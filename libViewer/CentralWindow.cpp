@@ -895,6 +895,14 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	//if (oldWindowMode == windowMode)
 	//	return;
 
+	if (oldWindowMode == WINDOW_VIEWER)
+	{
+		showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+			config->SetShowVideoThumbnail(showVideoThumbnail);
+	}
+
 	if (windowInit)
 	{
 		if (config != nullptr)
@@ -978,8 +986,8 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		panelInfosClick->Show(true);
 		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxRIGHT);
-		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		if (windowInit)
 		{
