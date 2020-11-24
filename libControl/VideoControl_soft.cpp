@@ -114,6 +114,15 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 }
 
+float CVideoControlSoft::GetMovieRatio()
+{
+	float ratioSelect = 0;
+	muVideoEffect.lock();
+	ratioSelect = videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
+	muVideoEffect.unlock();
+	return ratioSelect;
+}
+
 CRegardsBitmap * CVideoControlSoft::SavePicture()
 {
     CRegardsBitmap * bitmap = nullptr;
@@ -451,6 +460,7 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	float zoom = GetZoomRatio();
 	float ratio = 1.0f;
 
+	/*
 	muVideoEffect.lock();
 	ratio = (float)videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
 	muVideoEffect.unlock();
@@ -461,6 +471,7 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	{
 		width_local = (int)((float)height_local * ratio);
 	}
+	*/
 	widthOut = width_local * zoom;
 	heightOut = height_local * zoom; 
 }
@@ -1210,22 +1221,36 @@ int CVideoControlSoft::GetSrcBitmapWidth()
 {
 	TRACE();
 	int localAngle = angle;
+	float ratioSelect = GetMovieRatio();
+	float _widthVideo = widthVideo;
+	float _heightVideo = heightVideo;
+	if (ratioSelect != 1.0f)
+	{
+		_widthVideo = _heightVideo * ratioSelect;
+	}
 
 	if (localAngle == 90 || localAngle == 270)
-		return heightVideo;
+		return _heightVideo;
 	else
-		return widthVideo;
+		return _widthVideo;
 	return 0;
 }
 
 int CVideoControlSoft::GetSrcBitmapHeight()
 {
 	TRACE();
+	float ratioSelect = GetMovieRatio();
+	float _widthVideo = widthVideo;
+	float _heightVideo = heightVideo;
+	if (ratioSelect != 1.0f)
+	{
+		_widthVideo = _heightVideo * ratioSelect;
+	}
 	int localAngle = angle;
 	if (localAngle == 90 || localAngle == 270)
-		return widthVideo;
+		return _widthVideo;
 	else
-		return heightVideo;
+		return _heightVideo;
 	return 0;
 }
 
@@ -1744,19 +1769,20 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	return glTexture;
 }
 
+
 int CVideoControlSoft::GetVideoWidth()
 {
-	if (angle == 90 | angle == 270)
-		return heightVideo;
+	//if (angle == 90 | angle == 270)
+	//	return heightVideo;
 
-	return widthVideo;
+	return GetSrcBitmapWidth();
 }
 int CVideoControlSoft::GetVideoHeight()
 {
-	if (angle == 90 | angle == 270)
-		return widthVideo;
+	//if (angle == 90 | angle == 270)
+	//	return widthVideo;
 
-	return heightVideo;
+	return GetSrcBitmapHeight();
 }
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()

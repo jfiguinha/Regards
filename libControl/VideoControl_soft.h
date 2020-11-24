@@ -163,7 +163,7 @@ protected:
 	int GetVideoHeight();
 	int GetSrcBitmapWidth();
 	int GetSrcBitmapHeight();
-
+	float GetMovieRatio();
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;
