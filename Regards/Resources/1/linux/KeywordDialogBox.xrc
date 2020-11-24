@@ -15,11 +15,11 @@
 		</object>
 		<object class="wxButton" name="ID_OK">
 			<label>OK</label>
-			<pos>88,280</pos>
+			<pos>88,260</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>224,280</pos>
+			<pos>224,260</pos>
 		</object>
 	</object>
 </resource>
