@@ -159,8 +159,7 @@ protected:
 	float GetZoomRatio();
 	void CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert);
 	void CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc);
-	int GetVideoWidth();
-	int GetVideoHeight();
+
 	int GetSrcBitmapWidth();
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();

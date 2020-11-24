@@ -390,7 +390,7 @@ float CVideoControlSoft::GetZoomRatio()
 	float zoom = 1.0f;
 	if (shrinkVideo)
 	{
-		zoom = CalculPictureRatio(GetVideoWidth(), GetVideoHeight());
+		zoom = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	}
 	else
 	{
@@ -455,8 +455,8 @@ void CVideoControlSoft::ShrinkVideo()
 
 void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 {
-	int width_local = GetVideoWidth();
-	int height_local = GetVideoHeight();
+	int width_local = GetSrcBitmapWidth();
+	int height_local = GetSrcBitmapHeight();
 	float zoom = GetZoomRatio();
 	float ratio = 1.0f;
 
@@ -466,7 +466,7 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	muVideoEffect.unlock();
 
 	if (ratio == 1.0f)	
-		ratio = (float)GetVideoWidth() / (float)GetVideoHeight();
+		ratio = (float)GetSrcBitmapWidth() / (float)GetSrcBitmapHeight();
 	else
 	{
 		width_local = (int)((float)height_local * ratio);
@@ -1551,7 +1551,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	muVideoEffect.unlock();
 
 	if (aspect_ratio == 1.0)
-		aspect_ratio = (float)GetVideoWidth() / (float)GetVideoHeight();
+		aspect_ratio = (float)GetSrcBitmapWidth() / (float)GetSrcBitmapHeight();
 
 	/* XXX: we suppose the screen has a 1.0 pixel ratio */
 	height = scr_height * zoom;
@@ -1769,22 +1769,6 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	return glTexture;
 }
 
-
-int CVideoControlSoft::GetVideoWidth()
-{
-	//if (angle == 90 | angle == 270)
-	//	return heightVideo;
-
-	return GetSrcBitmapWidth();
-}
-int CVideoControlSoft::GetVideoHeight()
-{
-	//if (angle == 90 | angle == 270)
-	//	return widthVideo;
-
-	return GetSrcBitmapHeight();
-}
-
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
 #ifndef WIN32
@@ -1796,7 +1780,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
     
     printf("RenderFFmpegToTexture \n");
     
-	GLTexture * glTexture = new GLTexture(GetVideoWidth(), GetVideoHeight());
+	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 	if (!openGLDecoding)
 	{

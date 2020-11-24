@@ -37,6 +37,11 @@ using namespace Regards::FiltreEffet;
 
 #define DELAY_ANIMATION 20
 
+#define WINDOW_FACE 2
+#define WINDOW_EXPLORER 3
+#define WINDOW_VIEWER 1
+#define WINDOW_PICTURE 4
+
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
@@ -364,14 +369,16 @@ void CCentralWindow::ShowToolbar()
      
 	showToolbar = true;
 
-	windowManager->ShowWindow(Pos::wxBOTTOM);
+	if(windowMode == WINDOW_VIEWER)
+		windowManager->ShowWindow(Pos::wxBOTTOM);
 
 	if (isFullscreen)
 		windowManager->ShowWindow(Pos::wxRIGHT);
 
 	if (isFullscreen && !isPicture)
 	{
-		windowManager->ShowWindow(Pos::wxTOP);
+		if (windowMode == WINDOW_VIEWER)
+			windowManager->ShowWindow(Pos::wxTOP);
 		
 	}
 
@@ -594,8 +601,8 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 				{
 					isVideo = false;
 					filename = bitmap->GetFilename();
-					//if (loadInfo && panelInfosWindow->IsShown())
-					SetPanelInfos(isThumbnail);
+					if (windowMode == WINDOW_VIEWER)
+						SetPanelInfos(isThumbnail);
 				}
 			}
 		}
@@ -914,7 +921,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	switch (windowMode)
 	{
 
-	case 1:
+	case WINDOW_VIEWER:
 		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxBOTTOM);
 		windowManager->ShowWindow(Pos::wxTOP);
@@ -958,7 +965,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		break;
 
 #ifndef __NOFACE_DETECTION__
-	case 2:
+	case WINDOW_FACE:
 		previewWindow->SetFaceMode();
 		listFace->Show(true);
 		windowManager->ShowWindow(Pos::wxLEFT);
@@ -977,7 +984,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		listFace->ForceRefresh();
 		break;
 #endif
-	case 3:
+	case WINDOW_EXPLORER:
 		listPicture->Show(true);
 		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxRIGHT);
@@ -996,7 +1003,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		listPicture->ForceRefresh();
 		//windowManager->Update();
 		break;
-	case 4:
+	case WINDOW_PICTURE:
 		windowManager->HideWindow(Pos::wxLEFT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
@@ -1187,7 +1194,8 @@ void CCentralWindow::StartLoadingPicture(const int &numElement)
 
 bool CCentralWindow::SetAnimation(const wxString &filename)
 {
-	windowManager->ShowWindow(Pos::wxTOP);
+	if(windowMode == WINDOW_VIEWER)
+		windowManager->ShowWindow(Pos::wxTOP);
 	StopAnimation();
 	CLibPicture libPicture;
 	bool refresh = isAnimation ? false : true;
@@ -1230,8 +1238,8 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 	if (animationToolbar != nullptr)
 		animationToolbar->AnimationStart();
 
-
-	SetPanelInfos(false);
+	if (windowMode == WINDOW_VIEWER)
+		SetPanelInfos(false);
 
 	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
@@ -1254,7 +1262,8 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	isAnimation = false;
 	isPicture = false;
 	
-	windowManager->ShowWindow(Pos::wxTOP);
+	if(windowMode == WINDOW_VIEWER)
+		windowManager->ShowWindow(Pos::wxTOP);
 	//thumbnailVideoPanel->SetVideo(path);
 	//thumbnailVideoPanel->ShowVideoThumbnail();
 	if (thumbnailVideo->GetFilename() != filename)
@@ -1267,7 +1276,8 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	if (previewWindow != nullptr)
 		previewWindow->SetVideo(path, false);
 
-	SetPanelInfos(false);
+	if (windowMode == WINDOW_VIEWER)
+		SetPanelInfos(false);
 
 }
 
