@@ -230,7 +230,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				pBitmapIcone->SetTheme(themeIcone);
 				pBitmapIcone->SetSizeIcone(width, height);
 				pBitmapIcone->SetWindowPos(x, y);
-				pBitmapIcone->RenderIcone(&memdc, 0, 0);
+				pBitmapIcone->RenderIcone(&memdc, 0, 0, false, false);
 				delete pBitmapIcone;
 			}
 

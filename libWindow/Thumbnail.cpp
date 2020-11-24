@@ -818,7 +818,7 @@ void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const
 	if (config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 
-	int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur);
+	int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
 
 	if (preprocess_thumbnail)
 	{
@@ -975,7 +975,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     
     wxBufferedPaintDC dc(this);
     wxRect rc = GetWindowRect();
-    UpdateScroll();
+    //UpdateScroll();
     FillRect(&dc, rc, themeThumbnail.colorBack);
     RenderIcone(&dc);
 

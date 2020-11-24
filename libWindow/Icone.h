@@ -76,7 +76,7 @@ namespace Regards
 				return state;
 			}
 
-			int RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur);
+			int RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur, const bool & flipHorizontal, const bool & flipVertical);
 
 			bool IsChecked();
 

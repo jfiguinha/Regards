@@ -173,7 +173,8 @@ namespace Regards
 			int posLargeur;
 			int isMoving;
 			int idWindowToRefresh = 0;
-
+			bool flipVertical = false;
+			bool flipHorizontal = false;
 		};
 	}
 }

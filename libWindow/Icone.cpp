@@ -649,7 +649,7 @@ void CIcone::CalculPosition(const wxImage & render)
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
+int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur, const bool & flipHorizontal, const bool & flipVertical)
 {
 	int returnValue = 0;
 	wxBitmap localmemBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());  
@@ -692,7 +692,10 @@ int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
 
 					returnValue = 1;
 				}
-
+				if (flipHorizontal)
+					image = image.Mirror();
+				if (flipVertical)
+					image = image.Mirror(0);
 			}
 		}
 		if (image.IsOk())

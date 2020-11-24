@@ -21,6 +21,8 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
+	flipHorizontal = false;
+	flipVertical = true;
 }
 
 
@@ -340,19 +342,7 @@ void CThumbnailFace::DeleteEmptyFace()
 //-----------------------------------------------------------------
 CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, const int &yPos)
 {
-    /*
-	int x = xPos + posLargeur;
-	int y = yPos + posHauteur;
-	CInfosSeparationBar * element;
 
-	InfosSeparationBarVector::iterator it;
-	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
-	if (it != listSeparator.end())
-		element = *it;
-
-	return element;
-*/
-	
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
