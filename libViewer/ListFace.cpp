@@ -109,7 +109,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		if(config != nullptr)
 		{
 			double pertinence = config->GetPertinenceValue();
-			int pertinenceValue = pertinence * 100;
+			int pertinenceValue = pertinence;
 			for(int i = 0;i < value.size();i++)
 			{
 				if(pertinenceValue == value[i])

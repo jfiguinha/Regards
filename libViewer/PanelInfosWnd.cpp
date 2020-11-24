@@ -430,8 +430,8 @@ void CPanelInfosWnd::HistoryUpdate()
 
 void CPanelInfosWnd::LoadInfo()
 {
-	if (this->IsShown())
-	{
+	//if (this->IsShown())
+	//{
 		switch (windowVisible)
 		{
 		case WM_INFOS:
@@ -487,7 +487,7 @@ void CPanelInfosWnd::LoadInfo()
             }
 			break;
 		}
-	}
+	//}
 	//this->ForceRefresh();
 	//this->Refresh();
 	//this->Update();

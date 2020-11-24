@@ -157,6 +157,7 @@ namespace Regards
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
 			void SetPanelInfos(const bool &isThumbnail);
 			void SetVideo(const wxString &path, const bool &first);
+			void SetModeViewer();
 
 			PhotosVector photoVector;
 

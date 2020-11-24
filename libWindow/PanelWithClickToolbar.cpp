@@ -41,6 +41,14 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	}
 }
 
+void CPanelWithClickToolbar::SetTitle(const wxString &title)
+{
+	if (paneWindow != nullptr)
+	{
+		paneWindow->SetTitle(title);
+	}
+}
+
 void CPanelWithClickToolbar::RefreshData(wxCommandEvent& event)
 {
 	if (paneWindow != nullptr)

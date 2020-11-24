@@ -601,8 +601,7 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 				{
 					isVideo = false;
 					filename = bitmap->GetFilename();
-					if (windowMode == WINDOW_VIEWER)
-						SetPanelInfos(isThumbnail);
+					SetPanelInfos(isThumbnail);
 				}
 			}
 		}
@@ -912,11 +911,10 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	}
 
 	previewWindow->SetNormalMode();
-	//previewWindow->Show(false);
+	panelInfosWindow->Show(false);
 	panelInfosClick->Show(false);
 	listFace->Show(false);
 	listPicture->Show(false);
-
 
 	switch (windowMode)
 	{
@@ -958,16 +956,26 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			windowManager->HideWindow(Pos::wxTOP);
 		}
 
+	
+		panelInfosWindow->Show(true);
+		panelInfosClick->SetWindow(panelInfosWindow);
 		panelInfosClick->Show(true);
-		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
+		panelInfosClick->SetTitle("Informations");
 
-		//windowManager->Update();
+
+		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->Resize();
+
+		//SetPanelInfos(false);
 		break;
 
 #ifndef __NOFACE_DETECTION__
 	case WINDOW_FACE:
-		previewWindow->SetFaceMode();
-		listFace->Show(true);
+		//previewWindow->SetFaceMode();
+		//listFace->Show(true);
+		panelInfosClick->Show(true);
 		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxTOP);
@@ -980,12 +988,21 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			else
 				windowManager->ShowPaneWindow(Pos::wxLEFT);
 		}
-		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
-		listFace->ForceRefresh();
+		//windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
+		//listFace->ForceRefresh();
+
+		listFace->Show(true);
+		panelInfosClick->SetWindow(listFace);
+		panelInfosClick->Show(true);
+		panelInfosClick->SetTitle("Face List");
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->Resize();
 		break;
 #endif
 	case WINDOW_EXPLORER:
-		listPicture->Show(true);
+		//listPicture->Show(true);
+		panelInfosClick->Show(true);
 		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
@@ -998,10 +1015,16 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			else
 				windowManager->ShowPaneWindow(Pos::wxLEFT);
 		}
-		
-		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
-		listPicture->ForceRefresh();
+		//windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
+		//listPicture->ForceRefresh();
 		//windowManager->Update();
+		listPicture->Show(true);
+		panelInfosClick->SetWindow(listPicture);
+		panelInfosClick->Show(true);
+		panelInfosClick->SetTitle("Picture List");
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->Resize();
 		break;
 	case WINDOW_PICTURE:
 		windowManager->HideWindow(Pos::wxLEFT);
@@ -1238,8 +1261,7 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 	if (animationToolbar != nullptr)
 		animationToolbar->AnimationStart();
 
-	if (windowMode == WINDOW_VIEWER)
-		SetPanelInfos(false);
+	SetPanelInfos(false);
 
 	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
@@ -1276,8 +1298,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	if (previewWindow != nullptr)
 		previewWindow->SetVideo(path, false);
 
-	if (windowMode == WINDOW_VIEWER)
-		SetPanelInfos(false);
+	SetPanelInfos(false);
 
 }
 

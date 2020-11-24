@@ -28,6 +28,7 @@ namespace Regards
 			//CScrollbarWnd * GetScrollWindow();
 			int GetWidth();
 			int GetHeight();
+			void SetTitle(const wxString &title);
 			void ShowPanel();
 			void HidePanel(const bool& refresh = true);
 			void ClosePane(const int &id, const int &refresh = 1);
