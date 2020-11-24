@@ -32,7 +32,7 @@ CKeywordWnd::CKeywordWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElem
     sqlRequest = "";
 	treeDataModify = nullptr;
 	widthPosition = 0;
-	m_textctrl = new wxTextCtrl(windowMain, wxID_ANY);
+
 	themeTree = *theme;
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
@@ -43,7 +43,7 @@ CKeywordWnd::CKeywordWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElem
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
 	yPos = 0;
-	m_textctrl->Show(false);
+
 	this->windowMain = windowMain;
 }
 
