@@ -892,8 +892,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	bool showVideoThumbnail = true;
 	windowMode = event.GetInt();
 	CMainParam* config = CMainParamInit::getInstance();
-	//if (oldWindowMode == windowMode)
-	//	return;
 
 	if (!windowInit && oldWindowMode == WINDOW_VIEWER)
 	{
@@ -951,44 +949,46 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	{
 
 	case WINDOW_VIEWER:
-		if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
-			windowManager->ShowWindow(Pos::wxLEFT);
-		if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
-			windowManager->ShowWindow(Pos::wxRIGHT);
-		if (!windowManager->GetWindowIsShow(Pos::wxBOTTOM))
-			windowManager->ShowWindow(Pos::wxBOTTOM);
-		if (!windowManager->GetWindowIsShow(Pos::wxTOP))
-			windowManager->ShowWindow(Pos::wxTOP);
-
-		if (isVideo || isAnimation)
 		{
-			if(showVideoThumbnail)
-				windowManager->ShowPaneWindow(Pos::wxTOP);
+			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
+				windowManager->ShowWindow(Pos::wxLEFT);
+			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				windowManager->ShowWindow(Pos::wxRIGHT);
+			if (!windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+				windowManager->ShowWindow(Pos::wxBOTTOM);
+			if (!windowManager->GetWindowIsShow(Pos::wxTOP))
+				windowManager->ShowWindow(Pos::wxTOP);
+
+			if (isVideo || isAnimation)
+			{
+				if (showVideoThumbnail)
+					windowManager->ShowPaneWindow(Pos::wxTOP);
+				else
+					windowManager->HidePaneWindow(Pos::wxTOP);
+			}
 			else
-				windowManager->HidePaneWindow(Pos::wxTOP);
+			{
+				//windowManager->HidePaneWindow(Pos::wxTOP);
+				windowManager->HideWindow(Pos::wxTOP);
+			}
+
+
+			panelInfosWindow->Show(true);
+			panelInfosClick->SetWindow(panelInfosWindow);
+			panelInfosClick->Show(true);
+			panelInfosClick->SetTitle("Informations");
+
+			windowManager->HidePaneWindow(Pos::wxRIGHT);
+			windowManager->ShowPaneWindow(Pos::wxRIGHT);
+
+			if (windowInit)
+				if (!showInfos)
+					windowManager->HidePaneWindow(Pos::wxRIGHT);
+
+			windowManager->Resize();
+
+			//SetPanelInfos(false);
 		}
-		else
-		{
-			//windowManager->HidePaneWindow(Pos::wxTOP);
-			windowManager->HideWindow(Pos::wxTOP);
-		}
-
-	
-		panelInfosWindow->Show(true);
-		panelInfosClick->SetWindow(panelInfosWindow);
-		panelInfosClick->Show(true);
-		panelInfosClick->SetTitle("Informations");
-
-		windowManager->HidePaneWindow(Pos::wxRIGHT);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
-
-		if (windowInit)
-			if (!showInfos)
-				windowManager->HidePaneWindow(Pos::wxRIGHT);
-
-		windowManager->Resize();
-
-		//SetPanelInfos(false);
 		break;
 
 #ifndef __NOFACE_DETECTION__
