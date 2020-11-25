@@ -861,14 +861,14 @@ void CCentralWindow::SaveParameter()
 		
 		
 
-		showInfos = windowManager->GetPaneState(Pos::wxLEFT);
-		if(showInfos)
+		showFolder = windowManager->GetPaneState(Pos::wxLEFT);
+		if(showFolder)
 			config->SetPositionLeftPanel(left);
 
 		showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
 		showThumbnail = windowManager->GetPaneState(Pos::wxBOTTOM);
-		showFolder = windowManager->GetPaneState(Pos::wxRIGHT);
-		if(showFolder)
+		showInfos = windowManager->GetPaneState(Pos::wxRIGHT);
+		if(showInfos)
 			config->SetPositionRightPanel(right);
 
 		config->SetShowInfos(showInfos);
@@ -928,10 +928,14 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	{
 
 	case WINDOW_VIEWER:
-		windowManager->ShowWindow(Pos::wxLEFT);
-		windowManager->ShowWindow(Pos::wxBOTTOM);
-		windowManager->ShowWindow(Pos::wxTOP);
-		windowManager->ShowWindow(Pos::wxRIGHT);
+		if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
+			windowManager->ShowWindow(Pos::wxLEFT);
+		if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			windowManager->ShowWindow(Pos::wxRIGHT);
+		if (!windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+			windowManager->HideWindow(Pos::wxBOTTOM);
+		if (!windowManager->GetWindowIsShow(Pos::wxTOP))
+			windowManager->HideWindow(Pos::wxTOP);
 		if (windowInit)
 		{
 			if (!showFolder)
@@ -970,10 +974,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		panelInfosClick->Show(true);
 		panelInfosClick->SetTitle("Informations");
 
-
-		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 		windowManager->HidePaneWindow(Pos::wxRIGHT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+
+		if (windowInit)
+			if (!showInfos)
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+
 		windowManager->Resize();
 
 		//SetPanelInfos(false);
@@ -981,14 +988,17 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 #ifndef __NOFACE_DETECTION__
 	case WINDOW_FACE:
-		//previewWindow->SetFaceMode();
-		//listFace->Show(true);
+	{
 		panelInfosClick->Show(true);
-		windowManager->ShowWindow(Pos::wxLEFT);
-		windowManager->ShowWindow(Pos::wxRIGHT);
-		windowManager->HideWindow(Pos::wxBOTTOM);
-		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
+			windowManager->ShowWindow(Pos::wxLEFT);
+		if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			windowManager->ShowWindow(Pos::wxRIGHT);
+		if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+			windowManager->HideWindow(Pos::wxBOTTOM);
+		if (windowManager->GetWindowIsShow(Pos::wxTOP))
+			windowManager->HideWindow(Pos::wxTOP);
+			
 		if (windowInit)
 		{
 			if (!showFolder)
@@ -996,49 +1006,65 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			else
 				windowManager->ShowPaneWindow(Pos::wxLEFT);
 		}
-		//windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
-		//listFace->ForceRefresh();
-
 		listFace->Show(true);
 		panelInfosClick->SetWindow(listFace);
 		panelInfosClick->Show(true);
 		panelInfosClick->SetTitle("Face List");
 		windowManager->HidePaneWindow(Pos::wxRIGHT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+
+		if (windowInit)
+			if (!showInfos)
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+
 		windowManager->Resize();
+	}
 		break;
 #endif
 	case WINDOW_EXPLORER:
-		//listPicture->Show(true);
-		panelInfosClick->Show(true);
-		windowManager->ShowWindow(Pos::wxLEFT);
-		windowManager->ShowWindow(Pos::wxRIGHT);
-		windowManager->HideWindow(Pos::wxBOTTOM);
-		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
-		if (windowInit)
 		{
-			if (!showFolder)
-				windowManager->HidePaneWindow(Pos::wxLEFT);
-			else
-				windowManager->ShowPaneWindow(Pos::wxLEFT);
+			panelInfosClick->Show(true);
+			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
+				windowManager->ShowWindow(Pos::wxLEFT);
+			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				windowManager->ShowWindow(Pos::wxRIGHT);
+
+			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+				windowManager->HideWindow(Pos::wxBOTTOM);
+			if (windowManager->GetWindowIsShow(Pos::wxTOP))
+				windowManager->HideWindow(Pos::wxTOP);
+
+			if (windowInit)
+			{
+				if (!showFolder)
+					windowManager->HidePaneWindow(Pos::wxLEFT);
+				else
+					windowManager->ShowPaneWindow(Pos::wxLEFT);
+			}
+			listPicture->Show(true);
+			panelInfosClick->SetWindow(listPicture);
+			panelInfosClick->Show(true);
+			panelInfosClick->SetTitle("Picture List");
+			windowManager->HidePaneWindow(Pos::wxRIGHT);
+			windowManager->ShowPaneWindow(Pos::wxRIGHT);
+
+			if (windowInit)
+				if (!showInfos)
+					windowManager->HidePaneWindow(Pos::wxRIGHT);
+
+			windowManager->Resize();
 		}
-		//windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
-		//listPicture->ForceRefresh();
-		//windowManager->Update();
-		listPicture->Show(true);
-		panelInfosClick->SetWindow(listPicture);
-		panelInfosClick->Show(true);
-		panelInfosClick->SetTitle("Picture List");
-		windowManager->HidePaneWindow(Pos::wxRIGHT);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
-		windowManager->Resize();
+
 		break;
 	case WINDOW_PICTURE:
-		windowManager->HideWindow(Pos::wxLEFT);
-		windowManager->HideWindow(Pos::wxBOTTOM);
-		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->HideWindow(Pos::wxRIGHT);
+		if (windowManager->GetWindowIsShow(Pos::wxLEFT))
+			windowManager->HideWindow(Pos::wxLEFT);
+		if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+			windowManager->HideWindow(Pos::wxBOTTOM);
+		if (windowManager->GetWindowIsShow(Pos::wxTOP))
+			windowManager->HideWindow(Pos::wxTOP);
+		if (windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			windowManager->HideWindow(Pos::wxRIGHT);
 		break;
 
 	}

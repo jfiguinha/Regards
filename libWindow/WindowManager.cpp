@@ -203,6 +203,10 @@ void CWindowManager::HideWindow(Pos position, const bool &refresh)
 					if (window->separationBar->separationBar != nullptr)
 						window->separationBar->separationBar->Show(false);
 				}
+				if (window->isPanel)
+				{
+					window->GetPanel()->Show(false);
+				}
 			}
 		}
 	}
@@ -232,6 +236,17 @@ void CWindowManager::HidePaneWindow(Pos position, const int &refresh)
 		}
 
 	}
+}
+
+bool CWindowManager::GetWindowIsShow(Pos position)
+{
+	CWindowToAdd * window = FindWindow(position);
+
+	if (window != nullptr)
+	{
+		return !window->isHide;
+	}
+	return false;
 }
 
 int CWindowManager::GetPaneState(Pos position)
@@ -302,7 +317,10 @@ void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 						window->separationBar->separationBar->Show(true);
 				}
 			}
-
+			if (window->isPanel)
+			{
+				window->GetPanel()->Show(true);
+			}
 		}
 	}
 

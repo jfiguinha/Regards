@@ -42,7 +42,7 @@ namespace Regards
 			void Init();
             void ResetPosition();
 			wxRect GetWindowSize(Pos position);
-
+			bool GetWindowIsShow(Pos position);
 		protected:
 
 			vector<CWindowToAdd *> listWindow;
