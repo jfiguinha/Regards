@@ -895,7 +895,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	//if (oldWindowMode == windowMode)
 	//	return;
 
-	if (oldWindowMode == WINDOW_VIEWER)
+	if (!windowInit && oldWindowMode == WINDOW_VIEWER)
 	{
 		showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
 		CMainParam* config = CMainParamInit::getInstance();
@@ -924,6 +924,29 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	listFace->Show(false);
 	listPicture->Show(false);
 
+	if (windowInit)
+	{
+		if (!showFolder)
+			windowManager->HidePaneWindow(Pos::wxLEFT);
+		else
+			windowManager->ShowPaneWindow(Pos::wxLEFT);
+
+		if (!showInfos)
+			windowManager->HidePaneWindow(Pos::wxRIGHT);
+		else
+			windowManager->ShowPaneWindow(Pos::wxRIGHT);
+
+		if (!showThumbnail)
+			windowManager->HidePaneWindow(Pos::wxBOTTOM);
+		else
+			windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+	}
+
+	if (!showVideoThumbnail)
+		windowManager->HidePaneWindow(Pos::wxTOP);
+	else
+		windowManager->ShowPaneWindow(Pos::wxTOP);
+
 	switch (windowMode)
 	{
 
@@ -933,28 +956,10 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
 			windowManager->ShowWindow(Pos::wxRIGHT);
 		if (!windowManager->GetWindowIsShow(Pos::wxBOTTOM))
-			windowManager->HideWindow(Pos::wxBOTTOM);
+			windowManager->ShowWindow(Pos::wxBOTTOM);
 		if (!windowManager->GetWindowIsShow(Pos::wxTOP))
-			windowManager->HideWindow(Pos::wxTOP);
-		if (windowInit)
-		{
-			if (!showFolder)
-				windowManager->HidePaneWindow(Pos::wxLEFT);
-			else
-				windowManager->ShowPaneWindow(Pos::wxLEFT);
-            
-			if (!showInfos)
-				windowManager->HidePaneWindow(Pos::wxRIGHT);
-			else
-				windowManager->ShowPaneWindow(Pos::wxRIGHT);
+			windowManager->ShowWindow(Pos::wxTOP);
 
-			if (!showThumbnail)
-				windowManager->HidePaneWindow(Pos::wxBOTTOM);
-			else
-				windowManager->ShowPaneWindow(Pos::wxBOTTOM);
-			
-            
-		}
 		if (isVideo || isAnimation)
 		{
 			if(showVideoThumbnail)
@@ -999,13 +1004,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		if (windowManager->GetWindowIsShow(Pos::wxTOP))
 			windowManager->HideWindow(Pos::wxTOP);
 			
-		if (windowInit)
-		{
-			if (!showFolder)
-				windowManager->HidePaneWindow(Pos::wxLEFT);
-			else
-				windowManager->ShowPaneWindow(Pos::wxLEFT);
-		}
 		listFace->Show(true);
 		panelInfosClick->SetWindow(listFace);
 		panelInfosClick->Show(true);
@@ -1034,13 +1032,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			if (windowManager->GetWindowIsShow(Pos::wxTOP))
 				windowManager->HideWindow(Pos::wxTOP);
 
-			if (windowInit)
-			{
-				if (!showFolder)
-					windowManager->HidePaneWindow(Pos::wxLEFT);
-				else
-					windowManager->ShowPaneWindow(Pos::wxLEFT);
-			}
 			listPicture->Show(true);
 			panelInfosClick->SetWindow(listPicture);
 			panelInfosClick->Show(true);
