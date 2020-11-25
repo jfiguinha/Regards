@@ -145,7 +145,8 @@ void CShowVideo::OnShrink(wxCommandEvent& event)
 {
 	videoWindow->ShrinkVideo();
 	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
-	//OnHideScrollbar(event);
+	scrollbar->HideHorizontalScroll();
+	scrollbar->HideVerticalScroll();
 }
 
 
@@ -159,7 +160,10 @@ void CShowVideo::OnValueChange(wxCommandEvent& event)
 	}
 	else
 	{
+		scrollbar->ShowHorizontalScroll();
+		scrollbar->ShowVerticalScroll();
 		videoWindow->SetZoomIndex(value);
+
 	}
 }
 
