@@ -12,7 +12,7 @@ uniform int flipH;
 uniform int flipV;
 uniform int angle;
 uniform int type;
-uniform float ratio;
+
 
 //------------------------------------------------------------
 //------------------------------------------------------------
@@ -414,18 +414,11 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	positionTexture.x = (positionTexture.x / texelSizeX) * srcTexelSizeX;
 	positionTexture.y = (positionTexture.y / texelSizeY) * srcTexelSizeY;
 	
-	if(ratio == 1.0)
-	{
-		float ratioX = fWidthSrc / fWidth;
-		float ratioY = fHeightSrc / fHeight;
-		color = CalculInterpolation(ratioX, ratioY, positionTexture);
-	}
-	else
-	{
-		float ratioX = fWidthSrc / bitmapWidth;
-		float ratioY = fHeightSrc / bitmapHeight;
-		color = CalculInterpolation(ratioX, ratioY, positionTexture);
-	}
+	float ratioX = fWidthSrc / bitmapWidth;
+	float ratioY = fHeightSrc / bitmapHeight;
+	
+	color = CalculInterpolation(ratioX, ratioY, positionTexture);
+
 	return color;
 }
 

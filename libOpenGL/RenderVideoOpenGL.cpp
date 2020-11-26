@@ -39,7 +39,7 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 }
 
 
-void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & inverted)
+void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const wxFloatRect & rect, const bool & inverted)
 {
 	glTexture->Enable();
 
@@ -70,19 +70,19 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 			{
 				printf("SetParam sharpness failed \n ");
 			}
-			if (!m_pShader->SetParam("top", 0))
+			if (!m_pShader->SetParam("top", rect.top))
 			{
 				printf("SetParam colorboost failed \n ");
 			}
-			if (!m_pShader->SetParam("left", 0))
+			if (!m_pShader->SetParam("left", rect.left))
 			{
 				printf("SetParam colorboost failed \n ");
 			}
-			if (!m_pShader->SetParam("right", 1.0f))
+			if (!m_pShader->SetParam("right", rect.right))
 			{
 				printf("SetParam colorboost failed \n ");
 			}
-			if (!m_pShader->SetParam("bottom", 1.0f))
+			if (!m_pShader->SetParam("bottom", rect.bottom))
 			{
 				printf("SetParam colorboost failed \n ");
 			}
@@ -170,7 +170,7 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 }
 
 
-void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc, GLTexture * glTexture, const wxRect & rect, CVideoEffectParameter * effectParameter, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation, const float & zoomRatio, const bool & inverted)
+void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc, GLTexture * glTexture, const wxRect & rect, CVideoEffectParameter * effectParameter, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation, const bool & inverted)
 {
 	glTextureSrc->Enable();
 	glTexture->Enable();
@@ -241,10 +241,6 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 		{
 			printf("SetParam colorboost failed \n ");
 		}
-		if (!m_pShader->SetParam("ratio", zoomRatio))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
     }
 
 	RenderQuad(glTexture, left_local, top_local, false);
@@ -256,6 +252,14 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 
 	RenderToTexture();
 
+	wxFloatRect floatRect;
+	floatRect.top = (float)(top_local) / (float)textureDisplay->GetHeight();
+	floatRect.left = (float)(left_local) / (float)textureDisplay->GetWidth();
+	floatRect.right = (float)(left_local + width_local) / (float)textureDisplay->GetWidth();
+	floatRect.bottom = (float)(top_local + height_local) / (float)textureDisplay->GetHeight();
+	RenderWithEffect(textureDisplay, effectParameter, floatRect, false);
+
+	/*
 	textureDisplay->Enable();
 
 	/*
@@ -266,7 +270,7 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 	rect_local.SetRight(left_local + width_local);
 	*/
 
-
+	/*
 	if (effectParameter->effectEnable)
 	{
 		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO");
@@ -390,6 +394,8 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 	}
 
 	textureDisplay->Disable();
+
+	*/
 }
 
 

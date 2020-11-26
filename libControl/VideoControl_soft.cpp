@@ -1471,16 +1471,22 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			int filterInterpolation = 0;
 			int widthOutput = 0;
 			int heightOutput = 0;
+			int local_angle = (360 - angle) % 360;
 			wxRect rc(0, 0, 0, 0);
 			CalculPositionVideo(widthOutput, heightOutput, rc);
-			glTextureOutput = new GLTexture(rc.width, rc.height);
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
+			glTextureOutput = new GLTexture(widthOutput, heightOutput);
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, !flipV, local_angle, filterInterpolation, true);
 		}
 		else
 		{
 			printf("RenderWithEffect");
 			muVideoEffect.lock();
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, inverted);
+			wxFloatRect floatRect;
+			floatRect.left = 0;
+			floatRect.right = 1.0f;
+			floatRect.top = 0;
+			floatRect.bottom = 1.0f;
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, inverted);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1811,7 +1817,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	else
     {
         printf("RenderFFmpegToTexture OpenGL Decoding \n");
-        glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
     }
 		
 
@@ -1889,7 +1895,7 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	return supportOpenCL;
+	return 0;// supportOpenCL;
 
 }
 

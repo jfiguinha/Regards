@@ -18,6 +18,14 @@ namespace Regards
 {
 	namespace OpenGL
 	{
+		struct wxFloatRect
+		{
+			float left = 0;
+			float right = 0;
+			float top = 0;
+			float bottom = 0;
+		};
+
 		class CRenderVideoOpenGL : public CRenderOpenGL
 		{
 		public:
@@ -42,8 +50,8 @@ namespace Regards
 				return myGLVersion;
 			}
             
-			void RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & inverted);
-			void RenderWithEffectInterpolation(GLTexture * glTexture, GLTexture * glTextureOutput, const wxRect & rect, CVideoEffectParameter * videoEffectParameter, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation, const float & zoomRatio, const bool & inverted = false);
+			void RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const wxFloatRect & rect, const bool & inverted);
+			void RenderWithEffectInterpolation(GLTexture * glTexture, GLTexture * glTextureOutput, const wxRect & rect, CVideoEffectParameter * videoEffectParameter, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation, const bool & inverted = false);
             //void RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted = false);
 			//void RenderWithoutEffect(const int &left, const int &top, GLTexture * glTexture, const bool & flipH, const bool & flipV, const bool & inverted = false);
 
