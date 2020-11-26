@@ -230,5 +230,5 @@ protected:
 	int oldHeight = 0;
 	bool startVideo = false;
 	bool processVideoEnd = false;
-	bool openGLDecoding = false;
+	bool openGLDecoding = true;
 };

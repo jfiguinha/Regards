@@ -10,6 +10,7 @@
 #define FILTER_2PI double (2.0 * 3.1415926535897932384626433832795)
 #define FILTER_4PI double (4.0 * 3.1415926535897932384626433832795)
 
+#include "Interpolation.h"
 #include "InterpolationBicubic.h"
 
 class CBoxFilter : public CInterpolationBicubic
@@ -560,3 +561,174 @@ public:
 		}
 };
 
+static void ApplyInterpolationFilters(CRegardsBitmap * bitmap, CRegardsBitmap * & bitmapOut, const wxRect &rc, const int & flipH, const int & flipV, const int & angle, const int &filterInterpolation)
+{
+
+	switch (filterInterpolation)
+	{
+	case 0:
+	{
+		CCubicFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 1:
+	{
+		CBoxFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 2:
+	{
+		CHermiteFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 3:
+	{
+		CHanningFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 4:
+	{
+		CCatromFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 5:
+	{
+		CMitchellFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	case 6:
+	{
+		CTriangleFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 7:
+	{
+		CQuadraticFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 8:
+	{
+		CBlackmanFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 9:
+	{
+		CHammingFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 10:
+	{
+		CGaussianFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	case 11:
+	{
+		CBilinearFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	default:
+	{
+
+		CInterpolation interpolation;
+		interpolation.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+	}
+	break;
+	}
+}
+
+static void ApplyInterpolationFilters(CRegardsBitmap * bitmap, CRegardsBitmap * & bitmapOut, const int & flipH, const int & flipV, const int & angle, const int &filterInterpolation)
+{
+
+	switch (filterInterpolation)
+	{
+	case 0:
+	{
+		CCubicFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 1:
+	{
+		CBoxFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 2:
+	{
+		CHermiteFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 3:
+	{
+		CHanningFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 4:
+	{
+		CCatromFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 5:
+	{
+		CMitchellFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	case 6:
+	{
+		CTriangleFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 7:
+	{
+		CQuadraticFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 8:
+	{
+		CBlackmanFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 9:
+	{
+		CHammingFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 10:
+	{
+		CGaussianFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	case 11:
+	{
+		CBilinearFilter cubicFilter;
+		cubicFilter.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	default:
+	{
+
+		CInterpolation interpolation;
+		interpolation.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+	}
+	break;
+	}
+}

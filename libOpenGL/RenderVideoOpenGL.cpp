@@ -62,13 +62,29 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 			{
 				printf("SetTexture texUnit failed \n ");
 			}
-			if (!m_pShader->SetParam("fWidth", glTexture->GetWidth()))
+			if (!m_pShader->SetParam("fWidth", width_local))
 			{
 				printf("SetParam sharpness failed \n ");
 			}
-			if (!m_pShader->SetParam("fHeight", glTexture->GetHeight()))
+			if (!m_pShader->SetParam("fHeight", height_local))
 			{
 				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("top", 0))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("left", 0))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("right", 1.0f))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("bottom", 1.0f))
+			{
+				printf("SetParam colorboost failed \n ");
 			}
 			if (!m_pShader->SetIntegerParam("effectenable", effectParameter->effectEnable))
 			{
@@ -166,7 +182,7 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 	int top_local = (height - height_local) / 2;
 
 
-    GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO_INTERPOLATION");
+    GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_INTERPOLATION");
     if(m_pShader != nullptr)
     {
 		srand(time(NULL));
@@ -192,70 +208,6 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 		if (!m_pShader->SetParam("fHeightSrc", glTextureSrc->GetHeight()))
 		{
 			printf("SetParam sharpness failed \n ");
-		}
-        if (!m_pShader->SetIntegerParam("effectenable", effectParameter->effectEnable))
-        {
-            printf( "SetParam grayscale failed \n " );
-        }  
-        if (!m_pShader->SetIntegerParam("grayscale", effectParameter->grayEnable))
-        {
-            printf( "SetParam grayscale failed \n " );
-        }
-        if (!m_pShader->SetIntegerParam("sharpenMasking", effectParameter->SharpenEnable))
-        {
-            printf("SetParam sharpenMasking failed \n " );
-        }
-        if (!m_pShader->SetIntegerParam("tone", effectParameter->bandcEnable))
-        {
-            printf( "SetParam tone failed \n " );
-        }
-        if (!m_pShader->SetIntegerParam("colorboost", effectParameter->ColorBoostEnable))
-        {
-            printf( "SetParam colorboost failed \n " );
-        }
-        if (!m_pShader->SetIntegerParam("denoise", effectParameter->denoiseEnable))
-        {
-            printf( "SetParam colorboost failed \n " );
-        } 
-		if (!m_pShader->SetIntegerParam("filmgrain", effectParameter->filmgrainenable))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-        if (!m_pShader->SetParam("sharpness", effectParameter->sharpness))
-        {
-            printf( "SetParam sharpness failed \n " );
-        }
-        if (!m_pShader->SetParam("contrast", effectParameter->contrast))
-        {
-            printf( "SetParam contrast failed \n " );
-        }
-        if (!m_pShader->SetParam("brightness", effectParameter->brightness))
-        {
-            printf( "SetParam brightness failed \n " );
-        }        
-        if (!m_pShader->SetParam("red", effectParameter->color_boost[0]))
-        {
-            printf( "SetParam red failed \n " );
-        }        
-        if (!m_pShader->SetParam("green", effectParameter->color_boost[1]))
-        {
-            printf( "SetParam green failed \n " );
-        }        
-        if (!m_pShader->SetParam("blue",  effectParameter->color_boost[2]))
-        {
-            printf( "SetParam blue failed \n " );
-        } 
-        if (!m_pShader->SetParam("sigma", effectParameter->uSigma))
-        {
-            printf( "SetParam uSigma failed \n " );
-        } 
-		if (!m_pShader->SetParam("threshold", effectParameter->uThreshold / 100.0f))
-		{
-			printf("SetParam uThreshold failed \n ");
-		}
-		if (!m_pShader->SetParam("kSigma", effectParameter->uKSigma))
-		{
-			printf("SetParam uKSigma failed \n ");
 		}
 		if (!m_pShader->SetIntegerParam("left", rect.x))
 		{
@@ -293,18 +245,151 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 		{
 			printf("SetParam colorboost failed \n ");
 		}
-		if (!m_pShader->SetParam("timer", timer))
-		{
-			printf("SetParam uKSigma failed \n ");
-		}
     }
 
-	RenderQuad(glTexture, left_local, top_local, inverted);
+	RenderQuad(glTexture, left_local, top_local, false);
     if(m_pShader != nullptr)
         m_pShader->DisableShader();
 	
 	glTexture->Disable();
 	glTextureSrc->Disable();
+
+	RenderToTexture();
+
+	textureDisplay->Enable();
+
+	/*
+	wxRect rect_local;
+	rect_local.SetTop(top_local);
+	rect_local.SetBottom(top_local + height_local);
+	rect_local.SetLeft(left_local);
+	rect_local.SetRight(left_local + width_local);
+	*/
+
+
+	if (effectParameter->effectEnable)
+	{
+		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO");
+		if (m_pShader != nullptr)
+		{
+			srand(time(NULL));
+			float timer = rand() % 1000 + 1;
+
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("texUnit", textureDisplay->GetTextureID()))
+			{
+				printf("SetTexture texUnit failed \n ");
+			}
+			if (!m_pShader->SetParam("fWidth", textureDisplay->GetWidth()))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("fHeight", textureDisplay->GetHeight()))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("top", (float)(top_local) / (float)textureDisplay->GetHeight()))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("left", (float)(left_local) / (float)textureDisplay->GetWidth()))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("right", (float)(left_local + width_local) / (float)textureDisplay->GetWidth()))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("bottom", (float)(top_local + height_local) / (float)textureDisplay->GetHeight()))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("effectenable", effectParameter->effectEnable))
+			{
+				printf("SetParam grayscale failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("grayscale", effectParameter->grayEnable))
+			{
+				printf("SetParam grayscale failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("sharpenMasking", effectParameter->SharpenEnable))
+			{
+				printf("SetParam sharpenMasking failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("tone", effectParameter->bandcEnable))
+			{
+				printf("SetParam tone failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("colorboost", effectParameter->ColorBoostEnable))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("denoise", effectParameter->denoiseEnable))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetIntegerParam("filmgrain", effectParameter->filmgrainenable))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
+			if (!m_pShader->SetParam("sharpness", effectParameter->sharpness))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("contrast", effectParameter->contrast))
+			{
+				printf("SetParam contrast failed \n ");
+			}
+			if (!m_pShader->SetParam("brightness", effectParameter->brightness))
+			{
+				printf("SetParam brightness failed \n ");
+			}
+			if (!m_pShader->SetParam("red", effectParameter->color_boost[0]))
+			{
+				printf("SetParam red failed \n ");
+			}
+			if (!m_pShader->SetParam("green", effectParameter->color_boost[1]))
+			{
+				printf("SetParam green failed \n ");
+			}
+			if (!m_pShader->SetParam("blue", effectParameter->color_boost[2]))
+			{
+				printf("SetParam blue failed \n ");
+			}
+			if (!m_pShader->SetParam("sigma", effectParameter->uSigma))
+			{
+				printf("SetParam uSigma failed \n ");
+			}
+			if (!m_pShader->SetParam("threshold", effectParameter->uThreshold / 100.0f))
+			{
+				printf("SetParam uThreshold failed \n ");
+			}
+			if (!m_pShader->SetParam("kSigma", effectParameter->uKSigma))
+			{
+				printf("SetParam uKSigma failed \n ");
+			}
+			if (!m_pShader->SetParam("timer", timer))
+			{
+				printf("SetParam uKSigma failed \n ");
+			}
+		}
+
+		RenderQuad(textureDisplay, 0, 0, inverted);
+		if (m_pShader != nullptr)
+			m_pShader->DisableShader();
+	}
+	else
+	{
+		width_local = textureDisplay->GetWidth();
+		height_local = textureDisplay->GetHeight();
+
+		left_local = (width - width_local) / 2;
+		top_local = (height - height_local) / 2;
+
+		RenderQuad(textureDisplay, left_local, top_local, inverted);
+	}
+
+	textureDisplay->Disable();
 }
 
 

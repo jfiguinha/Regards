@@ -1,6 +1,10 @@
 uniform sampler2D texUnit;
 uniform float fWidth;
 uniform float fHeight;
+uniform float top;
+uniform float left;
+uniform float right;
+uniform float bottom;
 uniform int effectenable;
 uniform int grayscale;
 uniform int sharpenMasking;
@@ -20,6 +24,8 @@ uniform float threshold;
 uniform float kSigma;
 
 uniform float timer;
+
+
 const float permTexUnit = 1.0/256.0;		// Perm texture texel-size
 const float permTexUnitHalf = 0.5/256.0;	// Half perm texture texel-size
 const float grainamount = 0.03; //grain amount
@@ -280,38 +286,40 @@ vec4 Denoise(vec4 centrPx, sampler2D tex)
 //Main code													   
 //------------------------------------------------------------
 void main(void)
-{																   
-
+{		
+	float x = gl_TexCoord[0].s;
+	float y = gl_TexCoord[0].t;
 	vec2 tex_coord = gl_TexCoord[0].st;
 	vec4 src_color = texture2D(texUnit, tex_coord).rgba;
-	
-	if(effectenable == 0)
+		
+	if(x > left && x < right && y > top && y < bottom)													
 	{
-		gl_FragColor = src_color;
-		return;
-	}
-	
-	src_color = ApplyFilter(src_color);
-	
-	if(denoise == 1)
-	{
-		src_color = Denoise(src_color, texUnit);
-	}
-
-	if(filmgrain == 1)
-	{
-		vec4 noise = vec4(pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),0.0)));
-	  
-		if(grayscale == 0)
+		if(effectenable == 0)
 		{
-			noise.g = pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),1.0));
-			noise.b = pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),2.0));
+			gl_FragColor = src_color;
+			return;
 		}
 		
-		src_color = src_color+noise*grainamount;
+		src_color = ApplyFilter(src_color);
+		
+		if(denoise == 1)
+		{
+			src_color = Denoise(src_color, texUnit);
+		}
+
+		if(filmgrain == 1)
+		{
+			vec4 noise = vec4(pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),0.0)));
+		  
+			if(grayscale == 0)
+			{
+				noise.g = pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),1.0));
+				noise.b = pnoise3D(vec3(tex_coord*vec2(fWidth,fHeight),2.0));
+			}
+			
+			src_color = src_color+noise*grainamount;
+		}
 	}
-
-
 	gl_FragColor = src_color;
 }
 

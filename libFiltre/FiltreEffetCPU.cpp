@@ -319,6 +319,7 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 		delete bitmapOut;
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	ApplyInterpolationFilters(pBitmap, bitmapOut, flipH, flipV, angle, method);
 	/*
 					<item>CubicFilter</item>
 				<item>BboxFilter</item>
@@ -334,7 +335,7 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 				<item>BilinearFilter</item>
 				<item>None</item>
 	
-	*/
+
 
 	switch (method)
 	{
@@ -416,7 +417,7 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 		}
 		break;
 	}
-
+		*/
 
 }
 
@@ -427,7 +428,9 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 	//CInterpolationBicubic interpolation;
+	ApplyInterpolationFilters(pBitmap, bitmapOut, rc, flipH, flipV, angle, method);
 
+	/*
 	switch (method)
 	{
 	case 0:
@@ -508,7 +511,7 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 	}
 	break;
 	}
-
+	*/
 
 }
 
