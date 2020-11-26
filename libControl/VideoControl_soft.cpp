@@ -1781,7 +1781,11 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
     printf("RenderFFmpegToTexture \n");
     
 	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+    
+    printf("RenderFFmpegToTexture 1 \n");
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+    
+    printf("RenderFFmpegToTexture 2 \n");
 	if (!openGLDecoding)
 	{
         printf("RenderFFmpegToTexture Not OpenGL Decoding \n");
