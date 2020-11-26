@@ -1895,7 +1895,7 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	return 0;// supportOpenCL;
+	return supportOpenCL;
 
 }
 
