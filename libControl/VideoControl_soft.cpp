@@ -1784,6 +1784,8 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 	if (!openGLDecoding)
 	{
+        printf("RenderFFmpegToTexture Not OpenGL Decoding \n");
+        
 		int widthOutput = 0;
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
