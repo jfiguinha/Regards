@@ -3,6 +3,45 @@
 #include "RegardsBitmap.h"
 #include <BitmapYUV.h>
 
+struct myFiltreInterpolationTask {
+	myFiltreInterpolationTask(CInterpolation * filtre, const int &x, const int &y, CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
+	{
+		this->x = x;
+		this->y = y;
+		this->In = In;
+		this->Out = Out;
+		this->filtre = filtre;
+		this->rectToShow = rectToShow;
+		this->flipH = flipH;
+		this->flipV = flipV;
+		this->angle = angle;
+	}
+
+	void operator()()
+	{
+		int32_t width = Out->GetBitmapWidth();
+		int32_t height = Out->GetBitmapHeight();
+
+		int32_t widthIn = In->GetBitmapWidth();
+		int32_t heightIn = In->GetBitmapHeight();
+
+		float posY = 0;
+		float posX = 0;
+		CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
+		Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+	}
+
+	int x;
+	int y;
+	CRegardsBitmap * In;
+	CRegardsBitmap * Out;
+	wxRect rectToShow;
+	int flipH;
+	int flipV;
+	int angle;
+	CInterpolation * filtre;
+};
+
 CInterpolation::CInterpolation()
 {
 }
@@ -605,6 +644,8 @@ wxImage CInterpolation::Execute(CRegardsBitmap * In, const int &widthOut, const 
 	return imageout;
 }
 
+
+
 void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
 {
 	int32_t width = Out->GetBitmapWidth();
@@ -615,19 +656,43 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const 
 
 	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
+
+#ifdef USE_TBB
+		std::vector<myFiltreInterpolationTask> tasks;
+
+		for (auto y = 0; y < height; y++)
+		{
+			for (auto x = 0; x < width; x++)
+			{
+				tasks.push_back(myFiltreInterpolationTask(this, x, y, In, Out, rectToShow, flipH, flipV, angle));
+			}
+		}
+
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, tasks.size()),
+			[&tasks](const tbb::blocked_range<size_t>& r)
+		{
+			for (size_t i = r.begin(); i < r.end(); ++i)
+				tasks[i]();
+		}
+		);
+#else
+		
 #pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
+
+
 #pragma omp parallel for
 			for (auto x = 0; x < width; x++)
 			{
-
 				float posY = 0;
 				float posX = 0;
 				CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
 				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
 			}
 		}
+#endif
 	}
 
 
@@ -733,6 +798,7 @@ void CInterpolation::CalculPosition(const int &x, const int &y, const int &width
 		}
 	}
 }
+
 
 void CInterpolation::CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY)
 {

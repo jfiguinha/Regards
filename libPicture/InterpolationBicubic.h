@@ -20,17 +20,19 @@ public:
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const int &flipH, const int &flipV, const int &angle);
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle);
 
-protected:
-
-	virtual inline double Filter(const double &x);
-			
 	virtual inline void Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
 	virtual inline void Bicubic(CRgbaquad & data, wxImage * In, const float &x, const float &y, float * tabF1, float * tabF);
 
-	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
 
 	weightX * wX;
 	weightX * wY;
+
+protected:
+
+	virtual inline double Filter(const double &x);
+
+	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
+
 	double m_dWidth;
 };
 

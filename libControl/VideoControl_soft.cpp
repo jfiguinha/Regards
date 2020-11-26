@@ -12,6 +12,7 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
+#include <InterpolationFilters.h>
 #include <SavePicture.h>
 #include <ImageLoadingFormat.h>
 #include "ScrollbarWnd.h"
@@ -1789,26 +1790,105 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	if (!openGLDecoding)
 	{
         printf("RenderFFmpegToTexture Not OpenGL Decoding \n");
-        
+		int filterInterpolation = 0;
+		CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+
+		printf("RenderToTexture 2\n");
+
+		if (regardsParam != nullptr)
+			filterInterpolation = regardsParam->GetInterpolationType();
+
 		int widthOutput = 0;
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
         inverted = false;
 		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-		//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
-		CInterpolation interpolation;
-		interpolation.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
+		switch (filterInterpolation)
+		{
+		case 0:
+		{
+			CCubicFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 1:
+		{
+			CBoxFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 2:
+		{
+			CHermiteFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 3:
+		{
+			CHanningFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 4:
+		{
+			CCatromFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 5:
+		{
+			CMitchellFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		case 6:
+		{
+			CTriangleFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 7:
+		{
+			CQuadraticFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 8:
+		{
+			CBlackmanFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 9:
+		{
+			CHammingFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 10:
+		{
+			CGaussianFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		case 11:
+		{
+			CBilinearFilter cubicFilter;
+			cubicFilter.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		default:
+		{
+
+			CInterpolation interpolation;
+			interpolation.Execute(bitmap, bitmapOut, rc, flipH, !flipV, angle);
+		}
+		break;
+		}
+
 
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-
-        //CImageLoadingFormat imageLoad;
-        //imageLoad.SetPicture(bitmapOut);
-       // Regards::Picture::CLibPicture libPicture;
-         //printf("glTexture 2");
-        //libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
-
 		delete bitmapOut;
 	}
 	else
@@ -1892,7 +1972,7 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-    return supportOpenCL;
+	return 0;// supportOpenCL;
 
 }
 

@@ -3,6 +3,50 @@
 #include "RegardsBitmap.h"
 #include "Interpolation.h"
 
+
+struct myFiltreInterpolationBicubicTask {
+	myFiltreInterpolationBicubicTask(CInterpolationBicubic * filtre, const int &x, const int &y, CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
+	{
+		this->x = x;
+		this->y = y;
+		this->In = In;
+		this->Out = Out;
+		this->filtre = filtre;
+		this->rectToShow = rectToShow;
+		this->flipH = flipH;
+		this->flipV = flipV;
+		this->angle = angle;
+	}
+
+	void operator()()
+	{
+		int32_t width = Out->GetBitmapWidth();
+		int32_t height = Out->GetBitmapHeight();
+
+		int32_t widthIn = In->GetBitmapWidth();
+		int32_t heightIn = In->GetBitmapHeight();
+
+		CRgbaquad color;
+		float posY = 0;
+		float posX = 0;
+
+		CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
+		filtre->Bicubic(color, In, posX, posY, filtre->wY[y].tabF, filtre->wX[x].tabF);
+		Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+	}
+
+	int x;
+	int y;
+	CRegardsBitmap * In;
+	CRegardsBitmap * Out;
+	wxRect rectToShow;
+	int flipH;
+	int flipV;
+	int angle;
+	CInterpolationBicubic * filtre;
+};
+
+
 CInterpolationBicubic::CInterpolationBicubic(const double & dWidth)
 {
 	wX = nullptr;
@@ -67,24 +111,49 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 			ratioX = float(heightIn) / float(rectToShow.height);
 			ratioY = float(widthIn) / float(rectToShow.width);
 		}
-		
+
 		float posY = 0;
 		float posX = 0;
 
-		CRgbaquad color;
+		
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
+
+#ifdef USE_TBB
+		std::vector<myFiltreInterpolationBicubicTask> tasks;
+
+		for (auto y = 0; y < height; y++)
+		{
+			for (auto x = 0; x < width; x++)
+			{
+				tasks.push_back(myFiltreInterpolationBicubicTask(this, x, y, In, Out, rectToShow, flipH, flipV, angle));
+			}
+		}
+
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, tasks.size()),
+			[&tasks](const tbb::blocked_range<size_t>& r)
+		{
+			for (size_t i = r.begin(); i < r.end(); ++i)
+				tasks[i]();
+		}
+		);
+#else
 
 #pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
 			for (auto x = 0; x < width; x++)
 			{
+				CRgbaquad color;
 				CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
 				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
 				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
 			}
 		}
+
+#endif
+
 		delete[] wX;
 		delete[] wY;
 		wX = nullptr;
@@ -116,7 +185,8 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 		float posX = 0;
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
-	
+
+
 	#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
@@ -128,6 +198,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 				Out->SetColorValue(x, y, color);
 			}
 		}
+
 		delete[] wX;
 		delete[] wY;
 		wX = nullptr;

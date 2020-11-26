@@ -9,6 +9,8 @@ class CInterpolation
 {
 public:
 
+
+
 	CInterpolation();
 	~CInterpolation();
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out);
