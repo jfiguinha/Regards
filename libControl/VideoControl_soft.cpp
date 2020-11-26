@@ -1788,7 +1788,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
-        inverted = false;
+        //inverted = false;
 		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
