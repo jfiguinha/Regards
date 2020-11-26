@@ -1808,7 +1808,11 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		delete bitmapOut;
 	}
 	else
-		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+    {
+        printf("RenderFFmpegToTexture OpenGL Decoding \n");
+        glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+    }
+		
 
 	deleteTexture = true;
 	delete bitmap;
