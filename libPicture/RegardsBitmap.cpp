@@ -365,18 +365,30 @@ bool CRegardsBitmap::VertFlipBuf()
 //////////////////////////////////////////////////////////////////////////////////////////
 void CRegardsBitmap::SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth, const unsigned int &bmHeight, const bool &m_bFlip, const bool &copy)
 {
-	if (data != nullptr)
-		delete[] data;
+	if (m_bBuffer == nullptr)
+		return;
 
-	data = nullptr;
-
-	if(m_bBuffer != nullptr)
+	long localSize = bmWidth * bmHeight * 4;
+	if (localSize == m_lSize && copy)
 	{
+		m_iWidth = bmWidth;
+		m_iHeight = bmHeight;
+		memcpy(data, m_bBuffer, m_lSize);
+		if (m_bFlip)
+			VertFlipBuf();
+	}
+	else
+	{
+		if (data != nullptr)
+			delete[] data;
+
+		data = nullptr;
+
 		m_lSize = bmWidth * bmHeight * 4;
 		m_iWidth = bmWidth;
 		m_iHeight = bmHeight;
 
-		if (m_bBuffer != nullptr && copy)
+		if (copy)
 		{
 			data = new uint8_t[m_lSize];
 			memcpy(data, m_bBuffer, m_lSize);
@@ -386,7 +398,7 @@ void CRegardsBitmap::SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth,
 			data = m_bBuffer;
 		}
 
-		if(m_bFlip)
+		if (m_bFlip)
 			VertFlipBuf();
 	}
 }

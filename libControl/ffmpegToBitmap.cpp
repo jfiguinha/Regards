@@ -23,6 +23,8 @@ AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
          pixelFormat = AV_PIX_FMT_BGRA;
      else
          pixelFormat = AV_PIX_FMT_RGB24;
+
+	 bitmap = nullptr;
  }
 
 int CffmpegToBitmap::GetVideoWidth()
@@ -100,13 +102,20 @@ void CffmpegToBitmap::DeleteData()
         av_free(convertedFrameBuffer);
         convertedFrameBuffer = nullptr;
     }
+	mubmp.lock();
+	if (bitmap != nullptr)
+	{
+		delete bitmap;
+		bitmap = nullptr;
+	}
+	mubmp.unlock();
 }
 
 CffmpegToBitmap::~CffmpegToBitmap()
 {
 #ifdef RENDEROPENGL  
-  //  if(glTexture != nullptr)
-   //     delete glTexture;    
+    if(bitmap != nullptr)
+       delete bitmap;    
 #endif
 }
 
@@ -140,21 +149,25 @@ void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth,
     videoFrameOutputWidth = thumbnailWidth;
     videoFrameOutputHeight = thumbnailHeight;    
     sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-          convertedFrame->data, convertedFrame->linesize);  
-          
+          convertedFrame->data, convertedFrame->linesize); 
 
+	mubmp.lock();
+	if (bitmap == nullptr)
+		bitmap = new CRegardsBitmap();
+	bitmap->SetBitmap(convertedFrame->data[0], videoFrameOutputWidth, videoFrameOutputHeight);
+	mubmp.unlock();
 }
 CRegardsBitmap * CffmpegToBitmap::ConvertFrameToRgba32()
 {
-	CRegardsBitmap * bitmap = nullptr;
-	if (convertedFrame != nullptr)
+	CRegardsBitmap * bitmapLocal = nullptr;
+	mubmp.lock();
+	if (bitmap != nullptr)
 	{
-		uint8_t * data = convertedFrame->data[0];
-		bitmap = new CRegardsBitmap();
-		bitmap->SetBitmap(data, videoFrameOutputWidth, videoFrameOutputHeight);
-        //bitmap->VertFlipBuf();
+		bitmapLocal = new CRegardsBitmap();
+		*bitmapLocal = *bitmap;
 	}
-	return bitmap;
+	mubmp.unlock();
+	return bitmapLocal;
 }
 
 /*

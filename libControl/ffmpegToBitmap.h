@@ -48,6 +48,8 @@ private:
     int videoFrameOutputHeight;    
     int width;
     int height;
+	CRegardsBitmap * bitmap;
+	mutex mubmp;
 #ifdef RENDEROPENGL
    // GLTexture * glTexture = nullptr;
 #endif
