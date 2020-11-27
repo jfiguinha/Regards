@@ -1444,34 +1444,23 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
     video_aspect_ratio = sample_aspect_ratio;
     
-    SetFrameData(src_frame);
-    
     if(isffmpegDecode || isCPU)
+    {
         CopyFrame(src_frame);
-
+        SetFrameData(copyFrameBuffer);
+    }
+    else
+        SetFrameData(src_frame);
+    
     widthVideo = src_frame->width;
     heightVideo = src_frame->height;  
 	ratioVideo =(float) src_frame->width / (float)src_frame->height;
 
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
+    wxCommandEvent event(wxEVENT_REFRESH);
+    wxPostEvent(this, event);  
     //std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
-    
-    //Refresh();
-#if defined(__WXGTK__)
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(this, event);  
-#else
-#if defined(__APPLE__)
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(this, event);  
-#else
-    this->Refresh();
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(this, event);  
-#endif 
-#endif
-
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
