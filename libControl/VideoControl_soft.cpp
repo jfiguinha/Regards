@@ -1460,12 +1460,22 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
 }
 
+int CVideoControlSoft::IsOpenGLDecoding()
+{
+  	int supportOpenGL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenGL = config->GetVideoLibrary();
+
+	return supportOpenGL;  
+}
+
 GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 {
 	GLTexture * glTextureOutput = nullptr;
 	if (glTexture != nullptr)
 	{
-		if (openGLDecoding)
+		if (!IsSupportOpenCL() && IsOpenGLDecoding())
 		{
             printf("DisplayTexture openGLDecoding \n");
             
@@ -1801,7 +1811,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
     
     printf("RenderFFmpegToTexture 2 \n");
-	if (!openGLDecoding)
+	if (!IsOpenGLDecoding())
 	{
         printf("RenderFFmpegToTexture Not OpenGL Decoding \n");
 		int filterInterpolation = 0;

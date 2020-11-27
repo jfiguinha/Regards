@@ -203,6 +203,8 @@ namespace Regards
 			void CalculPositionPicture(const float &x, const float &y);
 			void CalculRectPictureInterpolation(wxRect &picture, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert = true);
 
+            int IsOpenGLDecoding();
+
 			void UpdateScrollBar();
 			void TestMaxY();
 			void TestMaxX();

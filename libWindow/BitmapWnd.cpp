@@ -1675,7 +1675,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
 		
         
-        if(openGLRenderBitmap)
+        if(IsOpenGLDecoding())
         {
             if (glTextureSrc != nullptr)
                 delete glTextureSrc;
@@ -1694,7 +1694,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	{
         renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
-		if(openGLRenderBitmap)
+		if(IsOpenGLDecoding())
         {
             printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
             
@@ -1781,6 +1781,16 @@ void CBitmapWnd::RenderTexture(const bool &invertPos)
 		yPosImage = y;
 	}
 
+}
+
+int CBitmapWnd::IsOpenGLDecoding()
+{
+  	int supportOpenGL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenGL = config->GetVideoLibrary();
+
+	return supportOpenGL;  
 }
 
 //-----------------------------------------------------------------
