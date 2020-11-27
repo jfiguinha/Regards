@@ -199,6 +199,7 @@ bool MyApp::OnInit()
 
 	//task_scheduler_init init;
 	//int n = tbb::task_scheduler_init::default_num_threads();
+	bool configFileExist = CParamInit::IsConfigFileExist();
 
 	//Chargement des paramËtres de l'application
 	regardsParam = new CRegardsConfigParam();
@@ -213,16 +214,13 @@ bool MyApp::OnInit()
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
 
-	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-	if (listPlatform.size() == 0)
+	if (!configFileExist)
 	{
-		regardsParam->SetIsOpenCLSupport(false);
-        //CFilterWindowParam::SetOpenCLCompatible(false);
-	}
-	else
-	{
-		regardsParam->SetIsOpenCLSupport(true);     
-        //CFilterWindowParam::SetOpenCLCompatible(true);
+		vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+		if (listPlatform.size() == 0)
+			regardsParam->SetIsOpenCLSupport(false);
+		else
+			regardsParam->SetIsOpenCLSupport(true);
 	}
 
 

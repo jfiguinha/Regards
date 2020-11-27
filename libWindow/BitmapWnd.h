@@ -137,6 +137,7 @@ namespace Regards
 #endif
 			int UpdateResized();
 
+			int IsSupportOpenCL();
 			virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);

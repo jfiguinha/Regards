@@ -2,6 +2,7 @@
 #include "ParamInit.h"
 #include "RegardsConfigParam.h"
 #include <wx/stdpaths.h>
+#include <wx/file.h>
 
 CRegardsConfigParam * CParamInit::_singleton = nullptr;
 
@@ -18,6 +19,23 @@ CParamInit::~CParamInit()
 CRegardsConfigParam * CParamInit::getInstance()
 {
 	return _singleton;
+}
+
+bool CParamInit::IsConfigFileExist()
+{
+	wxStandardPathsBase& stdp = wxStandardPaths::Get();
+	wxString documentPath = stdp.GetDocumentsDir();
+
+#ifdef WIN32
+
+	documentPath.append("\\Regards\\Regards.config");
+#else
+
+
+	documentPath.append("/Regards/Regards.config");
+#endif
+
+	return wxFileExists(documentPath);
 }
 
 void CParamInit::Initialize(CRegardsConfigParam * param)

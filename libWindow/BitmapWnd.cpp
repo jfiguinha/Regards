@@ -117,6 +117,17 @@ void CBitmapWnd::OnScrollMove(wxCommandEvent& event)
 	isMoving = event.GetInt();
 }
 
+int CBitmapWnd::IsSupportOpenCL()
+{
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	return supportOpenCL;
+}
+
+
 void CBitmapWnd::OnMoveLeft(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
@@ -1834,12 +1845,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		renderOpenGL->LoadingResource(scale_factor);
 	}
 
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
-
-	if (supportOpenCL)
+	if (IsSupportOpenCL())
 	{
 		if (openCLEngine == nullptr)
 		{
@@ -1856,7 +1862,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	{
 		renderOpenGL->SetCurrent(*this);
 
-		if (!supportOpenCL)
+		if (!IsSupportOpenCL())
         {
             printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
             RenderToScreenWithoutOpenCLSupport();
@@ -2039,14 +2045,9 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	printf("CBitmapWnd OnPaint \n");
 
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
-	
 	FillRect(&memDC, rc, themeBitmap.colorBack);
 
-	if (!supportOpenCL)
+	if (!IsSupportOpenCL())
 		RenderToScreenWithoutOpenCLSupport(&memDC);
 	else
 		RenderToScreenWithOpenCLSupport(&memDC);

@@ -737,20 +737,31 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
-    videoEnd = true;
-    if (eventPlayer != nullptr)
-    {
-        eventPlayer->OnPositionVideo(0);
-        eventPlayer->OnVideoEnd();
-    }
-	fpsTimer->Stop();
-	videoRenderStart = false;
-	stopVideo = true;
-
-	if(standByMovie != "")
+	if (!endProgram)
 	{
-		PlayMovie(standByMovie, false);
+		videoEnd = true;
+		if (eventPlayer != nullptr)
+		{
+			eventPlayer->OnPositionVideo(0);
+			eventPlayer->OnVideoEnd();
+		}
+		fpsTimer->Stop();
+		videoRenderStart = false;
+		stopVideo = true;
+
+		if (standByMovie != "")
+		{
+			PlayMovie(standByMovie, false);
+		}
 	}
+	else
+	{
+		fpsTimer->Stop();
+		videoRenderStart = false;
+		stopVideo = true;
+		videoEnd = true;
+	}
+
 }
 
 

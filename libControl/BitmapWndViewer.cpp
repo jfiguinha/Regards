@@ -576,15 +576,6 @@ void CBitmapWndViewer::FixArrowNavigation(const bool &fix)
 	fixArrow = fix;
 }
 
-int CBitmapWndViewer::IsSupportOpenCL()
-{
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
-
-	return supportOpenCL;
-}
 
 int CBitmapWndViewer::GetRawBitmapWidth()
 {

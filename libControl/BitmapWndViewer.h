@@ -67,7 +67,7 @@ namespace Regards
 			CRgbaquad GetBackColor();
 			int GetOrientation();
 			CDraw * GetDessinPt();
-			int IsSupportOpenCL();
+			
 			wxPoint GetMousePosition();
 
 		private:
