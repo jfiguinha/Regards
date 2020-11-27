@@ -1847,9 +1847,16 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		renderOpenGL->SetCurrent(*this);
 
 		if (!supportOpenCL)
-			RenderToScreenWithoutOpenCLSupport();
+        {
+            printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
+            RenderToScreenWithoutOpenCLSupport();
+        }
 		else
-			RenderToScreenWithOpenCLSupport();
+        {
+            printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
+            RenderToScreenWithOpenCLSupport();
+        }
+			
 
 		AfterRender();
 	}
