@@ -1062,6 +1062,9 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
+        
+    //if(deleteTexture)
+    //renderBitmapOpenGL->DeleteTexture();
 
 #endif
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
@@ -1492,7 +1495,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			if (regardsParam != nullptr)
 				filterInterpolation = regardsParam->GetInterpolationType();
 
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, local_angle, filterInterpolation, true);
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, !flipV, local_angle, filterInterpolation, true);
 		}
 		else
 		{

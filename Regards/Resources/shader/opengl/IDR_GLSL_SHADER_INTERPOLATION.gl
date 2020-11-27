@@ -52,7 +52,7 @@ float HammingFilter( float x)
 		return 0.0; 
 	}
 	float dWindow = 0.54 + 0.46 * cos (FILTER_2PI * x); 
-	float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x); 
+	float dSinc = (x == float(0)) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x); 
 	return dWindow * dSinc;
 }
 
@@ -414,8 +414,8 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	positionTexture.x = (positionTexture.x / texelSizeX) * srcTexelSizeX;
 	positionTexture.y = (positionTexture.y / texelSizeY) * srcTexelSizeY;
 	
-	float ratioX = fWidthSrc / bitmapWidth;
-	float ratioY = fHeightSrc / bitmapHeight;
+	float ratioX = float(fWidthSrc) / float(bitmapWidth);
+	float ratioY = float(fHeightSrc) / float(bitmapHeight);
 	
 	color = CalculInterpolation(ratioX, ratioY, positionTexture);
 
