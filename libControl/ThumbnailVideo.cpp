@@ -271,6 +271,12 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	UpdateScroll();
 }
 
+void CThumbnailVideo::ResizeThumbnail()
+{
+	UpdateScroll();
+	ProcessThumbnail();
+}
+
 void CThumbnailVideo::ProcessThumbnail()
 {
 	if (videoFilename != "")

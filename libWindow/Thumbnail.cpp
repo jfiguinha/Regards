@@ -848,7 +848,9 @@ void CThumbnail::UpdateScreenRatio()
 {
     TRACE();
     iconeList->DestroyCacheThumbnailList();
+	//UpdateScroll();
     this->Resize();
+	//this->ForceRefresh();
 }
 
 void CThumbnail::OpenFileViewer(const wxString &filename)
@@ -988,7 +990,6 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 void CThumbnail::Resize()
 {
     TRACE();
-    
 	CalculControlSize();
 	ResizeThumbnail();
 	Refresh();
