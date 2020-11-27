@@ -140,7 +140,7 @@ void CThumbnailFace::Init()
 
 
 	//---------------------------------
-	//Sauvegarde de l'état
+	//Sauvegarde de l'état
 	//---------------------------------
 
 	EraseThumbnailList();

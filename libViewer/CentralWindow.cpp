@@ -494,6 +494,7 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 			{
 				if (regardsParam->GetAutoConstrast())
 				{
+                    printf("Auto Contrast Enable \n");
 					CRgbaquad color;
 					CFiltreEffet * filtreLocal = new CFiltreEffet(color, nullptr, bitmap);
 					filtreLocal->BrightnessAndContrastAuto(1);

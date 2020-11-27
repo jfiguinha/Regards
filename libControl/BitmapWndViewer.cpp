@@ -358,13 +358,17 @@ bool CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)
 {
 	if (preview > 1 && mouseUpdate != nullptr)
 	{
-		if (!mouseUpdate->IsOpenGLCompatible())
-			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
+        if(openGLRenderBitmap)
+        {
+            if (!mouseUpdate->IsOpenGLCompatible())
+                GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+        }
+        
 		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet, m_cDessin, widthOutput, heightOutput);
 
-		if (!mouseUpdate->IsOpenGLCompatible())
-			return false;
+        if(openGLRenderBitmap)
+            if (!mouseUpdate->IsOpenGLCompatible())
+                return false;
 	}
 	return true;
 }

@@ -1724,6 +1724,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
 	bool isOpenGLOpenCL = false;
+    openGLDecoding = false;
     
 	if (openclContext->IsSharedContextCompatible())
 	{
@@ -1760,7 +1761,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	if (!isOpenGLOpenCL)
 	{
-        printf("RenderToTexture !isOpenGLOpenCL\n");
+        printf("RenderToTexture !isOpenGLOpenCL toto\n");
         
 		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 

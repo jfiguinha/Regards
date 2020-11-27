@@ -1672,83 +1672,89 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
 		
-		if (glTextureSrc != nullptr)
-			delete glTextureSrc;
+        
+        if(openGLRenderBitmap)
+        {
+            if (glTextureSrc != nullptr)
+                delete glTextureSrc;
 
-		CRegardsBitmap * bitmap = filtreEffet->GetPtBitmap();
+            CRegardsBitmap * bitmap = filtreEffet->GetPtBitmap();
 
-		glTextureSrc = new GLTexture();
-		glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+            glTextureSrc = new GLTexture();
+            glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 
-
+        }
 		loadBitmap = false;
 	}
 	
 
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
-		
-		int left = 0, top = 0;
-		int tailleAffichageWidth = widthOutput;
-		int tailleAffichageHeight = heightOutput;
-		int filterInterpolation = 0;
-		if (GetWidth() * scale_factor > tailleAffichageWidth)
-			left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
-		else
-			left = 0;
+		if(openGLRenderBitmap)
+        {
+            int left = 0, top = 0;
+            int tailleAffichageWidth = widthOutput;
+            int tailleAffichageHeight = heightOutput;
+            int filterInterpolation = 0;
+            if (GetWidth() * scale_factor > tailleAffichageWidth)
+                left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+            else
+                left = 0;
 
-		if (GetHeight() * scale_factor > tailleAffichageHeight)
-			top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-		else
-			top = 0;
+            if (GetHeight() * scale_factor > tailleAffichageHeight)
+                top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+            else
+                top = 0;
 
-		wxRect rc(0, 0, 0, 0);
-		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
-		GLTexture * glTextureOutput = new GLTexture(widthOutput, heightOutput);
+            wxRect rc(0, 0, 0, 0);
+            CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+            GLTexture * glTextureOutput = new GLTexture(widthOutput, heightOutput);
 
-		CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-		if (regardsParam != nullptr)
-			filterInterpolation = regardsParam->GetInterpolationType();
+            CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+            if (regardsParam != nullptr)
+                filterInterpolation = regardsParam->GetInterpolationType();
 
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+            renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
-		renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle, filterInterpolation);
-		
-		renderOpenGL->RenderToTexture();
+            renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle, filterInterpolation);
+            
+            renderOpenGL->RenderToTexture();
 
-		glTexture = renderOpenGL->GetDisplayTexture();
+            glTexture = renderOpenGL->GetDisplayTexture();
 
-		if (!ApplyPreviewEffect(widthOutput, heightOutput))
-		{
-			CRegardsBitmap* bitmap = nullptr;
-			bitmap = filtreEffet->GetBitmap(false);
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
-			if (glTexture != nullptr)
-				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-			else
-				printf("CBitmapWnd GetDisplayTexture Error \n");
-			delete bitmap;
-		}
+            if (!ApplyPreviewEffect(widthOutput, heightOutput))
+            {
+                CRegardsBitmap* bitmap = nullptr;
+                bitmap = filtreEffet->GetBitmap(false);
+                glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+                if (glTexture != nullptr)
+                    glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+                else
+                    printf("CBitmapWnd GetDisplayTexture Error \n");
+                delete bitmap;
+            }  
+        }
+        else
+        {
+            GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-		/*
-		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+            ApplyPreviewEffect(widthOutput, heightOutput);
+            
+            printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-		ApplyPreviewEffect(widthOutput, heightOutput);
-        
-        printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
+            CRegardsBitmap* bitmap = nullptr;
+            bitmap = filtreEffet->GetBitmap(false);
 
-		CRegardsBitmap* bitmap = nullptr;
-		bitmap = filtreEffet->GetBitmap(false);
+            glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+            if (glTexture != nullptr)
+                glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+            else
+                printf("CBitmapWnd GetDisplayTexture Error \n");
+            delete bitmap;
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
-		if (glTexture != nullptr)
-			glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-		else
-			printf("CBitmapWnd GetDisplayTexture Error \n");
-		delete bitmap;
+            renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-		*/
+        }
 	}
 	RenderTexture(false);
 }

@@ -292,6 +292,7 @@ namespace Regards
             bool destroyOpenGLRender = false;
 			IMouseUpdate * mouseUpdate;
 			CEffectParameter * effectParameter;
+            bool openGLRenderBitmap = false;
 		};
 	}
 }
