@@ -1653,6 +1653,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 {
+    printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport \n");
+    
 	CRgbaquad color;
 
 #ifndef WIN32
@@ -1690,8 +1692,12 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
+        renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+
 		if(openGLRenderBitmap)
         {
+            printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
+            
             int left = 0, top = 0;
             int tailleAffichageWidth = widthOutput;
             int tailleAffichageHeight = heightOutput;
@@ -1714,13 +1720,9 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
             if (regardsParam != nullptr)
                 filterInterpolation = regardsParam->GetInterpolationType();
 
-            renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-
             renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle, filterInterpolation);
             
             renderOpenGL->RenderToTexture();
-
-            glTexture = renderOpenGL->GetDisplayTexture();
 
             if (!ApplyPreviewEffect(widthOutput, heightOutput))
             {
@@ -1733,9 +1735,13 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
                     printf("CBitmapWnd GetDisplayTexture Error \n");
                 delete bitmap;
             }  
+            else
+                glTexture = renderOpenGL->GetDisplayTexture();
         }
         else
         {
+            printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport without OpenGL \n");
+            
             GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
             ApplyPreviewEffect(widthOutput, heightOutput);
@@ -1751,9 +1757,6 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
             else
                 printf("CBitmapWnd GetDisplayTexture Error \n");
             delete bitmap;
-
-            renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-
         }
 	}
 	RenderTexture(false);
