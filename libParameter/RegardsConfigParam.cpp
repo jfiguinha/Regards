@@ -428,7 +428,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		numInterpolation = atoi(child_node->value());
 	}	
 
-	child_node = position_node->first_node("openCLSupport");
+	child_node = position_node->first_node("OpenCLSupport");
 	if (child_node != 0)
 	{
 		value = child_node->value();
