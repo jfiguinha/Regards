@@ -1467,6 +1467,8 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 	{
 		if (openGLDecoding)
 		{
+            printf("DisplayTexture openGLDecoding \n");
+            
 			float zoomRatio = GetZoomRatio();
 			int filterInterpolation = 0;
 			int widthOutput = 0;
@@ -1480,11 +1482,11 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			if (regardsParam != nullptr)
 				filterInterpolation = regardsParam->GetInterpolationType();
 
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, !flipV, local_angle, filterInterpolation, true);
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, local_angle, filterInterpolation, true);
 		}
 		else
 		{
-			printf("RenderWithEffect");
+			printf("DisplayTexture not openGLDecoding \n");
 			muVideoEffect.lock();
 			wxFloatRect floatRect;
 			floatRect.left = 0;
