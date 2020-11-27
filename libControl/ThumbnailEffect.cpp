@@ -370,9 +370,11 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		SetNbFiles(i);
 	}
 
+
 	threadDataProcess = true;
     processIdle = true;
 	Refresh();
+
 }
 
 void CThumbnailEffect::LoadPicture(void * param)
@@ -581,10 +583,15 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 		delete threadLoadingBitmap;
 		threadLoadingBitmap = nullptr;
 	}
+
+	
 }
 
 void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 {
+
+	
+
 	int x = -posLargeur;
 	int y = -posHauteur;
 

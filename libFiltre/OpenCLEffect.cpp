@@ -47,6 +47,11 @@ int COpenCLEffect::GetSizeData()
 	return sizeof(cl_uint);
 }
 
+CRegardsBitmap * COpenCLEffect::GetPtBitmap()
+{
+	return nullptr;
+}
+
 int COpenCLEffect::Bm3d(const int & fSigma)
 {
 	int _width = 256;

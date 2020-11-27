@@ -68,6 +68,11 @@ int CFiltreEffet::GetHeight()
 	return filtreEffet->GetHeight();
 }
 
+CRegardsBitmap * CFiltreEffet::GetPtBitmap()
+{
+	return filtreEffet->GetPtBitmap();
+}
+
 int CFiltreEffet::FilterKuwahara(const int &kernelSize)
 {
     CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);

@@ -73,7 +73,7 @@ namespace Regards
 		private:
 
 			virtual void RenderTexture(const bool &invertPos);
-			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
+			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 #ifdef RENDEROPENGL
 			virtual void AfterRender();
             virtual void DeleteTexture();

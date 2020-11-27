@@ -111,7 +111,7 @@ namespace Regards
 			cl_mem LoadFloatImage(float* data, const int& width, const int& height);
 			CRegardsBitmap* GetBitmap(const bool& source);
 			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
-
+			CRegardsBitmap * GetPtBitmap();
 			virtual int GetWidth();
 			virtual int GetHeight();
 

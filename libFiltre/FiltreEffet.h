@@ -85,6 +85,7 @@ public:
 	//void SetLib(const int &numLib);
 	wxImage GetwxImage();
 	CRegardsBitmap * GetBitmap(const bool &source);
+	CRegardsBitmap * GetPtBitmap();
     CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 	IFiltreEffet * GetInstance()
 	{

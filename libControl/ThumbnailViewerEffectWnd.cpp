@@ -41,7 +41,7 @@ void CThumbnailViewerEffectWnd::Resize()
 {
     if(thumbnailEffectScroll != nullptr)
         thumbnailEffectScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-
+	thumbnailEffect->UpdateScroll();
 }
 
 wxString CThumbnailViewerEffectWnd::GetFilename()
@@ -57,6 +57,7 @@ void CThumbnailViewerEffectWnd::SetFile(const wxString & filename)
 	{
 		CLibPicture libPicture;
 		CImageLoadingFormat * load = libPicture.LoadThumbnail(filename);
-		return thumbnailEffect->SetFile(filename, load);
+		thumbnailEffect->SetFile(filename, load);
+		//thumbnailEffect->UpdateScroll();
 	}
 }

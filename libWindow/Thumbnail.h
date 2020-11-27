@@ -51,7 +51,7 @@ namespace Regards
             void UpdateScreenRatio();
 			wxString GetWaitingMessage();
 			static void LoadPicture(void * param);
-
+			void Resize();
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 
 		protected:
@@ -73,7 +73,7 @@ namespace Regards
 			virtual void SetNbFiles(const int &nbFiles){};
 			virtual CIcone * FindElement(const int &xPos, const int &yPos);
 			virtual void ResizeThumbnail(){};
-			void Resize();
+			
 			virtual void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
 			void OnPaint(wxPaintEvent& event);

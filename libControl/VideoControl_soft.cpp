@@ -1475,6 +1475,11 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			wxRect rc(0, 0, 0, 0);
 			CalculPositionVideo(widthOutput, heightOutput, rc);
 			glTextureOutput = new GLTexture(widthOutput, heightOutput);
+
+			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+			if (regardsParam != nullptr)
+				filterInterpolation = regardsParam->GetInterpolationType();
+
 			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, !flipV, local_angle, filterInterpolation, true);
 		}
 		else

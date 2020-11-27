@@ -20,6 +20,7 @@ namespace Regards
 			//void SetIconeSize(const int &width, const int &height);
 			wxString GetFilename();
             wxString GetWaitingMessage();
+			void UpdateScroll();
 			static bool ItemCompFonct(int x, int y, CIcone * icone, CWindowMain * parent);   /* Définit une fonction. */
 		private:
 			//virtual void SetTheme();
@@ -28,7 +29,7 @@ namespace Regards
 			CInfosSeparationBarEffect * CreateNewSeparatorBar(const wxString &libelle);
 			//void SetActiveScroll(bool visible);
 			void RenderIcone(wxDC * deviceContext);
-			void UpdateScroll();
+			
 			CIcone * FindElement(const int &xPos, const int &yPos);
 			virtual void ProcessIdle();
 			static void LoadPicture(void * param);

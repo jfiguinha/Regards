@@ -129,7 +129,7 @@ namespace Regards
 
 		protected:
 
-			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput) {};
+			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput) { return false; };
 #ifdef RENDEROPENGL
 			virtual void AfterRender() {};
 #else
@@ -261,6 +261,7 @@ namespace Regards
 			CRenderBitmapOpenGL * renderOpenGL;
 			CRenderPageCurlOpenGL * pageCurlOpenGL;
 			GLTexture * glTexture;
+			GLTexture * glTextureSrc = nullptr;
 			COpenCLEngine * openCLEngine;
 			COpenCLContext * openclContext;
 #endif

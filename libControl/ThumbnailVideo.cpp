@@ -268,7 +268,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 		processIdle = true;
 	}
 
-
+	UpdateScroll();
 }
 
 void CThumbnailVideo::ProcessThumbnail()

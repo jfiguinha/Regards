@@ -1571,13 +1571,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 	{
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
-
-
-
-
 		filtreEffet = new CFiltreEffet(color, openclContext, source);
-
-		
 		loadBitmap = false;
 	}
 
@@ -1670,26 +1664,78 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
 
+	
 	if (loadBitmap)
 	{
-		//CRegardsBitmap* bitmapSpecial = nullptr;
-
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
+		
+		if (glTextureSrc != nullptr)
+			delete glTextureSrc;
+
+		CRegardsBitmap * bitmap = filtreEffet->GetPtBitmap();
+
+		glTextureSrc = new GLTexture();
+		glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+
 
 		loadBitmap = false;
 	}
-		
+	
+
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
+		
+		int left = 0, top = 0;
+		int tailleAffichageWidth = widthOutput;
+		int tailleAffichageHeight = heightOutput;
+		int filterInterpolation = 0;
+		if (GetWidth() * scale_factor > tailleAffichageWidth)
+			left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+		else
+			left = 0;
+
+		if (GetHeight() * scale_factor > tailleAffichageHeight)
+			top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+		else
+			top = 0;
+
+		wxRect rc(0, 0, 0, 0);
+		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+		GLTexture * glTextureOutput = new GLTexture(widthOutput, heightOutput);
+
+		CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+		if (regardsParam != nullptr)
+			filterInterpolation = regardsParam->GetInterpolationType();
+
+		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+
+		renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle, filterInterpolation);
+		
+		renderOpenGL->RenderToTexture();
+
+		glTexture = renderOpenGL->GetDisplayTexture();
+
+		if (!ApplyPreviewEffect(widthOutput, heightOutput))
+		{
+			CRegardsBitmap* bitmap = nullptr;
+			bitmap = filtreEffet->GetBitmap(false);
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+			if (glTexture != nullptr)
+				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+			else
+				printf("CBitmapWnd GetDisplayTexture Error \n");
+			delete bitmap;
+		}
+
+		/*
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
 		ApplyPreviewEffect(widthOutput, heightOutput);
         
         printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-        
 
 		CRegardsBitmap* bitmap = nullptr;
 		bitmap = filtreEffet->GetBitmap(false);
@@ -1702,6 +1748,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		delete bitmap;
 
 		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+		*/
 	}
 	RenderTexture(false);
 }
@@ -1786,47 +1833,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	else
 		openclContext = nullptr;
 
-/*********************************************************
-Page CURL Effect
-********************************************************
-	if (isPageCurl)
-	{
-		if (pageCurlOpenGL == nullptr)
-		{
-			pageCurlOpenGL = new CRenderPageCurlOpenGL(this);
-			pageCurlOpenGL->Init(this);
-			pageCurlOpenGL->InitPageCurl(this->GetWidth(), this->GetHeight());
-
-		}
-
-		if (pageCurlOpenGL != nullptr)
-		{
-
-			pageCurlOpenGL->SetCurrent(*this);
-			pageCurlOpenGL->EnableFlip();
-			pageCurlOpenGL->Render();
-		}
-	}
-	else
-	{
-		if (renderOpenGL != nullptr)
-		{
-			renderOpenGL->SetCurrent(*this);
-
-			if (!supportOpenCL)
-				RenderToScreenWithoutOpenCLSupport();
-			else
-				RenderToScreenWithOpenCLSupport();
-
-			AfterRender();
-		}
-
-	}
-
-*******************************************************
-End Page CURL Effect
-********************************************************/
-
 	if (renderOpenGL != nullptr)
 	{
 		renderOpenGL->SetCurrent(*this);
@@ -1855,6 +1861,7 @@ End Page CURL Effect
 #endif
 
 #ifndef __APPLE__
+	
     if(openclContext != nullptr)
     {
        if (!openclContext->IsSharedContextCompatible())
@@ -1868,6 +1875,7 @@ End Page CURL Effect
             }  
        }   
     }
+	
 #endif
 
 	oldWidth = GetWidth();

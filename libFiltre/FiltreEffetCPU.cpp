@@ -65,6 +65,11 @@ int CFiltreEffetCPU::GetHeight()
 	return 0;
 }
 
+CRegardsBitmap * CFiltreEffetCPU::GetPtBitmap()
+{
+	return pBitmap;
+}
+
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	if (preview)
