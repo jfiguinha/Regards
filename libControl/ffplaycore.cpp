@@ -295,7 +295,6 @@ bool CFFmfc::Quit()
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
-		/*
 		if (_pimpl->dlg->GetDXVA2Compatible())
 		{
 			_pimpl->StopStream();
@@ -306,10 +305,9 @@ bool CFFmfc::Quit()
 		}
 		else
 		{
-		*/
 			_pimpl->StopStream();
 			_pimpl->do_exit(cur_stream);
-		//}
+		}
 	}
 	else
 	{
