@@ -176,6 +176,7 @@ void CPreviewWnd::ClickShowButton(const int &id, const int &refresh)
 			else
 				showBitmapWindow->FlipHorizontal();
 		}
+		break;
 
 		case WM_SAVE:
 		{

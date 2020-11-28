@@ -457,7 +457,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 			cl_textureVideoCopy = renderBitmapOpenGL->GetCopyVideoTexture(openclContext->GetContext());
 			wglDXUnlockObjectsNV(hDevice, 1, &hTexture);
 			muBitmap.unlock();
-			wxRect rect;
+			wxRect rect(0, 0, 0, 0);
 			if (cl_textureVideoCopy != nullptr)
 			{
 				cl_int err;
@@ -479,9 +479,9 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 
 				int widthOutput = 0;
 				int heightOutput = 0;
-				wxRect rc(0, 0, 0, 0);
-				CalculPositionVideo(widthOutput, heightOutput, rc);
-				openclEffectNV12->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
+				
+				CalculPositionVideo(widthOutput, heightOutput, rect);
+				openclEffectNV12->InterpolationZoomBicubic(widthOutput, heightOutput, rect, flipH, flipV, angle, filterInterpolation);
 
 				/*
 				int widthOut = 0;

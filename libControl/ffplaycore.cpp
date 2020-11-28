@@ -478,6 +478,7 @@ void CFFmfc::Seek_bar(int pos){
 int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 {
 	//Save volume infos;
+	/*
 	int volume = 100;
 
 	if (_pimpl != nullptr)
@@ -485,9 +486,11 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 		volume = _pimpl->volume;
 		delete _pimpl;
 	}
+	*/
 
-	_pimpl = new CFFmfcPimpl();
-	_pimpl->volume = volume;
+	if (_pimpl == nullptr)
+		_pimpl = new CFFmfcPimpl();
+	//_pimpl->volume = volume;
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();
