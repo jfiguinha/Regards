@@ -55,6 +55,48 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+<b>News for 2.63.3 :</b><br>
+- Correct bug on video playback with dxva2<br>
+- Correct bug with diaporama after video playback<br>
+- Correct bug on Vertical Flip which call Save<br>
+- Correct crash when you keep push down space bar after video thumbnail<br>
+<b>News for 2.63.2 :</b><br>
+- Correct bug on scrollbar disapear on Thumbnail video and Thumbnail effect<br>
+- Add support for opengl interpolation for no opencl devices<br>
+- Correct movie crash play on qemu linux distrib<br>
+<b>News for 2.63.1 :</b><br>
+- Correct bug on window display<br>
+<b>News for 2.63.0 :</b><br>
+Correct bug : <br>
+- Correct background process Face, Thumbnail and Criteria<br>
+- Correct event loop scrolling in thumbnail paint event<br>
+- Correct Thumbnail Face orientation on Face mode<br>
+- Correct bug on video ratio management<br>
+- Correct several bug on window display<br>
+Modification : <br>
+- Modification on criteria management. Add Red cross for deleting<br>
+<b>News for 2.62.9 :</b><br>
+- Bug correction :<br>
+- On linux, correct slider visibility for picture compression<br>
+- Correct bug on showing dialog box for delete keyword<br>
+- Correct bug on delete criteria<br>
+- Correct bug on saving picture file<br>
+- Update dialog box display<br>
+<b>News for 2.62.8 :</b><br>
+- New function : <br>
+- Add zoom and rotation for video<br>
+- Add saving option for video picture when the video is paused<br>
+- Bug Correction : <br>
+- Correct bug on image lib for saving and loading<br>
+- Correct bug on playing video on mac os<br>
+- Correct bug on stop video<br>
+<b>News for 2.62.7 :</b><br>
+- Correct audio crash on playing video<br>
+<b>News for 2.62.6 :</b><br>
+- Correct memory bug<br>
+- Faster movie play<br>
+<b>News for 2.62.5 :</b><br>
+- Correct freeze bug on playing video<br>
 News for 2.62.4 :
 - Add new transition effect : none, fading, move, page curl.
 - Add auto contrast correction on picture display.
