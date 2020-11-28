@@ -1140,6 +1140,7 @@ void CVideoControlSoft::OnPlay()
 
 void CVideoControlSoft::OnStop(wxString photoName)
 {
+	playStartTimer->Stop();
 	exit = true;
 	stopVideo = true;
 	if (videoStart)
