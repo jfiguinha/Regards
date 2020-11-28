@@ -309,7 +309,6 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 				stopVideo = true;
 				previewWindow->StopVideo();
 			}
-
 			return 1;
 		}
 		else
@@ -322,9 +321,9 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 			wxCommandEvent evt(wxEVENT_LOADPICTURE);
 			evt.SetClientData(pictureElement);
 			this->GetEventHandler()->AddPendingEvent(evt);
-
 		}
 	}
+	
 	return 0;
 }
 

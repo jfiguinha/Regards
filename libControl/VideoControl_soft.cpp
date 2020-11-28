@@ -739,7 +739,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
 	if (!endProgram)
 	{
-		videoEnd = true;
+   		videoEnd = true;
 		if (eventPlayer != nullptr)
 		{
 			eventPlayer->OnPositionVideo(0);
