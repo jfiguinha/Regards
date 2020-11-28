@@ -231,4 +231,5 @@ protected:
 	bool startVideo = false;
 	bool processVideoEnd = false;
 	bool openGLDecoding = true;
+	bool isDXVA2Compatible = false;
 };

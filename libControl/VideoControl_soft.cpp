@@ -862,11 +862,13 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		playStartTimer->Start(1000, true);
-		/*
-		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
-		ffmfc->SetVolume(GetSoundVolume());
-		*/
+		if (isDXVA2Compatible)
+			playStartTimer->Start(1000, true);
+		else
+		{
+			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+			ffmfc->SetVolume(GetSoundVolume());
+		}
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();

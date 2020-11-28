@@ -33,7 +33,7 @@ protected:
 
     virtual void OnPaint(wxPaintEvent& event);
 
-    bool isDXVA2Compatible;
+    
 
 #ifdef RENDEROPENGL 
 	bool UnbindTexture();
