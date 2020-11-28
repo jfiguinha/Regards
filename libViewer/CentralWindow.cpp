@@ -313,6 +313,7 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 		}
 		else
 		{
+			previewWindow->StopVideo();
 			loadPicture = false;
 			CPictureElement * pictureElement = new CPictureElement();
 			pictureElement->filename = filename;
