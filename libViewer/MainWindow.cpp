@@ -980,7 +980,10 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 		centralWnd->GetEventHandler()->AddPendingEvent(evt);
 	}
 	if (startDiaporama)
-		ImageSuivante();
+	{
+		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		diaporamaTimer->Start(100, wxTIMER_ONE_SHOT);
+	}
 }
 
 CMainWindow::~CMainWindow()
@@ -1240,7 +1243,10 @@ void CMainWindow::VideoEnd()
 	TRACE();
 	//Fin de la video
 	if (startDiaporama)
-		StartDiaporama();
+	{
+		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+	}
 }
 
 void CMainWindow::StopDiaporama()

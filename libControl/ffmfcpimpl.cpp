@@ -9,7 +9,7 @@ std::mutex abortMutex;
 
 //Calcul du pourcentage
 using namespace Regards::Window;
-
+CVideoControlInterface * CFFmfcPimpl::dlg = nullptr;
 //-----------------------------------------------------------------------------------------
 //Code
 //-----------------------------------------------------------------------------------------

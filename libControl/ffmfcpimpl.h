@@ -489,7 +489,7 @@ public:
 	int volume = 100;
 
 	//CffplaymfcDlg * dlg;
-	CVideoControlInterface * dlg;
+	static CVideoControlInterface * dlg;
 	VideoState *g_is = nullptr;
 	/* options specified by the user */
 	AVInputFormat *file_iformat = nullptr;

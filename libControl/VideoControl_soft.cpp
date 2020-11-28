@@ -748,11 +748,12 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
-
+		/*
 		if (standByMovie != "")
 		{
 			PlayMovie(standByMovie, false);
 		}
+		*/
 	}
 	else
 	{

@@ -488,7 +488,7 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 
 	_pimpl = new CFFmfcPimpl();
 	_pimpl->volume = volume;
-	_pimpl->dlg = control;
+	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();
 	//ÍË³ö·ûºÅÖÃÁã
