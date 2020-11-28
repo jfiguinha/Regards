@@ -733,6 +733,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
 	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+
 }
 
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
@@ -748,12 +749,6 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
-		/*
-		if (standByMovie != "")
-		{
-			PlayMovie(standByMovie, false);
-		}
-		*/
 	}
 	else
 	{
@@ -853,6 +848,8 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd || stopVideo)
 	{
+		if(playStartTimer->IsRunning())
+			playStartTimer->Stop();
 		startVideo = play;
 		stopVideo = false;
 		angle = 0;
@@ -865,19 +862,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		//playStartTimer->Start(100, true);
+		playStartTimer->Start(1000, true);
+		/*
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
 		ffmfc->SetVolume(GetSoundVolume());
-
-		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-
-
-		
+		*/
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
@@ -903,6 +892,14 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		videoEnd = false;
 		videoStart = true;
 		fpsTimer->Start(1000);
+
+
+		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 
 
