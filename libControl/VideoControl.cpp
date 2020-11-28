@@ -458,6 +458,8 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 			wglDXUnlockObjectsNV(hDevice, 1, &hTexture);
 			muBitmap.unlock();
 			wxRect rect(0, 0, 0, 0);
+			int widthOutput = 0;
+			int heightOutput = 0;
 			if (cl_textureVideoCopy != nullptr)
 			{
 				cl_int err;
@@ -477,46 +479,8 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				if (regardsParam != nullptr)
 					filterInterpolation = regardsParam->GetInterpolationType();
 
-				int widthOutput = 0;
-				int heightOutput = 0;
-				
 				CalculPositionVideo(widthOutput, heightOutput, rect);
 				openclEffectNV12->InterpolationZoomBicubic(widthOutput, heightOutput, rect, flipH, flipV, angle, filterInterpolation);
-
-				/*
-				int widthOut = 0;
-				int heightOut = 0;
-				CalculTextureSize(widthOut, heightOut);
-
-				wxRect posrect;
-				posrect.x = std::max((double)posLargeur, (double)0);
-				posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1, (double)0);
-				posrect.width = widthOut;
-				posrect.height = heightOut;
-
-				if (angle == 90 || angle == 270)
-				{
-					rect.height = getHeight();
-					rect.width = getWidth();
-					if (rect.height > widthOut)
-						rect.height = widthOut;
-					if (rect.width > heightOut)
-						rect.width = heightOut;
-					openclEffectNV12->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
-				}
-				else
-				{
-					rect.height = getHeight();
-					rect.width = getWidth();
-
-					if (rect.height > heightOut)
-						rect.height = heightOut;
-					if (rect.width > widthOut)
-						rect.width = widthOut;
-
-					openclEffectNV12->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
-				}
-				*/
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 				err = clFlush(openclContext->GetCommandQueue());
@@ -526,10 +490,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 			if (cl_textureVideoCopy != nullptr)
 			{
 
-				if (angle == 90 || angle == 270)
-					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width, openclContext->GetContext());
-				else
-					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height, openclContext->GetContext());
+				glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
 
 				if (glTexture != nullptr)
 				{
