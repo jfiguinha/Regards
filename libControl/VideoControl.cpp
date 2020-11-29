@@ -729,10 +729,7 @@ bool CVideoControl::GetDXVA2HardwareCompatible()
 	return dxva2;
 }
 
-bool CVideoControl::GetDXVA2Compatible()
-{
-	return isDXVA2Compatible;
-}
+
 
 void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void * dxva2Context)
 {

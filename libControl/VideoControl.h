@@ -15,7 +15,7 @@ public:
    
 	bool GetDXVA2HardwareCompatible();
 	void SetDXVA2Compatible(const bool &compatible);
-	bool GetDXVA2Compatible();
+	
 #ifdef RENDEROPENGL  
 	GLTexture * RenderFromOpenGLTexture();
 #endif

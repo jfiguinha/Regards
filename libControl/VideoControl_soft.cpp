@@ -741,6 +741,11 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 
 }
 
+bool CVideoControlSoft::GetDXVA2Compatible()
+{
+	return isDXVA2Compatible;
+}
+
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
 	if (!endProgram)

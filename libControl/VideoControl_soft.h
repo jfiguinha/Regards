@@ -119,6 +119,8 @@ protected:
 	void OnTopPosition(wxCommandEvent& event);
 	void CalculPositionPicture(const float &x, const float &y);
 
+    bool GetDXVA2Compatible();
+
     int IsSupportOpenCL();
     void OnRefresh(wxCommandEvent& event);
 	bool GetProcessEnd();
