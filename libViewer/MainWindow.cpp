@@ -310,6 +310,7 @@ bool CMainWindow::IsVideo()
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
 {
+	bool showPrintPicture = true;
 	if (IsVideo())
 	{
 		CShowVideo * video = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
@@ -321,15 +322,12 @@ void CMainWindow::OnPrint(wxCommandEvent& event)
 				if (image != nullptr)
 				{
 					statusBarViewer->PrintImagePreview(image);
+					showPrintPicture = false;
 				}
-			}
-			else
-			{
-				::wxMessageBox("Unable to print a movie picture in play", "Error", wxICON_ERROR);
 			}
 		}
 	}
-	else
+	if(showPrintPicture)
 	{
 		CLibPicture libPicture;
 		wxString filename = GetFilename();
