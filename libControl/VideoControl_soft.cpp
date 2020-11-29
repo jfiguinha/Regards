@@ -1844,7 +1844,12 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		CalculPositionVideo(widthOutput, heightOutput, rc);
         inverted = false;
 		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-		ApplyInterpolationFilters(bitmap, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);	
+        if(angle == 90)
+            ApplyInterpolationFilters(bitmap, bitmapOut, rc, flipH, flipV, angle, filterInterpolation);
+        else if(angle == 270)
+            ApplyInterpolationFilters(bitmap, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+        else
+            ApplyInterpolationFilters(bitmap, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);	
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 		delete bitmapOut;
 	}
