@@ -37,6 +37,8 @@
 #include <ShowBitmap.h>
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
+#include <ShowVideo.h>
+#include <wx/filedlg.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -183,6 +185,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
     Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
+	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -253,6 +256,51 @@ void CMainWindow::SetListeFile(wxCommandEvent& event)
 	}
 }
 
+void CMainWindow::OnEditFile(wxCommandEvent& event)
+{
+	CMainParam* config = CMainParamInit::getInstance();
+	wxString pathProgram = "";
+	wxString title = "Select Picture Editor Executable";
+	if (IsVideo())
+	{
+		if (config != nullptr)
+			pathProgram = config->GetPathForVideoEdit();
+
+		title = "Select Video Editor Executable";
+	}
+	else
+	{
+		if (config != nullptr)
+			pathProgram = config->GetPathForPictureEdit();
+	}
+
+	if (!wxFileExists(pathProgram))
+		pathProgram = "";
+
+	if (pathProgram == "")
+	{
+		wxFileDialog openFileDialog(nullptr, title, "", "",
+				"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		if (openFileDialog.ShowModal() == wxID_OK)
+			pathProgram = openFileDialog.GetPath();
+	}
+
+	if (IsVideo())
+	{
+		if (config != nullptr)
+			config->SetPathForVideoEdit(pathProgram);
+	}
+	else
+	{
+		if (config != nullptr)
+			config->SetPathForPictureEdit(pathProgram);
+	}
+
+
+	pathProgram = "\"" + pathProgram + "\" \"" + filename + "\"";
+	wxExecute(pathProgram);
+}
+
 bool CMainWindow::IsVideo()
 {
 	if (centralWnd != nullptr)
@@ -262,14 +310,36 @@ bool CMainWindow::IsVideo()
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
 {
-	CLibPicture libPicture;
-	wxString filename = GetFilename();
-	if (filename != "")
+	if (IsVideo())
 	{
-		CImageLoadingFormat* image = libPicture.LoadPicture(filename);
-		if (image != nullptr)
+		CShowVideo * video = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
+		if (video != nullptr)
 		{
-			statusBarViewer->PrintPreview(image);
+			if (video->IsPause())
+			{
+				CRegardsBitmap * image = video->GetVideoBitmap();
+				if (image != nullptr)
+				{
+					statusBarViewer->PrintImagePreview(image);
+				}
+			}
+			else
+			{
+				::wxMessageBox("Unable to print a movie picture in play", "Error", wxICON_ERROR);
+			}
+		}
+	}
+	else
+	{
+		CLibPicture libPicture;
+		wxString filename = GetFilename();
+		if (filename != "")
+		{
+			CImageLoadingFormat* image = libPicture.LoadPicture(filename);
+			if (image != nullptr)
+			{
+				statusBarViewer->PrintPreview(image);
+			}
 		}
 	}
 }

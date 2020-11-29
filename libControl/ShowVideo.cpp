@@ -110,11 +110,29 @@ void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
 	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
 }
 
+bool CShowVideo::IsPause()
+{
+	return videoWindow->IsPause();
+}
+
 void CShowVideo::OnClose(wxCommandEvent& event)
 {
 	slideToolbar->Show(false);
 	showToolbarSup = false;
 	this->Resize();
+}
+
+CRegardsBitmap * CShowVideo::GetVideoBitmap()
+{
+	CRegardsBitmap * bitmap = nullptr;
+	if (videoWindow != nullptr && IsPause())
+	{
+		bitmap = videoWindow->SavePicture();
+		bitmap->SetFilename(this->filename);
+		if (videoWindow->IsFFmpegDecode())
+			bitmap->VertFlipBuf();
+	}
+	return bitmap;
 }
 
 void CShowVideo::OnSave(wxCommandEvent& event)

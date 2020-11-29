@@ -115,6 +115,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 }
 
+bool CVideoControlSoft::IsPause()
+{
+	return pause;
+}
+
 float CVideoControlSoft::GetMovieRatio()
 {
 	float ratioSelect = 0;

@@ -42,6 +42,29 @@ CMainParam::CMainParam()
 
 	filepath = "";
 	windowVisible = WM_INFOS;
+
+	pathProgramVideo = "";
+	pathProgramPicture = "";
+}
+
+wxString CMainParam::GetPathForVideoEdit()
+{
+	return pathProgramVideo;
+}
+
+void CMainParam::SetPathForVideoEdit(const wxString & pathProgram)
+{
+	pathProgramVideo = pathProgram;
+}
+
+wxString CMainParam::GetPathForPictureEdit()
+{
+	return pathProgramPicture;
+}
+
+void CMainParam::SetPathForPictureEdit(const wxString & pathProgram)
+{
+	pathProgramPicture = pathProgram;
 }
 
 void CMainParam::SetPositionLeftPanel(const wxRect &position)
@@ -280,6 +303,8 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("windowMode", to_string(windowMode)));
 	sectionWindow->append_node(node("windowVisible", to_string(windowVisible)));
 	sectionWindow->append_node(node("LastFilepath", filepath));
+	sectionWindow->append_node(node("VideoEditorPath", pathProgramVideo));
+	sectionWindow->append_node(node("ImageEditorPath", pathProgramPicture));
 
 	xml_node<>* sectionPosition = node("leftPosPanel");
 	SetPositionParameter(sectionPosition, leftPanelPos, "window");
@@ -544,6 +569,22 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		filepath = child_node->value();
+	}
+
+	child_node = window_node->first_node("VideoEditorPath");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		pathProgramVideo = child_node->value();
+	}
+
+	child_node = window_node->first_node("ImageEditorPath");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		pathProgramPicture = child_node->value();
 	}
 
 	child_node = window_node->first_node("leftPosPanel");

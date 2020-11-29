@@ -36,9 +36,9 @@ namespace Regards
 			void SavePicture();
 			void ShowToolbar();
 			void HideToolbar();
-
+			bool IsPause();
 			void Resize();
-
+			CRegardsBitmap * GetVideoBitmap();
 			void SetVideoPreviewEffect(CEffectParameter * effectParameter);
 			CEffectParameter * GetParameter();
 			void UpdateFiltre(CEffectParameter * effectParameter);

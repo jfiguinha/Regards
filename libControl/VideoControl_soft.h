@@ -29,6 +29,7 @@ public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControlSoft();
 
+	bool IsPause();
 	void SetVideoDuration(int64_t duration);
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);

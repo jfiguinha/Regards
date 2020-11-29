@@ -63,7 +63,7 @@ namespace Regards
 		private:
         
 			
-
+			void OnEditFile(wxCommandEvent& event);
             void OnPicturePrevious(wxCommandEvent& event);
             void OnPictureNext(wxCommandEvent& event);
 

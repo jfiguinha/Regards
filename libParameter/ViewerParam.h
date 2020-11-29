@@ -46,6 +46,12 @@ namespace Regards
 			bool GetEnAvantDiaporamaOption();
 			int GetDelaiDiaporamaOption();
 
+			wxString GetPathForVideoEdit();
+			void SetPathForVideoEdit(const wxString & pathProgram);
+
+			wxString GetPathForPictureEdit();
+			void SetPathForPictureEdit(const wxString & pathProgram);
+
 			wxString GetLastFolder();
 			void SetLastFolder(const wxString &folder);
 
@@ -136,6 +142,9 @@ namespace Regards
 			wxRect leftPanelPos;
 			wxRect rightPanelPos;
 			wxString filepath;
+
+			wxString pathProgramVideo;
+			wxString pathProgramPicture;
 		};
 	}
 }
