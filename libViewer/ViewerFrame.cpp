@@ -28,6 +28,7 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <OpenCLEngine.h>
+#include <ExternalProgram.h>
 #include <KeywordDialogBox.h>
 using namespace std;
 using namespace Regards::Print;
@@ -219,11 +220,14 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     wxString labelSizeIcon = CLibResource::LoadStringFromResource(L"labelSizeIcon",1);//L"&Icon Size";
     wxString labelThumbnail = CLibResource::LoadStringFromResource(L"labelThumbnail",1);//L"&Thumbnail";
     wxString labelHelp = CLibResource::LoadStringFromResource(L"labelHelp",1);//L"&Help";
-    
+	wxString labelExternalProgram = "External Program";
+	wxString labelExternalProgram_link = "&External Program";
+
     wxMenu *menuSizeIcon = new wxMenu;
     menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
     menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
 	menuParameter->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
+	menuParameter->Append(ID_ExternalProgram, labelExternalProgram_link, labelExternalProgram);
 	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
     //menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
 	//menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
@@ -886,6 +890,12 @@ void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 	(*g_pageSetupData) = pageSetupDialog.GetPageSetupDialogData();
 }
 
+void CViewerFrame::OnExternalProgram(wxCommandEvent& event)
+{
+	ExternalProgram externalProgram(this);
+	externalProgram.ShowModal();
+}
+
 void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 {
 	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
@@ -922,6 +932,7 @@ wxBEGIN_EVENT_TABLE(CViewerFrame, wxFrame)
 EVT_MENU(ID_Hello, CViewerFrame::OnHello)
 EVT_MENU(wxID_HELP, CViewerFrame::OnHelp)
 EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
+EVT_MENU(ID_ExternalProgram, CViewerFrame::OnExternalProgram)
 EVT_MENU(ID_OpenCL, CViewerFrame::OnOpenCLConfiguration)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)

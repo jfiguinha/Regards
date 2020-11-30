@@ -55,6 +55,9 @@
     <Filter Include="Intro">
       <UniqueIdentifier>{b8ab152f-3298-4557-94e2-596ff5da631f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExternalProgram">
+      <UniqueIdentifier>{7fe6ce3b-526d-427f-a055-f152959b66c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -123,6 +126,9 @@
     <ClCompile Include="TitleIntro.cpp">
       <Filter>Intro</Filter>
     </ClCompile>
+    <ClCompile Include="ExternalProgram.cpp">
+      <Filter>ExternalProgram</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -190,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="TitleIntro.h">
       <Filter>Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="ExternalProgram.h">
+      <Filter>ExternalProgram</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

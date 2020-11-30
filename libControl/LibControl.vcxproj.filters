@@ -103,6 +103,9 @@
     <ClCompile Include="SlideToolbar.cpp">
       <Filter>Video\Core\Toolbar</Filter>
     </ClCompile>
+    <ClCompile Include="ffmpeg_encoder.cpp">
+      <Filter>Video\Core\Encoding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -219,6 +222,9 @@
     <ClInclude Include="SlideToolbar.h">
       <Filter>Video\Core\Toolbar</Filter>
     </ClInclude>
+    <ClInclude Include="ffmpeg_encoder.h">
+      <Filter>Video\Core\Encoding</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -259,6 +265,9 @@
     </Filter>
     <Filter Include="Video\Core\Toolbar">
       <UniqueIdentifier>{30e1353a-0406-4166-852a-626720695f48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video\Core\Encoding">
+      <UniqueIdentifier>{21d0ca21-54e3-46c7-bb55-45df9af45d9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

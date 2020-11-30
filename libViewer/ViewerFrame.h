@@ -32,6 +32,7 @@ namespace Regards
 			ID_SCANNER = 13,
 			ID_CATEGORYDETECTION = 14,
 			ID_ASSOCIATE = 15,
+			ID_ExternalProgram = 16,
 			ID_VIDEO = 1018,
 			ID_AUDIO = 1019,
 			ID_SUBTITLE = 1020,
@@ -78,6 +79,7 @@ namespace Regards
             void OnIconSizeLess(wxCommandEvent& event);
             void OnIconSizeMore(wxCommandEvent& event);
 			void OnFacePertinence(wxCommandEvent& event);
+			void OnExternalProgram(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
 			void OnHello(wxCommandEvent& event);

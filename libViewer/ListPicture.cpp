@@ -114,13 +114,12 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListPicture::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListPicture::ThumbnailZoomOff));
 	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxCommandEventHandler(CListPicture::ThumbnailZoomPosition));
-	Connect(wxEVENT_EXPORTFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ExportFile));
-	Connect(wxEVENT_DELETEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::DeleteFile));
-	Connect(wxEVENT_COPYFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::CopyFile));
-	Connect(wxEVENT_GEOLOCALIZEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::GeolocalizeFile));
-	Connect(wxEVENT_CHANGEDATEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ChangeDateFile));
-	Connect(wxEVENT_GENERATEINDEXFILE, wxEVT_COMMAND_TEXT_UPDATED,
-	        wxCommandEventHandler(CListPicture::GenerateIndexFile));
+	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CListPicture::ExportFile));
+	Connect(wxEVENT_DELETEFILE, wxCommandEventHandler(CListPicture::DeleteFile));
+	Connect(wxEVENT_COPYFILE, wxCommandEventHandler(CListPicture::CopyFile));
+	Connect(wxEVENT_GEOLOCALIZEFILE, wxCommandEventHandler(CListPicture::GeolocalizeFile));
+	Connect(wxEVENT_CHANGEDATEFILE, wxCommandEventHandler(CListPicture::ChangeDateFile));
+	Connect(wxEVENT_GENERATEINDEXFILE, wxCommandEventHandler(CListPicture::GenerateIndexFile));
 }
 
 void CListPicture::ForceRefresh()

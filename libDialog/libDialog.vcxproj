@@ -266,6 +266,7 @@
     <ClCompile Include="ChangeLabel.cpp" />
     <ClCompile Include="ConfigRegards.cpp" />
     <ClCompile Include="ExportFile.cpp" />
+    <ClCompile Include="ExternalProgram.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
     <ClCompile Include="infoAbout.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="ChangeLabel.h" />
     <ClInclude Include="ConfigRegards.h" />
     <ClInclude Include="ExportFile.h" />
+    <ClInclude Include="ExternalProgram.h" />
     <ClInclude Include="IndexGenerator.h" />
     <ClInclude Include="infoAbout.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />

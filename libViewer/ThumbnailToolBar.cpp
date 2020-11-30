@@ -189,7 +189,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 		case WM_EXPORT:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_EXPORTFILE);
+				wxCommandEvent evt(wxEVENT_EXPORTFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
@@ -197,7 +197,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 		case WM_INDEX:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_GENERATEINDEXFILE);
+				wxCommandEvent evt(wxEVENT_GENERATEINDEXFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
@@ -205,7 +205,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 		case WM_CLEAR:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_DELETEFILE);
+				wxCommandEvent evt(wxEVENT_DELETEFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
@@ -213,7 +213,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 		case WM_COPY:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_COPYFILE);
+				wxCommandEvent evt(wxEVENT_COPYFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
@@ -221,7 +221,7 @@ void CThumbnailToolBar::EventManager(const int &id)
         case WM_CALENDAR:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CHANGEDATEFILE);
+				wxCommandEvent evt(wxEVENT_CHANGEDATEFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
             break;
@@ -229,7 +229,7 @@ void CThumbnailToolBar::EventManager(const int &id)
         case WM_GEOLOCALISE:
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_GEOLOCALIZEFILE);
+				wxCommandEvent evt(wxEVENT_GEOLOCALIZEFILE);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
             break;

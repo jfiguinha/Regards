@@ -38,6 +38,7 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <ShowVideo.h>
+#include <ffmpeg_encoder.h>
 #include <wx/filedlg.h>
 //#include <jpge.h>
 //using namespace jpge;
@@ -186,6 +187,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
     Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
+	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
+
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -234,6 +237,27 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	listProcessWindow.push_back(this);
 }
 
+void CMainWindow::OnExportFile(wxCommandEvent& event)
+{
+	if (IsVideo())
+	{
+		wxFileDialog saveFileDialog(this, _("Save Video file"), "", "",
+				"mp4 files (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;     // the user changed idea...
+
+
+		CFFmpegEncoder * ffmpegEncoder = new CFFmpegEncoder();
+		ffmpegEncoder->EncodeFile(filename, saveFileDialog.GetPath());
+		delete ffmpegEncoder;
+	}
+	else
+	{
+		CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+		if (bitmapWindow != nullptr)
+			bitmapWindow->ExportPicture();
+	}
+}
 
 void CMainWindow::SetListeFile(wxCommandEvent& event)
 {

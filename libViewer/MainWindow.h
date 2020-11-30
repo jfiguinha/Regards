@@ -97,6 +97,7 @@ namespace Regards
 			void RefreshCriteriaPictureList(wxCommandEvent& event);
 			void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
 			void OnFaceInfosUpdate(wxCommandEvent& event);
+			void OnExportFile(wxCommandEvent& event);
             //void RefreshTimer(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);

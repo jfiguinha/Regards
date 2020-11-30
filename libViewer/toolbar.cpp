@@ -20,6 +20,7 @@ using namespace Regards::Viewer;
 #define IDM_SCANNER 159
 #define IDM_PICTUREMODE 160
 #define IDM_EDIT 161
+#define IDM_EXPORT 162
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
@@ -93,7 +94,15 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	editor->SetLibelle(lblEditor);
 	editor->SetCommandId(IDM_EDIT);
 	navElement.push_back(editor);
-    
+	
+	/*
+	CToolbarButton *export_button = new CToolbarButton(themeToolbar.button);
+	export_button->SetButtonResourceId("IDB_EXPORT");
+	export_button->SetLibelle(export_label);
+	export_button->SetCommandId(IDM_EXPORT);
+	export_button->SetLibelleTooltip(export_label);
+	navElement.push_back(export_button);
+    */
 	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);
@@ -184,6 +193,14 @@ void CToolbar::EventManager(const int &id)
 	{
 		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EDITFILE);
+		wxQueueEvent(central, event);
+		break;
+	}
+
+	case IDM_EXPORT:
+	{
+		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXPORTFILE);
 		wxQueueEvent(central, event);
 		break;
 	}
