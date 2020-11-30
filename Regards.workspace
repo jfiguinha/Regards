@@ -67,7 +67,7 @@
   <VirtualDirectory Name="OpenCL - OpenGL">
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
-    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
+    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="Yes"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
