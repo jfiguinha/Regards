@@ -90,7 +90,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	navElement.push_back(print);
 
 	CToolbarButton * editor = new CToolbarButton(themeToolbar.button);
-	editor->SetButtonResourceId(L"IDB_EXTRACT");
+	editor->SetButtonResourceId(L"IDB_EXPORT");
 	editor->SetLibelle(lblEditor);
 	editor->SetCommandId(IDM_EDIT);
 	navElement.push_back(editor);
