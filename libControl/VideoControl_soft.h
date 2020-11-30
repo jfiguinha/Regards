@@ -61,9 +61,7 @@ public:
 
 #ifdef WIN32
 	virtual void SetDXVA2Compatible(const bool &compatible) {};
-	virtual bool GetDXVA2Compatible() {
-		return false;
-	};
+
 	virtual bool GetDXVA2HardwareCompatible()
 	{
 		return false;
@@ -119,7 +117,7 @@ protected:
 	void OnTopPosition(wxCommandEvent& event);
 	void CalculPositionPicture(const float &x, const float &y);
 
-    bool GetDXVA2Compatible();
+   virtual bool GetDXVA2Compatible();
 
     int IsSupportOpenCL();
     void OnRefresh(wxCommandEvent& event);
