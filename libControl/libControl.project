@@ -27,6 +27,10 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Video">
+    <VirtualDirectory Name="Encoder">
+      <File Name="ffmpeg_encoder.h"/>
+      <File Name="ffmpeg_encoder.cpp"/>
+    </VirtualDirectory>
     <File Name="ShowVideo.cpp"/>
     <File Name="ShowVideo.h"/>
     <VirtualDirectory Name="Core">
