@@ -55,6 +55,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ExternalProgram.cpp"/>
     <File Name="Association.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="ConfigRegards.cpp"/>
@@ -67,6 +68,7 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ExternalProgram.h"/>
     <File Name="SavePicture.h"/>
     <File Name="Association.h"/>
     <File Name="InterpolationFilterSelect.h"/>
