@@ -157,7 +157,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WX_PRECOMP;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\otherlib\libGlew;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libsqlite;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\otherlib\libGlew;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -252,11 +252,14 @@
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Regards\half.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="InsertResource.cpp" />
+    <ClCompile Include="InsertResource.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CxImage\cximage.vcxproj">

@@ -83,7 +83,7 @@ wxString CLibResource::LoadStringFromResource(const wxString &idName, const int 
 wxString CLibResource::GetVector(const wxString &idName)
 {
     CSqlResource sqlResource;
-    wxString libelle = sqlResource.GetVector(idName);
+    wxString libelle = sqlResource.GetVectorFromFile(idName);
     return libelle;
 }
 

@@ -19,6 +19,7 @@ namespace Regards
 			wxString GetText(const wxString& idName);
 			wxString GetOpenGLShader(const wxString& idName);
 
+			wxString GetVectorFromFile(const wxString &idName);
             wxString GetVector(const wxString &idName);
 			wxString GetLibelle(const wxString &idName, const int &idLang);
 			wxString GetExifLibelle(const wxString &idName);

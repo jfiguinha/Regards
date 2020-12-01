@@ -210,6 +210,21 @@ wxString CSqlResource::GetOpenGLFromFile(const wxString& idName)
 	return text;
 }
 
+wxString  CSqlResource::GetVectorFromFile(const wxString &idName)
+{
+	text = "";
+	typeResult = 7;
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	defaultPathSearch = resourcePath + "\\vector";
+#else
+	defaultPathSearch = resourcePath + "/vector";
+#endif
+	ExecuteRequest("SELECT FilePath FROM VectorResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
+
 wxString  CSqlResource::GetVector(const wxString &idName)
 {
 	text = "";
