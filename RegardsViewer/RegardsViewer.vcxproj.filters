@@ -30,6 +30,15 @@
     <ClInclude Include="..\Regards\Regards.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\Regards\eLut.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Regards\half.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Regards\toFloat.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration.xrc">
@@ -83,7 +92,6 @@
     <None Include="wx\msw\cross.cur">
       <Filter>Fichiers de ressources</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\resource\explorer.ico">
@@ -143,6 +151,9 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="..\Regards\Regards.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Regards\half.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -38,7 +38,7 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <ShowVideo.h>
-#include <ffmpeg_encoder.h>
+#include <ffmpeg_transcoding.h>
 #include <wx/filedlg.h>
 //#include <jpge.h>
 //using namespace jpge;
@@ -247,7 +247,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 			return;     // the user changed idea...
 
 
-		CFFmpegEncoder * ffmpegEncoder = new CFFmpegEncoder();
+		CFFmpegTranscoding * ffmpegEncoder = new CFFmpegTranscoding();
 		ffmpegEncoder->EncodeFile(filename, saveFileDialog.GetPath());
 		delete ffmpegEncoder;
 	}

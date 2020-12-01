@@ -103,7 +103,7 @@
     <ClCompile Include="SlideToolbar.cpp">
       <Filter>Video\Core\Toolbar</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg_encoder.cpp">
+    <ClCompile Include="ffmpeg_transcoding.cpp">
       <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
   </ItemGroup>
@@ -222,7 +222,7 @@
     <ClInclude Include="SlideToolbar.h">
       <Filter>Video\Core\Toolbar</Filter>
     </ClInclude>
-    <ClInclude Include="ffmpeg_encoder.h">
+    <ClInclude Include="ffmpeg_transcoding.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
   </ItemGroup>

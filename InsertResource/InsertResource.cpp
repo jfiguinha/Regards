@@ -38,8 +38,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	wxInitAllImageHandlers();
 
 	//sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
-	sqlResource.InsertVector(L"IDB_STAREMPTY", L"C:\\developpement\\git\\svg\\star.svg");
-	sqlResource.InsertVector(L"IDB_STARYELLOW", L"C:\\developpement\\git\\svg\\star_yellow.svg");
+	sqlResource.InsertVector(L"IDB_OPEN", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\open.svg");
+	//sqlResource.InsertVector(L"IDB_STARYELLOW", L"C:\\developpement\\git\\svg\\star_yellow.svg");
 	/*
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BLUR.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BOXBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BOXBLUR.cl");
