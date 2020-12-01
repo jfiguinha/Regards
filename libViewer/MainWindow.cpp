@@ -1198,7 +1198,7 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 		AddFolder(*info);
 		updateCriteria = true;
 		updateFolder = true;
-		criteriaSendMessage = true;
+		//criteriaSendMessage = true;
 	}
 	delete info;
 
@@ -1230,7 +1230,7 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 
 			updateCriteria = true;
 			updateFolder = true;
-			criteriaSendMessage = true;
+			//criteriaSendMessage = true;
 
 			wxString dir = wxString(*info);
 			statusBarViewer->RemoveFSEntry(dir);

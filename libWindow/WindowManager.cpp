@@ -1510,7 +1510,7 @@ void CWindowManager::Resize()
 				else
 					_wnd->SetSize(rc);
 
-				_wnd->Refresh();
+				//_wnd->Refresh();
 				//_wnd->Refresh();
 				//_wnd->Update();
 
@@ -1541,9 +1541,9 @@ void CWindowManager::Resize()
 						else
 							windowToAdd->separationBar->separationBar->SetSize(rc);
 
-						windowToAdd->separationBar->separationBar->Refresh();
-						windowToAdd->separationBar->separationBar->Refresh();
-						windowToAdd->separationBar->separationBar->Update();
+						//windowToAdd->separationBar->separationBar->Refresh();
+						//windowToAdd->separationBar->separationBar->Refresh();
+						//windowToAdd->separationBar->separationBar->Update();
 					}
 				}
 			}
