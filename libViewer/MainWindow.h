@@ -8,6 +8,7 @@ class CImageLoadingFormat;
 class CPictureCategorieLoadData;
 class CPictureCategorie;
 class IStatusBarInterface;
+class CFFmpegTranscoding;
 
 namespace Regards
 {
@@ -62,7 +63,7 @@ namespace Regards
             
 		private:
         
-			
+			void OnEndDecompressFile(wxCommandEvent& event);
 			void OnEditFile(wxCommandEvent& event);
             void OnPicturePrevious(wxCommandEvent& event);
             void OnPictureNext(wxCommandEvent& event);
@@ -147,6 +148,8 @@ namespace Regards
             bool setViewerMode = false;
 			wxString lastFileToShow = "";
 			//bool blockImage = false;
+
+			CFFmpegTranscoding * ffmpegEncoder;
 		};
 	}
 

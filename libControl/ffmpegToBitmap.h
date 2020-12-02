@@ -26,6 +26,7 @@ public:
     void InitContext(AVFrame * src_frame, const bool & bicubic, const int & thumbnailWidth, const int & thumbnailHeight);
     void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
 	CRegardsBitmap * ConvertFrameToRgba32();
+	CRegardsBitmap * CffmpegToBitmap::GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
 	/*
 #ifdef RENDEROPENGL
     GLTexture * ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle);
@@ -38,9 +39,9 @@ public:
 private:
  
     //void rotate90(uint8_t * buffer, const unsigned int width, const unsigned int height);
-    void createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, int width, int height);
-    AVFrame* convertedFrame = nullptr;
-    uint8_t* convertedFrameBuffer = nullptr;
+    //void createAVFrame(int width, int height);
+   // AVFrame* convertedFrame = nullptr;
+ //   uint8_t* convertedFrameBuffer = nullptr;
     SwsContext* scaleContext = nullptr;
     int videoFrameWidth;
     int videoFrameHeight;

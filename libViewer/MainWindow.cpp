@@ -188,7 +188,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
     Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
-
+	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -237,6 +237,16 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	listProcessWindow.push_back(this);
 }
 
+void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
+{
+	if (ffmpegEncoder != nullptr)
+	{
+		ffmpegEncoder->EndDecodeFile();
+		delete ffmpegEncoder;
+		ffmpegEncoder = nullptr;
+	}
+}
+
 void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
 	if (IsVideo())
@@ -246,10 +256,13 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
+		if (ffmpegEncoder != nullptr)
+		{
+			ffmpegEncoder = new CFFmpegTranscoding();
+			ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath());
+		}
 
-		CFFmpegTranscoding * ffmpegEncoder = new CFFmpegTranscoding();
-		ffmpegEncoder->EncodeFile(filename, saveFileDialog.GetPath());
-		delete ffmpegEncoder;
+		//delete ffmpegEncoder;
 	}
 	else
 	{

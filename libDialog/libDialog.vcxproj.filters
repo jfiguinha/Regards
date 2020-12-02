@@ -58,6 +58,9 @@
     <Filter Include="ExternalProgram">
       <UniqueIdentifier>{7fe6ce3b-526d-427f-a055-f152959b66c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CompressionVideo">
+      <UniqueIdentifier>{2c43ff22-2fe6-4050-81bb-c8104781bfc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -129,6 +132,9 @@
     <ClCompile Include="ExternalProgram.cpp">
       <Filter>ExternalProgram</Filter>
     </ClCompile>
+    <ClCompile Include="CompressVideo.cpp">
+      <Filter>CompressionVideo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -199,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="ExternalProgram.h">
       <Filter>ExternalProgram</Filter>
+    </ClInclude>
+    <ClInclude Include="CompressVideo.h">
+      <Filter>CompressionVideo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

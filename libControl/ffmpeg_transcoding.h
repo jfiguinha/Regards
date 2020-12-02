@@ -1,15 +1,25 @@
 #pragma once
 
 class CFFmpegTranscodingPimpl;
+class CompressVideo;
 
 class CFFmpegTranscoding
 {
 public:
 	CFFmpegTranscoding();
 	~CFFmpegTranscoding();
-	int EncodeFile(const char * input, const char * output);
+	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output);
+	int EndDecodeFile();
 
 protected:
-	CFFmpegTranscodingPimpl * pimpl;
 
+	static void EncodeFileThread(void * data);
+	wxString input;
+	wxString output;
+	std::thread * encode_thread;
+	CFFmpegTranscodingPimpl * pimpl;
+	std::mutex muEnding;
+	bool ending = false;
+	CompressVideo * m_dlgProgress;
+	wxWindow * mainWindow;
 };

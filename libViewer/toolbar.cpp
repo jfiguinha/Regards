@@ -96,14 +96,13 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	editor->SetCommandId(IDM_EDIT);
 	navElement.push_back(editor);
 	
-	/*
 	CToolbarButton *export_button = new CToolbarButton(themeToolbar.button);
 	export_button->SetButtonResourceId("IDB_EXPORT");
 	export_button->SetLibelle(export_label);
 	export_button->SetCommandId(IDM_EXPORT);
 	export_button->SetLibelleTooltip(export_label);
 	navElement.push_back(export_button);
-    */
+
 	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);

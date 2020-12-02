@@ -39,6 +39,7 @@ int CffmpegToBitmap::GetVideoHeight()
 
 void CffmpegToBitmap::InitContext(AVFrame * src_frame, const bool & bicubic, const int & thumbnailWidth, const int & thumbnailHeight)
 {
+	DeleteData();
 	// Enable this when it hits the released ffmpeg version
     scaleContext = sws_alloc_context();
     if (scaleContext == nullptr)
@@ -82,15 +83,15 @@ void CffmpegToBitmap::InitContext(AVFrame * src_frame, const bool & bicubic, con
         throw logic_error("Failed to create resize context");
     }
 
-    createAVFrame(&convertedFrame, &convertedFrameBuffer, thumbnailWidth, thumbnailHeight);
+   // createAVFrame(thumbnailWidth, thumbnailHeight);
 }
 
 void CffmpegToBitmap::DeleteData()
 {
-    if (nullptr == scaleContext)
+    if (nullptr != scaleContext)
         sws_freeContext(scaleContext);
     
-
+	/*
     if (convertedFrame)
     {
         av_frame_free(&convertedFrame);
@@ -99,9 +100,10 @@ void CffmpegToBitmap::DeleteData()
     
     if (convertedFrameBuffer)
     {
-        av_free(convertedFrameBuffer);
+        delete[] convertedFrameBuffer;
         convertedFrameBuffer = nullptr;
     }
+	*/
 	mubmp.lock();
 	if (bitmap != nullptr)
 	{
@@ -130,32 +132,47 @@ int CffmpegToBitmap::GetThumbnailHeight()
     
      return videoFrameOutputHeight;
 }
-
-void CffmpegToBitmap::createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, int width, int height)
+/*
+void CffmpegToBitmap::createAVFrame(int width, int height)
 {
-    *pAvFrame = av_frame_alloc();
-
+	convertedFrame = av_frame_alloc();
     int numBytes = avpicture_get_size(pixelFormat, width, height);
-    *pFrameBuffer = reinterpret_cast<uint8_t*>(av_malloc(numBytes));
-    avpicture_fill((AVPicture*) *pAvFrame, *pFrameBuffer, pixelFormat, width, height);
+	convertedFrameBuffer = new uint8_t[numBytes];
+    avpicture_fill((AVPicture*)convertedFrame, convertedFrameBuffer, pixelFormat, width, height);
 }
-
-
-
+*/
+CRegardsBitmap * CffmpegToBitmap::GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
+{
+	CRegardsBitmap * bitmap = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
+	int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
+	uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
+	int linesize = thumbnailWidth * 4;
+	//printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
+	videoFrameOutputWidth = thumbnailWidth;
+	videoFrameOutputHeight = thumbnailHeight;
+	sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
+		&convertedFrameBuffer, &linesize);
+	return bitmap;
+}
 
 void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
+	int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
+	uint8_t * convertedFrameBuffer = new uint8_t[numBytes];
+	int linesize = thumbnailWidth * 4;
     //printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
     videoFrameOutputWidth = thumbnailWidth;
     videoFrameOutputHeight = thumbnailHeight;    
     sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-          convertedFrame->data, convertedFrame->linesize); 
+		&convertedFrameBuffer, &linesize);
 
 	mubmp.lock();
 	if (bitmap == nullptr)
 		bitmap = new CRegardsBitmap();
-	bitmap->SetBitmap(convertedFrame->data[0], videoFrameOutputWidth, videoFrameOutputHeight);
+	bitmap->SetBitmap(convertedFrameBuffer, videoFrameOutputWidth, videoFrameOutputHeight);
 	mubmp.unlock();
+
+	delete[] convertedFrameBuffer;
 }
 CRegardsBitmap * CffmpegToBitmap::ConvertFrameToRgba32()
 {

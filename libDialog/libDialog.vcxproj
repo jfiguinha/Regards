@@ -264,6 +264,7 @@
     </ClCompile>
     <ClCompile Include="Association.cpp" />
     <ClCompile Include="ChangeLabel.cpp" />
+    <ClCompile Include="CompressVideo.cpp" />
     <ClCompile Include="ConfigRegards.cpp" />
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="ExternalProgram.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="Association.h" />
     <ClInclude Include="ChangeLabel.h" />
+    <ClInclude Include="CompressVideo.h" />
     <ClInclude Include="ConfigRegards.h" />
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="ExternalProgram.h" />

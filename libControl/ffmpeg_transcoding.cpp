@@ -1,6 +1,10 @@
 #include "header.h"
 #include "ffmpeg_transcoding.h"
 #include <wx/progdlg.h>
+#include <CompressVideo.h>
+#include <imageLoadingFormat.h>
+#include "ffmpegToBitmap.h"
+#include <window_id.h>
 extern "C"
 {
 	#include <libavcodec/avcodec.h>
@@ -48,6 +52,7 @@ public:
 	{
 		packet.data = NULL;
 		packet.size = 0;
+		
 	};
 	~CFFmpegTranscodingPimpl()
 	{
@@ -55,30 +60,92 @@ public:
 		{
 			av_packet_unref(&packet);
 			Release();
+			if (bitmapShow != nullptr)
+			{
+				bitmapShow->join();
+				delete bitmapShow;
+			}
+
 		}
 	};
 
-	int EncodeFile(const char * input, const char * output, wxGenericProgressDialog * m_dlgProgress);
+	static void DisplayPreview(void * data);
+
+	int EncodeFile(const char * input, const char * output, CompressVideo * m_dlgProgress);
 
 private:
 	int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index);
-
+	void CopyFrame(AVFrame * frame);
 	int open_input_file(const char *filename);
 	int open_output_file(const char *filename);
 	int init_filter(FilteringContext* fctx, AVCodecContext *dec_ctx, AVCodecContext *enc_ctx, const char *filter_spec);
 	int init_filters(void);
-	int filter_encode_write_frame(AVFrame *frame, unsigned int stream_index);
+	int filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo);
 	int flush_encoder(unsigned int stream_index);
 	void Release();
-
+	void SetFrameData(AVFrame * src_frame, CompressVideo * m_dlgProgress);
 	AVFormatContext *ifmt_ctx;
 	AVFormatContext *ofmt_ctx;
 	FilteringContext *filter_ctx;
 	StreamContext *stream_ctx;
 	AVPacket packet;
 	bool cleanPacket = false;
+	
+	std::thread * bitmapShow = nullptr;
+	CompressVideo * m_dlgProgress;
+	mutex muEnding;
+	mutex muFrame;
+	bool isend = false;
+	AVFrame * copyFrameBuffer = nullptr;
 };
 
+
+void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
+{
+	CFFmpegTranscodingPimpl * ffmpeg_trans = (CFFmpegTranscodingPimpl *)data;
+	if (ffmpeg_trans != nullptr)
+	{
+		ffmpeg_trans->muFrame.lock();
+		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
+		bool deleteData = false;
+		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
+		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
+		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
+		CRegardsBitmap * bitmap = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
+		imageLoadingFormat->SetPicture(bitmap);
+		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
+		ffmpegToBitmap->DeleteData();
+		delete ffmpegToBitmap;
+
+		/*
+		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
+		bool deleteData = false;
+		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
+		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
+		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
+		ffmpegToBitmap->Preconvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+		printf("RenderFFmpegToTexture 1 \n");
+		CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
+		imageLoadingFormat->SetPicture(bitmap);
+		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
+		
+		ffmpegToBitmap->DeleteData();
+		delete ffmpegToBitmap;
+		*/
+		
+		if (ffmpeg_trans->copyFrameBuffer != nullptr)
+			av_frame_free(&ffmpeg_trans->copyFrameBuffer);	
+
+		ffmpeg_trans->muFrame.unlock();
+	}
+
+	ffmpeg_trans->muEnding.lock();
+	ffmpeg_trans->isend = true;
+	ffmpeg_trans->muEnding.unlock();
+
+}
 
 int CFFmpegTranscodingPimpl::open_input_file(const char *filename)
 {
@@ -489,7 +556,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 	return ret;
 }
 
-int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned int stream_index)
+int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo)
 {
 	FilteringContext *filter = &filter_ctx[stream_index];
 	int ret;
@@ -518,6 +585,11 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 			break;
 		}
 
+		if (isvideo)
+		{
+			SetFrameData(filter->filtered_frame, m_dlgProgress);
+		}
+
 		filter->filtered_frame->pict_type = AV_PICTURE_TYPE_NONE;
 		ret = encode_write_frame(filter->filtered_frame, stream_index);
 		av_frame_unref(filter->filtered_frame);
@@ -527,6 +599,45 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 
 	return ret;
 }
+
+
+void CFFmpegTranscodingPimpl::SetFrameData(AVFrame * src_frame, CompressVideo * m_dlgProgress)
+{
+	//return;
+
+	bool createFrame = true;
+	
+	if (bitmapShow == nullptr)
+	{
+		createFrame = true;
+		isend = false;
+	}
+	else
+	{
+		bool threadEnd = false;
+		muEnding.lock();
+		threadEnd = isend;
+		muEnding.unlock();
+		if (threadEnd)
+		{
+			bitmapShow->join();
+			delete bitmapShow;
+			bitmapShow = nullptr;
+			createFrame = true;
+			isend = false;
+		}
+	}
+	
+	if (createFrame)
+	{
+		muFrame.lock();
+		CopyFrame(src_frame);
+		muFrame.unlock();
+		bitmapShow = new thread(DisplayPreview, this);
+	}
+
+}
+
 
 int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 {
@@ -538,10 +649,10 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 	return encode_write_frame(NULL, stream_index);
 }
 
-int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output, wxGenericProgressDialog * m_dlgProgress)
+int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output, CompressVideo * m_dlgProgress)
 {
 	int ret;
-
+	this->m_dlgProgress = m_dlgProgress;
 	unsigned int stream_index;
 	unsigned int i;
 	cleanPacket = false;
@@ -555,10 +666,14 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 
 	
 	cleanPacket = true;
+	
 	/* read all packets */
-	while (1) {
+	while (m_dlgProgress->IsOk())
+	{
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			break;
+
+		bool isVideo = false;
 		stream_index = packet.stream_index;
 		av_log(NULL, AV_LOG_DEBUG, "Demuxer gave frame of stream_index %u\n",
 			stream_index);
@@ -572,6 +687,8 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 
 		case AVMEDIA_TYPE_VIDEO:
 			printf("video \n");
+			isVideo = true;
+			//SetFrameData()
 			break;
 		}
 
@@ -589,13 +706,20 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 				break;
 			}
 
-			char timebase[255];
-			char duration[255];
-			double pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
-			double total = double(ifmt_ctx->streams[stream_index]->duration) * double(ifmt_ctx->streams[stream_index]->time_base.num) / double(ifmt_ctx->streams[stream_index]->time_base.den);
+			if (isVideo)
+			{
+				char timebase[255];
+				char duration[255];
+				double pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
+				double total = double(ifmt_ctx->streams[stream_index]->duration) * double(ifmt_ctx->streams[stream_index]->time_base.num) / double(ifmt_ctx->streams[stream_index]->time_base.den);
+				double pourcentage = (pos / total) * 100.0f;
+				
+				sprintf(duration, "Progress : %d percent", (int)pourcentage);
 
-			m_dlgProgress->SetRange(total);
-			m_dlgProgress->Update(pos, "Percent : ");
+				m_dlgProgress->SetPos(total, pos);
+				m_dlgProgress->SetTextProgression(duration);
+			}
+
 
 			while (ret >= 0) {
 				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
@@ -604,8 +728,10 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 				else if (ret < 0)
 					return ret;
 
+
+
 				stream->dec_frame->pts = stream->dec_frame->best_effort_timestamp;
-				ret = filter_encode_write_frame(stream->dec_frame, stream_index);
+				ret = filter_encode_write_frame(stream->dec_frame, stream_index, m_dlgProgress, isVideo);
 				if (ret < 0)
 					return ret;
 			}
@@ -628,7 +754,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 		/* flush filter */
 		if (!filter_ctx[i].filter_graph)
 			continue;
-		ret = filter_encode_write_frame(NULL, i);
+		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
 			return ret;
@@ -658,6 +784,25 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 	delete pimpl;
 }
 
+void CFFmpegTranscodingPimpl::CopyFrame(AVFrame * frame)
+{
+	AVFrame * copyFrame = av_frame_alloc();
+	copyFrame->format = frame->format;
+	copyFrame->width = frame->width;
+	copyFrame->height = frame->height;
+	copyFrame->channels = frame->channels;
+	copyFrame->channel_layout = frame->channel_layout;
+	copyFrame->nb_samples = frame->nb_samples;
+
+	av_frame_get_buffer(copyFrame, 32);
+	av_frame_copy(copyFrame, frame);
+	av_frame_copy_props(copyFrame, frame);
+
+
+	copyFrameBuffer = copyFrame;
+
+}
+
 void CFFmpegTranscodingPimpl::Release()
 {
 	
@@ -680,10 +825,11 @@ void CFFmpegTranscodingPimpl::Release()
 	avformat_free_context(ofmt_ctx);
 }
 
-int CFFmpegTranscoding::EncodeFile(const char * input, const char * output)
+void CFFmpegTranscoding::EncodeFileThread(void * data)
 {
-	wxGenericProgressDialog * m_dlgProgress = new wxGenericProgressDialog("Video Conversion", "Percent : ");
-	int ret = pimpl->EncodeFile(input, output, m_dlgProgress);
+	CFFmpegTranscoding * ffmpeg_encoding = (CFFmpegTranscoding *)data;
+	
+	int ret = ffmpeg_encoding->pimpl->EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output, ffmpeg_encoding->m_dlgProgress);
 	if (ret < 0)
 	{
 		char message[255];
@@ -691,8 +837,28 @@ int CFFmpegTranscoding::EncodeFile(const char * input, const char * output)
 		printf(message);
 		//wxString message = av_err2str(ret);
 	}
+
+	wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
+	wxPostEvent(ffmpeg_encoding->mainWindow, event);
+	
+}
+
+int CFFmpegTranscoding::EndDecodeFile()
+{
 	m_dlgProgress->Close();
+	encode_thread->join();
+	delete encode_thread;
 	delete m_dlgProgress;
-	//	av_log(NULL, AV_LOG_ERROR, "Error occurred: %s\n", );
-	return ret;
+	return 0;
+}
+
+int CFFmpegTranscoding::EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output)
+{
+	this->mainWindow = mainWindow;
+	this->input = input;
+	this->output = output;
+	m_dlgProgress = new CompressVideo(nullptr);
+	m_dlgProgress->Show();
+	encode_thread = new std::thread(EncodeFileThread, this);
+	return 0;
 }
