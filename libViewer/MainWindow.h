@@ -149,7 +149,7 @@ namespace Regards
 			wxString lastFileToShow = "";
 			//bool blockImage = false;
 
-			CFFmpegTranscoding * ffmpegEncoder;
+			CFFmpegTranscoding * ffmpegEncoder = nullptr;
 		};
 	}
 

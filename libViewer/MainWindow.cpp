@@ -256,7 +256,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		if (ffmpegEncoder != nullptr)
+		if (ffmpegEncoder == nullptr)
 		{
 			ffmpegEncoder = new CFFmpegTranscoding();
 			ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath());

@@ -67,6 +67,10 @@ public:
 			}
 
 		}
+
+		if (copyFrameBuffer != nullptr)
+			av_frame_free(&copyFrameBuffer);
+		copyFrameBuffer = nullptr;
 	};
 
 	static void DisplayPreview(void * data);
@@ -105,40 +109,29 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 	CFFmpegTranscodingPimpl * ffmpeg_trans = (CFFmpegTranscodingPimpl *)data;
 	if (ffmpeg_trans != nullptr)
 	{
-		ffmpeg_trans->muFrame.lock();
+		
 		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
 		bool deleteData = false;
+
+		ffmpeg_trans->muFrame.lock();
+
 		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
 		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
 		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
 		CRegardsBitmap * bitmap = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-		imageLoadingFormat->SetPicture(bitmap);
-		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
-		ffmpegToBitmap->DeleteData();
-		delete ffmpegToBitmap;
 
-		/*
-		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
-		bool deleteData = false;
-		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
-		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
-		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
-		ffmpegToBitmap->Preconvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-		printf("RenderFFmpegToTexture 1 \n");
-		CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
-		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-		imageLoadingFormat->SetPicture(bitmap);
-		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
-		
-		ffmpegToBitmap->DeleteData();
-		delete ffmpegToBitmap;
-		*/
-		
 		if (ffmpeg_trans->copyFrameBuffer != nullptr)
 			av_frame_free(&ffmpeg_trans->copyFrameBuffer);	
-
+		ffmpeg_trans->copyFrameBuffer = nullptr;
 		ffmpeg_trans->muFrame.unlock();
+
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
+		imageLoadingFormat->SetPicture(bitmap);
+		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
+
+
+		ffmpegToBitmap->DeleteData();
+		delete ffmpegToBitmap;
 	}
 
 	ffmpeg_trans->muEnding.lock();
@@ -239,7 +232,16 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 		if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
 			|| dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO) {
 			/* in this example, we choose transcoding to same codec */
-			encoder = avcodec_find_encoder((dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO) ? VIDEO_CODEC : AUDIO_CODEC);
+			
+			if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+			{
+				//encoder = avcodec_find_encoder_by_name("h264_nvenc");
+				encoder = avcodec_find_encoder(VIDEO_CODEC);
+			}
+			else
+			{
+				encoder = avcodec_find_encoder(AUDIO_CODEC);
+			}
 			if (!encoder) {
 				av_log(NULL, AV_LOG_FATAL, "Necessary encoder not found\n");
 				return AVERROR_INVALIDDATA;
