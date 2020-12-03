@@ -23,8 +23,6 @@ AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
          pixelFormat = AV_PIX_FMT_BGRA;
      else
          pixelFormat = AV_PIX_FMT_RGB24;
-
-	 bitmap = nullptr;
  }
 
 int CffmpegToBitmap::GetVideoWidth()
@@ -83,42 +81,17 @@ void CffmpegToBitmap::InitContext(AVFrame * src_frame, const bool & bicubic, con
         throw logic_error("Failed to create resize context");
     }
 
-   // createAVFrame(thumbnailWidth, thumbnailHeight);
 }
 
 void CffmpegToBitmap::DeleteData()
 {
     if (nullptr != scaleContext)
         sws_freeContext(scaleContext);
-    
-	/*
-    if (convertedFrame)
-    {
-        av_frame_free(&convertedFrame);
-        convertedFrame = nullptr;
-    }    
-    
-    if (convertedFrameBuffer)
-    {
-        delete[] convertedFrameBuffer;
-        convertedFrameBuffer = nullptr;
-    }
-	*/
-	mubmp.lock();
-	if (bitmap != nullptr)
-	{
-		delete bitmap;
-		bitmap = nullptr;
-	}
-	mubmp.unlock();
 }
 
 CffmpegToBitmap::~CffmpegToBitmap()
 {
-#ifdef RENDEROPENGL  
-    if(bitmap != nullptr)
-       delete bitmap;    
-#endif
+
 }
 
 int CffmpegToBitmap::GetThumbnailWidth()
@@ -132,168 +105,38 @@ int CffmpegToBitmap::GetThumbnailHeight()
     
      return videoFrameOutputHeight;
 }
-/*
-void CffmpegToBitmap::createAVFrame(int width, int height)
+
+int CffmpegToBitmap::GetConvert(CRegardsBitmap * bitmap, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
-	convertedFrame = av_frame_alloc();
-    int numBytes = avpicture_get_size(pixelFormat, width, height);
-	convertedFrameBuffer = new uint8_t[numBytes];
-    avpicture_fill((AVPicture*)convertedFrame, convertedFrameBuffer, pixelFormat, width, height);
+	if(bitmap != nullptr)
+	{
+		int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
+		if (numBytes == bitmap->GetBitmapSize())
+		{
+			uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
+			int linesize = thumbnailWidth * 4;
+
+			videoFrameOutputWidth = thumbnailWidth;
+			videoFrameOutputHeight = thumbnailHeight;
+			sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
+				&convertedFrameBuffer, &linesize);
+
+			return 1;
+		}
+	}
+	return 0;
 }
-*/
+
 CRegardsBitmap * CffmpegToBitmap::GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
 	CRegardsBitmap * bitmap = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
 	int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
 	uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
 	int linesize = thumbnailWidth * 4;
-	//printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
+
 	videoFrameOutputWidth = thumbnailWidth;
 	videoFrameOutputHeight = thumbnailHeight;
 	sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
 		&convertedFrameBuffer, &linesize);
 	return bitmap;
 }
-
-void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
-{
-	int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
-	uint8_t * convertedFrameBuffer = new uint8_t[numBytes];
-	int linesize = thumbnailWidth * 4;
-    //printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
-    videoFrameOutputWidth = thumbnailWidth;
-    videoFrameOutputHeight = thumbnailHeight;    
-    sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-		&convertedFrameBuffer, &linesize);
-
-	mubmp.lock();
-	if (bitmap == nullptr)
-		bitmap = new CRegardsBitmap();
-	bitmap->SetBitmap(convertedFrameBuffer, videoFrameOutputWidth, videoFrameOutputHeight);
-	mubmp.unlock();
-
-	delete[] convertedFrameBuffer;
-}
-CRegardsBitmap * CffmpegToBitmap::ConvertFrameToRgba32()
-{
-	CRegardsBitmap * bitmapLocal = nullptr;
-	mubmp.lock();
-	if (bitmap != nullptr)
-	{
-		bitmapLocal = new CRegardsBitmap();
-		*bitmapLocal = *bitmap;
-	}
-	mubmp.unlock();
-	return bitmapLocal;
-}
-
-/*
-#ifdef RENDEROPENGL  
-
-
-GLTexture * CffmpegToBitmap::ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle)
-{
-    int localAngle = angle % 360;
-    if(glTexture != nullptr && glTexture->GetTextureID() == 0)
-    {
-        glTexture->Create(videoFrameOutputWidth, videoFrameOutputHeight, 0);
-    }
-
-    if(convertedFrame != nullptr)
-    {
-        //int lineSize = convertedFrame->linesize[0];
-        uint8_t * data = convertedFrame->data[0];
-        
-        if(localAngle != 0)
-        {
-            printf("Rotate Picture : %d \n",localAngle );
-            CRgbaquad * m_OriginalBitmapBits = (CRgbaquad *)data;
-            wxSize m_size = wxSize(videoFrameOutputWidth, videoFrameOutputHeight);
-            wxSize m_sizedst;
-            CRgbaquad clrBack;
-            CRotateByShearRGB Rot(CRotateByShearRGB::Progress);
-            CRgbaquad * m_ScaledBitmapBits = Rot.AllocAndRotate (
-                                                m_OriginalBitmapBits,
-                                                m_size,
-                                                angle,
-                                                &m_sizedst,
-                                                clrBack
-                                                );
-            glTexture->SetData((uint8_t *)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
-            delete[] m_ScaledBitmapBits;
-        }
-        else
-            glTexture->SetData(data, videoFrameOutputWidth, videoFrameOutputHeight);      
-    }
-
-    
-    return glTexture;
-}
-#else
-
-void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
-{
-     
-    if(imageToDisplay != nullptr && src_frame != nullptr)
-    {
-        printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
-        
-        sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-              convertedFrame->data, convertedFrame->linesize);
-
-        int width = thumbnailWidth;
-        int height = thumbnailHeight;
-        int lineSize = convertedFrame->linesize[0];
-
-        uint8_t *tmp_ptr = imageToDisplay->GetData();
-
-        for(int y=0; y<height; y++) 
-        {
-            memcpy(tmp_ptr+y*width*3, 
-                convertedFrame->data[0]+y*convertedFrame->linesize[0], 
-                width*3);
-        }        
-    }
-}
-
-CRegardsBitmap * CffmpegToBitmap::ConvertFrameToBitmapWithInterpolation(const int &angle)
-{
-	CRegardsBitmap * picture = nullptr;
-	int localAngle = angle % 360;
-
-	if (convertedFrame != nullptr)
-	{
-		//int lineSize = convertedFrame->linesize[0];
-		uint8_t * data = convertedFrame->data[0];
-
-		if (localAngle != 0)
-		{
-			printf("Rotate Picture : %d \n", localAngle);
-			CRgbaquad * m_OriginalBitmapBits = (CRgbaquad *)data;
-			wxSize m_size = wxSize(videoFrameOutputWidth, videoFrameOutputHeight);
-			wxSize m_sizedst;
-			CRgbaquad clrBack;
-			CRotateByShearRGB Rot(CRotateByShearRGB::Progress);
-			CRgbaquad * m_ScaledBitmapBits = Rot.AllocAndRotate(
-				m_OriginalBitmapBits,
-				m_size,
-				angle,
-				&m_sizedst,
-				clrBack
-			);
-			picture = new CRegardsBitmap();
-			picture->SetBitmap((uint8_t *)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
-			delete[] m_ScaledBitmapBits;
-		}
-		else
-		{
-			picture = new CRegardsBitmap();
-			picture->SetBitmap((uint8_t *)data, videoFrameOutputWidth, videoFrameOutputHeight);
-		}
-	}
-
-
-	return picture;
-}
-*/
-//#endif

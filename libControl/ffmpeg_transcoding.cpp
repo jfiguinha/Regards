@@ -21,7 +21,7 @@ static const int dst_vbit_rate = 1500000;
 static const int dst_abit_rate = 128000;
 static const int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
 static const int dst_sample_rate = 44100;
-static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_H264;
+static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_HEVC;
 static const AVCodecID AUDIO_CODEC = AV_CODEC_ID_AAC;
 
 
@@ -95,6 +95,7 @@ private:
 	AVPacket packet;
 	bool cleanPacket = false;
 	
+	CRegardsBitmap * bitmapVideo = nullptr;
 	std::thread * bitmapShow = nullptr;
 	CompressVideo * m_dlgProgress;
 	mutex muEnding;
@@ -118,17 +119,25 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
 		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
 		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
-		CRegardsBitmap * bitmap = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-
+		if(ffmpeg_trans->bitmapVideo == nullptr)
+			ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+		else
+		{
+			if (ffmpegToBitmap->GetConvert(ffmpeg_trans->bitmapVideo, ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo) == 0)
+			{
+				delete ffmpeg_trans->bitmapVideo;
+				ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+			}
+		}
 		if (ffmpeg_trans->copyFrameBuffer != nullptr)
 			av_frame_free(&ffmpeg_trans->copyFrameBuffer);	
 		ffmpeg_trans->copyFrameBuffer = nullptr;
 		ffmpeg_trans->muFrame.unlock();
 
-		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-		imageLoadingFormat->SetPicture(bitmap);
-		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat);
-
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+		imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
+		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
+		delete imageLoadingFormat;
 
 		ffmpegToBitmap->DeleteData();
 		delete ffmpegToBitmap;
@@ -266,7 +275,9 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 				else
 					enc_ctx->pix_fmt = dec_ctx->pix_fmt;
 				/* video time_base can be set to whatever is handy and supported by encoder */
-				enc_ctx->time_base = av_inv_q(dec_ctx->framerate);
+				enc_ctx->framerate = dec_ctx->framerate;
+				enc_ctx->time_base = dec_ctx->time_base;
+				//enc_ctx->time_base = av_inv_q(dec_ctx->framerate);
 
 				if (VIDEO_CODEC == AV_CODEC_ID_HEVC)
 					av_opt_set(enc_ctx->priv_data, "preset", "medium", 0);
@@ -364,9 +375,10 @@ int CFFmpegTranscodingPimpl::init_filter(FilteringContext* fctx, AVCodecContext 
 		}
 
 		snprintf(args, sizeof(args),
-			"video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
+			"video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:frame_rate=%d/%d:pixel_aspect=%d/%d",
 			dec_ctx->width, dec_ctx->height, dec_ctx->pix_fmt,
 			dec_ctx->time_base.num, dec_ctx->time_base.den,
+			dec_ctx->framerate.num, dec_ctx->framerate.den,
 			dec_ctx->sample_aspect_ratio.num,
 			dec_ctx->sample_aspect_ratio.den);
 
@@ -544,11 +556,31 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
 			return 0;
 
+		/*
+		// Convert the DTS from the packet base to stream base
+		if (enc_pkt.pts != AV_NOPTS_VALUE)
+			enc_pkt.pts = av_rescale_q(enc_pkt.pts, ofmt_ctx->streams[stream_index]->time_base, stream->enc_ctx->time_base);
+
+
+		// Convert the DTS from the packet base to stream base
+		if (enc_pkt.dts != AV_NOPTS_VALUE)
+			enc_pkt.dts = av_rescale_q(enc_pkt.dts, ofmt_ctx->streams[stream_index]->time_base, stream->enc_ctx->time_base);
+
+*/
+		/*
+		if (filt_frame->key_frame)
+			enc_pkt.flags |= AV_PKT_FLAG_KEY;
+
 		/* prepare packet for muxing */
 		enc_pkt.stream_index = stream_index;
+
 		av_packet_rescale_ts(&enc_pkt,
 			stream->enc_ctx->time_base,
 			ofmt_ctx->streams[stream_index]->time_base);
+
+		if (enc_pkt.duration > 0)
+			enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[stream_index]->time_base, stream->enc_ctx->time_base);
+
 
 		av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
 		/* mux encoded frame */
@@ -849,8 +881,14 @@ int CFFmpegTranscoding::EndDecodeFile()
 {
 	m_dlgProgress->Close();
 	encode_thread->join();
+	
+	wxSleep(1);
+
 	delete encode_thread;
+
 	delete m_dlgProgress;
+
+	wxMessageBox("Informations", "Conversion is Finished");
 	return 0;
 }
 
@@ -859,8 +897,25 @@ int CFFmpegTranscoding::EncodeFile(wxWindow * mainWindow, const wxString & input
 	this->mainWindow = mainWindow;
 	this->input = input;
 	this->output = output;
+	ListOfEncoder();
 	m_dlgProgress = new CompressVideo(nullptr);
 	m_dlgProgress->Show();
 	encode_thread = new std::thread(EncodeFileThread, this);
 	return 0;
+}
+
+vector<wxString> CFFmpegTranscoding::ListOfEncoder()
+{
+	vector<AVCodecID> listCodecId;
+	vector<wxString> listOfEncoder;
+	const AVCodec *current_codec = nullptr;
+	void *i = 0;
+	while ((current_codec = av_codec_iterate(&i))) {
+		if (av_codec_is_encoder(current_codec)) 
+		{
+			listCodecId.push_back(current_codec->id);
+			listOfEncoder.push_back(current_codec->long_name);
+		}
+	}
+	return listOfEncoder;
 }

@@ -10,7 +10,7 @@ public:
 	~CFFmpegTranscoding();
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output);
 	int EndDecodeFile();
-
+	vector<wxString> ListOfEncoder();
 protected:
 
 	static void EncodeFileThread(void * data);

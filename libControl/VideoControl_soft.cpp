@@ -135,7 +135,8 @@ CRegardsBitmap * CVideoControlSoft::SavePicture()
 	if (isffmpegDecode)
 	{
 		muBitmap.lock();
-		bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+		bitmap = new CRegardsBitmap();
+		*bitmap = *pictureFrame;
 		muBitmap.unlock();
 	}
 	else
@@ -824,6 +825,8 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (ffmfc)
 		delete ffmfc;
 
+	if(pictureFrame != nullptr)
+		delete pictureFrame;
 }
 
 void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap * picture)
@@ -1824,7 +1827,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
     
     printf("RenderFFmpegToTexture 1 \n");
-	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+	//CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
     
     printf("RenderFFmpegToTexture 2 \n");
 	if (!IsOpenGLDecoding())
@@ -1847,22 +1850,22 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		if(angle == 90 || angle == 270)
         {
         	printf("RenderFFmpegToTexture angle %d \n", angle);
-            ApplyInterpolationFilters(bitmap, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+            ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
         }
         else
-            ApplyInterpolationFilters(bitmap, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);	
+            ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 		delete bitmapOut;
 	}
 	else
     {
         printf("RenderFFmpegToTexture OpenGL Decoding \n");
-		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+		glTexture->Create(pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight(), pictureFrame->GetPtBitmap());
     }
 		
 
 	deleteTexture = true;
-	delete bitmap;
+	//delete bitmap;
 	return glTexture;
 }
 #endif
@@ -1976,7 +1979,16 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				ffmpegToBitmap->DeleteData();
 				ffmpegToBitmap->InitContext(src_frame, 0, widthVideo, heightVideo);
 			}
-			ffmpegToBitmap->Preconvert(src_frame, widthVideo, heightVideo);
+			if (pictureFrame == nullptr)
+				pictureFrame = ffmpegToBitmap->GetConvert(src_frame, widthVideo, heightVideo);
+			else
+			{
+				if (ffmpegToBitmap->GetConvert(pictureFrame, src_frame, widthVideo, heightVideo) == 0)
+				{
+					delete pictureFrame;
+					pictureFrame = ffmpegToBitmap->GetConvert(src_frame, widthVideo, heightVideo);
+				}
+			}
 			muBitmap.unlock();
 		}
 

@@ -24,9 +24,10 @@ public:
     int GetThumbnailHeight();    
     void DeleteData();
     void InitContext(AVFrame * src_frame, const bool & bicubic, const int & thumbnailWidth, const int & thumbnailHeight);
-    void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
-	CRegardsBitmap * ConvertFrameToRgba32();
-	CRegardsBitmap * CffmpegToBitmap::GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+    //void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+	//CRegardsBitmap * ConvertFrameToRgba32();
+	int GetConvert(CRegardsBitmap * bitmap, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+	CRegardsBitmap * GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
 	/*
 #ifdef RENDEROPENGL
     GLTexture * ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle);
@@ -49,8 +50,8 @@ private:
     int videoFrameOutputHeight;    
     int width;
     int height;
-	CRegardsBitmap * bitmap;
-	mutex mubmp;
+	//CRegardsBitmap * bitmap;
+	//mutex mubmp;
 #ifdef RENDEROPENGL
    // GLTexture * glTexture = nullptr;
 #endif

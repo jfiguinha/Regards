@@ -73,7 +73,8 @@ CRegardsBitmap * CVideoControl::SavePicture()
 		if (isffmpegDecode)
 		{
 			muBitmap.lock();
-			bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+			bitmap = new CRegardsBitmap();
+			*bitmap = *pictureFrame;
 			muBitmap.unlock();
 		}
 		else

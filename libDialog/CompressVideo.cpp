@@ -25,19 +25,20 @@ CompressVideo::CompressVideo(wxWindow* parent)
 	//(*Initialize(CompressVideo)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressVideo"),_T("wxDialog"));
 	ggProgress = (wxGauge*)FindWindow(XRCID("ID_GAUGEPRG"));
+	//panel = (wxPanel*)FindWindow(XRCID("ID_PANELVIDEO"));
 	labelProgression = (wxStaticText*)FindWindow(XRCID("ID_STPROGRESS"));
 	bitmap = (wxStaticBitmap*)FindWindow(XRCID("ID_BITMAPVIDEO"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
 	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressVideo::OnbtnCancelClick);
-	Connect(wxEVENT_SETBITMAP, wxCommandEventHandler(CompressVideo::SetBitmap));
-	
+	//Connect(wxEVT_PAINT, wxPaintEventHandler(CompressVideo::OnPaint));
+	bitmap->Show(false);
 }
 
 CompressVideo::~CompressVideo()
 {
-	//(*Destroy(CompressVideo)
-	//*)
+
 }
+
 
 void CompressVideo::SetTextProgression(const wxString &texte)
 {
@@ -50,25 +51,18 @@ void CompressVideo::SetPos(const int &max, const int &pos)
 	ggProgress->SetValue(pos);
 }
 
-void CompressVideo::SetBitmap(CImageLoadingFormat * loadingFormat)
+void CompressVideo::SetBitmap(wxImage * bmp)
 {
-	//loadingFormat->Resize(344, 200, 0);
-	loadingFormat->Flip();
-	wxImage * bmp = loadingFormat->GetwxImage();
-	scale = bmp->Scale(344, 200);
-	
+	scale = bmp->Scale(344, 200).Mirror(false);
+
+	wxPoint pt = bitmap->GetPosition();
+	wxClientDC dc(this);
+	dc.DrawBitmap(scale, pt.x, pt.y);
+
+	//bitmap->SetBitmap(scale);
 	delete bmp;
-	delete loadingFormat;
-
-
-	wxCommandEvent event(wxEVENT_SETBITMAP);
-	wxPostEvent(this, event);
 }
 
-void CompressVideo::SetBitmap(wxCommandEvent& event)
-{
-	bitmap->SetBitmap(scale);
-}
 
 bool CompressVideo::IsOk()
 {

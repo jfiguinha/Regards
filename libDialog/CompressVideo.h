@@ -25,11 +25,10 @@ class CompressVideo: public wxDialog
 		wxGauge * ggProgress;
 		wxStaticBitmap * bitmap;
 		wxStaticText * labelProgression;
-
+		//wxPanel * panel;
 		bool IsOk();
 		void SetPos(const int &max, const int &pos);
-		void SetBitmap(CImageLoadingFormat * loadingFormat);
-		void SetBitmap(wxCommandEvent& event);
+		void SetBitmap(wxImage * bmp);
 		void SetTextProgression(const wxString &texte);
 	protected:
 
@@ -37,11 +36,12 @@ class CompressVideo: public wxDialog
 		//*)
 
 	private:
-
+		//void OnPaint(wxPaintEvent &event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		//*)
         bool isOk;
 		wxImage scale;
+		std::mutex muBitmap;
 		DECLARE_EVENT_TABLE()
 };
 

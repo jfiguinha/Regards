@@ -219,6 +219,7 @@ protected:
 	int nbFrame;
 	wxString message;
 	CRegardsBitmap * pictureSubtitle;
+	CRegardsBitmap * pictureFrame = nullptr;
 	int videoPosition;
 	bool updateContext = true;
 	bool controlKeyPush = false;
