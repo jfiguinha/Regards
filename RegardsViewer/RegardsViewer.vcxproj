@@ -129,7 +129,7 @@
     <LibraryPath>$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Debug;$(SolutionDir)libextern\opencv\opencv-4.3.0\build\lib\Debug;$(SolutionDir)libextern\FreeImage\x64\Release;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\x265_2.5\build\vc15-x86_64\Debug;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib</LibraryPath>
     <EmbedManifest>false</EmbedManifest>
     <TargetName>RegardsViewer</TargetName>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -154,7 +154,7 @@
     <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\SDL2;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR</IncludePath>
     <TargetName>RegardsViewer</TargetName>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -230,8 +230,9 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.3.0\build\bin\Debug\opencv_fe
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" "$(SolutionDir)x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\bin\libiconv.dll" "$(SolutionDir)x64\Debug\iconv.dll"
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" "$(SolutionDir)x64\Debug"
+XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" "$(SolutionDir)x64\Debug"
 COPY "$(SolutionDir)x64\Debug\libiconv.dll" "$(SolutionDir)x64\Debug\iconv.dll"
-XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" "$(SolutionDir)x64\Debug"</Command>
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -365,6 +366,7 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.3.0\build\bin\Release\opencv_
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.3.0\build\bin\Release\opencv_features2d430.dll" "$(SolutionDir)x64\Release"  
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" "$(SolutionDir)x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" "$(SolutionDir)x64\Release"
+XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" "$(SolutionDir)x64\Release"
 COPY "$(SolutionDir)x64\Release\libiconv.dll" "$(SolutionDir)x64\Release\iconv.dll"</Command>
     </PostBuildEvent>
     <Manifest>

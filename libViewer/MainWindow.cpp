@@ -251,7 +251,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
 	if (IsVideo())
 	{
-		wxFileDialog saveFileDialog(this, _("Save Video file"), "", "",
+		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", "",
 				"mp4 files (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
