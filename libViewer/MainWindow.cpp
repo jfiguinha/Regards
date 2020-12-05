@@ -261,12 +261,12 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 			return;     // the user changed idea...
 
 		CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
-		CompressionAudioVideoOption compressAudioVideoOption(nullptr);
+		CompressionAudioVideoOption compressAudioVideoOption(this);
 		compressAudioVideoOption.SetOption(videoCompressOption);
 		compressAudioVideoOption.ShowModal();
 		if (compressAudioVideoOption.IsOk())
 		{
-			//compressAudioVideoOption.GetCompressionOption();
+			compressAudioVideoOption.GetCompressionOption();
 			if (ffmpegEncoder == nullptr)
 			{
 				ffmpegEncoder = new CFFmpegTranscoding();

@@ -136,7 +136,6 @@ void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
 	}
 	else
 	{
-		GetCompressionOption();
 		isOk = true;
 		this->Close();
 	}
