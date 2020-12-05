@@ -84,40 +84,48 @@ bool CompressionAudioVideoOption::IsOk()
     return isOk;
 }
 
-CVideoOptionCompress * CompressionAudioVideoOption::GetCompressionOption()
+void CompressionAudioVideoOption::SetOption(CVideoOptionCompress * videoOptionCompress)
 {
-	CVideoOptionCompress * videoOptionCompress = new CVideoOptionCompress();
+	this->videoOptionCompress = videoOptionCompress;
+}
 
-	//Audio
-	videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
-	videoOptionCompress->audioQuality = atoi(cbAudioQuality->GetStringSelection());
-	videoOptionCompress->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
-	videoOptionCompress->audioCodec = cbAudioCodec->GetStringSelection();
+void CompressionAudioVideoOption::GetCompressionOption()
+{
+	
+	if (videoOptionCompress != nullptr)
+	{
+		//Audio
+		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
+		videoOptionCompress->audioQuality = atoi(cbAudioQuality->GetStringSelection());
+		videoOptionCompress->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
+		videoOptionCompress->audioCodec = cbAudioCodec->GetStringSelection();
 
-	if (videoOptionCompress->audioCodec == "")
-		videoOptionCompress->audioCodec = "AAC";
-	if (videoOptionCompress->audioQualityOrBitRate && videoOptionCompress->audioQuality == 0)
-		videoOptionCompress->audioQuality = 5;
-	else if (videoOptionCompress->audioBitRate == 0)
-		videoOptionCompress->audioBitRate = 128;
-	//Video
-	videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
-	if (videoOptionCompress->encoder_profile == "")
-		videoOptionCompress->encoder_profile = "main";
-	videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
+		if (videoOptionCompress->audioCodec == "")
+			videoOptionCompress->audioCodec = "AAC";
+		if (videoOptionCompress->audioQualityOrBitRate && videoOptionCompress->audioQuality == 0)
+			videoOptionCompress->audioQuality = 5;
+		else if (videoOptionCompress->audioBitRate == 0)
+			videoOptionCompress->audioBitRate = 128;
+		//Video
+		videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
+		if (videoOptionCompress->encoder_profile == "")
+			videoOptionCompress->encoder_profile = "main";
+		videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
 
-	if (videoOptionCompress->videoCodec == "")
-		videoOptionCompress->videoCodec = "H264";
+		if (videoOptionCompress->videoCodec == "")
+			videoOptionCompress->videoCodec = "H264";
 
-	videoOptionCompress->videoPreset = cbVideoPreset->GetStringSelection();
-	if (videoOptionCompress->videoPreset == "")
-		videoOptionCompress->videoPreset = "Medium";
-	videoOptionCompress->constantOrVbrOption = rbQuality->GetSelection();
-	videoOptionCompress->videoQualityOrBitRate = ckVideoQuality->IsChecked();
-	videoOptionCompress->videoCompressionValue = slCompression->GetValue();
-	videoOptionCompress->videoBitRate = atoi(txtBitRate->GetValue());
-	videoOptionCompress->videoHardware = ckVideoHardware->IsChecked();
-	return videoOptionCompress;
+		videoOptionCompress->videoPreset = cbVideoPreset->GetStringSelection();
+		if (videoOptionCompress->videoPreset == "")
+			videoOptionCompress->videoPreset = "Medium";
+		videoOptionCompress->constantOrVbrOption = rbQuality->GetSelection();
+		videoOptionCompress->videoQualityOrBitRate = ckVideoQuality->IsChecked();
+		videoOptionCompress->videoCompressionValue = slCompression->GetValue();
+		videoOptionCompress->videoBitRate = atoi(txtBitRate->GetValue());
+		videoOptionCompress->videoHardware = ckVideoHardware->IsChecked();
+	}
+
+
 }
 
 void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)

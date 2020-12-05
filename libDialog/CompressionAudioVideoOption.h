@@ -21,8 +21,8 @@ class CompressionAudioVideoOption: public wxDialog
 
 		CompressionAudioVideoOption(wxWindow* parent);
 		virtual ~CompressionAudioVideoOption();
-
-		CVideoOptionCompress * GetCompressionOption();
+		void SetOption(CVideoOptionCompress * videoOptionCompress);
+		void GetCompressionOption();
 
 		wxButton* btnCancel;
 		wxButton* btnOk;
@@ -66,6 +66,7 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnbtnCheckVideoBitrateClick(wxCommandEvent& event);
 		//*)
         bool isOk;
+		CVideoOptionCompress * videoOptionCompress = nullptr;
 		DECLARE_EVENT_TABLE()
 };
 
