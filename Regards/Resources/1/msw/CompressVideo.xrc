@@ -4,23 +4,18 @@
 		<title>Video Compression</title>
 		<centered>1</centered>
 		<size>400,400</size>
-		<object class="wxGauge" name="ID_GAUGEPRG">
-			<pos>24,64</pos>
-			<size>344,28</size>
+		<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
+			<pos>24,30</pos>
+			<size>344,240</size>
 		</object>
 		<object class="wxStaticText" name="ID_STPROGRESS">
 			<label>Progression :</label>
-			<pos>32,32</pos>
+			<pos>32,280</pos>
 			<size>72,13</size>
 		</object>
-		<object class="wxStaticText" name="ID_STLABEL">
-			<label>Label</label>
-			<pos>96,32</pos>
-			<size>248,16</size>
-		</object>
-		<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
-			<pos>24,110</pos>
-			<size>344,240</size>
+		<object class="wxGauge" name="ID_GAUGEPRG">
+			<pos>24,310</pos>
+			<size>344,28</size>
 		</object>
 		<object class="wxButton" name="ID_BUTTON1">
 			<label>Cancel</label>

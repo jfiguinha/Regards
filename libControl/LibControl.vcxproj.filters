@@ -225,6 +225,9 @@
     <ClInclude Include="ffmpeg_transcoding.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
+    <ClInclude Include="VideoCompressOption.h">
+      <Filter>Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

@@ -40,6 +40,8 @@
 #include <ShowVideo.h>
 #include <ffmpeg_transcoding.h>
 #include <wx/filedlg.h>
+#include <CompressionAudioVideoOption.h>
+#include <VideoCompressOption.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -249,18 +251,29 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 
 void CMainWindow::OnExportFile(wxCommandEvent& event)
 {
+
+
 	if (IsVideo())
 	{
-		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", "",
-				"mp4 files (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", filename,
+				"mp4 files (*.mp4) | *.mp4 | mkv files (*.mkv) | *.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		if (ffmpegEncoder == nullptr)
+		CompressionAudioVideoOption compressAudioVideoOption(nullptr);
+		compressAudioVideoOption.ShowModal();
+		if (compressAudioVideoOption.IsOk())
 		{
-			ffmpegEncoder = new CFFmpegTranscoding();
-			ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath());
+			CVideoOptionCompress * videoCompressOption = compressAudioVideoOption.GetCompressionOption();
+			if (ffmpegEncoder == nullptr)
+			{
+				ffmpegEncoder = new CFFmpegTranscoding();
+				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
+				
+			}
 		}
+
+
 
 		//delete ffmpegEncoder;
 	}

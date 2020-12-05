@@ -2,13 +2,14 @@
 
 class CFFmpegTranscodingPimpl;
 class CompressVideo;
+class CVideoOptionCompress;
 
 class CFFmpegTranscoding
 {
 public:
 	CFFmpegTranscoding();
 	~CFFmpegTranscoding();
-	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output);
+	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
 	int EndDecodeFile();
 	vector<wxString> ListOfEncoder();
 protected:
@@ -22,4 +23,5 @@ protected:
 	bool ending = false;
 	CompressVideo * m_dlgProgress;
 	wxWindow * mainWindow;
+	CVideoOptionCompress * videoCompressOption;
 };

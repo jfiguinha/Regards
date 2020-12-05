@@ -298,6 +298,7 @@
     <ClInclude Include="ThumbnailVideo.h" />
     <ClInclude Include="ThumbnailViewerEffect.h" />
     <ClInclude Include="ThumbnailViewerEffectWnd.h" />
+    <ClInclude Include="VideoCompressOption.h" />
     <ClInclude Include="VideoControl.h" />
     <ClInclude Include="VideoControlInterface.h" />
     <ClInclude Include="VideoControl_soft.h" />
