@@ -64,7 +64,21 @@
 			</content>
 			<default>-1</default>
 			<pos>20,80</pos>
-			<size>360,70</size>
+			<size>160,70</size>
+		</object>
+		<object class="wxStaticText" name="ID_STVIDEOPROFILE">
+			<label>Profile :</label>
+			<pos>200,85</pos>
+		</object>
+		<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
+			<pos>250,80</pos>
+			<size>100,30</size>
+			<value>main</value>
+			<content>
+				<item>baseline</item>
+				<item>main</item>
+				<item>high</item>
+			</content>
 		</object>
 		<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
 			<pos>15,160</pos>
@@ -78,7 +92,7 @@
 		<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
 			<max>51</max>
 			<pos>120,160</pos>
-			<size>230,20</size>
+			<size>230,40</size>
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT1">
 			<label>High</label>
