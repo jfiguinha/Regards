@@ -84,20 +84,22 @@ bool CompressionAudioVideoOption::IsOk()
     return isOk;
 }
 
-void CompressionAudioVideoOption::SetOption(CVideoOptionCompress * videoOptionCompress)
-{
-	this->videoOptionCompress = videoOptionCompress;
-}
-
-void CompressionAudioVideoOption::GetCompressionOption()
+void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * videoOptionCompress)
 {
 	
 	if (videoOptionCompress != nullptr)
 	{
 		//Audio
 		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
-		videoOptionCompress->audioQuality = atoi(cbAudioQuality->GetStringSelection());
-		videoOptionCompress->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
+		if (cbAudioQuality->GetStringSelection() != "")
+			videoOptionCompress->audioQuality = atoi(cbAudioQuality->GetStringSelection());
+		else
+			videoOptionCompress->audioQuality = 5;
+
+		if (cbAudioBitRate->GetStringSelection() != "")
+			videoOptionCompress->audioBitRate = atoi(cbAudioBitRate->GetStringSelection());
+		else
+			videoOptionCompress->audioBitRate = 128;
 		videoOptionCompress->audioCodec = cbAudioCodec->GetStringSelection();
 
 		if (videoOptionCompress->audioCodec == "")

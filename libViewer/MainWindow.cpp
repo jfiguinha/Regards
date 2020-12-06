@@ -260,15 +260,15 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
 		CompressionAudioVideoOption compressAudioVideoOption(this);
-		compressAudioVideoOption.SetOption(videoCompressOption);
 		compressAudioVideoOption.ShowModal();
 		if (compressAudioVideoOption.IsOk())
 		{
-			compressAudioVideoOption.GetCompressionOption();
+			
 			if (ffmpegEncoder == nullptr)
 			{
+				CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
+				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
 				ffmpegEncoder = new CFFmpegTranscoding();
 				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
 				
