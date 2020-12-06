@@ -8,7 +8,7 @@ class CRegardsFloatBitmap;
 class CRegardsBitmap;
 class CRegardsJpegPicture;
 class CxImage;
-class wxImage;
+
 
 class CImageLoadingFormat
 {

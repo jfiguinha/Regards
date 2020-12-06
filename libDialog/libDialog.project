@@ -55,6 +55,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="CompressVideo.cpp"/>
+    <File Name="CompressionAudioVideoOption.cpp"/>
     <File Name="ExternalProgram.cpp"/>
     <File Name="Association.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
@@ -68,6 +70,8 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="CompressVideo.h"/>
+    <File Name="CompressionAudioVideoOption.h"/>
     <File Name="ExternalProgram.h"/>
     <File Name="SavePicture.h"/>
     <File Name="Association.h"/>

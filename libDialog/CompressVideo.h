@@ -1,6 +1,4 @@
 #pragma once
-#ifdef WIN32
-
 #ifndef WX_PRECOMP
 	//(*HeadersPCH(TiffOption)
 	#include <wx/checklst.h>
@@ -44,5 +42,3 @@ class CompressVideo: public wxDialog
 		std::mutex muBitmap;
 		DECLARE_EVENT_TABLE()
 };
-
-#endif

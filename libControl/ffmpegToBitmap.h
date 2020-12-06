@@ -4,11 +4,15 @@
 using namespace Regards::OpenGL;
 #endif
 
+
 extern "C" {
-#include <libavfilter/avfilter.h>
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
+    #include <libavutil/opt.h>
+    #include <libavutil/pixfmt.h>
+    #include <libswscale/swscale.h>
+    #include <libavfilter/avfilter.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
 }
 
 class CRegardsBitmap;

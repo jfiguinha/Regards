@@ -112,7 +112,9 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
 		if (videoOptionCompress->encoder_profile == "")
 			videoOptionCompress->encoder_profile = "main";
-		videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
+            
+        if(cbVideoProfile != nullptr)
+            videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
 
 		if (videoOptionCompress->videoCodec == "")
 			videoOptionCompress->videoCodec = "H264";
