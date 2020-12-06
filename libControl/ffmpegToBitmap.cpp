@@ -4,12 +4,6 @@
 #include <cassert>
 #include <array>
 #include <RotateByShearRGB.h>
-extern "C" {
-#include <libavutil/opt.h>
-#include <libavutil/pixfmt.h>
-#include <libswscale/swscale.h>
-}
-
 #include <RegardsBitmap.h>
 
 AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;

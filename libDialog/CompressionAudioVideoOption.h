@@ -1,6 +1,4 @@
 #pragma once
-#ifdef WIN32
-
 #ifndef WX_PRECOMP
 	//(*HeadersPCH(TiffOption)
 	#include <wx/checklst.h>
@@ -67,5 +65,3 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		DECLARE_EVENT_TABLE()
 };
-
-#endif

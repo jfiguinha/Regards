@@ -1,13 +1,13 @@
 #include "header.h"
 #include "ffmpeg_transcoding.h"
-#include <wx/progdlg.h>
-#include <CompressVideo.h>
-#include <imageLoadingFormat.h>
-#include "ffmpegToBitmap.h"
 #include <RegardsBitmap.h>
-#include <window_id.h>
+#include <CompressVideo.h>
+#include <ImageLoadingFormat.h>
+#include "ffmpegToBitmap.h"
 #include "VideoCompressOption.h"
+#include <wx/progdlg.h>
 #include <wx/filename.h>
+#include <window_id.h>
 extern "C"
 {
 	#include <libavcodec/avcodec.h>
@@ -27,13 +27,13 @@ static const int dst_sample_rate = 44100;
 //static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_H265;
 //static const AVCodecID AUDIO_CODEC = AV_CODEC_ID_AAC;
 
-static const char * const hb_h264_profile_names[] = { "auto", "high", "main", "baseline", NULL, };
-static const char * const   hb_h264_level_names[] = { "auto", "1.0", "1b", "1.1", "1.2", "1.3", "2.0", "2.1", "2.2", "3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "5.0", "5.1", "5.2",  NULL, };
-static const int    const  hb_h264_level_values[] = { -1,    10,    9,    11,    12,    13,    20,    21,    22,    30,    31,    32,    40,    41,    42,    50,    51,    52,     0, };
+static const char * hb_h264_profile_names[] = { "auto", "high", "main", "baseline", NULL, };
+static const char * hb_h264_level_names[] = { "auto", "1.0", "1b", "1.1", "1.2", "1.3", "2.0", "2.1", "2.2", "3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "5.0", "5.1", "5.2",  NULL, };
+static const int    hb_h264_level_values[] = { -1,    10,    9,    11,    12,    13,    20,    21,    22,    30,    31,    32,    40,    41,    42,    50,    51,    52,     0, };
 static const int          hb_h265_level_values[] = {
 	-1,  30,  60,  63,  90,  93, 120, 123,
 	150, 153, 156, 180, 183, 186,   0, };
-static const char * const hb_h265_level_names[] = {
+static const char * hb_h265_level_names[] = {
 	"auto", "1.0", "2.0", "2.1", "3.0", "3.1", "4.0", "4.1",
 	"5.0", "5.1", "5.2", "6.0", "6.1", "6.2",  NULL, };
 
