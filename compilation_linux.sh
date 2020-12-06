@@ -37,6 +37,10 @@ sudo apt install libtbb-dev
 sudo apt install libvdpau-dev
 sudo apt install libbz2-dev
 sudo apt install patchelf
+sudo apt install libgnutls28-dev
+sudo apt install libtool
+sudo apt install libunistring-dev
+sudo apt install libass-dev
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev

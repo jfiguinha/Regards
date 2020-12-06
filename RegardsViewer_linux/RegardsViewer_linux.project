@@ -302,11 +302,20 @@
         <Library Value="opencv_face"/>
         <Library Value="opencv_objdetect"/>
         <Library Value="x265"/>
+        <Library Value="x264"/>
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
         <Library Value="EGL"/>
         <Library Value="openjp2"/>
         <Library Value="exif"/>
+        <Library Value="gnutls"/>
+        <Library Value="vorbis"/>
+        <Library Value="vorbisenc"/>
+        <Library Value="ass"/>
+        <Library Value="fdk-aac"/>
+        <Library Value="mp3lame"/>
+        <Library Value="opus"/>
+        <Library Value="vpx"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
