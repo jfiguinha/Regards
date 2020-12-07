@@ -87,6 +87,10 @@ public:
 
 	static void DisplayPreview(void * data);
 
+	void ProcessEnd()
+	{
+		processEnd = true;
+	}
 	int EncodeFile(const char * input, const char * output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 
 private:
@@ -116,9 +120,18 @@ private:
 	CompressVideo * m_dlgProgress;
 	mutex muEnding;
 	mutex muFrame;
+	mutex muWriteData;
 	bool isend = false;
 	AVFrame * copyFrameBuffer = nullptr;
 	CVideoOptionCompress * videoCompressOption;
+	char timebase[255];
+	char duration[255];
+	double pos = 0;
+	double total = 0;
+	double pourcentage = 0;
+	bool processEnd = true;
+	//sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)pos, (int)total);
+
 };
 
 
@@ -154,6 +167,10 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
 		imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
+		ffmpeg_trans->muWriteData.lock();
+		ffmpeg_trans->m_dlgProgress->SetPos(ffmpeg_trans->total, ffmpeg_trans->pos);
+		ffmpeg_trans->m_dlgProgress->SetTextProgression(ffmpeg_trans->duration);
+		ffmpeg_trans->muWriteData.unlock();
 		delete imageLoadingFormat;
 
 		ffmpegToBitmap->DeleteData();
@@ -583,6 +600,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 				//h264_nvenc
 				if (videoCompressOption->videoHardware)
 				{
+#ifdef WIN32
 					encoderHardware = "nvenc";
 					if (!openHardEncoder(VIDEO_CODEC, encoder, enc_ctx, GetCodecNameForEncoder(VIDEO_CODEC, encoderHardware)))
 					{
@@ -605,6 +623,9 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 				{
 					encoder = avcodec_find_encoder(VIDEO_CODEC);
 				}
+#else
+					encoder = avcodec_find_encoder(VIDEO_CODEC);
+#endif
 			}
 			else
 			{
@@ -1282,7 +1303,8 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 
 void CFFmpegTranscodingPimpl::SetFrameData(AVFrame * src_frame, CompressVideo * m_dlgProgress)
 {
-	//return;
+	if (processEnd)
+		return;
 
 	bool createFrame = true;
 	
@@ -1336,7 +1358,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 	unsigned int i;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
-
+	processEnd = false;
 	if ((ret = open_input_file(input)) < 0)
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
@@ -1388,16 +1410,14 @@ int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output,
 
 			if (isVideo)
 			{
-				char timebase[255];
-				char duration[255];
-				double pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
-				double total = double(ifmt_ctx->streams[stream_index]->duration) * double(ifmt_ctx->streams[stream_index]->time_base.num) / double(ifmt_ctx->streams[stream_index]->time_base.den);
-				double pourcentage = (pos / total) * 100.0f;
+				muWriteData.lock();
+				pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
+				total = double(ifmt_ctx->streams[stream_index]->duration) * double(ifmt_ctx->streams[stream_index]->time_base.num) / double(ifmt_ctx->streams[stream_index]->time_base.den);
+				pourcentage = (pos / total) * 100.0f;
 				
 				sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)pos, (int)total);
+				muWriteData.unlock();
 
-				m_dlgProgress->SetPos(total, pos);
-				m_dlgProgress->SetTextProgression(duration);
 			}
 
 
@@ -1517,7 +1537,7 @@ void CFFmpegTranscoding::EncodeFileThread(void * data)
 		printf(message);
 		//wxString message = av_err2str(ret);
 	}
-
+	ffmpeg_encoding->pimpl->ProcessEnd();
 	wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
 	wxPostEvent(ffmpeg_encoding->mainWindow, event);
 	
