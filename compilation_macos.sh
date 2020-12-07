@@ -30,6 +30,7 @@ brew install -v poppler
 brew install -v qpdf
 brew install -v openexr
 brew install -v jasper
+brew install -v ffmpeg
 #brew install -v freeimage
 #brew install -v fftw
 #Install External Library

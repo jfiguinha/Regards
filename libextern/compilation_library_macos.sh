@@ -84,6 +84,6 @@ cd ..
 cd ..
 
 #Compille ffmpeg
-chmod +x ffmpeg_build_macos.sh
-./ffmpeg_build_macos.sh
+#chmod +x ffmpeg_build_macos.sh
+#./ffmpeg_build_macos.sh
 
