@@ -31,7 +31,43 @@ CompressVideo::CompressVideo(wxWindow* parent)
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
 	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressVideo::OnbtnCancelClick);
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CompressVideo::OnPaint));
+    Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueMaxProgressBar));
+    Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueProgressBar));
+    Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CompressVideo::OnSetText));
 	bitmap->Show(false);
+
+}
+
+void CompressVideo::OnSetValueMaxProgressBar(wxCommandEvent& event)
+{
+	int position = event.GetInt();
+	//cout << "OnSetValueProgressBar Pos : " << position << endl;
+	if (ggProgress != nullptr)
+	{
+        if (ggProgress->GetRange() != position)
+        {
+       		ggProgress->SetRange(position);
+            ggProgress->Refresh();  
+        }
+	}
+}
+
+void CompressVideo::OnSetValueProgressBar(wxCommandEvent& event)
+{
+	int position = event.GetInt();
+	//cout << "OnSetValueProgressBar Pos : " << position << endl;
+	if (ggProgress != nullptr)
+	{
+		if (ggProgress->GetRange() > 0)
+		{
+			if (position >= ggProgress->GetRange())
+				ggProgress->SetValue(ggProgress->GetRange() - 1);
+			else
+				ggProgress->SetValue(position);
+
+			ggProgress->Refresh();
+		}
+	}
 }
 
 CompressVideo::~CompressVideo()
@@ -39,20 +75,47 @@ CompressVideo::~CompressVideo()
 
 }
 
+void CompressVideo::OnSetText(wxCommandEvent& event)
+{
+    wxString * statusText = (wxString *)event.GetClientData();
+    if(statusText != nullptr)
+    {
+        labelProgression->SetLabel(*statusText);
+        delete statusText;      
+    }
+
+}
 
 void CompressVideo::SetTextProgression(const wxString &texte)
 {
-	labelProgression->SetLabel(texte);
+	//labelProgression->SetLabel(texte);
+	wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
+	wxString * statusText = new wxString(texte);
+	event->SetClientData(statusText);
+	wxQueueEvent(this, event);
 }
 
 void CompressVideo::SetPos(const int &max, const int &pos)
 {
-	ggProgress->SetRange(max);
-	ggProgress->SetValue(pos);
+    if (ggProgress->GetRange() != max)
+    {
+        wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETRANGEPROGRESSBAR);
+        event->SetInt(max);
+        wxQueueEvent(this, event);    
+    }
+
+    
+    wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETVALUEPROGRESSBAR);
+	event->SetInt(pos);
+	wxQueueEvent(this, event);
+    
+	//ggProgress->SetRange(max);
+	//ggProgress->SetValue(pos);
 }
 
 void CompressVideo::SetBitmap(wxImage * bmp)
 {
+
 	scale = bmp->Scale(344, 200).Mirror(false);
 
 	wxPoint pt = bitmap->GetPosition();
@@ -60,6 +123,7 @@ void CompressVideo::SetBitmap(wxImage * bmp)
 	dc.DrawBitmap(scale, pt.x, pt.y);
 
 	//bitmap->SetBitmap(scale);
+
 	delete bmp;
 }
 

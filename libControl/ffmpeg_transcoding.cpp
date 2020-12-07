@@ -7,6 +7,7 @@
 #include "VideoCompressOption.h"
 #include <wx/progdlg.h>
 #include <wx/filename.h>
+#include <ConvertUtility.h>
 #include <window_id.h>
 extern "C"
 {
@@ -91,7 +92,7 @@ public:
 	{
 		processEnd = true;
 	}
-	int EncodeFile(const char * input, const char * output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
+	int EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 
 private:
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx);
@@ -100,8 +101,8 @@ private:
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString &nameEncoder);
 	int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index);
 	void CopyFrame(AVFrame * frame);
-	int open_input_file(const char *filename);
-	int open_output_file(const char *filename);
+	int open_input_file(const wxString & filename);
+	int open_output_file(const wxString & filename);
 	int init_filter(FilteringContext* fctx, AVCodecContext *dec_ctx, AVCodecContext *enc_ctx, const char *filter_spec);
 	int init_filters(void);
 	int filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo);
@@ -183,13 +184,13 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 
 }
 
-int CFFmpegTranscodingPimpl::open_input_file(const char *filename)
+int CFFmpegTranscodingPimpl::open_input_file(const wxString & filename)
 {
 	int ret;
 	unsigned int i;
 
 	ifmt_ctx = NULL;
-	if ((ret = avformat_open_input(&ifmt_ctx, filename, NULL, NULL)) < 0) {
+	if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToUTF8(filename), NULL, NULL)) < 0) {
 		av_log(NULL, AV_LOG_ERROR, "Cannot open input file\n");
 		return ret;
 	}
@@ -241,7 +242,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const char *filename)
 			return AVERROR(ENOMEM);
 	}
 
-	av_dump_format(ifmt_ctx, 0, filename, 0);
+	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 0);
 	return 0;
 }
 
@@ -548,7 +549,7 @@ void hb_limit_rational(int *x, int *y, int num, int den, int limit)
 	*y = den;
 }
 
-int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
+int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 {
 	AVStream *out_stream;
 	AVStream *in_stream;
@@ -570,9 +571,9 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 	//ret = avformat_alloc_output_context2(&mkvVideo, av_guess_format("matroska", "c:\\Users\\MPM\\Desktop\\test.mkv", NULL), "mkv", filename);
 
 	if(extension == "mkv")
-		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", filename, NULL), "mkv", filename);
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", CConvertUtility::ConvertToUTF8(filename));
 	else
-		avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, filename);
+		avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, CConvertUtility::ConvertToUTF8(filename));
 	if (!ofmt_ctx) {
 		av_log(NULL, AV_LOG_ERROR, "Could not create output context\n");
 		return AVERROR_UNKNOWN;
@@ -598,9 +599,10 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 				encoder = nullptr;
 				////h264_amf
 				//h264_nvenc
+
+#ifdef WIN32
 				if (videoCompressOption->videoHardware)
 				{
-#ifdef WIN32
 					encoderHardware = "nvenc";
 					if (!openHardEncoder(VIDEO_CODEC, encoder, enc_ctx, GetCodecNameForEncoder(VIDEO_CODEC, encoderHardware)))
 					{
@@ -624,7 +626,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 					encoder = avcodec_find_encoder(VIDEO_CODEC);
 				}
 #else
-					encoder = avcodec_find_encoder(VIDEO_CODEC);
+                encoder = avcodec_find_encoder(VIDEO_CODEC);
 #endif
 			}
 			else
@@ -1008,12 +1010,12 @@ int CFFmpegTranscodingPimpl::open_output_file(const char *filename)
 		}
 
 	}
-	av_dump_format(ofmt_ctx, 0, filename, 1);
+	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 1);
 
 	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {
-		ret = avio_open(&ofmt_ctx->pb, filename, AVIO_FLAG_WRITE);
+		ret = avio_open(&ofmt_ctx->pb, CConvertUtility::ConvertToUTF8(filename), AVIO_FLAG_WRITE);
 		if (ret < 0) {
-			av_log(NULL, AV_LOG_ERROR, "Could not open output file '%s'", filename);
+			av_log(NULL, AV_LOG_ERROR, "Could not open output file '%s'", CConvertUtility::ConvertToUTF8(filename));
 			return ret;
 		}
 	}
@@ -1350,7 +1352,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 	return encode_write_frame(NULL, stream_index);
 }
 
-int CFFmpegTranscodingPimpl::EncodeFile(const char * input, const char * output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption)
+int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption)
 {
 	int ret;
 	this->m_dlgProgress = m_dlgProgress;

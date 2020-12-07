@@ -36,6 +36,9 @@ class CompressVideo: public wxDialog
 	private:
 		//void OnPaint(wxPaintEvent &event);
 		void OnbtnCancelClick(wxCommandEvent& event);
+        void OnSetValueProgressBar(wxCommandEvent& event);
+        void OnSetValueMaxProgressBar(wxCommandEvent& event);
+        void OnSetText(wxCommandEvent& event);
 		//*)
         bool isOk;
 		wxImage scale;
