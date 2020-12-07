@@ -672,8 +672,14 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					encoder = avcodec_find_encoder(VIDEO_CODEC);
 				}
 #elif defined(__APPLE__)
-                if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "")))
+                if (videoCompressOption->videoHardware)
                 {
+                    if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "")))
+                        encoder = avcodec_find_encoder(VIDEO_CODEC);
+                    else
+                        encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, ""));
+                }
+                else{
                     encoder = avcodec_find_encoder(VIDEO_CODEC);
                 } 
 #else

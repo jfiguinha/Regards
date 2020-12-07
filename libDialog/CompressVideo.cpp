@@ -34,9 +34,25 @@ CompressVideo::CompressVideo(wxWindow* parent)
     Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueMaxProgressBar));
     Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueProgressBar));
     Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CompressVideo::OnSetText));
+#ifdef __APPLE__
+    Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CompressVideo::OnSetBitmap));
+#else
 	bitmap->Show(false);
-
+#endif
 }
+
+#ifdef __APPLE__
+void CompressVideo::OnSetBitmap(wxCommandEvent& event)
+{
+    wxImage * bmp = (wxImage *)event.GetClientData();
+	scale = bmp->Scale(344, 200).Mirror(false);
+    bitmap->SetBitmap(scale);
+	//wxPoint pt = bitmap->GetPosition();
+	//wxClientDC dc(this);
+	//dc.DrawBitmap(scale, pt.x, pt.y);
+    delete bmp;
+}
+#endif
 
 void CompressVideo::OnSetValueMaxProgressBar(wxCommandEvent& event)
 {
@@ -115,16 +131,21 @@ void CompressVideo::SetPos(const int &max, const int &pos)
 
 void CompressVideo::SetBitmap(wxImage * bmp)
 {
+#ifdef __APPLE__
 
+    wxCommandEvent* event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
+	event->SetClientData(bmp);
+	wxQueueEvent(this, event);
+#else
 	scale = bmp->Scale(344, 200).Mirror(false);
-
 	wxPoint pt = bitmap->GetPosition();
 	wxClientDC dc(this);
 	dc.DrawBitmap(scale, pt.x, pt.y);
-
+    delete bmp;
+#endif
 	//bitmap->SetBitmap(scale);
 
-	delete bmp;
+	
 }
 
 
