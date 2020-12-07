@@ -95,8 +95,9 @@ public:
 	int EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 
 private:
+    wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx);
-	bool openHardEncoder(const AVCodecID &codec_id, AVCodec * pCodec, AVCodecContext * pCodecCtx, const wxString &encoderName);
+	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName);
 	AVCodecID GetCodecID(AVMediaType codec_type);
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString &nameEncoder);
 	int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index);
@@ -283,10 +284,11 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 //h264_amf
 //h264_nvenc
 
-bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, AVCodec * pCodec, AVCodecContext * pCodecCtx, const wxString &encoderName)
+bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName)
 {
 	bool isSucceed = false;
-
+    AVCodec * pCodec = nullptr;
+    AVCodecContext * pCodecCtx = nullptr;
 	if (encoderName.size() > 0)
 	{
 		pCodec = avcodec_find_encoder_by_name(encoderName);
@@ -325,6 +327,53 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, AVCodec
 	avcodec_free_context(&pCodecCtx);
 	pCodecCtx = nullptr;
 	return isSucceed;
+}
+
+wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxString &encoderHardware)
+{
+    wxString codec_name;
+    switch (codec_type)
+    {
+        case AV_CODEC_ID_MPEG4:
+        {
+            //hb_log("encavcodecInit: MPEG-4 ASP encoder");
+            codec_name = "mpeg4";
+        } break;
+        case AV_CODEC_ID_MPEG2VIDEO:
+        {
+           // hb_log("encavcodecInit: MPEG-2 encoder");
+            codec_name = "mpeg2video";
+        } break;
+        case AV_CODEC_ID_VP8:
+        {
+           // hb_log("encavcodecInit: VP8 encoder");
+            codec_name = "libvpx";
+        } break;
+        case AV_CODEC_ID_VP9:
+        {
+           // hb_log("encavcodecInit: VP9 encoder");
+            codec_name = "libvpx-vp9";
+        } break;
+        case AV_CODEC_ID_H264:
+        {
+            if(encoderHardware == "nvenc")
+                codec_name = "h264_nvenc";
+            else if(encoderHardware == "amf")
+                codec_name = "h264_amf";
+            else
+                codec_name = "h264_videotoolbox";
+        }break;
+        case AV_CODEC_ID_HEVC:
+        {
+            if(encoderHardware == "nvenc")
+                codec_name = "hevc_nvenc";
+            else if(encoderHardware == "amf")
+                codec_name = "hevc_amf";
+            else
+                codec_name = "hevc_videotoolbox";
+        }break;
+    }
+    return codec_name;
 }
 
 AVCodecID CFFmpegTranscodingPimpl::GetCodecID(AVMediaType codec_type)
@@ -370,9 +419,9 @@ AVCodecID CFFmpegTranscodingPimpl::GetCodecID(AVMediaType codec_type)
 		{
 			return  AV_CODEC_ID_VP9;
 		}
-		if (videoCompressOption->videoCodec == "H263")
+		if (videoCompressOption->videoCodec == "MPEG4")
 		{
-			return AV_CODEC_ID_H263;
+			return AV_CODEC_ID_MPEG4;
 		}
 		if (videoCompressOption->videoCodec == "MPEG2")
 		{
@@ -597,37 +646,40 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 			{
 				enc_ctx = nullptr;
 				encoder = nullptr;
-				////h264_amf
-				//h264_nvenc
-
 #ifdef WIN32
 				if (videoCompressOption->videoHardware)
 				{
 					encoderHardware = "nvenc";
-					if (!openHardEncoder(VIDEO_CODEC, encoder, enc_ctx, GetCodecNameForEncoder(VIDEO_CODEC, encoderHardware)))
+					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware)))
 					{
 						encoderHardware = "amf";
-						if (!openHardEncoder(VIDEO_CODEC, encoder, enc_ctx, GetCodecNameForEncoder(VIDEO_CODEC, encoderHardware)))
+						if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware)))
 						{
 							encoder = avcodec_find_encoder(VIDEO_CODEC);
 						}
 						else
 						{
-							encoder = avcodec_find_encoder_by_name(GetCodecNameForEncoder(VIDEO_CODEC, "amf"));
+							encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "amf"));
 						}
 					}
 					else
 					{
-						encoder = avcodec_find_encoder_by_name(GetCodecNameForEncoder(VIDEO_CODEC, "nvenc"));
+						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "nvenc"));
 					}
 				}
 				else
 				{
 					encoder = avcodec_find_encoder(VIDEO_CODEC);
 				}
+#elif defined(__APPLE__)
+                if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "")))
+                {
+                    encoder = avcodec_find_encoder(VIDEO_CODEC);
+                } 
 #else
                 encoder = avcodec_find_encoder(VIDEO_CODEC);
 #endif
+
 			}
 			else
 			{
