@@ -39,9 +39,8 @@ class CompressVideo: public wxDialog
         void OnSetValueProgressBar(wxCommandEvent& event);
         void OnSetValueMaxProgressBar(wxCommandEvent& event);
         void OnSetText(wxCommandEvent& event);
-#ifdef __APPLE__
         void OnSetBitmap(wxCommandEvent& event);
-#endif
+
 		//*)
         bool isOk;
 		wxImage scale;

@@ -34,7 +34,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	cbAudioQuality = (wxComboBox*)FindWindow(XRCID("ID_CBAUDIOQUALITY"));
 	cbAudioCodec = (wxComboBox*)FindWindow(XRCID("ID_CBAUDIOCODEC"));
 	cbVideoCodec = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOCODEC"));
-	cbVideoPreset = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOPRESET"));
+	//cbVideoPreset = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOPRESET"));
 	cbVideoProfile = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOPROFILE"));
 	rbQuality = (wxRadioBox*)FindWindow(XRCID("ID_RBQUALITY"));
 	ckVideoQuality = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOQUALITY"));
@@ -119,7 +119,7 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		if (videoOptionCompress->videoCodec == "")
 			videoOptionCompress->videoCodec = "H264";
 
-		videoOptionCompress->videoPreset = cbVideoPreset->GetStringSelection();
+		videoOptionCompress->videoPreset = "";// cbVideoPreset->GetStringSelection();
 		if (videoOptionCompress->videoPreset == "")
 			videoOptionCompress->videoPreset = "Medium";
 		videoOptionCompress->constantOrVbrOption = rbQuality->GetSelection();

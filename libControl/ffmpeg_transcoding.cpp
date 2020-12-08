@@ -38,6 +38,153 @@ static const char * hb_h265_level_names[] = {
 	"auto", "1.0", "2.0", "2.1", "3.0", "3.1", "4.0", "4.1",
 	"5.0", "5.1", "5.2", "6.0", "6.1", "6.2",  NULL, };
 
+
+/**********************************************************************
+ * hb_reduce
+ **********************************************************************
+ * Given a numerator (num) and a denominator (den), reduce them to an
+ * equivalent fraction and store the result in x and y.
+ *********************************************************************/
+void hb_reduce(int *x, int *y, int num, int den)
+{
+	// find the greatest common divisor of num & den by Euclid's algorithm
+	int n = num, d = den;
+	while (d)
+	{
+		int t = d;
+		d = n % d;
+		n = t;
+	}
+
+	// at this point n is the gcd. if it's non-zero remove it from num
+	// and den. Otherwise just return the original values.
+	if (n)
+	{
+		*x = num / n;
+		*y = den / n;
+	}
+	else
+	{
+		*x = num;
+		*y = den;
+	}
+}
+
+void hb_limit_rational(int *x, int *y, int num, int den, int limit)
+{
+	hb_reduce(&num, &den, num, den);
+	if (num < limit && den < limit)
+	{
+		*x = num;
+		*y = den;
+		return;
+	}
+
+	if (num > den)
+	{
+		double div = (double)limit / num;
+		num = limit;
+		den *= div;
+	}
+	else
+	{
+		double div = (double)limit / den;
+		den = limit;
+		num *= div;
+	}
+	*x = num;
+	*y = den;
+}
+
+
+static int apply_vpx_preset(AVDictionary ** av_opts, const wxString & preset)
+{
+	if (preset == "")
+	{
+		// default "medium"
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "2", 0);
+	}
+	else if (preset == "veryfast")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "5", 0);
+	}
+	else if (preset == "faster")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "4", 0);
+	}
+	else if (preset == "fast")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "3", 0);
+	}
+	else if (preset == "medium")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "2", 0);
+	}
+	else if (preset == "slow")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "1", 0);
+	}
+	else if (preset == "slower")
+	{
+		av_dict_set(av_opts, "deadline", "good", 0);
+		av_dict_set(av_opts, "cpu-used", "0", 0);
+	}
+	else if (preset == "veryslow")
+	{
+		av_dict_set(av_opts, "deadline", "best", 0);
+		av_dict_set(av_opts, "cpu-used", "0", 0);
+	}
+	else
+	{
+		// default "medium"
+		//hb_log("apply_vpx_preset: Unknown VPx encoder preset %s", preset);
+		return -1;
+	}
+
+	return 0;
+}
+
+// VP8 and VP9 have some options in common and some different
+static int apply_vp8_preset(AVDictionary ** av_opts, const wxString & preset)
+{
+	return apply_vpx_preset(av_opts, preset);
+}
+
+static int apply_vp9_preset(AVDictionary ** av_opts, const wxString & preset)
+{
+	av_dict_set(av_opts, "row-mt", "1", 0);
+	return apply_vpx_preset(av_opts, preset);
+}
+
+static int apply_encoder_preset(AVCodecID vcodec, AVDictionary ** av_opts,
+	const char * preset)
+{
+	switch (vcodec)
+	{
+	case AV_CODEC_ID_VP8:
+		return apply_vp8_preset(av_opts, preset);
+	case AV_CODEC_ID_VP9:
+		return apply_vp9_preset(av_opts, preset);
+	/*
+	case AV_CODEC_ID_H264:
+	case AV_CODEC_ID_H265:
+		av_dict_set(av_opts, "preset", preset, 0);
+		break;
+	*/
+	default:
+		break;
+
+	}
+
+	return 0;
+}
+
 class CFFmpegTranscodingPimpl
 {
 public:
@@ -96,8 +243,9 @@ public:
 
 private:
     wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
-	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx);
-	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName);
+	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
+	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx);
+	bool openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx);
 	AVCodecID GetCodecID(AVMediaType codec_type);
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString &nameEncoder);
 	int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index);
@@ -247,11 +395,12 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString & filename)
 	return 0;
 }
 
-AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx)
+AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName)
 {
 	int in_w = dst_width;
 	int in_h = dst_height;
 
+#ifdef HANDBRAKE
 	pCodecCtx->codec_id = codec_id;
 	pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
 	pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -262,6 +411,21 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 	pCodecCtx->bit_rate = dst_vbit_rate;
 	pCodecCtx->gop_size = 30 * 1;
 	pCodecCtx->max_b_frames = 0;
+#else
+	pCodecCtx->codec_id = codec_id;
+	pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
+	pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
+	pCodecCtx->width = pSourceCodecCtx->width;
+	pCodecCtx->height = pSourceCodecCtx->height;
+	pCodecCtx->time_base = pSourceCodecCtx->time_base;
+	//pCodecCtx->bit_rate = dst_vbit_rate;
+	pCodecCtx->gop_size = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
+	pCodecCtx->max_b_frames = 0;
+	pCodecCtx->framerate = pSourceCodecCtx->framerate;
+	pCodecCtx->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
+#endif
+
+
 
 	// some formats want stream headers to be separate
 	if (pCodecCtx->flags & AVFMT_GLOBALHEADER)
@@ -271,10 +435,304 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H264)
 	{
 		av_dict_set(&param, "start_time_realtime", 0, 0);
-		av_opt_set(pCodecCtx->priv_data, "preset", "superfast", 0);
+		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
 		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
 	}
 
+	/*
+	if (pCodecCtx->codec_id == AV_CODEC_ID_H265)
+	{
+		av_dict_set(&param, "start_time_realtime", 0, 0);
+		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
+		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
+	}
+	*/
+	if (videoCompressOption->videoQualityOrBitRate == 0)
+	{
+		/* Average bitrate */
+		pCodecCtx->bit_rate = 1000 * videoCompressOption->videoBitRate;
+		// ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >=
+		// bitrate * fps
+		pCodecCtx->bit_rate_tolerance = videoCompressOption->videoBitRate * av_q2d(pCodecCtx->framerate) + 1;
+
+		if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
+			av_dict_set(&param, "rc", "vbr_hq", 0);
+
+		if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "amf")
+			av_dict_set(&param, "rc", "vbr_peak", 0);
+	}
+	else
+	{
+		if (codec_id == AV_CODEC_ID_VP8)
+		{
+			pCodecCtx->flags |= AV_CODEC_FLAG_QSCALE;
+			pCodecCtx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
+			pCodecCtx->bit_rate = (int64_t)pCodecCtx->width * pCodecCtx->height * pCodecCtx->framerate.num / pCodecCtx->framerate.den;
+		}
+		else if (codec_id == AV_CODEC_ID_VP9)
+		{
+			// These settings produce better image quality than
+			// what was previously used
+			pCodecCtx->flags |= AV_CODEC_FLAG_QSCALE;
+			pCodecCtx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
+
+			char quality[7];
+			snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
+			av_dict_set(&param, "crf", quality, 0);
+			//This value was chosen to make the bitrate high enough
+			//for libvpx to "turn off" the maximum bitrate feature
+			//that is normally applied to constant quality.
+			pCodecCtx->bit_rate = (int64_t)pCodecCtx->width * pCodecCtx->height * pCodecCtx->framerate.num / pCodecCtx->framerate.den;
+			//hb_log("encavcodec: encoding at CQ %.2f", job->vquality);
+		}
+		//Set constant quality for nvenc
+		else if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
+		{
+			char qualityI[7];
+			char quality[7];
+			char qualityB[7];
+
+			double adjustedQualityI = videoCompressOption->videoCompressionValue - 2;
+			double adjustedQualityB = videoCompressOption->videoCompressionValue + 2;
+			if (adjustedQualityB > 51) {
+				adjustedQualityB = 51;
+			}
+
+			if (adjustedQualityI < 0) {
+				adjustedQualityI = 0;
+			}
+
+			snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
+			snprintf(qualityI, 7, "%.2f", adjustedQualityI);
+			snprintf(qualityB, 7, "%.2f", adjustedQualityB);
+
+			pCodecCtx->bit_rate = 0;
+
+			av_dict_set(&param, "rc", "vbr_hq", 0);
+			av_dict_set(&param, "cq", quality, 0);
+
+			// further Advanced Quality Settings in Constant Quality Mode
+			av_dict_set(&param, "init_qpP", quality, 0);
+			av_dict_set(&param, "init_qpB", qualityB, 0);
+			av_dict_set(&param, "init_qpI", qualityI, 0);
+			//hb_log("encavcodec: encoding at rc=vbr_hq %.2f", job->vquality);
+		}
+		else if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "amf")
+		{
+			char quality[7];
+			char qualityB[7];
+			double adjustedQualityB = videoCompressOption->videoCompressionValue + 2;
+
+			snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
+			snprintf(qualityB, 7, "%.2f", adjustedQualityB);
+
+			if (adjustedQualityB > 51) {
+				adjustedQualityB = 51;
+			}
+
+			av_dict_set(&param, "rc", "cqp", 0);
+
+			av_dict_set(&param, "qp_i", quality, 0);
+			av_dict_set(&param, "qp_p", quality, 0);
+
+			if (codec_id != AV_CODEC_ID_H265)
+			{
+				av_dict_set(&param, "qp_b", qualityB, 0);
+			}
+			//hb_log("encavcodec: encoding at QP %.2f", job->vquality);
+		}
+		else if (codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265)
+		{
+			pCodecCtx->flags |= AV_CODEC_FLAG_QSCALE;
+			pCodecCtx->global_quality = videoCompressOption->videoCompressionValue;
+
+			//hb_log("encavcodec: encoding at constant quality %d", context->global_quality);
+		}
+		else
+		{
+			// These settings produce better image quality than
+			// what was previously used
+			pCodecCtx->flags |= AV_CODEC_FLAG_QSCALE;
+			pCodecCtx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
+
+			//hb_log("encavcodec: encoding at constant quantizer %d",
+			//	context->global_quality);
+		}
+	}
+
+
+	
+	/* take first format from list of supported formats */
+	/*
+	if (pCodecCtx->pix_fmts)
+		pCodecCtx->pix_fmt = pSourceCodecCtx->pix_fmts[0];
+	else
+		pCodecCtx->pix_fmt = dec_ctx->pix_fmt;
+	*/
+	/* video time_base can be set to whatever is handy and supported by encoder */
+
+	//pCodecCtx->time_base = dec_ctx->time_base;
+
+	if (codec_id == AV_CODEC_ID_MPEG4)
+	{
+		// MPEG-4 Part 2 stores the PAR num/den as unsigned 8-bit fields,
+		// and libavcodec's encoder fails to initialize if we don't
+		// reduce it to fit 8-bits.
+		hb_limit_rational(&pCodecCtx->sample_aspect_ratio.num,
+			&pCodecCtx->sample_aspect_ratio.den,
+			pCodecCtx->sample_aspect_ratio.num,
+			pCodecCtx->sample_aspect_ratio.den, 255);
+	}
+
+	//hb_log("encavcodec: encoding with stored aspect %d/%d",
+	//	job->par.num, job->par.den);
+
+	// set colorimetry
+	//context->color_primaries = hb_output_color_prim(job);
+	//context->color_trc = hb_output_color_transfer(job);
+	//context->colorspace = hb_output_color_matrix(job);
+
+	/*
+	if (!job->inline_parameter_sets)
+	{
+		context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+	}
+	if (job->grayscale)
+	{
+		context->flags |= AV_CODEC_FLAG_GRAY;
+	}
+	*/
+
+	if (codec_id == AV_CODEC_ID_H264 && encoderName == "")
+	{
+		// Set profile and level
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "baseline")
+				av_dict_set(&param, "profile", "baseline", 0);
+			else if (videoCompressOption->encoder_profile == "main")
+				av_dict_set(&param, "profile", "main", 0);
+			else if (videoCompressOption->encoder_profile == "high")
+				av_dict_set(&param, "profile", "high", 0);
+		}
+
+		if (videoCompressOption->encoder_level != "")
+		{
+			int i = 1;
+			while (hb_h264_level_names[i] != NULL)
+			{
+				if (videoCompressOption->encoder_level == hb_h264_level_names[i])
+					av_dict_set(&param, "level", videoCompressOption->encoder_level, 0);
+				++i;
+			}
+		}
+
+		pCodecCtx->max_b_frames = 16;
+	}
+
+	if (codec_id == AV_CODEC_ID_H265 && encoderName == "")
+	{
+		// Set profile and level
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "main")
+				av_dict_set(&param, "profile", "main", 0);
+			else if (videoCompressOption->encoder_profile == "main10")
+				av_dict_set(&param, "profile", "main10", 0);
+		}
+		else
+		{
+			av_dict_set(&param, "profile", "main", 0);
+		}
+
+		pCodecCtx->max_b_frames = 16;
+	}
+
+	if (codec_id == AV_CODEC_ID_H264 && encoderName == "amf")
+	{
+		// Set profile and level
+		pCodecCtx->profile = FF_PROFILE_UNKNOWN;
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "baseline")
+				pCodecCtx->profile = FF_PROFILE_H264_BASELINE;
+			else if (videoCompressOption->encoder_profile == "main")
+				pCodecCtx->profile = FF_PROFILE_H264_MAIN;
+			else if (videoCompressOption->encoder_profile == "high")
+				pCodecCtx->profile = FF_PROFILE_H264_HIGH;
+		}
+		pCodecCtx->level = FF_LEVEL_UNKNOWN;
+		if (videoCompressOption->encoder_level != "")
+		{
+			int i = 1;
+			while (hb_h264_level_names[i] != NULL)
+			{
+				if (videoCompressOption->encoder_level == hb_h264_level_names[i])
+					pCodecCtx->level = hb_h264_level_values[i];
+				++i;
+			}
+		}
+	}
+
+	if (codec_id == AV_CODEC_ID_H265 && encoderName == "amf")
+	{
+		// Set profile and level
+		pCodecCtx->profile = FF_PROFILE_UNKNOWN;
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "main")
+				pCodecCtx->profile = FF_PROFILE_HEVC_MAIN;
+		}
+		pCodecCtx->level = FF_LEVEL_UNKNOWN;
+		if (videoCompressOption->encoder_level != "")
+		{
+			int i = 1;
+			while (hb_h265_level_names[i] != NULL)
+			{
+				if (videoCompressOption->encoder_level == hb_h264_level_names[i])
+					pCodecCtx->level = hb_h265_level_values[i];
+				++i;
+			}
+		}
+		// FIXME
+		//context->tier = FF_TIER_UNKNOWN;
+	}
+
+	if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
+	{
+		// Force IDR frames when we force a new keyframe for chapters
+		av_dict_set(&param, "forced-idr", "1", 0);
+
+		// Set profile and level
+		if (videoCompressOption->encoder_profile != "")
+		{
+			if (videoCompressOption->encoder_profile == "baseline")
+				av_dict_set(&param, "profile", "baseline", 0);
+			else if (videoCompressOption->encoder_profile == "main")
+				av_dict_set(&param, "profile", "main", 0);
+			else if (videoCompressOption->encoder_profile == "high")
+				av_dict_set(&param, "profile", "high", 0);
+		}
+
+		if (videoCompressOption->encoder_level != "")
+		{
+			int i = 1;
+			while (hb_h264_level_names[i] != NULL)
+			{
+				if (videoCompressOption->encoder_level == hb_h264_level_names[i])
+					av_dict_set(&param, "level", videoCompressOption->encoder_level, 0);
+				++i;
+			}
+		}
+	}
+
+	// Make VCE h.265 encoder emit an IDR for every GOP
+	if (codec_id == AV_CODEC_ID_H265 && encoderName == "nvenc")
+	{
+		av_dict_set(&param, "gops_per_idr", "1", 0);
+	}
+
+	//apply_encoder_preset(codec_id, &param, videoCompressOption->videoPreset);
 
 	return param;
 
@@ -284,7 +742,7 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 //h264_amf
 //h264_nvenc
 
-bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName)
+bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx)
 {
 	bool isSucceed = false;
     AVCodec * pCodec = nullptr;
@@ -298,7 +756,7 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const w
 			pCodecCtx = avcodec_alloc_context3(pCodec);
 			pCodecCtx->thread_count = 1;
 
-			AVDictionary *param = setEncoderParam(codec_id, pCodecCtx);
+			AVDictionary *param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, encoderName);
 
 			int ret = avcodec_open2(pCodecCtx, pCodec, &param);
 			if (ret < 0)
@@ -329,9 +787,51 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const w
 	return isSucceed;
 }
 
+
+bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx)
+{
+	bool isSucceed = false;
+	AVCodec * pCodec = nullptr;
+	AVCodecContext * pCodecCtx = nullptr;
+	pCodec = avcodec_find_encoder(codec_id);
+
+	if (pCodec != NULL)
+	{
+		pCodecCtx = avcodec_alloc_context3(pCodec);
+		pCodecCtx->thread_count = 1;
+
+		AVDictionary *param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, "");
+
+		int ret = avcodec_open2(pCodecCtx, pCodec, &param);
+		if (ret < 0)
+		{
+			avcodec_close(pCodecCtx);
+			avcodec_free_context(&pCodecCtx);
+			pCodecCtx = nullptr;
+			isSucceed = false;
+
+			//fprintf(stderr, "Could not open codec %s\n", hardWareDecoderName);
+		}
+		else
+		{
+
+
+			isSucceed = true;
+			//fprintf(stderr, "open codec %s succeed! %d %d\n", hardWareDecoderName, pCodec->id, pCodecCtx->codec_id);
+		}
+	}
+
+	avcodec_close(pCodecCtx);
+	avcodec_free_context(&pCodecCtx);
+	pCodecCtx = nullptr;
+	return isSucceed;
+}
+
 wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxString &encoderHardware)
 {
     wxString codec_name;
+	//if (encoderHardware != "")
+	//	return GetCodecNameForEncoder(codec_type, encoderHardware);
     switch (codec_type)
     {
         case AV_CODEC_ID_MPEG4:
@@ -360,8 +860,10 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
                 codec_name = "h264_nvenc";
             else if(encoderHardware == "amf")
                 codec_name = "h264_amf";
-            else
+            else if (encoderHardware == "videotoolbox")
                 codec_name = "h264_videotoolbox";
+			else
+				codec_name = "libx264";
         }break;
         case AV_CODEC_ID_HEVC:
         {
@@ -369,8 +871,10 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
                 codec_name = "hevc_nvenc";
             else if(encoderHardware == "amf")
                 codec_name = "hevc_amf";
-            else
+            else if (encoderHardware == "videotoolbox")
                 codec_name = "hevc_videotoolbox";
+			else
+				codec_name = "libx265";
         }break;
     }
     return codec_name;
@@ -431,90 +935,6 @@ AVCodecID CFFmpegTranscodingPimpl::GetCodecID(AVMediaType codec_type)
 }
 
 
-static int apply_vpx_preset(AVDictionary ** av_opts, const wxString & preset)
-{
-	if (preset == "")
-	{
-		// default "medium"
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "2", 0);
-	}
-	else if (preset == "veryfast")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "5", 0);
-	}
-	else if (preset == "faster")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "4", 0);
-	}
-	else if (preset == "fast")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "3", 0);
-	}
-	else if (preset == "medium")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "2", 0);
-	}
-	else if (preset == "slow")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "1", 0);
-	}
-	else if (preset == "slower")
-	{
-		av_dict_set(av_opts, "deadline", "good", 0);
-		av_dict_set(av_opts, "cpu-used", "0", 0);
-	}
-	else if (preset == "veryslow")
-	{
-		av_dict_set(av_opts, "deadline", "best", 0);
-		av_dict_set(av_opts, "cpu-used", "0", 0);
-	}
-	else
-	{
-		// default "medium"
-		//hb_log("apply_vpx_preset: Unknown VPx encoder preset %s", preset);
-		return -1;
-	}
-
-	return 0;
-}
-
-// VP8 and VP9 have some options in common and some different
-static int apply_vp8_preset(AVDictionary ** av_opts, const wxString & preset)
-{
-	return apply_vpx_preset(av_opts, preset);
-}
-
-static int apply_vp9_preset(AVDictionary ** av_opts, const wxString & preset)
-{
-	av_dict_set(av_opts, "row-mt", "1", 0);
-	return apply_vpx_preset(av_opts, preset);
-}
-
-static int apply_encoder_preset(AVCodecID vcodec, AVDictionary ** av_opts,
-	const char * preset)
-{
-	switch (vcodec)
-	{
-	case AV_CODEC_ID_VP8:
-		return apply_vp8_preset(av_opts, preset);
-	case AV_CODEC_ID_VP9:
-		return apply_vp9_preset(av_opts, preset);
-	case AV_CODEC_ID_H264:
-	case AV_CODEC_ID_H265:
-		av_dict_set(av_opts, "preset", preset, 0);
-		break;
-	default:
-		break;
-	}
-
-	return 0;
-}
 
 
 wxString CFFmpegTranscodingPimpl::GetCodecNameForEncoder(AVCodecID vcodec, const wxString &nameEncoder)
@@ -541,62 +961,6 @@ wxString CFFmpegTranscodingPimpl::GetCodecNameForEncoder(AVCodecID vcodec, const
 	return nameCodecEncoder;
 }
 
-/**********************************************************************
- * hb_reduce
- **********************************************************************
- * Given a numerator (num) and a denominator (den), reduce them to an
- * equivalent fraction and store the result in x and y.
- *********************************************************************/
-void hb_reduce(int *x, int *y, int num, int den)
-{
-	// find the greatest common divisor of num & den by Euclid's algorithm
-	int n = num, d = den;
-	while (d)
-	{
-		int t = d;
-		d = n % d;
-		n = t;
-	}
-
-	// at this point n is the gcd. if it's non-zero remove it from num
-	// and den. Otherwise just return the original values.
-	if (n)
-	{
-		*x = num / n;
-		*y = den / n;
-	}
-	else
-	{
-		*x = num;
-		*y = den;
-	}
-}
-
-void hb_limit_rational(int *x, int *y, int num, int den, int limit)
-{
-	hb_reduce(&num, &den, num, den);
-	if (num < limit && den < limit)
-	{
-		*x = num;
-		*y = den;
-		return;
-	}
-
-	if (num > den)
-	{
-		double div = (double)limit / num;
-		num = limit;
-		den *= div;
-	}
-	else
-	{
-		double div = (double)limit / den;
-		den = limit;
-		num *= div;
-	}
-	*x = num;
-	*y = den;
-}
 
 int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 {
@@ -621,6 +985,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	if(extension == "mkv")
 		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", CConvertUtility::ConvertToUTF8(filename));
+	else if (extension == "webm")
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToUTF8(filename), NULL), "webm", CConvertUtility::ConvertToUTF8(filename));
 	else
 		avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, CConvertUtility::ConvertToUTF8(filename));
 	if (!ofmt_ctx) {
@@ -650,12 +1016,13 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				if (videoCompressOption->videoHardware)
 				{
 					encoderHardware = "nvenc";
-					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware)))
+					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx))
 					{
 						encoderHardware = "amf";
-						if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware)))
+						if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx))
 						{
 							encoder = avcodec_find_encoder(VIDEO_CODEC);
+							encoderHardware = "";
 						}
 						else
 						{
@@ -669,21 +1036,30 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				}
 				else
 				{
+					encoderHardware = "";
 					encoder = avcodec_find_encoder(VIDEO_CODEC);
 				}
 #elif defined(__APPLE__)
-                if (videoCompressOption->videoHardware)
-                {
-                    if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "")))
-                        encoder = avcodec_find_encoder(VIDEO_CODEC);
-                    else
-                        encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, ""));
+				if (videoCompressOption->videoHardware)
+				{
+					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "videotoolbox"), dec_ctx))
+					{
+						encoderHardware = "";
+						encoder = avcodec_find_encoder(VIDEO_CODEC);
+					}
+					else
+					{
+						encoderHardware = "videotoolbox";
+						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "videotoolbox"), dec_ctx);
+					}
                 }
                 else{
-                    encoder = avcodec_find_encoder(VIDEO_CODEC);
+					encoderHardware = "";
+					encoder = avcodec_find_encoder(VIDEO_CODEC);
                 } 
 #else
-                encoder = avcodec_find_encoder(VIDEO_CODEC);
+				encoderHardware = "";
+				encoder = avcodec_find_encoder(VIDEO_CODEC);
 #endif
 
 			}
@@ -706,297 +1082,13 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 			 * streams easily using filters */
 			if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
-				if (apply_encoder_preset(VIDEO_CODEC, &av_opts, videoCompressOption->videoPreset))
-				{
-					av_free(dec_ctx);
-					av_dict_free(&av_opts);
-					ret = 1;
-					return AVERROR(ENOMEM);
+				AVDictionary *param = setEncoderParam(VIDEO_CODEC, enc_ctx, dec_ctx, encoderHardware);
+
+				int ret = avcodec_open2(enc_ctx, encoder, &param);
+				if (ret < 0) {
+					av_log(NULL, AV_LOG_ERROR, "Cannot open video encoder for stream #%u\n", i);
+					return ret;
 				}
-
-				enc_ctx->framerate = dec_ctx->framerate;
-				enc_ctx->max_b_frames = 0;
-				enc_ctx->height = dec_ctx->height;
-				enc_ctx->width = dec_ctx->width;
-				if (videoCompressOption->videoQualityOrBitRate == 0)
-				{
-					/* Average bitrate */
-					enc_ctx->bit_rate = 1024 * videoCompressOption->videoBitRate;
-					// ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >=
-					// bitrate * fps
-					enc_ctx->bit_rate_tolerance = videoCompressOption->videoBitRate * av_q2d(enc_ctx->framerate) + 1;
-
-					if ((VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265) && encoderHardware == "nvenc")
-						av_dict_set(&av_opts, "rc", "vbr_hq", 0);
-
-					if ((VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265) && encoderHardware == "amf")
-						av_dict_set(&av_opts, "rc", "vbr_peak", 0);
-				}
-				else
-				{
-					if (VIDEO_CODEC == AV_CODEC_ID_VP8 ||
-						VIDEO_CODEC == AV_CODEC_ID_VP9)
-					{
-						// These settings produce better image quality than
-						// what was previously used
-						enc_ctx->flags |= AV_CODEC_FLAG_QSCALE;
-						enc_ctx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
-
-						char quality[7];
-						snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
-						av_dict_set(&av_opts, "crf", quality, 0);
-						//This value was chosen to make the bitrate high enough
-						//for libvpx to "turn off" the maximum bitrate feature
-						//that is normally applied to constant quality.
-						enc_ctx->bit_rate = (int64_t)enc_ctx->width * enc_ctx->height * enc_ctx->framerate.num / enc_ctx->framerate.den;
-						//hb_log("encavcodec: encoding at CQ %.2f", job->vquality);
-					}
-					//Set constant quality for nvenc
-					else if ((VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265) && encoderHardware == "nvenc")
-					{
-						char qualityI[7];
-						char quality[7];
-						char qualityB[7];
-
-						double adjustedQualityI = videoCompressOption->videoCompressionValue - 2;
-						double adjustedQualityB = videoCompressOption->videoCompressionValue + 2;
-						if (adjustedQualityB > 51) {
-							adjustedQualityB = 51;
-						}
-
-						if (adjustedQualityI < 0) {
-							adjustedQualityI = 0;
-						}
-
-						snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
-						snprintf(qualityI, 7, "%.2f", adjustedQualityI);
-						snprintf(qualityB, 7, "%.2f", adjustedQualityB);
-
-						enc_ctx->bit_rate = 0;
-
-						av_dict_set(&av_opts, "rc", "vbr_hq", 0);
-						av_dict_set(&av_opts, "cq", quality, 0);
-
-						// further Advanced Quality Settings in Constant Quality Mode
-						av_dict_set(&av_opts, "init_qpP", quality, 0);
-						av_dict_set(&av_opts, "init_qpB", qualityB, 0);
-						av_dict_set(&av_opts, "init_qpI", qualityI, 0);
-						//hb_log("encavcodec: encoding at rc=vbr_hq %.2f", job->vquality);
-					}
-					else if ((VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265) && encoderHardware == "amf")
-					{
-						char quality[7];
-						char qualityB[7];
-						double adjustedQualityB = videoCompressOption->videoCompressionValue + 2;
-
-						snprintf(quality, 7, "%.2f", videoCompressOption->videoCompressionValue);
-						snprintf(qualityB, 7, "%.2f", adjustedQualityB);
-
-						if (adjustedQualityB > 51) {
-							adjustedQualityB = 51;
-						}
-
-						av_dict_set(&av_opts, "rc", "cqp", 0);
-
-						av_dict_set(&av_opts, "qp_i", quality, 0);
-						av_dict_set(&av_opts, "qp_p", quality, 0);
-
-						if (VIDEO_CODEC != AV_CODEC_ID_H265)
-						{
-							av_dict_set(&av_opts, "qp_b", qualityB, 0);
-						}
-						//hb_log("encavcodec: encoding at QP %.2f", job->vquality);
-					}
-					else if (VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265)
-					{
-						enc_ctx->flags |= AV_CODEC_FLAG_QSCALE;
-						enc_ctx->global_quality = videoCompressOption->videoCompressionValue;
-
-						//hb_log("encavcodec: encoding at constant quality %d", context->global_quality);
-					}
-					else
-					{
-						// These settings produce better image quality than
-						// what was previously used
-						enc_ctx->flags |= AV_CODEC_FLAG_QSCALE;
-						enc_ctx->global_quality = FF_QP2LAMBDA * videoCompressOption->videoCompressionValue + 0.5;
-
-						//hb_log("encavcodec: encoding at constant quantizer %d",
-						//	context->global_quality);
-					}
-				}
-
-
-				enc_ctx->sample_aspect_ratio = dec_ctx->sample_aspect_ratio;
-				/* take first format from list of supported formats */
-				if (encoder->pix_fmts)
-					enc_ctx->pix_fmt = encoder->pix_fmts[0];
-				else
-					enc_ctx->pix_fmt = dec_ctx->pix_fmt;
-				/* video time_base can be set to whatever is handy and supported by encoder */
-
-				enc_ctx->time_base = dec_ctx->time_base;
-
-				if (VIDEO_CODEC == AV_CODEC_ID_MPEG4)
-				{
-					// MPEG-4 Part 2 stores the PAR num/den as unsigned 8-bit fields,
-					// and libavcodec's encoder fails to initialize if we don't
-					// reduce it to fit 8-bits.
-					hb_limit_rational(&enc_ctx->sample_aspect_ratio.num,
-						&enc_ctx->sample_aspect_ratio.den,
-						enc_ctx->sample_aspect_ratio.num,
-						enc_ctx->sample_aspect_ratio.den, 255);
-				}
-
-				//hb_log("encavcodec: encoding with stored aspect %d/%d",
-				//	job->par.num, job->par.den);
-
-				// set colorimetry
-				//context->color_primaries = hb_output_color_prim(job);
-				//context->color_trc = hb_output_color_transfer(job);
-				//context->colorspace = hb_output_color_matrix(job);
-
-				/*
-				if (!job->inline_parameter_sets)
-				{
-					context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-				}
-				if (job->grayscale)
-				{
-					context->flags |= AV_CODEC_FLAG_GRAY;
-				}
-				*/
-
-				if (VIDEO_CODEC == AV_CODEC_ID_H264 && encoderHardware == "")
-				{
-					// Set profile and level
-					if (videoCompressOption->encoder_profile != "")
-					{
-						if (videoCompressOption->encoder_profile == "baseline")
-							av_dict_set(&av_opts, "profile", "baseline", 0);
-						else if (videoCompressOption->encoder_profile == "main")
-							av_dict_set(&av_opts, "profile", "main", 0);
-						else if (videoCompressOption->encoder_profile == "high")
-							av_dict_set(&av_opts, "profile", "high", 0);
-					}
-
-					if (videoCompressOption->encoder_level != "")
-					{
-						int i = 1;
-						while (hb_h264_level_names[i] != NULL)
-						{
-							if (videoCompressOption->encoder_level == hb_h264_level_names[i])
-								av_dict_set(&av_opts, "level", videoCompressOption->encoder_level, 0);
-							++i;
-						}
-					}
-
-					enc_ctx->max_b_frames = 16;
-				}
-
-				if (VIDEO_CODEC == AV_CODEC_ID_H265 && encoderHardware == "")
-				{
-					// Set profile and level
-					if (videoCompressOption->encoder_profile != "")
-					{
-						if (videoCompressOption->encoder_profile == "main")
-							av_dict_set(&av_opts, "profile", "main", 0);
-						else if (videoCompressOption->encoder_profile == "main10")
-							av_dict_set(&av_opts, "profile", "main10", 0);
-					}
-
-					enc_ctx->max_b_frames = 16;
-				}
-
-				if(VIDEO_CODEC == AV_CODEC_ID_H264 && encoderHardware == "amf")
-				{
-					// Set profile and level
-					enc_ctx->profile = FF_PROFILE_UNKNOWN;
-					if (videoCompressOption->encoder_profile != "")
-					{
-						if (videoCompressOption->encoder_profile == "baseline")
-							enc_ctx->profile = FF_PROFILE_H264_BASELINE;
-						else if (videoCompressOption->encoder_profile == "main")
-							enc_ctx->profile = FF_PROFILE_H264_MAIN;
-						else if (videoCompressOption->encoder_profile == "high")
-							enc_ctx->profile = FF_PROFILE_H264_HIGH;
-					}
-					enc_ctx->level = FF_LEVEL_UNKNOWN;
-					if (videoCompressOption->encoder_level != "")
-					{
-						int i = 1;
-						while (hb_h264_level_names[i] != NULL)
-						{
-							if (videoCompressOption->encoder_level == hb_h264_level_names[i])
-								enc_ctx->level = hb_h264_level_values[i];
-							++i;
-						}
-					}
-				}
-
-				if (VIDEO_CODEC == AV_CODEC_ID_H265 && encoderHardware == "amf")
-				{
-					// Set profile and level
-					enc_ctx->profile = FF_PROFILE_UNKNOWN;
-					if (videoCompressOption->encoder_profile != "")
-					{
-						if (videoCompressOption->encoder_profile == "main")
-							enc_ctx->profile = FF_PROFILE_HEVC_MAIN;
-					}
-					enc_ctx->level = FF_LEVEL_UNKNOWN;
-					if (videoCompressOption->encoder_level != "")
-					{
-						int i = 1;
-						while (hb_h265_level_names[i] != NULL)
-						{
-							if (videoCompressOption->encoder_level == hb_h264_level_names[i])
-								enc_ctx->level = hb_h265_level_values[i];
-							++i;
-						}
-					}
-					// FIXME
-					//context->tier = FF_TIER_UNKNOWN;
-				}
-
-				if ((VIDEO_CODEC == AV_CODEC_ID_H264 || VIDEO_CODEC == AV_CODEC_ID_H265) && encoderHardware == "nvenc")
-				{
-					// Force IDR frames when we force a new keyframe for chapters
-					av_dict_set(&av_opts, "forced-idr", "1", 0);
-
-					// Set profile and level
-					if (videoCompressOption->encoder_profile != "")
-					{
-						if (videoCompressOption->encoder_profile == "baseline")
-							av_dict_set(&av_opts, "profile", "baseline", 0);
-						else if (videoCompressOption->encoder_profile == "main")
-							av_dict_set(&av_opts, "profile", "main", 0);
-						else if (videoCompressOption->encoder_profile == "high")
-							av_dict_set(&av_opts, "profile", "high", 0);
-					}
-
-					if (videoCompressOption->encoder_level != "")
-					{
-						int i = 1;
-						while (hb_h264_level_names[i] != NULL)
-						{
-							if (videoCompressOption->encoder_level == hb_h264_level_names[i])
-								av_dict_set(&av_opts, "level", videoCompressOption->encoder_level, 0);
-							++i;
-						}
-					}
-				}
-
-				// Make VCE h.265 encoder emit an IDR for every GOP
-				if (VIDEO_CODEC == AV_CODEC_ID_H265 && encoderHardware == "nvenc")
-				{
-					av_dict_set(&av_opts, "gops_per_idr", "1", 0);
-				}
-
-				//enc_ctx->time_base = av_inv_q(dec_ctx->framerate);
-				//enc_ctx->thread_count = FFMIN(8, std::thread::hardware_concurrency());
-				//av_dict_set(&av_opts, "profile", "main", 0);
-				//if (ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
-				//	enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 			}
 			else {
 				//enc_ctx->bit_rate = dst_abit_rate;
@@ -1033,17 +1125,19 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				// If this flag is not set, it inserts the data into each
 				// packet instead.
 				//enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+
+							/* Third parameter can be used to pass settings to encoder */
+				ret = avcodec_open2(enc_ctx, encoder, &av_opts);
+				if (ret < 0) {
+					av_log(NULL, AV_LOG_ERROR, "Cannot open video encoder for stream #%u\n", i);
+					return ret;
+				}
 			}
 
 
 
 			
-			/* Third parameter can be used to pass settings to encoder */
-			ret = avcodec_open2(enc_ctx, encoder, &av_opts);
-			if (ret < 0) {
-				av_log(NULL, AV_LOG_ERROR, "Cannot open video encoder for stream #%u\n", i);
-				return ret;
-			}
+
 			ret = avcodec_parameters_from_context(out_stream->codecpar, enc_ctx);
 			if (ret < 0) {
 				av_log(NULL, AV_LOG_ERROR, "Failed to copy encoder parameters to output stream #%u\n", i);
@@ -1594,16 +1688,18 @@ void CFFmpegTranscoding::EncodeFileThread(void * data)
 	{
 		char message[255];
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		printf(message);
+		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+		//printf(message);
 		//wxString message = av_err2str(ret);
 	}
 	ffmpeg_encoding->pimpl->ProcessEnd();
 	wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
+	event.SetInt(ret);
 	wxPostEvent(ffmpeg_encoding->mainWindow, event);
 	
 }
 
-int CFFmpegTranscoding::EndDecodeFile()
+int CFFmpegTranscoding::EndDecodeFile(const int & returnValue)
 {
 	m_dlgProgress->Close();
 	encode_thread->join();
@@ -1616,7 +1712,8 @@ int CFFmpegTranscoding::EndDecodeFile()
 
 	delete videoCompressOption;
 
-	wxMessageBox("Conversion is Finished", "Informations");
+	if(returnValue == 0)
+		wxMessageBox("Conversion is Finished", "Informations");
 	return 0;
 }
 

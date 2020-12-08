@@ -34,25 +34,18 @@
 			</content>
 		</object>
 		<object class="wxStaticText" name="ID_STVIDEOPRESET">
-			<label>Video Preset :</label>
+			<label>Profile :</label>
 			<pos>32,50</pos>
 			<size>100,13</size>
 		</object>
-		<object class="wxComboBox" name="ID_CBVIDEOPRESET">
+		<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
 			<pos>200,50</pos>
 			<size>100,30</size>
-			<value>Medium</value>
+			<value>main</value>
 			<content>
-				<item>UltraFast</item>
-				<item>SuperFast</item>
-				<item>VeryFast</item>
-				<item>Faster</item>
-				<item>Fast</item>
-				<item>Medium</item>
-				<item>Slow</item>
-				<item>Slower</item>
-				<item>VerySlow</item>
-				<item>Placebo</item>
+				<item>baseline</item>
+				<item>main</item>
+				<item>high</item>
 			</content>
 		</object>
 		<object class="wxRadioBox" name="ID_RBQUALITY">
@@ -66,20 +59,6 @@
 			<pos>20,80</pos>
 			<size>160,70</size>
 		</object>
-		<object class="wxStaticText" name="ID_STVIDEOPROFILE">
-			<label>Profile :</label>
-			<pos>200,85</pos>
-		</object>
-		<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
-			<pos>250,80</pos>
-			<size>100,30</size>
-			<value>main</value>
-			<content>
-				<item>baseline</item>
-				<item>main</item>
-				<item>high</item>
-			</content>
-		</object>
 		<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
 			<pos>15,160</pos>
 			<checked>1</checked>
@@ -92,7 +71,7 @@
 		<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
 			<max>51</max>
 			<pos>120,160</pos>
-			<size>230,40</size>
+			<size>230,20</size>
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT1">
 			<label>High</label>

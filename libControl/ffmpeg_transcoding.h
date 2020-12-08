@@ -10,7 +10,7 @@ public:
 	CFFmpegTranscoding();
 	~CFFmpegTranscoding();
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
-	int EndDecodeFile();
+	int EndDecodeFile(const int & returnValue);
 	vector<wxString> ListOfEncoder();
 protected:
 
