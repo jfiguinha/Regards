@@ -3,6 +3,7 @@
 #include <window_id.h>
 #include <VideoCompressOption.h>
 #include <ImageLoadingFormat.h>
+#include <wx/filename.h>
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
@@ -23,6 +24,7 @@ END_EVENT_TABLE()
 CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 {
     isOk = true;
+
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));

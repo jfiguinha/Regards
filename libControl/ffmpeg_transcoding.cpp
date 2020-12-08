@@ -432,21 +432,27 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 		pCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 	AVDictionary *param = 0;
-	if (pCodecCtx->codec_id == AV_CODEC_ID_H264)
+
+	if (pCodecCtx->codec_id == AV_CODEC_ID_H264 && videoCompressOption->videoPreset != "" && encoderName == "")
 	{
 		av_dict_set(&param, "start_time_realtime", 0, 0);
 		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
 		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
 	}
-
+	
 	/*
-	if (pCodecCtx->codec_id == AV_CODEC_ID_H265)
+	if (pCodecCtx->codec_id == AV_CODEC_ID_H265 && encoderName == ""  && videoCompressOption->videoPreset != "")
 	{
-		av_dict_set(&param, "start_time_realtime", 0, 0);
-		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
-		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
+		//preset: ultrafast, superfast, veryfast, faster, fast, 
+			//medium, slow, slower, veryslow, placebo
+		av_opt_set(pCodecCtx->priv_data, "preset", "fast", 0);
+		//tune: psnr, ssim, zerolatency, fastdecode
+		av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
+		//profile: main, main10, mainstillpicture
+		av_opt_set(pCodecCtx->priv_data, "profile", "main", 0);
 	}
 	*/
+	
 	if (videoCompressOption->videoQualityOrBitRate == 0)
 	{
 		/* Average bitrate */
@@ -640,11 +646,12 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 			else if (videoCompressOption->encoder_profile == "main10")
 				av_dict_set(&param, "profile", "main10", 0);
 		}
+		/*
 		else
 		{
 			av_dict_set(&param, "profile", "main", 0);
 		}
-
+		*/
 		pCodecCtx->max_b_frames = 16;
 	}
 
@@ -841,8 +848,10 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
         } break;
         case AV_CODEC_ID_MPEG2VIDEO:
         {
-           // hb_log("encavcodecInit: MPEG-2 encoder");
-            codec_name = "mpeg2video";
+			if (encoderHardware == "qsv")
+				codec_name = "mpeg2_qsv";
+			else
+				codec_name = "mpeg2video";
         } break;
         case AV_CODEC_ID_VP8:
         {
@@ -851,8 +860,11 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
         } break;
         case AV_CODEC_ID_VP9:
         {
-           // hb_log("encavcodecInit: VP9 encoder");
-            codec_name = "libvpx-vp9";
+			if (encoderHardware == "qsv")
+				codec_name = "vp9_qsv";
+			else
+				codec_name = "libvpx-vp9";
+
         } break;
         case AV_CODEC_ID_H264:
         {
@@ -860,8 +872,12 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
                 codec_name = "h264_nvenc";
             else if(encoderHardware == "amf")
                 codec_name = "h264_amf";
+			else if (encoderHardware == "mf")
+				codec_name = "h264_mf";
             else if (encoderHardware == "videotoolbox")
                 codec_name = "h264_videotoolbox";
+			else if (encoderHardware == "qsv")
+				codec_name = "h264_qsv";
 			else
 				codec_name = "libx264";
         }break;
@@ -871,8 +887,12 @@ wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxStr
                 codec_name = "hevc_nvenc";
             else if(encoderHardware == "amf")
                 codec_name = "hevc_amf";
+			else if (encoderHardware == "mf")
+				codec_name = "hevc_mf";
             else if (encoderHardware == "videotoolbox")
                 codec_name = "hevc_videotoolbox";
+			else if (encoderHardware == "qsv")
+				codec_name = "hevc_qsv";
 			else
 				codec_name = "libx265";
         }break;
@@ -1015,23 +1035,28 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 #ifdef WIN32
 				if (videoCompressOption->videoHardware)
 				{
-					encoderHardware = "nvenc";
-					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx))
+					bool success = false;
+					encoderHardware = "nvenc"; //NVIDIA ENC
+					success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+					if (!success)
 					{
-						encoderHardware = "amf";
-						if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx))
-						{
-							encoder = avcodec_find_encoder(VIDEO_CODEC);
-							encoderHardware = "";
-						}
-						else
-						{
-							encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "amf"));
-						}
+						encoderHardware = "amf"; //AMD VCE
+						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+					}
+					if (!success)
+					{
+						encoderHardware = "qsv"; //Quicktime
+						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+					}
+					if (!success)
+					{
+						encoderHardware = "mf"; //MediaFoundation
+						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
 					}
 					else
 					{
-						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "nvenc"));
+						encoder = avcodec_find_encoder(VIDEO_CODEC);
+						encoderHardware = "";
 					}
 				}
 				else
@@ -1101,7 +1126,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				//enc_ctx->thread_count = FFMIN(8, std::thread::hardware_concurrency());
 				if (videoCompressOption->audioQualityOrBitRate == 0)
 				{
-					enc_ctx->bit_rate = videoCompressOption->audioBitRate * 1024;
+					enc_ctx->bit_rate = videoCompressOption->audioBitRate * 1000;
 				}
 				else if (videoCompressOption->audioQuality >= 0)
 				{
