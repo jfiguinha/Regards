@@ -172,6 +172,7 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="GLEW_STATIC"/>

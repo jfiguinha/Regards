@@ -323,6 +323,7 @@
     <GlobalSettings>
       <Compiler Options="-std=gnu++14;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-Wno-narrowing;-fopenmp" C_Options="-Wall;" Assembler="">
         <IncludePath Value="../../libextern/ffmpeg-master"/>
+        <IncludePath Value="../../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../../libextern/libexif-master"/>
         <IncludePath Value="../wxSVG/include"/>
         <IncludePath Value="../wxSVG/include/wxSVG"/>

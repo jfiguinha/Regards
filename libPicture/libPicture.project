@@ -182,6 +182,7 @@
         <IncludePath Value="../libextern/exiv2-0.27.3/include/exiv2"/>
         <IncludePath Value="../libextern/exiv2-0.27.3/include"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
         <Preprocessor Value="LIBRAW"/>
