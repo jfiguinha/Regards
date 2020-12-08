@@ -754,9 +754,10 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const w
 	bool isSucceed = false;
     AVCodec * pCodec = nullptr;
     AVCodecContext * pCodecCtx = nullptr;
+	wxString encoderHardName = GetCodecName(codec_id, encoderName);
 	if (encoderName.size() > 0)
 	{
-		pCodec = avcodec_find_encoder_by_name(encoderName);
+		pCodec = avcodec_find_encoder_by_name(encoderHardName);
 
 		if (pCodec != NULL)
 		{
@@ -1037,21 +1038,27 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				{
 					bool success = false;
 					encoderHardware = "nvenc"; //NVIDIA ENC
-					success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+					success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
 					if (!success)
 					{
 						encoderHardware = "amf"; //AMD VCE
-						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
 					}
 					if (!success)
 					{
 						encoderHardware = "qsv"; //Quicktime
-						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
 					}
 					if (!success)
 					{
 						encoderHardware = "mf"; //MediaFoundation
-						success = openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, encoderHardware), dec_ctx);
+						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+
+					}
+					if (success)
+					{
+						printf("Hardware Encoder video use : %s \n", encoderHardware);
+						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, encoderHardware));
 					}
 					else
 					{
@@ -1067,15 +1074,20 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 #elif defined(__APPLE__)
 				if (videoCompressOption->videoHardware)
 				{
-					if (!openHardEncoder(VIDEO_CODEC, GetCodecName(VIDEO_CODEC, "videotoolbox"), dec_ctx))
+					bool success = false;
+					if (!success)
 					{
-						encoderHardware = "";
-						encoder = avcodec_find_encoder(VIDEO_CODEC);
+						encoderHardware = "videotoolbox"; //Quicktime
+						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+					}
+					if (success)
+					{
+						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, encoderHardware));
 					}
 					else
 					{
-						encoderHardware = "videotoolbox";
-						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, "videotoolbox"), dec_ctx);
+						encoderHardware = "";
+						encoder = avcodec_find_encoder(VIDEO_CODEC);
 					}
                 }
                 else{
