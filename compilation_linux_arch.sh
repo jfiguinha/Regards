@@ -38,6 +38,10 @@ sudo pacman -S sndio
 #sudo pacman -S openexr
 sudo pacman -S pkg-config
 sudo pacman -S patchelf
+sudo pacman -S libgnutls28
+sudo pacman -S libtool
+sudo pacman -S libunistring
+sudo pacman -S libass
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
