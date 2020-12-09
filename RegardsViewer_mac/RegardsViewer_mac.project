@@ -667,8 +667,6 @@
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavresample.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/lib/gcc/10/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/Cellar/nss/3.59/lib/libnss3.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/Cellar/nss/3.59/lib/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/p11-kit/lib/libp11-kit.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libidn2/lib/libidn2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libunistring/lib/libunistring.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
