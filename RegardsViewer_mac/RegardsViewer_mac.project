@@ -655,6 +655,7 @@
         <Command Enabled="yes">cp /usr/local/opt/speex/lib/libspeex.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/srt/lib/libsrt.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/theora/lib/libtheoradec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
+        <Command Enabled="yes">cp /usr/local/opt/theora/lib/libtheoraenc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/x264/lib/libx264.161.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/xz/lib/liblzma.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/pixman/lib/libpixman-1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
