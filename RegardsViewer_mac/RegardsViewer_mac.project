@@ -645,6 +645,7 @@
         <Command Enabled="yes">cp /usr/local/opt/libvorbis/lib/libvorbis.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libvorbis/lib/libvorbisenc.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/opencore-amr/lib/libopencore-amrnb.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
+        <Command Enabled="yes">cp /usr/local/opt/opencore-amr/lib/libopencore-amrwb.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/opus/lib/libopus.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
