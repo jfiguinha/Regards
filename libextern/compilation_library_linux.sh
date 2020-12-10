@@ -142,36 +142,6 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-#Compille ffmpeg
-tar xf ffmpeg-4.3.1.tar.xz
-mv ffmpeg-4.3.1 ffmpeg-master
-cd ffmpeg-master
-export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-#./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
-
-./configure \
-  --prefix="$HOME/ffmpeg_build" \
-  --pkg-config-flags="--static" \
-  --extra-cflags="-I$HOME/ffmpeg_build/include" \
-  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
-  --extra-libs="-lpthread -lm" \
-  --bindir="$HOME/ffmpeg_build/bin" \
-  --enable-gpl \
-  --enable-gnutls \
-  --enable-libaom \
-  --enable-libass \
-  --enable-libfdk-aac \
-  --enable-libfreetype \
-  --enable-libmp3lame \
-  --enable-libopus \
-  --enable-libvorbis \
-  --enable-libvpx \
-  --enable-libx264 \
-  --enable-libx265 \
-  --enable-nonfree
-
-make -j$NBPROC
-cd ..
 
 #compile tesseract
 unzip tesseract-4.1.1.zip
@@ -216,4 +186,34 @@ cd ..
 cd .. 
 
 
+#Compille ffmpeg
+tar xf ffmpeg-4.3.1.tar.xz
+mv ffmpeg-4.3.1 ffmpeg-master
+cd ffmpeg-master
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+#./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
+
+./configure \
+  --prefix="$HOME/ffmpeg_build" \
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I$HOME/ffmpeg_build/include" \
+  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+  --extra-libs="-lpthread -lm" \
+  --bindir="$HOME/ffmpeg_build/bin" \
+  --enable-gpl \
+  --enable-gnutls \
+  --enable-libaom \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-nonfree
+
+make -j$NBPROC
+cd ..
 
