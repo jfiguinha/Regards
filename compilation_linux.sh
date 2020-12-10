@@ -41,6 +41,7 @@ sudo apt install libgnutls28-dev
 sudo apt install libtool
 sudo apt install libunistring-dev
 sudo apt install libass-dev
+sudo apt install libvorbis-dev
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
