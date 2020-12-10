@@ -55,6 +55,14 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+<b>News for 2.63.5 :</b><br>
+- Add video encoder tool. Support mkv and mp4.<br>
+- Update ffmpeg lib with the latest version<br>
+- Correct memory bug on video decoder software.<br>
+<b>News for 2.63.4 :</b><br>
+- Correct bug on display bleeding<br>
+- Correct rotation video bug on software decompression<br>
+- Add new button for linking external program for video and picture edition<br>
 <b>News for 2.63.3 :</b><br>
 - Correct bug on video playback with dxva2<br>
 - Correct bug with diaporama after video playback<br>
