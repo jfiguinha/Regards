@@ -8,11 +8,11 @@ url="https://github.com/jfiguinha/Regards"
 license=('GPL')
 provides=()
 options=()
-depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau' 'sndio')
+depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau' 'sndio' 'libgnutls28' 'libunistring' 'libass')
 optdepends=()
 conflicts=('RegardsViewer')
 source=("RegardsViewer.zip")
-sha256sums=('0a53d82f68e72e95c2cbbbbb7e6e442ec844a4d256fe4d6d952d306b65a62528')
+sha256sums=('2c7c3af953f6df55418628f9960939a82ce3e98d275d2711097c864db37ee1b0')
 
 package() {
   # Recursively remove group's write permission before moving to package directory
