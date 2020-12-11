@@ -7,7 +7,7 @@ class CVideoOptionCompress;
 class CFFmpegTranscoding
 {
 public:
-	CFFmpegTranscoding();
+	CFFmpegTranscoding(const wxString & acceleratorHardware);
 	~CFFmpegTranscoding();
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
 	int EndDecodeFile(const int & returnValue);
@@ -24,4 +24,5 @@ protected:
 	CompressVideo * m_dlgProgress;
 	wxWindow * mainWindow;
 	CVideoOptionCompress * videoCompressOption;
+
 };

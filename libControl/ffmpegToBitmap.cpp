@@ -48,7 +48,6 @@ void CffmpegToBitmap::InitContext(AVFrame * src_frame, const bool & bicubic, con
     av_opt_set_int(scaleContext, "dstw", thumbnailWidth,0);
     av_opt_set_int(scaleContext, "dsth", thumbnailHeight,0);
     av_opt_set_int(scaleContext, "dst_format", pixelFormat,0);
-    av_opt_set_int(scaleContext, "dst_format", pixelFormat,0);
     if(bicubic)
         av_opt_set_int(scaleContext, "sws_flags", SWS_BICUBIC,0);
     else

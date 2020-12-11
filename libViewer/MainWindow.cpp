@@ -270,7 +270,9 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 			{
 				CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
 				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
-				ffmpegEncoder = new CFFmpegTranscoding();
+				//Decoder available
+
+				ffmpegEncoder = new CFFmpegTranscoding("dxva2");
 				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
 				
 			}
