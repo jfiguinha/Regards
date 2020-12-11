@@ -23,11 +23,14 @@ class CompressVideo: public wxDialog
 		wxGauge * ggProgress;
 		wxStaticBitmap * bitmap;
 		wxStaticText * labelProgression;
+		wxStaticText * labelFrame;
+		wxStaticText * labelTime;
+		wxStaticText * labelTimeMissing;
 		//wxPanel * panel;
 		bool IsOk();
 		void SetPos(const int &max, const int &pos);
 		void SetBitmap(wxImage * bmp);
-		void SetTextProgression(const wxString &texte);
+		void SetTextProgression(const wxString &texte, const int &type = 0);
 	protected:
 
 		//(*Identifiers(TiffOption)

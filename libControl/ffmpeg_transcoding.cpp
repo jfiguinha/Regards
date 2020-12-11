@@ -9,6 +9,7 @@
 #include <wx/filename.h>
 #include <ConvertUtility.h>
 #include <window_id.h>
+#include <chrono>
 extern "C"
 {
 	#include <libavcodec/avcodec.h>
@@ -19,6 +20,7 @@ extern "C"
 	#include <libavutil/pixdesc.h>
 	#include <libavutil/imgutils.h>
 }
+
 
 static const int dst_width = 1920;
 static const int dst_height = 1080;
@@ -285,15 +287,26 @@ private:
 	double total = 0;
 	double pourcentage = 0;
 	bool processEnd = true;
-
+	int nbframe = 0;
+	int nbframePerSecond = 0;
 	AVBufferRef *hw_device_ctx = NULL;
-
+	std::chrono::steady_clock::time_point begin;
+	std::chrono::steady_clock::time_point end;
 	wxString acceleratorHardware = "dxva2";
 	
 
 };
 
 static enum AVPixelFormat hw_pix_fmt;
+
+static wxString ConvertSecondToTime(int sec)
+{
+	
+	int h = (sec / 3600);
+	int m = (sec - (3600 * h)) / 60;
+	int s = (sec - (3600 * h) - (m * 60));
+	return wxString::Format("%02d:%02d:%02d\n", h, m, s);
+}
 
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
@@ -331,6 +344,27 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		ffmpeg_trans->muWriteData.lock();
 		ffmpeg_trans->m_dlgProgress->SetPos(ffmpeg_trans->total, ffmpeg_trans->pos);
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(ffmpeg_trans->duration);
+
+		
+
+		double dif = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - ffmpeg_trans->begin).count();
+		wxString frame = wxString::Format("%d fps", (int)(ffmpeg_trans->nbframe / dif));
+		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame,2);
+
+		//double nbsecondpersecond = ((double)ffmpeg_trans->nbframe / (double)dif) / (double)ffmpeg_trans->nbframePerSecond;
+		//double pos = ffmpeg_trans->nbframe / ffmpeg_trans->nbframePerSecond;
+		//int nbNbTotalImage = ffmpeg_trans->total * ffmpeg_trans->nbframePerSecond;
+		//double timeMissing = ((double)ffmpeg_trans->total - (double)ffmpeg_trans->pos) / (double)nbsecondpersecond;
+		
+		double pourcentage = ((double)ffmpeg_trans->pos / (double)ffmpeg_trans->total) * 100.0f;
+		double timeMissing = (dif * 100.0f)  / pourcentage;
+
+		frame = ConvertSecondToTime((int)(timeMissing - dif));
+		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 3);
+
+		frame = ConvertSecondToTime((int)dif);
+		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 1);
+
 		ffmpeg_trans->muWriteData.unlock();
 		delete imageLoadingFormat;
 
@@ -1560,6 +1594,8 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 
 		if (isvideo)
 		{
+			nbframe++;
+			end = std::chrono::steady_clock::now();
 			SetFrameData(filter->filtered_frame, m_dlgProgress);
 		}
 
@@ -1629,7 +1665,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	this->m_dlgProgress = m_dlgProgress;
 	unsigned int stream_index;
 	unsigned int i;
-	AVFrame * dst = av_frame_alloc();
+	nbframe = 0;
 	bool first = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
@@ -1641,10 +1677,11 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	if ((ret = init_filters()) < 0)
 		return ret;
 
-	
+	AVFrame * dst = av_frame_alloc();
+	SwsContext* scaleContext = nullptr;
 	cleanPacket = true;
-
-
+	begin = std::chrono::steady_clock::now();
+	
 	
 	/* read all packets */
 	while (m_dlgProgress->IsOk())
@@ -1679,6 +1716,8 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 			av_packet_rescale_ts(&packet,
 				ifmt_ctx->streams[stream_index]->time_base,
 				stream->dec_ctx->time_base);
+
+			
 			ret = avcodec_send_packet(stream->dec_ctx, &packet);
 			if (ret < 0) {
 				av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
@@ -1691,7 +1730,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 				pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
 				total = double(ifmt_ctx->streams[stream_index]->duration) * double(ifmt_ctx->streams[stream_index]->time_base.num) / double(ifmt_ctx->streams[stream_index]->time_base.den);
 				pourcentage = (pos / total) * 100.0f;
-				
+				this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
 				sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)pos, (int)total);
 				muWriteData.unlock();
 
@@ -1729,25 +1768,25 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 							return ret;
 						}
 
-
-						SwsContext* scaleContext = sws_alloc_context();
-
-						av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-						av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-						av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-						av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-						av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-						av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-						av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-						if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-						{
-							sws_freeContext(scaleContext);
-							throw std::logic_error("Failed to initialise scale context");
-						}
-
 						if (first)
 						{
+
+							scaleContext = sws_alloc_context();
+
+							av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+							av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+							av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+							av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+							av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+							av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+							av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+							if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+							{
+								sws_freeContext(scaleContext);
+								throw std::logic_error("Failed to initialise scale context");
+							}
+
 							first = false;
 							dst->format = AV_PIX_FMT_YUV420P;
 							dst->width = stream->dec_frame->width;
@@ -1758,8 +1797,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 							int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
 						}
 						av_frame_copy_props(dst, stream->dec_frame);
-						//stream->dec_frame->format = AV_PIX_FMT_YUV420P;
-						
 
 						sws_scale(scaleContext,
 							(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
@@ -1767,8 +1804,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 						freeData = true;
 
 						tmp_frame = dst;
-
-						sws_freeContext(scaleContext);
 						av_frame_free(&sw_frame);
 					}
 					else
@@ -1819,7 +1854,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 
 	//av_frame_unref(dst);
 	av_frame_free(&dst);
-
+	sws_freeContext(scaleContext);
 
 	return ret ? 1 : 0;
 }

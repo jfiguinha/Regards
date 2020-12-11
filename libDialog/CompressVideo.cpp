@@ -27,6 +27,9 @@ CompressVideo::CompressVideo(wxWindow* parent)
 	ggProgress = (wxGauge*)FindWindow(XRCID("ID_GAUGEPRG"));
 	//panel = (wxPanel*)FindWindow(XRCID("ID_PANELVIDEO"));
 	labelProgression = (wxStaticText*)FindWindow(XRCID("ID_STPROGRESS"));
+	labelFrame = (wxStaticText*)FindWindow(XRCID("ID_STFRAME"));
+	labelTime = (wxStaticText*)FindWindow(XRCID("ID_STTIMEELAPSED"));
+	labelTimeMissing = (wxStaticText*)FindWindow(XRCID("ID_STTIMEMISSING"));
 	bitmap = (wxStaticBitmap*)FindWindow(XRCID("ID_BITMAPVIDEO"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
 	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressVideo::OnbtnCancelClick);
@@ -95,21 +98,38 @@ CompressVideo::~CompressVideo()
 
 void CompressVideo::OnSetText(wxCommandEvent& event)
 {
+	int id = event.GetInt();
     wxString * statusText = (wxString *)event.GetClientData();
     if(statusText != nullptr)
     {
-        labelProgression->SetLabel(*statusText);
+		switch (id)
+		{
+		case 1:
+			labelTime->SetLabel(*statusText);
+			break;
+		case 2:
+			labelFrame->SetLabel(*statusText);
+			break;
+		case 3:
+			labelTimeMissing->SetLabel(*statusText);
+			break;
+		default:
+			labelProgression->SetLabel(*statusText);
+			break;
+		}
+        
         delete statusText;      
     }
 
 }
 
-void CompressVideo::SetTextProgression(const wxString &texte)
+void CompressVideo::SetTextProgression(const wxString &texte, const int &type)
 {
 	//labelProgression->SetLabel(texte);
 	wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
 	wxString * statusText = new wxString(texte);
 	event->SetClientData(statusText);
+	event->SetInt(type);
 	wxQueueEvent(this, event);
 }
 
