@@ -10,6 +10,8 @@ std::mutex abortMutex;
 //Calcul du pourcentage
 using namespace Regards::Window;
 CVideoControlInterface * CFFmfcPimpl::dlg = nullptr;
+AVPixelFormat CFFmfcPimpl::hw_pix_fmt;
+
 //-----------------------------------------------------------------------------------------
 //Code
 //-----------------------------------------------------------------------------------------
@@ -19,8 +21,6 @@ CVideoControlInterface * CFFmfcPimpl::dlg = nullptr;
 //const char program_name[] = "ffplaymfc";
 //const int program_birth_year = 2013;
 
-#ifdef WIN32
-
 AVPixelFormat CFFmfcPimpl::GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts)
 {
 	InputStream* ist = (InputStream*)s->opaque;
@@ -29,8 +29,6 @@ AVPixelFormat CFFmfcPimpl::GetHwFormat(AVCodecContext *s, const AVPixelFormat *p
 	return ist->hwaccel_pix_fmt;
 }
 
-
-#endif
 
 inline int compute_mod(int a, int b)
 {
@@ -961,9 +959,25 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 		SDL_UnlockMutex(is->pictq_mutex);
 	}
 	return 0;
-	}
+}
+
+AVFrame * CFFmfcPimpl::CopyFrame(AVFrame * frame)
+{
+	AVFrame * copyFrame = av_frame_alloc();
+	copyFrame->format = frame->format;
+	copyFrame->width = frame->width;
+	copyFrame->height = frame->height;
+	copyFrame->channels = frame->channels;
+	copyFrame->channel_layout = frame->channel_layout;
+	copyFrame->nb_samples = frame->nb_samples;
+	av_frame_get_buffer(copyFrame, 32);
+	av_frame_copy(copyFrame, frame);
+	av_frame_copy_props(copyFrame, frame);
+	return copyFrame;
+}
+
 //½âÂëÒ»Ö¡ÊÓÆµ
-int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt)
+int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt, bool & frame_destination)
 {
 	int got_picture, i;
 	//´ÓPacket¶ÓÁÐÖÐ»ñÈ¡Packet
@@ -1000,16 +1014,72 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		return 0;
 	}
 
+	frame_destination = false;
 	got_picture = false;
-	//½âÂë
-	//if (avcodec_decode_video2(is->videoCtx, frame, &got_picture, pkt) < 0)
-	//	return 0;
 	
 	int ret = avcodec_receive_frame(is->videoCtx, frame);
 	if (ret == 0)
 		got_picture = true;
 	if (ret == AVERROR(EAGAIN))
 		ret = 0;
+
+	if (acceleratorHardware != "" && (acceleratorHardware == "dxva2" && !isOpenGLDecoding))
+	{
+		if (frame->format == hw_pix_fmt)
+		{
+			AVFrame * sw_frame = av_frame_alloc();
+			if (sw_frame == nullptr) {
+				fprintf(stderr, "Can not alloc frame\n");
+				ret = AVERROR(ENOMEM);
+				av_frame_free(&sw_frame);
+				return ret;
+			}
+			/* retrieve data from GPU to CPU */
+			if ((ret = av_hwframe_transfer_data(sw_frame, frame, 0)) < 0) {
+				fprintf(stderr, "Error transferring the data to system memory\n");
+				av_frame_free(&sw_frame);
+				return ret;
+			}
+
+			if (first)
+			{
+
+				scaleContext = sws_alloc_context();
+
+				av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+				av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+				av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+				av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+				av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+				{
+					sws_freeContext(scaleContext);
+					throw std::logic_error("Failed to initialise scale context");
+				}
+
+				first = false;
+				dst->format = AV_PIX_FMT_YUV420P;
+				dst->width = frame->width;
+				dst->height = frame->height;
+				dst->channels = frame->channels;
+				dst->channel_layout = frame->channel_layout;
+				dst->nb_samples = frame->nb_samples;
+				int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+			}
+			av_frame_copy_props(dst, frame);
+
+			sws_scale(scaleContext,
+				(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)frame->height,
+				dst->data, dst->linesize);
+
+			frame_destination = true;
+			av_frame_free(&sw_frame);
+		}
+	}
+
 	if (ret == 0)
 		ret = avcodec_send_packet(is->videoCtx, pkt);
 	if (ret == AVERROR(EAGAIN))
@@ -1099,8 +1169,9 @@ int CFFmfcPimpl::video_thread(void *arg)
 		//avcodec_get_frame_defaults(frame);
 		av_frame_unref(frame);
 		av_packet_unref(&pkt);
+		bool frame_destination = false;
 		//½âÂëÒ»Ö¡ÊÓÆµ
-		ret = is->_pimpl->get_video_frame(is, frame, &pts_int, &pkt);
+		ret = is->_pimpl->get_video_frame(is, frame, &pts_int, &pkt, frame_destination);
 		if (ret < 0)
 			goto the_end;
 
@@ -1109,7 +1180,11 @@ int CFFmfcPimpl::video_thread(void *arg)
 
 		pts = pts_int * av_q2d(is->video_st->time_base);
 		//½âÂë³É¹¦ºóÓÃÓÚÏÔÊ¾£¬Ò²ÊÇ·Åµ½ÁíÒ»¸ö¶ÓÁÐÖÐ£¿
-		ret = is->_pimpl->queue_picture(is, frame, pts, pkt.pos);
+
+		if(frame_destination)
+			ret = is->_pimpl->queue_picture(is, is->_pimpl->dst, pts, pkt.pos);
+		else
+			ret = is->_pimpl->queue_picture(is, frame, pts, pkt.pos);
 
 		if (ret < 0)
 			goto the_end;
@@ -1123,7 +1198,10 @@ the_end:
 	avcodec_flush_buffers(is->videoCtx);
 	av_packet_unref(&pkt);
 	av_frame_free(&frame);
-	//avcodec_free_frame(&frame);
+	av_frame_free(&is->_pimpl->dst);
+	if(is->_pimpl->scaleContext != nullptr)
+		sws_freeContext(is->_pimpl->scaleContext);
+	is->_pimpl->first = true;
 	return 0;
 }
 
@@ -1805,6 +1883,35 @@ const char * CFFmfcPimpl::getExt(const char *fspec) {
 	return e;
 }
 
+
+enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext *ctx,
+	const enum AVPixelFormat *pix_fmts)
+{
+	const enum AVPixelFormat *p;
+
+	for (p = pix_fmts; *p != -1; p++) {
+		if (*p == hw_pix_fmt)
+			return *p;
+	}
+
+	fprintf(stderr, "Failed to get HW surface format.\n");
+	return AV_PIX_FMT_NONE;
+}
+
+int CFFmfcPimpl::hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type)
+{
+	int err = 0;
+
+	if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
+		NULL, NULL, 0)) < 0) {
+		fprintf(stderr, "Failed to create specified HW device.\n");
+		return err;
+	}
+	ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
+
+	return err;
+}
+
 /* open a given stream. Return 0 if OK */
 //´ò¿ªÒ»¸öStream£¬ÊÓÆµ»òÒôÆµ
 int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
@@ -1847,70 +1954,105 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 #endif
 
-#ifdef WIN32
-		if (dlg->GetDXVA2HardwareCompatible())
+//#ifdef WIN32
+		if (acceleratorHardware == "dxva2" && isOpenGLDecoding)
 		{
-			avctx->thread_count = 1;  // Multithreading is apparently not compatible with hardware decoding
-			InputStream *ist = new InputStream();
-			ist->hwaccel_id = HWACCEL_AUTO;
-			ist->hwaccel_device = "dxva2";
-			ist->dec = codec;
-			ist->dec_ctx = avctx;
-			avctx->coded_height = ic->streams[stream_index]->codecpar->height;
-			avctx->coded_width = ic->streams[stream_index]->codecpar->width;
-
-
-			//printf("ÊÓÆµ¸ß£º%d\n",ic->streams[video_index]->codec->height);
-
-			avctx->opaque = ist;
-			if (dxva2_init(avctx, dlg, avctx->coded_width, avctx->coded_height) == 0)
+			if (dlg->GetDXVA2HardwareCompatible())
 			{
-				InputStream *ist = (InputStream *)avctx->opaque;
-				dxva2 = (DXVA2Context *)ist->hwaccel_ctx;
-				//dlg->SetOpenCLDevice((void *)ist);
-				dlg->SetDXVA2Compatible(true);
-				avctx->get_buffer2 = ist->hwaccel_get_buffer;
-				avctx->get_format = GetHwFormat;
-				avctx->thread_safe_callbacks = 1;
+				avctx->thread_count = 1;  // Multithreading is apparently not compatible with hardware decoding
+				InputStream *ist = new InputStream();
+				ist->hwaccel_id = HWACCEL_AUTO;
+				ist->hwaccel_device = "dxva2";
+				ist->dec = codec;
+				ist->dec_ctx = avctx;
+				avctx->coded_height = ic->streams[stream_index]->codecpar->height;
+				avctx->coded_width = ic->streams[stream_index]->codecpar->width;
 
-				avctx->workaround_bugs = workaround_bugs;
-				avctx->lowres = lowres;
-				if (avctx->lowres > codec->max_lowres) {
-					av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
-						codec->max_lowres);
-					avctx->lowres = codec->max_lowres;
-				}
-				avctx->idct_algo = idct;
-				avctx->skip_frame = skip_frame;
-				avctx->skip_idct = skip_idct;
-				avctx->skip_loop_filter = skip_loop_filter;
-				avctx->error_concealment = error_concealment;
 
-				/*
-				if(avctx->lowres) avctx->flags |= CODEC_FLAG_EMU_EDGE;
-				if (fast)   avctx->flags2 |= CODEC_FLAG2_FAST;
-				if(codec->capabilities & CODEC_CAP_DR1)
-					avctx->flags |= CODEC_FLAG_EMU_EDGE;
-				*/
-				//MetaData?
-				if (!av_dict_get(opts, "threads", nullptr, 0))
-					av_dict_set(&opts, "threads", "auto", 0);
-				// ´ò¿ª½âÂëÆ÷£¬¶þÕßÖ®¼ä½¨Á¢ÁªÏµ
+				//printf("ÊÓÆµ¸ß£º%d\n",ic->streams[video_index]->codec->height);
 
-				if (avcodec_open2(avctx, codec, nullptr) < 0)
+				avctx->opaque = ist;
+				if (dxva2_init(avctx, dlg, avctx->coded_width, avctx->coded_height) == 0)
 				{
-					std::cout << "Video codec open error" << std::endl;
-					return false;
+					InputStream *ist = (InputStream *)avctx->opaque;
+					dxva2 = (DXVA2Context *)ist->hwaccel_ctx;
+					//dlg->SetOpenCLDevice((void *)ist);
+					dlg->SetDXVA2Compatible(true);
+					avctx->get_buffer2 = ist->hwaccel_get_buffer;
+					avctx->get_format = GetHwFormat;
+					avctx->thread_safe_callbacks = 1;
+
+					avctx->workaround_bugs = workaround_bugs;
+					avctx->lowres = lowres;
+					if (avctx->lowres > codec->max_lowres) {
+						av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
+							codec->max_lowres);
+						avctx->lowres = codec->max_lowres;
+					}
+					avctx->idct_algo = idct;
+					avctx->skip_frame = skip_frame;
+					avctx->skip_idct = skip_idct;
+					avctx->skip_loop_filter = skip_loop_filter;
+					avctx->error_concealment = error_concealment;
+
+					/*
+					if(avctx->lowres) avctx->flags |= CODEC_FLAG_EMU_EDGE;
+					if (fast)   avctx->flags2 |= CODEC_FLAG2_FAST;
+					if(codec->capabilities & CODEC_CAP_DR1)
+						avctx->flags |= CODEC_FLAG_EMU_EDGE;
+					*/
+					//MetaData?
+					if (!av_dict_get(opts, "threads", nullptr, 0))
+						av_dict_set(&opts, "threads", "auto", 0);
+					// ´ò¿ª½âÂëÆ÷£¬¶þÕßÖ®¼ä½¨Á¢ÁªÏµ
+
+					if (avcodec_open2(avctx, codec, nullptr) < 0)
+					{
+						std::cout << "Video codec open error" << std::endl;
+						return false;
+					}
+					dvxa2 = true;
 				}
-				dvxa2 = true;
-			}
-			else
-			{
-				dlg->SetDXVA2Compatible(false);
+				else
+				{
+					dlg->SetDXVA2Compatible(false);
+				}
 			}
 		}
-#endif
+		else if (acceleratorHardware != "")
+		{
+			enum AVHWDeviceType type;
 
+			type = av_hwdevice_find_type_by_name(acceleratorHardware);
+			if (type == AV_HWDEVICE_TYPE_NONE) {
+				fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware);
+				fprintf(stderr, "Available device types:");
+				while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+					fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+				fprintf(stderr, "\n");
+				return -1;
+			}
+
+			for (int i = 0;; i++) {
+				const AVCodecHWConfig *config = avcodec_get_hw_config(codec, i);
+				if (!config) {
+					fprintf(stderr, "Decoder %s does not support device type %s.\n",
+						codec->name, av_hwdevice_get_type_name(type));
+					return -1;
+				}
+				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+					config->device_type == type) {
+					hw_pix_fmt = config->pix_fmt;
+					break;
+				}
+			}
+
+
+			avctx->get_format = get_hw_format;
+
+			if (hw_decoder_init(avctx, type) < 0)
+				return -1;
+		}
 		break;
 	}
 	if (!codec)

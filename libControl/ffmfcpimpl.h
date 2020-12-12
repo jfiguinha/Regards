@@ -341,9 +341,10 @@ public:
 
 	}
 
-#ifdef WIN32
-	static AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
-#endif
+	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
+	//static AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
+	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
+	static enum AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
 	//Calcul du pourcentage
 	void StopStream();
 	int percentageToDb(int p, int maxValue);
@@ -418,7 +419,7 @@ public:
 	int queue_picture(VideoState *is, AVFrame *src_frame, double pts1, int64_t pos);
 
 	//½âÂëÒ»Ö¡ÊÓÆµ
-	int get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt);
+	int get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt, bool & frame_destination);
 
 	//½âÂëÊÓÆµ
 	static int video_thread(void *arg);
@@ -482,6 +483,8 @@ public:
 
 	void toggle_audio_display(VideoState *is, int mode);
 
+	AVFrame * CopyFrame(AVFrame * frame);
+
 	static int lockmgr(void **mtx, enum AVLockOp op);
 
 	//SOUND Volume
@@ -529,6 +532,9 @@ public:
 #ifdef WIN32
 	DXVA2Context * dxva2 = nullptr;
 #endif
+
+	AVBufferRef *hw_device_ctx = NULL;
+	static enum AVPixelFormat hw_pix_fmt;
 	wxWindow * parent = nullptr;
 	/* current context */
 	int64_t audio_callback_time = 0;
@@ -550,6 +556,15 @@ public:
 	int aframe_index = 0;
 	int packet_index = 0;
 	int videoOutputMode = 24;
+	bool first = true;
+	AVFrame * dst = av_frame_alloc();
+	SwsContext* scaleContext = nullptr;
+#ifdef WIN32
+	wxString acceleratorHardware = "dxva2";
+#else
+	wxString acceleratorHardware = "";
+#endif
+	bool isOpenGLDecoding = false;
 
 #ifndef CMDUTILS
 	AVDictionary *format_opts = nullptr, *codec_opts = nullptr;

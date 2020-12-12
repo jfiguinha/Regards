@@ -1741,9 +1741,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 
 			while (ret >= 0) 
 			{
-				bool freeData = false;
-
-
 				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
 				if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 					break;
@@ -1801,7 +1798,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 						sws_scale(scaleContext,
 							(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
 							dst->data, dst->linesize);
-						freeData = true;
 
 						tmp_frame = dst;
 						av_frame_free(&sw_frame);

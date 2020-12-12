@@ -738,8 +738,14 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), acceleratorHardware, isOpenGLDecoding);
 
+}
+
+void CVideoControlSoft::SetEncoderHardware(const wxString &encoderHardware, const bool &opengl)
+{
+	acceleratorHardware = encoderHardware;
+	isOpenGLDecoding = opengl;
 }
 
 bool CVideoControlSoft::GetDXVA2Compatible()
@@ -879,7 +885,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			playStartTimer->Start(1000, true);
 		else
 		{
-			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), acceleratorHardware, isOpenGLDecoding);
 			ffmfc->SetVolume(GetSoundVolume());
 		}
 		muVideoEffect.lock();

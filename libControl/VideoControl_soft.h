@@ -99,6 +99,8 @@ public:
 	void FlipVertical();
 	void FlipHorizontal();
 
+	void SetEncoderHardware(const wxString &encoderHardware, const bool &opengl);
+
 protected:
 
 	float GetHauteurMax();
@@ -234,4 +236,6 @@ protected:
 	bool processVideoEnd = false;
 	bool openGLDecoding = true;
 	bool isDXVA2Compatible = false;
+	wxString acceleratorHardware = "";
+	bool isOpenGLDecoding = false;
 };

@@ -62,14 +62,22 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 
 
 	if (softRender)
+	{
 		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+		videoWindow->SetEncoderHardware("dxva2", false);
+	}
 	else
+	{
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+		videoWindow->SetEncoderHardware("dxva2", dxva2);
+	}
 
+	
 	
 
 #else
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+	 videoWindow->SetEncoderHardware("", false);
 #endif
 
     scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
