@@ -1010,7 +1010,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
     if(IsSupportOpenCL())
     {
-        if (openclEffectYUV == nullptr)
+		if (openclEffectYUV == nullptr)
         {
             openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
         }  
@@ -1960,7 +1960,7 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
     else
         enableopenCL = 0;
 
-	if (!enableopenCL || isCPU || src_frame->format != 0)
+	if (!enableopenCL || isCPU || (src_frame->format != 0 && src_frame->format != 23))
 	{
 		SwsContext* scaleContext = nullptr;
 		bool deleteData = false;
@@ -2003,22 +2003,38 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 	else
 	{
 		isffmpegDecode = false;
-
 		if (openclEffectYUV != nullptr)
 		{
-			//printf("OpenCL openclEffectYUV \n");
-			int ysize = 0;
-			int usize = 0;
-			int vsize = 0;
+			if (src_frame->format == 23)
+			{
+				//printf("OpenCL openclEffectYUV \n");
+				int ysize = 0;
+				int uvsize = 0;
 
-			ysize = src_frame->linesize[0] * src_frame->height;
-			usize = src_frame->linesize[1] * (src_frame->height / 2);
-			vsize = src_frame->linesize[2] * (src_frame->height / 2);
-			muBitmap.lock();
+				ysize = src_frame->linesize[0] * src_frame->height;
+				uvsize = src_frame->linesize[1] * (src_frame->height / 2);
+				muBitmap.lock();
 
-			openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2], vsize, src_frame->width, src_frame->height, src_frame->linesize[0], src_frame->format);
+				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
 
-			muBitmap.unlock();
+				muBitmap.unlock();
+			}
+			if (src_frame->format == 0)
+			{
+				//printf("OpenCL openclEffectYUV \n");
+				int ysize = 0;
+				int usize = 0;
+				int vsize = 0;
+
+				ysize = src_frame->linesize[0] * src_frame->height;
+				usize = src_frame->linesize[1] * (src_frame->height / 2);
+				vsize = src_frame->linesize[2] * (src_frame->height / 2);
+				muBitmap.lock();
+
+				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2], vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
+
+				muBitmap.unlock();
+			}
 		}
 	}
 }
@@ -2060,16 +2076,16 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 
 	if (!isffmpegDecode)
 	{
-
-		printf("VideoControl Is use_opencl 1\n");               
+		printf("VideoControl Is use_opencl 1\n");
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
-            printf("VideoControl Is use_opencl 2\n"); 
+			printf("VideoControl Is use_opencl 2\n");
 			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
 			muBitmap.unlock();
 		}
-        printf("VideoControl Is use_opencl 3\n"); 
+		printf("VideoControl Is use_opencl 3\n");
+
 		deleteTexture = false;
 	}
 	else

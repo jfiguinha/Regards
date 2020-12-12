@@ -54,7 +54,42 @@ COpenCLEffectVideoYUV::~COpenCLEffectVideoYUV()
 	}
 }
 
-void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferU, int sizeU, uint8_t * bufferV, int sizeV, const int &width, const int &height, const int &lineSize, const int &format)
+void COpenCLEffectVideoYUV::SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &lineSize)
+{
+	if (inputY == nullptr)
+		inputY = new COpenCLParameterByteArray();
+	inputY->SetLibelle("inputY");
+	inputY->SetNoDelete(true);
+	inputY->SetValue(context->GetContext(), bufferY, sizeY, flag);
+
+	if (inputU == nullptr)
+		inputU = new COpenCLParameterByteArray();
+	inputU->SetLibelle("inputUV");
+	inputU->SetNoDelete(true);
+	inputU->SetValue(context->GetContext(), bufferUV, sizeUV, flag);
+
+	if (paramWidth == nullptr)
+		paramWidth = new COpenCLParameterInt();
+	paramWidth->SetNoDelete(true);
+	paramWidth->SetLibelle("widthIn");
+	paramWidth->SetValue(width);
+
+	if (paramHeight == nullptr)
+		paramHeight = new COpenCLParameterInt();
+	paramHeight->SetNoDelete(true);
+	paramHeight->SetLibelle("heightIn");
+	paramHeight->SetValue(height);
+
+	if (paramLineSize == nullptr)
+		paramLineSize = new COpenCLParameterInt();
+	paramLineSize->SetNoDelete(true);
+	paramLineSize->SetLibelle("LineSize");
+	paramLineSize->SetValue(lineSize);
+	isOk = true;
+	formatData = 1;
+}
+
+void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferU, int sizeU, uint8_t * bufferV, int sizeV, const int &width, const int &height, const int &lineSize)
 {
 	if (inputY == nullptr)
 		inputY = new COpenCLParameterByteArray();
@@ -92,7 +127,7 @@ void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t 
 	paramLineSize->SetLibelle("LineSize");
 	paramLineSize->SetValue(lineSize);
 	isOk = true;
-	formatData = format;
+	formatData = 0;
 }
 
 bool COpenCLEffectVideoYUV::IsOk()
@@ -113,59 +148,116 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 	if (context != nullptr)
 	{
-
 		COpenCLProgram * programCL = nullptr;
-		programCL = GetProgram("IDR_OPENCL_FFMPEGYUV420");
-
-		if (programCL != nullptr)
+		if (formatData == 1)
 		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+			programCL = GetProgram("IDR_OPENCL_FFMPEGNV12");
 
-			this->widthOut = widthOut;
-			this->heightOut = heightOut;
-
-			vecParam.push_back(inputY);
-			vecParam.push_back(inputU);
-			vecParam.push_back(inputV);
-			vecParam.push_back(paramWidth);
-			vecParam.push_back(paramHeight);
-
-			if (paramSrcWidth == nullptr)
-				paramSrcWidth = new COpenCLParameterInt();
-			paramSrcWidth->SetLibelle("widthOut");
-			paramSrcWidth->SetNoDelete(true);
-			paramSrcWidth->SetValue(widthOut);
-			vecParam.push_back(paramSrcWidth);
-
-			if (paramSrcHeight == nullptr)
-				paramSrcHeight = new COpenCLParameterInt();
-
-			paramSrcHeight->SetLibelle("heightOut");
-			paramSrcHeight->SetValue(heightOut);
-			paramSrcHeight->SetNoDelete(true);
-			vecParam.push_back(paramSrcHeight);
-
-			vecParam.push_back(paramLineSize);
-
-			program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "Convert");
-
-			if (paramSrc == nullptr)
-				paramSrc = new COpenCLParameterClMem();
-			paramSrc->SetValue(program->GetOutput());
-			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
+			if (programCL != nullptr)
 			{
-				if (!parameter->GetNoDelete())
+				vector<COpenCLParameter *> vecParam;
+				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+				this->widthOut = widthOut;
+				this->heightOut = heightOut;
+
+				vecParam.push_back(inputY);
+				vecParam.push_back(inputU);
+				vecParam.push_back(paramWidth);
+				vecParam.push_back(paramHeight);
+
+				if (paramSrcWidth == nullptr)
+					paramSrcWidth = new COpenCLParameterInt();
+				paramSrcWidth->SetLibelle("widthOut");
+				paramSrcWidth->SetNoDelete(true);
+				paramSrcWidth->SetValue(widthOut);
+				vecParam.push_back(paramSrcWidth);
+
+				if (paramSrcHeight == nullptr)
+					paramSrcHeight = new COpenCLParameterInt();
+
+				paramSrcHeight->SetLibelle("heightOut");
+				paramSrcHeight->SetValue(heightOut);
+				paramSrcHeight->SetNoDelete(true);
+				vecParam.push_back(paramSrcHeight);
+
+				vecParam.push_back(paramLineSize);
+
+				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
+				program->SetKeepOutput(true);
+				program->ExecuteProgram(programCL->GetProgram(), "Convert");
+
+				if (paramSrc == nullptr)
+					paramSrc = new COpenCLParameterClMem();
+				paramSrc->SetValue(program->GetOutput());
+				delete program;
+
+				for (COpenCLParameter * parameter : vecParam)
 				{
-					delete parameter;
-					parameter = nullptr;
+					if (!parameter->GetNoDelete())
+					{
+						delete parameter;
+						parameter = nullptr;
+					}
 				}
+				vecParam.clear();
 			}
-			vecParam.clear();
 		}
+		else
+		{
+			programCL = GetProgram("IDR_OPENCL_FFMPEGYUV420");
+
+			if (programCL != nullptr)
+			{
+				vector<COpenCLParameter *> vecParam;
+				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+				this->widthOut = widthOut;
+				this->heightOut = heightOut;
+
+				vecParam.push_back(inputY);
+				vecParam.push_back(inputU);
+				vecParam.push_back(inputV);
+				vecParam.push_back(paramWidth);
+				vecParam.push_back(paramHeight);
+
+				if (paramSrcWidth == nullptr)
+					paramSrcWidth = new COpenCLParameterInt();
+				paramSrcWidth->SetLibelle("widthOut");
+				paramSrcWidth->SetNoDelete(true);
+				paramSrcWidth->SetValue(widthOut);
+				vecParam.push_back(paramSrcWidth);
+
+				if (paramSrcHeight == nullptr)
+					paramSrcHeight = new COpenCLParameterInt();
+
+				paramSrcHeight->SetLibelle("heightOut");
+				paramSrcHeight->SetValue(heightOut);
+				paramSrcHeight->SetNoDelete(true);
+				vecParam.push_back(paramSrcHeight);
+
+				vecParam.push_back(paramLineSize);
+
+				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
+				program->SetKeepOutput(true);
+				program->ExecuteProgram(programCL->GetProgram(), "Convert");
+
+				if (paramSrc == nullptr)
+					paramSrc = new COpenCLParameterClMem();
+				paramSrc->SetValue(program->GetOutput());
+				delete program;
+
+				for (COpenCLParameter * parameter : vecParam)
+				{
+					if (!parameter->GetNoDelete())
+					{
+						delete parameter;
+						parameter = nullptr;
+					}
+				}
+				vecParam.clear();
+			}
+		}
+
 	}
 }

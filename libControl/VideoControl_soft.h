@@ -12,6 +12,7 @@
 #include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 #include <OpenCLEffectVideoYUV.h>
+#include <OpenCLEffectVideoNV12.h>
 #include "RenderVideoOpenGL.h"
 using namespace Regards::Window;
 using namespace Regards::Video;

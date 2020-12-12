@@ -377,6 +377,7 @@ public:
 
 	void CloseStream(VideoState *is);
 
+	void CopyFrameToDest(AVFrame * frame);
 
 	/* get the current audio clock value */
 	double get_audio_clock(VideoState *is);

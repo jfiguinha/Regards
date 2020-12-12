@@ -976,6 +976,19 @@ AVFrame * CFFmfcPimpl::CopyFrame(AVFrame * frame)
 	return copyFrame;
 }
 
+void CFFmfcPimpl::CopyFrameToDest(AVFrame * frame)
+{
+	dst->format = frame->format;
+	dst->width = frame->width;
+	dst->height = frame->height;
+	dst->channels = frame->channels;
+	dst->channel_layout = frame->channel_layout;
+	dst->nb_samples = frame->nb_samples;
+	av_frame_get_buffer(dst, 32);
+	av_frame_copy(dst, frame);
+	av_frame_copy_props(dst, frame);
+}
+
 //½âÂëÒ»Ö¡ÊÓÆµ
 int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt, bool & frame_destination)
 {
@@ -1027,6 +1040,7 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 	{
 		if (frame->format == hw_pix_fmt)
 		{
+			/*
 			AVFrame * sw_frame = av_frame_alloc();
 			if (sw_frame == nullptr) {
 				fprintf(stderr, "Can not alloc frame\n");
@@ -1035,12 +1049,13 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 				return ret;
 			}
 			/* retrieve data from GPU to CPU */
-			if ((ret = av_hwframe_transfer_data(sw_frame, frame, 0)) < 0) {
+			if ((ret = av_hwframe_transfer_data(dst, frame, 0)) < 0) {
 				fprintf(stderr, "Error transferring the data to system memory\n");
-				av_frame_free(&sw_frame);
+				av_frame_free(&dst);
 				return ret;
 			}
-
+			
+			/*
 			if (first)
 			{
 
@@ -1069,14 +1084,17 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 				dst->nb_samples = frame->nb_samples;
 				int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
 			}
+
+			*/
 			av_frame_copy_props(dst, frame);
 
+			/*/
 			sws_scale(scaleContext,
 				(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)frame->height,
 				dst->data, dst->linesize);
-
+*/
 			frame_destination = true;
-			av_frame_free(&sw_frame);
+			//av_frame_free(&sw_frame);
 		}
 	}
 
