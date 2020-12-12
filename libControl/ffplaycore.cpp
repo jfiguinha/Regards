@@ -497,7 +497,7 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
 
-	_pimpl->acceleratorHardware = "dxva2";
+	_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = false;
 	//_pimpl->volume = volume;
 	CFFmfcPimpl::dlg = control;

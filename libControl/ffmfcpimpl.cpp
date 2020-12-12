@@ -1216,10 +1216,7 @@ the_end:
 	avcodec_flush_buffers(is->videoCtx);
 	av_packet_unref(&pkt);
 	av_frame_free(&frame);
-	av_frame_free(&is->_pimpl->dst);
-	if(is->_pimpl->scaleContext != nullptr)
-		sws_freeContext(is->_pimpl->scaleContext);
-	is->_pimpl->first = true;
+
 	return 0;
 }
 
@@ -2039,6 +2036,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		}
 		else if (acceleratorHardware != "")
 		{
+			bool success = true;
 			enum AVHWDeviceType type;
 
 			type = av_hwdevice_find_type_by_name(acceleratorHardware);
@@ -2048,28 +2046,36 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 				while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 					fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
 				fprintf(stderr, "\n");
-				return -1;
+				success = false;
 			}
 
-			for (int i = 0;; i++) {
-				const AVCodecHWConfig *config = avcodec_get_hw_config(codec, i);
-				if (!config) {
-					fprintf(stderr, "Decoder %s does not support device type %s.\n",
-						codec->name, av_hwdevice_get_type_name(type));
-					return -1;
-				}
-				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-					config->device_type == type) {
-					hw_pix_fmt = config->pix_fmt;
-					break;
+			if (success)
+			{
+				for (int i = 0;; i++) {
+					const AVCodecHWConfig *config = avcodec_get_hw_config(codec, i);
+					if (!config) 
+					{
+						fprintf(stderr, "Decoder %s does not support device type %s.\n",
+							codec->name, av_hwdevice_get_type_name(type));
+						success = false;
+						break;
+					}
+					if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+						config->device_type == type) {
+						hw_pix_fmt = config->pix_fmt;
+						break;
+					}
 				}
 			}
 
+			if (success)
+			{
+				avctx->get_format = get_hw_format;
+				if (hw_decoder_init(avctx, type) < 0)
+					success = false;
+			}
 
-			avctx->get_format = get_hw_format;
 
-			if (hw_decoder_init(avctx, type) < 0)
-				return -1;
 		}
 		break;
 	}
@@ -2770,6 +2776,13 @@ void CFFmfcPimpl::CloseStream(VideoState *is)
 	if (is->ic) {
 		avformat_close_input(&is->ic);
 	}
+
+	av_frame_free(&is->_pimpl->dst);
+	if (is->_pimpl->scaleContext != nullptr)
+		sws_freeContext(is->_pimpl->scaleContext);
+	is->_pimpl->scaleContext = nullptr;
+	is->_pimpl->dst = nullptr;
+	is->_pimpl->first = true;
 }
 
 //ÉèÖÃ¸÷ÖÖSDLÐÅºÅ£¬¿ªÊ¼½âÂëÏß³Ì
