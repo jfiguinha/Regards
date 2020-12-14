@@ -154,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\libFiltreInterface;..\libOpenGL;..\libWindowMain;..\libextern\libjpeg-turbo-1.5.1;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libOpenCLEngine;..\libUtility;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libControl;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libextern\ffmpeg-master\include;..\libControl;..\include;..\libFiltreInterface;..\libOpenGL;..\libWindowMain;..\libextern\libjpeg-turbo-1.5.1;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libOpenCLEngine;..\libUtility;..\libextern\librapidxml;..\libTheme;..\libWindow;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

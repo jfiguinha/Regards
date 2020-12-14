@@ -3,17 +3,22 @@
 class CFFmpegTranscodingPimpl;
 class CompressVideo;
 class CVideoOptionCompress;
+class CRegardsBitmap;
 
 class CFFmpegTranscoding
 {
 public:
 	CFFmpegTranscoding(const wxString & acceleratorHardware);
 	~CFFmpegTranscoding();
+	int GetDuration();
+	int OpenVideoFile(const wxString & input);
+	int CloseVideoFile();
+	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap);
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
 	int EndDecodeFile(const int & returnValue);
 	vector<wxString> ListOfEncoder();
 protected:
-
+	
 	static void EncodeFileThread(void * data);
 	wxString input;
 	wxString output;
@@ -24,5 +29,4 @@ protected:
 	CompressVideo * m_dlgProgress;
 	wxWindow * mainWindow;
 	CVideoOptionCompress * videoCompressOption;
-
 };

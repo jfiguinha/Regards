@@ -12,12 +12,14 @@
 
 class CImageLoadingFormat;
 class CVideoOptionCompress;
+class CFFmpegTranscoding;
+class CRegardsBitmap;
 
 class CompressionAudioVideoOption: public wxDialog
 {
 	public:
 
-		CompressionAudioVideoOption(wxWindow* parent);
+		CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename);
 		virtual ~CompressionAudioVideoOption();
 		void GetCompressionOption(CVideoOptionCompress * videoOptionCompress);
 
@@ -48,12 +50,18 @@ class CompressionAudioVideoOption: public wxDialog
 
 		wxComboBox * cbVideoProfile;
 
+		wxStaticBitmap * bitmap;
+		wxStaticText * labelTimeStart;
+		wxStaticText * labelTimeEnd;
+		wxSlider * slVideo;
 	protected:
 
 		//(*Identifiers(TiffOption)
 		//*)
 
 	private:
+
+		wxString ConvertSecondToTime(int64_t sec);
 		//void OnPaint(wxPaintEvent &event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		void OnbtnOkClick(wxCommandEvent& event);
@@ -61,7 +69,14 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnbtnCheckAudioQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoBitrateClick(wxCommandEvent& event);
+		void OnSetVideoDuration(wxCommandEvent& event);
+		void OnVideoSliderChange(wxScrollEvent& event);
 		//*)
         bool isOk;
+		wxString videoFilename;
+		CFFmpegTranscoding * ffmpegTranscoding;
+		CRegardsBitmap * bitmapDisplay;
+		int ret = 0;
+		wxImage scale;
 		DECLARE_EVENT_TABLE()
 };

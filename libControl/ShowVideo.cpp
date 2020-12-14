@@ -64,7 +64,13 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	if (softRender)
 	{
 		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+#ifdef WIN32
+		videoWindow->SetEncoderHardware("dxva2", false);
+#elif defined __APPLE__
+		videoWindow->SetEncoderHardware("videotoolbox", false);
+#else
 		videoWindow->SetEncoderHardware("", false);
+#endif
 	}
 	else
 	{

@@ -3,7 +3,10 @@
 #include <window_id.h>
 #include <VideoCompressOption.h>
 #include <ImageLoadingFormat.h>
+#include <ffmpeg_transcoding.h>
+#include <RegardsBitmap.h>
 #include <wx/filename.h>
+#include <libPicture.h>
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
@@ -16,15 +19,17 @@
 //(*IdInit(CompressionAudioVideoOption)
 //*)
 
-BEGIN_EVENT_TABLE(CompressionAudioVideoOption,wxDialog)
-	//(*EventTable(CompressionAudioVideoOption)
-	//*)
+BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
+//(*EventTable(CompressionAudioVideoOption)
+//*)
 END_EVENT_TABLE()
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
+using namespace Regards::Picture;
+
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename)
 {
     isOk = true;
-
+	this->videoFilename = videoFilename;
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
@@ -43,18 +48,66 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	slCompression = (wxSlider*)FindWindow(XRCID("ID_SLCOMPRESSIONQUALITY"));
 	ckVideoBitRate = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOBITRATE"));
 	txtBitRate = (wxTextCtrl*)FindWindow(XRCID("ID_TXTBITRATE"));
-
+	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
+	labelTimeStart  = (wxStaticText *)FindWindow(XRCID("ID_STSTARTMOVIE"));
+	labelTimeEnd = (wxStaticText *)FindWindow(XRCID("ID_STENDMOVIE"));
+	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
 	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
 	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
 	Connect(XRCID("ID_CKVIDEOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoQualityClick);
 	Connect(XRCID("ID_CKVIDEOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoBitrateClick);
 	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCancelClick);
 	Connect(XRCID("ID_BTOK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnOkClick);
+	Connect(XRCID("ID_SLVIDEO"), wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoSliderChange);
+	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
+
+	bitmapDisplay = new CRegardsBitmap();
+	ffmpegTranscoding = new CFFmpegTranscoding("");
+	ret = ffmpegTranscoding->OpenVideoFile(videoFilename);
+	ret = ffmpegTranscoding->GetFrameBitmapPosition(0, bitmapDisplay);
+	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);
+	scale = _wxImage->Scale(344, 200).Mirror(false);
+	bitmap->SetBitmap(scale);
+	delete _wxImage;
+
+	double timeTotal = ffmpegTranscoding->GetDuration();
+	slVideo->SetMax(timeTotal);
+	labelTimeEnd->SetLabel(ConvertSecondToTime(timeTotal));
+}
+
+void CompressionAudioVideoOption::OnVideoSliderChange(wxScrollEvent& event)
+{
+	long value = slVideo->GetValue();
+
+	ret = ffmpegTranscoding->GetFrameBitmapPosition(value, bitmapDisplay);
+	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);
+	scale = _wxImage->Scale(344, 200).Mirror(false);
+	bitmap->SetBitmap(scale);
+	delete _wxImage;
+
+	labelTimeStart->SetLabel(ConvertSecondToTime(value));
 }
 
 CompressionAudioVideoOption::~CompressionAudioVideoOption()
 {
+	ffmpegTranscoding->CloseVideoFile();
+	delete ffmpegTranscoding;
+	delete bitmapDisplay;
+}
 
+wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)
+{
+
+	int h = (sec / 3600);
+	int m = (sec - (3600 * h)) / 60;
+	int s = (sec - (3600 * h) - (m * 60));
+	return wxString::Format("%02d:%02d:%02d\n", h, m, s);
+}
+
+void CompressionAudioVideoOption::OnSetVideoDuration(wxCommandEvent& event)
+{
+	int64_t duration = event.GetExtraLong();
+	labelTimeEnd->SetLabel(ConvertSecondToTime(duration));
 }
 
 void CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick(wxCommandEvent& event)

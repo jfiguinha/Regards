@@ -222,6 +222,9 @@
     <ClInclude Include="ThumbnailMessage.h">
       <Filter>Datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="DoubleSlider.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -385,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="TreeDataStars.cpp">
       <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="DoubleSlider.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

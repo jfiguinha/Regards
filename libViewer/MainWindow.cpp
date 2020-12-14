@@ -261,7 +261,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		CompressionAudioVideoOption compressAudioVideoOption(this);
+		CompressionAudioVideoOption compressAudioVideoOption(this, filename);
 		compressAudioVideoOption.ShowModal();
 		if (compressAudioVideoOption.IsOk())
 		{
