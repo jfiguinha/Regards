@@ -15,6 +15,7 @@ class CVideoOptionCompress;
 class CFFmpegTranscoding;
 class CRegardsBitmap;
 
+
 class CompressionAudioVideoOption: public wxDialog
 {
 	public:

@@ -7,6 +7,7 @@
 #include <RegardsBitmap.h>
 #include <wx/filename.h>
 #include <libPicture.h>
+
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
@@ -28,7 +29,7 @@ using namespace Regards::Picture;
 
 CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename)
 {
-    isOk = true;
+    isOk = false;
 	this->videoFilename = videoFilename;
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
