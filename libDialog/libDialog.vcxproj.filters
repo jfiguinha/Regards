@@ -138,6 +138,9 @@
     <ClCompile Include="CompressionAudioVideoOption.cpp">
       <Filter>CompressionVideo</Filter>
     </ClCompile>
+    <ClCompile Include="SliderVideoSelection.cpp">
+      <Filter>CompressionVideo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -213,6 +216,9 @@
       <Filter>CompressionVideo</Filter>
     </ClInclude>
     <ClInclude Include="CompressionAudioVideoOption.h">
+      <Filter>CompressionVideo</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderVideoSelection.h">
       <Filter>CompressionVideo</Filter>
     </ClInclude>
   </ItemGroup>

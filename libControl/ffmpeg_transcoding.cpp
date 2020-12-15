@@ -81,11 +81,6 @@ int CFFmpegTranscoding::GetDuration()
 	return pimpl->GetTotalTime();
 }
 
-int CFFmpegTranscoding::CloseVideoFile()
-{
-	return pimpl->CloseFile();
-}
-
 int CFFmpegTranscoding::EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption)
 {
 	this->mainWindow = mainWindow;

@@ -12,7 +12,6 @@ public:
 	~CFFmpegTranscoding();
 	int GetDuration();
 	int OpenVideoFile(const wxString & input);
-	int CloseVideoFile();
 	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap);
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
 	int EndDecodeFile(const int & returnValue);

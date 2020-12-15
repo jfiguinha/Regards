@@ -281,6 +281,7 @@
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="SavePicture.cpp" />
     <ClCompile Include="SelectPage.cpp" />
+    <ClCompile Include="SliderVideoSelection.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="TitleIntro.cpp" />
@@ -307,6 +308,7 @@
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="SavePicture.h" />
     <ClInclude Include="SelectPage.h" />
+    <ClInclude Include="SliderVideoSelection.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailSelection.h" />
     <ClInclude Include="TitleIntro.h" />

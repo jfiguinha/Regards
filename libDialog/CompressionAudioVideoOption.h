@@ -4,9 +4,10 @@
 	#include <wx/checklst.h>
 	#include <wx/button.h>
 	#include <wx/dialog.h>
-
 	//*)
 #endif
+
+#include <wx/spinctrl.h>
 //(*Headers(TiffOption)
 //*)
 
@@ -14,7 +15,7 @@ class CImageLoadingFormat;
 class CVideoOptionCompress;
 class CFFmpegTranscoding;
 class CRegardsBitmap;
-
+class CSliderVideoSelection;
 
 class CompressionAudioVideoOption: public wxDialog
 {
@@ -52,8 +53,8 @@ class CompressionAudioVideoOption: public wxDialog
 		wxComboBox * cbVideoProfile;
 
 		wxStaticBitmap * bitmap;
-		wxStaticText * labelTimeStart;
-		wxStaticText * labelTimeEnd;
+		wxSpinCtrl * labelTimeStart;
+		wxSpinCtrl * labelTimeEnd;
 		wxSlider * slVideo;
 	protected:
 
@@ -71,13 +72,20 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnbtnCheckVideoQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoBitrateClick(wxCommandEvent& event);
 		void OnSetVideoDuration(wxCommandEvent& event);
-		void OnVideoSliderChange(wxScrollEvent& event);
+		void OnVideoSliderChange(wxCommandEvent& event);
+
+		void OnSlideFromChange(wxSpinEvent& event);
+		void OnSlideToChange(wxSpinEvent& event);
+
+		//void OnVideoSliderChange(wxScrollEvent& event);
 		//*)
         bool isOk;
 		wxString videoFilename;
 		CFFmpegTranscoding * ffmpegTranscoding;
 		CRegardsBitmap * bitmapDisplay;
+		CSliderVideoSelection * sliderVideoPosition;
 		int ret = 0;
 		wxImage scale;
+		bool skipEvent = false;
 		DECLARE_EVENT_TABLE()
 };

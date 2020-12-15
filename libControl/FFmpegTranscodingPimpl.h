@@ -84,7 +84,6 @@ public:
 
 	int OpenFile(const wxString & input);
 	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap);
-	int CloseFile();
 	double GetTotalTime();
 
 private:
@@ -108,9 +107,9 @@ private:
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
 
-	AVFormatContext *ifmt_ctx;
-	AVFormatContext *ofmt_ctx;
-	FilteringContext *filter_ctx;
+	AVFormatContext *ifmt_ctx = nullptr;
+	AVFormatContext *ofmt_ctx = nullptr;
+	FilteringContext *filter_ctx = nullptr;
 	StreamContext *stream_ctx;
 	AVPacket packet;
 	bool cleanPacket = false;
