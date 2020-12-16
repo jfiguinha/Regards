@@ -21,6 +21,7 @@ AVPixelFormat CFFmfcPimpl::hw_pix_fmt;
 //const char program_name[] = "ffplaymfc";
 //const int program_birth_year = 2013;
 
+#ifdef WIN32
 AVPixelFormat CFFmfcPimpl::GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts)
 {
 	InputStream* ist = (InputStream*)s->opaque;
@@ -28,7 +29,7 @@ AVPixelFormat CFFmfcPimpl::GetHwFormat(AVCodecContext *s, const AVPixelFormat *p
 	ist->hwaccel_pix_fmt = AV_PIX_FMT_DXVA2_VLD;
 	return ist->hwaccel_pix_fmt;
 }
-
+#endif
 
 inline int compute_mod(int a, int b)
 {
@@ -1969,7 +1970,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 #endif
 
-//#ifdef WIN32
+#ifdef WIN32
 		if (acceleratorHardware == "dxva2" && isOpenGLDecoding)
 		{
 			if (dlg->GetDXVA2HardwareCompatible())
@@ -2035,6 +2036,9 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 			}
 		}
 		else if (acceleratorHardware != "")
+#else
+        if (acceleratorHardware != "")
+#endif
 		{
 			bool success = true;
 			enum AVHWDeviceType type;
