@@ -77,8 +77,13 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnSlideFromChange(wxSpinEvent& event);
 		void OnSlideToChange(wxSpinEvent& event);
 
+		void OnTextFromChange(wxCommandEvent& event);
+		void OnTextToChange(wxCommandEvent& event);
+
+
 		//void OnVideoSliderChange(wxScrollEvent& event);
 		//*)
+		double timeTotal;
         bool isOk;
 		wxString videoFilename;
 		CFFmpegTranscoding * ffmpegTranscoding;

@@ -226,7 +226,15 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
 		ffmpeg_trans->muWriteData.lock();
-		ffmpeg_trans->m_dlgProgress->SetPos(ffmpeg_trans->duration_movie, ffmpeg_trans->pos);
+
+		double duration_total = ffmpeg_trans->duration_movie;
+
+		int posVideo = (int)ffmpeg_trans->pos - ffmpeg_trans->videoCompressOption->startTime;
+
+		if (ffmpeg_trans->videoCompressOption->endTime != 0 || ffmpeg_trans->videoCompressOption->startTime != 0)
+			duration_total = ffmpeg_trans->videoCompressOption->endTime - ffmpeg_trans->videoCompressOption->startTime;
+
+		ffmpeg_trans->m_dlgProgress->SetPos(duration_total, posVideo);
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(ffmpeg_trans->duration);
 
 
@@ -235,7 +243,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		wxString frame = wxString::Format("%d fps", (int)(ffmpeg_trans->nbframe / dif));
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
 
-		double pourcentage = ((double)ffmpeg_trans->pos / (double)ffmpeg_trans->duration_movie) * 100.0f;
+		double pourcentage = ((double)posVideo / (double)duration_total) * 100.0f;
 		double timeMissing = (dif * 100.0f) / pourcentage;
 
 		frame = ConvertSecondToTime((int)(timeMissing - dif));
@@ -1581,6 +1589,26 @@ int CFFmpegTranscodingPimpl::GetFrameBitmapPosition(const long &timeInSeconds, C
 		return ret;
 	}
 
+	int64_t timestamp = timeInSeconds *1000 * 1000;
+
+	if (timestamp < 0)
+	{
+		timestamp = 0;
+	}
+
+	//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
+	int64_t seek_target = timestamp;
+	int64_t seek_rel = 0;
+	int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
+	int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
+	int seek_flags = 0;
+	seek_flags &= ~AVSEEK_FLAG_BYTE;
+	// FIXME the +-2 is due to rounding being not done in the correct direction in generation
+	//      of the seek_pos/seek_rel variables
+
+	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
+
+	/*
 	int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(timeInSeconds);
 
 	if (timestamp < 0)
@@ -1591,7 +1619,7 @@ int CFFmpegTranscodingPimpl::GetFrameBitmapPosition(const long &timeInSeconds, C
 	ret = av_seek_frame(ifmt_ctx, videoStreamIndex, timestamp, 0);
 	if (ret != 0)
 		return ret;
-
+	*/
 
 	while (!pictureFind)
 	{
@@ -1717,14 +1745,54 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 	int ret = 0;
 	int stream_index = 0;
 	bool first = true;
+	bool startEncoding = true;
+	bool first_frame = true;
+	
+	if (videoCompressOption->startTime != 0)
+	{
+		int64_t timestamp = static_cast<int64_t>(videoCompressOption->startTime) * 1000 * 1000;
+		//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
+
+		if (timestamp < 0)
+		{
+			timestamp = 0;
+		}
+
+	//	int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
+		int64_t seek_target = timestamp;
+		int64_t seek_rel = 0;
+		int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
+		int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
+		int seek_flags = 0;
+		seek_flags &= ~AVSEEK_FLAG_BYTE;
+		// FIXME the +-2 is due to rounding being not done in the correct direction in generation
+		//      of the seek_pos/seek_rel variables
+
+		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
+
+		/*
+		ret = av_seek_frame(ifmt_ctx, videoStreamIndex, timestamp, 0);
+		if (ret != 0)
+			return ret;
+		
+		startEncoding = false;
+		*/
+	}
+	
+
+
 	/* read all packets */
 	while (m_dlgProgress->IsOk())
 	{
+
+
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			break;
 
 		bool isVideo = false;
 		stream_index = packet.stream_index;
+
+
 		av_log(NULL, AV_LOG_DEBUG, "Demuxer gave frame of stream_index %u\n",
 			stream_index);
 
@@ -1742,8 +1810,12 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 			break;
 		}
 
+
+
 		if (filter_ctx[stream_index].filter_graph) {
+
 			CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
+			
 
 			av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
@@ -1751,23 +1823,23 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 				ifmt_ctx->streams[stream_index]->time_base,
 				stream->dec_ctx->time_base);
 
-
+			pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+			double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 			ret = avcodec_send_packet(stream->dec_ctx, &packet);
 			if (ret < 0) {
 				av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
 				break;
 			}
+					   			 		  
+			/*
+			printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+				av_ts2str(packet->pts), av_ts2timestr(packet->pts, time_base),
+				av_ts2str(packet->dts), av_ts2timestr(packet->dts, time_base),
+				av_ts2str(packet->duration), av_ts2timestr(packet->duration, time_base),
+				pkt->stream_index);
+			*/
 
-			if (isVideo)
-			{
-				muWriteData.lock();
-				pos = (double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den;
-				pourcentage = (pos / duration_movie) * 100.0f;
-				this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-				sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)pos, (int)duration_movie);
-				muWriteData.unlock();
 
-			}
 
 			AVFrame *tmp_frame = NULL;
 			int ret = 0;
@@ -1842,9 +1914,38 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 					tmp_frame = stream->dec_frame;
 
 				tmp_frame->pts = tmp_frame->best_effort_timestamp;
+
+
+				if (isVideo)
+				{
+					
+					if (first_frame)
+					{
+						long startTime = videoCompressOption->startTime;
+						videoCompressOption->startTime = pos;
+						long diff = startTime - pos;
+						videoCompressOption->endTime = videoCompressOption->endTime + diff;
+						first_frame = false;
+					}
+					
+					muWriteData.lock();
+					double duration_total = duration_movie;
+
+					if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
+						duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
+
+					int posVideo = (int)pos - videoCompressOption->startTime;
+					pourcentage = (posVideo / duration_total) * 100.0f;
+					this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
+					sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+					muWriteData.unlock();
+
+				}
+
 				ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
 				if (ret < 0)
 					return ret;
+
 			}
 		}
 		else {
@@ -1857,7 +1958,17 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 			if (ret < 0)
 				return ret;
 		}
+
+continue_packet:
+
 		av_packet_unref(&packet);
+
+		if (videoCompressOption->endTime != 0)
+		{
+			int posVideo = (int)pos;
+			if (videoCompressOption->endTime == posVideo)
+				break;
+		}
 	}
 
 	/* flush filters and encoders */

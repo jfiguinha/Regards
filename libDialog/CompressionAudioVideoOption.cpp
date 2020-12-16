@@ -62,9 +62,6 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(XRCID("ID_CKVIDEOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoBitrateClick);
 	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCancelClick);
 	Connect(XRCID("ID_BTOK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnOkClick);
-	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_SPINCTRL, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
-	Connect(XRCID("ID_STENDMOVIE"), wxEVT_SPINCTRL, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
-
 	//Connect(XRCID("ID_SLVIDEO"), wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoSliderChange);
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
@@ -78,7 +75,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	bitmap->SetBitmap(scale);
 	delete _wxImage;
 
-	double timeTotal = ffmpegTranscoding->GetDuration();
+	timeTotal = ffmpegTranscoding->GetDuration();
 	slVideo->SetMax(timeTotal);
 	
 
@@ -104,6 +101,25 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 	sliderVideoPosition->SetBackgroundColour(bgColor);
 	slVideo->Show(false);
+
+	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_SPINCTRL, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
+	Connect(XRCID("ID_STENDMOVIE"), wxEVT_SPINCTRL, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
+
+	//Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TEXT, (wxObjectEventFunction)&CompressionAudioVideoOption::OnTextFromChange);
+	//Connect(XRCID("ID_STENDMOVIE"), wxEVT_TEXT, (wxObjectEventFunction)&CompressionAudioVideoOption::OnTextToChange);
+
+}
+
+void CompressionAudioVideoOption::OnTextFromChange(wxCommandEvent& event)
+{
+	labelTimeStart->SetValue(sliderVideoPosition->GetTimeStart());
+	labelTimeStart->SetValue(ConvertSecondToTime(sliderVideoPosition->GetTimeStart()));
+
+}
+void CompressionAudioVideoOption::OnTextToChange(wxCommandEvent& event)
+{
+	labelTimeEnd->SetValue(sliderVideoPosition->GetTimeEnd());
+	labelTimeEnd->SetValue(ConvertSecondToTime(sliderVideoPosition->GetTimeEnd()));
 }
 
 
@@ -258,6 +274,10 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		videoOptionCompress->videoCompressionValue = slCompression->GetValue();
 		videoOptionCompress->videoBitRate = atoi(txtBitRate->GetValue());
 		videoOptionCompress->videoHardware = ckVideoHardware->IsChecked();
+		videoOptionCompress->startTime = sliderVideoPosition->GetTimeStart();
+
+		int endTime = timeTotal;
+		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->GetTimeStart() != 0) ? sliderVideoPosition->GetTimeEnd() : 0;
 	}
 
 

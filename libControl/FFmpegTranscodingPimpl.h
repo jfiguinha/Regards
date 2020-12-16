@@ -10,6 +10,7 @@ extern "C"
 	#include <libavutil/pixdesc.h>
 	#include <libavutil/imgutils.h>
 	#include <libswscale/swscale.h>
+	#include <libavutil/timestamp.h>
 }
 
 class CRegardsBitmap;

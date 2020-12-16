@@ -299,24 +299,30 @@ void CSliderVideoSelection::OnMouseMove(wxMouseEvent& event)
 	{
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
-			CalculTimePosition(xPos);
+			if ((xPos) < positionButtonTo.x)
+			{
+				CalculTimePosition(xPos);
 
-			wxCommandEvent* event = new wxCommandEvent(wxEvent_SLIDERMOVE);
-			event->SetExtraLong(secondTimePast);
-			event->SetInt(1);
-			wxQueueEvent(eventWnd, event);
+				wxCommandEvent* event = new wxCommandEvent(wxEvent_SLIDERMOVE);
+				event->SetExtraLong(secondTimePast);
+				event->SetInt(1);
+				wxQueueEvent(eventWnd, event);
+			}
 		}
 	}
 	if (mouseBlockTo)
 	{
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
-			CalculTimePositionTo(xPos);
+			if ((xPos - positionButton.width) > positionButton.x)
+			{
+				CalculTimePositionTo(xPos);
+				wxCommandEvent* event = new wxCommandEvent(wxEvent_SLIDERMOVE);
+				event->SetExtraLong(secondTimeTo);
+				event->SetInt(2);
+				wxQueueEvent(eventWnd, event);
+			}
 
-			wxCommandEvent* event = new wxCommandEvent(wxEvent_SLIDERMOVE);
-			event->SetExtraLong(secondTimeTo);
-			event->SetInt(2);
-			wxQueueEvent(eventWnd, event);
 		}
 	}
 	Refresh();
@@ -335,18 +341,23 @@ void CSliderVideoSelection::OnMouseHover(wxMouseEvent& event)
 
 void CSliderVideoSelection::SetStartTime(const long &pos)
 {
-	secondTimePast = pos;
-	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
-	
+	if (secondTimePast < secondTimeTo)
+	{
+		secondTimePast = pos;
+		timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
+		this->Refresh();
+	}
 
-	this->Refresh();
 }
 
 void CSliderVideoSelection::SetEndTime(const long &pos)
 {
-	secondTimeTo = pos;
-	totalTime = CConvertUtility::GetTimeLibelle(secondTimeTo);
-	this->Refresh();
+	if (secondTimeTo > secondTimePast)
+	{
+		secondTimeTo = pos;
+		totalTime = CConvertUtility::GetTimeLibelle(secondTimeTo);
+		this->Refresh();
+	}
 }
 
 void CSliderVideoSelection::OnLButtonDown(wxMouseEvent& event)
