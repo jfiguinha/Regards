@@ -273,6 +273,8 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				//Decoder available
 #ifdef WIN32
 				ffmpegEncoder = new CFFmpegTranscoding("dxva2");
+#elif defined(__APPLE__)
+				ffmpegEncoder = new CFFmpegTranscoding("videotoolbox");
 #else
 				ffmpegEncoder = new CFFmpegTranscoding("");
 #endif

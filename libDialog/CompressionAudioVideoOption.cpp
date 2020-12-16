@@ -78,7 +78,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 
 	bitmapDisplay = new CRegardsBitmap();
+#ifdef WIN32
+	ffmpegTranscoding = new CFFmpegTranscoding("dxva2");
+#elif defined(__APPLE__)
+	ffmpegTranscoding = new CFFmpegTranscoding("videotoolbox");
+#else
 	ffmpegTranscoding = new CFFmpegTranscoding("");
+#endif
 	ret = ffmpegTranscoding->OpenVideoFile(videoFilename);
 	ret = ffmpegTranscoding->GetFrameBitmapPosition(0, bitmapDisplay);
 	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);
