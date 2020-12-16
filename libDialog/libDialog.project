@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libDialog" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Video">
+    <File Name="SliderVideoSelection.h"/>
+    <File Name="CompressVideo.cpp"/>
+    <File Name="CompressVideo.h"/>
+    <File Name="SliderVideoSelection.cpp"/>
+    <File Name="CompressionAudioVideoOption.h"/>
+    <File Name="CompressionAudioVideoOption.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -55,8 +63,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="CompressVideo.cpp"/>
-    <File Name="CompressionAudioVideoOption.cpp"/>
     <File Name="ExternalProgram.cpp"/>
     <File Name="Association.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
@@ -70,8 +76,6 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="CompressVideo.h"/>
-    <File Name="CompressionAudioVideoOption.h"/>
     <File Name="ExternalProgram.h"/>
     <File Name="SavePicture.h"/>
     <File Name="Association.h"/>

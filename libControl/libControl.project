@@ -28,6 +28,8 @@
   </Plugins>
   <VirtualDirectory Name="Video">
     <VirtualDirectory Name="Encoder">
+      <File Name="FFmpegTranscodingPimpl.h"/>
+      <File Name="FFmpegTranscodingPimpl.cpp"/>
       <File Name="ffmpeg_transcoding.h"/>
       <File Name="ffmpeg_transcoding.cpp"/>
     </VirtualDirectory>
