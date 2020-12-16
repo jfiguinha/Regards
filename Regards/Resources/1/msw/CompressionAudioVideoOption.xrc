@@ -193,17 +193,26 @@
 						</object>
 						<object class="wxSlider" name="ID_SLVIDEO">
 							<max>51</max>
-							<pos>45,260</pos>
+							<pos>0,250</pos>
 							<size>300,20</size>
 						</object>
-						<object class="wxStaticText" name="ID_STSTARTMOVIE">
-							<label>00:00:00</label>
-							<pos>0,260</pos>
-							<size>50,20</size>
+						<object class="wxStaticText" name="ID_STLABELSTARTMOVIE">
+							<label>From : </label>
+							<pos>5,300</pos>
 						</object>
-						<object class="wxStaticText" name="ID_STENDMOVIE">
+						<object class="wxSpinCtrl" name="ID_STSTARTMOVIE">
 							<label>00:00:00</label>
-							<pos>355,260</pos>
+							<pos>100,300</pos>
+							<size>100,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STLABELENDMOVIE">
+							<label>To : </label>
+							<pos>5,330</pos>
+						</object>
+						<object class="wxSpinCtrl" name="ID_STENDMOVIE">
+							<label>00:00:00</label>
+							<pos>100,330</pos>
+							<size>100,20</size>
 						</object>
 					</object>
 				</object>

@@ -7,7 +7,9 @@
 	//*)
 #endif
 
-#include <wx/spinctrl.h>
+#include <wx/timectrl.h>
+#include <wx/dateevt.h>
+
 //(*Headers(TiffOption)
 //*)
 
@@ -53,9 +55,10 @@ class CompressionAudioVideoOption: public wxDialog
 		wxComboBox * cbVideoProfile;
 
 		wxStaticBitmap * bitmap;
-		wxSpinCtrl * labelTimeStart;
-		wxSpinCtrl * labelTimeEnd;
+		wxTimePickerCtrl  * labelTimeStart;
+		wxTimePickerCtrl  * labelTimeEnd;
 		wxSlider * slVideo;
+
 	protected:
 
 		//(*Identifiers(TiffOption)
@@ -74,12 +77,9 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnSetVideoDuration(wxCommandEvent& event);
 		void OnVideoSliderChange(wxCommandEvent& event);
 
-		void OnSlideFromChange(wxSpinEvent& event);
-		void OnSlideToChange(wxSpinEvent& event);
-
-		void OnTextFromChange(wxCommandEvent& event);
-		void OnTextToChange(wxCommandEvent& event);
-
+		void OnSlideFromChange(wxDateEvent& event);
+		void OnSlideToChange(wxDateEvent& event);
+		void SetBitmap(const long &pos);
 
 		//void OnVideoSliderChange(wxScrollEvent& event);
 		//*)
