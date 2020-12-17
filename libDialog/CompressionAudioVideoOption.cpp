@@ -151,21 +151,21 @@ void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 	int hour = pos.GetHour();
 	int minute = pos.GetMinute();
 	int second = pos.GetSecond();
-	long timeTotal = hour * 3600 + minute * 60 + second;
-	if (timeTotal >= 0 && timeTotal < sliderVideoPosition->GetTimeEnd())
+	long _timeTotal = hour * 3600 + minute * 60 + second;
+	if (_timeTotal >= 0 && _timeTotal < sliderVideoPosition->GetTimeEnd())
 	{
-		sliderVideoPosition->SetStartTime(timeTotal);
+		sliderVideoPosition->SetStartTime(_timeTotal);
 	}
 	else
 	{
-		timeTotal = sliderVideoPosition->GetTimeEnd() - 1;
+		_timeTotal = sliderVideoPosition->GetTimeEnd() - 1;
 		int hour = 0;
 		int minute = 0;
 		int second = 0;
-		GetTimeToHourMinuteSecond(timeTotal, hour, minute, second);
+		GetTimeToHourMinuteSecond(_timeTotal, hour, minute, second);
 		labelTimeStart->SetTime(hour, minute, second);
 	}
-	SetBitmap(timeTotal);
+	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
@@ -177,18 +177,18 @@ void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 	long _timeTotal = hour * 3600 + minute * 60 + second;
 	if (_timeTotal <= timeTotal && _timeTotal > sliderVideoPosition->GetTimeStart())
 	{
-		sliderVideoPosition->SetEndTime(timeTotal);
+		sliderVideoPosition->SetEndTime(_timeTotal);
 	}
 	else
 	{
-		timeTotal = sliderVideoPosition->GetTimeStart() + 1;
+		_timeTotal = sliderVideoPosition->GetTimeStart() + 1;
 		int hour = 0;
 		int minute = 0;
 		int second = 0;
-		GetTimeToHourMinuteSecond(timeTotal, hour, minute, second);
+		GetTimeToHourMinuteSecond(_timeTotal, hour, minute, second);
 		labelTimeEnd->SetTime(hour, minute, second);
 	}
-	SetBitmap(timeTotal);
+	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
