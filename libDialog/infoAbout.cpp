@@ -60,7 +60,7 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.63.5");
+	treeDataWidth->SetValue("2.63.6");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
