@@ -197,7 +197,7 @@ public:
 
 		//putenv("SDL_AUDIO_CHANNELS=2");
 #ifdef WIN32
-		putenv("SDL_AUDIODRIVER=DirectSound");
+		//putenv("SDL_AUDIODRIVER=DirectSound");
 #endif
 		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------
@@ -208,10 +208,63 @@ public:
 			exit(1);
 		}
 
+#ifdef WIN32
+		if (!TestAudioDevice("SDL_AUDIODRIVER=DirectSound"))
+		{
+			if (!TestAudioDevice("SDL_AUDIODRIVER=winmm"))
+			{
+				wxMessageBox(_T("Could not initialize SDL Audio Driver"));
+				exit(1);
+			}
+		}
+
+#endif
+
 #endif
 
 
 	}
+
+#ifdef WIN32
+	virtual bool TestAudioDevice(const wxString &driverAudio)
+	{
+		SDL_AudioSpec spec;
+		SDL_AudioDeviceID devid_out = 0;
+		SDL_AudioSpec wanted;
+		int devcount;
+		int i;
+
+		putenv(driverAudio);
+
+		SDL_Log("Using audio driver: %s\n", SDL_GetCurrentAudioDriver());
+
+		SDL_zero(wanted);
+		wanted.freq = 44100;
+		wanted.format = AUDIO_F32SYS;
+		wanted.channels = 1;
+		wanted.samples = 4096;
+		wanted.callback = NULL;
+
+		SDL_zero(spec);
+
+		/* DirectSound can fail in some instances if you open the same hardware
+		   for both capture and output and didn't open the output end first,
+		   according to the docs, so if you're doing something like this, always
+		   open your capture devices second in case you land in those bizarre
+		   circumstances. */
+
+		SDL_Log("Opening default playback device...\n");
+		devid_out = SDL_OpenAudioDevice(NULL, SDL_FALSE, &wanted, &spec, SDL_AUDIO_ALLOW_ANY_CHANGE);
+		if (!devid_out) {
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open an audio device for playback: %s!\n", SDL_GetError());
+			return false;
+		}
+
+		SDL_PauseAudioDevice(devid_out, 1);
+		SDL_CloseAudioDevice(devid_out);
+		return true;
+	}
+#endif
 
 	virtual void OnInitCmdLine(wxCmdLineParser& parser);
 	virtual bool OnCmdLineParsed(wxCmdLineParser& parser);

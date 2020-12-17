@@ -448,7 +448,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 	}
     
-    if (redraw)
+    if (redraw && *_filename == this->filename)
     {
         CThreadPictureData * pictureData = new CThreadPictureData();
 		pictureData->mainWindow = this;

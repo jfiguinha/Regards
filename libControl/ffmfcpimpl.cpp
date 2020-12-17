@@ -1630,6 +1630,8 @@ int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wan
 	// Attempt to initialize SDL audio.
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 		return -1;
+
+
 	/*
 #ifdef _MSC_VER > 1900
 	SDL_AudioSpec wanted_spec, spec;
