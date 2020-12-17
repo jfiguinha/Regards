@@ -200,7 +200,7 @@
 							<label>From : </label>
 							<pos>5,300</pos>
 						</object>
-						<object class="wxSpinCtrl" name="ID_STSTARTMOVIE">
+						<object class="wxTimePickerCtrl" name="ID_STSTARTMOVIE">
 							<label>00:00:00</label>
 							<pos>100,300</pos>
 							<size>100,20</size>
@@ -209,7 +209,7 @@
 							<label>To : </label>
 							<pos>5,330</pos>
 						</object>
-						<object class="wxSpinCtrl" name="ID_STENDMOVIE">
+						<object class="wxTimePickerCtrl" name="ID_STENDMOVIE">
 							<label>00:00:00</label>
 							<pos>100,330</pos>
 							<size>100,20</size>
