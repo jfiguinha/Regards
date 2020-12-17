@@ -31,6 +31,9 @@ public:
 	int GetVideoLibrary();
 	void SetVideoLibrary(const int &numLib);
 
+	wxString GetVideoDecoderHardware();
+	void SetVideoDecoderHardware(const wxString &numLib);
+
 	int GetEffectLibrary();
 	void SetEffectLibrary(const int &numLib);
 
@@ -155,5 +158,8 @@ protected:
 
 	int autoContrast = 0;
 	int soundVolume = 100;
+
+	wxString videoDecoderHardware;
+	wxString videoEncoderHardware;
 };
 
