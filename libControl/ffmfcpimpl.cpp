@@ -2045,7 +2045,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 			type = av_hwdevice_find_type_by_name(acceleratorHardware);
 			if (type == AV_HWDEVICE_TYPE_NONE) {
-				fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware);
+				fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
 				fprintf(stderr, "Available device types:");
 				while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 					fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
