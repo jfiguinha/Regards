@@ -34,6 +34,25 @@ CRegardsConfigParam::CRegardsConfigParam()
 	useDxva2 = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
+
+#ifdef WIN32
+	videoDecoderHardware = "dxva2";
+#elif defined(__APPLE__)
+	videoDecoderHardware = "videotoolbox";
+#else
+	videoDecoderHardware = "";
+#endif
+
+}
+
+wxString CRegardsConfigParam::GetVideoDecoderHardware()
+{
+	return videoDecoderHardware;
+}
+
+void CRegardsConfigParam::SetVideoDecoderHardware(const wxString &numLib)
+{
+	videoDecoderHardware = numLib;
 }
 
 int CRegardsConfigParam::GetAutoConstrast()
@@ -276,6 +295,8 @@ void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibVideo)));
 	sectionPosition->append_node(node("UseDXVA2", to_string(useDxva2)));
+	sectionPosition->append_node(node("HardwareDecoder", videoDecoderHardware));
+	sectionPosition->append_node(node("HardwareEncoder", videoEncoderHardware));
 	sectionPosition->append_node(node("SoundVolume", to_string(soundVolume)));
 }
 
@@ -312,6 +333,22 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		numLibVideo = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("HardwareDecoder");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		videoDecoderHardware = child_node->value();
+	}
+
+	child_node = position_node->first_node("HardwareEncoder");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		videoEncoderHardware = child_node->value();
 	}
 
 	child_node = position_node->first_node("UseDXVA2");

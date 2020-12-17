@@ -265,7 +265,6 @@
     <ClInclude Include="CalendarDialogBox.h" />
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="ClickToolbar.h" />
-    <ClInclude Include="DoubleSlider.h" />
     <ClInclude Include="EmptyWindow.h" />
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
@@ -336,7 +335,6 @@
     <ClCompile Include="CalendarDialogBox.cpp" />
     <ClCompile Include="CalendarSelect.cpp" />
     <ClCompile Include="ClickToolbar.cpp" />
-    <ClCompile Include="DoubleSlider.cpp" />
     <ClCompile Include="EmptyWindow.cpp" />
     <ClCompile Include="Icone.cpp" />
     <ClCompile Include="IconeList.cpp" />

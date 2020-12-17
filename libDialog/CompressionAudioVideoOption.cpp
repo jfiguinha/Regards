@@ -10,6 +10,8 @@
 #include "SliderVideoSelection.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
@@ -78,13 +80,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 
 	bitmapDisplay = new CRegardsBitmap();
-#ifdef WIN32
-	ffmpegTranscoding = new CFFmpegTranscoding("dxva2");
-#elif defined(__APPLE__)
-	ffmpegTranscoding = new CFFmpegTranscoding("videotoolbox");
-#else
-	ffmpegTranscoding = new CFFmpegTranscoding("");
-#endif
+	wxString decoder = "";
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+}
+	ffmpegTranscoding = new CFFmpegTranscoding(decoder);
 	ret = ffmpegTranscoding->OpenVideoFile(videoFilename);
 	ret = ffmpegTranscoding->GetFrameBitmapPosition(0, bitmapDisplay);
 	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);

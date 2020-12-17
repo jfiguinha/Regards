@@ -59,31 +59,35 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		softRender = true;
 	}
 
-
+	wxString decoder = "";
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+	}
 
 	if (softRender)
 	{
 		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-#ifdef WIN32
-		videoWindow->SetEncoderHardware("dxva2", false);
-#elif defined __APPLE__
-		videoWindow->SetEncoderHardware("videotoolbox", false);
-#else
-		videoWindow->SetEncoderHardware("", false);
-#endif
+		videoWindow->SetEncoderHardware(decoder, false);
 	}
 	else
 	{
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-		videoWindow->SetEncoderHardware("dxva2", dxva2);
+		videoWindow->SetEncoderHardware(decoder, dxva2);
 	}
 
-	
-	
-
 #else
+
+	wxString decoder = "";
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+	}
+
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-	 videoWindow->SetEncoderHardware("", false);
+	 videoWindow->SetEncoderHardware(decoder, false);
 #endif
 
     scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");

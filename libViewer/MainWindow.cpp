@@ -42,6 +42,7 @@
 #include <wx/filedlg.h>
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
+#include <ParamInit.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -271,13 +272,13 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
 				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
 				//Decoder available
-#ifdef WIN32
-				ffmpegEncoder = new CFFmpegTranscoding("dxva2");
-#elif defined(__APPLE__)
-				ffmpegEncoder = new CFFmpegTranscoding("videotoolbox");
-#else
-				ffmpegEncoder = new CFFmpegTranscoding("");
-#endif
+				wxString decoder = "";
+				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+				if (regardsParam != nullptr)
+				{
+					decoder = regardsParam->GetVideoDecoderHardware();
+				}
+				ffmpegEncoder = new CFFmpegTranscoding(decoder);
 				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
 				
 			}
