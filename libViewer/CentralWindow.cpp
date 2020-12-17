@@ -405,6 +405,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	wxString * _filename = new wxString();
 	bool isPictureToShow = false;
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
+    int redraw = event.GetInt();
 	if (pictureData->bitmap != nullptr)
 	{
 		if (filename == pictureData->bitmap->GetFilename())
@@ -446,6 +447,17 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 		}
 
 	}
+    
+    if (redraw)
+    {
+        CThreadPictureData * pictureData = new CThreadPictureData();
+		pictureData->mainWindow = this;
+		pictureData->picture = *_filename;
+		pictureData->isVisible = true;
+		thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
+		pictureData->myThread = threadloadPicture;
+		processLoadPicture = true;  
+    }
 
 	if (!isThumbnail)
 	{
@@ -1330,6 +1342,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 
 void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &numElement)
 {
+    int processPicture = 0;
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CCentralWindow::LoadingPicture");
 	OutputDebugString(L"\n");
@@ -1340,6 +1353,7 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 	this->numElement = numElement;
     printf("CCentralWindow::LoadingPicture \n");
 	TRACE();
+
 
 	//--------------------------------------------------------------------------------
 	//Load Thumbnail
@@ -1355,12 +1369,14 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 		bitmapReturn->myThread = nullptr;
 		bitmapReturn->isThumbnail = true;
 		bitmapReturn->bitmap = _loadingPicture;
-		wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
+        wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
 		event->SetClientData(bitmapReturn);
+        event->SetInt(processLoadPicture ? 1 : 0);
 		wxQueueEvent(this, event);
-}
+    }
 
-	if (!processLoadPicture)
+    
+    if (!processLoadPicture)
 	{
 #if defined(WIN32) && defined(_DEBUG)
 		OutputDebugString(L"CCentralWindow::LoadingPicture OK Loading : ");
@@ -1377,20 +1393,20 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 		pictureData->myThread = threadloadPicture;
 		processLoadPicture = true;
 	}
-	else
-	{
-		if (listPicture != nullptr)
-		{
-			listPicture->SetActifItem(numElement, true);
-			listPicture->ForceRefresh();
-		}
 
-		if (thumbnailPicture != nullptr)
-		{
-			thumbnailPicture->SetActifItem(numElement, true);
-			thumbnailPicture->ForceRefresh();
-		}
-	}
+    if (listPicture != nullptr)
+    {
+        listPicture->SetActifItem(numElement, true);
+        listPicture->ForceRefresh();
+    }
+
+    if (thumbnailPicture != nullptr)
+    {
+        thumbnailPicture->SetActifItem(numElement, true);
+        thumbnailPicture->ForceRefresh();
+    }
+
+
 }
 
 void CCentralWindow::EndPictureThread(wxCommandEvent& event)
