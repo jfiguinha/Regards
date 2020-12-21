@@ -34,15 +34,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	useDxva2 = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
-
-#ifdef WIN32
-	videoDecoderHardware = "dxva2";
-#elif defined(__APPLE__)
-	videoDecoderHardware = "videotoolbox";
-#else
 	videoDecoderHardware = "";
-#endif
-
 }
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
