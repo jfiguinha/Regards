@@ -34,9 +34,9 @@ brew install -v ffmpeg
 #brew install -v freeimage
 #brew install -v fftw
 #Install External Library
-cd libextern
-chmod +x compilation_library_macos.sh
-./compilation_library_macos.sh
-cd ..
+#cd libextern
+#chmod +x compilation_library_macos.sh
+#./compilation_library_macos.sh
+#cd ..
 
 #/bin/sh -c '/usr/bin/make -j12 -e -f Makefile.macos'

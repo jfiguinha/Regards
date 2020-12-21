@@ -35,51 +35,6 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libheif"/>
-    <Project Name="libavif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libOpenCLEngine"/>
-    <Project Name="libResource"/>
-  </Dependencies>
   <Dependencies Name="Debug">
     <Project Name="include"/>
     <Project Name="libWindowMain"/>
@@ -374,8 +329,8 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">cp /opt/libjpeg-turbo/lib/libturbojpeg.0.2.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.2.0.dylib @executable_path/../Frameworks/libturbojpeg.0.2.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">cp /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.2.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.2.0.dylib @executable_path/../Frameworks/libturbojpeg.0.2.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -668,7 +623,6 @@
         <Command Enabled="yes">cp /usr/local/opt/harfbuzz/lib/libharfbuzz.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavresample.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/lib/gcc/10/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/p11-kit/lib/libp11-kit.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libidn2/lib/libidn2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libunistring/lib/libunistring.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
@@ -732,8 +686,8 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">cp /opt/libjpeg-turbo/lib/libturbojpeg.0.2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.2.0.dylib @executable_path/../Frameworks/libturbojpeg.0.2.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">cp /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.2.0.dylib @executable_path/../Frameworks/libturbojpeg.0.2.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/sdl2/lib/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1048,7 +1002,6 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib @executable_path/../Frameworks/libssl.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/librtmp.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib @executable_path/../Frameworks/libcrypto.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/librtmp.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ffmpeg/4.3.1_4/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavresample.4.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/lib/gcc/10/libgcc_s.1.dylib @executable_path/../Frameworks/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libx264.161.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libbluray.2.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/freetype/lib/libfreetype.6.dylib @executable_path/../Frameworks/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libbluray.2.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libvorbis.0.dylib</Command>
@@ -1089,8 +1042,8 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="no">#end ffmpeg</Command>
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
-        <Command Enabled="yes">rm -f ./package/RegardsViewer2_highsierra.dmg</Command>
-        <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2_highsierra.dmg</Command>
+        <Command Enabled="yes">rm -f ./package/RegardsViewer2.dmg</Command>
+        <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -1114,4 +1067,50 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
+    <Project Name="libavif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
+    <Project Name="wxIA"/>
+  </Dependencies>
 </CodeLite_Project>
