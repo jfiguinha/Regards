@@ -122,7 +122,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	wxColour bgColor = labelTimeStart->GetParent()->GetBackgroundColour();
 	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
 	sliderVideoPosition->SetPosition(slVideo->GetPosition());
-	wxSize size = wxSize(slVideo->GetParent()->GetSize().GetX(), theme.GetHeight());
+	wxSize size = wxSize(400, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 	sliderVideoPosition->SetBackgroundColour(bgColor);

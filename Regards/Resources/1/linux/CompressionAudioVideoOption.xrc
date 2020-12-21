@@ -84,7 +84,6 @@
 							<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
 								<max>51</max>
 								<pos>120,160</pos>
-								<size>230,20</size>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT1">
 								<label>High</label>
@@ -194,7 +193,6 @@
 						<object class="wxSlider" name="ID_SLVIDEO">
 							<max>51</max>
 							<pos>0,250</pos>
-							<size>300,20</size>
 						</object>
 						<object class="wxStaticText" name="ID_STLABELSTARTMOVIE">
 							<label>From : </label>
@@ -203,7 +201,6 @@
 						<object class="wxTimePickerCtrl" name="ID_STSTARTMOVIE">
 							<label>00:00:00</label>
 							<pos>100,300</pos>
-							<size>100,20</size>
 						</object>
 						<object class="wxStaticText" name="ID_STLABELENDMOVIE">
 							<label>To : </label>
@@ -212,7 +209,6 @@
 						<object class="wxTimePickerCtrl" name="ID_STENDMOVIE">
 							<label>00:00:00</label>
 							<pos>100,330</pos>
-							<size>100,20</size>
 						</object>
 					</object>
 				</object>
