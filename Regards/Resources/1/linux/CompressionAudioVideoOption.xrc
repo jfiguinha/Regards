@@ -83,7 +83,8 @@
 							</object>
 							<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
 								<max>51</max>
-								<pos>120,160</pos>
+								<pos>120,140</pos>
+                                <size>230,60</size>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT1">
 								<label>High</label>
@@ -105,6 +106,7 @@
 								<default>0</default>
 								<pos>140,200</pos>
 								<size>100,20</size>
+                                <value>1500</value>
 							</object>
 							<object class="wxStaticBox" name="ID_STATICBOX1">
 								<label>Audio Option</label>

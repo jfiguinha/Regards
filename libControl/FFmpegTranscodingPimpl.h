@@ -51,7 +51,8 @@ public:
 	{
 		if (cleanPacket)
 		{
-			av_packet_unref(&packet);
+            if(packet.data != NULL)
+                av_packet_unref(&packet);
 			Release();
 			if (bitmapShow != nullptr)
 			{
@@ -138,6 +139,6 @@ private:
 	double duration_movie = 0.0;
 	AVFrame * dst = nullptr;
 	SwsContext* scaleContext = nullptr;
-	bool m_allowSeek;
+	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 };

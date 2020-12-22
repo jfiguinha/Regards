@@ -1562,7 +1562,7 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input)
 	if ((ret = open_input_file(input)) < 0)
 		return ret;
 	//ret = init_filters();
-
+    m_allowSeek = (input != "-") && (input.find("rtsp://") != 0) && (input.find("udp://") != 0);
 	dst = av_frame_alloc();
 	scaleContext = sws_alloc_context();
 	cleanPacket = true;
@@ -2056,6 +2056,10 @@ void CFFmpegTranscodingPimpl::Release()
 		av_free(filter_ctx);
 		av_free(stream_ctx);
 		avformat_close_input(&ifmt_ctx);
+        
+        filter_ctx = nullptr;
+        stream_ctx = nullptr;
+        ifmt_ctx = nullptr;
 	}
 
 
@@ -2064,6 +2068,8 @@ void CFFmpegTranscodingPimpl::Release()
 		if (ofmt_ctx && !(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
 			avio_closep(&ofmt_ctx->pb);
 		avformat_free_context(ofmt_ctx);
+        
+        ofmt_ctx = nullptr;
 	}
 
 }
