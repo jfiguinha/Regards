@@ -315,6 +315,8 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString & filename)
 
 	for (i = 0; i < ifmt_ctx->nb_streams; i++) {
 		AVStream *stream = ifmt_ctx->streams[i];
+        if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+            continue;
 		AVCodec *dec = avcodec_find_decoder(stream->codecpar->codec_id);
 		AVCodecContext *codec_ctx;
 		if (!dec) {
@@ -1028,7 +1030,12 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 		return AVERROR_UNKNOWN;
 	}
 
-	for (i = 0; i < ifmt_ctx->nb_streams; i++) {
+	for (i = 0; i < ifmt_ctx->nb_streams; i++) 
+    {
+		AVStream *stream = ifmt_ctx->streams[i];
+        if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+            continue;
+        
 		out_stream = avformat_new_stream(ofmt_ctx, NULL);
 		if (!out_stream) {
 			av_log(NULL, AV_LOG_ERROR, "Failed allocating output stream\n");
@@ -1548,11 +1555,11 @@ void CFFmpegTranscodingPimpl::SetFrameData(AVFrame * src_frame, CompressVideo * 
 
 int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 {
+    av_log(NULL, AV_LOG_INFO, "Flushing stream #%u encoder\n", stream_index);
 	if (!(stream_ctx[stream_index].enc_ctx->codec->capabilities &
 		AV_CODEC_CAP_DELAY))
 		return 0;
 
-	av_log(NULL, AV_LOG_INFO, "Flushing stream #%u encoder\n", stream_index);
 	return encode_write_frame(NULL, stream_index);
 }
 
@@ -1810,7 +1817,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 			break;
 		}
 
-
+        if(st->codecpar->codec_id == AV_CODEC_ID_NONE)
+            goto continue_packet;
 
 		if (filter_ctx[stream_index].filter_graph) {
 
