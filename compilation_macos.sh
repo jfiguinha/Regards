@@ -20,20 +20,12 @@ brew install -v unzip
 brew install -v cmake
 brew install -v yasm
 brew install -v tbb
-brew install -v libtiff
-brew install -v libpng
-brew install -v libjpeg
-brew install -v x265
 brew install -v sdl2
 brew install -v tesseract
 brew install -v poppler
 brew install -v qpdf
-brew install -v openexr
 brew install -v jasper
-brew install -v aom
 brew install -v ffmpeg
-#brew install -v freeimage
-#brew install -v fftw
 #Install External Library
 cd libextern
 chmod +x compilation_library_macos.sh
