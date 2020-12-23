@@ -83,22 +83,4 @@ cd ..
 cd ..
 cd ..
 
-# installs ffmpeg vanilla as dependency
-brew install chromaprint amiaopensource/amiaos/decklinksdk
-
-# install dependencies to cook our own
-brew install automake fdk-aac git lame libass libtool libvorbis libvpx opus sdl shtool texi2html theora wget x264 x265 xvid nasm
-
-export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-
-#Compille ffmpeg
-tar xf ffmpeg-4.3.1.tar.xz
-mv ffmpeg-4.3.1 ffmpeg-master
-cd ffmpeg-master
-./configure  --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="$HOME/ffmpeg_build/bin" --enable-libaom --enable-gpl --enable-nonfree --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid --enable-chromaprint --enable-decklink --samples=fate-suite
-make -j$NBPROC
-cd ..
-#Compille ffmpeg
-#chmod +x ffmpeg_build_macos.sh
-#./ffmpeg_build_macos.sh
 
