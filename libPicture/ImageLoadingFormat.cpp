@@ -294,12 +294,12 @@ void CImageLoadingFormat::SetFilename(const wxString &filename)
 	this->filename = wxString(filename);
 }
 
-void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap * image)
+void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap * image, const bool & flip)
 {
 	if (image != nullptr)
 	{
 		format = TYPE_IMAGE_REGARDSJPEGIMAGE;
-		_jpegImage = new CRegardsJpegPicture(image->GetPtBitmap(), image->GetBitmapWidth(), image->GetBitmapHeight());
+		_jpegImage = new CRegardsJpegPicture(image->GetPtBitmap(), image->GetBitmapWidth(), image->GetBitmapHeight(), flip);
 		filename = image->GetFilename();
 	}
 }

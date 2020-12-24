@@ -4,10 +4,12 @@
 #include <ThumbnailDataStorage.h>
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
+#include <libPicture.h>
+#include <LibResource.h>
 using namespace Regards::Control;
 using namespace Regards::Scanner;
 using namespace Regards::Window;
-
+using namespace Regards::Picture;
 #define wxTIMER_PROCESS 1001
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
@@ -157,6 +159,13 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 			thumbnailData->SetPercent(percent);
 			thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(size));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+			if (thumbnail->image == nullptr)
+			{
+				CLibPicture libPicture;
+				thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+			}
+
 			thumbnailData->SetBitmap(thumbnail->image);
 
 			CIcone * pBitmapIcone = new CIcone();

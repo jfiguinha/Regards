@@ -9,6 +9,7 @@
 #include <picture_id.h>
 #include <SqlThumbnail.h>
 #include <SqlPhotosWithoutThumbnail.h>
+#include <LibResource.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -183,6 +184,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 				thumbnail->timePosition = i;
 				thumbnail->image = libPicture.LoadPicture(szFileName, true, i);
 			}
+			if(thumbnail->image == nullptr)
+				thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+
 			float percent = ((float)i / (float)size) * 100.0f;
 			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(szFileName);
 			//thumbnailData->SetStorage(nullptr);
@@ -193,7 +197,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			if (typeElement == TYPEMULTIPAGE)
 				thumbnailData->SetLibelle("Page : " + to_string(i+1) + "/" + to_string(nbResult));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
-			thumbnailData->SetBitmap(thumbnail->image);
+			if(thumbnail->image != nullptr)
+				thumbnailData->SetBitmap(thumbnail->image);
 
 			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(i);
@@ -235,6 +240,10 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			thumbnailData->SetTypeElement(typeElement);
 			thumbnailData->SetPercent(percent);
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+			if (thumbnail->image == nullptr)
+				thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)
 				thumbnailData->SetLibelle("Page : " + to_string(j+1) + "/" + to_string(size));
@@ -296,13 +305,17 @@ void CThumbnailVideo::ProcessThumbnail()
 					thumbnail->timePosition = i;
 					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
 				}
+				if (thumbnail->image == nullptr)
+					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+
 				CIcone * pBitmapIcone = iconeList->GetElement(i);
 				if (pBitmapIcone != nullptr)
 				{
 					CThumbnailDataStorage * thumbnailData = (CThumbnailDataStorage *)pBitmapIcone->GetData();
 					if (thumbnailData != nullptr)
 					{
-						thumbnailData->SetBitmap(thumbnail->image);
+						if(thumbnail->image != nullptr)
+							thumbnailData->SetBitmap(thumbnail->image);
 						thumbnailData->SetTimePosition(thumbnail->timePosition);
 						pBitmapIcone->DestroyCache();
 					}

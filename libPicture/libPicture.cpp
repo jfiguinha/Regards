@@ -1383,8 +1383,8 @@ CImageLoadingFormat * CLibPicture::LoadVideoThumbnail(const  wxString & szFileNa
 					bitmap = new CImageLoadingFormat();
 					bitmap->SetFilename(szFileName);
 					int rotation = 0;
-					CThumbnailVideo video;
-					bitmap->SetPicture(video.GetVideoFrame(szFileName, rotation, percent, timePosition, widthThumbnail, heightThumbnail));
+					CThumbnailVideo video(szFileName);
+					bitmap->SetPicture(video.GetVideoFrame(rotation, percent, timePosition, widthThumbnail, heightThumbnail));
 					bitmap->SetOrientation(rotation);
 					bitmap->SetFilename(szFileName);
 					break;
@@ -1426,7 +1426,8 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 	vector<CImageVideoThumbnail *> listThumbnail;
     int rotation = 0;
 
-	CThumbnailVideo video;
+
+	//CThumbnailVideo video(szFileName);
 	int movieDuration = 0;
 	int pourcentage = 0;
 
@@ -1869,9 +1870,9 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
             case AV1:
 			case MOV:
 			{
-				CThumbnailVideo video;	               
+				CThumbnailVideo video(szFileName);
                 //CConvertUtility::ConvertToStdString
-				vector<CImageVideoThumbnail *> listVideo = video.GetVideoListFrame(szFileName, widthThumbnail, heightThumbnail, compressJpeg);
+				vector<CImageVideoThumbnail *> listVideo = video.GetVideoListFrame(widthThumbnail, heightThumbnail, compressJpeg);
 				for (CImageVideoThumbnail * cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);
@@ -1915,9 +1916,9 @@ bool CLibPicture::TestIsVideoValid(const wxString & szFileName)
 {
 	bool isValid = true;
 	int rotation = 0;
-	CThumbnailVideo video;
+	CThumbnailVideo video(szFileName);
 	//CConvertUtility::ConvertToStdString
-	CRegardsBitmap * bitmap = video.GetVideoFrame(szFileName, 200, 200, rotation);
+	CRegardsBitmap * bitmap = video.GetVideoFrame(200, 200, rotation);
 	if (bitmap == nullptr)
 		isValid = false;
 	else
@@ -2804,9 +2805,9 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 		case MOV:
 			{
 				int orientation = 0;
-				CThumbnailVideo video;
+				CThumbnailVideo video(fileName);
 				int percent = ((float)numPicture / (float)20) * 100.0f;
-				bitmap->SetPicture(video.GetVideoFrame(fileName, 0, 0, orientation, percent));
+				bitmap->SetPicture(video.GetVideoFrame(0, 0, orientation, percent));
 				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(fileName);
 			}
@@ -3210,8 +3211,8 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 	case MOV:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CThumbnailVideo video;
-			video.GetVideoDimensions(fileName, width, height, rotation);
+			CThumbnailVideo video(fileName);
+			video.GetVideoDimensions(width, height, rotation);
 		}
 		break;
 #ifdef LIBHEIC

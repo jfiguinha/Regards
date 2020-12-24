@@ -20,6 +20,7 @@
 #include <ConvertUtility.h>
 #include <libPicture.h>
 #include <InterpolationBicubic.h>
+#include <videothumb.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
@@ -738,7 +739,9 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), acceleratorHardware, isOpenGLDecoding);
+	CThumbnailVideo video(filename);
+	bool isHardware = video.IsHardwareDecoderCompatible();
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), isHardware ? acceleratorHardware : "", isOpenGLDecoding);
 
 }
 
@@ -885,7 +888,9 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			playStartTimer->Start(1000, true);
 		else
 		{
-			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), acceleratorHardware, isOpenGLDecoding);
+			CThumbnailVideo video(filename);
+			bool isHardware = video.IsHardwareDecoderCompatible();
+			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), isHardware ? acceleratorHardware : "", isOpenGLDecoding);
 			ffmfc->SetVolume(GetSoundVolume());
 		}
 		muVideoEffect.lock();

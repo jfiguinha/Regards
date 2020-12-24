@@ -4,7 +4,7 @@ class CRegardsJpegPicture
 {
 public:
 
-	CRegardsJpegPicture(uint8_t * buffer, const int &width, const int &height);
+	CRegardsJpegPicture(uint8_t * buffer, const int &width, const int &height, const bool &flip = true);
 	virtual ~CRegardsJpegPicture();
 
 	bool IsValid();
@@ -19,7 +19,7 @@ public:
 
 protected:
 
-	uint8_t * CompressRegardsBitmapToJpeg(uint8_t * buffer, int width, int height, unsigned long & outputsize);
+	uint8_t * CompressRegardsBitmapToJpeg(uint8_t * buffer, int width, int height, unsigned long & outputsize, const bool &flip);
 	int m_iWidth;
 	int m_iHeight;
 	unsigned long m_lSize;

@@ -51,6 +51,13 @@ void CThumbnailFileSelection::AddSeparatorBar(const wxString &libelle, int &nbEl
 		thumbnailData->SetTypeElement(typeElement);
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+		if (thumbnail->image == nullptr)
+		{
+			CLibPicture libPicture;
+			thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+		}
+			
 		thumbnailData->SetBitmap(thumbnail->image);
 
 		CIcone * pBitmapIcone = new CIcone();
@@ -150,6 +157,13 @@ void CThumbnailFileSelection::SetListeFile()
 		thumbnailData->SetTypeElement(typeElement);
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
+
+		if (thumbnail->image == nullptr)
+		{
+			CLibPicture libPicture;
+			thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+		}
+
 		thumbnailData->SetBitmap(thumbnail->image);
 
 

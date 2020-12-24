@@ -108,12 +108,6 @@
     <ClInclude Include="Rotate.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
-    <ClInclude Include="RotateByShear.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateByShearRGB.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
     <ClInclude Include="Rotation.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -321,6 +315,12 @@
     <ClInclude Include="BitmapFusionFilter.h">
       <Filter>window\Transition</Filter>
     </ClInclude>
+    <ClInclude Include="moviestreaminfo.h">
+      <Filter>window\video</Filter>
+    </ClInclude>
+    <ClInclude Include="videostream.h">
+      <Filter>window\video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -484,6 +484,12 @@
     </ClCompile>
     <ClCompile Include="BitmapFusionFilter.cpp">
       <Filter>window\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="moviestreaminfo.cpp">
+      <Filter>window\video</Filter>
+    </ClCompile>
+    <ClCompile Include="videostream.cpp">
+      <Filter>window\video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

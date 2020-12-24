@@ -20,14 +20,11 @@
 
 
 extern "C" {
-#ifdef LATEST_GREATEST_FFMPEG	
 #include <libavutil/display.h>
 #include <libavutil/opt.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
-#endif
-#include <libswscale/swscale.h>
 }
 
 #include <libavutil/dict.h>
