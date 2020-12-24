@@ -210,7 +210,18 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 
 CompressionAudioVideoOption::~CompressionAudioVideoOption()
 {
-	delete ffmpegTranscoding;
+	if (ffmpegTranscoding)
+	{
+		delete ffmpegTranscoding;
+		ffmpegTranscoding = nullptr;
+	}
+
+	if (sliderVideoPosition)
+	{
+		delete sliderVideoPosition;
+		sliderVideoPosition = nullptr;
+	}
+
 }
 
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)

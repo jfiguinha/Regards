@@ -80,7 +80,7 @@ private:
 	int widthVideo;
 	int heightVideo;
 	int rotation;
-	float startTime = 0;
+	int64_t startTime = 0;
 	bool isOk = true;
 	CRegardsBitmap * image;
 };

@@ -293,7 +293,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 
 				widthVideo = codec_ctx->width;
 				heightVideo = codec_ctx->height;
-				startTime = stream->start_time;
+				startTime = ifmt_ctx->start_time;
 
 				int32_t* matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
 				if (matrix)
@@ -339,7 +339,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 		return ret;
 	}
 
-	int64_t timestamp = timeInSeconds *1000 * 1000 ;
+	int64_t timestamp = timeInSeconds *1000 * 1000 + startTime;
 
 	if (timestamp < 0)
 	{
