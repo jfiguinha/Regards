@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libPicture" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Rotate">
+    <File Name="RotateByShearRGB.h"/>
+    <File Name="RotateByShear.h"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -38,34 +42,11 @@
     <File Name="InterpolationFloatBicubic.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ThumbnailVideo">
-    <File Name="ifilter.h"/>
-    <File Name="histogram.h"/>
-    <File Name="grayscalefilter.h"/>
-    <File Name="filmstripfilter.h"/>
-    <File Name="filmstripfilter.cpp"/>
-    <File Name="filmstrip.h"/>
-    <File Name="config.h"/>
-    <File Name="cximagewriter.h"/>
-    <File Name="cximagewriter.cpp"/>
-    <File Name="imagewriter.h"/>
-    <File Name="ImageVideoThumbnail.h"/>
-    <File Name="imagetypes.h"/>
-    <File Name="imagewriterfactory.h"/>
-    <File Name="moviestreaminfo.h"/>
-    <File Name="moviestreaminfo.cpp"/>
-    <File Name="moviedecoder.h"/>
-    <File Name="moviedecoder.cpp"/>
-    <File Name="stringoperations.cpp"/>
-    <File Name="stringoperations.h"/>
-    <File Name="videothumbnailer.h"/>
-    <File Name="videothumbnailer.cpp"/>
-    <File Name="videothumbnail.h"/>
-    <File Name="videothumbnail.cpp"/>
     <File Name="videothumb.h"/>
+    <File Name="ImageVideoThumbnail.h"/>
+    <File Name="FFmpegDecodeFrame.h"/>
     <File Name="videothumb.cpp"/>
-    <File Name="videostream.h"/>
-    <File Name="videostream.cpp"/>
-    <File Name="videoframe.h"/>
+    <File Name="FFmpegDecodeFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libhdr">
     <File Name="PiccanteHDR.h"/>
@@ -159,6 +140,8 @@
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libResource"/>
