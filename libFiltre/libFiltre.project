@@ -126,6 +126,10 @@
       <File Name="DecodeRaw.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="video">
+      <File Name="videostream.h"/>
+      <File Name="moviestreaminfo.h"/>
+      <File Name="videostream.cpp"/>
+      <File Name="moviestreaminfo.cpp"/>
       <File Name="VideoFilter.h"/>
       <File Name="VideoFilter.cpp"/>
       <File Name="AudioVideoFilter.h"/>
@@ -202,6 +206,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libUtility"/>
