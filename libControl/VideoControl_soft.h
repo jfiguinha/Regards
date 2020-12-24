@@ -31,10 +31,10 @@ public:
 	~CVideoControlSoft();
 
 	bool IsPause();
-	void SetVideoDuration(int64_t duration);
+	void SetVideoDuration(const int64_t & duration, const int64_t & startTime);
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
-	void SetVideoPosition(int64_t pos);
+	void SetVideoPosition(const int64_t & pos);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
@@ -240,4 +240,5 @@ protected:
 	bool isDXVA2Compatible = false;
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
+	float startingTime = 0;
 };

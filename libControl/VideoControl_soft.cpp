@@ -63,7 +63,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
-
+	startingTime = 0;
 	old_width = 0;
 	old_height = 0;
 	pause = false;
@@ -866,8 +866,12 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 
 bool CVideoControlSoft::IsHardwareCompatible()
 {
-	CThumbnailVideo video(filename);
-	return video.IsHardwareDecoderCompatible();
+	if (acceleratorHardware != "")
+	{
+		CThumbnailVideo video(filename);
+		return video.IsHardwareDecoderCompatible();
+	}
+	return true;
 }
 
 int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
@@ -1396,13 +1400,15 @@ void CVideoControlSoft::OnPause()
 	}
 }
 
-void CVideoControlSoft::SetVideoDuration(int64_t duration)
+void CVideoControlSoft::SetVideoDuration(const int64_t & duration, const int64_t & startTime)
 {
+	startingTime = startTime;
+
 	if (eventPlayer != nullptr)
 		eventPlayer->SetVideoDuration(duration);
 }
 
-void CVideoControlSoft::SetVideoPosition(int64_t pos)
+void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
 {
 	ffmfc->SetTimePosition(pos * 1000 * 1000);
 }
@@ -1416,9 +1422,10 @@ void CVideoControlSoft::SetPos(int64_t pos)
 {
 	if (!videoEnd)
 	{
-		videoPosition = pos;
+		videoPosition = (pos * 1000) - startingTime;
+		videoPosition = videoPosition / 1000;
 		if (eventPlayer != nullptr)
-			eventPlayer->OnPositionVideo(pos);
+			eventPlayer->OnPositionVideo(videoPosition);
 	}
 
 	//Refresh();

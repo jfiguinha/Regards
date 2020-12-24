@@ -1578,11 +1578,13 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 	bool first = true;
 	bool startEncoding = true;
 	bool first_frame = true;
+	int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
 	
+
 	if (videoCompressOption->startTime != 0)
 	{
+		
 		int64_t timestamp = static_cast<int64_t>(videoCompressOption->startTime) * 1000 * 1000;
-		//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
 
 		if (timestamp < 0)
 		{

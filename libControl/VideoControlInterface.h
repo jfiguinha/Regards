@@ -42,7 +42,7 @@ public:
 	virtual int GetVolume() = 0;
 
 	virtual void SetRotation(const int &rotation) = 0;
-	virtual void SetVideoDuration(int64_t duration) = 0;
-	virtual void SetVideoPosition(int64_t pos) = 0;
+	virtual void SetVideoDuration(const int64_t & duration, const int64_t & startTime) = 0;
+	virtual void SetVideoPosition(const int64_t & pos) = 0;
 
 };

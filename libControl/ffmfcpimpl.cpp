@@ -2570,7 +2570,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 
 	//×¢Òâ£ºÔÚ´Ë´¦ÉèÖÃMFC²ÎÊý
 	//ffmfc_param_global(is);
-	is->_pimpl->dlg->SetVideoDuration(is->ic->duration);
+	is->_pimpl->dlg->SetVideoDuration(is->ic->duration, is->ic->start_time);
 
 	for (;;) {
 
