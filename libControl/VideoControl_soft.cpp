@@ -739,9 +739,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	CThumbnailVideo video(filename);
-	bool isHardware = video.IsHardwareDecoderCompatible();
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), isHardware ? acceleratorHardware : "", isOpenGLDecoding);
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
 
 }
 
@@ -866,6 +864,12 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 	muSubtitle.unlock();
 }
 
+bool CVideoControlSoft::IsHardwareCompatible()
+{
+	CThumbnailVideo video(filename);
+	return video.IsHardwareDecoderCompatible();
+}
+
 int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd || stopVideo)
@@ -888,9 +892,8 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			playStartTimer->Start(1000, true);
 		else
 		{
-			CThumbnailVideo video(filename);
-			bool isHardware = video.IsHardwareDecoderCompatible();
-			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), isHardware ? acceleratorHardware : "", isOpenGLDecoding);
+
+			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
 			ffmfc->SetVolume(GetSoundVolume());
 		}
 		muVideoEffect.lock();

@@ -15,7 +15,7 @@
 
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-class CFFmpegTranscoding;
+class CThumbnailVideo;
 class CRegardsBitmap;
 class CSliderVideoSelection;
 
@@ -86,8 +86,7 @@ class CompressionAudioVideoOption: public wxDialog
 		double timeTotal;
         bool isOk;
 		wxString videoFilename;
-		CFFmpegTranscoding * ffmpegTranscoding;
-		CRegardsBitmap * bitmapDisplay;
+		CThumbnailVideo * ffmpegTranscoding;
 		CSliderVideoSelection * sliderVideoPosition;
 		int ret = 0;
 		wxImage scale;

@@ -3,7 +3,7 @@
 #include <window_id.h>
 #include <VideoCompressOption.h>
 #include <ImageLoadingFormat.h>
-#include <ffmpeg_transcoding.h>
+#include <videothumb.h>
 #include <RegardsBitmap.h>
 #include <wx/filename.h>
 #include <libPicture.h>
@@ -79,22 +79,10 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 
-	bitmapDisplay = new CRegardsBitmap();
-	wxString decoder = "";
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-}
-	ffmpegTranscoding = new CFFmpegTranscoding(decoder);
-	ret = ffmpegTranscoding->OpenVideoFile(videoFilename);
-	ret = ffmpegTranscoding->GetFrameBitmapPosition(0, bitmapDisplay);
-	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);
-	scale = _wxImage->Scale(344, 200).Mirror(false);
-	bitmap->SetBitmap(scale);
-	delete _wxImage;
+	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
+	SetBitmap(0);
 
-	timeTotal = ffmpegTranscoding->GetDuration();
+	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 	
 
@@ -138,11 +126,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
-	int ret = ffmpegTranscoding->GetFrameBitmapPosition(pos, bitmapDisplay);
-	wxImage * _wxImage = CLibPicture::ConvertRegardsBitmapToWXImage(bitmapDisplay);
-	scale = _wxImage->Scale(344, 200).Mirror(false);
-	bitmap->SetBitmap(scale);
-	delete _wxImage;
+	bitmap->SetBitmap(CLibPicture::ConvertRegardsBitmapToWXImage(ffmpegTranscoding->GetVideoFrame(pos, 344, 200), true, false));
 }
 
 void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
@@ -227,7 +211,6 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 CompressionAudioVideoOption::~CompressionAudioVideoOption()
 {
 	delete ffmpegTranscoding;
-	delete bitmapDisplay;
 }
 
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)

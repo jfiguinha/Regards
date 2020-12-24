@@ -109,6 +109,7 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString
 	widthVideo = 0;
 	heightVideo = 0;
 	rotation = 0;
+	first = true;
 	this->acceleratorHardware = acceleratorHardware;
 	int ret;
 	if ((ret = open_input_file(fileName)) < 0)
@@ -122,6 +123,8 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString
 	}
 	else
 		cleanPacket = false;
+
+	image = new CRegardsBitmap();
 };
 
 
@@ -149,6 +152,9 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 
 	if (scaleContext != nullptr)
 		sws_freeContext(scaleContext);
+
+	if (image != nullptr)
+		delete image;
 };
 
 
@@ -314,7 +320,7 @@ double CFFmpegDecodeFrame::GetTotalTime()
 }
 
 
-int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, CRegardsBitmap * bitmap, const int &widthThumbnail, const int &heightThumbnail)
+int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const int &widthThumbnail, const int &heightThumbnail)
 {
 	if (!isOk)
 		return -1;
@@ -322,13 +328,9 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, CRegar
 	int videoFrameOutputHeight = 0;
 	int ret = 0;
 	int stream_index = 0;
-	bool first = true;
 	bool pictureFind = false;
 	AVFrame * sw_frame = nullptr;
 	bool deleteMemory = false;
-	if (bitmap == nullptr)
-		return -22;
-
 
 	if (!m_allowSeek)
 	{
@@ -453,12 +455,12 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, CRegar
 				}
 
 				int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight);
-				if (numBytes != bitmap->GetBitmapSize())
+				if (numBytes != image->GetBitmapSize())
 				{
-					bitmap->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
+					image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
 				}
 
-				uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
+				uint8_t * convertedFrameBuffer = image->GetPtBitmap();
 				int linesize = videoFrameOutputWidth * 4;
 
 				sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
@@ -476,7 +478,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, CRegar
 	
 	if (rotation != 0)
 	{
-		CRgbaquad * m_OriginalBitmapBits = (CRgbaquad *)bitmap->GetPtBitmap();
+		CRgbaquad * m_OriginalBitmapBits = (CRgbaquad *)image->GetPtBitmap();
 		wxSize m_size = wxSize(videoFrameOutputWidth, videoFrameOutputHeight);
 		wxSize m_sizedst;
 		CRgbaquad clrBack;
@@ -488,12 +490,23 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, CRegar
 			&m_sizedst,
 			clrBack
 		);
-		bitmap->SetBitmap((uint8_t *)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
+		image->SetBitmap((uint8_t *)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
 		delete[] m_ScaledBitmapBits;
 	}
 	if (pictureFind)
 		ret = 0;
 	return ret;
+}
+
+CRegardsBitmap * CFFmpegDecodeFrame::GetBitmap(const bool &copy)
+{
+	if (copy)
+	{
+		CRegardsBitmap * copyPicture = new CRegardsBitmap();
+		*copyPicture = *image;
+		return copyPicture;
+	}
+	return image;
 }
 
 void CFFmpegDecodeFrame::Release()

@@ -104,6 +104,7 @@ public:
 
 protected:
 
+	bool IsHardwareCompatible();
 	float GetHauteurMax();
 	float GetLargeurMax();
 	void ExportPicture(CRegardsBitmap * bitmap);

@@ -32,7 +32,9 @@ public:
 	~CFFmpegDecodeFrame();
 	bool IsOk();
 	void GetVideoInfos(int & width, int & height, int &rotation);
-	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
+	int GetFrameBitmapPosition(const long &time, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
+	CRegardsBitmap * GetBitmap(const bool &copy = true);
+
 	double GetTotalTime();
 	int GetRotation();
 private:
@@ -57,7 +59,7 @@ private:
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
 	wxString acceleratorHardware = "dxva2";
-	
+	bool first;
 	AVFrame * dst = nullptr;
 	SwsContext* scaleContext = nullptr;
 	bool m_allowSeek = true;
@@ -68,7 +70,7 @@ private:
 	mutex muWriteData;
 	mutex muEnding;
 	AVFrame * copyFrameBuffer = nullptr;
-	CRegardsBitmap * bitmapVideo = nullptr;
+
 	double duration_movie = 0.0;
 	char timebase[255];
 	char duration[255];
@@ -80,4 +82,5 @@ private:
 	int rotation;
 
 	bool isOk = true;
+	CRegardsBitmap * image;
 };

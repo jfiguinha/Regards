@@ -84,9 +84,6 @@ public:
 	int OpenFile(const wxString & input, const wxString & output);
 	int ProcessEncodeFile(AVFrame * dst, SwsContext * scaleContext);
 
-	int OpenFile(const wxString & input);
-	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap);
-	double GetTotalTime();
 
 private:
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);

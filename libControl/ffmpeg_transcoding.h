@@ -10,9 +10,6 @@ class CFFmpegTranscoding
 public:
 	CFFmpegTranscoding(const wxString & acceleratorHardware);
 	~CFFmpegTranscoding();
-	int GetDuration();
-	int OpenVideoFile(const wxString & input);
-	int GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap);
 	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
 	int EndDecodeFile(const int & returnValue);
 	vector<wxString> ListOfEncoder();

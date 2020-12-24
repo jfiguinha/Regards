@@ -9,8 +9,6 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <rapidxml.hpp>
-using namespace Regards::Video;
-
 
 CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 {
@@ -33,6 +31,17 @@ CThumbnailVideo::~CThumbnailVideo()
 	decodeFrame = nullptr;
 }
 
+CRegardsBitmap *  CThumbnailVideo::GetVideoFrame(const int &timePosition, const int & thumbnailWidth, const int & thumbnailHeight)
+{
+	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
+	if (ret != 0)
+	{
+		delete decodeFrame;
+		decodeFrame = new CFFmpegDecodeFrame(filename, "");
+		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
+	}
+	return decodeFrame->GetBitmap(false);
+}
 
 void CThumbnailVideo::GetVideoDimensions(int & width, int & height, int &rotation)
 {
@@ -41,29 +50,26 @@ void CThumbnailVideo::GetVideoDimensions(int & width, int & height, int &rotatio
 
 bool CThumbnailVideo::IsHardwareDecoderCompatible()
 {
-	CRegardsBitmap * image = new CRegardsBitmap();
-	int ret = decodeFrame->GetFrameBitmapPosition(0, image, 0, 0);
-	delete image;
+	int ret = decodeFrame->GetFrameBitmapPosition(0, 0, 0);
 	return (ret != 0 ? false : true);
 }
 
 CRegardsBitmap * CThumbnailVideo::GetVideoFrame(int &rotation, const int &percent, int &timePosition, const int & thumbnailWidth, const int & thumbnailHeight)
 {
-	CRegardsBitmap * image = new CRegardsBitmap();
 	double totalTime = decodeFrame->GetTotalTime();
 	timePosition = (totalTime * percent) / 100.0f;
-	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, image, thumbnailWidth, thumbnailHeight);
+	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	if (ret != 0)
 	{
 		delete decodeFrame;
 		decodeFrame = new CFFmpegDecodeFrame(filename, "");
-		ret = decodeFrame->GetFrameBitmapPosition(timePosition, image, thumbnailWidth, thumbnailHeight);
+		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
 
 	rotation = decodeFrame->GetRotation();
 
 
-	return image;
+	return decodeFrame->GetBitmap();
 }
 
 CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const int & thumbnailWidth, const int & thumbnailHeight, int &rotation, int percent)

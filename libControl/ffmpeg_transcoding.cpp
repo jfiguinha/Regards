@@ -67,20 +67,6 @@ int CFFmpegTranscoding::EndDecodeFile(const int & returnValue)
 	return 0;
 }
 
-int CFFmpegTranscoding::OpenVideoFile(const wxString & input)
-{
-	return pimpl->OpenFile(input);
-}
-int CFFmpegTranscoding::GetFrameBitmapPosition(const long &time, CRegardsBitmap * bitmap)
-{
-	return pimpl->GetFrameBitmapPosition(time, bitmap);
-}
-
-int CFFmpegTranscoding::GetDuration()
-{
-	return pimpl->GetTotalTime();
-}
-
 int CFFmpegTranscoding::EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption)
 {
 	this->mainWindow = mainWindow;

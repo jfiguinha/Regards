@@ -60,7 +60,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 
 #if defined(FFMPEG)
 #include <videothumb.h>
-using namespace Regards::Video;
+//using namespace Regards::Video;
 #endif
 
 #if defined(EXIV2)
@@ -2907,6 +2907,49 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 	}
 
 	return bitmap;
+}
+
+wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap, const bool &flip, const bool &loadAlpha)
+{
+	int width = bitmap->GetBitmapWidth();
+	int height = bitmap->GetBitmapHeight();
+	int widthSrcSize = width * 4;
+	unsigned char * data = bitmap->GetPtBitmap();
+	int posData = 0;
+	int posDataOut = 0;
+	int posAlpha = 0;
+	wxImage anImage(width, height, true);
+	if (loadAlpha)
+		anImage.InitAlpha();
+
+	unsigned char * dataOut = anImage.GetData();
+	unsigned char * dataAlpha = anImage.GetAlpha();
+
+	if (data != nullptr)
+	{
+		for (auto y = 0; y < height; y++)
+		{
+			if(flip)
+				posData = y * widthSrcSize;
+			else
+				posData = ((height - y) * widthSrcSize) - widthSrcSize;
+			posDataOut = y * (width * 3);
+			posAlpha = y * width;
+			for (auto x = 0; x < width; x++)
+			{
+				dataOut[posDataOut] = data[posData + 2];
+				dataOut[posDataOut + 1] = data[posData + 1];
+				dataOut[posDataOut + 2] = data[posData];
+
+				if (loadAlpha)
+					dataAlpha[posAlpha++] = data[posData + 3];
+				posData += 4;
+				posDataOut += 3;
+			}
+		}
+	}
+
+	return anImage;
 }
 
 wxImage * CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap, const bool &loadAlpha)
