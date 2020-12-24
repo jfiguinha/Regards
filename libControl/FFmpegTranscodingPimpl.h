@@ -138,4 +138,5 @@ private:
 	SwsContext* scaleContext = nullptr;
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
+	float startTime = 0;
 };

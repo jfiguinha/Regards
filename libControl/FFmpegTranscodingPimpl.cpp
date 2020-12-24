@@ -389,6 +389,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString & filename)
 
 			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
+				startTime = stream->start_time;
 				duration_movie = double(stream->duration) * double(stream->time_base.num) / double(stream->time_base.den);
 			}
 		}
@@ -1578,13 +1579,11 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 	bool first = true;
 	bool startEncoding = true;
 	bool first_frame = true;
-	int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
-	
 
 	if (videoCompressOption->startTime != 0)
 	{
 		
-		int64_t timestamp = static_cast<int64_t>(videoCompressOption->startTime) * 1000 * 1000;
+		int64_t timestamp = static_cast<int64_t>(videoCompressOption->startTime) * 1000 * 1000 + startTime;
 
 		if (timestamp < 0)
 		{
