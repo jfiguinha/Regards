@@ -2,10 +2,8 @@
 NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
-
 #decompression
 tar xf  fftw-3.3.8.tar.gz
-
 
 #Compile exiv2-0.27.3 :
 cd exiv2-0.27.3
@@ -37,17 +35,6 @@ cd fftw-3.3.8
 make -j$NBPROC
 cd ..
 
-#Compile libpoppler
-tar xf poppler-20.11.0.tar.xz
-cd poppler-20.11.0
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
 #compile opencv
 cd opencv
 unzip opencv-4.3.0.zip
@@ -62,4 +49,24 @@ cd ..
 cd ..
 cd ..
 
+#compile lame
+tar xf lame-3.100.tar.gz
+cd lame-3.100
+./configure --prefix="$HOME/ffmpeg_build" 
+make -j$NBPROC
+sudo make install
+cd ..
 
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+
+# ffmpeg
+tar xf ffmpeg-4.3.1.tar.xz
+mv ffmpeg-4.3.1 ffmpeg-master
+cd ffmpeg-master
+./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="$HOME/ffmpeg_build/bin" --enable-gpl --enable-nonfree --enable-libaom --enable-libfdk-aac --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-libopus --enable-libxvid --enable-libdav1d
+make -j$NBPROC
+#make install
+
+rm VERSION
+
+cd ..
