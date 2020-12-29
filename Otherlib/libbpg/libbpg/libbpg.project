@@ -13,30 +13,8 @@
   <VirtualDirectory Name="include">
     <File Name="libbpg.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="internal">
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/png.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/png.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngconf.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngdebug.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngerror.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngget.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pnginfo.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pnglibconf.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngmem.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngpread.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngpriv.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngread.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngrio.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngrtran.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngrutil.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngset.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngstruct.h"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngtrans.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngwio.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngwrite.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngwtran.c"/>
-    <File Name="../../../libextern/dlib-19.20/dlib/external/libpng/pngwutil.c" ExcludeProjConfig=""/>
-  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="-std=c99;-Wall;-fPIC;-pthread" Assembler="">
@@ -47,6 +25,7 @@
         <Preprocessor Value="HAVE_AV_CONFIG_H"/>
         <Preprocessor Value="_FILE_OFFSET_BITS=64"/>
         <Preprocessor Value="_LARGEFILE_SOURCE"/>
+        <Preprocessor Value="ENABLE_NEON=ON"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -133,6 +112,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

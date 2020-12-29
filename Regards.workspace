@@ -53,7 +53,7 @@
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -71,7 +71,7 @@
     <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
@@ -143,7 +143,7 @@
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>

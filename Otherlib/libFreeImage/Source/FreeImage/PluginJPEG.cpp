@@ -44,8 +44,9 @@ extern "C" {
 #include "Utilities.h"
 
 #include "../Metadata/FreeImageTag.h"
-
-
+#define JPEG_LIB_VERSION        90	/* Compatibility version 9.0 */
+#define JPEG_LIB_VERSION_MAJOR  9
+#define JPEG_LIB_VERSION_MINOR  4
 // ==========================================================
 // Plugin Interface
 // ==========================================================
@@ -502,8 +503,7 @@ marker_is_icc(jpeg_saved_marker_ptr marker) {
   NOTE: if the file contains invalid ICC APP2 markers, we just silently
   return FALSE.  You might want to issue an error message instead.
 */
-static BOOL 
-jpeg_read_icc_profile(j_decompress_ptr cinfo, JOCTET **icc_data_ptr, unsigned *icc_data_len) {
+BOOL jpeg_read_icc_profile(j_decompress_ptr cinfo, JOCTET **icc_data_ptr, unsigned *icc_data_len) {
 	jpeg_saved_marker_ptr marker;
 	int num_markers = 0;
 	int seq_no;

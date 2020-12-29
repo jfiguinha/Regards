@@ -14,7 +14,7 @@
 #include <FilterData.h>
 #include <OpenCLEngine.h>
 #include <Metadata.h>
-#include <videostream.h>
+#include "videostream.h"
 using namespace Regards::Filter;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;

@@ -61,7 +61,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
+      <Compiler Options=";-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="include"/>
         <IncludePath Value="../"/>

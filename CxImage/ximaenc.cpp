@@ -4,7 +4,9 @@
  */
 
 #include "ximage.h"
+#if defined(__x86_64__) || defined(_M_AMD64)	
 #include <tmmintrin.h>
+#endif 
 
 #if CXIMAGE_SUPPORT_JPG
 #include "ximajpg.h"

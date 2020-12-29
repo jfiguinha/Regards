@@ -1,28 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libSqlData" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Datastructure">
-    <File Name="Photos.h"/>
-    <File Name="PhotoGps.h"/>
-    <File Name="PhotoCriteria.h"/>
-    <File Name="PhotoCategorieUsenet.h"/>
-    <File Name="PhotoCategorie.h"/>
-    <File Name="PhotoCatalog.h"/>
-    <File Name="ListCriteriaPhoto.h"/>
-    <File Name="FolderCatalog.h"/>
-    <File Name="FaceName.h"/>
-    <File Name="FaceFilePath.h"/>
-    <File Name="FaceDescriptor.h"/>
-    <File Name="Criteria.h"/>
-    <File Name="Country.h"/>
-    <File Name="Photos.cpp"/>
-    <File Name="PhotoGps.cpp"/>
-    <File Name="PhotoCriteria.cpp"/>
-    <File Name="PhotoCategorie.cpp"/>
-    <File Name="PhotoCatalog.cpp"/>
-    <File Name="FolderCatalog.cpp"/>
-    <File Name="Criteria.cpp"/>
-    <File Name="Country.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -49,6 +26,29 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Datastructure">
+    <File Name="Photos.h"/>
+    <File Name="PhotoGps.h"/>
+    <File Name="PhotoCriteria.h"/>
+    <File Name="PhotoCategorieUsenet.h"/>
+    <File Name="PhotoCategorie.h"/>
+    <File Name="PhotoCatalog.h"/>
+    <File Name="ListCriteriaPhoto.h"/>
+    <File Name="FolderCatalog.h"/>
+    <File Name="FaceName.h"/>
+    <File Name="FaceFilePath.h"/>
+    <File Name="FaceDescriptor.h"/>
+    <File Name="Criteria.h"/>
+    <File Name="Country.h"/>
+    <File Name="Photos.cpp"/>
+    <File Name="PhotoGps.cpp"/>
+    <File Name="PhotoCriteria.cpp"/>
+    <File Name="PhotoCategorie.cpp"/>
+    <File Name="PhotoCatalog.cpp"/>
+    <File Name="FolderCatalog.cpp"/>
+    <File Name="Criteria.cpp"/>
+    <File Name="Country.cpp"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -130,7 +130,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>

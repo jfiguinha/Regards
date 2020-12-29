@@ -145,7 +145,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libTheme"/>

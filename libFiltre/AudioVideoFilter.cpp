@@ -12,7 +12,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <Metadata.h>
-#include <videostream.h>
+#include "videostream.h"
 #include <RegardsBitmap.h>
 using namespace Regards::Filter;
 using namespace Regards::Video;

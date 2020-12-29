@@ -68,7 +68,7 @@ wxString CFileUtility::GetResourcesFolderPath()
 
 #if defined(__APPLE__) && not defined(__LLVM__)
 
-     printf("toto 1 GetResourcesFolderPath \n");
+     //printf("toto 1 GetResourcesFolderPath \n");
 
     wxString exeFolderMacOs = ".app/Contents/";
     wxString path = wxStandardPaths::Get().GetExecutablePath();

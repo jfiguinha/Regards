@@ -51,6 +51,9 @@
 // for _write
 #include <io.h>
 #endif
+#ifdef __APPLE__
+#include <unistd.h>
+#endif
 
 using namespace heif;
 

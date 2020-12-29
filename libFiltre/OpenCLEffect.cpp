@@ -921,7 +921,12 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 
 
 		COpenCLParameterInt * paramRGBA = new COpenCLParameterInt();
+
+#if defined(__x86_64__) || defined(_M_AMD64)	
 		paramRGBA->SetValue(0);
+#elif defined(__APPLE__)
+        paramRGBA->SetValue(1);
+#endif 
 		paramRGBA->SetLibelle("rgba");
 		vecParam.push_back(paramRGBA);
 

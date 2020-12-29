@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libavif" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -20,9 +25,11 @@
     <File Name="include/avif/internal.h"/>
     <File Name="include/avif/avif.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
+      <Compiler Options=";-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="include"/>
         <Preprocessor Value="AVIF_CODEC_AOM"/>
@@ -111,6 +118,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

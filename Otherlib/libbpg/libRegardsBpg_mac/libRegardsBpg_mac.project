@@ -34,7 +34,6 @@
         <IncludePath Value="."/>
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>
-        <IncludePath Value="../../../libextern/dlib-19.20/dlib/external/libpng"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
         <Preprocessor Value="HAVE_AV_CONFIG_H"/>
@@ -43,19 +42,20 @@
         <Preprocessor Value="CONFIG_BPG_VERSION=0.9.7"/>
         <Preprocessor Value="USE_X265"/>
         <Preprocessor Value="_DEBUG"/>
+        <Preprocessor Value="ENABLE_NEON=ON"/>
       </Compiler>
       <Linker Options="-headerpad_max_install_names">
         <LibraryPath Value="."/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
-        <Library Value="avcodec"/>
-        <Library Value="avutil"/>
-        <Library Value="omp"/>
+        <Library Value="avcodec_bpg"/>
+        <Library Value="avutil_bpg"/>
         <Library Value="z"/>
+        <Library Value="png"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="clang++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
       </Compiler>
@@ -98,7 +98,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="clang++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>

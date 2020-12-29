@@ -31,7 +31,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/dlib-19.20/dlib/all"/>
         <IncludePath Value="../libextern/dlib-19.20"/>

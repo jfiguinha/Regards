@@ -4,7 +4,6 @@ echo $NBPROC
 
 
 #decompression
-tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 tar xf  fftw-3.3.8.tar.gz
 
 
@@ -25,37 +24,6 @@ make -j$NBPROC
 cd ..
 cd ..
 
-#Compile libde265-master
-cd libde265-master
-cmake ../libde265-master 
-make -j$NBPROC
-cd ..
-
-#Compile MediaInfo_DLL_GNU_FromSource
-cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/GNU/Library
-./configure
-make -j$NBPROC
-cd ..
-cd ..
-cd ..
-cd ..
-cd ..
-
-cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
-./configure
-make -j$NBPROC
-cd ..
-cd ..
-cd ..
-cd ..
-cd ..
-
-#Compile LibRaw
-unzip LibRaw-0.20.0.zip
-cd LibRaw-0.20.0
-./configure
-make -j$NBPROC
-cd ..
 
 #Compile wxWidgets-master
 unzip wxWidgets-master.zip
@@ -67,6 +35,17 @@ cd ..
 cd fftw-3.3.8
 ./configure --enable-float
 make -j$NBPROC
+cd ..
+
+#Compile libpoppler
+tar xf poppler-20.11.0.tar.xz
+cd poppler-20.11.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
 cd ..
 
 #compile opencv
