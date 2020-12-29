@@ -52,7 +52,7 @@ cd ..
 #compile lame
 tar xf lame-3.100.tar.gz
 cd lame-3.100
-./configure --prefix="$HOME/ffmpeg_build" 
+./configure --prefix=/Users/jacques/ffmpeg_build --enable-static --disable-shared
 make -j$NBPROC
 sudo make install
 cd ..
