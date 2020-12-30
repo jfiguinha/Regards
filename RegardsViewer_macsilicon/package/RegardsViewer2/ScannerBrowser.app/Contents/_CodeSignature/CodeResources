@@ -21,7 +21,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			tg64yoVKJ4P0nR16Oa222xnJFZo=
+			GzNI6UNJIfjDtXqdfeXmaSNTyJY=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -31,10 +31,6 @@
 	<dict>
 		<key>Resources/English.lproj/InfoPlist.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			l2C27EtEWp5NYz0NmkRp9knTvlA=
-			</data>
 			<key>hash2</key>
 			<data>
 			rc7AU71syGe/2TPzyHLWGnPt5bv9V/ZrRP//SWfw+KE=
@@ -44,10 +40,6 @@
 		</dict>
 		<key>Resources/ScannerBrowser.icns</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			LA6akF4+iLOgx5O6IPOMsx3W2kI=
-			</data>
 			<key>hash2</key>
 			<data>
 			c8t1rtJbtnp+kMu4t1JCxXeMI+Qy5B6UI4ee+Yq5cKk=
@@ -55,13 +47,9 @@
 		</dict>
 		<key>Resources/en.lproj/MainMenu.nib</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			tg64yoVKJ4P0nR16Oa222xnJFZo=
-			</data>
 			<key>hash2</key>
 			<data>
-			ST/oOH4s1oHPjgBC1RjdhPetBnO4XLEXxnUv64Pyod4=
+			N1exc4+UteCzBNG3i/k/5JPYw14h9RNs2ZE5qXi00yY=
 			</data>
 			<key>optional</key>
 			<true/>
