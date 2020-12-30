@@ -38,6 +38,7 @@ brew install -v dav1d
 brew install -v nasm
 brew install -v libjpeg-turbo
 brew install -v poppler
+brew install -v lame
 #Install External Library
 cd libextern
 chmod +x compilation_library_macos.sh
