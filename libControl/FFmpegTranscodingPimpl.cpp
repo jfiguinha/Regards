@@ -1436,8 +1436,8 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
 
-	if (ret < 0)
-		return ret;
+	//if (ret < 0)
+	//	return ret;
 
 	while (ret >= 0) {
 		ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
@@ -1846,7 +1846,10 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
 
-	ProcessEncodeFile(dst, scaleContext);
+	ret = ProcessEncodeFile(dst, scaleContext);
+    char message[255];
+    av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+    wxMessageBox(message, "Error conversion", wxICON_ERROR);
 
 	return ret ? 1 : 0;
 }

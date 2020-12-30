@@ -40,7 +40,12 @@ namespace Regards
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
 
             void FlipVertical();
-			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
+#if defined(__x86_64__) || defined(_M_AMD64)	
+		void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
+#elif defined(__APPLE__)
+        void GetRgbaBitmap(cl_mem cl_image, int rgba = 1);
+#endif 
+			
 			int GetSrcWidth();
 			int GetSrcHeight();
 			int GetThumbnailWidth();
