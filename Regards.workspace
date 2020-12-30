@@ -55,6 +55,7 @@
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -142,6 +143,7 @@
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -214,6 +216,7 @@
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="MacOsLibExplorer" ConfigName="Release"/>
+      <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
