@@ -4,9 +4,9 @@
  */
 
 #include "ximage.h"
-#if defined(__x86_64__) || defined(_M_AMD64)	
-#include <tmmintrin.h>
-#endif 
+//#if defined(__x86_64__) || defined(_M_AMD64)	
+//#include <tmmintrin.h>
+//#endif 
 
 #if CXIMAGE_SUPPORT_JPG
 #include "ximajpg.h"
@@ -1006,8 +1006,7 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 		}
 		else
 		{
-			//uint32_t *src = (uint32_t *)info.pImage;
-			//uint32_t *dst = (uint32_t *)buffer;
+/*
 #if defined(__x86_64__) || defined(_M_AMD64)			
 			int restant = head.biWidth % 16;
 			int width = head.biWidth - restant;
@@ -1059,6 +1058,18 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 				}
 			}
 #endif
+*/
+#pragma omp parallel for
+			for (long y = 0; y < head.biHeight; y++)
+			{
+#pragma omp parallel for
+				for (long x = 0; x < head.biWidth; x++)
+				{
+					RGBQUAD color = BlindGetPixelColor(x, y);
+					memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t) << 2);
+				}
+			}
+//#endif
 		}
 	}
 	return true;

@@ -35,12 +35,16 @@ CHeic::~CHeic()
 
 void CHeic::Initx265Decoder()
 {
-    //de265_multithread_init();
+#ifndef __APPLE__
+    de265_multithread_init();
+#endif
 }
 
 void CHeic::Uninitx265Decoder()
 {
-    //de265_multithread_uninit();
+#ifndef __APPLE__
+    de265_multithread_uninit();
+#endif
 }
 
 static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
