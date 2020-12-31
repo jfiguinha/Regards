@@ -151,6 +151,8 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../Otherlib/libbpg/libRegardsBpg"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../libextern/libde265-master"/>
+        <IncludePath Value="../libextern/libde265-master/build"/>
         <IncludePath Value="../libextern/libde265-master/libde265"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/reader"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/common"/>

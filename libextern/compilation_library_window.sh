@@ -23,6 +23,8 @@ cd ..
 cd ..
 
 #Compile libde265-master
+unzip libde265-1.0.8.zip
+mv libde265-1.0.8.zip libde265-master
 cd libde265-master
 mkdir build
 cd build
