@@ -423,8 +423,8 @@ COPY "$(SolutionDir)x64\Release\libiconv.dll" "$(SolutionDir)x64\Release\iconv.d
     <ProjectReference Include="..\libextern\exiv2-0.27.3\contrib\vs2019\solution\xmpsdk\exiv2-xmp.vcxproj">
       <Project>{d1483131-bf1b-37c3-b1c8-a6fb8235195b}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\libde265-master\libde265.vcxproj">
-      <Project>{b2a389c1-2895-4fbf-9aeb-3f7689efee23}</Project>
+    <ProjectReference Include="..\libextern\libde265-master\build\libde265\libde265.vcxproj">
+      <Project>{b5ff1811-1aee-35c6-a362-ce49cd44ca31}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
       <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
