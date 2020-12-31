@@ -282,7 +282,6 @@
         <Library Value="Bcrypt"/>
         <Library Value="heif"/>
         <Library Value="libheif_shared"/>
-        <Library Value="liblibde265.dll"/>
         <Library Value="x265"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
@@ -315,6 +314,7 @@
         <Library Value="jxrglue"/>
         <Library Value="Iex"/>
         <Library Value="IexMath"/>
+        <Library Value="liblibde265.dll"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -661,15 +661,15 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssp-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/SDL2.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_core450.dll  ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_dnn450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_face450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_imgcodecs450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_imgproc450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_calib3d450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_objdetect450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_features2d450.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_flann450.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_core451.dll  ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_dnn451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_face451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_imgcodecs451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_imgproc451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_calib3d451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_objdetect451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_features2d451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_flann451.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/avfilter-7.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/avformat-58.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libaom.dll ./Release</Command>
@@ -708,7 +708,7 @@
         <Command Enabled="no">#cp C:/msys64/mingw64/bin/xvidcore.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenblas.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libprotobuf.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-103.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-105.dll ./Release</Command>
         <Command Enabled="no">#cp C:/msys64/mingw64/bin/libfribidi-0.dll ./Release</Command>
         <Command Enabled="no">#cp C:/msys64/mingw64/bin/libogg-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Release</Command>

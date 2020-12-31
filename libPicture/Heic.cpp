@@ -31,7 +31,15 @@ CHeic::~CHeic()
 {
 }
 
+void CHeic::Initx265Decoder()
+{
+    de265_multithread_init();
+}
 
+void CHeic::Uninitx265Decoder()
+{
+    de265_multithread_uninit();
+}
 
 static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
 	int pixelsPerLine, int bit_depth)

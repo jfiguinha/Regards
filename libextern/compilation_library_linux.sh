@@ -19,6 +19,8 @@ sudo make install
 cd ..
 cd ..
 
+
+
 #Compile exiv2-0.27.3 :
 cd exiv2-0.27.3
 mkdir build
@@ -37,8 +39,12 @@ cd ..
 
 #Compile libde265-master
 cd libde265-master
-cmake ../libde265-master 
+mkdir build
+cd build
+cmake ../
 make -j$NBPROC
+make install
+cd ..
 cd ..
 
 #Compile MediaInfo_DLL_GNU_FromSource

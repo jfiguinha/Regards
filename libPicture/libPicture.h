@@ -68,6 +68,9 @@ namespace Regards
 			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap, const bool &flip, const bool &loadAlpha = false);
 			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
 
+			static void Initx265Decoder();
+			static void Uninitx265Decoder();
+
 			static void InitFreeImage();
 			static void UninitFreeImage();
 
