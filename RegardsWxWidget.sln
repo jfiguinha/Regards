@@ -164,8 +164,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenCL - OpenGL", "OpenCL -
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libOpenCLEngine", "libOpenCLEngine\libOpenCLEngine.vcxproj", "{E9B03D35-95A4-4669-80BF-275B587B44A6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libde265", "libextern\libde265-master\build\libde265\libde265.vcxproj", "{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_windows10|Win32 = Debug_windows10|Win32
@@ -1159,21 +1157,6 @@ Global
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.RelWithDebInfo|x64.Build.0 = Release|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug_windows10|Win32.ActiveCfg = MinSizeRel|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug_windows10|Win32.Build.0 = MinSizeRel|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug_windows10|x64.ActiveCfg = Debug|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug_windows10|x64.Build.0 = Debug|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug|Win32.ActiveCfg = Debug|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug|x64.ActiveCfg = Debug|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Debug|x64.Build.0 = Debug|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Release|Win32.ActiveCfg = Release|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.Release|x64.ActiveCfg = Release|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1230,7 +1213,6 @@ Global
 		{E3536C28-A7F1-4B53-8E52-7D2232F9E098} = {328978B4-04A6-4655-A7B5-55E1992468A5}
 		{E325BED7-1CA9-4A6F-8C40-E5E45ACBDC7C} = {6093E7CC-0BB0-4108-A40F-13E9736FE20D}
 		{E9B03D35-95A4-4669-80BF-275B587B44A6} = {490F3885-F433-4CD3-A40D-2E4B5310948B}
-		{B5FF1811-1AEE-35C6-A362-CE49CD44CA31} = {923298DB-EF4E-41D8-9A4F-76D4C249C930}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {519CD969-9135-455E-B849-2080D1629CA3}
