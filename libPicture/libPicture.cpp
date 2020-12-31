@@ -200,16 +200,6 @@ int CLibPicture::TestExtension(const wxString & ext)
     return CLibResource::GetExtensionId(ext);
 }
 
-void CLibPicture::Initx265Decoder()
-{
-    CHeic::Initx265Decoder();
-}
-
-void CLibPicture::Uninitx265Decoder() 
-{
-    CHeic::Uninitx265Decoder();
-}
-
 bool CLibPicture::TestIsPicture(const wxString & szFileName)
 {
     int numExt = 0;
