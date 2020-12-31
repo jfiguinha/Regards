@@ -28,7 +28,11 @@
 #include <tbb/tbbmalloc_proxy.h>
 #endif
 #endif
+
+#ifndef _OPENMP
 #define _OPENMP
+#endif
+
 #include <omp.h>
 #include <thread>
 #include <mutex>
