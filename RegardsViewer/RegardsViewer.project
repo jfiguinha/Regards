@@ -637,11 +637,11 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc_proxy.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/bin/libexiv2.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
-        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release</Command>
+        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libde265-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw_r-20.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release</Command>

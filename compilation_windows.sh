@@ -34,6 +34,7 @@ pacman -S mingw-w64-x86_64-jasper
 pacman -S mingw-w64-x86_64-opencv
 pacman -S mingw-w64-x86_64-x265
 pacman -S mingw-w64-x86_64-aom
+pacman -S mingw-w64-x86_64-libde265
 #install OpenCL SDK
 #wget https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases/download/1.0/OCL_SDK_Light_AMD.exe
 
