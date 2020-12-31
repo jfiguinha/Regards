@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../libde265/acceleration.h
+stddef.h
+-
+stdint.h
+-
+assert.h
+-
+
+../libde265/x86/sse-dct.h
+stddef.h
+-
+stdint.h
+-
+
+../libde265/x86/sse-motion.h
+stddef.h
+-
+stdint.h
+-
+
+../libde265/x86/sse.h
+acceleration.h
+../libde265/x86/acceleration.h
+
+C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/x86/sse.cc
+intrin.h
+-
+x86/sse.h
+C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/x86/x86/sse.h
+x86/sse-motion.h
+C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/x86/x86/sse-motion.h
+x86/sse-dct.h
+C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/x86/x86/sse-dct.h
+config.h
+C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/x86/config.h
+cpuid.h
+-
+
