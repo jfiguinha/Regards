@@ -244,6 +244,17 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
+	/*
+	CLibPicture libPicture;
+	wxArrayString files;
+	wxDir::GetAllFiles("D:\\Images\\107APPLE\\", &files, "*.heic", wxDIR_FILES);
+	for (wxString file : files)
+	{
+		CImageLoadingFormat * picture = libPicture.LoadPicture(file);
+		delete picture;
+	}
+	*/
+
 #ifdef PREPARE_DATA_TRAINING
 	//Create image learning
 	//int i = 0;
