@@ -15,26 +15,37 @@
 				<object class="wxNotebook">
 					<style>wxBK_TOP</style>
 					<object class="notebookpage">
-						<label>Compression Option</label>
+						<label>Compression Video Option</label>
 						<object class="wxPanel" name="page_1">
+							<object class="wxRadioBox" name="ID_RBVIDEOCOMPRESSION">
+									<label>Video Conversion</label>
+									<style>wxRA_SPECIFY_ROWS</style>
+									<content>
+										<item>Conversion</item>
+										<item>Direct Copy</item>
+									</content>
+									<default>-1</default>
+									<pos>10,0</pos>
+									<size>380,55</size>
+							</object>
 							<object class="wxStaticBox" name="ID_STATICBOX1">
 								<label>Video Option</label>
-								<pos>10,0</pos>
-								<size>380,240</size>
+								<pos>10,60</pos>
+								<size>380,260</size>
 							</object>
 							<object class="wxCheckBox" name="ID_CKVIDEOHARDWARE">
-								<pos>15,20</pos>
+								<pos>15,80</pos>
 							</object>
 							<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
 								<label>Hardware Encoder</label>
-								<pos>32,20</pos>
+								<pos>32,80</pos>
 							</object>
 							<object class="wxStaticText" name="ID_STVIDEOCODEC">
 								<label>Video :</label>
-								<pos>132,20</pos>
+								<pos>132,80</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOCODEC">
-								<pos>200,20</pos>
+								<pos>200,80</pos>
 								<size>100,30</size>
 								<value>H264</value>
 								<content>
@@ -48,11 +59,11 @@
 							</object>
 							<object class="wxStaticText" name="ID_STVIDEOPRESET">
 								<label>Profile :</label>
-								<pos>32,50</pos>
+								<pos>32,110</pos>
 								<size>100,13</size>
 							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
-								<pos>200,50</pos>
+								<pos>200,110</pos>
 								<size>100,30</size>
 								<value>main</value>
 								<content>
@@ -69,56 +80,72 @@
 									<item>Variable</item>
 								</content>
 								<default>-1</default>
-								<pos>20,80</pos>
+								<pos>20,140</pos>
 								<size>160,70</size>
 							</object>
 							<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
-								<pos>15,160</pos>
+								<pos>15,220</pos>
 								<checked>1</checked>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT2">
 								<label>Quality : </label>
-								<pos>32,160</pos>
+								<pos>32,220</pos>
 								<size>70,20</size>
 							</object>
 							<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
 								<max>51</max>
-								<pos>120,160</pos>
+								<pos>120,220</pos>
 								<size>230,20</size>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT1">
 								<label>High</label>
-								<pos>90,160</pos>
+								<pos>90,220</pos>
 								<size>30,20</size>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT2">
 								<label>Low</label>
-								<pos>355,160</pos>
+								<pos>355,220</pos>
 							</object>
 							<object class="wxCheckBox" name="ID_CKVIDEOBITRATE">
-								<pos>15,200</pos>
+								<pos>15,260</pos>
 							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT2">
 								<label>BitRate (kbps) : </label>
-								<pos>32,200</pos>
+								<pos>32,260</pos>
 							</object>
 							<object class="wxTextCtrl" name="ID_TXTBITRATE">
 								<default>0</default>
-								<value>1500</value>
-								<pos>140,200</pos>
+                                <value>1500</value>
+								<pos>140,260</pos>
 								<size>100,20</size>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>Compression Audio Option</label>
+						<object class="wxPanel" name="page_2">
+							<object class="wxRadioBox" name="ID_RBAUDIOCOMPRESSION">
+									<label>Audio Conversion</label>
+									<style>wxRA_SPECIFY_ROWS</style>
+									<content>
+										<item>Conversion</item>
+										<item>Direct Copy</item>
+									</content>
+									<default>-1</default>
+									<pos>10,0</pos>
+									<size>380,55</size>
 							</object>
 							<object class="wxStaticBox" name="ID_STATICBOX1">
 								<label>Audio Option</label>
-								<pos>10,240</pos>
-								<size>380,120</size>
+								<pos>10,60</pos>
+								<size>380,140</size>
 							</object>
 							<object class="wxStaticText" name="ID_STAUDIOCODEC">
 								<label>Audio Codec :</label>
-								<pos>32,260</pos>
+								<pos>32,100</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBAUDIOCODEC">
-								<pos>200,260</pos>
+								<pos>200,100</pos>
 								<size>100,30</size>
 								<value>AAC</value>
 								<content>
@@ -130,15 +157,15 @@
 								</content>
 							</object>
 							<object class="wxCheckBox" name="ID_CKAUDIOQUALITY">
-								<pos>15,290</pos>
+								<pos>15,130</pos>
 								<checked>1</checked>
 							</object>
 							<object class="wxStaticText" name="ID_STAUDIOQUALITY">
 								<label>Audio Quality :</label>
-								<pos>32,290</pos>
+								<pos>32,130</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBAUDIOQUALITY">
-								<pos>200,290</pos>
+								<pos>200,130</pos>
 								<size>100,30</size>
 								<value>5</value>
 								<content>
@@ -156,14 +183,14 @@
 								</content>
 							</object>
 							<object class="wxCheckBox" name="ID_CKAUDIOBITRATE">
-								<pos>15,320</pos>
+								<pos>15,160</pos>
 							</object>
 							<object class="wxStaticText" name="ID_STAUDIOBITRATE">
 								<label>Audio Bitrate :</label>
-								<pos>32,320</pos>
+								<pos>32,160</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBAUDIOBITRATE">
-								<pos>200,320</pos>
+								<pos>200,160</pos>
 								<size>100,30</size>
 								<value>128</value>
 								<content>
@@ -187,7 +214,7 @@
 					</object>
 					<object class="notebookpage">
 					<label>Position</label>
-					<object class="wxPanel" name="page_2">
+					<object class="wxPanel" name="page_3">
 						<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
 							<pos>24,10</pos>
 							<size>344,240</size>
