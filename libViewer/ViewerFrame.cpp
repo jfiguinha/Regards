@@ -452,12 +452,15 @@ void CViewerFrame::CheckAllProcessEnd(wxTimerEvent& event)
 	{
 		for (CMasterWindow * window : CMasterWindow::listMainWindow)
 		{
-			if(!window->GetProcessEnd())
+			if (window != nullptr)
 			{
-				wxString message = window->GetWaitingMessage();
-				mainWindowWaiting->SetTexte(message);
-				exitTimer->Start(1000, wxTIMER_ONE_SHOT);
-				return;
+				if (!window->GetProcessEnd())
+				{
+					wxString message = window->GetWaitingMessage();
+					mainWindowWaiting->SetTexte(message);
+					exitTimer->Start(1000, wxTIMER_ONE_SHOT);
+					return;
+				}
 			}
 		}
 	}

@@ -92,6 +92,7 @@ namespace Regards
 			bool processEnd;
 			bool processStop;
 			bool processIdle;
+			int id;
 		public:
         
             double scaleFactor;

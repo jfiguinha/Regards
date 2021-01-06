@@ -90,6 +90,7 @@ CMasterWindow::CMasterWindow(void)
 	windowMainPimpl = new CWindowMainPimpl();
 	processEnd = true;
 	processIdle = false;
+	id = listMainWindow.size();
 	listMainWindow.push_back(this);
 
 }
@@ -102,6 +103,9 @@ void CMasterWindow::CallRefresh(wxWindow * window)
 
 CMasterWindow::~CMasterWindow(void)
 {
+	if(id < listMainWindow.size())
+		listMainWindow[id] = nullptr;
+
 	if(windowMainPimpl != nullptr)
 		delete windowMainPimpl;
 }
