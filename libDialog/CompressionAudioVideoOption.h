@@ -59,6 +59,8 @@ class CompressionAudioVideoOption: public wxDialog
 		wxTimePickerCtrl  * labelTimeEnd;
 		wxSlider * slVideo;
 
+		wxRadioBox * rbAudioDirectCopy;
+		wxRadioBox * rbVideoDirectCopy;
 	protected:
 
 		//(*Identifiers(TiffOption)

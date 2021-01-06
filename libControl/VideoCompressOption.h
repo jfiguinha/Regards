@@ -31,4 +31,6 @@ public:
 	bool videoQualityOrBitRate;
 	wxString encoder_profile = "main";
 	wxString encoder_level = "";
+	bool audioDirectCopy = false;
+	bool videoDirectCopy = false;
 };

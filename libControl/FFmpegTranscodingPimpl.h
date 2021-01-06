@@ -119,7 +119,7 @@ private:
 	mutex muEnding;
 	mutex muFrame;
 	mutex muWriteData;
-	bool isend = false;
+	bool isend = true;
 	AVFrame * copyFrameBuffer = nullptr;
 	CVideoOptionCompress * videoCompressOption;
 	char timebase[255];

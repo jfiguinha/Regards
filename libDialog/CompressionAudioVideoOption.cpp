@@ -68,6 +68,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	labelTimeStart = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STSTARTMOVIE"));
 	labelTimeEnd = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STENDMOVIE"));
 	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
+	rbAudioDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBAUDIOCOMPRESSION"));
+	rbVideoDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOCOMPRESSION"));
 
 	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
 	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
@@ -316,7 +318,8 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		videoOptionCompress->videoBitRate = atoi(txtBitRate->GetValue());
 		videoOptionCompress->videoHardware = ckVideoHardware->IsChecked();
 		videoOptionCompress->startTime = sliderVideoPosition->GetTimeStart();
-
+		videoOptionCompress->audioDirectCopy = rbAudioDirectCopy->GetSelection();
+		videoOptionCompress->videoDirectCopy = rbVideoDirectCopy->GetSelection();
 		int endTime = timeTotal;
 		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->GetTimeStart() != 0) ? sliderVideoPosition->GetTimeEnd() : 0;
 	}
