@@ -1674,300 +1674,298 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst, SwsContext* scaleC
 			break;
 		}
 
-        if(st->codecpar->codec_id == AV_CODEC_ID_NONE)
-            goto continue_packet;
+        if(st->codecpar->codec_id != AV_CODEC_ID_NONE)
+        {
+            bool copyDirectPacket = false;
+            bool showPreviewFrame = false;
+            if (videoCompressOption->audioDirectCopy && !isVideo)
+            {
+                copyDirectPacket = true;
+            }
+            if (videoCompressOption->videoDirectCopy && isVideo)
+            {
+                copyDirectPacket = true;
 
-		bool copyDirectPacket = false;
-		bool showPreviewFrame = false;
-		if (videoCompressOption->audioDirectCopy && !isVideo)
-		{
-			copyDirectPacket = true;
-		}
-		if (videoCompressOption->videoDirectCopy && isVideo)
-		{
-			copyDirectPacket = true;
+                bool threadEnd = false;
+                muEnding.lock();
+                threadEnd = isend;
+                muEnding.unlock();
 
-			bool threadEnd = false;
-			muEnding.lock();
-			threadEnd = isend;
-			muEnding.unlock();
+                nbframe++;
+                end = std::chrono::steady_clock::now();
 
-			nbframe++;
-			end = std::chrono::steady_clock::now();
+                if(threadEnd)
+                    showPreviewFrame = true;
+            }
 
-			if(threadEnd)
-				showPreviewFrame = true;
-		}
+            if (showPreviewFrame)
+            {
 
-		if (showPreviewFrame)
-		{
+                AVPacket* pkt = new AVPacket;
+                av_new_packet(pkt, packet.size);
+                av_copy_packet(pkt, &packet);
 
-			AVPacket* pkt = new AVPacket;
-			av_new_packet(pkt, packet.size);
-			av_copy_packet(pkt, &packet);
+                CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
 
-			CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
+                av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-			av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
+                av_packet_rescale_ts(pkt,
+                    ifmt_ctx->streams[stream_index]->time_base,
+                    stream->dec_ctx->time_base);
 
-			av_packet_rescale_ts(pkt,
-				ifmt_ctx->streams[stream_index]->time_base,
-				stream->dec_ctx->time_base);
+                pos = ((double)pkt->pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+                double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+                ret = avcodec_send_packet(stream->dec_ctx, pkt);
+                if (ret < 0) {
+                    av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
+                    break;
+                }
 
-			pos = ((double)pkt->pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-			double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-			ret = avcodec_send_packet(stream->dec_ctx, pkt);
-			if (ret < 0) {
-				av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
-				break;
-			}
+                AVFrame *tmp_frame = NULL;
+                int ret = 0;
 
-			AVFrame *tmp_frame = NULL;
-			int ret = 0;
+                while (ret >= 0)
+                {
+                    ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
+                    if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
+                        break;
+                    else if (ret < 0)
+                        return ret;
 
-			while (ret >= 0)
-			{
-				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
-				if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-					break;
-				else if (ret < 0)
-					return ret;
+                    if (acceleratorHardware != "")
+                    {
+                        if (stream->dec_frame->format == hw_pix_fmt)
+                        {
+                            AVFrame * sw_frame = av_frame_alloc();
+                            if (sw_frame == nullptr) {
+                                fprintf(stderr, "Can not alloc frame\n");
+                                ret = AVERROR(ENOMEM);
+                                av_frame_free(&sw_frame);
+                                return ret;
+                            }
+                            /* retrieve data from GPU to CPU */
+                            if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
+                                fprintf(stderr, "Error transferring the data to system memory\n");
+                                av_frame_free(&sw_frame);
+                                return ret;
+                            }
 
-				if (acceleratorHardware != "")
-				{
-					if (stream->dec_frame->format == hw_pix_fmt)
-					{
-						AVFrame * sw_frame = av_frame_alloc();
-						if (sw_frame == nullptr) {
-							fprintf(stderr, "Can not alloc frame\n");
-							ret = AVERROR(ENOMEM);
-							av_frame_free(&sw_frame);
-							return ret;
-						}
-						/* retrieve data from GPU to CPU */
-						if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
-							fprintf(stderr, "Error transferring the data to system memory\n");
-							av_frame_free(&sw_frame);
-							return ret;
-						}
+                            if (first)
+                            {
+                                av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+                                av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+                                av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+                                av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+                                av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+                                av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+                                av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
-						if (first)
-						{
-							av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-							av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-							av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-							av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-							av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-							av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-							av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+                                if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+                                {
+                                    sws_freeContext(scaleContext);
+                                    throw std::logic_error("Failed to initialise scale context");
+                                }
 
-							if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-							{
-								sws_freeContext(scaleContext);
-								throw std::logic_error("Failed to initialise scale context");
-							}
+                                first = false;
+                                dst->format = AV_PIX_FMT_YUV420P;
+                                dst->width = stream->dec_frame->width;
+                                dst->height = stream->dec_frame->height;
+                                dst->channels = stream->dec_frame->channels;
+                                dst->channel_layout = stream->dec_frame->channel_layout;
+                                dst->nb_samples = stream->dec_frame->nb_samples;
+                                int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+                            }
+                            av_frame_copy_props(dst, stream->dec_frame);
 
-							first = false;
-							dst->format = AV_PIX_FMT_YUV420P;
-							dst->width = stream->dec_frame->width;
-							dst->height = stream->dec_frame->height;
-							dst->channels = stream->dec_frame->channels;
-							dst->channel_layout = stream->dec_frame->channel_layout;
-							dst->nb_samples = stream->dec_frame->nb_samples;
-							int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
-						}
-						av_frame_copy_props(dst, stream->dec_frame);
+                            sws_scale(scaleContext,
+                                (uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
+                                dst->data, dst->linesize);
 
-						sws_scale(scaleContext,
-							(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
-							dst->data, dst->linesize);
+                            tmp_frame = dst;
+                            av_frame_free(&sw_frame);
+                        }
+                        else
+                            tmp_frame = stream->dec_frame;
+                    }
+                    else
+                        tmp_frame = stream->dec_frame;
 
-						tmp_frame = dst;
-						av_frame_free(&sw_frame);
-					}
-					else
-						tmp_frame = stream->dec_frame;
-				}
-				else
-					tmp_frame = stream->dec_frame;
+                    tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
-				tmp_frame->pts = tmp_frame->best_effort_timestamp;
+                    if (first_frame)
+                    {
+                        long startTime = videoCompressOption->startTime;
+                        videoCompressOption->startTime = pos;
+                        long diff = startTime - pos;
+                        videoCompressOption->endTime = videoCompressOption->endTime + diff;
+                        first_frame = false;
+                    }
 
-				if (first_frame)
-				{
-					long startTime = videoCompressOption->startTime;
-					videoCompressOption->startTime = pos;
-					long diff = startTime - pos;
-					videoCompressOption->endTime = videoCompressOption->endTime + diff;
-					first_frame = false;
-				}
+                    muWriteData.lock();
+                    double duration_total = duration_movie;
 
-				muWriteData.lock();
-				double duration_total = duration_movie;
+                    if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
+                        duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
 
-				if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
-					duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
+                    int posVideo = (int)pos - videoCompressOption->startTime;
+                    pourcentage = (posVideo / duration_total) * 100.0f;
+                    this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
+                    sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+                    muWriteData.unlock();
 
-				int posVideo = (int)pos - videoCompressOption->startTime;
-				pourcentage = (posVideo / duration_total) * 100.0f;
-				this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-				sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
-				muWriteData.unlock();
+                    SetFrameData(tmp_frame, m_dlgProgress);
 
-				SetFrameData(tmp_frame, m_dlgProgress);
+                    av_free_packet(pkt);
 
-				av_free_packet(pkt);
+                }
+            }
+            
+            if (!showPreviewFrame && !copyDirectPacket && filter_ctx[stream_index].filter_graph) {
 
-			}
-		}
-		
-		if (!showPreviewFrame && !copyDirectPacket && filter_ctx[stream_index].filter_graph) {
+                CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
 
-			CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
+                av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-			av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
+                av_packet_rescale_ts(&packet,
+                    ifmt_ctx->streams[stream_index]->time_base,
+                    stream->dec_ctx->time_base);
 
-			av_packet_rescale_ts(&packet,
-				ifmt_ctx->streams[stream_index]->time_base,
-				stream->dec_ctx->time_base);
-
-			pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-			double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-			ret = avcodec_send_packet(stream->dec_ctx, &packet);
-			if (ret < 0) {
-				av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
-				break;
-			}
-					   			 		  
-			/*
-			printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-				av_ts2str(packet->pts), av_ts2timestr(packet->pts, time_base),
-				av_ts2str(packet->dts), av_ts2timestr(packet->dts, time_base),
-				av_ts2str(packet->duration), av_ts2timestr(packet->duration, time_base),
-				pkt->stream_index);
-			*/
-
-
-
-			AVFrame *tmp_frame = NULL;
-			int ret = 0;
-
-			while (ret >= 0)
-			{
-				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
-				if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-					break;
-				else if (ret < 0)
-					return ret;
-
-				if (acceleratorHardware != "")
-				{
-					if (stream->dec_frame->format == hw_pix_fmt)
-					{
-						AVFrame * sw_frame = av_frame_alloc();
-						if (sw_frame == nullptr) {
-							fprintf(stderr, "Can not alloc frame\n");
-							ret = AVERROR(ENOMEM);
-							av_frame_free(&sw_frame);
-							return ret;
-						}
-						/* retrieve data from GPU to CPU */
-						if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
-							fprintf(stderr, "Error transferring the data to system memory\n");
-							av_frame_free(&sw_frame);
-							return ret;
-						}
-
-						if (first)
-						{
+                pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+                double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+                ret = avcodec_send_packet(stream->dec_ctx, &packet);
+                if (ret < 0) {
+                    av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
+                    break;
+                }
+                                              
+                /*
+                printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+                    av_ts2str(packet->pts), av_ts2timestr(packet->pts, time_base),
+                    av_ts2str(packet->dts), av_ts2timestr(packet->dts, time_base),
+                    av_ts2str(packet->duration), av_ts2timestr(packet->duration, time_base),
+                    pkt->stream_index);
+                */
 
 
 
-							av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-							av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-							av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-							av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-							av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-							av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-							av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+                AVFrame *tmp_frame = NULL;
+                int ret = 0;
 
-							if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-							{
-								sws_freeContext(scaleContext);
-								throw std::logic_error("Failed to initialise scale context");
-							}
+                while (ret >= 0)
+                {
+                    ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
+                    if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
+                        break;
+                    else if (ret < 0)
+                        return ret;
 
-							first = false;
-							dst->format = AV_PIX_FMT_YUV420P;
-							dst->width = stream->dec_frame->width;
-							dst->height = stream->dec_frame->height;
-							dst->channels = stream->dec_frame->channels;
-							dst->channel_layout = stream->dec_frame->channel_layout;
-							dst->nb_samples = stream->dec_frame->nb_samples;
-							int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
-						}
-						av_frame_copy_props(dst, stream->dec_frame);
+                    if (acceleratorHardware != "")
+                    {
+                        if (stream->dec_frame->format == hw_pix_fmt)
+                        {
+                            AVFrame * sw_frame = av_frame_alloc();
+                            if (sw_frame == nullptr) {
+                                fprintf(stderr, "Can not alloc frame\n");
+                                ret = AVERROR(ENOMEM);
+                                av_frame_free(&sw_frame);
+                                return ret;
+                            }
+                            /* retrieve data from GPU to CPU */
+                            if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
+                                fprintf(stderr, "Error transferring the data to system memory\n");
+                                av_frame_free(&sw_frame);
+                                return ret;
+                            }
 
-						sws_scale(scaleContext,
-							(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
-							dst->data, dst->linesize);
-
-						tmp_frame = dst;
-						av_frame_free(&sw_frame);
-					}
-					else
-						tmp_frame = stream->dec_frame;
-				}
-				else
-					tmp_frame = stream->dec_frame;
-
-				tmp_frame->pts = tmp_frame->best_effort_timestamp;
+                            if (first)
+                            {
 
 
-				if (isVideo)
-				{
-					
-					if (first_frame)
-					{
-						long startTime = videoCompressOption->startTime;
-						videoCompressOption->startTime = pos;
-						long diff = startTime - pos;
-						videoCompressOption->endTime = videoCompressOption->endTime + diff;
-						first_frame = false;
-					}
-					
-					muWriteData.lock();
-					double duration_total = duration_movie;
 
-					if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
-						duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
+                                av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+                                av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+                                av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+                                av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+                                av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+                                av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+                                av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
-					int posVideo = (int)pos - videoCompressOption->startTime;
-					pourcentage = (posVideo / duration_total) * 100.0f;
-					this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-					sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
-					muWriteData.unlock();
+                                if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+                                {
+                                    sws_freeContext(scaleContext);
+                                    throw std::logic_error("Failed to initialise scale context");
+                                }
 
-				}
+                                first = false;
+                                dst->format = AV_PIX_FMT_YUV420P;
+                                dst->width = stream->dec_frame->width;
+                                dst->height = stream->dec_frame->height;
+                                dst->channels = stream->dec_frame->channels;
+                                dst->channel_layout = stream->dec_frame->channel_layout;
+                                dst->nb_samples = stream->dec_frame->nb_samples;
+                                int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+                            }
+                            av_frame_copy_props(dst, stream->dec_frame);
 
-				ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
-				if (ret < 0)
-					return ret;
+                            sws_scale(scaleContext,
+                                (uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
+                                dst->data, dst->linesize);
 
-			}
-		}
-		else {
-			/* remux this frame without reencoding */
-			av_packet_rescale_ts(&packet,
-				ifmt_ctx->streams[stream_index]->time_base,
-				ofmt_ctx->streams[stream_index]->time_base);
+                            tmp_frame = dst;
+                            av_frame_free(&sw_frame);
+                        }
+                        else
+                            tmp_frame = stream->dec_frame;
+                    }
+                    else
+                        tmp_frame = stream->dec_frame;
 
-			ret = av_interleaved_write_frame(ofmt_ctx, &packet);
-			if (ret < 0)
-				return ret;
-		}
+                    tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
-continue_packet:
+
+                    if (isVideo)
+                    {
+                        
+                        if (first_frame)
+                        {
+                            long startTime = videoCompressOption->startTime;
+                            videoCompressOption->startTime = pos;
+                            long diff = startTime - pos;
+                            videoCompressOption->endTime = videoCompressOption->endTime + diff;
+                            first_frame = false;
+                        }
+                        
+                        muWriteData.lock();
+                        double duration_total = duration_movie;
+
+                        if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
+                            duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
+
+                        int posVideo = (int)pos - videoCompressOption->startTime;
+                        pourcentage = (posVideo / duration_total) * 100.0f;
+                        this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
+                        sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+                        muWriteData.unlock();
+
+                    }
+
+                    ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
+                    if (ret < 0)
+                        return ret;
+
+                }
+            }
+            else {
+                /* remux this frame without reencoding */
+                av_packet_rescale_ts(&packet,
+                    ifmt_ctx->streams[stream_index]->time_base,
+                    ofmt_ctx->streams[stream_index]->time_base);
+
+                ret = av_interleaved_write_frame(ofmt_ctx, &packet);
+                if (ret < 0)
+                    return ret;
+            }          
+        }
 
 		av_packet_unref(&packet);
 
