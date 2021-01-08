@@ -466,8 +466,16 @@ void CShowVideo::SetTimePosition(const int64_t &timePosition)
 
 void CShowVideo::MoveSlider(const int64_t &position)
 {
-	if (videoWindow != nullptr)
-		videoWindow->SetVideoPosition(position);
+	wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		evt.SetExtraLong(position);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	//if (videoWindow != nullptr)
+	//	videoWindow->SetVideoPosition(position);
 }
 
 void CShowVideo::InitControl()

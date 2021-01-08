@@ -530,6 +530,8 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
+	deleteTexture = false;
+	inverted = true;
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
@@ -560,17 +562,28 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 #endif
 
-	if (videoRenderStart && initStart)
+	if (videoRenderStart)
 	{
-		if (!fpsTimer->IsRunning())
-			fpsTimer->Start(1000);
+		if (thumbnailVideo != nullptr && pause && pictureVideo != nullptr)
+		{
+			muBitmap.lock();
+			glTexture = RenderFFmpegToTexture(pictureVideo);
+			muBitmap.unlock();
+		}
+		else if (initStart)
+		{
+			if (!fpsTimer->IsRunning())
+				fpsTimer->Start(1000);
 #ifdef RENDEROPENGL 
-		UnbindTexture();
+			UnbindTexture();
 #endif
 
-		dxva2ToOpenGLWorking = true;
-		initStart = false;
+			dxva2ToOpenGLWorking = true;
+			initStart = false;
+		}
 	}
+
+
 
     printf("OnPaint CVideoControl begin \n"); 
        
@@ -598,7 +611,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 
 #ifdef RENDEROPENGL 
-	if (videoRenderStart)
+	if (videoRenderStart && glTexture == nullptr)
 	{
 		if (dxva2ToOpenGLWorking)
 			glTexture = RenderFromOpenGLTexture();

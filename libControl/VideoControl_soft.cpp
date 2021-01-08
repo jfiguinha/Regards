@@ -66,6 +66,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	startingTime = 0;
 	old_width = 0;
 	old_height = 0;
+	thumbnailVideo = nullptr;
 	pause = false;
 	config = nullptr;
 	angle = 0;
@@ -101,6 +102,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CVideoControlSoft::OnKeyUp));
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CVideoControlSoft::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CVideoControlSoft::OnTopPosition));
+	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CVideoControlSoft::OnSetPosition));
 	pause = false;
 	videoEnd = true;
 	this->windowMain = windowMain;
@@ -267,6 +269,49 @@ void CVideoControlSoft::TestMaxY()
 
 	if (posHauteur < 0)
 		posHauteur = 0;
+}
+
+void CVideoControlSoft::GenerateThumbnailVideo(void * data)
+{
+	CVideoControlSoft * videoSoft = (CVideoControlSoft *)data;
+	videoSoft->muBitmap.lock();
+	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFrame(videoSoft->videoPosition, 0, 0);
+	videoSoft->muBitmap.unlock();
+	videoSoft->threadVideoEnd = true;
+
+	wxCommandEvent evt(wxEVENT_REFRESH);
+	videoSoft->GetEventHandler()->AddPendingEvent(evt);
+	//videoSoft->Refresh();
+}
+
+void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
+{
+	long pos = event.GetExtraLong();
+	if (videoPosition == pos)
+		return;
+	videoPosition = pos;
+	ffmfc->SetTimePosition(videoPosition * 1000 * 1000);
+	if (pause && thumbnailVideo != nullptr)
+	{
+		if (threadVideoEnd)
+		{
+			if (_threadVideo != nullptr)
+			{
+				_threadVideo->join();
+				delete _threadVideo;
+			}
+			_threadVideo = new thread(GenerateThumbnailVideo, this);
+			threadVideoEnd = false;
+		}
+		
+
+		/*
+		muBitmap.lock();
+		pictureVideo = thumbnailVideo->GetVideoFrame(videoPosition, 0, 0);
+		muBitmap.unlock();
+		this->Refresh();
+		*/
+	}
 }
 
 void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
@@ -800,6 +845,12 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 
 CVideoControlSoft::~CVideoControlSoft()
 {
+	if (_threadVideo != nullptr)
+	{
+		_threadVideo->join();
+		delete _threadVideo;
+	}
+
 	if(playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
@@ -834,6 +885,9 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(pictureFrame != nullptr)
 		delete pictureFrame;
+
+	if (thumbnailVideo != nullptr)
+		delete thumbnailVideo;
 }
 
 void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap * picture)
@@ -878,6 +932,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd || stopVideo)
 	{
+		if (thumbnailVideo != nullptr)
+			delete thumbnailVideo;
+
+		thumbnailVideo = new CThumbnailVideo(movie);
+
 		if(playStartTimer->IsRunning())
 			playStartTimer->Stop();
 		startVideo = play;
@@ -976,7 +1035,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
     printf("CVideoControlSoft::OnPaint \n");
-
+	deleteTexture = false;
+	inverted = true;
 #ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
@@ -1038,10 +1098,18 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	}
 
 #ifdef RENDEROPENGL 
-	if(videoRenderStart)
+	if (videoRenderStart)
 	{
-        glTexture = RenderToGLTexture();
-    }
+		if (thumbnailVideo != nullptr && pause && pictureVideo != nullptr)
+		{
+			muBitmap.lock();
+			glTexture = RenderFFmpegToTexture(pictureVideo);
+			muBitmap.unlock();
+		}
+		else
+				glTexture = RenderToGLTexture();
+	}
+
     
 //#ifdef __APPLE__
 /*
@@ -1411,6 +1479,15 @@ void CVideoControlSoft::SetVideoDuration(const int64_t & duration, const int64_t
 void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
 {
 	ffmfc->SetTimePosition(pos * 1000 * 1000);
+	if (pause && thumbnailVideo != nullptr)
+	{
+		muBitmap.lock();
+
+		pictureVideo = thumbnailVideo->GetVideoFrame(pos,0,0);
+
+		muBitmap.unlock();
+		this->Refresh();
+	}
 }
 
 void CVideoControlSoft::SetCurrentclock(wxString message)
@@ -1834,6 +1911,41 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	return glTexture;
 }
 
+GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFrame)
+{
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+
+	int filterInterpolation = 0;
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+		filterInterpolation = regardsParam->GetInterpolationType();
+
+	int widthOutput = 0;
+	int heightOutput = 0;
+	wxRect rc(0, 0, 0, 0);
+	CalculPositionVideo(widthOutput, heightOutput, rc);
+	inverted = false;
+	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+	if (angle == 90 || angle == 270)
+	{
+		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+	}
+	else
+		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+	delete bitmapOut;
+
+	deleteTexture = true;
+	//delete bitmap;
+	return glTexture;
+}
+
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
 #ifndef WIN32
@@ -1841,24 +1953,12 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 #else
     double scale_factor = 1.0f;
 #endif
-    
-    
-    printf("RenderFFmpegToTexture \n");
-    
+
 	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
-    
-    printf("RenderFFmpegToTexture 1 \n");
-	//CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
-    
-    printf("RenderFFmpegToTexture 2 \n");
 	if (!IsOpenGLDecoding())
 	{
-        printf("RenderFFmpegToTexture Not OpenGL Decoding \n");
 		int filterInterpolation = 0;
 		CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-
-		printf("RenderToTexture 2\n");
-
 		if (regardsParam != nullptr)
 			filterInterpolation = regardsParam->GetInterpolationType();
 
@@ -1870,7 +1970,6 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		if(angle == 90 || angle == 270)
         {
-        	printf("RenderFFmpegToTexture angle %d \n", angle);
             ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
         }
         else
@@ -1880,7 +1979,6 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	}
 	else
     {
-        printf("RenderFFmpegToTexture OpenGL Decoding \n");
 		glTexture->Create(pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight(), pictureFrame->GetPtBitmap());
     }
 		

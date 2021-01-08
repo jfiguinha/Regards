@@ -459,7 +459,8 @@ void CSliderVideo::OnMouseMove(wxMouseEvent& event)
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
 			CalculTimePosition(xPos);
-			
+			if (sliderEvent != nullptr)
+				sliderEvent->MoveSlider(secondTimePast);
 		}
 	}
 	else
@@ -496,6 +497,9 @@ void CSliderVideo::OnMouseMove(wxMouseEvent& event)
 			buttonScreenActif = false;
 		}
 	}
+
+
+
 	Refresh();
 }
 

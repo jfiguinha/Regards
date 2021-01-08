@@ -19,6 +19,7 @@ using namespace Regards::Video;
 using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 class CFFmfc;
+class CThumbnailVideo;
 
 #ifdef RENDEROPENGL  
 class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
@@ -115,12 +116,13 @@ protected:
 	void MoveLeft();
 	void MoveBottom();
 	void MoveRight();
+	void OnSetPosition(wxCommandEvent& event);
 	void OnKeyUp(wxKeyEvent& event);
 	void OnKeyDown(wxKeyEvent& event);
 	void OnLeftPosition(wxCommandEvent& event);
 	void OnTopPosition(wxCommandEvent& event);
 	void CalculPositionPicture(const float &x, const float &y);
-
+	static void GenerateThumbnailVideo(void * data);
    virtual bool GetDXVA2Compatible();
 
     int IsSupportOpenCL();
@@ -155,6 +157,7 @@ protected:
 	void OnLButtonUp(wxMouseEvent& event);
 	void TestMaxX();
 	void TestMaxY();
+	GLTexture * RenderFFmpegToTexture(CRegardsBitmap * source);
 	GLTexture * DisplayTexture(GLTexture * glTexture);
 	void StopVideoThread(wxCommandEvent& event);
     float CalculRatio(const int &pictureWidth, const int &pictureHeight);
@@ -198,7 +201,8 @@ protected:
 	mutex muBitmap;
 	mutex muVideoEffect;
 	mutex muSubtitle;
-
+	thread * _threadVideo = nullptr;
+	bool threadVideoEnd = true;
 	GLTexture * glTextureSrc = nullptr;
 	CRegardsBitmap * bitmap = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
@@ -224,7 +228,8 @@ protected:
 	wxString message;
 	CRegardsBitmap * pictureSubtitle;
 	CRegardsBitmap * pictureFrame = nullptr;
-	int videoPosition;
+	CRegardsBitmap * pictureVideo = nullptr;
+	long videoPosition = 0;
 	bool updateContext = true;
 	bool controlKeyPush = false;
 	float ratioVideo = 1.0f;
@@ -241,4 +246,5 @@ protected:
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
+	CThumbnailVideo * thumbnailVideo;
 };
