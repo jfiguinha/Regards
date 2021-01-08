@@ -18,6 +18,7 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <OpenCVEffect.h>
+#include "hqdn3d.h"
 #include <RegardsBitmap.h>
 //BM3D
 #include "bm3dfilter.h"
@@ -533,6 +534,24 @@ int CFiltreEffetCPU::HistogramNormalize()
 int CFiltreEffetCPU::HistogramEqualize()
 {
 	return CHistogramme::HistogramEqualize(pBitmap);
+}
+
+int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		Chqdn3d * filtre = new Chqdn3d(LumSpac, ChromSpac, LumTmp, ChromTmp);
+		filtre->ApplyDenoise3D(bitmap);
+		delete filtre;
+
+	}
+	return 0;
 }
 
 int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)

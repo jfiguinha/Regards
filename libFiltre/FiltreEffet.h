@@ -60,6 +60,7 @@ public:
 	int FlipHorizontal();
 	int Rotate90();
 	int Rotate270();
+	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 	int MotionBlur(const double &radius, const double &sigma, const double &angle);
 	int RotateFree(const double &angle);
 	int PhotoFiltre(const CRgbaquad &clValue, const int &intensity);

@@ -590,6 +590,15 @@ void CFiltreEffet::SetPreview(const bool &value)
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
+int CFiltreEffet::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+{
+	int value = filtreEffet->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp);
+	return value;
+}
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
 int CFiltreEffet::MotionBlur(const double &radius, const double &sigma, const double &angle)
 {
 	//return filtreEffet->MotionBlur(radius, sigma, angle);

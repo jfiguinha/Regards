@@ -296,6 +296,9 @@
     <ClInclude Include="GaussianBlurEffectParameter.h" />
     <ClInclude Include="GaussianBlurFilter.h" />
     <ClInclude Include="Histogramme.h" />
+    <ClInclude Include="hqdn3d.h" />
+    <ClInclude Include="hqdn3dEffectParameter.h" />
+    <ClInclude Include="hqdn3dFilter.h" />
     <ClInclude Include="KuwaharaEffectParameter.h" />
     <ClInclude Include="KuwaharaFilter.h" />
     <ClInclude Include="LensFlare.h" />
@@ -371,6 +374,8 @@
     <ClCompile Include="GaussianBlur.cpp" />
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="Histogramme.cpp" />
+    <ClCompile Include="hqdn3d.cpp" />
+    <ClCompile Include="hqdn3dFilter.cpp" />
     <ClCompile Include="KuwaharaFilter.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />

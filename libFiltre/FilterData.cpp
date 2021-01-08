@@ -63,6 +63,8 @@
 #include <BitmapFusionFilter.h>
 #include <PageCurlFilter.h>
 #include <BitmapFusionEffectParameter.h>
+#include <hqdn3dFilter.h>
+#include <hqdn3dEffectParameter.h>
 using namespace Regards::Filter;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
@@ -187,6 +189,17 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
             }
         }
             break;
+
+		case IDM_FILTREHQDN3D:
+		{
+			if (effectParameter != nullptr)
+			{
+				Chqdn3dEffectParameter  * hq3dn = (Chqdn3dEffectParameter *)effectParameter;
+				filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
+				return 1;
+			}
+		}
+		break;
             
         case ID_AJUSTEMENT_PHOTOFILTRE:
         {
@@ -458,6 +471,11 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
        /// filterEffect->Filter(effectParameter, source, this);
 		break;
 
+	case IDM_FILTREHQDN3D:
+		filterEffect = new Chqdn3dFilter();
+		/// filterEffect->Filter(effectParameter, source, this);
+		break;
+
 	case IDM_ROTATE_FREE:
         filterEffect = new CRotateFreeFilter();
         //filterEffect->Filter(effectParameter, source, this);
@@ -609,6 +627,7 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 		case IDM_WAVE_EFFECT:
 		case IDM_FILTRELENSFLARE:
 		case IDM_FILTRE_MOTIONBLUR:
+		case IDM_FILTREHQDN3D:
 			return false;
 			break;
 	}
@@ -632,6 +651,7 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 		case IDM_FILTRE_MOTIONBLUR:
 		case IDM_ROTATE_FREE:
 		case IDM_FILTRE_CLAHE:
+		case IDM_FILTREHQDN3D:
 			return false;
 			break;
 	}
@@ -705,6 +725,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 		case IDM_FILTRE_FLOUGAUSSIEN:
 		case IDM_FILTRE_FLOU:
         case IDM_AJUSTEMENT_SOLARISATION:
+		case IDM_FILTREHQDN3D:
             return true;
 		/*
 		case IDM_FILTRELENSFLARE:
@@ -742,6 +763,7 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
         case IDM_FILTRE_FLOUGAUSSIEN:
         case IDM_FILTRE_FLOU:
         case IDM_FILTRE_SOFTEN:
+		case IDM_FILTREHQDN3D:
             return CONVOLUTION_EFFECT;
             break;
             
@@ -843,6 +865,10 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
         case IDM_BEST_EXPOSURE:
             return new CBestExposureEffectParameter();
             break;
+
+		case IDM_FILTREHQDN3D:
+			return new Chqdn3dEffectParameter();
+			break;
             
         case IDM_FILTRELENSFLARE:
             return new CLensFlareEffectParameter();
@@ -897,6 +923,7 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_CROP:
         case IDM_FILTRE_MOTIONBLUR:
         case IDM_WAVE_EFFECT:
+		case IDM_FILTREHQDN3D:
         case IDM_FILTRELENSFLARE:
             {
                 return true;
@@ -916,6 +943,17 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 			gaussianBlur->radius = 5;
 			gaussianBlur->boxSize = 3;
 			return gaussianBlur;
+			break;
+		}
+
+		case IDM_FILTREHQDN3D:
+		{
+			Chqdn3dEffectParameter * hq3deffect = new Chqdn3dEffectParameter();
+			hq3deffect->LumSpac = 4;
+			hq3deffect->ChromSpac= 4;
+			hq3deffect->LumTmp = 3;
+			hq3deffect->ChromTmp = 3;
+			return hq3deffect;
 			break;
 		}
 
@@ -1086,6 +1124,7 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case ID_AJUSTEMENT_POSTERISATION:
         case IDM_WAVE_EFFECT:
         case IDM_FILTRELENSFLARE:
+		case IDM_FILTREHQDN3D:
         case IDM_COLOR_BALANCE:
         case IDM_FILTRE_SWIRL:
         case IDM_FILTRE_CLOUDS:
@@ -1158,5 +1197,6 @@ void CFiltreData::InitFilterListLabel()
     //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BRIGHTNESSCONTRAST_AUTO, "LBLBRIGHTNESSCONTRASTAUTO"));
+	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREHQDN3D, "LBLFILTREHQDN3D"));
     
 }
