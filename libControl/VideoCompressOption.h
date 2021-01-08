@@ -33,4 +33,5 @@ public:
 	wxString encoder_level = "";
 	bool audioDirectCopy = false;
 	bool videoDirectCopy = false;
+	bool interlace = false;
 };
