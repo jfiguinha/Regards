@@ -2,9 +2,88 @@
 #include "ffmpeg_denoise.h"
 #include <RegardsBitmap.h>
 #include <algorithm>
+
+/*
+	HQDN3D 0.11 for Avisynth
+
+	Copyright (C) 2003 Daniel Moreno <comac@comac.darktech.org>
+	Avisynth port (C) 2005 Loren Merritt <lorenm@u.washington.edu>
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+
 extern float value[256];
 
 #define ABS(A) ( (A) > 0 ? (A) : -(A) )
+enum type_yuv { TYPE_Y, TYPE_U, TYPE_V };
+
+struct myDenoisetask {
+	myDenoisetask(CFFmpegDenoise * denoise, unsigned short * Frame,  // mpi->planes[x]
+		unsigned char * FrameDest,    // dmpi->planes[x]
+		unsigned short *FrameAnt,
+		int W, int H, int sStride, int dStride,
+		int *Horizontal, int *Vertical, int *Temporal){
+
+		this->denoise = denoise;
+		this->Frame = Frame;
+		this->FrameDest = FrameDest;
+		this->FrameAnt = FrameAnt;
+		this->W = W;
+		this->H = H;
+		this->sStride = sStride;
+		this->dStride = dStride;
+		this->Horizontal = Horizontal;
+		this->Vertical = Vertical;
+		this->Temporal = Temporal;
+	}
+
+	void operator()()
+	{
+		unsigned int * Line = new unsigned int[W];
+
+		denoise->deNoise(Frame,  // mpi->planes[x]
+			FrameDest,    // dmpi->planes[x]
+			Line,       // vf->priv->Line (width bytes)
+			FrameAnt,
+			W, H, sStride, dStride,
+			Horizontal, Vertical, Temporal);
+
+		delete[] Line;
+	}
+
+
+	void Free()
+	{
+	}
+
+	CFFmpegDenoise * denoise;
+	unsigned short * Frame;
+	unsigned char * FrameDest;
+	unsigned short *FrameAnt;
+	int W;
+	int H;
+	int sStride;
+	int dStride;
+	int *Horizontal;
+	int *Vertical;
+	int *Temporal;
+	
+};
+
+
 
 static void PrecalcCoefs(int *Ct, double Dist25)
 {
@@ -29,7 +108,7 @@ static inline unsigned int LowPassMul(unsigned int PrevMul, unsigned int CurrMul
 }
 
 void CFFmpegDenoise::deNoise(unsigned short * Frame,  // mpi->planes[x]
-	unsigned char *FrameDest,    // dmpi->planes[x]
+	unsigned char * FrameDest,    // dmpi->planes[x]
 	unsigned int *LineAnt,       // vf->priv->Line (width bytes)
 	unsigned short *FrameAnt,
 	int W, int H, int sStride, int dStride,
@@ -89,13 +168,70 @@ CFFmpegDenoise::~CFFmpegDenoise()
 
 }
 
+#define rgbtoy(b, g, r, y) \
+    y=(unsigned char)(((int)(30*r) + (int)(59*g) + (int)(11*b))/100)
+
+#define rgbtoyuv(b, g, r, y, u, v) \
+    rgbtoy(b, g, r, y); \
+    u=(unsigned char)(((int)(-17*r) - (int)(33*g) + (int)(50*b)+12800)/100); \
+    v=(unsigned char)(((int)(50*r) - (int)(42*g) - (int)(8*b)+12800)/100)
+
+static void RGBtoYUV420PSameSize(const unsigned char * rgb,
+	unsigned char * yplane, unsigned char * uplane, unsigned char * vplane,
+	unsigned rgbIncrement,
+	unsigned char flip,
+	int srcFrameWidth, int srcFrameHeight)
+{
+	unsigned int planeSize;
+	unsigned int halfWidth;
+
+	//unsigned char * yplane;
+	//unsigned char * uplane;
+	//unsigned char * vplane;
+	const unsigned char * rgbIndex;
+
+	int x, y;
+	unsigned char * yline;
+	unsigned char * uline;
+	unsigned char * vline;
+
+	planeSize = srcFrameWidth * srcFrameHeight;
+	halfWidth = srcFrameWidth >> 1;
+
+	// get pointers to the data
+	//yplane = yuv;
+	//uplane = yuv + planeSize;
+	//vplane = yuv + planeSize + (planeSize >> 2);
+	rgbIndex = rgb;
+
+	for (y = 0; y < srcFrameHeight; y++)
+	{
+		yline = yplane + (y * srcFrameWidth);
+		uline = uplane + ((y >> 1) * halfWidth);
+		vline = vplane + ((y >> 1) * halfWidth);
+
+		if (flip)
+			rgbIndex = rgb + (srcFrameWidth*(srcFrameHeight - 1 - y)*rgbIncrement);
+
+		for (x = 0; x < (int)srcFrameWidth; x += 2)
+		{
+			rgbtoyuv(rgbIndex[0], rgbIndex[1], rgbIndex[2], *yline, *uline, *vline);
+			rgbIndex += rgbIncrement;
+			yline++;
+			rgbtoyuv(rgbIndex[0], rgbIndex[1], rgbIndex[2], *yline, *uline, *vline);
+			rgbIndex += rgbIncrement;
+			yline++;
+			uline++;
+			vline++;
+		}
+	}
+}
+
 CRegardsBitmap * CFFmpegDenoise::ApplyDenoise3D(double LumSpac, double ChromSpac, double LumTmp, double ChromTmp, CRegardsBitmap * bitmapIn)
 {
 
 	CRegardsBitmap * bitmapOut = new CRegardsBitmap(bitmapIn->GetBitmapWidth(), bitmapIn->GetBitmapHeight());
-	unsigned short * picture_y = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
-	unsigned short * picture_u = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
-	unsigned short * picture_v = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+
 
 
 	if (LumSpac < 0)
@@ -128,61 +264,110 @@ CRegardsBitmap * CFFmpegDenoise::ApplyDenoise3D(double LumSpac, double ChromSpac
 	cw = w >> 1;
 	ch = h >> 1;
 
-	unsigned int * Line = new unsigned int[w];
-	Frame[0] = new unsigned short[w*h];
-	Frame[1] = new unsigned short[cw*ch];
-	Frame[2] = new unsigned short[cw*ch];
 
-	uint8_t* data = bitmapIn->GetPtBitmap();
+	unsigned short * picture_y = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+	unsigned short * picture_u = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+	unsigned short * picture_v = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+
+	
+	Frame[0] = new unsigned short[w*h];
+	Frame[1] = new unsigned short[w*h];
+	Frame[2] = new unsigned short[w*h];
+
+	uint8_t * y_out = new uint8_t[w*h];
+	uint8_t * u_out = new uint8_t[w*h];
+	uint8_t * v_out = new uint8_t[w*h];
+
+	uint8_t* dataIn = bitmapIn->GetPtBitmap();
 	int posPicture = 0;
 	int posLocal = 0;
 	for (int posY = 0; posY < bitmapIn->GetBitmapHeight(); posY++)
 	{
 		for (int posX = 0; posX < bitmapIn->GetBitmapWidth(); posX++)
 		{
-			picture_y[posLocal] = 0.257f * value[data[posPicture + 2]] + 0.504f * value[data[posPicture + 1]] + 0.098f * value[data[posPicture]] + 16;
-			picture_v[posLocal] = (0.439 * data[posPicture + 2]) - (0.368 * data[posPicture + 1]) - (0.071 * data[posPicture]) + 128;
-			picture_u[posLocal] = -(0.148 * data[posPicture + 2]) - (0.291 * data[posPicture + 1]) + (0.439 * data[posPicture]) + 128;
+			picture_y[posLocal] = 0.257f * value[dataIn[posPicture + 2]] + 0.504f * value[dataIn[posPicture + 1]] + 0.098f * value[dataIn[posPicture]] + 16;
+			picture_v[posLocal] = (0.439 * dataIn[posPicture + 2]) - (0.368 * dataIn[posPicture + 1]) - (0.071 * dataIn[posPicture]) + 128;
+			picture_u[posLocal] = -(0.148 * dataIn[posPicture + 2]) - (0.291 * dataIn[posPicture + 1]) + (0.439 * dataIn[posPicture]) + 128;
 
 			posLocal++;
 			posPicture += 4;
 		}
 	}
 
-	uint8_t * y_out = new uint8_t[posLocal];
-	uint8_t * u_out = new uint8_t[posLocal];
-	uint8_t * v_out = new uint8_t[posLocal];
 
+	unsigned int * Line = new unsigned int[w];
+#ifdef USE_TBB_ONLY
+	std::vector<myDenoisetask> tasks;
+	tasks.push_back(myDenoisetask(this, picture_y,
+		y_out,
+		Frame[0], w, h,
+		bitmapIn->GetBitmapWidth(),
+		bitmapIn->GetBitmapWidth(),
+		Coefs[0], Coefs[0], Coefs[1]));
+
+	tasks.push_back(myDenoisetask(this, picture_u,
+		u_out,
+		Frame[1], w, h,
+		bitmapIn->GetBitmapWidth(),
+		bitmapIn->GetBitmapWidth(),
+		Coefs[2], Coefs[2], Coefs[3]));
+
+	tasks.push_back(myDenoisetask(this, picture_v,
+		v_out,
+		Frame[2], w, h,
+		bitmapIn->GetBitmapWidth(),
+		bitmapIn->GetBitmapWidth(),
+		Coefs[2], Coefs[2], Coefs[3]));
+
+
+	tbb::parallel_for(
+		tbb::blocked_range<size_t>(0, tasks.size()),
+		[&tasks](const tbb::blocked_range<size_t>& r)
+	{
+		for (size_t i = r.begin(); i < r.end(); ++i)
+			tasks[i]();
+	}
+	);
+	
+#else
+	
 	deNoise(picture_y,
 		y_out,
 		Line, Frame[0], w, h,
 		bitmapIn->GetBitmapWidth(),
 		bitmapIn->GetBitmapWidth(),
 		Coefs[0], Coefs[0], Coefs[1]);
+
 	deNoise(picture_u,
 		u_out,
 		Line, Frame[1], cw, ch,
 		bitmapIn->GetBitmapWidth(),
 		bitmapIn->GetBitmapWidth(),
 		Coefs[2], Coefs[2], Coefs[3]);
+
 	deNoise(picture_v,
 		v_out,
-		Line, Frame[2], cw, ch,
+		Line, Frame[2],cw, ch,
 		bitmapIn->GetBitmapWidth(),
 		bitmapIn->GetBitmapWidth(),
 		Coefs[2], Coefs[2], Coefs[3]);
+	
 
+#endif
 	posLocal = 0;
 	posPicture = 0;
-	data = bitmapOut->GetPtBitmap();
+	uint8_t* data = bitmapOut->GetPtBitmap();
 
 	for (int posY = 0; posY < bitmapOut->GetBitmapHeight(); posY++)
 	{
 		for (int posX = 0; posX < bitmapOut->GetBitmapWidth(); posX++)
 		{
-			float Y = picture_y[posLocal];
-			float V = picture_v[posLocal];
-			float U = picture_u[posLocal];
+			float Y = y_out[posLocal];
+			//float V = v_out[posLocal];
+			//float U = u_out[posLocal];
+			float V = (0.439 * dataIn[posPicture + 2]) - (0.368 * dataIn[posPicture + 1]) - (0.071 * dataIn[posPicture]) + 128;
+			float U = -(0.148 * dataIn[posPicture + 2]) - (0.291 * dataIn[posPicture + 1]) + (0.439 * dataIn[posPicture]) + 128;
+
 
 			double B = 1.164 * (Y - 16) + 2.018 * (U - 128);
 			double G = 1.164 * (Y - 16) - 0.813 * (V - 128) - 0.391 * (U - 128);
@@ -195,6 +380,20 @@ CRegardsBitmap * CFFmpegDenoise::ApplyDenoise3D(double LumSpac, double ChromSpac
 			posLocal++;
 		}
 	}
+
+	delete[] picture_y;
+	delete[] picture_u;
+	delete[] picture_v;
+
+	delete[] Frame[0];
+	delete[] Frame[1];
+	delete[] Frame[2];
+
+	delete[] y_out;
+	delete[] u_out;
+	delete[] v_out;
+
+	delete[] Line;
 
 	return bitmapOut;
 }

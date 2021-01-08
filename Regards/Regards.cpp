@@ -17,6 +17,8 @@
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
 #include <libPicture.h>
+#include <ffmpeg_denoise.h>
+#include <RegardsBitmap.h>
 
 using namespace Regards::Picture;
 using namespace tbb;
@@ -244,16 +246,21 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
-	/*
+#ifdef TEST_NOISE
+	float LumSpac = -1;
+	float ChromSpac = -1;
+	float LumTmp = -1;
+	float ChromTmp = -1;
 	CLibPicture libPicture;
-	wxArrayString files;
-	wxDir::GetAllFiles("D:\\Images\\107APPLE\\", &files, "*.heic", wxDIR_FILES);
-	for (wxString file : files)
-	{
-		CImageLoadingFormat * picture = libPicture.LoadPicture(file);
-		delete picture;
-	}
-	*/
+	CImageLoadingFormat * picture = libPicture.LoadPicture("d:\\Noise-Image.1.jpg");
+	CRegardsBitmap * test = picture->GetRegardsBitmap();
+	CFFmpegDenoise denoise;
+	CRegardsBitmap * out = denoise.ApplyDenoise3D(150,150, 80,80, test);
+	out->SaveToBmp("d:\\toto.bmp");
+	delete test;
+	delete out; 
+	delete picture;
+#endif
 
 #ifdef PREPARE_DATA_TRAINING
 	//Create image learning
