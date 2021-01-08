@@ -118,6 +118,9 @@
     <ClCompile Include="FFmpegDecodeFrame.cpp">
       <Filter>ThumbnailVideo</Filter>
     </ClCompile>
+    <ClCompile Include="avif_heif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -260,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="RotateByShearRGB.h">
       <Filter>Rotate</Filter>
+    </ClInclude>
+    <ClInclude Include="avif_heif.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
