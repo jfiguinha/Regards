@@ -1,7 +1,7 @@
 [DEBREATE-0.7.13]
 <<CTRL>>
 Package: RegardsViewer
-Version: 2.63.7
+Version: 2.63.8
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
 Section: graphics
 Source: https://github.com/jfiguinha/Regards.git
@@ -48,7 +48,7 @@ Upstream-Name: Figuinha
 Upstream-Contact: Figuinha Jacques <appt.jf@outlook.fr>
 Source: http://jfiguinha.pagesperso-orange.fr/
 
-Copyright: 2015-2020 Figuinha Jacques <appt.jf@outlook.fr>
+Copyright: 2015-2021 Figuinha Jacques <appt.jf@outlook.fr>
 License: GPL-2+
 
 License: GPL-2+

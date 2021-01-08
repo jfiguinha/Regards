@@ -60,13 +60,13 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.63.7");
+	treeDataWidth->SetValue("2.63.8");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
 	treeDataAnnee->SetIsParent(false);
 	treeDataAnnee->SetKey("Copyright");
-	treeDataAnnee->SetValue("2014 - 2020");
+	treeDataAnnee->SetValue("2014 - 2021");
 	tr.append_child(child, treeDataAnnee);
 
 	CTreeData * treeDataLib = new CTreeData();
