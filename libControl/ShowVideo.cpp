@@ -35,7 +35,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		config->GetVideoControlTheme(&themeVideo);
 	}
     
-#ifdef WIN32_OLDCODE
+#ifdef WIN32
 
 	int dxva2 = 0;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
@@ -73,7 +73,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	else
 	{
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-		videoWindow->SetEncoderHardware(decoder, dxva2);
+		videoWindow->SetEncoderHardware("dxva2", dxva2);
 	}
 
 #else

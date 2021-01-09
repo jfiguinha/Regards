@@ -495,6 +495,13 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 
 				CalculPositionVideo(widthOutput, heightOutput, rect);
 				openclEffectNV12->InterpolationZoomBicubic(widthOutput, heightOutput, rect, flipH, flipV, angle, filterInterpolation);
+				
+				if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
+				{
+					GetDenoiserPt(widthOutput, heightOutput);
+					openclEffectNV12->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
+				}
+				
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 				err = clFlush(openclContext->GetCommandQueue());

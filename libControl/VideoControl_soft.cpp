@@ -1895,7 +1895,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
 	//Test if denoising Effect
-	if (videoEffectParameter.denoiseEnable)
+	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
 		GetDenoiserPt(widthOutput, heightOutput);
 		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
@@ -1989,7 +1989,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
 
 	//Test if denoising Effect
-	if (videoEffectParameter.denoiseEnable)
+	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
 		GetDenoiserPt(widthOutput, heightOutput);
 		hq3d->ApplyDenoise3D(bitmapOut);
@@ -2033,7 +2033,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
             ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
 
 		//Test if denoising Effect
-		if (videoEffectParameter.denoiseEnable)
+		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 		{
 			GetDenoiserPt(widthOutput, heightOutput);
 			hq3d->ApplyDenoise3D(bitmapOut);

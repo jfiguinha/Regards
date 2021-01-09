@@ -498,7 +498,7 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 		_pimpl = new CFFmfcPimpl();
 
 	_pimpl->acceleratorHardware = acceleratorHardware;
-	_pimpl->isOpenGLDecoding = false;
+	_pimpl->isOpenGLDecoding = isOpenGLDecoding;
 	//_pimpl->volume = volume;
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
