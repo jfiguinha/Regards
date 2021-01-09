@@ -38,7 +38,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <VirtualDirectory Name="src">
-      <File Name="hqdn3d.cpp"/>
       <File Name="RedEye.cpp"/>
       <File Name="Wave.cpp"/>
       <File Name="Selection.cpp"/>
@@ -57,7 +56,6 @@
       <File Name="circle.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="hqdn3d.h"/>
       <File Name="RedEye.h"/>
       <File Name="Wave.h"/>
       <File Name="Selection.h"/>
