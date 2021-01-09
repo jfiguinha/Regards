@@ -598,12 +598,12 @@ int CFiltreEffet::HQDn3D(const double & LumSpac, const double & ChromSpac, const
 {
 	if (hq3d == nullptr)
 	{
-		hq3d = new Chqdn3d(width, height, LumSpac, ChromSpac, LumTmp, ChromTmp);
+		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
 	}
 	else if (oldLevelDenoise != LumSpac || width != oldwidthDenoise || height != oldheightDenoise)
 	{
 		delete hq3d;
-		hq3d = new Chqdn3d(width, height, LumSpac, ChromSpac, LumTmp, ChromTmp);
+		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
 	}
 
 	int value = filtreEffet->HQDn3D(hq3d);

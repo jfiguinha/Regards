@@ -764,9 +764,7 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 			bitmapheight = bitmapIn->GetHeight();
 			orientation = bitmapIn->GetOrientation();
 
-			if (filtreEffet != nullptr)
-				delete filtreEffet;
-			filtreEffet = nullptr;
+
 
 			ShrinkImage(false);
 			AfterSetBitmap();
@@ -1582,14 +1580,14 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
-		//if (filtreEffet != nullptr)
-		//	delete filtreEffet;
-		//filtreEffet = new CFiltreEffet(color, openclContext, source);
-		//loadBitmap = false;
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+		filtreEffet = new CFiltreEffet(color, openclContext, source);
+		loadBitmap = false;
 	}
 
-	if (filtreEffet == nullptr)
-		filtreEffet = new CFiltreEffet(color, openclContext, source);
+	//if (filtreEffet == nullptr)
+	//	filtreEffet = new CFiltreEffet(color, openclContext, source);
 
 	muBitmap.unlock();
     
@@ -1684,11 +1682,11 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	
 	if (loadBitmap)
 	{
-		//if (filtreEffet != nullptr)
-		//	delete filtreEffet;
-		//filtreEffet = new CFiltreEffet(color, nullptr, source);
-		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, nullptr, source);
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+		filtreEffet = new CFiltreEffet(color, nullptr, source);
+		//if (filtreEffet == nullptr)
+		//	filtreEffet = new CFiltreEffet(color, nullptr, source);
         
         if(IsOpenGLDecoding())
         {

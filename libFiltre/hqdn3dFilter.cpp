@@ -80,7 +80,7 @@ void Chqdn3dFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTree
     }
 }
 
-/*
+
 void Chqdn3dFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
@@ -118,4 +118,3 @@ CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParame
 
 	return imageLoad;
 }
-*/
