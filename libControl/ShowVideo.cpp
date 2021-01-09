@@ -35,7 +35,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		config->GetVideoControlTheme(&themeVideo);
 	}
     
-#ifdef WIN32
+#ifdef WIN32_OLDCODE
 
 	int dxva2 = 0;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();

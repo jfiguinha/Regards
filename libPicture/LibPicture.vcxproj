@@ -269,6 +269,7 @@
     <ClInclude Include="FFmpegDecodeFrame.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
+    <ClInclude Include="hqdn3d.h" />
     <ClInclude Include="ImageLoadingFormat.h" />
     <ClInclude Include="ImageVideoThumbnail.h" />
     <ClInclude Include="Interpolation.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="FFmpegDecodeFrame.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="Heic.cpp" />
+    <ClCompile Include="hqdn3d.cpp" />
     <ClCompile Include="ImageLoadingFormat.cpp" />
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="InterpolationBicubic.cpp" />

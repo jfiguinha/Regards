@@ -121,6 +121,9 @@
     <ClCompile Include="avif_heif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="hqdn3d.cpp">
+      <Filter>hqdb3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -267,6 +270,9 @@
     <ClInclude Include="avif_heif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="hqdn3d.h">
+      <Filter>hqdb3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -301,6 +307,9 @@
     </Filter>
     <Filter Include="Rotate">
       <UniqueIdentifier>{1ff0607e-4525-432a-9d3d-5f1118e555a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hqdb3d">
+      <UniqueIdentifier>{531a7516-7c4b-4759-ad3f-783dd329bc7c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

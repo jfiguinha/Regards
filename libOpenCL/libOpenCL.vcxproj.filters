@@ -16,9 +16,6 @@
     <Filter Include="header">
       <UniqueIdentifier>{4ac54e02-2524-4677-9b45-efc88ece30af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hq3d">
-      <UniqueIdentifier>{da19449e-7ccd-403f-9508-2842d955b3b3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -45,9 +42,6 @@
     <ClInclude Include="OpenCLFilter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="hqdn3d.h">
-      <Filter>hq3d</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideoYUV.cpp">
@@ -70,9 +64,6 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
-    </ClCompile>
-    <ClCompile Include="hqdn3d.cpp">
-      <Filter>hq3d</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
