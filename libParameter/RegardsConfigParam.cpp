@@ -39,6 +39,15 @@ CRegardsConfigParam::CRegardsConfigParam()
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
 {
+	if (videoDecoderHardware == "")
+	{
+#ifdef WIN32
+		videoDecoderHardware = "dxva2";
+#endif
+#ifdef __APPLE__
+		videoDecoderHardware = "videotoolbox";
+#endif
+	}
 	return videoDecoderHardware;
 }
 

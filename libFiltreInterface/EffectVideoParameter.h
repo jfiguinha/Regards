@@ -62,9 +62,11 @@ public:
 		denoiseEnable = 0;
         bandcEnable = 1;
 
-		//uSigma = 11.0;
-		//uThreshold = 18;
-		//uKSigma = 2;
+		uSigma = 11.0;
+		uThreshold = 18;
+		uKSigma = 2;
+		openglDenoise = false;
+
 		denoisingLevel = 4;
 
 
@@ -102,10 +104,12 @@ public:
 	};
 
 	//Video Denoising Parameter
-	//float uSigma;
-	//float uThreshold;
-	//float uKSigma;
+	bool openglDenoise;
+	float uSigma;
+	float uThreshold;
+	float uKSigma;
 	//float exponent;
+
 	float denoisingLevel;
 
 	//Video Parameter

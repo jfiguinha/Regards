@@ -106,7 +106,7 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 			{
 				printf("SetParam colorboost failed \n ");
 			}
-			if (!m_pShader->SetIntegerParam("denoise", 0))// effectParameter->denoiseEnable))
+			if (!m_pShader->SetIntegerParam("denoise", effectParameter->openglDenoise))
 			{
 				printf("SetParam colorboost failed \n ");
 			}
@@ -138,15 +138,15 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 			{
 				printf("SetParam blue failed \n ");
 			}
-			if (!m_pShader->SetParam("sigma", 0))//effectParameter->uSigma))
+			if (!m_pShader->SetParam("sigma",  effectParameter->uSigma))
 			{
 				printf("SetParam uSigma failed \n ");
 			}
-			if (!m_pShader->SetParam("threshold",  0))//effectParameter->uThreshold / 100.0f))
+			if (!m_pShader->SetParam("threshold",  effectParameter->uThreshold / 100.0f))
 			{
 				printf("SetParam uThreshold failed \n ");
 			}
-			if (!m_pShader->SetParam("kSigma", 0))//effectParameter->uKSigma))
+			if (!m_pShader->SetParam("kSigma", effectParameter->uKSigma))
 			{
 				printf("SetParam uKSigma failed \n ");
 			}

@@ -21,9 +21,9 @@ using namespace Regards::OpenCL;
 CVideoFilter::CVideoFilter()
 {
 	effectDenoising = CLibResource::LoadStringFromResource(L"LBLeffectDenoising", 1);
-	//effectDenoisingSigmaU = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaU",1);//L"Effect.Denoising.Sigma P";
-	//effectDenoisingThreshold =CLibResource::LoadStringFromResource(L"LBLeffectDenoisingThreshold",1);// L"Effect.Denoising.FSize";
-	//effectDenoisingSigmaK = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaK",1);//L"Effect.Denoising.Sigma X";
+	effectDenoisingSigmaU = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaU",1);//L"Effect.Denoising.Sigma P";
+	effectDenoisingThreshold =CLibResource::LoadStringFromResource(L"LBLeffectDenoisingThreshold",1);// L"Effect.Denoising.FSize";
+	effectDenoisingSigmaK = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaK",1);//L"Effect.Denoising.Sigma X";
 	effectSharpenLevel = CLibResource::LoadStringFromResource(L"LBLeffectSharpenLevel",1);//L"Effect.Sharpen.Level";
 	toneConstrastLevel = CLibResource::LoadStringFromResource(L"LBLtoneConstrastLevel",1);//L"Tone.Constrast.Level";
 	toneBrightnessLevel = CLibResource::LoadStringFromResource(L"LBLtoneBrightnessLevel",1);//L"Tone.Brightness.Level";
@@ -31,7 +31,8 @@ CVideoFilter::CVideoFilter()
 	colorBoostGreen = CLibResource::LoadStringFromResource(L"LBLcolorBoostGreen",1);//L"Color Boost.Green";
 	colorBoostBlue = CLibResource::LoadStringFromResource(L"LBLcolorBoostBlue",1);//L"Color Boost.Blue";
 	enableEffect = CLibResource::LoadStringFromResource(L"LBLenableEffect",1);//L"Effect.Enable";
-	enableBlurEffect = CLibResource::LoadStringFromResource(L"LBLenableBlurEffect",1);//L"Effect.Denoising.Enable";
+	enableDenoiseEffect = CLibResource::LoadStringFromResource(L"LBLenableDenoiseEffect",1);//L"Effect.Denoising.Enable";
+	enableOpenglDenoising = CLibResource::LoadStringFromResource(L"LBLenableOpenGLDenoiseEffect", 1);//L"Effect.Denoising.Enable";
 	enableSharpenEffect = CLibResource::LoadStringFromResource(L"LBLenableSharpenEffect",1);//L"Effect.Sharpen.Enable";
 	enableColorEffect = CLibResource::LoadStringFromResource(L"LBLenableColorEffect",1);//L"Color Boost.Enable";
 	enableBandCEffect = CLibResource::LoadStringFromResource(L"LBLenableBandCEffect",1);//L"Tone.Enable";
@@ -124,10 +125,16 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	for (auto i = 0; i < 10; i++)
 		elementExponent.push_back(i);    
    
-	filtreInterface->AddTreeInfos(enableBlurEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
+	filtreInterface->AddTreeInfos(enableDenoiseEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
+	
+	vector<float> elementDenoiseLevel;
+	for (float i = 0; i < 255; i += 1)
+		elementDenoiseLevel.push_back(i);
 
+	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel), &elementDenoiseLevel, 4);
 
-	/*
+	filtreInterface->AddTreeInfos(enableOpenglDenoising, new CTreeElementValueInt(videoEffectParameter->openglDenoise), &videoEffectParameter->openglDenoise, 2, 2);
+
 	vector<float> elementSigma;
 	for (float i = 0; i < 100; i+=1)
 		elementSigma.push_back(i);
@@ -135,13 +142,6 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
-	*/
-	
-	vector<float> elementSigma;
-	for (float i = 0; i < 255; i += 1)
-		elementSigma.push_back(i);
-
-	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel), &elementSigma, 4);
 
 
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
@@ -186,7 +186,7 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	}
 
 	//Video Parameter
-	/*
+	
 	if (key == effectDenoisingSigmaU)
 	{
 		videoEffectParameter->uSigma = value;
@@ -196,7 +196,7 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->enableOpenCL = value;
 	}    */
-	if (key == effectDenoising)
+	else if (key == effectDenoising)
 	{
 		videoEffectParameter->denoisingLevel = value;
 	}
@@ -293,12 +293,12 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->enableSubtitle = value;
 	}
-	else if (key == enableBlurEffect)
+	else if (key == enableDenoiseEffect)
 	{
 		videoEffectParameter->denoiseEnable = value;
-	}/*
-    else if (key == effectDenoisingThreshold)
+	}
+    else if (key == enableOpenglDenoising)
 	{
-		videoEffectParameter->uThreshold = value;
-	}*/
+		videoEffectParameter->openglDenoise = value;
+	}
 }

@@ -73,7 +73,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	else
 	{
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-		videoWindow->SetEncoderHardware("dxva2", dxva2);
+		videoWindow->SetEncoderHardware(decoder, dxva2);
 	}
 
 #else

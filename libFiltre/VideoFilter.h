@@ -31,7 +31,7 @@ namespace Regards
         private:
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
 			wxString enableEffect;
-			wxString enableBlurEffect;
+			wxString enableDenoiseEffect;
 			wxString enableSharpenEffect;
 			wxString enableColorEffect;
 			wxString enableGrayScale;
@@ -40,9 +40,10 @@ namespace Regards
 			wxString effectSharpenLevel;
 			wxString toneConstrastLevel;
 			wxString toneBrightnessLevel;
-			//wxString effectDenoisingSigmaU;
-			//wxString effectDenoisingSigmaK;
-			//wxString effectDenoisingThreshold;
+			wxString effectDenoisingSigmaU;
+			wxString effectDenoisingSigmaK;
+			wxString effectDenoisingThreshold;
+			wxString enableOpenglDenoising;
 			wxString effectDenoising;
 			wxString colorBoostRed;
 			wxString colorBoostGreen;
