@@ -627,7 +627,6 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 		case IDM_WAVE_EFFECT:
 		case IDM_FILTRELENSFLARE:
 		case IDM_FILTRE_MOTIONBLUR:
-		case IDM_FILTREHQDN3D:
 			return false;
 			break;
 	}
@@ -651,7 +650,6 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 		case IDM_FILTRE_MOTIONBLUR:
 		case IDM_ROTATE_FREE:
 		case IDM_FILTRE_CLAHE:
-		case IDM_FILTREHQDN3D:
 			return false;
 			break;
 	}

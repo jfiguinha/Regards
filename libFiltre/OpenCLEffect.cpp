@@ -6,6 +6,7 @@
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
 #include "OpenCLFilter.h"
+#include "hqdn3d.h"
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
@@ -50,6 +51,70 @@ int COpenCLEffect::GetSizeData()
 CRegardsBitmap * COpenCLEffect::GetPtBitmap()
 {
 	return nullptr;
+}
+
+int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+{
+	int _width = 0;
+	int _height = 0;
+
+	cl_mem yPicture = nullptr;
+
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			yPicture = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height, "ConvertToYUchar");
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			yPicture = openclFilter.ConvertToY(input->GetValue(), _width, _height, "ConvertToYUchar");
+		}
+
+		long size = _width * _height;
+		uint8_t * data_picture = new uint8_t[_width * _height];
+		if (context != nullptr)
+		{
+			context->GetOutputData(yPicture, data_picture, size, flag);
+
+
+		}
+
+		Chqdn3d hqdn3d(LumSpac, ChromSpac, LumTmp, ChromTmp);
+		uint8_t * dataOut = hqdn3d.ApplyDenoise3D(data_picture, _width, _height);
+
+		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
+		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
+		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
+
+
+		cl_mem output = nullptr;
+		if (preview && paramOutput != nullptr)
+		{
+			output = openclFilter.InsertYValue(memDataOut->GetValue(), paramOutput->GetValue(), _width, _height, "InsertYValueFromUchar");
+		}
+		else
+		{
+			output = openclFilter.InsertYValue(memDataOut->GetValue(), input->GetValue(), _width, _height, "InsertYValueFromUchar");
+		}
+
+		SetOutputValue(output, _width, _height);
+
+		cl_int err;
+		err = clReleaseMemObject(yPicture);
+		Error::CheckError(err);
+		yPicture = nullptr;
+
+		delete memDataOut;
+
+	}
+	return 0;
 }
 
 int COpenCLEffect::Bm3d(const int & fSigma)

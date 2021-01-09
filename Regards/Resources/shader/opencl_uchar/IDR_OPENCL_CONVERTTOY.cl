@@ -52,13 +52,50 @@ __kernel void ConvertToY(__global float * output, const __global uint * input)
 {
 	int position = get_global_id(0);
 	float4 color = rgbaUintToFloat4(input[position]);
-	output[position] = (0.257f * (float)color.z + 0.504f * color.y + 0.098f * color.x + 16.0f);
+	output[position] = (0.257f * color.z + 0.504f * color.y + 0.098f * color.x + 16.0f);
+}
+
+//----------------------------------------------------
+//Conversion en yuv => Rcupration de la valeur Y
+//----------------------------------------------------
+__kernel void ConvertToYUchar(__global uchar * output, const __global uint * input)
+{
+	int position = get_global_id(0);
+	float4 color = rgbaUintToFloat4(input[position]);
+	output[position] = (0.257f * color.z + 0.504f * color.y + 0.098f * color.x + 16.0f);
 }
 
 //----------------------------------------------------
 //Incorporation de la valeur Y
 //----------------------------------------------------
 __kernel void InsertYValue(__global uint * output, const __global float * Yinput, const __global uint * source)
+{
+	int position = get_global_id(0);
+	float4 color = rgbaUintToFloat4(source[position]);
+	float B = color.x;
+	float G = color.y;
+	float R = color.z;
+
+	float half_parted = 128.0f;
+	float seize = 16.0f;
+	
+	float Y = Yinput[position];
+	float V = (0.439 * R) - (0.368 * G) - (0.071 * B) + half_parted;
+	float U = -(0.148 * R) - (0.291 * G) + (0.439 * B) + half_parted;
+
+	float4 colorSource = rgbaUintToFloat4(source[position]);
+	color.x = (1.164 * (Y - seize) + 2.018 * (U - half_parted));
+	color.y = (1.164 * (Y - seize) - 0.813 * (V - half_parted) - 0.391 * (U - half_parted));
+	color.z = (1.164 * (Y - seize) + 1.596 * (V - half_parted));	
+	color.w = colorSource.w;
+	
+	output[position] = rgbaFloat4ToUint(color, 1.0f);
+}
+
+//----------------------------------------------------
+//Incorporation de la valeur Y
+//----------------------------------------------------
+__kernel void InsertYValueFromUchar(__global uint * output, const __global uchar * Yinput, const __global uint * source)
 {
 	int position = get_global_id(0);
 	float4 color = rgbaUintToFloat4(source[position]);

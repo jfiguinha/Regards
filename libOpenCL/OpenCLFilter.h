@@ -63,8 +63,8 @@ namespace Regards
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Fusion(cl_mem inputData, cl_mem secondPictureData, const float &pourcentage, int width, int height);
-			cl_mem ConvertToY(cl_mem inputData, int width, int height);
-			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height);
+			cl_mem ConvertToY(cl_mem inputData, int width, int height, const wxString & functionName = "ConvertToY");
+			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height, const wxString & functionName = "InsertYValue");
 			cl_mem ExtractBlocSize(cl_mem sourceData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 		protected:

@@ -18,7 +18,7 @@ COpenCLFilter::~COpenCLFilter()
 {
 }
 
-cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height)
+cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height, const wxString & functionName)
 {
 	cl_mem outputValue = nullptr;
 	if (context != nullptr)
@@ -40,7 +40,7 @@ cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height)
 			{
 				program->SetParameter(&vecParam, width, height, sizeof(float) * width * height);
 				program->SetKeepOutput(true);
-				program->ExecuteProgram1D(programCL->GetProgram(), "ConvertToY");
+				program->ExecuteProgram1D(programCL->GetProgram(), functionName);
 				outputValue = program->GetOutput();
 
 			}
@@ -200,12 +200,6 @@ void COpenCLFilter::InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const 
 
 			try
 			{
-				/*
-				program->SetParameter(&vecParam, width, height, sizeof(float) * width * height);
-				program->SetKeepOutput(true);
-				program->ExecuteProgram(programCL->GetProgram(), "InsertBlockSize");
-				outputValue = program->GetOutput();
-				*/
 				int sizeTraitement = size + 2 * marge;
 				program->ExecuteProgram2D(programCL->GetProgram(), "InsertBlockSize", &vecParam, sizeTraitement, sizeTraitement);
 			}
@@ -228,7 +222,7 @@ void COpenCLFilter::InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const 
 	}
 }
 
-cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height)
+cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height, const wxString & functionName)
 {
 	cl_mem outputValue = nullptr;
 	if (context != nullptr)
@@ -256,7 +250,7 @@ cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int widt
 			{
 				program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 				program->SetKeepOutput(true);
-				program->ExecuteProgram1D(programCL->GetProgram(), "InsertYValue");
+				program->ExecuteProgram1D(programCL->GetProgram(), functionName);
 				outputValue = program->GetOutput();
 
 			}

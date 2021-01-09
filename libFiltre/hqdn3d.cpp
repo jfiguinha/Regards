@@ -51,6 +51,56 @@ static inline unsigned int LowPassMul(unsigned int PrevMul, unsigned int CurrMul
 	return CurrMul + Coef[d];
 }
 
+void Chqdn3d::deNoise(uint8_t * Frame,  // mpi->planes[x]
+	uint8_t * FrameDest,    // dmpi->planes[x]
+	unsigned int *LineAnt,       // vf->priv->Line (width bytes)
+	uint8_t *FrameAnt,
+	int W, int H, int sStride, int dStride,
+	int *Horizontal, int *Vertical, int *Temporal)
+{
+	int X, Y;
+	int sLineOffs = 0, dLineOffs = 0;
+	unsigned int PixelAnt;
+	int PixelDst;
+
+	/* First pixel has no left nor top neightbour. Only previous frame */
+	LineAnt[0] = PixelAnt = Frame[0] << 16;
+	PixelDst = LowPassMul(FrameAnt[0] << 8, PixelAnt, Temporal);
+	FrameAnt[0] = ((PixelDst + 0x1000007F) / 256);
+	FrameDest[0] = ((PixelDst + 0x10007FFF) / 65536);
+
+	/* Fist line has no top neightbour. Only left one for each pixel and
+		* last frame */
+	for (X = 1; X < W; X++) {
+		LineAnt[X] = PixelAnt = LowPassMul(PixelAnt, Frame[X] << 16, Horizontal);
+		PixelDst = LowPassMul(FrameAnt[X] << 8, PixelAnt, Temporal);
+		FrameAnt[X] = ((PixelDst + 0x1000007F) / 256);
+		FrameDest[X] = ((PixelDst + 0x10007FFF) / 65536);
+	}
+
+	for (Y = 1; Y < H; Y++) {
+		unsigned int PixelAnt;
+		uint8_t * LinePrev = &FrameAnt[Y*W];
+		sLineOffs += sStride, dLineOffs += dStride;
+		/* First pixel on each line doesn't have previous pixel */
+		PixelAnt = Frame[sLineOffs] << 16;
+		LineAnt[0] = LowPassMul(LineAnt[0], PixelAnt, Vertical);
+		PixelDst = LowPassMul(LinePrev[0] << 8, LineAnt[0], Temporal);
+		LinePrev[0] = ((PixelDst + 0x1000007F) / 256);
+		FrameDest[dLineOffs] = ((PixelDst + 0x10007FFF) / 65536);
+
+		for (X = 1; X < W; X++) {
+			int PixelDst;
+			/* The rest are normal */
+			PixelAnt = LowPassMul(PixelAnt, Frame[sLineOffs + X] << 16, Horizontal);
+			LineAnt[X] = LowPassMul(LineAnt[X], PixelAnt, Vertical);
+			PixelDst = LowPassMul(LinePrev[X] << 8, LineAnt[X], Temporal);
+			LinePrev[X] = ((PixelDst + 0x1000007F) / 256);
+			FrameDest[dLineOffs + X] = ((PixelDst + 0x10007FFF) / 65536);
+		}
+	}
+}
+
 void Chqdn3d::deNoise(unsigned short * Frame,  // mpi->planes[x]
 	unsigned char * FrameDest,    // dmpi->planes[x]
 	unsigned int *LineAnt,       // vf->priv->Line (width bytes)
@@ -141,6 +191,24 @@ Chqdn3d::~Chqdn3d()
 
 }
 
+uint8_t * Chqdn3d::ApplyDenoise3D(uint8_t * picture_y, const int &w, const int &h)
+{
+	uint8_t * Frame = new uint8_t[w*h];
+	uint8_t * y_out = new uint8_t[w*h];
+	unsigned int * Line = new unsigned int[w];
+
+	deNoise(picture_y,
+		y_out,
+		Line, Frame, w, h,
+		w,
+		w,
+		Coefs[0], Coefs[0], Coefs[1]);
+
+	delete[] Line;
+	
+	return y_out;
+}
+
 int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 {
 	CRegardsBitmap * bitmapOut = new CRegardsBitmap();
@@ -149,10 +217,14 @@ int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 	h = bitmapIn->GetBitmapHeight();
 
 	unsigned short * picture_y = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+	//unsigned short * picture_u = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
+	//unsigned short * picture_v = new unsigned short[bitmapIn->GetBitmapWidth() * bitmapIn->GetBitmapHeight()];
 
 	unsigned short * Frame = new unsigned short[w*h];
 
 	uint8_t * y_out = new uint8_t[w*h];
+	//uint8_t * u_out = new uint8_t[w*h];
+	//uint8_t * v_out = new uint8_t[w*h];
 
 	uint8_t* dataIn = bitmapIn->GetPtBitmap();
 	int posPicture = 0;
@@ -162,6 +234,9 @@ int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 		for (int posX = 0; posX < bitmapIn->GetBitmapWidth(); posX++)
 		{
 			picture_y[posLocal] = 0.257f * value[dataIn[posPicture + 2]] + 0.504f * value[dataIn[posPicture + 1]] + 0.098f * value[dataIn[posPicture]] + 16;
+			//picture_v[posLocal] = (0.439 *  value[dataIn[posPicture + 2]]) - (0.368 * value[dataIn[posPicture + 1]]) - (0.071 *  value[dataIn[posPicture]]) + 128;
+			//picture_u[posLocal] = -(0.148 *  value[dataIn[posPicture + 2]]) - (0.291 * value[dataIn[posPicture + 1]]) + (0.439 *  value[dataIn[posPicture]]) + 128;
+
 			posLocal++;
 			posPicture += 4;
 		}
@@ -176,6 +251,25 @@ int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 		bitmapIn->GetBitmapWidth(),
 		Coefs[0], Coefs[0], Coefs[1]);
 
+	/*
+	memset(Frame, 0, w*h);
+
+	deNoise(picture_u,
+		u_out,
+		Line, Frame, w, h,
+		bitmapIn->GetBitmapWidth(),
+		bitmapIn->GetBitmapWidth(),
+		Coefs[2], Coefs[2], Coefs[3]);
+
+	memset(Frame, 0, w*h);
+
+	deNoise(picture_v,
+		v_out,
+		Line, Frame, w, h,
+		bitmapIn->GetBitmapWidth(),
+		bitmapIn->GetBitmapWidth(),
+		Coefs[2], Coefs[2], Coefs[3]);
+	*/
 	posLocal = 0;
 	posPicture = 0;
 	uint8_t* data = bitmapOut->GetPtBitmap();
@@ -201,9 +295,12 @@ int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 	}
 
 	delete[] picture_y;
+	//delete[] picture_v;
+	//delete[] picture_u;
 	delete[] Frame;
 	delete[] y_out;
-	delete[] Line;
+	//delete[] v_out;
+	//delete[] Line;
 
 	delete bitmapOut;
 

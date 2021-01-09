@@ -20,10 +20,13 @@ using namespace Regards::Filter;
 
 Chqdn3dFilter::Chqdn3dFilter()
 {
+	/*
 	libelleLumSpac = CLibResource::LoadStringFromResource(L"LBLEFFECTLUMSPAC",1);
     libelleChromSpac = CLibResource::LoadStringFromResource(L"LBLEFFECTCHROMSPAC",1);
     libelleLumTmp = CLibResource::LoadStringFromResource(L"LBLEFFECTLUMTMP",1);
     libelleChromTmp = CLibResource::LoadStringFromResource(L"LBLEFFECTCHROMTMP",1);
+	*/
+	libelleLumSpac = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1);
 }
 
 Chqdn3dFilter::~Chqdn3dFilter()
@@ -47,9 +50,9 @@ void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * 
         elementIntensity.push_back(i);
     
     filtreInterface->AddTreeInfos(libelleLumSpac, new CTreeElementValueInt(hqdn3dParameter->LumSpac), &elementIntensity);
-    filtreInterface->AddTreeInfos(libelleChromSpac, new CTreeElementValueInt(hqdn3dParameter->ChromSpac), &elementIntensity);
-    filtreInterface->AddTreeInfos(libelleLumTmp, new CTreeElementValueInt(hqdn3dParameter->LumTmp), &elementIntensity);
-    filtreInterface->AddTreeInfos(libelleChromTmp, new CTreeElementValueInt(hqdn3dParameter->ChromTmp), &elementIntensity);
+    //filtreInterface->AddTreeInfos(libelleChromSpac, new CTreeElementValueInt(hqdn3dParameter->ChromSpac), &elementIntensity);
+   // filtreInterface->AddTreeInfos(libelleLumTmp, new CTreeElementValueInt(hqdn3dParameter->LumTmp), &elementIntensity);
+    //filtreInterface->AddTreeInfos(libelleChromTmp, new CTreeElementValueInt(hqdn3dParameter->ChromTmp), &elementIntensity);
 }
 
 void Chqdn3dFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
@@ -77,7 +80,7 @@ void Chqdn3dFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTree
     }
 }
 
-
+/*
 void Chqdn3dFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
@@ -115,4 +118,4 @@ CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParame
 
 	return imageLoad;
 }
-
+*/
