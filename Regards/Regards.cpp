@@ -17,7 +17,7 @@
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
 #include <libPicture.h>
-#include <ffmpeg_denoise.h>
+//#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
 
 using namespace Regards::Picture;

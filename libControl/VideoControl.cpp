@@ -57,31 +57,44 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 
 }
 
-CRegardsBitmap * CVideoControl::SavePicture()
+CRegardsBitmap * CVideoControl::SavePicture(bool & isFromBuffer)
 {
 	CRegardsBitmap * bitmap = nullptr;
-	if (dxva2ToOpenGLWorking)
+	if (thumbnailFromBitmap)
 	{
+		isFromBuffer = true;
 		muBitmap.lock();
-		bitmap = openclEffectNV12->GetRgbaBitmap(true);
-		bitmap->ConvertToBgr();
-		//ExportPicture(bitmap);
+		bitmap = new CRegardsBitmap();
+		*bitmap = *pictureVideo;
+		bitmap->VertFlipBuf();
 		muBitmap.unlock();
 	}
 	else
 	{
-		if (isffmpegDecode)
+		isFromBuffer = false;
+		if (dxva2ToOpenGLWorking)
 		{
 			muBitmap.lock();
-			bitmap = new CRegardsBitmap();
-			*bitmap = *pictureFrame;
+			bitmap = openclEffectNV12->GetRgbaBitmap(true);
+			bitmap->ConvertToBgr();
+			//ExportPicture(bitmap);
 			muBitmap.unlock();
 		}
 		else
 		{
-			muBitmap.lock();
-			bitmap = openclEffectYUV->GetRgbaBitmap(true);
-			muBitmap.unlock();
+			if (isffmpegDecode)
+			{
+				muBitmap.lock();
+				bitmap = new CRegardsBitmap();
+				*bitmap = *pictureFrame;
+				muBitmap.unlock();
+			}
+			else
+			{
+				muBitmap.lock();
+				bitmap = openclEffectYUV->GetRgbaBitmap(true);
+				muBitmap.unlock();
+			}
 		}
 	}
 	return bitmap;

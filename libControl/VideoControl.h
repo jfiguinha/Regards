@@ -27,7 +27,7 @@ public:
 	HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height);
 	
     virtual void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
-	CRegardsBitmap * SavePicture();
+	CRegardsBitmap * SavePicture(bool & isFromBuffer);
 
 protected:
 

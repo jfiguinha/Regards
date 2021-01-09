@@ -144,10 +144,15 @@ CRegardsBitmap * CShowVideo::GetVideoBitmap()
 	CRegardsBitmap * bitmap = nullptr;
 	if (videoWindow != nullptr && IsPause())
 	{
-		bitmap = videoWindow->SavePicture();
+		bool isFromBuffer = false;
+		bitmap = videoWindow->SavePicture(isFromBuffer);
 		bitmap->SetFilename(this->filename);
-		if (videoWindow->IsFFmpegDecode())
-			bitmap->VertFlipBuf();
+		if (!isFromBuffer)
+		{
+			if (videoWindow->IsFFmpegDecode())
+				bitmap->VertFlipBuf();
+		}
+
 	}
 	return bitmap;
 }
@@ -156,11 +161,16 @@ void CShowVideo::OnSave(wxCommandEvent& event)
 {
     if (videoWindow != nullptr)
     {
-        CRegardsBitmap * bitmap = videoWindow->SavePicture();
+		bool isFromBuffer = false;
+        CRegardsBitmap * bitmap = videoWindow->SavePicture(isFromBuffer);
         CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
         bitmap->SetFilename(this->filename);
-        if (videoWindow->IsFFmpegDecode())
-            bitmap->VertFlipBuf();
+		if (!isFromBuffer)
+		{
+			if (videoWindow->IsFFmpegDecode())
+				bitmap->VertFlipBuf();
+		}
+
         imageLoading->SetPicture(bitmap);
         CSavePicture::SavePicture(nullptr, imageLoading, filename);
         if (imageLoading != nullptr)
@@ -444,9 +454,12 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 
 void CShowVideo::SetPosition(const int64_t &timePosition)
 {
-	if (videoWindow != nullptr)
+	wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+	if (window != nullptr)
 	{
-		videoWindow->SetVideoPosition(timePosition);
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		evt.SetExtraLong(timePosition);
+		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 

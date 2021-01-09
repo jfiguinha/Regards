@@ -132,22 +132,37 @@ float CVideoControlSoft::GetMovieRatio()
 	return ratioSelect;
 }
 
-CRegardsBitmap * CVideoControlSoft::SavePicture()
+CRegardsBitmap * CVideoControlSoft::SavePicture(bool & isFromBuffer)
 {
-    CRegardsBitmap * bitmap = nullptr;
-	if (isffmpegDecode)
+	CRegardsBitmap * bitmap = nullptr;
+	if (thumbnailFromBitmap)
 	{
 		muBitmap.lock();
 		bitmap = new CRegardsBitmap();
-		*bitmap = *pictureFrame;
+		*bitmap = *pictureVideo;
+		bitmap->VertFlipBuf();
 		muBitmap.unlock();
+		isFromBuffer = true;
 	}
 	else
 	{
-		muBitmap.lock();
-		bitmap = openclEffectYUV->GetRgbaBitmap(true);
-		muBitmap.unlock();
+		isFromBuffer = false;
+		if (isffmpegDecode)
+		{
+			muBitmap.lock();
+			bitmap = new CRegardsBitmap();
+			*bitmap = *pictureFrame;
+			muBitmap.unlock();
+		}
+		else
+		{
+			muBitmap.lock();
+			bitmap = openclEffectYUV->GetRgbaBitmap(true);
+			muBitmap.unlock();
+		}
 	}
+
+
     return bitmap;
 }
 
@@ -156,6 +171,7 @@ bool CVideoControlSoft::IsFFmpegDecode()
     return isffmpegDecode;
 }
 
+/*
 void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
 {
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
@@ -167,7 +183,7 @@ void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
 	if (imageLoading != nullptr)
 		delete imageLoading;
 }
-
+*/
 //-----------------------------------------------------------------
 //Gestion du click de souris
 //-----------------------------------------------------------------
@@ -293,6 +309,7 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 	ffmfc->SetTimePosition(videoPosition * 1000 * 1000);
 	if (pause && thumbnailVideo != nullptr)
 	{
+		thumbnailFromBitmap = true;
 		if (threadVideoEnd)
 		{
 			if (_threadVideo != nullptr)
@@ -303,15 +320,9 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 			_threadVideo = new thread(GenerateThumbnailVideo, this);
 			threadVideoEnd = false;
 		}
-		
-
-		/*
-		muBitmap.lock();
-		pictureVideo = thumbnailVideo->GetVideoFrame(videoPosition, 0, 0);
-		muBitmap.unlock();
-		this->Refresh();
-		*/
 	}
+	else
+		thumbnailFromBitmap = false;
 }
 
 void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
@@ -1189,7 +1200,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
 {
 	ffmfc->Change_subtitle_stream(newStreamSubtitle);
-	SetVideoPosition(videoPosition / 1000);
+	//SetVideoPosition(videoPosition / 1000);
+	wxCommandEvent evt(wxEVENT_SETPOSITION);
+	evt.SetExtraLong(videoPosition / 1000);
+	this->GetEventHandler()->AddPendingEvent(evt);
 	return 0;
 }
 
@@ -1197,12 +1211,16 @@ int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
 int CVideoControlSoft::ChangeAudioStream(int newStreamAudio)
 {
 	ffmfc->Change_audio_stream(newStreamAudio);
-	SetVideoPosition(videoPosition / 1000);
+	//SetVideoPosition(videoPosition / 1000);
+	wxCommandEvent evt(wxEVENT_SETPOSITION);
+	evt.SetExtraLong(videoPosition / 1000);
+	this->GetEventHandler()->AddPendingEvent(evt);
 	return 0;
 }
 
 void CVideoControlSoft::OnPlay()
 {
+	thumbnailFromBitmap = false;
 	if (videoStart)
 	{
 		bool _videoEnd = videoEnd;
@@ -1476,6 +1494,7 @@ void CVideoControlSoft::SetVideoDuration(const int64_t & duration, const int64_t
 		eventPlayer->SetVideoDuration(duration);
 }
 
+/*
 void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
 {
 	ffmfc->SetTimePosition(pos * 1000 * 1000);
@@ -1489,7 +1508,7 @@ void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
 		this->Refresh();
 	}
 }
-
+*/
 void CVideoControlSoft::SetCurrentclock(wxString message)
 {
 	this->message = message;

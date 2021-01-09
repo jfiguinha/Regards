@@ -35,7 +35,7 @@ public:
 	void SetVideoDuration(const int64_t & duration, const int64_t & startTime);
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
-	void SetVideoPosition(const int64_t & pos);
+	//void SetVideoPosition(const int64_t & pos);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
@@ -45,7 +45,7 @@ public:
 	void SetZoomIndex(const int &pos);
 	void ShrinkVideo();
 	vector<int> GetZoomValue();
-	virtual CRegardsBitmap * SavePicture();
+	virtual CRegardsBitmap * SavePicture(bool & isFromBuffer);
     bool IsFFmpegDecode();
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
@@ -108,7 +108,7 @@ protected:
 	bool IsHardwareCompatible();
 	float GetHauteurMax();
 	float GetLargeurMax();
-	void ExportPicture(CRegardsBitmap * bitmap);
+	//void ExportPicture(CRegardsBitmap * bitmap);
 
 	void CalculTextureSize(int &widthOut, int &heightOut);
 	void UpdateScrollBar();
@@ -247,4 +247,5 @@ protected:
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
 	CThumbnailVideo * thumbnailVideo;
+	bool thumbnailFromBitmap = false;
 };

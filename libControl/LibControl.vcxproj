@@ -274,7 +274,6 @@
     <ClInclude Include="ffmpeg.h" />
     <ClInclude Include="ffmpegToBitmap.h" />
     <ClInclude Include="FFmpegTranscodingPimpl.h" />
-    <ClInclude Include="ffmpeg_denoise.h" />
     <ClInclude Include="ffmpeg_dxva2.h" />
     <ClInclude Include="ffmpeg_transcoding.h" />
     <ClInclude Include="ffplaycore.h" />
@@ -321,7 +320,6 @@
     <ClCompile Include="ffmfcpimpl.cpp" />
     <ClCompile Include="ffmpegToBitmap.cpp" />
     <ClCompile Include="FFmpegTranscodingPimpl.cpp" />
-    <ClCompile Include="ffmpeg_denoise.cpp" />
     <ClCompile Include="ffmpeg_dxva2.cpp" />
     <ClCompile Include="ffmpeg_transcoding.cpp" />
     <ClCompile Include="ffplaycore.cpp" />
