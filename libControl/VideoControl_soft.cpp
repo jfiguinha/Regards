@@ -21,6 +21,7 @@
 #include <libPicture.h>
 #include <InterpolationBicubic.h>
 #include <videothumb.h>
+#include <hqdn3d.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
@@ -60,6 +61,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 #endif
 
 #endif
+	hq3d = nullptr;// new Chqdn3d(videoEffectParameter.denoisingLevel);
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
@@ -864,6 +866,9 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(playStartTimer->IsRunning())
 		playStartTimer->Stop();
+
+	if(hq3d != nullptr)
+		delete hq3d;
 
 	delete playStartTimer;
 	delete fpsTimer;
@@ -1838,6 +1843,24 @@ void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutpu
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 }
 
+void CVideoControlSoft::GetDenoiserPt(const int &width, const int &height)
+{
+	if (hq3d == nullptr)
+	{
+		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
+	}
+	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height != oldheightDenoise)
+	{
+		delete hq3d;
+		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
+	}
+
+	oldLevelDenoise = videoEffectParameter.denoisingLevel;
+	oldwidthDenoise = width;
+	oldheightDenoise = height;
+
+}
+
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
     printf("RenderToTexture 1\n");
@@ -1870,6 +1893,13 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
+
+	//Test if denoising Effect
+	if (videoEffectParameter.denoiseEnable)
+	{
+		GetDenoiserPt(widthOutput, heightOutput);
+		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
+	}
 
 	bool isOpenGLOpenCL = false;
     openGLDecoding = false;
@@ -1957,6 +1987,14 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 	}
 	else
 		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+
+	//Test if denoising Effect
+	if (videoEffectParameter.denoiseEnable)
+	{
+		GetDenoiserPt(widthOutput, heightOutput);
+		hq3d->ApplyDenoise3D(bitmapOut);
+	}
+
 	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 	delete bitmapOut;
 
@@ -1993,6 +2031,14 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
         }
         else
             ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+
+		//Test if denoising Effect
+		if (videoEffectParameter.denoiseEnable)
+		{
+			GetDenoiserPt(widthOutput, heightOutput);
+			hq3d->ApplyDenoise3D(bitmapOut);
+		}
+
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 		delete bitmapOut;
 	}

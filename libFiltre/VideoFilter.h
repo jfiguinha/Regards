@@ -40,9 +40,10 @@ namespace Regards
 			wxString effectSharpenLevel;
 			wxString toneConstrastLevel;
 			wxString toneBrightnessLevel;
-			wxString effectDenoisingSigmaU;
-			wxString effectDenoisingSigmaK;
-			wxString effectDenoisingThreshold;
+			//wxString effectDenoisingSigmaU;
+			//wxString effectDenoisingSigmaK;
+			//wxString effectDenoisingThreshold;
+			wxString effectDenoising;
 			wxString colorBoostRed;
 			wxString colorBoostGreen;
 			wxString colorBoostBlue;

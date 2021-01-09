@@ -14,6 +14,7 @@
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 #include "OpenCLBm3D.h"
+#include <hqdn3d.h>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
@@ -53,7 +54,7 @@ CRegardsBitmap * COpenCLEffect::GetPtBitmap()
 	return nullptr;
 }
 
-int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+int COpenCLEffect::HQDn3D(Chqdn3d * hq3d)
 {
 	int _width = 0;
 	int _height = 0;
@@ -86,8 +87,7 @@ int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, cons
 
 		}
 
-		Chqdn3d hqdn3d(LumSpac, ChromSpac, LumTmp, ChromTmp);
-		uint8_t * dataOut = hqdn3d.ApplyDenoise3D(data_picture, _width, _height);
+		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, _width, _height);
 
 		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
 		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");

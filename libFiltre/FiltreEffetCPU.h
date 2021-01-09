@@ -1,6 +1,7 @@
 #pragma once
 #include "IFiltreEffet.h"
 class CRegardsBitmap;
+class Chqdn3d;
 
 class CFiltreEffetCPU : public IFiltreEffet
 {
@@ -12,7 +13,7 @@ public:
 	int HistogramNormalize();
 	int HistogramEqualize();
 	int RedEye();
-	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
+	int HQDn3D(Chqdn3d * filtre);
 	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);
@@ -68,5 +69,6 @@ public:
 private:
 	CRegardsBitmap * bitmapOut;
 	CRegardsBitmap * pBitmap;
+
 };
 

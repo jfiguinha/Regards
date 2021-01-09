@@ -37,7 +37,7 @@ namespace Regards
 			virtual ~COpenCLFilter();
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
-
+			cl_mem HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cl_mem inputData, int width, int height);
 			cl_mem Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cl_mem inputData, int width, int height);
 			cl_mem FiltreConvolution(const wxString &programName, const wxString &functionName, cl_mem inputData, int width, int height);
 			cl_mem MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cl_mem inputData, int width, int height);

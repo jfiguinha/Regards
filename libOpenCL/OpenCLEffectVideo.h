@@ -8,7 +8,7 @@
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CVideoEffectParameter;
-
+class Chqdn3d;
 namespace Regards
 {
 	namespace OpenCL
@@ -38,7 +38,7 @@ namespace Regards
 			virtual void InterpolationBicubic(const int& widthOut, const int& heightOut, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
-
+			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
 #if defined(__x86_64__) || defined(_M_AMD64)	
 		void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);

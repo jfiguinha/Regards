@@ -6,6 +6,7 @@
 #include "utility.h"
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
+#include "hqdn3d.h"
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 using namespace Regards::OpenCL;
@@ -480,6 +481,57 @@ void COpenCLEffectVideo::FlipVertical()
 	{
 		cl_mem output = openclFilter.Flip("FlipVertical", paramOutput->GetValue(), widthOut, heightOut);
 		paramOutput->SetValue(output);
+	}
+
+}
+
+void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+{
+	int _width = 0;
+	int _height = 0;
+
+	cl_mem yPicture = nullptr;
+
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			yPicture = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height, "ConvertToYUchar");
+		}
+
+		long size = _width * _height;
+		uint8_t * data_picture = new uint8_t[_width * _height];
+		if (context != nullptr)
+		{
+			context->GetOutputData(yPicture, data_picture, size, flag);
+
+
+		}
+		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, _width, _height);
+
+		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
+		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
+		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
+
+
+		cl_mem output = nullptr;
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.InsertYValue(memDataOut->GetValue(), paramOutput->GetValue(), _width, _height, "InsertYValueFromUchar");
+		}
+
+		paramOutput->SetValue(output);
+
+		cl_int err;
+		err = clReleaseMemObject(yPicture);
+		Error::CheckError(err);
+		yPicture = nullptr;
+
+		delete memDataOut;
+
 	}
 
 }

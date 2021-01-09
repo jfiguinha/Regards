@@ -64,9 +64,6 @@
     <Filter Include="window\Transition">
       <UniqueIdentifier>{29ad8b41-1d26-46d2-b755-04859f09bd84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hqdn3d">
-      <UniqueIdentifier>{f3ee8e3d-a3b0-40cb-b60d-6e60ddfa1960}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -324,9 +321,6 @@
     <ClInclude Include="videostream.h">
       <Filter>window\video</Filter>
     </ClInclude>
-    <ClInclude Include="hqdn3d.h">
-      <Filter>hqdn3d</Filter>
-    </ClInclude>
     <ClInclude Include="hqdn3dEffectParameter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
@@ -502,9 +496,6 @@
     </ClCompile>
     <ClCompile Include="videostream.cpp">
       <Filter>window\video</Filter>
-    </ClCompile>
-    <ClCompile Include="hqdn3d.cpp">
-      <Filter>hqdn3d</Filter>
     </ClCompile>
     <ClCompile Include="hqdn3dFilter.cpp">
       <Filter>window\picture</Filter>

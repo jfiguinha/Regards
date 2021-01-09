@@ -20,9 +20,10 @@ using namespace Regards::Video;
 using namespace Regards::OpenCL;
 CVideoFilter::CVideoFilter()
 {
-	effectDenoisingSigmaU = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaU",1);//L"Effect.Denoising.Sigma P";
-	effectDenoisingThreshold =CLibResource::LoadStringFromResource(L"LBLeffectDenoisingThreshold",1);// L"Effect.Denoising.FSize";
-	effectDenoisingSigmaK = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaK",1);//L"Effect.Denoising.Sigma X";
+	effectDenoising = CLibResource::LoadStringFromResource(L"LBLeffectDenoising", 1);
+	//effectDenoisingSigmaU = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaU",1);//L"Effect.Denoising.Sigma P";
+	//effectDenoisingThreshold =CLibResource::LoadStringFromResource(L"LBLeffectDenoisingThreshold",1);// L"Effect.Denoising.FSize";
+	//effectDenoisingSigmaK = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaK",1);//L"Effect.Denoising.Sigma X";
 	effectSharpenLevel = CLibResource::LoadStringFromResource(L"LBLeffectSharpenLevel",1);//L"Effect.Sharpen.Level";
 	toneConstrastLevel = CLibResource::LoadStringFromResource(L"LBLtoneConstrastLevel",1);//L"Tone.Constrast.Level";
 	toneBrightnessLevel = CLibResource::LoadStringFromResource(L"LBLtoneBrightnessLevel",1);//L"Tone.Brightness.Level";
@@ -125,6 +126,8 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
    
 	filtreInterface->AddTreeInfos(enableBlurEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
 
+
+	/*
 	vector<float> elementSigma;
 	for (float i = 0; i < 100; i+=1)
 		elementSigma.push_back(i);
@@ -132,6 +135,15 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
+	*/
+	
+	vector<float> elementSigma;
+	for (float i = 0; i < 255; i += 1)
+		elementSigma.push_back(i);
+
+	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel), &elementSigma, 4);
+
+
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);
 
@@ -174,6 +186,7 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	}
 
 	//Video Parameter
+	/*
 	if (key == effectDenoisingSigmaU)
 	{
 		videoEffectParameter->uSigma = value;
@@ -183,6 +196,10 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->enableOpenCL = value;
 	}    */
+	if (key == effectDenoising)
+	{
+		videoEffectParameter->denoisingLevel = value;
+	}
 	else if (key == libelleScale)
 	{
 		videoEffectParameter->zoomUpdate = true;
@@ -200,11 +217,12 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	else if (key == enableBicubicInterpolation)
 	{
 		videoEffectParameter->BicubicEnable = value;
-	}     
+	}    
+	/*
 	else if (key == effectDenoisingSigmaK)
 	{
 		videoEffectParameter->uKSigma = value;
-	}
+	}*/
 	else if (key == effectSharpenLevel)
 	{
 		videoEffectParameter->sharpness = value / 10.0f;
@@ -278,9 +296,9 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	else if (key == enableBlurEffect)
 	{
 		videoEffectParameter->denoiseEnable = value;
-	}
+	}/*
     else if (key == effectDenoisingThreshold)
 	{
 		videoEffectParameter->uThreshold = value;
-	}
+	}*/
 }

@@ -38,7 +38,7 @@ public:
 		//Tone mapping
 		contrast = 0.0f;
 		brightness = 0.0f;
-		exponent = 1.0f;
+		//exponent = 1.0f;
 
 		//Color Boost
 		color_boost[0] = 0.0f;
@@ -62,9 +62,11 @@ public:
 		denoiseEnable = 0;
         bandcEnable = 1;
 
-		uSigma = 11.0;
-		uThreshold = 18;
-		uKSigma = 2;
+		//uSigma = 11.0;
+		//uThreshold = 18;
+		//uKSigma = 2;
+		denoisingLevel = 4;
+
 
 		filmgrainenable = 0;
 
@@ -100,10 +102,11 @@ public:
 	};
 
 	//Video Denoising Parameter
-	float uSigma;
-	float uThreshold;
-	float uKSigma;
-	float exponent;
+	//float uSigma;
+	//float uThreshold;
+	//float uKSigma;
+	//float exponent;
+	float denoisingLevel;
 
 	//Video Parameter
 	float sharpness;

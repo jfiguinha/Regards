@@ -16,6 +16,7 @@
 #include <PiccanteHDR.h>
 #include <OpenCLContext.h>
 #include <config_id.h>
+#include <hqdn3d.h>
 extern float value[256];
 
 using namespace Regards::FiltreEffet;
@@ -151,7 +152,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
-
+	hq3d = nullptr;
     if(openCLContext != nullptr)
     {
         //if(OpenCLHasEnoughMemory())
@@ -205,6 +206,9 @@ CFiltreEffet::~CFiltreEffet()
        
 	if (filtreEffet != nullptr)
 		delete(filtreEffet);
+
+	if (hq3d != nullptr)
+		delete hq3d;
 
 }
 
@@ -592,7 +596,17 @@ void CFiltreEffet::SetPreview(const bool &value)
 //----------------------------------------------------------------------------
 int CFiltreEffet::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
-	int value = filtreEffet->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp);
+	if (hq3d == nullptr)
+	{
+		hq3d = new Chqdn3d(width, height, LumSpac, ChromSpac, LumTmp, ChromTmp);
+	}
+	else if (oldLevelDenoise != LumSpac || width != oldwidthDenoise || height != oldheightDenoise)
+	{
+		delete hq3d;
+		hq3d = new Chqdn3d(width, height, LumSpac, ChromSpac, LumTmp, ChromTmp);
+	}
+
+	int value = filtreEffet->HQDn3D(hq3d);
 	return value;
 }
 

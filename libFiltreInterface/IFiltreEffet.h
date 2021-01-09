@@ -3,7 +3,7 @@
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
-
+class Chqdn3d;
 class IFiltreEffet
 {
 public:
@@ -32,7 +32,7 @@ public:
 	virtual int HistogramEqualize() = 0;
 	virtual int SharpenMasking(const float &sharpness) = 0;
 	virtual int NiveauDeGris() = 0;
-	virtual int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp) = 0;
+	virtual int HQDn3D(Chqdn3d * hq3d) = 0;
 	virtual int NoirEtBlanc() = 0;
 	virtual int Sepia() = 0;
 	virtual int Soften() = 0;

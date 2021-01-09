@@ -17,5 +17,7 @@ public:
 	double ChromSpac;
 	double LumTmp;
 	double ChromTmp;
+	int width;
+	int height;
 };
 

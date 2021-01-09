@@ -20,6 +20,7 @@ using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 class CFFmfc;
 class CThumbnailVideo;
+class Chqdn3d;
 
 #ifdef RENDEROPENGL  
 class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
@@ -248,4 +249,9 @@ protected:
 	float startingTime = 0;
 	CThumbnailVideo * thumbnailVideo;
 	bool thumbnailFromBitmap = false;
+	Chqdn3d * hq3d = nullptr;
+	int oldLevelDenoise = 4;
+	int oldwidthDenoise = 0;
+	int oldheightDenoise = 0;
+	void GetDenoiserPt(const int &width, const int &height);
 };
