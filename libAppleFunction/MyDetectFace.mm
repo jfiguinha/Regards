@@ -14,6 +14,7 @@
 #import <AppKit/AppKit.h>
 #include "wx/osx/private.h"
 #include "wx/uri.h"
+@interface sharingServiceDelegate : NSObject <NSSharingServiceDelegate>
 @end
 
 MyDetectFaceImpl::MyDetectFaceImpl( void )
@@ -23,13 +24,22 @@ MyDetectFaceImpl::~MyDetectFaceImpl( void )
 {
 }
 
-- (NSInteger)detectFace:(CIImage*)image{
+@implementation sharingServiceDelegate
+
+- (id)init {
+    
+    self = [super init];
+    
+    return self;
+}
+
+- (NSInteger)detectFace:(CGImageRef)image{
     //create req
 	int nbFace = 0;
     VNDetectFaceRectanglesRequest *faceDetectionReq = [VNDetectFaceRectanglesRequest new];
     NSDictionary *d = [[NSDictionary alloc] init];
     //req handler
-    VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCIImage:image options:d];
+    VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:image options:d];
     //send req to handler
     [handler performRequests:@[faceDetectionReq] error:nil];
     
@@ -44,25 +54,28 @@ MyDetectFaceImpl::~MyDetectFaceImpl( void )
 	return nbFace;
 }
 
-- (NSMutableArray *)drawFaceRect:(CIImage*)image{
+- (NSMutableArray *)drawFaceRect:(CGImageRef)image{
     //face landmark
 	NSMutableArray* array = [NSMutableArray mutableArray];
     VNDetectFaceLandmarksRequest *faceLandmarks = [VNDetectFaceLandmarksRequest new];
     VNSequenceRequestHandler *faceLandmarksDetectionRequest = [VNSequenceRequestHandler new];
-    [faceLandmarksDetectionRequest performRequests:@[faceLandmarks] onCIImage:image error:nil];
+    [faceLandmarksDetectionRequest performRequests:@[faceLandmarks] onCGImage:image error:nil];
     for(VNFaceObservation *observation in faceLandmarks.results){
         //draw rect on face
         CGRect boundingBox = observation.boundingBox;
-        CGSize size = CGSizeMake(boundingBox.size.width * self.sourceImgView.bounds.size.width, boundingBox.size.height * self.sourceImgView.bounds.size.height);
-        CGPoint origin = CGPointMake(boundingBox.origin.x * self.sourceImgView.bounds.size.width, (1-boundingBox.origin.y)*self.sourceImgView.bounds.size.height - size.height);
-		[array addObject:[NSValue valueWithCGRect:CGRectMake(origin.x, origin.y, size.width, size.height)]];
+        //CGSize size = CGSizeMake(boundingBox.size.width * self.sourceImgView.bounds.size.width, boundingBox.size.height * self.sourceImgView.bounds.size.height);
+        //CGPoint origin = CGPointMake(boundingBox.origin.x * self.sourceImgView.bounds.size.width, (1-boundingBox.origin.y)*self.sourceImgView.bounds.size.height - size.height);
+		//[array addObject:[NSValue valueWithCGRect:CGRectMake(origin.x, origin.y, size.width, size.height)]];
     }
 	return array;
 }
 
+@end
 
 int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t * data)
 {
+    sharingServiceDelegate * shareDelegate = [[sharingServiceDelegate alloc] init];
+    
 	CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, 
 															  data, 
 															  width*height*4, 
@@ -82,9 +95,9 @@ int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t 
 										bitmapInfo,
 										provider,NULL,NO,renderingIntent);
 
-	int nbFaceDetect = [self detectFace:image];
+	int nbFaceDetect = [shareDelegate detectFace:imageRef];
 	
-	CGImageRelease(image);
+	CGImageRelease(imageRef);
 
 	return nbFaceDetect;
     
