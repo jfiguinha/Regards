@@ -374,7 +374,6 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Debug/libRegardsBpg.so ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.28 ./Debug</Command>
@@ -396,8 +395,9 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_highgui.so.4.3 ./Debug</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/liblibde265.so ./Debug</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/liblibde265.so</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/RegardsViewer</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libde265.so</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libraw_r.so.20</Command>
@@ -421,7 +421,7 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_features2d.so.4.3</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_flann.so.4.3</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_highgui.so.4.3</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libde265.so</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/liblibde265.so</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libraw_r.so.20</Command>
@@ -550,7 +550,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_highgui.so.4.3 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/liblibde265.so ./Release</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/RegardsViewer</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libde265.so</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Release/liblibde265.so</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libraw_r.so.20</Command>
@@ -574,7 +574,6 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_calib3d.so.4.3</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_features2d.so.4.3</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_flann.so.4.3</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libde265.so</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libraw_r.so.20</Command>

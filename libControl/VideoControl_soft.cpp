@@ -798,7 +798,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
 	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
-
+    ffmfc->SetVolume(GetSoundVolume());
 }
 
 void CVideoControlSoft::SetEncoderHardware(const wxString &encoderHardware, const bool &opengl)

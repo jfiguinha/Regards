@@ -217,13 +217,13 @@ public:
 				exit(1);
 			}
 		}
-
 #endif
 
 #endif
 
 
 	}
+
 
 #ifdef WIN32
 	virtual bool TestAudioDevice(const wxString &driverAudio)
