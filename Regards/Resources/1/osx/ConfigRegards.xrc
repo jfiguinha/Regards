@@ -47,6 +47,7 @@
 		<object class="wxRadioBox" name="ID_RBDXVA2">
 			<label>Use DXVA2</label>
 			<style>wxRA_SPECIFY_COLS</style>
+			<enabled>false</enabled>
 			<content>
 				<item>Yes</item>
 				<item>No</item>
@@ -108,46 +109,46 @@
 		</object>
 		<object class="wxSpinCtrl" name="ID_SCTIME">
 			<value>0</value>
-			<pos>56,240</pos>
+			<pos>120,250</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTIME">
 			<label>Time :</label>
-			<pos>16,240</pos>
+			<pos>16,250</pos>
 			<size>40,24</size>
 		</object>
 		<object class="wxStaticBox" name="sbProcess">
 			<label>Process</label>
-			<pos>0,270</pos>
-			<size>360,200</size>
+			<pos>0,290</pos>
+			<size>360,100</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTHUMBNAIL">
 			<label>THUMBNAIL :</label>
-			<pos>16,290</pos>
+			<pos>16,315</pos>
 			<size>100,24</size>
 		</object>		
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
-			<pos>120,290</pos>
+			<pos>120,315</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
 			<label>EXIF :</label>
-			<pos>16,330</pos>
+			<pos>16,345</pos>
 			<size>100,24</size>
 		</object>			
 		<object class="wxSpinCtrl" name="ID_SCEXIF">
 			<value>0</value>
-			<pos>120,330</pos>
+			<pos>120,345</pos>
 			<size>120,21</size>
 		</object>	
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,380</pos>
+			<pos>64,400</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,380</pos>
+			<pos>192,400</pos>
 		</object>		
 	</object>
 </resource>
