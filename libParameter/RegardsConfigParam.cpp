@@ -39,6 +39,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
 {
+    /*
 	if (videoDecoderHardware == "")
 	{
 #ifdef WIN32
@@ -48,6 +49,7 @@ wxString CRegardsConfigParam::GetVideoDecoderHardware()
 		videoDecoderHardware = "videotoolbox";
 #endif
 	}
+    */
 	return videoDecoderHardware;
 }
 

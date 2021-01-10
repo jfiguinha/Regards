@@ -2,10 +2,11 @@
 #include "SavePicture.h"
 #include <libPicture.h>
 #ifdef __APPLE__
-#include <SaveFileFormat.h>
-#include <SaveFromCFunction.h>
-#include <Picture_id.h>
-#include <ConvertUtility.h>
+#include <wx/sysopt.h>
+//#include <SaveFileFormat.h>
+//#include <SaveFromCFunction.h>
+//#include <Picture_id.h>
+//#include <ConvertUtility.h>
 #endif
 #include <wx/filename.h>
 #include "SelectPage.h"
