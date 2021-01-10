@@ -49,9 +49,10 @@
         <LibraryPath Value="../../../libextern/x265_3.2/build/linux/8bit/"/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
-        <Library Value="avcodec"/>
-        <Library Value="avutil"/>
+        <Library Value="avcodec_bpg"/>
+        <Library Value="avutil_bpg"/>
         <Library Value="gomp"/>
+        <Library Value="png"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
