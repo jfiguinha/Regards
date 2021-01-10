@@ -19,6 +19,16 @@
     <File Name="../libRegardsBpg/bpgenc.h"/>
     <File Name="../libRegardsBpg/DllBpg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fPIC;-pthread" C_Options="-std=c99;-Wall;-fPIC;-pthread;-fopenmp;" Assembler="">
@@ -46,10 +56,11 @@
         <LibraryPath Value="../../../libextern/x265_2.5/build/msys/8bit"/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
-        <Library Value="avcodec"/>
-        <Library Value="avutil"/>
+        <Library Value="avcodec_bpg"/>
+        <Library Value="avutil_bpg"/>
         <Library Value="gomp"/>
         <Library Value="z"/>
+        <Library Value="png"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -141,14 +152,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
 </CodeLite_Project>
