@@ -661,6 +661,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssp-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/SDL2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libdeflate.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_core451.dll  ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_dnn451.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_face451.dll ./Release</Command>
