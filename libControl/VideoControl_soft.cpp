@@ -963,6 +963,9 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			delete thumbnailVideo;
 
 		thumbnailVideo = new CThumbnailVideo(movie);
+		if(!firstMovie)
+			if (playStopTimer->IsRunning())
+				playStopTimer->Stop();
 
 		if(playStartTimer->IsRunning())
 			playStartTimer->Stop();
