@@ -963,10 +963,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			delete thumbnailVideo;
 
 		thumbnailVideo = new CThumbnailVideo(movie);
+#ifndef WIN32 
 		if(!firstMovie)
 			if (playStopTimer->IsRunning())
 				playStopTimer->Stop();
-
+#endif
 		if(playStartTimer->IsRunning())
 			playStartTimer->Stop();
 		startVideo = play;
@@ -985,10 +986,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
+#ifndef WIN32 
         if(firstMovie)
             playStopTimer->Start(1000,true);
         firstMovie = false;
-
+#endif
 	}
 	else if(movie != filename)
 	{

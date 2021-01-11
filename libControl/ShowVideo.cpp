@@ -63,7 +63,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	wxString decoder = "";
 	if (regardsParam != nullptr)
 	{
-		//decoder = regardsParam->GetVideoDecoderHardware();
+		decoder = regardsParam->GetVideoDecoderHardware();
 	}
 
 	if (softRender)
@@ -83,7 +83,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
-		//decoder = regardsParam->GetVideoDecoderHardware();
+		decoder = regardsParam->GetVideoDecoderHardware();
 	}
 
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
@@ -121,16 +121,13 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
-    
+#ifndef WIN32  
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     wxString videoPathTemp = "";
-#ifdef WIN32
 	videoPathTemp = resourcePath + "\\video.mp4";
-#else
-	videoPathTemp = resourcePath + "/video.mp4";
+	SetVideo(videoPathTemp, 0, true);
 #endif
-    //videoWindow->PlayFirstMovie(videoPathTemp);
-    SetVideo(videoPathTemp,0,true);
+
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
