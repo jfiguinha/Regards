@@ -967,14 +967,14 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		if (isDXVA2Compatible)
-			playStartTimer->Start(1000, true);
-		else
-		{
+		//if (isDXVA2Compatible)
+		//	playStartTimer->Start(1000, true);
+		//else
+		//{
 
 			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
 			ffmfc->SetVolume(GetSoundVolume());
-		}
+		//}
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
