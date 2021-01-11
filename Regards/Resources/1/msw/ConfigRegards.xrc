@@ -45,17 +45,25 @@
 			<pos>180,0</pos>
 			<size>180,70</size>
 		</object>			
-		<object class="wxRadioBox" name="ID_RBDXVA2">
-			<label>Use DXVA2</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<content>
-				<item>Yes</item>
-				<item>No</item>
-			</content>
-			<default>-1</default>
+		<object class="wxStaticBox" name="sbInterpolation">
+			<label>Accelerator</label>
 			<pos>0,74</pos>
 			<size>180,70</size>
 		</object>	
+		<object class="wxCheckBox" name="ID_CKDXVA2OPENGL">
+			<pos>10,95</pos>
+		</object>
+		<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
+			<label>Use dxva2 OpenGL</label>
+			<pos>32,95</pos>
+		</object>
+		<object class="wxCheckBox" name="ID_CKDXVA2ACCELERATOR">
+			<pos>10,115</pos>
+		</object>
+		<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
+			<label>Use dxva2 Accelerator</label>
+			<pos>32,115</pos>
+		</object>
 		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Interpolation Filter</label>
 			<pos>180,74</pos>
@@ -106,11 +114,11 @@
 		<object class="wxStaticBox" name="sbDiaporama">
 			<label>Sequence</label>
 			<pos>0,220</pos>
-			<size>360,70</size>
+			<size>360,50</size>
 		</object>
 		<object class="wxSpinCtrl" name="ID_SCTIME">
 			<value>0</value>
-			<pos>56,240</pos>
+			<pos>120,240</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTIME">
@@ -120,36 +128,36 @@
 		</object>
 		<object class="wxStaticBox" name="sbProcess">
 			<label>Process</label>
-			<pos>0,270</pos>
-			<size>360,200</size>
+			<pos>0,280</pos>
+			<size>360,100</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTHUMBNAIL">
 			<label>THUMBNAIL :</label>
-			<pos>16,300</pos>
+			<pos>16,310</pos>
 			<size>100,24</size>
 		</object>		
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
-			<pos>120,300</pos>
+			<pos>120,310</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
 			<label>EXIF :</label>
-			<pos>16,330</pos>
+			<pos>16,340</pos>
 			<size>100,24</size>
 		</object>			
 		<object class="wxSpinCtrl" name="ID_SCEXIF">
 			<value>0</value>
-			<pos>120,330</pos>
+			<pos>120,340</pos>
 			<size>120,21</size>
 		</object>	
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,380</pos>
+			<pos>64,400</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,380</pos>
+			<pos>192,400</pos>
 		</object>		
 	</object>
 </resource>

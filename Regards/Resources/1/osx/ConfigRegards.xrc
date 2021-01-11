@@ -44,18 +44,18 @@
 			<pos>180,0</pos>
 			<size>180,70</size>
 		</object>			
-		<object class="wxRadioBox" name="ID_RBDXVA2">
-			<label>Use DXVA2</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<enabled>false</enabled>
-			<content>
-				<item>Yes</item>
-				<item>No</item>
-			</content>
-			<default>-1</default>
+		<object class="wxStaticBox" name="sbInterpolation">
+			<label>Accelerator</label>
 			<pos>0,74</pos>
 			<size>180,70</size>
 		</object>	
+		<object class="wxCheckBox" name="ID_CKVIDEOTOOLBOX">
+			<pos>10,95</pos>
+		</object>
+		<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
+			<label>Use videotoolbox</label>
+			<pos>32,95</pos>
+		</object>
 		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Interpolation Filter</label>
 			<pos>180,74</pos>

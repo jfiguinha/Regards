@@ -35,7 +35,14 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
     scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
-	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
+	//rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
+#ifdef WIN32
+	ckDxva2Opengl = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2OPENGL"));
+	ckDxva2acc = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2ACCELERATOR"));
+#endif
+#ifdef __APPLE__
+	ckvideotoolbox = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOTOOLBOX"));
+#endif
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
@@ -88,12 +95,22 @@ void ConfigRegards::Init()
     int exifProcess = regardsParam->GetExifProcess();
     scProcessExif->SetValue(exifProcess);
 
+#ifdef WIN32
 	bool dxva2Use = regardsParam->GetDxva2Actif();
-	if (dxva2Use == 0)
-		rdDxva2Render->SetSelection(1);
+	ckDxva2Opengl->SetValue(dxva2Use);
+	wxString decoder = regardsParam->GetVideoDecoderHardware();
+	if(decoder == "dxva2")
+		ckDxva2acc->SetValue(1);
 	else
-		rdDxva2Render->SetSelection(0);
-
+		ckDxva2acc->SetValue(0);
+#endif
+#ifdef __APPLE__
+	wxString decoder = regardsParam->GetVideoDecoderHardware();
+	if (decoder == "videotoolbox")
+		ckvideotoolbox->SetValue(1);
+	else
+		ckvideotoolbox->SetValue(0);
+#endif
 	int dataInMemory = regardsParam->GetDatabaseInMemory();
 	if (dataInMemory == 0)
 		rbDatabaseInMemory->SetSelection(1);
@@ -129,18 +146,25 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetAutoConstrast(0);
 
-	int dxva2Use = rdDxva2Render->GetSelection();
-	if (dxva2Use == 0)
-		regardsParam->SetDxva2Actif(1);
+#ifdef WIN32
+	regardsParam->SetDxva2Actif(ckDxva2Opengl->IsChecked());
+	bool ckAcc = ckDxva2acc->IsChecked();
+	if(ckAcc)
+		regardsParam->SetVideoDecoderHardware("dxva2");
 	else
-		regardsParam->SetDxva2Actif(0);
-
-
+		regardsParam->SetVideoDecoderHardware("");
+#endif
+#ifdef __APPLE__
+	bool ckAcc = ckvideotoolbox->IsChecked();
+	if (ckAcc)
+		regardsParam->SetVideoDecoderHardware("videotoolbox");
+	else
+		regardsParam->SetVideoDecoderHardware("");
+#endif
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
 	
-
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
  

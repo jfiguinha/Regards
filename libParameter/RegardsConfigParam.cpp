@@ -39,9 +39,6 @@ CRegardsConfigParam::CRegardsConfigParam()
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
 {
-	if (videoDecoderHardware == "")
-	{
-	}
 	return videoDecoderHardware;
 }
 
