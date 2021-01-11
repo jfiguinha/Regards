@@ -1398,6 +1398,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 		/* NOTE: the audio packet can contain several frames */
 		while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) 
 		{
+			int ret = 0;
 			if (!is->frame) {
 				if (!(is->frame = av_frame_alloc()))//avcodec_alloc_frame()))
 					return AVERROR(ENOMEM);
@@ -1407,7 +1408,6 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
                  av_frame_unref(is->frame);
             }
 				
-			//avcodec_get_frame_defaults(is->frame);
 
 			if (is->paused)
 				return -1;
@@ -1415,44 +1415,22 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			if (flush_complete)
 				break;
 			new_packet = 0;
-            
-            
-            bool decodeAudio = true;
-#ifdef __WXGTK__
-#ifndef NDEBUG
-            decodeAudio = false;
-#endif
-#endif
 
-            if(decodeAudio)
-            {
-	            //len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
-				
-				//ret = avcodec_decode_audio4(ctx, frame, &got_frame, pkt);
-				
-				int ret = avcodec_receive_frame(dec, is->frame);
-				if (ret == 0)
-					got_frame = true;
-				if (ret == AVERROR(EAGAIN))
-					ret = 0;
-				if (ret == 0)
-					ret = avcodec_send_packet(dec, pkt_temp);
-				if (ret == AVERROR(EAGAIN))
-					ret = 0;
-				else if (ret < 0)
-					len1 = ret;
-				else
-					len1 = pkt->size;
-				
-            }
-            else
-                len1 = 0;
-
-			if (len1 < 0) {
-				/* if error, we skip the frame */
-				pkt_temp->size = 0;
-				break;
+			ret = avcodec_send_packet(audio_ctx, pkt);
+			if (ret < 0) {
+				//Debug4("codec: sending audio packet failed");
+				fprintf(stderr, "codec: sending audio packet failed\n");
+				return ret;
 			}
+			ret = avcodec_receive_frame(audio_ctx, is->frame);
+			if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF) {
+				//Debug4("codec: receiving audio frame failed");
+				fprintf(stderr, "codec: receiving audio frame failed\n");
+				return ret;
+			}
+            
+			got_frame = true;
+			len1 = pkt->size;
 
 			//×¢Òâ£º´Ë´¦ÉèÖÃMFC²ÎÊý---
 			//ffmfc_param_aframe(is,is->frame,pkt_temp);
