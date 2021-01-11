@@ -25,7 +25,7 @@
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
-
+wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame * copyFrameBuffer = nullptr;
 
 #ifdef RENDEROPENGL
@@ -92,9 +92,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
     fpsTimer = new wxTimer(this, TIMER_FPS);
 	playStartTimer = new wxTimer(this, TIMER_PLAYSTART);
+    playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
 	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
+    Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
     Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CVideoControlSoft::OnScrollMove));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CVideoControlSoft::OnMouseMove));
@@ -118,6 +120,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
 	
+}
+
+void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
+{
+    OnStop(filename);
 }
 
 bool CVideoControlSoft::IsPause()
@@ -797,8 +804,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
-    ffmfc->SetVolume(GetSoundVolume());
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 
 void CVideoControlSoft::SetEncoderHardware(const wxString &encoderHardware, const bool &opengl)
@@ -866,6 +872,10 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(playStartTimer->IsRunning())
 		playStartTimer->Stop();
+        
+
+	if(playStopTimer->IsRunning())
+		playStopTimer->Stop();
 
 	if(hq3d != nullptr)
 		delete hq3d;
@@ -944,6 +954,28 @@ bool CVideoControlSoft::IsHardwareCompatible()
 	return true;
 }
 
+int CVideoControlSoft::PlayFirstMovie(const wxString &movie)
+{
+    thumbnailVideo = new CThumbnailVideo(movie);
+    startVideo = true;
+    stopVideo = false;
+    angle = 0;
+    flipV = false;
+    flipH = false;
+    videoStart = false;
+    newVideo = true;
+    initStart = true;
+    videoRenderStart = false;
+    filename = movie;
+    standByMovie = "";
+    pause = false;
+    ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, 0);;
+    muVideoEffect.lock();
+    videoEffectParameter.ratioSelect = 0;
+    muVideoEffect.unlock();
+    playStopTimer->Start(1000,true);
+}
+
 int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd || stopVideo)
@@ -967,14 +999,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		//if (isDXVA2Compatible)
-		//	playStartTimer->Start(1000, true);
-		//else
-		//{
-
-			ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding);
-			ffmfc->SetVolume(GetSoundVolume());
-		//}
+		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();

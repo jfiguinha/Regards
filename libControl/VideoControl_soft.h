@@ -56,7 +56,7 @@ public:
 	void OnStop(wxString photoName);
 	void OnPause();
 	int PlayMovie(const wxString &movie, const bool &play);
-
+    int PlayFirstMovie(const wxString &movie);
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);
     int getWidth();
@@ -136,6 +136,7 @@ protected:
 	void OnIdle(wxIdleEvent& evt);
 	void OnShowFPS(wxTimerEvent& event);
 	void OnPlayStart(wxTimerEvent& event);
+    void OnPlayStop(wxTimerEvent& event);
     void Resize();
 	void calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	GLTexture * RenderToGLTexture();
@@ -194,6 +195,7 @@ protected:
 	CWindowMain * windowMain;
 	wxTimer * fpsTimer;
 	wxTimer * playStartTimer;
+    wxTimer * playStopTimer;
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;

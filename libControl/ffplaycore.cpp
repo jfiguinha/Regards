@@ -481,7 +481,7 @@ void CFFmfc::Seek_bar(int pos){
 //½âÂëÖ÷º¯Êý
 //Main function
 //#define __MINGW32__
-int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding)
+int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding, const int &volume)
 {
 	//Save volume infos;
 	/*
@@ -499,7 +499,7 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 
 	_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = isOpenGLDecoding;
-	//_pimpl->volume = volume;
+	_pimpl->volume = volume;
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();

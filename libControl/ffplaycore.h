@@ -59,7 +59,7 @@ public:
 	void SetVolume(const int &pos);
 	void SetTimePosition(int64_t time);
 	//Main function
-	int SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding);
+	int SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding, const int &volume);
 	void Play();
 	//Reset
 	int Reset_index();

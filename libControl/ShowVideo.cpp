@@ -7,6 +7,7 @@
 #include <window_id.h>
 #include "SlideToolbar.h"
 #include <ViewerParam.h>
+#include <FileUtility.h>
 #include <SavePicture.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Video;
@@ -120,6 +121,15 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
+    
+    wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+    wxString videoPathTemp = "";
+#ifdef WIN32
+	videoPathTemp = resourcePath + "\\video.mp4";
+#else
+	videoPathTemp = resourcePath + "/video.mp4";
+#endif
+    SetVideo(videoPathTemp,0,true);
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
