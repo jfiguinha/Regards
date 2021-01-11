@@ -1386,9 +1386,8 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 	AVPacket *pkt_temp = &is->audio_pkt_temp;
 	AVPacket *pkt = &is->audio_pkt;
 	AVCodecContext *dec = is->audioCtx;
-	int len1, len2, data_size, resampled_data_size;
+	int len2, data_size, resampled_data_size;
 	int64_t dec_channel_layout;
-	int got_frame = 0;
 	double pts;
 	int new_packet = 0;
 	int flush_complete = 0;
@@ -1396,7 +1395,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 
 	for (;;) {
 		/* NOTE: the audio packet can contain several frames */
-		while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) 
+		while (new_packet)
 		{
 			int ret = 0;
 			if (!is->frame) {
@@ -1428,24 +1427,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 				fprintf(stderr, "codec: receiving audio frame failed\n");
 				return ret;
 			}
-            
-			got_frame = true;
-			len1 = pkt->size;
 
-			//×¢Òâ£º´Ë´¦ÉèÖÃMFC²ÎÊý---
-			//ffmfc_param_aframe(is,is->frame,pkt_temp);
-			//----------
-
-			//------------------------
-			pkt_temp->data += len1;
-			pkt_temp->size -= len1;
-
-			if (!got_frame) {
-				/* stop sending empty packets if the decoder is finished */
-				if (!pkt_temp->data && dec->codec->capabilities & AV_CODEC_CAP_DELAY)
-					flush_complete = 1;
-				continue;
-			}
 			data_size = av_samples_get_buffer_size(nullptr, dec->channels,
 				is->frame->nb_samples,
 				dec->sample_fmt, 1);
@@ -1524,7 +1506,6 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 		/* free the current packet */
 		if (pkt->data)
 			av_packet_unref(pkt);
-		memset(pkt_temp, 0, sizeof(*pkt_temp));
 
 		if (is->paused || is->audioq.abort_request) {
 			return -1;
@@ -1541,8 +1522,6 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			avcodec_flush_buffers(dec);
 			flush_complete = 0;
 		}
-
-		*pkt_temp = *pkt;
 
 		/* if update the audio clock with the pts */
 		if (pkt->pts != AV_NOPTS_VALUE) {
