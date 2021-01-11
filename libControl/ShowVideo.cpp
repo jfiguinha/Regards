@@ -122,6 +122,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
     
+	/*
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     wxString videoPathTemp = "";
 #ifdef WIN32
@@ -131,6 +132,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 #endif
     //videoWindow->PlayFirstMovie(videoPathTemp);
     SetVideo(videoPathTemp,0,true);
+	*/
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
@@ -518,6 +520,21 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
     this->filename = filename;
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
+		/*
+		if (firstMovie)
+		{
+			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+			wxString videoPathTemp = "";
+#ifdef WIN32
+			videoPathTemp = resourcePath + "\\video.mp4";
+#else
+			videoPathTemp = resourcePath + "/video.mp4";
+#endif
+			value = videoWindow->PlayMovie(videoPathTemp, true);
+			wxSleep(1);
+			firstMovie = false;
+		}
+		*/
         value = videoWindow->PlayMovie(filename, true);
 	}
 	return value;

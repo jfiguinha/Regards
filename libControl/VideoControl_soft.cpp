@@ -92,11 +92,9 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
     fpsTimer = new wxTimer(this, TIMER_FPS);
 	playStartTimer = new wxTimer(this, TIMER_PLAYSTART);
-    playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
 	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
-    Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
     Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CVideoControlSoft::OnScrollMove));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CVideoControlSoft::OnMouseMove));
@@ -122,10 +120,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 }
 
-void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
-{
-    OnStop(filename);
-}
 
 bool CVideoControlSoft::IsPause()
 {
@@ -872,10 +866,6 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(playStartTimer->IsRunning())
 		playStartTimer->Stop();
-        
-
-	if(playStopTimer->IsRunning())
-		playStopTimer->Stop();
 
 	if(hq3d != nullptr)
 		delete hq3d;
@@ -964,10 +954,6 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 
 		thumbnailVideo = new CThumbnailVideo(movie);
 
-		if(!firstMovie)
-			if (playStopTimer->IsRunning())
-				playStopTimer->Stop();
-
 		if(playStartTimer->IsRunning())
 			playStartTimer->Stop();
 		startVideo = play;
@@ -982,14 +968,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, firstMovie ? 0 : GetSoundVolume());
+		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
 
-        if(firstMovie)
-            playStopTimer->Start(1000,true);
-        firstMovie = false;
 
 	}
 	else if(movie != filename)
