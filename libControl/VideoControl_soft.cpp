@@ -954,27 +954,6 @@ bool CVideoControlSoft::IsHardwareCompatible()
 	return true;
 }
 
-int CVideoControlSoft::PlayFirstMovie(const wxString &movie)
-{
-    thumbnailVideo = new CThumbnailVideo(movie);
-    startVideo = true;
-    stopVideo = false;
-    angle = 0;
-    flipV = false;
-    flipH = false;
-    videoStart = false;
-    newVideo = true;
-    initStart = true;
-    videoRenderStart = false;
-    filename = movie;
-    standByMovie = "";
-    pause = false;
-    ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, 0);;
-    muVideoEffect.lock();
-    videoEffectParameter.ratioSelect = 0;
-    muVideoEffect.unlock();
-    playStopTimer->Start(1000,true);
-}
 
 int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
@@ -999,11 +978,13 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
+		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, firstMovie ? 0 : GetSoundVolume());
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
-
+        if(firstMovie)
+            playStopTimer->Start(1000,true);
+        firstMovie = false;
 
 	}
 	else if(movie != filename)

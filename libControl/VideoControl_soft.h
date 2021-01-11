@@ -56,7 +56,6 @@ public:
 	void OnStop(wxString photoName);
 	void OnPause();
 	int PlayMovie(const wxString &movie, const bool &play);
-    int PlayFirstMovie(const wxString &movie);
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);
     int getWidth();
@@ -256,4 +255,5 @@ protected:
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
 	void GetDenoiserPt(const int &width, const int &height);
+    bool firstMovie = true;
 };

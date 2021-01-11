@@ -106,6 +106,7 @@ namespace Regards
 			vector<CStreamInfo> listStream;
 			std::vector<int> value;
             wxString filename;
+            bool firstMovie = true;
 		};
 	}
 }

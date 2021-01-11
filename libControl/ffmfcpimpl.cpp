@@ -1560,6 +1560,8 @@ void CFFmfcPimpl::sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 		len1 = is->audio_buf_size - is->audio_buf_index;
 		if (len1 > len)
 			len1 = len;
+            
+            printf("Volume index : %d \n",is->_pimpl->percentVolume);
 		//memcpy(stream, (uint8_t *)is->audio_buf + is->audio_buf_index, len1);
 		SDL_memset(stream, 0, len1);
 		float volume = (((float)is->_pimpl->percentVolume / 100.0f) * SDL_MIX_MAXVOLUME);

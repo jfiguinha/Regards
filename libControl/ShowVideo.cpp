@@ -129,6 +129,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 #else
 	videoPathTemp = resourcePath + "/video.mp4";
 #endif
+    //videoWindow->PlayFirstMovie(videoPathTemp);
     SetVideo(videoPathTemp,0,true);
 }
 
@@ -517,7 +518,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
     this->filename = filename;
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
-		value = videoWindow->PlayMovie(filename, true);
+        value = videoWindow->PlayMovie(filename, true);
 	}
 	return value;
 }
