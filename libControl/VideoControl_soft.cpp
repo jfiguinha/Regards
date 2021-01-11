@@ -105,6 +105,10 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CVideoControlSoft::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CVideoControlSoft::OnTopPosition));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CVideoControlSoft::OnSetPosition));
+#ifndef WIN32
+    playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
+    Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
+#endif
 	pause = false;
 	videoEnd = true;
 	this->windowMain = windowMain;
@@ -119,8 +123,12 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	ffmfc = new CFFmfc(this, wxID_ANY);
 	
 }
-
-
+#ifndef WIN32
+void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
+{
+    OnStop(filename);
+}
+#endif
 bool CVideoControlSoft::IsPause()
 {
 	return pause;
@@ -866,6 +874,11 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(playStartTimer->IsRunning())
 		playStartTimer->Stop();
+        
+#ifndef WIN32
+    if(playStopTimer->IsRunning())
+		playStopTimer->Stop();
+#endif
 
 	if(hq3d != nullptr)
 		delete hq3d;
@@ -953,7 +966,11 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			delete thumbnailVideo;
 
 		thumbnailVideo = new CThumbnailVideo(movie);
-
+        
+#ifndef WIN32
+		if(playStopTimer->IsRunning())
+			playStopTimer->Stop();
+#endif
 		if(playStartTimer->IsRunning())
 			playStartTimer->Stop();
 		startVideo = play;
@@ -968,12 +985,19 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
+#ifndef WIN32
+        ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, firstMovie ? 0 : GetSoundVolume());
+#else
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
-		muVideoEffect.lock();
+#endif
+        muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
-
-
+#ifndef WIN32
+        if(firstMovie)
+            playStopTimer->Start(1000,true);
+        firstMovie = false;
+#endif
 	}
 	else if(movie != filename)
 	{
