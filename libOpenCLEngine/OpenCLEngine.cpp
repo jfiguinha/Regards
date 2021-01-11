@@ -425,7 +425,7 @@ OpenCLDevice * COpenCLEngine::GetDefaultDevice()
     return device;
 }
 
-COpenCLEngine::COpenCLEngine()
+COpenCLEngine::COpenCLEngine(const bool &attachOpenCV)
 {
 	_singleton = nullptr;
 	OpenCLPlatform * platform = nullptr;
@@ -468,7 +468,7 @@ COpenCLEngine::COpenCLEngine()
 	}
 
 #ifdef OPENCV_OPENCL
-	if (platform != nullptr && _singleton != nullptr && device != nullptr)
+	if (platform != nullptr && _singleton != nullptr && device != nullptr && attachOpenCV)
 	{
 		//Set OpenCV to use OpenCL context
 		cv::ocl::setUseOpenCL(true);

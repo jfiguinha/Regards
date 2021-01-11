@@ -1851,7 +1851,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	{
 		if (openCLEngine == nullptr)
 		{
-			openCLEngine = new COpenCLEngine();
+			openCLEngine = new COpenCLEngine(true);
 			if (openCLEngine != nullptr)
 				openclContext = openCLEngine->GetInstance();
 		}

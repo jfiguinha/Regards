@@ -124,7 +124,7 @@ namespace Regards
 		class  COpenCLEngine
 		{
 		public:
-			COpenCLEngine();
+			COpenCLEngine(const bool &attachOpenCV);
 			~COpenCLEngine();
            static OpenCLDevice * GetDefaultDevice();
 			COpenCLContext * GetInstance();

@@ -575,7 +575,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
     if (openCLEngine == nullptr)
     {
-        openCLEngine = new COpenCLEngine();
+        openCLEngine = new COpenCLEngine(false);
         if (openCLEngine != nullptr)
             openclContext = openCLEngine->GetInstance();
     }

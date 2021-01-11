@@ -63,7 +63,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	wxString decoder = "";
 	if (regardsParam != nullptr)
 	{
-		decoder = regardsParam->GetVideoDecoderHardware();
+		//decoder = regardsParam->GetVideoDecoderHardware();
 	}
 
 	if (softRender)
@@ -83,7 +83,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
-		decoder = regardsParam->GetVideoDecoderHardware();
+		//decoder = regardsParam->GetVideoDecoderHardware();
 	}
 
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
