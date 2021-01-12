@@ -50,8 +50,7 @@
 			<size>355,70</size>
 		</object>
 		<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
-			<pos>10,110</pos>
-			<size>170,20</size>
+			<pos>10,105</pos>
 			<value>CubicFilter</value>
 			<content>
 				<item>CubicFilter</item>
