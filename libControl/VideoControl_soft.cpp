@@ -22,6 +22,7 @@
 #include <InterpolationBicubic.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
+
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);

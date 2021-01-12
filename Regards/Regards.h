@@ -45,7 +45,11 @@ using namespace Regards::OpenCL;
 #ifdef __WXMSW__
 #include <gdiplus.h>
 // pour terminer, voici les lignes à inclure dans votre code source :
+
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif 
+
 #define ISOLATION_AWARE_ENABLED
 #endif
 

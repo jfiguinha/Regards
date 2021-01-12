@@ -15,6 +15,7 @@ extern "C"
 
 class CRegardsBitmap;
 class CompressVideo;
+class CVideoEffectParameter;
 
 class CFFmpegTranscodingPimpl
 {
@@ -105,6 +106,8 @@ private:
 
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
+	AVFrame * ApplyFilter(AVFrame *sw_frame);
+	AVFrame * RgbToYuv(uint8_t *rgb, int width, int height, AVFrame * src_frame);
 
 	AVFormatContext *ifmt_ctx = nullptr;
 	AVFormatContext *ofmt_ctx = nullptr;
@@ -139,4 +142,5 @@ private:
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
+	CVideoEffectParameter * videoEffectParameter = nullptr;
 };

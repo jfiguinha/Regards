@@ -21,15 +21,15 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
 
+	softRender = true;
 	toolbarOutside = false;
 	height = 0;
 	width = 0;
 	videoPosOld = 0;
 	isDiaporama = false;
-
+	//decoder = "";
 	CThemeSlider themeSlider;
 	CTheme themeVideo;
-
 		
 	if (config != nullptr)
 	{
@@ -132,7 +132,6 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
 	else
 		videoWindow->PlayFirstMovie(false);
-
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
