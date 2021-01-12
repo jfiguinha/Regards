@@ -254,6 +254,7 @@ protected:
 	int oldheightDenoise = 0;
 	void GetDenoiserPt(const int &width, const int &height);
     
+
     bool firstMovie = true;
     wxTimer * playStopTimer;
     void OnPlayStop(wxTimerEvent& event);

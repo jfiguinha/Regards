@@ -997,7 +997,6 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 		OnStop(movie);
 		
 	}
-
 	return 0;
 }
 
