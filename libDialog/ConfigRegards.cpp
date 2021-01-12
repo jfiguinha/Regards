@@ -40,9 +40,6 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	ckDxva2Opengl = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2OPENGL"));
 	ckDxva2acc = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2ACCELERATOR"));
 #endif
-#ifdef __APPLE__
-	ckvideotoolbox = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOTOOLBOX"));
-#endif
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
@@ -104,13 +101,6 @@ void ConfigRegards::Init()
 	else
 		ckDxva2acc->SetValue(0);
 #endif
-#ifdef __APPLE__
-	wxString decoder = regardsParam->GetVideoDecoderHardware();
-	if (decoder == "videotoolbox")
-		ckvideotoolbox->SetValue(1);
-	else
-		ckvideotoolbox->SetValue(0);
-#endif
 	int dataInMemory = regardsParam->GetDatabaseInMemory();
 	if (dataInMemory == 0)
 		rbDatabaseInMemory->SetSelection(1);
@@ -151,13 +141,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	bool ckAcc = ckDxva2acc->IsChecked();
 	if(ckAcc)
 		regardsParam->SetVideoDecoderHardware("dxva2");
-	else
-		regardsParam->SetVideoDecoderHardware("");
-#endif
-#ifdef __APPLE__
-	bool ckAcc = ckvideotoolbox->IsChecked();
-	if (ckAcc)
-		regardsParam->SetVideoDecoderHardware("videotoolbox");
 	else
 		regardsParam->SetVideoDecoderHardware("");
 #endif

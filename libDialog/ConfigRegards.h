@@ -47,9 +47,6 @@ class ConfigRegards: public wxDialog
 		wxCheckBox* ckDxva2Opengl;
 		wxCheckBox* ckDxva2acc;
 #endif
-#ifdef __APPLE__
-		wxCheckBox* ckvideotoolbox;
-#endif
 
 		bool IsOk();
 

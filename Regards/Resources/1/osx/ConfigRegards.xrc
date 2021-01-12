@@ -45,21 +45,9 @@
 			<size>180,70</size>
 		</object>			
 		<object class="wxStaticBox" name="sbInterpolation">
-			<label>Accelerator</label>
-			<pos>0,74</pos>
-			<size>180,70</size>
-		</object>	
-		<object class="wxCheckBox" name="ID_CKVIDEOTOOLBOX">
-			<pos>10,95</pos>
-		</object>
-		<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-			<label>Use videotoolbox</label>
-			<pos>32,95</pos>
-		</object>
-		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Interpolation Filter</label>
-			<pos>180,74</pos>
-			<size>180,70</size>
+			<pos>180,0</pos>
+			<size>360,70</size>
 		</object>
 		<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
 			<pos>185,94</pos>

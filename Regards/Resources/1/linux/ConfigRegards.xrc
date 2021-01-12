@@ -19,8 +19,8 @@
 -->
 		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Transition Effect</label>
-			<pos>0,0</pos>
-			<size>180,70</size>
+			<pos>5,0</pos>
+			<size>175,70</size>
 		</object>
 		<object class="wxComboBox" name="ID_RBTRANSITIONEFFECT">
 			<default>0</default>
@@ -45,24 +45,13 @@
 			<pos>180,0</pos>
 			<size>180,70</size>
 		</object>			
-		<object class="wxRadioBox" name="ID_RBDXVA2">
-			<label>Use DXVA2</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<content>
-				<item>Yes</item>
-				<item>No</item>
-			</content>
-			<default>-1</default>
-			<pos>0,74</pos>
-			<size>180,70</size>
-		</object>	
 		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Interpolation Filter</label>
-			<pos>180,74</pos>
-			<size>180,70</size>
+			<pos>5,74</pos>
+			<size>355,70</size>
 		</object>
 		<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
-			<pos>185,94</pos>
+			<pos>10,110</pos>
 			<size>170,20</size>
 			<value>CubicFilter</value>
 			<content>
@@ -89,8 +78,8 @@
 				<item>No</item>
 			</content>
 			<default>-1</default>
-			<pos>0,148</pos>
-			<size>180,70</size>
+			<pos>5,148</pos>
+			<size>175,70</size>
 		</object>		
 		<object class="wxRadioBox" name="ID_RBAUTOCONTRAST">
 			<label>Constrast Correction</label>
@@ -105,51 +94,51 @@
 		</object>			
 		<object class="wxStaticBox" name="sbDiaporama">
 			<label>Sequence</label>
-			<pos>0,220</pos>
-			<size>360,70</size>
+			<pos>5,220</pos>
+			<size>355,70</size>
 		</object>
 		<object class="wxSpinCtrl" name="ID_SCTIME">
 			<value>0</value>
-			<pos>56,240</pos>
+			<pos>120,250</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTIME">
 			<label>Time :</label>
-			<pos>16,240</pos>
+			<pos>16,250</pos>
 			<size>40,24</size>
 		</object>
 		<object class="wxStaticBox" name="sbProcess">
 			<label>Process</label>
-			<pos>0,270</pos>
-			<size>360,200</size>
+			<pos>5,290</pos>
+			<size>360,100</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTHUMBNAIL">
 			<label>THUMBNAIL :</label>
-			<pos>16,300</pos>
+			<pos>16,320</pos>
 			<size>100,24</size>
 		</object>		
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
-			<pos>120,300</pos>
+			<pos>120,320</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
 			<label>EXIF :</label>
-			<pos>16,330</pos>
+			<pos>16,350</pos>
 			<size>100,24</size>
 		</object>			
 		<object class="wxSpinCtrl" name="ID_SCEXIF">
 			<value>0</value>
-			<pos>120,330</pos>
+			<pos>120,350</pos>
 			<size>120,21</size>
 		</object>	
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,380</pos>
+			<pos>64,400</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,380</pos>
+			<pos>192,400</pos>
 		</object>		
 	</object>
 </resource>
