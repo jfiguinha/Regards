@@ -79,6 +79,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 
 #else
 
+	softRender = true;
 	wxString decoder = "";
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -122,7 +123,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
     
-	if (softRender && decoder != "")
+	if (softRender && decoder == "")
 	{
 		wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 		wxString videoPathTemp = "";
