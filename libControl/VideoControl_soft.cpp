@@ -995,7 +995,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 		muVideoEffect.unlock();
 #ifndef WIN32
         if(firstMovie)
-            playStopTimer->Start(1000,true);
+            playStopTimer->Start(100,true);
         firstMovie = false;
 #endif
 	}

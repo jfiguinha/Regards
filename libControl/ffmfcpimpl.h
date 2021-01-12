@@ -256,9 +256,9 @@ public:
 		uint8_t silence_buf[SDL_AUDIO_BUFFER_SIZE];
 		uint8_t *audio_buf  = nullptr;
 		uint8_t *audio_buf1 = nullptr;
-		unsigned int audio_buf_size = 0; /* in bytes */
-		int audio_buf_index = 0; /* in bytes */
-		int audio_write_buf_size = 0;
+		unsigned int audio_buf_size = 3565; /* in bytes */
+		int audio_buf_index = 983040; /* in bytes */
+		int audio_write_buf_size = 8560;
 		AVPacket audio_pkt_temp;
 		AVPacket audio_pkt;
 		AudioParams audio_src;
@@ -266,7 +266,7 @@ public:
 		SwrContext *swr_ctx;
 		double audio_current_pts = 0;
 		double audio_current_pts_drift = 0;
-		int frame_drops_early = 0;
+		int frame_drops_early = 7920;
 		int frame_drops_late = 0;
 		double frame_last_delay = 0;
 		AVFrame *frame = nullptr;
@@ -503,7 +503,7 @@ public:
 	int audio_disable = 0;
 	int video_disable = 0;
 	int wanted_stream[AVMEDIA_TYPE_NB] = { -1,-1,0,-1,0 };
-	int seek_by_bytes = -1;
+	int seek_by_bytes = 0;
 	int display_disable = 0;
 	int show_status = 0;
 	int av_sync_type = AV_SYNC_AUDIO_MASTER;
