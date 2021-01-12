@@ -122,12 +122,16 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
     
-#ifndef WIN32
-    wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-    wxString videoPathTemp = "";
-    videoPathTemp = resourcePath + "/video.mp4";
-    videoWindow->PlayMovie(videoPathTemp, true);
-#endif
+	if (softRender && decoder != "")
+	{
+		wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+		wxString videoPathTemp = "";
+		videoPathTemp = resourcePath + "/video.mp4";
+		videoWindow->PlayMovie(videoPathTemp, true);
+	}
+	else
+		videoWindow->PlayFirstMovie(false);
+
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)

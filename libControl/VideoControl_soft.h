@@ -100,7 +100,7 @@ public:
 	void Rotate270();
 	void FlipVertical();
 	void FlipHorizontal();
-
+	void PlayFirstMovie(const bool &firstMovie);
 	void SetEncoderHardware(const wxString &encoderHardware, const bool &opengl);
 
 protected:
@@ -254,9 +254,8 @@ protected:
 	int oldheightDenoise = 0;
 	void GetDenoiserPt(const int &width, const int &height);
     
-#ifndef WIN32
     bool firstMovie = true;
     wxTimer * playStopTimer;
     void OnPlayStop(wxTimerEvent& event);
-#endif
+
 };
