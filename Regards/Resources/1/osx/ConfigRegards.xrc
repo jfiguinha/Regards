@@ -46,11 +46,12 @@
 		</object>			
 		<object class="wxStaticBox" name="sbInterpolation">
 			<label>Interpolation Filter</label>
-			<pos>180,0</pos>
-			<size>360,70</size>
+			<pos>5,74</pos>
+			<size>355,70</size>
 		</object>
 		<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
-			<pos>185,94</pos>
+			<pos>10,110</pos>
+			<size>170,20</size>
 			<value>CubicFilter</value>
 			<content>
 				<item>CubicFilter</item>
