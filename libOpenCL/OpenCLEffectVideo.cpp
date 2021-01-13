@@ -509,7 +509,11 @@ void COpenCLEffectVideo::FlipVertical()
 		cl_mem output = openclFilter.Flip("FlipVertical", paramOutput->GetValue(), widthOut, heightOut);
 		paramOutput->SetValue(output);
 	}
-
+	else
+	{
+		cl_mem output = openclFilter.Flip("FlipVertical", paramSrc->GetValue(), srcwidth, srcheight);
+		paramSrc->SetValue(output);
+	}
 }
 
 void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)

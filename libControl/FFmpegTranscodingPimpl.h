@@ -72,7 +72,6 @@ public:
 				if(openclContext != nullptr)
 					openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 
-				memOutput = new COpenCLParameterClMem();
 			}
 
 		}
@@ -111,9 +110,6 @@ public:
 
 		if (openclEffectYUV != nullptr)
 			delete openclEffectYUV;
-
-		if(memOutput != nullptr)
-			delete memOutput;
 	};
 
 	static void DisplayPreview(void * data);
@@ -125,10 +121,11 @@ public:
 
 	int EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 	int OpenFile(const wxString & input, const wxString & output);
-	int ProcessEncodeFile(AVFrame * dst, SwsContext * scaleContext);
+	
 
 
 private:
+	int ProcessEncodeFile(AVFrame * dst);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
 	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx);
@@ -148,8 +145,8 @@ private:
 	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream);
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
-	void ApplyFilter(AVFrame * sw_frame);
-	void RgbToYuv(uint8_t *rgb, int width, int height, AVFrame * & src_frame);
+	AVFrame * ApplyFilter(AVFrame * sw_frame);
+	AVFrame * RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame);
 
 	AVFormatContext *ifmt_ctx = nullptr;
 	AVFormatContext *ofmt_ctx = nullptr;
@@ -187,11 +184,12 @@ private:
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
+	bool first_decode = true;
 
 	COpenCLEngine * openCLEngine = nullptr;
 	COpenCLContext * openclContext = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
-	COpenCLParameterClMem * memOutput = nullptr;
+	
 	CRegardsBitmap * bitmap = nullptr;
 	CRegardsBitmap * bitmapCopy = nullptr;
 	bool hardwareVideoDecoding = false;

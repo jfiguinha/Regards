@@ -61,7 +61,8 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
 
 	//Create Memory Buffer for Bitmap
 	input = data_mem;
-
+	this->width = width;
+	this->height = height;
 	paramWidth = new COpenCLParameterInt();
 	paramWidth->SetValue(width);
 	paramWidth->SetNoDelete(true);

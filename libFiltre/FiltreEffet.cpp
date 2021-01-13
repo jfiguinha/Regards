@@ -144,7 +144,7 @@ int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * e
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height)
+CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, COpenCLParameterClMem * data_mem, const int &width, const int &height)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
