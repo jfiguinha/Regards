@@ -29,6 +29,10 @@ COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
 	paramSrcHeight = nullptr;
 }
 
+COpenCLParameterClMem * COpenCLEffectVideo::GetPtData()
+{
+	return paramSrc;
+}
 
 COpenCLEffectVideo::~COpenCLEffectVideo()
 {
@@ -381,6 +385,29 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem input, const int& width, co
 			vecParam.clear();
 		}
 	}
+	return bitmap;
+}
+
+CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem cl_image)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	cl_mem ptData = cl_image;
+	int width = widthOut;
+	int height = heightOut;
+
+	if (context->GetDefaultType() == OPENCL_FLOAT)
+	{
+		bitmap = GetBitmap(ptData, width, height);
+	}
+	else
+	{
+		bitmap = new  CRegardsBitmap(width, height);
+		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), ptData, CL_TRUE, 0, bitmap->GetBitmapSize(), bitmap->GetPtBitmap(), 0, nullptr, nullptr);
+		Error::CheckError(err);
+		err = clFinish(context->GetCommandQueue());
+		Error::CheckError(err);
+	}
+
 	return bitmap;
 }
 

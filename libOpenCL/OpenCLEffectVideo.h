@@ -35,6 +35,8 @@ namespace Regards
 			virtual ~COpenCLEffectVideo();
 			bool IsOk();
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
+			CRegardsBitmap* GetBitmap(cl_mem cl_image);
+			
 			virtual void InterpolationBicubic(const int& widthOut, const int& heightOut, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
@@ -51,6 +53,9 @@ namespace Regards
 			int GetThumbnailWidth();
 			int GetThumbnailHeight();
 			int CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height);
+
+			COpenCLParameterClMem * GetPtData();
+
 		protected:
 
 			int GetSizeData();
