@@ -32,6 +32,7 @@ namespace Regards
 		{
 		public:
 
+			COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height);
 			COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap);
 
 			void SetFlag(const bool &useMemory)

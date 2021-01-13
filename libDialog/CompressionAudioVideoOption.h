@@ -18,6 +18,7 @@ class CVideoOptionCompress;
 class CThumbnailVideo;
 class CRegardsBitmap;
 class CSliderVideoSelection;
+class CVideoEffectParameter;
 
 class CompressionAudioVideoOption: public wxDialog
 {
@@ -61,6 +62,23 @@ class CompressionAudioVideoOption: public wxDialog
 
 		wxRadioBox * rbAudioDirectCopy;
 		wxRadioBox * rbVideoDirectCopy;
+
+		//Filter event
+		wxCheckBox * ckdenoiseFilter;
+		wxSlider * denoiseFilter;
+		wxCheckBox * cksharpenFilter;
+		wxSlider * sharpenFilter;
+		wxCheckBox * cklightandcontrast;
+		wxSlider * contrastFilter;
+		wxSlider * lightFilter;
+		wxCheckBox * ckcolorBoost;
+		wxSlider * redFilter;
+		wxSlider * greenFilter;
+		wxSlider * blueFilter;
+		wxCheckBox * ckgrey;
+		wxCheckBox * cksepia;
+		wxCheckBox * cknoise;
+		wxCheckBox * ckenablefilter;
 	protected:
 
 		//(*Identifiers(TiffOption)
@@ -89,6 +107,7 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		wxString videoFilename;
 		CThumbnailVideo * ffmpegTranscoding;
+		
 		CSliderVideoSelection * sliderVideoPosition;
 		int ret = 0;
 		wxImage scale;

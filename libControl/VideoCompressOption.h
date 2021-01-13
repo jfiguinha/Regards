@@ -1,4 +1,5 @@
 #pragma once
+#include <EffectVideoParameter.h>
 
 class CVideoOptionCompress
 {
@@ -6,12 +7,12 @@ public:
 
 	CVideoOptionCompress()
 	{
-
+		videoEffectParameter = new CVideoEffectParameter();
 	}
 
 	~CVideoOptionCompress()
 	{
-
+		delete videoEffectParameter;
 	}
 	
 	//Audio
@@ -34,4 +35,5 @@ public:
 	bool audioDirectCopy = false;
 	bool videoDirectCopy = false;
 	bool interlace = false;
+	CVideoEffectParameter * videoEffectParameter;
 };

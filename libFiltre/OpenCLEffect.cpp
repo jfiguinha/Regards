@@ -41,6 +41,36 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
     SetBitmap(bitmap);
 }
 
+COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height)
+	: IFiltreEffet(backColor)
+{
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
+	this->backColor = backColor;
+	//flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
+	flag = CL_MEM_COPY_HOST_PTR;
+	this->context = context;
+	dataIsOk = false;
+
+	input = nullptr;
+	paramWidth = nullptr;
+	paramHeight = nullptr;
+
+	paramOutput = nullptr;
+	widthOut = 0;
+	heightOut = 0;
+
+	//Create Memory Buffer for Bitmap
+	input = data_mem;
+
+	paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(width);
+	paramWidth->SetNoDelete(true);
+
+	paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(height);
+	paramHeight->SetNoDelete(true);
+}
+
 int COpenCLEffect::GetSizeData()
 {
 	if(context->GetDefaultType() == OPENCL_FLOAT)

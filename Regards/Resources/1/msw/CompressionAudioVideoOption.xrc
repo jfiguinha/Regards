@@ -244,7 +244,158 @@
 						</object>
 					</object>
 				</object>
-			
+				<object class="notebookpage">
+					<label>Filter Effect</label>
+					<object class="wxPanel" name="page_4">
+						<object class="wxCheckBox" name="ID_CKENABLEFILTER">
+							<pos>15,20</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STENABLEFILTER">
+							<label>Enable Filter</label>
+							<pos>32,20</pos>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Color Filter</label>
+							<pos>5,40</pos>
+							<size>380,140</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKGRAYFILTER">
+							<pos>15,60</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STGRAYFILTER">
+							<label>Gray Filter</label>
+							<pos>32,60</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKSEPIAFILTER">
+							<pos>200,60</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STSEPIAFILTER">
+							<label>Sepia Filter</label>
+							<pos>220,60</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKNOISEFILTER">
+							<pos>200,80</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STNOISEFILTER">
+							<label>Noise Filter</label>
+							<pos>220,80</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKDCOLORBOOSTFILTER">
+							<pos>15,80</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STCOLORBOOSTFILTER">
+							<label>Color Boost</label>
+							<pos>32,80</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STREDBOOSTFILTER">
+							<label>Red : </label>
+							<pos>32,100</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLREDBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,100</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STGREENBOOSTFILTER">
+							<label>Green : </label>
+							<pos>32,120</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLGREENBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,120</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STBLUEBOOSTFILTER">
+							<label>Blue : </label>
+							<pos>32,140</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLBLUEBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<pos>120,140</pos>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Constrast and Lightness</label>
+							<pos>5,180</pos>
+							<size>380,110</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKCONTRASTANDLIGHTFILTER">
+							<pos>15,210</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STCONTRASTANDLIGHTFILTER">
+							<label>Enable</label>
+							<pos>32,210</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STCONTRASTFILTER">
+							<label>Constrast : </label>
+							<pos>32,230</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLCONTRASTFILTER">
+							<max>100</max>
+							<min>-100</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,230</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STLIGHTFILTER">
+							<label>Lightness : </label>
+							<pos>32,250</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLLIGHTFILTER">
+							<max>100</max>
+							<min>-100</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,250</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Convolution Filter</label>
+							<pos>5,300</pos>
+							<size>380,100</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKSHARPENFILTER">
+							<pos>15,320</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STSHARPENFILTER">
+							<label>Sharpen : </label>
+							<pos>32,320</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLSHARPENFILTER">
+							<max>100</max>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,320</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKDENOISEFILTER">
+							<pos>15,340</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STDENOISEFILTER">
+							<label>Denoise : </label>
+							<pos>32,340</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLDENOISEFILTER">
+							<max>255</max>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,340</pos>
+							<size>230,20</size>
+						</object>
+					</object>
+				</object>
 			</object>
 				</object>
 			<object class="sizeritem">

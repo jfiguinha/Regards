@@ -4,6 +4,7 @@
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include "InterpolationBicubic.h"
+#include <OpenCLParameter.h>
 #include <LibResource.h>
 #include "Rotate.h"
 #include "RedEye.h"
@@ -141,6 +142,20 @@ int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * e
     int value = CFiltreData::RenderEffect(numEffect,this, effectParameter, true);
 	filtreEffet->SetPreviewMode(false);
 	return value;
+}
+
+CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height)
+{
+	filtreEffet = nullptr;
+	this->backColor = backColor;
+	this->numLib = LIBCPU;
+	this->openCLContext = openCLContext;
+	filename = "";
+	this->width = width;
+	this->height = height;
+	hq3d = nullptr;
+	filtreEffet = new COpenCLEffect(backColor, openCLContext, data_mem, width, height);
+	this->numLib = LIBOPENCL;
 }
 
 CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)

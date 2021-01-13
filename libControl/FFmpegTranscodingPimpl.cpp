@@ -1504,17 +1504,6 @@ void CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 	
 	if (openCLEngine != nullptr)
 	{
-		/*
-		if (sw_frame->format == 23)
-		{
-			int ysize = 0;
-			int uvsize = 0;
-
-			ysize = sw_frame->linesize[0] * sw_frame->height;
-			uvsize = sw_frame->linesize[1] * (sw_frame->height / 2);
-			openclEffectYUV->SetMemoryDataNV12(sw_frame->data[0], ysize, sw_frame->data[1], uvsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
-		}
-		else*/
 		if(!hardwareVideoDecoding)
 		{
 			int ysize = 0;
@@ -1567,9 +1556,9 @@ void CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 		convertedFrameBuffer_data = bitmapData->GetPtBitmap();
 	}
 
-	if (videoEffectParameter != nullptr)
+	if (videoCompressOption->videoEffectParameter != nullptr)
 	{
-		if (videoEffectParameter->effectEnable)
+		if (videoCompressOption->videoEffectParameter->effectEnable)
 		{
 			COpenCLFilter openclFilter(openclContext);
 			
@@ -1577,10 +1566,48 @@ void CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 			{
 				cl_mem output = nullptr;
 				COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
-				if (videoEffectParameter->grayEnable)
+				CRgbaquad color;
+				CFiltreEffet filtre(color, openclContext, data_mem, videoFrameOutputWidth, videoFrameOutputHeight);
+
+				if (videoCompressOption->videoEffectParameter != nullptr)
 				{
-					output = openclFilter.ColorEffect("GrayLevel", data_mem->GetValue(), videoFrameOutputWidth, videoFrameOutputHeight);
+					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
+					{
+						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
+					}
+					if (videoCompressOption->videoEffectParameter->bandcEnable)
+					{
+						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
+					}
+					if (videoCompressOption->videoEffectParameter->SharpenEnable)
+					{
+						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
+					}
+					if (videoCompressOption->videoEffectParameter->denoiseEnable)
+					{
+						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
+					}
+					if (videoCompressOption->videoEffectParameter->sepiaEnable)
+					{
+						filtre.Sepia();
+					}
+					if (videoCompressOption->videoEffectParameter->grayEnable)
+					{
+						filtre.NiveauDeGris();
+					}
+					if (videoCompressOption->videoEffectParameter->filmgrainenable)
+					{
+						filtre.Noise();
+					}
+					if (videoCompressOption->videoEffectParameter->grayEnable)
+					{
+						filtre.NiveauDeGris();
+					}
 				}
+
+				bitmap = filtre.GetBitmap(true);
+
+				/*
 				if (output != nullptr)
 				{
 					memOutput->SetValue(output);
@@ -1596,6 +1623,7 @@ void CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 				}		
 				else
 					bitmap = openclEffectYUV->GetRgbaBitmap();
+				*/
 			}
 			else
 			{
@@ -1606,39 +1634,37 @@ void CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 				imageFormat.SetPicture(bitmapData);
 				CFiltreEffet filtre(color, openclContext, &imageFormat);
 
-				if (videoEffectParameter != nullptr)
+				if (videoCompressOption->videoEffectParameter != nullptr)
 				{
-					/*
-					if (videoEffectParameter->ColorBoostEnable)
+					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
 					{
-						filtre.RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1], videoEffectParameter->color_boost[2]);
+						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
 					}
-					if (videoEffectParameter->bandcEnable)
+					if (videoCompressOption->videoEffectParameter->bandcEnable)
 					{
-						filtre.BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast);
+						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
 					}
-					if (videoEffectParameter->SharpenEnable)
+					if (videoCompressOption->videoEffectParameter->SharpenEnable)
 					{
-						filtre.SharpenMasking(videoEffectParameter->sharpness);
+						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
 					}
-					if (videoEffectParameter->denoiseEnable)
+					if (videoCompressOption->videoEffectParameter->denoiseEnable)
 					{
-						filtre.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3);
+						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
 					}
-					if (videoEffectParameter->sepiaEnable)
+					if (videoCompressOption->videoEffectParameter->sepiaEnable)
 					{
 						filtre.Sepia();
 					}
-					if (videoEffectParameter->grayEnable)
+					if (videoCompressOption->videoEffectParameter->grayEnable)
 					{
 						filtre.NiveauDeGris();
 					}
-					if (videoEffectParameter->filmgrainenable)
+					if (videoCompressOption->videoEffectParameter->filmgrainenable)
 					{
 						filtre.Noise();
 					}
-					*/
-					if (videoEffectParameter->grayEnable)
+					if (videoCompressOption->videoEffectParameter->grayEnable)
 					{
 						filtre.NiveauDeGris();
 					}
@@ -1682,9 +1708,9 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 	if (isvideo)
 	{
-		if (videoEffectParameter != nullptr)
+		if (videoCompressOption->videoEffectParameter != nullptr)
 		{
-			if (videoEffectParameter->effectEnable)
+			if (videoCompressOption->videoEffectParameter->effectEnable)
 			{
 				ApplyFilter(filt_frame);
 			}

@@ -77,10 +77,6 @@ public:
 
 		}
 
-		videoEffectParameter = new CVideoEffectParameter();
-		videoEffectParameter->effectEnable = true;
-		videoEffectParameter->grayEnable = true;
-
 	};
 	~CFFmpegTranscodingPimpl()
 	{
@@ -112,9 +108,6 @@ public:
 
 		if (openCLEngine != nullptr)
 			delete openCLEngine;
-
-		if (videoEffectParameter != nullptr)
-			delete videoEffectParameter;
 
 		if (openclEffectYUV != nullptr)
 			delete openclEffectYUV;
@@ -194,7 +187,7 @@ private:
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
-	CVideoEffectParameter * videoEffectParameter = nullptr;
+
 	COpenCLEngine * openCLEngine = nullptr;
 	COpenCLContext * openclContext = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;

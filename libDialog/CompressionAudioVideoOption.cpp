@@ -46,6 +46,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 {
     isOk = false;
 	this->videoFilename = videoFilename;
+
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
@@ -70,6 +71,22 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
 	rbAudioDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBAUDIOCOMPRESSION"));
 	rbVideoDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOCOMPRESSION"));
+	//Filter
+	ckdenoiseFilter = (wxCheckBox*)FindWindow(XRCID("ID_CKDENOISEFILTER"));
+	denoiseFilter = (wxSlider*)FindWindow(XRCID("ID_SLDENOISEFILTER"));
+	cksharpenFilter = (wxCheckBox*)FindWindow(XRCID("ID_CKSHARPENFILTER"));
+	sharpenFilter = (wxSlider*)FindWindow(XRCID("ID_SLSHARPENFILTER"));
+	cklightandcontrast = (wxCheckBox*)FindWindow(XRCID("ID_CKCONTRASTANDLIGHTFILTER"));
+	contrastFilter = (wxSlider*)FindWindow(XRCID("ID_SLCONTRASTFILTER"));
+	lightFilter = (wxSlider*)FindWindow(XRCID("ID_SLLIGHTFILTER"));
+	ckcolorBoost = (wxCheckBox*)FindWindow(XRCID("ID_CKDCOLORBOOSTFILTER"));
+	redFilter = (wxSlider*)FindWindow(XRCID("ID_SLREDBOOSTFILTER"));
+	greenFilter = (wxSlider*)FindWindow(XRCID("ID_SLGREENBOOSTFILTER"));
+	blueFilter = (wxSlider*)FindWindow(XRCID("ID_SLBLUEBOOSTFILTER"));
+	ckgrey = (wxCheckBox*)FindWindow(XRCID("ID_CKGRAYFILTER"));
+	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
+	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
+	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
 
 	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
 	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
@@ -279,6 +296,24 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 	
 	if (videoOptionCompress != nullptr)
 	{
+		videoOptionCompress->videoEffectParameter->effectEnable = ckenablefilter->GetValue();
+		videoOptionCompress->videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->grayEnable = ckgrey->GetValue();
+		videoOptionCompress->videoEffectParameter->sepiaEnable = cksepia->GetValue();
+		videoOptionCompress->videoEffectParameter->filmgrainenable = cknoise->GetValue();
+		videoOptionCompress->videoEffectParameter->contrast = contrastFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->brightness = lightFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
+
+		videoOptionCompress->videoEffectParameter->color_boost[0] = redFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->color_boost[1] = greenFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->color_boost[2] = blueFilter->GetValue();
+		videoOptionCompress->videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
+
+		videoOptionCompress->videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+
 		//Audio
 		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
 		if (cbAudioQuality->GetStringSelection() != "")

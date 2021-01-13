@@ -16,10 +16,19 @@ class CRegardsFloatBitmap;
 class CRegardsBitmap;
 class CEffectParameter;
 class IFiltreEffet;
+namespace Regards
+{
+	namespace OpenCL
+	{
+		class COpenCLParameterClMem;
+	}
+}
+
 
 class CFiltreEffet
 {
 public:
+	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height);
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
 	void SetPreviewMode(const bool& value);
