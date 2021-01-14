@@ -1992,7 +1992,6 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 			{
 				CRgbaquad color;
 				CImageLoadingFormat imageFormat;
-
 				imageFormat.SetPicture(bitmapData);
 				CFiltreEffet filtre(color, openclContext, &imageFormat);
 
@@ -2094,14 +2093,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 		//      of the seek_pos/seek_rel variables
 
 		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
-
-		/*
-		ret = av_seek_frame(ifmt_ctx, videoStreamIndex, timestamp, 0);
-		if (ret != 0)
-			return ret;
-		
-		startEncoding = false;
-		*/
 	}
 	
 
@@ -2346,9 +2337,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 			if (videoCompressOption->endTime == posVideo)
 				break;
 		}
-
-
-
 	}
 
 	/* flush filters and encoders */

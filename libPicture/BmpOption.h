@@ -22,6 +22,7 @@ class BmpOption: public wxDialog
 
 		wxButton* btnCancel;
 		wxButton* btnOK;
+		wxStaticBitmap * bitmap;
 		wxRadioBox* rbCompression;
 		//*)
         bool IsOk();

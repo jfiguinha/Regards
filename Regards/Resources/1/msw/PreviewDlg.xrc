@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="PreviewDlg">
+		<title>Video Preview</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<size>400,400</size>
+		<object class="wxBoxSizer">
+		    <cols>1</cols>
+			<rows>0</rows>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+				<object class="wxPanel" name="IDPANEL">
+					<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
+						<pos>5,5</pos>
+						<size>390,350</size>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTRE|wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTRE|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_BTOK">
+							<label>OK</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTRE|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_BTCANCEL">
+							<label>Cancel</label>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

@@ -12,7 +12,7 @@
 
 //(*Headers(TiffOption)
 //*)
-
+class CPreviewDlg;
 class CImageLoadingFormat;
 class CVideoOptionCompress;
 class CThumbnailVideo;
@@ -30,6 +30,7 @@ class CompressionAudioVideoOption: public wxDialog
 
 		wxButton* btnCancel;
 		wxButton* btnOk;
+		wxButton* btnPreview;
 		//wxPanel * panel;
 		bool IsOk();
 
@@ -86,10 +87,12 @@ class CompressionAudioVideoOption: public wxDialog
 
 	private:
 
+		wxImage ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter);
 		wxString ConvertSecondToTime(int64_t sec);
 		//void OnPaint(wxPaintEvent &event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		void OnbtnOkClick(wxCommandEvent& event);
+		void OnbtnPreviewClick(wxCommandEvent& event);
 		void OnbtnCheckAudioBitrateClick(wxCommandEvent& event);
 		void OnbtnCheckAudioQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoQualityClick(wxCommandEvent& event);
@@ -107,7 +110,7 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		wxString videoFilename;
 		CThumbnailVideo * ffmpegTranscoding;
-		
+		CPreviewDlg * previewDlg;
 		CSliderVideoSelection * sliderVideoPosition;
 		int ret = 0;
 		wxImage scale;

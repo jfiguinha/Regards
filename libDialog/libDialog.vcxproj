@@ -154,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libWindow;..\libextern\ffmpeg-master\include;..\libControl;..\include;..\libFiltreInterface;..\libOpenGL;..\libWindowMain;..\libextern\libjpeg-turbo-1.5.1;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libOpenCLEngine;..\libUtility;..\libextern\librapidxml;..\libTheme;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libWindowMain;..\libFiltre;..\libWindow;..\libextern\ffmpeg-master\include;..\libControl;..\include;..\libFiltreInterface;..\libOpenGL;..\libWindowMain;..\libextern\libjpeg-turbo-1.5.1;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libOpenCLEngine;..\libUtility;..\libextern\librapidxml;..\libTheme;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -279,6 +279,7 @@
     <ClCompile Include="MyFrameIntro.cpp" />
     <ClCompile Include="OpenCLDialog.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
+    <ClCompile Include="PreviewDlg.cpp" />
     <ClCompile Include="SavePicture.cpp" />
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="SliderVideoSelection.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="MyFrameIntro.h" />
     <ClInclude Include="OpenCLDialog.h" />
     <ClInclude Include="PertinenceValue.h" />
+    <ClInclude Include="PreviewDlg.h" />
     <ClInclude Include="SavePicture.h" />
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="SliderVideoSelection.h" />

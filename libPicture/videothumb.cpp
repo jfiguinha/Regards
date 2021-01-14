@@ -10,6 +10,7 @@
 #include <ParamInit.h>
 #include <rapidxml.hpp>
 
+
 CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 {
 	filename = fileName;

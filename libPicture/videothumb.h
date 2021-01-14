@@ -3,6 +3,7 @@
 class CImageVideoThumbnail;
 class CRegardsBitmap;
 class CFFmpegDecodeFrame;
+class CVideoEffectParameter;
 
 class CThumbnailVideo
 {
@@ -19,6 +20,7 @@ public:
 	int64_t GetMovieDuration();
 
 private:
+	void ApplyEffectToBitmap(CRegardsBitmap * & bitmap, CVideoEffectParameter * videoEffectParameter);
 	wxString filename;
 	CFFmpegDecodeFrame * decodeFrame;
 };
