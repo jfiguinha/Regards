@@ -1,4 +1,4 @@
-﻿#include "header.h"
+#include "header.h"
 #include "FFmpegTranscodingPimpl.h"
 #include <RegardsBitmap.h>
 #include <CompressVideo.h>
@@ -11,9 +11,8 @@
 #include <window_id.h>
 #include <chrono>
 #include "VideoCompressOption.h"
-#include <FiltreEffet.h>
-#include <OpenCLFilter.h>
-using namespace Regards::OpenCL;
+
+
 static const int dst_width = 1920;
 static const int dst_height = 1080;
 static const int dst_vbit_rate = 1500000;
@@ -196,43 +195,35 @@ static wxString ConvertSecondToTime(int sec)
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 {
-	CffmpegToBitmap * ffmpegToBitmap = nullptr;
 	CFFmpegTranscodingPimpl * ffmpeg_trans = (CFFmpegTranscodingPimpl *)data;
 	if (ffmpeg_trans != nullptr)
 	{
-		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
-		if (ffmpeg_trans->bitmap == nullptr)
-		{
-			
-			ffmpegToBitmap = new CffmpegToBitmap(true);
-			bool deleteData = false;
 
-			ffmpeg_trans->muFrame.lock();
+		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
+		bool deleteData = false;
 
-			int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
-			int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
-			ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
-			if (ffmpeg_trans->bitmapVideo == nullptr)
-				ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-			else
-			{
-				if (ffmpegToBitmap->GetConvert(ffmpeg_trans->bitmapVideo, ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo) == 0)
-				{
-					delete ffmpeg_trans->bitmapVideo;
-					ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-				}
-			}
-			if (ffmpeg_trans->copyFrameBuffer != nullptr)
-				av_frame_free(&ffmpeg_trans->copyFrameBuffer);
-			ffmpeg_trans->copyFrameBuffer = nullptr;
-			ffmpeg_trans->muFrame.unlock();
-			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
-		}
+		ffmpeg_trans->muFrame.lock();
+
+		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
+		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
+		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
+		if (ffmpeg_trans->bitmapVideo == nullptr)
+			ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
 		else
 		{
-			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapCopy);
+			if (ffmpegToBitmap->GetConvert(ffmpeg_trans->bitmapVideo, ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo) == 0)
+			{
+				delete ffmpeg_trans->bitmapVideo;
+				ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+			}
 		}
+		if (ffmpeg_trans->copyFrameBuffer != nullptr)
+			av_frame_free(&ffmpeg_trans->copyFrameBuffer);
+		ffmpeg_trans->copyFrameBuffer = nullptr;
+		ffmpeg_trans->muFrame.unlock();
 
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+		imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
 		ffmpeg_trans->muWriteData.lock();
 
@@ -264,12 +255,8 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		ffmpeg_trans->muWriteData.unlock();
 		delete imageLoadingFormat;
 
-		if (ffmpegToBitmap != nullptr)
-		{
-			ffmpegToBitmap->DeleteData();
-			delete ffmpegToBitmap;
-		}
-
+		ffmpegToBitmap->DeleteData();
+		delete ffmpegToBitmap;
 	}
 
 	ffmpeg_trans->muEnding.lock();
@@ -1464,238 +1451,7 @@ int CFFmpegTranscodingPimpl::init_filters(void)
 	return 0;
 }
 
-
-AVFrame * CFFmpegTranscodingPimpl::RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame)
-{
-	if (filterContext != nullptr)
-	{
-		sws_freeContext(filterContext);
-		filterContext = nullptr;
-	}
-	if (filterContext == nullptr)
-	{
-		filterContext = sws_alloc_context();
-		av_opt_set_int(filterContext, "srcw", width, 0);
-		av_opt_set_int(filterContext, "srch", height, 0);
-		av_opt_set_int(filterContext, "src_format", AV_PIX_FMT_BGRA, 0);
-		av_opt_set_int(filterContext, "dstw", dec_frame->width, 0);
-		av_opt_set_int(filterContext, "dsth", dec_frame->height, 0);
-		av_opt_set_int(filterContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-		av_opt_set_int(filterContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-		if (sws_init_context(filterContext, nullptr, nullptr) < 0)
-		{
-			sws_freeContext(filterContext);
-			filterContext = nullptr;
-			throw std::logic_error("Failed to initialise scale context");
-			return nullptr;
-		}
-
-
-		dst_hardware->format = AV_PIX_FMT_YUV420P;
-		dst_hardware->width = dec_frame->width;
-		dst_hardware->height = dec_frame->height;
-		int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, dst_hardware->width, dst_hardware->height, AV_PIX_FMT_YUV420P, 1);
-
-	}
-
-	av_frame_copy_props(dst_hardware, dec_frame);
-	const int in_linesize[1] = { 4 * width };// RGB stride
-	sws_scale(filterContext, (const uint8_t * const *)&convertedFrameBuffer, in_linesize, 0, height, dst_hardware->data, dst_hardware->linesize);
-	return dst_hardware;
-}
-
-AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
-{
-	AVFrame * out = nullptr;
-	bool finalConvert = true;
-	CRegardsBitmap * bitmapData = nullptr;
-	int videoFrameOutputWidth = sw_frame->width;
-	int videoFrameOutputHeight = sw_frame->height;
-	uint8_t * convertedFrameBuffer_data = nullptr;
-
-	if (bitmap != nullptr)
-		delete bitmap;
-	
-	if (openCLEngine != nullptr)
-	{
-		if(!hardwareVideoDecoding)
-		{
-			int ysize = 0;
-			int usize = 0;
-			int vsize = 0;
-
-			ysize = sw_frame->linesize[0] * sw_frame->height;
-			usize = sw_frame->linesize[1] * (sw_frame->height / 2);
-			vsize = sw_frame->linesize[2] * (sw_frame->height / 2);
-			openclEffectYUV->SetMemoryData(sw_frame->data[0], ysize, sw_frame->data[1], usize, sw_frame->data[2], vsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
-		}
-		openclEffectYUV->TranscodePicture(videoFrameOutputWidth, videoFrameOutputHeight);
-		//openclEffectYUV->FlipVertical();
-	}
-	else
-	{
-		bitmapData = new CRegardsBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-		if (localContext != nullptr)
-		{
-			sws_freeContext(localContext);
-			localContext = nullptr;
-		}
-
-		if (localContext == nullptr)
-		{
-			localContext = sws_alloc_context();
-
-			av_opt_set_int(localContext, "srcw", sw_frame->width, 0);
-			av_opt_set_int(localContext, "srch", sw_frame->height, 0);
-			av_opt_set_int(localContext, "src_format", sw_frame->format, 0);
-			av_opt_set_int(localContext, "dstw", videoFrameOutputWidth, 0);
-			av_opt_set_int(localContext, "dsth", videoFrameOutputHeight, 0);
-			av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-			av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-			if (sws_init_context(localContext, nullptr, nullptr) < 0)
-			{
-				sws_freeContext(localContext);
-				throw std::logic_error("Failed to initialise scale context");
-				return nullptr;
-			}
-		}
-
-		int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight);
-		if (numBytes != bitmapData->GetBitmapSize())
-		{
-			bitmapData->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-		}
-
-		uint8_t * convertedFrameBuffer = bitmapData->GetPtBitmap();
-		int linesize = videoFrameOutputWidth * 4;
-
-		sws_scale(localContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
-			&convertedFrameBuffer, &linesize);
-
-		convertedFrameBuffer_data = bitmapData->GetPtBitmap();
-	}
-
-	if (videoCompressOption->videoEffectParameter != nullptr)
-	{
-		if (videoCompressOption->videoEffectParameter->effectEnable)
-		{
-			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
-			COpenCLFilter openclFilter(openclContext);
-			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
-			if (openCLEngine != nullptr)
-			{
-				cl_mem output = openclFilter.Flip("FlipVertical", data_mem->GetValue(), videoFrameOutputWidth, videoFrameOutputHeight);
-				memOutput->SetValue(output);
-				
-				CRgbaquad color;
-				CFiltreEffet filtre(color, openclContext, memOutput, videoFrameOutputWidth, videoFrameOutputHeight);
-
-				if (videoCompressOption->videoEffectParameter != nullptr)
-				{
-					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
-					{
-						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
-					}
-					if (videoCompressOption->videoEffectParameter->bandcEnable)
-					{
-						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
-					}
-					if (videoCompressOption->videoEffectParameter->SharpenEnable)
-					{
-						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
-					}
-					if (videoCompressOption->videoEffectParameter->denoiseEnable)
-					{
-						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
-					}
-					if (videoCompressOption->videoEffectParameter->sepiaEnable)
-					{
-						filtre.Sepia();
-					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
-					{
-						filtre.NiveauDeGris();
-					}
-					if (videoCompressOption->videoEffectParameter->filmgrainenable)
-					{
-						filtre.Noise();
-					}
-				}
-				bitmap = filtre.GetBitmap(true);
-			}
-			else
-			{
-				//ApplyFilter
-				CRgbaquad color;
-				CImageLoadingFormat imageFormat;
-
-				imageFormat.SetPicture(bitmapData);
-				CFiltreEffet filtre(color, openclContext, &imageFormat);
-
-				if (videoCompressOption->videoEffectParameter != nullptr)
-				{
-					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
-					{
-						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
-					}
-					if (videoCompressOption->videoEffectParameter->bandcEnable)
-					{
-						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
-					}
-					if (videoCompressOption->videoEffectParameter->SharpenEnable)
-					{
-						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
-					}
-					if (videoCompressOption->videoEffectParameter->denoiseEnable)
-					{
-						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
-					}
-					if (videoCompressOption->videoEffectParameter->sepiaEnable)
-					{
-						filtre.Sepia();
-					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
-					{
-						filtre.NiveauDeGris();
-					}
-					if (videoCompressOption->videoEffectParameter->filmgrainenable)
-					{
-						filtre.Noise();
-					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
-					{
-						filtre.NiveauDeGris();
-					}
-				}
-				bitmap = filtre.GetBitmap(true);
-			}
-		
-			convertedFrameBuffer_data = bitmap->GetPtBitmap();
-			out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
-			finalConvert = false;
-		}
-	}
-
-	if (finalConvert)
-	{
-		if (openCLEngine == nullptr)
-		{
-			out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
-		}
-		else
-		{
-			openclEffectYUV->FlipVertical();
-			bitmap = openclEffectYUV->GetRgbaBitmap(true);
-			convertedFrameBuffer_data = bitmap->GetPtBitmap();
-			out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
-		}
-	}
-	return out;
-}
-
-int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned int stream_index, const int &isvideo)
+int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned int stream_index)
 {
 	StreamContext *stream = &stream_ctx[stream_index];
 	int ret;
@@ -1738,6 +1494,58 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 }
 
 
+int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream)
+{
+	int ret = 0;
+
+	AVFrame * sw_frame = av_frame_alloc();
+	if (sw_frame == nullptr) {
+		fprintf(stderr, "Can not alloc frame\n");
+		ret = AVERROR(ENOMEM);
+		av_frame_free(&sw_frame);
+		return ret;
+	}
+
+	/* retrieve data from GPU to CPU */
+	if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
+		fprintf(stderr, "Error transferring the data to system memory\n");
+		av_frame_free(&sw_frame);
+		return ret;
+	}
+
+	if (first)
+	{
+		av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+		av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+		av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+		av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+		av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(scaleContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+
+		first = false;
+		dst->format = AV_PIX_FMT_YUV420P;
+		dst->width = stream->dec_frame->width;
+		dst->height = stream->dec_frame->height;
+		int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+	}
+	av_frame_copy_props(dst, stream->dec_frame);
+
+	sws_scale(scaleContext,
+		(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
+		dst->data, dst->linesize);
+
+	tmp_frame = dst;
+	av_frame_free(&sw_frame);
+
+	return ret;
+}
 
 int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo)
 {
@@ -1776,13 +1584,11 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 		}
 
 		filter->filtered_frame->pict_type = AV_PICTURE_TYPE_NONE;
-		ret = encode_write_frame(filter->filtered_frame, stream_index, isvideo);
+		ret = encode_write_frame(filter->filtered_frame, stream_index);
 		av_frame_unref(filter->filtered_frame);
 		if (ret < 0)
 			break;
 	}
-
-
 
 	return ret;
 }
@@ -1818,19 +1624,9 @@ void CFFmpegTranscodingPimpl::SetFrameData(AVFrame * src_frame, CompressVideo * 
 
 	if (createFrame)
 	{
-		if (bitmap == nullptr)
-		{
-			muFrame.lock();
-			CopyFrame(src_frame);
-			muFrame.unlock();
-		}
-		else
-		{
-			if (bitmapCopy == nullptr)
-				bitmapCopy = new CRegardsBitmap();
-			*bitmapCopy = *bitmap;
-		}
-
+		muFrame.lock();
+		CopyFrame(src_frame);
+		muFrame.unlock();
 		bitmapShow = new thread(DisplayPreview, this);
 	}
 
@@ -1846,7 +1642,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 			AV_CODEC_CAP_DELAY))
 			return 0;
 
-		return encode_write_frame(NULL, stream_index, 0);
+		return encode_write_frame(NULL, stream_index);
 	}
 	return 0;
 }
@@ -1860,84 +1656,6 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 		return ret;
 	ret = init_filters();
 
-	return ret;
-}
-
-int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream)
-{
-	int ret = 0;
-	   
-	AVFrame * sw_frame = av_frame_alloc();
-	if (sw_frame == nullptr) {
-		fprintf(stderr, "Can not alloc frame\n");
-		ret = AVERROR(ENOMEM);
-		av_frame_free(&sw_frame);
-		return ret;
-	}
-
-	/* retrieve data from GPU to CPU */
-	if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) {
-		fprintf(stderr, "Error transferring the data to system memory\n");
-		av_frame_free(&sw_frame);
-		return ret;
-	}
-
-	if (openCLEngine != nullptr)
-	{
-		int ysize = 0;
-		int uvsize = 0;
-
-		ysize = sw_frame->linesize[0] * sw_frame->height;
-		uvsize = sw_frame->linesize[1] * (sw_frame->height / 2);
-		openclEffectYUV->SetMemoryDataNV12(sw_frame->data[0], ysize, sw_frame->data[1], uvsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
-
-		if (first)
-		{
-			dst->format = AV_PIX_FMT_YUV420P;
-			dst->width = stream->dec_frame->width;
-			dst->height = stream->dec_frame->height;
-			int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
-			first = false;
-		}
-
-		av_frame_copy_props(dst, stream->dec_frame);
-
-		tmp_frame = dst;
-		av_frame_free(&sw_frame);
-	}
-	else
-	{
-		if (first)
-		{
-			av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-			av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-			av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-			av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-			av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-			{
-				sws_freeContext(scaleContext);
-				throw std::logic_error("Failed to initialise scale context");
-			}
-
-			first = false;
-			dst->format = AV_PIX_FMT_YUV420P;
-			dst->width = stream->dec_frame->width;
-			dst->height = stream->dec_frame->height;
-			int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
-		}
-		av_frame_copy_props(dst, stream->dec_frame);
-
-		sws_scale(scaleContext,
-			(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
-			dst->data, dst->linesize);
-
-		tmp_frame = dst;
-		av_frame_free(&sw_frame);
-	}
 	return ret;
 }
 
@@ -2041,7 +1759,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                 av_new_packet(pkt, packet.size);
                 av_copy_packet(pkt, &packet);
 
-                StreamContext *stream = &stream_ctx[stream_index];
+                CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
 
                 av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
@@ -2070,18 +1788,16 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     if (acceleratorHardware != "")
                     {
-						if (stream->dec_frame->format == hw_pix_fmt)
-						{
-							hardwareVideoDecoding = true;
+                        if (stream->dec_frame->format == hw_pix_fmt)
+                        {
 							ret = GenerateFrameFromDecoder(first, tmp_frame, stream);
-						}
+
+                        }
                         else
                             tmp_frame = stream->dec_frame;
                     }
                     else
                         tmp_frame = stream->dec_frame;
-
-
 
                     tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
@@ -2139,6 +1855,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     pkt->stream_index);
                 */
 
+
+
                 AVFrame *tmp_frame = NULL;
                 int ret = 0;
 
@@ -2152,11 +1870,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     if (acceleratorHardware != "")
                     {
-						if (stream->dec_frame->format == hw_pix_fmt)
-						{
-							hardwareVideoDecoding = true;
+                        if (stream->dec_frame->format == hw_pix_fmt)
+                        {
 							ret = GenerateFrameFromDecoder(first, tmp_frame, stream);
-						}	
+						}
                         else
                             tmp_frame = stream->dec_frame;
                     }
@@ -2168,23 +1885,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     if (isVideo)
                     {
-						tmp_frame = ApplyFilter(stream->dec_frame);
-						/*
-						if (openCLEngine != nullptr)
-						{
-							if (hardwareVideoDecoding)
-							{
-								int videoFrameOutputWidth = tmp_frame->width;
-								int videoFrameOutputHeight = tmp_frame->height;
-
-								openclEffectYUV->TranscodePicture(videoFrameOutputWidth, videoFrameOutputHeight);
-								CRegardsBitmap * bitmap = openclEffectYUV->GetRgbaBitmap(true);
-								uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
-								tmp_frame = RgbToYuv(convertedFrameBuffer, videoFrameOutputWidth, videoFrameOutputHeight, stream->dec_frame);
-								delete bitmap;
-							}
-						}
-						*/
                         
                         if (first_frame)
                         {
@@ -2209,7 +1909,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     }
 
-					ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
+                    ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
                     if (ret < 0)
                         return ret;
 
@@ -2347,4 +2047,5 @@ void CFFmpegTranscodingPimpl::Release()
         
         ofmt_ctx = nullptr;
 	}
+
 }

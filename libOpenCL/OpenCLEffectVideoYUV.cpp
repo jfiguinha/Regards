@@ -52,6 +52,8 @@ COpenCLEffectVideoYUV::~COpenCLEffectVideoYUV()
 		paramHeight->Release();
 		delete paramHeight;
 	}
+
+
 }
 
 void COpenCLEffectVideoYUV::SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &lineSize)

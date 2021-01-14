@@ -355,6 +355,10 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		videoOptionCompress->startTime = sliderVideoPosition->GetTimeStart();
 		videoOptionCompress->audioDirectCopy = rbAudioDirectCopy->GetSelection();
 		videoOptionCompress->videoDirectCopy = rbVideoDirectCopy->GetSelection();
+
+		if (videoOptionCompress->videoDirectCopy)
+			videoOptionCompress->videoEffectParameter->effectEnable = false;
+
 		int endTime = timeTotal;
 		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->GetTimeStart() != 0) ? sliderVideoPosition->GetTimeEnd() : 0;
 	}
