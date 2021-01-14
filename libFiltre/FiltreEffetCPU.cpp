@@ -1270,6 +1270,24 @@ int CFiltreEffetCPU::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcent
 	return 0;
 }
 
+void CFiltreEffetCPU::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
+{
+	if (bitmap != nullptr)
+	{
+		if (bitmapOut != nullptr && !source)
+		{
+			bitmap->SetFilename(bitmapOut->GetFilename());
+			bitmap->SetBitmap(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+		}
+		else
+		{
+			bitmap->SetFilename(pBitmap->GetFilename());
+			bitmap->SetBitmap(pBitmap->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		}
+	}
+
+}
+
 CRegardsBitmap * CFiltreEffetCPU::GetBitmap(const bool &source)
 {
 	CRegardsBitmap * copy = new CRegardsBitmap();

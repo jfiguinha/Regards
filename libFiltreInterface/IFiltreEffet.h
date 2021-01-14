@@ -68,6 +68,7 @@ public:
 	virtual wxImage GetwxImage() = 0;
 	virtual CRegardsBitmap * GetBitmap(const bool &source) = 0;
 	virtual CRegardsBitmap * GetPtBitmap() = 0;
+	virtual void GetBitmap(CRegardsBitmap * & bitmap, const bool &source) = 0;
     virtual CRegardsFloatBitmap * GetFloatBitmap(const bool &source) = 0;
 	virtual int RedEye() = 0;
     virtual void SetBitmap(CImageLoadingFormat * bitmap) = 0;

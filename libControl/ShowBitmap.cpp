@@ -514,7 +514,6 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	return false;
 }
 
-
 CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
 {
 	if (bitmapWindow != nullptr)

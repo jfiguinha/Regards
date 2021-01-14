@@ -23,6 +23,7 @@ public:
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
     CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 	CRegardsBitmap * GetBitmap(const bool &source);
+	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 	CRegardsBitmap * GetPtBitmap();
 	wxImage GetwxImage();
 	int WaveFilter(int x, int y, short height, int scale, int radius);

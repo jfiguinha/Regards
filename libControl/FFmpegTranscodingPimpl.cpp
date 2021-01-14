@@ -199,35 +199,43 @@ static wxString ConvertSecondToTime(int sec)
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 {
+	CffmpegToBitmap * ffmpegToBitmap = nullptr;
 	CFFmpegTranscodingPimpl * ffmpeg_trans = (CFFmpegTranscodingPimpl *)data;
 	if (ffmpeg_trans != nullptr)
 	{
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+		if (ffmpeg_trans->bitmap == nullptr)
+		{
 
-		CffmpegToBitmap * ffmpegToBitmap = new CffmpegToBitmap(true);
-		bool deleteData = false;
+			ffmpegToBitmap = new CffmpegToBitmap(true);
+			bool deleteData = false;
 
-		ffmpeg_trans->muFrame.lock();
+			ffmpeg_trans->muFrame.lock();
 
-		int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
-		int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
-		ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
-		if (ffmpeg_trans->bitmapVideo == nullptr)
-			ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+			int widthVideo = ffmpeg_trans->copyFrameBuffer->width;
+			int heightVideo = ffmpeg_trans->copyFrameBuffer->height;
+			ffmpegToBitmap->InitContext(ffmpeg_trans->copyFrameBuffer, 0, widthVideo, heightVideo);
+			if (ffmpeg_trans->bitmapVideo == nullptr)
+				ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+			else
+			{
+				if (ffmpegToBitmap->GetConvert(ffmpeg_trans->bitmapVideo, ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo) == 0)
+				{
+					delete ffmpeg_trans->bitmapVideo;
+					ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
+				}
+			}
+			if (ffmpeg_trans->copyFrameBuffer != nullptr)
+				av_frame_free(&ffmpeg_trans->copyFrameBuffer);
+			ffmpeg_trans->copyFrameBuffer = nullptr;
+			ffmpeg_trans->muFrame.unlock();
+			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
+		}
 		else
 		{
-			if (ffmpegToBitmap->GetConvert(ffmpeg_trans->bitmapVideo, ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo) == 0)
-			{
-				delete ffmpeg_trans->bitmapVideo;
-				ffmpeg_trans->bitmapVideo = ffmpegToBitmap->GetConvert(ffmpeg_trans->copyFrameBuffer, widthVideo, heightVideo);
-			}
+			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapCopy);
 		}
-		if (ffmpeg_trans->copyFrameBuffer != nullptr)
-			av_frame_free(&ffmpeg_trans->copyFrameBuffer);
-		ffmpeg_trans->copyFrameBuffer = nullptr;
-		ffmpeg_trans->muFrame.unlock();
 
-		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
-		imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
 		ffmpeg_trans->muWriteData.lock();
 
@@ -259,8 +267,12 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		ffmpeg_trans->muWriteData.unlock();
 		delete imageLoadingFormat;
 
-		ffmpegToBitmap->DeleteData();
-		delete ffmpegToBitmap;
+		if (ffmpegToBitmap != nullptr)
+		{
+			ffmpegToBitmap->DeleteData();
+			delete ffmpegToBitmap;
+		}
+
 	}
 
 	ffmpeg_trans->muEnding.lock();
@@ -1582,8 +1594,7 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 
 		if (isvideo)
 		{
-			nbframe++;
-			end = std::chrono::steady_clock::now();
+
 			SetFrameData(filter->filtered_frame, m_dlgProgress);
 		}
 
@@ -1628,9 +1639,18 @@ void CFFmpegTranscodingPimpl::SetFrameData(AVFrame * src_frame, CompressVideo * 
 
 	if (createFrame)
 	{
-		muFrame.lock();
-		CopyFrame(src_frame);
-		muFrame.unlock();
+
+		if (bitmap != nullptr)
+		{
+			*bitmapCopy = *bitmap;
+		}
+		else
+		{
+			muFrame.lock();
+			CopyFrame(src_frame);
+			muFrame.unlock();
+		}
+
 		bitmapShow = new thread(DisplayPreview, this);
 	}
 
@@ -1703,12 +1723,15 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 {
 	AVFrame * out = nullptr;
 	bool finalConvert = true;
-	CRegardsBitmap * bitmap = nullptr;
-	CRegardsBitmap * bitmapData = nullptr;
+
 	int videoFrameOutputWidth = sw_frame->width;
 	int videoFrameOutputHeight = sw_frame->height;
 	uint8_t * convertedFrameBuffer_data = nullptr;
-	COpenCLEffectVideoYUV * openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+	if(bitmap == nullptr)
+		bitmap = new CRegardsBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
+
+	nbframe++;
+	end = std::chrono::steady_clock::now();
 
 	if (openCLEngine != nullptr)
 	{
@@ -1810,7 +1833,7 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 						filtre.Noise();
 					}
 				}
-				bitmap = filtre.GetBitmap(true);
+				filtre.GetBitmap(bitmap, true);
 			}
 			else
 			{
@@ -1855,7 +1878,7 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 						filtre.NiveauDeGris();
 					}
 				}
-				bitmap = filtre.GetBitmap(true);
+				filtre.GetBitmap(bitmap, true);
 			}
 
 			convertedFrameBuffer_data = bitmap->GetPtBitmap();
@@ -1881,11 +1904,6 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 
 	//av_frame_free(&sw_frame);
 
-	if (openclEffectYUV != nullptr)
-		delete openclEffectYUV;
-
-	if (bitmap != nullptr)
-		delete bitmap;
 	return out;
 }
 

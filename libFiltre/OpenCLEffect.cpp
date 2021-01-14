@@ -728,6 +728,50 @@ void COpenCLEffect::RefreshMemoryBitmap(CRegardsBitmap * bitmapOut)
 	}
 }
 
+void COpenCLEffect::GetBitmap(CRegardsBitmap * & bitmap, cl_mem input, const int &width, const int &height)
+{
+	if (input != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * valueInput = new COpenCLParameterClMem();
+			valueInput->SetValue(input);
+			valueInput->SetNoDelete(true);
+			vecParam.push_back(valueInput);
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(bitmap->GetBitmapWidth());
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(bitmap->GetBitmapHeight());
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, bitmap);
+			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
+
+			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+}
 
 CRegardsBitmap * COpenCLEffect::GetBitmap(cl_mem input, const int &width, const int &height)
 {
@@ -868,6 +912,50 @@ CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
 		}
 	}
 	return bitmapOut;
+}
+
+void COpenCLEffect::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
+{
+	if (bitmap == nullptr)
+		return;
+
+	if (context->GetDefaultType() == OPENCL_UCHAR)
+	{
+		if (paramOutput != nullptr && !source)
+		{
+			if (context != nullptr)
+			{
+				context->GetOutputData(paramOutput->GetValue(), bitmap->GetPtBitmap(), bitmap->GetBitmapSize(), flag);
+			}
+		}
+		else
+		{
+			if (context != nullptr)
+			{
+				context->GetOutputData(input->GetValue(), bitmap->GetPtBitmap(), bitmap->GetBitmapSize(), flag);
+			}
+		}
+	}
+	else
+	{
+
+		if (paramOutput != nullptr && !source)
+		{
+			if (context != nullptr)
+			{
+				GetBitmap(bitmap, paramOutput->GetValue(), widthOut, heightOut);
+			}
+		}
+		else
+		{
+			if (context != nullptr)
+			{
+				GetBitmap(bitmap, input->GetValue(), width, height);
+			}
+		}
+	}
+	if (bitmap != nullptr)
+		bitmap->SetFilename(filename);
 }
 
 CRegardsBitmap * COpenCLEffect::GetBitmap(const bool &source)

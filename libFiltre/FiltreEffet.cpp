@@ -248,6 +248,11 @@ CRegardsBitmap * CFiltreEffet::GetBitmap(const bool &source)
 	return filtreEffet->GetBitmap(source);
 }
 
+void CFiltreEffet::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
+{
+	filtreEffet->GetBitmap(bitmap, source);
+}
+
  CRegardsFloatBitmap * CFiltreEffet::GetFloatBitmap(const bool &source)
  {
      return filtreEffet->GetFloatBitmap(source);

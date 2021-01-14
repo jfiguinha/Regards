@@ -19,6 +19,7 @@ extern "C"
 #include <OpenCLEngine.h>
 #include <EffectVideoParameter.h>
 #include <OpenCLParameter.h>
+#include <RegardsBitmap.h>
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
@@ -52,7 +53,8 @@ public:
 		packet.data = NULL;
 		packet.size = 0;
 		this->acceleratorHardware = acceleratorHardware;
-
+		bitmapCopy = new CRegardsBitmap();
+		bitmap = nullptr;// new CRegardsBitmap();
 		int supportOpenCL = 0;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -66,8 +68,8 @@ public:
 				if (openCLEngine != nullptr)
 					openclContext = openCLEngine->GetInstance();
 
-				//if(openclContext != nullptr)
-				//	openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+				if(openclContext != nullptr)
+					openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 
 			}
 
@@ -107,6 +109,17 @@ public:
 
 		if (localContext != nullptr)
 			sws_freeContext(localContext);
+
+
+		if (openclEffectYUV != nullptr)
+			delete openclEffectYUV;
+
+		if (bitmap != nullptr)
+			delete bitmap;
+
+
+		if (bitmapCopy != nullptr)
+			delete bitmapCopy;
 	};
 
 	static void DisplayPreview(void * data);
@@ -186,4 +199,8 @@ private:
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
+	CRegardsBitmap * bitmap = nullptr;
+	CRegardsBitmap * bitmapCopy = nullptr;
+	CRegardsBitmap * bitmapData = nullptr;
+	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
 };

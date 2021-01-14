@@ -113,6 +113,7 @@ namespace Regards
 			CRegardsBitmap* GetBitmap(const bool& source);
 			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
 			CRegardsBitmap * GetPtBitmap();
+			void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 			virtual int GetWidth();
 			virtual int GetHeight();
 
@@ -131,7 +132,7 @@ namespace Regards
 
 			CRegardsFloatBitmap* GetFloatBitmap(cl_mem input, const int& width, const int& height);
 			CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
-
+			void GetBitmap(CRegardsBitmap * & bitmap, cl_mem input, const int &width, const int &height);
 			//Bitmap Memory Buffer
 			bool dataIsOk ;
 			COpenCLParameter * input;
