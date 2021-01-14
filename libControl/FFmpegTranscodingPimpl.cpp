@@ -1697,8 +1697,7 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 #define SCALEBITS            8
 #define ONE_HALF             (1 << (SCALEBITS - 1))
 #define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
-typedef unsigned char        uint8_t;
-void rgba_to_yuv420p(uint8_t *lum, uint8_t *cb, uint8_t *cr, uint8_t *src, int width, int height)
+static inline void rgba_to_yuv420p(uint8_t *lum, uint8_t *cb, uint8_t *cr, uint8_t *src, int width, int height)
 {
 	//int wrap, wrap3, x, y;
 	//int r, g, b, r1, g1, b1;
@@ -1839,6 +1838,27 @@ AVFrame * CFFmpegTranscodingPimpl::RgbToYuv(uint8_t * convertedFrameBuffer, int 
 	return dst_hardware;
 }
 
+AVFrame * CFFmpegTranscodingPimpl::RgbToYuv(int width, int height, AVFrame * dec_frame, CFiltreEffet * filtre)
+{
+	if (!yuvDecodeInit)
+	{	
+		dst_hardware = av_frame_alloc();
+		dst_hardware->format = AV_PIX_FMT_YUV420P;
+		dst_hardware->width = dec_frame->width;
+		dst_hardware->height = dec_frame->height;
+		int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, dst_hardware->width, dst_hardware->height, AV_PIX_FMT_YUV420P, 1);
+		yuvDecodeInit = true;
+	}
+
+	av_frame_copy_props(dst_hardware, dec_frame);
+	const int in_linesize[1] = { 4 * width };// RGB stride
+	if(filtre != nullptr)
+		filtre->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], width, height);
+	else
+		openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], width, height);
+	return dst_hardware;
+}
+
 AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 {
 	AVFrame * out = nullptr;
@@ -1847,7 +1867,7 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 	int videoFrameOutputWidth = sw_frame->width;
 	int videoFrameOutputHeight = sw_frame->height;
 	uint8_t * convertedFrameBuffer_data = nullptr;
-	if(bitmap == nullptr)
+	if (bitmap == nullptr)
 		bitmap = new CRegardsBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
 
 	if (openCLEngine != nullptr)
@@ -1964,6 +1984,8 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 						filtre.Noise();
 					}
 				}
+				out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, &filtre);
+				finalConvert = false;
 				filtre.GetBitmap(bitmap, true);
 			}
 			else
@@ -2010,11 +2032,12 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 					}
 				}
 				filtre.GetBitmap(bitmap, true);
+				convertedFrameBuffer_data = bitmap->GetPtBitmap();
+				out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
+				finalConvert = false;
 			}
 
-			convertedFrameBuffer_data = bitmap->GetPtBitmap();
-			out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
-			finalConvert = false;
+
 		}
 	}
 
@@ -2027,9 +2050,13 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 		else
 		{
 			openclEffectYUV->FlipVertical();
+			//bitmap = openclEffectYUV->GetRgbaBitmap(true);
+			//convertedFrameBuffer_data = bitmap->GetPtBitmap();
+			//out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
+			out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, nullptr);
+			if (bitmap != nullptr)
+				delete bitmap;
 			bitmap = openclEffectYUV->GetRgbaBitmap(true);
-			convertedFrameBuffer_data = bitmap->GetPtBitmap();
-			out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
 		}
 	}
 

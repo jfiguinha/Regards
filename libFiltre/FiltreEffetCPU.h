@@ -12,6 +12,7 @@ public:
 	int HistogramLog();
 	int HistogramNormalize();
 	int HistogramEqualize();
+	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
 	int HQDn3D(Chqdn3d * filtre);
 	int ClaheFilter(int nBins, float clipLevel, int windowSize);

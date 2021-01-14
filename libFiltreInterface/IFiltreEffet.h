@@ -19,6 +19,7 @@ public:
 	{
 		this->preview = preview;
 	}
+	virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut) = 0;
     virtual int Bm3d(const int & fSigma) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle) = 0;

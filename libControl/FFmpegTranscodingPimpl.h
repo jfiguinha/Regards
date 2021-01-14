@@ -23,6 +23,7 @@ extern "C"
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
+class CFiltreEffet;
 
 class CFFmpegTranscodingPimpl
 {
@@ -138,7 +139,7 @@ private:
 
 	AVFrame * RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame);
 	AVFrame * ApplyFilter(AVFrame * sw_frame);
-
+	AVFrame * RgbToYuv(int width, int height, AVFrame * dec_frame, CFiltreEffet * filtre);
 	int ProcessEncodeFile(AVFrame * dst);
 	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream,const bool & decodeOpenCL = false);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
@@ -204,4 +205,5 @@ private:
 	CRegardsBitmap * bitmapData = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
 	bool hardwareDecode = false;
+	bool yuvDecodeInit = false;
 };

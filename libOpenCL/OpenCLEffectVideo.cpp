@@ -90,6 +90,7 @@ int COpenCLEffectVideo::GetSrcHeight()
 }
 
 
+
 void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 {
 	if (paramOutWidth != nullptr && paramOutHeight != nullptr && paramOutput != nullptr)
@@ -443,6 +444,120 @@ CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 
 	return bitmap;
 
+}
+
+
+void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut)
+{
+	int middleWidth = widthOut / 2;
+	int middleHeight = heightOut / 2;
+
+	COpenCLParameterByteArray *	inputY = new COpenCLParameterByteArray();
+	inputY->SetLibelle("inputY");
+	inputY->SetNoDelete(true);
+	inputY->SetValue(context->GetContext(), y, widthOut * heightOut, flag);
+
+	COpenCLParameterByteArray *	inputU = new COpenCLParameterByteArray();
+	inputU->SetLibelle("inputU");
+	inputU->SetNoDelete(true);
+	inputU->SetValue(context->GetContext(), u, middleWidth * middleHeight, flag);
+	
+	COpenCLParameterByteArray *	inputV = new COpenCLParameterByteArray();
+	inputV->SetNoDelete(true);
+	inputV->SetLibelle("inputV");
+	inputV->SetValue(context->GetContext(), v, middleWidth * middleHeight, flag);
+
+	COpenCLParameterInt *	paramWidth = new COpenCLParameterInt();
+	paramWidth->SetNoDelete(true);
+	paramWidth->SetLibelle("widthIn");
+	paramWidth->SetValue(widthOut);
+
+	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+	paramHeight->SetNoDelete(true);
+	paramHeight->SetLibelle("heightIn");
+	paramHeight->SetValue(heightOut);
+
+	paramSrc->SetNoDelete(true);
+
+	if (context != nullptr)
+	{
+		COpenCLProgram * programCL = nullptr;
+
+		programCL = GetProgram("IDR_OPENCL_CONVERTTOY");
+
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			vecParam.push_back(inputY);
+			vecParam.push_back(inputU);
+			vecParam.push_back(inputV);
+			vecParam.push_back(paramSrc);
+			vecParam.push_back(paramWidth);
+			vecParam.push_back(paramHeight);
+
+			//program->SetParameter(&vecParam, middleWidth, middleHeight, middleWidth * middleHeight * GetSizeData());
+			//program->SetKeepOutput(true);
+			program->ExecuteProgram2D(programCL->GetProgram(), "RgbaToYUV420P", &vecParam, middleWidth, middleHeight);
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+
+			cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueReadBuffer(context->GetCommandQueue(), inputU->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, u, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueReadBuffer(context->GetCommandQueue(), inputV->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, v, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+		}
+	}
+	if (inputY != nullptr)
+	{
+		inputY->Release();
+		delete inputY;
+	}
+
+	if (inputU != nullptr)
+	{
+		inputU->Release();
+		delete inputU;
+	}
+
+	if (inputV != nullptr)
+	{
+		inputV->Release();
+		delete inputV;
+	}
+
+	if (paramWidth != nullptr)
+	{
+		paramWidth->Release();
+		delete paramWidth;
+	}
+
+	if (paramHeight != nullptr)
+	{
+		paramHeight->Release();
+		delete paramHeight;
+	}
 }
 
 int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height)

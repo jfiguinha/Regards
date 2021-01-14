@@ -1234,6 +1234,7 @@ cl_mem COpenCLFilter::Noise(cl_mem inputData, int width, int height)
 
 }
 
+
 cl_mem COpenCLFilter::Flip(const wxString &functionName, cl_mem inputData, int width, int height)
 {
 	cl_mem outputValue = nullptr;

@@ -3,6 +3,7 @@
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
+#include "utility.h"
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)
@@ -90,6 +91,7 @@ void COpenCLEffectVideoYUV::SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint
 	isOk = true;
 	formatData = 1;
 }
+
 
 void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferU, int sizeU, uint8_t * bufferV, int sizeV, const int &width, const int &height, const int &lineSize)
 {

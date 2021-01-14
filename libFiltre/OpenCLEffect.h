@@ -116,7 +116,7 @@ namespace Regards
 			void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 			virtual int GetWidth();
 			virtual int GetHeight();
-
+			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			int BrightnessAndContrastAuto(float clipHistPercent) { return  -1; }
 
 		protected:
