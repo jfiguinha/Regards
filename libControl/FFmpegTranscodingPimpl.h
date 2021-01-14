@@ -12,7 +12,14 @@ extern "C"
 	#include <libswscale/swscale.h>
 	#include <libavutil/timestamp.h>
 }
-
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
+#include <OpenCLContext.h>
+#include <OpenCLEffectVideoYUV.h>
+#include <OpenCLEngine.h>
+#include <EffectVideoParameter.h>
+#include <OpenCLParameter.h>
+using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
 
@@ -46,6 +53,26 @@ public:
 		packet.size = 0;
 		this->acceleratorHardware = acceleratorHardware;
 
+		int supportOpenCL = 0;
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			supportOpenCL = config->GetIsOpenCLSupport();
+
+		if (supportOpenCL)
+		{
+			if (openCLEngine == nullptr)
+			{
+				openCLEngine = new COpenCLEngine(true);
+				if (openCLEngine != nullptr)
+					openclContext = openCLEngine->GetInstance();
+
+				//if(openclContext != nullptr)
+				//	openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+
+			}
+
+		}
+
 	};
 	~CFFmpegTranscodingPimpl()
 	{
@@ -69,8 +96,17 @@ public:
 		if (dst != nullptr)
 			av_frame_free(&dst);
 
+		if (dst_hardware != nullptr)
+			av_frame_free(&dst_hardware);
+
 		if (scaleContext != nullptr)
 			sws_freeContext(scaleContext);
+
+		if(filterContext != nullptr)
+			sws_freeContext(filterContext);
+
+		if (localContext != nullptr)
+			sws_freeContext(localContext);
 	};
 
 	static void DisplayPreview(void * data);
@@ -86,6 +122,9 @@ public:
 
 
 private:
+
+	AVFrame * RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame);
+	AVFrame * ApplyFilter(AVFrame * sw_frame);
 
 	int ProcessEncodeFile(AVFrame * dst);
 	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream);
@@ -116,6 +155,8 @@ private:
 	AVPacket packet;
 	bool cleanPacket = false;
 
+	COpenCLEngine * openCLEngine = nullptr;
+	COpenCLContext * openclContext = nullptr;
 	CRegardsBitmap * bitmapVideo = nullptr;
 	std::thread * bitmapShow = nullptr;
 	CompressVideo * m_dlgProgress;
@@ -138,7 +179,10 @@ private:
 	wxString acceleratorHardware = "dxva2";
 	double duration_movie = 0.0;
 	AVFrame * dst = nullptr;
+	AVFrame * dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
+	SwsContext* filterContext = nullptr;
+	SwsContext* localContext = nullptr;
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
