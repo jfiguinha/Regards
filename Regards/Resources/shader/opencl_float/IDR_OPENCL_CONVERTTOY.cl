@@ -121,3 +121,45 @@ __kernel void InsertBlockSize(__global float * yPicture, const __global float * 
 		yPicture[posLocal] = wiener[position];
 	}
 }
+
+
+#define SCALEBITS            8
+#define ONE_HALF             (1 << (SCALEBITS - 1))
+#define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
+__kernel void RgbaToYUV420P(__global uchar * lum,__global uchar * cb, __global uchar * cr, const __global float * src, int width, int height)
+{
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+
+	int height_middle = height / 2;
+	int width_middle = width / 2;
+	float r1 = 0;
+	float g1 = 0;
+	float b1 = 0;
+	int cr_position = x + y * width_middle;
+	int lum_position = (x * 2) + (y * 2) * width;
+	int position = (x * 2) * 4 + (y * 2) * width * 4;
+	for (int i = 0; i < 2; i++)
+	{
+		float r = src[position + 2] * 255.0f;
+		float g = src[position + 1] * 255.0f;
+		float b = src[position + 0] * 255.0f;
+		r1 += r;
+		g1 += g;
+		b1 += b;
+		lum[lum_position] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+		r = src[position + 6] * 255.0f;
+		g = src[position + 5] * 255.0f;
+		b = src[position + 4] * 255.0f;
+		r1 += r;
+		g1 += g;
+		b1 += b;
+		lum[lum_position + 1] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+
+		position += width * 4;
+		lum_position += width;
+	}
+
+	cb[cr_position] = ((((int)(-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
+	cr[cr_position] = ((((int)(FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
+}

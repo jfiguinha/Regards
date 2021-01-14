@@ -1510,7 +1510,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 }
 
 
-int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream)
+int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream, const bool & decodeOpenCL)
 {
 	int ret = 0;
 
@@ -1529,36 +1529,47 @@ int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & 
 		return ret;
 	}
 
-	if (first)
+	if (openCLEngine != nullptr && decodeOpenCL && videoCompressOption->videoEffectParameter->effectEnable)
 	{
-		av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-		av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-		av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-		av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-		av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-		{
-			sws_freeContext(scaleContext);
-			throw std::logic_error("Failed to initialise scale context");
-		}
-
-		first = false;
-		dst->format = AV_PIX_FMT_YUV420P;
-		dst->width = stream->dec_frame->width;
-		dst->height = stream->dec_frame->height;
-		int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+		hardwareDecode = true;
+		tmp_frame = ApplyFilter(sw_frame);
+		av_frame_copy_props(tmp_frame, stream->dec_frame);
+		av_frame_free(&sw_frame);;
 	}
-	av_frame_copy_props(dst, stream->dec_frame);
+	else
+	{
+		if (first)
+		{
+			av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+			av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+			av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+			av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
+			av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
+			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
-	sws_scale(scaleContext,
-		(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
-		dst->data, dst->linesize);
+			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+			{
+				sws_freeContext(scaleContext);
+				throw std::logic_error("Failed to initialise scale context");
+			}
 
-	tmp_frame = dst;
-	av_frame_free(&sw_frame);
+			first = false;
+			dst->format = AV_PIX_FMT_YUV420P;
+			dst->width = stream->dec_frame->width;
+			dst->height = stream->dec_frame->height;
+			int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+		}
+		av_frame_copy_props(dst, stream->dec_frame);
+
+		sws_scale(scaleContext,
+			(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
+			dst->data, dst->linesize);
+
+		tmp_frame = dst;
+		av_frame_free(&sw_frame);
+	}
+
 
 	return ret;
 }
@@ -1683,6 +1694,113 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 	return ret;
 }
 
+#define SCALEBITS            8
+#define ONE_HALF             (1 << (SCALEBITS - 1))
+#define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
+typedef unsigned char        uint8_t;
+void rgba_to_yuv420p(uint8_t *lum, uint8_t *cb, uint8_t *cr, uint8_t *src, int width, int height)
+{
+	//int wrap, wrap3, x, y;
+	//int r, g, b, r1, g1, b1;
+	//uint8_t *p;
+	//wrap = width;
+	//wrap3 = width * 4;
+	//p = src;
+
+	int height_middle = height / 2;
+	int width_middle = width / 2;
+
+	for (int y = 0; y < height_middle; y++)
+	{
+		for (int x = 0; x < width_middle; x++)
+		{
+			int r1 = 0;
+			int g1 = 0;
+			int b1 = 0;
+			int cr_position = x + y * width_middle;
+			int lum_position = (x * 2) + (y * 2) * width;
+			int position = (x * 2) * 4 + (y * 2) * width * 4;
+			for (int i = 0; i < 2; i++)
+			{
+				int r = src[position + 2];
+				int g = src[position + 1];
+				int b = src[position + 0];
+				r1 += r;
+				g1 += g;
+				b1 += b;
+				lum[lum_position] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+				r = src[position + 6];
+				g = src[position + 5];
+				b = src[position + 4];
+				r1 += r;
+				g1 += g;
+				b1 += b;
+				lum[lum_position + 1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+
+				position += width * 4;
+				lum_position += width;
+			}
+
+			cb[cr_position] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cr[cr_position] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+		}
+	}
+/*
+	int wrap, wrap3, x, y;
+	int r, g, b, r1, g1, b1;
+	uint8_t *p;
+	wrap = width;
+	wrap3 = width * 4;
+	p = src;
+	for (y = 0; y < height; y += 2)
+	{
+		for (x = 0; x < width; x += 2)
+		{
+			r = p[2];
+			g = p[1];
+			b = p[0];
+			r1 = r;
+			g1 = g;
+			b1 = b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			p += wrap3;
+			lum += wrap;
+			r = p[2];
+			g = p[1];
+			b = p[0];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+
+			cb[0] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 +
+				FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cr[0] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
+				FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cb++;
+			cr++;
+			p += -wrap3 + 2 * 4;
+			lum += -wrap + 2;
+		}
+		p += wrap3;
+		lum += wrap;
+	}
+*/
+}
 
 AVFrame * CFFmpegTranscodingPimpl::RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame)
 {
@@ -1715,7 +1833,9 @@ AVFrame * CFFmpegTranscodingPimpl::RgbToYuv(uint8_t * convertedFrameBuffer, int 
 
 	av_frame_copy_props(dst_hardware, dec_frame);
 	const int in_linesize[1] = { 4 * width };// RGB stride
-	sws_scale(filterContext, (const uint8_t * const *)&convertedFrameBuffer, in_linesize, 0, height, dst_hardware->data, dst_hardware->linesize);
+
+	rgba_to_yuv420p(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], convertedFrameBuffer, width, height);
+	//sws_scale(filterContext, (const uint8_t * const *)&convertedFrameBuffer, in_linesize, 0, height, dst_hardware->data, dst_hardware->linesize);
 	return dst_hardware;
 }
 
@@ -1730,19 +1850,30 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 	if(bitmap == nullptr)
 		bitmap = new CRegardsBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
 
-	nbframe++;
-	end = std::chrono::steady_clock::now();
-
 	if (openCLEngine != nullptr)
 	{
-		int ysize = 0;
-		int usize = 0;
-		int vsize = 0;
+		if (hardwareDecode)
+		{
+			int ysize = 0;
+			int uvsize = 0;
 
-		ysize = sw_frame->linesize[0] * sw_frame->height;
-		usize = sw_frame->linesize[1] * (sw_frame->height / 2);
-		vsize = sw_frame->linesize[2] * (sw_frame->height / 2);
-		openclEffectYUV->SetMemoryData(sw_frame->data[0], ysize, sw_frame->data[1], usize, sw_frame->data[2], vsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
+			ysize = sw_frame->linesize[0] * sw_frame->height;
+			uvsize = sw_frame->linesize[1] * (sw_frame->height / 2);
+			openclEffectYUV->SetMemoryDataNV12(sw_frame->data[0], ysize, sw_frame->data[1], uvsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
+
+		}
+		else
+		{
+			int ysize = 0;
+			int usize = 0;
+			int vsize = 0;
+
+			ysize = sw_frame->linesize[0] * sw_frame->height;
+			usize = sw_frame->linesize[1] * (sw_frame->height / 2);
+			vsize = sw_frame->linesize[2] * (sw_frame->height / 2);
+			openclEffectYUV->SetMemoryData(sw_frame->data[0], ysize, sw_frame->data[1], usize, sw_frame->data[2], vsize, sw_frame->width, sw_frame->height, sw_frame->linesize[0]);
+
+		}
 
 		openclEffectYUV->TranscodePicture(videoFrameOutputWidth, videoFrameOutputHeight);
 
@@ -2120,7 +2251,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     {
                         if (stream->dec_frame->format == hw_pix_fmt)
                         {
-							ret = GenerateFrameFromDecoder(first, tmp_frame, stream);
+							ret = GenerateFrameFromDecoder(first, tmp_frame, stream, true);
 						}
                         else
                             tmp_frame = stream->dec_frame;
@@ -2133,7 +2264,11 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     if (isVideo)
                     {
-						tmp_frame = ApplyFilter(tmp_frame);
+						if(!hardwareDecode && videoCompressOption->videoEffectParameter->effectEnable)
+							tmp_frame = ApplyFilter(tmp_frame);
+						
+						nbframe++;
+						end = std::chrono::steady_clock::now();
                         
                         if (first_frame)
                         {

@@ -140,7 +140,7 @@ private:
 	AVFrame * ApplyFilter(AVFrame * sw_frame);
 
 	int ProcessEncodeFile(AVFrame * dst);
-	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream);
+	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream,const bool & decodeOpenCL = false);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
 	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx);
@@ -203,4 +203,5 @@ private:
 	CRegardsBitmap * bitmapCopy = nullptr;
 	CRegardsBitmap * bitmapData = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
+	bool hardwareDecode = false;
 };
