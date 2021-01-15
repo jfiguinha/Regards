@@ -113,6 +113,7 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
 			COpenCLFilter openclFilter(openclContext);
 			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
+			//data_mem->SetNoDelete(true);
 			if (openCLEngine != nullptr)
 			{
 				cl_mem output = openclFilter.Flip("FlipVertical", data_mem->GetValue(), videoFrameOutputWidth, videoFrameOutputHeight);
@@ -565,7 +566,7 @@ void CFFmpegDecodeFrameFilter::GenerateBitmapFromFrame(AVFrame * sw_frame)
 	sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
 		&convertedFrameBuffer, &linesize);
 
-	bitmap->VertFlipBuf();
+	//bitmap->VertFlipBuf();
 }
 
 int CFFmpegDecodeFrameFilter::GenerateFrameFromDecoder(CVideoEffectParameter * videoEffectParameter, bool & first, StreamContext *stream, const bool & decodeOpenCL)
@@ -733,6 +734,7 @@ CRegardsBitmap * CFFmpegDecodeFrameFilter::GetBitmap()
 {
 	CRegardsBitmap * copyPicture = new CRegardsBitmap();
 	*copyPicture = *bitmap;
+	copyPicture->VertFlipBuf();
 	return copyPicture;
 }
 
