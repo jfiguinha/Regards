@@ -17,11 +17,11 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
-	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
+	//btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
+	//btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnOKClick);
-	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnCancelClick);
+	//Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnOKClick);
+	//Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnCancelClick);
 
 	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -44,7 +44,7 @@ void CPreviewDlg::OnSize(wxSizeEvent& event)
 {
 	showBitmapWindow->SetSize(panel->GetPosition().x, panel->GetPosition().y, panel->GetSize().x, panel->GetSize().y);
 }
-
+/*
 void CPreviewDlg::OnbtnOKClick(wxCommandEvent& event)
 {
 	this->Close();
@@ -54,7 +54,7 @@ void CPreviewDlg::OnbtnCancelClick(wxCommandEvent& event)
 {
 	this->Close();
 }
-
+*/
 CPreviewDlg::~CPreviewDlg()
 {
 	delete(showBitmapWindow);

@@ -421,25 +421,23 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 					sw_frame = stream->dec_frame;
 				}
 
+				videoFrameOutputWidth = sw_frame->width;
+				videoFrameOutputHeight = sw_frame->height;
+				float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
+				if (widthThumbnail != 0 && heightThumbnail != 0)
+				{
+					videoFrameOutputWidth = widthThumbnail;
+					videoFrameOutputHeight = heightThumbnail;
+
+					//Calcul Ratio
+					if (widthThumbnail >= heightThumbnail)
+						videoFrameOutputHeight = (int)((float)widthThumbnail / ratio);
+					else
+						videoFrameOutputWidth = (int)((float)videoFrameOutputHeight * ratio);
+				}
+
 				if (first)
 				{
-					videoFrameOutputWidth = sw_frame->width;
-					videoFrameOutputHeight = sw_frame->height;
-
-					float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
-
-					if (widthThumbnail != 0 && heightThumbnail != 0)
-					{
-						videoFrameOutputWidth = widthThumbnail;
-						videoFrameOutputHeight = heightThumbnail;
-
-						//Calcul Ratio
-						if (widthThumbnail >= heightThumbnail)
-							videoFrameOutputHeight = (int)((float)widthThumbnail / ratio);
-						else
-							videoFrameOutputWidth = (int)((float)videoFrameOutputHeight * ratio);
-					}
-
 					av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
 					av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
 					av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
@@ -453,6 +451,8 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 						sws_freeContext(scaleContext);
 						throw std::logic_error("Failed to initialise scale context");
 					}
+
+					first = false;
 				}
 
 				int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight);

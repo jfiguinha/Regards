@@ -22,8 +22,8 @@ public:
 	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
 	~CPreviewDlg();
 	void UpdatePreview();
-	wxButton* btnCancel;
-	wxButton* btnOK;
+	//wxButton* btnCancel;
+	//wxButton* btnOK;
 	wxStaticBitmap * bitmap;
 	wxPanel * panel;
 protected:
@@ -31,8 +31,8 @@ protected:
 	void OnSize(wxSizeEvent& event);
 	CShowPreview * showBitmapWindow;
 	
-	void OnbtnOKClick(wxCommandEvent& event);
-	void OnbtnCancelClick(wxCommandEvent& event);
+	//void OnbtnOKClick(wxCommandEvent& event);
+	//void OnbtnCancelClick(wxCommandEvent& event);
 
 };
 

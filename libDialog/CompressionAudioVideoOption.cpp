@@ -195,7 +195,7 @@ void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
-	previewDlg->Update();
+	previewDlg->UpdatePreview();
 }
 
 void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
@@ -216,7 +216,7 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
-	previewDlg->Update();
+	previewDlg->UpdatePreview();
 }
 
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
@@ -273,8 +273,9 @@ wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideo
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
 
-
-	bitmap->SetBitmap(CLibPicture::ConvertRegardsBitmapToWXImage(ffmpegTranscoding->GetVideoFrame(pos, 344, 200), true, false));
+	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 344, 200);
+	wxImage picture  = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
+	bitmap->SetBitmap(picture);
 	
 }
 
