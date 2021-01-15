@@ -47,7 +47,7 @@ public:
 	} StreamContext;
 
 
-	CFFmpegTranscodingPimpl(const wxString &acceleratorHardware)
+	CFFmpegTranscodingPimpl(COpenCLEngine * openCLEngine, const wxString &acceleratorHardware)
 	{
 		dst = av_frame_alloc();
 		scaleContext = sws_alloc_context();
@@ -63,11 +63,10 @@ public:
 
 		if (supportOpenCL)
 		{
-			if (openCLEngine == nullptr)
+			this->openCLEngine = openCLEngine;
+			if (openCLEngine != nullptr)
 			{
-				openCLEngine = new COpenCLEngine(true);
-				if (openCLEngine != nullptr)
-					openclContext = openCLEngine->GetInstance();
+				openclContext = openCLEngine->GetInstance();
 
 				if(openclContext != nullptr)
 					openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);

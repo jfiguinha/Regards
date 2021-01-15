@@ -31,7 +31,7 @@ class CVideoControlSoft : public CWindowMain, public CVideoControlInterface
 public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControlSoft();
-
+	COpenCLEngine * GetOpenCLEngine();
 	bool IsPause();
 	void SetVideoDuration(const int64_t & duration, const int64_t & startTime);
 	void SetCurrentclock(wxString message);

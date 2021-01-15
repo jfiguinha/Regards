@@ -123,6 +123,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 }
 
+COpenCLEngine * CVideoControlSoft::GetOpenCLEngine()
+{
+	return openCLEngine;
+}
+
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
     OnStop(filename);

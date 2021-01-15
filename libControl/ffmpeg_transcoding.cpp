@@ -17,9 +17,9 @@ extern "C"
 	#include <libswscale/swscale.h>
 }
 
-CFFmpegTranscoding::CFFmpegTranscoding(const wxString & acceleratorHardware)
+CFFmpegTranscoding::CFFmpegTranscoding(const wxString & acceleratorHardware, COpenCLEngine * openCLEngine)
 {
-	pimpl = new CFFmpegTranscodingPimpl(acceleratorHardware);
+	pimpl = new CFFmpegTranscodingPimpl(openCLEngine, acceleratorHardware);
 }
 
 CFFmpegTranscoding::~CFFmpegTranscoding()

@@ -17,6 +17,7 @@
 #include "CentralWindow.h"
 #include "FileUtility.h"
 #include "CategoryFolderWindow.h"
+#include <VideoControl_soft.h>
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
@@ -262,7 +263,10 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		CompressionAudioVideoOption compressAudioVideoOption(this, filename);
+		CVideoControlSoft * videoWindow = (CVideoControlSoft *)this->FindWindowById(VIDEOCONTROL);
+		COpenCLEngine * openCLEngine = videoWindow->GetOpenCLEngine();
+
+		CompressionAudioVideoOption compressAudioVideoOption(this, filename, openCLEngine);
 		compressAudioVideoOption.ShowModal();
 		if (compressAudioVideoOption.IsOk())
 		{
@@ -278,7 +282,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				{
 					decoder = regardsParam->GetVideoDecoderHardware();
 				}
-				ffmpegEncoder = new CFFmpegTranscoding(decoder);
+				ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
 				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
 				
 			}

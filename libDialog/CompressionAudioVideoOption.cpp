@@ -3,7 +3,7 @@
 #include <window_id.h>
 #include <VideoCompressOption.h>
 #include <ImageLoadingFormat.h>
-#include <videothumb.h>
+#include <FFmpegDecodeFrameFilter.h>
 #include <RegardsBitmap.h>
 #include <wx/filename.h>
 #include <libPicture.h>
@@ -43,7 +43,7 @@ static void GetTimeToHourMinuteSecond(const long &timeToSplit, int &hour, int &m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename)
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine)
 {
     isOk = false;
 	this->videoFilename = videoFilename;
@@ -102,10 +102,16 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 
-	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
+	wxString decoder = "";
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+	}
+	ffmpegTranscoding = new CFFmpegDecodeFrameFilter(openCLEngine, videoFilename, decoder);
 	SetBitmap(0);
 
-	timeTotal = ffmpegTranscoding->GetMovieDuration();
+	timeTotal = ffmpegTranscoding->GetTotalTime();
 	slVideo->SetMax(timeTotal);
 	
 
@@ -151,7 +157,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
 	previewDlg->Show();
 }
-
+/*
 wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter)
 {
 	CRgbaquad color;
@@ -197,7 +203,7 @@ wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideo
 	filtre.FlipVertical();
 	return filtre.GetwxImage();
 }
-
+*/
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
 	CVideoEffectParameter videoEffectParameter;
@@ -219,13 +225,17 @@ void CompressionAudioVideoOption::SetBitmap(const long &pos)
 	int width = 0;
 	int height = 0;
 	int rotation = 0;
-	ffmpegTranscoding->GetVideoDimensions(width, height, rotation);
-	wxImage picture = ApplyFilter(ffmpegTranscoding->GetVideoFrame(pos, 0, 0), &videoEffectParameter);
-	wxImage * copypicture = new wxImage(picture);
-	bitmap->SetBitmap(picture.Rescale(344, 200));
-	
+	//ffmpegTranscoding->GetVideoDimensions(width, height, rotation);
+	//wxImage picture = ApplyFilter(ffmpegTranscoding->GetVideoFrame(pos, 0, 0), &videoEffectParameter);
+	ffmpegTranscoding->GetFrameBitmapPosition(&videoEffectParameter, pos);
+	CRegardsBitmap * picture = ffmpegTranscoding->GetBitmap();
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-	imageLoadingFormat->SetPicture(copypicture);
+	imageLoadingFormat->SetPicture(picture);
+
+	wxImage * copypicture = imageLoadingFormat->GetwxImage();
+	bitmap->SetBitmap(copypicture->Rescale(344, 200));
+	delete copypicture;
+
 	previewDlg->SetBitmap(imageLoadingFormat);
 }
 

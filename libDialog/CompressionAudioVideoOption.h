@@ -9,13 +9,14 @@
 
 #include <wx/timectrl.h>
 #include <wx/dateevt.h>
-
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
 //(*Headers(TiffOption)
 //*)
 class CPreviewDlg;
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-class CThumbnailVideo;
+class CFFmpegDecodeFrameFilter;
 class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
@@ -24,7 +25,7 @@ class CompressionAudioVideoOption: public wxDialog
 {
 	public:
 
-		CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename);
+		CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine);
 		virtual ~CompressionAudioVideoOption();
 		void GetCompressionOption(CVideoOptionCompress * videoOptionCompress);
 
@@ -87,7 +88,7 @@ class CompressionAudioVideoOption: public wxDialog
 
 	private:
 
-		wxImage ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter);
+		//wxImage ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter);
 		wxString ConvertSecondToTime(int64_t sec);
 		//void OnPaint(wxPaintEvent &event);
 		void OnbtnCancelClick(wxCommandEvent& event);
@@ -109,7 +110,7 @@ class CompressionAudioVideoOption: public wxDialog
 		double timeTotal;
         bool isOk;
 		wxString videoFilename;
-		CThumbnailVideo * ffmpegTranscoding;
+		CFFmpegDecodeFrameFilter * ffmpegTranscoding;
 		CPreviewDlg * previewDlg;
 		CSliderVideoSelection * sliderVideoPosition;
 		int ret = 0;
