@@ -244,7 +244,7 @@
 						</object>
 					</object>
 				</object>
-				<object class="notebookpage">
+					<object class="notebookpage">
 					<label>Filter Effect</label>
 					<object class="wxPanel" name="page_4">
 						<object class="wxCheckBox" name="ID_CKENABLEFILTER">
@@ -396,8 +396,8 @@
 						</object>
 					</object>
 				</object>
-			</object>
 				</object>
+			</object>
 			<object class="sizeritem">
 				<flag>wxALIGN_CENTRE|wxALL</flag>
 				<border>5</border>
