@@ -98,6 +98,8 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnbtnCheckAudioQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoQualityClick(wxCommandEvent& event);
 		void OnbtnCheckVideoBitrateClick(wxCommandEvent& event);
+		void OnbtnCheckFilterClick(wxCommandEvent& event);
+		void OnbtnSliderFilterClick(wxScrollEvent& event);
 		void OnSetVideoDuration(wxCommandEvent& event);
 		void OnVideoSliderChange(wxCommandEvent& event);
 

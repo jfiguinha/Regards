@@ -94,6 +94,26 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
 	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
 
+
+	Connect(XRCID("ID_SLDENOISEFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLSHARPENFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLCONTRASTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLLIGHTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLREDBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLGREENBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	
+	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKSHARPENFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKCONTRASTANDLIGHTFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKDCOLORBOOSTFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKGRAYFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKSEPIAFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKNOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKENABLEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+
 	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
 	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
 	Connect(XRCID("ID_CKVIDEOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoQualityClick);
@@ -157,6 +177,48 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 }
 
+void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
+{
+	//CVideoEffectParameter videoEffectParameter;
+	videoEffectParameter->effectEnable = ckenablefilter->GetValue();
+	videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
+	videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
+	videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
+	videoEffectParameter->grayEnable = ckgrey->GetValue();
+	videoEffectParameter->sepiaEnable = cksepia->GetValue();
+	videoEffectParameter->filmgrainenable = cknoise->GetValue();
+	videoEffectParameter->contrast = contrastFilter->GetValue();
+	videoEffectParameter->brightness = lightFilter->GetValue();
+	videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
+	videoEffectParameter->color_boost[0] = redFilter->GetValue();
+	videoEffectParameter->color_boost[1] = greenFilter->GetValue();
+	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
+	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
+	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+	previewDlg->Update();
+}
+
+void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
+{
+	//CVideoEffectParameter videoEffectParameter;
+	videoEffectParameter->effectEnable = ckenablefilter->GetValue();
+	videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
+	videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
+	videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
+	videoEffectParameter->grayEnable = ckgrey->GetValue();
+	videoEffectParameter->sepiaEnable = cksepia->GetValue();
+	videoEffectParameter->filmgrainenable = cknoise->GetValue();
+	videoEffectParameter->contrast = contrastFilter->GetValue();
+	videoEffectParameter->brightness = lightFilter->GetValue();
+	videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
+	videoEffectParameter->color_boost[0] = redFilter->GetValue();
+	videoEffectParameter->color_boost[1] = greenFilter->GetValue();
+	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
+	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
+	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+	previewDlg->Update();
+}
+
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
 	previewDlg->Show();
@@ -210,25 +272,10 @@ wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideo
 */
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
-	//CVideoEffectParameter videoEffectParameter;
-	videoEffectParameter->effectEnable = ckenablefilter->GetValue();
-	videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
-	videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
-	videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
-	videoEffectParameter->grayEnable = ckgrey->GetValue();
-	videoEffectParameter->sepiaEnable = cksepia->GetValue();
-	videoEffectParameter->filmgrainenable = cknoise->GetValue();
-	videoEffectParameter->contrast = contrastFilter->GetValue();
-	videoEffectParameter->brightness = lightFilter->GetValue();
-	videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
-	videoEffectParameter->color_boost[0] = redFilter->GetValue();
-	videoEffectParameter->color_boost[1] = greenFilter->GetValue();
-	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
-	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
-	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+
 
 	bitmap->SetBitmap(CLibPicture::ConvertRegardsBitmapToWXImage(ffmpegTranscoding->GetVideoFrame(pos, 344, 200), true, false));
-	previewDlg->Update();
+	
 }
 
 void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
