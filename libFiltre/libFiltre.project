@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libFiltre" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="video">
+    <File Name="FFmpegDecodeFrameFilter.h"/>
+    <File Name="FFmpegDecodeFrameFilter.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -209,6 +213,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libextern/ffmpeg-master/"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
@@ -225,6 +230,9 @@
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
