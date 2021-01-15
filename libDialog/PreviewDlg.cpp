@@ -4,7 +4,7 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
-#include <ShowBitmap.h>
+#include "ShowPreview.h"
 #include <theme.h>
 #include <wx/xrc/xmlres.h>
 using namespace Regards::Control;
@@ -13,7 +13,7 @@ using namespace Regards::Picture;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-CPreviewDlg::CPreviewDlg(wxWindow* parent)
+CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter)
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
@@ -30,7 +30,7 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent)
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 	
-	showBitmapWindow = new CShowBitmap(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, nullptr, viewerTheme);
+	showBitmapWindow = new CShowPreview(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoEffectParameter);
 	showBitmapWindow->SetSize(bitmap->GetPosition().x, bitmap->GetPosition().y, bitmap->GetSize().x, bitmap->GetSize().y);
 	showBitmapWindow->Show(true);
 	bitmap->Show(false);
@@ -61,19 +61,7 @@ CPreviewDlg::~CPreviewDlg()
 
 }
 
-bool CPreviewDlg::SetBitmap(CImageLoadingFormat * bitmap)
+void CPreviewDlg::UpdatePreview()
 {
-#if defined(WIN32) && defined(_DEBUG)
-	OutputDebugString(L"CPreviewDlg::SetBitmap");
-	OutputDebugString(L"\n");
-	OutputDebugString(bitmap->GetFilename());
-	OutputDebugString(L"\n");
-#endif
-
-	if (bitmap != nullptr && bitmap->IsOk())
-	{
-		showBitmapWindow->SetBitmap(bitmap, false);
-	}
-	return 1;
+	showBitmapWindow->UpdateBitmap();
 }
-

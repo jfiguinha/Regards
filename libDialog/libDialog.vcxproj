@@ -280,8 +280,11 @@
     <ClCompile Include="OpenCLDialog.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="PreviewDlg.cpp" />
+    <ClCompile Include="PreviewToolbar.cpp" />
     <ClCompile Include="SavePicture.cpp" />
     <ClCompile Include="SelectPage.cpp" />
+    <ClCompile Include="ShowPreview.cpp" />
+    <ClCompile Include="SliderVideoPreview.cpp" />
     <ClCompile Include="SliderVideoSelection.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailSelection.cpp" />
@@ -308,8 +311,11 @@
     <ClInclude Include="OpenCLDialog.h" />
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="PreviewDlg.h" />
+    <ClInclude Include="PreviewToolbar.h" />
     <ClInclude Include="SavePicture.h" />
     <ClInclude Include="SelectPage.h" />
+    <ClInclude Include="ShowPreview.h" />
+    <ClInclude Include="SliderVideoPreview.h" />
     <ClInclude Include="SliderVideoSelection.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailSelection.h" />

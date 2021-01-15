@@ -657,52 +657,52 @@ int CFFmpegDecodeFrameFilter::GetFrameBitmapPosition(CVideoEffectParameter * vid
 		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
 			continue;
 
-			CFFmpegDecodeFrameFilter::StreamContext *stream = &stream_ctx[stream_index];
+		CFFmpegDecodeFrameFilter::StreamContext *stream = &stream_ctx[stream_index];
 
-			av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
+		av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-			av_packet_rescale_ts(&packet,
-				ifmt_ctx->streams[stream_index]->time_base,
-				stream->dec_ctx->time_base);
+		av_packet_rescale_ts(&packet,
+			ifmt_ctx->streams[stream_index]->time_base,
+			stream->dec_ctx->time_base);
 
 
-			ret = avcodec_send_packet(stream->dec_ctx, &packet);
-			if (ret < 0) {
-				av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
+		ret = avcodec_send_packet(stream->dec_ctx, &packet);
+		if (ret < 0) {
+			av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
+			return ret;
+		}
+		while (ret >= 0)
+		{
+			ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
+			if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
+				break;
+			else if (ret < 0)
 				return ret;
-			}
-			while (ret >= 0)
-			{
-				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
-				if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
-					break;
-				else if (ret < 0)
-					return ret;
 
-				if (acceleratorHardware != "")
+			if (acceleratorHardware != "")
+			{
+				if (stream->dec_frame->format == hw_pix_fmt)
 				{
-					if (stream->dec_frame->format == hw_pix_fmt)
-					{
-						ret = GenerateFrameFromDecoder(videoEffectParameter, first, stream, true);
-						pictureFind = true;
-					}
+					ret = GenerateFrameFromDecoder(videoEffectParameter, first, stream, true);
+					pictureFind = true;
+				}
 						
+			}
+			else
+			{
+				if (!hardwareDecode && videoEffectParameter->effectEnable)
+				{
+					ApplyFilter(videoEffectParameter, stream->dec_frame);
+					pictureFind = true;
 				}
 				else
 				{
-					if (!hardwareDecode && videoEffectParameter->effectEnable)
-					{
-						ApplyFilter(videoEffectParameter, stream->dec_frame);
-						pictureFind = true;
-					}
-					else
-					{
-						GenerateBitmapFromFrame(stream->dec_frame);
-						pictureFind = true;
-					}
+					GenerateBitmapFromFrame(stream->dec_frame);
+					pictureFind = true;
 				}
-
 			}
+
+		}
 
 		av_packet_unref(&packet);
 	}

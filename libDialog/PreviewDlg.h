@@ -1,12 +1,16 @@
 #pragma once
 #include <BitmapInterface.h>
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
+
 class CImageLoadingFormat;
+class CVideoEffectParameter;
 
 namespace Regards
 {
 	namespace Control
 	{
-		class CShowBitmap;
+		class CShowPreview;
 	}
 }
 using namespace Regards::Control;
@@ -15,9 +19,9 @@ class CPreviewDlg : public wxDialog
 {
 public:
 
-	CPreviewDlg(wxWindow* parent);
+	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
 	~CPreviewDlg();
-	bool SetBitmap(CImageLoadingFormat * bitmap);
+	void UpdatePreview();
 	wxButton* btnCancel;
 	wxButton* btnOK;
 	wxStaticBitmap * bitmap;
@@ -25,8 +29,8 @@ public:
 protected:
 	
 	void OnSize(wxSizeEvent& event);
-	CShowBitmap * showBitmapWindow;
-
+	CShowPreview * showBitmapWindow;
+	
 	void OnbtnOKClick(wxCommandEvent& event);
 	void OnbtnCancelClick(wxCommandEvent& event);
 

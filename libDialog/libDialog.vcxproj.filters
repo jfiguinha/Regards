@@ -61,6 +61,9 @@
     <Filter Include="CompressionVideo">
       <UniqueIdentifier>{2c43ff22-2fe6-4050-81bb-c8104781bfc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CompressionVideo\Preview">
+      <UniqueIdentifier>{886c2dca-4edc-47db-9598-c720474aa390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -144,6 +147,15 @@
     <ClCompile Include="PreviewDlg.cpp">
       <Filter>CompressionVideo</Filter>
     </ClCompile>
+    <ClCompile Include="ShowPreview.cpp">
+      <Filter>CompressionVideo\Preview</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewToolbar.cpp">
+      <Filter>CompressionVideo\Preview</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderVideoPreview.cpp">
+      <Filter>CompressionVideo\Preview</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -226,6 +238,15 @@
     </ClInclude>
     <ClInclude Include="PreviewDlg.h">
       <Filter>CompressionVideo</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowPreview.h">
+      <Filter>CompressionVideo\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewToolbar.h">
+      <Filter>CompressionVideo\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderVideoPreview.h">
+      <Filter>CompressionVideo\Preview</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@
 #include <RegardsConfigParam.h>
 #include <FiltreEffet.h>
 #include "PreviewDlg.h"
+#include <videothumb.h>
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
@@ -47,7 +48,9 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 {
     isOk = false;
 	this->videoFilename = videoFilename;
-	previewDlg = new CPreviewDlg(this);
+	videoEffectParameter = new CVideoEffectParameter();
+	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, videoEffectParameter);
+
 
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
@@ -108,10 +111,11 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-	ffmpegTranscoding = new CFFmpegDecodeFrameFilter(openCLEngine, videoFilename, decoder);
+
+	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
 	SetBitmap(0);
 
-	timeTotal = ffmpegTranscoding->GetTotalTime();
+	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 	
 
@@ -206,37 +210,25 @@ wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideo
 */
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
-	CVideoEffectParameter videoEffectParameter;
-	videoEffectParameter.effectEnable = ckenablefilter->GetValue();
-	videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
-	videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();
-	videoEffectParameter.SharpenEnable = cksharpenFilter->GetValue();
-	videoEffectParameter.grayEnable = ckgrey->GetValue();
-	videoEffectParameter.sepiaEnable = cksepia->GetValue();
-	videoEffectParameter.filmgrainenable = cknoise->GetValue();
-	videoEffectParameter.contrast = contrastFilter->GetValue();
-	videoEffectParameter.brightness = lightFilter->GetValue();
-	videoEffectParameter.ColorBoostEnable = ckcolorBoost->GetValue();
-	videoEffectParameter.color_boost[0] = redFilter->GetValue();
-	videoEffectParameter.color_boost[1] = greenFilter->GetValue();
-	videoEffectParameter.color_boost[2] = blueFilter->GetValue();
-	videoEffectParameter.bandcEnable = cklightandcontrast->GetValue();
-	videoEffectParameter.sharpness = sharpenFilter->GetValue() / 10.0f;
-	int width = 0;
-	int height = 0;
-	int rotation = 0;
-	//ffmpegTranscoding->GetVideoDimensions(width, height, rotation);
-	//wxImage picture = ApplyFilter(ffmpegTranscoding->GetVideoFrame(pos, 0, 0), &videoEffectParameter);
-	ffmpegTranscoding->GetFrameBitmapPosition(&videoEffectParameter, pos);
-	CRegardsBitmap * picture = ffmpegTranscoding->GetBitmap();
-	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-	imageLoadingFormat->SetPicture(picture);
+	//CVideoEffectParameter videoEffectParameter;
+	videoEffectParameter->effectEnable = ckenablefilter->GetValue();
+	videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
+	videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
+	videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
+	videoEffectParameter->grayEnable = ckgrey->GetValue();
+	videoEffectParameter->sepiaEnable = cksepia->GetValue();
+	videoEffectParameter->filmgrainenable = cknoise->GetValue();
+	videoEffectParameter->contrast = contrastFilter->GetValue();
+	videoEffectParameter->brightness = lightFilter->GetValue();
+	videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
+	videoEffectParameter->color_boost[0] = redFilter->GetValue();
+	videoEffectParameter->color_boost[1] = greenFilter->GetValue();
+	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
+	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
+	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
 
-	wxImage * copypicture = imageLoadingFormat->GetwxImage();
-	bitmap->SetBitmap(copypicture->Rescale(344, 200));
-	delete copypicture;
-
-	previewDlg->SetBitmap(imageLoadingFormat);
+	bitmap->SetBitmap(CLibPicture::ConvertRegardsBitmapToWXImage(ffmpegTranscoding->GetVideoFrame(pos, 344, 200), true, false));
+	previewDlg->Update();
 }
 
 void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
@@ -333,6 +325,9 @@ CompressionAudioVideoOption::~CompressionAudioVideoOption()
 	}
 	if (previewDlg != nullptr)
 		delete previewDlg;
+
+	if (videoEffectParameter != nullptr)
+		delete videoEffectParameter;
 }
 
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)
