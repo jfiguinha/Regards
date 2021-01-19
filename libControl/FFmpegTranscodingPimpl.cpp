@@ -1603,9 +1603,8 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 			break;
 		}
 
-		if (isvideo)
+		if (isvideo && m_dlgProgress != nullptr)
 		{
-
 			SetFrameData(filter->filtered_frame, m_dlgProgress);
 		}
 
@@ -2064,6 +2063,187 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 	return out;
 }
 
+int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds)
+{
+	int ret = 0;
+	int stream_index = 0;
+	bool first = true;
+	bool startEncoding = true;
+	bool first_frame = true;
+	bool pictureFind = false;
+
+	int64_t timestamp = timeInSeconds * 1000 * 1000 + startTime;
+
+	if (timestamp < 0)
+	{
+		timestamp = 0;
+	}
+
+	//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
+	int64_t seek_target = timestamp;
+	int64_t seek_rel = 0;
+	int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
+	int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
+	int seek_flags = 0;
+	seek_flags &= ~AVSEEK_FLAG_BYTE;
+	// FIXME the +-2 is due to rounding being not done in the correct direction in generation
+	//      of the seek_pos/seek_rel variables
+
+	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
+
+	/* read all packets */
+	while (!pictureFind)
+	{
+		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
+			break;
+
+		if (packet.stream_index != videoStreamIndex)
+		{
+			av_free_packet(&packet);
+			continue;
+		}
+
+		bool isVideo = true;
+		stream_index = packet.stream_index;
+
+
+		av_log(NULL, AV_LOG_DEBUG, "Demuxer gave frame of stream_index %u\n",
+			stream_index);
+
+		AVStream *st = ifmt_ctx->streams[packet.stream_index];
+
+		if (st->codecpar->codec_id != AV_CODEC_ID_NONE)
+		{
+			bool copyDirectPacket = false;
+
+			if (videoCompressOption->videoDirectCopy && isVideo)
+			{
+				copyDirectPacket = true;
+			}
+
+			if (!copyDirectPacket && filter_ctx[stream_index].filter_graph) {
+
+				CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
+
+				av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
+
+				av_packet_rescale_ts(&packet,
+					ifmt_ctx->streams[stream_index]->time_base,
+					stream->dec_ctx->time_base);
+
+				pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+				double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+				ret = avcodec_send_packet(stream->dec_ctx, &packet);
+				if (ret < 0) {
+					av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
+					break;
+				}
+
+				AVFrame *tmp_frame = NULL;
+				int ret = 0;
+
+				while (ret >= 0)
+				{
+					ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
+					if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
+						break;
+					else if (ret < 0)
+						return ret;
+
+					if (acceleratorHardware != "")
+					{
+						if (stream->dec_frame->format == hw_pix_fmt)
+						{
+							ret = GenerateFrameFromDecoder(first, tmp_frame, stream, true);
+						}
+						else
+							tmp_frame = stream->dec_frame;
+					}
+					else
+						tmp_frame = stream->dec_frame;
+
+					tmp_frame->pts = tmp_frame->best_effort_timestamp;
+
+
+					if (isVideo)
+					{
+						if (!hardwareDecode && videoCompressOption->videoEffectParameter->effectEnable)
+							tmp_frame = ApplyFilter(tmp_frame);
+
+						nbframe++;
+						end = std::chrono::steady_clock::now();
+
+						if (first_frame)
+						{
+							long startTime = videoCompressOption->startTime;
+							videoCompressOption->startTime = pos;
+							long diff = startTime - pos;
+							videoCompressOption->endTime = videoCompressOption->endTime + diff;
+							first_frame = false;
+						}
+
+						muWriteData.lock();
+						double duration_total = duration_movie;
+
+						if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
+							duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
+
+						int posVideo = (int)pos - videoCompressOption->startTime;
+						pourcentage = (posVideo / duration_total) * 100.0f;
+						this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
+						sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+						muWriteData.unlock();
+
+					}
+
+					ret = filter_encode_write_frame(tmp_frame, stream_index, nullptr, isVideo);
+					if (ret < 0)
+						return ret;
+					
+					//pictureFind = true;
+				}
+			}
+			else {
+				/* remux this frame without reencoding */
+				av_packet_rescale_ts(&packet,
+					ifmt_ctx->streams[stream_index]->time_base,
+					ofmt_ctx->streams[stream_index]->time_base);
+
+				ret = av_interleaved_write_frame(ofmt_ctx, &packet);
+				if (ret < 0)
+					return ret;
+			}
+		}
+
+		av_packet_unref(&packet);
+		int posVideo = (int)pos;
+		if ((timeInSeconds + 1) == posVideo)
+			break;
+	}
+
+	/* flush filters and encoders */
+	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
+		/* flush filter */
+		if (!filter_ctx[i].filter_graph)
+			continue;
+		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
+		if (ret < 0) {
+			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
+			return ret;
+		}
+
+		/* flush encoder */
+		ret = flush_encoder(i);
+		if (ret < 0) {
+			av_log(NULL, AV_LOG_ERROR, "Flushing encoder failed\n");
+			return ret;
+		}
+	}
+
+	av_write_trailer(ofmt_ctx);
+	return ret;
+}
+
 int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 {
 	int ret = 0;
@@ -2362,6 +2542,36 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 	return ret;
 }
 
+int CFFmpegTranscodingPimpl::EncodeOneFrame(const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption)
+{
+	int ret;
+	this->m_dlgProgress = m_dlgProgress;
+	unsigned int stream_index;
+	unsigned int i;
+	nbframe = 0;
+	bool first = true;
+	cleanPacket = false;
+	this->videoCompressOption = videoCompressOption;
+	processEnd = false;
+
+	if ((ret = OpenFile(input, output)) < 0)
+		return ret;
+
+	cleanPacket = true;
+	begin = std::chrono::steady_clock::now();
+
+	ret = ProcessEncodeOneFrameFile(dst, time);
+	if (ret < 0)
+	{
+		char message[255];
+		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+	}
+
+	Release();
+	return ret ? 1 : 0;
+
+}
 
 int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption)
 {

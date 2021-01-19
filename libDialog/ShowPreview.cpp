@@ -12,7 +12,13 @@
 #include <ImageLoadingFormat.h>
 #include <PictureData.h>
 #include <MetadataExiv2.h>
+#ifdef NOTENCODE_FRAME
 #include <FFmpegDecodeFrameFilter.h>
+#else
+#include <FFmpegTranscodingPimpl.h>
+#include <FFmpegDecodeFrame.h>
+#include <FileUtility.h>
+#endif
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -27,10 +33,17 @@ void CShowPreview::UpdateScreenRatio()
 	this->Resize();
 }
 
+#ifdef NOTENCODE_FRAME
 CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CThemeParam * config, 
+	wxWindowID mainViewerId, CThemeParam * config,
 	const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter)
 	: CWindowMain("ShowBitmap", parent, id)
+#else
+CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
+	wxWindowID mainViewerId, CThemeParam * config,
+	const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress)
+	: CWindowMain("ShowBitmap", parent, id)
+#endif
 {
 	transitionEnd = false;
 	tempImage = nullptr;
@@ -40,7 +53,12 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	configRegards = nullptr;
 	defaultToolbar = true;
 	defaultViewer = true;
+#ifdef NOTENCODE_FRAME
 	this->videoEffectParameter = videoEffectParameter;
+#else
+	this->videoOptionCompress = *videoOptionCompress;
+	this->openCLEngine = openCLEngine;
+#endif
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -96,25 +114,70 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	}
 
 	progressValue = 0;
-	filename = "";
-	ffmpegTranscoding = new CFFmpegDecodeFrameFilter(openCLEngine, videoFilename, decoder);
+	filename = videoFilename;
 
+#ifdef NOTENCODE_FRAME
+	ffmpegTranscoding = new CFFmpegDecodeFrameFilter(openCLEngine, filename, decoder);
 	timeTotal = ffmpegTranscoding->GetTotalTime();
+#else
+	
+	CFFmpegDecodeFrame * decodeFrame = new CFFmpegDecodeFrame(filename, decoder);
+	timeTotal = decodeFrame->GetTotalTime();
+	delete decodeFrame;
+#endif
+	
+
+	
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
 {
 	this->position = position;
-	UpdateBitmap();
+	UpdateBitmap(nullptr);
 }
 
+#ifdef NOTENCODE_FRAME
 void CShowPreview::UpdateBitmap()
+#else
+void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
+#endif
 {
+	CRegardsBitmap * picture = nullptr;
+#ifdef NOTENCODE_FRAME
 	ffmpegTranscoding->GetFrameBitmapPosition(videoEffectParameter, position);
-	CRegardsBitmap * picture = ffmpegTranscoding->GetBitmap();
+	picture = ffmpegTranscoding->GetBitmap();
+#else
+
+	wxString decoder = "";
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+	}
+
+	CFFmpegTranscodingPimpl * transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
+	
+	if (videoOptionCompress != nullptr)
+	{
+		this->videoOptionCompress = *videoOptionCompress;
+	}
+
+	wxString fileTemp = CFileUtility::GetTempFile("video_temp.mp4", true);
+
+	transcodeFFmpeg->EncodeOneFrame(filename, fileTemp, position, &this->videoOptionCompress);
+
+	delete transcodeFFmpeg;
+
+	CFFmpegDecodeFrame * decodeFrame = new CFFmpegDecodeFrame(fileTemp, decoder);
+	decodeFrame->GetFrameBitmapPosition(0);
+	picture = decodeFrame->GetBitmap();
+	delete decodeFrame;
+#endif
+	
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
 	imageLoadingFormat->SetPicture(picture);
+	imageLoadingFormat->Flip();
 	bitmapWindow->SetBitmap(imageLoadingFormat, false);
 }
 
@@ -178,14 +241,16 @@ void CShowPreview::OnMoveBottom(wxCommandEvent& event)
 	}
 }
 
-
-
 CShowPreview::~CShowPreview()
 {
 
 	delete(previewToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
+
+#ifdef NOTENCODE_FRAME
+	delete ffmpegTranscoding;
+#endif
 }
 
 void CShowPreview::Resize()

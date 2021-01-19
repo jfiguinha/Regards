@@ -10,7 +10,13 @@ using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 class CRegardsBitmap;
+#ifdef NOTENCODE_FRAME
 class CFFmpegDecodeFrameFilter;
+#else
+#include <VideoCompressOption.h>
+class CFFmpegTranscodingPimpl;
+class CFFmpegDecodeFrame;
+#endif
 
 namespace Regards
 {
@@ -20,9 +26,13 @@ namespace Regards
 		{
 		public:
 
+#ifdef NOTENCODE_FRAME
 			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CThemeParam * config, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
+#else
+			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CThemeParam * config, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
+#endif
 			~CShowPreview();
-
+			
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			//CRegardsBitmap* GetBitmap(const bool& source);
 			void UpdateScreenRatio();
@@ -31,7 +41,11 @@ namespace Regards
 			void MoveSlider(const int64_t &position);
 			void ClickButton(const int &id) {};
 			void SetTrackBarPosition(const int &iPos) {};
+#ifdef NOTENCODE_FRAME
 			void UpdateBitmap();
+#else
+			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress);
+#endif
 		private:
 			bool SetBitmap(CImageLoadingFormat * bitmap);
 			void OnViewerZoomIn(wxCommandEvent& event);
@@ -51,11 +65,17 @@ namespace Regards
 			CBitmapInterface * bitmapInterface;
 			CRegardsConfigParam * configRegards;
 			CImageLoadingFormat * tempImage;
-			CVideoEffectParameter * videoEffectParameter;
+			
 			bool defaultToolbar;
 			bool defaultViewer;
 			bool bitmapWndLocal;
+#ifdef NOTENCODE_FRAME
 			CFFmpegDecodeFrameFilter * ffmpegTranscoding;
+			CVideoEffectParameter * videoEffectParameter;
+#else
+			CVideoOptionCompress videoOptionCompress;
+			COpenCLEngine * openCLEngine;
+#endif
 			bool transitionEnd;
 			wxString filename;
 			int progressValue;

@@ -5,6 +5,7 @@ using namespace Regards::OpenCL;
 
 class CImageLoadingFormat;
 class CVideoEffectParameter;
+class CVideoOptionCompress;
 
 namespace Regards
 {
@@ -19,9 +20,18 @@ class CPreviewDlg : public wxDialog
 {
 public:
 
+#ifdef NOTENCODE_FRAME
 	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
+#else
+	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
+#endif
 	~CPreviewDlg();
+
+#ifdef NOTENCODE_FRAME
 	void UpdatePreview();
+#else
+	void UpdatePreview(CVideoOptionCompress * videoOptionCompress);
+#endif
 	//wxButton* btnCancel;
 	//wxButton* btnOK;
 	wxStaticBitmap * bitmap;

@@ -49,7 +49,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
     isOk = false;
 	this->videoFilename = videoFilename;
 	videoEffectParameter = new CVideoEffectParameter();
-	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, videoEffectParameter);
+	
 
 
 	//(*Initialize(CompressionAudioVideoOption)
@@ -125,6 +125,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 
+
 	wxString decoder = "";
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -172,9 +173,14 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
 	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
 
-	//Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TEXT, (wxObjectEventFunction)&CompressionAudioVideoOption::OnTextFromChange);
-	//Connect(XRCID("ID_STENDMOVIE"), wxEVT_TEXT, (wxObjectEventFunction)&CompressionAudioVideoOption::OnTextToChange);
 
+#ifdef NOTENCODE_FRAME
+	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, videoEffectParameter);
+#else
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
+#endif
 }
 
 void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
@@ -195,7 +201,15 @@ void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+#ifdef NOTENCODE_FRAME
 	previewDlg->UpdatePreview();
+#else
+
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	previewDlg->UpdatePreview(&videoOptionCompress);
+#endif
+	
 }
 
 void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
@@ -216,60 +230,24 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+#ifdef NOTENCODE_FRAME
 	previewDlg->UpdatePreview();
+#else
+
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	previewDlg->UpdatePreview(&videoOptionCompress);
+#endif
 }
 
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	previewDlg->UpdatePreview(&videoOptionCompress);
 	previewDlg->Show();
 }
-/*
-wxImage CompressionAudioVideoOption::ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter)
-{
-	CRgbaquad color;
-	CImageLoadingFormat imageFormat(false);
-	imageFormat.SetPicture(bitmap);
-	CFiltreEffet filtre(color, nullptr, &imageFormat);
 
-	if (videoEffectParameter->effectEnable)
-	{
-		if (videoEffectParameter->ColorBoostEnable)
-		{
-			filtre.RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1], videoEffectParameter->color_boost[2]);
-		}
-		if (videoEffectParameter->bandcEnable)
-		{
-			filtre.BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast);
-		}
-		if (videoEffectParameter->SharpenEnable)
-		{
-			filtre.SharpenMasking(videoEffectParameter->sharpness);
-		}
-		if (videoEffectParameter->denoiseEnable)
-		{
-			filtre.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3);
-		}
-		if (videoEffectParameter->sepiaEnable)
-		{
-			filtre.Sepia();
-		}
-		if (videoEffectParameter->grayEnable)
-		{
-			filtre.NiveauDeGris();
-		}
-		if (videoEffectParameter->filmgrainenable)
-		{
-			filtre.Noise();
-		}
-		if (videoEffectParameter->grayEnable)
-		{
-			filtre.NiveauDeGris();
-		}
-	}
-	filtre.FlipVertical();
-	return filtre.GetwxImage();
-}
-*/
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
 

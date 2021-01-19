@@ -13,7 +13,11 @@ using namespace Regards::Picture;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
+#ifdef NOTENCODE_FRAME
 CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter)
+#else
+CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress)
+#endif
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
@@ -29,8 +33,13 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
-	
+
+#ifdef NOTENCODE_FRAME
 	showBitmapWindow = new CShowPreview(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoEffectParameter);
+#else
+	showBitmapWindow = new CShowPreview(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
+#endif
+
 	showBitmapWindow->SetSize(bitmap->GetPosition().x, bitmap->GetPosition().y, bitmap->GetSize().x, bitmap->GetSize().y);
 	showBitmapWindow->Show(true);
 	bitmap->Show(false);
@@ -60,8 +69,14 @@ CPreviewDlg::~CPreviewDlg()
 	delete(showBitmapWindow);
 
 }
-
+#ifdef NOTENCODE_FRAME
 void CPreviewDlg::UpdatePreview()
 {
 	showBitmapWindow->UpdateBitmap();
 }
+#else
+void CPreviewDlg::UpdatePreview(CVideoOptionCompress * videoOptionCompress)
+{
+	showBitmapWindow->UpdateBitmap(videoOptionCompress);
+}
+#endif

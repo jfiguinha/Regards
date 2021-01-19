@@ -734,7 +734,7 @@ CRegardsBitmap * CFFmpegDecodeFrameFilter::GetBitmap()
 {
 	CRegardsBitmap * copyPicture = new CRegardsBitmap();
 	*copyPicture = *bitmap;
-	copyPicture->VertFlipBuf();
+	//copyPicture->VertFlipBuf();
 	return copyPicture;
 }
 

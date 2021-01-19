@@ -129,6 +129,7 @@ public:
 		processEnd = true;
 	}
 
+	int EncodeOneFrame(const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption);
 	int EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 	int OpenFile(const wxString & input, const wxString & output);
 	
@@ -139,7 +140,10 @@ private:
 	AVFrame * RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame);
 	AVFrame * ApplyFilter(AVFrame * sw_frame);
 	AVFrame * RgbToYuv(int width, int height, AVFrame * dec_frame, CFiltreEffet * filtre);
+
 	int ProcessEncodeFile(AVFrame * dst);
+	int ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds);
+
 	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream,const bool & decodeOpenCL = false);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
