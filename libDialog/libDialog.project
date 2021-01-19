@@ -27,6 +27,16 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Video">
+    <VirtualDirectory Name="Preview">
+      <File Name="SliderVideoPreview.h"/>
+      <File Name="ShowPreview.h"/>
+      <File Name="PreviewToolbar.h"/>
+      <File Name="PreviewDlg.h"/>
+      <File Name="SliderVideoPreview.cpp"/>
+      <File Name="ShowPreview.cpp"/>
+      <File Name="PreviewToolbar.cpp"/>
+      <File Name="PreviewDlg.cpp"/>
+    </VirtualDirectory>
     <File Name="SliderVideoSelection.h"/>
     <File Name="CompressVideo.cpp"/>
     <File Name="CompressVideo.h"/>
@@ -97,6 +107,7 @@
         <IncludePath Value="../libWindow"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libUtility"/>
@@ -116,6 +127,8 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libFiltreInterface"/>
+        <IncludePath Value="../libextern/ffmpeg-master"/>
+        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="">
