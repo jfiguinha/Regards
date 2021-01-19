@@ -826,6 +826,7 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 			yPicture = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height, "ConvertToYUchar");
 		}
 
+
 		long size = _width * _height;
 		uint8_t * data_picture = new uint8_t[_width * _height];
 		if (context != nullptr)
@@ -854,6 +855,7 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 		Error::CheckError(err);
 		yPicture = nullptr;
 
+		delete[] data_picture;
 		delete memDataOut;
 
 	}

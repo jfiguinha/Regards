@@ -1941,51 +1941,6 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 	{
 		if (videoCompressOption->videoEffectParameter.effectEnable)
 		{
-			
-			/*
-			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
-			COpenCLFilter openclFilter(openclContext);
-			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
-			if (openCLEngine != nullptr)
-			{
-				cl_mem output = openclFilter.Flip("FlipVertical", data_mem->GetValue(), videoFrameOutputWidth, videoFrameOutputHeight);
-				memOutput->SetValue(output);
-
-				CRgbaquad color;
-				CFiltreEffet filtre(color, openclContext, memOutput, videoFrameOutputWidth, videoFrameOutputHeight);
-
-				if (videoCompressOption != nullptr)
-				{
-					if (videoCompressOption->videoEffectParameter.ColorBoostEnable)
-					{
-						filtre.RGBFilter(videoCompressOption->videoEffectParameter.color_boost[0], videoCompressOption->videoEffectParameter.color_boost[1], videoCompressOption->videoEffectParameter.color_boost[2]);
-					}
-					if (videoCompressOption->videoEffectParameter.bandcEnable)
-					{
-						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter.brightness, videoCompressOption->videoEffectParameter.contrast);
-					}
-					if (videoCompressOption->videoEffectParameter.SharpenEnable)
-					{
-						filtre.SharpenMasking(videoCompressOption->videoEffectParameter.sharpness);
-					}
-					if (videoCompressOption->videoEffectParameter.denoiseEnable)
-					{
-						filtre.HQDn3D(videoCompressOption->videoEffectParameter.denoisingLevel, 4, 3, 3);
-					}
-					if (videoCompressOption->videoEffectParameter.sepiaEnable)
-					{
-						filtre.Sepia();
-					}
-					if (videoCompressOption->videoEffectParameter.grayEnable)
-					{
-						filtre.NiveauDeGris();
-					}
-					if (videoCompressOption->videoEffectParameter.filmgrainenable)
-					{
-						filtre.Noise();
-					}
-				}
-				*/
 			if (openCLEngine != nullptr)
 			{
 				openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
@@ -1993,7 +1948,6 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 				out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, nullptr);
 				finalConvert = false;
 				openclEffectYUV->GetBitmap(bitmap);
-				//filtre.GetBitmap(bitmap, true);
 			}
 			else
 			{
@@ -2057,9 +2011,7 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 		{
 			openclEffectYUV->FlipVertical();
 			out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, nullptr);
-			if (bitmap != nullptr)
-				delete bitmap;
-			bitmap = openclEffectYUV->GetRgbaBitmap(true);
+			openclEffectYUV->GetBitmap(bitmap, true);
 		}
 	}
 

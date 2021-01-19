@@ -110,54 +110,6 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 	{
 		if (videoEffectParameter->effectEnable)
 		{
-			/*
-			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
-			COpenCLFilter openclFilter(openclContext);
-			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
-			//data_mem->SetNoDelete(true);
-			if (openCLEngine != nullptr)
-			{
-				cl_mem output = openclFilter.Flip("FlipVertical", data_mem->GetValue(), videoFrameOutputWidth, videoFrameOutputHeight);
-				memOutput->SetValue(output);
-
-				CRgbaquad color;
-				CFiltreEffet filtre(color, openclContext, memOutput, videoFrameOutputWidth, videoFrameOutputHeight);
-
-				if (videoEffectParameter != nullptr)
-				{
-					if (videoEffectParameter->ColorBoostEnable)
-					{
-						filtre.RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1], videoEffectParameter->color_boost[2]);
-					}
-					if (videoEffectParameter->bandcEnable)
-					{
-						filtre.BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast);
-					}
-					if (videoEffectParameter->SharpenEnable)
-					{
-						filtre.SharpenMasking(videoEffectParameter->sharpness);
-					}
-					if (videoEffectParameter->denoiseEnable)
-					{
-						filtre.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3);
-					}
-					if (videoEffectParameter->sepiaEnable)
-					{
-						filtre.Sepia();
-					}
-					if (videoEffectParameter->grayEnable)
-					{
-						filtre.NiveauDeGris();
-					}
-					if (videoEffectParameter->filmgrainenable)
-					{
-						filtre.Noise();
-					}
-				}
-				finalConvert = false;
-				filtre.GetBitmap(bitmap, true);
-			}
-			*/
 			if (openCLEngine != nullptr)
 			{
 				openclEffectYUV->ApplyVideoEffect(videoEffectParameter);
@@ -210,8 +162,6 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 				filtre.GetBitmap(bitmap, true);
 				finalConvert = false;
 			}
-
-
 		}
 	}
 
@@ -220,9 +170,7 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 		if (openCLEngine != nullptr)
 		{
 			openclEffectYUV->FlipVertical();
-			if (bitmap != nullptr)
-				delete bitmap;
-			bitmap = openclEffectYUV->GetRgbaBitmap(true);
+			openclEffectYUV->GetBitmap(bitmap, true);
 		}
 	}
 }
