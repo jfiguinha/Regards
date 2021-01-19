@@ -36,9 +36,11 @@ namespace Regards
 			bool IsOk();
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
 			CRegardsBitmap* GetBitmap(cl_mem cl_image);
+			void GetBitmap(CRegardsBitmap * bitmap, const bool &src = false);
+
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			
-			
+			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
 			virtual void InterpolationBicubic(const int& widthOut, const int& heightOut, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
@@ -62,6 +64,7 @@ namespace Regards
 
 			int GetSizeData();
 			CRegardsBitmap* GetBitmap(cl_mem input, const int& width, const int& height);
+			void GetBitmap(CRegardsBitmap * bitmap, cl_mem input, const int& width, const int& height);
 			COpenCLProgram * GetProgram(const wxString &numProgram);
 			cl_mem_flags  flag;
 

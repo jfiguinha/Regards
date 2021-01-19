@@ -85,65 +85,27 @@ CRegardsBitmap * COpenCLEffect::GetPtBitmap()
 	return nullptr;
 }
 
-int COpenCLEffect::HQDn3D(Chqdn3d * hq3d)
+int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
 	int _width = 0;
 	int _height = 0;
-
-	cl_mem yPicture = nullptr;
-
+	cl_mem output = nullptr;
 	if (context != nullptr)
 	{
 		COpenCLFilter openclFilter(context);
-
 		if (preview && paramOutput != nullptr)
 		{
 			_width = widthOut;
 			_height = heightOut;
-			yPicture = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height, "ConvertToYUchar");
+			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			yPicture = openclFilter.ConvertToY(input->GetValue(), _width, _height, "ConvertToYUchar");
+			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input->GetValue(), width, height);
 		}
-
-		long size = _width * _height;
-		uint8_t * data_picture = new uint8_t[_width * _height];
-		if (context != nullptr)
-		{
-			context->GetOutputData(yPicture, data_picture, size, flag);
-
-
-		}
-
-		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, _width, _height);
-
-		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
-		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
-		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
-
-
-		cl_mem output = nullptr;
-		if (preview && paramOutput != nullptr)
-		{
-			output = openclFilter.InsertYValue(memDataOut->GetValue(), paramOutput->GetValue(), _width, _height, "InsertYValueFromUchar");
-		}
-		else
-		{
-			output = openclFilter.InsertYValue(memDataOut->GetValue(), input->GetValue(), _width, _height, "InsertYValueFromUchar");
-		}
-
 		SetOutputValue(output, _width, _height);
-
-		cl_int err;
-		err = clReleaseMemObject(yPicture);
-		Error::CheckError(err);
-		yPicture = nullptr;
-
-		delete memDataOut;
-
 	}
 	return 0;
 }

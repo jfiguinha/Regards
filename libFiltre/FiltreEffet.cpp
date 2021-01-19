@@ -153,7 +153,6 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 	filename = "";
 	this->width = width;
 	this->height = height;
-	hq3d = nullptr;
 	filtreEffet = new COpenCLEffect(backColor, openCLContext, data_mem, width, height);
 	this->numLib = LIBOPENCL;
 }
@@ -167,7 +166,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
-	hq3d = nullptr;
+
     if(openCLContext != nullptr)
     {
         //if(OpenCLHasEnoughMemory())
@@ -221,10 +220,6 @@ CFiltreEffet::~CFiltreEffet()
        
 	if (filtreEffet != nullptr)
 		delete(filtreEffet);
-
-	if (hq3d != nullptr)
-		delete hq3d;
-
 }
 
 void CFiltreEffet::GetRgbaBitmap(void * cl_image)
@@ -621,17 +616,7 @@ void CFiltreEffet::SetPreview(const bool &value)
 //----------------------------------------------------------------------------
 int CFiltreEffet::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
-	if (hq3d == nullptr)
-	{
-		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
-	}
-	else if (oldLevelDenoise != LumSpac || width != oldwidthDenoise || height != oldheightDenoise)
-	{
-		delete hq3d;
-		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
-	}
-
-	int value = filtreEffet->HQDn3D(hq3d);
+	int value = filtreEffet->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp);
 	return value;
 }
 

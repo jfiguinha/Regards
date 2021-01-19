@@ -246,6 +246,9 @@ CFiltreEffetCPU::~CFiltreEffetCPU()
     if(pBitmap != nullptr)
         delete pBitmap;
     pBitmap = nullptr;
+
+	if (hq3d != nullptr)
+		delete hq3d;
 }
 
 wxImage CFiltreEffetCPU::GetwxImage()
@@ -536,7 +539,7 @@ int CFiltreEffetCPU::HistogramEqualize()
 	return CHistogramme::HistogramEqualize(pBitmap);
 }
 
-int CFiltreEffetCPU::HQDn3D(Chqdn3d * filtre)
+int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
 	CRegardsBitmap* bitmap = nullptr;
 	if (preview)
@@ -544,8 +547,22 @@ int CFiltreEffetCPU::HQDn3D(Chqdn3d * filtre)
 	else
 		bitmap = pBitmap;
 
+
 	if (bitmap != nullptr)
-		filtre->ApplyDenoise3D(bitmap);
+	{
+		if (hq3d == nullptr)
+		{
+			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
+		}
+		else if (oldLevelDenoise != LumSpac || bitmap->GetBitmapWidth() != oldwidthDenoise || bitmap->GetBitmapHeight() != oldheightDenoise)
+		{
+			delete hq3d;
+			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
+		}
+
+		hq3d->ApplyDenoise3D(bitmap);
+	}
+		
 	return 0;
 }
 

@@ -110,6 +110,7 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 	{
 		if (videoEffectParameter->effectEnable)
 		{
+			/*
 			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
 			COpenCLFilter openclFilter(openclContext);
 			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
@@ -155,6 +156,14 @@ void CFFmpegDecodeFrameFilter::ApplyFilter(CVideoEffectParameter * videoEffectPa
 				}
 				finalConvert = false;
 				filtre.GetBitmap(bitmap, true);
+			}
+			*/
+			if (openCLEngine != nullptr)
+			{
+				openclEffectYUV->ApplyVideoEffect(videoEffectParameter);
+				openclEffectYUV->FlipVertical();
+				finalConvert = false;
+				openclEffectYUV->GetBitmap(bitmap);
 			}
 			else
 			{

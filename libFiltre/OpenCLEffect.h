@@ -56,7 +56,7 @@ namespace Regards
 			int HistogramLog(){ return -1; };
 			int HistogramNormalize(){ return -1; };
 			int HistogramEqualize(){ return -1; };
-			int HQDn3D(Chqdn3d * hq3d);
+			int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 			wxImage GetwxImage();
             void SetBitmap(CImageLoadingFormat * bitmap);
 			int FlipVertical();

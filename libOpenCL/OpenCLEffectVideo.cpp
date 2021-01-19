@@ -389,6 +389,52 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem input, const int& width, co
 	return bitmap;
 }
 
+
+void COpenCLEffectVideo::GetBitmap(CRegardsBitmap * bitmap, cl_mem input, const int& width, const int& height)
+{
+	if (input != nullptr)
+	{
+		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem* valueInput = new COpenCLParameterClMem();
+			valueInput->SetValue(input);
+			valueInput->SetNoDelete(true);
+			vecParam.push_back(valueInput);
+
+			COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(bitmap->GetBitmapWidth());
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(bitmap->GetBitmapHeight());
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, bitmap);
+			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
+
+			delete program;
+
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+}
+
+
 CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem cl_image)
 {
 	CRegardsBitmap* bitmap = nullptr;
@@ -447,6 +493,135 @@ CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 }
 
 
+void COpenCLEffectVideo::GetBitmap(CRegardsBitmap * bitmap, const bool &src)
+{
+	cl_mem ptData = nullptr;
+	int width = widthOut;
+	int height = heightOut;
+
+	if (src || paramOutput == nullptr)
+	{
+		ptData = paramSrc->GetValue();
+		width = srcwidth;
+		height = srcheight;
+	}
+	else
+		ptData = paramOutput->GetValue();
+
+	if (context->GetDefaultType() == OPENCL_FLOAT)
+	{
+		GetBitmap(bitmap, ptData, width, height);
+	}
+	else
+	{
+		//bitmap = new  CRegardsBitmap(width, height);
+		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), ptData, CL_TRUE, 0, bitmap->GetBitmapSize(), bitmap->GetPtBitmap(), 0, nullptr, nullptr);
+		Error::CheckError(err);
+		err = clFinish(context->GetCommandQueue());
+		Error::CheckError(err);
+	}
+}
+
+void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter)
+{
+	COpenCLFilter openclFilter(context);
+	cl_mem output = nullptr;
+
+	if (videoEffectParameter->ColorBoostEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1], videoEffectParameter->color_boost[2], paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.RGBFilter(videoEffectParameter->color_boost[0], videoEffectParameter->color_boost[1], videoEffectParameter->color_boost[2], paramSrc->GetValue(), widthOut, heightOut);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->bandcEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast, paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.BrightnessAndContrast(videoEffectParameter->brightness, videoEffectParameter->contrast, paramSrc->GetValue(), widthOut, heightOut);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->SharpenEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.SharpenMasking(videoEffectParameter->sharpness, paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.SharpenMasking(videoEffectParameter->sharpness, paramSrc->GetValue(), widthOut, heightOut);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->denoiseEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3, paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3, paramSrc->GetValue(), srcwidth, srcheight);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->sepiaEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.ColorEffect("Sepia", paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.ColorEffect("Sepia", paramSrc->GetValue(), srcwidth, srcheight);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->grayEnable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.ColorEffect("GrayLevel", paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.ColorEffect("GrayLevel", paramSrc->GetValue(), srcwidth, srcheight);
+			paramSrc->SetValue(output);
+		}
+	}
+	if (videoEffectParameter->filmgrainenable)
+	{
+		if (paramOutput != nullptr)
+		{
+			output = openclFilter.Noise(paramOutput->GetValue(), widthOut, heightOut);
+			paramOutput->SetValue(output);
+		}
+		else
+		{
+			output = openclFilter.Noise(paramSrc->GetValue(), srcwidth, srcheight);
+			paramSrc->SetValue(output);
+		}
+	}
+
+}
+
+
 void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut)
 {
 	int middleWidth = widthOut / 2;
@@ -493,7 +668,10 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			vecParam.push_back(inputY);
 			vecParam.push_back(inputU);
 			vecParam.push_back(inputV);
-			vecParam.push_back(paramSrc);
+			if (paramOutput != nullptr)
+				vecParam.push_back(paramOutput);
+			else
+				vecParam.push_back(paramSrc);
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);
 

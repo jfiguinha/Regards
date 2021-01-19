@@ -330,7 +330,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 	int ret = 0;
 	int stream_index = 0;
 	bool pictureFind = false;
-	AVFrame * sw_frame = nullptr;
+	
 	bool deleteMemory = false;
 
 	if (!m_allowSeek)
@@ -396,6 +396,8 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 
 			while (ret >= 0)
 			{
+				AVFrame * sw_frame = nullptr;
+
 				ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
 				if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 					break;

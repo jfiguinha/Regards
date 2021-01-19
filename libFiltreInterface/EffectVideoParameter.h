@@ -69,6 +69,7 @@ public:
 
 		denoisingLevel = 4;
 
+		effectEnable = 0;
 
 		filmgrainenable = 0;
 

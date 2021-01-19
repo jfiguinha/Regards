@@ -1529,7 +1529,7 @@ int CFFmpegTranscodingPimpl::GenerateFrameFromDecoder(bool & first, AVFrame * & 
 		return ret;
 	}
 
-	if (openCLEngine != nullptr && decodeOpenCL && videoCompressOption->videoEffectParameter->effectEnable)
+	if (openCLEngine != nullptr && decodeOpenCL && videoCompressOption->videoEffectParameter.effectEnable)
 	{
 		hardwareDecode = true;
 		tmp_frame = ApplyFilter(sw_frame);
@@ -1937,10 +1937,12 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 		convertedFrameBuffer_data = bitmapData->GetPtBitmap();
 	}
 
-	if (videoCompressOption->videoEffectParameter != nullptr)
+	if (videoCompressOption != nullptr)
 	{
-		if (videoCompressOption->videoEffectParameter->effectEnable)
+		if (videoCompressOption->videoEffectParameter.effectEnable)
 		{
+			
+			/*
 			COpenCLParameterClMem * memOutput = new COpenCLParameterClMem(true);
 			COpenCLFilter openclFilter(openclContext);
 			COpenCLParameterClMem * data_mem = openclEffectYUV->GetPtData();
@@ -1952,40 +1954,46 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 				CRgbaquad color;
 				CFiltreEffet filtre(color, openclContext, memOutput, videoFrameOutputWidth, videoFrameOutputHeight);
 
-				if (videoCompressOption->videoEffectParameter != nullptr)
+				if (videoCompressOption != nullptr)
 				{
-					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
+					if (videoCompressOption->videoEffectParameter.ColorBoostEnable)
 					{
-						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
+						filtre.RGBFilter(videoCompressOption->videoEffectParameter.color_boost[0], videoCompressOption->videoEffectParameter.color_boost[1], videoCompressOption->videoEffectParameter.color_boost[2]);
 					}
-					if (videoCompressOption->videoEffectParameter->bandcEnable)
+					if (videoCompressOption->videoEffectParameter.bandcEnable)
 					{
-						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
+						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter.brightness, videoCompressOption->videoEffectParameter.contrast);
 					}
-					if (videoCompressOption->videoEffectParameter->SharpenEnable)
+					if (videoCompressOption->videoEffectParameter.SharpenEnable)
 					{
-						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
+						filtre.SharpenMasking(videoCompressOption->videoEffectParameter.sharpness);
 					}
-					if (videoCompressOption->videoEffectParameter->denoiseEnable)
+					if (videoCompressOption->videoEffectParameter.denoiseEnable)
 					{
-						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
+						filtre.HQDn3D(videoCompressOption->videoEffectParameter.denoisingLevel, 4, 3, 3);
 					}
-					if (videoCompressOption->videoEffectParameter->sepiaEnable)
+					if (videoCompressOption->videoEffectParameter.sepiaEnable)
 					{
 						filtre.Sepia();
 					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
+					if (videoCompressOption->videoEffectParameter.grayEnable)
 					{
 						filtre.NiveauDeGris();
 					}
-					if (videoCompressOption->videoEffectParameter->filmgrainenable)
+					if (videoCompressOption->videoEffectParameter.filmgrainenable)
 					{
 						filtre.Noise();
 					}
 				}
-				out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, &filtre);
+				*/
+			if (openCLEngine != nullptr)
+			{
+				openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
+				openclEffectYUV->FlipVertical();
+				out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, nullptr);
 				finalConvert = false;
-				filtre.GetBitmap(bitmap, true);
+				openclEffectYUV->GetBitmap(bitmap);
+				//filtre.GetBitmap(bitmap, true);
 			}
 			else
 			{
@@ -1994,37 +2002,37 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 				imageFormat.SetPicture(bitmapData);
 				CFiltreEffet filtre(color, openclContext, &imageFormat);
 
-				if (videoCompressOption->videoEffectParameter != nullptr)
+				if (videoCompressOption != nullptr)
 				{
-					if (videoCompressOption->videoEffectParameter->ColorBoostEnable)
+					if (videoCompressOption->videoEffectParameter.ColorBoostEnable)
 					{
-						filtre.RGBFilter(videoCompressOption->videoEffectParameter->color_boost[0], videoCompressOption->videoEffectParameter->color_boost[1], videoCompressOption->videoEffectParameter->color_boost[2]);
+						filtre.RGBFilter(videoCompressOption->videoEffectParameter.color_boost[0], videoCompressOption->videoEffectParameter.color_boost[1], videoCompressOption->videoEffectParameter.color_boost[2]);
 					}
-					if (videoCompressOption->videoEffectParameter->bandcEnable)
+					if (videoCompressOption->videoEffectParameter.bandcEnable)
 					{
-						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter->brightness, videoCompressOption->videoEffectParameter->contrast);
+						filtre.BrightnessAndContrast(videoCompressOption->videoEffectParameter.brightness, videoCompressOption->videoEffectParameter.contrast);
 					}
-					if (videoCompressOption->videoEffectParameter->SharpenEnable)
+					if (videoCompressOption->videoEffectParameter.SharpenEnable)
 					{
-						filtre.SharpenMasking(videoCompressOption->videoEffectParameter->sharpness);
+						filtre.SharpenMasking(videoCompressOption->videoEffectParameter.sharpness);
 					}
-					if (videoCompressOption->videoEffectParameter->denoiseEnable)
+					if (videoCompressOption->videoEffectParameter.denoiseEnable)
 					{
-						filtre.HQDn3D(videoCompressOption->videoEffectParameter->denoisingLevel, 4, 3, 3);
+						filtre.HQDn3D(videoCompressOption->videoEffectParameter.denoisingLevel, 4, 3, 3);
 					}
-					if (videoCompressOption->videoEffectParameter->sepiaEnable)
+					if (videoCompressOption->videoEffectParameter.sepiaEnable)
 					{
 						filtre.Sepia();
 					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
+					if (videoCompressOption->videoEffectParameter.grayEnable)
 					{
 						filtre.NiveauDeGris();
 					}
-					if (videoCompressOption->videoEffectParameter->filmgrainenable)
+					if (videoCompressOption->videoEffectParameter.filmgrainenable)
 					{
 						filtre.Noise();
 					}
-					if (videoCompressOption->videoEffectParameter->grayEnable)
+					if (videoCompressOption->videoEffectParameter.grayEnable)
 					{
 						filtre.NiveauDeGris();
 					}
@@ -2048,9 +2056,6 @@ AVFrame * CFFmpegTranscodingPimpl::ApplyFilter(AVFrame * sw_frame)
 		else
 		{
 			openclEffectYUV->FlipVertical();
-			//bitmap = openclEffectYUV->GetRgbaBitmap(true);
-			//convertedFrameBuffer_data = bitmap->GetPtBitmap();
-			//out = RgbToYuv(convertedFrameBuffer_data, videoFrameOutputWidth, videoFrameOutputHeight, sw_frame);
 			out = RgbToYuv(videoFrameOutputWidth, videoFrameOutputHeight, sw_frame, nullptr);
 			if (bitmap != nullptr)
 				delete bitmap;
@@ -2071,6 +2076,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 	bool startEncoding = true;
 	bool first_frame = true;
 	bool pictureFind = false;
+	int nb_max_Frame = 5;
 
 	int64_t timestamp = timeInSeconds * 1000 * 1000 + startTime;
 
@@ -2167,7 +2173,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 					if (isVideo)
 					{
-						if (!hardwareDecode && videoCompressOption->videoEffectParameter->effectEnable)
+						if (!hardwareDecode && videoCompressOption->videoEffectParameter.effectEnable)
 							tmp_frame = ApplyFilter(tmp_frame);
 
 						nbframe++;
@@ -2201,6 +2207,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 						return ret;
 					
 					//pictureFind = true;
+
+					//av_frame_free(&stream->dec_frame);
 				}
 			}
 			else {
@@ -2217,7 +2225,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 		av_packet_unref(&packet);
 		int posVideo = (int)pos;
-		if ((timeInSeconds + 1) == posVideo)
+		if (nb_max_Frame == nbframe)
 			break;
 	}
 
@@ -2462,7 +2470,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                     if (isVideo)
                     {
-						if(!hardwareDecode && videoCompressOption->videoEffectParameter->effectEnable)
+						if(!hardwareDecode && videoCompressOption->videoEffectParameter.effectEnable)
 							tmp_frame = ApplyFilter(tmp_frame);
 						
 						nbframe++;
@@ -2568,7 +2576,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(const wxString & input, const wxStri
 		wxMessageBox(message, "Error conversion", wxICON_ERROR);
 	}
 
-	Release();
 	return ret ? 1 : 0;
 
 }

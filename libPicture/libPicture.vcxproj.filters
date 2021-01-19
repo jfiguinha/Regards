@@ -273,6 +273,9 @@
     <ClInclude Include="hqdn3d.h">
       <Filter>hqdb3d</Filter>
     </ClInclude>
+    <ClInclude Include="buffer_data.h">
+      <Filter>ThumbnailVideo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

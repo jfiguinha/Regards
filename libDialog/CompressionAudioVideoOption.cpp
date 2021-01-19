@@ -409,23 +409,23 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 	
 	if (videoOptionCompress != nullptr)
 	{
-		videoOptionCompress->videoEffectParameter->effectEnable = ckenablefilter->GetValue();
-		videoOptionCompress->videoEffectParameter->denoiseEnable = ckdenoiseFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->denoisingLevel = denoiseFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->SharpenEnable = cksharpenFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->grayEnable = ckgrey->GetValue();
-		videoOptionCompress->videoEffectParameter->sepiaEnable = cksepia->GetValue();
-		videoOptionCompress->videoEffectParameter->filmgrainenable = cknoise->GetValue();
-		videoOptionCompress->videoEffectParameter->contrast = contrastFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->brightness = lightFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->ColorBoostEnable = ckcolorBoost->GetValue();
+		videoOptionCompress->videoEffectParameter.effectEnable = ckenablefilter->GetValue();
+		videoOptionCompress->videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.SharpenEnable = cksharpenFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.grayEnable = ckgrey->GetValue();
+		videoOptionCompress->videoEffectParameter.sepiaEnable = cksepia->GetValue();
+		videoOptionCompress->videoEffectParameter.filmgrainenable = cknoise->GetValue();
+		videoOptionCompress->videoEffectParameter.contrast = contrastFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.brightness = lightFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.ColorBoostEnable = ckcolorBoost->GetValue();
 
-		videoOptionCompress->videoEffectParameter->color_boost[0] = redFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->color_boost[1] = greenFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->color_boost[2] = blueFilter->GetValue();
-		videoOptionCompress->videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
+		videoOptionCompress->videoEffectParameter.color_boost[0] = redFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.color_boost[1] = greenFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.color_boost[2] = blueFilter->GetValue();
+		videoOptionCompress->videoEffectParameter.bandcEnable = cklightandcontrast->GetValue();
 
-		videoOptionCompress->videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
+		videoOptionCompress->videoEffectParameter.sharpness = sharpenFilter->GetValue() / 10.0f;
 
 		//Audio
 		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
@@ -470,7 +470,7 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		videoOptionCompress->videoDirectCopy = rbVideoDirectCopy->GetSelection();
 
 		if (videoOptionCompress->videoDirectCopy)
-			videoOptionCompress->videoEffectParameter->effectEnable = false;
+			videoOptionCompress->videoEffectParameter.effectEnable = false;
 
 		int endTime = timeTotal;
 		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->GetTimeStart() != 0) ? sliderVideoPosition->GetTimeEnd() : 0;

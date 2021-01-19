@@ -16,6 +16,8 @@ COpenCLFilter::COpenCLFilter(COpenCLContext * context)
 
 COpenCLFilter::~COpenCLFilter()
 {
+	if (hq3d != nullptr)
+		delete hq3d;
 }
 
 cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height, const wxString & functionName)
@@ -1466,6 +1468,56 @@ cl_mem COpenCLFilter::ColorEffect(const wxString &functionName, cl_mem inputData
 		vecParam.clear();
 	}
 	return outputValue;
+}
+
+
+cl_mem COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cl_mem inputData, int width, int height)
+{
+	cl_mem output = nullptr;
+	cl_mem yPicture = nullptr;
+
+	if(hq3d == nullptr)
+		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
+	else if (oldLevelDenoise != LumSpac || width != oldwidthDenoise || height != oldheightDenoise)
+	{
+		delete hq3d;
+		hq3d = new Chqdn3d(width, height, LumSpac, LumTmp);
+	}
+
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (inputData != nullptr)
+		{
+			yPicture = openclFilter.ConvertToY(inputData, height, height, "ConvertToYUchar");
+		}
+
+		long size = width * height;
+		uint8_t * data_picture = new uint8_t[width * height];
+		if (context != nullptr)
+		{
+			context->GetOutputData(yPicture, data_picture, size, flag);
+
+
+		}
+		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, width, height);
+
+		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
+		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
+		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
+
+
+		output = openclFilter.InsertYValue(memDataOut->GetValue(), inputData, width, height, "InsertYValueFromUchar");
+
+		cl_int err;
+		err = clReleaseMemObject(yPicture);
+		Error::CheckError(err);
+		yPicture = nullptr;
+
+		delete memDataOut;
+
+	}
+	return output;
 }
 
 cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cl_mem inputData, int width, int height)

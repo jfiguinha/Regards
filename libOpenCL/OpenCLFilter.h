@@ -11,7 +11,7 @@
 #else
 #include <CL/cl.h>
 #endif
-
+#include <hqdn3d.h>
 
 
 using namespace std;
@@ -72,6 +72,10 @@ namespace Regards
 			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;
+			Chqdn3d * hq3d = nullptr;
+			double oldLevelDenoise = 0;
+			int oldwidthDenoise = 0;
+			int oldheightDenoise = 0;
 		};
 
 	}

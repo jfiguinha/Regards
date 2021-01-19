@@ -120,8 +120,5 @@ private:
 	wxString filename;
 	int width;
 	int height;
-	Chqdn3d * hq3d = nullptr;
-	int oldLevelDenoise = 4;
-	int oldwidthDenoise = 0;
-	int oldheightDenoise = 0;
+
 };

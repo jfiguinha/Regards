@@ -14,7 +14,7 @@ public:
 	int HistogramEqualize();
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
-	int HQDn3D(Chqdn3d * filtre);
+	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);
@@ -71,6 +71,9 @@ public:
 private:
 	CRegardsBitmap * bitmapOut;
 	CRegardsBitmap * pBitmap;
-
+	Chqdn3d * hq3d = nullptr;
+	int oldLevelDenoise = 4;
+	int oldwidthDenoise = 0;
+	int oldheightDenoise = 0;
 };
 

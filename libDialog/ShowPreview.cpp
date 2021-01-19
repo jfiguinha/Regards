@@ -150,6 +150,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 #else
 
 	wxString decoder = "";
+
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
@@ -173,6 +174,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 	decodeFrame->GetFrameBitmapPosition(0);
 	picture = decodeFrame->GetBitmap();
 	delete decodeFrame;
+
 #endif
 	
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();

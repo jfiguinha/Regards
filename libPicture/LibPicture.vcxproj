@@ -264,6 +264,7 @@
     <ClInclude Include="avif_heif.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
+    <ClInclude Include="buffer_data.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="ExrOption.h" />
     <ClInclude Include="FFmpegDecodeFrame.h" />
