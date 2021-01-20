@@ -37,7 +37,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
     
 #ifdef WIN32
-
+	wxString decoder = "";
 	int dxva2 = 0;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -46,9 +46,11 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
 	if (dxva2)
 	{
+		decoder = "dxva2";
 		OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
 		if (device != nullptr)
 		{
+			softRender = false;
 			if (device->deviceType == CL_DEVICE_TYPE_CPU)
 				softRender = true;
 			else if (!device->openGlSharing)
@@ -60,7 +62,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		softRender = true;
 	}
 
-	wxString decoder = "";
+	
 
 	if (softRender)
 	{
