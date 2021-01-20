@@ -171,7 +171,7 @@ private:
 	int flush_encoder(unsigned int stream_index);
 	void Release();
 	void SetFrameData(AVFrame * src_frame, CompressVideo * m_dlgProgress);
-
+	void VideoInfos(CFFmpegTranscodingPimpl::StreamContext *stream);
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
 

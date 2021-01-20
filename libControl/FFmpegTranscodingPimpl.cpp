@@ -1782,6 +1782,11 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	}
 	tmp_frame = dst_hardware;
 
+
+}
+
+void CFFmpegTranscodingPimpl::VideoInfos(CFFmpegTranscodingPimpl::StreamContext *stream)
+{
 	nbframe++;
 	end = std::chrono::steady_clock::now();
 
@@ -1930,10 +1935,13 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 					tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
 					if (isVideo)
+					{
 						if (videoCompressOption != nullptr)
 							if (videoCompressOption->videoEffectParameter.effectEnable)
 								VideoTreatment(tmp_frame, stream);
 
+						VideoInfos(stream);
+					}
 					ret = filter_encode_write_frame(tmp_frame, stream_index, nullptr, isVideo);
 					if (ret < 0)
 						return ret;
@@ -2273,9 +2281,14 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
 					if (isVideo)
+					{
 						if (videoCompressOption != nullptr)
 							if (videoCompressOption->videoEffectParameter.effectEnable)
 								VideoTreatment(tmp_frame, stream);
+
+						VideoInfos(stream);
+					}
+
 
                     ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
                     if (ret < 0)
