@@ -3,7 +3,6 @@
 #include <window_id.h>
 #include <VideoCompressOption.h>
 #include <ImageLoadingFormat.h>
-#include <FFmpegDecodeFrameFilter.h>
 #include <RegardsBitmap.h>
 #include <wx/filename.h>
 #include <libPicture.h>
@@ -124,7 +123,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	//Connect(XRCID("ID_SLVIDEO"), wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoSliderChange);
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
-
+	Connect(wxEVENT_CLOSEPREVIEW, wxCommandEventHandler(CompressionAudioVideoOption::OnClosePreview));
 
 	wxString decoder = "";
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
@@ -183,6 +182,12 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 #endif
 }
 
+void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
+{
+	btnPreview->SetLabelText("Preview");
+	previewDlg->Hide();
+}
+
 void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 {
 	//CVideoEffectParameter videoEffectParameter;
@@ -204,12 +209,14 @@ void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 #ifdef NOTENCODE_FRAME
 	previewDlg->UpdatePreview();
 #else
+	/*
 	if (previewDlg->IsShown())
 	{
 		CVideoOptionCompress videoOptionCompress;
 		GetCompressionOption(&videoOptionCompress);
 		previewDlg->UpdatePreview(&videoOptionCompress);
 	}
+	*/
 #endif
 	
 }
@@ -236,22 +243,35 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 	previewDlg->UpdatePreview();
 #else
 
+	/*
 	if (previewDlg->IsShown())
 	{
 		CVideoOptionCompress videoOptionCompress;
 		GetCompressionOption(&videoOptionCompress);
 		previewDlg->UpdatePreview(&videoOptionCompress);
 	}
-
+	*/
 #endif
 }
 
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	previewDlg->UpdatePreview(&videoOptionCompress);
-	previewDlg->Show();
+	if (previewDlg->IsShown())
+	{
+		CVideoOptionCompress videoOptionCompress;
+		GetCompressionOption(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress);
+	}
+	else
+	{
+
+		CVideoOptionCompress videoOptionCompress;
+		GetCompressionOption(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress);
+		previewDlg->Show();
+		btnPreview->SetLabelText("Refresh");
+	}
+
 	
 }
 

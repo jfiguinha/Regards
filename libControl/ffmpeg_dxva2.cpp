@@ -139,6 +139,7 @@ extern "C"
         if (ctx->decoder_service)
             ctx->decoder_service->Release();
 
+		av_freep(&ctx->tmp_frame->data[0]);
         av_frame_free(&ctx->tmp_frame);
 
         av_freep(&ist->hwaccel_ctx);

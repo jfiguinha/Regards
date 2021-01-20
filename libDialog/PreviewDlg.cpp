@@ -47,6 +47,14 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	//bitmap->Connect(wxEVT_SIZE, wxSizeEventHandler(CPreviewDlg::OnSize));
 
 	panel->Bind(wxEVT_SIZE, &CPreviewDlg::OnSize, this);
+
+	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CPreviewDlg::OnClose));
+}
+
+void CPreviewDlg::OnClose(wxCloseEvent& event)
+{
+	wxCommandEvent evt(wxEVENT_CLOSEPREVIEW);
+	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CPreviewDlg::OnSize(wxSizeEvent& event)

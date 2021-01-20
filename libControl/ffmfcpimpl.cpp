@@ -1216,6 +1216,8 @@ int CFFmfcPimpl::video_thread(void *arg)
 the_end:
 	avcodec_flush_buffers(is->videoCtx);
 	av_packet_unref(&pkt);
+
+	av_freep(&frame->data[0]);
 	av_frame_free(&frame);
 
 	return 0;
@@ -2742,6 +2744,7 @@ void CFFmfcPimpl::CloseStream(VideoState *is)
 		avformat_close_input(&is->ic);
 	}
 
+	av_freep(&is->_pimpl->dst->data[0]);
 	av_frame_free(&is->_pimpl->dst);
 	if (is->_pimpl->scaleContext != nullptr)
 		sws_freeContext(is->_pimpl->scaleContext);

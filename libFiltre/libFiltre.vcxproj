@@ -285,7 +285,6 @@
     <ClInclude Include="DecodeRawParameter.h" />
     <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="Draw.h" />
-    <ClInclude Include="FFmpegDecodeFrameFilter.h" />
     <ClInclude Include="FilterData.h" />
     <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="Filtre.h" />
@@ -366,7 +365,6 @@
     <ClCompile Include="DecodeRaw.cpp" />
     <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="Draw.cpp" />
-    <ClCompile Include="FFmpegDecodeFrameFilter.cpp" />
     <ClCompile Include="FilterData.cpp" />
     <ClCompile Include="FilterWindowParam.cpp" />
     <ClCompile Include="Filtre.cpp" />

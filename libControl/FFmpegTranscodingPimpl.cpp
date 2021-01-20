@@ -226,7 +226,10 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 				}
 			}
 			if (ffmpeg_trans->copyFrameBuffer != nullptr)
+			{
+				av_freep(&ffmpeg_trans->copyFrameBuffer[0]);
 				av_frame_free(&ffmpeg_trans->copyFrameBuffer);
+			}
 			ffmpeg_trans->copyFrameBuffer = nullptr;
 			ffmpeg_trans->muFrame.unlock();
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
@@ -1965,11 +1968,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 					if (ret < 0)
 						return ret;
 					
-					if (deleteFrame)
-					{
-						//av_freep(&tmp_frame->data[0]);
-						av_frame_free(&tmp_frame);
-					}
 				}
 			}
 			else {
@@ -2453,8 +2451,10 @@ void CFFmpegTranscodingPimpl::Release()
 				avcodec_free_context(&stream_ctx[i].enc_ctx);
 			}
 				
-			if (filter_ctx && filter_ctx[i].filter_graph) {
+			if (filter_ctx && filter_ctx[i].filter_graph) 
+			{
 				avfilter_graph_free(&filter_ctx[i].filter_graph);
+				av_freep(&filter_ctx[i].filtered_frame->data[0]);
 				av_frame_free(&filter_ctx[i].filtered_frame);
 			}
 

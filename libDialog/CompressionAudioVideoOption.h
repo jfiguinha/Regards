@@ -91,6 +91,7 @@ class CompressionAudioVideoOption: public wxDialog
 		//wxImage ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter);
 		wxString ConvertSecondToTime(int64_t sec);
 		//void OnPaint(wxPaintEvent &event);
+		void OnClosePreview(wxCommandEvent& event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		void OnbtnOkClick(wxCommandEvent& event);
 		void OnbtnPreviewClick(wxCommandEvent& event);

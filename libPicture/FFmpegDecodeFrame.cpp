@@ -99,7 +99,22 @@ int CFFmpegDecodeFrame::GetRotation()
 	return rotation;
 }
 
-CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString &acceleratorHardware)
+void CFFmpegDecodeFrame::OpenFile(const wxString & filename)
+{
+	int ret = open_input_file(filename);
+	if (ret < 0)
+	{
+		isOk = false;
+		cleanPacket = false;
+	}
+	else
+	{
+		m_allowSeek = (filename != "-") && (filename.find("rtsp://") != 0) && (filename.find("udp://") != 0);
+		cleanPacket = true;
+	}
+}
+
+CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString &acceleratorHardware)
 {
 	isOk = true;
 	dst = av_frame_alloc();
@@ -112,25 +127,10 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString
 	rotation = 0;
 	first = true;
 	this->acceleratorHardware = acceleratorHardware;
-	int ret = open_input_file(fileName);
-	if (ret < 0)
-	{
-		isOk = false;
-		cleanPacket = false;
-	}
-	else
-	{
-		m_allowSeek = (fileName != "-") && (fileName.find("rtsp://") != 0) && (fileName.find("udp://") != 0);
-		cleanPacket = true;
-	}
-
-		
-
 	image = new CRegardsBitmap();
 };
 
-
-CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
+void CFFmpegDecodeFrame::EndTreatment()
 {
 	if (cleanPacket)
 	{
@@ -142,11 +142,21 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 			bitmapShow->join();
 			delete bitmapShow;
 		}
-
+		cleanPacket = false;
 	}
+}
+
+
+CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
+{
+	EndTreatment();
 
 	if (copyFrameBuffer != nullptr)
+	{
+		av_freep(&copyFrameBuffer->data[0]);
 		av_frame_free(&copyFrameBuffer);
+	}
+		
 	copyFrameBuffer = nullptr;
 
 	if (dst != nullptr)

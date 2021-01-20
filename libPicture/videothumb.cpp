@@ -21,7 +21,8 @@ CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
 
-	decodeFrame = new CFFmpegDecodeFrame(fileName, decoder);
+	decodeFrame = new CFFmpegDecodeFrame(decoder);
+	decodeFrame->OpenFile(fileName);
 }
 
 
@@ -38,7 +39,8 @@ CRegardsBitmap *  CThumbnailVideo::GetVideoFrame(const int &timePosition, const 
 	if (ret != 0)
 	{
 		delete decodeFrame;
-		decodeFrame = new CFFmpegDecodeFrame(filename, "");
+		decodeFrame = new CFFmpegDecodeFrame("");
+		decodeFrame->OpenFile(filename);
 		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
 	return decodeFrame->GetBitmap(false);
@@ -63,7 +65,8 @@ CRegardsBitmap * CThumbnailVideo::GetVideoFrame(int &rotation, const int &percen
 	if (ret != 0)
 	{
 		delete decodeFrame;
-		decodeFrame = new CFFmpegDecodeFrame(filename, "");
+		decodeFrame = new CFFmpegDecodeFrame("");
+		decodeFrame->OpenFile(filename);
 		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
 

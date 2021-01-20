@@ -37,7 +37,7 @@ public:
 	wxStaticBitmap * bitmap;
 	wxPanel * panel;
 protected:
-	
+	void OnClose(wxCloseEvent& event);
 	void OnSize(wxSizeEvent& event);
 	CShowPreview * showBitmapWindow;
 	

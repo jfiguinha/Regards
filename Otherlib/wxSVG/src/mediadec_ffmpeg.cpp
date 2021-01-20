@@ -289,7 +289,9 @@ wxImage wxFfmpegMediaDecoder::GetNextFrame() {
 	return wxImage();
 }
 
-void wxFfmpegMediaDecoder::EndDecode() {
+void wxFfmpegMediaDecoder::EndDecode() 
+{
+	av_freep(&m_frame->data[0]);
 	av_frame_free(&m_frame);
     CloseVideoDecoder();
 }

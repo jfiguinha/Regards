@@ -12,13 +12,10 @@
 #include <ImageLoadingFormat.h>
 #include <PictureData.h>
 #include <MetadataExiv2.h>
-#ifdef NOTENCODE_FRAME
-#include <FFmpegDecodeFrameFilter.h>
-#else
 #include <FFmpegTranscodingPimpl.h>
 #include <FFmpegDecodeFrame.h>
 #include <FileUtility.h>
-#endif
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -33,17 +30,10 @@ void CShowPreview::UpdateScreenRatio()
 	this->Resize();
 }
 
-#ifdef NOTENCODE_FRAME
-CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CThemeParam * config,
-	const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter)
-	: CWindowMain("ShowBitmap", parent, id)
-#else
 CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
 	wxWindowID mainViewerId, CThemeParam * config,
 	const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress)
 	: CWindowMain("ShowBitmap", parent, id)
-#endif
 {
 	transitionEnd = false;
 	tempImage = nullptr;
@@ -53,12 +43,9 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	configRegards = nullptr;
 	defaultToolbar = true;
 	defaultViewer = true;
-#ifdef NOTENCODE_FRAME
-	this->videoEffectParameter = videoEffectParameter;
-#else
 	this->videoOptionCompress = *videoOptionCompress;
 	this->openCLEngine = openCLEngine;
-#endif
+
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -106,6 +93,9 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CShowPreview::OnControlSize));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowPreview::OnSetPosition));
 
+	Connect(wxEVENT_SHOWORIGINAL, wxCommandEventHandler(CShowPreview::OnShowOriginal));
+	Connect(wxEVENT_SHOWNEW, wxCommandEventHandler(CShowPreview::OnShowNew));
+
 	wxString decoder = "";
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
@@ -116,19 +106,44 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	progressValue = 0;
 	filename = videoFilename;
 
-#ifdef NOTENCODE_FRAME
-	ffmpegTranscoding = new CFFmpegDecodeFrameFilter(openCLEngine, filename, decoder);
-	timeTotal = ffmpegTranscoding->GetTotalTime();
-#else
-	
-	CFFmpegDecodeFrame * decodeFrame = new CFFmpegDecodeFrame(filename, decoder);
-	timeTotal = decodeFrame->GetTotalTime();
-	delete decodeFrame;
-#endif
-	
-
+	decodeFrameOriginal = new CFFmpegDecodeFrame(decoder);
+	decodeFrameOriginal->OpenFile(filename);
+	timeTotal = decodeFrameOriginal->GetTotalTime();
 	
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
+}
+
+void CShowPreview::ShowOriginal()
+{
+	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+	imageLoadingFormat->SetPicture(decodeFrameOriginal->GetBitmap(false));
+	bitmapWindow->SetBitmap(imageLoadingFormat, false);
+	bitmapWindow->Refresh();
+	wxDialog * dlg = (wxDialog *)this->GetParent();
+	dlg->SetTitle("Original Video");
+
+}
+
+void CShowPreview::ShowNew()
+{
+	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+	imageLoadingFormat->SetPicture(decodeFrame->GetBitmap(false));
+	bitmapWindow->SetBitmap(imageLoadingFormat, false);
+	bitmapWindow->Refresh();
+	wxDialog * dlg = (wxDialog *)this->GetParent();
+	dlg->SetTitle("Export Video");
+}
+
+void CShowPreview::OnShowOriginal(wxCommandEvent& event)
+{
+	ShowOriginal();
+	showOriginal = true;
+}
+
+void CShowPreview::OnShowNew(wxCommandEvent& event)
+{
+	ShowNew();
+	showOriginal = false;
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
@@ -137,48 +152,46 @@ void CShowPreview::MoveSlider(const int64_t &position)
 	UpdateBitmap(nullptr);
 }
 
-#ifdef NOTENCODE_FRAME
-void CShowPreview::UpdateBitmap()
-#else
 void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
-#endif
 {
+	CImageLoadingFormat * imageLoadingFormat = nullptr;
 	CRegardsBitmap * picture = nullptr;
-#ifdef NOTENCODE_FRAME
-	ffmpegTranscoding->GetFrameBitmapPosition(videoEffectParameter, position);
-	picture = ffmpegTranscoding->GetBitmap();
-#else
 
 	wxString decoder = "";
-	/*
+	
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-	*/
+	
 	wxString fileTemp = CFileUtility::GetTempFile("video_temp.mp4", false);
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
 	}
 
-
-	CFFmpegTranscodingPimpl * transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
+	if(transcodeFFmpeg == nullptr)
+		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
 	transcodeFFmpeg->EncodeOneFrame(filename, fileTemp, position, &this->videoOptionCompress);
-	delete transcodeFFmpeg;
+	transcodeFFmpeg->EndTreatment();
 	
-	CFFmpegDecodeFrame * decodeFrame = new CFFmpegDecodeFrame(fileTemp, decoder);
-	decodeFrame->GetFrameBitmapPosition(0);
-	picture = decodeFrame->GetBitmap();
-	delete decodeFrame;
+	if(decodeFrame == nullptr)
+		decodeFrame = new CFFmpegDecodeFrame(decoder);
 
-#endif
+	decodeFrame->OpenFile(fileTemp);
+	decodeFrame->GetFrameBitmapPosition(0);
+	decodeFrame->GetBitmap(false)->VertFlipBuf();
+	decodeFrame->EndTreatment();
+
 	
-	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat();
-	imageLoadingFormat->SetPicture(picture);
-	imageLoadingFormat->Flip();
-	bitmapWindow->SetBitmap(imageLoadingFormat, false);
+	decodeFrameOriginal->GetFrameBitmapPosition(position);
+	decodeFrameOriginal->GetBitmap(false)->VertFlipBuf();
+
+	if(showOriginal)
+		ShowOriginal();
+	else
+		ShowNew();
 }
 
 void CShowPreview::OnControlSize(wxCommandEvent& event)
@@ -248,9 +261,12 @@ CShowPreview::~CShowPreview()
 	delete(bitmapWindow);
 	delete(scrollbar);
 
-#ifdef NOTENCODE_FRAME
-	delete ffmpegTranscoding;
-#endif
+	if(transcodeFFmpeg != nullptr)
+		delete transcodeFFmpeg;
+	if (decodeFrame != nullptr)
+		delete decodeFrame;
+	if (decodeFrameOriginal != nullptr)
+		delete decodeFrameOriginal;
 }
 
 void CShowPreview::Resize()
@@ -290,15 +306,7 @@ bool CShowPreview::SetBitmap(CImageLoadingFormat * bitmap)
 	return true;
 }
 
-/*
-CRegardsBitmap * CShowPreview::GetBitmap(const bool &source)
-{
-	if (bitmapWindow != nullptr)
-		return bitmapWindow->GetBitmap(source);
 
-	return nullptr;
-}
-*/
 void CShowPreview::OnViewerZoomIn(wxCommandEvent& event)
 {
 	if (previewToolbar != nullptr)

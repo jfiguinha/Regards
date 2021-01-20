@@ -6,17 +6,15 @@
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
 #include <wx/gauge.h>
+#include <VideoCompressOption.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 class CRegardsBitmap;
-#ifdef NOTENCODE_FRAME
 class CFFmpegDecodeFrameFilter;
-#else
-#include <VideoCompressOption.h>
 class CFFmpegTranscodingPimpl;
 class CFFmpegDecodeFrame;
-#endif
+
 
 namespace Regards
 {
@@ -26,11 +24,7 @@ namespace Regards
 		{
 		public:
 
-#ifdef NOTENCODE_FRAME
-			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CThemeParam * config, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
-#else
 			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CThemeParam * config, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
-#endif
 			~CShowPreview();
 			
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
@@ -41,12 +35,13 @@ namespace Regards
 			void MoveSlider(const int64_t &position);
 			void ClickButton(const int &id) {};
 			void SetTrackBarPosition(const int &iPos) {};
-#ifdef NOTENCODE_FRAME
-			void UpdateBitmap();
-#else
 			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress);
-#endif
+
 		private:
+
+			void ShowOriginal();
+			void ShowNew();
+
 			bool SetBitmap(CImageLoadingFormat * bitmap);
 			void OnViewerZoomIn(wxCommandEvent& event);
 			void OnViewerZoomOut(wxCommandEvent& event);
@@ -58,6 +53,9 @@ namespace Regards
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
 
+			void OnShowOriginal(wxCommandEvent& event);
+			void OnShowNew(wxCommandEvent& event);
+
 			CScrollbarWnd * scrollbar;
 			CPreviewToolbar * previewToolbar;
 			CSliderVideoPreview * sliderVideo;
@@ -66,21 +64,23 @@ namespace Regards
 			CRegardsConfigParam * configRegards;
 			CImageLoadingFormat * tempImage;
 			
+
 			bool defaultToolbar;
 			bool defaultViewer;
 			bool bitmapWndLocal;
-#ifdef NOTENCODE_FRAME
-			CFFmpegDecodeFrameFilter * ffmpegTranscoding;
-			CVideoEffectParameter * videoEffectParameter;
-#else
+
 			CVideoOptionCompress videoOptionCompress;
-			COpenCLEngine * openCLEngine;
-#endif
+			COpenCLEngine * openCLEngine = nullptr;
+			CFFmpegTranscodingPimpl * transcodeFFmpeg = nullptr;
+			CFFmpegDecodeFrame * decodeFrame = nullptr;
+			CFFmpegDecodeFrame * decodeFrameOriginal = nullptr;
+
 			bool transitionEnd;
 			wxString filename;
 			int progressValue;
 			double timeTotal;
 			int position = 0;
+			bool showOriginal = false;
 		};
 	}
 }

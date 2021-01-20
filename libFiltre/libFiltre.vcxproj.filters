@@ -64,9 +64,6 @@
     <Filter Include="window\Transition">
       <UniqueIdentifier>{29ad8b41-1d26-46d2-b755-04859f09bd84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="video">
-      <UniqueIdentifier>{ca91a8a8-de65-4966-a860-7719236f444f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -330,9 +327,6 @@
     <ClInclude Include="hqdn3dFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
-    <ClInclude Include="FFmpegDecodeFrameFilter.h">
-      <Filter>video</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -505,9 +499,6 @@
     </ClCompile>
     <ClCompile Include="hqdn3dFilter.cpp">
       <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="FFmpegDecodeFrameFilter.cpp">
-      <Filter>video</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

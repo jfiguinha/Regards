@@ -28,8 +28,10 @@ public:
 		AVFrame *dec_frame;
 	} StreamContext;
 
-	CFFmpegDecodeFrame(const wxString & filename, const wxString &acceleratorHardware);
+	CFFmpegDecodeFrame(const wxString &acceleratorHardware);
 	~CFFmpegDecodeFrame();
+	void EndTreatment();
+	void OpenFile(const wxString & filename);
 	bool IsOk();
 	void GetVideoInfos(int & width, int & height, int &rotation);
 	int GetFrameBitmapPosition(const long &time, const int &widthThumbnail = 0, const int &heightThumbnail = 0);

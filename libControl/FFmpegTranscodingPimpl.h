@@ -76,20 +76,26 @@ public:
 		}
 
 	};
-	~CFFmpegTranscodingPimpl()
+
+	void EndTreatment()
 	{
 		if (cleanPacket)
 		{
-            if(packet.data != NULL)
-                av_packet_unref(&packet);
+			if (packet.data != NULL)
+				av_packet_unref(&packet);
 			Release();
 			if (bitmapShow != nullptr)
 			{
 				bitmapShow->join();
 				delete bitmapShow;
 			}
-
+			cleanPacket = false;
 		}
+	}
+
+	~CFFmpegTranscodingPimpl()
+	{
+		EndTreatment();
 
 		if (copyFrameBuffer != nullptr)
 		{

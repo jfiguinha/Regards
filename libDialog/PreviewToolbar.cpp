@@ -9,6 +9,8 @@ using namespace Regards::Control;
 #define WM_CROP 6
 #define IDM_SETSHRINK 7
 #define WM_EXPORT 8
+#define IDM_OLDPICTURE 9
+#define IDM_NEWPICTURE 10
 
 
 
@@ -21,6 +23,21 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, wxWindowID vie
 	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON",1);// "Zoom On";
 	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF",1);// "Zoom Off";
 	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1);//"Shrink Picture";
+	wxString oldPictureLable = "Original";
+	wxString newPictureLable = "New";
+
+	CToolbarButton * newPicture = new CToolbarButton(themeToolbar.button);
+	newPicture->SetButtonResourceId("IDB_NEWPICTURE");
+	newPicture->SetCommandId(IDM_NEWPICTURE);
+	newPicture->SetLibelleTooltip(newPictureLable);
+	navElement.push_back(newPicture);
+
+	CToolbarButton * oldPicture = new CToolbarButton(themeToolbar.button);
+	oldPicture->SetButtonResourceId("IDB_OLDPICTURE");
+	oldPicture->SetCommandId(IDM_OLDPICTURE);
+	oldPicture->SetLibelleTooltip(oldPictureLable);
+	navElement.push_back(oldPicture);
+
 	CToolbarButton * shrink = new CToolbarButton(themeToolbar.button);
 	shrink->SetButtonResourceId("IDB_SHRINK");
 	shrink->SetCommandId(IDM_SETSHRINK);
@@ -153,6 +170,20 @@ void CPreviewToolbar::EventManager(const int &id)
 			break;
 		case WM_ZOOMON:
 			ZoomOn();
+			break;
+
+		case IDM_OLDPICTURE:
+			{
+				wxCommandEvent evt(wxEVENT_SHOWORIGINAL);
+				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			}
+			break;
+
+		case IDM_NEWPICTURE:
+			{
+				wxCommandEvent evt(wxEVENT_SHOWNEW);
+				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			}
 			break;
 		}
 	}
