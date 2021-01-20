@@ -55,7 +55,7 @@ public:
 		packet.size = 0;
 		this->acceleratorHardware = acceleratorHardware;
 		bitmapCopy = new CRegardsBitmap();
-		bitmap = nullptr;// new CRegardsBitmap();
+		//bitmap = nullptr;// new CRegardsBitmap();
 		int supportOpenCL = 0;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -125,8 +125,8 @@ public:
 		if (openclEffectYUV != nullptr)
 			delete openclEffectYUV;
 
-		if (bitmap != nullptr)
-			delete bitmap;
+		//if (bitmap != nullptr)
+		//	delete bitmap;
 
 
 		if (bitmapCopy != nullptr)
@@ -154,8 +154,7 @@ private:
 	void VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	int ProcessEncodeFile(AVFrame * dst);
 	int ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds);
-
-	int GenerateFrameFromDecoder(bool & first, AVFrame * & tmp_frame, StreamContext *stream,const bool & decodeOpenCL = false);
+	void DecodeHardwareFrame(AVFrame * & tmp_frame, AVFrame * sw_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
 	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx);
@@ -214,7 +213,7 @@ private:
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
-	CRegardsBitmap * bitmap = nullptr;
+	//CRegardsBitmap * bitmap = nullptr;
 	CRegardsBitmap * bitmapCopy = nullptr;
 	CRegardsBitmap * bitmapData = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
@@ -222,7 +221,7 @@ private:
 	bool yuvDecodeInit = false;
 	bool showpreview = false;
 
-	bool first = false;
+	bool first = true;
 	bool deleteFrame = false;
-	bool first_frame = false;
+	bool first_frame = true;
 };

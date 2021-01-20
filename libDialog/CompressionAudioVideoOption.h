@@ -119,5 +119,6 @@ class CompressionAudioVideoOption: public wxDialog
 		int ret = 0;
 		wxImage scale;
 		bool skipEvent = false;
+		bool previewShow = false;
 		DECLARE_EVENT_TABLE()
 };

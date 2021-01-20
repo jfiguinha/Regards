@@ -204,10 +204,12 @@ void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 #ifdef NOTENCODE_FRAME
 	previewDlg->UpdatePreview();
 #else
-
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	previewDlg->UpdatePreview(&videoOptionCompress);
+	if (previewDlg->IsShown())
+	{
+		CVideoOptionCompress videoOptionCompress;
+		GetCompressionOption(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress);
+	}
 #endif
 	
 }
@@ -234,9 +236,13 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 	previewDlg->UpdatePreview();
 #else
 
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	previewDlg->UpdatePreview(&videoOptionCompress);
+	if (previewDlg->IsShown())
+	{
+		CVideoOptionCompress videoOptionCompress;
+		GetCompressionOption(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress);
+	}
+
 #endif
 }
 
@@ -246,6 +252,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 	GetCompressionOption(&videoOptionCompress);
 	previewDlg->UpdatePreview(&videoOptionCompress);
 	previewDlg->Show();
+	
 }
 
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
