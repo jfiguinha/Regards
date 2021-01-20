@@ -277,11 +277,13 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
 				//Decoder available
 				wxString decoder = "";
+				/*
 				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 				if (regardsParam != nullptr)
 				{
 					decoder = regardsParam->GetVideoDecoderHardware();
 				}
+				*/
 				ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
 				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
 				

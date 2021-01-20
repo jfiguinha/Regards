@@ -61,10 +61,6 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
 
 	wxString decoder = "";
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
 
 	if (softRender)
 	{
@@ -79,16 +75,10 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 
 #else
 
-	softRender = true;
-	wxString decoder = "";
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
-
-     videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-	 videoWindow->SetEncoderHardware(decoder, false);
+		softRender = true;
+		wxString decoder = "";
+		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+		videoWindow->SetEncoderHardware(decoder, false);
 #endif
 
     scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");

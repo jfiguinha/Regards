@@ -15,7 +15,7 @@
 #include <FFmpegTranscodingPimpl.h>
 #include <FFmpegDecodeFrame.h>
 #include <FileUtility.h>
-
+#include "PreviewDlg.h"
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -97,12 +97,13 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	Connect(wxEVENT_SHOWNEW, wxCommandEventHandler(CShowPreview::OnShowNew));
 
 	wxString decoder = "";
+	/*
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-
+	*/
 	progressValue = 0;
 	filename = videoFilename;
 
@@ -118,8 +119,8 @@ void CShowPreview::ShowOriginal()
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
 	imageLoadingFormat->SetPicture(decodeFrameOriginal->GetBitmap(false));
 	bitmapWindow->SetBitmap(imageLoadingFormat, false);
-	bitmapWindow->Refresh();
-	wxDialog * dlg = (wxDialog *)this->GetParent();
+	
+	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
 	dlg->SetTitle("Original Video");
 
 }
@@ -129,8 +130,7 @@ void CShowPreview::ShowNew()
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
 	imageLoadingFormat->SetPicture(decodeFrame->GetBitmap(false));
 	bitmapWindow->SetBitmap(imageLoadingFormat, false);
-	bitmapWindow->Refresh();
-	wxDialog * dlg = (wxDialog *)this->GetParent();
+	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
 	dlg->SetTitle("Export Video");
 }
 
@@ -158,18 +158,25 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 	CRegardsBitmap * picture = nullptr;
 
 	wxString decoder = "";
-	
+	/*
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
+	*/
 	
-	wxString fileTemp = CFileUtility::GetTempFile("video_temp.mp4", false);
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
 	}
+
+	wxString fileTemp = "";
+
+	if(this->videoOptionCompress.videoCodec == "VP8" || this->videoOptionCompress.videoCodec == "VP9")
+		fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
+	else
+		fileTemp = CFileUtility::GetTempFile("video_temp.mp4", true);
 
 	if(transcodeFFmpeg == nullptr)
 		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);

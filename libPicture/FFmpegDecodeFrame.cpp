@@ -109,6 +109,7 @@ void CFFmpegDecodeFrame::OpenFile(const wxString & filename)
 	}
 	else
 	{
+		isOk = true;
 		m_allowSeek = (filename != "-") && (filename.find("rtsp://") != 0) && (filename.find("udp://") != 0);
 		cleanPacket = true;
 	}

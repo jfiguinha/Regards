@@ -126,12 +126,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEVENT_CLOSEPREVIEW, wxCommandEventHandler(CompressionAudioVideoOption::OnClosePreview));
 
 	wxString decoder = "";
+	/*
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-
+	*/
 	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
 	SetBitmap(0);
 

@@ -15,12 +15,13 @@ CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 {
 	filename = fileName;
 	wxString decoder = "";
+	/*
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-
+	*/
 	decodeFrame = new CFFmpegDecodeFrame(decoder);
 	decodeFrame->OpenFile(fileName);
 }
