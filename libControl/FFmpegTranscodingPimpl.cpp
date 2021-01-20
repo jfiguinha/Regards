@@ -1634,8 +1634,6 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 
 	if (openCLEngine != nullptr)
 	{
-		deleteFrame = false;
-		/*
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
 		{
 			int ysize = 0;
@@ -1648,7 +1646,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		}
 		else
 		{
-		*/
+			deleteFrame = false;
+
 			int ysize = 0;
 			int usize = 0;
 			int vsize = 0;
@@ -1657,7 +1656,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			usize = tmp_frame->linesize[1] * (tmp_frame->height / 2);
 			vsize = tmp_frame->linesize[2] * (tmp_frame->height / 2);
 			openclEffectYUV->SetMemoryData(tmp_frame->data[0], ysize, tmp_frame->data[1], usize, tmp_frame->data[2], vsize, tmp_frame->width, tmp_frame->height, tmp_frame->linesize[0]);
-		//}
+		}
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
@@ -1670,10 +1669,13 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			dst_hardware->height = stream->dec_frame->height;
 			int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
 		}
-
-		av_frame_copy_props(dst_hardware, tmp_frame);
+			
 		openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], stream->dec_frame->width, stream->dec_frame->height);
-
+		
+		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
+			av_frame_copy_props(dst_hardware, stream->dec_frame);
+		else
+			av_frame_copy_props(dst_hardware, tmp_frame);
 	}
 	else
 	{
@@ -1939,10 +1941,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 							return ret;
 						}
 						
-						//if (videoCompressOption == nullptr || !videoCompressOption->videoEffectParameter.effectEnable)
-						DecodeHardwareFrame(tmp_frame, sw_frame, stream);
-						//else
-						//	tmp_frame = sw_frame;
+						if (videoCompressOption == nullptr || !videoCompressOption->videoEffectParameter.effectEnable)
+							DecodeHardwareFrame(tmp_frame, sw_frame, stream);
+						else
+							tmp_frame = sw_frame;
 					}
 					else
 					{
@@ -2285,10 +2287,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 							return ret;
 						}
 
-						//if (videoCompressOption == nullptr || !videoCompressOption->videoEffectParameter.effectEnable)
+						if (videoCompressOption == nullptr || !videoCompressOption->videoEffectParameter.effectEnable)
 							DecodeHardwareFrame(tmp_frame, sw_frame, stream);
-						//else
-						//	tmp_frame = sw_frame;
+						else
+							tmp_frame = sw_frame;
 					}
 					else
 					{
