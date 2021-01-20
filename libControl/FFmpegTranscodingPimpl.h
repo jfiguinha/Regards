@@ -224,4 +224,5 @@ private:
 	bool first = true;
 	bool deleteFrame = false;
 	bool first_frame = true;
+	bool first_yuv = true;
 };
