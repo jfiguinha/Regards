@@ -101,6 +101,7 @@ int CFFmpegDecodeFrame::GetRotation()
 
 CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString &acceleratorHardware)
 {
+	isOk = true;
 	dst = av_frame_alloc();
 	scaleContext = sws_alloc_context();
 	packet.data = NULL;
@@ -111,18 +112,19 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString & fileName, const wxString
 	rotation = 0;
 	first = true;
 	this->acceleratorHardware = acceleratorHardware;
-	int ret;
-	if ((ret = open_input_file(fileName)) < 0)
-		isOk = false;
-	if (isOk)
+	int ret = open_input_file(fileName);
+	if (ret < 0)
 	{
-		m_allowSeek = (fileName != "-") && (fileName.find("rtsp://") != 0) && (fileName.find("udp://") != 0);
-		dst = av_frame_alloc();
-		scaleContext = sws_alloc_context();
-		cleanPacket = true;
+		isOk = false;
+		cleanPacket = false;
 	}
 	else
-		cleanPacket = false;
+	{
+		m_allowSeek = (fileName != "-") && (fileName.find("rtsp://") != 0) && (fileName.find("udp://") != 0);
+		cleanPacket = true;
+	}
+
+		
 
 	image = new CRegardsBitmap();
 };
@@ -148,7 +150,11 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 	copyFrameBuffer = nullptr;
 
 	if (dst != nullptr)
+	{
+		av_freep(&dst->data[0]);
 		av_frame_free(&dst);
+	}
+		
 
 	if (scaleContext != nullptr)
 		sws_freeContext(scaleContext);
@@ -474,8 +480,11 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 
 				pictureFind = true;
 				
-				if(deleteMemory)
+				if (deleteMemory)
+				{
+					//av_freep(&sw_frame->data[0]);
 					av_frame_free(&sw_frame);
+				}
 			}
 
 		av_packet_unref(&packet);
@@ -517,10 +526,12 @@ CRegardsBitmap * CFFmpegDecodeFrame::GetBitmap(const bool &copy)
 
 void CFFmpegDecodeFrame::Release()
 {
+
 	if (ifmt_ctx != nullptr)
 	{
 		for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 			avcodec_free_context(&stream_ctx[i].dec_ctx);
+			av_freep(&stream_ctx[i].dec_frame->data[0]);
 			av_frame_free(&stream_ctx[i].dec_frame);
 		}
 		av_free(stream_ctx);

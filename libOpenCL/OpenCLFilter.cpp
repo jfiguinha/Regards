@@ -1489,7 +1489,7 @@ cl_mem COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, c
 		COpenCLFilter openclFilter(context);
 		if (inputData != nullptr)
 		{
-			yPicture = openclFilter.ConvertToY(inputData, height, height, "ConvertToYUchar");
+			yPicture = openclFilter.ConvertToY(inputData, width, height, "ConvertToYUchar");
 		}
 
 		long size = width * height;

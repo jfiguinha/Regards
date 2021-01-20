@@ -92,14 +92,25 @@ public:
 		}
 
 		if (copyFrameBuffer != nullptr)
+		{
+			av_freep(&copyFrameBuffer->data[0]);
 			av_frame_free(&copyFrameBuffer);
+		}
+			
 		copyFrameBuffer = nullptr;
 
 		if (dst != nullptr)
+		{
+			av_freep(&dst->data[0]);
 			av_frame_free(&dst);
+		}
 
 		if (dst_hardware != nullptr)
+		{
+			av_freep(&dst_hardware->data[0]);
 			av_frame_free(&dst_hardware);
+		}
+			
 
 		if (scaleContext != nullptr)
 			sws_freeContext(scaleContext);
@@ -120,6 +131,9 @@ public:
 
 		if (bitmapCopy != nullptr)
 			delete bitmapCopy;
+
+		if (bitmapData != nullptr)
+			delete bitmapData;
 	};
 
 	static void DisplayPreview(void * data);
@@ -137,10 +151,7 @@ public:
 
 private:
 
-	AVFrame * RgbToYuv(uint8_t * convertedFrameBuffer, int width, int height, AVFrame * dec_frame);
-	AVFrame * ApplyFilter(AVFrame * sw_frame);
-	AVFrame * RgbToYuv(int width, int height, AVFrame * dec_frame, CFiltreEffet * filtre);
-
+	void VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	int ProcessEncodeFile(AVFrame * dst);
 	int ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds);
 
@@ -209,4 +220,9 @@ private:
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
 	bool hardwareDecode = false;
 	bool yuvDecodeInit = false;
+	bool showpreview = false;
+
+	bool first = false;
+	bool deleteFrame = false;
+	bool first_frame = false;
 };

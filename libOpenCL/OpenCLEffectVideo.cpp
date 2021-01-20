@@ -524,6 +524,7 @@ void COpenCLEffectVideo::GetBitmap(CRegardsBitmap * bitmap, const bool &src)
 
 void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter)
 {
+
 	COpenCLFilter openclFilter(context);
 	cl_mem output = nullptr;
 

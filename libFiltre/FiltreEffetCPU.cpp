@@ -1316,6 +1316,7 @@ void CFiltreEffetCPU::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr
 	else
 		bitmap = pBitmap;
 
+	/*
 	int height_middle = widthOut / 2;
 	int width_middle = heightOut / 2;
 	uint8_t * src = bitmap->GetPtBitmap();
@@ -1354,6 +1355,61 @@ void CFiltreEffetCPU::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr
 			cb[cr_position] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
 			cr[cr_position] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
 		}
+	}
+	*/
+
+	int wrap, wrap3, x, y;
+	int r, g, b, r1, g1, b1;
+	uint8_t *p;
+	wrap = bitmap->GetBitmapWidth();
+	wrap3 = bitmap->GetBitmapWidth() * 4;
+	p = bitmap->GetPtBitmap();
+	for (y = 0; y < bitmap->GetBitmapHeight(); y += 2)
+	{
+		for (x = 0; x < bitmap->GetBitmapWidth(); x += 2)
+		{
+			r = p[2];
+			g = p[1];
+			b = p[0];
+			r1 = r;
+			g1 = g;
+			b1 = b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			p += wrap3;
+			lum += wrap;
+			r = p[2];
+			g = p[1];
+			b = p[0];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+
+			cb[0] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 +
+				FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cr[0] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
+				FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cb++;
+			cr++;
+			p += -wrap3 + 2 * 4;
+			lum += -wrap + 2;
+		}
+		p += wrap3;
+		lum += wrap;
 	}
 }
 

@@ -150,26 +150,24 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 #else
 
 	wxString decoder = "";
-
+	/*
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
-
-	CFFmpegTranscodingPimpl * transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
-	
+	*/
+	wxString fileTemp = CFileUtility::GetTempFile("video_temp.mp4", false);
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
 	}
 
-	wxString fileTemp = CFileUtility::GetTempFile("video_temp.mp4", true);
 
+	CFFmpegTranscodingPimpl * transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
 	transcodeFFmpeg->EncodeOneFrame(filename, fileTemp, position, &this->videoOptionCompress);
-
 	delete transcodeFFmpeg;
-
+	
 	CFFmpegDecodeFrame * decodeFrame = new CFFmpegDecodeFrame(fileTemp, decoder);
 	decodeFrame->GetFrameBitmapPosition(0);
 	picture = decodeFrame->GetBitmap();
