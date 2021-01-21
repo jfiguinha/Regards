@@ -154,10 +154,10 @@ void CShowPreview::OnShowNew(wxCommandEvent& event)
 void CShowPreview::MoveSlider(const int64_t &position)
 {
 	this->position = position;
-	UpdateBitmap(nullptr);
+	UpdateBitmap(nullptr,"");
 }
 
-void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
+void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension)
 {
 	CImageLoadingFormat * imageLoadingFormat = nullptr;
 	CRegardsBitmap * picture = nullptr;
@@ -174,14 +174,12 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
+		this->extension = extension;
 	}
 
 	wxString fileTemp = "";
 
-	if(this->videoOptionCompress.videoCodec == "VP8" || this->videoOptionCompress.videoCodec == "VP9")
-		fileTemp = CFileUtility::GetTempFile("video_temp.webm", true);
-	else
-		fileTemp = CFileUtility::GetTempFile("video_temp.mp4", true);
+	fileTemp = CFileUtility::GetTempFile("video_temp." + this->extension, true);
 
 	if(transcodeFFmpeg == nullptr)
 		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);

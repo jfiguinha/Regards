@@ -176,13 +176,25 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
 
 	wxFileName filepath(videoOutputFilename);
-	wxString extension = filepath.GetExt();
+	extension = filepath.GetExt();
 	if (extension == "mpeg")
 	{
 		cbVideoCodec->Clear();
 		cbVideoCodec->AppendString("MPEG2");
 		cbVideoCodec->SetStringSelection("MPEG2");
 		cbVideoProfile->SetStringSelection("None");
+	}
+	else if (extension == "mov")
+	{
+		cbVideoCodec->Clear();
+		cbVideoCodec->AppendString("H264");
+		cbVideoCodec->AppendString("H265");
+		cbVideoCodec->SetStringSelection("H264");
+		cbVideoProfile->SetStringSelection("Main");
+
+		cbAudioCodec->Clear();
+		cbAudioCodec->AppendString("AAC");
+		cbAudioCodec->SetStringSelection("AAC");
 	}
 	else if (extension == "mp4")
 	{
@@ -381,14 +393,14 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 	{
 		CVideoOptionCompress videoOptionCompress;
 		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress, extension);
 	}
 	else
 	{
 
 		CVideoOptionCompress videoOptionCompress;
 		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress);
+		previewDlg->UpdatePreview(&videoOptionCompress, extension);
 		previewDlg->Show();
 		btnPreview->SetLabelText("Refresh");
 	}

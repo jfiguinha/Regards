@@ -83,8 +83,8 @@ void CPreviewDlg::UpdatePreview()
 	showBitmapWindow->UpdateBitmap();
 }
 #else
-void CPreviewDlg::UpdatePreview(CVideoOptionCompress * videoOptionCompress)
+void CPreviewDlg::UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension)
 {
-	showBitmapWindow->UpdateBitmap(videoOptionCompress);
+	showBitmapWindow->UpdateBitmap(videoOptionCompress, extension);
 }
 #endif

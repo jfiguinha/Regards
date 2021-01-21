@@ -35,7 +35,7 @@ namespace Regards
 			void MoveSlider(const int64_t &position);
 			void ClickButton(const int &id) {};
 			void SetTrackBarPosition(const int &iPos) {};
-			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress);
+			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension);
 
 		private:
 
@@ -74,7 +74,7 @@ namespace Regards
 			CFFmpegTranscodingPimpl * transcodeFFmpeg = nullptr;
 			CFFmpegDecodeFrame * decodeFrame = nullptr;
 			CFFmpegDecodeFrame * decodeFrameOriginal = nullptr;
-
+			wxString extension;
 			bool transitionEnd;
 			wxString filename;
 			int progressValue;

@@ -260,7 +260,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	{
 
 		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", filename,
-				"mp4 files (*.mp4)|*.mp4|webm files (*.webm)|*.webm|mkv files (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+				"mp4 files (*.mp4)|*.mp4|webm files (*.webm)|*.webm|mov files (*.mov)|*.mov|mkv files (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
@@ -270,7 +270,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		wxFileName file_path(filepath);
 		wxString extension = file_path.GetExt();
 
-		if(extension != "mp4" && extension != "webm" && extension != "mpeg" && extension != "mkv")
+		if(extension != "mp4" && extension != "webm" && extension != "mov" && extension != "mkv")
 		{
 			switch (index)
 			{
@@ -281,6 +281,9 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				filepath += ".webm";
 				break;
 			case 2:
+				filepath += ".mov";
+				break;
+			case 3:
 				filepath += ".mkv";
 				break;
 			}

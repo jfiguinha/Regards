@@ -30,7 +30,7 @@ public:
 #ifdef NOTENCODE_FRAME
 	void UpdatePreview();
 #else
-	void UpdatePreview(CVideoOptionCompress * videoOptionCompress);
+	void UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension);
 #endif
 	//wxButton* btnCancel;
 	//wxButton* btnOK;

@@ -121,6 +121,7 @@ class CompressionAudioVideoOption: public wxDialog
 		CVideoEffectParameter * videoEffectParameter;
 		int ret = 0;
 		wxImage scale;
+		wxString extension;
 		bool skipEvent = false;
 		bool previewShow = false;
 		DECLARE_EVENT_TABLE()
