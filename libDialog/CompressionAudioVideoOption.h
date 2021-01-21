@@ -104,6 +104,8 @@ class CompressionAudioVideoOption: public wxDialog
 		void OnSetVideoDuration(wxCommandEvent& event);
 		void OnVideoSliderChange(wxCommandEvent& event);
 
+		void OnVideoCodecSelect(wxCommandEvent& event);
+
 		void OnSlideFromChange(wxDateEvent& event);
 		void OnSlideToChange(wxDateEvent& event);
 		void SetBitmap(const long &pos);
