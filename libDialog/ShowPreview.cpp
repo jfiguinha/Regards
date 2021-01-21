@@ -169,6 +169,14 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 	sliderVideo->Stop();
 }
 
+void CShowPreview::SlidePosChange(const int &position, const wxString &key)
+{
+	this->position = position;
+	decodeFrameOriginal->GetFrameBitmapPosition(position);
+	decodeFrameOriginal->GetBitmap(false)->VertFlipBuf();
+	ShowOriginal();
+}
+
 void CShowPreview::MoveSlider(const int64_t &position)
 {
 	this->position = position;

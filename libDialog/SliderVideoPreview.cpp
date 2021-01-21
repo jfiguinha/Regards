@@ -297,7 +297,7 @@ void CSliderVideoPreview::OnMouseMove(wxMouseEvent& event)
 		{
 			CalculTimePosition(xPos);
 			if (sliderEvent != nullptr)
-				sliderEvent->MoveSlider(secondTimePast);
+				sliderEvent->SlidePosChange(secondTimePast, "Move");
 		}
 	}
 

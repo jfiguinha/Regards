@@ -31,7 +31,7 @@ namespace Regards
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			//CRegardsBitmap* GetBitmap(const bool& source);
 			void UpdateScreenRatio();
-			void SlidePosChange(const int &position, const wxString &key) {};
+			void SlidePosChange(const int &position, const wxString &key);
 			void ZoomPos(const int &position) {};
 			void MoveSlider(const int64_t &position);
 			void ClickButton(const int &id) {};
