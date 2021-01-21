@@ -7,6 +7,7 @@
 #include "BitmapWndViewer.h"
 #include <wx/gauge.h>
 #include <VideoCompressOption.h>
+#include <wx/activityindicator.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
@@ -55,6 +56,9 @@ namespace Regards
 			void ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label);
 			void OnShowOriginal(wxCommandEvent& event);
 			void OnShowNew(wxCommandEvent& event);
+			void OnUpdatePicture(wxCommandEvent& event);
+
+			static void ThreadLoading(void * data);
 
 			CScrollbarWnd * scrollbar;
 			CPreviewToolbar * previewToolbar;
@@ -82,6 +86,7 @@ namespace Regards
 			int position = 0;
 			bool showOriginal = false;
 			bool isFirstPicture = true;
+			std::thread * threadStart = nullptr;
 		};
 	}
 }

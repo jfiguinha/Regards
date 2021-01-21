@@ -2441,7 +2441,10 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	nbframe = 0;
 	bool first = true;
 	cleanPacket = false;
-	isBuffer = true;
+	if(dataOutput == nullptr)
+		isBuffer = false;
+	else
+		isBuffer = true;
 	this->videoCompressOption = videoCompressOption;
 	processEnd = false;
 	showpreview = false;

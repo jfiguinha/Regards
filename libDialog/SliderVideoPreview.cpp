@@ -43,10 +43,16 @@ CSliderVideoPreview::CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSlide
 	
 	button.Create(0,0);
 
+
+	m_animation = new wxActivityIndicator(this, wxID_ANY);
+	m_animation->SetSize(wxSize(this->GetHeight(), this->GetHeight()));
+	m_animation->SetBackgroundColour(themeSlider.colorBack);
+	
 }
 
 CSliderVideoPreview::~CSliderVideoPreview()
 {
+	delete m_animation;
 }
 
 bool CSliderVideoPreview::IsMouseOver()
@@ -131,6 +137,17 @@ void CSliderVideoPreview::SetPastSecondTime(const int64_t &secondTime)
 	}
 }
 
+void CSliderVideoPreview::Start()
+{
+	m_animation->Show();
+	m_animation->Start();
+}
+
+void CSliderVideoPreview::Stop()
+{
+	m_animation->Stop();
+	m_animation->Hide();
+}
 
 int CSliderVideoPreview::DrawTimePast(wxDC * context, const wxString &libelle)
 {

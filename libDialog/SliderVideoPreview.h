@@ -3,6 +3,7 @@
 #include <EffectVideoParameter.h>
 #include <SliderInterface.h>
 #include "WindowMain.h"
+#include <wx/activityindicator.h>
 using namespace Regards::Window;
 
 #define PLAYBUTTONID 1
@@ -28,6 +29,9 @@ namespace Regards
 
 			void SetPlay();
 			void SetPause();
+
+			void Start();
+			void Stop();
 
 			float GetTimePos();
 
@@ -96,6 +100,7 @@ namespace Regards
 			int positionYSlider;
 			
 			CThemeSliderVideo themeSlider;
+			wxActivityIndicator * m_animation;
 		};
 
 	}
