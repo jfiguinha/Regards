@@ -99,6 +99,36 @@ int CFFmpegDecodeFrame::GetRotation()
 	return rotation;
 }
 
+void CFFmpegDecodeFrame::OpenFile(wxMemoryOutputStream * dataOutput, const wxString & filename)
+{
+	isBuffer = true;
+	size_t buffer_size = dataOutput->GetSize();
+	//size_t buffer_size = dataOutput->CopyTo(nullptr, 0);
+	//wxStreamBuffer* theBuffer = dataOutput->GetOutputStreamBuffer();
+	//theBuffer->
+	bd.size = buffer_size;
+	bd.data = (uint8_t *)malloc(bd.size + 1);
+	dataOutput->CopyTo(bd.data, bd.size);
+	bd.ptr = bd.data;
+
+	int ret = open_input_file(filename);
+	if (ret < 0)
+	{
+		char message[255];
+		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+
+		isOk = false;
+		cleanPacket = false;
+	}
+	else
+	{
+		isOk = true;
+		m_allowSeek = (filename != "-") && (filename.find("rtsp://") != 0) && (filename.find("udp://") != 0);
+		cleanPacket = true;
+	}
+}
+
 void CFFmpegDecodeFrame::OpenFile(const wxString & filename)
 {
 	int ret = open_input_file(filename);
@@ -211,15 +241,63 @@ enum AVPixelFormat CFFmpegDecodeFrame::get_hw_format(AVCodecContext *ctx,
 	return AV_PIX_FMT_NONE;
 }
 
+int CFFmpegDecodeFrame::read_packet(void *opaque, uint8_t *buf, int buf_size)
+{
+	struct buffer_data *bd = (struct buffer_data *)opaque;
+	buf_size = FFMIN(buf_size, bd->size);
+
+	if (!buf_size)
+		return AVERROR_EOF;
+	printf("ptr:%p size:%zu\n", bd->ptr, bd->size);
+
+	// copy internal buffer data to buf 
+	memcpy(buf, bd->ptr, buf_size);
+	bd->ptr += buf_size;
+	bd->size -= buf_size;
+
+	return buf_size;
+}
+
 int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 {
 	int ret;
 	unsigned int i;
 
-	ifmt_ctx = NULL;
-	if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToUTF8(filename), NULL, NULL)) < 0) {
-		av_log(NULL, AV_LOG_ERROR, "Cannot open input file\n");
-		return ret;
+	if (isBuffer)
+	{
+		if (!(ifmt_ctx = avformat_alloc_context())) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
+
+		avio_ctx_buffer = (uint8_t *)av_malloc(avio_ctx_buffer_size);
+		if (!avio_ctx_buffer) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
+		avio_ctx = avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size,
+			0, &bd, &read_packet, NULL, NULL);
+		if (!avio_ctx) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
+		ifmt_ctx->pb = avio_ctx;
+
+		ret = avformat_open_input(&ifmt_ctx, NULL, NULL, NULL);
+		if (ret < 0) {
+			fprintf(stderr, "Could not open input\n");
+			return ret;
+		}
+
+	}
+	else
+	{
+		ifmt_ctx = NULL;
+		if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToUTF8(filename), NULL, NULL)) < 0) {
+			av_log(NULL, AV_LOG_ERROR, "Cannot open input file\n");
+			return ret;
+		}
+
 	}
 
 	if ((ret = avformat_find_stream_info(ifmt_ctx, NULL)) < 0) {
@@ -550,4 +628,17 @@ void CFFmpegDecodeFrame::Release()
         stream_ctx = nullptr;
         ifmt_ctx = nullptr;
 	}
+
+	if (isBuffer && bd.data != nullptr)
+	{
+		/* note: the internal buffer could have changed, and be != avio_ctx_buffer */
+		if (avio_ctx)
+			av_freep(&avio_ctx->buffer);
+		avio_context_free(&avio_ctx);
+
+		free(bd.data);
+		bd.data = nullptr;
+		bd.ptr = nullptr;
+	}
+
 }

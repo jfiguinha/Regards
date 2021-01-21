@@ -1024,6 +1024,29 @@ wxString CFFmpegTranscodingPimpl::GetCodecNameForEncoder(AVCodecID vcodec, const
 	return nameCodecEncoder;
 }
 
+int CFFmpegTranscodingPimpl::write_packet(void *opaque, uint8_t *buf, int buf_size)
+{
+	wxMemoryOutputStream  * dataOutput = (wxMemoryOutputStream  *)opaque;
+	dataOutput->WriteAll(buf, buf_size);
+	/*
+	struct buffer_data *bd = (struct buffer_data *)opaque;
+	while (buf_size > bd->room) {
+		int64_t offset = bd->ptr - bd->buf;
+		bd->buf = (uint8_t *)av_realloc_f(bd->buf, 2, bd->size);
+		if (!bd->buf)
+			return AVERROR(ENOMEM);
+		bd->size *= 2;
+		bd->ptr = bd->buf + offset;
+		bd->room = bd->size - offset;
+	}
+	printf("write packet pkt_size:%d used_buf_size:%zu buf_size:%zu buf_room:%zu\n", buf_size, bd->ptr - bd->buf, bd->size, bd->room);
+	// copy buffer data to buffer_data buffer 
+	memcpy(bd->ptr, buf, buf_size);
+	bd->ptr += buf_size;
+	bd->room -= buf_size;
+	*/
+	return buf_size;
+}
 
 int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 {
@@ -1044,21 +1067,53 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	wxString extension = filepath.GetExt();
 
-	//ret = avformat_alloc_output_context2(&mkvVideo, av_guess_format("matroska", "c:\\Users\\MPM\\Desktop\\test.mkv", NULL), "mkv", filename);
+	if (isBuffer)
+	{
+		/*
+		// fill opaque structure used by the AVIOContext write callback 
+		bd.ptr = bd.buf = (uint8_t *)av_malloc(bd_buf_size);
+		if (!bd.buf) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
+		bd.size = bd.room = bd_buf_size;
+		*/
+		avio_ctx_buffer = (uint8_t *)av_malloc(avio_ctx_buffer_size);
+		if (!avio_ctx_buffer) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
+		avio_ctx = avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size,
+			1, dataOutput, NULL, &write_packet, NULL);
+		if (!avio_ctx) {
+			ret = AVERROR(ENOMEM);
+			return ret;
+		}
 
+		ret = avformat_alloc_output_context2(&ofmt_ctx, NULL, "mpegts", NULL);
 
-	if (extension == "mkv")
-		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", CConvertUtility::ConvertToUTF8(filename));
-	else if (extension == "webm")
-		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToUTF8(filename), NULL), "webm", CConvertUtility::ConvertToUTF8(filename));
-	else if (extension == "mpeg")
-		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("mpeg", CConvertUtility::ConvertToUTF8(filename), NULL), "mpeg", CConvertUtility::ConvertToUTF8(filename));
-	else
-		avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, CConvertUtility::ConvertToUTF8(filename));
-	if (!ofmt_ctx) {
-		av_log(NULL, AV_LOG_ERROR, "Could not create output context\n");
-		return AVERROR_UNKNOWN;
+		ofmt_ctx->pb = avio_ctx;
 	}
+	else
+	{
+
+
+		if (extension == "mkv")
+			avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", CConvertUtility::ConvertToUTF8(filename));
+		else if (extension == "webm")
+			avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToUTF8(filename), NULL), "webm", CConvertUtility::ConvertToUTF8(filename));
+		else if (extension == "mpeg")
+			avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("mpeg", CConvertUtility::ConvertToUTF8(filename), NULL), "mpeg", CConvertUtility::ConvertToUTF8(filename));
+		else
+			avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, CConvertUtility::ConvertToUTF8(filename));
+		if (!ofmt_ctx) {
+			av_log(NULL, AV_LOG_ERROR, "Could not create output context\n");
+			return AVERROR_UNKNOWN;
+		}
+	}
+
+	
+	//
 
 	for (i = 0; i < ifmt_ctx->nb_streams; i++) 
     {
@@ -1275,14 +1330,18 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 1);
 
-	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {
-		ret = avio_open(&ofmt_ctx->pb, CConvertUtility::ConvertToUTF8(filename), AVIO_FLAG_WRITE);
-		if (ret < 0) {
-			av_log(NULL, AV_LOG_ERROR, "Could not open output file '%s'", CConvertUtility::ConvertToUTF8(filename));
-			return ret;
+	if (!isBuffer)
+	{
+		if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {
+			ret = avio_open(&ofmt_ctx->pb, CConvertUtility::ConvertToUTF8(filename), AVIO_FLAG_WRITE);
+			if (ret < 0) {
+				av_log(NULL, AV_LOG_ERROR, "Could not open output file '%s'", CConvertUtility::ConvertToUTF8(filename));
+				return ret;
+			}
 		}
 	}
 
+	
 	/* init muxer, write output file header */
 	ret = avformat_write_header(ofmt_ctx, NULL);
 	if (ret < 0) {
@@ -2373,7 +2432,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 	return ret;
 }
 
-int CFFmpegTranscodingPimpl::EncodeOneFrame(const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption)
+int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption)
 {
 	int ret;
 	this->m_dlgProgress = m_dlgProgress;
@@ -2382,9 +2441,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(const wxString & input, const wxStri
 	nbframe = 0;
 	bool first = true;
 	cleanPacket = false;
+	isBuffer = true;
 	this->videoCompressOption = videoCompressOption;
 	processEnd = false;
 	showpreview = false;
+	this->outputFile = output;
+	this->dataOutput = dataOutput;
 
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
@@ -2485,15 +2547,23 @@ void CFFmpegTranscodingPimpl::Release()
         ifmt_ctx = nullptr;
 	}
 
+	if (isBuffer)
+	{
+		av_freep(&avio_ctx->buffer);
+		av_free(avio_ctx);
+	}
 
 	if (ofmt_ctx != nullptr)
 	{
-		if (ofmt_ctx && !(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
-			avio_closep(&ofmt_ctx->pb);
+		if (!isBuffer)
+			if (ofmt_ctx && !(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
+				avio_closep(&ofmt_ctx->pb);
 
 		avformat_free_context(ofmt_ctx);
         
         ofmt_ctx = nullptr;
 	}
+
+
 
 }

@@ -13,13 +13,19 @@ extern "C"
 	#include <libavutil/timestamp.h>
 	#include <libavutil/display.h>
 }
-
+#include <wx/mstream.h>
 class CRegardsBitmap;
 class CompressVideo;
 
 class CFFmpegDecodeFrame
 {
 public:
+
+	struct buffer_data {
+		uint8_t *ptr;
+		uint8_t * data;
+		size_t size; ///< size left in the buffer
+	};
 
 	typedef struct StreamContext {
 		AVCodecContext *dec_ctx;
@@ -28,6 +34,7 @@ public:
 		AVFrame *dec_frame;
 	} StreamContext;
 
+	void OpenFile(wxMemoryOutputStream * dataOutput, const wxString & filename);
 	CFFmpegDecodeFrame(const wxString &acceleratorHardware);
 	~CFFmpegDecodeFrame();
 	void EndTreatment();
@@ -57,6 +64,7 @@ private:
 	double pourcentage = 0;
 	bool processEnd = true;
 	int nbframePerSecond = 0;
+	static int read_packet(void *opaque, uint8_t *buf, int buf_size);
 	AVBufferRef *hw_device_ctx = NULL;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
@@ -85,4 +93,12 @@ private:
 	int64_t startTime = 0;
 	bool isOk = true;
 	CRegardsBitmap * image;
+
+
+	struct buffer_data bd = { 0 };
+	bool isBuffer = false;
+
+	AVIOContext *avio_ctx = NULL;
+	uint8_t *avio_ctx_buffer = NULL;
+	size_t avio_ctx_buffer_size = 4096;
 };

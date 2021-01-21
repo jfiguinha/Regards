@@ -170,6 +170,8 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, cons
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
 	*/
+
+	wxMemoryOutputStream dataOutput;
 	
 	if (videoOptionCompress != nullptr)
 	{
@@ -183,13 +185,13 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, cons
 
 	if(transcodeFFmpeg == nullptr)
 		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
-	transcodeFFmpeg->EncodeOneFrame(filename, fileTemp, position, &this->videoOptionCompress);
+	transcodeFFmpeg->EncodeOneFrame(&dataOutput, filename, fileTemp, position, &this->videoOptionCompress);
 	transcodeFFmpeg->EndTreatment();
 	
 	if(decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame(decoder);
 
-	decodeFrame->OpenFile(fileTemp);
+	decodeFrame->OpenFile(&dataOutput, fileTemp);
 	decodeFrame->GetFrameBitmapPosition(0);
 	decodeFrame->GetBitmap(false)->VertFlipBuf();
 	decodeFrame->EndTreatment();

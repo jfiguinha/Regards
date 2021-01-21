@@ -12,6 +12,8 @@ extern "C"
 	#include <libswscale/swscale.h>
 	#include <libavutil/timestamp.h>
 }
+
+#include <wx/mstream.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <OpenCLContext.h>
@@ -20,6 +22,7 @@ extern "C"
 #include <EffectVideoParameter.h>
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
+
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
@@ -45,6 +48,13 @@ public:
 
 		AVFrame *dec_frame;
 	} StreamContext;
+
+	typedef struct buffer_data {
+		uint8_t *buf;
+		size_t size;
+		uint8_t *ptr;
+		size_t room; ///< size left in the buffer
+	}buffer_data;
 
 
 	CFFmpegTranscodingPimpl(COpenCLEngine * openCLEngine, const wxString &acceleratorHardware)
@@ -149,13 +159,15 @@ public:
 		processEnd = true;
 	}
 
-	int EncodeOneFrame(const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption);
+	int EncodeOneFrame(wxMemoryOutputStream * dataOutput, const wxString & input, const wxString & output, const long &time, CVideoOptionCompress * videoCompressOption);
 	int EncodeFile(const wxString & input, const wxString & output, CompressVideo * m_dlgProgress, CVideoOptionCompress * videoCompressOption);
 	int OpenFile(const wxString & input, const wxString & output);
 	
 
 
 private:
+
+	static int write_packet(void *opaque, uint8_t *buf, int buf_size);
 
 	void VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	int ProcessEncodeFile(AVFrame * dst);
@@ -231,4 +243,12 @@ private:
 	bool deleteFrame = false;
 	bool first_frame = true;
 	bool first_yuv = true;
+
+	bool isBuffer = false;
+	
+	AVIOContext *avio_ctx = NULL;
+	wxMemoryOutputStream * dataOutput = nullptr;
+	uint8_t *avio_ctx_buffer = NULL;
+	size_t avio_ctx_buffer_size = 4096;
+	wxString outputFile;
 };
