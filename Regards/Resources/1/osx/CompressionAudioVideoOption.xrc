@@ -87,6 +87,24 @@
 								<pos>15,260</pos>
 								<checked>1</checked>
 							</object>
+							<object class="wxStaticBox" name="ID_STATICBOX1">
+								<label>Preset Option</label>
+								<pos>180,140</pos>
+								<size>200,70</size>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
+								<pos>200,170</pos>
+								<value>Medium</value>
+								<content>
+									<item>VeryFast</item>
+									<item>Faster</item>
+									<item>Fast</item>
+									<item>Medium</item>
+									<item>Slow</item>
+									<item>Slower</item>
+									<item>VerySlow</item>
+								</content>
+							</object>
 							<object class="wxStaticText" name="ID_STATICTEXT2">
 								<label>Quality : </label>
 								<pos>32,260</pos>
@@ -151,7 +169,6 @@
 								<content>
 									<item>AAC</item>
 									<item>MP3</item>
-									<item>WAV</item>
 									<item>FLAC</item>
 									<item>VORBIS</item>
 								</content>
@@ -408,6 +425,13 @@
 						<border>5</border>
 						<object class="wxButton" name="ID_BTOK">
 							<label>OK</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTRE|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_BTPREVIEW">
+							<label>Preview</label>
 						</object>
 					</object>
 					<object class="sizeritem">

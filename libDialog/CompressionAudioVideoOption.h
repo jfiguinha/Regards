@@ -25,7 +25,7 @@ class CompressionAudioVideoOption: public wxDialog
 {
 	public:
 
-		CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine);
+		CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, const wxString &videoOutputFilename, COpenCLEngine * openCLEngine);
 		virtual ~CompressionAudioVideoOption();
 		void GetCompressionOption(CVideoOptionCompress * videoOptionCompress);
 

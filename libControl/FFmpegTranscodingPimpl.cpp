@@ -462,26 +462,37 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 
 	AVDictionary *param = 0;
 
+	if (pCodecCtx->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
+		/* just for testing, we also add B frames */
+		pCodecCtx->max_b_frames = 2;
+	}
+	if (pCodecCtx->codec_id == AV_CODEC_ID_MPEG1VIDEO) {
+		/* needed to avoid using macroblocks in which some coeffs overflow
+		   this doesnt happen with normal video, it just happens here as the
+		   motion of the chroma plane doesnt match the luma plane */
+		pCodecCtx->mb_decision = 2;
+	}
+
+
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H264 && videoCompressOption->videoPreset != "" && encoderName == "")
 	{
 		av_dict_set(&param, "start_time_realtime", 0, 0);
 		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
 		av_opt_set(pCodecCtx->priv_data, "tune", "zerolatency", 0);
+		av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
 	}
-
 	/*
 	if (pCodecCtx->codec_id == AV_CODEC_ID_H265 && encoderName == ""  && videoCompressOption->videoPreset != "")
 	{
 		//preset: ultrafast, superfast, veryfast, faster, fast,
 			//medium, slow, slower, veryslow, placebo
-		av_opt_set(pCodecCtx->priv_data, "preset", "fast", 0);
+		av_opt_set(pCodecCtx->priv_data, "preset", videoCompressOption->videoPreset, 0);
 		//tune: psnr, ssim, zerolatency, fastdecode
-		av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
+		//av_opt_set(pCodecCtx->priv_data, "tune", "zero-latency", 0);
 		//profile: main, main10, mainstillpicture
-		av_opt_set(pCodecCtx->priv_data, "profile", "main", 0);
+		//av_opt_set(pCodecCtx->priv_data, "profile", videoCompressOption->encoder_profile, 0);
 	}
 	*/
-
 	if (videoCompressOption->videoQualityOrBitRate == 0)
 	{
 		/* Average bitrate */
@@ -1035,10 +1046,13 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	//ret = avformat_alloc_output_context2(&mkvVideo, av_guess_format("matroska", "c:\\Users\\MPM\\Desktop\\test.mkv", NULL), "mkv", filename);
 
+
 	if (extension == "mkv")
 		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", CConvertUtility::ConvertToUTF8(filename));
 	else if (extension == "webm")
 		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToUTF8(filename), NULL), "webm", CConvertUtility::ConvertToUTF8(filename));
+	else if (extension == "mpeg")
+		avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("mpeg", CConvertUtility::ConvertToUTF8(filename), NULL), "mpeg", CConvertUtility::ConvertToUTF8(filename));
 	else
 		avformat_alloc_output_context2(&ofmt_ctx, NULL, NULL, CConvertUtility::ConvertToUTF8(filename));
 	if (!ofmt_ctx) {
@@ -1166,6 +1180,9 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					av_log(NULL, AV_LOG_FATAL, "Necessary encoder not found\n");
 					return AVERROR_INVALIDDATA;
 				}
+
+
+
 				enc_ctx = avcodec_alloc_context3(encoder);
 				if (!enc_ctx) {
 					av_log(NULL, AV_LOG_FATAL, "Failed to allocate the encoder context\n");
@@ -1178,6 +1195,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 				{
 					AVDictionary *param = setEncoderParam(VIDEO_CODEC, enc_ctx, dec_ctx, encoderHardware);
+					enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 					int ret = avcodec_open2(enc_ctx, encoder, &param);
 					if (ret < 0) {
@@ -1229,10 +1247,6 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					}
 				}
 
-
-
-
-
 				ret = avcodec_parameters_from_context(out_stream->codecpar, enc_ctx);
 				if (ret < 0) {
 					av_log(NULL, AV_LOG_ERROR, "Failed to copy encoder parameters to output stream #%u\n", i);
@@ -1258,6 +1272,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 		}
 
 	}
+
 	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 1);
 
 	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {

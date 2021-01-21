@@ -114,24 +114,29 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 }
 
-void CShowPreview::ShowOriginal()
+void CShowPreview::ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label)
 {
 	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
-	imageLoadingFormat->SetPicture(decodeFrameOriginal->GetBitmap(false));
-	bitmapWindow->SetBitmap(imageLoadingFormat, false);
-	
-	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
-	dlg->SetTitle("Original Video");
+	imageLoadingFormat->SetPicture(decodeFrame->GetBitmap(false));
+	if (isFirstPicture)
+		bitmapWindow->SetBitmap(imageLoadingFormat, false);
+	else
+		bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
 
+	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
+	dlg->SetTitle(label);
+
+	isFirstPicture = false;
+}
+
+void CShowPreview::ShowOriginal()
+{
+	ShowPicture(decodeFrameOriginal, "Original Video");
 }
 
 void CShowPreview::ShowNew()
 {
-	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
-	imageLoadingFormat->SetPicture(decodeFrame->GetBitmap(false));
-	bitmapWindow->SetBitmap(imageLoadingFormat, false);
-	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
-	dlg->SetTitle("Export Video");
+	ShowPicture(decodeFrame, "Export Video");
 }
 
 void CShowPreview::OnShowOriginal(wxCommandEvent& event)
@@ -174,7 +179,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress)
 	wxString fileTemp = "";
 
 	if(this->videoOptionCompress.videoCodec == "VP8" || this->videoOptionCompress.videoCodec == "VP9")
-		fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
+		fileTemp = CFileUtility::GetTempFile("video_temp.webm", true);
 	else
 		fileTemp = CFileUtility::GetTempFile("video_temp.mp4", true);
 

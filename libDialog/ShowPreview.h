@@ -52,7 +52,7 @@ namespace Regards
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-
+			void ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label);
 			void OnShowOriginal(wxCommandEvent& event);
 			void OnShowNew(wxCommandEvent& event);
 
@@ -81,6 +81,7 @@ namespace Regards
 			double timeTotal;
 			int position = 0;
 			bool showOriginal = false;
+			bool isFirstPicture = true;
 		};
 	}
 }

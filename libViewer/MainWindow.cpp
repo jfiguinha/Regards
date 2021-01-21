@@ -258,15 +258,41 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 
 	if (IsVideo())
 	{
+
 		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", filename,
 				"mp4 files (*.mp4)|*.mp4|webm files (*.webm)|*.webm|mkv files (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
+		wxString filepath = saveFileDialog.GetPath();
+		int index = saveFileDialog.GetFilterIndex();
+
+		wxFileName file_path(filepath);
+		wxString extension = file_path.GetExt();
+
+		if(extension != "mp4" && extension != "webm" && extension != "mpeg" && extension != "mkv")
+		{
+			switch (index)
+			{
+			case 0:
+				filepath += ".mp4";
+				break;
+			case 1:
+				filepath += ".webm";
+				break;
+			case 2:
+				filepath += ".mkv";
+				break;
+			}
+		}
+
+
+		//wxFileName file_name(filepath);
+
 		CVideoControlSoft * videoWindow = (CVideoControlSoft *)this->FindWindowById(VIDEOCONTROL);
 		COpenCLEngine * openCLEngine = videoWindow->GetOpenCLEngine();
 
-		CompressionAudioVideoOption compressAudioVideoOption(this, filename, openCLEngine);
+		CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath, openCLEngine);
 		compressAudioVideoOption.ShowModal();
 		if (compressAudioVideoOption.IsOk())
 		{
@@ -285,7 +311,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				}
 				*/
 				ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
-				ffmpegEncoder->EncodeFile(this, filename, saveFileDialog.GetPath(), videoCompressOption);
+				ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
 				
 			}
 		}

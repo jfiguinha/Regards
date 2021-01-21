@@ -43,7 +43,7 @@ static void GetTimeToHourMinuteSecond(const long &timeToSplit, int &hour, int &m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine)
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, const wxString &videoOutputFilename, COpenCLEngine * openCLEngine)
 {
     isOk = false;
 	this->videoFilename = videoFilename;
@@ -175,6 +175,41 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
 	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
 
+	wxFileName filepath(videoOutputFilename);
+	wxString extension = filepath.GetExt();
+	if (extension == "mpeg")
+	{
+		cbVideoCodec->Clear();
+		cbVideoCodec->AppendString("MPEG2");
+		cbVideoCodec->SetStringSelection("MPEG2");
+		cbVideoProfile->SetStringSelection("None");
+	}
+	else if (extension == "mp4")
+	{
+		cbVideoCodec->Clear();
+		cbVideoCodec->AppendString("H264");
+		cbVideoCodec->AppendString("H265");
+		cbVideoCodec->AppendString("MPEG4");
+		cbVideoCodec->SetStringSelection("H264");
+		cbVideoProfile->SetStringSelection("Main");
+
+		cbAudioCodec->Clear();
+		cbAudioCodec->AppendString("AAC");
+		cbAudioCodec->AppendString("MP3");
+		cbAudioCodec->SetStringSelection("AAC");
+	}
+	else if (extension == "webm")
+	{
+		cbVideoCodec->Clear();
+		cbVideoCodec->AppendString("VP8");
+		cbVideoCodec->AppendString("VP9");
+		cbVideoCodec->SetStringSelection("VP9");
+		cbVideoProfile->SetStringSelection("Auto");
+		
+		cbAudioCodec->Clear();
+		cbAudioCodec->AppendString("VORBIS");
+		cbAudioCodec->SetStringSelection("VORBIS");
+	}
 
 #ifdef NOTENCODE_FRAME
 	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, videoEffectParameter);
@@ -186,24 +221,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 
 	
-	wxFileName filepath(videoFilename);
-	wxString extension = filepath.GetExt();
-	if (extension == "mp4")
-	{
-		cbVideoCodec->Clear();
-		cbVideoCodec->AppendString("H264");
-		cbVideoCodec->AppendString("H265");
-		cbVideoCodec->AppendString("MPEG4");
-		cbVideoCodec->AppendString("MPEG2");
-		cbVideoCodec->SetLabel("H264");
-	}
-	else if (extension == "webm")
-	{
-		cbVideoCodec->Clear();
-		cbVideoCodec->AppendString("VP8");
-		cbVideoCodec->AppendString("VP9");
-		cbVideoCodec->SetLabel("VP9");
-	}
+
 }
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
@@ -236,13 +254,15 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoPreset->AppendString("Placebo");
 
 		cbVideoPreset->SetLabel("Medium");
+		cbVideoProfile->SetLabel("Main");
 	}
 	else if (codec == "H265")
 	{
 		cbVideoProfile->AppendString("Auto");
 		cbVideoProfile->AppendString("Main");
 		cbVideoProfile->AppendString("Main Still Picture");
-
+		cbVideoPreset->AppendString("None");
+		/*
 		cbVideoPreset->AppendString("UltraFast");
 		cbVideoPreset->AppendString("SuperFast");
 		cbVideoPreset->AppendString("VeryFast");
@@ -253,20 +273,23 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoPreset->AppendString("Slower");
 		cbVideoPreset->AppendString("VerySlow");
 		cbVideoPreset->AppendString("Placebo");
-
-		cbVideoPreset->SetLabel("Medium");
+		*/
+		cbVideoPreset->SetLabel("None");
+		cbVideoProfile->SetLabel("Main");
 	}
 	else if (codec == "MPEG4")
 	{
 		cbVideoProfile->AppendString("Auto");
 		cbVideoPreset->AppendString("None");
 		cbVideoPreset->SetLabel("None");
+		cbVideoProfile->SetLabel("Auto");
 	}
 	else if (codec == "MPEG2")
 	{
 		cbVideoProfile->AppendString("Auto");
 		cbVideoPreset->AppendString("None");
 		cbVideoPreset->SetLabel("None");
+		cbVideoProfile->SetLabel("Auto");
 	}
 	else if (codec == "VP8" || codec == "VP9")
 	{
@@ -280,8 +303,9 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoPreset->AppendString("VerySlow");
 
 		cbVideoPreset->SetLabel("Medium");
+		cbVideoProfile->SetLabel("Auto");
 	}
-	cbVideoProfile->SetLabel("Auto");
+	
 	
 }
 
@@ -572,11 +596,13 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 			videoOptionCompress->audioBitRate = 128;
 		//Video
 		videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
-		if (videoOptionCompress->encoder_profile == "")
-			videoOptionCompress->encoder_profile = "main";
+
             
         if(cbVideoProfile != nullptr)
             videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
+
+		if (videoOptionCompress->encoder_profile == "")
+			videoOptionCompress->encoder_profile = "main";
 
 		if (videoOptionCompress->videoCodec == "")
 			videoOptionCompress->videoCodec = "H264";
