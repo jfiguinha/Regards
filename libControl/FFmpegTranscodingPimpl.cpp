@@ -1069,15 +1069,6 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	if (isBuffer)
 	{
-		/*
-		// fill opaque structure used by the AVIOContext write callback 
-		bd.ptr = bd.buf = (uint8_t *)av_malloc(bd_buf_size);
-		if (!bd.buf) {
-			ret = AVERROR(ENOMEM);
-			return ret;
-		}
-		bd.size = bd.room = bd_buf_size;
-		*/
 		avio_ctx_buffer = (uint8_t *)av_malloc(avio_ctx_buffer_size);
 		if (!avio_ctx_buffer) {
 			ret = AVERROR(ENOMEM);
@@ -1090,7 +1081,15 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 			return ret;
 		}
 
-		ret = avformat_alloc_output_context2(&ofmt_ctx, NULL, "mpegts", NULL);
+		wxFileName filepath(filename);
+		extension = filepath.GetExt();
+
+		if(extension == "webm")
+			ret = avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("webm", CConvertUtility::ConvertToUTF8(filename), NULL), "webm", NULL);
+		else if (extension == "mkv")
+			ret = avformat_alloc_output_context2(&ofmt_ctx, av_guess_format("matroska", CConvertUtility::ConvertToUTF8(filename), NULL), "mkv", NULL);
+		else
+			ret = avformat_alloc_output_context2(&ofmt_ctx, NULL, "mpegts", NULL);
 
 		ofmt_ctx->pb = avio_ctx;
 	}

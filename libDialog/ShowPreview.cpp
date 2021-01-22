@@ -171,14 +171,14 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 
 void CShowPreview::SlidePosChange(const int &position, const wxString &key)
 {
+	moveSlider = true;
 	this->position = position;
-	decodeFrameOriginal->GetFrameBitmapPosition(position);
-	decodeFrameOriginal->GetBitmap(false)->VertFlipBuf();
-	ShowOriginal();
+	UpdateBitmap(nullptr, "");
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
 {
+	moveSlider = false;
 	this->position = position;
 	UpdateBitmap(nullptr,"");
 }
@@ -194,15 +194,20 @@ void CShowPreview::ThreadLoading(void * data)
 
 	wxString fileTemp = "";
 
-	fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
+	if (!showPreview->moveSlider)
+	{
+		//fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
+		fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
 
-	showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
-	showPreview->transcodeFFmpeg->EndTreatment();
+		showPreview->transcodeFFmpeg->EncodeOneFrame(&dataOutput, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
+		showPreview->transcodeFFmpeg->EndTreatment();
 
-	showPreview->decodeFrame->OpenFile(fileTemp);
-	showPreview->decodeFrame->GetFrameBitmapPosition(0);
-	showPreview->decodeFrame->GetBitmap(false)->VertFlipBuf();
-	showPreview->decodeFrame->EndTreatment();
+		showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
+		showPreview->decodeFrame->GetFrameBitmapPosition(0);
+		showPreview->decodeFrame->GetBitmap(false)->VertFlipBuf();
+		showPreview->decodeFrame->EndTreatment();
+	}
+
 
 
 	showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
