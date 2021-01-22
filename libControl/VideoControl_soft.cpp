@@ -2253,7 +2253,7 @@ void CVideoControlSoft::CopyFrame(AVFrame * frame)
 
 	if (oldFrame != nullptr)
 	{
-		av_freep(&oldFrame->data[0]);
+		//av_freep(&oldFrame->data[0]);
 		av_frame_free(&oldFrame);
 	}
 		

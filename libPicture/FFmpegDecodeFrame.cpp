@@ -184,7 +184,7 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 
 	if (copyFrameBuffer != nullptr)
 	{
-		av_freep(&copyFrameBuffer->data[0]);
+		//av_freep(&copyFrameBuffer->data[0]);
 		av_frame_free(&copyFrameBuffer);
 	}
 		
@@ -192,7 +192,7 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 
 	if (dst != nullptr)
 	{
-		av_freep(&dst->data[0]);
+		//av_freep(&dst->data[0]);
 		av_frame_free(&dst);
 	}
 		
@@ -620,7 +620,7 @@ void CFFmpegDecodeFrame::Release()
 	{
 		for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 			avcodec_free_context(&stream_ctx[i].dec_ctx);
-			av_freep(&stream_ctx[i].dec_frame->data[0]);
+			//av_freep(&stream_ctx[i].dec_frame->data[0]);
 			av_frame_free(&stream_ctx[i].dec_frame);
 		}
 		av_free(stream_ctx);

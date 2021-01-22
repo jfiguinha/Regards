@@ -2533,11 +2533,11 @@ void CFFmpegTranscodingPimpl::Release()
 			if (filter_ctx && filter_ctx[i].filter_graph) 
 			{
 				avfilter_graph_free(&filter_ctx[i].filter_graph);
-				av_freep(&filter_ctx[i].filtered_frame->data[0]);
+				//av_freep(&filter_ctx[i].filtered_frame->data[0]);
 				av_frame_free(&filter_ctx[i].filtered_frame);
 			}
 
-			av_freep(&stream_ctx[i].dec_frame->data[0]);
+			//av_freep(&stream_ctx[i].dec_frame->data[0]);
 			av_frame_free(&stream_ctx[i].dec_frame);
 		}
 		av_free(filter_ctx);
