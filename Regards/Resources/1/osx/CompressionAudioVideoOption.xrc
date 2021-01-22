@@ -89,11 +89,11 @@
 							</object>
 							<object class="wxStaticBox" name="ID_STATICBOX1">
 								<label>Preset Option</label>
-								<pos>180,140</pos>
+								<pos>180,180</pos>
 								<size>200,70</size>
 							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
-								<pos>200,170</pos>
+								<pos>200,210</pos>
 								<value>Medium</value>
 								<content>
 									<item>VeryFast</item>
