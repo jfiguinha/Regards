@@ -227,7 +227,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 			}
 			if (ffmpeg_trans->copyFrameBuffer != nullptr)
 			{
-				av_freep(&ffmpeg_trans->copyFrameBuffer[0]);
+				//av_freep(&ffmpeg_trans->copyFrameBuffer[0]);
 				av_frame_free(&ffmpeg_trans->copyFrameBuffer);
 			}
 			ffmpeg_trans->copyFrameBuffer = nullptr;
