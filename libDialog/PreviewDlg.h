@@ -27,14 +27,7 @@ public:
 #endif
 	~CPreviewDlg();
 
-#ifdef NOTENCODE_FRAME
-	void UpdatePreview();
-#else
 	void UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension);
-#endif
-	//wxButton* btnCancel;
-	//wxButton* btnOK;
-	wxStaticBitmap * bitmap;
 	wxPanel * panel;
 protected:
 	void OnClose(wxCloseEvent& event);

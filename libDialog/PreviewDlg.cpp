@@ -21,11 +21,7 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
-	//btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	//btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-	//Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnOKClick);
-	//Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CPreviewDlg::OnbtnCancelClick);
+	
 
 	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -34,23 +30,19 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
-#ifdef NOTENCODE_FRAME
-	showBitmapWindow = new CShowPreview(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoEffectParameter);
-#else
-	showBitmapWindow = new CShowPreview(bitmap->GetParent(), SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
-#endif
-
-	showBitmapWindow->SetSize(bitmap->GetPosition().x, bitmap->GetPosition().y, bitmap->GetSize().x, bitmap->GetSize().y);
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
 	showBitmapWindow->Show(true);
-	bitmap->Show(false);
+
 	//panel->AddChild(showBitmapWindow);
-	//bitmap->Connect(wxEVT_SIZE, wxSizeEventHandler(CPreviewDlg::OnSize));
-    
-    this->SetSize(640,480);
 
 	panel->Bind(wxEVT_SIZE, &CPreviewDlg::OnSize, this);
 
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CPreviewDlg::OnClose));
+
+
+	panel->SetSize(640, 480);
+	this->SetSize(640, 480);
+	showBitmapWindow->SetFocus();
 }
 
 void CPreviewDlg::OnClose(wxCloseEvent& event)

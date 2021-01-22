@@ -224,17 +224,9 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-#ifdef NOTENCODE_FRAME
-	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, videoEffectParameter);
-#else
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
-#endif
-
-
-	
-
 }
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
@@ -403,6 +395,10 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 		GetCompressionOption(&videoOptionCompress);
 		previewDlg->UpdatePreview(&videoOptionCompress, extension);
 		previewDlg->Show();
+		wxPoint pt = this->GetPosition();
+		wxSize size = this->GetSize();
+		pt.x += size.GetWidth();
+		previewDlg->SetPosition(pt);
 		btnPreview->SetLabelText("Refresh");
 	}
 

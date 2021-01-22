@@ -46,6 +46,8 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	this->videoOptionCompress = *videoOptionCompress;
 	this->openCLEngine = openCLEngine;
 
+	
+
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -120,6 +122,8 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	
 	//m_animation->LoadFile(resourcePath + "/loading.gif");
+
+	//this->SetSize(640, 480);
 }
 
 void CShowPreview::ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label)
@@ -131,8 +135,8 @@ void CShowPreview::ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString 
 	else
 		bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
 
-	CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
-	dlg->SetTitle(label);
+	//CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
+	//dlg->SetTitle(label);
 
 	isFirstPicture = false;
 }
