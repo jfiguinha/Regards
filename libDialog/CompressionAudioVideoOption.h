@@ -11,6 +11,16 @@
 #include <wx/dateevt.h>
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
+
+namespace Regards
+{
+	namespace Control
+	{
+		class CShowPreview;
+	}
+}
+using namespace Regards::Control;
+
 //(*Headers(TiffOption)
 //*)
 class CPreviewDlg;
@@ -81,6 +91,8 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * cksepia;
 		wxCheckBox * cknoise;
 		wxCheckBox * ckenablefilter;
+		wxPanel * panel;
+		wxStaticBitmap * bitmapPreview;
 	protected:
 
 		//(*Identifiers(TiffOption)
@@ -116,7 +128,7 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		wxString videoFilename;
 		CThumbnailVideo * ffmpegTranscoding;
-		CPreviewDlg * previewDlg;
+		//CPreviewDlg * previewDlg;
 		CSliderVideoSelection * sliderVideoPosition;
 		CVideoEffectParameter * videoEffectParameter;
 		int ret = 0;
@@ -124,5 +136,6 @@ class CompressionAudioVideoOption: public wxDialog
 		wxString extension;
 		bool skipEvent = false;
 		bool previewShow = false;
+		CShowPreview * showBitmapWindow;
 		DECLARE_EVENT_TABLE()
 };
