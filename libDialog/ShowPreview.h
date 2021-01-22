@@ -4,7 +4,7 @@
 #include "PreviewToolbar.h"
 #include "SliderVideoPreview.h"
 #include "ScrollbarWnd.h"
-#include "BitmapWndViewer.h"
+#include "BitmapWnd.h"
 #include <wx/gauge.h>
 #include <VideoCompressOption.h>
 #include <wx/activityindicator.h>
@@ -63,8 +63,7 @@ namespace Regards
 			CScrollbarWnd * scrollbar;
 			CPreviewToolbar * previewToolbar;
 			CSliderVideoPreview * sliderVideo;
-			CBitmapWndViewer * bitmapWindow;
-			CBitmapInterface * bitmapInterface;
+			CBitmapWnd * bitmapWindow;
 			CRegardsConfigParam * configRegards;
 			CImageLoadingFormat * tempImage;
 			
@@ -89,6 +88,7 @@ namespace Regards
 			std::thread * threadStart = nullptr;
 			bool moveSlider = false;
             bool oldShowOriginal = false;
+			bool firstTime = true;
 		};
 	}
 }

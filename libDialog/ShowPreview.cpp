@@ -55,7 +55,6 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	CThemeSlider themeSlider;
 	std::vector<int> value = { 1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
 
-	this->bitmapInterface = bitmapInterface;
 
 	if (config != nullptr)
 	{
@@ -72,10 +71,8 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	themeBitmap.colorScreen = wxColour("black");
 
-	bitmapWindow = new CBitmapWndViewer(this, bitmapViewerId, previewToolbar, mainViewerId, themeBitmap, bitmapInterface);
-	if (bitmapWindow != nullptr)
-		bitmapWindow->FixArrowNavigation(false);
-
+	bitmapWindow = new CBitmapWnd(this, bitmapViewerId, previewToolbar, 0, themeBitmap);
+	
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
 
@@ -171,6 +168,15 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 		ShowOriginal();
 	else
 		ShowNew();
+
+	if (firstTime)
+	{
+		if (previewToolbar != nullptr)
+			previewToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
+
+		firstTime = false;
+	}
+
 
 	sliderVideo->Stop();
 }
@@ -367,6 +373,8 @@ bool CShowPreview::SetBitmap(CImageLoadingFormat * bitmap)
 
 	if (bitmapWindow != nullptr)
 		bitmapWindow->SetBitmap(bitmap, false);
+
+
 
 	return true;
 }

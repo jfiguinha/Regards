@@ -167,6 +167,15 @@ namespace Regards
 
 			virtual void Resize();
 
+			virtual CDraw * GetDessinPt()
+			{
+				return nullptr;
+			}
+			virtual CRgbaquad GetBackColor() {
+				CRgbaquad color;
+				return color;
+			};
+
 #ifdef KeyPress
 #undef KeyPress
 #endif			
