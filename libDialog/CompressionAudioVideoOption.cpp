@@ -168,7 +168,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	wxColour bgColor = labelTimeStart->GetParent()->GetBackgroundColour();
 	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
 	sliderVideoPosition->SetPosition(slVideo->GetPosition());
-	wxSize size = wxSize(400, theme.GetHeight());
+	wxSize size = wxSize(slVideo->GetSize().x, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 	sliderVideoPosition->SetBackgroundColour(bgColor);
@@ -429,7 +429,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
 
-	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 344, 200);
+	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 444, 300);
 	wxImage picture  = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
 	bitmap->SetBitmap(picture);
 	
