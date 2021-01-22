@@ -72,7 +72,11 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	ckVideoBitRate = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOBITRATE"));
 	txtBitRate = (wxTextCtrl*)FindWindow(XRCID("ID_TXTBITRATE"));
 	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
+
+#ifdef __WXGTK__ 
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
+#endif
+
 	labelTimeStart = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STSTARTMOVIE"));
 	labelTimeEnd = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STENDMOVIE"));
 	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
@@ -94,8 +98,9 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
 	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
 	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
+#ifdef __WXGTK__ 
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
-
+#endif
 	Connect(XRCID("ID_SLDENOISEFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
 	Connect(XRCID("ID_SLSHARPENFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
 	Connect(XRCID("ID_SLCONTRASTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
@@ -225,10 +230,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-	//CVideoOptionCompress videoOptionCompress;
-	//GetCompressionOption(&videoOptionCompress);
-	//previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
-
+#ifdef __WXGTK__ 
 
 	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -243,12 +245,20 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
+#else
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
+#endif
+
 }
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
 {
+#ifndef __WXGTK__ 
 	btnPreview->SetLabelText("Preview");
-	//previewDlg->Hide();
+	previewDlg->Hide();
+#endif
 }
 
 void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
@@ -348,19 +358,6 @@ void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
-#ifdef NOTENCODE_FRAME
-	previewDlg->UpdatePreview();
-#else
-	/*
-	if (previewDlg->IsShown())
-	{
-		CVideoOptionCompress videoOptionCompress;
-		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress);
-	}
-	*/
-#endif
-	
 }
 
 void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
@@ -381,28 +378,17 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 	videoEffectParameter->color_boost[2] = blueFilter->GetValue();
 	videoEffectParameter->bandcEnable = cklightandcontrast->GetValue();
 	videoEffectParameter->sharpness = sharpenFilter->GetValue() / 10.0f;
-#ifdef NOTENCODE_FRAME
-	previewDlg->UpdatePreview();
-#else
-
-	/*
-	if (previewDlg->IsShown())
-	{
-		CVideoOptionCompress videoOptionCompress;
-		GetCompressionOption(&videoOptionCompress);
-		previewDlg->UpdatePreview(&videoOptionCompress);
-	}
-	*/
-#endif
 }
 
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
+
+#ifdef __WXGTK__ 
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+#else
 
-	/*
 	if (previewDlg->IsShown())
 	{
 		CVideoOptionCompress videoOptionCompress;
@@ -422,7 +408,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 		previewDlg->SetPosition(pt);
 		btnPreview->SetLabelText("Refresh");
 	}
-	*/
+#endif
 	
 }
 

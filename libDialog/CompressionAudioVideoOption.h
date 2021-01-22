@@ -91,8 +91,10 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * cksepia;
 		wxCheckBox * cknoise;
 		wxCheckBox * ckenablefilter;
+#ifdef __WXGTK__ 
 		wxPanel * panel;
 		wxStaticBitmap * bitmapPreview;
+#endif
 	protected:
 
 		//(*Identifiers(TiffOption)
@@ -128,7 +130,9 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		wxString videoFilename;
 		CThumbnailVideo * ffmpegTranscoding;
-		//CPreviewDlg * previewDlg;
+#ifndef __WXGTK__ 
+		CPreviewDlg * previewDlg;
+#endif
 		CSliderVideoSelection * sliderVideoPosition;
 		CVideoEffectParameter * videoEffectParameter;
 		int ret = 0;

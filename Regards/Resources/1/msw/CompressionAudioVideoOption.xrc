@@ -3,467 +3,445 @@
 	<object class="wxDialog" name="CompressionAudioVideoOption">
 		<title>Video Exportation Option</title>
 		<centered>1</centered>
-		<size>1080,550</size>
-		<object class="wxBoxSizer">
+		<size>400,400</size>
+         <object class="wxBoxSizer">
 		    <cols>1</cols>
 			<rows>0</rows>
-            <orient>wxHORIZONTAL</orient>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+				<object class="wxNotebook">
+					<style>wxBK_TOP</style>
+					<object class="notebookpage">
+						<label>Compression Video Option</label>
+						<object class="wxPanel" name="page_1">
+							<object class="wxRadioBox" name="ID_RBVIDEOCOMPRESSION">
+									<label>Video Conversion</label>
+									<style>wxRA_SPECIFY_ROWS</style>
+									<content>
+										<item>Conversion</item>
+										<item>Direct Copy</item>
+									</content>
+									<default>-1</default>
+									<pos>10,0</pos>
+									<size>380,55</size>
+							</object>
+							<object class="wxStaticBox" name="ID_STATICBOX1">
+								<label>Video Option</label>
+								<pos>10,60</pos>
+								<size>380,260</size>
+							</object>
+							<object class="wxCheckBox" name="ID_CKVIDEOHARDWARE">
+								<pos>15,80</pos>
+							</object>
+							<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
+								<label>Hardware Encoder</label>
+								<pos>32,80</pos>
+							</object>
+							<object class="wxStaticText" name="ID_STVIDEOCODEC">
+								<label>Video :</label>
+								<pos>132,80</pos>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOCODEC">
+								<pos>200,80</pos>
+								<size>100,30</size>
+								<value>H264</value>
+								<content>
+									<item>H264</item>
+									<item>H265</item>
+									<item>VP8</item>
+									<item>VP9</item>
+									<item>MPEG4</item>
+									<item>MPEG2</item>
+								</content>
+							</object>
+							<object class="wxStaticText" name="ID_STVIDEOPRESET">
+								<label>Profile :</label>
+								<pos>32,110</pos>
+								<size>100,13</size>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
+								<pos>200,110</pos>
+								<size>100,30</size>
+								<value>main</value>
+								<content>
+									<item>baseline</item>
+									<item>main</item>
+									<item>high</item>
+								</content>
+							</object>
+							<object class="wxRadioBox" name="ID_RBQUALITY">
+								<label>Bit Rate</label>
+								<style>wxRA_SPECIFY_COLS</style>
+								<content>
+									<item>Constant</item>
+									<item>Variable</item>
+								</content>
+								<default>-1</default>
+								<pos>20,140</pos>
+								<size>160,70</size>
+							</object>
+							<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
+								<pos>15,220</pos>
+								<checked>1</checked>
+							</object>
+							<object class="wxStaticBox" name="ID_STATICBOX1">
+								<label>Preset Option</label>
+								<pos>180,140</pos>
+								<size>200,70</size>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
+								<pos>200,170</pos>
+								<value>Medium</value>
+								<content>
+									<item>VeryFast</item>
+									<item>Faster</item>
+									<item>Fast</item>
+									<item>Medium</item>
+									<item>Slow</item>
+									<item>Slower</item>
+									<item>VerySlow</item>
+								</content>
+							</object>
+							<object class="wxStaticText" name="ID_STATICTEXT2">
+								<label>Quality : </label>
+								<pos>32,220</pos>
+								<size>70,20</size>
+							</object>
+							<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
+								<max>51</max>
+								<pos>120,220</pos>
+								<size>230,20</size>
+							</object>
+							<object class="wxStaticText" name="ID_STATICTEXT1">
+								<label>High</label>
+								<pos>90,220</pos>
+								<size>30,20</size>
+							</object>
+							<object class="wxStaticText" name="ID_STATICTEXT2">
+								<label>Low</label>
+								<pos>355,220</pos>
+							</object>
+							<object class="wxCheckBox" name="ID_CKVIDEOBITRATE">
+								<pos>15,260</pos>
+							</object>
+							<object class="wxStaticText" name="ID_STATICTEXT2">
+								<label>BitRate (kbps) : </label>
+								<pos>32,260</pos>
+							</object>
+							<object class="wxTextCtrl" name="ID_TXTBITRATE">
+								<default>0</default>
+                                <value>1500</value>
+								<pos>140,260</pos>
+								<size>100,20</size>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+						<label>Compression Audio Option</label>
+						<object class="wxPanel" name="page_2">
+							<object class="wxRadioBox" name="ID_RBAUDIOCOMPRESSION">
+									<label>Audio Conversion</label>
+									<style>wxRA_SPECIFY_ROWS</style>
+									<content>
+										<item>Conversion</item>
+										<item>Direct Copy</item>
+									</content>
+									<default>-1</default>
+									<pos>10,0</pos>
+									<size>380,55</size>
+							</object>
+							<object class="wxStaticBox" name="ID_STATICBOX1">
+								<label>Audio Option</label>
+								<pos>10,60</pos>
+								<size>380,140</size>
+							</object>
+							<object class="wxStaticText" name="ID_STAUDIOCODEC">
+								<label>Audio Codec :</label>
+								<pos>32,100</pos>
+							</object>
+							<object class="wxComboBox" name="ID_CBAUDIOCODEC">
+								<pos>200,100</pos>
+								<size>100,30</size>
+								<value>AAC</value>
+								<content>
+									<item>AAC</item>
+									<item>MP3</item>
+									<item>VORBIS</item>
+								</content>
+							</object>
+							<object class="wxCheckBox" name="ID_CKAUDIOQUALITY">
+								<pos>15,130</pos>
+								<checked>1</checked>
+							</object>
+							<object class="wxStaticText" name="ID_STAUDIOQUALITY">
+								<label>Audio Quality :</label>
+								<pos>32,130</pos>
+							</object>
+							<object class="wxComboBox" name="ID_CBAUDIOQUALITY">
+								<pos>200,130</pos>
+								<size>100,30</size>
+								<value>5</value>
+								<content>
+									<item>0</item>
+									<item>1</item>
+									<item>2</item>
+									<item>3</item>
+									<item>4</item>
+									<item>5</item>
+									<item>6</item>
+									<item>7</item>
+									<item>8</item>
+									<item>9</item>
+									<item>10</item>
+								</content>
+							</object>
+							<object class="wxCheckBox" name="ID_CKAUDIOBITRATE">
+								<pos>15,160</pos>
+							</object>
+							<object class="wxStaticText" name="ID_STAUDIOBITRATE">
+								<label>Audio Bitrate :</label>
+								<pos>32,160</pos>
+							</object>
+							<object class="wxComboBox" name="ID_CBAUDIOBITRATE">
+								<pos>200,160</pos>
+								<size>100,30</size>
+								<value>128</value>
+								<content>
+									<item>32</item>
+									<item>40</item>
+									<item>48</item>
+									<item>56</item>
+									<item>64</item>
+									<item>80</item>
+									<item>96</item>
+									<item>112</item>
+									<item>128</item>
+									<item>160</item>
+									<item>192</item>
+									<item>224</item>
+									<item>256</item>
+									<item>320</item>
+								</content>
+							</object>
+						</object>
+					</object>
+					<object class="notebookpage">
+					<label>Position</label>
+					<object class="wxPanel" name="page_3">
+						<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
+							<pos>24,10</pos>
+							<size>344,240</size>
+						</object>
+						<object class="wxSlider" name="ID_SLVIDEO">
+							<max>51</max>
+							<pos>0,250</pos>
+							<size>300,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STLABELSTARTMOVIE">
+							<label>From : </label>
+							<pos>5,300</pos>
+						</object>
+						<object class="wxTimePickerCtrl" name="ID_STSTARTMOVIE">
+							<label>00:00:00</label>
+							<pos>100,300</pos>
+							<size>100,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STLABELENDMOVIE">
+							<label>To : </label>
+							<pos>5,330</pos>
+						</object>
+						<object class="wxTimePickerCtrl" name="ID_STENDMOVIE">
+							<label>00:00:00</label>
+							<pos>100,330</pos>
+							<size>100,20</size>
+						</object>
+					</object>
+				</object>
+					<object class="notebookpage">
+					<label>Filter Effect</label>
+					<object class="wxPanel" name="page_4">
+						<object class="wxCheckBox" name="ID_CKENABLEFILTER">
+							<pos>15,20</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STENABLEFILTER">
+							<label>Enable Filter</label>
+							<pos>32,20</pos>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Color Filter</label>
+							<pos>5,40</pos>
+							<size>380,140</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKGRAYFILTER">
+							<pos>15,60</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STGRAYFILTER">
+							<label>Gray Filter</label>
+							<pos>32,60</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKSEPIAFILTER">
+							<pos>200,60</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STSEPIAFILTER">
+							<label>Sepia Filter</label>
+							<pos>220,60</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKNOISEFILTER">
+							<pos>200,80</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STNOISEFILTER">
+							<label>Noise Filter</label>
+							<pos>220,80</pos>
+						</object>
+						<object class="wxCheckBox" name="ID_CKDCOLORBOOSTFILTER">
+							<pos>15,80</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STCOLORBOOSTFILTER">
+							<label>Color Boost</label>
+							<pos>32,80</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STREDBOOSTFILTER">
+							<label>Red : </label>
+							<pos>32,100</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLREDBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,100</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STGREENBOOSTFILTER">
+							<label>Green : </label>
+							<pos>32,120</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLGREENBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,120</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STBLUEBOOSTFILTER">
+							<label>Blue : </label>
+							<pos>32,140</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLBLUEBOOSTFILTER">
+							<max>255</max>
+							<min>-255</min>
+							<pos>120,140</pos>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Constrast and Lightness</label>
+							<pos>5,180</pos>
+							<size>380,110</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKCONTRASTANDLIGHTFILTER">
+							<pos>15,210</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STCONTRASTANDLIGHTFILTER">
+							<label>Enable</label>
+							<pos>32,210</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STCONTRASTFILTER">
+							<label>Constrast : </label>
+							<pos>32,230</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLCONTRASTFILTER">
+							<max>100</max>
+							<min>-100</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,230</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticText" name="ID_STLIGHTFILTER">
+							<label>Lightness : </label>
+							<pos>32,250</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLLIGHTFILTER">
+							<max>100</max>
+							<min>-100</min>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,250</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Convolution Filter</label>
+							<pos>5,300</pos>
+							<size>380,100</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKSHARPENFILTER">
+							<pos>15,320</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STSHARPENFILTER">
+							<label>Sharpen : </label>
+							<pos>32,320</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLSHARPENFILTER">
+							<max>100</max>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,320</pos>
+							<size>230,20</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKDENOISEFILTER">
+							<pos>15,340</pos>
+						</object>
+						<object class="wxStaticText" name="ID_STDENOISEFILTER">
+							<label>Denoise : </label>
+							<pos>32,340</pos>
+							<size>70,20</size>
+						</object>
+						<object class="wxSlider" name="ID_SLDENOISEFILTER">
+							<max>255</max>
+							<style>wxSL_MIN_MAX_LABELS</style>
+							<pos>120,340</pos>
+							<size>230,20</size>
+						</object>
+					</object>
+				</object>
+				</object>
+			</object>
 			<object class="sizeritem">
-				<flag>wxGROW|wxALL</flag>
+				<flag>wxALIGN_CENTRE|wxALL</flag>
 				<border>5</border>
-				<option>1</option>			
 				<object class="wxBoxSizer">
-					<cols>1</cols>
-					<rows>0</rows>
-					<size>400,550</size>
-					<orient>wxVERTICAL</orient>
+					<orient>wxHORIZONTAL</orient>
 					<object class="sizeritem">
-						<flag>wxGROW|wxALL</flag>
+						<flag>wxALIGN_CENTRE|wxALL</flag>
 						<border>5</border>
-						<option>1</option>
-						<object class="wxNotebook">
-							<style>wxBK_TOP</style>
-							<object class="notebookpage">
-								<label>Compression Video Option</label>
-								<object class="wxPanel" name="page_1">
-									<object class="wxRadioBox" name="ID_RBVIDEOCOMPRESSION">
-											<label>Video Conversion</label>
-											<style>wxRA_SPECIFY_ROWS</style>
-											<content>
-												<item>Conversion</item>
-												<item>Direct Copy</item>
-											</content>
-											<default>-1</default>
-											<pos>10,0</pos>
-											<size>380,55</size>
-									</object>
-									<object class="wxStaticBox" name="ID_STATICBOX1">
-										<label>Video Option</label>
-										<pos>10,60</pos>
-										<size>380,260</size>
-									</object>
-									<object class="wxCheckBox" name="ID_CKVIDEOHARDWARE">
-										<pos>15,80</pos>
-									</object>
-									<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-										<label>Hardware Encoder</label>
-										<pos>32,80</pos>
-									</object>
-									<object class="wxStaticText" name="ID_STVIDEOCODEC">
-										<label>Video :</label>
-										<pos>132,80</pos>
-									</object>
-									<object class="wxComboBox" name="ID_CBVIDEOCODEC">
-										<pos>200,80</pos>
-										<size>100,30</size>
-										<value>H264</value>
-										<content>
-											<item>H264</item>
-											<item>H265</item>
-											<item>VP8</item>
-											<item>VP9</item>
-											<item>MPEG4</item>
-											<item>MPEG2</item>
-										</content>
-									</object>
-									<object class="wxStaticText" name="ID_STVIDEOPRESET">
-										<label>Profile :</label>
-										<pos>32,110</pos>
-										<size>100,13</size>
-									</object>
-									<object class="wxComboBox" name="ID_CBVIDEOPROFILE">
-										<pos>200,110</pos>
-										<size>100,30</size>
-										<value>main</value>
-										<content>
-											<item>baseline</item>
-											<item>main</item>
-											<item>high</item>
-										</content>
-									</object>
-									<object class="wxRadioBox" name="ID_RBQUALITY">
-										<label>Bit Rate</label>
-										<style>wxRA_SPECIFY_COLS</style>
-										<content>
-											<item>Constant</item>
-											<item>Variable</item>
-										</content>
-										<default>-1</default>
-										<pos>20,140</pos>
-										<size>160,70</size>
-									</object>
-									<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
-										<pos>15,220</pos>
-										<checked>1</checked>
-									</object>
-									<object class="wxStaticBox" name="ID_STATICBOX1">
-										<label>Preset Option</label>
-										<pos>180,140</pos>
-										<size>200,70</size>
-									</object>
-									<object class="wxComboBox" name="ID_CBVIDEOPRESET">
-										<pos>200,170</pos>
-										<value>Medium</value>
-										<content>
-											<item>VeryFast</item>
-											<item>Faster</item>
-											<item>Fast</item>
-											<item>Medium</item>
-											<item>Slow</item>
-											<item>Slower</item>
-											<item>VerySlow</item>
-										</content>
-									</object>
-									<object class="wxStaticText" name="ID_STATICTEXT2">
-										<label>Quality : </label>
-										<pos>32,220</pos>
-										<size>70,20</size>
-									</object>
-									<object class="wxSlider" name="ID_SLCOMPRESSIONQUALITY">
-										<max>51</max>
-										<pos>120,220</pos>
-										<size>230,20</size>
-									</object>
-									<object class="wxStaticText" name="ID_STATICTEXT1">
-										<label>High</label>
-										<pos>90,220</pos>
-										<size>30,20</size>
-									</object>
-									<object class="wxStaticText" name="ID_STATICTEXT2">
-										<label>Low</label>
-										<pos>355,220</pos>
-									</object>
-									<object class="wxCheckBox" name="ID_CKVIDEOBITRATE">
-										<pos>15,260</pos>
-									</object>
-									<object class="wxStaticText" name="ID_STATICTEXT2">
-										<label>BitRate (kbps) : </label>
-										<pos>32,260</pos>
-									</object>
-									<object class="wxTextCtrl" name="ID_TXTBITRATE">
-										<default>0</default>
-										<value>1500</value>
-										<pos>140,260</pos>
-										<size>100,20</size>
-									</object>
-								</object>
-							</object>
-							<object class="notebookpage">
-								<label>Compression Audio Option</label>
-								<object class="wxPanel" name="page_2">
-									<object class="wxRadioBox" name="ID_RBAUDIOCOMPRESSION">
-											<label>Audio Conversion</label>
-											<style>wxRA_SPECIFY_ROWS</style>
-											<content>
-												<item>Conversion</item>
-												<item>Direct Copy</item>
-											</content>
-											<default>-1</default>
-											<pos>10,0</pos>
-											<size>380,55</size>
-									</object>
-									<object class="wxStaticBox" name="ID_STATICBOX1">
-										<label>Audio Option</label>
-										<pos>10,60</pos>
-										<size>380,140</size>
-									</object>
-									<object class="wxStaticText" name="ID_STAUDIOCODEC">
-										<label>Audio Codec :</label>
-										<pos>32,100</pos>
-									</object>
-									<object class="wxComboBox" name="ID_CBAUDIOCODEC">
-										<pos>200,100</pos>
-										<size>100,30</size>
-										<value>AAC</value>
-										<content>
-											<item>AAC</item>
-											<item>MP3</item>
-											<item>VORBIS</item>
-										</content>
-									</object>
-									<object class="wxCheckBox" name="ID_CKAUDIOQUALITY">
-										<pos>15,130</pos>
-										<checked>1</checked>
-									</object>
-									<object class="wxStaticText" name="ID_STAUDIOQUALITY">
-										<label>Audio Quality :</label>
-										<pos>32,130</pos>
-									</object>
-									<object class="wxComboBox" name="ID_CBAUDIOQUALITY">
-										<pos>200,130</pos>
-										<size>100,30</size>
-										<value>5</value>
-										<content>
-											<item>0</item>
-											<item>1</item>
-											<item>2</item>
-											<item>3</item>
-											<item>4</item>
-											<item>5</item>
-											<item>6</item>
-											<item>7</item>
-											<item>8</item>
-											<item>9</item>
-											<item>10</item>
-										</content>
-									</object>
-									<object class="wxCheckBox" name="ID_CKAUDIOBITRATE">
-										<pos>15,160</pos>
-									</object>
-									<object class="wxStaticText" name="ID_STAUDIOBITRATE">
-										<label>Audio Bitrate :</label>
-										<pos>32,160</pos>
-									</object>
-									<object class="wxComboBox" name="ID_CBAUDIOBITRATE">
-										<pos>200,160</pos>
-										<size>100,30</size>
-										<value>128</value>
-										<content>
-											<item>32</item>
-											<item>40</item>
-											<item>48</item>
-											<item>56</item>
-											<item>64</item>
-											<item>80</item>
-											<item>96</item>
-											<item>112</item>
-											<item>128</item>
-											<item>160</item>
-											<item>192</item>
-											<item>224</item>
-											<item>256</item>
-											<item>320</item>
-										</content>
-									</object>
-								</object>
-							</object>
-							<object class="notebookpage">
-							<label>Position</label>
-							<object class="wxPanel" name="page_3">
-								<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
-									<pos>24,10</pos>
-									<size>344,240</size>
-								</object>
-								<object class="wxSlider" name="ID_SLVIDEO">
-									<max>51</max>
-									<pos>0,250</pos>
-									<size>300,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STLABELSTARTMOVIE">
-									<label>From : </label>
-									<pos>5,300</pos>
-								</object>
-								<object class="wxTimePickerCtrl" name="ID_STSTARTMOVIE">
-									<label>00:00:00</label>
-									<pos>100,300</pos>
-									<size>100,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STLABELENDMOVIE">
-									<label>To : </label>
-									<pos>5,330</pos>
-								</object>
-								<object class="wxTimePickerCtrl" name="ID_STENDMOVIE">
-									<label>00:00:00</label>
-									<pos>100,330</pos>
-									<size>100,20</size>
-								</object>
-							</object>
-						</object>
-							<object class="notebookpage">
-							<label>Filter Effect</label>
-							<object class="wxPanel" name="page_4">
-								<object class="wxCheckBox" name="ID_CKENABLEFILTER">
-									<pos>15,20</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STENABLEFILTER">
-									<label>Enable Filter</label>
-									<pos>32,20</pos>
-								</object>
-								<object class="wxStaticBox" name="ID_STATICBOX1">
-									<label>Color Filter</label>
-									<pos>5,40</pos>
-									<size>380,140</size>
-								</object>
-								<object class="wxCheckBox" name="ID_CKGRAYFILTER">
-									<pos>15,60</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STGRAYFILTER">
-									<label>Gray Filter</label>
-									<pos>32,60</pos>
-								</object>
-								<object class="wxCheckBox" name="ID_CKSEPIAFILTER">
-									<pos>200,60</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STSEPIAFILTER">
-									<label>Sepia Filter</label>
-									<pos>220,60</pos>
-								</object>
-								<object class="wxCheckBox" name="ID_CKNOISEFILTER">
-									<pos>200,80</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STNOISEFILTER">
-									<label>Noise Filter</label>
-									<pos>220,80</pos>
-								</object>
-								<object class="wxCheckBox" name="ID_CKDCOLORBOOSTFILTER">
-									<pos>15,80</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STCOLORBOOSTFILTER">
-									<label>Color Boost</label>
-									<pos>32,80</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STREDBOOSTFILTER">
-									<label>Red : </label>
-									<pos>32,100</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLREDBOOSTFILTER">
-									<max>255</max>
-									<min>-255</min>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,100</pos>
-									<size>230,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STGREENBOOSTFILTER">
-									<label>Green : </label>
-									<pos>32,120</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLGREENBOOSTFILTER">
-									<max>255</max>
-									<min>-255</min>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,120</pos>
-									<size>230,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STBLUEBOOSTFILTER">
-									<label>Blue : </label>
-									<pos>32,140</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLBLUEBOOSTFILTER">
-									<max>255</max>
-									<min>-255</min>
-									<pos>120,140</pos>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<size>230,20</size>
-								</object>
-								<object class="wxStaticBox" name="ID_STATICBOX1">
-									<label>Constrast and Lightness</label>
-									<pos>5,180</pos>
-									<size>380,110</size>
-								</object>
-								<object class="wxCheckBox" name="ID_CKCONTRASTANDLIGHTFILTER">
-									<pos>15,210</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STCONTRASTANDLIGHTFILTER">
-									<label>Enable</label>
-									<pos>32,210</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STCONTRASTFILTER">
-									<label>Constrast : </label>
-									<pos>32,230</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLCONTRASTFILTER">
-									<max>100</max>
-									<min>-100</min>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,230</pos>
-									<size>230,20</size>
-								</object>
-								<object class="wxStaticText" name="ID_STLIGHTFILTER">
-									<label>Lightness : </label>
-									<pos>32,250</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLLIGHTFILTER">
-									<max>100</max>
-									<min>-100</min>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,250</pos>
-									<size>230,20</size>
-								</object>
-								<object class="wxStaticBox" name="ID_STATICBOX1">
-									<label>Convolution Filter</label>
-									<pos>5,300</pos>
-									<size>380,100</size>
-								</object>
-								<object class="wxCheckBox" name="ID_CKSHARPENFILTER">
-									<pos>15,320</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STSHARPENFILTER">
-									<label>Sharpen : </label>
-									<pos>32,320</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLSHARPENFILTER">
-									<max>100</max>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,320</pos>
-									<size>230,20</size>
-								</object>
-								<object class="wxCheckBox" name="ID_CKDENOISEFILTER">
-									<pos>15,340</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STDENOISEFILTER">
-									<label>Denoise : </label>
-									<pos>32,340</pos>
-									<size>70,20</size>
-								</object>
-								<object class="wxSlider" name="ID_SLDENOISEFILTER">
-									<max>255</max>
-									<style>wxSL_MIN_MAX_LABELS</style>
-									<pos>120,340</pos>
-									<size>230,20</size>
-								</object>
-							</object>
-						</object>
+						<object class="wxButton" name="ID_BTOK">
+							<label>OK</label>
 						</object>
 					</object>
 					<object class="sizeritem">
 						<flag>wxALIGN_CENTRE|wxALL</flag>
 						<border>5</border>
-						<object class="wxBoxSizer">
-							<orient>wxHORIZONTAL</orient>
-							<object class="sizeritem">
-								<flag>wxALIGN_CENTRE|wxALL</flag>
-								<border>5</border>
-								<object class="wxButton" name="ID_BTOK">
-									<label>OK</label>
-								</object>
-							</object>
-							<object class="sizeritem">
-								<flag>wxALIGN_CENTRE|wxALL</flag>
-								<border>5</border>
-								<object class="wxButton" name="ID_BTPREVIEW">
-									<label>Preview</label>
-								</object>
-							</object>
-							<object class="sizeritem">
-								<flag>wxALIGN_CENTRE|wxALL</flag>
-								<border>5</border>
-								<object class="wxButton" name="ID_BTCANCEL">
-									<label>Cancel</label>
-								</object>
-							</object>
+						<object class="wxButton" name="ID_BTPREVIEW">
+							<label>Preview</label>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTRE|wxALL</flag>
+						<border>5</border>
+						<object class="wxButton" name="ID_BTCANCEL">
+							<label>Cancel</label>
 						</object>
 					</object>
 				</object>
 			</object>
-			<object class="sizeritem">
-				<flag>wxGROW|wxALL</flag>
-				<border>1</border>
-				<option>1</option>
-				<object class="wxPanel" name="IDPANEL">
-					<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
-						<pos>0,0</pos>
-						<size>640,480</size>
-					</object>
-				</object>
-			</object>
-		</object>
+        </object>
 	</object>
 </resource>
