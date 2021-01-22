@@ -109,7 +109,7 @@ public:
 
 		if (copyFrameBuffer != nullptr)
 		{
-			//av_freep(&copyFrameBuffer->data[0]);
+			av_freep(&copyFrameBuffer->data[0]);
 			av_frame_free(&copyFrameBuffer);
 		}
 			
@@ -117,13 +117,13 @@ public:
 
 		if (dst != nullptr)
 		{
-			//av_freep(&dst->data[0]);
+			av_freep(&dst->data[0]);
 			av_frame_free(&dst);
 		}
 
 		if (dst_hardware != nullptr)
 		{
-			//av_freep(&dst_hardware->data[0]);
+			av_freep(&dst_hardware->data[0]);
 			av_frame_free(&dst_hardware);
 		}
 			
