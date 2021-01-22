@@ -45,6 +45,8 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	bitmap->Show(false);
 	//panel->AddChild(showBitmapWindow);
 	//bitmap->Connect(wxEVT_SIZE, wxSizeEventHandler(CPreviewDlg::OnSize));
+    
+    this->SetSize(640,480);
 
 	panel->Bind(wxEVT_SIZE, &CPreviewDlg::OnSize, this);
 

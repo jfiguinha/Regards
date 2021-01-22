@@ -151,12 +151,14 @@ void CShowPreview::OnShowOriginal(wxCommandEvent& event)
 {
 	ShowOriginal();
 	showOriginal = true;
+    oldShowOriginal = showOriginal;
 }
 
 void CShowPreview::OnShowNew(wxCommandEvent& event)
 {
 	ShowNew();
 	showOriginal = false;
+    oldShowOriginal = false;
 }
 
 void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
@@ -172,12 +174,14 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 void CShowPreview::SlidePosChange(const int &position, const wxString &key)
 {
 	moveSlider = true;
+    showOriginal = true;
 	this->position = position;
 	UpdateBitmap(nullptr, "");
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
 {
+    showOriginal = oldShowOriginal;
 	moveSlider = false;
 	this->position = position;
 	UpdateBitmap(nullptr,"");
