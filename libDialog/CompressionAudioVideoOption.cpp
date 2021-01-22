@@ -14,6 +14,7 @@
 #include <FiltreEffet.h>
 #include "PreviewDlg.h"
 #include <videothumb.h>
+
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
