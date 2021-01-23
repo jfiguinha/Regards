@@ -435,13 +435,6 @@
 					<object class="sizeritem">
 						<flag>wxALIGN_CENTRE|wxALL</flag>
 						<border>5</border>
-						<object class="wxButton" name="ID_BTPREVIEW">
-							<label>Refresh</label>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<flag>wxALIGN_CENTRE|wxALL</flag>
-						<border>5</border>
 						<object class="wxButton" name="ID_BTCANCEL">
 							<label>Cancel</label>
 						</object>
