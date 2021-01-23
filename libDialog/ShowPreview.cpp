@@ -183,16 +183,16 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 
 void CShowPreview::SlidePosChange(const int &position, const wxString &key)
 {
-	//moveSlider = true;
-   // showOriginal = true;
+	moveSlider = true;
+    showOriginal = true;
 	this->position = position;
 	UpdateBitmap(nullptr, "");
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
 {
-    //showOriginal = oldShowOriginal;
-	//moveSlider = false;
+    showOriginal = oldShowOriginal;
+	moveSlider = false;
 	this->position = position;
 	UpdateBitmap(nullptr,"");
 }
@@ -208,8 +208,8 @@ void CShowPreview::ThreadLoading(void * data)
 
 	wxString fileTemp = "";
 
-	//if (!showPreview->moveSlider)
-	//{
+	if (!showPreview->moveSlider)
+	{
 		//fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
 		fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
 
@@ -220,7 +220,7 @@ void CShowPreview::ThreadLoading(void * data)
 		showPreview->decodeFrame->GetFrameBitmapPosition(0);
 		showPreview->decodeFrame->GetBitmap(false)->VertFlipBuf();
 		showPreview->decodeFrame->EndTreatment();
-	//}
+	}
 
 
 

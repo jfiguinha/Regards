@@ -86,7 +86,7 @@ namespace Regards
 			bool showOriginal = false;
 			bool isFirstPicture = true;
 			std::thread * threadStart = nullptr;
-			//bool moveSlider = false;
+			bool moveSlider = false;
             bool oldShowOriginal = false;
 			bool firstTime = true;
 		};

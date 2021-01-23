@@ -342,8 +342,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir /Q /S "$(SolutionDir)x64\Release\Resources"
-mkdir "$(SolutionDir)x64\Release\Resources"
+      <Command>mkdir -p "$(SolutionDir)x64\Release\Resources"
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" "$(SolutionDir)x64\Release\Resources"
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\*.dll" "$(SolutionDir)x64\Release"
 XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)x64\Release"
