@@ -458,11 +458,11 @@
 					<object class="wxStaticBox" name="ID_STATICBOX1">
 							<label>Preview Picture</label>
 							<pos>5,5</pos>
-							<size>640,480</size>
+							<size>640,500</size>
 						</object>
 					<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
-						<pos>10,10</pos>
-						<size>630,470</size>
+						<pos>20,20</pos>
+						<size>620,470</size>
 					</object>
 				</object>
 			</object>
