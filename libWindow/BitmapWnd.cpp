@@ -989,11 +989,14 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
+/*
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
+*/
+    double scale_factor = 1.0f;
 	switch(toolOption)
 	{
 		case MOVEPICTURE:
