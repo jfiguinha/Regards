@@ -436,7 +436,7 @@
 						<flag>wxALIGN_CENTRE|wxALL</flag>
 						<border>5</border>
 						<object class="wxButton" name="ID_BTPREVIEW">
-							<label>Preview</label>
+							<label>Refresh</label>
 						</object>
 					</object>
 					<object class="sizeritem">

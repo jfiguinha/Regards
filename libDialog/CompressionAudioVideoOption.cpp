@@ -77,6 +77,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
 #endif
 
+	stPreviewPicture = (wxStaticBox *)FindWindow(XRCID("ID_STPREVIEWPICTURE"));
 	labelTimeStart = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STSTARTMOVIE"));
 	labelTimeEnd = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STENDMOVIE"));
 	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
@@ -245,6 +246,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
+	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #else
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
@@ -410,6 +412,11 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 	}
 #endif
 	
+}
+
+void CompressionAudioVideoOption::ChangeLabelPicture(const wxString &label)
+{
+	stPreviewPicture->SetLabel(label);
 }
 
 void CompressionAudioVideoOption::SetBitmap(const long &pos)

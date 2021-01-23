@@ -15,7 +15,7 @@
 #include <FFmpegTranscodingPimpl.h>
 #include <FFmpegDecodeFrame.h>
 #include <FileUtility.h>
-#include "PreviewDlg.h"
+#include "CompressionAudioVideoOption.h"
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -132,8 +132,8 @@ void CShowPreview::ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString 
 	else
 		bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
 
-	//CPreviewDlg * dlg = (CPreviewDlg *)this->FindWindowByName("PreviewDlg");
-	//dlg->SetTitle(label);
+	CompressionAudioVideoOption * dlg = (CompressionAudioVideoOption *)this->FindWindowByName("CompressionAudioVideoOption");
+	dlg->ChangeLabelPicture(label);
 
 	isFirstPicture = false;
 }

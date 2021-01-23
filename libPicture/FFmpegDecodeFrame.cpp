@@ -604,7 +604,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 
 CRegardsBitmap * CFFmpegDecodeFrame::GetBitmap(const bool &copy)
 {
-	if (copy)
+	if (copy && image != nullptr)
 	{
 		CRegardsBitmap * copyPicture = new CRegardsBitmap();
 		*copyPicture = *image;

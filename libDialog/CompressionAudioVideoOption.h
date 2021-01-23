@@ -98,6 +98,9 @@ class CompressionAudioVideoOption: public wxDialog
 		wxPanel * panel;
 		wxStaticBitmap * bitmapPreview;
 #endif
+		wxStaticBox * stPreviewPicture;
+		void ChangeLabelPicture(const wxString &label);
+
 	protected:
 
 		//(*Identifiers(TiffOption)
