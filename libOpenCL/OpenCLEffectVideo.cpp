@@ -676,8 +676,6 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);
 
-			//program->SetParameter(&vecParam, middleWidth, middleHeight, middleWidth * middleHeight * GetSizeData());
-			//program->SetKeepOutput(true);
 			program->ExecuteProgram2D(programCL->GetProgram(), "RgbaToYUV420P", &vecParam, middleWidth, middleHeight);
 
 			delete program;

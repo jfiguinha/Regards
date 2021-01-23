@@ -1706,7 +1706,7 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream)
 {
-
+	bool decodeBitmap = false;
 
 	if (openCLEngine != nullptr)
 	{
@@ -1736,22 +1736,36 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
-
-		if (dst_hardware == nullptr)
+		if (openclContext->GetDefaultType() == OPENCL_UCHAR)
 		{
-			dst_hardware = av_frame_alloc();
-			dst_hardware->format = AV_PIX_FMT_YUV420P;
-			dst_hardware->width = stream->dec_frame->width;
-			dst_hardware->height = stream->dec_frame->height;
-			int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
+			if (bitmapData == nullptr)
+				bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
+			openclEffectYUV->GetBitmap(bitmapData);
+
+			decodeBitmap = true;
 		}
-			
-		openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], stream->dec_frame->width, stream->dec_frame->height);
-		
-		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
-			av_frame_copy_props(dst_hardware, stream->dec_frame);
 		else
-			av_frame_copy_props(dst_hardware, tmp_frame);
+		{
+			decodeBitmap = false;
+
+			if (dst_hardware == nullptr)
+			{
+				dst_hardware = av_frame_alloc();
+				dst_hardware->format = AV_PIX_FMT_YUV420P;
+				dst_hardware->width = stream->dec_frame->width;
+				dst_hardware->height = stream->dec_frame->height;
+				int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
+			}
+
+			openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], stream->dec_frame->width, stream->dec_frame->height);
+
+			if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
+				av_frame_copy_props(dst_hardware, stream->dec_frame);
+			else
+				av_frame_copy_props(dst_hardware, tmp_frame);
+		}
+
+
 	}
 	else
 	{
@@ -1834,8 +1848,12 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			}
 
 			filtre.GetBitmap(bitmapData, true);
-		}
 
+			decodeBitmap = true;
+		}
+	}
+	if(decodeBitmap && bitmapData != nullptr)
+	{
 		if (dst_hardware == nullptr)
 		{
 			dst_hardware = av_frame_alloc();
@@ -1863,7 +1881,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		av_frame_copy_props(dst_hardware, tmp_frame);
 
 		uint8_t * convertedFrameBuffer_data = bitmapData->GetPtBitmap();
-		linesize = bitmapData->GetBitmapWidth() * 4;
+		int linesize = bitmapData->GetBitmapWidth() * 4;
 
 		sws_scale(scaleContext, &convertedFrameBuffer_data, &linesize, 0, bitmapData->GetBitmapHeight(),
 			dst_hardware->data, dst_hardware->linesize);
