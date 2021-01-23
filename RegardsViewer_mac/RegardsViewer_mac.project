@@ -370,7 +370,6 @@
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libplds4.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libplc4.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libnspr4.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/xz/lib/liblzma.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/lame/lib/libmp3lame.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/opus/lib/libopus.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/theora/lib/libtheoraenc.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -811,12 +810,10 @@
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libplds4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libplc4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/nspr/lib/libnspr4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/xz/lib/liblzma.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/lame/lib/libmp3lame.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/opus/lib/libopus.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/theora/lib/libtheoraenc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/theora/lib/libtheoradec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/libogg/lib/libogg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_videoio.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
