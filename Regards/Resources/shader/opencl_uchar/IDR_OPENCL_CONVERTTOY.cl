@@ -178,12 +178,12 @@ __kernel void RgbaToYUV420P(__global uchar * lum, __global uchar * cb, __global 
 	int position = (x * 2) + (y * 2) * width;
 	for (int i = 0; i < 2; i++)
 	{
-		uchar4 src_color = rgbaUintToUChar4(src[position]);
-		uchar4 src_color_next = rgbaUintToUChar4(src[position+1]);
+		float4 src_color = rgbaUintToFloat4(src[position]);
+		float4 src_color_next = rgbaUintToFloat4(src[position+1]);
 		
-		uchar r = src_color.z;
-		uchar g = src_color.y;
-		uchar b = src_color.x;
+		float r = src_color.z;
+		float g = src_color.y;
+		float b = src_color.x;
 		r1 += r;
 		g1 += g;
 		b1 += b;
@@ -196,7 +196,7 @@ __kernel void RgbaToYUV420P(__global uchar * lum, __global uchar * cb, __global 
 		b1 += b;
 		lum[lum_position + 1] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
 
-		position += width * 4;
+		position += width;
 		lum_position += width;
 	}
 

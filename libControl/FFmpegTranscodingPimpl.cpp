@@ -1736,7 +1736,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
-		if (openclContext->GetDefaultType() == OPENCL_UCHAR)
+		/*
+		if (openclContext->GetDefaultType() == 4)
 		{
 			if (bitmapData == nullptr)
 				bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
@@ -1746,6 +1747,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		}
 		else
 		{
+		*/
 			decodeBitmap = false;
 
 			if (dst_hardware == nullptr)
@@ -1763,7 +1765,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 				av_frame_copy_props(dst_hardware, stream->dec_frame);
 			else
 				av_frame_copy_props(dst_hardware, tmp_frame);
-		}
+		//}
 
 
 	}

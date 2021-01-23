@@ -61,7 +61,7 @@ __kernel void Convert(__global uint *output, const __global uchar *inputY, const
 	int position = x + (heightIn - y - 1) * widthOut;
 
 	float4 color = GetColorFromYUV(inputY, inputU, inputV, x,  y, widthIn, heightIn, pitch); 
-	output[position] = rgbaFloat4ToUint(color,255.0f);
+	output[position] = rgbaFloat4ToUint(color,1.0f);
 } 
 
 
