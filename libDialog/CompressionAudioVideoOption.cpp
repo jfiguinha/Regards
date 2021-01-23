@@ -73,7 +73,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	txtBitRate = (wxTextCtrl*)FindWindow(XRCID("ID_TXTBITRATE"));
 	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
 
-#ifdef __WXGTK__ 
+#ifdef USE_PREVIEW_INTEGRATE 
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
 #endif
 
@@ -98,7 +98,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
 	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
 	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
-#ifdef __WXGTK__ 
+#ifdef USE_PREVIEW_INTEGRATE 
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
 #endif
 	Connect(XRCID("ID_SLDENOISEFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
@@ -230,7 +230,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-#ifdef __WXGTK__ 
+#ifdef USE_PREVIEW_INTEGRATE 
 
 	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -255,7 +255,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
 {
-#ifndef __WXGTK__ 
+#ifndef USE_PREVIEW_INTEGRATE 
 	btnPreview->SetLabelText("Preview");
 	previewDlg->Hide();
 #endif
@@ -383,7 +383,7 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
 
-#ifdef __WXGTK__ 
+#ifdef USE_PREVIEW_INTEGRATE 
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
@@ -415,7 +415,7 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 void CompressionAudioVideoOption::SetBitmap(const long &pos)
 {
 
-	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 444, 300);
+	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
 	wxImage picture  = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
 	bitmap->SetBitmap(picture);
 	

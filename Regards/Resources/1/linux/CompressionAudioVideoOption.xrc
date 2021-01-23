@@ -240,7 +240,7 @@
 					<label>Position</label>
 					<object class="wxPanel" name="page_3">
 						<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
-							<pos>80,40</pos>
+							<pos>120,30</pos>
 							<size>320,240</size>
 						</object>
 						<object class="wxSlider" name="ID_SLVIDEO">
@@ -455,9 +455,14 @@
 				<border>1</border>
 				<option>1</option>
 				<object class="wxPanel" name="IDPANEL">
+					<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Preview Picture</label>
+							<pos>5,5</pos>
+							<size>640,480</size>
+						</object>
 					<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
-						<pos>0,20</pos>
-						<size>640,480</size>
+						<pos>10,10</pos>
+						<size>630,470</size>
 					</object>
 				</object>
 			</object>

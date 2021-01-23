@@ -1,4 +1,7 @@
 #pragma once
+
+#define USE_PREVIEW_INTEGRATE
+
 #ifndef WX_PRECOMP
 	//(*HeadersPCH(TiffOption)
 	#include <wx/checklst.h>
@@ -91,7 +94,7 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * cksepia;
 		wxCheckBox * cknoise;
 		wxCheckBox * ckenablefilter;
-#ifdef __WXGTK__ 
+#ifdef USE_PREVIEW_INTEGRATE 
 		wxPanel * panel;
 		wxStaticBitmap * bitmapPreview;
 #endif
@@ -130,7 +133,7 @@ class CompressionAudioVideoOption: public wxDialog
         bool isOk;
 		wxString videoFilename;
 		CThumbnailVideo * ffmpegTranscoding;
-#ifndef __WXGTK__ 
+#ifndef USE_PREVIEW_INTEGRATE 
 		CPreviewDlg * previewDlg;
 #endif
 		CSliderVideoSelection * sliderVideoPosition;

@@ -13,25 +13,37 @@ using namespace Regards::Picture;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-#ifdef NOTENCODE_FRAME
-CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter)
-#else
+
 CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress)
-#endif
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
-	
+	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
 
-	CThemeBitmapWindow themeBitmap;
+	//CThemeBitmapWindow themeBitmap;
+	//showBitmapWindow = nullptr;
+	//CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+
+	//if (viewerTheme != nullptr)
+	//	viewerTheme->GetBitmapWindowTheme(&themeBitmap);
+
+	//showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
+	//showBitmapWindow->Show(true);
+    
+    CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
+	//CVideoOptionCompress videoOptionCompress;
+	//GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
 	showBitmapWindow->Show(true);
+    showBitmapWindow->Raise();
+	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
+	bitmapPreview->Show(false);
 
 	//panel->AddChild(showBitmapWindow);
 
@@ -40,9 +52,9 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CPreviewDlg::OnClose));
 
 
-	panel->SetSize(640, 480);
-	this->SetSize(640, 480);
-	showBitmapWindow->SetFocus();
+	//panel->SetSize(640, 480);
+	//this->SetSize(640, 480);
+	//showBitmapWindow->SetFocus();
 }
 
 void CPreviewDlg::OnClose(wxCloseEvent& event)
@@ -71,14 +83,8 @@ CPreviewDlg::~CPreviewDlg()
 	delete(showBitmapWindow);
 
 }
-#ifdef NOTENCODE_FRAME
-void CPreviewDlg::UpdatePreview()
-{
-	showBitmapWindow->UpdateBitmap();
-}
-#else
+
 void CPreviewDlg::UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension)
 {
 	showBitmapWindow->UpdateBitmap(videoOptionCompress, extension);
 }
-#endif

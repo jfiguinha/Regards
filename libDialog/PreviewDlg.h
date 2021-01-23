@@ -20,15 +20,12 @@ class CPreviewDlg : public wxDialog
 {
 public:
 
-#ifdef NOTENCODE_FRAME
-	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoEffectParameter * videoEffectParameter);
-#else
 	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
-#endif
 	~CPreviewDlg();
 
 	void UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension);
 	wxPanel * panel;
+    wxStaticBitmap * bitmapPreview;
 protected:
 	void OnClose(wxCloseEvent& event);
 	void OnSize(wxSizeEvent& event);
