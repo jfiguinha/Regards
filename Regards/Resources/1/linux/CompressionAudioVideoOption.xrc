@@ -455,7 +455,7 @@
 				<border>1</border>
 				<option>1</option>
 				<object class="wxPanel" name="IDPANEL">
-					<object class="wxStaticBox" name="ID_STATICBOX1">
+					<object class="wxStaticBox" name="ID_STPREVIEWPICTURE">
 							<label>Preview Picture</label>
 							<pos>5,5</pos>
 							<size>640,500</size>
@@ -463,6 +463,10 @@
 					<object class="wxStaticBitmap" name="ID_BITMAPVIDEOPREVIEW">
 						<pos>20,20</pos>
 						<size>620,470</size>
+					</object>
+					<object class="wxButton" name="ID_BTPREVIEW">
+						<label>Refresh</label>
+						<pos>300,510</pos>
 					</object>
 				</object>
 			</object>
