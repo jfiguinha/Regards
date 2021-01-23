@@ -25,5 +25,5 @@ __kernel void CopyFromOpenGLTexture(__global uint *output, __read_only image2d_t
 	int y = get_global_id(1);
 	int position = x + (height - y -1) * width;
 	const int2 pos = {x,y};
-	output[position] = rgbaFloat4ToUint(read_imagef(input, sampler, pos),1.0f);
+	output[position] = rgbaFloat4ToUint(read_imagef(input, sampler, pos),255.0f);
 } 
