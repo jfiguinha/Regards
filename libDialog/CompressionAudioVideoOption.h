@@ -96,7 +96,9 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * ckenablefilter;
 #ifdef USE_PREVIEW_INTEGRATE 
 		wxPanel * panel;
+#ifndef __APPLE__
 		wxStaticBitmap * bitmapPreview;
+#endif
 #endif
 		wxStaticBox * stPreviewPicture;
 		void ChangeLabelPicture(const wxString &label);

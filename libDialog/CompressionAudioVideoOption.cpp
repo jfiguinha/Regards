@@ -74,7 +74,9 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
 
 #ifdef USE_PREVIEW_INTEGRATE 
+#ifndef __APPLE__
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
+#endif
 #endif
 
 	stPreviewPicture = (wxStaticBox *)FindWindow(XRCID("ID_STPREVIEWPICTURE"));
@@ -242,11 +244,20 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
+    
+#ifdef __APPLE__
+	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
+	showBitmapWindow->Show(true);
+	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
+	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+#else
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
+    panel->Show(true);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+#endif
 #else
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
