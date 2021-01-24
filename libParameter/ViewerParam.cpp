@@ -302,7 +302,7 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("FacePertinence", to_string(pertinence)));
 	sectionWindow->append_node(node("windowMode", to_string(windowMode)));
 	sectionWindow->append_node(node("windowVisible", to_string(windowVisible)));
-	sectionWindow->append_node(node("LastFilepath", filepath));
+	sectionWindow->append_node(node("LastFilepath", CConvertUtility::ConvertToUTF8(filepath)));
 	sectionWindow->append_node(node("VideoEditorPath", pathProgramVideo));
 	sectionWindow->append_node(node("ImageEditorPath", pathProgramPicture));
 

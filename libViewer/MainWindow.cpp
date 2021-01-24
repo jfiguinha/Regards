@@ -1371,7 +1371,7 @@ int CMainWindow::LoadPicture(const bool& first)
 
 		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
-			config->SetLastShowPicture(filename);
+			config->SetLastShowPicture(this->filename);
 	}
 	return returnValue;
 }
