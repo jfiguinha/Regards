@@ -115,6 +115,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
     
+#ifndef WIN32
 	if (softRender && decoder == "")
 	{
 		wxString resourcePath = CFileUtility::GetResourcesFolderPath();
@@ -124,6 +125,9 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
 	else
 		videoWindow->PlayFirstMovie(false);
+#else
+	videoWindow->PlayFirstMovie(false);
+#endif
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
