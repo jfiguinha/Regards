@@ -125,17 +125,22 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 void CShowPreview::ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label)
 {
-	CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
-	imageLoadingFormat->SetPicture(decodeFrame->GetBitmap(false));
-	if (isFirstPicture)
-		bitmapWindow->SetBitmap(imageLoadingFormat, false);
-	else
-		bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
+	CRegardsBitmap * bitmap = decodeFrame->GetBitmap(false);
+	if (bitmap != nullptr && bitmap->GetBitmapWidth() > 0 && bitmap->GetBitmapHeight())
+	{
+		CImageLoadingFormat * imageLoadingFormat = new CImageLoadingFormat(false);
+		imageLoadingFormat->SetPicture(bitmap);
+		if (isFirstPicture)
+			bitmapWindow->SetBitmap(imageLoadingFormat, false);
+		else
+			bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
 
-	CompressionAudioVideoOption * dlg = (CompressionAudioVideoOption *)this->FindWindowByName("CompressionAudioVideoOption");
-	dlg->ChangeLabelPicture(label);
+		CompressionAudioVideoOption * dlg = (CompressionAudioVideoOption *)this->FindWindowByName("CompressionAudioVideoOption");
+		dlg->ChangeLabelPicture(label);
 
-	isFirstPicture = false;
+		isFirstPicture = false;
+	}
+
 }
 
 void CShowPreview::ShowOriginal()
@@ -164,10 +169,18 @@ void CShowPreview::OnShowNew(wxCommandEvent& event)
 
 void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 {
-	if (showOriginal)
+	if (!compressIsOK)
+	{
 		ShowOriginal();
+	}
 	else
-		ShowNew();
+	{
+		if (showOriginal)
+			ShowOriginal();
+		else
+			ShowNew();
+	}
+
 
 	if (firstTime)
 	{
@@ -199,6 +212,7 @@ void CShowPreview::MoveSlider(const int64_t &position)
 
 void CShowPreview::ThreadLoading(void * data)
 {
+	int ret = 0;
 	CShowPreview * showPreview = (CShowPreview *)data;
 
 	CImageLoadingFormat * imageLoadingFormat = nullptr;
@@ -210,35 +224,52 @@ void CShowPreview::ThreadLoading(void * data)
 
 	if (!showPreview->moveSlider)
 	{
+		
 		//fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
 		fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
 
-		showPreview->transcodeFFmpeg->EncodeOneFrame(&dataOutput, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
+		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(&dataOutput, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
+		//showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
 		showPreview->transcodeFFmpeg->EndTreatment();
 
-		showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
-		showPreview->decodeFrame->GetFrameBitmapPosition(0);
-		CRegardsBitmap * bmp = showPreview->decodeFrame->GetBitmap(false);
-		if(bmp != nullptr)
-			bmp->VertFlipBuf();
-		showPreview->decodeFrame->EndTreatment();
+		if (ret == 0)
+		{
+			showPreview->compressIsOK = true;
+
+			showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
+			//showPreview->decodeFrame->OpenFile(fileTemp);
+			showPreview->decodeFrame->GetFrameBitmapPosition(0);
+			CRegardsBitmap * bmp = showPreview->decodeFrame->GetBitmap(false);
+			if (bmp != nullptr)
+				bmp->VertFlipBuf();
+			showPreview->decodeFrame->EndTreatment();
+		}
+		else
+			showPreview->compressIsOK = false;
+
 	}
 
+	if (showPreview->compressIsOK)
+	{
+		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+		CRegardsBitmap * bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
+		if (bmp != nullptr)
+			bmp->VertFlipBuf();
 
+		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
+		showPreview->GetEventHandler()->AddPendingEvent(evt);
+	}
+	else
+	{
+		wxCommandEvent evt(wxEVENT_ERRORCOMPRESSION);
+		evt.SetInt(ret);
+		showPreview->GetParent()->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+	}
 
-	showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-	CRegardsBitmap * bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
-	if (bmp != nullptr)
-		bmp->VertFlipBuf();
-
-
-	wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
-	showPreview->GetEventHandler()->AddPendingEvent(evt);
 }
 
-void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension)
+void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension, const bool &updatePicture)
 {
-	sliderVideo->Start();
 	wxString decoder = "";
 
 	if (videoOptionCompress != nullptr)
@@ -253,14 +284,15 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress * videoOptionCompress, cons
 	if (decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame(decoder);
 
+	sliderVideo->Start();
+
 	if (threadStart != nullptr)
 	{
 		threadStart->join();
 		delete threadStart;
 	}
-	
-	threadStart = new thread(ThreadLoading, this);
 
+	threadStart = new thread(ThreadLoading, this);
 }
 
 void CShowPreview::OnControlSize(wxCommandEvent& event)

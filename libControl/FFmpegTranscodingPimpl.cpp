@@ -1967,6 +1967,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
 
+	bool firstPos = true;
+
 	/* read all packets */
 	while (!pictureFind)
 	{
@@ -2089,6 +2091,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 		av_packet_unref(&packet);
 		int posVideo = (int)pos;
+		if(firstPos)
+
 		if (nb_max_Frame == nbframe)
 			break;
 	}
@@ -2096,7 +2100,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 	/* flush filters and encoders */
 	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 
-		AVStream *st = ifmt_ctx->streams[packet.stream_index];
+		AVStream *st = ifmt_ctx->streams[i];
 		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
 			continue;
 
@@ -2104,18 +2108,18 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 		/* flush filter */
 		if (!filter_ctx[i].filter_graph)
 			continue;
-#endif
+
 		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
 			return ret;
 		}
+#endif
 
 		/* flush encoder */
 		ret = flush_encoder(i);
-		ret = 0;
 		//if (ret < 0) {
-		////	av_log(NULL, AV_LOG_ERROR, "Flushing encoder failed\n");
+		//	av_log(NULL, AV_LOG_ERROR, "Flushing encoder failed\n");
 		//	return ret;
 		//}
 	}
@@ -2503,12 +2507,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	ret = ProcessEncodeOneFrameFile(dst, time);
 	if (ret < 0)
 	{
-		char message[255];
-		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+		//char message[255];
+		//av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+		//wxMessageBox(message, "Error conversion", wxICON_ERROR);
 	}
 
-	return ret ? 1 : 0;
+	return ret;
 
 }
 
@@ -2568,22 +2572,30 @@ void CFFmpegTranscodingPimpl::Release()
 	{
 		for (int i = 0; i < ifmt_ctx->nb_streams; i++) 
 		{
-			avcodec_free_context(&stream_ctx[i].dec_ctx);
+			if(stream_ctx[i].dec_ctx != nullptr)
+				avcodec_free_context(&stream_ctx[i].dec_ctx);
 			if (ofmt_ctx && ofmt_ctx->nb_streams > i && ofmt_ctx->streams[i] && stream_ctx[i].enc_ctx)
 			{
-				avcodec_close(stream_ctx[i].enc_ctx);
-				avcodec_free_context(&stream_ctx[i].enc_ctx);
+				if (stream_ctx[i].enc_ctx != nullptr)
+				{
+					avcodec_close(stream_ctx[i].enc_ctx);
+					avcodec_free_context(&stream_ctx[i].enc_ctx);
+				}
 			}
 #ifdef USE_FILTER	
-			if (filter_ctx && filter_ctx[i].filter_graph) 
+			if (filter_ctx && filter_ctx[i].filter_graph)
 			{
 				avfilter_graph_free(&filter_ctx[i].filter_graph);
 				av_freep(&filter_ctx[i].filtered_frame->data[0]);
 				av_frame_free(&filter_ctx[i].filtered_frame);
-			}
+				}
 #endif
-			av_freep(&stream_ctx[i].dec_frame->data[0]);
-			av_frame_free(&stream_ctx[i].dec_frame);
+			if (stream_ctx[i].dec_frame != nullptr)
+			{
+				av_freep(&stream_ctx[i].dec_frame->data[0]);
+				av_frame_free(&stream_ctx[i].dec_frame);
+			}
+
 		}
 #ifdef USE_FILTER	
 		av_free(filter_ctx);

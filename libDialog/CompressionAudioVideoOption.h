@@ -114,6 +114,7 @@ class CompressionAudioVideoOption: public wxDialog
 		wxString ConvertSecondToTime(int64_t sec);
 		//void OnPaint(wxPaintEvent &event);
 		void OnClosePreview(wxCommandEvent& event);
+		void OnErrorCompression(wxCommandEvent& event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		void OnbtnOkClick(wxCommandEvent& event);
 		void OnbtnPreviewClick(wxCommandEvent& event);

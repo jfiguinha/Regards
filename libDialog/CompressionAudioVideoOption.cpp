@@ -15,6 +15,12 @@
 #include "PreviewDlg.h"
 #include <videothumb.h>
 #include "ShowPreview.h"
+
+extern "C"
+{
+#include <libavutil/error.h>
+}
+
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressionAudioVideoOption)
 	//*)
@@ -134,7 +140,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 	Connect(wxEVENT_CLOSEPREVIEW, wxCommandEventHandler(CompressionAudioVideoOption::OnClosePreview));
-
+	Connect(wxEVENT_ERRORCOMPRESSION, wxCommandEventHandler(CompressionAudioVideoOption::OnErrorCompression));
 	Connect(XRCID("ID_CBVIDEOCODEC"), wxEVT_COMBOBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
 
 	wxString decoder = "";
@@ -264,6 +270,16 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
 #endif
 
+}
+
+
+void CompressionAudioVideoOption::OnErrorCompression(wxCommandEvent& event)
+{
+	int errorCode = event.GetInt();
+	char message[255];
+	av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, errorCode);
+	wxMessageBox(message, "Error conversion", wxICON_ERROR);
+	this->Close();
 }
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)

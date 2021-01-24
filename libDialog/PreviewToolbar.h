@@ -32,11 +32,6 @@ namespace Regards
 		private:
 		
 			void EventManager(const int &id);
-
-			CToolbarButton * save;
-            CToolbarButton * export_button;
-			//CToolbarButton * crop;
-			CToolbarButton * email;
 			CToolbarSlide * slide;
 			wxWindowID parentId;
 			

@@ -624,8 +624,10 @@ void CFFmpegDecodeFrame::Release()
 
 	if (ifmt_ctx != nullptr)
 	{
-		for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
-			avcodec_free_context(&stream_ctx[i].dec_ctx);
+		for (int i = 0; i < ifmt_ctx->nb_streams; i++) 
+		{
+			if(stream_ctx[i].dec_ctx != nullptr)
+				avcodec_free_context(&stream_ctx[i].dec_ctx);
 			if (stream_ctx[i].dec_frame != nullptr)
 			{
 				av_freep(&stream_ctx[i].dec_frame->data[0]);

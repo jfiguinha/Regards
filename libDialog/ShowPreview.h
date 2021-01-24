@@ -36,7 +36,7 @@ namespace Regards
 			void MoveSlider(const int64_t &position);
 			void ClickButton(const int &id) {};
 			void SetTrackBarPosition(const int &iPos) {};
-			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension);
+			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension, const bool &updatePicture = true);
 
 		private:
 
@@ -89,6 +89,7 @@ namespace Regards
 			bool moveSlider = false;
             bool oldShowOriginal = false;
 			bool firstTime = true;
+			bool compressIsOK = true;
 		};
 	}
 }
