@@ -312,10 +312,10 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 	videoStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
 	int audioStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
 
-	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
-		AVStream *stream = ifmt_ctx->streams[i];
-        if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
-		   continue;
+	//for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
+		AVStream *stream = ifmt_ctx->streams[videoStreamIndex];
+    //    if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+	//	   continue;
 		AVCodec *dec = avcodec_find_decoder(stream->codecpar->codec_id);
 		AVCodecContext *codec_ctx;
 		if (!dec) {
@@ -407,7 +407,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 		stream_ctx[videoStreamIndex].dec_frame = av_frame_alloc();
 		if (!stream_ctx[videoStreamIndex].dec_frame)
 			return AVERROR(ENOMEM);
-	}
+	//}
 
 	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 0);
 	return 0;

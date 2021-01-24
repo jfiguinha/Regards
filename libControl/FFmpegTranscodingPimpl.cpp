@@ -2092,7 +2092,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 		av_packet_unref(&packet);
 		int posVideo = (int)pos;
 		if(firstPos)
-
 		if (nb_max_Frame == nbframe)
 			break;
 	}
@@ -2507,12 +2506,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	ret = ProcessEncodeOneFrameFile(dst, time);
 	if (ret < 0)
 	{
-		//char message[255];
-		//av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		//wxMessageBox(message, "Error conversion", wxICON_ERROR);
+		char message[255];
+		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+		wxMessageBox(message, "Error conversion", wxICON_ERROR);
 	}
 
-	return ret;
+	return ret ? 1 : 0;
 
 }
 
