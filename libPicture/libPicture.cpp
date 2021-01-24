@@ -1524,6 +1524,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 		if (photo_cancel->IsOk())
 		{
 			CRegardsBitmap * bitmap = photo_cancel->GetRegardsBitmap();
+			bitmap->SetFilename(szFileName);
 			CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
 			imageVideoThumbnail->image = new CImageLoadingFormat();
 			if (compressJpeg)
@@ -1540,7 +1541,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 			imageVideoThumbnail->percent = 100.0f;
 			imageVideoThumbnail->timePosition = 0;
 			listThumbnail->push_back(imageVideoThumbnail);
-			bitmap->SetFilename(szFileName);
+			
 			
 		}
 		delete photo_cancel;

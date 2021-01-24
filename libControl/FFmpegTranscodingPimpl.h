@@ -1,5 +1,6 @@
 #pragma once
 #include "VideoCompressOption.h"
+#include <map>
 extern "C"
 {
 	#include <libavcodec/avcodec.h>
@@ -130,10 +131,10 @@ public:
 
 		if (scaleContext != nullptr)
 			sws_freeContext(scaleContext);
-
+#ifdef USE_FILTER
 		if(filterContext != nullptr)
 			sws_freeContext(filterContext);
-
+#endif
 		if (localContext != nullptr)
 			sws_freeContext(localContext);
 
@@ -183,8 +184,10 @@ private:
 	void CopyFrame(AVFrame * frame);
 	int open_input_file(const wxString & filename);
 	int open_output_file(const wxString & filename);
+#ifdef USE_FILTER
 	int init_filter(FilteringContext* fctx, AVCodecContext *dec_ctx, AVCodecContext *enc_ctx, const char *filter_spec);
 	int init_filters(void);
+#endif
 	int filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo);
 	int flush_encoder(unsigned int stream_index);
 	void Release();
@@ -195,7 +198,9 @@ private:
 
 	AVFormatContext *ifmt_ctx = nullptr;
 	AVFormatContext *ofmt_ctx = nullptr;
+#ifdef USE_FILTER
 	FilteringContext *filter_ctx = nullptr;
+#endif
 	StreamContext *stream_ctx;
 	AVPacket packet;
 	bool cleanPacket = false;
@@ -226,7 +231,9 @@ private:
 	AVFrame * dst = nullptr;
 	AVFrame * dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
+#ifdef USE_FILTER
 	SwsContext* filterContext = nullptr;
+#endif
 	SwsContext* localContext = nullptr;
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
@@ -251,4 +258,5 @@ private:
 	uint8_t *avio_ctx_buffer = NULL;
 	size_t avio_ctx_buffer_size = 4096;
 	wxString outputFile;
+	std::map<int, int> streamCorrespondant;
 };

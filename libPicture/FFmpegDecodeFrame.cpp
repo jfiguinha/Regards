@@ -261,7 +261,7 @@ int CFFmpegDecodeFrame::read_packet(void *opaque, uint8_t *buf, int buf_size)
 int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 {
 	int ret;
-	unsigned int i;
+	//unsigned int i;
 
 	if (isBuffer)
 	{
@@ -309,25 +309,28 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 	if (!stream_ctx)
 		return AVERROR(ENOMEM);
 
-	for (i = 0; i < ifmt_ctx->nb_streams; i++) {
+	videoStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
+	int audioStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+
+	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 		AVStream *stream = ifmt_ctx->streams[i];
         if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
-            continue;
+		   continue;
 		AVCodec *dec = avcodec_find_decoder(stream->codecpar->codec_id);
 		AVCodecContext *codec_ctx;
 		if (!dec) {
-			av_log(NULL, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", i);
+			av_log(NULL, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", videoStreamIndex);
 			return AVERROR_DECODER_NOT_FOUND;
 		}
 		codec_ctx = avcodec_alloc_context3(dec);
 		if (!codec_ctx) {
-			av_log(NULL, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
+			av_log(NULL, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", videoStreamIndex);
 			return AVERROR(ENOMEM);
 		}
 		ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
-				"for stream #%u\n", i);
+				"for stream #%u\n", videoStreamIndex);
 			return ret;
 		}
 		/* Reencode video & audio and remux subtitles etc. */
@@ -338,7 +341,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 
 			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{			/* Open decoder */
-				videoStreamIndex = i;
+				//videoStreamIndex = i;
 				if (acceleratorHardware != "")
 				{
 					enum AVHWDeviceType type;
@@ -353,7 +356,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 						return -1;
 					}
 
-					for (i = 0;; i++) {
+					for (int i = 0;; i++) {
 						const AVCodecHWConfig *config = avcodec_get_hw_config(dec, i);
 						if (!config) {
 							fprintf(stderr, "Decoder %s does not support device type %s.\n",
@@ -379,7 +382,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 
 			ret = avcodec_open2(codec_ctx, dec, NULL);
 			if (ret < 0) {
-				av_log(NULL, AV_LOG_ERROR, "Failed to open decoder for stream #%u\n", i);
+				av_log(NULL, AV_LOG_ERROR, "Failed to open decoder for stream #%u\n", videoStreamIndex);
 				return ret;
 			}
 
@@ -399,10 +402,10 @@ int CFFmpegDecodeFrame::open_input_file(const wxString & filename)
 				duration_movie = double(stream->duration) * double(stream->time_base.num) / double(stream->time_base.den);
 			}
 		}
-		stream_ctx[i].dec_ctx = codec_ctx;
+		stream_ctx[videoStreamIndex].dec_ctx = codec_ctx;
 
-		stream_ctx[i].dec_frame = av_frame_alloc();
-		if (!stream_ctx[i].dec_frame)
+		stream_ctx[videoStreamIndex].dec_frame = av_frame_alloc();
+		if (!stream_ctx[videoStreamIndex].dec_frame)
 			return AVERROR(ENOMEM);
 	}
 
@@ -423,7 +426,6 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 	int videoFrameOutputWidth = 0;
 	int videoFrameOutputHeight = 0;
 	int ret = 0;
-	int stream_index = 0;
 	bool pictureFind = false;
 	
 	bool deleteMemory = false;
@@ -462,25 +464,26 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			return ret;
 
+
+
+		AVStream *st = ifmt_ctx->streams[packet.stream_index];
 		if (packet.stream_index != videoStreamIndex)
 		{
 			av_free_packet(&packet);
 			continue;
 		}
 
-		AVStream *st = ifmt_ctx->streams[packet.stream_index];
-		if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
-			continue;
+			CFFmpegDecodeFrame::StreamContext *stream = &stream_ctx[videoStreamIndex];
 
-		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
-			continue;
-
-			CFFmpegDecodeFrame::StreamContext *stream = &stream_ctx[stream_index];
+			if (stream->dec_ctx == nullptr)
+			{
+				continue;
+			}
 
 			av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
 			av_packet_rescale_ts(&packet,
-				ifmt_ctx->streams[stream_index]->time_base,
+				ifmt_ctx->streams[videoStreamIndex]->time_base,
 				stream->dec_ctx->time_base);
 
 			ret = avcodec_send_packet(stream->dec_ctx, &packet);
@@ -604,6 +607,9 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 
 CRegardsBitmap * CFFmpegDecodeFrame::GetBitmap(const bool &copy)
 {
+	if (!isOk)
+		return nullptr;
+
 	if (copy && image != nullptr)
 	{
 		CRegardsBitmap * copyPicture = new CRegardsBitmap();
@@ -620,8 +626,12 @@ void CFFmpegDecodeFrame::Release()
 	{
 		for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 			avcodec_free_context(&stream_ctx[i].dec_ctx);
-			av_freep(&stream_ctx[i].dec_frame->data[0]);
-			av_frame_free(&stream_ctx[i].dec_frame);
+			if (stream_ctx[i].dec_frame != nullptr)
+			{
+				av_freep(&stream_ctx[i].dec_frame->data[0]);
+				av_frame_free(&stream_ctx[i].dec_frame);
+			}
+
 		}
 		av_free(stream_ctx);
 		avformat_close_input(&ifmt_ctx);

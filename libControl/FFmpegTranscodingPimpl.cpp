@@ -1113,12 +1113,14 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 
 	
 	//
-
+	int nbStream = 0;
 	for (i = 0; i < ifmt_ctx->nb_streams; i++) 
     {
 		AVStream *stream = ifmt_ctx->streams[i];
         if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
             continue;
+
+		streamCorrespondant.insert(std::make_pair(i, nbStream++));
  
 		dec_ctx = stream_ctx[i].dec_ctx;
 
@@ -1351,6 +1353,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 	return 0;
 }
 
+#ifdef USE_FILTER
 int CFFmpegTranscodingPimpl::init_filter(FilteringContext* fctx, AVCodecContext *dec_ctx,
 	AVCodecContext *enc_ctx, const char *filter_spec)
 {
@@ -1542,7 +1545,7 @@ int CFFmpegTranscodingPimpl::init_filters(void)
 	}
 	return 0;
 }
-
+#endif
 int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned int stream_index)
 {
 	StreamContext *stream = &stream_ctx[stream_index];
@@ -1569,12 +1572,14 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 		/* prepare packet for muxing */
 		enc_pkt.stream_index = stream_index;
 
+		int outputIndex = streamCorrespondant[stream_index];
+
 		av_packet_rescale_ts(&enc_pkt,
 			stream->enc_ctx->time_base,
-			ofmt_ctx->streams[stream_index]->time_base);
+			ofmt_ctx->streams[outputIndex]->time_base);
 
 		if (enc_pkt.duration > 0)
-			enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[stream_index]->time_base, stream->enc_ctx->time_base);
+			enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base, stream->enc_ctx->time_base);
 
 
 		av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
@@ -1587,6 +1592,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned int stream_index, CompressVideo * m_dlgProgress, const int &isvideo)
 {
+#ifdef USE_FILTER
 	FilteringContext *filter = &filter_ctx[stream_index];
 	int ret;
 
@@ -1625,7 +1631,13 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame *frame, unsigned 
 		if (ret < 0)
 			break;
 	}
-
+#else
+	if (isvideo && m_dlgProgress != nullptr)
+	{
+		SetFrameData(frame, m_dlgProgress);
+	}
+	int ret = encode_write_frame(frame, stream_index);
+#endif
 	return ret;
 }
 
@@ -1699,8 +1711,9 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
+#ifdef USE_FILTER	
 	ret = init_filters();
-
+#endif
 	return ret;
 }
 
@@ -1984,7 +1997,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 				copyDirectPacket = true;
 			}
 
-			if (!copyDirectPacket && filter_ctx[stream_index].filter_graph) {
+			if (!copyDirectPacket){// && filter_ctx[stream_index].filter_graph) {
 
 				CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
 
@@ -2082,9 +2095,16 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 	/* flush filters and encoders */
 	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
+
+		AVStream *st = ifmt_ctx->streams[packet.stream_index];
+		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
+			continue;
+
+#ifdef USE_FILTER
 		/* flush filter */
 		if (!filter_ctx[i].filter_graph)
 			continue;
+#endif
 		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
@@ -2316,7 +2336,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                 }
             }
             
-            if (!showPreviewFrame && !copyDirectPacket && filter_ctx[stream_index].filter_graph) {
+            if (!showPreviewFrame && !copyDirectPacket){// && filter_ctx[stream_index].filter_graph) {
 
                 CFFmpegTranscodingPimpl::StreamContext *stream = &stream_ctx[stream_index];
 
@@ -2429,8 +2449,14 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 	/* flush filters and encoders */
 	for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 		/* flush filter */
+		AVStream *st = ifmt_ctx->streams[packet.stream_index];
+		if (st->codecpar->codec_id == AV_CODEC_ID_NONE)
+			continue;
+
+#ifdef USE_FILTER
 		if (!filter_ctx[i].filter_graph)
 			continue;
+#endif
 		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
@@ -2540,29 +2566,33 @@ void CFFmpegTranscodingPimpl::Release()
 {
 	if (ifmt_ctx != nullptr)
 	{
-		for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
+		for (int i = 0; i < ifmt_ctx->nb_streams; i++) 
+		{
 			avcodec_free_context(&stream_ctx[i].dec_ctx);
 			if (ofmt_ctx && ofmt_ctx->nb_streams > i && ofmt_ctx->streams[i] && stream_ctx[i].enc_ctx)
 			{
 				avcodec_close(stream_ctx[i].enc_ctx);
 				avcodec_free_context(&stream_ctx[i].enc_ctx);
 			}
-				
+#ifdef USE_FILTER	
 			if (filter_ctx && filter_ctx[i].filter_graph) 
 			{
 				avfilter_graph_free(&filter_ctx[i].filter_graph);
 				av_freep(&filter_ctx[i].filtered_frame->data[0]);
 				av_frame_free(&filter_ctx[i].filtered_frame);
 			}
-
+#endif
 			av_freep(&stream_ctx[i].dec_frame->data[0]);
 			av_frame_free(&stream_ctx[i].dec_frame);
 		}
+#ifdef USE_FILTER	
 		av_free(filter_ctx);
+		filter_ctx = nullptr;
+#endif
 		av_free(stream_ctx);
 		avformat_close_input(&ifmt_ctx);
         
-        filter_ctx = nullptr;
+       
         stream_ctx = nullptr;
         ifmt_ctx = nullptr;
 	}

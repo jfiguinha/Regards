@@ -218,14 +218,18 @@ void CShowPreview::ThreadLoading(void * data)
 
 		showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
 		showPreview->decodeFrame->GetFrameBitmapPosition(0);
-		showPreview->decodeFrame->GetBitmap(false)->VertFlipBuf();
+		CRegardsBitmap * bmp = showPreview->decodeFrame->GetBitmap(false);
+		if(bmp != nullptr)
+			bmp->VertFlipBuf();
 		showPreview->decodeFrame->EndTreatment();
 	}
 
 
 
 	showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-	showPreview->decodeFrameOriginal->GetBitmap(false)->VertFlipBuf();
+	CRegardsBitmap * bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
+	if (bmp != nullptr)
+		bmp->VertFlipBuf();
 
 
 	wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
