@@ -2504,14 +2504,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	begin = std::chrono::steady_clock::now();
 
 	ret = ProcessEncodeOneFrameFile(dst, time);
-	if (ret < 0)
-	{
-		char message[255];
-		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		wxMessageBox(message, "Error conversion", wxICON_ERROR);
-	}
-
-	return ret ? 1 : 0;
+	return ret;
 
 }
 
