@@ -76,7 +76,7 @@ namespace Regards
 
 			int DrawVolumeLibelle(wxDC * context, const wxString &libelle);
 			int DrawTotalTimeLibelle(wxDC * context, const wxString &libelle, const int &volumePos);
-
+			void OnMouseClickTimer(wxTimerEvent& event);
 
 			wxImage button;
             
@@ -101,7 +101,8 @@ namespace Regards
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-			
+			wxTimer * mouseTimer;
+			bool isNextButton = false;
 			CThemeSliderVideo themeSlider;
 			wxActivityIndicator * m_animation;
 

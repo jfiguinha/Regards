@@ -9,6 +9,8 @@
 #include <wx/sstream.h>
 using namespace Regards::Control;
 
+wxDEFINE_EVENT(TIMER_MOUSE, wxTimerEvent);
+
 CSliderVideoPreview::CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider)
 	: CWindowMain("CSliderVideoPreview",parent, id)
 {
@@ -43,15 +45,45 @@ CSliderVideoPreview::CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSlide
 	
 	button.Create(0,0);
 
-
+	mouseTimer = new wxTimer(this, TIMER_MOUSE);
+	Connect(TIMER_MOUSE, wxEVT_TIMER, wxTimerEventHandler(CSliderVideoPreview::OnMouseClickTimer), nullptr, this);
 	m_animation = new wxActivityIndicator(this, wxID_ANY);
 	m_animation->SetSize(wxSize(this->GetHeight(), this->GetHeight()));
 	m_animation->SetBackgroundColour(themeSlider.colorBack);
 	
 }
 
+void CSliderVideoPreview::OnMouseClickTimer(wxTimerEvent& event)
+{
+	wxSetCursor(wxCURSOR_ARROW);
+	if (isNextButton)
+	{
+		wxSetCursor(hCursorHand);
+		secondTimePast++;
+		if (secondTimePast > secondTotalTime)
+			secondTimePast = secondTotalTime;
+		timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
+		if (sliderEvent != nullptr)
+			sliderEvent->SlidePosChange(secondTimePast, "Click");
+	}
+	else 
+	{
+		secondTimePast--;
+		if (secondTimePast < 0)
+			secondTimePast = 0;
+		wxSetCursor(hCursorHand);
+		timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
+		if (sliderEvent != nullptr)
+			sliderEvent->SlidePosChange(secondTimePast, "Click");
+	}
+	this->Refresh();
+	mouseTimer->Start(100, true);
+}
+
 CSliderVideoPreview::~CSliderVideoPreview()
 {
+	mouseTimer->Stop();
+	delete mouseTimer;
 	delete m_animation;
 }
 
@@ -429,6 +461,7 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
         wxSetCursor(wxCURSOR_ARROW);
 		if (xPos >= positionNextButton.x && xPos <= (positionNextButton.x + positionNextButton.width))
 		{
+			isNextButton = true;
 			wxSetCursor(hCursorHand);
 			secondTimePast++;
 			if (secondTimePast > secondTotalTime)
@@ -436,9 +469,12 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
 			timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 			if (sliderEvent != nullptr)
 				sliderEvent->SlidePosChange(secondTimePast, "Click");
+
+			mouseTimer->Start(100, true);
 		}
 		else if (xPos >= positionPreviousButton.x && xPos <= (positionPreviousButton.x + positionPreviousButton.width))
 		{
+			isNextButton = false;
 			secondTimePast--;
 			if (secondTimePast < 0)
 				secondTimePast = 0;
@@ -446,6 +482,8 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
 			timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 			if (sliderEvent != nullptr)
 				sliderEvent->SlidePosChange(secondTimePast, "Click");
+
+			mouseTimer->Start(100, true);
 		}
 	}
     this->Refresh();
@@ -453,6 +491,7 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
 
 void CSliderVideoPreview::OnLButtonUp(wxMouseEvent& event)
 {
+	mouseTimer->Stop();
 	if (mouseBlock)
 	{
 		mouseBlock = false;
