@@ -90,6 +90,7 @@ namespace Regards
             bool oldShowOriginal = false;
 			bool firstTime = true;
 			bool compressIsOK = true;
+			wxString key = "";
 		};
 	}
 }

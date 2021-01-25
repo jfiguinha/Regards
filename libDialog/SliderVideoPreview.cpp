@@ -267,7 +267,7 @@ void CSliderVideoPreview::ClickLeftPage(const int &x)
 	//Click Top Triangle
 	CalculTimePosition(x);
 	if (sliderEvent != nullptr)
-		sliderEvent->MoveSlider(secondTimePast);
+		sliderEvent->SlidePosChange(secondTimePast, "Click");
 
 }
 
@@ -276,7 +276,7 @@ void CSliderVideoPreview::ClickRightPage(const int &x)
 	//Click Top Triangle
 	CalculTimePosition(x);
 	if (sliderEvent != nullptr)
-		sliderEvent->MoveSlider(secondTimePast);
+		sliderEvent->SlidePosChange(secondTimePast, "Click");
 
 }
 

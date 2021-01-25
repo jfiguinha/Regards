@@ -196,10 +196,22 @@ void CShowPreview::OnUpdatePicture(wxCommandEvent& event)
 
 void CShowPreview::SlidePosChange(const int &position, const wxString &key)
 {
-	moveSlider = true;
-    showOriginal = true;
-	this->position = position;
-	UpdateBitmap(nullptr, "");
+	if (key == "Move")
+	{
+		this->key = key;
+		moveSlider = true;
+		showOriginal = true;
+		this->position = position;
+		UpdateBitmap(nullptr, "");
+	}
+	else
+	{
+		this->key = key;
+		showOriginal = oldShowOriginal;
+		moveSlider = false;
+		this->position = position;
+		UpdateBitmap(nullptr, "");
+	}
 }
 
 void CShowPreview::MoveSlider(const int64_t &position)
@@ -243,23 +255,43 @@ void CShowPreview::ThreadLoading(void * data)
 			if (bmp != nullptr)
 				bmp->VertFlipBuf();
 			showPreview->decodeFrame->EndTreatment();
+
 		}
 		else
 			showPreview->compressIsOK = false;
 
-	}
+		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+		CRegardsBitmap * bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
+		if (bmp != nullptr)
+			bmp->VertFlipBuf();
 
-	if (showPreview->compressIsOK)
+		if (showPreview->key == "Click")
+		{
+			showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+			bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
+			if (bmp != nullptr)
+				bmp->VertFlipBuf();
+		}
+
+		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
+		showPreview->GetEventHandler()->AddPendingEvent(evt);
+
+	}
+	else
 	{
 		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
 		CRegardsBitmap * bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
 		if (bmp != nullptr)
 			bmp->VertFlipBuf();
 
+
+
+
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
-	else
+
+	if (!showPreview->compressIsOK)
 	{
 		wxCommandEvent evt(wxEVENT_ERRORCOMPRESSION);
 		evt.SetInt(ret);
