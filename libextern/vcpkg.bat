@@ -4,3 +4,12 @@ vcpkg install libexif:x64-windows --recurse
 vcpkg install tesseract:x64-windows --recurse
 vcpkg install tbb:x64-windows --recurse
 vcpkg install libde265:x64-windows --recurse
+vcpkg install glew:x64-windows --recurse
+vcpkg install sdl2:x64-windows --recurse
+vcpkg install sqlite3:x64-windows --recurse
+vcpkg install freeglut:x64-windows --recurse
+vcpkg install x265:x64-windows --recurse
+vcpkg install OpenExr:x64-windows --recurse
+vcpkg install libraw:x64-windows --recurse
+vcpkg install fftw3:x64-windows --recurse
+vcpkg install jasper:x64-windows --recurse
