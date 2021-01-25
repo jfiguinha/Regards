@@ -52,6 +52,9 @@ namespace Regards
 
 		private:
             
+			void InsertPreviousButton(const int &xStart, wxDC * context);
+			void InsertNextButton(const int &xStart, wxDC * context);
+
 			void OnMouseMove(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
@@ -101,6 +104,15 @@ namespace Regards
 			
 			CThemeSliderVideo themeSlider;
 			wxActivityIndicator * m_animation;
+
+			wxImage buttonImageNext;
+			wxImage buttonImagePrevious;
+
+			bool buttonNextActif = false;
+			wxRect positionNextButton;
+
+			bool buttonPreviousActif = false;
+			wxRect positionPreviousButton;
 		};
 
 	}

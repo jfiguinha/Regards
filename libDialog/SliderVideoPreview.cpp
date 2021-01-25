@@ -218,10 +218,82 @@ void CSliderVideoPreview::Draw(wxDC * context)
             button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
         sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
+		int xButtonPos = positionSlider.x + positionSlider.width + (totalTimeSize + themeSlider.GetMarge());
+		InsertPreviousButton(xButtonPos, &sourceDCContext);
+
+		xButtonPos += themeSlider.GetButtonSpeakerWidth() + 5;
+		InsertNextButton(xButtonPos, &sourceDCContext);
+
 		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &sourceDCContext, 0, 0);
 		sourceDCContext.SelectObject(wxNullBitmap);
 	}
 
+}
+
+
+void CSliderVideoPreview::InsertPreviousButton(const int &xStart, wxDC * context)
+{
+	wxImage bmp;
+
+
+	if (!buttonImagePrevious.IsOk() || (buttonImagePrevious.GetWidth() != themeSlider.GetButtonVolumeDownWidth() || buttonImagePrevious.GetHeight() != themeSlider.GetButtonVolumeDownHeight()))
+	{
+		buttonImagePrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG", themeSlider.GetButtonVolumeDownWidth(), themeSlider.GetButtonVolumeDownHeight());
+	}
+	bmp = buttonImagePrevious;
+
+
+	int yPos = themeSlider.GetButtonVolumeDownHeight();//buttonVolumeDown.GetHeight();
+	if (!buttonPreviousActif)
+	{
+		bmp = bmp.ConvertToGreyscale();
+		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
+	}
+	else
+		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+
+	int yPosBitmap = (GetWindowHeight() - yPos) / 2;
+	context->DrawBitmap(bmp, xStart, yPosBitmap);
+
+	positionPreviousButton.x = xStart;
+	positionPreviousButton.width = bmp.GetWidth();
+	positionPreviousButton.y = yPosBitmap;
+	positionPreviousButton.height = bmp.GetHeight();
+}
+
+
+void CSliderVideoPreview::InsertNextButton(const int &xStart, wxDC * context)
+{
+	wxImage bmp;
+
+
+	if (!buttonImageNext.IsOk() || (buttonImageNext.GetWidth() != themeSlider.GetButtonVolumeDownWidth() || buttonImageNext.GetHeight() != themeSlider.GetButtonVolumeDownHeight()))
+	{
+		buttonImageNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", themeSlider.GetButtonVolumeDownWidth(), themeSlider.GetButtonVolumeDownHeight());
+	}
+	bmp = buttonImageNext;
+
+
+	int yPos = themeSlider.GetButtonVolumeDownHeight();//buttonVolumeDown.GetHeight();
+	if (!buttonNextActif)
+	{
+		bmp = bmp.ConvertToGreyscale();
+		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
+	}
+	else
+		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+
+	int yPosBitmap = (GetWindowHeight() - yPos) / 2;
+	context->DrawBitmap(bmp, xStart, yPosBitmap);
+
+	positionNextButton.x = xStart;
+	positionNextButton.width = bmp.GetWidth();
+	positionNextButton.y = yPosBitmap;
+	positionNextButton.height = bmp.GetHeight();
 }
 
 void CSliderVideoPreview::CalculPositionButton()
@@ -300,7 +372,22 @@ void CSliderVideoPreview::OnMouseMove(wxMouseEvent& event)
 				sliderEvent->SlidePosChange(secondTimePast, "Move");
 		}
 	}
-
+	else
+	{
+		if (xPos >= positionNextButton.x && xPos <= (positionNextButton.x + positionNextButton.width))
+		{
+			buttonNextActif = true;
+		}
+		else if (xPos >= positionPreviousButton.x && xPos <= (positionPreviousButton.x + positionPreviousButton.width))
+		{
+			buttonPreviousActif = true;
+		}
+		else
+		{
+			buttonNextActif = false;
+			buttonPreviousActif = false;
+		}
+	}
 	Refresh();
 }
 
@@ -340,6 +427,26 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
 	else
 	{
         wxSetCursor(wxCURSOR_ARROW);
+		if (xPos >= positionNextButton.x && xPos <= (positionNextButton.x + positionNextButton.width))
+		{
+			wxSetCursor(hCursorHand);
+			secondTimePast++;
+			if (secondTimePast > secondTotalTime)
+				secondTimePast = secondTotalTime;
+			timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
+			if (sliderEvent != nullptr)
+				sliderEvent->SlidePosChange(secondTimePast, "Click");
+		}
+		else if (xPos >= positionPreviousButton.x && xPos <= (positionPreviousButton.x + positionPreviousButton.width))
+		{
+			secondTimePast--;
+			if (secondTimePast < 0)
+				secondTimePast = 0;
+			wxSetCursor(hCursorHand);
+			timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
+			if (sliderEvent != nullptr)
+				sliderEvent->SlidePosChange(secondTimePast, "Click");
+		}
 	}
     this->Refresh();
 }
