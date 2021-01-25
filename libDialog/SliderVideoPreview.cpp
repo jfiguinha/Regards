@@ -55,10 +55,8 @@ CSliderVideoPreview::CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSlide
 
 void CSliderVideoPreview::OnMouseClickTimer(wxTimerEvent& event)
 {
-	wxSetCursor(wxCURSOR_ARROW);
 	if (isNextButton)
 	{
-		wxSetCursor(hCursorHand);
 		secondTimePast++;
 		if (secondTimePast > secondTotalTime)
 			secondTimePast = secondTotalTime;
@@ -71,7 +69,7 @@ void CSliderVideoPreview::OnMouseClickTimer(wxTimerEvent& event)
 		secondTimePast--;
 		if (secondTimePast < 0)
 			secondTimePast = 0;
-		wxSetCursor(hCursorHand);
+
 		timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 		if (sliderEvent != nullptr)
 			sliderEvent->SlidePosChange(secondTimePast, "Click");
