@@ -440,9 +440,6 @@ COPY "$(SolutionDir)x64\Release\libiconv.dll" "$(SolutionDir)x64\Release\iconv.d
     <ProjectReference Include="..\libScanner\libScanner.vcxproj">
       <Project>{b9fab389-b14f-493d-89a4-bac998a11299}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libsqlite\libsqlite.vcxproj">
-      <Project>{c9f9bf26-e1a1-48ed-81db-d1f2144791bb}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libFiltre\libFiltre.vcxproj">
       <Project>{67274429-0b74-48ab-9b74-0d3e15c825be}</Project>
     </ProjectReference>

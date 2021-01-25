@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{03F0
 		include\window_id.h = include\window_id.h
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsqlite", "libsqlite\libsqlite.vcxproj", "{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libCompress", "libCompress\libCompress.vcxproj", "{3E3F0F6C-CC33-45D3-879B-06B0AFCE0F9C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSqlEngine", "libSqlEngine\libSqlEngine.vcxproj", "{DBDF9029-404C-4C2A-B226-485E21D3E785}"
@@ -178,26 +176,6 @@ Global
 		RelWithDebInfo|x64 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug_windows10|Win32.ActiveCfg = Debug|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug_windows10|Win32.Build.0 = Debug|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug_windows10|x64.ActiveCfg = Debug_windows10|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug_windows10|x64.Build.0 = Debug_windows10|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug|Win32.Build.0 = Debug|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug|x64.ActiveCfg = Debug|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Debug|x64.Build.0 = Debug|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.MinSizeRel|Win32.ActiveCfg = Debug_windows10|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.MinSizeRel|Win32.Build.0 = Debug_windows10|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.MinSizeRel|x64.ActiveCfg = Release|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.MinSizeRel|x64.Build.0 = Release|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Release|Win32.ActiveCfg = Release|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Release|Win32.Build.0 = Release|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Release|x64.ActiveCfg = Release|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.Release|x64.Build.0 = Release|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.RelWithDebInfo|Win32.Build.0 = Release|Win32
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.RelWithDebInfo|x64.ActiveCfg = Release|x64
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB}.RelWithDebInfo|x64.Build.0 = Release|x64
 		{3E3F0F6C-CC33-45D3-879B-06B0AFCE0F9C}.Debug_windows10|Win32.ActiveCfg = Debug|Win32
 		{3E3F0F6C-CC33-45D3-879B-06B0AFCE0F9C}.Debug_windows10|Win32.Build.0 = Debug|Win32
 		{3E3F0F6C-CC33-45D3-879B-06B0AFCE0F9C}.Debug_windows10|x64.ActiveCfg = Debug_windows10|x64
@@ -1162,7 +1140,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C9F9BF26-E1A1-48ED-81DB-D1F2144791BB} = {E1C320B6-A988-4CB1-845D-2A97AB3F013D}
 		{DBDF9029-404C-4C2A-B226-485E21D3E785} = {E1C320B6-A988-4CB1-845D-2A97AB3F013D}
 		{5E545B46-4112-4C16-B716-9A8CAD576B7E} = {92668C22-24B0-4B3A-9507-A1F8ECC28ED2}
 		{F25C7926-ABE0-4A0B-A1DE-3D7452A6AC73} = {54400FB5-24EF-4214-9418-C2DC7C5E477B}
