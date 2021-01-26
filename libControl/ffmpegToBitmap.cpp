@@ -5,6 +5,11 @@
 #include <array>
 #include <RotateByShearRGB.h>
 #include <RegardsBitmap.h>
+extern "C"
+{
+	#include "libavutil/imgutils.h"
+}
+
 
 AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
 
@@ -103,7 +108,7 @@ int CffmpegToBitmap::GetConvert(CRegardsBitmap * bitmap, AVFrame *src_frame, con
 {
 	if(bitmap != nullptr)
 	{
-		int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
+		int numBytes = av_image_get_buffer_size(pixelFormat, thumbnailWidth, thumbnailHeight, 1);
 		if (numBytes == bitmap->GetBitmapSize())
 		{
 			uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
@@ -123,7 +128,7 @@ int CffmpegToBitmap::GetConvert(CRegardsBitmap * bitmap, AVFrame *src_frame, con
 CRegardsBitmap * CffmpegToBitmap::GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
 	CRegardsBitmap * bitmap = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
-	int numBytes = avpicture_get_size(pixelFormat, thumbnailWidth, thumbnailHeight);
+	int numBytes = av_image_get_buffer_size(pixelFormat, thumbnailWidth, thumbnailHeight, 1);
 	uint8_t * convertedFrameBuffer = bitmap->GetPtBitmap();
 	int linesize = thumbnailWidth * 4;
 

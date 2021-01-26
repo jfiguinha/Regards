@@ -469,7 +469,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 		AVStream *st = ifmt_ctx->streams[packet.stream_index];
 		if (packet.stream_index != videoStreamIndex)
 		{
-			av_free_packet(&packet);
+			av_packet_unref(&packet);
 			continue;
 		}
 
@@ -558,7 +558,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 					first = false;
 				}
 
-				int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight);
+				int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
 				if (numBytes != image->GetBitmapSize())
 				{
 					image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);

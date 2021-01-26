@@ -254,7 +254,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
@@ -273,6 +273,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UseProcessorExtensions>SSE3</UseProcessorExtensions>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

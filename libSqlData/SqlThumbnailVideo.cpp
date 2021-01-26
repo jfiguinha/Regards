@@ -104,8 +104,8 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 		int width;
 		int height;
         int numVideo;
-        int percent;
-        int timePosition;
+        //int percent;
+      // int timePosition;
 		wxString filename = "";
         
 		switch (type)

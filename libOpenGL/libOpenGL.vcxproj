@@ -309,11 +309,12 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

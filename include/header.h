@@ -5,9 +5,15 @@
 #endif
 
 #define wxUSE_PDF
+#ifndef TURBOJPEG
 #define TURBOJPEG
+#endif
+#ifndef EXIV2
 #define EXIV2
+#endif
+#ifndef FFMPEG
 #define FFMPEG
+#endif
 #define USECURL
 #define RENDEROPENGL
 #define GLUT
