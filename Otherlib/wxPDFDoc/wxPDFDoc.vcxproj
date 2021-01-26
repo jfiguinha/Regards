@@ -384,6 +384,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>include;include/wx;$(SolutionDir)\libextern\poppler_windows-master\include\poppler;$(SolutionDir)\libextern\poppler_windows-master\include\poppler\cpp</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

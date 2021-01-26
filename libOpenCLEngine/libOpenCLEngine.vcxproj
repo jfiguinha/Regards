@@ -147,6 +147,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libextern\libRapidXML;$(SolutionDir)libextern\opencv\opencv-4.3.0\build\;$(SolutionDir)libextern\opencv\opencv-4.3.0\modules\core\include;..\include;..\libSqlData;..\libDatastructure;..\libParameter;..\libResource;..\libUtility;..\libPicture</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -260,7 +261,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="OpenCLContext.cpp" />
-    <ClCompile Include="OpenCLEngine.cpp" />
+    <ClCompile Include="OpenCLEngine.cpp">
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</WholeProgramOptimization>
+    </ClCompile>
     <ClCompile Include="OpenCLExecuteProgram.cpp" />
     <ClCompile Include="OpenCLInfos.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />

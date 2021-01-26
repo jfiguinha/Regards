@@ -386,7 +386,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>

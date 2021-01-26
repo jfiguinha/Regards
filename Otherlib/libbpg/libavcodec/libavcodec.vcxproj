@@ -239,6 +239,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_VAR_BIT_DEPTH;_ISOC99_SOURCE;HAVE_AV_CONFIG_H;_FILE_OFFSET_BITS=64;_LARGEFILE_SOURCE;_WIN32_WINNT=0x0502;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;inline=__inline;USE_VAR_BIT_DEPTH;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -191,8 +191,8 @@ public:
 
 #ifdef FFMPEG
 		avformat_network_init();
-		av_register_all();
-		avfilter_register_all();
+		//av_register_all();
+		//avfilter_register_all();
 #endif
 
 

@@ -3,8 +3,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#ifndef wxUSE_PDF
 #define wxUSE_PDF
+#endif
 #ifndef TURBOJPEG
 #define TURBOJPEG
 #endif
