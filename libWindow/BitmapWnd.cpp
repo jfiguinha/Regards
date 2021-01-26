@@ -963,7 +963,9 @@ void CBitmapWnd::MouseRelease(const int &xPos, const int &yPos)
 {
     TRACE();
 	mouseBlock = false;
-	wxSetCursor(wxCursor(wxCURSOR_ARROW));
+	//wxSetCursor(wxCursor(wxCURSOR_ARROW));
+	::wxSetCursor(*wxSTANDARD_CURSOR);
+
     if(HasCapture())
         ReleaseMouse();
 }
@@ -1017,6 +1019,10 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 				//int iXImage = int(float(pt.x + posLargeur) / ratio);
 				//int iYImage = int(float(pt.y + posHauteur) / ratio);
 			}
+			break;
+
+		default:
+			::wxSetCursor(*wxSTANDARD_CURSOR);
 			break;
 	}
 
@@ -1303,6 +1309,13 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 					wxSetCursor(hCursorZoomOut);
 				break;
 			}
+
+		default:
+		{
+			::wxSetCursor(*wxSTANDARD_CURSOR);
+			break;
+		}
+
 	}
 
 	MouseMove(xPos* scale_factor, yPos* scale_factor);

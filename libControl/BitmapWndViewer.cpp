@@ -337,7 +337,10 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 		SetTool(preview);
 	}
 	else
+	{
+		::wxSetCursor(*wxSTANDARD_CURSOR);
 		toolOption = MOVEPICTURE;
+	}
 }
 
 void CBitmapWndViewer::Resize()
@@ -893,6 +896,10 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
+			}
+			else
+			{
+				wxSetCursor(*wxSTANDARD_CURSOR);
 			}
 		}
 	}
