@@ -464,7 +464,7 @@ COPY "$(SolutionDir)x64\Release\iconv-2.dll" "$(SolutionDir)x64\Release\iconv.dl
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
       <MinimalRebuild>false</MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
@@ -486,7 +486,6 @@ COPY "$(SolutionDir)x64\Release\iconv-2.dll" "$(SolutionDir)x64\Release\iconv.dl
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalOptions>/p:XPDeprecationWarning=false %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -705,9 +704,14 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">header.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">header.h</PrecompiledHeaderFile>
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
     </ClCompile>
-    <ClCompile Include="..\Regards\half.cpp" />
-    <ClCompile Include="..\Regards\Regards.cpp" />
+    <ClCompile Include="..\Regards\half.cpp">
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
+    </ClCompile>
+    <ClCompile Include="..\Regards\Regards.cpp">
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">false</WholeProgramOptimization>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc" />

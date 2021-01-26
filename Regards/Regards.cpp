@@ -122,10 +122,10 @@ int MyApp::Close()
 
 #endif
 
-
 #if not defined(WIN32) && defined(LIBBPG)
     CLibPicture::UnloadBpgDll();
 #endif
+
 #ifdef FFMPEG
 	avformat_network_deinit();
     //av_lockmgr_register(nullptr);
