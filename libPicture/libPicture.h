@@ -5,6 +5,8 @@
 // DLLPICTURE_API comme étant importées à partir d'une DLL, tandis que cette DLL considère les symboles
 // définis avec cette macro comme étant exportés.
 #pragma once
+#include <map>
+using namespace std;
 
 class CxImage;
 class CRegardsBitmap;
@@ -114,7 +116,7 @@ namespace Regards
 			static void * lib_handle;
 #endif
 #endif
-
+			map<wxString, bool> fileValid;
 
 		};
 

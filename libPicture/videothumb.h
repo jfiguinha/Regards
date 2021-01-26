@@ -18,7 +18,7 @@ public:
 	CRegardsBitmap * GetVideoFrame(int &rotation, const int &percent, int &timePosition, const int & thumbnailWidth, const int & thumbnailHeight);
 	vector<CImageVideoThumbnail *> GetVideoListFrame(const int &widthThumbnail,const int &heightThumbnail, const bool &compressJpeg);
 	int64_t GetMovieDuration();
-
+	bool IsOk();
 private:
 	void ApplyEffectToBitmap(CRegardsBitmap * & bitmap, CVideoEffectParameter * videoEffectParameter);
 	wxString filename;

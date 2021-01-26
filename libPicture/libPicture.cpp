@@ -1916,14 +1916,17 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 bool CLibPicture::TestIsVideoValid(const wxString & szFileName)
 {
 	bool isValid = true;
-	int rotation = 0;
-	CThumbnailVideo video(szFileName);
-	//CConvertUtility::ConvertToStdString
-	CRegardsBitmap * bitmap = video.GetVideoFrame(200, 200, rotation);
-	if (bitmap == nullptr)
-		isValid = false;
+
+	if (fileValid.find(szFileName) != fileValid.end())
+	{
+		isValid = fileValid[szFileName];
+	}
 	else
-		delete bitmap;
+	{
+		CThumbnailVideo video(szFileName);
+		isValid = video.IsOk();
+		fileValid.insert(std::make_pair(szFileName, isValid));
+	}
 	return isValid;
 
 }

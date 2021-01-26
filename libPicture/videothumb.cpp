@@ -26,6 +26,11 @@ CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 	decodeFrame->OpenFile(fileName);
 }
 
+bool CThumbnailVideo::IsOk()
+{
+	return decodeFrame->IsOk();
+}
+
 
 CThumbnailVideo::~CThumbnailVideo()
 {
