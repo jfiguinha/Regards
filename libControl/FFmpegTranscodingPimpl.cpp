@@ -2017,6 +2017,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 					break;
 				}
 
+				if (packet.buf == nullptr)
+					continue;
+
 				AVFrame *tmp_frame = NULL;
 				int ret = 0;
 
@@ -2272,6 +2275,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     break;
                 }
 
+				if (pkt->buf == nullptr)
+					continue;
+
                 AVFrame *tmp_frame = NULL;
                 int ret = 0;
 
@@ -2356,6 +2362,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
                     break;
                 }
+
+				if (packet.buf == nullptr)
+					continue;
                                               
                 /*
                 printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",

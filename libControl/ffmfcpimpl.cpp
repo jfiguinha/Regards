@@ -1107,6 +1107,9 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		return ret;
 	//else
 	//	len1 = pkt->size;
+
+	if (pkt->buf == nullptr)
+		return 0;
 	
 
 	if (got_picture) {
@@ -1416,6 +1419,9 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			if (flush_complete)
 				break;
 			new_packet = 0;
+
+			if (pkt->buf == nullptr)
+				return 0;
             
             wxString dataValue = pkt->data;
             
