@@ -1416,7 +1416,12 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			if (flush_complete)
 				break;
 			new_packet = 0;
-
+            
+            wxString dataValue = pkt->data;
+            
+            if(dataValue == "FLUSH")
+                return 0;
+                
 			ret = avcodec_send_packet(audio_ctx, pkt);
 			if (ret < 0) {
 				//Debug4("codec: sending audio packet failed");
@@ -1926,13 +1931,6 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		if (video_codec_name)
 			codec = avcodec_find_decoder_by_name(video_codec_name);
 
-#ifdef __APPLE__
-
-		//if(avctx->codec_id == AV_CODEC_ID_H264)
-		//    codec= avcodec_find_decoder_by_name("h264_vda");
-
-#endif
-
 #ifdef WIN32
 		if (acceleratorHardware == "dxva2" && isOpenGLDecoding)
 		{
@@ -2123,7 +2121,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		//³õÊ¼»¯Packet¶ÓÁÐ
 		CFFmfcPimpl::packet_queue_start(&is->audioq);
 		//¿ª²¥
-		SDL_PauseAudio(0);
+        SDL_PauseAudio(0);
 		break;
 
 
@@ -2132,13 +2130,6 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		is->subtitle_stream = stream_index;
 		is->subtitle_st = ic->streams[stream_index];
 		CFFmfcPimpl::packet_queue_start(&is->subtitleq);
-		/*
-#ifdef SDL2
-		is->subtitle_tid = SDL_CreateThread(subtitle_thread, "Subtitle Thread", is);
-#else
-		is->subtitle_tid = SDL_CreateThread(subtitle_thread, is);
-#endif
-*/
 		is->subtitle_tid = new std::thread(subtitle_thread, is);
 
 		break;
