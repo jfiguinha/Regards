@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+extern float value[256];
+
 CRegardsBitmap& CRegardsBitmap::operator=(const CRegardsBitmap& other)
 {
 	filename = other.filename;
@@ -130,6 +132,98 @@ void CRegardsBitmap::SaveToBmp(const wxString &filename)
 }
 
 #endif
+
+#define SCALEBITS            8
+#define ONE_HALF             (1 << (SCALEBITS - 1))
+#define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
+void CRegardsBitmap::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr)
+{
+	int width_middle = m_iWidth / 2;
+	int height_middle = m_iHeight / 2;
+#pragma omp parallel for
+	for (int y = 0; y < height_middle; y++)
+	{
+#pragma omp parallel for
+		for (int x = 0; x < width_middle; x++)
+		{
+			float r1 = 0;
+			float g1 = 0;
+			float b1 = 0;
+			int cr_position = x + y * width_middle;
+			int lum_position = (x * 2) + (y * 2) * m_iWidth;
+			int position = (x * 2) * 4 + (y * 2) * m_iWidth * 4;
+			for (int i = 0; i < 2; i++)
+			{
+				float r = value[data[position + 2]];
+				float g = value[data[position + 1]];
+				float b = value[data[position + 0]];
+				r1 += r;
+				g1 += g;
+				b1 += b;
+				lum[lum_position] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+				r = value[data[position + 6]];
+				g = value[data[position + 5]];
+				b = value[data[position + 4]];
+				r1 += r;
+				g1 += g;
+				b1 += b;
+				lum[lum_position + 1] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+
+				position += m_iWidth * 4;
+				lum_position += m_iWidth;
+			}
+
+			cb[cr_position] = ((((int)(-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
+			cr[cr_position] = ((((int)(FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
+		}
+	}
+}
+
+void CRegardsBitmap::SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr)
+{
+#pragma omp parallel for
+	for (int y = 0; y < m_iHeight; y++)
+	{
+#pragma omp parallel for
+		for (int x = 0; x < m_iWidth; x++)
+		{
+			int positionSrc = x + y * m_iWidth;
+			int positionUV = 0;
+			if (x & 1)
+			{
+				if (y & 1)
+					positionUV = ((x - 1) / 2) + ((y - 1) / 2) * (m_iWidth / 2);
+				else
+					positionUV = ((x - 1) / 2) + (y / 2) * (m_iWidth / 2);
+			}
+			else
+			{
+				if (y & 1)
+					positionUV = (x / 2) + ((y - 1) / 2) * (m_iWidth / 2);
+				else
+					positionUV = (x / 2) + (y / 2) * (m_iWidth / 2);
+			}
+			float uComp = cb[positionUV];
+			float vComp = cr[positionUV];
+			float yComp = lum[positionSrc];
+			// RGB conversion
+
+			float b = (1.164 * (yComp - 16) + 1.596*(vComp - 128));
+			float g = (1.164 * (yComp - 16) - 0.391*(uComp - 128) - 0.813*(vComp - 128));
+			float r = (1.164 * (yComp - 16) + 2.018*(uComp - 128));
+			float a = 255.0f;
+
+			float minimal = 0.0;
+			float maximal = 255.0;
+
+			int position = x * 4 + y * m_iWidth * 4;
+			data[position] = min(max(r, minimal), maximal);
+			data[position+1] = min(max(g, minimal), maximal);
+			data[position+2] = min(max(b, minimal), maximal);
+			data[position+3] = min(max(a, minimal), maximal);
+		}
+	}
+}
 
 void CRegardsBitmap::ReadFile(const wxString &filename)
 {

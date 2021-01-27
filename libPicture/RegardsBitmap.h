@@ -18,7 +18,8 @@ public:
 	void DeleteMemory(const bool &keepMem);
 
 	CRegardsBitmap& operator=(const CRegardsBitmap& other);
-
+	void GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr);
+	void SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr);
 	void ReadFile(const wxString &filename);
 	void WriteFile(const wxString &filename);
 	
