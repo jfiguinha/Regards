@@ -16,6 +16,13 @@ using namespace cv::dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 
+struct facedetectlength
+{
+	float length = 0;
+	int numFace = 0;
+	bool operator() (facedetectlength i, facedetectlength j) { return (i.length < j.length); }
+}myobject;
+
 
 CFaceRecognition::CFaceRecognition()
 {
@@ -83,25 +90,35 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 		CSqlFindFacePhoto sqlfindFacePhoto;
 
 		std::vector<CFaceDescriptor*> listFace = sqlfindFacePhoto.GetUniqueFaceDescriptor(faceDescriptor->numFace);
+		std::vector<facedetectlength> listDataLength;
+		listDataLength.resize(listFace.size() + 1);
+		
+#pragma omp parallel for
 		for (int i = 0; i < listFace.size(); i++)
 		{
 			//Find best Compatible Face
-			CFaceDescriptor * facede = listFace[i];
-			float lengthDiff = IsCompatibleFace(faceDescriptor->descriptor, facede->descriptor);
-			if (lengthDiff < 0.6)
+			if (listFace[i]->numFace != faceDescriptor->numFace)
 			{
-				if (lengthDiff < bestLength)
-				{
-					bestFace = facede->numFace;
-					bestLength = lengthDiff;
-				}
+				float lengthDiff = IsCompatibleFace(faceDescriptor->descriptor, listFace[i]->descriptor);
+				listDataLength[i].length = lengthDiff;
+				listDataLength[i].numFace = listFace[i]->numFace;
+			}
+			else
+			{
+				listDataLength[i].length = 0;
+				listDataLength[i].numFace = listFace[i]->numFace;
 			}
 		}
 
-		if (bestLength < 0.6)
+		std::sort(listDataLength.begin(), listDataLength.end(), myobject);
+
+		if (listDataLength.size() > 1)
 		{
-			sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, bestFace);
-			findFaceCompatible = true;
+			if (listDataLength[1].length < 0.6)
+			{
+				sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, listDataLength[1].numFace);
+				findFaceCompatible = true;
+			}
 		}
 
 		for (int i = 0; i < listFace.size(); i++)

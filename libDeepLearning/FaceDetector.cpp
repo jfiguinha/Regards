@@ -119,7 +119,7 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 	//std::vector<uchar> buff;//buffer for coding
 	std::vector<int> param(2);
 	param[0] = cv::IMWRITE_JPEG_QUALITY;
-	param[1] = 80;//default(95) 0-100
+	param[1] = 50;//default(95) 0-100
 	cv::imencode(".jpg", image, buff, param);
 }
 
