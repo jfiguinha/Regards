@@ -22,6 +22,7 @@
 #include "ThumbnailFacePertinenceToolBar.h"
 #include "TitleBar.h"
 #include "LibResource.h"
+#include <videothumb.h>
 #include <RegardsConfigParam.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -137,6 +138,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
+	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
 	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
@@ -201,6 +203,30 @@ void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
 {
 	processIdle = true;
 }
+
+void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
+{
+	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	int nbFace = 0;
+	if (path != nullptr)
+	{
+		//Update criteria
+		if (path->nbFace > 0)
+		{
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxQueueEvent(mainWnd, eventChange);
+		}
+	}
+
+	if (path->nbFace > 0)
+	{
+		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+		this->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+}
+
 
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
@@ -291,6 +317,24 @@ void CListFace::LoadResource(void * param)
 	}
 }
 
+int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &filename)
+{
+	vector<int> listFace;
+
+	if (pictureData != nullptr)
+	{
+		pictureData->SetFilename(filename);
+
+		listFace = CDeepLearning::FindFace(pictureData);
+
+		for (int numFace : listFace)
+		{
+			CDeepLearning::FindFaceCompatible(numFace);
+		}
+	}
+	return listFace.size();
+}
+
 //---------------------------------------------------------------------------------------
 //Test FacialRecognition
 //---------------------------------------------------------------------------------------
@@ -299,32 +343,54 @@ void CListFace::FacialRecognition(void * param)
 	CThreadFace * path = (CThreadFace *)param;
 	bool pictureOK = false;
 	CLibPicture libPicture;
-	vector<int> listFace;
-	CRegardsBitmap * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
+	path->nbFace = 0;
 
-	int nbFaceFound = 0;
-	
-	if (pictureData != nullptr)
+	if (libPicture.TestIsVideo(path->filename))
 	{
-		pictureData->SetFilename(path->filename);
-
-		if (pictureOK)
+		//Open Frame By Frame to Detect Face
+		CThumbnailVideo video(path->filename);
+		int timeinsecond = video.GetMovieDuration();
+		for (int i = 0; i < timeinsecond; i++)
 		{
-			listFace = CDeepLearning::FindFace(pictureData);
-		}
+			CRegardsBitmap * pictureData = video.GetVideoFrame(i, 0, 0);
+			if (pictureData != nullptr)
+			{
+				pictureData->VertFlipBuf();
+				path->nbFace = CListFace::DetectFaceOnBitmap(pictureData, path->filename);
+			}
+				
 
-		for (int numFace : listFace)
-		{
-			CDeepLearning::FindFaceCompatible(numFace);
+			if (path->nbFace > 0)
+			{
+				if (path->mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_FACEVIDEOADD);
+					evt.SetClientData(path);
+					path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
+			}
+
 		}
 	}
-	
-	if (pictureData != nullptr)
-		delete pictureData;
+	else
+	{
+		CRegardsBitmap * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
+		if (pictureOK && pictureData != nullptr)
+		{
+			if (libPicture.TestIsVideo(path->filename))
+			{
+				pictureData->VertFlipBuf();
+			}
+			path->nbFace = CListFace::DetectFaceOnBitmap(pictureData, path->filename);
+		}
+
+		if (pictureData != nullptr)
+			delete pictureData;
+	}
+
 
 	if (path->mainWindow != nullptr)
 	{
-		path->nbFace = listFace.size();
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);

@@ -220,18 +220,15 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		RotateCorrectly(image, dest, angle);
 		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 
-
 		std::vector<cv_image<rgb_pixel>> faces;
 
 		for (CFace face : listOfFace)
 		{
-
 			std::vector<uchar> buff;
 			RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
 			ImageToJpegBuffer(image, buff);
 			int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 			listFace.push_back(numFace);
-
 			cv::Size size(150, 150);
 			cv::Mat dst;//dst image
 			cv::resize(face.croppedImage, dst, size);
@@ -311,18 +308,21 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 
 		for (CFace face : listOfFace)
 		{
+			if (face.confidence > confidenceThreshold)
+			{
+				std::vector<uchar> buff;
+				ImageToJpegBuffer(face.croppedImage, buff);
+				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				listFace.push_back(numFace);
 
-			std::vector<uchar> buff;
-			ImageToJpegBuffer(face.croppedImage, buff);
-			int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
-			listFace.push_back(numFace);
+				cv::Size size(150, 150);
+				cv::Mat dst;//dst image
+				cv::resize(face.croppedImage, dst, size);
+				//IplImage image2 = cvIplImage(face);
+				cv_image<rgb_pixel> cimg(cvIplImage(dst));
+				faces.push_back(cimg);
+			}
 
-			cv::Size size(150, 150);
-			cv::Mat dst;//dst image
-			cv::resize(face.croppedImage, dst, size);
-			//IplImage image2 = cvIplImage(face);
-			cv_image<rgb_pixel> cimg(cvIplImage(dst));
-			faces.push_back(cimg);
 		}
 		
 		if (faces.size() == 0)

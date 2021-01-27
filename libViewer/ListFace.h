@@ -10,7 +10,7 @@
 #include <WindowMain.h>
 using namespace Regards::Window;
 using namespace std;
-
+class CRegardsBitmap;
 class CFaceLoadData;
 
 namespace Regards
@@ -40,9 +40,10 @@ namespace Regards
 			void ForceRefresh();
 			void ClosePane();
 			void RefreshPane();
+			
 		private:
 
-			
+			static int DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &filename);
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -52,9 +53,11 @@ namespace Regards
 			void ThumbnailMove(wxCommandEvent& event);
 			void OnFacePhotoAdd(wxCommandEvent& event);
 			void OnResourceLoad(wxCommandEvent& event);
+			void OnFaceVideoAdd(wxCommandEvent& event);
 			void ProcessIdle();
 			bool GetProcessEnd();
 			static void FacialRecognition(void * param);
+
 			static void LoadResource(void * param);
 
 			CWindowManager * windowManager;

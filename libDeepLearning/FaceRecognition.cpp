@@ -71,9 +71,12 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 	CSqlFaceDescriptor sqlFaceDescriptor;
 	CFaceDescriptor * faceDescriptor;
 	faceDescriptor = sqlFaceDescriptor.GetFaceDescriptor(numFace);
-
+	
 	if (faceDescriptor != nullptr)
 	{
+
+		int bestFace = -1;
+		float bestLength = 1;
 		CSqlFaceLabel sqlfaceLabel;
 		
 		CSqlFaceRecognition sqlfaceRecognition;
@@ -82,15 +85,23 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 		std::vector<CFaceDescriptor*> listFace = sqlfindFacePhoto.GetUniqueFaceDescriptor(faceDescriptor->numFace);
 		for (int i = 0; i < listFace.size(); i++)
 		{
-
+			//Find best Compatible Face
 			CFaceDescriptor * facede = listFace[i];
-			float isCompatible = IsCompatibleFace(faceDescriptor->descriptor, facede->descriptor);
-			if (isCompatible < 0.6)
+			float lengthDiff = IsCompatibleFace(faceDescriptor->descriptor, facede->descriptor);
+			if (lengthDiff < 0.6)
 			{
-				sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, facede->numFace);
-				findFaceCompatible = true;
-				break;
+				if (lengthDiff < bestLength)
+				{
+					bestFace = facede->numFace;
+					bestLength = lengthDiff;
+				}
 			}
+		}
+
+		if (bestLength < 0.6)
+		{
+			sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, bestFace);
+			findFaceCompatible = true;
 		}
 
 		for (int i = 0; i < listFace.size(); i++)
