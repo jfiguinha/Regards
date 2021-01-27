@@ -493,7 +493,11 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 			}
 
 			if (packet.buf == nullptr)
+			{
+				av_packet_unref(&packet);
 				continue;
+			}
+
 
 			while (ret >= 0)
 			{

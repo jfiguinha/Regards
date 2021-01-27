@@ -2018,7 +2018,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 				}
 
 				if (packet.buf == nullptr)
+				{
+					av_free_packet(&packet);
 					continue;
+				}
 
 				AVFrame *tmp_frame = NULL;
 				int ret = 0;
@@ -2275,9 +2278,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     break;
                 }
 
-				if (pkt->buf == nullptr)
-					continue;
-
                 AVFrame *tmp_frame = NULL;
                 int ret = 0;
 
@@ -2288,6 +2288,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                         break;
                     else if (ret < 0)
                         return ret;
+
+					if (pkt->buf == nullptr)
+						return 0;
 
 					if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
 					{
@@ -2364,7 +2367,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                 }
 
 				if (packet.buf == nullptr)
+				{
+					av_free_packet(&packet);
 					continue;
+				}
                                               
                 /*
                 printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
