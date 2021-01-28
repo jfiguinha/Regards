@@ -18,6 +18,7 @@ namespace Regards
 			std::vector<wxString> GetPhotoListNotProcess();
 			std::vector<int> GetListFaceToRecognize();
 			std::vector<CFaceName> GetListFaceName();
+			std::vector<CFaceName> GetListFaceNum(const wxString & photopath);
 			std::vector<CFaceName> GetListFaceName(const wxString &photoPath);
 			std::vector<CFaceName> GetListFaceNameSelectable();
 			std::vector<CFaceFilePath> GetListPhotoFace(const int &numFace, const double &pertinence = 0.0);

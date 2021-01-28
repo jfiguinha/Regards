@@ -72,7 +72,7 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 		wxString path = sqlPhoto.GetPhotoPath(numPhoto);
 
 		CSqlFindFacePhoto findFacePhoto;
-		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceName(path);
+		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);
 		for (CFaceName facename : listFace)
 		{
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
@@ -117,7 +117,7 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 		//ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE fullpath = '" + fullpath + "'");
 
 		CSqlFindFacePhoto findFacePhoto;
-		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceName(listPhoto[i]);
+		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
 		for (CFaceName facename : listFace)
 		{
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));

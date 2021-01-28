@@ -485,7 +485,7 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 bool CListFace::GetProcessEnd()
 {
 	TRACE();
-	if (nbProcessFacePhoto > 0)
+	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
 	return true;
 }
@@ -534,7 +534,7 @@ void CListFace::ProcessIdle()
 	CSqlFindFacePhoto faceRecognition;
 	std::vector<int> listFace = faceRecognition.GetListFaceToRecognize();
 
-	if (nbProcessFaceRecognition < 1)
+	if (nbProcessFaceRecognition == 0)
 	{
 		if (listFace.size() > 0)
 		{

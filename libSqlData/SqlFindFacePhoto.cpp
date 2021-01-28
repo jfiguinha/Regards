@@ -14,6 +14,16 @@ CSqlFindFacePhoto::~CSqlFindFacePhoto()
 {
 }
 
+std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceNum(const wxString & photopath)
+{
+	wxString fullpath = photopath;
+	fullpath.Replace("'", "''");
+	type = 2;
+	listFaceName.clear();
+	ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE fullpath = '" + fullpath + "'");
+	return listFaceName;
+}
+
 std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceName()
 {
 	type = 2;
