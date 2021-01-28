@@ -25,6 +25,7 @@ class ConfigRegards: public wxDialog
 		wxButton* btOk;
 		wxStaticBox* sbDiaporama;
 		wxSpinCtrl* scTime;
+		wxSpinCtrl* scProcessFace;
         wxSpinCtrl* scProcessExif;
         wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;

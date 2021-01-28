@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="ConfigRegards">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>363,440</size>
+		<size>363,470</size>
 <!--
 		<object class="wxRadioBox" name="ID_RBTRANSITIONEFFECT">
 			<label>Transition Effect</label>
@@ -129,14 +129,24 @@
 			<value>0</value>
 			<pos>120,345</pos>
 			<size>120,21</size>
-		</object>	
+		</object>
+		<object class="wxStaticText" name="ID_STFACE">
+			<label>Face :</label>
+			<pos>16,375</pos>
+			<size>100,24</size>
+		</object>			
+		<object class="wxSpinCtrl" name="ID_SCFACE">
+			<value>0</value>
+			<pos>120,375</pos>
+			<size>120,21</size>
+		</object>			
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,400</pos>
+			<pos>64,430</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,400</pos>
+			<pos>192,430</pos>
 		</object>		
 	</object>
 </resource>

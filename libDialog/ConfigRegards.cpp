@@ -32,6 +32,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
 	stTime = (wxStaticText*)FindWindow(XRCID("ID_STTIME"));
     scProcessExif = (wxSpinCtrl*)FindWindow(XRCID("ID_SCEXIF"));
+	scProcessFace = (wxSpinCtrl*)FindWindow(XRCID("ID_SCFACE"));
     scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
@@ -152,7 +153,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	regardsParam->SetDiaporamaTime(timeDiaporama);
  
     int thumbnailProcess = scProcessThumbnail->GetValue();
-    int faceProcess = 1;
+    int faceProcess = scProcessFace->GetValue();
     int exifProcess = scProcessExif->GetValue();
     
     if(thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
