@@ -8,6 +8,8 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/opencv.h>
 #include <RegardsBitmap.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 #include "base64.h"
 using namespace cv;
 using namespace cv::dnn;
@@ -93,7 +95,45 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 	try
 	{
 #ifdef CAFFE
+
+		/*
+		    "{ backend     |  0 | Choose one of computation backends: "
+                         "0: automatically (by default), "
+                         "1: Halide language (http://halide-lang.org/), "
+                         "2: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
+                         "3: OpenCV implementation }"
+			"{ target      | 0 | Choose one of target computation devices: "
+                         "0: CPU target (by default), "
+                         "1: OpenCL, "
+                         "2: OpenCL fp16 (half-float precision), "
+                         "3: VPU }"
+		
+		*/
+
+		/*
+		DNN_TARGET_CPU = 0,
+        DNN_TARGET_OPENCL,
+        DNN_TARGET_OPENCL_FP16,
+        DNN_TARGET_MYRIAD,
+        DNN_TARGET_VULKAN,
+        DNN_TARGET_FPGA,  //!< FPGA device with CPU fallbacks using Inference Engine's Heterogeneous plugin.
+        DNN_TARGET_CUDA,
+        DNN_TARGET_CUDA_FP16
+		*/
+
+		bool openCLCompatible = false;
+		CRegardsConfigParam * config = CParamInit::getInstance();
+		if (config != nullptr)
+			openCLCompatible = config->GetIsOpenCLSupport();
+
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+
+		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		if(openCLCompatible)
+			net.setPreferableTarget(DNN_TARGET_OPENCL);
+		else
+			net.setPreferableTarget(DNN_TARGET_CPU);
+
 #else
 		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
 #endif

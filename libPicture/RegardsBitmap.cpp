@@ -16,6 +16,46 @@ CRegardsBitmap& CRegardsBitmap::operator=(const CRegardsBitmap& other)
 	return *this;
 }
 
+
+void CRegardsBitmap::GetY(uint8_t * & lum)
+{
+
+	for (int posY = 0; posY < GetBitmapHeight(); posY++)
+	{
+		for (int posX = 0; posX < GetBitmapWidth(); posX++)
+		{
+			int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
+			int posLocal = posX + posY * GetBitmapWidth();
+			lum[posLocal] = 0.257f * value[data[posPicture + 2]] + 0.504f * value[data[posPicture + 1]] + 0.098f * value[data[posPicture]] + 16;
+		}
+	}
+}
+
+void CRegardsBitmap::SetY(uint8_t * lum)
+{
+	for (int posY = 0; posY < GetBitmapHeight(); posY++)
+	{
+		for (int posX = 0; posX < GetBitmapWidth(); posX++)
+		{
+			int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
+			int posLocal = posX + posY * GetBitmapWidth();
+
+			float Y = lum[posLocal];
+			float cr = (0.439 * value[data[posPicture + 2]]) - (0.368 * value[data[posPicture + 1]]) - (0.071 * value[data[posPicture]]) + 128;
+			float cb = -(0.148 * value[data[posPicture + 2]]) - (0.291 * value[data[posPicture + 1]]) + (0.439 * value[data[posPicture]]) + 128;
+
+			double B = 1.164 * (Y - 16) + 2.018 * (cb - 128);
+			double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
+			double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
+
+			data[posPicture + 2] = min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
+			data[posPicture + 1] = min(max(G, 0.0), 255.0);//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
+			data[posPicture] = min(max(B, 0.0), 255.0);//min(Y + 2.03211f * U, 255.0f); //B
+
+		}
+	}
+}
+
 int CRegardsBitmap::GetOrientation()
 {
 	return orientation;

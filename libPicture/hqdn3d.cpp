@@ -254,59 +254,14 @@ uint8_t * Chqdn3d::ApplyDenoise3D(uint8_t * picture_y, const int &w, const int &
 
 int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
 {
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap();
-	*bitmapOut = *bitmapIn;
 	w = bitmapIn->GetBitmapWidth();
 	h = bitmapIn->GetBitmapHeight();
 
-
-	uint8_t* dataIn = bitmapIn->GetPtBitmap();
-	int posPicture = 0;
-	int posLocal = 0;
-	for (int posY = 0; posY < bitmapIn->GetBitmapHeight(); posY++)
-	{
-		for (int posX = 0; posX < bitmapIn->GetBitmapWidth(); posX++)
-		{
-			picture_y[posLocal] = 0.257f * value[dataIn[posPicture + 2]] + 0.504f * value[dataIn[posPicture + 1]] + 0.098f * value[dataIn[posPicture]] + 16;
-			posLocal++;
-			posPicture += 4;
-		}
-	}
+	bitmapIn->GetY(picture_y);
 
 	hqdn3d_denoise(picture_y, y_out, Line, &Frame, w, h, hqdn3d_coef[0], hqdn3d_coef[1]);
-	/*
-	deNoise(picture_y,
-		y_out,
-		Line, Frame, w, h,
-		bitmapIn->GetBitmapWidth(),
-		bitmapIn->GetBitmapWidth(),
-		Coefs[0], Coefs[0], Coefs[1]);
-	*/
-	posLocal = 0;
-	posPicture = 0;
-	uint8_t* data = bitmapOut->GetPtBitmap();
 
-	for (int posY = 0; posY < bitmapOut->GetBitmapHeight(); posY++)
-	{
-		for (int posX = 0; posX < bitmapOut->GetBitmapWidth(); posX++)
-		{
-			float Y = y_out[posLocal];
-			float cr = (0.439 * data[posPicture + 2]) - (0.368 * data[posPicture + 1]) - (0.071 * data[posPicture]) + 128;
-			float cb = -(0.148 * data[posPicture + 2]) - (0.291 * data[posPicture + 1]) + (0.439 * data[posPicture]) + 128;
-
-			double B = 1.164 * (Y - 16) + 2.018 * (cb - 128);
-			double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
-			double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
-
-			dataIn[posPicture + 2] = min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
-			dataIn[posPicture + 1] = min(max(G, 0.0), 255.0);//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-			dataIn[posPicture] = min(max(B, 0.0), 255.0);//min(Y + 2.03211f * U, 255.0f); //B
-			posPicture += 4;
-			posLocal++;
-		}
-	}
-
-	delete bitmapOut;
+	bitmapIn->SetY(y_out);
 
 	return 0;
 }

@@ -2,7 +2,9 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
+#include "SqlFindFacePhoto.h"
 #include "SqlResult.h"
+#include "SqlPhotos.h"
 #include <PictureData.h>
 #include <wx/mstream.h>
 using namespace Regards::Sqlite;
@@ -66,15 +68,19 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 	for(int i = 0;i < listNumPhoto.size();i++)
 	{
 		int numPhoto = listNumPhoto[i];
-		ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
-		ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
-		//ExecuteRequestWithNoResult("DELETE FROM FACE_NAME WHERE NumFace = " + to_string(numFace));
-		ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
-		ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(numFace));
+		CSqlPhotos sqlPhoto;
+		wxString path = sqlPhoto.GetPhotoPath(numPhoto);
+
+		CSqlFindFacePhoto findFacePhoto;
+		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceName(path);
+		for (CFaceName facename : listFace)
+		{
+			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
+			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
+			ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(facename.numFace));
+		}
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
 	}
-    
-    
     
 	RebuildLink();
 	return 0;
@@ -108,11 +114,17 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 	{
 		wxString fullpath = listPhoto[i];
 		fullpath.Replace("'", "''");
-		ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE fullpath = '" + fullpath + "'");
-		ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
-		//ExecuteRequestWithNoResult("DELETE FROM FACE_NAME WHERE NumFace = " + to_string(numFace));
-		ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
-		ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(numFace));
+		//ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE fullpath = '" + fullpath + "'");
+
+		CSqlFindFacePhoto findFacePhoto;
+		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceName(listPhoto[i]);
+		for (CFaceName facename : listFace)
+		{
+			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
+			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
+			ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(facename.numFace));
+		}
+
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
 	RebuildLink();

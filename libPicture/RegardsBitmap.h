@@ -20,6 +20,10 @@ public:
 	CRegardsBitmap& operator=(const CRegardsBitmap& other);
 	void GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr);
 	void SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr);
+
+	void GetY(uint8_t * & lum);
+	void SetY(uint8_t * lum);
+
 	void ReadFile(const wxString &filename);
 	void WriteFile(const wxString &filename);
 	

@@ -40,6 +40,15 @@ std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceName(const wxString &photoP
 	return listFaceName;
 }
 
+std::vector<int> CSqlFindFacePhoto::GetListFaceToRecognize()
+{
+	type = 5;
+	listFace.clear();
+	ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE NumFace not in (SELECT DISTINCT NumFace From FACE_RECOGNITION) ");
+	//ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where NumFaceCompatible = " + to_string(numFace));
+	return listNumFace;
+}
+
 std::vector<CFaceFilePath> CSqlFindFacePhoto::GetListPhotoFace(const int &numFace, const double &pertinence)
 {
 	type = 3;
@@ -138,6 +147,15 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 					break;
 				}
 			}
+			else if (type == 5)
+			{
+				switch (i)
+				{
+				case 0:
+					listNumFace.push_back(sqlResult->ColumnDataInt(i));
+					break;
+				}
+			}
 		}
 
 		if(type == 1)
@@ -152,6 +170,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 		{
 			listFace.push_back(faceFilePath);
 		}
+
 		nbResult++;
 	}
 	return nbResult;

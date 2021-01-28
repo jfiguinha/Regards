@@ -23,7 +23,10 @@
 #include "TitleBar.h"
 #include "LibResource.h"
 #include <videothumb.h>
+#include <SqlFaceRecognition.h>
+#include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
+#include <wx/progdlg.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -153,6 +156,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	path->thread = new thread(LoadResource, path);
 
 	nbProcessFacePhoto = 0;
+	nbProcessFaceRecognition = 0;
 	processIdle = false;
 
 	listProcessWindow.push_back(this);
@@ -258,9 +262,10 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 	}
 
 
-
-
-	nbProcessFacePhoto--;
+	if (event.GetInt() == 0)
+		nbProcessFacePhoto--;
+	else
+		nbProcessFaceRecognition--;
 
 	if (nbFace > 0)
 	{
@@ -317,6 +322,15 @@ void CListFace::LoadResource(void * param)
 	}
 }
 
+void CListFace::FindFaceCompatible(const vector<int> & listFace)
+{
+	for (int numFace : listFace)
+	{
+		CDeepLearning::FindFaceCompatible(numFace);
+	}
+}
+
+
 int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &filename)
 {
 	vector<int> listFace;
@@ -327,12 +341,71 @@ int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &
 
 		listFace = CDeepLearning::FindFace(pictureData);
 
+		//FindFaceCompatible(listFace);
+	}
+	return listFace.size();
+}
+
+void CListFace::FacialRecognitionReload()
+{
+	int nbProcesseur = 1;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+		nbProcesseur = config->GetFaceProcess();
+
+	if (nbProcessFaceRecognition < nbProcesseur)
+	{
+		CThreadFace * path = new CThreadFace();
+		path->mainWindow = this;
+		path->thread = new thread(FacialDetectionRecognition, path);
+		nbProcessFaceRecognition++;
+
+	}
+}
+
+void CListFace::FacialDetectionRecognition(void * param)
+{
+	CThreadFace * path = (CThreadFace *)param;
+	CSqlFaceRecognition faceRecognition;
+	faceRecognition.DeleteFaceRecognitionDatabase();
+
+	CSqlFindFacePhoto facePhoto;
+	std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
+
+	wxString filename = path->filename;
+
+	if (filename == "")
+	{
+		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
+			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+		int i = 0;
+		for (int numFace : listFace)
+		{
+			wxString text = "Face number : " + to_string(i);
+			CDeepLearning::FindFaceCompatible(numFace);
+			if (false == dialog.Update(i++, text))
+				break;
+		}
+	}
+	else
+	{
+		int i = 0;
 		for (int numFace : listFace)
 		{
 			CDeepLearning::FindFaceCompatible(numFace);
 		}
 	}
-	return listFace.size();
+
+	path->nbFace = listFace.size();
+
+	if (path->mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
+		evt.SetInt(1);
+		evt.SetClientData(path);
+		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 //---------------------------------------------------------------------------------------
@@ -392,6 +465,7 @@ void CListFace::FacialRecognition(void * param)
 	if (path->mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
+		evt.SetInt(0);
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -457,9 +531,24 @@ void CListFace::ProcessIdle()
 		
 	}
 
+	CSqlFindFacePhoto faceRecognition;
+	std::vector<int> listFace = faceRecognition.GetListFaceToRecognize();
+
+	if (nbProcessFaceRecognition < 1)
+	{
+		if (listFace.size() > 0)
+		{
+			CThreadFace * path = new CThreadFace();
+			path->mainWindow = this;
+			path->filename = "internal";
+			path->thread = new thread(FacialDetectionRecognition, path);
+			nbProcessFaceRecognition++;
+		}
+	}
+
 	//Recognize Face
 
-	if (listPhoto.size() == 0)
+	if (listPhoto.size() == 0 && listFace.size() == 0)
 	{
 		processIdle = false;
 	}

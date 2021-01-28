@@ -71,6 +71,13 @@ void CSqlPhotos::GetPhotoCriteriaByCategorie(CriteriaVector * criteriaVector, co
     ExecuteRequest("SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND FullPath = '" + fullpath + "' WHERE NumCategorie = " + to_string(numCategorie));
 }
 
+wxString CSqlPhotos::GetPhotoPath(const int64_t &numPhoto)
+{
+	typeResult = 3;
+	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto));
+	return photoPath;
+}
+
 int64_t CSqlPhotos::GetPhotoId(const wxString & filepath, const int64_t &idFolder)
 {
 	typeResult = 0;
@@ -168,6 +175,18 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				{
 				case 0:
 					listPhoto.push_back(sqlResult->ColumnDataText(i));
+					break;
+				}
+			}
+		}
+		else if (typeResult == 3)
+		{
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					photoPath = sqlResult->ColumnDataText(i);
 					break;
 				}
 			}

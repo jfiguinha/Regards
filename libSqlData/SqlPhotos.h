@@ -17,6 +17,9 @@ namespace Regards
 			int64_t GetPhotoId(const wxString & filepath, const int64_t &idFolder);
             int64_t GetPhotoId(const wxString & filepath);
 			int64_t GetOrInsertPhoto(const wxString & filepath, const int64_t &idFolder);
+
+			wxString GetPhotoPath(const int64_t &numPhoto);
+
 			bool DeletePhoto(const int64_t &numPhoto);
 			void DeletePhotoSearch();
 			bool DeletePhotoFolder(const int64_t &idFolder);
@@ -33,6 +36,7 @@ namespace Regards
 			int typeResult;
 			CriteriaVector * criteriaVector;
 			vector<wxString> listPhoto;
+			wxString photoPath;
 		};
 	}
 }

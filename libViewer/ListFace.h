@@ -40,9 +40,11 @@ namespace Regards
 			void ForceRefresh();
 			void ClosePane();
 			void RefreshPane();
-			
+			void FacialRecognitionReload();
+
 		private:
 
+			static void FacialDetectionRecognition(void * param);
 			static int DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &filename);
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
@@ -56,6 +58,7 @@ namespace Regards
 			void OnFaceVideoAdd(wxCommandEvent& event);
 			void ProcessIdle();
 			bool GetProcessEnd();
+			static void FindFaceCompatible(const vector<int> & listFace);
 			static void FacialRecognition(void * param);
 
 			static void LoadResource(void * param);
@@ -68,7 +71,9 @@ namespace Regards
 
 			int nbProcessFacePhoto;
 			bool isLoadingResource;
-			std::thread * threadResource;
+			int nbProcessFaceRecognition;
+			//std::thread * threadResource;
+			std::thread * threadFacialRecognition;
 		};
 	}
 }

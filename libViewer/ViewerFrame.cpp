@@ -195,7 +195,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	wxMenu *menuFile = new wxMenu;
 	wxMenu *menuParameter = new wxMenu;
-
+	wxMenu *menuFace = new wxMenu;
     
     wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize",1);//L"Decrease Icon Size";
     wxString labelDecreaseIconSize_link = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize_link",1);//L"&Decrease Icon Size";
@@ -229,14 +229,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuParameter->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
 	menuParameter->Append(ID_ExternalProgram, labelExternalProgram_link, labelExternalProgram);
 	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
-    //menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
-	//menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
 
-
-	//wxMenu *menuFace = new wxMenu;
-	//menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
-	//menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
-	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 #ifdef WIN32
 	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
@@ -245,7 +238,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
 #endif
-	//menuFile->Append(wxID_PREVIEW, wxT("Print Pre&view"), wxT("Preview"));
+
 	menuFile->AppendSeparator();
 	menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
 	menuFile->AppendSeparator();
@@ -256,10 +249,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuParameter, labelParameter);
-	//menuBar->Append(menuFace, "Photo Detection");
+	menuBar->Append(menuFace, "Photo Detection");
     menuBar->Append(menuSizeIcon, labelSizeIcon);
 
 	menuBar->Append(menuHelp, labelHelp);
+
+	menuFace->Append(ID_FACEDETECTION, wxT("&Face Detection..."), wxT("Face Detection"));
+
 	SetMenuBar(menuBar);
 
 	SetLabel(wxT("Regards Viewer"));
@@ -865,19 +861,13 @@ void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
 
 void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
 {
-	/*
-	CFaceDetectionDlg faceDetection(this);
-	faceDetection.Start();
-	faceDetection.ShowModal();
 
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 	if (listFace != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
+		listFace->FacialRecognitionReload();
 	}
 
-	*/
 }
 
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))

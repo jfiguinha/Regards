@@ -16,6 +16,7 @@ namespace Regards
 			CSqlFindFacePhoto();
 			~CSqlFindFacePhoto();
 			std::vector<wxString> GetPhotoListNotProcess();
+			std::vector<int> GetListFaceToRecognize();
 			std::vector<CFaceName> GetListFaceName();
 			std::vector<CFaceName> GetListFaceName(const wxString &photoPath);
 			std::vector<CFaceName> GetListFaceNameSelectable();
@@ -27,6 +28,7 @@ namespace Regards
 			std::vector<CFaceDescriptor *> listFaceDescriptor;
 			std::vector<CFaceName> listFaceName;
 			std::vector<CFaceFilePath> listFace;
+			std::vector<int> listNumFace;
 			int type;
 		};
 	}
