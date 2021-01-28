@@ -43,6 +43,9 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbAutoRotate;
 		wxRadioBox* rbContrastCorrection;
 		wxComboBox* rbInterpolation;
+
+		//ID_RBVIDEOFACEDETECTION
+		wxRadioBox* rbVideoFaceDetection;
 		//*)
 
 #ifdef WIN32

@@ -45,6 +45,7 @@
 #include <VideoCompressOption.h>
 #include <ParamInit.h>
 #include "ListFace.h"
+#include <wx/busyinfo.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -1286,6 +1287,8 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 	wxString* info = static_cast<wxString*>(event.GetClientData());
 	if (*info != "")
 	{
+		wxBusyInfo wait("Please wait, working...");
+
 		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
 		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
 		StopAllProcess(title, message, this);

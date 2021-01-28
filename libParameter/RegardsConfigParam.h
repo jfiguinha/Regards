@@ -43,6 +43,9 @@ public:
 	int GetOpenCLPlatformIndex();
 	void SetOpenCLPlatformIndex(const int &numIndex);
 
+	int GetFaceVideoDetection();
+	void SetFaceVideoDetection(const int &videoFaceDetection);
+
 	int GetFaceDetectionPictureSize();
 	void SetFaceDetectionPictureSize(const int &numIndex);
 
@@ -163,6 +166,8 @@ protected:
 
 	int autoContrast = 0;
 	int soundVolume = 100;
+
+	int videoFaceDetection = 0;
 
 	wxString videoDecoderHardware;
 	wxString videoEncoderHardware;

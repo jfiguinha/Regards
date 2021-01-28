@@ -36,6 +36,17 @@ CRegardsConfigParam::CRegardsConfigParam()
 	autoContrast = 0;
 	videoDecoderHardware = "";
 	openCLFaceSupport = 0;
+	videoFaceDetection = 0;
+}
+
+int CRegardsConfigParam::GetFaceVideoDetection()
+{
+	return videoFaceDetection;
+}
+
+void CRegardsConfigParam::SetFaceVideoDetection(const int &videoFaceDetection)
+{
+	this->videoFaceDetection = videoFaceDetection;
 }
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
@@ -292,6 +303,7 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
     sectionPosition->append_node(node("NbProcessExif", to_string(nbProcessExif)));
     sectionPosition->append_node(node("NbProcessFace", to_string(nbProcessFace)));
     sectionPosition->append_node(node("GpsFileByMinute", to_string(nbGpsFileByMinute)));
+	sectionPosition->append_node(node("videoFaceDetection", to_string(videoFaceDetection)));
 }
 
 void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
@@ -422,6 +434,14 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		nbGpsFileByMinute = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("videoFaceDetection");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		videoFaceDetection = atoi(child_node->value());
 	}
 }
 

@@ -417,8 +417,12 @@ void CListFace::FacialRecognition(void * param)
 	bool pictureOK = false;
 	CLibPicture libPicture;
 	path->nbFace = 0;
+	int faceVideoDetection = 0;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+		faceVideoDetection = config->GetFaceVideoDetection();
 
-	if (libPicture.TestIsVideo(path->filename))
+	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
 		CThumbnailVideo video(path->filename);

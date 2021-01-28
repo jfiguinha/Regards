@@ -36,6 +36,8 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
     scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
+	//ID_RBVIDEOFACEDETECTION
+	rbVideoFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOFACEDETECTION"));
 	//rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 #ifdef WIN32
 	ckDxva2Opengl = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2OPENGL"));
@@ -91,6 +93,12 @@ void ConfigRegards::Init()
 	else
 		rdOpenCVOpenCL->SetSelection(0);
 
+	int videoFaceDetection = regardsParam->GetFaceVideoDetection();
+	if (videoFaceDetection == 0)
+		rbVideoFaceDetection->SetSelection(1);
+	else
+		rbVideoFaceDetection->SetSelection(0);
+
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
     
@@ -140,6 +148,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetDectectOrientation(1);
 	else
 		regardsParam->SetDectectOrientation(0);
+
+	int videoFaceDetection = rbVideoFaceDetection->GetSelection();
+	if (videoFaceDetection == 0)
+		regardsParam->SetFaceVideoDetection(1);
+	else
+		regardsParam->SetFaceVideoDetection(0);
 
 	int autoContrast = rbContrastCorrection->GetSelection();
 	if (autoContrast == 0)
