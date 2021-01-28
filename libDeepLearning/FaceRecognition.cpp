@@ -90,35 +90,30 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 		CSqlFindFacePhoto sqlfindFacePhoto;
 
 		std::vector<CFaceDescriptor*> listFace = sqlfindFacePhoto.GetUniqueFaceDescriptor(faceDescriptor->numFace);
-		std::vector<facedetectlength> listDataLength;
-		listDataLength.resize(listFace.size() + 1);
+		//std::vector<facedetectlength> listDataLength;
+		//listDataLength.resize(listFace.size() + 1);
+		float lenghmin = 0.6;
+		int numFace = 0;
 		
-#pragma omp parallel for
 		for (int i = 0; i < listFace.size(); i++)
 		{
 			//Find best Compatible Face
 			if (listFace[i]->numFace != faceDescriptor->numFace)
 			{
 				float lengthDiff = IsCompatibleFace(faceDescriptor->descriptor, listFace[i]->descriptor);
-				listDataLength[i].length = lengthDiff;
-				listDataLength[i].numFace = listFace[i]->numFace;
+				if (lenghmin > lengthDiff)
+				{
+					numFace = listFace[i]->numFace;
+					lenghmin = lengthDiff;
+				}
 			}
-			else
-			{
-				listDataLength[i].length = 0;
-				listDataLength[i].numFace = listFace[i]->numFace;
-			}
+
 		}
 
-		std::sort(listDataLength.begin(), listDataLength.end(), myobject);
-
-		if (listDataLength.size() > 1)
+		if (lenghmin < 0.6)
 		{
-			if (listDataLength[1].length < 0.6)
-			{
-				sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, listDataLength[1].numFace);
-				findFaceCompatible = true;
-			}
+			sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, numFace);
+			findFaceCompatible = true;
 		}
 
 		for (int i = 0; i < listFace.size(); i++)

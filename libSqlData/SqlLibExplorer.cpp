@@ -56,6 +56,9 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_FACE_PHOTO_TABLE "CREATE TABLE FACEPHOTO (NumFace INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Numberface INT, width INT, height INT, Pertinence REAL, Face BLOB)"
 #define SQL_DROP_FACE_PHOTO "DROP TABLE FACEPHOTO"
 
+#define SQL_CREATE_FACE_VIDEO_TABLE "CREATE TABLE FACEVIDEO (NumFace INTEGER PRIMARY KEY, videoposition INT)"
+#define SQL_DROP_FACE_VIDEO "DROP TABLE FACEVIDEO"
+
 #define SQL_CREATE_FACE_DESCRIPTOR_TABLE "CREATE TABLE FACEDESCRIPTOR (NumFace INTEGER PRIMARY KEY, FaceDescriptor BLOB)"
 #define SQL_DROP_FACE_DESCRIPTOR "DROP TABLE FACEDESCRIPTOR"
 
@@ -264,6 +267,14 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'4 Star');");
 			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'5 Star');");
 		}
+
+		if (sqlVersion.GetVersion() == "2.62.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.64.0.0");
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_VIDEO_TABLE);
+
+		}
     }
     return hr;
 }
@@ -336,7 +347,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.62.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.64.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -907,6 +918,12 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	}
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_PHOTO_TABLE);
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_VIDEO_TABLE);
 	if (hr == -1)
 	{
 		goto Exit;

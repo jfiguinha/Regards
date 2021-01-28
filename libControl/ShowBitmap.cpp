@@ -369,21 +369,18 @@ void CShowBitmap::RotateRecognition(void * param)
 	CThreadRotate * threadRotate = (CThreadRotate *)param;
 	if (threadRotate != nullptr)
 	{
-		if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
+		bool pictureOK;
+		CLibPicture libPicture;
+		CPictureData * pictureData = libPicture.LoadPictureData(threadRotate->filename, pictureOK);
+		if (pictureData != nullptr)
 		{
-			bool pictureOK;
-			CLibPicture libPicture;
-			CPictureData * pictureData = libPicture.LoadPictureData(threadRotate->filename, pictureOK);
-			if (pictureData != nullptr)
+			if (pictureOK)
 			{
-				if (pictureOK)
-				{
-					threadRotate->isReady = true;
-					threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
-					//bitmap->SetOrientation(exif);
-				}
-				delete pictureData;
+				threadRotate->isReady = true;
+				threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
+				//bitmap->SetOrientation(exif);
 			}
+			delete pictureData;
 		}
 
 		if (threadRotate->mainWindow != nullptr)

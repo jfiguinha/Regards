@@ -20,6 +20,18 @@ CSqlFacePhoto::~CSqlFacePhoto()
 {
 }
 
+int CSqlFacePhoto::UpdateVideoFace(const int & numFace, const int &videoPosition)
+{
+	return ExecuteRequestWithNoResult("INSERT INTO FACEVIDEO (NumFace, videoPosition) VALUES (" + to_string(numFace) + "," + to_string(videoPosition) + ")");
+}
+
+int CSqlFacePhoto::GetVideoFacePosition(const int & numFace)
+{
+	type = 2;
+	ExecuteRequest("SELECT videoPosition WHERE FACEVIDEO WHERE NumFace = " + to_string(numFace));
+	return numFace;
+}
+
 vector<int> CSqlFacePhoto::GetAllNumFace()
 {
 	listFaceIndex.clear();
@@ -174,7 +186,7 @@ int CSqlFacePhoto::InsertFace(const wxString & path,const int &numberface, const
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	wxString value = wxString::Format(wxT("%f"), pertinence);
-	ExecuteInsertBlobData("INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence, Face) VALUES('" + fullpath + "'," + to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ", ? )", 7, zBlob, nBlob);
+	ExecuteInsertBlobData("INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence, Face) VALUES('" + fullpath + "'," + to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ", ?)", 7, zBlob, nBlob);
 	return GetNumFace(path, numberface);
 }
 

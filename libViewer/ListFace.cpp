@@ -27,13 +27,22 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
+#include <FaceDetector.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
+using namespace Regards::OpenCV;
 
 #define CAFFE
+
+class CFaceDetectorElement
+{
+public:
+	CFaceDetector * faceDetector = nullptr;
+	bool isFree = true;
+};
 
 class CThreadFace
 {
@@ -48,8 +57,9 @@ public:
 
 	};
 
-
-
+	int numElement = 0;
+	CFaceDetector * faceDetect = nullptr;
+	CListFace * listFace = nullptr;
 	wxString filename;
 	std::thread * thread;
 	wxWindow * mainWindow;
@@ -97,7 +107,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
-		std::vector<int> value = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+		std::vector<int> value = { 50, 60, 70, 80, 90, 100 };
 		std::vector<int> valueZoom = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 
 		CThemeToolbar theme;
@@ -150,9 +160,16 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 
+	int nbFaceProcess = 1;
+	CRegardsConfigParam * configparam = CParamInit::getInstance();
+	if (configparam != nullptr)
+		nbFaceProcess = configparam->GetFaceProcess();
+
 	isLoadingResource = true;
 	CThreadFace * path = new CThreadFace();
 	path->mainWindow = this;
+	path->listFace = this;
+	path->nbFace = nbFaceProcess;
 	path->thread = new thread(LoadResource, path);
 
 	nbProcessFacePhoto = 0;
@@ -160,6 +177,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	processIdle = false;
 
 	listProcessWindow.push_back(this);
+
+
 }
 
 void CListFace::ClosePane()
@@ -255,7 +274,7 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 			wxQueueEvent(mainWnd, eventChange);
 		}
 
-
+		SetFreeFaceDetector(path->numElement);
 
 		if (path != nullptr)
 			delete path;
@@ -311,8 +330,13 @@ void CListFace::LoadResource(void * param)
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString());
-
+	for (int i = 0; i < path->nbFace; i++)
+	{
+		CFaceDetectorElement * faceDetectorElement = new CFaceDetectorElement();
+		faceDetectorElement->faceDetector = new CFaceDetector();
+		faceDetectorElement->faceDetector->LoadModel(config.ToStdString(), weight.ToStdString(), model.ToStdString(), eye.ToStdString());
+		path->listFace->listFaceDetector.push_back(faceDetectorElement);
+	}
 
 	if (path->mainWindow != nullptr)
 	{
@@ -321,6 +345,42 @@ void CListFace::LoadResource(void * param)
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
+
+
+CFaceDetector * CListFace::GetFreeFaceDetector(int & numElement)
+{
+	CFaceDetector * faceDetect = nullptr;
+	int i = 0;
+	for (CFaceDetectorElement * element : listFaceDetector)
+	{
+		if (element->isFree)
+		{
+			numElement = i;
+			faceDetect = element->faceDetector;
+			element->isFree = false;
+			break;
+		}
+		else
+			i++;
+	}
+	return faceDetect;
+}
+
+void CListFace::SetFreeFaceDetector(const int & numElement)
+{
+	int i = 0;
+	for (CFaceDetectorElement * element : listFaceDetector)
+	{
+		if (numElement == i)
+		{
+			element->isFree = true;
+			break;
+		}
+		else
+			i++;
+	}
+}
+
 
 void CListFace::FindFaceCompatible(const vector<int> & listFace)
 {
@@ -331,17 +391,36 @@ void CListFace::FindFaceCompatible(const vector<int> & listFace)
 }
 
 
-int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, const wxString &filename)
+int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path)
 {
 	vector<int> listFace;
 
 	if (pictureData != nullptr)
 	{
-		pictureData->SetFilename(filename);
+		pictureData->SetFilename(path->filename);
 
-		listFace = CDeepLearning::FindFace(pictureData);
+		listFace = path->faceDetect->FindFace(pictureData);
 
 		//FindFaceCompatible(listFace);
+	}
+	return listFace.size();
+}
+
+int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path, const int &position)
+{
+	CSqlFacePhoto facePhoto;
+	vector<int> listFace;
+
+	if (pictureData != nullptr)
+	{
+		pictureData->SetFilename(path->filename);
+
+		listFace = path->faceDetect->FindFace(pictureData);
+
+		for (int numFace : listFace)
+		{
+			facePhoto.UpdateVideoFace(numFace, position);
+		}
 	}
 	return listFace.size();
 }
@@ -351,7 +430,7 @@ void CListFace::FacialRecognitionReload()
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
-		nbProcesseur = config->GetFaceProcess();
+		nbProcesseur = 1;// config->GetFaceProcess();
 
 	if (nbProcessFaceRecognition < nbProcesseur)
 	{
@@ -426,14 +505,20 @@ void CListFace::FacialRecognition(void * param)
 	{
 		//Open Frame By Frame to Detect Face
 		CThumbnailVideo video(path->filename);
+		int width = 0;
+		int height = 0;
+		int orientation = 0;
+		video.GetVideoDimensions(width, height, orientation);
 		int timeinsecond = video.GetMovieDuration();
 		for (int i = 0; i < timeinsecond; i++)
 		{
+
 			CRegardsBitmap * pictureData = video.GetVideoFrame(i, 0, 0);
 			if (pictureData != nullptr)
 			{
+				pictureData->SetOrientation(orientation);
 				pictureData->VertFlipBuf();
-				path->nbFace = CListFace::DetectFaceOnBitmap(pictureData, path->filename);
+				path->nbFace = DetectFaceOnBitmap(pictureData, path, i);
 			}
 				
 
@@ -458,7 +543,8 @@ void CListFace::FacialRecognition(void * param)
 			{
 				pictureData->VertFlipBuf();
 			}
-			path->nbFace = CListFace::DetectFaceOnBitmap(pictureData, path->filename);
+
+			path->nbFace = DetectFaceOnBitmap(pictureData, path);
 		}
 
 		if (pictureData != nullptr)
@@ -496,6 +582,9 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
+	if (isLoadingResource)
+		return;
+
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
@@ -509,29 +598,36 @@ void CListFace::ProcessIdle()
 
 	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
 	{
-		CSqlFacePhoto sqlFacePhoto;
-		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
-
-		
-		CThreadFace * path = new CThreadFace();
-		path->filename = listPhoto.at(0);
-		path->mainWindow = this;
-		path->thread = new thread(FacialRecognition, path);
-		nbProcessFacePhoto++;
-
-		
-		if (sendMessageStatus)
+		int numElement = 0;
+		CFaceDetector * faceDetect = GetFreeFaceDetector(numElement);
+		if (faceDetect != nullptr)
 		{
-			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
-			thumbnailMessage->nbPhoto = listPhoto.size();
-			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
-			thumbnailMessage->nbElement = listPhoto.size();
+			CSqlFacePhoto sqlFacePhoto;
+			sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
 
-			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
-			eventChange.SetClientData(thumbnailMessage);
-			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			CThreadFace * path = new CThreadFace();
+			path->faceDetect = faceDetect;
+			path->numElement = numElement;
+			path->filename = listPhoto.at(0);
+			path->mainWindow = this;
+			path->thread = new thread(FacialRecognition, path);
+			nbProcessFacePhoto++;
+
+
+			if (sendMessageStatus)
+			{
+				CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+				thumbnailMessage->nbPhoto = listPhoto.size();
+				thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
+				thumbnailMessage->nbElement = listPhoto.size();
+
+				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
+				eventChange.SetClientData(thumbnailMessage);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
 		}
+
 		
 	}
 
@@ -583,6 +679,15 @@ void CListFace::ThumbnailMove(wxCommandEvent& event)
 CListFace::~CListFace()
 {
 	delete(windowManager);
+
+	for (CFaceDetectorElement * faceDetectorElement : listFaceDetector)
+	{
+		if (faceDetectorElement != nullptr)
+		{
+			if (faceDetectorElement->faceDetector != nullptr)
+				delete faceDetectorElement->faceDetector;
+		}
+	}
 
 }
 

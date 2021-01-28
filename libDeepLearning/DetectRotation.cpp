@@ -44,8 +44,8 @@ int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData
 {
 	CFaceDetector faceDetector;
 	int angle = 0;
-	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
-	faceDetector.FindNbFace(image, angle);
+	//cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	faceDetector.FindNbFace(pictureData, angle);
 	return angle;
 
 }

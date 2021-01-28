@@ -10,9 +10,11 @@
 #include <ScrollbarWnd.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>
+#include <libPicture.h>
+#include <SqlFacePhoto.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
-
+using namespace Regards::Picture;
 
 CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
@@ -44,6 +46,22 @@ void CThumbnailFace::OnPictureClick(CThumbnailData * data)
 		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
 		evt.SetExtraLong(data->GetNumPhotoId());
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *)data;
+	int numFace = thumbnailData->GetNumFace();
+	CLibPicture libPicture;
+	if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+	{
+		CSqlFacePhoto facePhoto;
+		int positionVideo = facePhoto.GetVideoFacePosition(numFace);
+		wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			evt.SetExtraLong(positionVideo);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 }
 

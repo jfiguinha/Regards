@@ -18,6 +18,8 @@ namespace Regards
 			int InsertFaceTreatment(const wxString & path);
 			int InsertFace(const wxString & path, const int &numberface, const int & width, const int &height, const double &pertinence, const uint8_t *zBlob, const int &nBlob);
 			int GetNumFace(const wxString & path, const int &numberface);
+			int UpdateVideoFace(const int & numFace, const int &videoPosition);
+			int GetVideoFacePosition(const int & numFace);
 			vector<wxString> GetPhotoList();
 			vector<wxString> GetPhotoListTreatment();
 			vector <CPictureData * > GetAllFace();

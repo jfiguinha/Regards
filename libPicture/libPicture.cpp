@@ -181,6 +181,7 @@ CRegardsBitmap * CLibPicture::LoadPictureToBGRA(const wxString &filename, bool &
 		}
 
 		pictureOK = true;
+		imageLoading->ApplyExifOrientation();
 		pictureData = imageLoading->GetRegardsBitmap(true);
 	}
 	else
