@@ -79,6 +79,9 @@ public:
 	int GetFaceProcess();
 	void SetFaceProcess(const int &nbProcess);
 
+	int GetFaceOpenCLProcess();
+	void SetFaceOpenCLProcess(const int &openclProcess);
+
 	int GetExifProcess();
 	void SetExifProcess(const int &nbProcess);
 
@@ -155,6 +158,8 @@ protected:
     int loadFromBinaries = 0;
 	int openCLSupport = 0;
 	int useDxva2 = 0;
+
+	int openCLFaceSupport = 0;
 
 	int autoContrast = 0;
 	int soundVolume = 100;

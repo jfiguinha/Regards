@@ -44,6 +44,7 @@
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
 #include <ParamInit.h>
+#include "ListFace.h"
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -1311,6 +1312,14 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 		//delete mainWindowWaiting;
 		SetStopProcess(false);
 		this->Show(true);
+
+		CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+		if (listFace != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+			listFace->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 	}
 	delete info;
 

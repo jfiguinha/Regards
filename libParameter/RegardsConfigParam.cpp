@@ -35,6 +35,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	detectOrientation = 0;
 	autoContrast = 0;
 	videoDecoderHardware = "";
+	openCLFaceSupport = 0;
 }
 
 wxString CRegardsConfigParam::GetVideoDecoderHardware()
@@ -114,6 +115,16 @@ int CRegardsConfigParam::GetNumLanguage()
 void CRegardsConfigParam::SetNumLanguage(const int &numLanguage)
 {
     this->numLanguage = numLanguage;
+}
+
+int CRegardsConfigParam::GetFaceOpenCLProcess()
+{
+	return openCLFaceSupport;
+}
+
+void CRegardsConfigParam::SetFaceOpenCLProcess(const int &openclProcess)
+{
+	this->openCLFaceSupport = openclProcess;
 }
 
 int CRegardsConfigParam::GetFaceProcess()
@@ -302,6 +313,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
 	sectionPosition->append_node(node("autoContrast", to_string(autoContrast)));
+	sectionPosition->append_node(node("openCLFaceSupport", to_string(openCLFaceSupport)));
 }
 
 
@@ -479,6 +491,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		autoContrast = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("openCLFaceSupport");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		openCLFaceSupport = atoi(child_node->value());
 	}
 }
 

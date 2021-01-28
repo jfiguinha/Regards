@@ -41,6 +41,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	ckDxva2Opengl = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2OPENGL"));
 	ckDxva2acc = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2ACCELERATOR"));
 #endif
+	rdOpenCVOpenCL = (wxRadioBox*)FindWindow(XRCID("ID_RBOPENCLOPENCV"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
@@ -84,6 +85,12 @@ void ConfigRegards::Init()
 	else
 		rbContrastCorrection->SetSelection(0);
 
+	int opencvOpenCL = regardsParam->GetFaceOpenCLProcess();
+	if (opencvOpenCL == 0)
+		rdOpenCVOpenCL->SetSelection(1);
+	else
+		rdOpenCVOpenCL->SetSelection(0);
+
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
     
@@ -92,6 +99,9 @@ void ConfigRegards::Init()
        
     int exifProcess = regardsParam->GetExifProcess();
     scProcessExif->SetValue(exifProcess);
+
+	int faceProcess = regardsParam->GetFaceProcess();
+	scProcessFace->SetValue(faceProcess);
 
 #ifdef WIN32
 	bool dxva2Use = regardsParam->GetDxva2Actif();
@@ -148,6 +158,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
+
+	int opencvOpenCL = rdOpenCVOpenCL->GetSelection();
+	if(opencvOpenCL == 1)
+		regardsParam->SetFaceOpenCLProcess(0);
+	else
+		regardsParam->SetFaceOpenCLProcess(1);
 	
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
