@@ -77,12 +77,12 @@ bool CSqlPhotoCriteria::InsertPhotoCriteria(const int64_t &numPhoto, const int64
 /////////////////////////////////////////////////////////////////////////////
 bool CSqlPhotoCriteria::DeleteCriteria(const int64_t &numCriteria)
 {
-	return (ExecuteRequestWithNoResult("DELETE PHOTOSCRITERIA WHERE NumCriteria = " + to_string(numCriteria)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumCriteria = " + to_string(numCriteria)) != -1) ? true : false;
 }
 
 bool CSqlPhotoCriteria::DeletePhoto(const int64_t &numPhoto)
 {
-	return (ExecuteRequestWithNoResult("DELETE PHOTOSCRITERIA WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSCRITERIA WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
 }
 
 bool CSqlPhotoCriteria::DeletePhotoCriteria(const int64_t &numPhoto, const int64_t &numCriteria)

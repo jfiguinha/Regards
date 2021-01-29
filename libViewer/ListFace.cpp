@@ -52,8 +52,9 @@ public:
 
 
 	wxString filename;
-	std::thread * thread;
-	wxWindow * mainWindow;
+	std::thread * thread = nullptr;
+	wxWindow * mainWindow = nullptr;
+	wxProgressDialog * dialog = nullptr;
 	int nbFace = 0;
 };
 
@@ -255,7 +256,8 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 			wxQueueEvent(mainWnd, eventChange);
 		}
 
-
+		if (path->dialog != nullptr)
+			delete path->dialog;
 
 		if (path != nullptr)
 			delete path;
@@ -325,30 +327,28 @@ void CListFace::LoadResource(void * param)
 void CListFace::FacialDetectionRecognition(void * param)
 {
 	CThreadFace * path = (CThreadFace *)param;
-	CSqlFaceRecognition faceRecognition;
-	faceRecognition.DeleteFaceRecognitionDatabase();
-
-	CSqlFindFacePhoto facePhoto;
-	std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
-
 	wxString filename = path->filename;
-
+	std::vector<int> listFace;
 	if (filename == "")
 	{
-		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
-			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+		CSqlFindFacePhoto facePhoto;
+		listFace = facePhoto.GetListFaceToRecognize();
 
 		int i = 0;
 		for (int numFace : listFace)
 		{
 			wxString text = "Face number : " + to_string(i);
 			CDeepLearning::FindFaceCompatible(numFace);
-			if (false == dialog.Update(i++, text))
+			if (false == path->dialog->Update(i++, text))
 				break;
 		}
 	}
 	else
 	{
+		CSqlFindFacePhoto facePhoto;
+		listFace = facePhoto.GetListFaceToRecognize();
+
 		int i = 0;
 		for (int numFace : listFace)
 		{
@@ -376,8 +376,14 @@ void CListFace::FacialRecognitionReload()
 
 	if (nbProcessFaceRecognition < nbProcesseur)
 	{
+		CSqlFaceRecognition faceRecognition;
+		faceRecognition.DeleteFaceRecognitionDatabase();
+		CSqlFindFacePhoto facePhoto;
+		std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
 		CThreadFace * path = new CThreadFace();
 		path->mainWindow = this;
+		path->dialog = new wxProgressDialog("Face Recognition", "", listFace.size(), nullptr,
+			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 		path->thread = new thread(FacialDetectionRecognition, path);
 		nbProcessFaceRecognition++;
 

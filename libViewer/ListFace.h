@@ -62,16 +62,16 @@ namespace Regards
 			static void LoadResource(void * param);
 			void OnFaceVideoAdd(wxCommandEvent& event);
 
-			CWindowManager * windowManager;
-			CScrollbarWnd * thumbscrollbar;
-			CThumbnailFaceToolBar * thumbFaceToolbar;
-			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
-			CThumbnailFace * thumbnailFace;
+			CWindowManager * windowManager = nullptr;
+			CScrollbarWnd * thumbscrollbar = nullptr;
+			CThumbnailFaceToolBar * thumbFaceToolbar = nullptr;
+			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar = nullptr;
+			CThumbnailFace * thumbnailFace = nullptr;
 
-			int nbProcessFacePhoto;
+			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;
-			int nbProcessFaceRecognition;
-			std::thread * threadResource;
+			int nbProcessFaceRecognition = 0;
+			std::thread * threadResource = nullptr;
 		};
 	}
 }

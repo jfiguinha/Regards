@@ -47,12 +47,12 @@ std::vector<int> CSqlFaceRecognition::GetUniqueFace()
 
 bool CSqlFaceRecognition::DeleteFaceRecognitionDatabase()
 {
-	return (ExecuteRequest("DELETE FACE_RECOGNITION") != -1) ? true : false;
+	return (ExecuteRequest("DELETE FROM FACE_RECOGNITION") != -1) ? true : false;
 }
 
 bool CSqlFaceRecognition::DeleteFaceRecognitionDatabase(int numFace)
 {
-	return (ExecuteRequest("DELETE FACE_RECOGNITION WHERE NumFace = " + to_string(numFace)) != -1) ? true : false;
+	return (ExecuteRequest("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace)) != -1) ? true : false;
 }
 
 int CSqlFaceRecognition::TraitementResult(CSqlResult * sqlResult)
