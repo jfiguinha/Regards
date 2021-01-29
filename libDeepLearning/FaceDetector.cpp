@@ -74,6 +74,8 @@ const cv::Scalar meanVal(104.0, 177.0, 123.0);
 cv::CascadeClassifier eye_cascade;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
+std::mutex CFaceDetector::muDnnAccess;
+std::mutex CFaceDetector::muEyeAccess;
 
 CFaceDetector::CFaceDetector()
 {
@@ -167,72 +169,12 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 	cv::imencode(".jpg", image, buff, param);
 }
 
-int CFaceDetector::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate)
-{
-	cv::Mat dst;      //Mat object for output image file
-	int tab[] = { 0, 270, 90, 180 };
-	for (int type = 0; type < 4; type++)
-	{
-		int angle_detect = tab[type];
-		//if(typeRotate == 0)
-		//	Rotate(image, dst, angle_detect);
-		//else
-		RotateCorrectly(image, dst, angle_detect);
-
-
-#ifdef WRITE_OUTPUT_SAMPLE
-		wxString file = "d:\\test" + to_string(type) + ".jpg";
-		cv::imwrite(file.ToStdString(), dst);
-#endif
-
-		//imshow("Display window", dst);                   // Show our image inside it.     
-		//cv::waitKey(0);
-
-
-
-		detectFaceOpenCVDNN(dst, listOfFace, pointOfFace);
-		if (listOfFace.size() > 0)
-		{
-			angle = angle_detect;
-			break;
-		}
-
-	}
-	return listOfFace.size();
-}
-
-void CFaceDetector::Rotate(const cv::Mat& image, cv::Mat& dst, int degrees)
-{
-	cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate
-	cv::Mat r;       //Mat object for storing after rotation
-	///applie an affine transforation to image.
-	switch (degrees)
-	{
-	case 0:
-		r = cv::getRotationMatrix2D(pt, 0, 1.0);      //Mat object for storing after rotation
-		warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
-		break;
-	case 180:
-		r = cv::getRotationMatrix2D(pt, degrees, 1.0);      //Mat object for storing after rotation
-		warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
-		break;
-	case 270:
-		r = cv::getRotationMatrix2D(pt, degrees, 1.0);      //Mat object for storing after rotation
-		warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
-		break;
-	case 90:
-		r = cv::getRotationMatrix2D(pt, degrees, 1.0);      //Mat object for storing after rotation
-		warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
-		break;
-	}
-}
-
-
-int CFaceDetector::FindNbFace(cv::Mat & image, int & angle)
+int CFaceDetector::FindNbFace(cv::Mat & image)
 {
 	std::vector<cv::Rect> pointOfFace;
 	std::vector<CFace> listOfFace;
-	return FindFace(image, angle, pointOfFace, listOfFace);
+	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+	return listOfFace.size();
 }
 
 
@@ -248,8 +190,6 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 	if (isLoading)
 	{
-
-		int angle = 0;
 		CSqlFacePhoto facePhoto;
 		cv::Mat dest;
 		std::vector<CFace> listOfFace;
@@ -258,12 +198,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 
-		FindFace(image, angle, pointOfFace, listOfFace);
-		listOfFace.clear();
-		pointOfFace.clear();
-		RotateCorrectly(image, dest, angle);
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
-
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
@@ -274,8 +209,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 				cv::Size size(150, 150);
 				cv::Mat dst;//dst image
 				std::vector<uchar> buff;
-				RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-				cv::resize(image, dst, size);
+				//RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
+				cv::resize(face.croppedImage, dst, size);
 
 				ImageToJpegBuffer(dst, buff);
 				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
@@ -337,22 +272,14 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 
 	if (isLoading)
 	{
-		
-		int angle = 0;
 		CSqlFacePhoto facePhoto;
-		cv::Mat dest;
 		std::vector<CFace> listOfFace;
 		std::vector<cv::Rect> pointOfFace;
 		//std::vector<char> data = pictureData->CopyData();
 		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 
-		FindFace(image, angle, pointOfFace, listOfFace);
-		listOfFace.clear();
-		pointOfFace.clear();
-		RotateCorrectly(image, dest, angle);
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
-							
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
@@ -463,21 +390,14 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 
 	if (isLoading)
 	{
-		cv::Mat dest;
 		std::vector<CFace> listOfFace;
 
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
-		FindFace(dest, angle, pointOfFace, listOfFace);
-		RotateCorrectly(dest, dest, angle);
-		listOfFace.clear();
-		pointOfFace.clear();
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)
 		{
-			RotateCorrectly(image, image, angle);
-
 			for (int i = 0; i < listOfFace.size(); i++)
 			{
 				if (listOfFace[i].confidence > confidenceThreshold)
@@ -486,7 +406,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					std::vector<cv::Rect> eyes;
 
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
+					muEyeAccess.lock();
 					eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+					muEyeAccess.unlock();
 					for (cv::Rect rect : eyes)
 					{
 						cv::Rect rectEye;
@@ -500,36 +422,10 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 				}
 			}
 		}
-
-		cv::Mat cloneImage;
-		RotateCorrectly(image, cloneImage, 360 - angle);
-		pBitmap->SetBitmap(cloneImage.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 	}
 }
 
-void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
-{
-	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
-	if (angle == 90) {
-		// Rotate clockwise 270 degrees
-		cv::transpose(src, dst);
-		cv::flip(dst, dst, 0);
-	}
-	else if (angle == 180) {
-		// Rotate clockwise 180 degrees
-		cv::flip(src, dst, -1);
-	}
-	else if (angle == 270) {
-		// Rotate clockwise 90 degrees
-		cv::transpose(src, dst);
-		cv::flip(dst, dst, 1);
-	}
-	else if (angle == 0) {
-		if (src.data != dst.data) {
-			src.copyTo(dst);
-		}
-	}
-}
 
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
@@ -540,11 +436,13 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 	int frameWidth = frameOpenCVDNN.cols;
 #ifdef CAFFE
 
+	muDnnAccess.lock();
 	//frameOpenCVDNN.resize(300, 300);
 	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0));
 	//cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false, false);
 	net.setInput(inputBlob);
 	auto detection = net.forward();
+	muDnnAccess.unlock();
 
 #else
 	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, true, false);
@@ -579,18 +477,8 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 			// Note that this doesn't copy the data
 			face.croppedImage = frameOpenCVDNN(myROI);
 
-
-			cv::Mat gray;
-			std::vector<cv::Rect> eyes;
-
-			cv::cvtColor(face.croppedImage, gray, COLOR_BGR2GRAY);
-			eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-			if (eyes.size() > 0)
-			{
-				listOfFace.push_back(face);
-				pointOfFace.push_back(myROI);
-			}
-
+			listOfFace.push_back(face);
+			pointOfFace.push_back(myROI);
 		}
 	}
 	catch (cv::Exception& e)
@@ -598,5 +486,61 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+int CFaceDetector::DetectAngleOrientation(const cv::Mat & image)
+{
+	int angle = 0;
+	cv::Mat dst;      //Mat object for output image file
+	int tab[] = { 0, 270, 90, 180 };
+	for (int type = 0; type < 4; type++)
+	{
+		std::vector<cv::Rect> pointOfFace;
+		std::vector<CFace> listOfFace;
+		int angle_detect = tab[type];
+		//if(typeRotate == 0)
+		//	Rotate(image, dst, angle_detect);
+		//else
+		RotateCorrectly(image, dst, angle_detect);
+
+
+#ifdef WRITE_OUTPUT_SAMPLE
+		wxString file = "d:\\test" + to_string(type) + ".jpg";
+		cv::imwrite(file.ToStdString(), dst);
+#endif
+
+		detectFaceOpenCVDNN(dst, listOfFace, pointOfFace);
+		if (listOfFace.size() > 0)
+		{
+			angle = angle_detect;
+			break;
+		}
+
+	}
+	return angle;
+}
+
+void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
+{
+	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
+	if (angle == 90) {
+		// Rotate clockwise 270 degrees
+		cv::transpose(src, dst);
+		cv::flip(dst, dst, 0);
+	}
+	else if (angle == 180) {
+		// Rotate clockwise 180 degrees
+		cv::flip(src, dst, -1);
+	}
+	else if (angle == 270) {
+		// Rotate clockwise 90 degrees
+		cv::transpose(src, dst);
+		cv::flip(dst, dst, 1);
+	}
+	else if (angle == 0) {
+		if (src.data != dst.data) {
+			src.copyTo(dst);
+		}
 	}
 }
