@@ -132,7 +132,6 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
-
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
@@ -276,7 +275,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 				cv::Mat dst;//dst image
 				std::vector<uchar> buff;
 				RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-				cv::resize(face.croppedImage, dst, size);
+				cv::resize(image, dst, size);
 
 				ImageToJpegBuffer(dst, buff);
 				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());

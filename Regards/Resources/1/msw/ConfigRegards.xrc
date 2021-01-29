@@ -153,9 +153,21 @@
 									<size>100,24</size>
 								</object>			
 								<object class="wxSpinCtrl" name="ID_SCFACE">
-									<value>0</value>
+									<value>1</value>
+									<enabled>false</enabled>
 									<pos>120,90</pos>
 									<size>120,21</size>
+								</object>
+								<object class="wxRadioBox" name="ID_RBVIDEOFACEDETECTION">
+										<label>Video Face Detection</label>
+										<style>wxRA_SPECIFY_COLS</style>
+										<content>
+											<item>Yes</item>
+											<item>No</item>
+										</content>
+										<default>-1</default>
+										<pos>0,130</pos>
+										<size>360,70</size>
 								</object>
 							</object>
 						</object>

@@ -372,7 +372,7 @@ void CListFace::FacialRecognitionReload()
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
-		nbProcesseur = 1;// config->GetFaceProcess();
+		nbProcesseur = config->GetFaceProcess();
 
 	if (nbProcessFaceRecognition < nbProcesseur)
 	{
@@ -422,12 +422,19 @@ void CListFace::FacialRecognition(void * param)
 			CRegardsBitmap * pictureData = video.GetVideoFrame(i, 0, 0);
 			if (pictureData != nullptr)
 			{
+				pictureData->SetFilename(path->filename);
 				pictureData->SetOrientation(orientation);
 				pictureData->VertFlipBuf();
 				listFace = CDeepLearning::FindFace(pictureData);
 			}
 
 			path->nbFace = listFace.size();
+
+			CSqlFacePhoto facePhoto;
+			for (int numFace : listFace)
+			{
+				facePhoto.UpdateVideoFace(numFace, i);
+			}
 
 
 			if (path->nbFace > 0)
@@ -452,6 +459,7 @@ void CListFace::FacialRecognition(void * param)
 				pictureData->VertFlipBuf();
 			}
 
+			pictureData->SetFilename(path->filename);
 			listFace = CDeepLearning::FindFace(pictureData);
 
 			path->nbFace = listFace.size();
@@ -485,7 +493,7 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 bool CListFace::GetProcessEnd()
 {
 	TRACE();
-	if (nbProcessFacePhoto > 0)
+	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
 	return true;
 }
@@ -496,7 +504,7 @@ void CListFace::ProcessIdle()
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
-		nbProcesseur = 1;// config->GetFaceProcess();
+		nbProcesseur = config->GetFaceProcess();
 	//Find picture to examine
 	CSqlFacePhoto facePhoto;
 	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
