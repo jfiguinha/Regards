@@ -8,9 +8,9 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/opencv.h>
 #include <RegardsBitmap.h>
+#include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include "base64.h"
 using namespace cv;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
@@ -62,53 +62,25 @@ using anet_type = loss_metric<fc_no_bias<128, avg_pool_everything<
 	input_rgb_image_sized<150>
 	>>>>>>>>>>>>;
 
-
+static Net net;    // And finally we load the DNN responsible for face recognition.
+static anet_type anet;
 
 const size_t inWidth = 300;
 const size_t inHeight = 300;
 const double inScaleFactor = 1.0;
-const float confidenceThreshold = 0.5;
+const float confidence = 0.5;
+const float confidenceThreshold = 0.7;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
-
-
-class CFace
-{
-public:
-	float confidence;
-	cv::Mat croppedImage;
-};
-
-class CFaceDetectorPimpl
-{
-public:
-	int FindNbFace(cv::Mat & image, int & angle);
-	void RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox);
-	void RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle);
-	void ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff);
-	void detectFaceOpenCVDNN(cv::Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace);
-	int FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate = 0);
-	void Rotate(const cv::Mat& image, cv::Mat& dst, int degrees);
-
-	Net net;    // And finally we load the DNN responsible for face recognition.
-	anet_type anet;
-	cv::CascadeClassifier eye_cascade;
-};
-
-int CFaceDetector::FindNbFace(CPictureData * pictureData, int & angle)
-{
-	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
-	pimpl_->FindNbFace(image, angle);
-	return angle;
-}
+cv::CascadeClassifier eye_cascade;
+bool CFaceDetector::isload = false;
+std::mutex CFaceDetector::muLoading;
 
 CFaceDetector::CFaceDetector()
 {
-	pimpl_ = new CFaceDetectorPimpl();
 }
 
 CFaceDetector::~CFaceDetector()
 {
-	delete pimpl_;
 }
 
 void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection)
@@ -126,54 +98,54 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #ifdef CAFFE
 
 		/*
-		    "{ backend     |  0 | Choose one of computation backends: "
-                         "0: automatically (by default), "
-                         "1: Halide language (http://halide-lang.org/), "
-                         "2: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
-                         "3: OpenCV implementation }"
+			"{ backend     |  0 | Choose one of computation backends: "
+						 "0: automatically (by default), "
+						 "1: Halide language (http://halide-lang.org/), "
+						 "2: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
+						 "3: OpenCV implementation }"
 			"{ target      | 0 | Choose one of target computation devices: "
-                         "0: CPU target (by default), "
-                         "1: OpenCL, "
-                         "2: OpenCL fp16 (half-float precision), "
-                         "3: VPU }"
-		
+						 "0: CPU target (by default), "
+						 "1: OpenCL, "
+						 "2: OpenCL fp16 (half-float precision), "
+						 "3: VPU }"
+
 		*/
 
 		/*
 		DNN_TARGET_CPU = 0,
-        DNN_TARGET_OPENCL,
-        DNN_TARGET_OPENCL_FP16,
-        DNN_TARGET_MYRIAD,
-        DNN_TARGET_VULKAN,
-        DNN_TARGET_FPGA,  //!< FPGA device with CPU fallbacks using Inference Engine's Heterogeneous plugin.
-        DNN_TARGET_CUDA,
-        DNN_TARGET_CUDA_FP16
+		DNN_TARGET_OPENCL,
+		DNN_TARGET_OPENCL_FP16,
+		DNN_TARGET_MYRIAD,
+		DNN_TARGET_VULKAN,
+		DNN_TARGET_FPGA,  //!< FPGA device with CPU fallbacks using Inference Engine's Heterogeneous plugin.
+		DNN_TARGET_CUDA,
+		DNN_TARGET_CUDA_FP16
 		*/
 
 		bool openCLCompatible = false;
 		CRegardsConfigParam * config = CParamInit::getInstance();
 		if (config != nullptr)
 		{
-			if(config->GetIsOpenCLSupport())
+			if (config->GetIsOpenCLSupport())
 				openCLCompatible = config->GetFaceOpenCLProcess();
 		}
-			
 
-		pimpl_->net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
 
-		//pimpl_->net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		//if(openCLCompatible)
-		//	pimpl_->net.setPreferableTarget(DNN_TARGET_OPENCL);
-		//else
-		//	pimpl_->net.setPreferableTarget(DNN_TARGET_CPU);
+		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+
+		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		if (openCLCompatible)
+			net.setPreferableTarget(DNN_TARGET_OPENCL);
+		else
+			net.setPreferableTarget(DNN_TARGET_CPU);
 
 #else
 		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
 #endif
 
-		deserialize(face_recognition) >> pimpl_->anet;
+		deserialize(face_recognition) >> anet;
 
-		pimpl_->eye_cascade.load(eye_detection);
+		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
 	{
@@ -187,16 +159,16 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 }
 
 
-void CFaceDetectorPimpl::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff)
+void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff)
 {
 	//std::vector<uchar> buff;//buffer for coding
 	std::vector<int> param(2);
 	param[0] = cv::IMWRITE_JPEG_QUALITY;
-	param[1] = 50;//default(95) 0-100
+	param[1] = 80;//default(95) 0-100
 	cv::imencode(".jpg", image, buff, param);
 }
 
-int CFaceDetectorPimpl::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate)
+int CFaceDetector::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate)
 {
 	cv::Mat dst;      //Mat object for output image file
 	int tab[] = { 0, 270, 90, 180 };
@@ -230,7 +202,7 @@ int CFaceDetectorPimpl::FindFace(cv::Mat & image, int & angle, std::vector<cv::R
 	return listOfFace.size();
 }
 
-void CFaceDetectorPimpl::Rotate(const cv::Mat& image, cv::Mat& dst, int degrees)
+void CFaceDetector::Rotate(const cv::Mat& image, cv::Mat& dst, int degrees)
 {
 	cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate
 	cv::Mat r;       //Mat object for storing after rotation
@@ -257,7 +229,7 @@ void CFaceDetectorPimpl::Rotate(const cv::Mat& image, cv::Mat& dst, int degrees)
 }
 
 
-int CFaceDetectorPimpl::FindNbFace(cv::Mat & image, int & angle)
+int CFaceDetector::FindNbFace(cv::Mat & image, int & angle)
 {
 	std::vector<cv::Rect> pointOfFace;
 	std::vector<CFace> listOfFace;
@@ -270,8 +242,12 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 	CSqlFaceDescriptor sqlfaceDescritor;
 	std::vector<int> listFace;
 	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
 
-	if (isload)
+	if (isLoading)
 	{
 
 		int angle = 0;
@@ -283,31 +259,33 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 
-		pimpl_->FindFace(image, angle, pointOfFace, listOfFace);
+		FindFace(image, angle, pointOfFace, listOfFace);
 		listOfFace.clear();
 		pointOfFace.clear();
-		pimpl_->RotateCorrectly(image, dest, angle);
-		pimpl_->detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		RotateCorrectly(image, dest, angle);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
 		for (CFace face : listOfFace)
 		{
-			if (face.confidence > confidenceThreshold)
+			if (face.confidence > confidence)
 			{
-				std::vector<uchar> buff;
-				pimpl_->RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-				pimpl_->ImageToJpegBuffer(image, buff);
-				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
-				listFace.push_back(numFace);
 				cv::Size size(150, 150);
 				cv::Mat dst;//dst image
+				std::vector<uchar> buff;
+				RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
 				cv::resize(face.croppedImage, dst, size);
+
+				ImageToJpegBuffer(dst, buff);
+				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				listFace.push_back(numFace);
+				
 				//IplImage image2 = cvIplImage(face);
 				cv_image<rgb_pixel> cimg(cvIplImage(dst));
 				faces.push_back(cimg);
 			}
-
 		}
 
 		if (faces.size() == 0)
@@ -322,7 +300,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 			// In this 128D vector space, images from the same person will be close to each other
 			// but vectors from different people will be far apart.  So we can use these vectors to
 			// identify if a pair of images are from the same person or from different people.  
-			std::vector<matrix<float, 0, 1>> face_descriptors = pimpl_->anet(faces);
+			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
 
 			for (int i = 0; i < faces.size(); i++)
 			{
@@ -353,8 +331,12 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 	CSqlFaceDescriptor sqlfaceDescritor;
 	std::vector<int> listFace;
 	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
 
-	if (isload)
+	if (isLoading)
 	{
 		
 		int angle = 0;
@@ -366,32 +348,31 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 
 
-		pimpl_->FindFace(image, angle, pointOfFace, listOfFace);
+		FindFace(image, angle, pointOfFace, listOfFace);
 		listOfFace.clear();
 		pointOfFace.clear();
-		pimpl_->RotateCorrectly(image, dest, angle);
-		pimpl_->detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		RotateCorrectly(image, dest, angle);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 							
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
 		for (CFace face : listOfFace)
 		{
-			if (face.confidence > confidenceThreshold)
+			if (listOfFace[i].confidence > confidence)
 			{
+				cv::Size size(150, 150);
+				cv::Mat dst;//dst image
 				std::vector<uchar> buff;
-				pimpl_->ImageToJpegBuffer(face.croppedImage, buff);
+				cv::resize(face.croppedImage, dst, size);
+
+				ImageToJpegBuffer(dst, buff);
 				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 
-				cv::Size size(150, 150);
-				cv::Mat dst;//dst image
-				cv::resize(face.croppedImage, dst, size);
-				//IplImage image2 = cvIplImage(face);
 				cv_image<rgb_pixel> cimg(cvIplImage(dst));
 				faces.push_back(cimg);
 			}
-
 		}
 		
 		if (faces.size() == 0)
@@ -407,7 +388,7 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 			// In this 128D vector space, images from the same person will be close to each other
 			// but vectors from different people will be far apart.  So we can use these vectors to
 			// identify if a pair of images are from the same person or from different people.  
-			std::vector<matrix<float, 0, 1>> face_descriptors = pimpl_->anet(faces);
+			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
 
 			for (int i = 0; i < faces.size(); i++)
 			{
@@ -435,7 +416,7 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 	return listFace;
 }
 
-void CFaceDetectorPimpl::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox)
+void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox)
 {
 	int xmin, xmax, ymin, ymax;
 	xmin = rSelectionBox.x;
@@ -472,26 +453,31 @@ void CFaceDetectorPimpl::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelecti
 void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 {
 	std::vector<wxRect> listEye;
+	
 	std::vector<cv::Rect> pointOfFace;
 	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
 	int angle = 0;
-	
-	if (isload)
+
+	if (isLoading)
 	{
 		cv::Mat dest;
 		std::vector<CFace> listOfFace;
 
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
-		pimpl_->FindFace(dest, angle, pointOfFace, listOfFace);
-		pimpl_->RotateCorrectly(dest, dest, angle);
+		FindFace(dest, angle, pointOfFace, listOfFace);
+		RotateCorrectly(dest, dest, angle);
 		listOfFace.clear();
 		pointOfFace.clear();
-		pimpl_->detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)
 		{
-			pimpl_->RotateCorrectly(image, image, angle);
+			RotateCorrectly(image, image, angle);
 
 			for (int i = 0; i < listOfFace.size(); i++)
 			{
@@ -501,7 +487,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					std::vector<cv::Rect> eyes;
 
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
-					pimpl_->eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+					eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
 					for (cv::Rect rect : eyes)
 					{
 						cv::Rect rectEye;
@@ -510,19 +496,19 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 						rectEye.y = rect.y + pointOfFace[i].y;
 						rectEye.width = rect.width;
 						rectEye.height = rect.height;
-						pimpl_->RemoveRedEye(image, rectEye);
+						RemoveRedEye(image, rectEye);
 					}
 				}
 			}
 		}
 
 		cv::Mat cloneImage;
-		pimpl_->RotateCorrectly(image, cloneImage, 360 - angle);
+		RotateCorrectly(image, cloneImage, 360 - angle);
 		pBitmap->SetBitmap(cloneImage.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 	}
 }
 
-void CFaceDetectorPimpl::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
+void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
 {
 	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
 	if (angle == 90) {
@@ -549,7 +535,7 @@ void CFaceDetectorPimpl::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int a
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CFaceDetectorPimpl::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace)
+void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace)
 {
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
@@ -558,10 +544,8 @@ void CFaceDetectorPimpl::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CF
 	//frameOpenCVDNN.resize(300, 300);
 	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0));
 	//cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false, false);
-
 	net.setInput(inputBlob);
 	auto detection = net.forward();
-
 
 #else
 	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, true, false);
@@ -596,8 +580,6 @@ void CFaceDetectorPimpl::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CF
 			// Note that this doesn't copy the data
 			face.croppedImage = frameOpenCVDNN(myROI);
 
-			//listOfFace.push_back(face);
-			//pointOfFace.push_back(myROI);
 
 			cv::Mat gray;
 			std::vector<cv::Rect> eyes;
@@ -609,7 +591,7 @@ void CFaceDetectorPimpl::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CF
 				listOfFace.push_back(face);
 				pointOfFace.push_back(myROI);
 			}
-			
+
 		}
 	}
 	catch (cv::Exception& e)

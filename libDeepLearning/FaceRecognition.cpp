@@ -16,13 +16,6 @@ using namespace cv::dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 
-struct facedetectlength
-{
-	float length = 0;
-	int numFace = 0;
-	bool operator() (facedetectlength i, facedetectlength j) { return (i.length < j.length); }
-}myobject;
-
 
 CFaceRecognition::CFaceRecognition()
 {
@@ -78,23 +71,18 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 	CSqlFaceDescriptor sqlFaceDescriptor;
 	CFaceDescriptor * faceDescriptor;
 	faceDescriptor = sqlFaceDescriptor.GetFaceDescriptor(numFace);
-	
+
 	if (faceDescriptor != nullptr)
 	{
-
-		int bestFace = -1;
-		float bestLength = 1;
 		CSqlFaceLabel sqlfaceLabel;
-		
 		CSqlFaceRecognition sqlfaceRecognition;
 		CSqlFindFacePhoto sqlfindFacePhoto;
-
 		std::vector<CFaceDescriptor*> listFace = sqlfindFacePhoto.GetUniqueFaceDescriptor(faceDescriptor->numFace);
 		//std::vector<facedetectlength> listDataLength;
 		//listDataLength.resize(listFace.size() + 1);
 		float lenghmin = 0.6;
 		int numFace = 0;
-		
+
 		for (int i = 0; i < listFace.size(); i++)
 		{
 			//Find best Compatible Face

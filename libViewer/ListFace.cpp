@@ -27,22 +27,14 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-#include <FaceDetector.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
-using namespace Regards::OpenCV;
 
 #define CAFFE
-
-class CFaceDetectorElement
-{
-public:
-	CFaceDetector * faceDetector = nullptr;
-	bool isFree = true;
-};
 
 class CThreadFace
 {
@@ -57,9 +49,8 @@ public:
 
 	};
 
-	int numElement = 0;
-	CFaceDetector * faceDetect = nullptr;
-	CListFace * listFace = nullptr;
+
+
 	wxString filename;
 	std::thread * thread;
 	wxWindow * mainWindow;
@@ -160,25 +151,15 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 
-	int nbFaceProcess = 1;
-	CRegardsConfigParam * configparam = CParamInit::getInstance();
-	if (configparam != nullptr)
-		nbFaceProcess = configparam->GetFaceProcess();
-
 	isLoadingResource = true;
 	CThreadFace * path = new CThreadFace();
 	path->mainWindow = this;
-	path->listFace = this;
-	path->nbFace = nbFaceProcess;
 	path->thread = new thread(LoadResource, path);
 
 	nbProcessFacePhoto = 0;
-	nbProcessFaceRecognition = 0;
 	processIdle = false;
 
 	listProcessWindow.push_back(this);
-
-
 }
 
 void CListFace::ClosePane()
@@ -274,12 +255,11 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 			wxQueueEvent(mainWnd, eventChange);
 		}
 
-		SetFreeFaceDetector(path->numElement);
+
 
 		if (path != nullptr)
 			delete path;
 	}
-
 
 	if (event.GetInt() == 0)
 		nbProcessFacePhoto--;
@@ -330,13 +310,8 @@ void CListFace::LoadResource(void * param)
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
 
-	for (int i = 0; i < path->nbFace; i++)
-	{
-		CFaceDetectorElement * faceDetectorElement = new CFaceDetectorElement();
-		faceDetectorElement->faceDetector = new CFaceDetector();
-		faceDetectorElement->faceDetector->LoadModel(config.ToStdString(), weight.ToStdString(), model.ToStdString(), eye.ToStdString());
-		path->listFace->listFaceDetector.push_back(faceDetectorElement);
-	}
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString());
+
 
 	if (path->mainWindow != nullptr)
 	{
@@ -346,101 +321,6 @@ void CListFace::LoadResource(void * param)
 	}
 }
 
-
-CFaceDetector * CListFace::GetFreeFaceDetector(int & numElement)
-{
-	CFaceDetector * faceDetect = nullptr;
-	int i = 0;
-	for (CFaceDetectorElement * element : listFaceDetector)
-	{
-		if (element->isFree)
-		{
-			numElement = i;
-			faceDetect = element->faceDetector;
-			element->isFree = false;
-			break;
-		}
-		else
-			i++;
-	}
-	return faceDetect;
-}
-
-void CListFace::SetFreeFaceDetector(const int & numElement)
-{
-	int i = 0;
-	for (CFaceDetectorElement * element : listFaceDetector)
-	{
-		if (numElement == i)
-		{
-			element->isFree = true;
-			break;
-		}
-		else
-			i++;
-	}
-}
-
-
-void CListFace::FindFaceCompatible(const vector<int> & listFace)
-{
-	for (int numFace : listFace)
-	{
-		CDeepLearning::FindFaceCompatible(numFace);
-	}
-}
-
-
-int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path)
-{
-	vector<int> listFace;
-
-	if (pictureData != nullptr)
-	{
-		pictureData->SetFilename(path->filename);
-
-		listFace = path->faceDetect->FindFace(pictureData);
-
-		//FindFaceCompatible(listFace);
-	}
-	return listFace.size();
-}
-
-int CListFace::DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path, const int &position)
-{
-	CSqlFacePhoto facePhoto;
-	vector<int> listFace;
-
-	if (pictureData != nullptr)
-	{
-		pictureData->SetFilename(path->filename);
-
-		listFace = path->faceDetect->FindFace(pictureData);
-
-		for (int numFace : listFace)
-		{
-			facePhoto.UpdateVideoFace(numFace, position);
-		}
-	}
-	return listFace.size();
-}
-
-void CListFace::FacialRecognitionReload()
-{
-	int nbProcesseur = 1;
-	CRegardsConfigParam * config = CParamInit::getInstance();
-	if (config != nullptr)
-		nbProcesseur = 1;// config->GetFaceProcess();
-
-	if (nbProcessFaceRecognition < nbProcesseur)
-	{
-		CThreadFace * path = new CThreadFace();
-		path->mainWindow = this;
-		path->thread = new thread(FacialDetectionRecognition, path);
-		nbProcessFaceRecognition++;
-
-	}
-}
 
 void CListFace::FacialDetectionRecognition(void * param)
 {
@@ -487,6 +367,30 @@ void CListFace::FacialDetectionRecognition(void * param)
 	}
 }
 
+void CListFace::FacialRecognitionReload()
+{
+	int nbProcesseur = 1;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+		nbProcesseur = 1;// config->GetFaceProcess();
+
+	if (nbProcessFaceRecognition < nbProcesseur)
+	{
+		CThreadFace * path = new CThreadFace();
+		path->mainWindow = this;
+		path->thread = new thread(FacialDetectionRecognition, path);
+		nbProcessFaceRecognition++;
+
+	}
+}
+
+void CListFace::FindFaceCompatible(const vector<int> & listFace)
+{
+	for (int numFace : listFace)
+	{
+		CDeepLearning::FindFaceCompatible(numFace);
+	}
+}
 //---------------------------------------------------------------------------------------
 //Test FacialRecognition
 //---------------------------------------------------------------------------------------
@@ -496,6 +400,7 @@ void CListFace::FacialRecognition(void * param)
 	bool pictureOK = false;
 	CLibPicture libPicture;
 	path->nbFace = 0;
+	vector<int> listFace;
 	int faceVideoDetection = 0;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -507,6 +412,7 @@ void CListFace::FacialRecognition(void * param)
 		CThumbnailVideo video(path->filename);
 		int width = 0;
 		int height = 0;
+		
 		int orientation = 0;
 		video.GetVideoDimensions(width, height, orientation);
 		int timeinsecond = video.GetMovieDuration();
@@ -518,9 +424,11 @@ void CListFace::FacialRecognition(void * param)
 			{
 				pictureData->SetOrientation(orientation);
 				pictureData->VertFlipBuf();
-				path->nbFace = DetectFaceOnBitmap(pictureData, path, i);
+				listFace = CDeepLearning::FindFace(pictureData);
 			}
-				
+
+			path->nbFace = listFace.size();
+
 
 			if (path->nbFace > 0)
 			{
@@ -544,7 +452,9 @@ void CListFace::FacialRecognition(void * param)
 				pictureData->VertFlipBuf();
 			}
 
-			path->nbFace = DetectFaceOnBitmap(pictureData, path);
+			listFace = CDeepLearning::FindFace(pictureData);
+
+			path->nbFace = listFace.size();
 		}
 
 		if (pictureData != nullptr)
@@ -575,21 +485,18 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 bool CListFace::GetProcessEnd()
 {
 	TRACE();
-	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
+	if (nbProcessFacePhoto > 0)
 		return false;
 	return true;
 }
 
 void CListFace::ProcessIdle()
 {
-	if (isLoadingResource)
-		return;
-
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
-		nbProcesseur = config->GetFaceProcess();
+		nbProcesseur = 1;// config->GetFaceProcess();
 	//Find picture to examine
 	CSqlFacePhoto facePhoto;
 	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
@@ -598,37 +505,28 @@ void CListFace::ProcessIdle()
 
 	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
 	{
-		int numElement = 0;
-		CFaceDetector * faceDetect = GetFreeFaceDetector(numElement);
-		if (faceDetect != nullptr)
+		CSqlFacePhoto sqlFacePhoto;
+		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
+
+		CThreadFace * path = new CThreadFace();
+		path->filename = listPhoto.at(0);
+		path->mainWindow = this;
+		path->thread = new thread(FacialRecognition, path);
+		nbProcessFacePhoto++;
+
+
+		if (sendMessageStatus)
 		{
-			CSqlFacePhoto sqlFacePhoto;
-			sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
+			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+			thumbnailMessage->nbPhoto = listPhoto.size();
+			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
+			thumbnailMessage->nbElement = listPhoto.size();
 
-			CThreadFace * path = new CThreadFace();
-			path->faceDetect = faceDetect;
-			path->numElement = numElement;
-			path->filename = listPhoto.at(0);
-			path->mainWindow = this;
-			path->thread = new thread(FacialRecognition, path);
-			nbProcessFacePhoto++;
-
-
-			if (sendMessageStatus)
-			{
-				CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
-				thumbnailMessage->nbPhoto = listPhoto.size();
-				thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
-				thumbnailMessage->nbElement = listPhoto.size();
-
-				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-				wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
-				eventChange.SetClientData(thumbnailMessage);
-				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-			}
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
+			eventChange.SetClientData(thumbnailMessage);
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 		}
-
-		
 	}
 
 	CSqlFindFacePhoto faceRecognition;
@@ -679,15 +577,6 @@ void CListFace::ThumbnailMove(wxCommandEvent& event)
 CListFace::~CListFace()
 {
 	delete(windowManager);
-
-	for (CFaceDetectorElement * faceDetectorElement : listFaceDetector)
-	{
-		if (faceDetectorElement != nullptr)
-		{
-			if (faceDetectorElement->faceDetector != nullptr)
-				delete faceDetectorElement->faceDetector;
-		}
-	}
 
 }
 

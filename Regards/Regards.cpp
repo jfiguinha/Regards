@@ -19,10 +19,7 @@
 #include <libPicture.h>
 //#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
-
 using namespace Regards::Picture;
-using namespace tbb;
-//using namespace Regards::DeepLearning;
 
 
 
@@ -113,7 +110,7 @@ int MyApp::Close()
     CLibPicture::Uninitx265Decoder();
 
     CLibPicture::UninitFreeImage();
-	
+
 
 #ifdef __WXMSW__
 	
@@ -208,6 +205,7 @@ bool MyApp::OnInit()
 	CParamInit::Initialize(regardsParam);
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
+
 
 
 	CLibResource::InitializeSQLServerDatabase(resourcePath);

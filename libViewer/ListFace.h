@@ -10,20 +10,8 @@
 #include <WindowMain.h>
 using namespace Regards::Window;
 using namespace std;
-class CRegardsBitmap;
+
 class CFaceLoadData;
-class CFaceDetectorElement;
-class CThreadFace;
-
-namespace Regards
-{
-	namespace OpenCV
-	{
-		class CFaceDetector;
-	}
-}
-
-using namespace Regards::OpenCV;
 
 namespace Regards
 {
@@ -55,10 +43,9 @@ namespace Regards
 			void FacialRecognitionReload();
 
 		private:
-			void SetFreeFaceDetector(const int & numElement);
-			CFaceDetector * GetFreeFaceDetector(int & numElement);
+			
 			static void FacialDetectionRecognition(void * param);
-			static int DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path);
+			
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -68,13 +55,12 @@ namespace Regards
 			void ThumbnailMove(wxCommandEvent& event);
 			void OnFacePhotoAdd(wxCommandEvent& event);
 			void OnResourceLoad(wxCommandEvent& event);
-			void OnFaceVideoAdd(wxCommandEvent& event);
 			void ProcessIdle();
 			bool GetProcessEnd();
 			static void FindFaceCompatible(const vector<int> & listFace);
 			static void FacialRecognition(void * param);
-			static int DetectFaceOnBitmap(CRegardsBitmap * pictureData, CThreadFace * path, const int &position);
 			static void LoadResource(void * param);
+			void OnFaceVideoAdd(wxCommandEvent& event);
 
 			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
@@ -85,10 +71,7 @@ namespace Regards
 			int nbProcessFacePhoto;
 			bool isLoadingResource;
 			int nbProcessFaceRecognition;
-			//std::thread * threadResource;
-			std::thread * threadFacialRecognition;
-			vector<CFaceDetectorElement *> listFaceDetector;
-			bool isLoad = false;
+			std::thread * threadResource;
 		};
 	}
 }

@@ -6,9 +6,9 @@
 #include <RegardsBitmap.h>
 #include <DeepLearning.h>
 #include <PictureData.h>
-#include <FaceDetector.h>
 #include <FileUtility.h>
-using namespace Regards::OpenCV;
+
+using namespace Regards::DeepLearning;
 using namespace std;
 using namespace Regards::FiltreEffet;
 
@@ -107,43 +107,7 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 
 bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap)
 {
-
-#ifdef WIN32
-	//Face Data Preload
-#ifdef CAFFE
-	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
-	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
-#endif
-	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotation_model.json";
-	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
-	wxString shape = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_5_face_landmarks.dat";
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
-
-#else
-
-#ifdef CAFFE
-	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/deploy.prototxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
-	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
-
-#endif
-	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotation_model.json";
-	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
-	wxString shape = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_5_face_landmarks.dat";
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
-#endif
-
-	CFaceDetector * faceDetector = new CFaceDetector();
-	faceDetector->LoadModel(config.ToStdString(), weight.ToStdString(), model.ToStdString(), eye.ToStdString());
-	faceDetector->DetectEyes(pBitmap);
-	delete faceDetector;
-
-	//DeepLearning::CDeepLearning::DetectEyes(pBitmap);
+	DeepLearning::CDeepLearning::DetectEyes(pBitmap);
 	/*
 	wxString filename = pBitmap->GetFilename();
 	CLibPicture libPicture;
