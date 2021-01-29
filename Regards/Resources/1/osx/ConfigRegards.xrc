@@ -26,7 +26,6 @@
 								<object class="wxComboBox" name="ID_RBTRANSITIONEFFECT">
 									<default>0</default>
 									<pos>5,20</pos>
-									<size>170,20</size>
 									<value>Transition Effect</value>
 									<content>
 										<item>None</item>
@@ -53,7 +52,6 @@
 									</object>
 									<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
 										<pos>205,94</pos>
-										<size>170,20</size>
 										<value>CubicFilter</value>
 										<content>
 											<item>CubicFilter</item>
