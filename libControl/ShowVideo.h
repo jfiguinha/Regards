@@ -81,6 +81,7 @@ namespace Regards
             void OnSave(wxCommandEvent& event);
 			void OnClose(wxCommandEvent& event);
 			void OnShrink(wxCommandEvent& event);
+			void OnSetPosition(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnValueChange(wxCommandEvent& event);
 			void OnValueShrinkChange(wxCommandEvent& event);

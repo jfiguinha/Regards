@@ -113,6 +113,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
+	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowVideo::OnSetPosition));
 	this->windowMain = windowMain;
     
     /*
@@ -426,6 +427,15 @@ void CShowVideo::OnAfterOpenVideo()
 #else
 	videoSlider->Refresh();
 #endif
+}
+
+void CShowVideo::OnSetPosition(wxCommandEvent& event)
+{
+	long pos = event.GetExtraLong() ;
+	//videoWindow->OnPause();
+	SetTimePosition(pos * 1000 * 1000);
+	//SetPosition(pos);
+	//videoWindow->Refresh();
 }
 
 void CShowVideo::OnPositionVideo(const int64_t &position)

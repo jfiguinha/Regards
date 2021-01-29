@@ -320,6 +320,8 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 	long pos = event.GetExtraLong();
 	if (videoPosition == pos)
 		return;
+	if (stopVideo)
+		OnPlay();
 	videoPosition = pos;
 	ffmfc->SetTimePosition(videoPosition * 1000 * 1000);
 	if (pause && thumbnailVideo != nullptr)

@@ -25,10 +25,11 @@ int CSqlFacePhoto::UpdateVideoFace(const int & numFace, const int &videoPosition
 	return ExecuteRequestWithNoResult("INSERT INTO FACEVIDEO (NumFace, videoPosition) VALUES (" + to_string(numFace) + "," + to_string(videoPosition) + ")");
 }
 
-int CSqlFacePhoto::GetVideoFacePosition(const int & numFace)
+int CSqlFacePhoto::GetVideoFacePosition(const int & numFaceid)
 {
+	numFace = 0;
 	type = 2;
-	ExecuteRequest("SELECT videoPosition WHERE FACEVIDEO WHERE NumFace = " + to_string(numFace));
+	ExecuteRequest("SELECT videoPosition FROM FACEVIDEO WHERE NumFace = " + to_string(numFaceid));
 	return numFace;
 }
 

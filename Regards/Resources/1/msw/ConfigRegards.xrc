@@ -125,7 +125,7 @@
 								<object class="wxStaticBox" name="sbProcess">
 									<label>Process</label>
 									<pos>0,0</pos>
-									<size>360,130</size>
+									<size>380,130</size>
 								</object>
 								<object class="wxStaticText" name="ID_STTHUMBNAIL">
 									<label>THUMBNAIL :</label>
@@ -183,12 +183,12 @@
 								</content>
 								<default>-1</default>
 								<pos>0,0</pos>
-								<size>360,70</size>
+								<size>380,70</size>
 							</object>		
 							<object class="wxStaticBox" name="sbDiaporama">
 								<label>Sequence</label>
 								<pos>0,100</pos>
-								<size>360,50</size>
+								<size>380,50</size>
 							</object>
 							<object class="wxSpinCtrl" name="ID_SCTIME">
 								<value>0</value>

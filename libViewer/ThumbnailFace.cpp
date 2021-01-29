@@ -48,18 +48,14 @@ void CThumbnailFace::OnPictureClick(CThumbnailData * data)
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *)data;
-	int numFace = thumbnailData->GetNumFace();
 	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+	if (libPicture.TestIsVideo(data->GetFilename()))
 	{
-		CSqlFacePhoto facePhoto;
-		int positionVideo = facePhoto.GetVideoFacePosition(numFace);
-		wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
 		if (window != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
-			evt.SetExtraLong(positionVideo);
+			evt.SetExtraLong(data->GetNumFrame());
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
@@ -82,6 +78,15 @@ void CThumbnailFace::AddSeparatorBar(const wxString &libelle, const CFaceName & 
 		CSqlFaceThumbnail * thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
 		thumbnailData->SetNumPhotoId(numFace.numPhoto);
 		thumbnailData->SetNumElement(nbElement++);
+
+		CLibPicture libPicture;
+		if (libPicture.TestIsVideo(thumbnailData->GetFilename()))
+		{
+			CSqlFacePhoto facePhoto;
+			int positionVideo = facePhoto.GetVideoFacePosition(numFace.numFace);
+			thumbnailData->SetNumFrame(positionVideo);
+		}
+
 
 		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->ShowSelectButton(true);

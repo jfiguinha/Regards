@@ -41,7 +41,7 @@ CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
 	numElement = other.numElement;
 	libelleTimePosition = other.libelleTimePosition;
 	numPhotoId = other.numPhotoId;
-
+	numFrame = other.numFrame;
 	return *this;
 }
 

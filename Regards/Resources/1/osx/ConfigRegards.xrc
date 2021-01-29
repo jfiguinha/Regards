@@ -125,7 +125,7 @@
 								<object class="wxStaticBox" name="sbProcess">
 									<label>Process</label>
 									<pos>0,0</pos>
-									<size>360,130</size>
+									<size>380,130</size>
 								</object>
 								<object class="wxStaticText" name="ID_STTHUMBNAIL">
 									<label>THUMBNAIL :</label>
@@ -153,9 +153,21 @@
 									<size>100,24</size>
 								</object>			
 								<object class="wxSpinCtrl" name="ID_SCFACE">
-									<value>0</value>
+									<value>1</value>
+									<enabled>false</enabled>
 									<pos>120,90</pos>
 									<size>120,21</size>
+								</object>
+								<object class="wxRadioBox" name="ID_RBVIDEOFACEDETECTION">
+										<label>Video Face Detection</label>
+										<style>wxRA_SPECIFY_COLS</style>
+										<content>
+											<item>Yes</item>
+											<item>No</item>
+										</content>
+										<default>-1</default>
+										<pos>0,130</pos>
+										<size>360,70</size>
 								</object>
 							</object>
 						</object>
@@ -171,12 +183,12 @@
 								</content>
 								<default>-1</default>
 								<pos>0,0</pos>
-								<size>360,70</size>
+								<size>380,70</size>
 							</object>		
 							<object class="wxStaticBox" name="sbDiaporama">
 								<label>Sequence</label>
 								<pos>0,100</pos>
-								<size>360,50</size>
+								<size>380,50</size>
 							</object>
 							<object class="wxSpinCtrl" name="ID_SCTIME">
 								<value>0</value>
