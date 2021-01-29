@@ -3,18 +3,11 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#ifndef wxUSE_PDF
+
 #define wxUSE_PDF
-#endif
-#ifndef TURBOJPEG
 #define TURBOJPEG
-#endif
-#ifndef EXIV2
 #define EXIV2
-#endif
-#ifndef FFMPEG
 #define FFMPEG
-#endif
 #define USECURL
 #define RENDEROPENGL
 #define GLUT
@@ -31,7 +24,7 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
-#if defined(_MSC_VER) || defined(__WXGTK__) 
+#if defined(WIN32) || defined(__WXGTK__) 
 #include <tbb/tbbmalloc_proxy.h>
 #endif
 #endif
