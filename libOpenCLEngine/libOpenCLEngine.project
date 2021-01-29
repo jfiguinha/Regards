@@ -25,8 +25,6 @@
     <File Name="OpenCLEngine.h"/>
     <File Name="OpenCLContext.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
@@ -128,4 +126,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
