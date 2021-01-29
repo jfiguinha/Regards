@@ -418,7 +418,6 @@ void CListFace::FacialRecognition(void * param)
 		int timeinsecond = video.GetMovieDuration();
 		for (int i = 0; i < timeinsecond; i++)
 		{
-
 			CRegardsBitmap * pictureData = video.GetVideoFrame(i, 0, 0);
 			if (pictureData != nullptr)
 			{
@@ -436,7 +435,6 @@ void CListFace::FacialRecognition(void * param)
 				facePhoto.UpdateVideoFace(numFace, i);
 			}
 
-
 			if (path->nbFace > 0)
 			{
 				if (path->mainWindow != nullptr)
@@ -446,7 +444,6 @@ void CListFace::FacialRecognition(void * param)
 					path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
 			}
-
 		}
 	}
 	else
