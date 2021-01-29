@@ -152,7 +152,6 @@
 								</object>			
 								<object class="wxSpinCtrl" name="ID_SCFACE">
 									<value>1</value>
-									<enabled>false</enabled>
 									<pos>120,90</pos>
 									<size>120,21</size>
 								</object>
