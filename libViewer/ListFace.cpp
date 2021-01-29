@@ -380,13 +380,28 @@ void CListFace::FacialRecognitionReload()
 		faceRecognition.DeleteFaceRecognitionDatabase();
 		CSqlFindFacePhoto facePhoto;
 		std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
-		CThreadFace * path = new CThreadFace();
-		path->mainWindow = this;
-		path->dialog = new wxProgressDialog("Face Recognition", "", listFace.size(), nullptr,
+		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
 			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-		path->thread = new thread(FacialDetectionRecognition, path);
-		nbProcessFaceRecognition++;
 
+		int i = 0;
+		for (int numFace : listFace)
+		{
+			wxString text = "Face number : " + to_string(i);
+			CDeepLearning::FindFaceCompatible(numFace);
+			if (false == dialog.Update(i++, text))
+				break;
+		}
+
+		//Update criteria
+		if (listFace.size() > 0)
+		{
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxQueueEvent(mainWnd, eventChange);
+
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+			this->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 }
 
