@@ -15,7 +15,9 @@
 #include <OpenCLFilter.h>
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideoYUV.h>
+#include <FFmpegDecodeFrame.h>
 #include <OpenCLEngine.h>
+#include <OpenCVEffect.h>
 using namespace Regards::OpenCL;
 static const int dst_width = 1920;
 static const int dst_height = 1080;
@@ -1717,11 +1719,75 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & o
 	return ret;
 }
 
+CRegardsBitmap * CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame * tmp_frame)
+{
+	if (bitmapData == nullptr)
+		bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
+
+	if (localContext == nullptr)
+	{
+		localContext = sws_alloc_context();
+
+		av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
+		av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
+		av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
+		av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
+		av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
+		av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+		av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(localContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(localContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+	}
+
+	int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height);
+	if (numBytes != bitmapData->GetBitmapSize())
+	{
+		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
+	}
+
+	uint8_t * convertedFrameBuffer = bitmapData->GetPtBitmap();
+	int linesize = tmp_frame->width * 4;
+
+	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+		&convertedFrameBuffer, &linesize);
+
+	return bitmapData;
+}
+
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream)
 {
 	bool decodeBitmap = false;
+	bool stabilizeFrame = videoCompressOption->stabilizeVideo;
+	bool correctedContrast = videoCompressOption->autoConstrast;
+	int modFrame = nbFrame % 30;
+	bool ffmpegToRGBA = false;
+	if (stabilizeFrame && modFrame == 0)
+	{
+		if (openCVStabilization != nullptr)
+			delete openCVStabilization;
+		
+		openCVStabilization = new COpenCVStabilization();
+		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, 30);
+		openCVStabilization->CalculStabilization();
+	}
 
-	if (openCLEngine != nullptr)
+	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
+	{
+		GetBitmapRGBA(tmp_frame);
+		ffmpegToRGBA = true;
+	}
+
+	if (stabilizeFrame)
+		openCVStabilization->CorrectFrame(bitmapData, modFrame);
+
+	if (correctedContrast)
+		COpenCVEffect::BrightnessAndContrastAuto(bitmapData);
+		
+	if (!ffmpegToRGBA)
 	{
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
 		{
@@ -1747,6 +1813,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			openclEffectYUV->SetMemoryData(tmp_frame->data[0], ysize, tmp_frame->data[1], usize, tmp_frame->data[2], vsize, tmp_frame->width, tmp_frame->height, tmp_frame->linesize[0]);
 		}
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
+
+
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 		
@@ -1783,40 +1851,6 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	}
 	else
 	{
-		if (bitmapData == nullptr)
-			bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
-
-		if (localContext == nullptr)
-		{
-			localContext = sws_alloc_context();
-
-			av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
-			av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
-			av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
-			av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
-			av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
-			av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-			av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-			if (sws_init_context(localContext, nullptr, nullptr) < 0)
-			{
-				sws_freeContext(localContext);
-				throw std::logic_error("Failed to initialise scale context");
-			}
-		}
-
-		int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height);
-		if (numBytes != bitmapData->GetBitmapSize())
-		{
-			bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
-		}
-
-		uint8_t * convertedFrameBuffer = bitmapData->GetPtBitmap();
-		int linesize = tmp_frame->width * 4;
-
-		sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-			&convertedFrameBuffer, &linesize);
-
 		CRgbaquad color;
 		CImageLoadingFormat imageFormat(false);
 		imageFormat.SetPicture(bitmapData);
@@ -1908,7 +1942,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		deleteFrame = false;
 	}
 	tmp_frame = dst_hardware;
-
+	nbFrame++;
 
 }
 
@@ -2177,6 +2211,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 	bool first = true;
 	bool startEncoding = true;
 	bool first_frame = true;
+
 
 	if (videoCompressOption->startTime != 0)
 	{
@@ -2541,6 +2576,10 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
 
+
+	CFFmpegDecodeFrame * ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
+	ffmpegDecodeFrame->OpenFile(input);
+
 	ret = ProcessEncodeFile(dst);
 	if (ret < 0)
 	{
@@ -2549,7 +2588,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 		wxMessageBox(message, "Error conversion", wxICON_ERROR);
 	}
 
-
+	delete ffmpegDecodeFrame;
 	return ret ? 1 : 0;
 }
 

@@ -14,6 +14,10 @@ extern "C"
 	#include <libavutil/display.h>
 }
 #include <wx/mstream.h>
+#include <VideoStabilization.h>
+
+using namespace Regards::OpenCV;
+
 class CRegardsBitmap;
 class CompressVideo;
 
@@ -44,10 +48,12 @@ public:
 	int GetFrameBitmapPosition(const long &time, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 	CRegardsBitmap * GetBitmap(const bool &copy = true);
 
+	int CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const int &nbFrame);
+
 	double GetTotalTime();
 	int GetRotation();
 private:
-	
+
 	void Release();
 	int open_input_file(const wxString & filename);
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);

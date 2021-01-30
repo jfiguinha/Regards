@@ -23,11 +23,14 @@ extern "C"
 #include <EffectVideoParameter.h>
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
-
+#include <VideoStabilization.h>
+using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
+class CFFmpegDecodeFrame;
+
 
 class CFFmpegTranscodingPimpl
 {
@@ -195,6 +198,7 @@ private:
 	void VideoInfos(CFFmpegTranscodingPimpl::StreamContext *stream);
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
+	CRegardsBitmap * GetBitmapRGBA(AVFrame * tmp_frame);
 
 	AVFormatContext *ifmt_ctx = nullptr;
 	AVFormatContext *ofmt_ctx = nullptr;
@@ -259,4 +263,7 @@ private:
 	size_t avio_ctx_buffer_size = 4096;
 	wxString outputFile;
 	std::map<int, int> streamCorrespondant;
+	CFFmpegDecodeFrame * ffmpegDecodeFrame = nullptr;
+	COpenCVStabilization * openCVStabilization = nullptr;
+	int nbFrame = 0;
 };
