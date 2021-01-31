@@ -215,6 +215,12 @@ public:
 
 	}
 
+	void Init()
+	{
+		transforms.clear();
+		transforms_smooth.clear();
+	}
+
 	// Define variable for storing frames
 	cv::Mat curr_gray;
 	cv::Mat prev, prev_gray;
@@ -224,6 +230,10 @@ public:
 	Mat frame_stabilized, frame_out;
 };
 
+void COpenCVStabilization::Init()
+{
+	pimpl->Init();
+}
 
 COpenCVStabilization::COpenCVStabilization()
 {

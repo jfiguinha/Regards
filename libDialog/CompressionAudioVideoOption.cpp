@@ -78,7 +78,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	ckVideoBitRate = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOBITRATE"));
 	txtBitRate = (wxTextCtrl*)FindWindow(XRCID("ID_TXTBITRATE"));
 	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-
+	ckVideoAutocontrast = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOAUTOCONTRAST"));
+	ckVideoStabilization = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOSTABILIZATION"));
 #ifdef USE_PREVIEW_INTEGRATE 
 #ifndef __APPLE__
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
@@ -609,6 +610,8 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 	
 	if (videoOptionCompress != nullptr)
 	{
+		videoOptionCompress->autoConstrast = ckVideoAutocontrast->GetValue();
+		videoOptionCompress->stabilizeVideo = ckVideoStabilization->GetValue();
 		videoOptionCompress->videoEffectParameter.effectEnable = ckenablefilter->GetValue();
 		videoOptionCompress->videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();

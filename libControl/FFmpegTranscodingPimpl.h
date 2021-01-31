@@ -250,6 +250,8 @@ private:
 	bool yuvDecodeInit = false;
 	bool showpreview = false;
 
+	int oldPos = 0;
+	bool encodeOneFrame = false;
 	bool first = true;
 	bool deleteFrame = false;
 	bool first_frame = true;

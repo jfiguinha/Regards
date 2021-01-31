@@ -404,17 +404,23 @@
 						</object>
 						<object class="wxCheckBox" name="ID_CKDENOISEFILTER">
 							<pos>15,340</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STDENOISEFILTER">
 							<label>Denoise : </label>
-							<pos>32,340</pos>
-							<size>70,20</size>
 						</object>
 						<object class="wxSlider" name="ID_SLDENOISEFILTER">
 							<max>255</max>
 							<style>wxSL_MIN_MAX_LABELS</style>
 							<pos>120,340</pos>
 							<size>230,20</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKVIDEOAUTOCONTRAST">
+							<pos>15,370</pos>
+							<checked>0</checked>
+							<label>Auto Contrast</label>
+						</object>
+						<object class="wxCheckBox" name="ID_CKVIDEOSTABILIZATION">
+							<pos>15,400</pos>
+							<checked>0</checked>
+							<label>Video Stabilization</label>
 						</object>
 					</object>
 					</object>

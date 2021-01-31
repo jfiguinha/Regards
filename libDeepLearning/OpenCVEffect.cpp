@@ -73,7 +73,12 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &
 		// locate right cut
 		maxGray = histSize - 1;
 		while (accumulator[maxGray] >= (max - clipHistPercent))
+		{
 			maxGray--;
+			if (maxGray == 0)
+				break;
+		}
+			
 	}
 
 	// current range

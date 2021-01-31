@@ -94,6 +94,10 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * cksepia;
 		wxCheckBox * cknoise;
 		wxCheckBox * ckenablefilter;
+
+		wxCheckBox * ckVideoAutocontrast;
+		wxCheckBox * ckVideoStabilization;
+
 #ifdef USE_PREVIEW_INTEGRATE 
 		wxPanel * panel;
 #ifndef __APPLE__

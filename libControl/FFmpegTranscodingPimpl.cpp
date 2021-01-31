@@ -1765,12 +1765,20 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	bool correctedContrast = videoCompressOption->autoConstrast;
 	int modFrame = nbFrame % 30;
 	bool ffmpegToRGBA = false;
-	if (stabilizeFrame && modFrame == 0)
+	if ((stabilizeFrame && modFrame == 0) || openCVStabilization == nullptr || (encodeOneFrame && oldPos != pos))
 	{
-		if (openCVStabilization != nullptr)
-			delete openCVStabilization;
+		if (openCVStabilization == nullptr)
+		{
+			openCVStabilization = new COpenCVStabilization();			
+		}
+
+		if (encodeOneFrame)
+		{
+			ffmpegDecodeFrame->SetVideoPosition(pos);
+			oldPos = pos;
+		}
 		
-		openCVStabilization = new COpenCVStabilization();
+		openCVStabilization->Init();
 		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, 30);
 		openCVStabilization->CalculStabilization();
 	}
@@ -2534,7 +2542,11 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	this->m_dlgProgress = m_dlgProgress;
 	unsigned int stream_index;
 	unsigned int i;
+
+	CFFmpegDecodeFrame * ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
+	ffmpegDecodeFrame->OpenFile(input);
 	nbframe = 0;
+	encodeOneFrame = true;
 	bool first = true;
 	cleanPacket = false;
 	if(dataOutput == nullptr)
@@ -2565,6 +2577,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	unsigned int stream_index;
 	unsigned int i;
 	nbframe = 0;
+	encodeOneFrame = false;
 	bool first = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
