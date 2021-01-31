@@ -16,9 +16,10 @@ namespace Regards
 			void AddFrame(CRegardsBitmap * pictureData);
 			void CalculStabilization();
 			void CorrectFrame(CRegardsBitmap * pictureData, int i);
-			void Init();
+			void Init(const int &framerate);
 		private:
 			COpenCVStabilizationPimpl_ * pimpl;
+			
 		};
 	}
 }

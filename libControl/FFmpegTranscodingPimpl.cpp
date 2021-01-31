@@ -450,6 +450,7 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 	pCodecCtx->height = pSourceCodecCtx->height;
 	pCodecCtx->time_base = pSourceCodecCtx->time_base;
 	//pCodecCtx->bit_rate = dst_vbit_rate;
+	framerate = pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den;
 	pCodecCtx->gop_size = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
 	pCodecCtx->max_b_frames = 0;
 	pCodecCtx->framerate = pSourceCodecCtx->framerate;
@@ -1588,7 +1589,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 		/* mux encoded frame */
 		ret = av_interleaved_write_frame(ofmt_ctx, &enc_pkt);
 	}
-
+	av_free_packet(&enc_pkt);
 	return ret;
 }
 
@@ -1765,7 +1766,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	bool correctedContrast = videoCompressOption->autoConstrast;
 	int modFrame = nbFrame % 30;
 	bool ffmpegToRGBA = false;
-	if ((stabilizeFrame && modFrame == 0) || openCVStabilization == nullptr || (encodeOneFrame && oldPos != pos))
+	int localPos = pos;
+	if ((stabilizeFrame && modFrame == 0) || openCVStabilization == nullptr || (encodeOneFrame && oldPos != localPos))
 	{
 		if (openCVStabilization == nullptr)
 		{
@@ -1774,12 +1776,12 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 
 		if (encodeOneFrame)
 		{
-			ffmpegDecodeFrame->SetVideoPosition(pos);
+			ffmpegDecodeFrame->SetVideoPosition(localPos);
 			oldPos = pos;
 		}
 		
-		openCVStabilization->Init();
-		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, 30);
+		openCVStabilization->Init(framerate);
+		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, framerate);
 		openCVStabilization->CalculStabilization();
 	}
 
@@ -1788,6 +1790,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		GetBitmapRGBA(tmp_frame);
 		ffmpegToRGBA = true;
 	}
+
+	if (encodeOneFrame)
+		modFrame = 0;
 
 	if (stabilizeFrame)
 		openCVStabilization->CorrectFrame(bitmapData, modFrame);
@@ -2163,15 +2168,18 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 		}
 #endif
 
-		/* flush encoder */
-		ret = flush_encoder(i);
-		//if (ret < 0) {
-		//	av_log(NULL, AV_LOG_ERROR, "Flushing encoder failed\n");
-		//	return ret;
-		//}
+		// flush encoder
+		while (1)
+		{
+			ret = flush_encoder(i);
+			if (ret < 0)
+			{
+				break;
+			}
+		}
 	}
 
-	av_write_trailer(ofmt_ctx);
+	ret = av_write_trailer(ofmt_ctx);
 	return ret;
 }
 
@@ -2517,22 +2525,25 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 #ifdef USE_FILTER
 		if (!filter_ctx[i].filter_graph)
 			continue;
-#endif
+
 		ret = filter_encode_write_frame(NULL, i, m_dlgProgress, 0);
 		if (ret < 0) {
 			av_log(NULL, AV_LOG_ERROR, "Flushing filter failed\n");
 			return ret;
 		}
-
-		/* flush encoder */
-		ret = flush_encoder(i);
-		if (ret < 0) {
-			av_log(NULL, AV_LOG_ERROR, "Flushing encoder failed\n");
-			return ret;
+#endif
+		// flush encoder
+		while (1)
+		{
+			ret = flush_encoder(i);
+			if (ret < 0 )
+			{
+				break;
+			}
 		}
 	}
 
-	av_write_trailer(ofmt_ctx);
+	ret = av_write_trailer(ofmt_ctx);
 	return ret;
 }
 
@@ -2543,7 +2554,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	unsigned int stream_index;
 	unsigned int i;
 
-	CFFmpegDecodeFrame * ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
+	ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
 	ffmpegDecodeFrame->OpenFile(input);
 	nbframe = 0;
 	encodeOneFrame = true;
@@ -2590,7 +2601,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	begin = std::chrono::steady_clock::now();
 
 
-	CFFmpegDecodeFrame * ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
+	ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
 	ffmpegDecodeFrame->OpenFile(input);
 
 	ret = ProcessEncodeFile(dst);
@@ -2601,7 +2612,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 		wxMessageBox(message, "Error conversion", wxICON_ERROR);
 	}
 
-	delete ffmpegDecodeFrame;
+
 	return ret ? 1 : 0;
 }
 
@@ -2685,6 +2696,7 @@ void CFFmpegTranscodingPimpl::Release()
         ofmt_ctx = nullptr;
 	}
 
-
+	if(ffmpegDecodeFrame != nullptr)
+		delete ffmpegDecodeFrame;
 
 }

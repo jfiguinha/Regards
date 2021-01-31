@@ -268,4 +268,6 @@ private:
 	CFFmpegDecodeFrame * ffmpegDecodeFrame = nullptr;
 	COpenCVStabilization * openCVStabilization = nullptr;
 	int nbFrame = 0;
+
+	int framerate = 30;
 };

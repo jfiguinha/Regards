@@ -141,6 +141,13 @@ public:
 
 	void AnalyseFrame(const cv::Mat & curr)
 	{
+		if (first)
+		{
+			first = false;
+			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
+			return;
+		}
+
 		// Vector from previous and current feature points
 		vector <Point2f> prev_pts, curr_pts;
 
@@ -152,8 +159,16 @@ public:
 
 		// Calculate optical flow (i.e. track feature points)
 		vector <uchar> status;
-		vector <float> err;
-		calcOpticalFlowPyrLK(prev_gray, curr_gray, prev_pts, curr_pts, status, err);
+		Mat err;
+
+		try
+		{
+			calcOpticalFlowPyrLK(prev_gray, curr_gray, prev_pts, curr_pts, status, err);
+		}
+		catch (...)
+		{
+
+		}
 
 		// Filter only valid points
 		auto prev_it = prev_pts.begin();
@@ -178,7 +193,8 @@ public:
 
 		// In rare cases no transform is found. 
 		// We'll just use the last known good transform.
-		if (T.data == NULL) last_T.copyTo(T);
+		if (T.data == NULL) 
+			last_T.copyTo(T);
 		T.copyTo(last_T);
 
 		// Extract traslation
@@ -197,28 +213,40 @@ public:
 
 	void CorrectedFrame(const cv::Mat & frame, const int &i)
 	{
-		
-
+		int pos = i;
 		Mat T(2, 3, CV_64F);
 
-		// Extract transform from translation and rotation angle. 
-		transforms_smooth[i].getTransform(T);
 
-		// Apply affine wrapping to the given frame
-		warpAffine(frame, frame_stabilized, T, frame.size());
+		if (framerate >= transforms_smooth.size())
+		{
+			int diff = (framerate - transforms_smooth.size()) + 1;
+			pos = i - diff;
+		}
 
-		// Scale image to remove black border artifact
-		fixBorder(frame_stabilized);
+		if (pos < 0)
+		{
+			frame.copyTo(frame_stabilized);
+		}
+		else
+		{
+			// Extract transform from translation and rotation angle. 
+			transforms_smooth[pos].getTransform(T);
 
-		// Now draw the original and stablised side by side for coolness
-		hconcat(frame, frame_stabilized, frame_out);
+			// Apply affine wrapping to the given frame
+			warpAffine(frame, frame_stabilized, T, frame.size());
+
+			// Scale image to remove black border artifact
+			fixBorder(frame_stabilized);
+		}
+
 
 	}
 
-	void Init()
+	void Init(const int &framerate)
 	{
 		transforms.clear();
 		transforms_smooth.clear();
+		this->framerate = framerate;
 	}
 
 	// Define variable for storing frames
@@ -227,12 +255,14 @@ public:
 	vector<TransformParam> transforms;
 	vector <TransformParam> transforms_smooth;
 	cv::Mat last_T;
-	Mat frame_stabilized, frame_out;
+	Mat frame_stabilized;
+	bool first = true;
+	int framerate = 30;
 };
 
-void COpenCVStabilization::Init()
+void COpenCVStabilization::Init(const int &framerate)
 {
-	pimpl->Init();
+	pimpl->Init(framerate);
 }
 
 COpenCVStabilization::COpenCVStabilization()
@@ -260,5 +290,5 @@ void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap, int i)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->CorrectedFrame(image, i);
-	pBitmap->SetBitmap(pimpl->frame_out.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
