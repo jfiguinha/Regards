@@ -213,27 +213,12 @@ public:
 
 	void CorrectedFrame(const cv::Mat & frame, const int &i)
 	{
-		int pos = i;
 		Mat T(2, 3, CV_64F);
 
-
-		if (framerate >= transforms_smooth.size())
-		{
-			int diff = (framerate - transforms_smooth.size()) + 1;
-			pos = i - diff;
-		}
-
-		if (pos >= transforms_smooth.size())
-			pos = transforms_smooth.size() - 1;
-
-		if (pos < 0)
-		{
-			frame.copyTo(frame_stabilized);
-		}
-		else
+		if (i < transforms_smooth.size())
 		{
 			// Extract transform from translation and rotation angle. 
-			transforms_smooth[pos].getTransform(T);
+			transforms_smooth[i].getTransform(T);
 
 			// Apply affine wrapping to the given frame
 			warpAffine(frame, frame_stabilized, T, frame.size());
@@ -241,15 +226,17 @@ public:
 			// Scale image to remove black border artifact
 			fixBorder(frame_stabilized);
 		}
+		else
+			frame.copyTo(frame_stabilized);
 
 
 	}
 
-	void Init(const int &framerate)
+	void Init()
 	{
+		first = true;
 		transforms.clear();
 		transforms_smooth.clear();
-		this->framerate = framerate;
 	}
 
 	// Define variable for storing frames
@@ -260,17 +247,14 @@ public:
 	cv::Mat last_T;
 	Mat frame_stabilized;
 	bool first = true;
-	int framerate = 30;
+
+	std::map<int, cv::Mat> picture_stabilization;
 };
 
-void COpenCVStabilization::Init(const int &framerate)
-{
-	pimpl->Init(framerate);
-}
-
-COpenCVStabilization::COpenCVStabilization()
+COpenCVStabilization::COpenCVStabilization(const int &nbFrame)
 {
 	pimpl = new COpenCVStabilizationPimpl_();
+	this->nbFrame = nbFrame;
 }
 
 COpenCVStabilization::~COpenCVStabilization()
@@ -280,18 +264,47 @@ COpenCVStabilization::~COpenCVStabilization()
 
 void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
 {
-	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->AnalyseFrame(image);
-}
+	pimpl->Init();
 
-void COpenCVStabilization::CalculStabilization()
-{
+	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+
+	for (int i = 0; i < nbFrame - 1; i++)
+	{
+		pimpl->picture_stabilization[i] = pimpl->picture_stabilization[i+1];
+	}
+
+	pimpl->picture_stabilization[nbFrame - 1] = image;
+
+	for(int i = 0;i < nbFrame; i++)
+		pimpl->AnalyseFrame(pimpl->picture_stabilization[i]);
+
 	pimpl->CalculTransforma();
 }
 
-void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap, int i)
+void COpenCVStabilization::CalculTransformation()
+{
+	pimpl->Init();
+
+	for (int i = 0; i < nbFrame; i++)
+		pimpl->AnalyseFrame(pimpl->picture_stabilization[i]);
+
+	pimpl->CalculTransforma();
+}
+
+int COpenCVStabilization::GetNbFrame()
+{
+	return nbFrame;
+}
+
+void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap, const int & pos)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->CorrectedFrame(image, i);
+	pimpl->picture_stabilization[pos] = image;
+}
+
+void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
+{
+	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	pimpl->CorrectedFrame(image, 1);
 	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }

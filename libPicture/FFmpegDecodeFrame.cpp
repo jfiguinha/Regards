@@ -442,17 +442,22 @@ int CFFmpegDecodeFrame::SetVideoPosition(const int &timeInSeconds)
 
 		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
 	}
+
+	numFrame = 0;
 	return ret;
 }
 
-int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const int &nbFrame)
+int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const bool &bufferized)
 {
 	if (!isOk)
 		return -1;
 	int videoFrameOutputWidth = 0;
 	int videoFrameOutputHeight = 0;
 	int ret = 0;
-	int numFrame = 0;
+	numFrame = 0;
+	int nbFrame = 1;
+	if (bufferized)
+		nbFrame = opencvStabilization->GetNbFrame();
 
 	while (numFrame < nbFrame)
 	{
@@ -540,7 +545,10 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * op
 			sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
 				&convertedFrameBuffer, &linesize);
 
-			opencvStabilization->AddFrame(image);
+			if (bufferized)
+				opencvStabilization->BufferFrame(image, numFrame);
+			else
+				opencvStabilization->AddFrame(image);
 
 			numFrame++;
 		}

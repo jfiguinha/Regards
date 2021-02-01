@@ -418,9 +418,15 @@
 							<label>Auto Contrast</label>
 						</object>
 						<object class="wxCheckBox" name="ID_CKVIDEOSTABILIZATION">
-							<pos>15,400</pos>
+							<pos>15,410</pos>
 							<checked>0</checked>
-							<label>Video Stabilization</label>
+							<label>Video Stabilization Image Buffer : </label>
+						</object>
+						<object class="wxSpinCtrl" name="ID_SPINCONTROLBUFFER">
+							<value>4</value>
+							<min>4</min>
+							<max>30</max>
+							<pos>250,410</pos>
 						</object>
 					</object>
 					</object>

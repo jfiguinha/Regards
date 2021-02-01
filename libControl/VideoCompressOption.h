@@ -33,7 +33,5 @@ public:
 	bool audioDirectCopy = false;
 	bool videoDirectCopy = false;
 	bool interlace = false;
-	bool autoConstrast = false;
-	bool stabilizeVideo = false;
 	CVideoEffectParameter videoEffectParameter;
 };

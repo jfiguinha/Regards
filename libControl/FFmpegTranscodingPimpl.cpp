@@ -18,7 +18,6 @@
 #include <FFmpegDecodeFrame.h>
 #include <OpenCLEngine.h>
 #include <OpenCVEffect.h>
-#include "transcoding.h"
 
 using namespace Regards::OpenCL;
 static const int dst_width = 1920;
@@ -1779,27 +1778,32 @@ CRegardsBitmap * CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame * tmp_frame)
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream)
 {
 	bool decodeBitmap = false;
-	bool stabilizeFrame = videoCompressOption->stabilizeVideo;
-	bool correctedContrast = videoCompressOption->autoConstrast;
-	int modFrame = nbFrame % 30;
+	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
+	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
+	int modFrame = 0;
 	bool ffmpegToRGBA = false;
 	int localPos = pos;
 	if ((stabilizeFrame && modFrame == 0) || openCVStabilization == nullptr || (encodeOneFrame && oldPos != localPos))
 	{
+		bool bufferized = false;
 		if (openCVStabilization == nullptr)
 		{
-			openCVStabilization = new COpenCVStabilization();			
+			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+			bufferized = true;
 		}
-
+		
 		if (encodeOneFrame)
 		{
 			ffmpegDecodeFrame->SetVideoPosition(localPos);
 			oldPos = pos;
+			bufferized = true;
 		}
-		
-		openCVStabilization->Init(framerate);
-		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, framerate);
-		openCVStabilization->CalculStabilization();
+
+		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, bufferized);
+
+		if (bufferized)
+			openCVStabilization->CalculTransformation();
+
 	}
 
 	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
@@ -1812,7 +1816,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		modFrame = 0;
 
 	if (stabilizeFrame)
-		openCVStabilization->CorrectFrame(bitmapData, modFrame);
+		openCVStabilization->CorrectFrame(bitmapData);
 
 	if (correctedContrast)
 		COpenCVEffect::BrightnessAndContrastAuto(bitmapData);

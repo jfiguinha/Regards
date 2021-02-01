@@ -57,7 +57,7 @@ class CompressionAudioVideoOption: public wxDialog
 		wxCheckBox * ckVideoHardware; 
 		wxComboBox * cbAudioCodec;
 
-		
+		wxSpinCtrl * bufferStabilization;
 		wxComboBox * cbVideoCodec;
 		wxComboBox * cbVideoPreset;
 		wxRadioBox * rbQuality;

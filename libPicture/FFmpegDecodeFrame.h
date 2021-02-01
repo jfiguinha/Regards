@@ -48,7 +48,7 @@ public:
 	int GetFrameBitmapPosition(const long &time, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 	CRegardsBitmap * GetBitmap(const bool &copy = true);
 	int SetVideoPosition(const int &timePos);
-	int CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const int &nbFrame);
+	int CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const bool &bufferized);
 
 	double GetTotalTime();
 	int GetRotation();
@@ -80,7 +80,7 @@ private:
 	SwsContext* scaleContext = nullptr;
 	bool m_allowSeek = true;
 	int videoStreamIndex = 0;
-
+	int numFrame = 0;
 
 	mutex muFrame;
 	mutex muWriteData;

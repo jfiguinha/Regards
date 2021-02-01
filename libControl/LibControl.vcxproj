@@ -411,7 +411,6 @@
     <ClInclude Include="ThumbnailVideo.h" />
     <ClInclude Include="ThumbnailViewerEffect.h" />
     <ClInclude Include="ThumbnailViewerEffectWnd.h" />
-    <ClInclude Include="transcoding.h" />
     <ClInclude Include="VideoCompressOption.h" />
     <ClInclude Include="VideoControl.h" />
     <ClInclude Include="VideoControlInterface.h" />
@@ -460,7 +459,6 @@
     <ClCompile Include="ThumbnailVideo.cpp" />
     <ClCompile Include="ThumbnailViewerEffect.cpp" />
     <ClCompile Include="ThumbnailViewerEffectWnd.cpp" />
-    <ClCompile Include="transcoding.cpp" />
     <ClCompile Include="VideoControl.cpp" />
     <ClCompile Include="VideoControl_soft.cpp" />
   </ItemGroup>

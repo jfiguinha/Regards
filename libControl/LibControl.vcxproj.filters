@@ -109,9 +109,6 @@
     <ClCompile Include="FFmpegTranscodingPimpl.cpp">
       <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
-    <ClCompile Include="transcoding.cpp">
-      <Filter>Video\Core\Encoding</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -235,9 +232,6 @@
       <Filter>Video</Filter>
     </ClInclude>
     <ClInclude Include="FFmpegTranscodingPimpl.h">
-      <Filter>Video\Core\Encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="transcoding.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
   </ItemGroup>

@@ -148,5 +148,9 @@ public:
 	int ratioSelect = 4;
 	int zoomSelect = 0;
 	bool zoomUpdate = false;
+
+	bool autoConstrast = false;
+	bool stabilizeVideo = false;
+	int stabilizeImageBuffere = 4;
 };
 

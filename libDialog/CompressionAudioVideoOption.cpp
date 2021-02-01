@@ -28,6 +28,7 @@ extern "C"
 //(*InternalHeaders(CompressionAudioVideoOption)
 #include <wx/xrc/xmlres.h>
 #include <wx/statbmp.h>
+#include <wx/spinctrl.h>
 //*)
 
 //(*IdInit(CompressionAudioVideoOption)
@@ -108,6 +109,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
 	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
 	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
+	bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
 #ifdef USE_PREVIEW_INTEGRATE 
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
 #endif
@@ -610,8 +612,10 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 	
 	if (videoOptionCompress != nullptr)
 	{
-		videoOptionCompress->autoConstrast = ckVideoAutocontrast->GetValue();
-		videoOptionCompress->stabilizeVideo = ckVideoStabilization->GetValue();
+		//bufferStabilization
+		videoOptionCompress->videoEffectParameter.stabilizeImageBuffere = bufferStabilization->GetValue();
+		videoOptionCompress->videoEffectParameter.autoConstrast = ckVideoAutocontrast->GetValue();
+		videoOptionCompress->videoEffectParameter.stabilizeVideo = ckVideoStabilization->GetValue();
 		videoOptionCompress->videoEffectParameter.effectEnable = ckenablefilter->GetValue();
 		videoOptionCompress->videoEffectParameter.denoiseEnable = ckdenoiseFilter->GetValue();
 		videoOptionCompress->videoEffectParameter.denoisingLevel = denoiseFilter->GetValue();
