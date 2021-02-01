@@ -179,8 +179,8 @@ private:
 	void DecodeHardwareFrame(AVFrame * & tmp_frame, AVFrame * sw_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);
-	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx);
-	bool openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx);
+	bool openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx, AVStream * stream);
+	bool openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx, AVStream * stream);
 	AVCodecID GetCodecID(AVMediaType codec_type);
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString &nameEncoder);
 	int encode_write_frame(AVFrame *filt_frame, unsigned int stream_index);

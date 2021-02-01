@@ -159,6 +159,7 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 
 float value[256];
 
+
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp

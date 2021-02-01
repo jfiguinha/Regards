@@ -18,6 +18,8 @@
 #include <FFmpegDecodeFrame.h>
 #include <OpenCLEngine.h>
 #include <OpenCVEffect.h>
+#include "transcoding.h"
+
 using namespace Regards::OpenCL;
 static const int dst_width = 1920;
 static const int dst_height = 1080;
@@ -443,17 +445,23 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 	pCodecCtx->gop_size = 30 * 1;
 	pCodecCtx->max_b_frames = 0;
 #else
+
+	// Set things in context that we will allow the user to
+	// override with advanced settings.
+	//AVRational time_base_from_framerate;
+	//time_base_from_framerate.num = pSourceCodecCtx->framerate.den;
+	//time_base_from_framerate.den = pSourceCodecCtx->framerate.num;
 	pCodecCtx->codec_id = codec_id;
 	pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
 	pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
 	pCodecCtx->width = pSourceCodecCtx->width;
 	pCodecCtx->height = pSourceCodecCtx->height;
-	pCodecCtx->time_base = pSourceCodecCtx->time_base;
-	//pCodecCtx->bit_rate = dst_vbit_rate;
-	framerate = pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den;
-	pCodecCtx->gop_size = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
-	pCodecCtx->max_b_frames = 0;
 	pCodecCtx->framerate = pSourceCodecCtx->framerate;
+	pCodecCtx->time_base = pSourceCodecCtx->time_base;
+	pCodecCtx->bit_rate = dst_vbit_rate;
+	pCodecCtx->gop_size = (pCodecCtx->framerate.num / pCodecCtx->framerate.den) * 1;
+	pCodecCtx->max_b_frames = 0;
+	framerate = (pCodecCtx->framerate.num / pCodecCtx->framerate.den) * 1;
 	pCodecCtx->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
 #endif
 
@@ -792,7 +800,7 @@ AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_i
 //h264_amf
 //h264_nvenc
 
-bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx)
+bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const wxString &encoderName, AVCodecContext * pSourceCodecCtx, AVStream * stream)
 {
 	bool isSucceed = false;
 	AVCodec * pCodec = nullptr;
@@ -806,7 +814,6 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const w
 		{
 			pCodecCtx = avcodec_alloc_context3(pCodec);
 			pCodecCtx->thread_count = 1;
-
 			AVDictionary *param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, encoderName);
 
 			int ret = avcodec_open2(pCodecCtx, pCodec, &param);
@@ -839,7 +846,7 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID &codec_id, const w
 }
 
 
-bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx)
+bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID &codec_id, AVCodecContext * pSourceCodecCtx, AVStream * stream)
 {
 	bool isSucceed = false;
 	AVCodec * pCodec = nullptr;
@@ -850,7 +857,6 @@ bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID &codec_id, AVCodec
 	{
 		pCodecCtx = avcodec_alloc_context3(pCodec);
 		pCodecCtx->thread_count = 1;
-
 		AVDictionary *param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, "");
 
 		int ret = avcodec_open2(pCodecCtx, pCodec, &param);
@@ -1169,21 +1175,21 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					{
 						bool success = false;
 						encoderHardware = "nvenc"; //NVIDIA ENC
-						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
 						if (!success)
 						{
 							encoderHardware = "amf"; //AMD VCE
-							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
 						}
 						if (!success)
 						{
 							encoderHardware = "qsv"; //Quicktime
-							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
 						}
 						if (!success)
 						{
 							encoderHardware = "mf"; //MediaFoundation
-							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
 
 						}
 						if (success)
@@ -1312,7 +1318,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					return ret;
 				}
 
-				out_stream->time_base = enc_ctx->time_base;
+				//out_stream->time_base = enc_ctx->time_base;
 				stream_ctx[i].enc_ctx = enc_ctx;
 			}
 			else if (dec_ctx->codec_type == AVMEDIA_TYPE_UNKNOWN) {
@@ -1326,7 +1332,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 					av_log(NULL, AV_LOG_ERROR, "Copying parameters for stream #%u failed\n", i);
 					return ret;
 				}
-				out_stream->time_base = in_stream->time_base;
+				//out_stream->time_base = in_stream->time_base;
 			}
 		}
 
@@ -1563,8 +1569,8 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
 
-	//if (ret < 0)
-	//	return ret;
+	if (ret < 0)
+		return ret;
 
 	while (ret >= 0) {
 		ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
@@ -1577,9 +1583,19 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 		int outputIndex = streamCorrespondant[stream_index];
 
-		av_packet_rescale_ts(&enc_pkt,
-			stream->enc_ctx->time_base,
-			ofmt_ctx->streams[outputIndex]->time_base);
+		if (ofmt_ctx->streams[outputIndex]->time_base.den == ifmt_ctx->streams[outputIndex]->time_base.den
+			&& ofmt_ctx->streams[outputIndex]->time_base.num == ifmt_ctx->streams[outputIndex]->time_base.num)
+		{
+			av_packet_rescale_ts(&enc_pkt,
+				ifmt_ctx->streams[outputIndex]->time_base,
+				ofmt_ctx->streams[outputIndex]->time_base);
+		}
+		else
+		{
+			av_packet_rescale_ts(&enc_pkt,
+				stream->enc_ctx->time_base,
+				ofmt_ctx->streams[outputIndex]->time_base);
+		}
 
 		if (enc_pkt.duration > 0)
 			enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base, stream->enc_ctx->time_base);
@@ -1587,9 +1603,10 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned in
 
 		av_log(NULL, AV_LOG_DEBUG, "Muxing frame\n");
 		/* mux encoded frame */
-		ret = av_interleaved_write_frame(ofmt_ctx, &enc_pkt);
+		av_write_frame(ofmt_ctx, &enc_pkt);
+		av_free_packet(&enc_pkt);
 	}
-	av_free_packet(&enc_pkt);
+	
 	return ret;
 }
 
@@ -1704,7 +1721,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 
 		return encode_write_frame(NULL, stream_index);
 	}
-	return 0;
+	return -1;
 }
 
 int CFFmpegTranscodingPimpl::OpenFile(const wxString & input, const wxString & output)
@@ -2052,9 +2069,21 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 				av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-				av_packet_rescale_ts(&packet,
-					ifmt_ctx->streams[stream_index]->time_base,
-					stream->dec_ctx->time_base);
+				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				{
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						ofmt_ctx->streams[stream_index]->time_base);
+				}
+				else
+				{
+
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						stream->dec_ctx->time_base);
+				}
+
 
 				pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 				double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
@@ -2317,9 +2346,19 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                 av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-                av_packet_rescale_ts(pkt,
-                    ifmt_ctx->streams[stream_index]->time_base,
-                    stream->dec_ctx->time_base);
+				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				{
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						ofmt_ctx->streams[stream_index]->time_base);
+				}
+				else
+				{
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						stream->dec_ctx->time_base);
+				}
 
                 pos = ((double)pkt->pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
                 double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
@@ -2405,10 +2444,23 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                 av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-                av_packet_rescale_ts(&packet,
-                    ifmt_ctx->streams[stream_index]->time_base,
-                    stream->dec_ctx->time_base);
 
+				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				{
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						ofmt_ctx->streams[stream_index]->time_base);
+				}
+				else
+				{
+					av_packet_rescale_ts(&packet,
+						ifmt_ctx->streams[stream_index]->time_base,
+						stream->dec_ctx->time_base);
+				}
+				/*
+
+					*/
                 pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
                 double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
                 ret = avcodec_send_packet(stream->dec_ctx, &packet);

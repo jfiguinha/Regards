@@ -223,6 +223,9 @@ public:
 			pos = i - diff;
 		}
 
+		if (pos >= transforms_smooth.size())
+			pos = transforms_smooth.size() - 1;
+
 		if (pos < 0)
 		{
 			frame.copyTo(frame_stabilized);
