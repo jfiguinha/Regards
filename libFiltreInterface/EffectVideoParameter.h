@@ -151,6 +151,6 @@ public:
 
 	bool autoConstrast = false;
 	bool stabilizeVideo = false;
-	int stabilizeImageBuffere = 4;
+	int stabilizeImageBuffere = 2;
 };
 

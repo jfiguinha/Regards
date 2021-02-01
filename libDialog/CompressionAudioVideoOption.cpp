@@ -109,7 +109,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
 	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
 	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
-	bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
+	//bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
 #ifdef USE_PREVIEW_INTEGRATE 
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
 #endif
@@ -613,7 +613,7 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 	if (videoOptionCompress != nullptr)
 	{
 		//bufferStabilization
-		videoOptionCompress->videoEffectParameter.stabilizeImageBuffere = bufferStabilization->GetValue();
+		//videoOptionCompress->videoEffectParameter.stabilizeImageBuffere = bufferStabilization->GetValue();
 		videoOptionCompress->videoEffectParameter.autoConstrast = ckVideoAutocontrast->GetValue();
 		videoOptionCompress->videoEffectParameter.stabilizeVideo = ckVideoStabilization->GetValue();
 		videoOptionCompress->videoEffectParameter.effectEnable = ckenablefilter->GetValue();

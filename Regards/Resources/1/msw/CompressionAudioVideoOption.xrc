@@ -420,13 +420,7 @@
 						<object class="wxCheckBox" name="ID_CKVIDEOSTABILIZATION">
 							<pos>15,410</pos>
 							<checked>0</checked>
-							<label>Video Stabilization Image Buffer : </label>
-						</object>
-						<object class="wxSpinCtrl" name="ID_SPINCONTROLBUFFER">
-							<value>4</value>
-							<min>4</min>
-							<max>30</max>
-							<pos>250,410</pos>
+							<label>Video Stabilization</label>
 						</object>
 					</object>
 					</object>

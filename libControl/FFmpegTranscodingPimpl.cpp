@@ -1122,6 +1122,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 	
 	//
 	int nbStream = 0;
+	int outStream = 0;
 	for (i = 0; i < ifmt_ctx->nb_streams; i++) 
     {
 		AVStream *stream = ifmt_ctx->streams[i];
@@ -1158,6 +1159,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 				av_log(NULL, AV_LOG_ERROR, "Failed allocating output stream\n");
 				return AVERROR_UNKNOWN;
 			}
+
+			streamInNumberInOut[i] = outStream++;
 
 			in_stream = ifmt_ctx->streams[i];
 
@@ -1815,7 +1818,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	if (encodeOneFrame)
 		modFrame = 0;
 
-	if (stabilizeFrame)
+	if (stabilizeFrame && nbFrame > 0)
 		openCVStabilization->CorrectFrame(bitmapData);
 
 	if (correctedContrast)
@@ -2073,12 +2076,14 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 
 				av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
-					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				int outStreamIndex = streamInNumberInOut[stream_index];
+
+				if (ofmt_ctx->streams[outStreamIndex]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[outStreamIndex]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
 				{
 					av_packet_rescale_ts(&packet,
 						ifmt_ctx->streams[stream_index]->time_base,
-						ofmt_ctx->streams[stream_index]->time_base);
+						ofmt_ctx->streams[outStreamIndex]->time_base);
 				}
 				else
 				{
@@ -2164,10 +2169,12 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long
 				}
 			}
 			else {
+
+				int outStreamIndex = streamInNumberInOut[stream_index];
 				/* remux this frame without reencoding */
 				av_packet_rescale_ts(&packet,
 					ifmt_ctx->streams[stream_index]->time_base,
-					ofmt_ctx->streams[stream_index]->time_base);
+					ofmt_ctx->streams[outStreamIndex]->time_base);
 
 				ret = av_interleaved_write_frame(ofmt_ctx, &packet);
 				if (ret < 0)
@@ -2350,12 +2357,14 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                 av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
-					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				int outStreamIndex = streamInNumberInOut[stream_index];
+
+				if (ofmt_ctx->streams[outStreamIndex]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[outStreamIndex]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
 				{
 					av_packet_rescale_ts(&packet,
 						ifmt_ctx->streams[stream_index]->time_base,
-						ofmt_ctx->streams[stream_index]->time_base);
+						ofmt_ctx->streams[outStreamIndex]->time_base);
 				}
 				else
 				{
@@ -2448,13 +2457,13 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
                 av_log(NULL, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-
-				if (ofmt_ctx->streams[stream_index]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
-					&& ofmt_ctx->streams[stream_index]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
+				int outStreamIndex = streamInNumberInOut[stream_index];
+				if (ofmt_ctx->streams[outStreamIndex]->time_base.den == ifmt_ctx->streams[stream_index]->time_base.den
+					&& ofmt_ctx->streams[outStreamIndex]->time_base.num == ifmt_ctx->streams[stream_index]->time_base.num)
 				{
 					av_packet_rescale_ts(&packet,
 						ifmt_ctx->streams[stream_index]->time_base,
-						ofmt_ctx->streams[stream_index]->time_base);
+						ofmt_ctx->streams[outStreamIndex]->time_base);
 				}
 				else
 				{
@@ -2551,9 +2560,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
             }
             else {
                 /* remux this frame without reencoding */
+				int outStreamIndex = streamInNumberInOut[stream_index];
                 av_packet_rescale_ts(&packet,
                     ifmt_ctx->streams[stream_index]->time_base,
-                    ofmt_ctx->streams[stream_index]->time_base);
+                    ofmt_ctx->streams[outStreamIndex]->time_base);
 
                 ret = av_interleaved_write_frame(ofmt_ctx, &packet);
                 if (ret < 0)
@@ -2718,7 +2728,7 @@ void CFFmpegTranscodingPimpl::Release()
 #endif
 			if (stream_ctx[i].dec_frame != nullptr)
 			{
-				av_freep(&stream_ctx[i].dec_frame->data[0]);
+				//av_freep(&stream_ctx[i].dec_frame->data[0]);
 				av_frame_free(&stream_ctx[i].dec_frame);
 			}
 

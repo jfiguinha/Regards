@@ -270,4 +270,6 @@ private:
 	int nbFrame = 0;
 
 	int framerate = 30;
+
+	std::map<int, int> streamInNumberInOut;
 };

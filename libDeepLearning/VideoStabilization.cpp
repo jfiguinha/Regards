@@ -147,7 +147,7 @@ public:
 			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
 			return;
 		}
-
+		cv::Mat curr_gray;
 		// Vector from previous and current feature points
 		vector <Point2f> prev_pts, curr_pts;
 
@@ -193,9 +193,9 @@ public:
 
 		// In rare cases no transform is found. 
 		// We'll just use the last known good transform.
-		if (T.data == NULL) 
-			last_T.copyTo(T);
-		T.copyTo(last_T);
+		//if (T.data == NULL) 
+		//	last_T.copyTo(T);
+		//T.copyTo(last_T);
 
 		// Extract traslation
 		double dx = T.at<double>(0, 2);
@@ -208,7 +208,7 @@ public:
 		transforms.push_back(TransformParam(dx, dy, da));
 
 		// Move to next frame
-		curr_gray.copyTo(prev_gray);
+		//curr_gray.copyTo(prev_gray);
 	}
 
 	void CorrectedFrame(const cv::Mat & frame, const int &i)
@@ -240,11 +240,11 @@ public:
 	}
 
 	// Define variable for storing frames
-	cv::Mat curr_gray;
+	//cv::Mat curr_gray;
 	cv::Mat prev, prev_gray;
 	vector<TransformParam> transforms;
 	vector <TransformParam> transforms_smooth;
-	cv::Mat last_T;
+	//cv::Mat last_T;
 	Mat frame_stabilized;
 	bool first = true;
 
@@ -305,6 +305,6 @@ void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap, const int & pos
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->CorrectedFrame(image, 1);
+	pimpl->CorrectedFrame(image, 0);
 	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
