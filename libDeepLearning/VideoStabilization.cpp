@@ -147,11 +147,12 @@ public:
 			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
 			return;
 		}
-		cv::Mat curr_gray;
+		cv::UMat curr_gray;
 		// Vector from previous and current feature points
 		vector <Point2f> prev_pts, curr_pts;
 
 		// Detect features in previous frame
+	
 		goodFeaturesToTrack(prev_gray, prev_pts, 200, 0.01, 30);
 
 		// Convert to grayscale
@@ -159,7 +160,7 @@ public:
 
 		// Calculate optical flow (i.e. track feature points)
 		vector <uchar> status;
-		Mat err;
+		UMat err;
 
 		try
 		{
@@ -240,11 +241,11 @@ public:
 	}
 
 	// Define variable for storing frames
-	//cv::Mat curr_gray;
-	cv::Mat prev, prev_gray;
+	//cv::UMat curr_gray;
+	cv::UMat prev, prev_gray;
 	vector<TransformParam> transforms;
 	vector <TransformParam> transforms_smooth;
-	//cv::Mat last_T;
+	//cv::UMat last_T;
 	Mat frame_stabilized;
 	bool first = true;
 
@@ -268,7 +269,7 @@ void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
 {
 	pimpl->Init();
 
-	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 
 	for (int i = 0; i < nbFrame - 1; i++)
 	{

@@ -1695,7 +1695,11 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 		if (isffmpegDecode || isCPU)
 			*pictureFrame = *bitmapData;
 		else
+		{
+			muBitmap.lock();
 			openclEffectYUV->LoadRegardsBitmap(bitmapData);
+			muBitmap.unlock();
+		}
 	}
 
     
@@ -2398,24 +2402,7 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	}
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-    
-    /*
-    if(glTexture != nullptr)
-    {
-        CRegardsBitmap * bitmap = new CRegardsBitmap(glTexture->GetWidth(), glTexture->GetHeight());
-        printf("glTexture 0");
-        glTexture->GetData(bitmap->GetPtBitmap());
-         printf("glTexture 1");
-        CImageLoadingFormat imageLoad;
-        imageLoad.SetPicture(bitmap);
-        Regards::Picture::CLibPicture libPicture;
-         printf("glTexture 2");
-        libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
-         printf("glTexture 3");
-        //wxMessageBox("test","saving texture");
-    }
-     * */
-    
+       
 	return glTexture;
 }
 #else

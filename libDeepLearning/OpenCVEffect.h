@@ -10,6 +10,7 @@ namespace Regards
 			COpenCVEffect() {};
 			~COpenCVEffect() {};
 			static void BrightnessAndContrastAuto(CRegardsBitmap * pictureData, float clipHistPercent = 0);
+			static void EqualizeHistogram(CRegardsBitmap * pictureData);
 		};
 	}
 }
