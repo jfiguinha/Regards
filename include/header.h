@@ -4,15 +4,42 @@
 #include <wx/wx.h>
 #endif
 
+#ifndef wxUSE_PDF
 #define wxUSE_PDF
+#endif
+
+#ifndef TURBOJPEG
 #define TURBOJPEG
+#endif
+
+#ifndef EXIV2
 #define EXIV2
+#endif
+
+#ifndef FFMPEG
 #define FFMPEG
+#endif
+
+#ifndef USECURL
 #define USECURL
+#endif
+
+#ifndef RENDEROPENGL
 #define RENDEROPENGL
+#endif
+
+#ifndef GLUT
 #define GLUT
+#endif
+
+#ifndef USE_TBB
 #define USE_TBB
+#endif
+
+#ifndef OPENCV_OPENCL
 #define OPENCV_OPENCL
+#endif
+
 
 //#define WX_PRECOMP
 #if defined(__WXMSW__) && defined(_DEBUG)
