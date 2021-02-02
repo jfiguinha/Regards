@@ -2658,15 +2658,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 	begin = std::chrono::steady_clock::now();
 
 	ret = ProcessEncodeFile(dst);
-	if (ret < 0)
-	{
-		char message[255];
-		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		wxMessageBox(message, "Error conversion", wxICON_ERROR);
-	}
-
-
-	return ret ? 1 : 0;
+	return ret;
 }
 
 
@@ -2715,7 +2707,8 @@ void CFFmpegTranscodingPimpl::Release()
 #endif
 			if (stream_ctx[i].dec_frame != nullptr)
 			{
-				//av_freep(&stream_ctx[i].dec_frame->data[0]);
+				//if(stream_ctx[i].dec_frame->data[0] != nullptr)
+				//	av_freep(&stream_ctx[i].dec_frame->data[0]);
 				av_frame_free(&stream_ctx[i].dec_frame);
 			}
 

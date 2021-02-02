@@ -319,6 +319,6 @@ int COpenCVStabilization::GetNbFrameBuffer()
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->CorrectedFrame(image, 0);
+	pimpl->CorrectedFrame(image, nbFrameBuffer - 2);
 	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
