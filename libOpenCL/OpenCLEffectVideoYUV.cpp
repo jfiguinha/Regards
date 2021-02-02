@@ -4,6 +4,7 @@
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
+#include <RegardsBitmap.h>
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)
@@ -90,6 +91,7 @@ void COpenCLEffectVideoYUV::SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint
 	paramLineSize->SetValue(lineSize);
 	isOk = true;
 	formatData = 1;
+	needToTranscode = true;
 }
 
 
@@ -132,6 +134,7 @@ void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t 
 	paramLineSize->SetValue(lineSize);
 	isOk = true;
 	formatData = 0;
+	needToTranscode = true;
 }
 
 bool COpenCLEffectVideoYUV::IsOk()
@@ -147,6 +150,8 @@ int COpenCLEffectVideoYUV::GetSizeData()
 
 void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &heightOut)
 {
+	if (!needToTranscode)
+		return;
 	srcwidth = widthOut;
 	srcheight = heightOut;
 
@@ -264,4 +269,41 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 		}
 
 	}
+}
+
+void COpenCLEffectVideoYUV::LoadRegardsBitmap(CRegardsBitmap * bitmap)
+{
+	cl_mem outputValue;
+
+	if (paramSrc == nullptr)
+		paramSrc = new COpenCLParameterClMem();
+
+	if (context->GetDefaultType() == OPENCL_UCHAR)
+	{
+		COpenCLParameterUintArray uintValue(true);
+		uintValue.SetNoDelete(true);
+		uintValue.SetValue(context->GetContext(), (unsigned int*)bitmap->GetPtBitmap(), bitmap->GetBitmapWidth() * bitmap->GetBitmapHeight(), flag);
+		outputValue = uintValue.GetValue();
+	}
+	else
+	{
+		outputValue = LoadRegardsImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+
+	paramSrc->SetValue(outputValue);
+
+	if (paramWidth == nullptr)
+		paramWidth = new COpenCLParameterInt();
+	paramWidth->SetNoDelete(true);
+	paramWidth->SetLibelle("widthIn");
+	paramWidth->SetValue(bitmap->GetBitmapWidth());
+
+	if (paramHeight == nullptr)
+		paramHeight = new COpenCLParameterInt();
+	paramHeight->SetNoDelete(true);
+	paramHeight->SetLibelle("heightIn");
+	paramHeight->SetValue(bitmap->GetBitmapHeight());
+
+	needToTranscode = false;
+
 }

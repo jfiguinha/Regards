@@ -35,9 +35,11 @@ namespace Regards
 			virtual ~COpenCLEffectVideo();
 			bool IsOk();
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
+			cl_mem LoadRegardsImage(uint8_t * data, const int &width, const int &height);
 			CRegardsBitmap* GetBitmap(cl_mem cl_image);
 			void GetBitmap(CRegardsBitmap * bitmap, const bool &src = false);
 
+			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
@@ -87,6 +89,8 @@ namespace Regards
 			COpenCLParameterInt * paramSrcWidth = nullptr;
 			COpenCLParameterInt * paramSrcHeight = nullptr;
 			COpenCLParameterClMem * paramSrc = nullptr;
+
+			bool needToTranscode = false;
 		};
 
 	}

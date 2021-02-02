@@ -15,7 +15,6 @@
 #include <OpenCLFilter.h>
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideoYUV.h>
-#include <FFmpegDecodeFrame.h>
 #include <OpenCLEngine.h>
 #include <OpenCVEffect.h>
 
@@ -1786,28 +1785,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	int modFrame = 0;
 	bool ffmpegToRGBA = false;
 	int localPos = pos;
-	if ((stabilizeFrame && modFrame == 0) || openCVStabilization == nullptr || (encodeOneFrame && oldPos != localPos))
-	{
-		bool bufferized = false;
-		if (openCVStabilization == nullptr)
-		{
-			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
-			bufferized = true;
-		}
-		
-		if (encodeOneFrame)
-		{
-			ffmpegDecodeFrame->SetVideoPosition(localPos);
-			oldPos = pos;
-			bufferized = true;
-		}
-
-		ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, bufferized);
-
-		if (bufferized)
-			openCVStabilization->CalculTransformation();
-
-	}
+	bool frameStabilized = false;
 
 	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
 	{
@@ -1815,11 +1793,26 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		ffmpegToRGBA = true;
 	}
 
-	if (encodeOneFrame)
-		modFrame = 0;
+	if (stabilizeFrame)
+	{
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-	if (stabilizeFrame && nbFrame > 0)
-		openCVStabilization->CorrectFrame(bitmapData);
+		if (openCVStabilization->GetNbFrameBuffer() < videoCompressOption->videoEffectParameter.stabilizeImageBuffere)
+		{
+			openCVStabilization->BufferFrame(bitmapData);
+			if (openCVStabilization->GetNbFrameBuffer() == videoCompressOption->videoEffectParameter.stabilizeImageBuffere)
+				frameStabilized = true;
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(bitmapData);
+		}
+
+		if (frameStabilized)
+			openCVStabilization->CorrectFrame(bitmapData);
+	}
 
 	if (correctedContrast)
 		COpenCVEffect::BrightnessAndContrastAuto(bitmapData);
@@ -2620,8 +2613,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	unsigned int stream_index;
 	unsigned int i;
 
-	ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
-	ffmpegDecodeFrame->OpenFile(input);
 	nbframe = 0;
 	encodeOneFrame = true;
 	bool first = true;
@@ -2665,10 +2656,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
-
-
-	ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
-	ffmpegDecodeFrame->OpenFile(input);
 
 	ret = ProcessEncodeFile(dst);
 	if (ret < 0)
@@ -2761,8 +2748,5 @@ void CFFmpegTranscodingPimpl::Release()
         
         ofmt_ctx = nullptr;
 	}
-
-	if(ffmpegDecodeFrame != nullptr)
-		delete ffmpegDecodeFrame;
 
 }

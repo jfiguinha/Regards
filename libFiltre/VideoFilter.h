@@ -59,6 +59,8 @@ namespace Regards
 			wxString enableFilmgrain;
 			wxString libelleScale;
 			wxString libelleZoom;
+			wxString libelleAutoContrast;
+			wxString libelleStabilize;
         };
     }
 }

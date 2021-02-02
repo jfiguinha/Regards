@@ -22,7 +22,8 @@
 #include <InterpolationBicubic.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
-
+#include <OpenCVEffect.h>
+using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
@@ -323,6 +324,10 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 	if (stopVideo)
 		OnPlay();
 	videoPosition = pos;
+
+	if (openCVStabilization != nullptr)
+		openCVStabilization->Init();
+
 	ffmfc->SetTimePosition(videoPosition * 1000 * 1000);
 	if (pause && thumbnailVideo != nullptr)
 	{
@@ -805,7 +810,6 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 
 void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 {
-    
 	msgFrame = wxString::Format("FPS : %d", nbFrame);
 	nbFrame = 0;
 }
@@ -886,6 +890,9 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if(hq3d != nullptr)
 		delete hq3d;
+
+	if (openCVStabilization != nullptr)
+		delete openCVStabilization;
 
 	delete playStartTimer;
 	delete fpsTimer;
@@ -974,6 +981,9 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 			delete thumbnailVideo;
 
 		thumbnailVideo = new CThumbnailVideo(movie);
+
+		if (openCVStabilization != nullptr)
+			openCVStabilization->Init();
 
 		if(playStopTimer->IsRunning())
 			playStopTimer->Stop();
@@ -1141,7 +1151,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 			muBitmap.unlock();
 		}
 		else
-				glTexture = RenderToGLTexture();
+			glTexture = RenderToGLTexture();
 	}
 
     
@@ -1582,6 +1592,46 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 }
 
 
+CRegardsBitmap * CVideoControlSoft::GetBitmapRGBA(AVFrame * tmp_frame)
+{
+	if (bitmapData == nullptr)
+		bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
+
+	if (localContext == nullptr)
+	{
+		localContext = sws_alloc_context();
+
+		av_opt_set_int(localContext, "srcw", tmp_frame->width, 0);
+		av_opt_set_int(localContext, "srch", tmp_frame->height, 0);
+		av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
+		av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
+		av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
+		av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+		av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(localContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(localContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+	}
+
+	int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height);
+	if (numBytes != bitmapData->GetBitmapSize())
+	{
+		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
+	}
+
+	uint8_t * convertedFrameBuffer = bitmapData->GetPtBitmap();
+	int linesize = tmp_frame->width * 4;
+
+	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
+		&convertedFrameBuffer, &linesize);
+
+	bitmapData->VertFlipBuf();
+
+	return bitmapData;
+}
 
 
 void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, void * dxva2Context)
@@ -1599,14 +1649,55 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 	AVFrame *src_frame = (AVFrame *)data;
 
     video_aspect_ratio = sample_aspect_ratio;
-    
-    if(isffmpegDecode || isCPU)
-    {
-        CopyFrame(src_frame);
-        SetFrameData(copyFrameBuffer);
-    }
-    else
-        SetFrameData(src_frame);
+
+	bool frameStabilized = false;
+
+	if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable)
+	{
+		if (previousFrame == nullptr)
+			previousFrame = new CRegardsBitmap();
+
+		GetBitmapRGBA(src_frame);
+		*previousFrame = *bitmapData;
+
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+
+		if (openCVStabilization->GetNbFrameBuffer() < videoEffectParameter.stabilizeImageBuffere)
+		{
+			openCVStabilization->BufferFrame(previousFrame);
+			if(openCVStabilization->GetNbFrameBuffer() == videoEffectParameter.stabilizeImageBuffere)
+				frameStabilized = true;
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(previousFrame);
+		}
+
+		if(frameStabilized)
+			openCVStabilization->CorrectFrame(bitmapData);
+	}
+	
+
+	if(!frameStabilized)
+	{
+		if (isffmpegDecode || isCPU)
+		{
+			CopyFrame(src_frame);
+			SetFrameData(copyFrameBuffer);
+		}
+		else
+			SetFrameData(src_frame);
+	}
+	else
+	{
+		if (isffmpegDecode || isCPU)
+			*pictureFrame = *bitmapData;
+		else
+			openclEffectYUV->LoadRegardsBitmap(bitmapData);
+	}
+
     
     widthVideo = src_frame->width;
     heightVideo = src_frame->height;  
@@ -1919,6 +2010,11 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
 	}
 
+	if (videoEffectParameter.autoConstrast && videoEffectParameter.effectEnable)
+	{
+		openclEffect->AutoContrast();
+	}
+
 	bool isOpenGLOpenCL = false;
     openGLDecoding = false;
     
@@ -2055,6 +2151,11 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		{
 			GetDenoiserPt(widthOutput, heightOutput);
 			hq3d->ApplyDenoise3D(bitmapOut);
+		}
+
+		if (videoEffectParameter.autoConstrast && videoEffectParameter.effectEnable)
+		{
+			COpenCVEffect::BrightnessAndContrastAuto(bitmapOut);
 		}
 
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
@@ -2212,10 +2313,10 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				muBitmap.lock();
 
 				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-
+				//openclEffectYUV->TranscodePicture(widthVideo, heightVideo);
 				muBitmap.unlock();
 			}
-			if (src_frame->format == 0)
+			else if (src_frame->format == 0)
 			{
 				//printf("OpenCL openclEffectYUV \n");
 				int ysize = 0;
@@ -2226,11 +2327,11 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				usize = src_frame->linesize[1] * (src_frame->height / 2);
 				vsize = src_frame->linesize[2] * (src_frame->height / 2);
 				muBitmap.lock();
-
 				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2], vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-
+				//openclEffectYUV->TranscodePicture(widthVideo, heightVideo);
 				muBitmap.unlock();
 			}
+			
 		}
 	}
 }

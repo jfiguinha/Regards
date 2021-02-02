@@ -1041,14 +1041,6 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 	{
 		if (frame->format == hw_pix_fmt)
 		{
-			/*
-			AVFrame * sw_frame = av_frame_alloc();
-			if (sw_frame == nullptr) {
-				fprintf(stderr, "Can not alloc frame\n");
-				ret = AVERROR(ENOMEM);
-				av_frame_free(&sw_frame);
-				return ret;
-			}
 			/* retrieve data from GPU to CPU */
 			if ((ret = av_hwframe_transfer_data(dst, frame, 0)) < 0) {
 				fprintf(stderr, "Error transferring the data to system memory\n");
@@ -1056,46 +1048,8 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 				return ret;
 			}
 			
-			/*
-			if (first)
-			{
-
-				scaleContext = sws_alloc_context();
-
-				av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-				av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-				av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-				av_opt_set_int(scaleContext, "dstw", sw_frame->width, 0);
-				av_opt_set_int(scaleContext, "dsth", sw_frame->height, 0);
-				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-				{
-					sws_freeContext(scaleContext);
-					throw std::logic_error("Failed to initialise scale context");
-				}
-
-				first = false;
-				dst->format = AV_PIX_FMT_YUV420P;
-				dst->width = frame->width;
-				dst->height = frame->height;
-				dst->channels = frame->channels;
-				dst->channel_layout = frame->channel_layout;
-				dst->nb_samples = frame->nb_samples;
-				int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
-			}
-
-			*/
 			av_frame_copy_props(dst, frame);
-
-			/*/
-			sws_scale(scaleContext,
-				(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)frame->height,
-				dst->data, dst->linesize);
-*/
 			frame_destination = true;
-			//av_frame_free(&sw_frame);
 		}
 	}
 
@@ -1105,16 +1059,12 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		ret = 0;
 	else if (ret < 0)
 		return ret;
-	//else
-	//	len1 = pkt->size;
 
 	if (pkt->buf == nullptr)
 		return 0;
 	
 
 	if (got_picture) {
-		//×¢Òâ£º´Ë´¦ÉèÖÃMFC²ÎÊý£¡
-		//ffmfc_param_vframe(is,frame,pkt);
 		//--------------------------
 		int ret = 1;
 

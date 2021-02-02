@@ -262,6 +262,8 @@ COpenCVStabilization::~COpenCVStabilization()
 	delete pimpl;
 }
 
+
+
 void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
 {
 	pimpl->Init();
@@ -296,10 +298,21 @@ int COpenCVStabilization::GetNbFrame()
 	return nbFrame;
 }
 
-void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap, const int & pos)
+void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->picture_stabilization[pos] = image;
+	pimpl->picture_stabilization[nbFrameBuffer] = image;
+	nbFrameBuffer++;
+}
+
+void COpenCVStabilization::Init()
+{
+	nbFrameBuffer = 0;
+}
+
+int COpenCVStabilization::GetNbFrameBuffer()
+{
+	return nbFrameBuffer;
 }
 
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)

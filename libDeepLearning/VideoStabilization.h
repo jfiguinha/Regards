@@ -14,15 +14,17 @@ namespace Regards
 			COpenCVStabilization(const int &nbFrame);
 			~COpenCVStabilization();
 			void AddFrame(CRegardsBitmap * pictureData);
-			void BufferFrame(CRegardsBitmap * pBitmap, const int & pos);
+			void BufferFrame(CRegardsBitmap * pBitmap);
 			void CorrectFrame(CRegardsBitmap * pictureData);
+			void Init();
 			void CalculTransformation();
 			int GetNbFrame();
+			int GetNbFrameBuffer();
 		private:
 
 			COpenCVStabilizationPimpl_ * pimpl;
 			int nbFrame = 0;
-			
+			int nbFrameBuffer = 0;
 		};
 	}
 }

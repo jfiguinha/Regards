@@ -457,7 +457,11 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * op
 	numFrame = 0;
 	int nbFrame = 1;
 	if (bufferized)
+	{
+		opencvStabilization->Init();
 		nbFrame = opencvStabilization->GetNbFrame();
+	}
+		
 
 	while (numFrame < nbFrame)
 	{
@@ -546,7 +550,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * op
 				&convertedFrameBuffer, &linesize);
 
 			if (bufferized)
-				opencvStabilization->BufferFrame(image, numFrame);
+				opencvStabilization->BufferFrame(image);
 			else
 				opencvStabilization->AddFrame(image);
 

@@ -7,9 +7,11 @@
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
+#include <OpenCVEffect.h>
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 using namespace Regards::OpenCL;
+using namespace Regards::OpenCV;
 
 COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
 {
@@ -459,6 +461,59 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem cl_image)
 }
 
 
+cl_mem COpenCLEffectVideo::LoadRegardsImage(uint8_t * data, const int &width, const int &height)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, width * height * 4, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "LoadRegardsBitmap");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return outputValue;
+}
+
+void COpenCLEffectVideo::AutoContrast()
+{
+	CRegardsBitmap * bitmap = GetRgbaBitmap();
+	COpenCVEffect::BrightnessAndContrastAuto(bitmap);
+	cl_mem output = LoadRegardsImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	paramOutput->SetValue(output);
+	delete bitmap;
+}
+
 CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 {
 	CRegardsBitmap* bitmap = nullptr;
@@ -491,7 +546,6 @@ CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 	return bitmap;
 
 }
-
 
 void COpenCLEffectVideo::GetBitmap(CRegardsBitmap * bitmap, const bool &src)
 {

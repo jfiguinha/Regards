@@ -29,8 +29,6 @@ using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
-class CFFmpegDecodeFrame;
-
 
 class CFFmpegTranscodingPimpl
 {
@@ -144,10 +142,6 @@ public:
 
 		if (openclEffectYUV != nullptr)
 			delete openclEffectYUV;
-
-		//if (bitmap != nullptr)
-		//	delete bitmap;
-
 
 		if (bitmapCopy != nullptr)
 			delete bitmapCopy;
@@ -265,7 +259,7 @@ private:
 	size_t avio_ctx_buffer_size = 4096;
 	wxString outputFile;
 	std::map<int, int> streamCorrespondant;
-	CFFmpegDecodeFrame * ffmpegDecodeFrame = nullptr;
+
 	COpenCVStabilization * openCVStabilization = nullptr;
 	int nbFrame = 0;
 

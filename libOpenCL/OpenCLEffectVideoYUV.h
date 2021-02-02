@@ -17,7 +17,7 @@ namespace Regards
 			void SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &lineSize);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut);
 			bool IsOk();
-			
+			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 
 		protected:
 
@@ -32,6 +32,7 @@ namespace Regards
 			COpenCLParameterByteArray * inputU = nullptr;
 			COpenCLParameterByteArray * inputV = nullptr;
 			COpenCLParameterInt * paramLineSize = nullptr;
+
 		};
 
 	}

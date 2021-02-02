@@ -96,6 +96,7 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * buffer, int size, const int
 
 	typeData = 2;
 	formatData = format;
+	needToTranscode = true;
 }
 
 void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &widthPitch, const int &format)
@@ -132,6 +133,7 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t
 	isOk = true;
 	typeData = 1;
 	formatData = format;
+	needToTranscode = true;
 }
 
 
@@ -142,6 +144,9 @@ bool COpenCLEffectVideoNV12::IsOk()
 
 void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut)
 {
+	if (!needToTranscode)
+		return;
+
 	srcwidth = widthOut;
 	srcheight = heightOut;
 

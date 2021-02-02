@@ -3,6 +3,12 @@
 #ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
 #endif
+
+extern "C"
+{
+	#include <libswscale/swscale.h>
+}
+
 #include "WindowMain.h"
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
@@ -14,9 +20,11 @@
 #include <OpenCLEffectVideoYUV.h>
 #include <OpenCLEffectVideoNV12.h>
 #include "RenderVideoOpenGL.h"
+#include <VideoStabilization.h>
 using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
+using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
 class CThumbnailVideo;
@@ -230,6 +238,7 @@ protected:
 	CRegardsBitmap * pictureFrame = nullptr;
 	CRegardsBitmap * pictureVideo = nullptr;
 	long videoPosition = 0;
+	long oldvideoPosition = 0;
 	bool updateContext = true;
 	bool controlKeyPush = false;
 	float ratioVideo = 1.0f;
@@ -253,10 +262,13 @@ protected:
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
 	void GetDenoiserPt(const int &width, const int &height);
-    
+	CRegardsBitmap * GetBitmapRGBA(AVFrame * tmp_frame);
 
     bool firstMovie = true;
     wxTimer * playStopTimer;
     void OnPlayStop(wxTimerEvent& event);
-
+	CRegardsBitmap * previousFrame = nullptr;
+	CRegardsBitmap * bitmapData = nullptr;
+	COpenCVStabilization * openCVStabilization = nullptr;
+	SwsContext* localContext = nullptr;
 };
