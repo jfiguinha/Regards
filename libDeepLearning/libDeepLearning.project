@@ -11,6 +11,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="VideoStabilization.cpp"/>
     <File Name="OpenCVEffect.cpp"/>
     <File Name="FaceRecognition.cpp"/>
     <File Name="FaceDetector.cpp"/>
@@ -19,6 +20,7 @@
     <File Name="base64.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="VideoStabilization.h"/>
     <File Name="OpenCVEffect.h"/>
     <File Name="header.h"/>
     <File Name="FaceRecognition.h"/>

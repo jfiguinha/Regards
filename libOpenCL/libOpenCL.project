@@ -44,6 +44,8 @@
     <File Name="OpenCLRawDev.h"/>
     <File Name="OpenCLEffectVideo.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
@@ -58,6 +60,7 @@
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libDeepLearning"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -141,6 +144,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

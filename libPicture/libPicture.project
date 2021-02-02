@@ -137,6 +137,8 @@
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
@@ -172,6 +174,7 @@
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
+        <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
@@ -261,6 +264,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
