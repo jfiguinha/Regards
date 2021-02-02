@@ -928,6 +928,10 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if (thumbnailVideo != nullptr)
 		delete thumbnailVideo;
+
+	if (localContext != nullptr)
+		sws_freeContext(localContext);
+	localContext = nullptr;
 }
 
 void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap * picture)
@@ -979,6 +983,10 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 	{
 		if (thumbnailVideo != nullptr)
 			delete thumbnailVideo;
+
+		if (localContext != nullptr)
+			sws_freeContext(localContext);
+		localContext = nullptr;
 
 		thumbnailVideo = new CThumbnailVideo(movie);
 
