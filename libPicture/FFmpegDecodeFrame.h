@@ -48,7 +48,7 @@ public:
 	int GetFrameBitmapPosition(const long &time, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 	CRegardsBitmap * GetBitmap(const bool &copy = true);
 	int SetVideoPosition(const int &timePos);
-	int CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const bool &bufferized);
+	int CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const int &nbFrame, const bool &isBuffer);
 
 	double GetTotalTime();
 	int GetRotation();

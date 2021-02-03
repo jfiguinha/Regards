@@ -121,7 +121,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
-	
+	pictureFrame = new CRegardsBitmap();
 }
 
 COpenCLEngine * CVideoControlSoft::GetOpenCLEngine()
@@ -153,8 +153,8 @@ CRegardsBitmap * CVideoControlSoft::SavePicture(bool & isFromBuffer)
 	CRegardsBitmap * bitmap = nullptr;
 	if (thumbnailFromBitmap)
 	{
-		muBitmap.lock();
 		bitmap = new CRegardsBitmap();
+		muBitmap.lock();
 		*bitmap = *pictureVideo;
 		bitmap->VertFlipBuf();
 		muBitmap.unlock();
@@ -165,8 +165,8 @@ CRegardsBitmap * CVideoControlSoft::SavePicture(bool & isFromBuffer)
 		isFromBuffer = false;
 		if (isffmpegDecode)
 		{
-			muBitmap.lock();
 			bitmap = new CRegardsBitmap();
+			muBitmap.lock();
 			*bitmap = *pictureFrame;
 			muBitmap.unlock();
 		}
@@ -910,12 +910,6 @@ CVideoControlSoft::~CVideoControlSoft()
 #endif
 	if(openclEffectYUV != nullptr)
 		delete openclEffectYUV;
-        
-    if(ffmpegToBitmap != nullptr)           
-    {
-         delete ffmpegToBitmap;
-        ffmpegToBitmap = nullptr;               
-    }
     
 	if(pictureSubtitle != nullptr)
 		delete pictureSubtitle;
@@ -991,7 +985,9 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 		thumbnailVideo = new CThumbnailVideo(movie);
 
 		if (openCVStabilization != nullptr)
-			openCVStabilization->Init();
+			delete openCVStabilization;
+
+		openCVStabilization = nullptr;
 
 		if(playStopTimer->IsRunning())
 			playStopTimer->Stop();
@@ -1690,24 +1686,14 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
 	if(!frameStabilized)
 	{
-		if (isffmpegDecode || isCPU)
-		{
-			CopyFrame(src_frame);
-			SetFrameData(copyFrameBuffer);
-		}
-		else
-			SetFrameData(src_frame);
+		SetFrameData(src_frame);
 	}
 	else
 	{
-		if (isffmpegDecode || isCPU)
-			*pictureFrame = *bitmapData;
-		else
-		{
-			muBitmap.lock();
-			openclEffectYUV->LoadRegardsBitmap(bitmapData);
-			muBitmap.unlock();
-		}
+		muBitmap.lock();		
+		*pictureFrame = *bitmapData;
+		muBitmap.unlock();
+		
 	}
 
     
@@ -2007,7 +1993,10 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	openclEffect->TranscodePicture(widthVideo, heightVideo);
+	if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable && pictureFrame != nullptr)
+		openclEffect->LoadRegardsBitmap(pictureFrame);
+	else
+		openclEffect->TranscodePicture(widthVideo, heightVideo);
 
 	int widthOutput = 0;
 	int heightOutput = 0;
@@ -2271,43 +2260,10 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 
 	if (!enableopenCL || isCPU || (src_frame->format != 0 && src_frame->format != 23))
 	{
-		SwsContext* scaleContext = nullptr;
-		bool deleteData = false;
-		isffmpegDecode = true;
-
-		//deleteData = true;
-		if (widthVideo != 0 && heightVideo != 0)
-		{
-			muBitmap.lock();
-
-			if (ffmpegToBitmap == nullptr)
-			{
-				ffmpegToBitmap = new CffmpegToBitmap(true);
-				ffmpegToBitmap->InitContext(src_frame, 0, widthVideo, heightVideo);
-			}
-
-			if (ffmpegToBitmap->GetThumbnailWidth() != widthVideo || ffmpegToBitmap->GetThumbnailHeight() != heightVideo)
-				deleteData = true;
-
-			if (deleteData)
-			{
-				ffmpegToBitmap->DeleteData();
-				ffmpegToBitmap->InitContext(src_frame, 0, widthVideo, heightVideo);
-			}
-			if (pictureFrame == nullptr)
-				pictureFrame = ffmpegToBitmap->GetConvert(src_frame, widthVideo, heightVideo);
-			else
-			{
-				if (ffmpegToBitmap->GetConvert(pictureFrame, src_frame, widthVideo, heightVideo) == 0)
-				{
-					delete pictureFrame;
-					pictureFrame = ffmpegToBitmap->GetConvert(src_frame, widthVideo, heightVideo);
-				}
-			}
-			muBitmap.unlock();
-		}
-
-
+		GetBitmapRGBA(src_frame);
+		muBitmap.lock();
+		*pictureFrame = *bitmapData;
+		muBitmap.unlock();
 	}
 	else
 	{
@@ -2323,9 +2279,7 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				ysize = src_frame->linesize[0] * src_frame->height;
 				uvsize = src_frame->linesize[1] * (src_frame->height / 2);
 				muBitmap.lock();
-
 				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-				//openclEffectYUV->TranscodePicture(widthVideo, heightVideo);
 				muBitmap.unlock();
 			}
 			else if (src_frame->format == 0)
@@ -2340,40 +2294,12 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				vsize = src_frame->linesize[2] * (src_frame->height / 2);
 				muBitmap.lock();
 				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2], vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-				//openclEffectYUV->TranscodePicture(widthVideo, heightVideo);
 				muBitmap.unlock();
 			}
 			
 		}
 	}
 }
-
-void CVideoControlSoft::CopyFrame(AVFrame * frame)
-{
-	AVFrame * oldFrame = nullptr;
-	AVFrame * copyFrame = av_frame_alloc();
-	copyFrame->format = frame->format;
-	copyFrame->width = frame->width;
-	copyFrame->height = frame->height;
-	copyFrame->channels = frame->channels;
-	copyFrame->channel_layout = frame->channel_layout;
-	copyFrame->nb_samples = frame->nb_samples;
-
-	av_frame_get_buffer(copyFrame, 32);
-	av_frame_copy(copyFrame, frame);
-	av_frame_copy_props(copyFrame, frame);
-
-	oldFrame = copyFrameBuffer;
-	copyFrameBuffer = copyFrame;
-
-	if (oldFrame != nullptr)
-	{
-		//av_freep(&oldFrame->data[0]);
-		av_frame_free(&oldFrame);
-	}
-		
-}
-
 
 //-------------------------------------------------------------------------------------------------
 //

@@ -34,6 +34,8 @@ namespace Regards
 
 			virtual ~COpenCLEffectVideo();
 			bool IsOk();
+
+			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
 			cl_mem LoadRegardsImage(uint8_t * data, const int &width, const int &height);
 			CRegardsBitmap* GetBitmap(cl_mem cl_image);

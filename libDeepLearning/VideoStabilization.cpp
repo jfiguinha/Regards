@@ -114,7 +114,7 @@ public:
 		return smoothed_trajectory;
 	}
 
-	void CalculTransforma()
+	void CalculTransformation()
 	{
 		transforms_smooth.clear();
 
@@ -315,7 +315,7 @@ int COpenCVStabilization::GetNbFrameBuffer()
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->CalculTransforma();
+	pimpl->CalculTransformation();
 	pimpl->CorrectedFrame(image);
 	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }

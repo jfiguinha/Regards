@@ -155,7 +155,7 @@ protected:
 	void CalculCenterPicture();
 	bool IsCPUContext();
 	void SetFrameData(AVFrame * src_frame);
-	void CopyFrame(AVFrame * frame);
+
 	int GetBitmapWidth();
 	int GetBitmapHeight();
 	void MouseClick(const int &xPos, const int &yPos);
@@ -214,7 +214,7 @@ protected:
 	GLTexture * glTextureSrc = nullptr;
 	CRegardsBitmap * bitmap = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
-	CffmpegToBitmap * ffmpegToBitmap = nullptr;
+	//CffmpegToBitmap * ffmpegToBitmap = nullptr;
 #ifdef RENDEROPENGL
 	COpenCLEngine * openCLEngine = nullptr;
 	COpenCLContext * openclContext = nullptr;
@@ -228,7 +228,7 @@ protected:
 	bool flipV;
 	bool flipH;
 	bool oldBicubic = 0;
-	AVFrame * copyFrameBuffer = nullptr;
+
 	int isCPU = -1;
 	bool isffmpegDecode = false;
 	bool deleteTexture = false;

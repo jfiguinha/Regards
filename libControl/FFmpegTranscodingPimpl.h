@@ -24,6 +24,7 @@ extern "C"
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
 #include <VideoStabilization.h>
+#include <FFmpegDecodeFrame.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
@@ -116,6 +117,10 @@ public:
 		}
 			
 		copyFrameBuffer = nullptr;
+
+		if (ffmpegDecodeFrame != nullptr)
+			delete ffmpegDecodeFrame;
+		ffmpegDecodeFrame = nullptr;
 
 		if (dst != nullptr)
 		{
@@ -265,5 +270,6 @@ private:
 
 	int framerate = 30;
 
+	CFFmpegDecodeFrame * ffmpegDecodeFrame = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

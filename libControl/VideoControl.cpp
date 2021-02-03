@@ -867,9 +867,6 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 		if (dxva2Context == nullptr)
 		{
 			SetFrameData(src_frame);
-
-			if (isffmpegDecode)
-				CopyFrame(src_frame);
 		}
 
 	}

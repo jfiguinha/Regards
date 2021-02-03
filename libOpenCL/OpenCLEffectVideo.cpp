@@ -505,6 +505,43 @@ cl_mem COpenCLEffectVideo::LoadRegardsImage(uint8_t * data, const int &width, co
 	return outputValue;
 }
 
+void COpenCLEffectVideo::LoadRegardsBitmap(CRegardsBitmap * bitmap)
+{
+	cl_mem outputValue;
+
+	if (paramSrc == nullptr)
+		paramSrc = new COpenCLParameterClMem();
+
+	if (context->GetDefaultType() == OPENCL_UCHAR)
+	{
+		COpenCLParameterUintArray uintValue(true);
+		uintValue.SetNoDelete(true);
+		uintValue.SetValue(context->GetContext(), (unsigned int*)bitmap->GetPtBitmap(), bitmap->GetBitmapWidth() * bitmap->GetBitmapHeight(), flag);
+		outputValue = uintValue.GetValue();
+	}
+	else
+	{
+		outputValue = LoadRegardsImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+
+	paramSrc->SetValue(outputValue);
+
+	if (paramSrcWidth == nullptr)
+		paramSrcWidth = new COpenCLParameterInt();
+	paramSrcWidth->SetNoDelete(true);
+	paramSrcWidth->SetLibelle("widthIn");
+	paramSrcWidth->SetValue(bitmap->GetBitmapWidth());
+
+	if (paramSrcHeight == nullptr)
+		paramSrcHeight = new COpenCLParameterInt();
+	paramSrcHeight->SetNoDelete(true);
+	paramSrcHeight->SetLibelle("heightIn");
+	paramSrcHeight->SetValue(bitmap->GetBitmapHeight());
+
+	needToTranscode = false;
+
+}
+
 void COpenCLEffectVideo::AutoContrast()
 {
 	CRegardsBitmap * bitmap = GetRgbaBitmap();

@@ -447,24 +447,28 @@ int CFFmpegDecodeFrame::SetVideoPosition(const int &timeInSeconds)
 	return ret;
 }
 
-int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const bool &bufferized)
+int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * opencvStabilization, const int &nbFrame, const bool &isBuffer)
 {
 	if (!isOk)
 		return -1;
 	int videoFrameOutputWidth = 0;
 	int videoFrameOutputHeight = 0;
-	int ret = 0;
-	numFrame = 0;
-	int nbFrame = 1;
-	if (bufferized)
-	{
-		opencvStabilization->Init();
-		nbFrame = opencvStabilization->GetNbFrame();
-	}
-		
+	int ret = 0;	
+	int numFrame = 0;
+	bool toTheEnd = false;
 
-	while (numFrame < nbFrame)
+	if (nbFrame == -1)
+		toTheEnd = true;
+
+	while (TRUE)
 	{
+		if (!toTheEnd)
+		{
+			if (!(numFrame < nbFrame))
+				break;
+		}
+
+
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			return ret;
 
@@ -549,7 +553,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization * op
 			sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
 				&convertedFrameBuffer, &linesize);
 
-			if (bufferized)
+			if (isBuffer)
 				opencvStabilization->BufferFrame(image);
 			else
 				opencvStabilization->AddFrame(image);
