@@ -1780,7 +1780,9 @@ CRegardsBitmap * CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame * tmp_frame)
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream)
 {
 	bool decodeBitmap = false;
-	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
+	bool stabilizeFrame = false;
+	if(!encodeOneFrame)
+		stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 	int modFrame = 0;
 	bool ffmpegToRGBA = false;
@@ -1798,11 +1800,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		if (openCVStabilization == nullptr)
 			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-		if (openCVStabilization->GetNbFrameBuffer() < videoCompressOption->videoEffectParameter.stabilizeImageBuffere)
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
 			openCVStabilization->BufferFrame(bitmapData);
-			if (openCVStabilization->GetNbFrameBuffer() == videoCompressOption->videoEffectParameter.stabilizeImageBuffere)
-				frameStabilized = true;
 		}
 		else
 		{

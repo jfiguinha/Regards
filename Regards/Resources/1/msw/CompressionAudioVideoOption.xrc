@@ -381,9 +381,19 @@
 							<size>380,80</size>
 						</object>
 						<object class="wxCheckBox" name="ID_CKVIDEOSTABILIZATION">
-							<pos>15,405</pos>
+							<pos>15,400</pos>
 							<checked>0</checked>
 							<label>Video Stabilization</label>
+						</object>
+						<object class="wxStaticText" name="ID_STATICBOX1">
+							<label>Buffer : </label>
+							<pos>200,400</pos>
+						</object>
+						<object class="wxSpinCtrl" name="ID_CKVIDEOSTABILIZATIONBUFFER">
+							<pos>300,400</pos>
+							<value>2</value>
+							<min>2</min>
+							<max>100</max>
 						</object>
 						<object class="wxCheckBox" name="ID_CKVIDEOAUTOCONTRAST">
 							<pos>15,430</pos>

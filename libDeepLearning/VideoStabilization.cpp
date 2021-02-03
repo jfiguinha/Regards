@@ -207,6 +207,9 @@ public:
 		// Extract rotation angle
 		double da = atan2(T.at<double>(1, 0), T.at<double>(0, 0));
 
+		while(transforms.size() > nbFrameMax)
+			transforms.erase(transforms.begin());
+
 		// Store transformation 
 		if (transforms.size() == nbFrameMax)
 			transforms.erase(transforms.begin());
@@ -257,7 +260,7 @@ public:
 	//cv::UMat last_T;
 	Mat frame_stabilized;
 	bool first = true;
-	int nbFrameMax = 30;
+	int nbFrameMax = 60;
 	//std::map<int, cv::Mat> picture_stabilization;
 };
 
@@ -265,6 +268,7 @@ COpenCVStabilization::COpenCVStabilization(const int &nbFrame)
 {
 	pimpl = new COpenCVStabilizationPimpl_();
 	this->nbFrame = nbFrame;
+	pimpl->nbFrameMax = nbFrame;
 }
 
 COpenCVStabilization::~COpenCVStabilization()
@@ -278,6 +282,11 @@ void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
 {
 	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->AnalyseFrame(image);
+}
+
+void COpenCVStabilization::SetNbFrameBuffer(const int &nbFrame)
+{
+	pimpl->nbFrameMax = nbFrame;
 }
 
 int COpenCVStabilization::GetNbFrame()
@@ -295,6 +304,7 @@ void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap)
 void COpenCVStabilization::Init()
 {
 	nbFrameBuffer = 0;
+	pimpl->Init();
 }
 
 int COpenCVStabilization::GetNbFrameBuffer()

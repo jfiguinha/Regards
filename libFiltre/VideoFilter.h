@@ -61,6 +61,7 @@ namespace Regards
 			wxString libelleZoom;
 			wxString libelleAutoContrast;
 			wxString libelleStabilize;
+			wxString libelleStabilizeNbFrame;
         };
     }
 }

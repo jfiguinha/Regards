@@ -1671,11 +1671,11 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 		if (openCVStabilization == nullptr)
 			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 
-		if (openCVStabilization->GetNbFrameBuffer() < videoEffectParameter.stabilizeImageBuffere)
+		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
+
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
 			openCVStabilization->BufferFrame(previousFrame);
-			if(openCVStabilization->GetNbFrameBuffer() == videoEffectParameter.stabilizeImageBuffere)
-				frameStabilized = true;
 		}
 		else
 		{

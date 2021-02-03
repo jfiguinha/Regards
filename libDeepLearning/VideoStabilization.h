@@ -19,6 +19,7 @@ namespace Regards
 			void Init();
 			int GetNbFrame();
 			int GetNbFrameBuffer();
+			void SetNbFrameBuffer(const int &nbFrame);
 		private:
 
 			COpenCVStabilizationPimpl_ * pimpl;

@@ -97,6 +97,7 @@ class CompressionAudioVideoOption: public wxDialog
 
 		wxCheckBox * ckVideoAutocontrast;
 		wxCheckBox * ckVideoStabilization;
+		wxSpinCtrl * spVideoStabilizationBuffer;
 
 #ifdef USE_PREVIEW_INTEGRATE 
 		wxPanel * panel;
