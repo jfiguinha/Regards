@@ -1800,6 +1800,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 
 		if (encodeOneFrame && oldPos != pos)
 		{
+			openCVStabilization->Init();
 			ffmpegDecodeFrame->SetVideoPosition(pos);
 			oldPos = pos;
 			ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, videoCompressOption->videoEffectParameter.stabilizeImageBuffere, true);
