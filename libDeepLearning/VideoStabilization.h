@@ -17,7 +17,6 @@ namespace Regards
 			void BufferFrame(CRegardsBitmap * pBitmap);
 			void CorrectFrame(CRegardsBitmap * pictureData);
 			void Init();
-			void CalculTransformation();
 			int GetNbFrame();
 			int GetNbFrameBuffer();
 		private:
@@ -25,6 +24,7 @@ namespace Regards
 			COpenCVStabilizationPimpl_ * pimpl;
 			int nbFrame = 0;
 			int nbFrameBuffer = 0;
+			
 		};
 	}
 }

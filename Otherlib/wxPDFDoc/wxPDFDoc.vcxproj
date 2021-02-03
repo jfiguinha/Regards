@@ -301,7 +301,7 @@
       <PreprocessorDefinitions>wxUSE_PDF;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>include;include/wx;$(SolutionDir)\libextern\poppler_windows-master\poppler;$(SolutionDir)\libextern\poppler_windows-master\cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include/wx;$(SolutionDir)\libextern\poppler_windows-master\include\poppler;$(SolutionDir)\libextern\poppler_windows-master\include\poppler\cpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

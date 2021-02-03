@@ -116,6 +116,8 @@ public:
 
 	void CalculTransforma()
 	{
+		transforms_smooth.clear();
+
 		// Compute trajectory using cumulative sum of transformations
 		vector <Trajectory> trajectory = cumsum(transforms);
 
@@ -149,7 +151,7 @@ public:
 		}
 		cv::UMat curr_gray;
 		// Vector from previous and current feature points
-		vector <Point2f> prev_pts, curr_pts;
+		vector <Point2f> curr_pts;
 
 		// Detect features in previous frame
 	
@@ -206,18 +208,22 @@ public:
 		double da = atan2(T.at<double>(1, 0), T.at<double>(0, 0));
 
 		// Store transformation 
+		if (transforms.size() == nbFrameMax)
+			transforms.erase(transforms.begin());
 		transforms.push_back(TransformParam(dx, dy, da));
 
 		// Move to next frame
-		//curr_gray.copyTo(prev_gray);
+		curr_gray.copyTo(prev_gray);
 	}
 
-	void CorrectedFrame(const cv::Mat & frame, const int &i)
+	void CorrectedFrame(const cv::Mat & frame)
 	{
 		Mat T(2, 3, CV_64F);
 
-		if (i < transforms_smooth.size())
+		if (transforms_smooth.size() > 0)
 		{
+			int i = transforms_smooth.size() - 1;
+
 			// Extract transform from translation and rotation angle. 
 			transforms_smooth[i].getTransform(T);
 
@@ -238,18 +244,21 @@ public:
 		first = true;
 		transforms.clear();
 		transforms_smooth.clear();
+		prev_gray.deallocate();
+		prev_pts.clear();
 	}
 
 	// Define variable for storing frames
 	//cv::UMat curr_gray;
-	cv::UMat prev, prev_gray;
+	cv::UMat prev_gray;
+	vector <Point2f> prev_pts;
 	vector<TransformParam> transforms;
 	vector <TransformParam> transforms_smooth;
 	//cv::UMat last_T;
 	Mat frame_stabilized;
 	bool first = true;
-
-	std::map<int, cv::Mat> picture_stabilization;
+	int nbFrameMax = 30;
+	//std::map<int, cv::Mat> picture_stabilization;
 };
 
 COpenCVStabilization::COpenCVStabilization(const int &nbFrame)
@@ -267,31 +276,8 @@ COpenCVStabilization::~COpenCVStabilization()
 
 void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
 {
-	pimpl->Init();
-
 	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-
-	for (int i = 0; i < nbFrame - 1; i++)
-	{
-		pimpl->picture_stabilization[i] = pimpl->picture_stabilization[i+1];
-	}
-
-	pimpl->picture_stabilization[nbFrame - 1] = image;
-
-	for(int i = 0;i < nbFrame; i++)
-		pimpl->AnalyseFrame(pimpl->picture_stabilization[i]);
-
-	pimpl->CalculTransforma();
-}
-
-void COpenCVStabilization::CalculTransformation()
-{
-	pimpl->Init();
-
-	for (int i = 0; i < nbFrame; i++)
-		pimpl->AnalyseFrame(pimpl->picture_stabilization[i]);
-
-	pimpl->CalculTransforma();
+	pimpl->AnalyseFrame(image);
 }
 
 int COpenCVStabilization::GetNbFrame()
@@ -302,7 +288,7 @@ int COpenCVStabilization::GetNbFrame()
 void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->picture_stabilization[nbFrameBuffer] = image;
+	pimpl->AnalyseFrame(image);
 	nbFrameBuffer++;
 }
 
@@ -319,6 +305,7 @@ int COpenCVStabilization::GetNbFrameBuffer()
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->CorrectedFrame(image, nbFrameBuffer - 2);
+	pimpl->CalculTransforma();
+	pimpl->CorrectedFrame(image);
 	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }

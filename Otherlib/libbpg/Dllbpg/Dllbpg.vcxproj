@@ -136,8 +136,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(VC_LibraryPath_x64)onecore\x64;$(WindowsSDK_LibraryPath_x64)\um\x64;$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Debug;$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
-    <IncludePath>$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64;$(SolutionDir)libextern\x265_2.5\source;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSdk_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
+    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\x265_2.5\source;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <ExcludePath />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
