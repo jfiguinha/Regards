@@ -43,10 +43,7 @@
 							</object>
 							<object class="wxCheckBox" name="ID_CKVIDEOHARDWARE">
 								<pos>15,80</pos>
-							</object>
-							<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
 								<label>Hardware Encoder</label>
-								<pos>32,80</pos>
 							</object>
 							<object class="wxStaticText" name="ID_STVIDEOCODEC">
 								<label>Video :</label>
@@ -94,11 +91,7 @@
 							<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
 								<pos>15,260</pos>
 								<checked>1</checked>
-							</object>
-							<object class="wxStaticBox" name="ID_STATICBOX1">
 								<label>Preset Option</label>
-								<pos>180,170</pos>
-								<size>200,70</size>
 							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
 								<pos>200,200</pos>
@@ -134,10 +127,7 @@
 							</object>
 							<object class="wxCheckBox" name="ID_CKVIDEOBITRATE">
 								<pos>15,300</pos>
-							</object>
-							<object class="wxStaticText" name="ID_STATICTEXT2">
 								<label>BitRate (kbps) : </label>
-								<pos>32,300</pos>
 							</object>
 							<object class="wxTextCtrl" name="ID_TXTBITRATE">
 								<default>0</default>
@@ -183,10 +173,7 @@
 							<object class="wxCheckBox" name="ID_CKAUDIOQUALITY">
 								<pos>15,130</pos>
 								<checked>1</checked>
-							</object>
-							<object class="wxStaticText" name="ID_STAUDIOQUALITY">
 								<label>Audio Quality :</label>
-								<pos>32,130</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBAUDIOQUALITY">
 								<pos>200,130</pos>
@@ -208,10 +195,7 @@
 							</object>
 							<object class="wxCheckBox" name="ID_CKAUDIOBITRATE">
 								<pos>15,160</pos>
-							</object>
-							<object class="wxStaticText" name="ID_STAUDIOBITRATE">
 								<label>Audio Bitrate :</label>
-								<pos>32,160</pos>
 							</object>
 							<object class="wxComboBox" name="ID_CBAUDIOBITRATE">
 								<pos>200,160</pos>
@@ -271,10 +255,7 @@
 						<object class="wxPanel" name="page_4">
 						<object class="wxCheckBox" name="ID_CKENABLEFILTER">
 							<pos>15,20</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STENABLEFILTER">
 							<label>Enable Filter</label>
-							<pos>32,20</pos>
 						</object>
 						<object class="wxStaticBox" name="ID_STATICBOX1">
 							<label>Color Filter</label>
@@ -283,32 +264,19 @@
 						</object>
 						<object class="wxCheckBox" name="ID_CKGRAYFILTER">
 							<pos>15,60</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STGRAYFILTER">
 							<label>Gray Filter</label>
-							<pos>32,60</pos>
 						</object>
 						<object class="wxCheckBox" name="ID_CKSEPIAFILTER">
 							<pos>200,60</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STSEPIAFILTER">
 							<label>Sepia Filter</label>
-							<pos>220,60</pos>
 						</object>
 						<object class="wxCheckBox" name="ID_CKNOISEFILTER">
 							<pos>200,80</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STNOISEFILTER">
 							<label>Noise Filter</label>
-							<pos>220,80</pos>
 						</object>
 						<object class="wxCheckBox" name="ID_CKDCOLORBOOSTFILTER">
 							<pos>15,80</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STCOLORBOOSTFILTER">
 							<label>Color Boost</label>
-							<pos>32,80</pos>
-							<size>70,20</size>
 						</object>
 						<object class="wxStaticText" name="ID_STREDBOOSTFILTER">
 							<label>Red : </label>
@@ -353,11 +321,7 @@
 						</object>
 						<object class="wxCheckBox" name="ID_CKCONTRASTANDLIGHTFILTER">
 							<pos>15,210</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STCONTRASTANDLIGHTFILTER">
 							<label>Enable</label>
-							<pos>32,210</pos>
-							<size>70,20</size>
 						</object>
 						<object class="wxStaticText" name="ID_STCONTRASTFILTER">
 							<label>Constrast : </label>
@@ -390,11 +354,7 @@
 						</object>
 						<object class="wxCheckBox" name="ID_CKSHARPENFILTER">
 							<pos>15,320</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STSHARPENFILTER">
 							<label>Sharpen : </label>
-							<pos>32,320</pos>
-							<size>70,20</size>
 						</object>
 						<object class="wxSlider" name="ID_SLSHARPENFILTER">
 							<max>100</max>
@@ -404,17 +364,38 @@
 						</object>
 						<object class="wxCheckBox" name="ID_CKDENOISEFILTER">
 							<pos>15,340</pos>
-						</object>
-						<object class="wxStaticText" name="ID_STDENOISEFILTER">
 							<label>Denoise : </label>
-							<pos>32,340</pos>
-							<size>70,20</size>
 						</object>
 						<object class="wxSlider" name="ID_SLDENOISEFILTER">
 							<max>255</max>
 							<style>wxSL_MIN_MAX_LABELS</style>
 							<pos>120,340</pos>
 							<size>230,20</size>
+						</object>
+						<object class="wxStaticBox" name="ID_STATICBOX1">
+							<label>Video Filter</label>
+							<pos>5,380</pos>
+							<size>380,80</size>
+						</object>
+						<object class="wxCheckBox" name="ID_CKVIDEOSTABILIZATION">
+							<pos>15,400</pos>
+							<checked>0</checked>
+							<label>Video Stabilization</label>
+						</object>
+						<object class="wxStaticText" name="ID_STATICBOX1">
+							<label>Buffer : </label>
+							<pos>200,400</pos>
+						</object>
+						<object class="wxSpinCtrl" name="ID_CKVIDEOSTABILIZATIONBUFFER">
+							<pos>300,400</pos>
+							<value>2</value>
+							<min>2</min>
+							<max>100</max>
+						</object>
+						<object class="wxCheckBox" name="ID_CKVIDEOAUTOCONTRAST">
+							<pos>15,430</pos>
+							<checked>0</checked>
+							<label>Auto Contrast</label>
 						</object>
 					</object>
 					</object>
