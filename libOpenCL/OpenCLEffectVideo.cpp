@@ -31,9 +31,18 @@ COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
 	paramSrcHeight = nullptr;
 }
 
-COpenCLParameterClMem * COpenCLEffectVideo::GetPtData()
+COpenCLParameterClMem * COpenCLEffectVideo::GetPtData(const bool &src)
 {
-	return paramSrc;
+	if(src)
+		return paramSrc;
+	return paramOutput;
+}
+
+int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
+{
+	if (src)
+		return srcwidth * GetSizeData();
+	return widthOut * GetSizeData();
 }
 
 COpenCLEffectVideo::~COpenCLEffectVideo()
@@ -92,6 +101,55 @@ int COpenCLEffectVideo::GetSrcHeight()
 }
 
 
+cl_mem COpenCLEffectVideo::GetRgbaSourceBitmap(int rgba)
+{
+	cl_mem memvalue = nullptr;
+	if (paramSrcWidth != nullptr && paramSrcHeight != nullptr && paramSrc != nullptr)
+	{
+		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+			paramSrc->SetNoDelete(false);
+			vecParam.push_back(paramSrc);
+
+			paramSrcWidth->SetNoDelete(false);
+			vecParam.push_back(paramSrcWidth);
+
+			paramSrcHeight->SetNoDelete(false);
+			vecParam.push_back(paramSrcHeight);
+
+			COpenCLParameterInt* paramRGBA = new COpenCLParameterInt();
+			paramRGBA->SetValue(rgba);
+			paramRGBA->SetLibelle("rgba");
+			vecParam.push_back(paramRGBA);
+
+			program->SetKeepOutput(true);
+			program->SetParameter(&vecParam, srcwidth, srcheight, srcwidth * srcheight * GetSizeData());
+			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+			memvalue = program->GetOutput();
+			delete program;
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+			paramSrc = nullptr;
+			paramSrcWidth = nullptr;
+			paramSrcHeight = nullptr;
+
+		}
+	}
+	return memvalue;
+}
+
 
 void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 {
@@ -138,10 +196,46 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 
 		}
 	}
-
-
 }
 
+
+void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
+{
+	if (paramSrc != nullptr && paramSrcWidth != nullptr && paramSrcHeight != nullptr)
+	{
+		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+			vecParam.push_back(paramSrc);
+			vecParam.push_back(paramSrcWidth);
+			vecParam.push_back(paramSrcHeight);
+
+			COpenCLParameterInt* paramRGBA = new COpenCLParameterInt();
+			paramRGBA->SetValue(rgba);
+			paramRGBA->SetLibelle("rgba");
+			vecParam.push_back(paramRGBA);
+
+			program->SetKeepOutput(true);
+			program->SetParameter(&vecParam, widthOut, heightOut, cl_image);
+			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+
+			delete program;
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+
+		}
+	}
+}
 
 void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
 {
@@ -828,7 +922,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 	}
 }
 
-int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height)
+int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const bool &src)
 {
 	srcwidth = width;
 	srcheight = height;
@@ -845,20 +939,41 @@ int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& wi
 		openglSrc->SetValue(cl_openglTexture);
 		vecParam.push_back(openglSrc);
 
-		if (paramSrcWidth == nullptr)
-			paramSrcWidth = new COpenCLParameterInt();
-		paramSrcWidth->SetValue(width);
-		paramSrcWidth->SetNoDelete(true);
-		paramSrcWidth->SetLibelle("width");
-		vecParam.push_back(paramSrcWidth);
+		if (src)
+		{
+			if (paramSrcWidth == nullptr)
+				paramSrcWidth = new COpenCLParameterInt();
+			paramSrcWidth->SetValue(width);
+			paramSrcWidth->SetNoDelete(true);
+			paramSrcWidth->SetLibelle("width");
+			vecParam.push_back(paramSrcWidth);
 
-		if (paramSrcHeight == nullptr)
-			paramSrcHeight = new COpenCLParameterInt();
+			if (paramSrcHeight == nullptr)
+				paramSrcHeight = new COpenCLParameterInt();
 
-		paramSrcHeight->SetValue(height);
-		paramSrcHeight->SetNoDelete(true);
-		paramSrcHeight->SetLibelle("height");
-		vecParam.push_back(paramSrcHeight);
+			paramSrcHeight->SetValue(height);
+			paramSrcHeight->SetNoDelete(true);
+			paramSrcHeight->SetLibelle("height");
+			vecParam.push_back(paramSrcHeight);
+		}
+		else
+		{
+			if (paramOutWidth == nullptr)
+				paramOutWidth = new COpenCLParameterInt();
+			paramOutWidth->SetValue(width);
+			paramOutWidth->SetNoDelete(true);
+			paramOutWidth->SetLibelle("width");
+			vecParam.push_back(paramOutWidth);
+
+			if (paramOutHeight == nullptr)
+				paramOutHeight = new COpenCLParameterInt();
+
+			paramOutHeight->SetValue(height);
+			paramOutHeight->SetNoDelete(true);
+			paramOutHeight->SetLibelle("height");
+			vecParam.push_back(paramOutHeight);
+		}
+
 
 		program->SetParameter(&vecParam, width, height, width * height * GetSizeData());
 		program->SetKeepOutput(true);
@@ -877,9 +992,18 @@ int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& wi
 		}
 		vecParam.clear();
 
-		if (paramSrc == nullptr)
-			paramSrc = new COpenCLParameterClMem();
-		paramSrc->SetValue(memvalue);
+		if (src)
+		{
+			if (paramSrc == nullptr)
+				paramSrc = new COpenCLParameterClMem();
+			paramSrc->SetValue(memvalue);
+		}
+		else
+		{
+			if (paramOutput == nullptr)
+				paramOutput = new COpenCLParameterClMem();
+			paramOutput->SetValue(memvalue);
+		}
 	}
 	return 0;
 }

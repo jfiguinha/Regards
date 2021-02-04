@@ -34,7 +34,7 @@ namespace Regards
 
 			virtual ~COpenCLEffectVideo();
 			bool IsOk();
-
+			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
 			cl_mem LoadRegardsImage(uint8_t * data, const int &width, const int &height);
@@ -51,18 +51,25 @@ namespace Regards
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
 #if defined(__x86_64__) || defined(_M_AMD64)	
-		void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
+			void GetRgbaOpenCV(cl_mem cl_image, int rgba = 0);
+			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
+			cl_mem GetRgbaSourceBitmap(int rgba = 0);
 #elif defined(__APPLE__)
-        void GetRgbaBitmap(cl_mem cl_image, int rgba = 1);
+			void GetRgbaOpenCV(cl_mem cl_image, int rgba = 1);
+			void GetRgbaBitmap(cl_mem cl_image, int rgba = 1);
+			cl_mem GetRgbaSourceBitmap(int rgba = 1);
 #endif 
+
+			
 			
 			int GetSrcWidth();
 			int GetSrcHeight();
 			int GetThumbnailWidth();
 			int GetThumbnailHeight();
-			int CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height);
+			int CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const bool &src);
 
-			COpenCLParameterClMem * GetPtData();
+			COpenCLParameterClMem * GetPtData(const bool &src);
+			int GetDataSizeWidth(const bool &src);
 
 		protected:
 

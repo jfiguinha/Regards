@@ -488,7 +488,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				int filterInterpolation = 0;
 				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 
-				openclEffectNV12->CopyOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo);
+				openclEffectNV12->CopyOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, true);
 
 				if (regardsParam != nullptr)
 					filterInterpolation = regardsParam->GetInterpolationType();

@@ -19,7 +19,7 @@ namespace Regards
 		class COpenCLContext
 		{
 		public:
-			COpenCLContext(cl_platform_id platformId, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl);
+			COpenCLContext(cl_platform_id platformId, const wxString & platformName, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl);
 			~COpenCLContext();
 			int GenerateContext();
 
@@ -75,6 +75,13 @@ namespace Regards
 
 			int GetDefaultType();
 
+			void SetPlatformName(const wxString & platform_name);
+
+			wxString GetPlatformName()
+			{
+				return platform_name;
+			}
+
 		private:
 
 
@@ -84,6 +91,7 @@ namespace Regards
 			bool sharedContextCompatible = false;
             bool isOpenGL = false;
 			cl_platform_id platform;
+			wxString platform_name;
 			cl_device_id device;
 			cl_context context;
             cl_device_type deviceType;

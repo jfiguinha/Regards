@@ -1780,7 +1780,7 @@ CRegardsBitmap * CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame * tmp_frame)
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream)
 {
 	bool decodeBitmap = false;
-	bool stabilizeFrame = false;
+	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 	int modFrame = 0;
 	bool ffmpegToRGBA = false;
@@ -1798,12 +1798,14 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		if (openCVStabilization == nullptr)
 			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-		if (encodeOneFrame && oldPos != pos)
+		if ((encodeOneFrame && oldPos != localPos) || (encodeOneFrame && openCVStabilization->GetNbFrameBuffer() == 0))
 		{
 			openCVStabilization->Init();
 			ffmpegDecodeFrame->SetVideoPosition(pos);
 			oldPos = pos;
 			ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, videoCompressOption->videoEffectParameter.stabilizeImageBuffere, true);
+			frameStabilized = true;
+			openCVStabilization->AddFrame(bitmapData);
 		}
 		else if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
@@ -2632,6 +2634,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 	this->outputFile = output;
 	this->dataOutput = dataOutput;
 	ffmpegDecodeFrame = new CFFmpegDecodeFrame("");
+	ffmpegDecodeFrame->OpenFile(input);
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
 

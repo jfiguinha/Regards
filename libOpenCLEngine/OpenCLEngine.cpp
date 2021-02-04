@@ -439,7 +439,7 @@ COpenCLEngine::COpenCLEngine(const bool &attachOpenCV)
 
 	if (device != nullptr)
 	{
-		_singleton = new COpenCLContext(device->platformId, device->deviceId, device->deviceType, device->openGlSharing);
+		_singleton = new COpenCLContext(device->platformId, "", device->deviceId, device->deviceType, device->openGlSharing);
 		int rtnValue = _singleton->GenerateContext();
 		if (rtnValue == -1)
 		{
@@ -457,13 +457,8 @@ COpenCLEngine::COpenCLEngine(const bool &attachOpenCV)
 
 			if (i != listPlatform.end())
 				platform = (OpenCLPlatform *)(*i);
-			/*
-			for (OpenCLPlatform * _plateform : listPlatform)
-			{
-				if (device->platformId == _plateform->platformId)
-					platform = _plateform;
-			}
-			*/
+
+			_singleton->SetPlatformName(platform->platformName);
 		}
 	}
 

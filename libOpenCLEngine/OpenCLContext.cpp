@@ -23,13 +23,19 @@ int COpenCLContext::GetDefaultType()
 	return OPENCL_UCHAR;
 }
 
-COpenCLContext::COpenCLContext(cl_platform_id platformId, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl)
+COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString & platformName, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl)
 {
     this->isOpenGL = opengl;
 	platform = platformId;
 	device = deviceId;
+	this->platform_name = platformName;
 	this->deviceType = deviceType;
 	queue = nullptr;
+}
+
+void COpenCLContext::SetPlatformName(const wxString & platform_name)
+{
+	this->platform_name = platform_name;
 }
 
 void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag)

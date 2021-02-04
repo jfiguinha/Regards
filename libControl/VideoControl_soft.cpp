@@ -1,5 +1,8 @@
 #include "header.h"
 #include "VideoControl_soft.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/opengl.hpp>
+#include <opencv2/core/ocl.hpp>
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
 #include "ffplaycore.h"
@@ -1656,8 +1659,9 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
 	bool frameStabilized = false;
 
+	/*
 	if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable)
-	{
+	{videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast
 		if (previousFrame == nullptr)
 			previousFrame = new CRegardsBitmap();
 
@@ -1682,7 +1686,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 		if(frameStabilized)
 			openCVStabilization->CorrectFrame(bitmapData);
 	}
-	
+	*/
 
 	if(!frameStabilized)
 	{
@@ -1968,6 +1972,77 @@ void CVideoControlSoft::GetDenoiserPt(const int &width, const int &height)
 
 }
 
+bool CVideoControlSoft::ApplyOpenCVEffect(cv::UMat & cvImage)
+{
+	bool frameStabilized = false;
+
+	if (videoEffectParameter.stabilizeVideo)
+	{
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+
+		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
+
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
+		{
+			openCVStabilization->BufferFrame(cvImage);
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(cvImage);
+		}
+
+		if (frameStabilized)
+		{
+			cv::UMat image_local = openCVStabilization->CorrectFrame(cvImage);
+			image_local.copyTo(cvImage);
+		}
+	}
+
+	if (videoEffectParameter.autoConstrast)
+	{
+		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
+		frameStabilized = true;
+	}
+
+	return frameStabilized;
+}
+
+void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height)
+{
+	cl_int err = 0;
+	cv::ocl::setUseOpenCL(true);
+	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
+
+	cv::UMat cvImage;
+	err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureDisplay, 0, 0, 0);
+	Error::CheckError(err);
+
+	openclEffect->GetRgbaBitmap(cl_textureDisplay);
+	cv::ocl::convertFromImage(cl_textureDisplay, cvImage);
+
+	bool frameStabilized = ApplyOpenCVEffect(cvImage);
+	if (frameStabilized)
+	{
+		//Update texture
+		cl_mem matcv = (cl_mem)cvImage.handle(cv::ACCESS_READ);
+
+		size_t offset = 0;
+		size_t origin[3] = { 0, 0, 0 };
+		size_t region[3] = { width, height, 1 };
+
+		err = clEnqueueCopyBufferToImage(openclContext->GetCommandQueue(), matcv, cl_textureDisplay, offset, origin, region, 0, NULL, NULL);
+		Error::CheckError(err);
+	}
+
+	err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureDisplay, 0, 0, 0);
+	Error::CheckError(err);
+	err = clFlush(openclContext->GetCommandQueue());
+	Error::CheckError(err);
+
+}
+
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
     printf("RenderToTexture 1\n");
@@ -1993,10 +2068,12 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable && pictureFrame != nullptr)
-		openclEffect->LoadRegardsBitmap(pictureFrame);
-	else
-		openclEffect->TranscodePicture(widthVideo, heightVideo);
+	//if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable && (pictureFrame != nullptr && pictureFrame->GetBitmapSize() > 0))
+	//	openclEffect->LoadRegardsBitmap(pictureFrame);
+	//else
+	openclEffect->TranscodePicture(widthVideo, heightVideo);
+
+
 
 	int widthOutput = 0;
 	int heightOutput = 0;
@@ -2009,11 +2086,6 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	{
 		GetDenoiserPt(widthOutput, heightOutput);
 		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
-	}
-
-	if (videoEffectParameter.autoConstrast && videoEffectParameter.effectEnable)
-	{
-		openclEffect->AutoContrast();
 	}
 
 	bool isOpenGLOpenCL = false;
@@ -2032,7 +2104,12 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			{
 				cl_int err;
 				cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
-				if (cl_image != nullptr)
+				if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
+				{
+					ApplyOpenCVEffectWithOpenCLOpenGLInterop(openclEffect, cl_image, widthOutput, heightOutput);
+					isOpenGLOpenCL = true;
+				}
+				else if (cl_image != nullptr)
 				{
 					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
 					Error::CheckError(err);
@@ -2054,16 +2131,19 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	if (!isOpenGLOpenCL)
 	{
-        printf("RenderToTexture !isOpenGLOpenCL toto\n");
-        
+		printf("RenderToTexture !isOpenGLOpenCL toto\n");
+
 		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();
-			CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
-			//bitmap->VertFlipBuf();
-			glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+			CRegardsBitmap * pBitmap = openclEffect->GetRgbaBitmap();
+			if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
+			{
+				ApplyOpenCVEffect(pBitmap);
+			}
+			glTexture->SetData(pBitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 			delete bitmap;
 		}
 		else
@@ -2073,6 +2153,40 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
     printf("RenderToTexture End\n");
 	//inverted = true;
 	return glTexture;
+}
+
+bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
+{
+	bool frameStabilized = false;
+
+	if (videoEffectParameter.stabilizeVideo)
+	{
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+
+		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
+
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
+		{
+			openCVStabilization->BufferFrame(pictureFrame);
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(pictureFrame);
+		}
+
+		if (frameStabilized)
+			openCVStabilization->CorrectFrame(pictureFrame);
+	}
+
+	if (videoEffectParameter.autoConstrast)
+	{
+		frameStabilized = true;
+		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(pictureFrame);
+	}
+
+	return frameStabilized;
 }
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFrame)
@@ -2108,6 +2222,11 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 	{
 		GetDenoiserPt(widthOutput, heightOutput);
 		hq3d->ApplyDenoise3D(bitmapOut);
+	}
+
+	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
+	{
+		ApplyOpenCVEffect(bitmapOut);
 	}
 
 	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
@@ -2154,9 +2273,9 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 			hq3d->ApplyDenoise3D(bitmapOut);
 		}
 
-		if (videoEffectParameter.autoConstrast && videoEffectParameter.effectEnable)
+		if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
 		{
-			COpenCVEffect::BrightnessAndContrastAuto(bitmapOut);
+			ApplyOpenCVEffect(bitmapOut);
 		}
 
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());

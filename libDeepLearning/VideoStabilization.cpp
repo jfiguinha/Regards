@@ -63,6 +63,11 @@ public:
 		warpAffine(frame_stabilized, frame_stabilized, T, frame_stabilized.size());
 	}
 
+	void fixBorder(UMat &frame_stabilized)
+	{
+		Mat T = getRotationMatrix2D(Point2f(frame_stabilized.cols / 2, frame_stabilized.rows / 2), 0, 1.04);
+		warpAffine(frame_stabilized, frame_stabilized, T, frame_stabilized.size());
+	}
 
 	vector<Trajectory> cumsum(vector<TransformParam> &transforms)
 	{
@@ -139,6 +144,84 @@ public:
 
 			transforms_smooth.push_back(TransformParam(dx, dy, da));
 		}
+	}
+
+	void AnalyseFrame(const cv::UMat & curr)
+	{
+		if (first)
+		{
+			first = false;
+			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
+			return;
+		}
+		cv::UMat curr_gray;
+		// Vector from previous and current feature points
+		vector <Point2f> curr_pts;
+
+		// Detect features in previous frame
+
+		goodFeaturesToTrack(prev_gray, prev_pts, 200, 0.01, 30);
+
+		// Convert to grayscale
+		cvtColor(curr, curr_gray, COLOR_BGR2GRAY);
+
+		// Calculate optical flow (i.e. track feature points)
+		vector <uchar> status;
+		UMat err;
+
+		try
+		{
+			calcOpticalFlowPyrLK(prev_gray, curr_gray, prev_pts, curr_pts, status, err);
+		}
+		catch (...)
+		{
+
+		}
+
+		// Filter only valid points
+		auto prev_it = prev_pts.begin();
+		auto curr_it = curr_pts.begin();
+		for (size_t k = 0; k < status.size(); k++)
+		{
+			if (status[k])
+			{
+				prev_it++;
+				curr_it++;
+			}
+			else
+			{
+				prev_it = prev_pts.erase(prev_it);
+				curr_it = curr_pts.erase(curr_it);
+			}
+		}
+
+
+		// Find transformation matrix
+		Mat T = estimateAffinePartial2D(prev_pts, curr_pts);
+
+		// In rare cases no transform is found. 
+		// We'll just use the last known good transform.
+		//if (T.data == NULL) 
+		//	last_T.copyTo(T);
+		//T.copyTo(last_T);
+
+		// Extract traslation
+		double dx = T.at<double>(0, 2);
+		double dy = T.at<double>(1, 2);
+
+		// Extract rotation angle
+		double da = atan2(T.at<double>(1, 0), T.at<double>(0, 0));
+
+		while (transforms.size() > nbFrameMax)
+			transforms.erase(transforms.begin());
+
+		// Store transformation 
+		if (transforms.size() == nbFrameMax)
+			transforms.erase(transforms.begin());
+		transforms.push_back(TransformParam(dx, dy, da));
+
+		// Move to next frame
+		curr_gray.copyTo(prev_gray);
 	}
 
 	void AnalyseFrame(const cv::Mat & curr)
@@ -219,9 +302,10 @@ public:
 		curr_gray.copyTo(prev_gray);
 	}
 
-	void CorrectedFrame(const cv::Mat & frame)
+	cv::UMat CorrectedFrame(cv::UMat & frame)
 	{
 		Mat T(2, 3, CV_64F);
+		cv::Mat frame_stabilized;
 
 		if (transforms_smooth.size() > 0)
 		{
@@ -235,11 +319,34 @@ public:
 
 			// Scale image to remove black border artifact
 			fixBorder(frame_stabilized);
+
+			frame_stabilized.copyTo(frame);
 		}
-		else
-			frame.copyTo(frame_stabilized);
+		//frame.copyTo(frame_stabilized);
+		return frame;
+	}
 
+	void CorrectedFrame(cv::Mat & frame)
+	{
+		Mat T(2, 3, CV_64F);
 
+		if (transforms_smooth.size() > 0)
+		{
+			cv::Mat frame_stabilized;
+
+			int i = transforms_smooth.size() - 1;
+
+			// Extract transform from translation and rotation angle. 
+			transforms_smooth[i].getTransform(T);
+
+			// Apply affine wrapping to the given frame
+			warpAffine(frame, frame_stabilized, T, frame.size());
+
+			// Scale image to remove black border artifact
+			fixBorder(frame_stabilized);
+
+			frame_stabilized.copyTo(frame);
+		}
 	}
 
 	void Init()
@@ -247,8 +354,8 @@ public:
 		first = true;
 		transforms.clear();
 		transforms_smooth.clear();
-		prev_gray.deallocate();
-		prev_pts.clear();
+		//prev_gray.deallocate();
+		//prev_pts.clear();
 	}
 
 	// Define variable for storing frames
@@ -257,8 +364,7 @@ public:
 	vector <Point2f> prev_pts;
 	vector<TransformParam> transforms;
 	vector <TransformParam> transforms_smooth;
-	//cv::UMat last_T;
-	Mat frame_stabilized;
+
 	bool first = true;
 	int nbFrameMax = 60;
 	//std::map<int, cv::Mat> picture_stabilization;
@@ -317,5 +423,31 @@ void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->CalculTransformation();
 	pimpl->CorrectedFrame(image);
-	pBitmap->SetBitmap(pimpl->frame_stabilized.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+}
+
+void COpenCVStabilization::AddFrame(const cv::UMat & image)
+{
+	pimpl->AnalyseFrame(image);
+}
+
+void COpenCVStabilization::BufferFrame(const cv::UMat & image)
+{
+	pimpl->AnalyseFrame(image);
+	nbFrameBuffer++;
+}
+
+void COpenCVStabilization::CorrectFrame(cv::Mat & image)
+{
+	pimpl->CalculTransformation();
+	pimpl->CorrectedFrame(image);
+}
+
+cv::UMat COpenCVStabilization::CorrectFrame(cv::UMat & image)
+{
+	//cv::Mat frame;
+	//image.copyTo(frame);
+	pimpl->CalculTransformation();
+	return pimpl->CorrectedFrame(image);
+	//frame.copyTo(frame);
 }
