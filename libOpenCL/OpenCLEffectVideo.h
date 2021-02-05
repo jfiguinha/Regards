@@ -5,6 +5,11 @@
 #include <CL/cl.h>
 #endif
 
+namespace cv
+{
+	class UMat;
+}
+
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CVideoEffectParameter;
@@ -71,6 +76,9 @@ namespace Regards
 			COpenCLParameterClMem * GetPtData(const bool &src);
 			int GetDataSizeWidth(const bool &src);
 
+			cv::UMat GetOpenCVStruct(const bool &src);
+			void CopyOpenCVTexture(cv::UMat & dst, const bool &src);
+			//void UpdateData();
 		protected:
 
 			int GetSizeData();

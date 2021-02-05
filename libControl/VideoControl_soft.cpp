@@ -1657,49 +1657,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
     video_aspect_ratio = sample_aspect_ratio;
 
-	bool frameStabilized = false;
-
-	/*
-	if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable)
-	{videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast
-		if (previousFrame == nullptr)
-			previousFrame = new CRegardsBitmap();
-
-		GetBitmapRGBA(src_frame);
-		*previousFrame = *bitmapData;
-
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
-
-		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
-
-		if (openCVStabilization->GetNbFrameBuffer() == 0)
-		{
-			openCVStabilization->BufferFrame(previousFrame);
-		}
-		else
-		{
-			frameStabilized = true;
-			openCVStabilization->AddFrame(previousFrame);
-		}
-
-		if(frameStabilized)
-			openCVStabilization->CorrectFrame(bitmapData);
-	}
-	*/
-
-	if(!frameStabilized)
-	{
-		SetFrameData(src_frame);
-	}
-	else
-	{
-		muBitmap.lock();		
-		*pictureFrame = *bitmapData;
-		muBitmap.unlock();
-		
-	}
-
+	SetFrameData(src_frame);
     
     widthVideo = src_frame->width;
     heightVideo = src_frame->height;  
@@ -2068,12 +2026,26 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	//if (videoEffectParameter.stabilizeVideo && videoEffectParameter.effectEnable && (pictureFrame != nullptr && pictureFrame->GetBitmapSize() > 0))
-	//	openclEffect->LoadRegardsBitmap(pictureFrame);
-	//else
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
+	cl_int err = 0;
+	cv::ocl::setUseOpenCL(true);
+	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 
+	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
+	{
+		cv::UMat image = openclEffect->GetOpenCVStruct(true);
+		bool frameStabilized = ApplyOpenCVEffect(image);
+		if (frameStabilized)
+		{
+			//cv::Mat test;
+			//image.copyTo(test);
+			//cv::imwrite("d:\\toto.jpg", test);
+			openclEffect->CopyOpenCVTexture(image, true);
+		}
+	}
+
+		
 
 	int widthOutput = 0;
 	int heightOutput = 0;
@@ -2090,7 +2062,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	bool isOpenGLOpenCL = false;
     openGLDecoding = false;
-    
+
 	if (openclContext->IsSharedContextCompatible())
 	{
         
@@ -2104,6 +2076,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			{
 				cl_int err;
 				cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
+				/*
 				if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
 				{
 					ApplyOpenCVEffectWithOpenCLOpenGLInterop(openclEffect, cl_image, widthOutput, heightOutput);
@@ -2111,6 +2084,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 				}
 				else if (cl_image != nullptr)
 				{
+				*/
 					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
 					Error::CheckError(err);
 					openclEffect->GetRgbaBitmap(cl_image);
@@ -2119,7 +2093,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 					err = clFlush(openclContext->GetCommandQueue());
 					Error::CheckError(err);
 					isOpenGLOpenCL = true;
-				}
+				//}
 
 			}
 			catch (...)
@@ -2138,12 +2112,14 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();
-			CRegardsBitmap * pBitmap = openclEffect->GetRgbaBitmap();
+			CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
+
+			/*
+			bool frameStabilized = false;
 			if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
-			{
-				ApplyOpenCVEffect(pBitmap);
-			}
-			glTexture->SetData(pBitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+				frameStabilized = ApplyOpenCVEffect(bitmap);
+			*/
+			glTexture->SetData(bitmap->GetPtBitmap(), widthOutput, heightOutput);
 			delete bitmap;
 		}
 		else
@@ -2158,7 +2134,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
 {
 	bool frameStabilized = false;
-
+	cv::Mat image(pictureFrame->GetBitmapHeight(), pictureFrame->GetBitmapWidth(), CV_8UC4, pictureFrame->GetPtBitmap());
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
@@ -2168,24 +2144,24 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
 
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
 		{
-			openCVStabilization->BufferFrame(pictureFrame);
+			openCVStabilization->BufferFrame(image);
 		}
 		else
 		{
 			frameStabilized = true;
-			openCVStabilization->AddFrame(pictureFrame);
+			openCVStabilization->AddFrame(image);
 		}
 
 		if (frameStabilized)
-			openCVStabilization->CorrectFrame(pictureFrame);
+			openCVStabilization->CorrectFrame(image);
 	}
 
 	if (videoEffectParameter.autoConstrast)
 	{
 		frameStabilized = true;
-		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(pictureFrame);
+		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(image);
 	}
-
+	pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
 }
 

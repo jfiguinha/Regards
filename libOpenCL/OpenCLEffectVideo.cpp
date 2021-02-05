@@ -1,5 +1,8 @@
 #include <header.h>
 #include "OpenCLEffectVideo.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/opengl.hpp>
+#include <opencv2/core/ocl.hpp>
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include <RegardsBitmap.h>
@@ -16,9 +19,9 @@ using namespace Regards::OpenCV;
 COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
 {
 	openCLProgram = nullptr;
-	bool useMemory =  (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-    
+
 	openCLProgram = nullptr;
 	this->context = context;
 	paramOutWidth = nullptr;
@@ -33,7 +36,7 @@ COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
 
 COpenCLParameterClMem * COpenCLEffectVideo::GetPtData(const bool &src)
 {
-	if(src)
+	if (src)
 		return paramSrc;
 	return paramOutput;
 }
@@ -47,7 +50,7 @@ int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
 
 COpenCLEffectVideo::~COpenCLEffectVideo()
 {
-	if(paramOutput != nullptr)
+	if (paramOutput != nullptr)
 	{
 		paramOutput->Release();
 		delete paramOutput;
@@ -58,7 +61,7 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 		paramOutWidth->Release();
 		delete paramOutWidth;
 	}
-		
+
 	if (paramOutHeight != nullptr)
 	{
 		paramOutHeight->Release();
@@ -82,7 +85,7 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 		paramSrcHeight->Release();
 		delete paramSrcHeight;
 	}
-	
+
 	if (openCLProgram != nullptr)
 		delete openCLProgram;
 
@@ -237,6 +240,164 @@ void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
 	}
 }
 
+cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
+{
+	cv::UMat dst;
+	cl_int err = 0;
+	cl_mem clImage;
+	if (src)
+		clImage = paramSrc->GetValue();
+	else
+		clImage = paramOutput->GetValue();
+
+	cl_mem_object_type mem_type = 0;
+	clGetMemObjectInfo(clImage, CL_MEM_TYPE, sizeof(cl_mem_object_type), &mem_type, 0);
+
+	cl_image_format fmt = { 0, 0 };
+	clGetImageInfo(clImage, CL_IMAGE_FORMAT, sizeof(cl_image_format), &fmt, 0);
+
+	int depth = CV_8U;
+	//if (context->GetDefaultType() == OPENCL_FLOAT)
+	//	depth = CV_32F;
+
+	int type = CV_MAKE_TYPE(depth, 4);
+
+	size_t w = src ? srcwidth : widthOut;
+	size_t h = src ? srcheight : heightOut;
+	dst.create((int)h, (int)w, type);
+
+	if (context->GetDefaultType() == OPENCL_FLOAT)
+	{
+		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
+		cl_mem outputValue = nullptr;
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			if (src)
+			{
+				paramSrc->SetNoDelete(true);
+				vecParam.push_back(paramSrc);
+				paramSrcWidth->SetNoDelete(true);
+				vecParam.push_back(paramSrcWidth);
+				paramSrcHeight->SetNoDelete(true);
+				vecParam.push_back(paramSrcHeight);
+			}
+			else
+			{
+				paramOutput->SetNoDelete(true);
+				vecParam.push_back(paramOutput);
+				paramOutWidth->SetNoDelete(true);
+				vecParam.push_back(paramOutWidth);
+				paramOutHeight->SetNoDelete(true);
+				vecParam.push_back(paramOutHeight);
+			}
+
+			program->SetParameter(&vecParam, w, h, clBuffer);
+			program->SetKeepOutput(true);
+			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	else
+	{
+		dst.create((int)h, (int)w, type);
+		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
+		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
+		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
+		Error::CheckError(err);
+		clFinish(q);
+	}
+
+
+
+	return dst;
+}
+
+void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
+{
+	cl_int err = 0;
+
+	cl_mem clImage;
+	if (src)
+		clImage = paramSrc->GetValue();
+	else
+		clImage = paramOutput->GetValue();
+
+	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
+	if (context->GetDefaultType() == OPENCL_FLOAT)
+	{
+		cl_mem outputValue = nullptr;
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
+			dataImage->SetNoDelete(true);
+			dataImage->SetValue(clBuffer);
+			vecParam.push_back(dataImage);
+			if (src)
+			{
+				vecParam.push_back(paramSrcWidth);
+				vecParam.push_back(paramSrcHeight);
+			}
+			else
+			{
+				vecParam.push_back(paramOutWidth);
+				vecParam.push_back(paramOutHeight);
+			}
+			program->SetParameter(&vecParam, srcwidth, srcheight, GetSizeData() * srcwidth * srcheight);
+			program->SetKeepOutput(true);
+			program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
+			outputValue = program->GetOutput();
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+
+			if (paramSrc == nullptr)
+				paramSrc = new COpenCLParameterClMem();
+			paramSrc->SetValue(outputValue);
+
+			vecParam.clear();
+		}
+	}
+	else
+	{
+		size_t w = src ? srcwidth : widthOut;
+		size_t h = src ? srcheight : heightOut;
+
+		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
+		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
+		err = clEnqueueCopyBuffer(q, clBuffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
+		Error::CheckError(err);
+		clFinish(q);
+	}
+}
+
 void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
 {
 	if (paramSrc != nullptr && paramSrcWidth != nullptr && paramSrcHeight != nullptr)
@@ -260,7 +421,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 			paramSrcHeight->SetLibelle("height");
 			vecParam.push_back(paramSrcHeight);
 
-			if(paramOutWidth == nullptr)
+			if (paramOutWidth == nullptr)
 				paramOutWidth = new COpenCLParameterInt();
 			paramOutWidth->SetLibelle("widthOutput");
 			paramOutWidth->SetValue(widthOutput);
@@ -319,7 +480,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 			}
 			vecParam.clear();
 
-			if(paramOutput == nullptr)
+			if (paramOutput == nullptr)
 				paramOutput = new COpenCLParameterClMem();
 			paramOutput->SetValue(memvalue);
 		}
@@ -668,7 +829,7 @@ CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 	else
 	{
 		bitmap = new  CRegardsBitmap(width, height);
-		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), ptData, CL_TRUE, 0,bitmap->GetBitmapSize(), bitmap->GetPtBitmap(), 0, nullptr, nullptr);
+		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), ptData, CL_TRUE, 0, bitmap->GetBitmapSize(), bitmap->GetPtBitmap(), 0, nullptr, nullptr);
 		Error::CheckError(err);
 		err = clFinish(context->GetCommandQueue());
 		Error::CheckError(err);
@@ -822,7 +983,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 	inputU->SetLibelle("inputU");
 	inputU->SetNoDelete(true);
 	inputU->SetValue(context->GetContext(), u, middleWidth * middleHeight, flag);
-	
+
 	COpenCLParameterByteArray *	inputV = new COpenCLParameterByteArray();
 	inputV->SetNoDelete(true);
 	inputV->SetLibelle("inputV");
@@ -1078,7 +1239,7 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 
 bool COpenCLEffectVideo::IsOk()
 {
-	if(paramOutput != nullptr)
+	if (paramOutput != nullptr)
 		return true;
 	return false;
 }
@@ -1103,10 +1264,10 @@ int COpenCLEffectVideo::GetSizeData()
 
 int COpenCLEffectVideo::GetThumbnailWidth()
 {
-    return widthOut;
+	return widthOut;
 }
 
 int COpenCLEffectVideo::GetThumbnailHeight()
 {
-    return heightOut;
+	return heightOut;
 }

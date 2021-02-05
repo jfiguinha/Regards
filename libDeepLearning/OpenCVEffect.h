@@ -3,6 +3,7 @@
 namespace cv
 {
 	class UMat;
+	class Mat;
 }
 
 namespace Regards
@@ -16,7 +17,7 @@ namespace Regards
 			~COpenCVEffect() {};
 			static void BrightnessAndContrastAuto(CRegardsBitmap * pictureData, float clipHistPercent = 0);
 			static void EqualizeHistogram(CRegardsBitmap * pictureData);
-
+			static void BrightnessAndContrastAuto(cv::Mat & image, float clipHistPercent = 0);
 			static void BrightnessAndContrastAuto(cv::UMat & pictureData, float clipHistPercent = 0);
 
 		};

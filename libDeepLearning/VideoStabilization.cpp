@@ -426,6 +426,17 @@ void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
 	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
 
+void COpenCVStabilization::AddFrame(const cv::Mat & image)
+{
+	pimpl->AnalyseFrame(image);
+}
+
+void COpenCVStabilization::BufferFrame(const cv::Mat & image)
+{
+	pimpl->AnalyseFrame(image);
+	nbFrameBuffer++;
+}
+
 void COpenCVStabilization::AddFrame(const cv::UMat & image)
 {
 	pimpl->AnalyseFrame(image);

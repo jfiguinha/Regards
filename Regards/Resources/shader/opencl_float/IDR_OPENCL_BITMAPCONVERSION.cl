@@ -1,3 +1,14 @@
+inline float4 rgbaUintToFloat4(uint c)
+{
+    float4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+
 //----------------------------------------------------
 //Conversion d'un regards bitmap en floatant
 //----------------------------------------------------
@@ -106,12 +117,37 @@ __kernel void BitmapToOpenGLTexture(__write_only image2d_t output, const __globa
 	*/
 	write_imagef(output, (int2)(pos.x, pos.y), value);
 }
-
-
 __constant sampler_t sampler =
       CLK_NORMALIZED_COORDS_FALSE
     | CLK_ADDRESS_CLAMP_TO_EDGE
     | CLK_FILTER_NEAREST;
+
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
+__kernel void ImportFromOpencv(__global float4 * output,const __global uchar4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	float divisor = 255.0f;
+	output[position].x = (float)(input[position].x / divisor);
+	output[position].y = (float)(input[position].y / divisor);
+	output[position].z = (float)(input[position].z / divisor);
+	output[position].w = (float)(input[position].w / divisor);
+}
+
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
+__kernel void CopyToOpencv(__global uchar4 * output,const __global float4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	float divisor = 255.0f;
+	output[position].x = (uchar)(input[position].x * divisor);
+	output[position].y = (uchar)(input[position].y * divisor);
+	output[position].z = (uchar)(input[position].z * divisor);
+	output[position].w = (uchar)(input[position].w * divisor);
+}
+
 	
 //----------------------------------------------------
 //Conversion d'un bitmap en wxImage

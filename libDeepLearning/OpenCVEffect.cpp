@@ -7,7 +7,7 @@ using namespace cv;
 class COpenCVEffectPimpl
 {
 public:
-	static void BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &dst, float clipHistPercent = 0);
+	static void BrightnessAndContrastAuto(cv::Mat &image, float clipHistPercent = 0);
 	static void EqualizeHistogram(cv::Mat &src);
 	static void BrightnessAndContrastAuto(cv::UMat & image, float clipHistPercent);
 
@@ -38,7 +38,7 @@ void COpenCVEffectPimpl::EqualizeHistogram(cv::Mat &src)
  *  \param clipHistPercent cut wings of histogram at given percent tipical=>1, 0=>Disabled
  *  \note In case of BGRA image, we won't touch the transparency
 */
-void COpenCVEffectPimpl::BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &dst, float clipHistPercent)
+void COpenCVEffectPimpl::BrightnessAndContrastAuto(cv::Mat &image, float clipHistPercent)
 {
 	int histSize = 256;
 	float alpha, beta;
@@ -48,7 +48,7 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &
 	if (opencl)
 	{
 		cv::UMat gray;
-		cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+		cvtColor(image, gray, cv::COLOR_BGR2GRAY);
 
 		if (clipHistPercent == 0)
 		{
@@ -100,13 +100,13 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &
 	else
 	{
 		CV_Assert(clipHistPercent >= 0);
-		CV_Assert((src.type() == CV_8UC1) || (src.type() == CV_8UC3) || (src.type() == CV_8UC4));
+		CV_Assert((image.type() == CV_8UC1) || (image.type() == CV_8UC3) || (image.type() == CV_8UC4));
 
 		//to calculate grayscale histogram
 		cv::Mat gray;
-		if (src.type() == CV_8UC1) gray = src;
-		else if (src.type() == CV_8UC3) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
-		else if (src.type() == CV_8UC4) cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+		if (image.type() == CV_8UC1) gray = image;
+		else if (image.type() == CV_8UC3) cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+		else if (image.type() == CV_8UC4) cvtColor(image, gray, cv::COLOR_BGR2GRAY);
 		if (clipHistPercent == 0)
 		{
 			// keep full available range
@@ -158,7 +158,7 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(const cv::Mat &src, cv::Mat &
 	alpha = (histSize - 1) / inputRange;   // alpha expands current range to histsize range
 	beta = -minGray * alpha;             // beta shifts current range so that minGray will go to 0
 
-	cv::convertScaleAbs(src, dst, alpha, beta);
+	cv::convertScaleAbs(image, image, alpha, beta);
 
 	return;
 }
@@ -247,11 +247,17 @@ void COpenCVEffect::BrightnessAndContrastAuto(cv::UMat & image, float clipHistPe
 	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
 }
 
+void COpenCVEffect::BrightnessAndContrastAuto(cv::Mat & image, float clipHistPercent)
+{
+	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
+}
+
+
 void COpenCVEffect::BrightnessAndContrastAuto(CRegardsBitmap * pBitmap, float clipHistPercent)
 {
 	cv::Mat dest;
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, dest, 1);
+	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
 	pBitmap->SetBitmap(dest.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
 

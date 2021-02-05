@@ -164,6 +164,31 @@ __constant sampler_t sampler =
 //----------------------------------------------------
 //Conversion d'un bitmap en wxImage
 //----------------------------------------------------
+__kernel void ImportFromOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	output[position].x = input[position].x;
+	output[position].y = input[position].y;
+	output[position].z = input[position].z;
+	output[position].w = input[position].w;
+}
+
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
+__kernel void CopyToOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	output[position].x = input[position].x;
+	output[position].y = input[position].y;
+	output[position].z = input[position].z;
+	output[position].w = input[position].w;
+}
+
+	
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
 __kernel void OpenGLTextureToBitmap( __global uint * output, __read_only image2d_t input, int width, int height)
 {
 	const int2 pos = {get_global_id(0), get_global_id(1)};

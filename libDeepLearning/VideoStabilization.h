@@ -23,6 +23,9 @@ namespace Regards
 			void BufferFrame(CRegardsBitmap * pBitmap);
 			void CorrectFrame(CRegardsBitmap * pictureData);
 
+			void AddFrame(const cv::Mat & pictureData);
+			void BufferFrame(const cv::Mat & pBitmap);
+
 			void AddFrame(const cv::UMat & pictureData);
 			void BufferFrame(const cv::UMat & pBitmap);
 			cv::UMat CorrectFrame(cv::UMat & pictureData);
