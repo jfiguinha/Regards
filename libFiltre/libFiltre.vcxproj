@@ -203,7 +203,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -218,7 +218,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -271,7 +271,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -313,7 +313,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>

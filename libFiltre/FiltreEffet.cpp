@@ -1,5 +1,6 @@
 #include <header.h>
 #include "FiltreEffet.h"
+#include <OpenCLContext.h>
 #include <math.h>
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
@@ -15,7 +16,7 @@
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
 #include <PiccanteHDR.h>
-#include <OpenCLContext.h>
+
 #include <config_id.h>
 #include <hqdn3d.h>
 extern float value[256];

@@ -1112,7 +1112,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     {
         if (openCLEngine == nullptr)
         {
-            openCLEngine = new COpenCLEngine(false);
+            openCLEngine = new COpenCLEngine(true);
             if (openCLEngine != nullptr)
                 openclContext = openCLEngine->GetInstance();
         }
@@ -1995,12 +1995,11 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
-	cl_int err = 0;
-	cv::ocl::setUseOpenCL(true);
-	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
-
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
 	{
+		cl_int err = 0;
+		//cv::ocl::setUseOpenCL(true);
+		//cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 		if (openCVStabilization == nullptr)
 			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);

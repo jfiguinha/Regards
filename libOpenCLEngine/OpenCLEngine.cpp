@@ -465,12 +465,23 @@ COpenCLEngine::COpenCLEngine(const bool &attachOpenCV)
 #ifdef OPENCV_OPENCL
 	if (platform != nullptr && _singleton != nullptr && device != nullptr && attachOpenCV)
 	{
-		//Set OpenCV to use OpenCL context
 		cv::ocl::setUseOpenCL(true);
-		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
+		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
+
+		//Set OpenCV to use OpenCL context
+		//
+		//cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 	}
 #endif
 }
+
+/*
+OpenCLExecutionContext cv::ocl::OpenCLExecutionContext::create(const std::string & 	platformName,
+	void * 	platformID,
+	void * 	context,
+	void * 	deviceID
+)
+*/
 
 COpenCLContext * COpenCLEngine::GetInstance()
 {
