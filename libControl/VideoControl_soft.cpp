@@ -2000,7 +2000,11 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
+	{
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
+	}
 
 	int widthOutput = 0;
 	int heightOutput = 0;

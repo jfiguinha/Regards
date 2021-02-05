@@ -1853,6 +1853,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
 		if (stabilizeFrame || correctedContrast)
 		{
+			if (openCVStabilization == nullptr)
+				openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 			openclEffectYUV->ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
 		}
 
