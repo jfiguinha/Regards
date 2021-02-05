@@ -11,6 +11,7 @@
 #endif
 
 #include <wx/timectrl.h>
+#include <wx/spinctrl.h>
 #include <wx/dateevt.h>
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
