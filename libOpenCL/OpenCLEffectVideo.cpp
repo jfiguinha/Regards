@@ -11,6 +11,7 @@
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
 #include <OpenCVEffect.h>
+#include <VideoStabilization.h>
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 using namespace Regards::OpenCL;
@@ -395,6 +396,48 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 		err = clEnqueueCopyBuffer(q, clBuffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
+	}
+}
+
+
+void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
+{
+	bool frameStabilized = false;
+	cv::UMat cvImage = GetOpenCVStruct(true);
+
+	if (videoEffectParameter->stabilizeVideo)
+	{
+		if (openCVStabilization == nullptr)
+			openCVStabilization = new COpenCVStabilization(videoEffectParameter->stabilizeImageBuffere);
+
+		openCVStabilization->SetNbFrameBuffer(videoEffectParameter->stabilizeImageBuffere);
+
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
+		{
+			openCVStabilization->BufferFrame(cvImage);
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(cvImage);
+		}
+
+		if (frameStabilized)
+		{
+			cv::UMat image_local = openCVStabilization->CorrectFrame(cvImage);
+			image_local.copyTo(cvImage);
+		}
+	}
+
+	if (videoEffectParameter->autoConstrast)
+	{
+		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
+		frameStabilized = true;
+	}
+
+	if (frameStabilized)
+	{
+		CopyOpenCVTexture(cvImage, true);
 	}
 }
 

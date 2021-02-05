@@ -1930,42 +1930,8 @@ void CVideoControlSoft::GetDenoiserPt(const int &width, const int &height)
 
 }
 
-bool CVideoControlSoft::ApplyOpenCVEffect(cv::UMat & cvImage)
-{
-	bool frameStabilized = false;
-
-	if (videoEffectParameter.stabilizeVideo)
-	{
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
-
-		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
-
-		if (openCVStabilization->GetNbFrameBuffer() == 0)
-		{
-			openCVStabilization->BufferFrame(cvImage);
-		}
-		else
-		{
-			frameStabilized = true;
-			openCVStabilization->AddFrame(cvImage);
-		}
-
-		if (frameStabilized)
-		{
-			cv::UMat image_local = openCVStabilization->CorrectFrame(cvImage);
-			image_local.copyTo(cvImage);
-		}
-	}
-
-	if (videoEffectParameter.autoConstrast)
-	{
-		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
-		frameStabilized = true;
-	}
-
-	return frameStabilized;
-}
+/*
+Old Code for opengl interop
 
 void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height)
 {
@@ -1980,7 +1946,7 @@ void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVi
 	openclEffect->GetRgbaBitmap(cl_textureDisplay);
 	cv::ocl::convertFromImage(cl_textureDisplay, cvImage);
 
-	bool frameStabilized = ApplyOpenCVEffect(cvImage);
+	bool frameStabilized = openclEffect->ApplyOpenCVEffect(cvImage, &videoEffectParameter, openCVStabilization);
 	if (frameStabilized)
 	{
 		//Update texture
@@ -2000,6 +1966,7 @@ void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVi
 	Error::CheckError(err);
 
 }
+*/
 
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
@@ -2033,19 +2000,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
-	{
-		cv::UMat image = openclEffect->GetOpenCVStruct(true);
-		bool frameStabilized = ApplyOpenCVEffect(image);
-		if (frameStabilized)
-		{
-			//cv::Mat test;
-			//image.copyTo(test);
-			//cv::imwrite("d:\\toto.jpg", test);
-			openclEffect->CopyOpenCVTexture(image, true);
-		}
-	}
-
-		
+		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
 
 	int widthOutput = 0;
 	int heightOutput = 0;

@@ -113,8 +113,7 @@ public:
 
 protected:
 
-	void ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height);
-	bool ApplyOpenCVEffect(cv::UMat & cvImage);
+	//void ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height);
 	bool ApplyOpenCVEffect(CRegardsBitmap * pictureFrame);
 
 	bool IsHardwareCompatible();

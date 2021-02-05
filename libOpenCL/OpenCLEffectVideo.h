@@ -10,10 +10,21 @@ namespace cv
 	class UMat;
 }
 
+namespace Regards
+{
+	namespace OpenCV
+	{
+		class COpenCVStabilization;
+	}
+}
+
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CVideoEffectParameter;
 class Chqdn3d;
+
+using namespace Regards::OpenCV;
+
 namespace Regards
 {
 	namespace OpenCL
@@ -66,7 +77,7 @@ namespace Regards
 #endif 
 
 			
-			
+			void ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization);
 			int GetSrcWidth();
 			int GetSrcHeight();
 			int GetThumbnailWidth();

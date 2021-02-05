@@ -1787,6 +1787,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	int localPos = pos;
 	bool frameStabilized = false;
 
+	/*
 	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
 	{
 		GetBitmapRGBA(tmp_frame);
@@ -1823,7 +1824,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 
 	if (correctedContrast)
 		COpenCVEffect::BrightnessAndContrastAuto(bitmapData);
-		
+	*/	
 	if (!ffmpegToRGBA)
 	{
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
@@ -1850,7 +1851,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			openclEffectYUV->SetMemoryData(tmp_frame->data[0], ysize, tmp_frame->data[1], usize, tmp_frame->data[2], vsize, tmp_frame->width, tmp_frame->height, tmp_frame->linesize[0]);
 		}
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
-
+		if (stabilizeFrame || correctedContrast)
+		{
+			openclEffectYUV->ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+		}
 
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
