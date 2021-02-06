@@ -18,6 +18,16 @@
     <File Name="../libRegardsBpg/bpgenc.h"/>
     <File Name="../libRegardsBpg/DllBpg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++11;-Wall;-fPIC" C_Options="-std=c99;-Wall;-fPIC" Assembler="">
@@ -133,14 +143,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
 </CodeLite_Project>

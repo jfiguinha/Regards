@@ -1216,7 +1216,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 						if (!success)
 						{
 							encoderHardware = "videotoolbox"; //Quicktime
-							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx);
+							success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
 						}
 						if (success)
 						{
