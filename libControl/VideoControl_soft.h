@@ -1,8 +1,16 @@
 #pragma once
 #include "VideoControlInterface.h"
+
 #ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
 #endif
+
+#include <OpenCLContext.h>
+#include <OpenCLEngine.h>
+#include <OpenCLEffectVideoYUV.h>
+#include <OpenCLEffectVideoNV12.h>
+#include <VideoStabilization.h>
+
 
 extern "C"
 {
@@ -15,12 +23,9 @@ extern "C"
 #include <BitmapYUV.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <OpenCLContext.h>
-#include <OpenCLEngine.h>
-#include <OpenCLEffectVideoYUV.h>
-#include <OpenCLEffectVideoNV12.h>
+
 #include "RenderVideoOpenGL.h"
-#include <VideoStabilization.h>
+
 using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
