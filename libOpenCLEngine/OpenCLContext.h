@@ -88,7 +88,7 @@ namespace Regards
 				return opencvContext;
 			}
 
-			void SetOpenCVContext(cv::ocl::OpenCLExecutionContext & opencvContext)
+			void SetOpenCVContext(cv::ocl::OpenCLExecutionContext opencvContext)
 			{
 				this->opencvContext = opencvContext;
 			}

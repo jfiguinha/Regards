@@ -67,25 +67,7 @@ cd wxWidgets-master
 make -j$NBPROC
 cd ..
 
-wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
 
-wget https://github.com/opencv/opencv/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv-4.5.1.zip
-
-#compile opencv
-cd opencv
-unzip opencv-4.5.1.zip
-unzip opencv_contrib-4.5.1.zip
-cd opencv-4.5.1
-mkdir build
-cd build
-cmake -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.5.1/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14 -I ../../../eigen/Eigen" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-cd ..
 
 # libaom
 git clone https://aomedia.googlesource.com/aom
@@ -153,9 +135,60 @@ make -j$NBPROC
 sudo make install
 cd ..
 
+#Compille ffmpeg
+tar xf ffmpeg-4.3.1.tar.xz
+mv ffmpeg-4.3.1 ffmpeg-master
+cd ffmpeg-master
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+#./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
+
+./configure \
+  --prefix="$HOME/ffmpeg_build" \
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I$HOME/ffmpeg_build/include" \
+  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+  --extra-libs="-lpthread -lm" \
+  --bindir="$HOME/ffmpeg_build/bin" \
+  --enable-gpl \
+  --enable-gnutls \
+  --enable-libaom \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-nonfree
+
+make -j$NBPROC
+cd ..
+
+wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
+mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
+
+wget https://github.com/opencv/opencv/archive/4.5.1.zip
+mv 4.5.1.zip opencv/opencv-4.5.1.zip
+
+#compile opencv
+cd opencv
+unzip opencv-4.5.1.zip
+unzip opencv_contrib-4.5.1.zip
+cd opencv-4.5.1
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.5.1/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14 -I ../../../eigen/Eigen" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+cd ..
 
 #compile tesseract
 unzip tesseract-4.1.1.zip
+
 cd tesseract-4.1.1
 mkdir build
 cd build
@@ -195,36 +228,4 @@ cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 sudo make install
 cd .. 
 cd .. 
-
-
-#Compille ffmpeg
-tar xf ffmpeg-4.3.1.tar.xz
-mv ffmpeg-4.3.1 ffmpeg-master
-cd ffmpeg-master
-export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-#./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
-
-./configure \
-  --prefix="$HOME/ffmpeg_build" \
-  --pkg-config-flags="--static" \
-  --extra-cflags="-I$HOME/ffmpeg_build/include" \
-  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
-  --extra-libs="-lpthread -lm" \
-  --bindir="$HOME/ffmpeg_build/bin" \
-  --enable-gpl \
-  --enable-gnutls \
-  --enable-libaom \
-  --enable-libass \
-  --enable-libfdk-aac \
-  --enable-libfreetype \
-  --enable-libmp3lame \
-  --enable-libopus \
-  --enable-libvorbis \
-  --enable-libvpx \
-  --enable-libx264 \
-  --enable-libx265 \
-  --enable-nonfree
-
-make -j$NBPROC
-cd ..
 
