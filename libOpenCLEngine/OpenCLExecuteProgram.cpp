@@ -146,7 +146,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t & outputBufferSize)
 {
     
 	//cl_event        cl_perf_event = nullptr;
-	cl_int          err;
+	cl_int          err = 0;
 	size_t global_work_size[2] = { static_cast<size_t>(width), static_cast<size_t>(height) };
 	//size_t offset[2] = { 0, PAD_LINES };
 

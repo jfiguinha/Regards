@@ -1562,7 +1562,9 @@ cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const doub
 
 int COpenCLFilter::GetSizeData()
 {
-	return sizeof(float) * 4;
+	if(context->GetDefaultType() == OPENCL_FLOAT)
+		return sizeof(float) * 4;
+	return  sizeof(uint8_t) * 4;
 }
 
 COpenCLProgram * COpenCLFilter::GetProgram(const wxString &numProgram)

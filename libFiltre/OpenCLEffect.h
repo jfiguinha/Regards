@@ -120,6 +120,8 @@ namespace Regards
 			int BrightnessAndContrastAuto(float clipHistPercent);
 
 
+			//void RenderToOpenGLInterop(cl_mem cl_image);
+
 		protected:
 
 			int GetSizeData();
@@ -140,7 +142,8 @@ namespace Regards
 			COpenCLParameterInt * paramWidth;
 			COpenCLParameterInt * paramHeight;
 
-
+			bool opencvBuffer = false;
+			//cv::UMat cvImage;
 			int width;
 			int height;
 

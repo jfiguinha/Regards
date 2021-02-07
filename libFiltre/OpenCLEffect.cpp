@@ -16,6 +16,15 @@
 #include "OpenCLBm3D.h"
 #include <OpenCVEffect.h>
 #include <hqdn3d.h>
+#ifdef __APPLE__
+#include <OpenCL/opencl.h>
+#include <OpenGL/OpenGL.h>
+#elif defined(__WXGTK__)
+#include <GL/glx.h>
+#include <CL/cl_gl.h>
+#else
+#include <CL/cl_gl.h>
+#endif
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
@@ -921,6 +930,55 @@ void COpenCLEffect::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
 		bitmap->SetFilename(filename);
 }
 
+/*
+void COpenCLEffect::RenderToOpenGLInterop(cl_mem cl_image)
+{
+	try
+	{
+		cl_int err;
+		if (cl_image != nullptr)
+		{
+			err = clEnqueueAcquireGLObjects(context->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+			Error::CheckError(err);
+			if (opencvBuffer)
+			{
+				int _width = 0;
+				int _height = 0;
+				//Update texture
+				cl_mem matcv = (cl_mem)cvImage.handle(cv::ACCESS_READ);
+
+				if (preview && paramOutput != nullptr)
+				{
+					_height = heightOut;
+					_width = widthOut;
+				}
+				else
+				{
+					_height = height;
+					_width = width;
+				}
+
+				size_t offset = 0;
+				size_t origin[3] = { 0, 0, 0 };
+				size_t region[3] = { _width, _height, 1 };
+
+				err = clEnqueueCopyBufferToImage(context->GetCommandQueue(), matcv, cl_image, offset, origin, region, 0, NULL, NULL);
+				Error::CheckError(err);
+			}
+			else
+				GetRgbaBitmap(cl_image);
+			err = clEnqueueReleaseGLObjects(context->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+			Error::CheckError(err);
+			err = clFlush(context->GetCommandQueue());
+			Error::CheckError(err);
+		}
+	}
+	catch (...)
+	{
+
+	}
+}
+*/
 void COpenCLEffect::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut)
 {
 	int middleWidth = widthOut / 2;
