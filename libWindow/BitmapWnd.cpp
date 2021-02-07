@@ -1532,6 +1532,14 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	int localflipHorizontal = flipHorizontal;
 	int localflipVertical = flipVertical;
 	int filterInterpolation = 0;
+
+	if (regardsParam != nullptr)
+	{
+		if (regardsParam->GetAutoConstrast() && preview == 0)
+		{
+			filtreEffet->BrightnessAndContrastAuto(1);
+		}
+	}
 	
 	if(regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
@@ -1564,6 +1572,8 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
 	}
+
+
 }
 
 int CBitmapWnd::GetWidth()

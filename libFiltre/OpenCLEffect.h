@@ -117,7 +117,8 @@ namespace Regards
 			virtual int GetWidth();
 			virtual int GetHeight();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
-			int BrightnessAndContrastAuto(float clipHistPercent) { return  -1; }
+			int BrightnessAndContrastAuto(float clipHistPercent);
+
 
 		protected:
 

@@ -277,7 +277,8 @@ namespace Regards
 			COpenCLEngine * openCLEngine;
 			COpenCLContext * openclContext;
 #endif
-			//bool isOpenGL;
+			//Preview Parameter
+			int preview = 0;
 
 			int orientation;
 			int flipVertical;

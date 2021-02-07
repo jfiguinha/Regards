@@ -498,7 +498,7 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 		OutputDebugString(L"\n");
 #endif
 
-
+		/*
 		if (!isThumbnail)
 		{
 			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
@@ -514,9 +514,8 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 					delete filtreLocal;
 				}
 			}
-
 		}
-
+		*/
 
 		//filename = bitmap->GetFilename();
 		SetBitmap(bitmap, isThumbnail);

@@ -117,8 +117,7 @@ namespace Regards
 			bool fixArrow;
 			CBitmapInterface * bitmapInterface;
 
-			//Preview Parameter
-			int preview;
+
 			
 			IAfterEffect * afterEffect;
 

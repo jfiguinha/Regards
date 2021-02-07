@@ -14,6 +14,7 @@
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 #include "OpenCLBm3D.h"
+#include <OpenCVEffect.h>
 #include <hqdn3d.h>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
@@ -1446,6 +1447,35 @@ int COpenCLEffect::Negatif()
 
 	return 0;
 }
+
+int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.BrightnessAndContrastAuto(paramOutput->GetValue(), widthOut, heightOut, clipHistPercent);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.BrightnessAndContrastAuto(input->GetValue(), width, height, clipHistPercent);
+		}
+		SetOutputValue(output, _width, _height);
+	}
+
+	return 0;
+}
+
+
+
 
 int COpenCLEffect::GetWidth()
 {
