@@ -87,25 +87,6 @@
 						<object class="notebookpage">
 							<label>Accelerator</label>
 							<object class="wxPanel" name="page_2">
-								<object class="wxStaticBox" name="sbInterpolation">
-									<label>Accelerator</label>
-									<pos>0,0</pos>
-									<size>380,70</size>
-								</object>	
-								<object class="wxCheckBox" name="ID_CKDXVA2OPENGL">
-									<pos>10,20</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-									<label>Use dxva2 OpenGL</label>
-									<pos>32,20</pos>
-								</object>
-								<object class="wxCheckBox" name="ID_CKDXVA2ACCELERATOR">
-									<pos>10,45</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-									<label>Use dxva2 Accelerator</label>
-									<pos>32,45</pos>
-								</object>
 								<object class="wxRadioBox" name="ID_RBOPENCLOPENCV">
 									<label>OpenCL For OpenCV Accelerator</label>
 									<style>wxRA_SPECIFY_COLS</style>
@@ -114,7 +95,7 @@
 										<item>No</item>
 									</content>
 									<default>-1</default>
-									<pos>0,100</pos>
+									<pos>0,0</pos>
 									<size>380,70</size>
 								</object>	
 							</object>
