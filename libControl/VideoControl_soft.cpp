@@ -1995,7 +1995,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
-	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
+	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
 	{
 		cl_int err = 0;
 		//cv::ocl::setUseOpenCL(true);
