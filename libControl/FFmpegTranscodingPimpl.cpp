@@ -2025,7 +2025,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const int6
 	bool pictureFind = false;
 	int nb_max_Frame = 5;
 
-	int64_t timestamp = timeInSeconds * 1000 * 1000 + startTime;
+	int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
 
 	if (timestamp < 0)
 	{

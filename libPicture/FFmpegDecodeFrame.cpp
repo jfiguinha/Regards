@@ -423,7 +423,7 @@ int CFFmpegDecodeFrame::SetVideoPosition(const int &timeInSeconds)
 	int ret = 0;
 	if (timeInSeconds > 0)
 	{
-		int64_t timestamp = (int64_t)timeInSeconds * 1000 * 1000 + startTime;
+		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
 
 		if (timestamp < 0)
 		{
@@ -586,7 +586,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 
 	if (timeInSeconds > 0)
 	{
-		int64_t timestamp = (int64_t)timeInSeconds * 1000 * 1000 + startTime;
+		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
 
 		if (timestamp < 0)
 		{
