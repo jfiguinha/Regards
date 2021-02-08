@@ -245,8 +245,8 @@ protected:
 	CRegardsBitmap * pictureSubtitle;
 	CRegardsBitmap * pictureFrame = nullptr;
 	CRegardsBitmap * pictureVideo = nullptr;
-	long videoPosition = 0;
-	long oldvideoPosition = 0;
+	int64_t videoPosition = 0;
+	int64_t oldvideoPosition = 0;
 	bool updateContext = true;
 	bool controlKeyPush = false;
 	float ratioVideo = 1.0f;

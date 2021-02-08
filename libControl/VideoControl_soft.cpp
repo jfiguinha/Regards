@@ -328,10 +328,12 @@ void CVideoControlSoft::OnSetPosition(wxCommandEvent& event)
 		OnPlay();
 	videoPosition = pos;
 
+	int64_t timeToSeek = videoPosition * 1000 * 1000;
+
 	if (openCVStabilization != nullptr)
 		openCVStabilization->Init();
 
-	ffmfc->SetTimePosition(videoPosition * 1000 * 1000);
+	ffmfc->SetTimePosition(timeToSeek);
 	if (pause && thumbnailVideo != nullptr)
 	{
 		thumbnailFromBitmap = true;
