@@ -174,7 +174,7 @@ private:
 
 	void VideoTreatment(AVFrame * & tmp_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	int ProcessEncodeFile(AVFrame * dst);
-	int ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds);
+	int ProcessEncodeOneFrameFile(AVFrame * dst, const int64_t &timeInSeconds);
 	void DecodeHardwareFrame(AVFrame * & tmp_frame, AVFrame * sw_frame, CFFmpegTranscodingPimpl::StreamContext *stream);
 	wxString GetCodecName(AVCodecID vcodec, const wxString &encoderHardware);
 	AVDictionary * setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName);

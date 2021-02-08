@@ -2017,7 +2017,7 @@ void CFFmpegTranscodingPimpl::VideoInfos(CFFmpegTranscodingPimpl::StreamContext 
 }
 
 
-int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const long &timeInSeconds)
+int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const int64_t &timeInSeconds)
 {
 	int ret = 0;
 	int stream_index = 0;

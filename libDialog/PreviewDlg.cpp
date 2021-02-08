@@ -19,16 +19,6 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
 	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
 	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-
-	//CThemeBitmapWindow themeBitmap;
-	//showBitmapWindow = nullptr;
-	//CMainTheme * viewerTheme = CMainThemeInit::getInstance();
-
-	//if (viewerTheme != nullptr)
-	//	viewerTheme->GetBitmapWindowTheme(&themeBitmap);
-
-	//showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
-	//showBitmapWindow->Show(true);
     
     CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -37,24 +27,15 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenC
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
-	//CVideoOptionCompress videoOptionCompress;
-	//GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
 	showBitmapWindow->Show(true);
     showBitmapWindow->Raise();
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
 
-	//panel->AddChild(showBitmapWindow);
-
 	panel->Bind(wxEVT_SIZE, &CPreviewDlg::OnSize, this);
 
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CPreviewDlg::OnClose));
-
-
-	//panel->SetSize(640, 480);
-	//this->SetSize(640, 480);
-	//showBitmapWindow->SetFocus();
 }
 
 void CPreviewDlg::OnClose(wxCloseEvent& event)
@@ -67,17 +48,7 @@ void CPreviewDlg::OnSize(wxSizeEvent& event)
 {
 	showBitmapWindow->SetSize(panel->GetPosition().x, panel->GetPosition().y, panel->GetSize().x, panel->GetSize().y);
 }
-/*
-void CPreviewDlg::OnbtnOKClick(wxCommandEvent& event)
-{
-	this->Close();
-}
 
-void CPreviewDlg::OnbtnCancelClick(wxCommandEvent& event)
-{
-	this->Close();
-}
-*/
 CPreviewDlg::~CPreviewDlg()
 {
 	delete(showBitmapWindow);
