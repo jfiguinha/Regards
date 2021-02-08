@@ -60,7 +60,7 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.64.3");
+	treeDataWidth->SetValue("2.64.4");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
@@ -160,12 +160,6 @@ void CInfoAbout::Init()
 	treelibWebp->SetValue("3.2");
 	tr.append_child(child, treelibWebp);
 
-	CTreeData * treelib265 = new CTreeData();
-	treelib265->SetIsParent(false);
-	treelib265->SetKey("x265");
-	treelib265->SetValue("2.5");
-	tr.append_child(child, treelib265);
-
 	CTreeData * treelibSDL = new CTreeData();
 	treelibSDL->SetIsParent(false);
 	treelibSDL->SetKey("SDL 2");
@@ -189,6 +183,12 @@ void CInfoAbout::Init()
 	treelibheif->SetKey("heif");
 	treelibheif->SetValue("1.0");
 	tr.append_child(child, treelibheif);
+	
+	CTreeData * treelibAvif = new CTreeData();
+	treelibAvif->SetIsParent(false);
+	treelibAvif->SetKey("Avif");
+	treelibAvif->SetValue("1.0");
+	tr.append_child(child, treelibAvif);
 
     CTreeData * treePiccante = new CTreeData();
 	treePiccante->SetIsParent(false);
@@ -213,6 +213,12 @@ void CInfoAbout::Init()
 	poppler->SetKey("libPoppler");
 	poppler->SetValue("0.8");
 	tr.append_child(child, poppler);
+	
+	CTreeData * opencv = new CTreeData();
+	opencv->SetIsParent(false);
+	opencv->SetKey("OpenCV");
+	opencv->SetValue("4.5");
+	tr.append_child(child, opencv);
 
 	CreateElement();
 }
