@@ -64,7 +64,9 @@
 #include <PageCurlFilter.h>
 #include <BitmapFusionEffectParameter.h>
 #include <hqdn3dFilter.h>
+#include <OilPaintingFilter.h>
 #include <hqdn3dEffectParameter.h>
+#include <OilPaintingEffectParameter.h>
 using namespace Regards::Filter;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
@@ -260,6 +262,17 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
         }
             break;
 
+		case IDM_FILTER_OILPAINTING:
+		{
+			if (effectParameter != nullptr)
+			{
+				COilPaintingEffectParameter * oilPaintingParam = (COilPaintingEffectParameter *)effectParameter;
+				filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+				return 1;
+			}
+		}
+		break;
+
 		case IDM_SHARPENMASKING:
 		{
 			if (effectParameter != nullptr)
@@ -406,6 +419,10 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 	case IDM_FILTRE_CLOUDS:
         filterEffect = new CCloudsFilter();
        // filterEffect->Filter(effectParameter, source, this);
+		break;
+
+	case IDM_FILTER_OILPAINTING:
+		filterEffect = new COilPaintingFilter();
 		break;
 
 	case IDM_DECODE_RAW:
@@ -720,6 +737,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 		case IDM_SHARPENMASKING:
         case IDM_BEST_EXPOSURE:
         case IDM_FILTRE_CLOUDS:
+		case IDM_FILTER_OILPAINTING:
 		case IDM_FILTRE_FLOUGAUSSIEN:
 		case IDM_FILTRE_FLOU:
         case IDM_AJUSTEMENT_SOLARISATION:
@@ -791,6 +809,7 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
         case IDM_FILTRE_EDGE:
         case IDM_FILTRE_EMBOSS:
         case IDM_FILTRE_MOSAIQUE:
+		case IDM_FILTER_OILPAINTING:
         case IDM_FILTRENOISE:
         case IDM_FILTRE_DILATE:
         case IDM_FILTRE_ERODE:
@@ -883,6 +902,11 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
         case IDM_FILTRE_CLOUDS:
             return new CCloudsEffectParameter();
             break;
+
+		case IDM_FILTER_OILPAINTING:
+			return new COilPaintingEffectParameter();
+			break;
+
 		case IDM_FILTRE_FLOUGAUSSIEN:
 			return new CGaussianBlurEffectParameter();
 			break;
@@ -915,6 +939,7 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_COLOR_BALANCE:
         case IDM_FILTRE_SWIRL:
         case IDM_FILTRE_CLOUDS:
+		case IDM_FILTER_OILPAINTING:
         case IDM_BEST_EXPOSURE:
         case IDM_SHARPENMASKING:
        // case IDM_REDEYE:
@@ -1060,6 +1085,15 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
             return exposure;
             break;
         }
+
+		case IDM_FILTER_OILPAINTING:
+		{
+			COilPaintingEffectParameter * oilpainteffect = new COilPaintingEffectParameter();
+			oilpainteffect->size = 10;
+			oilpainteffect->dynRatio = 1;
+			return oilpainteffect;
+			break;
+		}
             
 
         case IDM_FILTRE_CLOUDS:
@@ -1127,6 +1161,7 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case IDM_FILTRE_SWIRL:
         case IDM_FILTRE_CLOUDS:
         case IDM_AJUSTEMENT_SOLARISATION:
+		case IDM_FILTER_OILPAINTING:
             return 2;
     }
     return 3;
@@ -1196,5 +1231,6 @@ void CFiltreData::InitFilterListLabel()
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BRIGHTNESSCONTRAST_AUTO, "LBLBRIGHTNESSCONTRASTAUTO"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREHQDN3D, "LBLFILTREHQDN3D"));
+	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_OILPAINTING, "LBLfilterOilPainting"));
     
 }

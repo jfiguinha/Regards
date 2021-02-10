@@ -41,9 +41,12 @@ int CFiltreEffet::GetLib()
 #define LUTMAXM1 29.0
 #define LUTPRECISION 1000.0
 
+#ifndef MAX
 #define MAX(i,j) ( (i)<(j) ? (j):(i) )
+#endif
+#ifndef MIN
 #define MIN(i,j) ( (i)<(j) ? (i):(j) )
-
+#endif
 
 int CFiltreEffet::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
 {
@@ -59,6 +62,11 @@ int CFiltreEffet::FilterBilateral2DS(const float & sigma_s, const float & sigma_
     imageLoadFormat.SetPicture(test);
     filtreEffet->SetBitmap(&imageLoadFormat);  
     return 0;
+}
+
+int CFiltreEffet::OilPaintingEffect(const int &size, const int &dynRatio)
+{
+	return filtreEffet->OilPaintingEffect(size, dynRatio);
 }
 
 int CFiltreEffet::GetWidth()

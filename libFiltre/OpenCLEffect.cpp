@@ -120,8 +120,34 @@ int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, cons
 	return 0;
 }
 
+int COpenCLEffect::OilPaintingEffect(const int &size, const int &dynRatio)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.OilPaintingEffect(paramOutput->GetValue(), widthOut, heightOut, size, dynRatio);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.OilPaintingEffect(input->GetValue(), width, height, size, dynRatio);
+		}
+		SetOutputValue(output, _width, _height);
+	}
+	return 0;
+}
+
 int COpenCLEffect::Bm3d(const int & fSigma)
 {
+
 	int _width = 256;
 	int _height = 256;
 	
@@ -131,20 +157,6 @@ int COpenCLEffect::Bm3d(const int & fSigma)
 	{
 		COpenCLFilter openclFilter(context);
 		int size = 512;
-/*
-		if(preview && paramOutput != nullptr)
-		{
-			_width = widthOut;
-			_height = heightOut;
-			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, paramOutput->GetValue(), widthOut, heightOut);
-		}
-		else
-		{
-			_width = width;
-			_height = height;
-			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, input->GetValue(), width, height);
-		}		
-        */
         
 		if (preview && paramOutput != nullptr)
 		{
@@ -159,10 +171,6 @@ int COpenCLEffect::Bm3d(const int & fSigma)
 			yPicture = openclFilter.ConvertToY(input->GetValue(), _width, _height);
 		}
 
-
-		
-
-		
 		//int size = 512;
 		
 		COpenCLBm3D openclBm3D(context);
@@ -170,35 +178,6 @@ int COpenCLEffect::Bm3d(const int & fSigma)
 		openclBm3D.ExecuteFilter(fSigma);
 		yPicture = openclBm3D.GetWienerImage();
 		
-		
-		/*
-		int nbPictureX = _width / size;
-		int nbPictureY = _height / size;
-		if (nbPictureX * size < _width)
-			nbPictureX++;
-		if (nbPictureY * size < _height)
-			nbPictureY++;
-
-		for (int y = 0; y < nbPictureY; y++)
-		{
-			for (int x = 0; x < nbPictureX; x++)
-			{		
-
-				int marge = 16;			
-				int sizeTraitement = size + marge * 2;
-				cl_mem wiener = nullptr;
-				cl_mem block_size = nullptr;
-
-				COpenCLBm3D openclBm3D(context);
-				block_size = openclFilter.ExtractBlocSize(yPicture, size, marge, _width, _height, x, y);
-				openclBm3D.InitData(block_size, sizeTraitement * sizeTraitement, sizeTraitement, sizeTraitement);
-				openclBm3D.ExecuteFilter(fSigma);
-				wiener = openclBm3D.GetWienerImage();
-				openclFilter.InsertBlockSize(yPicture, wiener, size, marge, _width, _height, x, y);
-			}
-		}
-		*/
-
 		cl_mem output = nullptr;
 		if (preview && paramOutput != nullptr)
 		{
@@ -211,6 +190,7 @@ int COpenCLEffect::Bm3d(const int & fSigma)
 
 		SetOutputValue(output, _width, _height);
 	}
+
 	return 0;  
 }
 

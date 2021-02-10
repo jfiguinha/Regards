@@ -327,6 +327,12 @@
     <ClInclude Include="hqdn3dFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
+    <ClInclude Include="OilPaintingEffectParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="OilPaintingFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -498,6 +504,9 @@
       <Filter>window\video</Filter>
     </ClCompile>
     <ClCompile Include="hqdn3dFilter.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="OilPaintingFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>

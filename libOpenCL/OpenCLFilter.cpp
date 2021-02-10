@@ -5,6 +5,10 @@
 #include "RegardsBitmap.h"
 #include "utility.h"
 #include <OpenCVEffect.h>
+#include <opencv2/core/ocl.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/xphoto.hpp>
+#include <opencv2/imgproc.hpp>
 using namespace Regards::OpenCL;
 
 
@@ -19,6 +23,19 @@ COpenCLFilter::~COpenCLFilter()
 {
 	if (hq3d != nullptr)
 		delete hq3d;
+}
+
+cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height, const int &size, const int &dynRatio)
+{
+	context->GetContextForOpenCV().bind();
+	cv::Mat cvDest;
+	cv::Mat cvSrc;
+	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+	cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
+	cv::xphoto::oilPainting(cvSrc, cvDest, size, dynRatio, cv::COLOR_BGR2Lab);
+	cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
+	return CopyOpenCVTexture(cvImage, width, height);
+
 }
 
 cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent)

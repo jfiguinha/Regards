@@ -47,7 +47,7 @@ namespace Regards
 			int ClaheFilter(int nBins, float clipLevel, int windowSize){ return -1; };
 			int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 			int NlmeansFilter(int fsize, int bsize, float sigma);
-
+			int OilPaintingEffect(const int &size, const int &dynRatio);
 			void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 			void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 			

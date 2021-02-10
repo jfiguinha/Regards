@@ -67,6 +67,7 @@ public:
 	virtual int GetHeight();
 	static wxImage GetwxImage(CRegardsBitmap * bitmap);
 	int BrightnessAndContrastAuto(float clipHistPercent);
+	int OilPaintingEffect(const int &size, const int &dynRatio);
 
 private:
 	CRegardsBitmap * bitmapOut;
@@ -75,5 +76,6 @@ private:
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
+	//cv::Mat bitmapOpenCV;
 };
 
