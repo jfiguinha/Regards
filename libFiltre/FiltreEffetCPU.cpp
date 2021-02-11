@@ -247,13 +247,13 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 
 	switch (mode)
 	{
-	case 0:
+	case 1:
 		sketchMode = true;
 		break;
-	case 1:
+	case 2:
 		alienMode = true;
 		break;
-	case 2:
+	case 3:
 		evilMode = true;
 		break;
 	default:
@@ -313,8 +313,11 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	cv::Size smallSize;
 	smallSize.width = size.width / 2;
 	smallSize.height = size.height / 2;
+
+	cv::Mat srcBgr;
+	cv::cvtColor(src, srcBgr, cv::COLOR_BGRA2BGR);
 	cv::Mat smallImg = cv::Mat(smallSize, CV_8UC3);
-	resize(src, smallImg, smallSize, 0, 0, cv::INTER_LINEAR);
+	resize(srcBgr, smallImg, smallSize, 0, 0, cv::INTER_LINEAR);
 
 	// Perform many iterations of weak bilateral filtering, to enhance the edges
 	// while blurring the flat regions, like a cartoon.
@@ -335,7 +338,8 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	}
 
 	// Go back to the original scale.
-	resize(smallImg, src, size, 0, 0, cv::INTER_LINEAR);
+	cv::cvtColor(smallImg, srcBgr, cv::COLOR_BGR2BGRA);
+	resize(srcBgr, src, size, 0, 0, cv::INTER_LINEAR);
 
 	// Use the blurry cartoon image, except for the strong edges that we will leave black.
 	src.copyTo(dst, mask);

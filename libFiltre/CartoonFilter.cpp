@@ -39,10 +39,11 @@ void CCartoonFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap *
 	this->source = source;
 
 	vector<CMetadata> elementNoiseReduction;
-	AddMetadataElement(elementNoiseReduction, "Sketch Mode", 0);
-	AddMetadataElement(elementNoiseReduction, "Alien Mode", 1);
-	AddMetadataElement(elementNoiseReduction, "Evil Mode", 2);
-	AddMetadataElement(elementNoiseReduction, "Default", 3);
+	AddMetadataElement(elementNoiseReduction, "Default", 0);
+	AddMetadataElement(elementNoiseReduction, "Sketch Mode", 1);
+	AddMetadataElement(elementNoiseReduction, "Alien Mode", 2);
+	AddMetadataElement(elementNoiseReduction, "Evil Mode", 3);
+
     
 	filtreInterface->AddTreeInfos(libelleEffectMode, new CTreeElementValueInt(cartoonEffectParameter->mode), &elementNoiseReduction, 3, 3);
 }
