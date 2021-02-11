@@ -373,6 +373,14 @@ int CFiltreEffet::Swirl(const float &radius, const float &angle)
 }
 
 //---------------------------------------------------------------------
+//Effet Cartoonify Image 
+//---------------------------------------------------------------------
+int CFiltreEffet::CartoonifyImage(const int & mode)
+{
+	return filtreEffet->CartoonifyImage(mode);
+}
+
+//---------------------------------------------------------------------
 //Lumière et Contraste 
 //---------------------------------------------------------------------
 int CFiltreEffet::BrightnessAndContrast(const double &brightness, const double &contrast)

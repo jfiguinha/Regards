@@ -333,6 +333,12 @@
     <ClInclude Include="OilPaintingFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
+    <ClInclude Include="CartoonEffectParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="CartoonFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -507,6 +513,9 @@
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="OilPaintingFilter.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="CartoonFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>

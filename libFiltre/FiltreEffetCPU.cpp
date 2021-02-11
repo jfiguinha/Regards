@@ -239,8 +239,27 @@ void CFiltreEffetCPU::RemovePepperNoise(cv::Mat &mask)
 	}
 }
 
-int CFiltreEffetCPU::CartoonifyImage(const bool & sketchMode, const bool & alienMode, const bool & evilMode)
+int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 {
+	bool sketchMode = false;
+	bool alienMode = false;
+	bool evilMode = false;
+
+	switch (mode)
+	{
+	case 0:
+		sketchMode = true;
+		break;
+	case 1:
+		alienMode = true;
+		break;
+	case 2:
+		evilMode = true;
+		break;
+	default:
+		break;
+	}
+
 	CRegardsBitmap* bitmap = nullptr;
 	if (preview)
 		bitmap = bitmapOut;

@@ -50,7 +50,7 @@ namespace Regards
 			int OilPaintingEffect(const int &size, const int &dynRatio);
 			void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 			void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
-			
+			int CartoonifyImage(const int & mode) { return -1; };
 			int NiveauDeGris();
 			int RedEye(){ return -1; };
 			int HistogramLog(){ return -1; };

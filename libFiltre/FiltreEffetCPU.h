@@ -52,7 +52,7 @@ public:
 	int FiltreMosaic();
 	int FlipVertical();
 	int FlipHorizontal();
-	int CartoonifyImage(const bool & sketchMode, const bool & alienMode, const bool & evilMode);
+	int CartoonifyImage(const int & mode);
 	int MotionBlur(const double &radius, const double &sigma, const double &angle);
 	int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 	int PhotoFiltre(const CRgbaquad &clValue, const int &intensity);

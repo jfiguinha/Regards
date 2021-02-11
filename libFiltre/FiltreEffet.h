@@ -61,6 +61,7 @@ public:
     int FilterKuwahara(const int &kernelSize);
     int FilterBilateral2DS(const float & sigma_s, const float & sigma_r);
 	int Median();
+	int CartoonifyImage(const int & mode);
 	int Noise();
 	int Dilate();
 	int Negatif();
