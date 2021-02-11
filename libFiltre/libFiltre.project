@@ -95,6 +95,7 @@
       <File Name="FilterWindowParam.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="data structure">
+      <File Name="CartoonEffectParameter.h"/>
       <File Name="OilPaintingEffectParameter.h"/>
       <File Name="BitmapFusionEffectParameter.h"/>
       <File Name="bm3dEffectParameter.h"/>
@@ -138,6 +139,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="CartoonFilter.h"/>
+      <File Name="CartoonFilter.cpp"/>
       <File Name="OilPaintingFilter.h"/>
       <File Name="OilPaintingFilter.cpp"/>
       <File Name="hqdn3dFilter.h"/>
