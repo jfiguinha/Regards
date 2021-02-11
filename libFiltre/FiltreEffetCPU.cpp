@@ -344,6 +344,8 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	// Use the blurry cartoon image, except for the strong edges that we will leave black.
 	src.copyTo(dst, mask);
 	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+    
+    return 0;
 }
 
 // Apply an "alien" filter, when given a shrunken BGR image and the full-res edge mask.
