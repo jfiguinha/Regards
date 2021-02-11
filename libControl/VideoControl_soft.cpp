@@ -2311,7 +2311,11 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
         isCPU = IsCPUContext();
     }
     else
+    {
+        isffmpegDecode = true;
         enableopenCL = 0;
+    }
+        
 
 	if (!enableopenCL || isCPU || (src_frame->format != 0 && src_frame->format != 23))
 	{
@@ -2319,6 +2323,7 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 		muBitmap.lock();
 		*pictureFrame = *bitmapData;
 		muBitmap.unlock();
+        
 	}
 	else
 	{
