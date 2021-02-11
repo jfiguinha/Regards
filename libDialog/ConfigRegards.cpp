@@ -3,7 +3,11 @@
 #include <RegardsConfigParam.h>
 #include <LibResource.h>
 #include <ParamInit.h>
-
+#include "ViewerParamInit.h"
+#include "ViewerParam.h"
+#include <OpenCLEngine.h>
+using namespace Regards::Viewer;
+using namespace Regards::OpenCL;
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(ConfigRegards)
 	//*)
@@ -38,11 +42,14 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
 	//ID_RBVIDEOFACEDETECTION
 	rbVideoFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOFACEDETECTION"));
-	//rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
-#ifdef WIN32
-	ckDxva2Opengl = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2OPENGL"));
-	ckDxva2acc = (wxCheckBox*)FindWindow(XRCID("ID_CKDXVA2ACCELERATOR"));
-#endif
+
+	txtPicturePath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTPICTUREPATH"));
+	btPicturePath = (wxButton*)FindWindow(XRCID("ID_PICTUREPATH"));
+	txtVideoPath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTVIDEOPATH"));
+	btVideoPath = (wxButton*)FindWindow(XRCID("ID_VIDEOPATH"));
+	cbOpenCLDevice = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLDEVICE"));
+	cbOpenCLPlatform = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLPLATFORM"));
+	rbKernelInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBKERNELINMEMORY"));
 	rdOpenCVOpenCL = (wxRadioBox*)FindWindow(XRCID("ID_RBOPENCLOPENCV"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
@@ -51,10 +58,37 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
-    
+	Connect(XRCID("ID_CBOPENCLPLATFORM"), wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&ConfigRegards::OnPlatformSelected);
+	//Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&ConfigRegards::OnInit);
+	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
+	Connect(XRCID("ID_PICTUREPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnPathPictureClick);
+
+
     Init();
+
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		txtVideoPath->SetValue(config->GetPathForVideoEdit());
+	if (config != nullptr)
+		txtPicturePath->SetValue(config->GetPathForPictureEdit());
     
     SetAutoLayout( TRUE );
+}
+
+void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
+{
+	wxFileDialog openFileDialog(nullptr, "Select Video Editor Executable", "", "",
+		"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_OK)
+		txtVideoPath->SetValue(openFileDialog.GetPath());
+}
+
+void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
+{
+	wxFileDialog openFileDialog(nullptr, "Select Picture Editor Executable", "", "",
+		"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_OK)
+		txtPicturePath->SetValue(openFileDialog.GetPath());
 }
 
 ConfigRegards::~ConfigRegards()
@@ -63,6 +97,54 @@ ConfigRegards::~ConfigRegards()
 	//*)
 }
 
+int ConfigRegards::GetDeviceIndex()
+{
+	wxString selectItem = cbOpenCLDevice->GetStringSelection();
+	OpenCLDevice * openCLDevice = COpenCLDeviceList::SelectDevice(selectItem);
+	if (openCLDevice != nullptr)
+		return openCLDevice->deviceIndex;
+	return 0;
+}
+
+wxString ConfigRegards::GetPlatformName()
+{
+	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
+	return selectItem;
+}
+
+void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
+{
+	wxString device = "";
+	OpenCLPlatform * openCLPlatformSelected = nullptr;
+	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
+	vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+
+	for (OpenCLPlatform * openCLPlatform : listPlatform)
+	{
+		if (selectItem == openCLPlatform->platformName)
+		{
+			openCLPlatformSelected = openCLPlatform;
+			break;
+		}
+	}
+
+	int i = 0;
+	cbOpenCLDevice->Clear();
+
+	vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+
+	for (OpenCLDevice * openCLDevice : listDevice)
+	{
+		cbOpenCLDevice->Append(openCLDevice->deviceName);
+		if (i == 0)
+		{
+			device = openCLDevice->deviceName;
+			i++;
+		}
+	}
+
+	cbOpenCLDevice->SetStringSelection(device);
+}
 
 void ConfigRegards::Init()
 {
@@ -111,15 +193,6 @@ void ConfigRegards::Init()
 	int faceProcess = regardsParam->GetFaceProcess();
 	scProcessFace->SetValue(faceProcess);
 
-#ifdef WIN32
-	bool dxva2Use = regardsParam->GetDxva2Actif();
-	ckDxva2Opengl->SetValue(dxva2Use);
-	wxString decoder = regardsParam->GetVideoDecoderHardware();
-	if(decoder == "dxva2")
-		ckDxva2acc->SetValue(1);
-	else
-		ckDxva2acc->SetValue(0);
-#endif
 	int dataInMemory = regardsParam->GetDatabaseInMemory();
 	if (dataInMemory == 0)
 		rbDatabaseInMemory->SetSelection(1);
@@ -128,6 +201,58 @@ void ConfigRegards::Init()
 
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
+
+	bool kernelInMemory = false;
+	int supportOpenCL = 0;
+	wxString platformName = "";
+	wxString deviceName = "";
+	int indexDevice = -1;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+	{
+		platformName = config->GetOpenCLPlatformName();
+		indexDevice = config->GetOpenCLPlatformIndex();
+		kernelInMemory = config->GetOpenCLLoadFromBinaries();
+		supportOpenCL = config->GetIsOpenCLSupport();
+	}
+
+	rbKernelInMemory->SetSelection(kernelInMemory);
+
+	OpenCLPlatform * openCLPlatformSelected = nullptr;
+	this->SetTitle("OpenCL Device Selection");
+	vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+
+	;
+	for (OpenCLPlatform * openCLPlatform : listPlatform)
+	{
+
+		cbOpenCLPlatform->Append(openCLPlatform->platformName);
+		if (platformName == openCLPlatform->platformName)
+		{
+			openCLPlatformSelected = openCLPlatform;
+		}
+	}
+
+	cbOpenCLPlatform->SetStringSelection(platformName);
+
+	if (openCLPlatformSelected != nullptr)
+	{
+		vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+
+		printf("Select Device Index : %d \n", indexDevice);
+		for (OpenCLDevice * openCLDevice : listDevice)
+		{
+			cbOpenCLDevice->Append(openCLDevice->deviceName);
+			if (openCLDevice->deviceIndex == indexDevice)
+			{
+				deviceName = openCLDevice->deviceName;
+			}
+		}
+
+		cbOpenCLDevice->SetStringSelection(deviceName);
+	}
+
+
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -136,6 +261,22 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
     
     int nbProcesseur = thread::hardware_concurrency();
+
+	int kernelInMemory = rbKernelInMemory->GetSelection();
+
+	if (regardsParam != nullptr)
+	{
+		regardsParam->SetOpenCLLoadFromBinaries(kernelInMemory);
+		regardsParam->SetOpenCLPlatformIndex(GetDeviceIndex());
+		regardsParam->SetOpenCLPlatformName(GetPlatformName());
+	}
+
+	CMainParam* mainparam = CMainParamInit::getInstance();
+	if (mainparam != nullptr)
+	{
+		mainparam->SetPathForVideoEdit(txtVideoPath->GetValue());
+		mainparam->SetPathForPictureEdit(txtPicturePath->GetValue());
+	}
 
 	int transition = rbTransitionEffect->GetSelection();
 	if (transition == 0)
@@ -160,15 +301,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetAutoConstrast(1);
 	else
 		regardsParam->SetAutoConstrast(0);
-
-#ifdef WIN32
-	regardsParam->SetDxva2Actif(ckDxva2Opengl->IsChecked());
-	bool ckAcc = ckDxva2acc->IsChecked();
-	if(ckAcc)
-		regardsParam->SetVideoDecoderHardware("dxva2");
-	else
-		regardsParam->SetVideoDecoderHardware("");
-#endif
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);

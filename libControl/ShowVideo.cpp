@@ -1,7 +1,6 @@
 #include "header.h"
 #include "ShowVideo.h"
 #include "SliderVideo.h"
-#include "VideoControl.h"
 #include "VideoControl_soft.h"
 #include <OpenCLContext.h>
 #include <window_id.h>
@@ -36,6 +35,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		config->GetVideoControlTheme(&themeVideo);
 	}
     
+#ifdef OPENGL_DXVA2_DECODING
 #ifdef WIN32
 	wxString decoder = "";
 	int dxva2 = 0;
@@ -82,6 +82,19 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 		videoWindow->SetEncoderHardware(decoder, false);
 #endif
+#endif
+
+	softRender = true;
+	wxString decoder = "";
+	/*
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		decoder = regardsParam->GetVideoDecoderHardware();
+	}
+	*/
+	videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+	videoWindow->SetEncoderHardware(decoder, false);
 
     scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
 

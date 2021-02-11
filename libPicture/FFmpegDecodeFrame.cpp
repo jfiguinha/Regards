@@ -573,7 +573,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long &timeInSeconds, const 
 		return -1;
 	int videoFrameOutputWidth = 0;
 	int videoFrameOutputHeight = 0;
-	int ret = 0;
+	int ret = -22;
 	bool pictureFind = false;
 	
 	bool deleteMemory = false;

@@ -38,6 +38,36 @@ cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height,
 
 }
 
+cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
+{
+	context->GetContextForOpenCV().bind();
+	bool frameStabilized = false;
+	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+
+	cv::UMat ycbcr;
+	cv::UMat yChannel;
+	cv::UMat yChannelOut;
+
+	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
+	cvtColor(cvImage, ycbcr, cv::COLOR_BGR2YCrCb);
+
+	// Extract the Y channel
+	cv::extractChannel(ycbcr, yChannel, 0);
+
+	cv::xphoto::bm3dDenoising(yChannel, yChannelOut, fSigma);
+
+	// Merge the the color planes back into an Lab image
+	cv::insertChannel(yChannelOut, ycbcr, 0);
+
+	// convert back to RGB
+	cv::cvtColor(ycbcr, cvImage, cv::COLOR_Lab2BGR);
+	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+	// Temporary Mat not reused, so release from memory.
+	yChannel.release();
+
+	return CopyOpenCVTexture(cvImage, width, height);
+}
+
 cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent)
 {
 	context->GetContextForOpenCV().bind();

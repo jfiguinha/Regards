@@ -79,7 +79,6 @@ namespace Regards
             void OnIconSizeLess(wxCommandEvent& event);
             void OnIconSizeMore(wxCommandEvent& event);
 			void OnFacePertinence(wxCommandEvent& event);
-			void OnExternalProgram(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
 			void OnHello(wxCommandEvent& event);
@@ -87,14 +86,9 @@ namespace Regards
 			void OnClose(wxCloseEvent& event);
 			void OnConfiguration(wxCommandEvent& event);
 			void OnEraseDatabase(wxCommandEvent& event);
-			//void OnInterpolationFilter(wxCommandEvent& event);
-			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnScanner(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
-			void OnFaceDetection(wxCommandEvent& event);
-			void OnCategoryDetection(wxCommandEvent& event);
-			void ShowOpenCLConfiguration(const bool &showRestart);
             void OnFileSystemModified(wxFileSystemWatcherEvent& event);
 			void HideScanner(wxCommandEvent& event);
 

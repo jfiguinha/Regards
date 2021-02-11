@@ -412,7 +412,6 @@
     <ClInclude Include="ThumbnailViewerEffect.h" />
     <ClInclude Include="ThumbnailViewerEffectWnd.h" />
     <ClInclude Include="VideoCompressOption.h" />
-    <ClInclude Include="VideoControl.h" />
     <ClInclude Include="VideoControlInterface.h" />
     <ClInclude Include="VideoControl_soft.h" />
     <ClInclude Include="VideoInterface.h" />
@@ -459,7 +458,6 @@
     <ClCompile Include="ThumbnailVideo.cpp" />
     <ClCompile Include="ThumbnailViewerEffect.cpp" />
     <ClCompile Include="ThumbnailViewerEffectWnd.cpp" />
-    <ClCompile Include="VideoControl.cpp" />
     <ClCompile Include="VideoControl_soft.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

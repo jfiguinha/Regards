@@ -69,6 +69,7 @@ namespace Regards
 			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 			cl_mem BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent);
 			cl_mem OilPaintingEffect(cl_mem inputData, int width, int height, const int &size, const int &dynRatio);
+			cl_mem Bm3d(cl_mem inputData, int width, int height, const float & fSigma);
 		protected:
 
 			cv::UMat GetOpenCVStruct(cl_mem inputData, int width, int height);

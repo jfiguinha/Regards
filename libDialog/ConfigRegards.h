@@ -44,15 +44,18 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbContrastCorrection;
 		wxComboBox* rbInterpolation;
 
+		wxComboBox* cbOpenCLDevice;
+		wxComboBox* cbOpenCLPlatform;
+		wxRadioBox* rbKernelInMemory;
+
 		//ID_RBVIDEOFACEDETECTION
 		wxRadioBox* rbVideoFaceDetection;
 		//*)
 
-#ifdef WIN32
-		wxCheckBox* ckDxva2Opengl;
-		wxCheckBox* ckDxva2acc;
-#endif
-
+		wxTextCtrl  * txtPicturePath;
+		wxButton* btPicturePath;
+		wxTextCtrl  * txtVideoPath;
+		wxButton* btVideoPath;
 		bool IsOk();
 
 	protected:
@@ -61,6 +64,12 @@ class ConfigRegards: public wxDialog
 		//*)
 
 	private:
+
+		void OnbtnPathVideoClick(wxCommandEvent& event);
+		void OnBtnPathPictureClick(wxCommandEvent& event);
+		int GetDeviceIndex();
+		wxString GetPlatformName();
+		void OnPlatformSelected(wxCommandEvent& event);
 
 		//(*Handlers(ConfigRegards)
 		void Init();

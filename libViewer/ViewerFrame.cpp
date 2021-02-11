@@ -18,8 +18,6 @@
 #include <FileUtility.h>
 #include <SqlFindPhotos.h>
 #include <SqlFindFolderCatalog.h>
-#include <OpenCLDialog.h>
-#include <InterpolationFilterSelect.h>
 #include <libPicture.h>
 #include <SavePicture.h>
 #include <ScannerFrame.h>
@@ -28,7 +26,6 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <OpenCLEngine.h>
-#include <ExternalProgram.h>
 #include <KeywordDialogBox.h>
 using namespace std;
 using namespace Regards::Print;
@@ -194,8 +191,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	m_previewModality = wxPreviewFrame_AppModal;
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	wxMenu *menuFile = new wxMenu;
-	wxMenu *menuParameter = new wxMenu;
-	wxMenu *menuFace = new wxMenu;
     
     wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize",1);//L"Decrease Icon Size";
     wxString labelDecreaseIconSize_link = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize_link",1);//L"&Decrease Icon Size";
@@ -203,8 +198,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     wxString labelEnlargeIconSize_link = CLibResource::LoadStringFromResource(L"labelEnlargeIconSize_link",1);//L"&Enlarge Icon Size";
     wxString labelConfiguration = CLibResource::LoadStringFromResource(L"labelConfiguration",1);//L"Configuration";
     wxString labelConfiguration_link = CLibResource::LoadStringFromResource(L"labelConfiguration_link",1);//L"&Configuration";
-    wxString labelOpenCL = CLibResource::LoadStringFromResource(L"labelOpenCL",1);//L"OpenCL";
-    wxString labelOpenCL_link = CLibResource::LoadStringFromResource(L"labelOpenCL_link",1);//L"&OpenCL";
     wxString labelEraseDataBase = CLibResource::LoadStringFromResource(L"labelEraseDataBase",1);//L"Erase Database";
     wxString labelEraseDataBase_link = CLibResource::LoadStringFromResource(L"labelEraseDataBase_link",1);//L"&Erase Database";
     wxString labelThumbnailRight = CLibResource::LoadStringFromResource(L"labelThumbnailRight",1);//L"Right Position";
@@ -220,27 +213,24 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     wxString labelSizeIcon = CLibResource::LoadStringFromResource(L"labelSizeIcon",1);//L"&Icon Size";
     wxString labelThumbnail = CLibResource::LoadStringFromResource(L"labelThumbnail",1);//L"&Thumbnail";
     wxString labelHelp = CLibResource::LoadStringFromResource(L"labelHelp",1);//L"&Help";
-	wxString labelExternalProgram = "External Program";
-	wxString labelExternalProgram_link = "&External Program";
 
     wxMenu *menuSizeIcon = new wxMenu;
     menuSizeIcon->Append(ID_SIZEICONLESS, labelDecreaseIconSize_link, labelDecreaseIconSize);
     menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
-	menuParameter->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
-	menuParameter->Append(ID_ExternalProgram, labelExternalProgram_link, labelExternalProgram);
-	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
 
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 #ifdef WIN32
 	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
 #endif
+	
+	menuFile->AppendSeparator();
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
 #endif
-
-	menuFile->AppendSeparator();
 	menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
+	menuFile->AppendSeparator();
+	menuFile->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
 	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT);
 	wxMenu *menuHelp = new wxMenu;
@@ -248,14 +238,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     menuHelp->Append(wxID_HELP);
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
-	menuBar->Append(menuParameter, labelParameter);
-	menuBar->Append(menuFace, "Photo Detection");
     menuBar->Append(menuSizeIcon, labelSizeIcon);
-
 	menuBar->Append(menuHelp, labelHelp);
-
-	menuFace->Append(ID_FACEDETECTION, wxT("&Face Detection..."), wxT("Face Detection"));
-
 	SetMenuBar(menuBar);
 
 	SetLabel(wxT("Regards Viewer"));
@@ -665,44 +649,6 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 	}
 }
 
-void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
-{
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
-
-	if (supportOpenCL)
-	{
-
-		OpenCLDialog configFile(this);
-		configFile.ShowModal();
-		if (configFile.IsOk())
-		{
-			wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1);//L"&Thumbnail";
-			wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
-			CRegardsConfigParam* config = CParamInit::getInstance();
-			if (config != nullptr)
-			{
-				config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
-				config->SetOpenCLPlatformName(configFile.GetPlatformName());
-			}
-
-			if (showRestart)
-				wxMessageBox(labelRestart, labelInformations);
-		}
-	}
-	else
-	{
-		wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
-		wxMessageBox("OpenCL device Required", labelInformations);
-	}
-}
-
-void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
-{
-    ShowOpenCLConfiguration(true);
-}
 
 void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 {
@@ -843,33 +789,6 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 	}
 }
 
-void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
-{
-	/*
-	CCategoryDetectionDlg catergoryDetection(this);
-	catergoryDetection.ShowModal();
-
-
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if (listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
-}
-
-void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
-{
-
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if (listFace != nullptr)
-	{
-		listFace->FacialRecognitionReload();
-	}
-
-}
-
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 {
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
@@ -881,12 +800,6 @@ void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 
 	(*g_printData) = pageSetupDialog.GetPageSetupDialogData().GetPrintData();
 	(*g_pageSetupData) = pageSetupDialog.GetPageSetupDialogData();
-}
-
-void CViewerFrame::OnExternalProgram(wxCommandEvent& event)
-{
-	ExternalProgram externalProgram(this);
-	externalProgram.ShowModal();
 }
 
 void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
@@ -925,12 +838,8 @@ wxBEGIN_EVENT_TABLE(CViewerFrame, wxFrame)
 EVT_MENU(ID_Hello, CViewerFrame::OnHello)
 EVT_MENU(wxID_HELP, CViewerFrame::OnHelp)
 EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
-EVT_MENU(ID_ExternalProgram, CViewerFrame::OnExternalProgram)
-EVT_MENU(ID_OpenCL, CViewerFrame::OnOpenCLConfiguration)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
-EVT_MENU(ID_FACEDETECTION, CViewerFrame::OnFaceDetection)
-EVT_MENU(ID_CATEGORYDETECTION, CViewerFrame::OnCategoryDetection)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 //EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)

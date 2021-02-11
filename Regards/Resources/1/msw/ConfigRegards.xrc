@@ -87,25 +87,6 @@
 						<object class="notebookpage">
 							<label>Accelerator</label>
 							<object class="wxPanel" name="page_2">
-								<object class="wxStaticBox" name="sbInterpolation">
-									<label>Accelerator</label>
-									<pos>0,0</pos>
-									<size>380,70</size>
-								</object>	
-								<object class="wxCheckBox" name="ID_CKDXVA2OPENGL">
-									<pos>10,20</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-									<label>Use dxva2 OpenGL</label>
-									<pos>32,20</pos>
-								</object>
-								<object class="wxCheckBox" name="ID_CKDXVA2ACCELERATOR">
-									<pos>10,45</pos>
-								</object>
-								<object class="wxStaticText" name="ID_STVIDEOHARDCODEC">
-									<label>Use dxva2 Accelerator</label>
-									<pos>32,45</pos>
-								</object>
 								<object class="wxRadioBox" name="ID_RBOPENCLOPENCV">
 									<label>OpenCL For OpenCV Accelerator</label>
 									<style>wxRA_SPECIFY_COLS</style>
@@ -114,7 +95,7 @@
 										<item>No</item>
 									</content>
 									<default>-1</default>
-									<pos>0,100</pos>
+									<pos>0,0</pos>
 									<size>380,70</size>
 								</object>	
 							</object>
@@ -171,6 +152,73 @@
 							</object>
 						</object>
 						<object class="notebookpage">
+						<label>OpenCV Parameter</label>
+							<object class="wxPanel" name="page_4">
+								<object class="wxStaticText" name="ID_STATICTEXT1">
+									<label>OpenCL Platform Selection :</label>
+									<pos>24,24</pos>
+									<size>240,20</size>
+								</object>
+								<object class="wxComboBox" name="ID_CBOPENCLPLATFORM">
+									<pos>16,50</pos>
+									<size>248,30</size>
+								</object>
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>OpenCL Device Selection :</label>
+									<pos>24,85</pos>
+									<size>240,20</size>
+								</object>
+								<object class="wxComboBox" name="ID_CBOPENCLDEVICE">
+									<pos>16,110</pos>
+									<size>248,30</size>
+								</object>
+								<object class="wxRadioBox" name="ID_RBKERNELINMEMORY">
+									<label>OpenCL Kernel in memory</label>
+									<style>wxRA_SPECIFY_COLS</style>
+									<content>
+										<item>No</item>
+										<item>Yes</item>
+									</content>
+									<default>-1</default>
+									<pos>20,150</pos>
+									<size>300,70</size>
+								</object>
+						</object>
+					</object>
+						<object class="notebookpage">
+						<label>External Program</label>
+							<object class="wxPanel" name="page_4">
+								<object class="wxStaticBox" name="sbPictureExternalProgram">
+									<label>Picture External Program</label>
+									<pos>0,10</pos>
+									<size>360,70</size>
+								</object>
+								<object class="wxTextCtrl" name="ID_TXTPICTUREPATH">
+									<default>0</default>
+									<pos>5,35</pos>
+									<size>255,20</size>
+								</object>
+								<object class="wxButton" name="ID_PICTUREPATH">
+									<label>...</label>
+									<pos>270,35</pos>
+								</object>
+								<object class="wxStaticBox" name="sbVideoExternalProgram">
+									<label>Video External Program</label>
+									<pos>0,84</pos>
+									<size>360,80</size>
+								</object>
+								<object class="wxTextCtrl" name="ID_TXTVIDEOPATH">
+									<default>0</default>
+									<pos>5,120</pos>
+									<size>255,20</size>
+								</object>
+								<object class="wxButton" name="ID_VIDEOPATH">
+									<label>...</label>
+									<pos>270,120</pos>
+								</object>
+						</object>
+					</object>					
+					<object class="notebookpage">
 						<label>Other Parameter</label>
 						<object class="wxPanel" name="page_4">
 							<object class="wxRadioBox" name="ID_RBDATAINMEMORY">

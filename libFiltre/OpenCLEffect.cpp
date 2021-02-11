@@ -147,7 +147,28 @@ int COpenCLEffect::OilPaintingEffect(const int &size, const int &dynRatio)
 
 int COpenCLEffect::Bm3d(const int & fSigma)
 {
-
+	/*
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Bm3d(paramOutput->GetValue(), widthOut, heightOut, fSigma);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Bm3d(input->GetValue(), width, height, fSigma);
+		}
+		SetOutputValue(output, _width, _height);
+	}
+	*/
 	int _width = 256;
 	int _height = 256;
 	

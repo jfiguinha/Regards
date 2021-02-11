@@ -34,12 +34,6 @@
     <Filter Include="SavePicture">
       <UniqueIdentifier>{67843608-65e6-4ab1-9ed0-76c15e29da16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="OpenCL">
-      <UniqueIdentifier>{1b34044e-3a98-45ac-9cf0-c43503ec730c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InterpolationFiltre">
-      <UniqueIdentifier>{ffcf16eb-5edf-45a1-a29d-3be4c4de4ce6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SelectPage">
       <UniqueIdentifier>{8ecf6784-0296-4f1b-a77a-bef3bc4aff22}</UniqueIdentifier>
     </Filter>
@@ -54,9 +48,6 @@
     </Filter>
     <Filter Include="Intro">
       <UniqueIdentifier>{b8ab152f-3298-4557-94e2-596ff5da631f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ExternalProgram">
-      <UniqueIdentifier>{7fe6ce3b-526d-427f-a055-f152959b66c9}</UniqueIdentifier>
     </Filter>
     <Filter Include="CompressionVideo">
       <UniqueIdentifier>{2c43ff22-2fe6-4050-81bb-c8104781bfc6}</UniqueIdentifier>
@@ -93,12 +84,6 @@
     <ClCompile Include="SavePicture.cpp">
       <Filter>SavePicture</Filter>
     </ClCompile>
-    <ClCompile Include="OpenCLDialog.cpp">
-      <Filter>OpenCL</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationFilterSelect.cpp">
-      <Filter>InterpolationFiltre</Filter>
-    </ClCompile>
     <ClCompile Include="SelectPage.cpp">
       <Filter>SelectPage</Filter>
     </ClCompile>
@@ -131,9 +116,6 @@
     </ClCompile>
     <ClCompile Include="TitleIntro.cpp">
       <Filter>Intro</Filter>
-    </ClCompile>
-    <ClCompile Include="ExternalProgram.cpp">
-      <Filter>ExternalProgram</Filter>
     </ClCompile>
     <ClCompile Include="CompressVideo.cpp">
       <Filter>CompressionVideo</Filter>
@@ -185,12 +167,6 @@
     <ClInclude Include="SavePicture.h">
       <Filter>SavePicture</Filter>
     </ClInclude>
-    <ClInclude Include="OpenCLDialog.h">
-      <Filter>OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationFilterSelect.h">
-      <Filter>InterpolationFiltre</Filter>
-    </ClInclude>
     <ClInclude Include="SelectPage.h">
       <Filter>SelectPage</Filter>
     </ClInclude>
@@ -223,9 +199,6 @@
     </ClInclude>
     <ClInclude Include="TitleIntro.h">
       <Filter>Intro</Filter>
-    </ClInclude>
-    <ClInclude Include="ExternalProgram.h">
-      <Filter>ExternalProgram</Filter>
     </ClInclude>
     <ClInclude Include="CompressVideo.h">
       <Filter>CompressionVideo</Filter>

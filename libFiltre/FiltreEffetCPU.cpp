@@ -173,11 +173,222 @@ int CFiltreEffetCPU::Bm3d(const int & fSigma)
 		CRegardsBitmap * copyBitmap = bm3dFilter->GetResult();
 		memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
 		delete bm3dFilter;
-
         return 0; 
 	}
 	return -1;
 }
+
+// Remove black dots (upto 4x4 in size) of noise from a pure black & white image.
+// ie: The input image should be mostly white (255) and just contains some black (0) noise
+// in addition to the black (0) edges.
+void CFiltreEffetCPU::RemovePepperNoise(cv::Mat &mask)
+{
+	// For simplicity, ignore the top & bottom row border.
+	for (int y = 2; y < mask.rows - 2; y++) {
+		// Get access to each of the 5 rows near this pixel.
+		uchar *pThis = mask.ptr(y);
+		uchar *pUp1 = mask.ptr(y - 1);
+		uchar *pUp2 = mask.ptr(y - 2);
+		uchar *pDown1 = mask.ptr(y + 1);
+		uchar *pDown2 = mask.ptr(y + 2);
+
+		// For simplicity, ignore the left & right row border.
+		pThis += 2;
+		pUp1 += 2;
+		pUp2 += 2;
+		pDown1 += 2;
+		pDown2 += 2;
+		for (int x = 2; x < mask.cols - 2; x++) {
+			uchar v = *pThis;   // Get the current pixel value (either 0 or 255).
+			// If the current pixel is black, but all the pixels on the 2-pixel-radius-border are white
+			// (ie: it is a small island of black pixels, surrounded by white), then delete that island.
+			if (v == 0) {
+				bool allAbove = *(pUp2 - 2) && *(pUp2 - 1) && *(pUp2) && *(pUp2 + 1) && *(pUp2 + 2);
+				bool allLeft = *(pUp1 - 2) && *(pThis - 2) && *(pDown1 - 2);
+				bool allBelow = *(pDown2 - 2) && *(pDown2 - 1) && *(pDown2) && *(pDown2 + 1) && *(pDown2 + 2);
+				bool allRight = *(pUp1 + 2) && *(pThis + 2) && *(pDown1 + 2);
+				bool surroundings = allAbove && allLeft && allBelow && allRight;
+				if (surroundings == true) {
+					// Fill the whole 5x5 block as white. Since we know the 5x5 borders
+					// are already white, just need to fill the 3x3 inner region.
+					*(pUp1 - 1) = 255;
+					*(pUp1 + 0) = 255;
+					*(pUp1 + 1) = 255;
+					*(pThis - 1) = 255;
+					*(pThis + 0) = 255;
+					*(pThis + 1) = 255;
+					*(pDown1 - 1) = 255;
+					*(pDown1 + 0) = 255;
+					*(pDown1 + 1) = 255;
+				}
+				// Since we just covered the whole 5x5 block with white, we know the next 2 pixels
+				// won't be black, so skip the next 2 pixels on the right.
+				pThis += 2;
+				pUp1 += 2;
+				pUp2 += 2;
+				pDown1 += 2;
+				pDown2 += 2;
+			}
+			// Move to the next pixel.
+			pThis++;
+			pUp1++;
+			pUp2++;
+			pDown1++;
+			pDown2++;
+		}
+	}
+}
+
+int CFiltreEffetCPU::CartoonifyImage(const bool & sketchMode, const bool & alienMode, const bool & evilMode)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	cv::Mat dst;
+	cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+	// Convert from BGR color to Grayscale
+	cv::Mat srcGray;
+	cv::cvtColor(src, srcGray, cv::COLOR_BGRA2GRAY);
+
+	// Remove the pixel noise with a good Median filter, before we start detecting edges.
+	medianBlur(srcGray, srcGray, 7);
+
+	cv::Size size = src.size();
+	cv::Mat mask = cv::Mat(size, CV_8U);
+	cv::Mat edges = cv::Mat(size, CV_8U);
+	if (!evilMode) {
+		// Generate a nice edge mask, similar to a pencil line drawing.
+		Laplacian(srcGray, edges, CV_8U, 5);
+		threshold(edges, mask, 80, 255, cv::THRESH_BINARY_INV);
+		// Mobile cameras usually have lots of noise, so remove small
+		// dots of black noise from the black & white edge mask.
+		RemovePepperNoise(mask);
+	}
+	else {
+		// Evil mode, making everything look like a scary bad guy.
+		// (Where "srcGray" is the original grayscale image plus a medianBlur of size 7x7).
+		cv::Mat edges2;
+		Scharr(srcGray, edges, CV_8U, 1, 0);
+		Scharr(srcGray, edges2, CV_8U, 1, 0, -1);
+		edges += edges2;
+		threshold(edges, mask, 12, 255, cv::THRESH_BINARY_INV);
+		medianBlur(mask, mask, 3);
+	}
+	//imshow("edges", edges);
+	//imshow("mask", mask);
+
+	// For sketch mode, we just need the mask!
+	if (sketchMode) {
+		// The output image has 3 channels, not a single channel.
+		cvtColor(mask, dst, cv::COLOR_GRAY2BGRA);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		return -1;
+	}
+
+	// Do the bilateral filtering at a shrunken scale, since it
+	// runs so slowly but doesn't need full resolution for a good effect.
+	cv::Size smallSize;
+	smallSize.width = size.width / 2;
+	smallSize.height = size.height / 2;
+	cv::Mat smallImg = cv::Mat(smallSize, CV_8UC3);
+	resize(src, smallImg, smallSize, 0, 0, cv::INTER_LINEAR);
+
+	// Perform many iterations of weak bilateral filtering, to enhance the edges
+	// while blurring the flat regions, like a cartoon.
+	cv::Mat tmp = cv::Mat(smallSize, CV_8UC3);
+	int repetitions = 7;        // Repetitions for strong cartoon effect.
+	for (int i = 0; i < repetitions; i++) {
+		int size = 9;           // Filter size. Has a large effect on speed.
+		double sigmaColor = 9;  // Filter color strength.
+		double sigmaSpace = 7;  // Positional strength. Effects speed.
+		bilateralFilter(smallImg, tmp, size, sigmaColor, sigmaSpace);
+		bilateralFilter(tmp, smallImg, size, sigmaColor, sigmaSpace);
+	}
+
+	if (alienMode) {
+		// Apply an "alien" filter, when given a shrunken image and the full-res edge mask.
+		// Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
+		ChangeFacialSkinColor(smallImg, edges);
+	}
+
+	// Go back to the original scale.
+	resize(smallImg, src, size, 0, 0, cv::INTER_LINEAR);
+
+	// Use the blurry cartoon image, except for the strong edges that we will leave black.
+	src.copyTo(dst, mask);
+	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+}
+
+// Apply an "alien" filter, when given a shrunken BGR image and the full-res edge mask.
+// Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
+void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges)
+{
+	// Convert to Y'CrCb color-space, since it is better for skin detection and color adjustment.
+	cv::Mat yuv = cv::Mat(smallImgBGR.size(), CV_8UC3);
+	cvtColor(smallImgBGR, yuv, cv::COLOR_BGR2YCrCb);
+
+	// The floodFill mask has to be 2 pixels wider and 2 pixels taller than the small image.
+	// The edge mask is the full src image size, so we will shrink it to the small size,
+	// storing into the floodFill mask data.
+	int sw = smallImgBGR.cols;
+	int sh = smallImgBGR.rows;
+	cv::Mat maskPlusBorder = cv::Mat::zeros(sh + 2, sw + 2, CV_8U);
+	cv::Mat mask = maskPlusBorder(cv::Rect(1, 1, sw, sh));  // mask is a ROI in maskPlusBorder.
+	resize(bigEdges, mask, smallImgBGR.size());
+
+	// Make the mask values just 0 or 255, to remove weak edges.
+	threshold(mask, mask, 80, 255, cv::THRESH_BINARY);
+	// Connect the edges together, if there was a pixel gap between them.
+	dilate(mask, mask, cv::Mat());
+	erode(mask, mask, cv::Mat());
+	//imshow("constraints for floodFill", mask);
+
+	// YCrCb Skin detector and color changer using multiple flood fills into a mask.
+	// Apply flood fill on many points around the face, to cover different shades & colors of the face.
+	// Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
+	int const NUM_SKIN_POINTS = 6;
+	cv::Point skinPts[NUM_SKIN_POINTS];
+	skinPts[0] = cv::Point(sw / 2, sh / 2 - sh / 6);
+	skinPts[1] = cv::Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
+	skinPts[2] = cv::Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
+	skinPts[3] = cv::Point(sw / 2, sh / 2 + sh / 16);
+	skinPts[4] = cv::Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
+	skinPts[5] = cv::Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
+	// Skin might be fairly dark, or slightly less colorful.
+	// Skin might be very bright, or slightly more colorful but not much more blue.
+	const int LOWER_Y = 60;
+	const int UPPER_Y = 80;
+	const int LOWER_Cr = 25;
+	const int UPPER_Cr = 15;
+	const int LOWER_Cb = 20;
+	const int UPPER_Cb = 15;
+	cv::Scalar lowerDiff = cv::Scalar(LOWER_Y, LOWER_Cr, LOWER_Cb);
+	cv::Scalar upperDiff = cv::Scalar(UPPER_Y, UPPER_Cr, UPPER_Cb);
+	// Instead of drawing into the "yuv" image, just draw 1's into the "maskPlusBorder" image, so we can apply it later.
+	// The "maskPlusBorder" is initialized with the edges, because floodFill() will not go across non-zero mask pixels.
+	cv::Mat edgeMask = mask.clone();    // Keep an duplicate copy of the edge mask.
+	for (int i = 0; i < NUM_SKIN_POINTS; i++) {
+		// Use the floodFill() mode that stores to an external mask, instead of the input image.
+		const int flags = 4 | cv::FLOODFILL_FIXED_RANGE | cv::FLOODFILL_MASK_ONLY;
+		floodFill(yuv, maskPlusBorder, skinPts[i], cv::Scalar(), NULL, lowerDiff, upperDiff, flags);
+	}
+
+	// After the flood fill, "mask" contains both edges and skin pixels, whereas
+	// "edgeMask" just contains edges. So to get just the skin pixels, we can remove the edges from it.
+	mask -= edgeMask;
+	// "mask" now just contains 1's in the skin pixels and 0's for non-skin pixels.
+
+	// Change the color of the skin pixels in the given BGR image.
+	int Red = 0;
+	int Green = 70;
+	int Blue = 0;
+	add(smallImgBGR, cv::Scalar(Blue, Green, Red), smallImgBGR, mask);
+}
+
 
 int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
 {
@@ -189,14 +400,45 @@ int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CClahe * clahe = new Regards::FiltreEffet::CClahe();
 		CRegardsBitmap * out = clahe->ClaheFilter(bitmap, nBins, clipLevel, windowSize);
 		bitmap->SetBitmap(out->GetPtBitmap(), out->GetBitmapWidth(), out->GetBitmapHeight());
 		delete clahe;
 		delete out;
 		return 0;
+		*/
+
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		if (src.channels() >= 3) {
+			// READ RGB color image and convert it to Lab
+			
+			cv::Mat channel;
+			cv::cvtColor(src, dst, cv::COLOR_BGRA2BGR);
+			cv::cvtColor(dst, dst, cv::COLOR_BGR2Lab);
+
+			// Extract the L channel
+			cv::extractChannel(dst, channel, 0);
+
+			// apply the CLAHE algorithm to the L channel
+			cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
+			clahe->setClipLimit(4);
+			clahe->apply(channel, channel);
+
+			// Merge the the color planes back into an Lab image
+			cv::insertChannel(channel, dst, 0);
+
+			// convert back to RGB
+			cv::cvtColor(dst, dst, cv::COLOR_Lab2BGR);
+			cv::cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
+			// Temporary Mat not reused, so release from memory.
+			channel.release();
+		}
+
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
-	return -1;
+	return 0;
 }
 
 int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)

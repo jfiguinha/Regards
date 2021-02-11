@@ -3,6 +3,11 @@
 class CRegardsBitmap;
 class Chqdn3d;
 
+namespace cv
+{
+	class Mat;
+}
+
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
@@ -47,6 +52,7 @@ public:
 	int FiltreMosaic();
 	int FlipVertical();
 	int FlipHorizontal();
+	int CartoonifyImage(const bool & sketchMode, const bool & alienMode, const bool & evilMode);
 	int MotionBlur(const double &radius, const double &sigma, const double &angle);
 	int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 	int PhotoFiltre(const CRgbaquad &clValue, const int &intensity);
@@ -70,6 +76,8 @@ public:
 	int OilPaintingEffect(const int &size, const int &dynRatio);
 
 private:
+	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
+	void RemovePepperNoise(cv::Mat &mask);
 	CRegardsBitmap * bitmapOut;
 	CRegardsBitmap * pBitmap;
 	Chqdn3d * hq3d = nullptr;
