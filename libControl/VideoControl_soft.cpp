@@ -1637,7 +1637,7 @@ CRegardsBitmap * CVideoControlSoft::GetBitmapRGBA(AVFrame * tmp_frame)
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
 		&convertedFrameBuffer, &linesize);
 
-	bitmapData->VertFlipBuf();
+	//bitmapData->VertFlipBuf();
 
 	return bitmapData;
 }
