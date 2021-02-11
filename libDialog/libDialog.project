@@ -73,12 +73,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="ExternalProgram.cpp"/>
     <File Name="Association.cpp"/>
-    <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="ConfigRegards.cpp"/>
     <File Name="ExportFile.cpp"/>
-    <File Name="OpenCLDialog.cpp"/>
     <File Name="ChangeLabel.cpp"/>
     <File Name="MoveFaceDialog.cpp"/>
     <File Name="PertinenceValue.cpp"/>
@@ -86,13 +83,10 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="ExternalProgram.h"/>
     <File Name="SavePicture.h"/>
     <File Name="Association.h"/>
-    <File Name="InterpolationFilterSelect.h"/>
     <File Name="ConfigRegards.h"/>
     <File Name="ExportFile.h"/>
-    <File Name="OpenCLDialog.h"/>
     <File Name="ChangeLabel.h"/>
     <File Name="MoveFaceDialog.h"/>
     <File Name="PertinenceValue.h"/>

@@ -52,8 +52,6 @@
       <File Name="VideoControlInterface.h"/>
       <File Name="VideoControl_soft.h"/>
       <File Name="VideoControl_soft.cpp"/>
-      <File Name="VideoControl.h"/>
-      <File Name="VideoControl.cpp"/>
       <File Name="VideoInterface.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
