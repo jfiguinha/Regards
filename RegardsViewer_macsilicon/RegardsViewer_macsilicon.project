@@ -334,7 +334,6 @@
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../Resource/theme/RegardsViewer.viewer.theme ./Debug/RegardsViewer.app/Contents/MacOs/RegardsViewer.viewer.theme</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/poppler/lib/libpoppler.105.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -427,9 +426,11 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_videoio.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_xphoto.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod +w ./Debug/RegardsViewer.app/Contents/Frameworks/*.*</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_xphoto.4.5.dylib @executable_path/../Frameworks/libopencv_xphoto.4.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jasper/lib/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libavformat.58.dylib @executable_path/../Frameworks/libavformat.58.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -700,6 +701,9 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/theora/lib/libtheoraenc.1.dylib @executable_path/../Frameworks/libtheoraenc.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/theora/lib/libtheoradec.1.dylib @executable_path/../Frameworks/libtheoradec.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_photo.4.5.dylib @executable_path/../Frameworks/libopencv_photo.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.5.dylib @executable_path/../Frameworks/libopencv_imgproc.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
         <Command Enabled="yes">codesign -fs - ./Debug/RegardsViewer.app  --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
@@ -790,7 +794,6 @@
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../Resource/theme/RegardsViewer.viewer.theme ./Release/RegardsViewer.app/Contents/MacOs/RegardsViewer.viewer.theme</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/poppler/lib/libpoppler.105.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -881,9 +884,11 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_videoio.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_xphoto.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod +w ./Release/RegardsViewer.app/Contents/Frameworks/*.*</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_xphoto.4.5.dylib @executable_path/../Frameworks/libopencv_xphoto.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jasper/lib/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libavformat.58.dylib @executable_path/../Frameworks/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1156,7 +1161,10 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/theora/lib/libtheoraenc.1.dylib @executable_path/../Frameworks/libtheoraenc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/theora/lib/libtheoradec.1.dylib @executable_path/../Frameworks/libtheoradec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
-        <Command Enabled="yes">codesign -fs - ./Release/RegardsViewer.app  —deep</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_photo.4.5.dylib @executable_path/../Frameworks/libopencv_photo.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.5.dylib @executable_path/../Frameworks/libopencv_imgproc.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_xphoto.4.5.dylib</Command>
+        <Command Enabled="yes">codesign -fs - ./Release/RegardsViewer.app --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
