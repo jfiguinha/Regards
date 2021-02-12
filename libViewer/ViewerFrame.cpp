@@ -266,8 +266,24 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
               
 		if (config->GetIsOpenCLSupport())
 		{
+			bool findPlatform = false;
+			//Verify if opencl old platform exist
+			CRegardsConfigParam * config = CParamInit::getInstance();
+			if (config != nullptr)
+			{
+				
+				vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+				wxString platformName = config->GetOpenCLPlatformName();
+				int indexDevice = config->GetOpenCLPlatformIndex();
+				for (OpenCLPlatform * platform : listPlatform)
+				{
+					if (platformName == platform->platformName)
+						findPlatform = true;
+				}
+			}
+
 			//OpenCL auto selected
-			if (platformName == "")
+			if (platformName == "" || !findPlatform)
 			{
 				if(COpenCLEngine::GetNbPlatform() == 1)
 					COpenCLEngine::GetDefaultGpuDeviceInformation();

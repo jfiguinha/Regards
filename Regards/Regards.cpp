@@ -224,6 +224,9 @@ bool MyApp::OnInit()
 	}
 
 
+
+
+
 #ifndef RENDEROPENGL  
 
 	openCLEngine = new COpenCLEngine();
