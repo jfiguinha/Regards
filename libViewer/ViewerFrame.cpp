@@ -7,6 +7,7 @@
 #include "SQLRemoveData.h"
 #include <PrintEngine.h>
 #include <LibResource.h>
+#include <OpenCLDialog.h>
 #include <window_id.h>
 #include <wx/filename.h>
 #include <ConfigRegards.h>
@@ -268,7 +269,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			//OpenCL auto selected
 			if (platformName == "")
 			{
-				COpenCLEngine::GetDefaultGpuDeviceInformation();
+				if(COpenCLEngine::GetNbPlatform() == 1)
+					COpenCLEngine::GetDefaultGpuDeviceInformation();
+				else
+				{
+					bool restart = false;
+					ShowOpenCLConfiguration(restart);
+				}
 			}
 		}
     }
@@ -299,6 +306,39 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 }
 
+void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
+{
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	if (supportOpenCL)
+	{
+
+		OpenCLDialog configFile(this);
+		configFile.ShowModal();
+		if (configFile.IsOk())
+		{
+			wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1);//L"&Thumbnail";
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
+			CRegardsConfigParam* config = CParamInit::getInstance();
+			if (config != nullptr)
+			{
+				config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
+				config->SetOpenCLPlatformName(configFile.GetPlatformName());
+			}
+
+			if (showRestart)
+				wxMessageBox(labelRestart, labelInformations);
+		}
+	}
+	else
+	{
+		wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
+		wxMessageBox("OpenCL device Required", labelInformations);
+	}
+}
 
 void CViewerFrame::ShowScanner()
 {

@@ -129,6 +129,7 @@ namespace Regards
            static OpenCLDevice * GetDefaultDevice();
 			COpenCLContext * GetInstance();
 			
+			static int GetNbPlatform();
 			static int GetDefaultGpuDeviceInformation();
 			static int SupportOpenCL();
 

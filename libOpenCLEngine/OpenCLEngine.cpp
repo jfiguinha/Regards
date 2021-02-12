@@ -607,6 +607,12 @@ int COpenCLEngine::SupportOpenCL()
 	return supportOpenCL;
 }
 
+int COpenCLEngine::GetNbPlatform()
+{
+	vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+	return listPlatform.size();
+}
+
 int COpenCLEngine::GetDefaultGpuDeviceInformation()
 {
 	wxString platformName = "";

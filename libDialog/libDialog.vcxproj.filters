@@ -55,6 +55,9 @@
     <Filter Include="CompressionVideo\Preview">
       <UniqueIdentifier>{886c2dca-4edc-47db-9598-c720474aa390}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OpenCLDialog">
+      <UniqueIdentifier>{0ee87316-51c9-4699-a270-d2c0d0226a9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -138,6 +141,9 @@
     <ClCompile Include="SliderVideoPreview.cpp">
       <Filter>CompressionVideo\Preview</Filter>
     </ClCompile>
+    <ClCompile Include="OpenCLDialog.cpp">
+      <Filter>OpenCLDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -220,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="SliderVideoPreview.h">
       <Filter>CompressionVideo\Preview</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCLDialog.h">
+      <Filter>OpenCLDialog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

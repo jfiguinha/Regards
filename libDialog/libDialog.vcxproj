@@ -386,6 +386,7 @@
     <ClCompile Include="MoveFaceDialog.cpp" />
     <ClCompile Include="MyCentralWindowIntro.cpp" />
     <ClCompile Include="MyFrameIntro.cpp" />
+    <ClCompile Include="OpenCLDialog.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="PreviewDlg.cpp" />
     <ClCompile Include="PreviewToolbar.cpp" />
@@ -414,6 +415,7 @@
     <ClInclude Include="MoveFaceDialog.h" />
     <ClInclude Include="MyCentralWindowIntro.h" />
     <ClInclude Include="MyFrameIntro.h" />
+    <ClInclude Include="OpenCLDialog.h" />
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="PreviewDlg.h" />
     <ClInclude Include="PreviewToolbar.h" />

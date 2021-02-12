@@ -51,9 +51,9 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
-#if defined(WIN32) || defined(__WXGTK__) 
-#include <tbb/tbbmalloc_proxy.h>
-#endif
+//#if defined(WIN32) || defined(__WXGTK__) 
+//#include <tbb/tbbmalloc_proxy.h>
+//#endif
 #endif
 
 #ifndef _OPENMP
