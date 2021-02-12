@@ -26,7 +26,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	pictureSize = 0;
     nbProcessThumbnail = 1;
     nbProcessExif = 1;
-    nbProcessFace = 4;
+    nbProcessFace = 1;
     nbGpsFileByMinute = 60;
     numLanguage = 1;
 	numInterpolation = 0;
