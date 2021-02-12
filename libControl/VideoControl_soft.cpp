@@ -2317,8 +2317,9 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
     }
         
 
-	if (!enableopenCL || isCPU || (src_frame->format != 0 && src_frame->format != 23))
+	if (!enableopenCL || (src_frame->format != 0 && src_frame->format != 23))
 	{
+        isffmpegDecode = true;
 		GetBitmapRGBA(src_frame);
 		muBitmap.lock();
 		*pictureFrame = *bitmapData;
