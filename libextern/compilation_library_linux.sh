@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 NBPROC=$(nproc)
 echo $NBPROC
 
@@ -19,12 +19,10 @@ sudo make install
 cd ..
 cd ..
 
-
-
 #Compile exiv2-0.27.3 :
 cd exiv2-0.27.3
 mkdir build
-cd build 
+cd build
 cmake ../
 make -j$NBPROC
 cd ..
@@ -44,7 +42,6 @@ cd libde265-master
 cmake . -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
-cd ..
 cd ..
 
 #Compile MediaInfo_DLL_GNU_FromSource
@@ -66,7 +63,6 @@ cd wxWidgets-master
 ./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-gtk=3
 make -j$NBPROC
 cd ..
-
 
 
 # libaom
@@ -165,6 +161,8 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
 make -j$NBPROC
 cd ..
+
+mkdir opencv
 
 wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
 mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip

@@ -49,6 +49,8 @@ rm VERSION
 
 cd ..
 
+mkdir opencv
+
 wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
 mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
 
