@@ -991,14 +991,13 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-/*
+
 #ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
+    double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
-*/
-    double scale_factor = 1.0f;
+
 	switch(toolOption)
 	{
 		case MOVEPICTURE:
@@ -1008,16 +1007,6 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 				mouseScrollY = yPos;
 				CaptureMouse();
 				wxSetCursor(hCursorHand);
-			}
-			break;
-
-		case ZOOMPICTURE:
-			{
-				wxPoint pt;
-				pt.y = xPos;
-				pt.x = yPos;
-				//int iXImage = int(float(pt.x + posLargeur) / ratio);
-				//int iYImage = int(float(pt.y + posHauteur) / ratio);
 			}
 			break;
 
