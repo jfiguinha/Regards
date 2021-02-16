@@ -428,6 +428,11 @@ vector<int> CVideoControlSoft::GetZoomValue()
 int CVideoControlSoft::GetZoomIndex()
 {
 	int zoomIndex = 0;
+    if(shrinkVideo)
+    {
+        float ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+    }
+    
 	muVideoEffect.lock();
 	zoomIndex = videoEffectParameter.zoomSelect;
 	muVideoEffect.unlock();
@@ -1037,6 +1042,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		videoEnd = false;
 		videoStart = true;
 		fpsTimer->Start(1000);
+        ShrinkVideo();
 
 
 		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
@@ -1047,14 +1053,6 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		}
 	}
 
-
-
-	wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
-	if (window != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_SHRINK);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
 
 }
 

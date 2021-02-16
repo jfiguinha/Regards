@@ -214,10 +214,10 @@ void CShowVideo::SavePicture()
 
 void CShowVideo::OnShrink(wxCommandEvent& event)
 {
-	videoWindow->ShrinkVideo();
-	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
-	scrollbar->HideHorizontalScroll();
-	scrollbar->HideVerticalScroll();
+    videoWindow->ShrinkVideo();
+    slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
+    scrollbar->HideHorizontalScroll();
+    scrollbar->HideVerticalScroll();       
 }
 
 
