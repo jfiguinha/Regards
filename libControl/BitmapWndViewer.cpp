@@ -539,27 +539,33 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 #else
     double scale_factor = 1.0f;
 #endif
-
+    
 
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = CBitmapWnd::GetHPos();
 		int vpos = CBitmapWnd::GetVPos();
+        
+        int x = (xPos - xPosImage);
+        int y = (yPos - yPosImage);
+        
+                
+        printf("MouseClick xPos : %d xPosImage : %d \n",xPos, xPosImage);
+        printf("MouseClick yPos : %d yPosImage : %d \n",yPos, yPosImage);
+        
+        printf("MouseClick x : %d \n",x);
+        printf("MouseClick y : %d \n",y);
 
 		invertColor = true;
 		mouseBlock = true;
 		CaptureMouse();
-		m_cDessin->InitPoint(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
+		m_cDessin->InitPoint(x, y, hpos, vpos, CBitmapWnd::GetRatio());
 	}
 	else if (fixArrow)
 	{
 
 		int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
 		int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
-        
-            
-     printf("xPos : %d width : %d arrow : %d \n",xPos, GetWidth(),arrowNext.GetWidth());
-     printf("yPos : %d yPosTop : %d yPosBottom : %d \n",yPos, yPosTop, yPosBottom);
 
 		if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 		{
@@ -862,22 +868,30 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 #else
 	double scale_factor = 1.0f;
 #endif 
+
+
     
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = CBitmapWnd::GetHPos();
 		int vpos = CBitmapWnd::GetVPos();
+        
+        int x = (xPos - xPosImage);
+        int y = (yPos - yPosImage);
+        
+    printf("MouseMove xPos : %d \n",x);
+    printf("MouseMove yPos : %d \n",y);
 
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
 		{
-			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
+			m_cDessin->MouseMove(x, y, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}
 		else if(CFiltreData::SupportMouseSelection(toolOption))
 		{
-			m_cDessin->Selection(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
+			m_cDessin->Selection(x, y, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}
