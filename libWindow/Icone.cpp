@@ -719,27 +719,8 @@ int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur,
 
 		eraseBitmap = false;
 	}
-    
-#ifdef __WXGTK__
-    double scale_factor = dc->GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif     
-    
-    if(scale_factor != 1.0)
-    {
-        wxImage image = bitmapLocal.ConvertToImage();
-        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-        dc->DrawBitmap(resized, (x + posLargeur)  / scale_factor, (y + posHauteur) / scale_factor);
-    }
-    else
-    {
-        dc->DrawBitmap(bitmapLocal, x + posLargeur, y + posHauteur);
-    }
 
-
-	//if (!thumbnailIconeCache)
-	//	scale.Destroy();
+    dc->DrawBitmap(bitmapLocal, x + posLargeur, y + posHauteur);
 	return returnValue;
 }
 

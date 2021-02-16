@@ -219,13 +219,9 @@ void CToolbarWindow::RedrawElement(wxDC * dc, CToolbarElement * nav)
 
 void CToolbarWindow::DrawButton(wxDC * dc, CToolbarElement * nav)
 {
-#ifdef __WXGTK__
-    double scale_factor = dc->GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif     
-    
-    wxBitmap pictureBuffer(nav->GetWidth(),nav->GetHeight());
+    double scale_factor = 1.0f;  
+
+    wxBitmap pictureBuffer(nav->GetWidth() * scale_factor,nav->GetHeight() * scale_factor);
     wxMemoryDC memDC(pictureBuffer);
     
     wxRect rc;
@@ -238,13 +234,7 @@ void CToolbarWindow::DrawButton(wxDC * dc, CToolbarElement * nav)
     nav->DrawButton(&memDC,0,0);
     memDC.SelectObject(wxNullBitmap);
 
-    if(scale_factor != 1.0)
-    {
-        wxImage image = pictureBuffer.ConvertToImage();
-        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-        dc->DrawBitmap(resized, nav->GetXPos()/ scale_factor, nav->GetYPos()/ scale_factor);
-    }
-    else if (pictureBuffer.IsOk())
+    if (pictureBuffer.IsOk())
     {
         dc->DrawBitmap(pictureBuffer, nav->GetXPos(), nav->GetYPos());
     }  
@@ -334,6 +324,8 @@ void CToolbarWindow::DrawBackground(wxDC * deviceContext, const wxRect &rc)
 
 void CToolbarWindow::DrawBackground(wxDC * deviceContext)
 {
+    double scale_factor = 1.0f;
+    
 	if(GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
 		background.Create(GetWindowWidth(),GetWindowHeight());
@@ -344,23 +336,7 @@ void CToolbarWindow::DrawBackground(wxDC * deviceContext)
 		memDC.SelectObject(wxNullBitmap);
 		
 		backPicture = background.ConvertToImage();
-		
-#ifdef __WXGTK__
-    double scale_factor = GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif         
-        
-        if(scale_factor != 1.0)
-        {
-            wxBitmap resized(backPicture, wxBITMAP_SCREEN_DEPTH, scale_factor);
-            deviceContext->DrawBitmap(resized, 0, 0);
-        }
-        else
-        {
-            deviceContext->DrawBitmap(background, 0, 0);
-        }
-
+        deviceContext->DrawBitmap(background, 0, 0);
 	}
 }
 

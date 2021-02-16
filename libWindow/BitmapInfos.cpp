@@ -160,11 +160,7 @@ void CBitmapInfos::Redraw()
 
 void CBitmapInfos::DrawInformations(wxDC * dc)
 {
-#ifdef __WXGTK__
-    double scale_factor = dc->GetContentScaleFactor();
-#else
     double scale_factor = 1.0f;
-#endif
     wxRect rc = GetWindowRect();
     FillRect(dc, rc, bitmapInfosTheme.colorBack);
     wxString message = L"";

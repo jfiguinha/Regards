@@ -429,12 +429,7 @@ void CScrollbarWnd::Resize()
 	if (!(pictureWidth > 0 && pictureHeight > 0))
 		return;
     
-#ifdef __WXGTK__
-    double scale_factor = GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
-    
+    double scale_factor = 1.0f;   
 
     if(!_useScaleFactor)
         scale_factor = 1.0f;

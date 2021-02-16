@@ -35,6 +35,7 @@ CTheme::~CTheme()
 
 int CThemeXml::CalculElementSizeForScreen(const int &elementSize, const bool &width)
 {
+
     float ratio = 1.0;
     if(width)
         ratio = CalculRatioX();

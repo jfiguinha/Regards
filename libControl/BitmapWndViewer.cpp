@@ -534,7 +534,7 @@ void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
 
 void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 {
-#ifndef WIN32
+#ifdef __APPLE__
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;

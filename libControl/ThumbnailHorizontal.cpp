@@ -85,6 +85,8 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 
 void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 {
+    
+    
 	int x = -posLargeur;
 	int y = 0;
 

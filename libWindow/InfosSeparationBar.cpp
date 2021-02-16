@@ -134,34 +134,12 @@ void CInfosSeparationBar::RenderTitle(wxDC * dc)
 
 void CInfosSeparationBar::Render(wxDC * dc, const int &posLargeur, const int &posHauteur)
 {
-#ifdef __WXGTK__
-    double scale_factor = dc->GetContentScaleFactor();
-#else
     double scale_factor = 1.0f;
-#endif 
-    
     wxBitmap memBitmap(GetWidth(),GetHeight());
     wxMemoryDC memDC(memBitmap);
     RenderIcone(&memDC, posLargeur, posHauteur);
     memDC.SelectObject(wxNullBitmap);
-    
-#ifdef __WXGTK__
-    if(scale_factor != 1.0)
-    {
-        wxImage image = memBitmap.ConvertToImage();
-        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-        dc->DrawBitmap(resized, (_xPos + posLargeur) / scale_factor, (_yPos + posHauteur) / scale_factor);
-    }
-    else
-    {
-        dc->DrawBitmap(memBitmap,  _xPos + posLargeur, _yPos + posHauteur);
-    }
-#else
     dc->DrawBitmap(memBitmap,  _xPos + posLargeur, _yPos + posHauteur);
-#endif    
-    
-    
-    
 }
 
 //----------------------------------------------------------------------------------
