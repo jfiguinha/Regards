@@ -50,6 +50,7 @@ class ConfigRegards: public wxDialog
 
 		//ID_RBVIDEOFACEDETECTION
 		wxRadioBox* rbVideoFaceDetection;
+		wxRadioBox* rbFaceDetection;
 		//*)
 
 		wxTextCtrl  * txtPicturePath;

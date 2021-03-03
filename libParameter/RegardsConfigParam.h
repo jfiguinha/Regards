@@ -27,6 +27,9 @@ public:
 
 	int GetAutoConstrast();
 	void SetAutoConstrast(const int &autoContrast);
+
+	int GetFaceDetection();
+	void SetFaceDetection(const int &faceDetection);
     
 	int GetVideoLibrary();
 	void SetVideoLibrary(const int &numLib);
@@ -168,6 +171,7 @@ protected:
 	int soundVolume = 100;
 
 	int videoFaceDetection = 0;
+	int faceDetection = 1;
 
 	wxString videoDecoderHardware;
 	wxString videoEncoderHardware;

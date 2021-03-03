@@ -55,7 +55,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	isDiaporama = false;
 	showToolbar = true;
 	videoStart = false;
-
+	
 
 	wxRect rect;
 	wxRect left;
@@ -64,6 +64,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	CMainParam* config = CMainParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
+
 
 	if (imageList != nullptr)
 	{
@@ -214,14 +221,15 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		listPicture->Show(false);
 		listPicture->SetListeFile(&photoVector);
 	}
-#ifndef __NOFACE_DETECTION__
-	if (viewerTheme != nullptr)
-	{
-		listFace = new CListFace(windowManager, LISTFACEID);
-		listFace->Show(false);
-	}
-#endif
 
+	if (faceDetection)
+	{
+		if (viewerTheme != nullptr)
+		{
+			listFace = new CListFace(windowManager, LISTFACEID);
+			listFace->Show(false);
+		}
+	}
 
 	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
@@ -931,7 +939,8 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	previewWindow->SetNormalMode();
 	panelInfosWindow->Show(false);
 	panelInfosClick->Show(false);
-	listFace->Show(false);
+	if(faceDetection)
+		listFace->Show(false);
 	listPicture->Show(false);
 
 	if (windowInit)
@@ -1003,34 +1012,36 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		}
 		break;
 
-#ifndef __NOFACE_DETECTION__
+
 	case WINDOW_FACE:
 	{
-		panelInfosClick->Show(true);
-		if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
-			windowManager->ShowWindow(Pos::wxLEFT);
-		if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
-			windowManager->ShowWindow(Pos::wxRIGHT);
-		if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
-			windowManager->HideWindow(Pos::wxBOTTOM);
-		if (windowManager->GetWindowIsShow(Pos::wxTOP))
-			windowManager->HideWindow(Pos::wxTOP);
-			
-		listFace->Show(true);
-		panelInfosClick->SetWindow(listFace);
-		panelInfosClick->Show(true);
-		panelInfosClick->SetTitle("Face List");
-		windowManager->HidePaneWindow(Pos::wxRIGHT);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		if (faceDetection)
+		{
+			panelInfosClick->Show(true);
+			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
+				windowManager->ShowWindow(Pos::wxLEFT);
+			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				windowManager->ShowWindow(Pos::wxRIGHT);
+			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+				windowManager->HideWindow(Pos::wxBOTTOM);
+			if (windowManager->GetWindowIsShow(Pos::wxTOP))
+				windowManager->HideWindow(Pos::wxTOP);
 
-		if (windowInit)
-			if (!showInfos)
-				windowManager->HidePaneWindow(Pos::wxRIGHT);
+			listFace->Show(true);
+			panelInfosClick->SetWindow(listFace);
+			panelInfosClick->Show(true);
+			panelInfosClick->SetTitle("Face List");
+			windowManager->HidePaneWindow(Pos::wxRIGHT);
+			windowManager->ShowPaneWindow(Pos::wxRIGHT);
 
-		windowManager->Resize();
-	}
+			if (windowInit)
+				if (!showInfos)
+					windowManager->HidePaneWindow(Pos::wxRIGHT);
+
+			windowManager->Resize();
+		}
 		break;
-#endif
+	}
 	case WINDOW_EXPLORER:
 		{
 			panelInfosClick->Show(true);

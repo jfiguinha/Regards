@@ -4,6 +4,8 @@
 #include <LibResource.h>
 #include "ViewerFrame.h"
 #include <window_id.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -25,14 +27,22 @@ using namespace Regards::Viewer;
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
 {
+	int faceDetection = 0;
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
 	wxString lblPrint = CLibResource::LoadStringFromResource(L"LBLPRINT", 1);
-#ifndef __NOFACE_DETECTION__
+
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
+	
+
 	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
-#endif
+
 	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
 	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
@@ -52,13 +62,16 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	infos->SetCommandId(IDM_SHOWINFOS);
 	navElement.push_back(infos);
 	*/
-#ifndef __NOFACE_DETECTION__
-	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
-	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
-	thumbnailFace->SetLibelle(lblListFace);
-	thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
-	navElement.push_back(thumbnailFace);
-#endif
+
+	if (faceDetection)
+	{
+		CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
+		thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
+		thumbnailFace->SetLibelle(lblListFace);
+		thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
+		navElement.push_back(thumbnailFace);
+	}
+
 	CToolbarButton * explorer = new CToolbarButton(themeToolbar.button);
 	explorer->SetButtonResourceId(L"IDB_SEARCH");
 	explorer->SetLibelle(lblExplorerMode);

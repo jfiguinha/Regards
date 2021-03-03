@@ -23,6 +23,8 @@ void CSqlPhotosWithoutThumbnail::GeneratePhotoList()
 {
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL");
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOSSEARCHCRITERIA WHERE FullPath not in ( SELECT FullPath From PHOTOSTHUMBNAIL) ORDER BY CreateDate desc, GeoGps");
+	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 FROM VIDEOTHUMBNAIL WHERE FullPath in (select FullPath from PHOTOS where MultiFiles = 1)  GROUP BY fullpath HAVING COUNT(*) < 20");
+
     //UpdateVideoList();
 }
 
@@ -53,7 +55,7 @@ void CSqlPhotosWithoutThumbnail::UpdatePhotoList()
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT FullPath From PHOTOSTHUMBNAIL)");
     ExecuteRequestWithNoResult("DELETE FROM PHOTOSWIHOUTTHUMBNAIL WHERE FullPath in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
     //ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) SELECT FullPath, 1, 0 From PHOTOS where (ExtensionId >= 100 or ExtensionId in (5,) and FullPath not in (SELECT distinct FullPath From VIDEOTHUMBNAIL)");
-    UpdateVideoList();
+    //UpdateVideoList();
 }
 
 void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString> * photoList)

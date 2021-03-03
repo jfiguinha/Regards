@@ -80,7 +80,13 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
 		{            
             int extensionId = libPicture.TestImageFormat(filename);
 			filename.Replace("'", "''");
-			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
+			int multifile = 0;
+			if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
+			{
+				multifile = 1;
+			}
+
+			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId, Multifiles) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + "," + to_string(multifile) + ")");
               
 		}  
 

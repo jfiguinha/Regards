@@ -42,7 +42,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
 	//ID_RBVIDEOFACEDETECTION
 	rbVideoFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOFACEDETECTION"));
-
+	rbFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBFACEDETECTION"));
 	txtPicturePath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTPICTUREPATH"));
 	btPicturePath = (wxButton*)FindWindow(XRCID("ID_PICTUREPATH"));
 	txtVideoPath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTVIDEOPATH"));
@@ -181,6 +181,12 @@ void ConfigRegards::Init()
 	else
 		rbVideoFaceDetection->SetSelection(0);
 
+	int faceDetection = regardsParam->GetFaceDetection();
+	if (faceDetection == 0)
+		rbFaceDetection->SetSelection(1);
+	else
+		rbFaceDetection->SetSelection(0);
+
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
     
@@ -295,6 +301,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetFaceVideoDetection(1);
 	else
 		regardsParam->SetFaceVideoDetection(0);
+
+	int faceDetection = rbFaceDetection->GetSelection();
+	if (faceDetection == 0)
+		regardsParam->SetFaceDetection(1);
+	else
+		regardsParam->SetFaceDetection(0);
 
 	int autoContrast = rbContrastCorrection->GetSelection();
 	if (autoContrast == 0)

@@ -17,10 +17,11 @@ namespace Regards
 			void InsertProcessStart(const wxString & photoPath);
 			void GeneratePhotoList();
 			void UpdatePhotoList();
+			void UpdateVideoList();
 		private:
 
 			bool IsPathFind(const wxString & photo);
-            void UpdateVideoList();
+            
 			int TraitementResult(CSqlResult * sqlResult);
 			int typeResult;
 			int priority;

@@ -126,6 +126,8 @@ bool CSqlLib::OpenConnection(const wxString &databasePath, const bool &readonly,
 		m_strLastError = sqlite3_errmsg(pCon);
 	}
 
+	
+
    // if(readonly)
 	//	rc = sqlite3_open_v2(":memory:", &(pCon), SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL);
    // else

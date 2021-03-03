@@ -29,7 +29,7 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_CRITERIA_TABLE "CREATE TABLE CRITERIA (NumCriteria INTEGER PRIMARY KEY AUTOINCREMENT, NumCategorie INT, NumCatalog INT, Libelle NVARCHAR(255))"
 #define SQL_DROP_CRITERIA "DROP TABLE CRITERIA"
 
-#define SQL_CREATE_PHOTOS_TABLE "CREATE TABLE PHOTOS (NumPhoto INTEGER PRIMARY KEY AUTOINCREMENT , NumFolderCatalog INT, FullPath NVARCHAR(255), CriteriaInsert INT, Process INT, ExtensionId INT)"
+#define SQL_CREATE_PHOTOS_TABLE "CREATE TABLE PHOTOS (NumPhoto INTEGER PRIMARY KEY AUTOINCREMENT , NumFolderCatalog INT, FullPath NVARCHAR(255), CriteriaInsert INT, Process INT, ExtensionId INT, Multifiles INT)"
 #define SQL_DROP_PHOTOS "DROP TABLE PHOTOS"
 
 #define SQL_CREATE_PHOTOSCRITERIA_TABLE "CREATE TABLE PHOTOSCRITERIA (NumCriteria INT, NumPhoto INT)"
@@ -129,6 +129,8 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
     int hr = -1;
 	if (wxFileExists(lpFilename))
 	{
+		hr = ExecuteSQLWithNoResult("PRAGMA auto_vacuum = FULL");
+
         CSqlVersion sqlVersion;
 		if(sqlVersion.GetVersion() == "2.0.0.2")
 		{
@@ -275,6 +277,28 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_VIDEO_TABLE);
 
 		}
+
+		if (sqlVersion.GetVersion() == "2.64.0.0")
+		{
+			hr = ExecuteSQLWithNoResult("ALTER TABLE PHOTOS ADD COLUMN Multifiles INT;");
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.65.0.0");
+
+			PhotosVector photosVector;
+			CSqlFindPhotos findPhotos;
+			findPhotos.GetAllVideo(&photosVector);
+			CLibPicture libPicture;
+			for (CPhotos photo : photosVector)
+			{
+				wxString fullpath = photo.GetPath();
+				fullpath.Replace("'", "''");
+
+				if (libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
+					ExecuteSQLWithNoResult("UPDATE PHOTOS SET Multifiles = 1 WHERE FullPath = '" + fullpath + "'");
+				else
+					ExecuteSQLWithNoResult("UPDATE PHOTOS SET Multifiles = 0 WHERE FullPath = '" + fullpath + "'");
+			}
+		}
     }
     return hr;
 }
@@ -347,7 +371,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.64.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.65.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;

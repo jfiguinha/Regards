@@ -135,7 +135,7 @@ namespace Regards
             bool loadPicture = false;
             wxString filename;
             int numElement;
-
+			int faceDetection = 0;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailViewerVideo * thumbnailVideo;
 
