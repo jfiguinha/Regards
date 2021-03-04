@@ -11,6 +11,7 @@
 #include <FileUtility.h>
 #include <libPicture.h>
 #include <wx/file.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
@@ -126,6 +127,7 @@ CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 	{
 		CLibPicture libPicture;
 		picture = libPicture.LoadPicture(thumbnail);
+		picture->SetFilename(thumbnail);
 	}
 	return picture;
 

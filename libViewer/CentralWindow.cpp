@@ -1374,6 +1374,7 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 	CImageLoadingFormat * _loadingPicture = sqlThumbnail.GetPictureThumbnail(filenameToShow);
 	if (_loadingPicture != nullptr && _loadingPicture->IsOk())
 	{
+		_loadingPicture->SetFilename(filenameToShow);
 		//_loadingPicture->SetPicture(bitmapThumbnail);
 		CBitmapReturn * bitmapReturn = new CBitmapReturn();
 		bitmapReturn->myThread = nullptr;
