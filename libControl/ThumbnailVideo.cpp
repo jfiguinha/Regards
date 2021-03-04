@@ -197,8 +197,17 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			if (typeElement == TYPEMULTIPAGE)
 				thumbnailData->SetLibelle("Page : " + to_string(i+1) + "/" + to_string(nbResult));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
-			if(thumbnail->image != nullptr)
-				thumbnailData->SetBitmap(thumbnail->image);
+
+			try
+			{
+				if (thumbnail->image != nullptr)
+					thumbnailData->SetBitmap(thumbnail->image);
+			}
+			catch (...)
+			{
+				printf("toto");
+			}
+
 
 			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(i);

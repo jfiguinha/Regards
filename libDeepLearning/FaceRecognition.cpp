@@ -7,6 +7,7 @@
 #include <SqlFindFacePhoto.h>
 #include <SqlFaceLabel.h>
 #include "base64.h"
+#include <RegardsBitmap.h>
 #include <dlib/dnn.h>
 using namespace dlib;
 using namespace cv::face;
@@ -127,7 +128,7 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 {
 	int predictedLabel = 0;
 	CSqlFacePhoto facePhoto;
-	std::vector<CPictureData *> listPicture = facePhoto.GetAllFace(numFace);
+	std::vector<CImageLoadingFormat *> listPicture = facePhoto.GetAllFace(numFace);
 	std::vector<int> labels = facePhoto.GetAllNumFace(numFace);
 	CSqlFaceRecognition sqlfaceRecognition;
 	CSqlFaceLabel sqlfaceLabel;
@@ -139,16 +140,20 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 		// These vectors hold the images and corresponding labels.
 		std::vector<Mat> images;
 
-		for (CPictureData * picture : listPicture)
+		for (CImageLoadingFormat * picture : listPicture)
 		{
 			//std::vector<char> data = picture->CopyData();
-			cv::Mat image = cv::imdecode(cv::Mat(1, picture->GetSize(), CV_8UC1, picture->GetData()), IMREAD_UNCHANGED);
+			//cv::Mat image = cv::imdecode(cv::Mat(1, picture->GetSize(), CV_8UC1, picture->GetData()), IMREAD_UNCHANGED);
+			CRegardsBitmap * pBitmap = picture->GetRegardsBitmap();
+			cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 
 			//cv::Mat image = imdecode(Mat(data), 1);
 			cv::Mat dst;//dst image
 			cv::cvtColor(image, dst, cv::COLOR_BGR2GRAY);
 			cv::resize(dst, image, size);
 			images.push_back(image);
+
+			delete pBitmap;
 		}
 
 		cv::Mat testSample = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
@@ -193,7 +198,7 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
 
-		for (CPictureData * picture : listPicture)
+		for (CImageLoadingFormat * picture : listPicture)
 		{
 			delete picture;
 		}

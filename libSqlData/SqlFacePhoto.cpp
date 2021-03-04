@@ -5,9 +5,13 @@
 #include "SqlFindFacePhoto.h"
 #include "SqlResult.h"
 #include "SqlPhotos.h"
-#include <PictureData.h>
+#include <FileUtility.h>
 #include <wx/mstream.h>
+#include <libPicture.h>
+#include <wx/file.h>
+#include <wx/dir.h>
 using namespace Regards::Sqlite;
+using namespace Regards::Picture;
 
 CSqlFacePhoto::CSqlFacePhoto()
 	: CSqlExecuteRequest(L"RegardsDB")
@@ -49,30 +53,88 @@ vector<int> CSqlFacePhoto::GetAllNumFace(const int &numFace)
 	return listFaceIndex;
 }
 
-vector<CPictureData *> CSqlFacePhoto::GetAllFace()
+
+vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 {
+	/*
 	type = 3;
 	listFace.clear();
 	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO");
 	return listFace;
+	*/
+	vector<CImageLoadingFormat *> listFace;
+	wxArrayString files;
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Face");
+#else
+	documentPath.append("/Face");
+#endif
+
+	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	if (files.size() > 0)
+		sort(files.begin(), files.end());
+
+	for (wxString file : files)
+	{
+		CLibPicture libPicture;
+		listFace.push_back(libPicture.LoadPicture(file));
+	}
+
+	return listFace;
 }
 
-vector<CPictureData *> CSqlFacePhoto::GetAllFace(const int &numFace)
+vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 {
+	/*
 	type = 3;
 	listFace.clear();
 	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO where NumFace != " + to_string(numFace));
 	return listFace;
+	*/
+	vector<CImageLoadingFormat *> listFace;
+	wxArrayString files;
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Face");
+#else
+	documentPath.append("/Face");
+#endif
+
+	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
+	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	if (files.size() > 0)
+		sort(files.begin(), files.end());
+
+	for (wxString file : files)
+	{
+		CLibPicture libPicture;
+		if(file != thumbnail)
+			listFace.push_back(libPicture.LoadPicture(file));
+	}
+
+	return listFace;
 }
 
-CPictureData * CSqlFacePhoto::GetFacePicture(const int &numFace)
+CImageLoadingFormat * CSqlFacePhoto::GetFacePicture(const int &numFace)
 {
+	CImageLoadingFormat * picture = nullptr;
+	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
+	if (wxFileExists(thumbnail))
+	{
+		CLibPicture libPicture;
+		picture = libPicture.LoadPicture(thumbnail);
+	}
+	return picture;
+
+	/*
 	type = 3;
 	listFace.clear();
 	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO where NumFace = " + to_string(numFace));
 	if (listFace.size() > 0)
 		return listFace[0];
 	return nullptr;
+	*/
 }
 
 bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
@@ -88,6 +150,12 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);
 		for (CFaceName facename : listFace)
 		{
+			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
+			if (wxFileExists(thumbnail))
+			{
+				wxRemoveFile(thumbnail);
+			}
+
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(facename.numFace));
@@ -133,6 +201,12 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
 		for (CFaceName facename : listFace)
 		{
+			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
+			if (wxFileExists(thumbnail))
+			{
+				wxRemoveFile(thumbnail);
+			}
+
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(facename.numFace));
@@ -187,8 +261,17 @@ int CSqlFacePhoto::InsertFace(const wxString & path,const int &numberface, const
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	wxString value = wxString::Format(wxT("%f"), pertinence);
-	ExecuteInsertBlobData("INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence, Face) VALUES('" + fullpath + "'," + to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ", ?)", 7, zBlob, nBlob);
-	return GetNumFace(path, numberface);
+	ExecuteRequest("INSERT INTO FACEPHOTO (FullPath, Numberface, width, height, Pertinence) VALUES('" + fullpath + "'," + to_string(numberface) + "," + to_string(width) + "," + to_string(height) + "," + value + ")");
+
+	int numFaceId = GetNumFace(path, numberface);
+
+	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFaceId);
+	wxFile fileOut;
+	fileOut.Create(thumbnail, true);
+	fileOut.Write(zBlob, nBlob);
+	fileOut.Close();
+	
+	return numFaceId;
 }
 
 int CSqlFacePhoto::GetNumFace(const wxString & path, const int &numberface)
@@ -203,10 +286,17 @@ int CSqlFacePhoto::GetNumFace(const wxString & path, const int &numberface)
 
 wxImage CSqlFacePhoto::GetFace(const int &numFace)
 {
+	/*
 	bitmap.Destroy();
 	type = 0;
 	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
 	return bitmap;
+	*/
+	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
+	wxImage image;
+	if (wxFileExists(thumbnail))
+		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	return image;
 }
 
 
@@ -215,11 +305,33 @@ bool CSqlFacePhoto::DeletePhotoFaceDatabase(const wxString & path)
 {
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
+
+	type = 7;
+	listFace.clear();
+	ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE FullPath = '" + fullpath + "'");
+	for (int idFace : listFace)
+	{
+		wxString thumbnail = CFileUtility::GetFaceThumbnailPath(idFace);
+		if (wxFileExists(thumbnail))
+		{
+			wxRemoveFile(thumbnail);
+		}
+	}
+
 	return (ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 }
 
 bool CSqlFacePhoto::DeleteFaceDatabase()
 {
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Face");
+#else
+	documentPath.append("/Face");
+#endif
+
+	wxRmdir(documentPath);
+
 	return (ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO") != -1) ? true : false;
 }
 
@@ -228,42 +340,9 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		CPictureData * picture = nullptr;
-		if (type == 3)
-			picture = new CPictureData();
-
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-			if(type == 0)
-			{
-				switch (i)
-				{
-					case 0:
-						filename = sqlResult->ColumnDataText(i);
-						break;
-					case 1:
-						width = sqlResult->ColumnDataInt(i);
-						break;
-					case 2:
-						height = sqlResult->ColumnDataInt(i);
-						break;
-					case 3:
-					{
-						int size = sqlResult->ColumnDataBlobSize(i);
-						if (size > 0)
-						{		
-							//const int req_comps = 4;
-							//int actual_comps = 4;
-							uint8_t * data = new uint8_t[size];
-							sqlResult->ColumnDataBlob(i, (void * &)data, size);
-							wxMemoryInputStream jpegStream(data, size);
-							bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);
-							delete[] data;
-						}
-					}
-				}
-			}
-			else if(type == 1)
+			if(type == 1)
 			{
 				switch (i)
 				{
@@ -282,39 +361,6 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 						break;
 				}
 			}
-			else if (type == 3)
-			{
-				
-				switch (i)
-				{
-				case 0:
-					picture->SetFilename(sqlResult->ColumnDataText(i));
-					break;
-				case 1:
-					picture->SetWidth(sqlResult->ColumnDataInt(i));
-					break;
-				case 2:
-					picture->SetHeight(sqlResult->ColumnDataInt(i));
-					break;
-				case 3:
-				{
-					int size = sqlResult->ColumnDataBlobSize(i);
-					if (size > 0)
-					{
-						uint8_t * data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-						if (data != nullptr)
-						{
-							picture->SetData(data, size);
-
-							delete[] data;
-							data = nullptr;
-						}
-					}
-				}
-				}
-				
-			}
 			else if (type == 4)
 			{
 				int numFace;
@@ -326,10 +372,19 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				}
 				listFaceIndex.push_back(numFace);
 			}
+			else if (type == 7)
+			{
+				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+				{
+					switch (i)
+					{
+					case 0:
+						listFace.push_back(sqlResult->ColumnDataInt(i));
+						break;
+					}
+				}
+			}
 		}
-
-		if (type == 3)
-			listFace.push_back(picture);
 		nbResult++;
 	}
 	return nbResult;

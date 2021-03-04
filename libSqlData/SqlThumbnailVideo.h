@@ -22,14 +22,15 @@ namespace Regards
 			bool DeleteThumbnail(const int & numPhoto);
 			bool EraseThumbnail();
 			bool EraseFolderThumbnail(const int &numFolder);
-			bool TestThumbnail(const wxString & path, const int &numVideo);
+			bool TestThumbnail(const int & numPhoto, const int &numVideo);
 		private:
 			int TraitementResult(CSqlResult * sqlResult);
 			CImageVideoThumbnail * videoThumbnail = nullptr;
-            wxImage bitmap;
+			vector<int> listPhoto;
 			int type;
 			bool find;
             int nbElement;
+			int numPhoto;
 		};
 	}
 }

@@ -92,6 +92,85 @@ wxString CFileUtility::GetResourcesFolderPath()
 #endif
 }
 
+wxString CFileUtility::GetFaceThumbnailPath(const int &numFace)
+{
+	wxString documentPath = GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Face");
+#else
+	documentPath.append("/Face");
+#endif
+
+	if (!wxDir::Exists(documentPath))
+	{
+		wxDir::Make(documentPath);
+	}
+
+#ifdef WIN32
+	documentPath.append("\\" + to_string(numFace) + ".jpg");
+#else
+	documentPath.append("/" + to_string(numFace) + ".jpg");
+#endif
+
+	return documentPath;
+}
+
+wxString CFileUtility::GetVideoThumbnailPath(const wxString & path, const int &numFrame)
+{
+	wxString ext;
+	wxString dirpath;
+	wxString name;
+	wxFileName::SplitPath(path, &dirpath, &name, &ext);
+
+	wxString documentPath = GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\ThumbnailVideo");
+#else
+	documentPath.append("/ThumbnailVideo");
+#endif
+
+	if (!wxDir::Exists(documentPath))
+	{
+		wxDir::Make(documentPath);
+	}
+
+#ifdef WIN32
+	documentPath.append("\\" + name + "_" + to_string(numFrame) + ".jpg");
+#else
+	documentPath.append("/" + name + "_" + to_string(numFrame) + ".jpg");
+#endif
+
+	return documentPath;
+}
+
+wxString CFileUtility::GetThumbnailPath(const wxString & path)
+{
+	wxString ext;
+	wxString dirpath;
+	wxString name;
+	wxFileName::SplitPath(path, &dirpath, &name, &ext);
+
+	wxString documentPath = GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Thumbnail");
+#else
+	documentPath.append("/Thumbnail");
+#endif
+
+	if (!wxDir::Exists(documentPath))
+	{
+		wxDir::Make(documentPath);
+	}
+
+#ifdef WIN32
+	documentPath.append("\\" + name + ".jpg");
+#else
+	documentPath.append("/" + name + ".jpg");
+#endif
+
+	return documentPath;
+}
+
 wxString CFileUtility::GetDocumentFolderPath()
 {
 	wxStandardPathsBase& stdp = wxStandardPaths::Get();

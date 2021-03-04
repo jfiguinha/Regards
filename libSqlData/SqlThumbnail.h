@@ -1,7 +1,7 @@
 #pragma once
 #include <SqlExecuteRequest.h>
 
-class CRegardsBitmap;
+class CImageLoadingFormat;
 class CPictureData;
 
 namespace Regards
@@ -17,21 +17,23 @@ namespace Regards
 			~CSqlThumbnail();
 			bool InsertThumbnail(const wxString & path, const uint8_t *zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash);
 			wxImage GetThumbnail(const wxString & path);
-			CRegardsBitmap * GetPictureThumbnail(const wxString & path);
+			CImageLoadingFormat * GetPictureThumbnail(const wxString & path);
 			bool DeleteThumbnail(const wxString &path);
 			bool DeleteThumbnail(const int & numPhoto);
 			bool EraseThumbnail();
 			bool EraseFolderThumbnail(const int &numFolder);
 			bool TestThumbnail(const wxString & path, const wxString &hash);
 			bool TestThumbnail(const wxString & path);
-			CPictureData * GetJpegThumbnail(const wxString & path);
+			//CPictureData * GetJpegThumbnail(const wxString & path);
 		private:
 			int TraitementResult(CSqlResult * sqlResult);
-			wxImage bitmap;
-			CRegardsBitmap * regardsBitmap;
+			vector<int> listPhoto;
+			//wxImage bitmap;
+			//CRegardsBitmap * regardsBitmap;
 			int type;
 			bool find;
-			CPictureData * picture;
+			int numPhoto = 0;
+			//CPictureData * picture;
 		};
 	}
 }

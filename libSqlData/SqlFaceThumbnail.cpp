@@ -21,10 +21,6 @@ wxImage CSqlFaceThumbnail::GetwxImage()
 	return sqlThumbnail.GetFace(numFace);
 }
 
-void CSqlFaceThumbnail::SetBitmap(CImageLoadingFormat * bitmap)
-{
-}
-
 bool CSqlFaceThumbnail::TestBitmap()
 {
 	return true;

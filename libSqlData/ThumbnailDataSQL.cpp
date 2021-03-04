@@ -27,7 +27,7 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 
 int CThumbnailDataSQL::GetNbFrame()
 {
-    if(isVideo && nbFrame == 0)
+    if(isVideo && nbFrame < 20)
     {
         CSqlThumbnailVideo sqlThumbnailVideo;
         nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
@@ -49,7 +49,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 {
 
 
-    if(isVideo && nbFrame == 0)
+    if(isVideo && nbFrame < 20 )
     {
         CSqlThumbnailVideo sqlThumbnailVideo;
         nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
@@ -84,6 +84,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	return frameOut;
 }
 
+/*
 void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	if(bitmap == nullptr)
@@ -117,4 +118,4 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 		}
 	}
 }
-
+*/

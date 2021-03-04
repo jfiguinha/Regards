@@ -6,7 +6,11 @@
 #include <RegardsBitmap.h>
 #include <ImageVideoThumbnail.h>
 #include <wx/mstream.h>
+#include <libPicture.h>
+#include <wx/file.h>
+#include <FileUtility.h>
 using namespace Regards::Sqlite;
+using namespace Regards::Picture;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
 	: CSqlExecuteRequest(L"RegardsDB")
@@ -30,13 +34,11 @@ int CSqlThumbnailVideo::GetNbThumbnail(const wxString & path)
 	return nbElement;
 }
 
-bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVideo)
+bool CSqlThumbnailVideo::TestThumbnail(const int & numPhoto, const int &numVideo)
 {
 	type = 2;
 	find = false;
-	wxString fullpath = path;
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo = " + to_string(numVideo));
+	ExecuteRequest("SELECT NumPhoto FROM VIDEOTHUMBNAIL WHERE numPhoto = " + to_string(numPhoto) + " and numVideo = " + to_string(numVideo));
 	return find;
 }
 
@@ -44,55 +46,128 @@ bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVide
 
 bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const int &numPicture, const int &rotation, const int &percent, const int &timePosition)
 {
-    if(!TestThumbnail(path, numPicture))
+	type = 6;
+	wxString fullpath(path);
+	fullpath.Replace("'", "''");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+
+    if(!TestThumbnail(numPhoto, numPicture))
     {
-        wxString fullpath = path;
-        fullpath.Replace("'", "''");
-        return ExecuteInsertBlobData("INSERT INTO VIDEOTHUMBNAIL (FullPath, numVideo, rotation, percent, timePosition, width, height, thumbnail) VALUES('" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," + to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) + ", ? )", 7, zBlob, nBlob);
+		type = 2;
+		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numPicture);
+		wxFile fileOut;
+		fileOut.Create(thumbnail, true);
+		fileOut.Write(zBlob, nBlob);
+		fileOut.Close();
+
+        return ExecuteRequestWithNoResult("INSERT INTO VIDEOTHUMBNAIL (NumPhoto, FullPath, numVideo, rotation, percent, timePosition, width, height) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," + to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) + ")");
     }
     return false;
 }
 
 CImageVideoThumbnail * CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &numVideo)
 {
-	type = 0;
-    videoThumbnail = nullptr;
-	wxString fullpath = path;
+	type = 6;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath, numVideo, rotation, percent, timePosition, width, height, thumbnail FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo = " + to_string(numVideo));
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+
+	type = 0;
+	ExecuteRequest("SELECT rotation, percent, timePosition FROM VIDEOTHUMBNAIL WHERE NumPhoto = " + to_string(numPhoto) + " and numVideo = " + to_string(numVideo));
+	
+	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
+	if (wxFileExists(thumbnail))
+	{
+		CLibPicture libPicture;
+		videoThumbnail->image = libPicture.LoadPicture(thumbnail);
+	}
+	else
+	{
+		videoThumbnail->image = nullptr;
+	}
+	
+	
 	return videoThumbnail;
+
 }
 
 wxImage CSqlThumbnailVideo::GetThumbnail(const wxString & path, const int &numVideo)
 {
-	type = 1;
-	wxString fullpath = path;
+	type = 6;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath, numVideo, width, height, thumbnail FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo = " + to_string(numVideo));
-	return bitmap;
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+
+	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
+	wxImage image;
+	if (wxFileExists(thumbnail))
+		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	return image;
 }
 
 
 bool CSqlThumbnailVideo::DeleteThumbnail(const wxString & path)
 {
+	type = 6;
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
+
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	for (int i = 0; i < 20; i++)
+	{
+		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), i);
+		if (wxFileExists(thumbnail))
+		{
+			wxRemoveFile(thumbnail);
+		}
+	}
+
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 }
 
 bool CSqlThumbnailVideo::DeleteThumbnail(const int & numPhoto)
 {
+	for (int i = 0; i < 20; i++)
+	{
+		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), i);
+		if (wxFileExists(thumbnail))
+		{
+			wxRemoveFile(thumbnail);
+		}
+	}
+
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")") != -1) ? true : false;
 }
 
 bool CSqlThumbnailVideo::EraseThumbnail()
 {
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\ThumbnailVideo");
+#else
+	documentPath.append("/ThumbnailVideo");
+#endif
+
+	wxRmdir(documentPath);
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL") != -1) ? true : false;
 }
 
 bool CSqlThumbnailVideo::EraseFolderThumbnail(const int &numFolder)
 {
-	//return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL") != -1) ? true : false;
+	type = 7;
+	listPhoto.clear();
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder));
+	for (int idPhoto : listPhoto)
+	{
+		for (int i = 0; i < 20; i++)
+		{
+			wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(idPhoto), i);
+			if (wxFileExists(thumbnail))
+			{
+				wxRemoveFile(thumbnail);
+			}
+		}
+	}
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
 }
 
@@ -110,92 +185,22 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
         
 		switch (type)
 		{
-        case 1:
-            
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-                // FullPath, numVideo, rotation, percent, timePosition, width, height
-				switch (i)
-				{
-				case 0:
-					filename = sqlResult->ColumnDataText(i);
-					break;
-                case 1:
-                    numVideo = sqlResult->ColumnDataInt(i);
-                    break;
-				case 2:
-					width = sqlResult->ColumnDataInt(i);
-					break;
-				case 3:
-					height = sqlResult->ColumnDataInt(i);
-					break;
-				case 4:
-				{
-					int size = sqlResult->ColumnDataBlobSize(i);
-					if (size > 0)
-					{		
-						const int req_comps = 4;
-						int actual_comps = 4;
-						uint8_t * data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-                        
-                        wxMemoryInputStream jpegStream(data, size);
-                        bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);                        
-
-						delete[] data;
-					}
-				}
-				break;
-				}
-			}
-			break;
-		case 0:
+ 		case 0:
             videoThumbnail = new CImageVideoThumbnail();
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
                 // FullPath, numVideo, rotation, percent, timePosition, width, height
 				switch (i)
 				{
-				case 0:
-					filename = sqlResult->ColumnDataText(i);
-					break;
-                case 1:
-                    numVideo = sqlResult->ColumnDataInt(i);
-                    break;
-                case 2:
+                case 0:
                     videoThumbnail->rotation = sqlResult->ColumnDataInt(i);
                     break;
-                case 3:
+                case 1:
                     videoThumbnail->percent = sqlResult->ColumnDataInt(i);
                     break;
-                case 4:
+                case 2:
                     videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
                     break;
-				case 5:
-					width = sqlResult->ColumnDataInt(i);
-					break;
-				case 6:
-					height = sqlResult->ColumnDataInt(i);
-					break;
-				case 7:
-				{
-					int size = sqlResult->ColumnDataBlobSize(i);
-					if (size > 0)
-					{		
-						const int req_comps = 4;
-						int actual_comps = 4;
-						uint8_t * data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-                        wxImage * bitmap = new wxImage();
-                        wxMemoryInputStream jpegStream(data, size);
-                        bitmap->LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);                                               
-                        videoThumbnail->image = new CImageLoadingFormat();
-                        videoThumbnail->image->SetPicture(bitmap);
-
-						delete[] data;
-					}
-				}
-				break;
 				}
 			}
 			break;
@@ -221,7 +226,32 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 					break;
 				}
 			}
-			break;            
+			break;  
+
+		case 6:
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					numPhoto = sqlResult->ColumnDataInt(i);
+					break;
+				}
+			}
+			break;
+
+			case 7:
+				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+				{
+					switch (i)
+					{
+					case 0:
+						numPhoto = sqlResult->ColumnDataInt(i);
+						listPhoto.push_back(numPhoto);
+						break;
+					}
+				}
+			break;
 		}
 
 		nbResult++;

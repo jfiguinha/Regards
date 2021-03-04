@@ -383,27 +383,31 @@ void CThumbnailEffect::LoadPicture(void * param)
 	if (threadLoadingBitmap == nullptr)
 		return;
     
-    CImageLoadingFormat thumbnail; 
+	bool deleteData = false;
+    //CImageLoadingFormat thumbnail; 
     CSqlThumbnail sqlThumbnail;  
     CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-	CRegardsBitmap * bitmap = nullptr;
+	CImageLoadingFormat * thumbnail = nullptr;
 
 	if (threadLoadingBitmap->imageLoading == nullptr)
-		bitmap = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
+	{
+		deleteData = true;
+		thumbnail = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
+	}	
 	else
-		bitmap = threadLoadingBitmap->imageLoading->GetRegardsBitmap();
+		thumbnail = threadLoadingBitmap->imageLoading;
 
     
-	if(bitmap != nullptr)
+	if(thumbnail != nullptr)
     {
-        thumbnail.SetPicture(bitmap);  
+        //thumbnail.SetPicture(bitmap);  
         CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, &thumbnail);
+        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, thumbnail);
 
         switch (threadLoadingBitmap->thumbnailData->GetNumPhotoId())
         {
             case IDM_WAVE_EFFECT:
-                filtre->WaveFilter(20,20, bitmap->GetBitmapHeight() / 2,2,20);
+                filtre->WaveFilter(20,20, thumbnail->GetHeight() / 2,2,20);
                 break;
 
             case IDM_FILTRELENSFLARE:
@@ -425,7 +429,8 @@ void CThumbnailEffect::LoadPicture(void * param)
         delete filtre;      
     }   
 	
-
+	if (deleteData)
+		delete thumbnail;
     
 	wxCommandEvent * event = new wxCommandEvent(EVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);

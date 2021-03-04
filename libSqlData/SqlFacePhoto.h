@@ -1,8 +1,7 @@
 #pragma once
 #include "SqlExecuteRequest.h"
 
-class CRegardsBitmap;
-class CPictureData;
+class CImageLoadingFormat;
 
 namespace Regards
 {
@@ -22,9 +21,9 @@ namespace Regards
 			int GetVideoFacePosition(const int & numFace);
 			vector<wxString> GetPhotoList();
 			vector<wxString> GetPhotoListTreatment();
-			vector <CPictureData * > GetAllFace();
-			vector<CPictureData *> GetAllFace(const int &numFace);
-			CPictureData * GetFacePicture(const int &numFace);
+			vector<CImageLoadingFormat * > GetAllFace();
+			vector<CImageLoadingFormat *> GetAllFace(const int &numFace);
+			CImageLoadingFormat * GetFacePicture(const int &numFace);
 			vector<int> GetAllNumFace();
 			vector<int> GetAllNumFace(const int &numFace);
 			wxImage GetFace(const int &numFace);
@@ -43,10 +42,11 @@ namespace Regards
 			int height;
 			wxString filename;
 			vector<wxString> listPhoto;
-			vector<CPictureData *> listFace;
-			CPictureData * facePicture;
+			vector<int> listFace;
+			//vector<CPictureData *> listFace;
+			//CPictureData * facePicture;
 			vector<int> listFaceIndex;
-			wxImage bitmap;
+			//wxImage bitmap;
 		};
 	}
 }

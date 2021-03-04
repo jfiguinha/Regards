@@ -13,5 +13,8 @@ public:
     static wxString GetResourcesFolderPath();
 	static wxString GetFileTime(const wxString &szFileName);
 	static wxString GetDocumentFolderPath();
+	static wxString GetThumbnailPath(const wxString & path);
+	static wxString GetVideoThumbnailPath(const wxString & path, const int &numFrame);
+	static wxString GetFaceThumbnailPath(const int &numFace);
     static wxString GetTempFile(wxString filename, const bool &removeFile = true);
 };

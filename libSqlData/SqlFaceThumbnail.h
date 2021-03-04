@@ -24,7 +24,6 @@ public:
 		return numFace;
 	}
 
-	void SetBitmap(CImageLoadingFormat * bitmap);
 	wxImage GetwxImage();
 
 private:

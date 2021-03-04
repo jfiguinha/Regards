@@ -1370,11 +1370,11 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 	//--------------------------------------------------------------------------------
 
 	CSqlThumbnail sqlThumbnail;
-	CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-	CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(filenameToShow);
-	if (bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
+	//CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
+	CImageLoadingFormat * _loadingPicture = sqlThumbnail.GetPictureThumbnail(filenameToShow);
+	if (_loadingPicture != nullptr && _loadingPicture->IsOk())
 	{
-		_loadingPicture->SetPicture(bitmapThumbnail);
+		//_loadingPicture->SetPicture(bitmapThumbnail);
 		CBitmapReturn * bitmapReturn = new CBitmapReturn();
 		bitmapReturn->myThread = nullptr;
 		bitmapReturn->isThumbnail = true;
