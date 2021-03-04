@@ -728,7 +728,6 @@ void CThumbnail::LoadPicture(void * param)
 	else
 	{
 		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-
 	}
 
 

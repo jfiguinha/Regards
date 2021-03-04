@@ -19,7 +19,7 @@ public:
 		return false;
 	}
 
-	//void SetBitmap(CImageLoadingFormat * bitmap);
+	void SetBitmap(CImageLoadingFormat * bitmap);
 	wxImage GetwxImage();
     int GetNbFrame();
     

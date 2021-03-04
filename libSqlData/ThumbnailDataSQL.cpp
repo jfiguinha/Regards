@@ -84,7 +84,6 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	return frameOut;
 }
 
-/*
 void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	if(bitmap == nullptr)
@@ -118,4 +117,4 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 		}
 	}
 }
-*/
+
