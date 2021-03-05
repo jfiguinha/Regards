@@ -17,7 +17,7 @@ namespace Regards
             int GetNbThumbnail(const wxString & path);
 			bool InsertThumbnail(const wxString & path, const uint8_t *zBlob, const int &nBlob, const int & width, const int &height, const int &numPicture, const int &rotation, const int &percent, const int &timePosition);
 			wxImage GetThumbnail(const wxString & path, const int &numVideo);
-            CImageVideoThumbnail * GetPictureThumbnail(const wxString & path, const int &numVideo);
+            void GetPictureThumbnail(const wxString & path, const int &numVideo, CImageVideoThumbnail * & videoThumbnail);
 			bool DeleteThumbnail(const wxString &path);
 			bool DeleteThumbnail(const int & numPhoto);
 			bool EraseThumbnail();

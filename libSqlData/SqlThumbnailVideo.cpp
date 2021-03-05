@@ -51,10 +51,11 @@ bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * 
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
 
-    if(!TestThumbnail(numPhoto, numPicture))
+	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numPicture);
+
+	if (!wxFileExists(thumbnail))
     {
 		type = 2;
-		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numPicture);
 		wxFile fileOut;
 		fileOut.Create(thumbnail, true);
 		fileOut.Write(zBlob, nBlob);
@@ -65,29 +66,34 @@ bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * 
     return false;
 }
 
-CImageVideoThumbnail * CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &numVideo)
+void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &numVideo, CImageVideoThumbnail * & videoThumbnail)
 {
-	type = 6;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	if (videoThumbnail != nullptr)
+	{
 
-	type = 0;
-	ExecuteRequest("SELECT rotation, percent, timePosition FROM VIDEOTHUMBNAIL WHERE NumPhoto = " + to_string(numPhoto) + " and numVideo = " + to_string(numVideo));
-	
-	wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
-	if (wxFileExists(thumbnail))
-	{
-		CLibPicture libPicture;
-		videoThumbnail->image = libPicture.LoadPicture(thumbnail);
+		this->videoThumbnail = videoThumbnail;
+
+		type = 6;
+		wxString fullpath(path);
+		fullpath.Replace("'", "''");
+		ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+
+		type = 0;
+		ExecuteRequest("SELECT rotation, percent, timePosition FROM VIDEOTHUMBNAIL WHERE NumPhoto = " + to_string(numPhoto) + " and numVideo = " + to_string(numVideo));
+
+		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
+		if (wxFileExists(thumbnail))
+		{
+			CLibPicture libPicture;
+			videoThumbnail->image = libPicture.LoadPicture(thumbnail);
+		}
+		else
+		{
+			videoThumbnail->image = nullptr;
+		}
 	}
-	else
-	{
-		videoThumbnail->image = nullptr;
-	}
 	
-	
-	return videoThumbnail;
+	//return videoThumbnail;
 
 }
 
@@ -186,7 +192,7 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 		switch (type)
 		{
  		case 0:
-            videoThumbnail = new CImageVideoThumbnail();
+            
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
                 // FullPath, numVideo, rotation, percent, timePosition, width, height

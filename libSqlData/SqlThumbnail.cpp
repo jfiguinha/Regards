@@ -51,7 +51,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 	type = 2;
     wxString fullpath(path);
     fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
 	if (!find)
 	{
 		DeleteThumbnail(path);
@@ -64,7 +64,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 	type = 2;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	if (!find)
 	{
 		DeleteThumbnail(path);
@@ -82,14 +82,16 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
 	
-	type = 2;
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-	wxFile fileOut;
-	fileOut.Create(thumbnail, true);
-	fileOut.Write(zBlob, nBlob);
-	fileOut.Close();
+	if (!wxFileExists(thumbnail))
+	{
+		wxFile fileOut;
+		fileOut.Create(thumbnail, true);
+		fileOut.Write(zBlob, nBlob);
+		fileOut.Close();
+		returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 
-	returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
+	}
 	return returnValue;
 }
 

@@ -27,7 +27,7 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 
 int CThumbnailDataSQL::GetNbFrame()
 {
-    if(isVideo && nbFrame < 20)
+    if(isVideo)// && nbFrame < 20)
     {
         CSqlThumbnailVideo sqlThumbnailVideo;
         nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
@@ -49,7 +49,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 {
 
 
-    if(isVideo && nbFrame < 20 )
+    if(isVideo)// && nbFrame < 20 )
     {
         CSqlThumbnailVideo sqlThumbnailVideo;
         nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
