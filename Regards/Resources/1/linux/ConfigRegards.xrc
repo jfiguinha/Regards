@@ -152,7 +152,7 @@
 							</object>
 						</object>
 												<object class="notebookpage">
-						<label>OpenCV Parameter</label>
+						<label>OpenCL Parameter</label>
 							<object class="wxPanel" name="page_4">
 								<object class="wxStaticText" name="ID_STATICTEXT1">
 									<label>OpenCL Platform Selection :</label>
@@ -234,17 +234,17 @@
 							</object>		
 							<object class="wxStaticBox" name="sbDiaporama">
 								<label>Sequence</label>
-								<pos>0,100</pos>
+								<pos>0,90</pos>
 								<size>380,50</size>
 							</object>
 							<object class="wxSpinCtrl" name="ID_SCTIME">
 								<value>0</value>
-								<pos>120,120</pos>
+								<pos>120,110</pos>
 								<size>120,21</size>
 							</object>
 							<object class="wxStaticText" name="ID_STTIME">
 								<label>Time :</label>
-								<pos>16,120</pos>
+								<pos>16,110</pos>
 								<size>40,24</size>
 							</object>
 							<object class="wxRadioBox" name="ID_RBFACEDETECTION">
