@@ -373,6 +373,8 @@ void CCentralWindow::HideToolbar()
 
 void CCentralWindow::ShowToolbar()
 {
+
+
      printf("CCentralWindow::ShowToolbar \n");
      
 	showToolbar = true;
@@ -381,7 +383,12 @@ void CCentralWindow::ShowToolbar()
 		windowManager->ShowWindow(Pos::wxBOTTOM);
 
 	if (isFullscreen)
+	{
 		windowManager->ShowWindow(Pos::wxRIGHT);
+		windowManager->HideWindow(Pos::wxCENTRAL);
+		windowManager->ShowWindow(Pos::wxCENTRAL);
+	}
+		
 
 	if (isFullscreen && !isPicture)
 	{
@@ -391,6 +398,7 @@ void CCentralWindow::ShowToolbar()
 	}
 
 	windowManager->Resize();
+
 
 	if (previewWindow != nullptr)
 	{
