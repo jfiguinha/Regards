@@ -22,7 +22,7 @@ namespace Regards
 			void SetTabValue(vector<CTreeElementValue *> * value);
 			void SetExifKey(const wxString &exifKey);
 			void SetVisible(const bool &visible);
-			void MouseOver(wxDC * deviceContext, const int &x, const int &y);
+			void MouseOver(wxDC * deviceContext, const int &x, const int &y, bool & update);
 			void ClickElement(wxWindow * window, const int &x, const int &y);
 			void UnclickElement(wxWindow * window, const int &x, const int &y);
 			void SetInitValue(CTreeElementValue * value);

@@ -24,7 +24,7 @@ namespace Regards
 				themeTexte.SetHeight(height);
 			}
 
-			void MouseOver(wxDC * deviceContext, const int &x, const int &y);
+			void MouseOver(wxDC * deviceContext, const int &x, const int &y, bool & update);
 			void DrawElement(wxDC * deviceContext, const int &x, const int &y);
 			void SetLibelle(const wxString &libelle);
 			void SetClick(const bool &value);

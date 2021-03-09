@@ -54,7 +54,7 @@ wxString CInfosFile::GetFilename()
 	return filename;
 }
 
-void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool & update)
 {
     //TRACE();
     
@@ -62,7 +62,7 @@ void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, con
 	{
 		CTreeElement * treeElement = element->GetTreeElement();
 		if (treeElement != nullptr)
-			treeElement->MouseOver(deviceContext, x, y);
+			treeElement->MouseOver(deviceContext, x, y, update);
 	}
 }
 

@@ -32,7 +32,7 @@ namespace Regards
 			void SaveState();
 			bool GetCheckState(const wxString &exifKey, const wxString &key);
 			void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
-			void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
+			void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool & update);
 
 			void CreateElement();
 			void UpdateElement();

@@ -161,10 +161,10 @@ void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 		xPos = treeControl->GetWidthRow(treeElement->GetRow() - 1);
 	
 
-	treeElement->DrawElement(&dc, treeElement->GetPosX() + xPos, treeElement->GetPosY());
+	//treeElement->DrawElement(&dc, treeElement->GetPosX() + xPos, treeElement->GetPosY());
     
-	GenerateScreenBuffer();
-	this->Refresh();
+	//GenerateScreenBuffer();
+	//this->Refresh();
 }
 
 CTreeWindow::~CTreeWindow()
@@ -391,16 +391,23 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 	wxClientDC dc(this);
     try
     {
+		bool update = false;
         CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
         if (element != nullptr)
         {
-            treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur);
+            treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
         }
         else
         {
-            treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur);
+            treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur, update);
             ::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
         }
+		if (update)
+		{
+			//GenerateScreenBuffer();
+			//this->Refresh();
+		}
+
     }
     catch (...)
     {

@@ -25,12 +25,12 @@ namespace Regards
 			bool IsVisible();
 
 
-			virtual void MouseOver(wxDC * context, const int &x, const int &y)
+			virtual void MouseOver(wxDC * context, const int &x, const int &y, bool & update)
 			{
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			};
 
-			virtual void MouseOut(wxDC * context, const int &x, const int &y)
+			virtual void MouseOut(wxDC * context, const int &x, const int &y, bool & update)
 			{
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			};

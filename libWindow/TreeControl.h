@@ -39,17 +39,17 @@ namespace Regards
 			int GetNbRow();
 			int GetWidthRow(const int &numRow);
 
-			virtual void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+			virtual void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool &update)
 			{
 				if (element != nullptr)
 				{
 					CTreeElement * treeElement = element->GetTreeElement();
 					if (treeElement != nullptr)
-						treeElement->MouseOver(deviceContext, x, y);
+						treeElement->MouseOver(deviceContext, x, y, update);
 				}
 			}
 
-			virtual void MouseOut(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur){};
+			virtual void MouseOut(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool &update) { update = false; };
 			virtual void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur){};
 			virtual void UnclickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur){};
 			virtual void DoubleClickOnElement(CPositionElement * element){};

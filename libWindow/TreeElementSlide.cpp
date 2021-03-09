@@ -155,7 +155,7 @@ void CTreeElementSlide::CalculZoomPosition(const int &x)
 }
 
 
-void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int &y)
+void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int &y, bool & update)
 {
 	if (mouseBlock)
 	{
@@ -171,6 +171,8 @@ void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int 
 				position = 0;
 
 			eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
+
+			update = true;
 		}
 	}
 }

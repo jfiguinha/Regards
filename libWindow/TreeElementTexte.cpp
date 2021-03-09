@@ -39,12 +39,14 @@ void CTreeElementTexte::SetTheme(CThemeTreeTexte * theme)
 	themeTexte = *theme;
 }
 
-void CTreeElementTexte::MouseOver(wxDC * deviceContext, const int &x, const int &y)
+void CTreeElementTexte::MouseOver(wxDC * deviceContext, const int &x, const int &y, bool & update)
 {
 	if (canUpdate)
         wxSetCursor(wxCursor(wxCURSOR_IBEAM));
 	else
 		wxSetCursor(wxCursor(wxCURSOR_HAND));
+
+	update = false;
 }
 
 void CTreeElementTexte::SetLibelle(const wxString &libelle)

@@ -80,13 +80,13 @@ void COcrLabel::ClickOnElement(CPositionElement * element, wxWindow * window, co
 	}
 }
 
-void COcrLabel::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+void COcrLabel::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool & update)
 {
 	int xPos = 0;
 	if (element->GetRow() > 0)
 		xPos = GetWidthRow(element->GetRow() - 1);
 
-	element->GetTreeElement()->MouseOver(deviceContext, element->GetX() + xPos, element->GetY());
+	element->GetTreeElement()->MouseOver(deviceContext, element->GetX() + xPos, element->GetY(), update);
 }
 
 void COcrLabel::Init()
