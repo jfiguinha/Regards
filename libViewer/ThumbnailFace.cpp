@@ -437,8 +437,8 @@ void CThumbnailFace::ResizeThumbnail()
 	{
 		//int nbElement = infosSeparationBar->listElement.size();
 
-		int elementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth() + positionXOld))
+		int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 			elementByRow++;
 
 		if (nbElementByRow < elementByRow)
@@ -516,8 +516,8 @@ void CThumbnailFace::ResizeThumbnailWithVScroll()
 	{
 		//int nbElement = infosSeparationBar->listElement.size();
 
-		int elementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+		int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 			elementByRow++;
 
 		if (nbElementByRow < elementByRow)
@@ -669,11 +669,11 @@ void CThumbnailFace::UpdateScrollWithVScroll()
 	{
 		int nbElement = (int)infosSeparationBar->listElement.size();
 
-		int nbElementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
+		int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
 
 		if (nbElement > 0 && nbElementByRow == 0)
 		{
-			float value = (float)(GetWindowWidth() + positionXOld) / (float)themeThumbnail.themeIcone.GetWidth();
+			float value = (float)(GetWindowWidth()) / (float)themeThumbnail.themeIcone.GetWidth();
 			if (value > 0)
 				nbElementByRow = 1;
 		}
@@ -683,7 +683,7 @@ void CThumbnailFace::UpdateScrollWithVScroll()
 			if (nbElementByRow < 1)
 				nbElementByRow = 1;
 
-			if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth() + positionXOld))
+			if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 				nbElementByRow++;
 
 			int nbElementEnY = (int)infosSeparationBar->listElement.size() / nbElementByRow;

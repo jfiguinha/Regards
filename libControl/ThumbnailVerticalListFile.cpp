@@ -102,8 +102,8 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
     int nbElementX = 0;
     int nbElementY = 0;
 
-    int nbElementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+    int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
         nbElementByRow++;
 
     int nbElementEnY = (int)listFile.size() / nbElementByRow;
@@ -174,8 +174,8 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector, 
     
     thumbnailPos = 0;
 
-    int nbElementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+    int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
         nbElementByRow++;
 
     int nbElementEnY = (int)photoVector.size() / nbElementByRow;

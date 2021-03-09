@@ -120,9 +120,6 @@ namespace Regards
 			int thumbnailSizeY;
 
 			bool isStoragePt;
-			int positionYOld;
-			int positionXOld;
-
 			int nbLigneX;
 			int nbLigneY;
 

@@ -603,8 +603,8 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 	int nbElementX = 0;
 	int nbElementY = 0;
 
-	int nbElementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+	int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 		nbElementByRow++;
 
 	int nbElementEnY = (int)iconeList->GetNbElement() / nbElementByRow;
@@ -618,8 +618,8 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 	{
 		//int nbElement = infosSeparationBar->listElement.size();
 
-		int elementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+		int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 			elementByRow++;
 
 		if (nbElementByRow < elementByRow)
@@ -690,13 +690,15 @@ void CThumbnailEffect::UpdateScroll()
 	//bool update = false;
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
+	if (GetWindowWidth() <= 0)
+		return;
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
 		int nbElement = (int)infosSeparationBar->listElement.size();
 
-		int nbElementByRow = (GetWindowWidth() + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth() + positionXOld))
+		int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 			nbElementByRow++;
 
 		int nbElementEnY = (int)infosSeparationBar->listElement.size() / nbElementByRow;

@@ -208,7 +208,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 				}
 
-				posLargeur = xPos;
+ 				posLargeur = xPos;
 				posHauteur = yPos;
 				
 			}
@@ -311,8 +311,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	posHauteur = 0;
 	posLargeur = 0;
 	numActif = 0;
-	positionYOld = 0;
-	positionXOld = 0;
 	nbLigneX = 0;
 	nbLigneY = 0;
 	positionSize = 4;
