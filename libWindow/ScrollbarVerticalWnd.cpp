@@ -568,15 +568,24 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
     }
 }
 
+void CScrollbarVerticalWnd::SetShowWindow(const bool &showValue)
+{
+	this->showWindow = showWindow;
+}
+
 void CScrollbarVerticalWnd::SendTopPosition(const int &value)
 {
-	wxWindow * window = this->GetParent();
-	if (window != nullptr)
+	if (showWindow)
 	{
-		wxCommandEvent evt(wxEVENT_TOPPOSITION);
-		evt.SetInt(value);
-		window->GetEventHandler()->AddPendingEvent(evt);
+ 		wxWindow * window = this->GetParent();
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_TOPPOSITION);
+			evt.SetInt(value);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
+
 }
 
 bool CScrollbarVerticalWnd::TestMaxY()

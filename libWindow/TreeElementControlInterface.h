@@ -11,7 +11,7 @@ namespace Regards
 			CTreeElementControlInterface(){};
 			~CTreeElementControlInterface(){};
 
-			virtual void UpdateElement(CTreeElement * treeElement) = 0;
+			//virtual void UpdateElement(CTreeElement * treeElement) = 0;
 			virtual void UpdateTreeControl() = 0;
 		};
 	}

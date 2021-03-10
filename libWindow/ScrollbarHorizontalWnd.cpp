@@ -602,15 +602,24 @@ void CScrollbarHorizontalWnd::OnTimerStopMoving(wxTimerEvent& event)
 		stopMoving->Stop();
 }
 
+void CScrollbarHorizontalWnd::SetShowWindow(const bool &showValue)
+{
+	this->showWindow = showWindow;
+}
+
 void CScrollbarHorizontalWnd::SendLeftPosition(const int &value)
 {
-	wxWindow * window = this->GetParent();
-	if (window != nullptr)
+	if (showWindow)
 	{
-		wxCommandEvent evt(wxEVENT_LEFTPOSITION);
-		evt.SetInt(value);
-		window->GetEventHandler()->AddPendingEvent(evt);
+		wxWindow * window = this->GetParent();
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_LEFTPOSITION);
+			evt.SetInt(value);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
+
 }
 
 void CScrollbarHorizontalWnd::ClickLeftTriangle()

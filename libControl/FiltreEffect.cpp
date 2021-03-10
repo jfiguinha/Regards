@@ -127,7 +127,7 @@ void CFiltreEffect::SlidePosChange(CTreeElement * treeElement, const int &positi
 	{
 		bitmapViewer->UpdateFiltre(effectParameter);
 	}
-	eventControl->UpdateElement(treeElement);
+	//eventControl->UpdateElement(treeElement);
 }
 
 

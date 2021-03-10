@@ -481,5 +481,7 @@ void CScrollbarWnd::Resize()
 			windowManager->Refresh();
 		}
 
+		scrollVertical->SetShowWindow(_showScrollV);
+		scrollHorizontal->SetShowWindow(_showScrollH);
     }
 }

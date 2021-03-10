@@ -152,6 +152,8 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 {
     TRACE();
+	if (isMovingScroll)
+		return;
 
     int numElement = iconeList->GetNbElement();
 
@@ -167,7 +169,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 	}
 
 	numActif = iconeList->GetElement(numItem);
-
+	isMovingScroll = false;
 	if (move)
 	{
 		if (numItem == 0)
@@ -184,7 +186,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 			}
             
             posLargeur = 0;
-            posHauteur = 0;            
+            posHauteur = 0;   
 		}
 		else{
 			if (!isMoving)
@@ -210,7 +212,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
  				posLargeur = xPos;
 				posHauteur = yPos;
-				
+				isMovingScroll = true;
 			}
 		}
 
@@ -409,7 +411,7 @@ void CThumbnail::OnLeftPosition(wxCommandEvent& event)
 void CThumbnail::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
-	posHauteur = pos;
+ 	posHauteur = pos;
 	this->Refresh();
 }
 
@@ -964,9 +966,24 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	if (width <= 0 || height <= 0)
 		return;
 
+
+
+	if (isMovingScroll)
+	{
+		if (numActif != nullptr)
+		{
+			wxRect rect = numActif->GetPos();
+			int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
+			int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
+			posLargeur = xPos;
+			posHauteur = yPos;
+		}
+		isMovingScroll = false;
+	}
+
+
 	TestMaxX();
 	TestMaxY();
-
     
 	render = true;
     //printf("CThumbnail::OnPaint \n");   

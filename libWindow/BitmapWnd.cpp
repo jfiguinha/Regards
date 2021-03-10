@@ -769,6 +769,8 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 			ShrinkImage(false);
 			AfterSetBitmap();
 
+			RemoveListener();
+
 			this->Refresh();
 			this->Update();
 

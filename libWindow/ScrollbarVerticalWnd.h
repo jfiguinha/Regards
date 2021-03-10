@@ -33,6 +33,8 @@ namespace Regards
             
             void UpdateScreenRatio();
 
+			void SetShowWindow(const bool &showValue);
+
 		protected:
 
 			void PaintNow();
@@ -111,6 +113,8 @@ namespace Regards
 			CThemeScrollBar themeScroll;
             
             bool showTriangle = false;
+
+			bool showWindow = true;
 		};
 	}
 }

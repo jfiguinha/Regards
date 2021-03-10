@@ -31,6 +31,8 @@ namespace Regards
 			bool UpdateScrollBar(const int &posLargeur, const int &screenWidth, const int &pictureWidth);
 
             void UpdateScreenRatio();
+
+			void SetShowWindow(const bool &showValue);
             
 		protected:
 
@@ -109,6 +111,8 @@ namespace Regards
 			bool scrollMoving;
             
             bool showTriangle = false;
+
+			bool showWindow = true;
 		};
 	}
 }

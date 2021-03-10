@@ -125,7 +125,7 @@ namespace Regards
 			//void StartLoadingBitmap();
 			void ReinitPicture();
 			void SetOrientation(const int &exif);
-
+			virtual void RemoveListener() {};
 
 		protected:
 
@@ -270,12 +270,12 @@ namespace Regards
 			CFiltreEffet * filtreEffet;
 			//int filterInterpolation;
 #ifdef RENDEROPENGL
-			CRenderBitmapOpenGL * renderOpenGL;
-			CRenderPageCurlOpenGL * pageCurlOpenGL;
-			GLTexture * glTexture;
+			CRenderBitmapOpenGL * renderOpenGL = nullptr;
+			CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
+			GLTexture * glTexture = nullptr;
 			GLTexture * glTextureSrc = nullptr;
-			COpenCLEngine * openCLEngine;
-			COpenCLContext * openclContext;
+			COpenCLEngine * openCLEngine = nullptr;
+			COpenCLContext * openclContext = nullptr;
 #endif
 			//Preview Parameter
 			int preview = 0;

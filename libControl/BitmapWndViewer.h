@@ -50,7 +50,7 @@ namespace Regards
 			~CBitmapWndViewer();
 			CEffectParameter * GetParameter();
 			void SetListener(IMouseUpdate * mouseUpdate);
-			void RemoveListener();
+			virtual void RemoveListener();
 			void SendEmail();
 			void ExportPicture();
 			void SavePicture();

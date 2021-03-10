@@ -152,6 +152,7 @@ void CTreeWindow::MoveRight()
 	}
 }
 
+/*
 void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 {
     TRACE();
@@ -166,7 +167,7 @@ void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 	//GenerateScreenBuffer();
 	//this->Refresh();
 }
-
+*/
 CTreeWindow::~CTreeWindow()
 {
     TRACE();

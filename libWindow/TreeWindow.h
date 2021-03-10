@@ -43,7 +43,7 @@ namespace Regards
 
 			void SetTreeControl(CTreeControl * treeControl);
 			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
-			void UpdateElement(CTreeElement * treeElement);
+			//void UpdateElement(CTreeElement * treeElement);
 			CThemeTree * GetTheme()
 			{
 				return &themeTree;

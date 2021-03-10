@@ -172,6 +172,7 @@ namespace Regards
 			int idWindowToRefresh = 0;
 			bool flipVertical = false;
 			bool flipHorizontal = false;
+			bool isMovingScroll = false;
 		};
 	}
 }
