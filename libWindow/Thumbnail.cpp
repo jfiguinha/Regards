@@ -153,7 +153,10 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 {
     TRACE();
 	if (isMovingScroll)
+	{
+		printf("toto is back !!!!");
 		return;
+	}
 
     int numElement = iconeList->GetNbElement();
 
@@ -231,7 +234,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 	}
 
 
-	this->Refresh();
+	this->ForceRefresh();
 }
 
 void CThumbnail::SetTheme(CThemeThumbnail * theme)

@@ -1159,6 +1159,7 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 #endif
 
 		LoadPictureInThread(pictureElement);
+
 		if (listPicture != nullptr)
 		{
 			listPicture->SetActifItem(pictureElement->numElement, true);
@@ -1416,13 +1417,13 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
     if (listPicture != nullptr)
     {
         listPicture->SetActifItem(numElement, true);
-        listPicture->ForceRefresh();
+       // listPicture->ForceRefresh();
     }
 
     if (thumbnailPicture != nullptr)
     {
         thumbnailPicture->SetActifItem(numElement, true);
-        thumbnailPicture->ForceRefresh();
+       // thumbnailPicture->ForceRefresh();
     }
 
 
