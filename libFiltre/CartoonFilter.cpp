@@ -11,7 +11,8 @@ using namespace Regards::Filter;
 
 CCartoonFilter::CCartoonFilter()
 {
-    libelleEffectMode = L"effect.Mode";
+	libelleEffectMode = CLibResource::LoadStringFromResource(L"LBLEFFECTMODE", 1);
+  //  libelleEffectMode = L"effect.Mode";
 }
 
 CCartoonFilter::~CCartoonFilter()

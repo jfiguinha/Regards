@@ -11,6 +11,7 @@
 #else
 #include <CL/cl_gl.h>
 #endif
+#include <LibResource.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 using namespace Regards::OpenCL;
@@ -68,7 +69,9 @@ void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, cons
 	}
 	catch (...)
 	{
-		wxMessageBox("Error copy video data", "Information");
+		wxString copyvideoData = CLibResource::LoadStringFromResource("LBLERRORCOPYVIDEODATA", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(copyvideoData, infos);
 
 	}
 }

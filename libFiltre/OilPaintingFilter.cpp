@@ -9,8 +9,11 @@ using namespace Regards::Filter;
 
 COilPaintingFilter::COilPaintingFilter()
 {
-    libelleSize = L"effect.Size";
-	libelleDynRatio = L"effect.Dynamic Ratio";
+	libelleSize = CLibResource::LoadStringFromResource(L"LBLEFFECTSIZE", 1);//"Effect.FSize";
+	libelleDynRatio = CLibResource::LoadStringFromResource(L"LBLDYNAMICRATIO", 1);//"Effect.BSize";
+
+//    libelleSize = L"effect.Size";
+//	libelleDynRatio = L"effect.Dynamic Ratio";
 }
 
 COilPaintingFilter::~COilPaintingFilter()

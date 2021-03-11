@@ -23,8 +23,8 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, wxWindowID vie
 	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON",1);// "Zoom On";
 	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF",1);// "Zoom Off";
 	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1);//"Shrink Picture";
-	wxString oldPictureLable = "Original";
-	wxString newPictureLable = "New";
+	wxString oldPictureLable = CLibResource::LoadStringFromResource("LBLORIGINALLABEL", 1);
+	wxString newPictureLable = CLibResource::LoadStringFromResource("LBLNEWLABEL", 1);
 
 	CToolbarButton * newPicture = new CToolbarButton(themeToolbar.button);
 	newPicture->SetButtonResourceId("IDB_NEWPICTURE");

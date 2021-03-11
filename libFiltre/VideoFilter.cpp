@@ -44,8 +44,8 @@ CVideoFilter::CVideoFilter()
 	libelleStabilizeNbFrame = CLibResource::LoadStringFromResource(L"LBLVideoStabilizeFrame", 1);//LBLEFFECTOPENCL
 	showFPS = CLibResource::LoadStringFromResource(L"LBLshowFPS",1);//L"Effect.Show FPS";
 	enableFilmgrain = CLibResource::LoadStringFromResource(L"LBLFILMGRAIN", 1);
-	libelleScale = "Effect.Picture Format";
-	libelleZoom = "Effect.Zoom Picture";
+	libelleScale = CLibResource::LoadStringFromResource(L"LBLPICTUREFORMAT", 1);
+	libelleZoom = CLibResource::LoadStringFromResource(L"LBLZOOMPICTURE", 1);
 }
 
 CVideoFilter::~CVideoFilter()

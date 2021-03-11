@@ -352,7 +352,8 @@ void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
 	else
 	{
 		wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
-		wxMessageBox("OpenCL device Required", labelInformations);
+		wxString openclDevice = CLibResource::LoadStringFromResource(L"LBLOPENCLDEVICEREQUIRED", 1);
+		wxMessageBox(openclDevice, labelInformations);
 	}
 }
 

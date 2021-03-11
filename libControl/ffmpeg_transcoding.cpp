@@ -11,7 +11,7 @@
 #include <ConvertUtility.h>
 #include <window_id.h>
 #include <chrono>
-
+#include <LibResource.h>
 extern "C"
 {
 	#include <libswscale/swscale.h>
@@ -36,9 +36,11 @@ void CFFmpegTranscoding::EncodeFileThread(void * data)
 	int ret = ffmpeg_encoding->pimpl->EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output, ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
 	if (ret < 0)
 	{
+		wxString errorConversion = CLibResource::LoadStringFromResource("LBLERRORCONVERSION", 1);
+		
 		char message[255];
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+		wxMessageBox(message, errorConversion, wxICON_ERROR);
 		//printf(message);
 		//wxString message = av_err2str(ret);
 	}
@@ -62,8 +64,13 @@ int CFFmpegTranscoding::EndDecodeFile(const int & returnValue)
 
 	delete videoCompressOption;
 
-	if(returnValue == 0)
-		wxMessageBox("Conversion is Finished", "Informations");
+	if (returnValue == 0)
+	{
+		wxString filecompleted = CLibResource::LoadStringFromResource("LBLFILEENCODINGCOMPLETED", 1);
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox(filecompleted, infos);
+	}
+		
 	return 0;
 }
 

@@ -218,14 +218,8 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 				isMovingScroll = true;
 			}
 		}
-
-
 	}
-    
-
-	 
-    
-
+ 
 	numSelect = iconeList->GetElement(numItem);
 
 	if (numSelect != nullptr)
@@ -973,6 +967,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 
 	if (isMovingScroll)
 	{
+
 		if (numActif != nullptr)
 		{
 			wxRect rect = numActif->GetPos();

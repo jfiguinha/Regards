@@ -392,7 +392,9 @@ wxString CScannerFrame::ScanPage()
     }
     else
     {
-        wxMessageBox("Please select a scanner source !","Informations");
+		wxString selectScanner = CLibResource::LoadStringFromResource("LBLSELECTSCANNERSOURCE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("labelInformations", 1);
+        wxMessageBox(selectScanner, infos);
     }
 #else
 	{
@@ -437,7 +439,9 @@ wxString CScannerFrame::ScanPage()
 		}
 		else
 		{
-			wxMessageBox("No scanner detected !", "Informations", wxICON_ERROR);
+			wxString scannerdetected = CLibResource::LoadStringFromResource("LBLNOSCANNERDETECTED", 1);
+			wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+			wxMessageBox(scannerdetected, infos, wxICON_ERROR);
 		}
 
 

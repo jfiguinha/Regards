@@ -15,7 +15,7 @@
 #include <FiltreEffet.h>
 #include <FilterData.h>
 #include <wx/progdlg.h>
-
+#include <libResource.h>
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
 //#include "ExportOdt.h"
@@ -336,9 +336,11 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	wxString language = choice->GetStringSelection();
 
 	wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp", false);
+	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+	wxString exportOcr = CLibResource::LoadStringFromResource(L"LBLEXPORTOCR", 1);
 
 	//wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr | Odt files (*.odt) | *.odt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	wxFileDialog saveFileDialog(nullptr, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog saveFileDialog(nullptr, exportOcr, "", "", "PDF " + filename + " (*.pdf)|*.pdf | TXT " + filename + " (*.txt)|*.txt |boxfile " + filename + " (*.boxfile) | *.boxfile | hOcr " + filename + " (*.hocr) | *.hocr", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea...
 

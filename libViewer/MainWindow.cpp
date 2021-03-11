@@ -260,9 +260,11 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 
 	if (IsVideo())
 	{
+		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
+		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
-		wxFileDialog saveFileDialog(nullptr, _("Save Video file"), "", filename,
-				"mp4 files (*.mp4)|*.mp4|webm files (*.webm)|*.webm|mov files (*.mov)|*.mov|mkv files (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
+				"mp4 " + filename + " (*.mp4)|*.mp4|webm " + filename + " (*.webm)|*.webm|mov " + filename + " (*.mov)|*.mov|mkv " + filename + " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
@@ -358,13 +360,13 @@ void CMainWindow::OnEditFile(wxCommandEvent& event)
 {
 	CMainParam* config = CMainParamInit::getInstance();
 	wxString pathProgram = "";
-	wxString title = "Select Picture Editor Executable";
+	wxString title = CLibResource::LoadStringFromResource(L"LBLSELECTPICTUREEDITOR", 1);
 	if (IsVideo())
 	{
 		if (config != nullptr)
 			pathProgram = config->GetPathForVideoEdit();
 
-		title = "Select Video Editor Executable";
+		title = CLibResource::LoadStringFromResource(L"LBLSELECTVIDEOEDITOR", 1);
 	}
 	else
 	{
@@ -377,8 +379,9 @@ void CMainWindow::OnEditFile(wxCommandEvent& event)
 
 	if (pathProgram == "")
 	{
+		wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 		wxFileDialog openFileDialog(nullptr, title, "", "",
-				"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (openFileDialog.ShowModal() == wxID_OK)
 			pathProgram = openFileDialog.GetPath();
 	}

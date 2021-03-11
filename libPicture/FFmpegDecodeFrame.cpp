@@ -7,6 +7,7 @@
 #include <ConvertUtility.h>
 #include <window_id.h>
 #include <chrono>
+#include <LibResource.h>
 #include <RotateByShearRGB.h>
 
 static const int dst_width = 1920;
@@ -116,7 +117,8 @@ void CFFmpegDecodeFrame::OpenFile(wxMemoryOutputStream * dataOutput, const wxStr
 	{
 		char message[255];
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
-		wxMessageBox(message, "Error conversion", wxICON_ERROR);
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox(message, infos, wxICON_ERROR);
 
 		isOk = false;
 		cleanPacket = false;

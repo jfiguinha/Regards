@@ -64,7 +64,7 @@ public:
 			if (res != CURLE_OK)
 			{
 				wxString error = curl_easy_strerror(res);
-				wxMessageBox(error);
+				//wxMessageBox(error);
 				printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 			}
 			//curl_share_setopt(curl, CURLSHOPT_UNLOCKFUNC);

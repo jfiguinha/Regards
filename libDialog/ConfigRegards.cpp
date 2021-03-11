@@ -77,16 +77,22 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 
 void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
 {
-	wxFileDialog openFileDialog(nullptr, "Select Video Editor Executable", "", "",
-		"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTVIDEOEDITOR", 1);
+	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
+
+	wxFileDialog openFileDialog(nullptr, label, "", "",
+		allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtVideoPath->SetValue(openFileDialog.GetPath());
 }
 
 void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
 {
-	wxFileDialog openFileDialog(nullptr, "Select Picture Editor Executable", "", "",
-		"All files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTPICTUREEDITOR", 1);
+	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
+
+	wxFileDialog openFileDialog(nullptr, label, "", "",
+		allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtPicturePath->SetValue(openFileDialog.GetPath());
 }

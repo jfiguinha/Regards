@@ -14,7 +14,7 @@
 #include <picture_id.h>
 #include <wx/progdlg.h>
 #include <wx/pdfdocument.h>
-
+#include <LibResource.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define OPENFILE 0
@@ -94,7 +94,9 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 	}
 	else
 	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
 }
 
@@ -113,7 +115,9 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 	}
 	else
 	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
 }
 
@@ -234,7 +238,9 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 	}
 	else
 	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
 }
 
@@ -242,8 +248,11 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		wxFileDialog saveFileDialog(nullptr, _("Save PDF file"), "", "",
-			"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
+		
+		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
+			"PDF " + filename + " (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
@@ -254,7 +263,9 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 	}
 	else
 	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
 }
 
@@ -484,7 +495,9 @@ void CCentralWindow::OnPrint(wxCommandEvent& event)
 	}
 	else
 	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
 }
 
@@ -496,11 +509,14 @@ void CCentralWindow::OnExit(wxCommandEvent& event)
 
 wxString CCentralWindow::LoadFile()
 {
+	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 	wxString szFilter = "";
 	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
-	szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
+	szFilter = filename + " PDF(*.PDF) | *.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + " BMP(*.BMP)|*.bmp|" + filename + " BPG(*.BPG)|*.bpg|" + filename + " PCX(*.PCX)|*.pcx|" + filename + " JPEG(*.JPG)|*.jpg|" + filename + " TIFF(*.TIF)|*.tif|" + filename + " GIF(*.GIF)|*.gif|" + filename + " PNG(*.PNG)|*.png|" + filename + " TGA(*.TGA)|*.tga|" + filename + " JPEG2000(*.JP2)|*.jp2|" + filename + " JPC(*.JPC)|*.jpc|" + filename + " PPM(*.PPM)|*.ppm|" + filename + " MNG(*.MNG)|*.mng|" + filename + " WEBP (*.WEBP)|*.webp|" + filename + " IFF (*.IFF)|*.iff|" + filename + " XPM (*.XPM)|*.xpm|" + filename + " JXR (*.JXR)|*.jxr|" + filename + " EXR (*.EXR)|*.exr|" + filename + " J2K (*.J2K)|*.j2k|" + filename + " PFM (*.PFM)|*.pfm";
 
-	wxFileDialog openFileDialog(nullptr, _("Open Picture file"), "", "",
+	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
+
+	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
 		szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return "";     // the user changed idea..

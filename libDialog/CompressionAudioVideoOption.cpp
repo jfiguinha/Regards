@@ -15,6 +15,7 @@
 #include "PreviewDlg.h"
 #include <videothumb.h>
 #include "ShowPreview.h"
+#include <LibResource.h>
 
 extern "C"
 {
@@ -279,9 +280,10 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 void CompressionAudioVideoOption::OnErrorCompression(wxCommandEvent& event)
 {
 	int errorCode = event.GetInt();
+	wxString errorConversion = CLibResource::LoadStringFromResource("LBLERRORCONVERSION", 1);
 	char message[255];
 	av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, errorCode);
-	wxMessageBox(message, "Error conversion", wxICON_ERROR);
+	wxMessageBox(message, errorConversion, wxICON_ERROR);
 	this->Close();
 }
 
@@ -692,7 +694,9 @@ void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
 {
 	if (ckVideoBitRate->IsChecked() && txtBitRate->GetValue() == "")
 	{
-		wxMessageBox("Erreur bit rate value.", "Error", wxICON_ERROR);
+		wxString filecompleted = CLibResource::LoadStringFromResource("LBLBITRATEVALUEERROR", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(filecompleted, infos, wxICON_ERROR);
 	}
 	else
 	{

@@ -3,7 +3,7 @@
 #include "SqlLib.h"
 #include "SqlEngine.h"
 #include "SqlResult.h"
-//#include <LibResource.h>
+#include <LibResource.h>
 using namespace Regards::Sqlite;
 
 
@@ -119,7 +119,8 @@ int64_t CSqlExecuteRequest::GetLastId()
 		else
 		{
             //wxString database_error = CLibResource::LoadStringFromResource(L"DatabaseCorrupt",1);
-			wxMessageBox("Database loading error.");
+			wxString infos = CLibResource::LoadStringFromResource("LBLDATABASEERROR", 1);
+			wxMessageBox(infos);
 			exit(1);
 		}
     

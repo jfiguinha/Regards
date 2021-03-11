@@ -6,6 +6,7 @@
 #include <strsafe.h>
 #include <wbemidl.h>
 #include <shlobj.h>
+#include <LibResource.h>
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(Association)
 	//*)
@@ -49,7 +50,10 @@ bool Association::AssociateExtension()
 	{
 		if (!IsAppRunningAsAdminMode())
 		{
-			wxMessageBox("Please restart in administrator mode", "Informations", wxICON_ERROR);
+			wxString filecompleted = CLibResource::LoadStringFromResource("LBLRESTARTADMINMODE", 1);
+			wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+			
+			wxMessageBox(filecompleted, infos, wxICON_ERROR);
 		}
 		else
 		{

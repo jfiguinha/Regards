@@ -656,7 +656,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		if(!FreeImage_Save(FIF_BMP, Image, fileName, _option))
         {
-            wxMessageBox("Unable to save BMP file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+            wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(Image);
 		delete regards;
@@ -671,7 +673,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		if(!FreeImage_Save(FIF_IFF, Image, fileName, _option))
         {
-            wxMessageBox("Unable to save IFF file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+			wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(Image);
 		delete regards;
@@ -694,7 +698,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		if(!FreeImage_Save(FIF_J2K, Image, fileName, _option))
         {
-            wxMessageBox("Unable to save J2K file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+			wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(Image);
 		delete regards;
@@ -718,7 +724,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		if(!FreeImage_Save(FIF_JP2, Image, fileName, _option))
         {
-            wxMessageBox("Unable to save JP2 file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+			wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(Image);
 		delete regards;
@@ -748,7 +756,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		if(!FreeImage_Save(FIF_JXR, Image, fileName, _option))
         {
-            wxMessageBox("Unable to save JXR file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+			wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(Image);
 		delete regards;
@@ -790,7 +800,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		FIBITMAP * floatImage = FreeImage_ConvertToRGBAF(Image);
 		if(!FreeImage_Save(FIF_EXR, floatImage, fileName, _option))
         {
-            wxMessageBox("Unable to save EXR file", "Error", wxICON_ERROR);
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);//L"&Help";
+			wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+			wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
         }
 		FreeImage_Unload(floatImage);
 		FreeImage_Unload(Image);

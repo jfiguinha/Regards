@@ -11,6 +11,7 @@
 #include <wx/filename.h>
 #include "SelectPage.h"
 #include <ImageLoadingFormat.h>
+#include <LibResource.h>
 using namespace Regards::Picture;
 CSavePicture::CSavePicture()
 {
@@ -33,8 +34,10 @@ wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &f
 		wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
 
+		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+
 		std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm",".avif",".heic" };
-		szFilter = "Files PDF(*.PDF)|*.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif|Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm|Files AVIF (*.avif)|*.avif|Files HEIC (*.heic)|*.heic";
+		szFilter = filename + " PDF(*.PDF)|*.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + "  BMP(*.BMP)|*.bmp|" + filename + "  BPG(*.BPG)|*.bpg|" + filename + "  PCX(*.PCX)|*.pcx|" + filename + "  JPEG(*.JPG)|*.jpg|" + filename + "  TIFF(*.TIF)|*.tif|" + filename + "  GIF(*.GIF)|*.gif|" + filename + "  PNG(*.PNG)|*.png|" + filename + "  TGA(*.TGA)|*.tga|" + filename + "  JPEG2000(*.JP2)|*.jp2|" + filename + "  JPC(*.JPC)|*.jpc|" + filename + "  PPM(*.PPM)|*.ppm|" + filename + "  MNG(*.MNG)|*.mng|" + filename + "  WEBP (*.WEBP)|*.webp|" + filename + "  IFF (*.IFF)|*.iff|" + filename + "  XPM (*.XPM)|*.xpm|" + filename + "  JXR (*.JXR)|*.jxr|" + filename + "  EXR (*.EXR)|*.exr|" + filename + "  J2K (*.J2K)|*.j2k|" + filename + "  PFM (*.PFM)|*.pfm|" + filename + "  AVIF (*.avif)|*.avif|" + filename + "  HEIC (*.heic)|*.heic";
 
 		wxFileName bmpFilename(filename);
 		wxFileDialog saveFileDialog(nullptr, filename, "", bmpFilename.GetName(),
@@ -132,7 +135,9 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 		else
 			libPicture.SavePicture(filename, file);
 
-		wxMessageBox("Save file complete", "Informations");
+		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox(savecompleted, infos);
 	}
 }
 
@@ -155,7 +160,9 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 		{
 			libPicture.SavePicture(filename, file);
 		}
-		wxMessageBox("Save file complete", "Informations");
+		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox(savecompleted, infos);
 	}
 
 	
