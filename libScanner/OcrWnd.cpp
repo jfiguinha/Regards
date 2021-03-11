@@ -15,7 +15,7 @@
 #include <FiltreEffet.h>
 #include <FilterData.h>
 #include <wx/progdlg.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
 //#include "ExportOdt.h"
