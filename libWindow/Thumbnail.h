@@ -173,6 +173,7 @@ namespace Regards
 			bool flipVertical = false;
 			bool flipHorizontal = false;
 			bool isMovingScroll = false;
+			int numOldItem = -1;
 		};
 	}
 }

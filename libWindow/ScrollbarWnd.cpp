@@ -104,7 +104,7 @@ void CScrollbarWnd::OnMoveLeft(wxCommandEvent& event)
 	}
 	posLargeur -= pageSize;
 	TestMaxX();
-	scrollHorizontal->SetPosition(posHauteur);
+	scrollHorizontal->SetPosition(posLargeur);
 
 	if (centralWindow->GetWindow() != nullptr)
 	{

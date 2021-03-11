@@ -152,11 +152,16 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 {
     TRACE();
-	if (isMovingScroll)
+
+	isMovingScroll = move;
+
+	if (numOldItem == numItem)
 	{
-		printf("toto is back !!!!");
+		//printf("toto is back !!!!");
 		return;
 	}
+
+	
 
     int numElement = iconeList->GetNbElement();
 
@@ -177,7 +182,6 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 	{
 		if (numItem == 0)
 		{
-
 			if (this->GetParent() != nullptr)
 			{
 				wxSize * size = new wxSize();
@@ -187,7 +191,6 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 				evt.SetClientData(size);
 				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 			}
-            
             posLargeur = 0;
             posHauteur = 0;   
 		}
@@ -414,7 +417,7 @@ void CThumbnail::OnTopPosition(wxCommandEvent& event)
 
 void CThumbnail::OnScrollMove(wxCommandEvent& event)
 {
-	isMoving = event.GetInt();
+	isMovingScroll = isMoving = event.GetInt();
 }
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
@@ -738,6 +741,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
     TRACE();
 
     bool needtoRedraw = false;
+	isMovingScroll = true;
+
 
         int xPos = event.GetX();
         int yPos = event.GetY();
@@ -963,23 +968,15 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	if (width <= 0 || height <= 0)
 		return;
 
-
-
-	if (isMovingScroll)
+	if (numActif != nullptr && !isMovingScroll)
 	{
-
-		if (numActif != nullptr)
-		{
-			wxRect rect = numActif->GetPos();
-			int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
-			int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
-			posLargeur = xPos;
-			posHauteur = yPos;
-		}
-		isMovingScroll = false;
+		wxRect rect = numActif->GetPos();
+		int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
+		int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
+		posLargeur = xPos;
+		posHauteur = yPos;
 	}
-
-
+	
 	TestMaxX();
 	TestMaxY();
     
@@ -991,12 +988,13 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     wxRect rc = GetWindowRect();
     //UpdateScroll();
     FillRect(&dc, rc, themeThumbnail.colorBack);
-    RenderIcone(&dc);
+    
+	RenderIcone(&dc);
 
 	render = false;
-
     oldPosLargeur = posLargeur;
     oldPosHauteur = posHauteur;
+
 }
 
 void CThumbnail::Resize()
@@ -1169,6 +1167,7 @@ void CThumbnail::InitScrollingPos()
 
 	posHauteur = 0;
 	posLargeur = 0;
+
 
 	wxWindow * parent = this->GetParent();
 
