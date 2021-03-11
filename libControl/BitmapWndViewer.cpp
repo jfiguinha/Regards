@@ -41,10 +41,11 @@ using namespace Regards::Window;
 enum
 {
 	TIMER_TRANSITION = 1,
-	TIMER_SELECTEFFECT = 2
+	TIMER_SELECTEFFECT = 2,
+	TIMER_CLICK = 3
 };
 
-#define TIMER_TRANSITION 1
+
 
 #define PREVIEW_NONE 0
 #define PREVIEW_PHOTOFITLRE 1
@@ -55,8 +56,11 @@ enum
 #define PREVIEW_POSTERIZE 6
 #define PREVIEW_SOLARIZE 7
 #define PREVIEW_CLOUDS 8
-#define TIMER_TRANSITION_TIME 30
 
+#define TIMER_TRANSITION_TIME 30
+#define TIMER_TRANSITION 31
+#define TIMER_CLICK 32
+#define TIMER_CLICK_TIME 200
 
 void CBitmapWndViewer::SendEmail()
 {
@@ -192,6 +196,7 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	invertColor = false;
 	transitionTimer = nullptr;
 	selectEffectTimer = nullptr;
+	clickTimer = nullptr;
     LoadingResource();
 	etape = 0;
 	fixArrow = true;
@@ -203,7 +208,22 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	m_cDessin = nullptr;
 	afterEffect = nullptr;
 	transitionTimer = new wxTimer(this, TIMER_TRANSITION);
+	clickTimer = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, this);
+	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnClick), nullptr, this);
+}
+
+void CBitmapWndViewer::OnClick(wxTimerEvent& event)
+{
+	if (typeClick == 0)
+	{
+		bitmapInterface->ImagePrecedente();
+	}
+	else
+	{
+		bitmapInterface->ImageSuivante();
+	}
+	clickTimer->Start(TIMER_CLICK_TIME, true);
 }
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
@@ -240,8 +260,12 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
 
+	if (clickTimer->IsRunning())
+		clickTimer->Stop();
+
 	//delete(openclEffectVideo);
 	delete(transitionTimer);
+	delete(clickTimer);
 	delete(m_cDessin);
 
 
@@ -530,6 +554,9 @@ void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
         if(HasCapture())
             ReleaseMouse();
 	}
+
+	if (clickTimer->IsRunning())
+		clickTimer->Stop();
 }
 
 void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
@@ -569,11 +596,15 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 
 		if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 		{
+			typeClick = 0;
 			bitmapInterface->ImagePrecedente();
+			clickTimer->Start(TIMER_CLICK_TIME, true);
 		}
 		else if ((xPos > (GetWidth() - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 		{
+			typeClick = 1;
 			bitmapInterface->ImageSuivante();
+			clickTimer->Start(TIMER_CLICK_TIME, true);
 		}
 	}
 }

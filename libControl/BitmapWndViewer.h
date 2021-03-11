@@ -103,7 +103,7 @@ namespace Regards
 
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
-			
+			void OnClick(wxTimerEvent& event);
             void LoadingResource();
 
             
@@ -131,6 +131,9 @@ namespace Regards
 			bool invertColor;
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
+			wxTimer * clickTimer;
+			int typeClick = 0;
+
 #ifdef RENDEROPENGL
 			/*
 			Regards::OpenGL::GLTexture * pictureNext;
