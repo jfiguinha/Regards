@@ -74,19 +74,6 @@ public:
     int getWidth();
     int getHeight();
 
-#ifdef WIN32
-	virtual void SetDXVA2Compatible(const bool &compatible) {};
-
-	virtual bool GetDXVA2HardwareCompatible()
-	{
-		return false;
-	};
-	virtual HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height)
-	{
-		return S_OK;
-	};
-#endif
-
     wxWindow * GetWindow()
     {
         return this;

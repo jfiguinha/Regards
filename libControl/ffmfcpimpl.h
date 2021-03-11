@@ -45,9 +45,7 @@ extern "C"
 #include "libavutil/display.h"
 }
 
-#ifdef WIN32
-#include "ffmpeg_dxva2.h"
-#endif
+
 
 
 class CFFmfcPimpl;
@@ -530,9 +528,6 @@ public:
 	const char *subtitle_codec_name = 0;
 	const char *video_codec_name = 0;
 	int rdftspeed = 20;
-#ifdef WIN32
-	DXVA2Context * dxva2 = nullptr;
-#endif
 
 	AVBufferRef *hw_device_ctx = NULL;
 	static enum AVPixelFormat hw_pix_fmt;

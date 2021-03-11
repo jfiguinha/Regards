@@ -42,8 +42,6 @@
       <File Name="ffplaycore.cpp"/>
       <File Name="ffmpegToBitmap.h"/>
       <File Name="ffmpegToBitmap.cpp"/>
-      <File Name="ffmpeg_dxva2.h"/>
-      <File Name="ffmpeg_dxva2.cpp"/>
       <File Name="ffmpeg.h"/>
       <File Name="ffmfcpimpl.h"/>
       <File Name="ffplaycore.h"/>

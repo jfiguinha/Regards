@@ -21,15 +21,7 @@ AVPixelFormat CFFmfcPimpl::hw_pix_fmt;
 //const char program_name[] = "ffplaymfc";
 //const int program_birth_year = 2013;
 
-#ifdef WIN32
-AVPixelFormat CFFmfcPimpl::GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts)
-{
-	InputStream* ist = (InputStream*)s->opaque;
-	ist->active_hwaccel_id = HWACCEL_DXVA2;
-	ist->hwaccel_pix_fmt = AV_PIX_FMT_DXVA2_VLD;
-	return ist->hwaccel_pix_fmt;
-}
-#endif
+
 
 inline int compute_mod(int a, int b)
 {
@@ -893,14 +885,9 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 			video_aspect_ratio = 0;
 		else
 			video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
-#ifdef WIN32
-		if (dlg->GetDXVA2Compatible())
-			dlg->SetData(src_frame, video_aspect_ratio, dxva2);
-		else
-			dlg->SetData(src_frame, video_aspect_ratio, nullptr);
-#else
+
 		dlg->SetData(src_frame, video_aspect_ratio, nullptr);
-#endif
+
 		//av_frame_unref(src_frame);
 #else
 
@@ -1887,75 +1874,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		if (video_codec_name)
 			codec = avcodec_find_decoder_by_name(video_codec_name);
 
-#ifdef WIN32
-		if (acceleratorHardware == "dxva2" && isOpenGLDecoding)
-		{
-			if (dlg->GetDXVA2HardwareCompatible())
-			{
-				avctx->thread_count = 1;  // Multithreading is apparently not compatible with hardware decoding
-				InputStream *ist = new InputStream();
-				ist->hwaccel_id = HWACCEL_AUTO;
-				ist->hwaccel_device = "dxva2";
-				ist->dec = codec;
-				ist->dec_ctx = avctx;
-				avctx->coded_height = ic->streams[stream_index]->codecpar->height;
-				avctx->coded_width = ic->streams[stream_index]->codecpar->width;
-
-
-				//printf("ÊÓÆµ¸ß£º%d\n",ic->streams[video_index]->codec->height);
-
-				avctx->opaque = ist;
-				if (dxva2_init(avctx, dlg, avctx->coded_width, avctx->coded_height) == 0)
-				{
-					InputStream *ist = (InputStream *)avctx->opaque;
-					dxva2 = (DXVA2Context *)ist->hwaccel_ctx;
-					//dlg->SetOpenCLDevice((void *)ist);
-					dlg->SetDXVA2Compatible(true);
-					avctx->get_buffer2 = ist->hwaccel_get_buffer;
-					avctx->get_format = GetHwFormat;
-					avctx->thread_safe_callbacks = 1;
-
-					avctx->workaround_bugs = workaround_bugs;
-					avctx->lowres = lowres;
-					if (avctx->lowres > codec->max_lowres) {
-						av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
-							codec->max_lowres);
-						avctx->lowres = codec->max_lowres;
-					}
-					avctx->idct_algo = idct;
-					avctx->skip_frame = skip_frame;
-					avctx->skip_idct = skip_idct;
-					avctx->skip_loop_filter = skip_loop_filter;
-					avctx->error_concealment = error_concealment;
-
-					/*
-					if(avctx->lowres) avctx->flags |= CODEC_FLAG_EMU_EDGE;
-					if (fast)   avctx->flags2 |= CODEC_FLAG2_FAST;
-					if(codec->capabilities & CODEC_CAP_DR1)
-						avctx->flags |= CODEC_FLAG_EMU_EDGE;
-					*/
-					//MetaData?
-					if (!av_dict_get(opts, "threads", nullptr, 0))
-						av_dict_set(&opts, "threads", "auto", 0);
-					// ´ò¿ª½âÂëÆ÷£¬¶þÕßÖ®¼ä½¨Á¢ÁªÏµ
-
-					if (avcodec_open2(avctx, codec, nullptr) < 0)
-					{
-						std::cout << "Video codec open error" << std::endl;
-						return false;
-					}
-					dvxa2 = true;
-				}
-				else
-				{
-					dlg->SetDXVA2Compatible(false);
-				}
-			}
-		}
-		else if (acceleratorHardware != "")
-#else
         if (acceleratorHardware != "")
-#endif
 		{
 			bool success = true;
 			enum AVHWDeviceType type;
@@ -2181,11 +2100,6 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 
 		packet_queue_flush(&is->videoq);
 
-#ifdef WIN32
-
-		if (dlg->GetDXVA2Compatible())
-			dxva2_uninit(is->videoCtx);
-#endif
 		avcodec_close(is->videoCtx);
 		break;
 	case AVMEDIA_TYPE_SUBTITLE:
