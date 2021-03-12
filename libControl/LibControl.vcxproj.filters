@@ -79,9 +79,6 @@
     <ClCompile Include="ffmfcpimpl.cpp">
       <Filter>Video\Core</Filter>
     </ClCompile>
-    <ClCompile Include="ffmpeg_dxva2.cpp">
-      <Filter>Video\Core</Filter>
-    </ClCompile>
     <ClCompile Include="ffmpegToBitmap.cpp">
       <Filter>Video\Core</Filter>
     </ClCompile>
@@ -193,9 +190,6 @@
       <Filter>Video\Core</Filter>
     </ClInclude>
     <ClInclude Include="ffmpeg.h">
-      <Filter>Video\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="ffmpeg_dxva2.h">
       <Filter>Video\Core</Filter>
     </ClInclude>
     <ClInclude Include="ffmpegToBitmap.h">
