@@ -1,4 +1,4 @@
-﻿#include <header.h>
+#include <header.h>
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #include <ConfigParam.h>
@@ -157,14 +157,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 #ifdef __APPLE__
     isLoadingResource = false;
-    
-	//load Ressource
-
-#ifdef WIN32
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
-#else
+    processIdle = true;
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
-#endif
 	CDeepLearning::LoadRessource(eye.ToStdString());
 
 #else
@@ -172,9 +166,10 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	CThreadFace * path = new CThreadFace();
 	path->mainWindow = this;
 	path->thread = new thread(LoadResource, path);
+    processIdle = false;
 #endif
 	nbProcessFacePhoto = 0;
-	processIdle = false;
+
 
 	listProcessWindow.push_back(this);
 }
