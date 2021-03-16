@@ -284,7 +284,7 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
-
+    processIdle = true;
 }
 
 #ifndef __APPLE__
@@ -616,6 +616,7 @@ void CListFace::ProcessIdle()
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 {
 	thumbnailFace->Init();
+    processIdle = true;
 }
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)
