@@ -153,11 +153,14 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap, std::vector<F
         std::vector<uchar> buff;
         CRegardsBitmap * faceBmp = pBitmap->CropBitmap(face.x, face.y, face.width, face.height);
         cv::Mat croppedImage(faceBmp->GetBitmapHeight(), faceBmp->GetBitmapWidth(), CV_8UC4, faceBmp->GetPtBitmap());
+        
+        cv::cvtColor(croppedImage, croppedImage, cv::COLOR_BGRA2BGR);
+        
         //RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
         cv::resize(croppedImage, dst, size);
         
         ImageToJpegBuffer(dst, buff);
-        int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, croppedImage.rows, croppedImage.cols, 0.9, reinterpret_cast<uchar*>(buff.data()), buff.size());
+        int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, dst.rows, dst.cols, 0.9, reinterpret_cast<uchar*>(buff.data()), buff.size());
         listFace.push_back(numFace);
         
         //IplImage image2 = cvIplImage(face);
@@ -315,7 +318,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 				cv::resize(face.croppedImage, dst, size);
 
 				ImageToJpegBuffer(dst, buff);
-				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, dst.rows, dst.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 				
 				//IplImage image2 = cvIplImage(face);
@@ -395,7 +398,7 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 				cv::resize(face.croppedImage, dst, size);
 
 				ImageToJpegBuffer(dst, buff);
-				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, dst.rows, dst.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 
 				cv_image<rgb_pixel> cimg(cvIplImage(dst));
