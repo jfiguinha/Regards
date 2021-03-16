@@ -45,6 +45,7 @@
         <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
         <IncludePath Value="../libextern/eigen"/>
         <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libAppleFunction"/>
         <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>
         <Preprocessor Value="CV__DISABLE_C_API_CTORS"/>
       </Compiler>

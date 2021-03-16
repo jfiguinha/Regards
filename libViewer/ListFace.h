@@ -59,7 +59,9 @@ namespace Regards
 			bool GetProcessEnd();
 			static void FindFaceCompatible(const vector<int> & listFace);
 			static void FacialRecognition(void * param);
+#ifndef __APPLE
 			static void LoadResource(void * param);
+#endif
 			void OnFaceVideoAdd(wxCommandEvent& event);
 
 			CWindowManager * windowManager = nullptr;

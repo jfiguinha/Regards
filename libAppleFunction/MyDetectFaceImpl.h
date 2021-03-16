@@ -12,13 +12,16 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "FaceRect.h"
+#include <vector>
+using namespace std;
 
 class MyDetectFaceImpl
 {
 public:
     MyDetectFaceImpl ( void );
     ~MyDetectFaceImpl( void );
-
+    int DetectRectFace(const int &width, const int &height, uint8_t * data, vector<FaceRect> & listRect);
     int MyDetectFace(const int &width, const int &height, uint8_t * data);
 
 };

@@ -1,4 +1,5 @@
 #include "header.h"
+#ifndef __APPLE__
 #include "DetectRotation.h"
 #include "FaceDetector.h"
 using namespace cv;
@@ -168,3 +169,4 @@ int DeterminePictureAngle(cv::Mat & image)
 	return model.predict_class({ input });
 }
 */
+#endif

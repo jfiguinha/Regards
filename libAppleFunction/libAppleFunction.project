@@ -6,6 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="CoreML">
+    <File Name="FaceRect.h"/>
     <File Name="MyDetectFaceImpl.h"/>
     <File Name="MyDetectFace.mm"/>
     <File Name="DetectFace.h"/>

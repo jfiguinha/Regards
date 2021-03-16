@@ -1,5 +1,5 @@
 #pragma once
-
+#ifndef __APPLE__
 class CImageLoadingFormat;
 class CPictureData;
 
@@ -28,3 +28,4 @@ namespace Regards
 	}
 }
 
+#endif

@@ -11,6 +11,7 @@
 #include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#include <FaceRect.h>
 using namespace cv;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
@@ -85,6 +86,125 @@ CFaceDetector::~CFaceDetector()
 {
 }
 
+#ifdef __APPLE__
+void CFaceDetector::LoadModel(const string &eye_detection)
+{
+	try
+	{
+		eye_cascade.load(eye_detection);
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	isload = true;
+}
+
+void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap, std::vector<FaceRect> & listFaceRect)
+{
+	std::vector<wxRect> listEye;
+	std::vector<cv::Rect> pointOfFace;
+    cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+    if (listFaceRect.size() > 0)
+    {
+        for (FaceRect face : listFaceRect)
+        {
+            CRegardsBitmap * faceBmp = pBitmap->CropBitmap(face.x, face.y, face.width, face.height);
+            cv::Mat croppedImage(faceBmp->GetBitmapHeight(), faceBmp->GetBitmapWidth(), CV_8UC4, faceBmp->GetPtBitmap());
+
+            cv::Mat gray;
+            std::vector<cv::Rect> eyes;
+
+            cv::cvtColor(croppedImage, gray, COLOR_BGR2GRAY);
+            muEyeAccess.lock();
+            eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+            muEyeAccess.unlock();
+            for (cv::Rect rect : eyes)
+            {
+                cv::Rect rectEye;
+
+                rectEye.x = rect.x + face.x;
+                rectEye.y = rect.y + face.y;
+                rectEye.width = rect.width;
+                rectEye.height = rect.height;
+                RemoveRedEye(image, rectEye);
+            }
+            
+            delete faceBmp;
+        }
+    }
+    pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+}
+
+std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap, std::vector<FaceRect> & listFaceRect)
+{
+    int i = 0;
+    std::vector<int> listFace;
+	CSqlFaceDescriptor sqlfaceDescritor;
+    std::vector<cv_image<rgb_pixel>> faces;
+    CSqlFacePhoto facePhoto;
+    for (FaceRect face : listFaceRect)
+    {
+        cv::Size size(150, 150);
+        cv::Mat dst;//dst image
+        std::vector<uchar> buff;
+        CRegardsBitmap * faceBmp = pBitmap->CropBitmap(face.x, face.y, face.width, face.height);
+        cv::Mat croppedImage(faceBmp->GetBitmapHeight(), faceBmp->GetBitmapWidth(), CV_8UC4, faceBmp->GetPtBitmap());
+        //RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
+        cv::resize(croppedImage, dst, size);
+        
+        ImageToJpegBuffer(dst, buff);
+        int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, croppedImage.rows, croppedImage.cols, 0.9, reinterpret_cast<uchar*>(buff.data()), buff.size());
+        listFace.push_back(numFace);
+        
+        //IplImage image2 = cvIplImage(face);
+        cv_image<rgb_pixel> cimg(cvIplImage(dst));
+        faces.push_back(cimg);
+        delete faceBmp;
+    }
+
+    if (faces.size() == 0)
+    {
+        cout << "No faces found in image!" << endl;
+        return listFace;
+    }
+
+    try
+    {
+        // This call asks the DNN to convert each face image in faces into a 128D vector.
+        // In this 128D vector space, images from the same person will be close to each other
+        // but vectors from different people will be far apart.  So we can use these vectors to
+        // identify if a pair of images are from the same person or from different people.  
+        std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
+
+        for (int i = 0; i < faces.size(); i++)
+        {
+            matrix<float, 0, 1> face = face_descriptors[i];
+            ostringstream sout;
+            serialize(face, sout);
+
+            string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
+            sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
+            //Write into database
+
+
+        }
+    }
+    catch (cv::Exception& e)
+    {
+        const char* err_msg = e.what();
+        std::cout << "exception caught: " << err_msg << std::endl;
+        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+    }
+    return listFace;
+}
+
+
+#else
+
 void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection)
 {
 #ifdef CAFFE
@@ -157,24 +277,6 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 	isload = true;
 
-}
-
-
-void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff)
-{
-	//std::vector<uchar> buff;//buffer for coding
-	std::vector<int> param(2);
-	param[0] = cv::IMWRITE_JPEG_QUALITY;
-	param[1] = 80;//default(95) 0-100
-	cv::imencode(".jpg", image, buff, param);
-}
-
-int CFaceDetector::FindNbFace(cv::Mat & image)
-{
-	std::vector<cv::Rect> pointOfFace;
-	std::vector<CFace> listOfFace;
-	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-	return listOfFace.size();
 }
 
 
@@ -342,39 +444,6 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 	return listFace;
 }
 
-void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox)
-{
-	int xmin, xmax, ymin, ymax;
-	xmin = rSelectionBox.x;
-	xmax = rSelectionBox.x + rSelectionBox.width;
-	ymax = rSelectionBox.y + rSelectionBox.height;
-	ymin = rSelectionBox.y;
-
-	if (xmin > xmax)
-	{
-		int old = xmax;
-		xmax = xmin;
-		xmin = old;
-	}
-
-	if (ymin > xmax)
-	{
-		int old = ymax;
-		ymax = ymin;
-		ymin = old;
-	}
-
-
-	for (int32_t y = ymin; y < ymax; y++) {
-		for (int32_t x = xmin; x < xmax; x++)
-		{
-			float a = 1.0f - 5.0f*((float)((x - 0.5f*(xmax + xmin))*(x - 0.5f*(xmax + xmin)) + (y - 0.5f*(ymax + ymin))*(y - 0.5f*(ymax + ymin)))) / ((float)((xmax - xmin)*(ymax - ymin)));
-			if (a < 0)
-				a = 0;
-			image.at<Vec4b>(Point(x, y))[2] = (uint8_t)(a*min(image.at<Vec4b>(Point(x, y))[1], image.at<Vec4b>(Point(x, y))[0]) + (1.0f - a)*image.at<Vec4b>(Point(x, y))[2]);
-		}
-	}
-}
 
 void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 {
@@ -489,6 +558,15 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 	}
 }
 
+int CFaceDetector::FindNbFace(cv::Mat & image)
+{
+	std::vector<cv::Rect> pointOfFace;
+	std::vector<CFace> listOfFace;
+	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+	return listOfFace.size();
+}
+
+
 int CFaceDetector::DetectAngleOrientation(const cv::Mat & image)
 {
 	int angle = 0;
@@ -544,3 +622,51 @@ void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
 		}
 	}
 }
+
+#endif
+
+void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff)
+{
+	//std::vector<uchar> buff;//buffer for coding
+	std::vector<int> param(2);
+	param[0] = cv::IMWRITE_JPEG_QUALITY;
+	param[1] = 80;//default(95) 0-100
+	cv::imencode(".jpg", image, buff, param);
+}
+
+
+
+void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox)
+{
+	int xmin, xmax, ymin, ymax;
+	xmin = rSelectionBox.x;
+	xmax = rSelectionBox.x + rSelectionBox.width;
+	ymax = rSelectionBox.y + rSelectionBox.height;
+	ymin = rSelectionBox.y;
+
+	if (xmin > xmax)
+	{
+		int old = xmax;
+		xmax = xmin;
+		xmin = old;
+	}
+
+	if (ymin > xmax)
+	{
+		int old = ymax;
+		ymax = ymin;
+		ymin = old;
+	}
+
+
+	for (int32_t y = ymin; y < ymax; y++) {
+		for (int32_t x = xmin; x < xmax; x++)
+		{
+			float a = 1.0f - 5.0f*((float)((x - 0.5f*(xmax + xmin))*(x - 0.5f*(xmax + xmin)) + (y - 0.5f*(ymax + ymin))*(y - 0.5f*(ymax + ymin)))) / ((float)((xmax - xmin)*(ymax - ymin)));
+			if (a < 0)
+				a = 0;
+			image.at<Vec4b>(Point(x, y))[2] = (uint8_t)(a*min(image.at<Vec4b>(Point(x, y))[1], image.at<Vec4b>(Point(x, y))[0]) + (1.0f - a)*image.at<Vec4b>(Point(x, y))[2]);
+		}
+	}
+}
+

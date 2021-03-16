@@ -12,6 +12,29 @@ static std::thread loadModel;
 static bool isload = false;
 static std::mutex muLoading;
 
+#ifdef __APPLE__
+
+std::vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData, vector<FaceRect> & listFace)
+{
+    CFaceDetector faceDetector;
+    return faceDetector.FindFace(pictureData, listFace);
+}
+
+void CDeepLearning::LoadRessource(const string &eye_detection)
+{
+	//CDetectRotation::LoadModel(rotation_json);
+	CFaceDetector::LoadModel(eye_detection);
+}
+
+void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap, vector<FaceRect> & listFace)
+{
+    CFaceDetector faceDetector;
+    faceDetector.DetectEyes(pBitmap, listFace);
+}
+
+#else
+
+    
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 {
 	bool isLoading = false;
@@ -59,6 +82,24 @@ void CDeepLearning::LoadRessource(const string &config_file, const string &weigh
 	muLoading.unlock();
 }
 
+
+void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
+{
+	std::vector<wxRect> listEye;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	if (isLoading)
+	{
+		CFaceDetector faceDetector;
+		faceDetector.DetectEyes(pBitmap);
+	}
+}
+   
+
+
 bool CDeepLearning::IsResourceReady()
 {
 	bool isLoading = false;
@@ -84,20 +125,6 @@ int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 
 }
 
-void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
-{
-	std::vector<wxRect> listEye;
-	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
-
-	if (isLoading)
-	{
-		CFaceDetector faceDetector;
-		faceDetector.DetectEyes(pBitmap);
-	}
-}
 
 int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
 {
@@ -114,17 +141,13 @@ int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
 	return 0;
 }
 
+ 
+#endif
+
+
+
 bool CDeepLearning::FindFaceCompatible(const int &numFace)
 {
-	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
-
-	if (isLoading)
-	{
-		CFaceRecognition faceRecognition;
-		return faceRecognition.FindCompatibility(numFace);
-	}
-	return false;
+    CFaceRecognition faceRecognition;
+    return faceRecognition.FindCompatibility(numFace);
 }

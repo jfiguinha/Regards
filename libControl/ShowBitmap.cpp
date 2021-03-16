@@ -10,9 +10,14 @@
 #include <RegardsConfigParam.h>
 #include <array>
 #include <ImageLoadingFormat.h>
-#include <DeepLearning.h>
+
 #include <PictureData.h>
 #include <MetadataExiv2.h>
+#ifdef __APPLE__
+#include <DetectFace.h>
+#else
+#include <DeepLearning.h>
+#endif
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -369,6 +374,25 @@ void CShowBitmap::RotateRecognition(void * param)
 	CThreadRotate * threadRotate = (CThreadRotate *)param;
 	if (threadRotate != nullptr)
 	{
+#ifdef __APPLE__
+		bool pictureOK;
+		CLibPicture libPicture;
+        CImageLoadingFormat * picture = libPicture.LoadPicture(threadRotate->filename);
+        if(picture != nullptr)
+        {
+            CRegardsBitmap * bitmap = picture->GetRegardsBitmap();
+            if(bitmap != nullptr)
+            {
+                CDetectFace detectFace;
+                threadRotate->isReady = true;
+                threadRotate->exif = detectFace.GetExifOrientation(bitmap); 
+                delete bitmap; 
+            }
+
+        }
+        delete picture;
+
+#else        
 		bool pictureOK;
 		CLibPicture libPicture;
 		CPictureData * pictureData = libPicture.LoadPictureData(threadRotate->filename, pictureOK);
@@ -378,11 +402,10 @@ void CShowBitmap::RotateRecognition(void * param)
 			{
 				threadRotate->isReady = true;
 				threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
-				//bitmap->SetOrientation(exif);
 			}
 			delete pictureData;
 		}
-
+#endif
 		if (threadRotate->mainWindow != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_ROTATEDETECT);
