@@ -170,12 +170,12 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 void CSqlFacePhoto::RebuildLink()
 {
 	//Recomposition des liens entre photos
-	int oldNumFace = numFace;
 	CSqlFaceRecognition faceRecognition;
 	CSqlFaceLabel faceLabel;
 	vector<int> listFace = faceLabel.GetFaceLabelAlone();
 	for(int i = 0;i < listFace.size();i++)
 	{
+		int oldNumFace = listFace[i];
 		numFace = -1;
 		ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ORDER BY numFace ASC LIMIT 1");
 		if(numFace != -1)
