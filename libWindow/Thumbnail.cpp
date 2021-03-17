@@ -907,11 +907,15 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	if (pBitmapIcone != nullptr)
 	{
 		numSelect = pBitmapIcone;
-		pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
+		bool value = pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
         //
-		CThumbnailData * data = pBitmapIcone->GetCopyData();
-        OnPictureClick(data);
-		delete data;
+		if (!value)
+		{
+			CThumbnailData * data = pBitmapIcone->GetCopyData();
+			OnPictureClick(data);
+			delete data;
+		}
+
         pBitmapIcone->SetSelected(true);
 	}
 	else
@@ -968,6 +972,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	if (width <= 0 || height <= 0)
 		return;
 
+
 	if (numActif != nullptr && !isMovingScroll)
 	{
 		wxRect rect = numActif->GetPos();
@@ -994,6 +999,16 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	render = false;
     oldPosLargeur = posLargeur;
     oldPosHauteur = posHauteur;
+
+	if (this->GetParent() != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+	}
 
 }
 

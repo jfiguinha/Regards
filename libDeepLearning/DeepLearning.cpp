@@ -125,7 +125,7 @@ int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 
 }
 
-
+/*
 int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
 {
 	bool isLoading = false;
@@ -140,7 +140,7 @@ int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
 	}
 	return 0;
 }
-
+*/
  
 #endif
 

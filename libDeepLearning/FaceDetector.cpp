@@ -11,7 +11,9 @@
 #include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#ifdef __APPLE__
 #include <FaceRect.h>
+#endif
 using namespace cv;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
