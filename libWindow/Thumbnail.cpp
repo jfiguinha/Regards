@@ -329,6 +329,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnail::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnail::OnLButtonDown));
+	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CThumbnail::OnLButtonUp));
 	Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(CThumbnail::OnLDoubleClick));
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CThumbnail::OnMouseWheel));
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
@@ -743,16 +744,39 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
     bool needtoRedraw = false;
 	isMovingScroll = true;
 
-
-        int xPos = event.GetX();
-        int yPos = event.GetY();
-        
-        ::wxSetCursor(wxCursor(wxCURSOR_HAND));
-        CIcone * pBitmapIcone = FindElement(xPos, yPos);
-        
-		if(pBitmapIcone != nullptr)
+	if (mouseClickBlock)
+	{
+		int xPos = event.GetX();
+		int yPos = event.GetY();
+		if (numActif != nullptr)
 		{
-        
+			mouseClickMove = true;
+			xPosDrag = xPos;
+			yPosDrag = yPos;
+			//numActif->SetPos(xPos, yPos);
+			numActif->SetChecked(true);
+			
+		}
+
+		if (yPos < 100)
+			MoveTop();
+		else if (yPos > this->GetWindowHeight() - 100)
+			MoveBottom();
+		else
+			this->Refresh();
+	}
+	else
+	{
+
+		int xPos = event.GetX();
+		int yPos = event.GetY();
+
+		::wxSetCursor(wxCursor(wxCURSOR_HAND));
+		CIcone * pBitmapIcone = FindElement(xPos, yPos);
+
+		if (pBitmapIcone != nullptr)
+		{
+
 			if (numActif != nullptr)
 			{
 				if (pBitmapIcone != numActif)
@@ -776,13 +800,13 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						}
 					}
 				}
-            
+
 			}
 
-            if (pBitmapIcone->GetState() != ACTIFICONE)
-            {
-                numActif = pBitmapIcone;
-                pBitmapIcone->SetActive(true);
+			if (pBitmapIcone->GetState() != ACTIFICONE)
+			{
+				numActif = pBitmapIcone;
+				pBitmapIcone->SetActive(true);
 				if (pBitmapIcone != nullptr)
 				{
 					CThumbnailData * data = pBitmapIcone->GetData();
@@ -795,16 +819,19 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 					}
 				}
 
-                needtoRedraw = true;
-            }
+				needtoRedraw = true;
+			}
 		}
-    
-    if(needtoRedraw)
-    {
-		 this->Refresh();
-    }
 
-    //this->GetParent()->GetEventHandler()->ProcessEvent(event);
+		if (needtoRedraw)
+		{
+			this->Refresh();
+		}
+
+		//this->GetParent()->GetEventHandler()->ProcessEvent(event);
+	}
+
+  
 }
 
 void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur)
@@ -888,6 +915,19 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 		}
 }
 
+void CThumbnail::OnLButtonUp(wxMouseEvent& event)
+{
+	int xPos = event.GetX();
+	int yPos = event.GetY();
+	
+	mouseClickBlock = false;
+	if (mouseClickMove)
+	{
+		OnMouseRelease(xPos, yPos);
+		mouseClickMove = false;
+		this->Refresh();
+	}
+}
 
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
@@ -897,11 +937,15 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
+	mouseClickBlock = true;
+
 	if (numSelect != nullptr)
 	{
 		numSelect->SetSelected(false);
 		//numSelect->RenderIcone(&winDC);
 	}
+
+
 
 	CIcone * pBitmapIcone = FindElement(xPos, yPos);
 	if (pBitmapIcone != nullptr)
@@ -921,6 +965,17 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	else
 	{
 		FindOtherElement(&winDC, xPos, yPos);
+	}
+
+	if (numActif != nullptr)
+	{
+		bitmapIconDrag = numActif->GetBitmapIcone();
+		wxImage image = bitmapIconDrag.ConvertToImage();
+		unsigned char* alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];
+		memset(alphaData, 128, image.GetWidth() * image.GetHeight());
+		image.SetAlpha(alphaData);
+		bitmapIconDrag = image;
+
 	}
 
 	this->Refresh();
@@ -988,7 +1043,6 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	render = true;
     //printf("CThumbnail::OnPaint \n");   
     //printf("CThumbnail::OnPaint not buffered \n");
-    
     wxBufferedPaintDC dc(this);
     wxRect rc = GetWindowRect();
     //UpdateScroll();
@@ -1009,7 +1063,13 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		evt.SetClientData(size);
 		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 	}
+	//delete dc;
 
+	if(mouseClickBlock && mouseClickMove)
+	{
+		dc.DrawBitmap(bitmapIconDrag, xPosDrag - (bitmapIconDrag.GetWidth() / 2), yPosDrag - (bitmapIconDrag.GetHeight() / 2));
+	}
+	
 }
 
 void CThumbnail::Resize()

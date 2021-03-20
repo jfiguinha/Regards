@@ -28,10 +28,13 @@ namespace Regards
 			void MoveFace(const wxString &faceName);
 
 		protected:
+
+			void OnMouseRelease(const int &x, const int &y);
 			void ResizeThumbnail();
 			void ResizeThumbnailWithVScroll();
 			void MoveIcone(const int &numElement, const int &numFace);
 		private:
+			int FindSeparatorFace(const int &xPos, const int &yPos);
 			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void AddSeparatorBar(const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);

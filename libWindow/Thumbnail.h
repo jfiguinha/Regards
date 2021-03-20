@@ -64,7 +64,7 @@ namespace Regards
             void OnKeyUp(wxKeyEvent& event);
 			void TestMaxX();
 			void TestMaxY();
-
+			virtual void OnMouseRelease(const int &x, const int &y) {};
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
 
 			void OpenFileViewer(const wxString &filename);
@@ -79,6 +79,7 @@ namespace Regards
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
+			void OnLButtonUp(wxMouseEvent& event);
 			void OnLDoubleClick(wxMouseEvent& event);
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
@@ -124,6 +125,8 @@ namespace Regards
 			int nbLigneY;
 
 			//mutex m_lock;
+			bool mouseClickBlock = false;
+			bool mouseClickMove = false;
 
 			int numStartElement;
 			int nbElementToShow;
@@ -160,6 +163,10 @@ namespace Regards
 			bool check;
 			bool testValidity;
             wxBitmap bitmapMemory;
+			wxBitmap bitmapIconDrag;
+			int xPosDrag;
+			int yPosDrag;
+
             int oldPosLargeur;
             int oldPosHauteur;
 

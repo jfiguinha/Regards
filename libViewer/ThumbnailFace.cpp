@@ -385,6 +385,89 @@ CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, cons
 }
 
 
+int CThumbnailFace::FindSeparatorFace(const int &xPos, const int &yPos)
+{
+	int x = xPos + posLargeur;
+	int y = yPos + posHauteur;
+	int numFace = 0;
+	for (int i = 0; i < listSeparator.size(); i++)
+	{
+		if (i == listSeparator.size() - 1)
+		{
+			CInfosSeparationBarFace * faceSeparator = (CInfosSeparationBarFace *)listSeparator[i];
+			numFace = faceSeparator->GetNumFace();
+		}
+		else
+		{
+			CInfosSeparationBarFace * separatorBarFirst = (CInfosSeparationBarFace *)listSeparator[i];
+			CInfosSeparationBarFace * separatorBarSecond = (CInfosSeparationBarFace *)listSeparator[i + 1];
+			wxRect rcFirst = separatorBarFirst->GetPos();
+			wxRect rcSecond = separatorBarSecond->GetPos();
+			if (y > (rcFirst.y + rcFirst.height) && y < rcSecond.y)
+			{
+				numFace = separatorBarFirst->GetNumFace();
+				break;
+			}
+		}
+
+	}
+	return numFace;
+
+}
+
+void CThumbnailFace::OnMouseRelease(const int &x, const int &y)
+{
+	bool faceMove = false;
+	int numFace = FindSeparatorFace(x,y);
+	CSqlFaceRecognition faceRecognition;
+
+	if (numFace != 0)
+	{
+		for (CInfosSeparationBar * separatorBar : listSeparator)
+		{
+			if (separatorBar != nullptr)
+			{
+				vector<int> numElementToDelete;
+				for (int i = 0; i < separatorBar->listElement.size(); i++)
+				{
+					int numElement = separatorBar->listElement.at(i);
+					CIcone * icone = iconeList->GetElement(numElement);
+					if (icone != nullptr)
+					{
+						if (icone->IsChecked())
+						{
+							CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *)icone->GetData();
+							if (thumbnailData->GetNumFace() != numFace)
+							{
+								int numFaceCompatible = faceRecognition.GetCompatibleFace(thumbnailData->GetNumFace());
+								if (numFaceCompatible != numFace)
+								{
+									faceMove = true;
+									MoveIcone(numElement, numFace);
+									faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
+									separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
+									i--;
+								}
+							}
+
+						}
+						icone->SetChecked(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (faceMove)
+	{
+		DeleteEmptyFace();
+		widthThumbnail = 0;
+		heightThumbnail = 0;
+		ResizeThumbnail();
+	}
+
+}
+
 void CThumbnailFace::FindOtherElement(wxDC * dc, const int &x, const int &y)
 {
 	CInfosSeparationBar * separator = FindSeparatorElement(x, y);

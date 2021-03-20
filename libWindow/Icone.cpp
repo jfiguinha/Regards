@@ -20,6 +20,25 @@ using namespace Regards::Window;
 
 #define WM_PICTURELOAD 1
 
+void CIcone::ReinitPos()
+{
+	x = oldx;
+	y = oldy;
+}
+
+void CIcone::InitPos()
+{
+	oldx = x;
+	oldy = y;
+}
+
+void CIcone::SetPos(const int &x, const int &y)
+{
+
+	this->x = x;
+	this->y = y;
+}
+
 int CIcone::GetXPos()
 {
 	return x;
@@ -644,6 +663,11 @@ void CIcone::CalculPosition(const wxImage & render)
 
 	posXThumbnail = localx + left;
 	posYThumbnail = localy + top;
+}
+
+wxBitmap CIcone::GetBitmapIcone()
+{
+	return bitmapLocal;
 }
 
 //----------------------------------------------------------------------------------

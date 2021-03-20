@@ -33,6 +33,10 @@ namespace Regards
 				showSelected = show;
 			};
 
+			void ReinitPos();
+			void InitPos();
+			void SetPos(const int &x, const int &y);
+
 			CIcone& operator=(const CIcone& other);
 			inline bool operator== (const CIcone &n1);
 
@@ -41,6 +45,7 @@ namespace Regards
 			bool DataNeedToBeDelete();
 			CThumbnailData * GetCopyData();
 			void SetTheme(CThemeIcone theme);
+			wxBitmap GetBitmapIcone();
 
 			//------------------------------------------
 			//Theme
@@ -135,6 +140,8 @@ namespace Regards
 			int numElement;
 			int x;
 			int y;
+			int oldx;
+			int oldy;
 			bool deleteData;
 			int thumbnailIconeCache;
 			CRegardsConfigParam * config;

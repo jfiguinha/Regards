@@ -514,44 +514,11 @@ CIcone * CThumbnailFolder::FindElementWithVScroll(const int &xPos, const int &yP
 {
 	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-	/*
-	int x = xPos;
-	int y = yPos;
-
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
 CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, const int &yPos)
 {
-    /*
-	int x = xPos + posLargeur;
-	int y = yPos + posHauteur;
-	CInfosSeparationBar * element;
-
-	InfosSeparationBarVector::iterator it;
-	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
-	if (it != listSeparator.end())
-		element = *it;
-
-	return element;
-*/
-
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
