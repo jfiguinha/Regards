@@ -434,6 +434,7 @@ void CThumbnailFace::OnMouseRelease(const int &x, const int &y)
 					CIcone * icone = iconeList->GetElement(numElement);
 					if (icone != nullptr)
 					{
+						bool needToMove = false;
 						if (icone->IsChecked())
 						{
 							CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *)icone->GetData();
@@ -443,6 +444,7 @@ void CThumbnailFace::OnMouseRelease(const int &x, const int &y)
 								if (numFaceCompatible != numFace)
 								{
 									faceMove = true;
+									needToMove = true;
 									MoveIcone(numElement, numFace);
 									faceRecognition.MoveFaceRecognition(thumbnailData->GetNumFace(), numFace);
 									separatorBar->listElement.erase(separatorBar->listElement.begin() + i);
@@ -451,7 +453,8 @@ void CThumbnailFace::OnMouseRelease(const int &x, const int &y)
 							}
 
 						}
-						icone->SetChecked(false);
+						if(needToMove)
+							icone->SetChecked(false);
 					}
 				}
 			}

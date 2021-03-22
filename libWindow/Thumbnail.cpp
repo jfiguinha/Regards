@@ -750,6 +750,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		int yPos = event.GetY();
 		if (numActif != nullptr)
 		{
+			if (!mouseClickMove)
+				nbElementChecked = GetNbIconSelected();
 			mouseClickMove = true;
 			xPosDrag = xPos;
 			yPosDrag = yPos;
@@ -982,6 +984,19 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 
 }
 
+int CThumbnail::GetNbIconSelected()
+{
+	int nbCheck = 0;
+	int nbElement = iconeList->GetNbElement();
+	for (int i = 0; i < nbElement; i++)
+	{
+		CIcone * icone = iconeList->GetElement(i);
+		if (icone->IsChecked())
+			nbCheck++;
+	}
+	return nbCheck;
+}
+
 
 void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 {
@@ -1068,6 +1083,39 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	if(mouseClickBlock && mouseClickMove)
 	{
 		dc.DrawBitmap(bitmapIconDrag, xPosDrag - (bitmapIconDrag.GetWidth() / 2), yPosDrag - (bitmapIconDrag.GetHeight() / 2));
+
+		if (nbElementChecked > 1)
+		{
+			wxString libelle = L"";
+
+			libelle = to_string(nbElementChecked);
+
+			if (libelle != L"")
+			{
+				CThemeIcone themeIcone;
+				CThemeFont themeFont = themeIcone.font;
+				themeFont.SetFontSize(18);
+				wxSize size = GetSizeTexte(&dc, libelle, themeFont);
+				int localx = xPosDrag - (bitmapIconDrag.GetWidth() / 2);
+				int localy = yPosDrag - (bitmapIconDrag.GetHeight() / 2);
+
+				int xPos = xPosDrag - size.x / 2;
+				int yPos = yPosDrag - size.y / 2;
+
+
+				
+				dc.SetBrush(wxBrush(themeIcone.colorSelectTop));
+				dc.DrawRoundedRectangle(localx + 50, localy + 50, 100, 100, -0.25);
+				dc.SetBrush(wxNullBrush);
+
+				dc.SetBrush(wxBrush(*wxWHITE));
+				CWindowMain::DrawTexte(&dc, libelle, xPos, yPos, themeFont);
+				dc.SetBrush(wxNullBrush);
+			}
+		}
+		
+
+		
 	}
 	
 }

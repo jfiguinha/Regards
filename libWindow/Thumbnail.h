@@ -55,6 +55,8 @@ namespace Regards
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 
 		protected:
+
+			int GetNbIconSelected();
 			void ProcessThumbnail(CThumbnailData * pThumbnailData);
 			virtual void EraseThumbnail(wxCommandEvent& event);
 			void StartLoadingPicture(wxCommandEvent& event);
@@ -166,7 +168,7 @@ namespace Regards
 			wxBitmap bitmapIconDrag;
 			int xPosDrag;
 			int yPosDrag;
-
+			int nbElementChecked = 0;
             int oldPosLargeur;
             int oldPosHauteur;
 
