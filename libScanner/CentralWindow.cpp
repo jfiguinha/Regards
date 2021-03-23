@@ -135,6 +135,34 @@ void CCentralWindow::OnOpen(const int &type)
 	list.push_back("File");
 	list.push_back("Multifile");
 	bool isOk = false;
+
+	if(type == 0)
+	{
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+		wxString tempFolder = documentPath + "\\temp";
+		if (!wxMkDir(tempFolder)) {
+#else
+		wxString tempFolder = documentPath + "/temp";
+		if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+			// handle the error here
+		}
+		else
+		{
+#ifdef WIN32
+			filename = tempFolder + "\\local_pdf_file.pdf";
+#else
+			filename = tempFolder + "/local_pdf_file.pdf";
+#endif
+
+			if (wxFileExists(filename))
+				wxRemoveFile(filename);
+
+		}
+
+	}
+
 	wxString file = "";
 	int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
 	if (numSelect != -1)
@@ -197,33 +225,11 @@ void CCentralWindow::OnOpen(const int &type)
 	else
 	{
 		CLibPicture libPicture;
-		wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-		wxString tempFolder = documentPath + "\\temp";
-		if (!wxMkDir(tempFolder)) {
-#else
-		wxString tempFolder = documentPath + "/temp";
-		if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-			// handle the error here
-		}
-		else
-		{
-#ifdef WIN32
-			filename = tempFolder + "\\local_pdf_file.pdf";
-#else
-			filename = tempFolder + "/local_pdf_file.pdf";
-#endif
-
-			if (wxFileExists(filename))
-				wxRemoveFile(filename);
-
-		}
 
 		if (wxFileExists(file))
 			wxCopyFile(file, filename);
 
-		position = libPicture.GetNbImage(file) - 1;
+		//position = libPicture.GetNbImage(file) - 1;
 		
 	}
 
@@ -232,7 +238,7 @@ void CCentralWindow::OnOpen(const int &type)
 		if (previewWindow != nullptr)
 			previewWindow->LoadFile(filename);
 
-		//previewWindow->SetPosition(position);
+		previewWindow->SetPosition(0);
 	}
 }
 
@@ -772,40 +778,46 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 
 	}
 
-	QPDF inpdf;
-	inpdf.processFile(filename.ToStdString().c_str());
-	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
-	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
-	int pageno = 0;
-
-	std::string outfile = file.ToStdString();
-	QPDF outpdf;
-	outpdf.emptyPDF();
-
-
-	for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
 	{
-		bool find = false;
-		for (int i : listPage)
+		wxBusyInfo wait("Please wait, working...");
+		QPDF inpdf;
+		inpdf.processFile(filename.ToStdString().c_str());
+		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
+		int pageno = 0;
+
+		std::string outfile = file.ToStdString();
+		QPDF outpdf;
+		outpdf.emptyPDF();
+
+
+		for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
 		{
-			if (i == pageno)
+			bool find = false;
+			for (int i : listPage)
 			{
-				find = true;
-				break;
+				if (i == pageno)
+				{
+					find = true;
+					break;
+				}
 			}
+
+			if (!find)
+			{
+				QPDFPageObjectHelper& page(*iter);
+				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			}
+
+			pageno++;
 		}
 
-		if (!find)
-		{
-			QPDFPageObjectHelper& page(*iter);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
-		}
-
-		pageno++;
+		QPDFWriter outpdfw(outpdf, outfile.c_str());
+		outpdfw.write();
 	}
 
-	QPDFWriter outpdfw(outpdf, outfile.c_str());
-	outpdfw.write();
+
+
 
 #ifndef DEMO
 	if (wxFileExists(filename))
