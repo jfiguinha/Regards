@@ -16,6 +16,7 @@
 #include <wx/pdfdocument.h>
 #include <LibResource.h>
 #include <SavePicture.h>
+#include <wx/busyinfo.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define OPENFILE 0
@@ -653,11 +654,12 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 	if (file != "")
 	{
+		wxBusyInfo wait("Please wait, working...");
 		std::vector<QPDFPageObjectHelper> oldpages;
 		int oldpageno_len = 0;
 		int i = 0;
 		bool fileIn = false;
-		if (wxFileExists(filename))
+		if (filename != "" && wxFileExists(filename))
 			fileIn = true;
 
 		QPDF oldpdf;
