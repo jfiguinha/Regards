@@ -18,7 +18,7 @@ namespace Regards
 		{
 		public:
 
-			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config);
+			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config, const bool &exportPicture);
 			~CShowBitmap();
 
 			void HideToolbar();

@@ -19,13 +19,13 @@ void CBitmapToolbar::SetBitmapDisplayPt(Regards::Control::CBitmapWndViewer * bit
 }
 */
 
-CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical)
+CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical, const bool &exportPicture)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	slide = nullptr;
 	this->parentId = viewerId;
-
+	this->exportPicture = exportPicture;
 	//wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
 	wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1);// "Save";
 	wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL",1);//"Emai";
@@ -227,7 +227,13 @@ void CBitmapToolbar::EventManager(const int &id)
 		case WM_EXPORT:
 		{
 			if (bitmapWindow != nullptr)
-				bitmapWindow->ExportPicture();
+			{
+				if (exportPicture)
+					bitmapWindow->ExportPicture();
+				else
+					bitmapWindow->SavePicture();
+			}
+
 			break;
 		}
 		/*

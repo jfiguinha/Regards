@@ -70,7 +70,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);
-	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme);
+	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme, true);
 	
    
     

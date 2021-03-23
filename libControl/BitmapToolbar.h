@@ -15,7 +15,7 @@ namespace Regards
 
 		public:
 
-			CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical);
+			CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical, const bool &exportPicture);
 			~CBitmapToolbar();
 			//void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
 			void SetTrackBarPosition(const int &iPos);
@@ -41,6 +41,7 @@ namespace Regards
 			CToolbarButton * email;
 			CToolbarSlide * slide;
 			wxWindowID parentId;
+			bool exportPicture;
 			
 		};
 	}

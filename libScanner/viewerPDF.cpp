@@ -111,7 +111,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	//----------------------------------------------------------------------------------------
 	if (viewerTheme != nullptr)
 	{
-		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme);
+		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme, false);
 		windowManager->AddWindow(showBitmapWindow, Pos::wxCENTRAL, false, 0, rect, SCANNER_MAINVIEWERWINDOWID, false);
 	}
 
@@ -347,6 +347,8 @@ void CViewerPDF::LoadFile(const wxString &filename)
 			animationPosition = 0;
 
 		}
+
+		//thumbnailVideo->SetVideoPosition(0);
 	}
 	
 	//nbThumbnail = page.size();

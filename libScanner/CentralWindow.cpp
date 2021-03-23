@@ -227,7 +227,7 @@ void CCentralWindow::OnOpen(const int &type)
 		if (previewWindow != nullptr)
 			previewWindow->LoadFile(filename);
 
-		previewWindow->SetPosition(position);
+		//previewWindow->SetPosition(position);
 	}
 }
 

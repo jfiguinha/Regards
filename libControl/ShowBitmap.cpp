@@ -80,7 +80,7 @@ void CShowBitmap::SavePicture()
 }
 
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config)
+	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config, const bool &exportPicture)
 	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
@@ -110,7 +110,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
     
     pictureToolbar = nullptr;
 
-	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false);
+	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false, exportPicture);
 	pictureToolbar->SetTabValue(value);
 
 	if (config != nullptr)
