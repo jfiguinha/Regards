@@ -19,6 +19,7 @@ CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
+	moveOnPaint = false;
 }
 
 

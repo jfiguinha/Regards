@@ -117,7 +117,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 
 	
 
-	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
+	Connect(wxEVT_ANIMATIONPOSITION, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CViewerPDF::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CViewerPDF::OnFiltreCancel));
 	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CViewerPDF::OnShowToolbar));

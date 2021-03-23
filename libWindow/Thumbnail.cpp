@@ -1043,7 +1043,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		return;
 
 
-	if (numActif != nullptr && !isMovingScroll)
+	if (numActif != nullptr && !isMovingScroll && moveOnPaint)
 	{
 		wxRect rect = numActif->GetPos();
 		int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);

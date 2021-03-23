@@ -143,13 +143,17 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 		{
 			wxSize * size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
-			size->x = rect.x;
-			size->y = rect.y;
+
+			posHauteur = max((rect.y - this->GetWindowHeight() / 2), 0);
+			posLargeur = max((rect.x - this->GetWindowWidth() / 2), 0);
+
+			size->x = posLargeur;
+			size->y = posHauteur;
 			evt.SetClientData(size);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
 
-		posLargeur = rect.x;
+		//posLargeur = rect.x;
 	}
 
 	numSelect = pIcone;

@@ -28,14 +28,17 @@ CThumbnailMultiPage::~CThumbnailMultiPage(void)
 
 void CThumbnailMultiPage::OnPictureClick(CThumbnailData * data)
 {
+	int timePosition = 0;
 	//wxWindow * mainWindow = (wxWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if (parent != nullptr && data != nullptr)
 	{
-		int timePosition = data->GetTimePosition();
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_ANIMATIONPOSITION);
+		timePosition = data->GetTimePosition();
+		wxCommandEvent evt(wxEVT_ANIMATIONPOSITION);
 		evt.SetExtraLong(timePosition);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	SetVideoPosition(timePosition);
 }
 
 int CThumbnailMultiPage::FindNumItem(const int &videoPos)
@@ -122,12 +125,19 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 		{
 			wxSize * size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
-			size->x = rect.x;
+
+			posHauteur = max((rect.y - this->GetWindowHeight() / 2), 0);
+			posLargeur = max((rect.x - this->GetWindowWidth() / 2), 0);
+
+			size->x = posLargeur;
 			size->y = posHauteur;
+
+			//size->x = rect.x;
+			//size->y = posHauteur;
 			evt.SetClientData(size);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
-		posLargeur = rect.x;
+		//posLargeur = rect.x;
 	}
 
 	numSelect = pIcone;
