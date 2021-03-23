@@ -744,7 +744,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
     bool needtoRedraw = false;
 	isMovingScroll = true;
 
-	if (mouseClickBlock)
+	if (mouseClickBlock && enableDragAndDrop)
 	{
 		int xPos = event.GetX();
 		int yPos = event.GetY();
@@ -923,7 +923,7 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 	int yPos = event.GetY();
 	
 	mouseClickBlock = false;
-	if (mouseClickMove)
+	if (mouseClickMove && enableDragAndDrop)
 	{
 		OnMouseRelease(xPos, yPos);
 		mouseClickMove = false;
@@ -969,7 +969,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		FindOtherElement(&winDC, xPos, yPos);
 	}
 
-	if (numActif != nullptr)
+	if (numActif != nullptr && enableDragAndDrop)
 	{
 		bitmapIconDrag = numActif->GetBitmapIcone();
 		wxImage image = bitmapIconDrag.ConvertToImage();
@@ -1080,7 +1080,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	}
 	//delete dc;
 
-	if(mouseClickBlock && mouseClickMove)
+	if(mouseClickBlock && mouseClickMove && enableDragAndDrop)
 	{
 		dc.DrawBitmap(bitmapIconDrag, xPosDrag - (bitmapIconDrag.GetWidth() / 2), yPosDrag - (bitmapIconDrag.GetHeight() / 2));
 

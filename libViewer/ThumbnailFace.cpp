@@ -25,6 +25,7 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 	heightThumbnail = 0;
 	flipHorizontal = false;
 	flipVertical = true;
+	enableDragAndDrop = true;
 }
 
 

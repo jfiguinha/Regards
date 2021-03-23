@@ -184,6 +184,7 @@ namespace Regards
 			bool isMovingScroll = false;
 			int numOldItem = -1;
 			bool moveOnPaint = true;
+			bool enableDragAndDrop = false;
 		};
 	}
 }
