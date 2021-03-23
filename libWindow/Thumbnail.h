@@ -183,6 +183,7 @@ namespace Regards
 			bool flipHorizontal = false;
 			bool isMovingScroll = false;
 			int numOldItem = -1;
+			bool moveOnPaint = true;
 		};
 	}
 }

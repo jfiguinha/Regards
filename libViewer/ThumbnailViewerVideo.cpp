@@ -9,6 +9,7 @@ CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, co
 {
 	filename = L"";
 	idWindowToRefresh = THUMBNAILVIDEOWINDOW;
+	moveOnPaint = false;
 }
 
 

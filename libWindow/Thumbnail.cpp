@@ -1069,7 +1069,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     oldPosLargeur = posLargeur;
     oldPosHauteur = posHauteur;
 
-	if (this->GetParent() != nullptr)
+	if (this->GetParent() != nullptr && moveOnPaint)
 	{
 		wxSize * size = new wxSize();
 		wxCommandEvent evt(wxEVENT_SETPOSITION);

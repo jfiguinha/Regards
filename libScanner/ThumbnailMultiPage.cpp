@@ -19,6 +19,7 @@ CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const 
 	this->parent = parent;
 	numItemSelected = -1;
 	process_end = true;
+	moveOnPaint = false;
 }
 
 CThumbnailMultiPage::~CThumbnailMultiPage(void)
