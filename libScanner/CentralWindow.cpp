@@ -15,6 +15,7 @@
 #include <wx/progdlg.h>
 #include <wx/pdfdocument.h>
 #include <LibResource.h>
+#include <SavePicture.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define OPENFILE 0
@@ -75,6 +76,8 @@ void CCentralWindow::OnScan(wxCommandEvent& event)
 
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
+	CSavePicture::ExportPicture(this, filename);
+	/*
 	if (filename != "")
 	{
 		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
@@ -99,6 +102,7 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
 		wxMessageBox(openfile, infos, wxICON_INFORMATION);
 	}
+	*/
 }
 
 void CCentralWindow::OnDeletePage(wxCommandEvent& event)
@@ -247,6 +251,7 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 
 void CCentralWindow::OnSave(wxCommandEvent& event)
 {
+	/*
 	if (filename != "")
 	{
 		//CSavePicture::ExportPicture(this, filename);
@@ -265,6 +270,31 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 		wxCopyFile(filename, newfilename);
 
 		LoadFile(newfilename);
+	}
+	else
+	{
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
+	}
+	*/
+	if (filename != "")
+	{
+		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			vector<int> listPage = selectFile.GetSelectItem();
+			wxString fileExtract = ProcessExtractFile(listPage);
+
+			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
+				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			if (saveFileDialog.ShowModal() == wxID_CANCEL)
+				return;     // the user changed idea...
+
+			wxString newfilename = saveFileDialog.GetPath();
+			wxCopyFile(fileExtract, newfilename);
+		}
+
 	}
 	else
 	{

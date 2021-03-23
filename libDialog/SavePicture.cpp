@@ -12,6 +12,7 @@
 #include "SelectPage.h"
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
+#include <wx/busyinfo.h>
 using namespace Regards::Picture;
 CSavePicture::CSavePicture()
 {
@@ -109,6 +110,8 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 				vector<int> listPage = SelectPage(window, filename);
 				if (listPage.size() > 0)
 				{
+					wxBusyInfo wait("Please wait, working...");
+
 					for (int i = 0; i < listPage.size(); i++)
 					{
 						int numPage = listPage[i];

@@ -10,6 +10,7 @@
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include "DecodeRawPicture.h"
+#include <wx/busyinfo.h>
 using namespace Regards::Filter;
 
 CDecodeRaw::CDecodeRaw()
@@ -394,7 +395,7 @@ CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter
 		return nullptr;
 
 	CDecodeRawParameter * rawParameter = (CDecodeRawParameter *)effectParameter;
-
+	wxBusyInfo wait("Please wait, working...");
 	return rawDecoder->DecodePicture(rawParameter);
 }
 
@@ -409,6 +410,7 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapD
 
 	if (rawParameter->update)
 	{
+		wxBusyInfo wait("Please wait, working...");
 		CImageLoadingFormat * imageLoad = rawDecoder->DecodePicture(rawParameter);
 		if (imageLoad != nullptr)
 		{
