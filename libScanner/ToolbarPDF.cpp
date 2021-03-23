@@ -9,7 +9,7 @@ using namespace Regards::Scanner;
 
 
 //
-#define IDM_WINDOWSEARCH 152
+#define IDM_OPENFILE 152
 #define IDM_THUMBNAILFACE 153
 #define IDM_VIEWERMODE 154
 #define IDM_EXPLORERMODE 155
@@ -37,7 +37,7 @@ CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & 
 
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
 	screen->SetButtonResourceId(L"IDB_FOLDER");
-	screen->SetCommandId(IDM_WINDOWSEARCH);
+	screen->SetCommandId(IDM_OPENFILE);
 	screen->SetLibelle(lblOpenFolder);
 	navElement.push_back(screen);
 
@@ -95,7 +95,7 @@ void CToolbarPDF::EventManager(const int &id)
 	switch (id)
 	{
 
-	case IDM_WINDOWSEARCH:
+	case IDM_OPENFILE:
 	{
 		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_OPENFILE);

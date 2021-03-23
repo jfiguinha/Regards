@@ -56,6 +56,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CCentralWindow::OnDeletePage));
     Connect(wxEVENT_SCANNER, wxCommandEventHandler(CCentralWindow::OnScan));
 	Connect(wxEVENT_EXTRACT, wxCommandEventHandler(CCentralWindow::OnExtractPage));
+	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CCentralWindow::OnOpenFile));
 }
 
 void CCentralWindow::OnScan(wxCommandEvent& event)
@@ -248,6 +249,10 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
+		//CSavePicture::ExportPicture(this, filename);
+
+		//CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
+		
 		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
 		

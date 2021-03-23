@@ -191,7 +191,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 		}
 		processIdle = false;
 	}
-
+	UpdateScroll();
 
 
 }
