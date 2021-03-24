@@ -136,7 +136,7 @@ void CCentralWindow::OnOpen(const int &type)
 	list.push_back("Multifile");
 	bool isOk = false;
 
-	if(type == 0)
+	if (type != ADDFILE)
 	{
 		wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
@@ -228,8 +228,6 @@ void CCentralWindow::OnOpen(const int &type)
 
 		if (wxFileExists(file))
 			wxCopyFile(file, filename);
-
-		//position = libPicture.GetNbImage(file) - 1;
 		
 	}
 
