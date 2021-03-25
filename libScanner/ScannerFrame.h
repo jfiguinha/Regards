@@ -58,7 +58,7 @@ public:
 	void PrintPreview(CImageLoadingFormat * imageToPrint);
 
 	wxString ScanPage();
-	void OnOpen();
+	int OnOpen();
 	void OnClose();
 
 private:

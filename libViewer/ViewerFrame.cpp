@@ -357,7 +357,7 @@ void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
 	}
 }
 
-void CViewerFrame::ShowScanner()
+int CViewerFrame::ShowScanner()
 {
 	if (frameScanner != nullptr)
 	{
@@ -370,7 +370,14 @@ void CViewerFrame::ShowScanner()
 		frameScanner->Centre(wxBOTH);
 		frameScanner->Show(true);
 	}
-	frameScanner->OnOpen();
+	int value = frameScanner->OnOpen();
+	if (value == -1)
+	{
+		frameScanner->Show(false);
+		this->Raise();
+	}
+
+	return value;
 }
 
 void CViewerFrame::OnScanner(wxCommandEvent& event)

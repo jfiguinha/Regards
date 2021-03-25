@@ -142,10 +142,12 @@ CScannerFrame::~CScannerFrame()
 		delete centralWindow;
 }
 
-void CScannerFrame::OnOpen()
+int CScannerFrame::OnOpen()
 {
+	int value = -1;
 	if(centralWindow != nullptr)
-		centralWindow->OnOpen(0);
+		value = centralWindow->OnOpen(0);
+	return value;
 }
 
 /*

@@ -128,7 +128,7 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 }
 
 
-void CCentralWindow::OnOpen(const int &type)
+int CCentralWindow::OnOpen(const int &type)
 {
 	wxArrayString list;
 	list.push_back("Scan");
@@ -189,7 +189,7 @@ void CCentralWindow::OnOpen(const int &type)
 					szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 				if (openFileDialog.ShowModal() == wxID_CANCEL)
-					return;     // the user changed idea..
+					return -1;     // the user changed idea..
 
 				wxArrayString listFile;
 				int filterIndex = openFileDialog.GetFilterIndex();
@@ -203,41 +203,42 @@ void CCentralWindow::OnOpen(const int &type)
 			}
 		}
 
-	}
-
-	int position = 0;
-	if (type == ADDFILE)
-	{
-		CLibPicture libPicture;
-		vector<int> listPage;
-		
-		if (file != "")
+		int position = 0;
+		if (type == ADDFILE)
 		{
-			position = previewWindow->GetAnimationPosition();
-			int nbPage = libPicture.GetNbImage(file);
-			for(int i = 0;i < nbPage;i++)
-				listPage.push_back(i);
-			ProcessAddFile(file, filename, listPage, position);
-			position += nbPage;
+			CLibPicture libPicture;
+			vector<int> listPage;
+
+			if (file != "")
+			{
+				position = previewWindow->GetAnimationPosition();
+				int nbPage = libPicture.GetNbImage(file);
+				for (int i = 0; i < nbPage; i++)
+					listPage.push_back(i);
+				ProcessAddFile(file, filename, listPage, position);
+				position += nbPage;
+
+			}
+		}
+		else
+		{
+			CLibPicture libPicture;
+
+			if (wxFileExists(file))
+				wxCopyFile(file, filename);
 
 		}
-	}
-	else
-	{
-		CLibPicture libPicture;
 
-		if (wxFileExists(file))
-			wxCopyFile(file, filename);
-		
+		if (wxFileExists(filename))
+		{
+			if (previewWindow != nullptr)
+				previewWindow->LoadFile(filename);
+
+			previewWindow->SetPosition(0);
+		}
 	}
 
-	if (wxFileExists(filename))
-	{
-		if (previewWindow != nullptr)
-			previewWindow->LoadFile(filename);
-
-		previewWindow->SetPosition(0);
-	}
+	return numSelect;
 }
 
 void CCentralWindow::OnAddPage(wxCommandEvent& event)

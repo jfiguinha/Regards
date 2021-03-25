@@ -25,7 +25,7 @@ namespace Regards
 			wxString LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
-			void OnOpen(const int &type);
+			int OnOpen(const int &type);
 			void UpdateScreenRatio();
 			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
 
