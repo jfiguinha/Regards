@@ -51,7 +51,7 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
-#if defined(WIN32) || defined(__WXGTK__) 
+#if (defined(WIN32) && defined(_MSC_VER)) || defined(__WXGTK__) 
 #include <tbb/tbbmalloc_proxy.h>
 #endif
 #endif

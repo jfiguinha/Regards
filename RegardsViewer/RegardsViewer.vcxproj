@@ -492,7 +492,7 @@ COPY "$(SolutionDir)x64\Release\iconv-2.dll" "$(SolutionDir)x64\Release\iconv.dl
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>true</OpenMPSupport>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
