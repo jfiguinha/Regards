@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<u>Revision</u>: 9117bd784328d9ac40ff<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 08, 2020
+         (11:26:07 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Created release v19.21</p><pre class="files_changed"> dlib/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 2c70aad12c18fddebfb4<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 07, 2020
+         (12:24:28 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Use a cache to avoid calls to the cuDNN algorithm selection routines.</p><pre class="files_changed"> dlib/cuda/cudnn_dlibapi.cpp | 50 +++++++++++++++++++++++++++------------------
+ dlib/cuda/cudnn_dlibapi.h   |  2 --
+ 2 files changed, 30 insertions(+), 22 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 8910445a7af9f60639c2<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 07, 2020
+         (11:40:46 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">fix some spelling and grammar errors</p><pre class="files_changed"> dlib/algs.h                                                | 2 +-
+ dlib/bigint/bigint_kernel_abstract.h                       | 2 +-
+ dlib/disjoint_subsets/disjoint_subsets_sized_abstract.h    | 2 +-
+ dlib/gui_core/gui_core_kernel_abstract.h                   | 2 +-
+ dlib/gui_widgets/base_widgets.cpp                          | 2 +-
+ dlib/gui_widgets/widgets.h                                 | 2 +-
+ dlib/image_keypoint/binned_vector_feature_image_abstract.h | 2 +-
+ dlib/image_transforms/interpolation_abstract.h             | 6 +++---
+ dlib/lsh/create_random_projection_hash_abstract.h          | 4 ++--
+ dlib/statistics/statistics_abstract.h                      | 2 +-
+ dlib/svm/structural_svm_distributed_abstract.h             | 2 +-
+ dlib/svm/structural_svm_problem_abstract.h                 | 2 +-
+ tools/htmlify/to_xml.cpp                                   | 2 +-
+ tools/python/src/image2.cpp                                | 8 ++++----
+ 14 files changed, 20 insertions(+), 20 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 4721075314e8ed9e342f<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 07, 2020
+         (05:57:12 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">More optimization unit tests</p><pre class="files_changed"> dlib/test/optimization.cpp | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: a9d554a4ac91760a8236<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 05, 2020
+         (04:13:58 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">minor cleanup</p><pre class="files_changed"> dlib/image_loader/png_loader.cpp | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: ff3023f26618ed7a393d<br><u>Author</u>: <a href="mailto:yolenych@gmail.com">yuriio</a><br><u>Date</u>: Aug 05, 2020
+         (18:11:46 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Added possibility to load PNG images from a data buffer. (#2137)</p><pre class="files_changed"> dlib/image_loader/png_loader.cpp        | 157 +++++++++++++++++++++++++-------
+ dlib/image_loader/png_loader.h          |  32 ++++++-
+ dlib/image_loader/png_loader_abstract.h |  45 +++++++++
+ 3 files changed, 198 insertions(+), 36 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 7b564927d67775e25da9<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 01, 2020
+         (09:48:30 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Switching to what is hopefully a better fix for the following CUDA error</p><pre class="files_changed"> dlib/CMakeLists.txt    | 8 --------
+ dlib/cuda/cuda_dlib.cu | 4 ++--
+ 2 files changed, 2 insertions(+), 10 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: f8cfe63904bd06b07f52<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 01, 2020
+         (09:45:38 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Avoid unnecessairly asking cuDNN which algorithms to use, since this is slow in cuDNN 8.0</p><pre class="files_changed"> dlib/cuda/cudnn_dlibapi.cpp | 31 ++++++++++++++++++++++---------
+ dlib/cuda/cudnn_dlibapi.h   |  2 ++
+ 2 files changed, 24 insertions(+), 9 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 6c3243f766494da7003c<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Aug 01, 2020
+         (09:33:39 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Cleanup cuDNN conv algorithm selection code slightly by moving it into its own function.</p><pre class="files_changed"> dlib/cuda/cudnn_dlibapi.cpp | 248 ++++++++++++++++++++++++--------------------
+ dlib/cuda/cudnn_dlibapi.h   |   2 +
+ 2 files changed, 135 insertions(+), 115 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 4d18e0d0c751cfe75d39<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jul 26, 2020
+         (11:13:20 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">oops, fixing a weird typo</p><pre class="files_changed"> dlib/global_optimization/find_max_global.h          | 2 +-
+ dlib/global_optimization/find_max_global_abstract.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 3400e163e8bdcafed3e1<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jul 26, 2020
+         (08:42:50 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">tweaked cca test thresholds to avoid false positives</p><pre class="files_changed"> dlib/test/cca.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 943408d2d20b5e548163<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jul 26, 2020
+         (08:18:47 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Allow forwarding initial function evaluations into find_max_global()</p><pre class="files_changed"> dlib/global_optimization/find_max_global.h         | 215 +++++++++++++--------
+ .../global_optimization/find_max_global_abstract.h | 204 ++++++++++++-------
+ dlib/test/global_optimization.cpp                  |   5 +
+ 3 files changed, 268 insertions(+), 156 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 5a80ca9e5f8fea37b0cc<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jul 24, 2020
+         (19:50:22 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Apply --expt-relaxed-constexpr to all older versions of cuda.</p><pre class="files_changed"> dlib/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: 5650ce45a14cc08d5c15<br><u>Author</u>: <a href="mailto:22759056+jbfove@users.noreply.github.com">jbfove</a><br><u>Date</u>: Jul 22, 2020
+         (28:07:49 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Fix restoration of MSVC warnings in public headers (#2135)</p><pre class="files_changed"> dlib/geometry/vector.h | 6 ++++--
+ dlib/matrix/matrix.h   | 8 ++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 23b9abd07a56f9fef560<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jul 11, 2020
+         (17:07:36 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Switch cuda target architecture from sm_30 to sm_50.  I.e. Maxwell instead of Kepler.</p><pre class="files_changed"> dlib/CMakeLists.txt                            | 2 +-
+ dlib/cmake_utils/test_for_cuda/CMakeLists.txt  | 2 +-
+ dlib/cmake_utils/test_for_cudnn/CMakeLists.txt | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: a2498dc47c8c341e2bf7<br><u>Author</u>: <a href="mailto:stoperro@users.noreply.github.com">stoperro</a><br><u>Date</u>: Jun 28, 2020
+         (19:35:15 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Additional documentation for failed dlib::layer&lt;&gt; use. (#2118)</p><pre class="files_changed"> dlib/dnn/core.h | 3 +++
+ 1 file changed, 3 insertions(+)</pre><hr class="fullhr"><u>Revision</u>: 71b303d883f6cea37d25<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 27, 2020
+         (16:08:39 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Improve the error a user gets when trying to build the pyhton extention on windows but they didn't install visual C++.</p><pre class="files_changed"> tools/python/CMakeLists.txt | 11 +++++++++++
+ 1 file changed, 11 insertions(+)</pre><hr class="fullhr"><u>Revision</u>: b9f4da5522a0d824c606<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 21, 2020
+         (04:48:02 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Make cuDNN test project failure print a message saying exactly why it failed.</p><pre class="files_changed"> dlib/CMakeLists.txt | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: facefa02044a396ffd69<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 20, 2020
+         (10:44:30 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Fix random foreset regression not doing quite the right thing.</p><pre class="files_changed"> dlib/random_forest/random_forest_regression.h | 13 +++++++------
+ dlib/test/random_forest.cpp                   | 18 +++++++++++++-----
+ 2 files changed, 20 insertions(+), 11 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: fe803b566f0efc9317bb<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 20, 2020
+         (05:43:17 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">add support for cudnn 8.0</p><pre class="files_changed"> dlib/cuda/cudnn_dlibapi.cpp | 85 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)</pre><hr class="fullhr"><u>Revision</u>: f8887d8cbbc1739fe117<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 17, 2020
+         (17:29:10 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">fix paths</p><pre class="files_changed"> tools/python/dlib/__init__.py.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: 2a3cb83afc370b48a372<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 17, 2020
+         (16:17:10 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Make dlib/__init__.py know the paths to cuda that cmake used.  Use those paths instead of relying on CUDA_PATH to be set.</p><pre class="files_changed"> tools/python/CMakeLists.txt      |  1 +
+ tools/python/dlib/__init__.py    | 13 -------------
+ tools/python/dlib/__init__.py.in | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 13 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 1515adc74461973170ec<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 10, 2020
+         (04:19:59 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">work around a bug in nvcc</p><pre class="files_changed"> dlib/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: 7fe355e0ec3da0740c9a<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 07, 2020
+         (12:59:40 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Oops, put import statements after path adjustment</p><pre class="files_changed"> tools/python/dlib/__init__.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 7fcb6c285d2ef6d91f37<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 07, 2020
+         (12:42:44 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Add an __init__.py file so we can add paths to CUDA libs on windows.</p><pre class="files_changed"> tools/python/CMakeLists.txt   |  6 ++----
+ tools/python/dlib/__init__.py | 11 +++++++++++
+ tools/python/src/dlib.cpp     |  2 +-
+ 3 files changed, 14 insertions(+), 5 deletions(-)</pre><hr class="fullhr"><u>Revision</u>: 53b6ea3bf5d30b891c51<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 06, 2020
+         (10:58:34 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Record last changeset and set PATCH version to 99</p><pre class="files_changed"> dlib/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)</pre><hr class="fullhr"><u>Revision</u>: 5612caa16937b5b81eb2<br><u>Author</u>: <a href="mailto:davis@dlib.net">Davis King</a><br><u>Date</u>: Jun 06, 2020
+         (10:53:52 UTC)
+      <br><p xmlns:gcse="googleCustomSearch" style="margin:0.4em">Created release v19.20</p><pre class="files_changed"> dlib/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)</pre><hr class="fullhr">

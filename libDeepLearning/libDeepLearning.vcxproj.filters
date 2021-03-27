@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="dlib">
-      <UniqueIdentifier>{0d209e21-8cdf-4184-b060-74627ca7547b}</UniqueIdentifier>
+      <UniqueIdentifier>{e3f27eee-4dd1-4d23-ba85-b6c21b881ad0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,14 +36,14 @@
     <ClCompile Include="base64.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.20\dlib\all\source.cpp">
-      <Filter>dlib</Filter>
-    </ClCompile>
     <ClCompile Include="OpenCVEffect.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libextern\dlib-19.21\dlib\all\source.cpp">
+      <Filter>dlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
