@@ -45,52 +45,52 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -140,14 +140,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(IncludePath);$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(IncludePath);$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -166,13 +166,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
-    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(IncludePath);$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
-    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(IncludePath);$(SolutionDir)libextern\ffmpeg-master\include\;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -182,6 +182,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;GLEW_STATIC;WX_PRECOMP;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\wxCheckTree;..\libFFmpegPlayer;..\otherlib\libRaw;..\include;..\otherlib\libMediaInfo;..\libVideoInterface;..\libMediaFoundation;..\libVideoPlayer;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libRenderBitmap;..\otherlib\libGlew;..\libOpenGL;..\libDirectShow;..\dllDatastructure;..\dllPicture;..\libPrint;..\libCursor;..\otherlib\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\otherlib\librapidxml;..\libTheme;..\libWindow;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -197,6 +198,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;GLEW_STATIC;WX_PRECOMP;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\wxCheckTree;..\libFFmpegPlayer;..\otherlib\libRaw;..\include;..\otherlib\libMediaInfo;..\libVideoInterface;..\libMediaFoundation;..\libVideoPlayer;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libRenderBitmap;..\otherlib\libGlew;..\libOpenGL;..\libDirectShow;..\dllDatastructure;..\dllPicture;..\libPrint;..\libCursor;..\otherlib\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\otherlib\librapidxml;..\libTheme;..\libWindow;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -214,6 +216,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libDeepLearning;..\libScanner;$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\libExif;$(SolutionDir)libextern\qpdf-master\include;..\otherlib\wxia\include;..\otherlib\wxia\wia;$(SolutionDir)libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;..\FaceRecognition;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCLEngine;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource;..\libextern\libjpeg-turbo-1.5.1;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -231,6 +234,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libDeepLearning;..\libScanner;$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\libExif;$(SolutionDir)libextern\qpdf-master\include;..\otherlib\wxia\include;..\otherlib\wxia\wia;$(SolutionDir)libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;..\FaceRecognition;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCLEngine;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource;..\libextern\libjpeg-turbo-1.5.1;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -259,6 +263,7 @@
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <FloatingPointModel>Fast</FloatingPointModel>
       <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -288,6 +293,7 @@
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <FloatingPointModel>Fast</FloatingPointModel>
       <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -332,6 +338,7 @@
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -376,6 +383,7 @@
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

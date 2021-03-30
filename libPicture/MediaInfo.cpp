@@ -12,9 +12,6 @@
 // Command line version
 //
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#if defined(WIN32)
-#define MEDIAINFO_LIBRARY
-#endif
 
 #ifdef MEDIAINFO_LIBRARY
 #include "MediaInfo/MediaInfo.h" //Staticly-loaded library (.lib or .a or .so)

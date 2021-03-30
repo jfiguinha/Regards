@@ -14,7 +14,6 @@
 #define GLUT
 //#define WX_PRECOMP
 
-#include <fdeep/fdeep.hpp>
 #include <ImageLoadingFormat.h>
 #include <PictureData.h>
 #include <opencv2/opencv.hpp>
