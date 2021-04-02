@@ -6,7 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="dlib">
-    <File Name="../libextern/dlib-19.20/dlib/all/source.cpp"/>
+    <File Name="../libextern/dlib-19.21/dlib/all/source.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -35,15 +35,11 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/dlib-19.20/dlib/all"/>
-        <IncludePath Value="../libextern/dlib-19.20"/>
+        <IncludePath Value="../libextern/dlib-19.21/dlib/all"/>
+        <IncludePath Value="../libextern/dlib-19.21"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libextern/json-3.8.0/include"/>
-        <IncludePath Value="../libextern/frugally-deep/include"/>
-        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
-        <IncludePath Value="../libextern/eigen"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libAppleFunction"/>
         <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>
