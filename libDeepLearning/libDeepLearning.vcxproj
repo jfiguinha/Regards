@@ -13,6 +13,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_avx|Win32">
+      <Configuration>Release_avx</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_avx|x64">
+      <Configuration>Release_avx</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release_windows10|Win32">
       <Configuration>Release_windows10</Configuration>
       <Platform>Win32</Platform>
@@ -40,6 +48,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="base64.cpp" />
     <ClCompile Include="DeepLearning.cpp" />
@@ -48,6 +57,7 @@
     <ClCompile Include="FaceRecognition.cpp" />
     <ClCompile Include="header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
@@ -76,52 +86,66 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -139,6 +163,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -151,6 +178,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -158,10 +188,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libExtern\dlib-19.21\dlib\all;$(SolutionDir)libExtern\dlib-19.21;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(IncludePath)$(WindowsSDK_IncludePath);</IncludePath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libExtern\dlib-19.21\dlib\all;$(SolutionDir)libExtern\dlib-19.21;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(IncludePath)$(WindowsSDK_IncludePath);</IncludePath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libExtern\dlib-19.21\dlib\all;$(SolutionDir)libExtern\dlib-19.21;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(IncludePath)$(WindowsSDK_IncludePath);</IncludePath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -176,12 +213,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libExtern\dlib-19.21\dlib\all;$(SolutionDir)libExtern\dlib-19.21;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(IncludePath)$(WindowsSDK_IncludePath);</IncludePath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)libextern\oneapi-tbb-2021.1.1\include;$(SolutionDir)libExtern\dlib-19.21\dlib\all;$(SolutionDir)libExtern\dlib-19.21;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(IncludePath)$(WindowsSDK_IncludePath);</IncludePath>
+    <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -195,15 +239,46 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>MaxSpeedHighLevel</Optimization>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions3</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>MaxSpeedHighLevel</Optimization>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -223,12 +298,14 @@
       <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
+      <OpenMP>GenerateParallelCode</OpenMP>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -276,8 +353,9 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <OpenMP>GenerateParallelCode</OpenMP>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -293,8 +371,9 @@
       <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <OpenMP>GenerateParallelCode</OpenMP>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -302,6 +381,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>

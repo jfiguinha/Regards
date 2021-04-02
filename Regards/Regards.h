@@ -353,3 +353,55 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 
 	{ wxCMD_LINE_NONE }
 };
+
+
+
+
+void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+	parser.SetDesc(g_cmdLineDesc);
+	// must refuse '/' as parameter starter or cannot use "/path" style paths
+	parser.SetSwitchChars(wxT("-"));
+}
+
+bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+	/*
+	wxString nbArgument = to_string(wxGetApp().argc);
+	wxMessageBox(nbArgument);
+	//silent_mode = parser.Found(wxT("s"));
+	wxString  par2(wxGetApp().argv[0]);
+	wxMessageBox(par2);
+	wxString par(wxGetApp().argv[1]);
+	wxMessageBox(par);
+	 * */
+	 // to get at your unnamed parameters use
+	wxArrayString files;
+	for (auto i = 0; i < parser.GetParamCount(); i++)
+	{
+		printf("Files to show : %s \n", CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
+		files.Add(parser.GetParam(i));
+		break;
+	}
+
+	// and other command line parameters
+	if (files.Count() > 0)
+		fileToOpen = files[0];
+	// then do what you need with them.
+
+	return true;
+}
+
+// ----------------------------------------------------------------------------
+// the application class
+// ----------------------------------------------------------------------------
+#ifdef __APPLE__
+void MyApp::MacOpenFile(const wxString& fileName)
+{
+	wxString message = "Mac Open Files : " + fileName;
+	fileToOpen = fileName;
+	//wxMessageBox(message);
+	//wxMessageBox(fileName);
+	//frameViewer->OpenFile(fileName);
+}
+#endif

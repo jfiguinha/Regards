@@ -1195,7 +1195,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString & filename)
 						}
 						if (success)
 						{
-							printf("Hardware Encoder video use : %s \n", encoderHardware);
+							//printf("Hardware Encoder video use : %s \n", encoderHardware);
 							encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, encoderHardware));
 						}
 						else

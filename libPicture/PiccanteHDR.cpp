@@ -1,7 +1,10 @@
-#include <header.h>
+#include <wx/wxprec.h>
+
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
 #include "PiccanteHDR.h"
- //#include <FileUtility.h>
- #include <climits>
  #include <RegardsBitmap.h>
  #include <RegardsFloatBitmap.h>
 #include <ImageLoadingFormat.h>
@@ -25,10 +28,7 @@
 #if defined(__x86_64__) || defined(_M_AMD64)
 #include <xmmintrin.h> 
 #endif
-//#include <libPicture.h>
-#if defined(__x86_64__) || defined(_M_AMD64)
-#include <xmmintrin.h>
-#endif
+
 
 float CPiccanteHDR::clamp(float val, float minval, float maxval)
 {

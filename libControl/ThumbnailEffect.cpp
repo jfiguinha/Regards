@@ -55,6 +55,7 @@ CThumbnailEffect::CThumbnailEffect(wxWindow* parent, wxWindowID id, const CTheme
 	imageLoading = nullptr;
 	isAllProcess = true;
     processIdle = false;
+	moveOnPaint = false;
 	barseparationHeight = 40;
 	config = nullptr;
 	config = CParamInit::getInstance();
