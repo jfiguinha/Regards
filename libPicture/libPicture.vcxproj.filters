@@ -61,9 +61,6 @@
     <ClCompile Include="InterpolationBilinear.cpp">
       <Filter>Interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="PiccanteHDR.cpp">
-      <Filter>libhdr</Filter>
-    </ClCompile>
     <ClCompile Include="BmpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
     </ClCompile>
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
+    </ClCompile>
+    <ClCompile Include="PiccanteHDR.cpp">
+      <Filter>libhdr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,9 +194,6 @@
     </ClInclude>
     <ClInclude Include="InterpolationFilters.h">
       <Filter>Interpolation</Filter>
-    </ClInclude>
-    <ClInclude Include="PiccanteHDR.h">
-      <Filter>libhdr</Filter>
     </ClInclude>
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>ThumbnailVideo</Filter>
@@ -275,6 +272,9 @@
     </ClInclude>
     <ClInclude Include="buffer_data.h">
       <Filter>ThumbnailVideo</Filter>
+    </ClInclude>
+    <ClInclude Include="PiccanteHDR.h">
+      <Filter>libhdr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
