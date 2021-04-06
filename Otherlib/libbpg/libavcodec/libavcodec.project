@@ -45,8 +45,6 @@
     <File Name="version.h"/>
     <File Name="videodsp.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="-std=c99;-Wall;-fPIC;-pthread" Assembler="">
@@ -143,4 +141,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -268,9 +268,9 @@ int main(int argc, char* argv[]) {
     if (argc > 1)
         filename = argv[1];
     if (hasAVX)
-        program = "RegardsViewer_avx.exe";
+        program = "RegardsViewer_avx";
     else
-        program = "RegardsViewer_sse3.exe";
+        program = "RegardsViewer_sse3";
 
     if (filename != "")
         program = program + " " + filename;
