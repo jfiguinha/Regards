@@ -18,6 +18,16 @@
     <File Name="../libRegardsBpg/bpgenc.h"/>
     <File Name="../libRegardsBpg/DllBpg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fPIC;-pthread" C_Options="-std=c99;-Wall;-fPIC;-pthread;-fopenmp;" Assembler="">
@@ -89,7 +99,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="Cross GCC ( x86_64-linux-gnu )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
@@ -134,14 +144,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
 </CodeLite_Project>
