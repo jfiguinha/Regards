@@ -1,2 +1,6 @@
-/usr/bin/g++  -c  RegardsSelectApplication.cpp -fopenmp -std=gnu++14 -Wall -flto -O2 -Wall -DNDEBUG  -o Release/RegardsSelectApplication.cpp.o -I${HOME}/ffmpeg_build/include -I${HOME}/ffmpeg_build/include/poppler -I${HOME}/ffmpeg_build/include/poppler/cpp -I${HOME}/ffmpeg_build/include/opencv4 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/cairo -I/usr/include/SDL2 -I/usr/include -I/usr/include/harfbuzz  -I. -I.
-/usr/bin/g++ -o Release/RegardsViewer @"RegardsSelectApplication.txt" -L${HOME}/ffmpeg_build/lib  -L.   -Wl,--allow-multiple-definition
+#!/bin/bash
+NBPROC=$(nproc)
+echo $NBPROC
+
+export PROJECTPATH=$PWD
+make -j$NBPROC -f compile_select.mk
