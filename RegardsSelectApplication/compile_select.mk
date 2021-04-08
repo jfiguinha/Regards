@@ -93,7 +93,7 @@ PreBuild:
 ##
 $(IntermediateDirectory)/RegardsSelectApplication.cpp$(ObjectSuffix): RegardsSelectApplication.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RegardsSelectApplication.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RegardsSelectApplication.cpp$(DependSuffix) -MM RegardsSelectApplication.cpp
-	$(CXX) $(IncludePCH) $(SourceSwitch) "$$PROJECTPATH/RegardsSelectApplication/RegardsSelectApplication.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RegardsSelectApplication.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "RegardsSelectApplication.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RegardsSelectApplication.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/RegardsSelectApplication.cpp$(PreprocessSuffix): RegardsSelectApplication.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RegardsSelectApplication.cpp$(PreprocessSuffix) RegardsSelectApplication.cpp
 
