@@ -150,11 +150,11 @@ class CompressionAudioVideoOption: public wxDialog
 #endif
 		CSliderVideoSelection * sliderVideoPosition;
 		CVideoEffectParameter * videoEffectParameter;
-		int ret = 0;
+		//int ret = 0;
 		wxImage scale;
 		wxString extension;
-		bool skipEvent = false;
-		bool previewShow = false;
+		//bool skipEvent = false;
+		//bool previewShow = false;
 		CShowPreview * showBitmapWindow;
 		DECLARE_EVENT_TABLE()
 };

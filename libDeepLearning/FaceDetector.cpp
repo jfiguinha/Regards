@@ -68,9 +68,9 @@ using anet_type = loss_metric<fc_no_bias<128, avg_pool_everything<
 static Net net;    // And finally we load the DNN responsible for face recognition.
 static anet_type anet;
 
-const size_t inWidth = 300;
-const size_t inHeight = 300;
-const double inScaleFactor = 1.0;
+//const size_t inWidth = 300;
+//const size_t inHeight = 300;
+//const double inScaleFactor = 1.0;
 const float confidence = 0.5;
 const float confidenceThreshold = 0.7;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
@@ -455,12 +455,12 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 	std::vector<wxRect> listEye;
 	
 	std::vector<cv::Rect> pointOfFace;
-	int i = 0;
+	//int i = 0;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
 	muLoading.unlock();
-	int angle = 0;
+	//int angle = 0;
 
 	if (isLoading)
 	{

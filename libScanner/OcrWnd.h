@@ -49,13 +49,13 @@ namespace Regards
 			COcrLabelWnd * ocrLabelWnd;
 			wxButton * exportPdf;
 			wxButton * ocrPdf;
-			wxButton * exportImage;
+			//wxButton * exportImage;
 			vector<wxString> listFile;
 			wxChoice *choice;
 			vector<ChOcrElement *> listRect;
 			CPage * pageInfo;
 			//wxBitmap bmpSelection;
-			CRegardsBitmap * bitmapBackground;
+			//CRegardsBitmap * bitmapBackground;
 		};
 	}
 }

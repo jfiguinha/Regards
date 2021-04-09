@@ -102,7 +102,7 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 
 
 	int maxX = 5 * starYellow.GetWidth() + localx;
-	int maxY = localy + starYellow.GetHeight();
+	//int maxY = localy + starYellow.GetHeight();
 	if (x > localx && x < maxX)
 	{
 		value = (x - localx) / starYellow.GetWidth();

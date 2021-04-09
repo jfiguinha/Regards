@@ -115,7 +115,7 @@ protected:
   int CalcHints(wxInputStream* stream, int begin, int end, int globalBias, int localBias, wxPdfCffIndexArray& localSubIndex);
 
 private:
-  wxInputStream*        m_stream;              ///< the input stream
+ // wxInputStream*        m_stream;              ///< the input stream
 
   wxPdfCffIndexArray*   m_globalSubrIndex;     ///< index of the global subroutines
 
@@ -125,7 +125,7 @@ private:
   wxPdfCffFontObject*   m_args;                ///< argument stack
   int                   m_argCount;            ///< argument count
 
-  int                   m_globalBias;          ///< The bias for the global subroutines
+ // int                   m_globalBias;          ///< The bias for the global subroutines
   int                   m_numHints;            ///< Number of arguments to the stem operators in a subroutine calculated recursively
 
   wxPdfSortedArrayInt*  m_hGlobalSubrsUsed;    ///< A HashMap for keeping the Global subroutines used in the font

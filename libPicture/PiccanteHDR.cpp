@@ -198,7 +198,7 @@ void CPiccanteHDR::LoadPicture(const wxString & fileName, const bool &isThumbnai
             
             CRegardsFloatBitmap * picture = new CRegardsFloatBitmap(width, height);                
             float * pictureData = picture->GetData();
-            int size = width * height * channels;
+           // int size = width * height * channels;
             switch(channels)
             {
                 case 3:

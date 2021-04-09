@@ -26,7 +26,7 @@ CCriteriaWindow::CCriteriaWindow(wxWindow* parent, wxWindowID id,
         
         CThemeTree themeTree;
         viewerTheme->GetTreeTheme(&themeTree);
-        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, themeTree, themeScroll);
+        criteriaTreeWnd = new CCriteriaTreeWnd(this, CRITERIATREEWINDOWID, MAINVIEWERWINDOWID, themeTree, themeScroll);
     }
     
 	if (viewerTheme != nullptr)

@@ -530,7 +530,7 @@ uint8_t * CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char * buffe
 	uint8_t * data = nullptr;
 	//bool result = true;
 	const int JPEG_QUALITY = 75;
-	const int COLOR_COMPONENTS = 3;
+	//const int COLOR_COMPONENTS = 3;
 
 	tjhandle _jpegCompressor = tjInitCompress();
 
@@ -805,7 +805,7 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 			break;
 		case 8:// left side bottom
 		{
-			wxImage image = image.Rotate90();
+			wxImage image = _wxImage->Rotate90();
 			delete _wxImage;
 			_wxImage = new wxImage(image);
 		}

@@ -20,8 +20,8 @@ public:
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const int &flipH, const int &flipV, const int &angle);
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle);
 
-	virtual inline void Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
-	virtual inline void Bicubic(CRgbaquad & data, wxImage * In, const float &x, const float &y, float * tabF1, float * tabF);
+	virtual void Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
+	virtual void Bicubic(CRgbaquad & data, wxImage * In, const float &x, const float &y, float * tabF1, float * tabF);
 
 
 	weightX * wX;

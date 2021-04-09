@@ -148,7 +148,7 @@ void FilterGuided::Process1Channel(Image *I, Image *p, Image *q,
         }
     }
 
-    delete p_mean;
+    delete[] p_mean;
 }
 
 PIC_INLINE void FilterGuided::Process3Channel(Image *I, Image *p,

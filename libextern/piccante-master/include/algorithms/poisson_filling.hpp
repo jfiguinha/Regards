@@ -230,7 +230,7 @@ public:
             imgOut->Assign(imgTmp);
         }
 
-        delete color;
+        delete[] color;
         return imgOut;
     }
 };

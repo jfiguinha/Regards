@@ -73,7 +73,7 @@ namespace Regards
 			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;
 			int nbProcessFaceRecognition = 0;
-			std::thread * threadResource = nullptr;
+			//std::thread * threadResource = nullptr;
 		};
 	}
 }

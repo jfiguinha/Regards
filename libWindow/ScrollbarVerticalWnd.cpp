@@ -548,7 +548,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 
 void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 {
-	int xPos = event.GetX();
+	//int xPos = event.GetX();
 	int yPos = event.GetY();
 	//wxClientDC dc(this);
 	

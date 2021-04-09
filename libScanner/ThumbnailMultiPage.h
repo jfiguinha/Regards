@@ -24,7 +24,7 @@ namespace Regards
 			void InitWithDefaultPicture(const wxString &filename, vector<CImageVideoThumbnail *> & videoThumbnail);
 			int numItemSelected;
 			bool process_end;
-			wxTimer * processTimer;
+			//wxTimer * processTimer;
 			wxString videoFilename;
 			wxWindow * parent;
 		};

@@ -112,8 +112,8 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 			ratioY = float(widthIn) / float(rectToShow.width);
 		}
 
-		float posY = 0;
-		float posX = 0;
+		//float posY = 0;
+		//float posX = 0;
 
 		
 

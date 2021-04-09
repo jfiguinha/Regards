@@ -55,7 +55,7 @@ void wxImagePanel::render(wxDC&  dc)
 {
    
 	//wxPaintDC pdc(this);
-	int x, y, w, h;
+	int w, h;
 
 	GetClientSize(&w, &h);
 	if (!m_dbBitmap.Ok() || m_dbBitmap.GetWidth() != w || m_dbBitmap.GetHeight() != h)

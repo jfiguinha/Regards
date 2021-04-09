@@ -920,8 +920,8 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 	#ifdef LIBBPG
 		case BPG:
 		{
-			int width = bitmap->GetWidth();
-			int height = bitmap->GetHeight();
+			//int width = bitmap->GetWidth();
+			//int height = bitmap->GetHeight();
 			int lossless_mode = option;
 			int compress_level = quality;
 
@@ -933,7 +933,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 			int32_t sizeLen = 0;
 			image->Encode(buffer, sizeLen, CxImage::GetTypeIdFromName("png"));
 	#if defined(WIN32)
-			int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
+			BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
 	#else
 			int(*BPG_SavePNGPicture)(uint8_t * , uint64_t , int , int , int , const char * ) = (int(*)(uint8_t * , uint64_t , int , int , int , const char * ))dlsym(lib_handle, "BPG_SavePNGPicture");
 			if (BPG_SavePNGPicture) {
@@ -1104,8 +1104,8 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 				wxImage image;
 				image.LoadFile(file);
-				int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-				int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+				//int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+				//int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
 			//	double dblDpiBy72 = (double)m_nDpi / 72.0;
 				
 				image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
@@ -1156,7 +1156,7 @@ bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName, const w
 {
     if( poImage->HasOption( wxIMAGE_OPTION_RESOLUTIONUNIT ) )
     {
-        int nResolutionUnit= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONUNIT );
+        //int nResolutionUnit= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONUNIT );
         int nResolution= 0;
 
         // Get image resolution-
@@ -1199,10 +1199,10 @@ bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName, const w
 			wxPrintOrientation orientation = (poImage->GetHeight() > poImage->GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
 			oPdfDocument.AddPage(orientation);
 			
-			float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
-			float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
-			double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
-			double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
+			//float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
+			//float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
+			//double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
+			//double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
 
 			if (option == 0)
 				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
@@ -1441,7 +1441,7 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 
 
 	//CThumbnailVideo video(szFileName);
-	int movieDuration = 0;
+	//int movieDuration = 0;
 	int pourcentage = 0;
 
 	//Test if is animation
@@ -1453,7 +1453,7 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 		float percent = ((float)i / (float)size) * 100.0f;
 		CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
 		//CRegardsBitmap * picture = nullptr;
-		int timePosition = 0;
+		//int timePosition = 0;
 		cxVideo->rotation = rotation;
 		cxVideo->percent = percent;
 
@@ -1501,8 +1501,8 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
     wxImage image;
     wxBitmapType bitmapTypeWxWidget;
     
-	int iFormat = TestImageFormat(szFileName);
-	bool needresize = true;
+	//int iFormat = TestImageFormat(szFileName);
+	//bool needresize = true;
     int m_ani_images = 0;
 	if (bitmapType == PDF)
 	{
@@ -1592,7 +1592,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 				//wxMemoryDC memdc;
 				if (isThumbnail)
 				{
-					int bx, by, bw, bh;
+					int bw, bh;
 
 					float scale_x = float(width) / float(image.GetWidth());
 					float scale_y = float(height) / float(image.GetHeight());
@@ -1785,7 +1785,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 #endif
 
 
-    int rotation = 0;
+  //  int rotation = 0;
 	try
 	{
 		switch (iFormat)
@@ -1973,14 +1973,14 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 	//bool exif = false;
 	//bool iptc = false;
 	//bool xmp = false;
-	int returnValue = -1;
+	//int returnValue = -1;
 	int iFormat = TestImageFormat(fileName);
 
 #ifdef LIBRAW		
 	if (iFormat == RAWFILE)
 	{
 		CMetadataExiv2 pictureMetadata(fileName);
-		int orientation = pictureMetadata.GetOrientation();
+		//int orientation = pictureMetadata.GetOrientation();
 		imageLoading = CRaw::GetThumbnail(fileName,true);
 		if(imageLoading != nullptr && imageLoading->IsOk())
 		{
@@ -2363,7 +2363,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #if defined(WIN32)
 				int returnValue = 0;
 				int width = 0, height = 0;
-				size_t size = 0;
+				//size_t size = 0;
                 uint8_t * data = nullptr;
                 if(BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
                 {
@@ -2531,7 +2531,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
                 
                 printf("CLibPicture LoadPicture JPEG \n");
 
-				CxImage * _cxImage = nullptr;
+				//CxImage * _cxImage = nullptr;
 				
 
 				if(isThumbnail)
@@ -2560,9 +2560,9 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 						if((scalingfactors=tjGetScalingFactors(&nsf))==NULL || nsf==0)
 							throw("executing tjGetScalingFactors()");
 						
-						int num = 1;
-						int denom = 4;
-						int defaultscaling = 0;
+						//int num = 1;
+						//int denom = 4;
+						//int defaultscaling = 0;
 						int match = 0;
 
 						#ifdef WIN32

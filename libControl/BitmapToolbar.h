@@ -35,7 +35,7 @@ namespace Regards
 		
 			void EventManager(const int &id);
 
-			CToolbarButton * save;
+			//CToolbarButton * save;
             CToolbarButton * export_button;
 			//CToolbarButton * crop;
 			CToolbarButton * email;

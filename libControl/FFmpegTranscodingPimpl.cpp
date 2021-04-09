@@ -19,14 +19,15 @@
 #include <OpenCVEffect.h>
 
 using namespace Regards::OpenCL;
-static const int dst_width = 1920;
-static const int dst_height = 1080;
+//static const int dst_width = 1920;
+//static const int dst_height = 1080;
 static const int dst_vbit_rate = 1500000;
-static const int dst_abit_rate = 128000;
-static const int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
-static const int dst_sample_rate = 44100;
+//static const int dst_abit_rate = 128000;
+//static const int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
+//static const int dst_sample_rate = 44100;
 //static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_H265;
 //static const AVCodecID AUDIO_CODEC = AV_CODEC_ID_AAC;
+
 
 static const char * hb_h264_profile_names[] = { "auto", "high", "main", "baseline", NULL, };
 static const char * hb_h264_level_names[] = { "auto", "1.0", "1b", "1.1", "1.2", "1.3", "2.0", "2.1", "2.2", "3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "5.0", "5.1", "5.2",  NULL, };
@@ -210,7 +211,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		{
 
 			ffmpegToBitmap = new CffmpegToBitmap(true);
-			bool deleteData = false;
+			//bool deleteData = false;
 
 			ffmpeg_trans->muFrame.lock();
 
@@ -428,8 +429,8 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString & filename)
 
 AVDictionary * CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID &codec_id, AVCodecContext * pCodecCtx, AVCodecContext * pSourceCodecCtx, const wxString &encoderName)
 {
-	int in_w = dst_width;
-	int in_h = dst_height;
+	//int in_w = dst_width;
+//	int in_h = dst_height;
 
 #ifdef HANDBRAKE
 	pCodecCtx->codec_id = codec_id;
@@ -1782,10 +1783,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 	bool decodeBitmap = false;
 	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
-	int modFrame = 0;
+	//int modFrame = 0;
 	bool ffmpegToRGBA = false;
-	int localPos = pos;
-	bool frameStabilized = false;
+	//int localPos = pos;
+	//bool frameStabilized = false;
 
 	/*
 	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
@@ -1879,7 +1880,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 				dst_hardware->format = AV_PIX_FMT_YUV420P;
 				dst_hardware->width = stream->dec_frame->width;
 				dst_hardware->height = stream->dec_frame->height;
-				int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
+				av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
 			}
 
 			openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], stream->dec_frame->width, stream->dec_frame->height);
@@ -1967,7 +1968,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame * & tmp_frame, CFFmpegTrans
 			dst_hardware->format = AV_PIX_FMT_YUV420P;
 			dst_hardware->width = stream->dec_frame->width;
 			dst_hardware->height = stream->dec_frame->height;
-			int res = av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
+			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height, AV_PIX_FMT_YUV420P, 1);
 		}
 		av_frame_copy_props(dst_hardware, tmp_frame);
 
@@ -2021,7 +2022,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const int6
 {
 	int ret = 0;
 	int stream_index = 0;
-	bool startEncoding = true;
+	//bool startEncoding = true;
 	bool pictureFind = false;
 	int nb_max_Frame = 5;
 
@@ -2101,7 +2102,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const int6
 
 
 				pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-				double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+				//double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 				ret = avcodec_send_packet(stream->dec_ctx, &packet);
 				if (ret < 0) {
 					av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
@@ -2189,7 +2190,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame * dst, const int6
 		}
 
 		av_packet_unref(&packet);
-		int posVideo = (int)pos;
+		//int posVideo = (int)pos;
 		if(firstPos)
 		if (nb_max_Frame == nbframe)
 			break;
@@ -2251,7 +2252,7 @@ void CFFmpegTranscodingPimpl::DecodeHardwareFrame(AVFrame * & tmp_frame, AVFrame
 		dst->format = AV_PIX_FMT_YUV420P;
 		dst->width = stream->dec_frame->width;
 		dst->height = stream->dec_frame->height;
-		int res = av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
+		av_image_alloc(dst->data, dst->linesize, sw_frame->width, sw_frame->height, AV_PIX_FMT_YUV420P, 1);
 	}
 	av_frame_copy_props(dst, stream->dec_frame);
 
@@ -2270,8 +2271,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 {
 	int ret = 0;
 	int stream_index = 0;
-	bool first = true;
-	bool startEncoding = true;
+	//bool first = true;
+	//bool startEncoding = true;
 	bool first_frame = true;
 
 
@@ -2380,7 +2381,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 				}
 
                 pos = ((double)pkt->pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-                double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+                //double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
                 ret = avcodec_send_packet(stream->dec_ctx, pkt);
                 if (ret < 0) {
                     av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
@@ -2481,7 +2482,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
 
 					*/
                 pos = ((double)packet.pts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-                double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+               // double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
                 ret = avcodec_send_packet(stream->dec_ctx, &packet);
                 if (ret < 0) {
                     av_log(NULL, AV_LOG_ERROR, "Decoding failed\n");
@@ -2623,12 +2624,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream * dataOutput, c
 {
 	int ret;
 	this->m_dlgProgress = m_dlgProgress;
-	unsigned int stream_index;
-	unsigned int i;
+	//unsigned int stream_index;
+	//unsigned int i;
 
 	nbframe = 0;
 	encodeOneFrame = true;
-	bool first = true;
+	//bool first = true;
 	cleanPacket = false;
 	if(dataOutput == nullptr)
 		isBuffer = false;
@@ -2656,11 +2657,11 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString & input, const wxString &
 {
 	int ret;
 	this->m_dlgProgress = m_dlgProgress;
-	unsigned int stream_index;
-	unsigned int i;
+	//unsigned int stream_index;
+	//unsigned int i;
 	nbframe = 0;
 	encodeOneFrame = false;
-	bool first = true;
+	//bool first = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
 	processEnd = false;

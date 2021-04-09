@@ -411,7 +411,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 {
     printf("CCentralWindow::OnShowPicture \n");
 	TRACE();
-	bool needToReload = false;
+	//bool needToReload = false;
 	bool isThumbnail = false;
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CCentralWindow::OnShowPicture : ");
@@ -570,7 +570,7 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
     printf("CCentralWindow::SetBitmap \n");
 	TRACE();
 	StopAnimation();
-	bool refresh = isPicture ? false : true;
+	//bool refresh = isPicture ? false : true;
 	bool result = false;
 	isAnimation = false;
 	isPicture = true;
@@ -694,7 +694,7 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 	if (animationPosition < nbThumbnail)
 	{
 		CLibPicture libPicture;
-		CImageLoadingFormat * image = nullptr;
+		//CImageLoadingFormat * image = nullptr;
 		int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
 		{
@@ -1335,7 +1335,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 {
     printf("CCentralWindow::SetVideo \n");
 	StopAnimation();
-	bool refresh = isVideo ? false : true;
+	//bool refresh = isVideo ? false : true;
 	filename = path;
 	isVideo = true;
 	isAnimation = false;
@@ -1361,7 +1361,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 
 void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &numElement)
 {
-    int processPicture = 0;
+   // int processPicture = 0;
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CCentralWindow::LoadingPicture");
 	OutputDebugString(L"\n");

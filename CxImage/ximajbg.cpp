@@ -150,7 +150,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
     //jbg_enc_lrlmax(&jbig_state, 800, 600);
 
 	// Specify a few other options (each is ignored if negative)
-	int32_t dl = -1, dh = -1, d = -1, l0 = -1, mx = -1;
+	int32_t dl = -1, dh = -1, l0 = -1, mx = -1;
 	int32_t options = JBG_TPDON | JBG_TPBON | JBG_DPON;
 	int32_t order = JBG_ILEAVE | JBG_SMID;
 	jbg_enc_lrange(&jbig_state, dl, dh);

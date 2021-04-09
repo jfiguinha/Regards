@@ -80,7 +80,7 @@ void COcrWnd::OnExport(wxCommandEvent& event)
 			{
 				ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
 				CRgbaquad color = CRgbaquad(255, 255, 255);
-				uint8_t * data = bitmapBackground->GetPtBitmap();
+				//uint8_t * data = bitmapBackground->GetPtBitmap();
 				int maxY = bboxText->rect.y + bboxText->rect.height;
 				int maxX = bboxText->rect.x + bboxText->rect.width;
 				for (int y = bboxText->rect.y; y < maxY; y++)
@@ -314,7 +314,7 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 		args[i] = new char[255];
 		strcpy(args[i++], extension);
 		wxString error = "";
-		int failed = CExportOcr::ExportOcr(8, args, error);
+		CExportOcr::ExportOcr(8, args, error);
 
 		for (int i = 0; i < 8; i++)
 			delete[] args[i];
@@ -326,13 +326,13 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 
 void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 {
-	int timeout_ms = 5000;
-	const char* retry_config = nullptr;
-	bool textonly = false;
-	int jpg_quality = 92;
+	//int timeout_ms = 5000;
+	//const char* retry_config = nullptr;
+	//bool textonly = false;
+	//int jpg_quality = 92;
 
 	//Get select 
-	int i = choice->GetSelection();
+	//int i = choice->GetSelection();
 	wxString language = choice->GetStringSelection();
 
 	wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp", false);
@@ -537,7 +537,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	}
 
 	//Get select 
-	int i = choice->GetSelection();
+	//int i = choice->GetSelection();
 	wxString language = choice->GetStringSelection();
 
 	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
@@ -732,7 +732,7 @@ void COcrWnd::tesseract_preprocess(wxString source_file, wxString out_file) {
 	l_int32 status = 1;
 	l_float32 border_avg = 0.0f;
 	PIX *pixs = NULL;
-	char *ext = NULL;
+	//char *ext = NULL;
 
 
 	// Read in source image 

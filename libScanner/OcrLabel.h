@@ -38,9 +38,9 @@ namespace Regards
 			void UpdateElement();
 			void UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent);
 
-			int numEvent;
+			//int numEvent;
 			int yPos;
-			int index;
+			//int index;
 			tree<CTreeData *>::iterator top;
 			tree<CTreeData *>::iterator child;
 			int widthPosition;

@@ -195,7 +195,7 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 	}
 	else if (element->GetType() == ELEMENT_DELETE)
 	{
-		CTreeElementDelete * deleteElement = (CTreeElementDelete *)element->GetTreeElement();
+		//CTreeElementDelete * deleteElement = (CTreeElementDelete *)element->GetTreeElement();
 		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
 
 		wxMessageDialog dialog(nullptr, _("Do you want to delete this criteria ?"), _("Confirmation"), wxOK | wxCANCEL);
@@ -227,7 +227,7 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 	}
 	else if (element->GetType() == ELEMENT_TEXTE)
 	{
-		CTreeElementTexte * texte = (CTreeElementTexte *)element->GetTreeElement();
+		//CTreeElementTexte * texte = (CTreeElementTexte *)element->GetTreeElement();
 		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
 
 		wxTextEntryDialog dlg(nullptr, wxT("Update Keyword : \n"),
@@ -235,11 +235,11 @@ void  CKeywordWnd::ClickOnElement(CPositionElement * element, wxWindow * window,
 			treeData->GetKey(), wxOK | wxCANCEL);
 		if (dlg.ShowModal() == wxID_OK)
 		{
-			bool isNew = false;
+			//bool isNew = false;
 			// We can be certain that this string contains letters only.
 			wxString value = dlg.GetValue();
 			CSqlCriteria sqlCriteria;
-			int id = sqlCriteria.UpdateCriteria(1, treeData->GetNumCategorie(), value);
+			sqlCriteria.UpdateCriteria(1, treeData->GetNumCategorie(), value);
 
 			wxWindow * mainWnd = window->FindWindowById(MAINVIEWERWINDOWID);
 			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
@@ -318,7 +318,7 @@ void CKeywordWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 	CTreeElementTexte * treeElementTexte = nullptr;
 	CTreeElementDelete * treeElementDelete = nullptr;
 	CTreeElementCheckBox * treeElementCheck = nullptr;
-	CTreeElementTriangle * treeElementTriangle = nullptr;
+	//CTreeElementTriangle * treeElementTriangle = nullptr;
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{

@@ -73,9 +73,9 @@ CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
 			struct heif_decoding_options* decode_options = heif_decoding_options_alloc();
 			decode_options->convert_hdr_to_8bit = true;
 
-			int bit_depth = 8;
+			//int bit_depth = 8;
 
-			struct heif_image* image = NULL;
+			//struct heif_image* image = NULL;
 			heif_image* img;
 			heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
 			if (img)
@@ -268,7 +268,7 @@ bool CHeifAvif::HasExifMetaData(const string &filename)
 // static
 void CHeifAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
 {
-	int count = 0;
+	//int count = 0;
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
@@ -290,7 +290,7 @@ void CHeifAvif::GetMetadata(const string &filename, uint8_t * & data, long & siz
 				{
 					if (data)
 					{
-						heif_error error = heif_image_handle_get_metadata(handle, metadata_id, data);
+						heif_image_handle_get_metadata(handle, metadata_id, data);
 					}
 				}
 				else

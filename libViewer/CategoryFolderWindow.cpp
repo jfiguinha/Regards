@@ -203,7 +203,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	CSqlInsertFile sqlInsertFile;
 	nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
-	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
@@ -249,7 +249,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			CThumbnailMessage* thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 1;
-			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
 			eventChange.SetClientData(thumbnailMessage);
 		}

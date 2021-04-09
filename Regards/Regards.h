@@ -238,8 +238,8 @@ public:
 		SDL_AudioSpec spec;
 		SDL_AudioDeviceID devid_out = 0;
 		SDL_AudioSpec wanted;
-		int devcount;
-		int i;
+		//int devcount;
+		//int i;
 
 		putenv(driverAudio);
 
@@ -335,7 +335,7 @@ private:
 	wxString m_strImageFilter;
 
 #ifdef __WXMSW__
-	ULONG_PTR m_gdiplusToken;   // class member
+	//ULONG_PTR m_gdiplusToken;   // class member
 #endif
 };
 

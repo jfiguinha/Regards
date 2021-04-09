@@ -321,7 +321,7 @@ private:
   wxPdfDoubleHashMap m_colWidths;    ///< array of column widths
   wxPdfDoubleHashMap m_maxHeights;   ///< array of maximal row heights including row span heights
 
-  double             m_maxWidth;     ///< maximal allowed width
+//  double             m_maxWidth;     ///< maximal allowed width
   double             m_totalWidth;   ///< total width
   double             m_totalHeight;  ///< total height
   double             m_headHeight;   ///< total height of table header

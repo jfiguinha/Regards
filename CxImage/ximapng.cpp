@@ -497,7 +497,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	for (int32_t pass = 0; pass < num_pass; pass++){
 		//write image
 		iter.Upset();
-		int32_t ay=head.biHeight-1;
+		//int32_t ay=head.biHeight-1;
 		do	{
 			/*
 #if CXIMAGE_SUPPORT_ALPHA	// <vho>

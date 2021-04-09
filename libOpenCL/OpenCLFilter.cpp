@@ -41,7 +41,7 @@ cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height,
 cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
 {
 	context->GetContextForOpenCV().bind();
-	bool frameStabilized = false;
+	//bool frameStabilized = false;
 	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
 	cv::UMat ycbcr;
@@ -71,7 +71,7 @@ cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float 
 cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent)
 {
 	context->GetContextForOpenCV().bind();
-	bool frameStabilized = false;
+	//bool frameStabilized = false;
 	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
 	Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
@@ -104,7 +104,7 @@ cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 	if (context->GetDefaultType() == OPENCL_FLOAT)
 	{
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_mem outputValue = nullptr;
+		//cl_mem outputValue = nullptr;
 		COpenCLFilter openclFilter(context);
 		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if (programCL != nullptr)
@@ -161,7 +161,7 @@ cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 
 cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
 {
-	cl_int err = 0;
+	//cl_int err = 0;
 	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
 
 	cl_mem outputValue = nullptr;

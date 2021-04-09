@@ -144,7 +144,7 @@ namespace Regards
 			//bool videoStart;
 			//bool sendMessageVideoStop;
             bool checkVersion;
-            bool isInit = false;
+           // bool isInit = false;
             bool setViewerMode = false;
 			wxString lastFileToShow = "";
 			//bool blockImage = false;

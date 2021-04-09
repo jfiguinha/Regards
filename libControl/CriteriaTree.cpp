@@ -455,18 +455,23 @@ void CCriteriaTree::CreateElement()
 
 void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
+	if (window == nullptr)
+		return;
+
+	wxWindow* criteriaTreeWindow = window->FindWindowById(CRITERIATREEWINDOWID);
     CTreeElement * treeElement = element->GetTreeElement();
 	if (element->GetType() == ELEMENT_STAR)
 	{
 		CTreeElementStar * treeElementStar = (CTreeElementStar *)treeElement;
 		treeElementStar->ClickElement(window, x, y);
 		window->Refresh();
-		wxWindow* window = window->FindWindowById(CRITERIAFOLDERWINDOWID);
-		if (window)
+		wxWindow* criteriawindow = window->FindWindowById(CRITERIAFOLDERWINDOWID);
+		
+		if (criteriawindow)
 		{
 			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
 			evt.SetExtraLong(2);
-			window->GetEventHandler()->AddPendingEvent(evt);
+			criteriawindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
     else if (element->GetType() == ELEMENT_TEXTEVALUE)
@@ -484,7 +489,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window
 				photoCriteria->SetPhotoId(numPhotoId);
 				wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWCALENDAR);
 				event->SetClientData(photoCriteria);
-				wxQueueEvent(window->GetParent()->GetParent(), event);
+				wxQueueEvent(criteriaTreeWindow, event);
 			}
 			else
 			{
@@ -505,7 +510,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window
 				photoCriteria->SetPhotoId(numPhotoId);
 				wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWMAP);
 				event->SetClientData(photoCriteria);
-				wxQueueEvent(window->GetParent()->GetParent(), event);
+				wxQueueEvent(criteriaTreeWindow, event);
 			}
 			else
 			{
@@ -522,7 +527,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window
 			photoCriteria->SetPhotoId(numPhotoId);
 			wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWKEYWORD);
 			event->SetClientData(photoCriteria);
-			wxQueueEvent(window->GetParent()->GetParent(), event);
+			wxQueueEvent(criteriaTreeWindow, event);
 		}
     }
     
@@ -607,7 +612,7 @@ void CCriteriaTree::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
             int widthElement = 0;
             CTreeElementTexte * treeElementTexte = nullptr;
             CTreeElementTriangle * treeElementTriangle = nullptr;
-			CTreeElementStar * treeElementStar = nullptr;
+			//CTreeElementStar * treeElementStar = nullptr;
             treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
             treeElementTriangle->SetVisible(isVisible);
             posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);

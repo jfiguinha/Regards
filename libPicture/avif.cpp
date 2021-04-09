@@ -321,8 +321,8 @@ vector<CRegardsBitmap *> CAvif::GetAllPicture(const string &filename, int &delay
 	avifDecoder * decoder = avifDecoderCreate();
 	if (decoder != nullptr)
 	{
-		int frameIndex = 0;
-		avifBool firstImage = AVIF_TRUE;
+		//int frameIndex = 0;
+		//avifBool firstImage = AVIF_TRUE;
 		delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
 		for (;;)
 		{
@@ -413,7 +413,7 @@ bool CAvif::HasExifMetaData(const string &filename)
 	avifDecoder * decoder = avifDecoderCreate();
 	if (decoder != nullptr)
 	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
+		avifDecoderRead(decoder, decoded, (avifROData *)&raw);
 		if (decoded->exif.size > 0)
 			exifData = true;
 		avifDecoderDestroy(decoder);
@@ -427,14 +427,14 @@ bool CAvif::HasExifMetaData(const string &filename)
 // static
 void CAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
 {
-	bool exifData = false;
+	//bool exifData = false;
 	avifRWData raw = AVIF_DATA_EMPTY;
 	LoadDataFromFile(filename, raw);
 	avifImage * decoded = avifImageCreateEmpty();
 	avifDecoder * decoder = avifDecoderCreate();
 	if (decoder != nullptr)
 	{
-		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
+		avifDecoderRead(decoder, decoded, (avifROData *)&raw);
 		if (decoded->exif.size > 0)
 		{
 			if (size > 0)

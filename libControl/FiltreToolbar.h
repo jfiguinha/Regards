@@ -17,7 +17,7 @@ namespace Regards
 
 			void EventManager(const int &id);
 			int numFiltre;
-			wxWindow * wxWindowPanel;
+			//wxWindow * wxWindowPanel;
 		};
 	}
 }

@@ -67,11 +67,11 @@ RoundUpToDWord(DWORD val)
 #define TTC_FILE 0x66637474
 
 const DWORD sizeOfFixedHeader     = 12;
-const DWORD offsetOfTableCount    = 4;
+//const DWORD offsetOfTableCount    = 4;
 
 const DWORD sizeOfTableEntry      = 16;
 const DWORD offsetOfTableTag      = 0;
-const DWORD offsetOfTableChecksum = 4;
+//const DWORD offsetOfTableChecksum = 4;
 const DWORD offsetOfTableOffset   = 8;
 const DWORD offsetOfTableLength   = 12;
 

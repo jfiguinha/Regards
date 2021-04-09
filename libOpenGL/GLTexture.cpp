@@ -97,9 +97,9 @@ bool GLTexture::Create(const int &nWidth, const int &nHeight, uint8_t * pbyData)
 	width = nWidth;
 	height = nHeight;
 
-	GLuint m_nTextureSize = nWidth * nHeight << 2;
+	//GLuint m_nTextureSize = nWidth * nHeight << 2;
 
-    int nError = glGetError();
+    //int nError = glGetError();
 	if( 0 != m_nTextureID )
 	{
 		// if this texture already exists then delete it.

@@ -388,7 +388,7 @@ CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, cons
 
 int CThumbnailFace::FindSeparatorFace(const int &xPos, const int &yPos)
 {
-	int x = xPos + posLargeur;
+	//int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	int numFace = 0;
 	for (int i = 0; i < listSeparator.size(); i++)

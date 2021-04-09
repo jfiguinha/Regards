@@ -18,7 +18,7 @@ public:
 protected:
 
 	virtual double Filter(const double &x) = 0;
-	virtual inline void Bicubic(float * data, CRegardsFloatBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
+	virtual void Bicubic(float * data, CRegardsFloatBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
 	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
 
 	weightX * wX;

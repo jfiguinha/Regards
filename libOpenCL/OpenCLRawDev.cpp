@@ -91,7 +91,7 @@ void * COpenCLRawDev::GetTempData()
 
 void COpenCLRawDev::WaveletDenoiseNormalize(int size, int hpass, int lpass, float thold)
 {
-	cl_mem cloutput = WaveletDenoiseNormalizeValue(size, hpass, lpass, thold);
+	WaveletDenoiseNormalizeValue(size, hpass, lpass, thold);
 	/*
 	paramOutput->Release();
 	paramOutput = new COpenCLParameterClMem();
@@ -102,7 +102,7 @@ void COpenCLRawDev::WaveletDenoiseNormalize(int size, int hpass, int lpass, floa
 
 void COpenCLRawDev::WaveletDenoiseCol(int hpass, int lpass, int sc)
 {
-	cl_mem cloutput = WaveletDenoiseByColSetValue(hpass, lpass, sc);
+	WaveletDenoiseByColSetValue(hpass, lpass, sc);
 	/*
 	paramOutput->Release();
 	paramOutput = new COpenCLParameterClMem();
@@ -113,7 +113,7 @@ void COpenCLRawDev::WaveletDenoiseCol(int hpass, int lpass, int sc)
 
 void COpenCLRawDev::WaveletDenoiseRow(int lpass, int sc)
 {
-	cl_mem cloutput = WaveletDenoiseByRowSetValue(lpass, sc);
+	WaveletDenoiseByRowSetValue(lpass, sc);
 	/*
 	paramOutput->Release();
 	paramOutput = new COpenCLParameterClMem();

@@ -17,7 +17,7 @@ uint8_t * CRegardsJpegPicture::CompressRegardsBitmapToJpeg(uint8_t * buffer, int
 	uint8_t * data = nullptr;
 	//bool result = true;
 	const int JPEG_QUALITY = 75;
-	const int COLOR_COMPONENTS = 3;
+	//const int COLOR_COMPONENTS = 3;
 
 	tjhandle _jpegCompressor = tjInitCompress();
 

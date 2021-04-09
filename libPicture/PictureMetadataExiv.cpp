@@ -459,7 +459,7 @@ wxString CPictureMetadataExiv::GetQuickTimeDate(int64_t dateQuicktime)
 	MacTime.tm_year = 70;
 
 	/* Convert to time_t */
-	time_t time = mktime(&MacTime);
+	mktime(&MacTime);
 	strftime(message, 20, "%Y-%m-%dT%H:%M:%S", &MacTime);
 
 	return message;

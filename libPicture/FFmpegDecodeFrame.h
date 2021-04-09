@@ -67,9 +67,9 @@ private:
 	AVPacket packet;
 	bool cleanPacket = false;
 	std::thread * bitmapShow = nullptr;
-	double pourcentage = 0;
-	bool processEnd = true;
-	int nbframePerSecond = 0;
+	//double pourcentage = 0;
+	//bool processEnd = true;
+	//int nbframePerSecond = 0;
 	static int read_packet(void *opaque, uint8_t *buf, int buf_size);
 	AVBufferRef *hw_device_ctx = NULL;
 	std::chrono::steady_clock::time_point begin;
@@ -88,11 +88,11 @@ private:
 	AVFrame * copyFrameBuffer = nullptr;
 
 	double duration_movie = 0.0;
-	char timebase[255];
-	char duration[255];
+	//char timebase[255];
+	//char duration[255];
 	double pos = 0;
-	int nbframe = 0;
-	bool isend = false;
+	//int nbframe = 0;
+	//bool isend = false;
 	int widthVideo;
 	int heightVideo;
 	int rotation;

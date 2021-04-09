@@ -35,7 +35,7 @@ void CSqlFindPhotos::UpdatePhotosExtension()
     for(CPhotos photo : photosVector)
     {
         int indexId = libPicture.TestImageFormat(photo.GetPath());
-        bool result = (ExecuteRequestWithNoResult("UPDATE PHOTOS SET ExtensionId = " + to_string(indexId) + " WHERE NumPhoto = " + to_string(photo.GetId())) != -1) ? true : false;
+        ExecuteRequestWithNoResult("UPDATE PHOTOS SET ExtensionId = " + to_string(indexId) + " WHERE NumPhoto = " + to_string(photo.GetId()));
         printf("CSqlFindPhotos::UpdatePhotosExtension \n");
     }
 }

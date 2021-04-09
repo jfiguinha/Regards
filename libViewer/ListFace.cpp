@@ -223,7 +223,7 @@ void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
 void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
 {
 	CThreadFace * path = (CThreadFace *)event.GetClientData();
-	int nbFace = 0;
+	//int nbFace = 0;
 	if (path != nullptr)
 	{
 		//Update criteria
@@ -361,7 +361,7 @@ void CListFace::FacialDetectionRecognition(void * param)
 		CSqlFindFacePhoto facePhoto;
 		listFace = facePhoto.GetListFaceToRecognize();
 
-		int i = 0;
+		//int i = 0;
 		for (int numFace : listFace)
 		{
 			CDeepLearning::FindFaceCompatible(numFace);

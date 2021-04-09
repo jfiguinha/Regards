@@ -95,7 +95,7 @@ private:
 
 	//Toolbar
 	Regards::Scanner::CCentralWindow * centralWindow;
-	int m_imageCount;
+	//int m_imageCount;
 	IMainInterface * mainInterface;
 
 	DECLARE_EVENT_TABLE()

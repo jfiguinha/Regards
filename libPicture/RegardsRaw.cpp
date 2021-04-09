@@ -67,7 +67,7 @@ CxImage * CRegardsRaw::GetPicture(const string & fileName)
 				image = new CxImage();
 				int raw_color, raw_bitsize;
 				RawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
-				int flip = RawProcessor->imgdata.sizes.flip;
+				//int flip = RawProcessor->imgdata.sizes.flip;
 				image->Create(width, height, raw_bitsize*raw_color);
 				int iTaille = raw_color * (raw_bitsize / 8);
 				int stride = ((iTaille * width + iTaille) & ~iTaille);

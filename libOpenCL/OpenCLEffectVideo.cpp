@@ -270,7 +270,7 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 	if (context->GetDefaultType() == OPENCL_FLOAT)
 	{
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_mem outputValue = nullptr;
+		//cl_mem outputValue = nullptr;
 		COpenCLFilter openclFilter(context);
 		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if (programCL != nullptr)

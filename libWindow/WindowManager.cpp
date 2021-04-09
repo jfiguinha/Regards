@@ -177,7 +177,7 @@ CPanelWithClickToolbar * CWindowManager::AddPanel(CWindowMain * window, const Po
 	else
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false, refreshButton);
 
-	wxWindow * parent = panel->GetPaneWindow();
+	//wxWindow * parent = panel->GetPaneWindow();
 	//window->Reparent(parent);
 	panel->SetWindow(window);
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true, isTop);
@@ -833,8 +833,8 @@ void CWindowManager::ResetPosition()
 
 void CWindowManager::Init_Central()
 {
-	int width = GetSize().x;
-	int height = GetSize().y;
+	//int width = GetSize().x;
+	//int height = GetSize().y;
 	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
 	CWindowToAdd * top = FindWindow(Pos::wxTOP);
 	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
@@ -934,9 +934,9 @@ void CWindowManager::Init_Central()
 void CWindowManager::Init()
 {
 	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
-	CWindowToAdd * top = FindWindow(Pos::wxTOP);
-	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
-	CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
+	//CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	//CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
+	//CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
 	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
     
 	int width = GetSize().x;

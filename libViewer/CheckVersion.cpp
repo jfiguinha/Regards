@@ -60,7 +60,7 @@ wxString CCheckVersion::GetLastVersion()
 	CURL *curl;
 
 	//int error = 0;
-	bool returnValue = true;
+	//bool returnValue = true;
 	//wxString xml = L"";
 	wxString httpAdress = serverHttp;
 	CURLcode res;

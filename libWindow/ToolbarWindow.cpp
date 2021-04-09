@@ -324,7 +324,7 @@ void CToolbarWindow::DrawBackground(wxDC * deviceContext, const wxRect &rc)
 
 void CToolbarWindow::DrawBackground(wxDC * deviceContext)
 {
-    double scale_factor = 1.0f;
+   // double scale_factor = 1.0f;
     
 	if(GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{

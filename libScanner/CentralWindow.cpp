@@ -134,7 +134,7 @@ int CCentralWindow::OnOpen(const int &type)
 	list.push_back("Scan");
 	list.push_back("File");
 	list.push_back("Multifile");
-	bool isOk = false;
+	//bool isOk = false;
 
 	if (type != ADDFILE)
 	{
@@ -192,7 +192,7 @@ int CCentralWindow::OnOpen(const int &type)
 					return -1;     // the user changed idea..
 
 				wxArrayString listFile;
-				int filterIndex = openFileDialog.GetFilterIndex();
+				//int filterIndex = openFileDialog.GetFilterIndex();
 				openFileDialog.GetPaths(listFile);
 
 				file = ProcessLoadFiles(listFile);
@@ -357,8 +357,8 @@ void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingForma
 
 	wxImage image;
 	image.LoadFile(file);
-	int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-	int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+	//int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+	//int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
 	//	double dblDpiBy72 = (double)m_nDpi / 72.0;
 
 	image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
@@ -366,7 +366,7 @@ void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingForma
 
 	if (image.HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
 	{
-		int nResolutionUnit = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
+		//int nResolutionUnit = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
 		int nResolution = 0;
 
 		// Get image resolution-
@@ -393,9 +393,9 @@ void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingForma
 			oPdfDocument.AddPage(orientation);
 
 			float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
-			float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
-			double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
-			double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
+			//float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
+			//double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
+			//double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
 
 			if (option == 0)
 				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
@@ -696,7 +696,7 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 
 		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
-		int pageno_len = pages.size();
+		//int pageno_len = pages.size();
 		int pageno = 0;
 
 

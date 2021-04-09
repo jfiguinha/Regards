@@ -68,7 +68,7 @@ void CToolbarKeyword::EventManager(const int &id)
 			CSqlCriteria sqlCriteria;
 			int lastId = sqlCriteria.GetLastId() + 1;
 			value = value + " " + to_string(lastId);
-			int id = sqlCriteria.GetOrInsertCriteriaId(1, 7, value, isNew);
+			sqlCriteria.GetOrInsertCriteriaId(1, 7, value, isNew);
 
 			if (isNew)
 			{

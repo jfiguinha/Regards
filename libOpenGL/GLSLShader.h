@@ -42,7 +42,7 @@ namespace Regards
 			bool check_shader_compile_status(GLuint obj);
 			bool check_program_link_status(GLuint obj);
 
-			char pbyShaderData[4096];
+			//char pbyShaderData[4096];
         
 			GLhandleARB m_hProgramObject;
 			GLhandleARB m_hShaderHandle;

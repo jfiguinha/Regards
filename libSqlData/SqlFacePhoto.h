@@ -38,8 +38,8 @@ namespace Regards
 			int TraitementResult(CSqlResult * sqlResult);
 			int64_t numFace;
 			int type;
-			int width;
-			int height;
+			//int width;
+			//int height;
 			wxString filename;
 			vector<wxString> listPhoto;
 			vector<int> listFace;

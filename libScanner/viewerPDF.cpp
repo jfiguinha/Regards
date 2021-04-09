@@ -153,7 +153,7 @@ void CViewerPDF::OnFiltreOK(wxCommandEvent& event)
 void CViewerPDF::OnFiltreCancel(wxCommandEvent& event)
 {
 	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
-	int numFiltre = event.GetInt();
+	//int numFiltre = event.GetInt();
 	if (panelInfos != nullptr)
 		panelInfos->OnFiltreCancel();
 	this->HideValidationToolbar();
@@ -326,7 +326,7 @@ void CViewerPDF::LoadFile(const wxString &filename)
 {
 
 	CLibPicture libPicture;
-	bool result = false;
+//	bool result = false;
 	oldAnimationPosition = -1;
 	oldFilename = L"";
 

@@ -487,7 +487,7 @@ void CRenderOpenGL::RenderInterpolation(GLTexture * glTextureSrc, GLTexture * gl
 	if (m_pShader != nullptr)
 	{
 		srand(time(NULL));
-		float timer = rand() % 1000 + 1;
+		//float timer = rand() % 1000 + 1;
 
 		m_pShader->EnableShader();
 		if (!m_pShader->SetParam("fWidth", glTexture->GetWidth()))

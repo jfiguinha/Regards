@@ -375,8 +375,8 @@ void CSplitter::ResizeVertical()
 
 void CSplitter::ResizeHorizontal()
 {
-	int width = GetSize().GetX();
-	int height = GetSize().GetY();
+	//int width = GetSize().GetX();
+	//int height = GetSize().GetY();
 
 	if (fastRender && moving)
 	{

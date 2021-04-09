@@ -392,8 +392,6 @@ vector<CRegardsBitmap *> CHeic::GetAllPicture(const string &filename, bool &isMa
     // Input file available from https://github.com/nokiatech/heif_conformance
     if (reader->initialize(filename.c_str()) == ErrorCode::OK)
     {
-        de265_error err = de265_error::DE265_OK;
-        de265_decoder_context * decoderContext = de265_new_decoder();
         FileInformation info;
         if (reader->getFileInformation(info) != ErrorCode::OK)
         {
@@ -422,10 +420,11 @@ vector<CRegardsBitmap *> CHeic::GetAllPicture(const string &filename, bool &isMa
                     const auto tref = trackProperties.referenceTrackIds[0];
                     //cout << "Track reference type is '" << tref.type.value << "'" << endl;
                     //cout << "This is a thumbnail track for track ID ";
+					/*
                     for (const auto masterTrackId : tref.trackIds)
                     {
                         //cout << masterTrackId << endl;
-                    }
+                    }*/
                 }
 
                 Array<TimestampIDPair> timestamps;
@@ -464,6 +463,8 @@ vector<CRegardsBitmap *> CHeic::GetAllPicture(const string &filename, bool &isMa
                 
             }
         }
+
+
     }
     else
     {
@@ -543,8 +544,6 @@ uint32_t CHeic::GetDelay(const string &filename)
 	// Input file available from https://github.com/nokiatech/heif_conformance
 	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
 	{
-		de265_error err = de265_error::DE265_OK;
-		de265_decoder_context * decoderContext = de265_new_decoder();
 		FileInformation info;
 		if (reader->getFileInformation(info) != ErrorCode::OK)
 		{
@@ -568,6 +567,7 @@ uint32_t CHeic::GetDelay(const string &filename)
 				}
 			}
 		}
+
 	}
 	else
 	{
@@ -594,8 +594,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename, bool &isMasterSequenc
 	// Input file available from https://github.com/nokiatech/heif_conformance
 	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
 	{
-		de265_error err = de265_error::DE265_OK;
-		de265_decoder_context * decoderContext = de265_new_decoder();
+		//de265_error err = de265_error::DE265_OK;
 		FileInformation info;
 		if (reader->getFileInformation(info) != ErrorCode::OK)
 		{
@@ -624,10 +623,12 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename, bool &isMasterSequenc
 					const auto tref = trackProperties.referenceTrackIds[0];
 					//cout << "Track reference type is '" << tref.type.value << "'" << endl;
 					//cout << "This is a thumbnail track for track ID ";
+					/*
 					for (const auto masterTrackId : tref.trackIds)
 					{
 						//cout << masterTrackId << endl;
 					}
+					*/
 				}
 
 				Array<TimestampIDPair> timestamps;
@@ -674,6 +675,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename, bool &isMasterSequenc
 
 			}
 		}
+
 	}
 	else
 	{
@@ -720,20 +722,23 @@ int CHeic::GetNbFrame(const string &filename)
 				const auto tref = trackProperties.referenceTrackIds[0];
 				//cout << "Track reference type is '" << tref.type.value << "'" << endl;
 				//cout << "This is a thumbnail track for track ID ";
+				/*
 				for (const auto masterTrackId : tref.trackIds)
 				{
 					//cout << masterTrackId << endl;
 				}
+				*/
 			}
 
 			Array<TimestampIDPair> timestamps;
 			reader->getItemTimestamps(sequenceId, timestamps);
 			//cout << "Sample timestamps:" << endl;
+			/*
 			for (const auto& timestamp : timestamps)
 			{
 				//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
 			}
-
+			*/
 			nbId = timestamps.size;
 		}
 
@@ -866,7 +871,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 			Array<ImageId> itemIds;
 			// Find item IDs of master images
 			reader->getMasterImages(itemIds);
-			bool firstTime = true;
+			//bool firstTime = true;
 			// Find thumbnails for each master. There can be several thumbnails for one master image, get narrowest ones here.
 			
 			for (const auto masterId : itemIds)
@@ -1251,8 +1256,8 @@ static const unsigned char image_jpg[] = {
 static const unsigned int image_jpg_len = sizeof(image_jpg);
 
 /* dimensions of image */
-static const unsigned int image_jpg_x = 64;
-static const unsigned int image_jpg_y = 64;
+//static const unsigned int image_jpg_x = 64;
+//static const unsigned int image_jpg_y = 64;
 
 /* start of JPEG image data section */
 static const unsigned int image_data_offset = 20;

@@ -452,7 +452,7 @@ int CSqlResource::TraitementResultFilePath(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
 	wxString idName;
-	int langid;
+	//int langid;
 	wxString filePath;
 	text = "";
 	while (sqlResult->Next())

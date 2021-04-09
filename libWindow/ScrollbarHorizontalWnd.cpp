@@ -396,7 +396,7 @@ void CScrollbarHorizontalWnd::Resize()
 void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
-	int yPos = event.GetY();
+	//int yPos = event.GetY();
 
 	if (captureBar)
 	{

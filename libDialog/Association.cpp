@@ -182,7 +182,7 @@ int Association::AssociateRegards()
 	TCHAR sPath[MAX_PATH];
 	TCHAR cDirLong[MAX_PATH];
 	//TCHAR cDirShort[MAX_PATH];
-	TCHAR Temp[255];
+	//TCHAR Temp[255];
 
 	GetCurrentDirectory(MAX_PATH, cDirLong);
 	//GetShortPathName(cDirLong, cDirShort, MAX_PATH);

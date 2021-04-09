@@ -77,6 +77,6 @@ void CGLSLParameterTexture::Add(GLint progHandle)
 	glBindTexture(GL_TEXTURE_2D, nTextureID_i);
 	glUniform1i(nParamObj, nTextureID_i);
 
-	bool error = (GL_NO_ERROR == glGetError());
+	//bool error = (GL_NO_ERROR == glGetError());
 }
 #endif

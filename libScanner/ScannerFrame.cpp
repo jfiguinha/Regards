@@ -284,7 +284,7 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 	const UINT w = img->GetWidth();
 	const UINT h = img->GetHeight();
 	wxImage image(w, h);
-	Gdiplus::Bitmap* bmp = nullptr;
+	//Gdiplus::Bitmap* bmp = nullptr;
 	try {
 
 		auto format = img->GetPixelFormat();
@@ -416,7 +416,7 @@ wxString CScannerFrame::ScanPage()
 
 
 			// Scan the Image into the stream object ppStream
-			HRESULT hr = WiaGetImage(
+			WiaGetImage(
 				(HWND)this->GetHWND(),
 				StiDeviceTypeScanner,
 				0,

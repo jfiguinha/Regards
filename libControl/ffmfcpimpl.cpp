@@ -370,8 +370,8 @@ void CFFmfcPimpl::video_display(VideoState *is)
 		{
 			VideoPicture *vp;
 			SubPicture *sp;
-			AVPicture pict;
-			SDL_Rect rect;
+			//AVPicture pict;
+			//SDL_Rect rect;
 			int i;
 
 			if (is->subtitle_st)
@@ -389,8 +389,8 @@ void CFFmfcPimpl::video_display(VideoState *is)
 							AVPicture picture = rect->pict;
 							CRegardsBitmap * bitmap = new CRegardsBitmap(rect->w, rect->h);
 							uint8_t * data = picture.data[0];
-							uint8_t * colorIndex = picture.data[1];
-							uint8_t * ptBitmap = bitmap->GetPtBitmap();
+							//uint8_t * colorIndex = picture.data[1];
+							//uint8_t * ptBitmap = bitmap->GetPtBitmap();
 							for (int y = 0; y < rect->h; y++)
 							{
 								for (int x = 0; x < rect->w; x++)
@@ -1100,7 +1100,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 	VideoState *is = (VideoState *)arg;
 	//AVFrame *frame = avcodec_alloc_frame();
 	AVFrame *frame = av_frame_alloc();
-	int64_t pts_int = AV_NOPTS_VALUE, pos = -1;
+	int64_t pts_int = AV_NOPTS_VALUE;// , pos = -1;
 	double pts;
 	int ret;
 	//is->videoCtx = GetCodec(is->video_st);
@@ -1170,7 +1170,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 	AVPacket pkt1, *pkt = &pkt1;
 	int got_subtitle;
 	double pts;
-	int i, j;
+	//int i, j;
 	//is->subtitleCtx = GetCodec(is->subtitle_st);
 	//int r, g, b, y, u, v, a;
 
@@ -1325,7 +1325,7 @@ int CFFmfcPimpl::synchronize_audio(VideoState *is, int nb_samples)
 int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 {
 	AVCodecContext *audio_ctx = is->audioCtx;
-	AVPacket *pkt_temp = &is->audio_pkt_temp;
+	//AVPacket *pkt_temp = &is->audio_pkt_temp;
 	AVPacket *pkt = &is->audio_pkt;
 	AVCodecContext *dec = is->audioCtx;
 	int len2, data_size, resampled_data_size;
@@ -2317,7 +2317,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 		ic->streams[i]->discard = AVDISCARD_ALL;
 	}
 
-	float zhenlv;
+	//float zhenlv;
 	if (!is->_pimpl->video_disable)
 		st_index[AVMEDIA_TYPE_VIDEO] = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, is->_pimpl->wanted_stream[AVMEDIA_TYPE_VIDEO], -1, nullptr, 0);
 

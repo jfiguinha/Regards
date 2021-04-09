@@ -132,7 +132,7 @@ void CPreviewWnd::OnFiltreOK(wxCommandEvent& event)
 void CPreviewWnd::OnFiltreCancel(wxCommandEvent& event)
 {
 	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDID);
-	int numFiltre = event.GetInt();
+	//int numFiltre = event.GetInt();
 	if (panelInfos != nullptr)
 		panelInfos->OnFiltreCancel();
 	this->HideValidationToolbar();

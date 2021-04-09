@@ -14,7 +14,7 @@
 
 #include "math.h"
 
-const double pi = 3.1415926;
+//const double pi = 3.1415926;
 
 wxSVGRect wxSVGRectElement::GetBBox(wxSVG_COORDINATES coordinates) {
 	WX_SVG_CREATE_M_CANVAS_ITEM

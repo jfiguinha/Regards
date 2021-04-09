@@ -57,7 +57,7 @@ namespace Regards
 			CMainParam * explorerconfig ;
 			int oldPos;
 			bool update ;
-			int numImageFace;
+			//int numImageFace;
 			bool traitementEnd;
 			int numProcess;
 			int nbProcesseur;

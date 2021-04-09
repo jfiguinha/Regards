@@ -45,8 +45,8 @@ void CPfm::GetDimensions(const wxString & path, int & width, int & height)
 	// init variables 
 	string bands;           // what type is the image   "Pf" = grayscale    (1-band)
 							//                          "PF" = color        (3-band)
-	float scalef, fvalue;   // scale factor and temp value to hold pixel value
-	float vfvalue[3];
+	float scalef;// , fvalue;   // scale factor and temp value to hold pixel value
+	//float vfvalue[3];
 	// extract header information, skips whitespace 
 	file >> bands;
 	file >> width;
@@ -168,7 +168,7 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap * image, const wxString & path, float
 
 		string bands = "PF";
 		int width = image->GetWidth(), height = image->GetHeight();     // width and height of the image 
-		float fvalue;       // scale factor and temp value to hold pixel value
+		//float fvalue;       // scale factor and temp value to hold pixel value
 		float vfvalue[3];      // temp value to hold 3-band pixel value
 
 		// sign of scalefact indicates endianness, see pfms specs

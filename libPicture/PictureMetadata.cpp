@@ -353,8 +353,8 @@ void CPictureMetadata::ReadPicture(bool & hasGps, bool & hasDataTime, wxString &
 vector<CMetadata> CExiv::ReadExif(Exiv2::ExifData &exifData)
 {
 	vector<CMetadata> metadataList;
-	int item = 0;
-	int index = 0;
+	//int item = 0;
+	//int index = 0;
 	wxString exifinfos;
 	wxString informations;
 
@@ -382,7 +382,7 @@ vector<CMetadata> CExiv::ReadXmp(Exiv2::XmpData &xmpData)
 	for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
 	{
 		informations = md->key();
-		long count = md->count();
+		//long count = md->count();
 		exifinfos = Exiv2::toString(*md);
 
 		if (informations == "Xmp.video.MimeType" && exifinfos == "video/quicktime")
@@ -409,8 +409,8 @@ vector<CMetadata> CExiv::ReadXmp(Exiv2::XmpData &xmpData)
 vector<CMetadata> CExiv::ReadIpct(Exiv2::IptcData &ipctData)
 {
 	vector<CMetadata> metadataList;
-	int item = 0;
-	int index = 0;
+	//int item = 0;
+	//int index = 0;
 	wxString exifinfos;
 	wxString informations;
 	Exiv2::IptcData::iterator end = ipctData.end();

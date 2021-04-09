@@ -368,7 +368,7 @@ void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
 {
-	int isMoving = event.GetInt();
+	//int isMoving = event.GetInt();
 	printf("Is moving !!");
 }
 
@@ -430,7 +430,7 @@ int CVideoControlSoft::GetZoomIndex()
 	int zoomIndex = 0;
     if(shrinkVideo)
     {
-        float ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+        CalculRatio(GetBitmapWidth(), GetBitmapHeight());
     }
     
 	muVideoEffect.lock();
@@ -441,7 +441,7 @@ int CVideoControlSoft::GetZoomIndex()
 
 void CVideoControlSoft::ChangeVideoFormat()
 {
-	int zoomSelect = 0;
+	//int zoomSelect = 0;
 	muVideoEffect.lock();
 	videoEffectParameter.ratioSelect++;
 	if (videoEffectParameter.ratioSelect >= videoEffectParameter.tabRatio.size())
@@ -536,7 +536,7 @@ void CVideoControlSoft::ShrinkVideo()
 {
     TRACE();
 
-	float ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+	CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
 	//Calcul position largeur et hauteur initial
 	posLargeur = 0;
@@ -554,7 +554,7 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	int width_local = GetSrcBitmapWidth();
 	int height_local = GetSrcBitmapHeight();
 	float zoom = GetZoomRatio();
-	float ratio = 1.0f;
+	//float ratio = 1.0f;
 
 	/*
 	muVideoEffect.lock();
@@ -1228,7 +1228,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     //renderBitmapOpenGL->DeleteTexture();
 
 #endif
-    double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+   // double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
 
     //std::cout<<"Video OnPaint Time : "<< duration <<'\n';
@@ -1345,10 +1345,10 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
 
-	float ratio = GetZoomRatio();
+	//float ratio = GetZoomRatio();
 
-	float middleScreenWidth = screenWidth / 2.0f;
-	float middleScreenHeight = screenHeight / 2.0f;
+	//float middleScreenWidth = screenWidth / 2.0f;
+	//float middleScreenHeight = screenHeight / 2.0f;
 
 	if (screenWidth > bitmapRatioWidth)
 	{
@@ -1375,7 +1375,7 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 int CVideoControlSoft::GetBitmapWidth()
 {
 	TRACE();    
-	int localAngle = angle;
+	//int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
@@ -1385,7 +1385,7 @@ int CVideoControlSoft::GetBitmapWidth()
 
 int CVideoControlSoft::GetBitmapHeight()
 {
-	int localAngle = angle;
+	//int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
@@ -1465,8 +1465,8 @@ void CVideoControlSoft::CalculCenterPicture()
 	float screenHeight = float(GetHeight());
 
 
-	float middleScreenWidth = screenWidth / 2.0f;
-	float middleScreenHeight = screenHeight / 2.0f;
+	//float middleScreenWidth = screenWidth / 2.0f;
+	//float middleScreenHeight = screenHeight / 2.0f;
 
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
@@ -1663,7 +1663,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
     heightVideo = src_frame->height;  
 	ratioVideo =(float) src_frame->width / (float)src_frame->height;
 
-    double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+  //  double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(this, event);  
@@ -1689,7 +1689,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 		{
             printf("DisplayTexture openGLDecoding \n");
             
-			float zoomRatio = GetZoomRatio();
+			//float zoomRatio = GetZoomRatio();
 			int filterInterpolation = 0;
 			int widthOutput = 0;
 			int heightOutput = 0;
@@ -1777,7 +1777,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 
 	float aspect_ratio = video_aspect_ratio;
 	int width, height, x, y;
-	float ratio = 1.0f;
+	//float ratio = 1.0f;
 	float zoom = GetZoomRatio();
 
 	muVideoEffect.lock();
@@ -1973,15 +1973,15 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
     printf("RenderToTexture 1\n");
     
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+  // double scale_factor = GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
+   // double scale_factor = 1.0f;
 #endif
     
     if(openclEffect == nullptr)
         return nullptr;
 
-	float zoomRatio = GetZoomRatio();
+	//float zoomRatio = GetZoomRatio();
 
 	GLTexture * glTexture = nullptr;
 	wxRect rect;
@@ -1997,7 +1997,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
 	{
-		cl_int err = 0;
+		//cl_int err = 0;
 		//cv::ocl::setUseOpenCL(true);
 		//cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 		if (openCVStabilization == nullptr)
@@ -2126,9 +2126,9 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFrame)
 {
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	//double scale_factor = GetContentScaleFactor();
 #else
-	double scale_factor = 1.0f;
+	//double scale_factor = 1.0f;
 #endif
 
 	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
@@ -2174,9 +2174,9 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+  //  double scale_factor = GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
+   // double scale_factor = 1.0f;
 #endif
 
 	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());

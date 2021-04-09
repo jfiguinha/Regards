@@ -160,9 +160,11 @@ ErrorExit:
   Adapt Huffman table
 **********************************************************************/
 // Alphabet size = 4
+/*
 static const Int g_Index4Table[] = {
     1,2,3,3
 };
+*/
 static const Int g4CodeTable[] = {
     4,
     1, 1,
@@ -172,10 +174,12 @@ static const Int g4CodeTable[] = {
 };
 
 // Alphabet size = 5
+/*
 static const Int g_Index5Table[] = {
     1,2,3,4,4,
     1,3,3,3,3
 };
+*/
 static const Int g5CodeTable[] = {
     5,
     1, 1,
@@ -194,12 +198,14 @@ static const Int g5CodeTable[] = {
 static const Int g5DeltaTable[] = { 0,-1,0,1,1 };
 
 // Alphabet size = 6
+/*
 static const Int g_Index6Table[] = {
     1,5,3,5,2,4,
     2,4,2,4,2,3,
     4,4,2,2,2,3,
     5,5,2,1,4,3,
 };
+*/
 static const Int g6CodeTable[] = {
     6,
     1, 1,
@@ -239,9 +245,11 @@ static const Int g6DeltaTable[] = {
     -1,-1, 0, 1,-2, 0
 };
 
+/*
 // Alphabet size = 7
 static const Int g_Index7Table[] = { 2,2,2,3,4,5,5,
                         1,2,3,4,5,6,6 };
+*/
 static const Int g7CodeTable[] = {
     7,
     1, 2,
@@ -262,10 +270,11 @@ static const Int g7CodeTable[] = {
     1, 6
 };
 static const Int g7DeltaTable[] = { 1,0,-1,-1,-1,-1,-1 };
-
+/*
 // Alphabet size = 8
 static const Int g_Index8Table[] = { 2,3,5,4,2,3,5,3,
                         3,3,4,3,3,3,4,2};
+                        */
 static const Int g8CodeTable[] = {
     8,
     2, 2,
@@ -287,12 +296,13 @@ static const Int g8CodeTable[] = {
     0, 4,
     3, 2
 };
-static const Int g8DeltaTable[] = { -1,0,1,1,-1,0,1,1 };
-
+//static const Int g8DeltaTable[] = { -1,0,1,1,-1,0,1,1 };
+/*
 static const Int g_Index9Table[] = {
     3,5,4,5,5,1,3,5,4,
     1,3,3,4,6,3,5,7,7,
 };
+*/
 static const Int g9CodeTable[] = {
     9,
     2, 3,
@@ -319,6 +329,7 @@ static const Int g9CodeTable[] = {
 static const Int g9DeltaTable[] = { 2,2,1,1,-1,-2,-2,-2,-3 };
 
 // Alphabet size = 12
+/*
 static const Int g_Index12Table[] = {  // index12 is the most critical symbol
     5,6,7,7,5,3,5,1,5,4,5,3,
     4,5,6,6,4,3,5,2,3,3,5,3,
@@ -326,6 +337,7 @@ static const Int g_Index12Table[] = {  // index12 is the most critical symbol
     3,2,7,5,5,3,7,3,5,3,6,3,
     3,1,7,4,7,3,8,4,7,4,8,5,
 };
+*/
 static const Int g12CodeTable[] = {
     12,  
     1, 5,

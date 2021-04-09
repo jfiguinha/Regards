@@ -1150,7 +1150,7 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 	}
 	if (startDiaporama)
 	{
-		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		//int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 		diaporamaTimer->Start(100, wxTIMER_ONE_SHOT);
 	}
 }

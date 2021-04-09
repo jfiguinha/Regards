@@ -70,7 +70,7 @@ namespace Regards
 
 			bool defaultToolbar;
 			bool defaultViewer;
-			bool bitmapWndLocal;
+			//bool bitmapWndLocal;
 
 			CVideoOptionCompress videoOptionCompress;
 			COpenCLEngine * openCLEngine = nullptr;

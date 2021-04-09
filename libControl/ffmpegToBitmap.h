@@ -52,8 +52,8 @@ private:
     int videoFrameHeight;
     int videoFrameOutputWidth;
     int videoFrameOutputHeight;    
-    int width;
-    int height;
+   // int width;
+   // int height;
 	//CRegardsBitmap * bitmap;
 	//mutex mubmp;
 #ifdef RENDEROPENGL

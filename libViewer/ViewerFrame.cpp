@@ -274,7 +274,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 				
 				vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 				wxString platformName = config->GetOpenCLPlatformName();
-				int indexDevice = config->GetOpenCLPlatformIndex();
+				//int indexDevice = config->GetOpenCLPlatformIndex();
 				for (OpenCLPlatform * platform : listPlatform)
 				{
 					if (platformName == platform->platformName)

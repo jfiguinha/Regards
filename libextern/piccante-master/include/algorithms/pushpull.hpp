@@ -144,7 +144,7 @@ public:
 
         return pp.Process(img, NULL, tmp_value);
 
-        delete tmp_value;
+        delete[] tmp_value;
     }
 
     /**

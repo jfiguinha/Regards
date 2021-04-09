@@ -219,7 +219,7 @@ private:
 	bool isend = true;
 	AVFrame * copyFrameBuffer = nullptr;
 	CVideoOptionCompress * videoCompressOption;
-	char timebase[255];
+	//char timebase[255];
 	char duration[255];
 	double pos = 0;
 	double pourcentage = 0;
@@ -238,23 +238,23 @@ private:
 	SwsContext* filterContext = nullptr;
 #endif
 	SwsContext* localContext = nullptr;
-	bool m_allowSeek = true;
+	//bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
 	//CRegardsBitmap * bitmap = nullptr;
 	CRegardsBitmap * bitmapCopy = nullptr;
 	CRegardsBitmap * bitmapData = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
-	bool hardwareDecode = false;
-	bool yuvDecodeInit = false;
+	//bool hardwareDecode = false;
+	//bool yuvDecodeInit = false;
 	bool showpreview = false;
 
-	int oldPos = 0;
+	//int oldPos = 0;
 	bool encodeOneFrame = false;
 	bool first = true;
 	bool deleteFrame = false;
 	bool first_frame = true;
-	bool first_yuv = true;
+	//bool first_yuv = true;
 
 	bool isBuffer = false;
 	

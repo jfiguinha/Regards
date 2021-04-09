@@ -27,7 +27,7 @@ void CMasterWindow::StopAllProcess(const wxString &title, const wxString &messag
 	do
 	{
 		allStop = true;
-		int j = 0;
+		//int j = 0;
 		for (CMasterWindow* window : listProcessWindow)
 		{
 			wxString message = window->GetWaitingMessage();

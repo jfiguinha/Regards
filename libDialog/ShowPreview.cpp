@@ -227,8 +227,8 @@ void CShowPreview::ThreadLoading(void * data)
 	int ret = 0;
 	CShowPreview * showPreview = (CShowPreview *)data;
 
-	CImageLoadingFormat * imageLoadingFormat = nullptr;
-	CRegardsBitmap * picture = nullptr;
+	//CImageLoadingFormat * imageLoadingFormat = nullptr;
+	//CRegardsBitmap * picture = nullptr;
 
 	wxMemoryOutputStream dataOutput;
 

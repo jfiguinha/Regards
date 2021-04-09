@@ -730,8 +730,8 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 
 void CInterpolation::CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY)
 {
-	int width = widthOut;
-	int height = heightOut;
+	//int width = widthOut;
+	//int height = heightOut;
 
 	float ratioX = float(widthIn) / float(rectToShow.width);
 	float ratioY = float(heightIn) / float(rectToShow.height);

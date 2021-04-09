@@ -76,7 +76,7 @@ static void Win32WarningHandler(const char* module, const char* fmt,
 #endif /* HAVE_TIFFIO_H */
 #endif   // _WIN32
 
-
+/*
 static void SetVariablesFromCLArgs(tesseract::TessBaseAPI* api, int argc,
 	char** argv) {
 	char opt1[256], opt2[255];
@@ -100,7 +100,7 @@ static void SetVariablesFromCLArgs(tesseract::TessBaseAPI* api, int argc,
 		}
 	}
 }
-
+*/
 static void PrintLangsList(tesseract::TessBaseAPI* api) {
 	GenericVector<STRING> languages;
 	api->GetAvailableLanguagesAsVector(&languages);

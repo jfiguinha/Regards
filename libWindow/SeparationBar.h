@@ -27,9 +27,9 @@ namespace Regards
 
 			bool bSplitterMoving;
 			bool horizontal;
-			int position;
-			int oldX;
-			int oldY;
+			//int position;
+			//int oldX;
+			//int oldY;
 			bool fastRender;
 			IMoveWindow * moveWindow;
 			CThemeSeparationBar theme;
