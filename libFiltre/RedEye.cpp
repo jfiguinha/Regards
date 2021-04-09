@@ -68,7 +68,7 @@ wxRect CRedEye::ConvertPositionWithAngle(CRegardsBitmap * pBitmap, const wxRect 
 void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBox, int angle)
 {
 	int xmin, xmax, ymin, ymax;
-	int local_angle = (360 - angle);
+	//int local_angle = (360 - angle);
 	wxRect out = ConvertPositionWithAngle(pBitmap, rSelectionBox, angle);
 
 	xmin = out.x;

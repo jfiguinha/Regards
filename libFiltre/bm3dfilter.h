@@ -24,11 +24,12 @@ private:
     const char *_tau_2D_wien = "dct";
     const char *_color_space = "opp";
     const char *_patch_size = "0"; // >0: overrides default
-    const char *_nb_threads = "1";
+    //const char *_nb_threads = "1";
     const bool useSD_1 = false;
     const bool useSD_2 = false;
     const bool verbose = false;
-    unsigned int width, height, chnls = 1;
+   // unsigned int width, height, chnls = 1;
+    unsigned int chnls = 1;
     //int nbProcess = 1;
     int patch_size;
     int nb_threads;

@@ -135,7 +135,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextP
 	COpenCLEffectVideo * openclEffectVideo = nullptr;
 	cl_mem cl_nextPicture = nullptr;
 
-	cl_int err;
+	//cl_int err;
 	if (bmpViewer->GetOpenCLContext() != nullptr)
 	{
 		openclEffectVideo = new COpenCLEffectVideo(bmpViewer->GetOpenCLContext());

@@ -616,7 +616,7 @@ int COpenCLEngine::GetNbPlatform()
 
 int COpenCLEngine::GetDefaultGpuDeviceInformation()
 {
-	wxString platformName = "";
+	//wxString platformName = "";
 	wxString deviceName = "";
 	int indexDevice = -1;
 	OpenCLPlatform * openCLPlatformSelected = nullptr;
@@ -625,7 +625,7 @@ int COpenCLEngine::GetDefaultGpuDeviceInformation()
 	for (OpenCLPlatform * openCLPlatform : listPlatform)
 	{
 
-		platformName == openCLPlatform->platformName;
+		//platformName == openCLPlatform->platformName;
 		openCLPlatformSelected = openCLPlatform;
 		break;
 	}

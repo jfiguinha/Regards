@@ -18,7 +18,7 @@ namespace Regards
 		private:
 			LibRaw * rawProcessor;
 			int result;
-			unsigned char *buffer;
+			//unsigned char *buffer;
 
 		};
 	}

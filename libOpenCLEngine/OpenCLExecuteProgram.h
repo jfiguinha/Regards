@@ -55,7 +55,7 @@ namespace Regards
 			int width;
 			int height;
 			int bitmapSize;
-			size_t global_size;
+			//size_t global_size;
 			COpenCLContext * context;
 			vector<COpenCLParameter *> * vecParam;
 			cl_mem cl_output_buffer;
