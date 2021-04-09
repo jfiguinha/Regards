@@ -16,7 +16,7 @@
     <VirtualDirectory Name="libbpg">
       <Project Name="libavutil" Path="Otherlib/libbpg/libavutil/libavutil.project" Active="No"/>
       <Project Name="libbpg" Path="Otherlib/libbpg/libbpg/libbpg.project" Active="No"/>
-      <Project Name="libRegardsBpg_unix" Path="Otherlib/libbpg/libRegardsBpg_unix/libRegardsBpg_unix.project" Active="No"/>
+      <Project Name="libRegardsBpg_unix" Path="Otherlib/libbpg/libRegardsBpg_unix/libRegardsBpg_unix.project" Active="Yes"/>
       <Project Name="libRegardsBpg_windows" Path="Otherlib/libbpg/libRegardsBpg_windows/libRegardsBpg_windows.project" Active="No"/>
       <Project Name="libRegardsBpg_mac" Path="Otherlib/libbpg/libRegardsBpg_mac/libRegardsBpg_mac.project" Active="No"/>
       <Project Name="libavcodec" Path="Otherlib/libbpg/libavcodec/libavcodec.project" Active="No"/>
@@ -56,6 +56,7 @@
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
+    <Project Name="RegardsSelectApplication" Path="RegardsSelectApplication/RegardsSelectApplication.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -144,6 +145,7 @@
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="libSqlite" ConfigName="Debug"/>
+      <Project Name="RegardsSelectApplication" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -217,6 +219,7 @@
       <Project Name="MacOsLibExplorer" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="libSqlite" ConfigName="Release"/>
+      <Project Name="RegardsSelectApplication" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

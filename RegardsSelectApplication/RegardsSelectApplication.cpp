@@ -1,11 +1,13 @@
 // RegardsSelectApplication.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
 //
+
+#ifdef WIN32
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#endif
 #include <iostream>
 
 // AVX CPU dispatching - based on Agner Fog's C++ vector class library:
@@ -13,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <string>
 
 //------------------------------------------------------------------------------
 //>> BEGIN <instrset.h>
@@ -263,8 +266,10 @@ int instrset_detect(void) {
 int main(int argc, char* argv[]) {
     int iset = instrset_detect();
     bool hasAVX = iset >= 7;
-    wxString filename = "";
-    wxString program = "";
+    std::string filename = "";
+    std::string program = "";
+    
+#ifdef WIN32
     if (argc > 1)
         filename = argv[1];
     if (hasAVX)
@@ -275,8 +280,31 @@ int main(int argc, char* argv[]) {
     if (filename != "")
         program = program + " " + filename;
 
+    if(hasAVX)
+        printf("Exec RegardsViewer with avx \n");
+    else
+        printf("Exec RegardsViewer with sse \n");
+        
     wxExecute(program, wxEXEC_ASYNC);
     return 0;
+#else
+    if (argc > 1)
+        filename = argv[1];
+    if (hasAVX)
+        program = "./RegardsViewer_avx";
+    else
+        program = "./RegardsViewer_sse3";
+
+    if (filename != "")
+        program = program + " " + filename;
+
+    if(hasAVX)
+        printf("Exec RegardsViewer with avx \n");
+    else
+        printf("Exec RegardsViewer with sse \n");
+    //wxExecute(program, wxEXEC_ASYNC);
+    return system(program.c_str());
+#endif
 }
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
