@@ -1,8 +1,8 @@
 #include "header.h"
-#include "VideoControl_soft.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/opengl.hpp>
 #include <opencv2/core/ocl.hpp>
+#include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
 #include "ffplaycore.h"
