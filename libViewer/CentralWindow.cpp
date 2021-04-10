@@ -919,6 +919,9 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	bool showFolder = true;
 	bool showVideoThumbnail = true;
 	windowMode = event.GetInt();
+	if (windowMode == oldWindowMode)
+		return;
+
 	CMainParam* config = CMainParamInit::getInstance();
 
 	if (!windowInit && oldWindowMode == WINDOW_VIEWER)
@@ -997,26 +1000,17 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			}
 			else
 			{
-				//windowManager->HidePaneWindow(Pos::wxTOP);
 				windowManager->HideWindow(Pos::wxTOP);
 			}
-
 
 			panelInfosWindow->Show(true);
 			panelInfosClick->SetWindow(panelInfosWindow);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Informations");
 
-			windowManager->HidePaneWindow(Pos::wxRIGHT);
-			windowManager->ShowPaneWindow(Pos::wxRIGHT);
-
 			if (windowInit)
 				if (!showInfos)
 					windowManager->HidePaneWindow(Pos::wxRIGHT);
-
-			windowManager->Resize();
-
-			//SetPanelInfos(false);
 		}
 		break;
 
@@ -1039,14 +1033,10 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			panelInfosClick->SetWindow(listFace);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Face List");
-			windowManager->HidePaneWindow(Pos::wxRIGHT);
-			windowManager->ShowPaneWindow(Pos::wxRIGHT);
 
 			if (windowInit)
 				if (!showInfos)
 					windowManager->HidePaneWindow(Pos::wxRIGHT);
-
-			windowManager->Resize();
 		}
 		break;
 	}
@@ -1067,14 +1057,10 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			panelInfosClick->SetWindow(listPicture);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Picture List");
-			windowManager->HidePaneWindow(Pos::wxRIGHT);
-			windowManager->ShowPaneWindow(Pos::wxRIGHT);
 
 			if (windowInit)
 				if (!showInfos)
 					windowManager->HidePaneWindow(Pos::wxRIGHT);
-
-			windowManager->Resize();
 		}
 
 		break;
@@ -1092,7 +1078,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	}
 	windowInit = false;
 	
-
 	oldWindowMode = windowMode;
 
 	windowManager->Resize();

@@ -22,14 +22,42 @@ namespace Regards
 
 			void SetOtherWindow(CWindowMain * window)
 			{
+				wxSize oldsize;
+				bool needToResize = false;
+				if (hWndOther != nullptr)
+				{
+					oldsize = hWndOther->GetSize();
+					needToResize = true;
+				}
+
 				hMainWndOther = window;
                 hWndOther = window;
+
+				if (needToResize)
+				{
+					window->SetSize(oldsize);
+					this->Resize();
+				}
 			};
 
 			void SetOtherWindow(wxWindow * window)
 			{
+				wxSize oldsize;
+				bool needToResize = false;
+				if (hWndOther != nullptr)
+				{
+					oldsize = hWndOther->GetSize();
+					needToResize = true;
+				}
+
 				hWndOther = window;
                 hMainWndOther = nullptr;
+
+				if (needToResize)
+				{
+					window->SetSize(oldsize);
+					this->Resize();
+				}
 			};
             
             void UpdateScreenRatio();

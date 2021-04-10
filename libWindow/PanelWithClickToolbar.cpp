@@ -96,9 +96,24 @@ CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, 
 
 void CPanelWithClickToolbar::SetWindow(CWindowMain * windowMain)
 {
+	wxSize oldsize;
+	bool needToResize = false;
+	if (mainWindow != nullptr)
+	{
+		oldsize = mainWindow->GetSize();
+		needToResize = true;
+		
+	}
+	
 	mainWindow = windowMain;
 	mainWindow->Reparent(paneWindow);
 	paneWindow->SetOtherWindow(windowMain);
+
+	if (needToResize)
+	{
+		windowMain->SetSize(oldsize);
+		this->Resize();
+	}
 }
 
 CPanelWithClickToolbar::~CPanelWithClickToolbar()
