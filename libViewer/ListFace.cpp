@@ -106,14 +106,15 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		std::vector<int> valueZoom = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 
 		CThemeToolbar theme;
-		viewerTheme->GetThumbnailToolbarTheme(theme);
+		//viewerTheme->GetThumbnailToolbarTheme(theme);
+        viewerTheme->GetBitmapToolbarTheme(&theme);
+            
 		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
 		thumbFaceToolbar->SetTabValue(valueZoom);
 		thumbFaceToolbar->SetTrackBarPosition(4);
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
 
-		
 		int position = 2;
 		if(config != nullptr)
 		{
@@ -126,11 +127,13 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 			}
 		}
 	
+        viewerTheme->GetThumbnailToolbarTheme(theme);
 		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(value);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
+#ifndef __APPLE__
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
-		
+#endif
 		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 		

@@ -94,7 +94,8 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	{
 		std::vector<int> value = {50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
 		CThemeToolbar theme;
-		viewerTheme->GetThumbnailToolbarTheme(theme);
+		//viewerTheme->GetThumbnailToolbarTheme(theme);
+        viewerTheme->GetBitmapToolbarTheme(&theme);
 		thumbToolbar = new CThumbnailToolBar(windowManager, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
 		thumbToolbar->SetTrackBarPosition(4);
@@ -106,6 +107,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	{
 		CThemeToolBarZoom theme;
 		viewerTheme->GetThumbnailToolbarZoomTheme(theme);
+        //viewerTheme->GetBitmapToolbarTheme(&theme);
 		thumbToolbarZoom = new CThumbnailToolBarZoom(windowManager, wxID_ANY, theme);
 		windowManager->AddWindow(thumbToolbarZoom, Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY,
 		                         false);
