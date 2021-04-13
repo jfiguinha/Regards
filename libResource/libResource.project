@@ -38,6 +38,8 @@
     <File Name="ClosedHandCursor.h"/>
     <File Name="LibResource.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
@@ -50,8 +52,8 @@
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -137,6 +139,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

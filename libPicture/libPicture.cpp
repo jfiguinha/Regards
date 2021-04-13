@@ -10,14 +10,10 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core.hpp>
-#include <ImfRgbaFile.h>
-#include <ImfArray.h>
-#include <ImathBox.h>
 #include <webp/decode.h>
 #include <webp/encode.h>
 #include <ximage.h>
 #include <xfile.h>
-//#include <SqlThumbnail.h>
 #include <xiofile.h>
 #ifdef ROTDETECT
 #include <rotdetect.h>
@@ -46,9 +42,6 @@
 #endif
 #endif
 #include "PictureData.h"
-
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
-//using namespace IMATH_INTERNAL_NAMESPACE;
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
@@ -3114,6 +3107,7 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 	}
 	break;
 
+    case EXR:
     case HDR:
         {
 			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
@@ -3121,15 +3115,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 			height = hdr.rows;
         }
         break;        
-
-	case EXR:
-	{
-		RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-		Imath::Box2i dw = file.dataWindow();
-		width = dw.max.x - dw.min.x + 1;
-		height = dw.max.y - dw.min.y + 1;
-	}
-	break;
 
 	case WEBP:
 	{

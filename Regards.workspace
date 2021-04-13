@@ -55,7 +55,7 @@
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
-    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="Yes"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -144,7 +144,6 @@
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="libSqlite" ConfigName="Debug"/>
-      <Project Name="RegardsSelectApplication" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -218,7 +217,6 @@
       <Project Name="MacOsLibExplorer" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="libSqlite" ConfigName="Release"/>
-      <Project Name="RegardsSelectApplication" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

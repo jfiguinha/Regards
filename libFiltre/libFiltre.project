@@ -99,8 +99,6 @@
       <File Name="OilPaintingEffectParameter.h"/>
       <File Name="BitmapFusionEffectParameter.h"/>
       <File Name="bm3dEffectParameter.h"/>
-      <File Name="BestExposureEffectParameter.h"/>
-      <File Name="KuwaharaEffectParameter.h"/>
       <File Name="WaveEffectParameter.h"/>
       <File Name="SwirlEffectParameter.h"/>
       <File Name="SolarisationEffectParameter.h"/>
@@ -150,10 +148,6 @@
       <File Name="BitmapFusionFilter.cpp"/>
       <File Name="bm3dWindowFilter.h"/>
       <File Name="bm3dWindowFilter.cpp"/>
-      <File Name="KuwaharaFilter.h"/>
-      <File Name="KuwaharaFilter.cpp"/>
-      <File Name="BestExposureFilter.h"/>
-      <File Name="BestExposureFilter.cpp"/>
       <File Name="GaussianBlurFilter.h"/>
       <File Name="GaussianBlurFilter.cpp"/>
       <File Name="ColorBalanceFilter.h"/>
@@ -234,7 +228,6 @@
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
-        <IncludePath Value="../libAppleFunction"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

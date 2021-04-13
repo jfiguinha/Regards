@@ -29,6 +29,8 @@
     <File Name="DeepLearning.h"/>
     <File Name="base64.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
@@ -39,7 +41,6 @@
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libAppleFunction"/>
         <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>
         <Preprocessor Value="CV__DISABLE_C_API_CTORS"/>
       </Compiler>
@@ -135,6 +136,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
