@@ -5,8 +5,14 @@
 #define __FREEIMAGE__
 #include <FreeImage.h>
 #include "MetadataExiv2.h"
-#include <OpenEXR/ImfRgbaFile.h>
-#include <OpenEXR/ImfArray.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/core/ocl.hpp>
+#include <opencv2/core.hpp>
+#include <ImfRgbaFile.h>
+#include <ImfArray.h>
+#include <ImathBox.h>
 #include <webp/decode.h>
 #include <webp/encode.h>
 #include <ximage.h>
@@ -23,7 +29,6 @@
 #include <ImageLoadingFormat.h>
 #include <ConvertUtility.h>
 #include <picture_id.h>
-#include "PiccanteHDR.h"
 #include <LibResource.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
@@ -43,7 +48,7 @@
 #include "PictureData.h"
 
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
-using namespace IMATH_INTERNAL_NAMESPACE;
+//using namespace IMATH_INTERNAL_NAMESPACE;
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
@@ -95,6 +100,24 @@ using namespace Regards::exiv2;
 
 //using namespace Regards::Sqlite;
 using namespace Regards::Picture;
+
+//#include <libPicture.h>
+#if defined(__x86_64__) || defined(_M_AMD64)
+#include <xmmintrin.h>
+#endif
+
+static float clamp(float val, float minval, float maxval)
+{
+	// Branchless SSE clamp.
+	// return minss( maxss(val,minval), maxval );
+#if defined(__x86_64__) || defined(_M_AMD64)
+	_mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val), _mm_set_ss(minval)), _mm_set_ss(maxval)));
+	return val;
+#else
+	return min(max(val, minval), maxval);
+#endif
+
+}
 
 #if defined(LIBBPG) && not defined(WIN32)
 
@@ -2298,9 +2321,20 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			break;
 		}
 
+		/*/
+		cout << "Width : " << src.cols << endl;
+		cout << "Height: " << src.rows << endl;
+		*/
         case HDR:
             {
-               CPiccanteHDR::LoadPicture(fileName, isThumbnail,bitmap);
+				CRegardsBitmap* picture = nullptr;
+				cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
+				cv::Mat ldr;
+				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(2.2f);
+				tonemap->process(hdr, ldr);
+				ldr.convertTo(ldr, CV_8UC4, 255);
+				picture = new CRegardsBitmap();
+				picture->SetBitmap(ldr.data, ldr.cols, ldr.rows);
             }
             break; 
 
@@ -2426,7 +2460,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				CRegardsBitmap * picture = nullptr;
 				Array2D<Rgba> pixels;
 				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Box2i dw = file.dataWindow();
+				Imath::Box2i dw = file.dataWindow();
 				int width = dw.max.x - dw.min.x + 1;
 				int height = dw.max.y - dw.min.y + 1;
 				pixels.resizeErase(height, width);
@@ -2442,10 +2476,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					{
 						for (int j = 0; j < width; j++, k += 4)
 						{
-							float rvalue = CPiccanteHDR::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							float gvalue = CPiccanteHDR::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = CPiccanteHDR::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							float avalue = CPiccanteHDR::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+							float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 
 							data[k] = (int)(bvalue * 255.0);
 							data[k + 1] = (int)(gvalue * 255.0);
@@ -2471,7 +2505,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				CRegardsFloatBitmap * picture = nullptr;
 				Array2D<Rgba> pixels;
 				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Box2i dw = file.dataWindow();
+				Imath::Box2i dw = file.dataWindow();
 				int width = dw.max.x - dw.min.x + 1;
 				int height = dw.max.y - dw.min.y + 1;
 				pixels.resizeErase(height, width);
@@ -2487,10 +2521,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					{
 						for (int j = 0; j < width; j++, k += 4)
 						{
-							data[k] = CPiccanteHDR::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							data[k + 1] = CPiccanteHDR::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							data[k + 2] = CPiccanteHDR::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							data[k + 3] = CPiccanteHDR::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+							data[k] = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							data[k + 1] = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							data[k + 2] = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							data[k + 3] = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 						}
 					}
 					bitmap->SetPicture(picture);
@@ -3084,14 +3118,16 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 
     case HDR:
         {
-            CPiccanteHDR::GetPictureDimensions(fileName,width,height);
+			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
+			width = hdr.cols;
+			height = hdr.rows;
         }
         break;        
 
 	case EXR:
 	{
 		RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-		Box2i dw = file.dataWindow();
+		Imath::Box2i dw = file.dataWindow();
 		width = dw.max.x - dw.min.x + 1;
 		height = dw.max.y - dw.min.y + 1;
 	}

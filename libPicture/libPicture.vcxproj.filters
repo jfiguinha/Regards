@@ -121,9 +121,6 @@
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
     </ClCompile>
-    <ClCompile Include="PiccanteHDR.cpp">
-      <Filter>libhdr</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -273,9 +270,6 @@
     <ClInclude Include="buffer_data.h">
       <Filter>ThumbnailVideo</Filter>
     </ClInclude>
-    <ClInclude Include="PiccanteHDR.h">
-      <Filter>libhdr</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -301,9 +295,6 @@
     </Filter>
     <Filter Include="Interpolation">
       <UniqueIdentifier>{3416b6d8-bec8-4f8c-8300-c5b3e87eaf85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libhdr">
-      <UniqueIdentifier>{351ee07f-c5f0-4f60-957a-ddaa0d66f2a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dialog">
       <UniqueIdentifier>{bdc0c1a0-e7de-486c-a3af-db9eba76d898}</UniqueIdentifier>
