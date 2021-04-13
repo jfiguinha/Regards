@@ -202,7 +202,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\src\tiff;$(SolutionDir)libextern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">
@@ -285,8 +285,8 @@ copy ..\FreeImage.h ..\..\Dist\x32
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPJ_STATIC;WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -323,8 +323,8 @@ copy ..\FreeImage.h ..\..\Dist\x64
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPJ_STATIC;WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -480,8 +480,8 @@ copy ..\FreeImage.h ..\..\Dist\x32
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPJ_STATIC;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -525,8 +525,8 @@ copy ..\FreeImage.h ..\..\Dist\x64
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPJ_EXPORTS;IMF_EXPORT;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -570,8 +570,8 @@ copy ..\FreeImage.h ..\..\Dist\x64
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPJ_STATIC;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>

@@ -39,7 +39,7 @@
 #include "Utilities.h"
 #include "tiffiop.h"
 #include "../Metadata/FreeImageTag.h"
-#include "OpenEXR/half.h"
+#include "half.h"
 
 #include "FreeImageIO.h"
 #include "PSDParser.h"
