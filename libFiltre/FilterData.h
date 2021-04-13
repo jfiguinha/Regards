@@ -60,15 +60,12 @@ class CEffectParameter;
 #define IDM_FLIPVERTICAL  38
 #define IDM_FLIPHORIZONTAL  39
 #define IDM_WAVE_EFFECT 40
-#define IDM_BEST_EXPOSURE 41
-#define IDM_FILTER_KUWAHARA 42
-#define IDM_FILTER_BM3D 43
-#define IDM_BRIGHTNESSCONTRAST_AUTO 44
-#define IDM_FILTREHQDN3D 45
-#define IDM_FILTER_OILPAINTING 46
-#define IDM_FILTER_CARTOON 47
-#define FILTER_END 48
-#define IDM_FILTER_BILATERAL2DS 50
+#define IDM_FILTER_BM3D 41
+#define IDM_BRIGHTNESSCONTRAST_AUTO 42
+#define IDM_FILTREHQDN3D 43
+#define IDM_FILTER_OILPAINTING 44
+#define IDM_FILTER_CARTOON 45
+#define FILTER_END 46
 #define IDM_OCR 99
 #define IDM_FILTRE_PAGECURL 91
 #define IDM_HDR_DEBLURRING 90
@@ -123,7 +120,6 @@ public:
     static bool IsOpenCLPreviewCompatible(const int &numFilter);
 	static bool IsOpenGLCompatible(const int &numFilter);
 	static bool IsOpenCLCompatible(const int &numFilter);
-    static bool IsPiccanteCompatible(const int &numFilter);
     static bool OnFiltreOk(const int &numFiltre);
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);

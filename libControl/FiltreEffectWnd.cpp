@@ -6,7 +6,6 @@
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
 #include <header.h>
-#include <PiccanteHDR.h>
 #include "FiltreEffectWnd.h"
 #include <FiltreEffet.h>
 #include "InfoEffectWnd.h"

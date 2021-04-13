@@ -585,9 +585,6 @@
     <ProjectReference Include="..\Otherlib\libFreeImage\Source\libJXR\libJXR.2017.vcxproj">
       <Project>{244455e0-5f25-4451-9540-f317883e52a8}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libFreeImage\Source\libOpenJPEG\libOpenJPEG.2017.vcxproj">
-      <Project>{e3536c28-a7f1-4b53-8e52-7d2232f9e098}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Otherlib\libheif\libheif.vcxproj">
       <Project>{27ae55ec-bd2c-4843-8333-26b52bf4fbba}</Project>
     </ProjectReference>

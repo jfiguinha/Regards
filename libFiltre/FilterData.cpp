@@ -33,8 +33,6 @@
 #include "NlmeansEffectParameter.h"
 #include "bm3dWindowFilter.h"
 #include "ClaheEffectParameter.h"
-#include "KuwaharaEffectParameter.h"
-#include "BestExposureEffectParameter.h"
 #include "WaveEffectParameter.h"
 #include "LensFlareFilter.h"
 #include "SwirlFilter.h"
@@ -56,7 +54,6 @@
 #include "VideoFilter.h"
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
-#include "BestExposureFilter.h"
 #include "CropFilter.h"
 #include <Crop.h>
 #include <Selection.h>
@@ -343,29 +340,6 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
             filtreEffet->Erode();
             break;
             
-        case IDM_BEST_EXPOSURE:
-            //filtreEffet->BestExposure();
-			if (effectParameter != nullptr)
-			{
-				CBestExposureEffectParameter * bestExposureParameter = (CBestExposureEffectParameter *)effectParameter;
-				filtreEffet->BestExposure(bestExposureParameter->tmo);
-                return 1;
-			}
-            break;     
-            
-        case IDM_FILTER_BILATERAL2DS:
-            //filtreEffet->FilterBilateral2DS();
-            break;              
-
-        case IDM_FILTER_KUWAHARA:
-			if (effectParameter != nullptr)
-			{
-				CKuwaharaEffectParameter * kuwaharaEffectParameter = (CKuwaharaEffectParameter *)effectParameter;
-				filtreEffet->FilterKuwahara(kuwaharaEffectParameter->fSize);
-                return 1;
-			}
-            break;        
-            
         case IDM_FILTRE_DILATE:
             filtreEffet->Dilate();
             break;
@@ -442,11 +416,7 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
         filterEffect = new CDecodeRaw();
         //filterEffect->Filter(effectParameter, source, this);
 		break;
-        
-    case IDM_BEST_EXPOSURE:
-        filterEffect = new CBestExposureFilter();
-        break;
-        
+               
     case IDM_FILTER_BM3D:
         filterEffect = new CBm3dWindowFilter();
         break;
@@ -612,19 +582,6 @@ CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 	return nullptr;
 }
 
-bool CFiltreData::IsPiccanteCompatible(const int &numFilter)
-{
- 	switch(numFilter)
-	{
-        case IDM_FILTER_KUWAHARA:
-        case IDM_HDR_DEBLURRING:
-        case IDM_BEST_EXPOSURE:
-        case IDM_FILTER_BILATERAL2DS:
-            return true;
-    }   
-    return false;
-}
-
 bool CFiltreData::IsOpenGLCompatible(const int &numFilter)
 {
 	switch (numFilter)
@@ -646,10 +603,7 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{   
-		case IDM_FILTER_KUWAHARA:
 		case IDM_HDR_DEBLURRING:
-		case IDM_BEST_EXPOSURE:
-		case IDM_FILTER_BILATERAL2DS:
 		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
@@ -672,10 +626,7 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{
-        case IDM_FILTER_KUWAHARA:
         case IDM_HDR_DEBLURRING:
-        case IDM_FILTER_BILATERAL2DS:
-        case IDM_BEST_EXPOSURE:
 		case IDM_FILTRE_CLOUDS:
 		case IDM_CROP:
 		case IDM_REDEYE:
@@ -753,7 +704,6 @@ bool CFiltreData::NeedPreview(const int &numFilter)
         case IDM_COLOR_BALANCE:
         case IDM_FILTRE_SWIRL:
 		case IDM_SHARPENMASKING:
-        case IDM_BEST_EXPOSURE:
         case IDM_FILTRE_CLOUDS:
 		case IDM_FILTER_OILPAINTING:
 		case IDM_FILTRE_FLOUGAUSSIEN:
@@ -777,14 +727,9 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 
 int CFiltreData::GetTypeEffect(const int &numFilter)
 {
-
-    
     switch(numFilter)
     {
-        case IDM_FILTER_KUWAHARA:
         case IDM_HDR_DEBLURRING:
-        case IDM_FILTER_BILATERAL2DS:
-        case IDM_BEST_EXPOSURE:
             return HDR_EFFECT;
             //Convolution
         case IDM_FILTER_BM3D:
@@ -899,10 +844,6 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
             return new CBm3dEffectParameter();
             break;
             
-        case IDM_BEST_EXPOSURE:
-            return new CBestExposureEffectParameter();
-            break;
-
 		case IDM_FILTREHQDN3D:
 			return new Chqdn3dEffectParameter();
 			break;
@@ -964,7 +905,6 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_FILTRE_SWIRL:
         case IDM_FILTRE_CLOUDS:
 		case IDM_FILTER_OILPAINTING:
-        case IDM_BEST_EXPOSURE:
         case IDM_SHARPENMASKING:
        // case IDM_REDEYE:
         case IDM_CROP:
@@ -1111,14 +1051,6 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
             break;
         }
         
-        case IDM_BEST_EXPOSURE:
-        {
-            CBestExposureEffectParameter * exposure = new CBestExposureEffectParameter();
-            exposure->tmo = 2.2f;
-            return exposure;
-            break;
-        }
-
 		case IDM_FILTER_OILPAINTING:
 		{
 			COilPaintingEffectParameter * oilpainteffect = new COilPaintingEffectParameter();
@@ -1179,7 +1111,6 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case IDM_FILTRE_CLAHE:
         case IDM_FILTRE_FLOU:
         case IDM_DECODE_RAW:
-        case IDM_BEST_EXPOSURE:
         case IDM_SHARPENMASKING:
         case IDM_FILTRE_FLOUGAUSSIEN:
         case IDM_FILTRE_MOTIONBLUR:
@@ -1258,10 +1189,6 @@ void CFiltreData::InitFilterListLabel()
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPVERTICAL, "LBLFLIPV"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPHORIZONTAL, "LBLFLIPH"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_WAVE_EFFECT, "LBLWAVEFILTER"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BEST_EXPOSURE, "LBLHDRBESTEXPOSUREFILTER"));
-    //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HDR_DEBLURRING, "LBLHDRDEBLURRINGFILTER"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_KUWAHARA, "LBLFILTERKUWAHARA"));
-    //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BRIGHTNESSCONTRAST_AUTO, "LBLBRIGHTNESSCONTRASTAUTO"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREHQDN3D, "LBLFILTREHQDN3D"));

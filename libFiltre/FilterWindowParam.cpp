@@ -12,7 +12,6 @@
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <RegardsBitmap.h>
-#include <PiccanteHDR.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
 #include <RenderOpenGL.h>
@@ -72,51 +71,28 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
 		return;
 
-	if (CFiltreData::IsPiccanteCompatible(GetTypeFilter()))
-	{
-		filtreEffet->SetPreview(true);
-		CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(false);
-		switch (GetTypeFilter())
-		{
-		case IDM_BEST_EXPOSURE:
-			CPiccanteHDR::BestExposure(test);
-			break;
-		case IDM_FILTER_KUWAHARA:
-			CPiccanteHDR::FilterKuwahara(test);
-			break;
-		case IDM_FILTER_BILATERAL2DS:
-			CPiccanteHDR::FilterBilateral2DS(test);
-			break;
-		}
-
-		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(test);
-		filtreEffet->SetBitmap(imageLoad);
-	}
+	filtreEffet->SetPreview(true);
+	if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()) && supportOpenCL)
+		filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
 	else
 	{
-		filtreEffet->SetPreview(true);
-		if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()) && supportOpenCL)
-			filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
-		else
+		CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
+		if (bitmap != nullptr)
 		{
-			CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
-			if (bitmap != nullptr)
-			{
-				CImageLoadingFormat image;
-				image.SetPicture(bitmap);
-				CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-				filtre->RenderEffect(GetTypeFilter(), effectParameter);
-				CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-				imageLoad->SetPicture(filtre->GetBitmap(true));
-				filtreEffet->SetBitmap(imageLoad);
-				delete filtre;
-			}
+			CImageLoadingFormat image;
+			image.SetPicture(bitmap);
+			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+			filtre->RenderEffect(GetTypeFilter(), effectParameter);
+			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+			imageLoad->SetPicture(filtre->GetBitmap(true));
+			filtreEffet->SetBitmap(imageLoad);
+			delete filtre;
 		}
-
-		widthOutput = filtreEffet->GetWidth();
-		heightOutput = filtreEffet->GetHeight();
 	}
+
+	widthOutput = filtreEffet->GetWidth();
+	heightOutput = filtreEffet->GetHeight();
+
 }
 
 void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filtre)
@@ -165,27 +141,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 		RotateExif(bitmapViewer->GetOrientation(), filtre);
 	}
 
-	if (CFiltreData::IsPiccanteCompatible(numFiltre))
-	{
-		CRegardsFloatBitmap * bitmap = bitmapViewer->GetFloatBitmap(true);
-		switch (numFiltre)
-		{
-		case IDM_BEST_EXPOSURE:
-			CPiccanteHDR::BestExposure(bitmap);
-			break;
-		case IDM_FILTER_KUWAHARA:
-			CPiccanteHDR::FilterKuwahara(bitmap);
-			break;
-		case IDM_FILTER_BILATERAL2DS:
-			CPiccanteHDR::FilterBilateral2DS(bitmap);
-			break;
-		}
-		CImageLoadingFormat imageLoadFormat(true);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(bitmap);
-		imageLoad->SetOrientation(bitmapViewer->GetOrientation());
-	}
-	else if (CFiltreData::IsOpenCLCompatible(numFiltre) && supportOpenCL)
+	if (CFiltreData::IsOpenCLCompatible(numFiltre) && supportOpenCL)
 	{
 		if (filtre != nullptr)
 		{

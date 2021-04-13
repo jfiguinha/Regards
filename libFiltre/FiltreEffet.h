@@ -57,9 +57,6 @@ public:
 	int Sharpen();
 	int Erode();
 	int OilPaintingEffect(const int &size = 10, const int &dynRatio = 1);
-    int BestExposure(const float &tmoValue);
-    int FilterKuwahara(const int &kernelSize);
-    int FilterBilateral2DS(const float & sigma_s, const float & sigma_r);
 	int Median();
 	int CartoonifyImage(const int & mode);
 	int Noise();

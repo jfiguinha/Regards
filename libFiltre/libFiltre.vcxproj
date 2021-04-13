@@ -462,8 +462,6 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="AfterEffect.h" />
     <ClInclude Include="AudioVideoFilter.h" />
-    <ClInclude Include="BestExposureEffectParameter.h" />
-    <ClInclude Include="BestExposureFilter.h" />
     <ClInclude Include="BilateralEffectParameter.h" />
     <ClInclude Include="bilateralFilter.h" />
     <ClInclude Include="BitmapDisplay.h" />
@@ -507,8 +505,6 @@
     <ClInclude Include="Histogramme.h" />
     <ClInclude Include="hqdn3dEffectParameter.h" />
     <ClInclude Include="hqdn3dFilter.h" />
-    <ClInclude Include="KuwaharaEffectParameter.h" />
-    <ClInclude Include="KuwaharaFilter.h" />
     <ClInclude Include="LensFlare.h" />
     <ClInclude Include="LensFlareEffectParameter.h" />
     <ClInclude Include="LensFlareFilter.h" />
@@ -559,7 +555,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AudioVideoFilter.cpp" />
-    <ClCompile Include="BestExposureFilter.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
     <ClCompile Include="BitmapFusionFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
@@ -588,7 +583,6 @@
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="Histogramme.cpp" />
     <ClCompile Include="hqdn3dFilter.cpp" />
-    <ClCompile Include="KuwaharaFilter.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />
     <ClCompile Include="lib_transforms.cpp" />

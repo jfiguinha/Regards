@@ -135,9 +135,6 @@
     <ClInclude Include="Filtre.h">
       <Filter>interface\include</Filter>
     </ClInclude>
-    <ClInclude Include="BestExposureEffectParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
     <ClInclude Include="BilateralEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
@@ -166,9 +163,6 @@
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="GaussianBlurEffectParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="KuwaharaEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="LensFlareEffectParameter.h">
@@ -210,9 +204,6 @@
     <ClInclude Include="FiltreUpdate.h">
       <Filter>window\main</Filter>
     </ClInclude>
-    <ClInclude Include="BestExposureFilter.h">
-      <Filter>window\picture</Filter>
-    </ClInclude>
     <ClInclude Include="bilateralFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
@@ -235,9 +226,6 @@
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="GaussianBlurFilter.h">
-      <Filter>window\picture</Filter>
-    </ClInclude>
-    <ClInclude Include="KuwaharaFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="MotionBlurFilter.h">
@@ -410,9 +398,6 @@
     <ClCompile Include="FilterWindowParam.cpp">
       <Filter>window\main</Filter>
     </ClCompile>
-    <ClCompile Include="BestExposureFilter.cpp">
-      <Filter>window\picture</Filter>
-    </ClCompile>
     <ClCompile Include="bilateralFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
@@ -435,9 +420,6 @@
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="GaussianBlurFilter.cpp">
-      <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="KuwaharaFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="MotionBlurFilter.cpp">

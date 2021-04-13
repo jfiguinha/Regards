@@ -15,8 +15,6 @@
 #include "WaveFilter.h"
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
-#include <PiccanteHDR.h>
-
 #include <config_id.h>
 #include <hqdn3d.h>
 extern float value[256];
@@ -53,16 +51,6 @@ int CFiltreEffet::RenderEffect(const int &numEffect, CEffectParameter * effectPa
     return CFiltreData::RenderEffect(numEffect,this,effectParameter);
 }
 
-int CFiltreEffet::FilterBilateral2DS(const float & sigma_s, const float & sigma_r)
-{
-    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
-    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-	CPiccanteHDR::FilterBilateral2DS(test,sigma_s,sigma_r);
-    CImageLoadingFormat imageLoadFormat(true);
-    imageLoadFormat.SetPicture(test);
-    filtreEffet->SetBitmap(&imageLoadFormat);  
-    return 0;
-}
 
 int CFiltreEffet::OilPaintingEffect(const int &size, const int &dynRatio)
 {
@@ -84,33 +72,12 @@ CRegardsBitmap * CFiltreEffet::GetPtBitmap()
 	return filtreEffet->GetPtBitmap();
 }
 
-int CFiltreEffet::FilterKuwahara(const int &kernelSize)
-{
-    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
-    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-	CPiccanteHDR::FilterKuwahara(test,kernelSize);
-    CImageLoadingFormat imageLoadFormat(true);
-    imageLoadFormat.SetPicture(test);
-    filtreEffet->SetBitmap(&imageLoadFormat);  
-    return 0;     
-}
-
 int CFiltreEffet::Bm3d(const int & fSigma)
 {
     filtreEffet->Bm3d(fSigma);
     return 0;
 }
 
-int CFiltreEffet::BestExposure(const float &tmoValue)
-{
-    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
-    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-	CPiccanteHDR::BestExposure(test,tmoValue);
-    CImageLoadingFormat imageLoadFormat(true);
-    imageLoadFormat.SetPicture(test);
-    filtreEffet->SetBitmap(&imageLoadFormat);    
-    return 0;
-}
 
 int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
 {
