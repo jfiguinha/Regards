@@ -546,7 +546,9 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_highgui.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_video.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_xphoto.so.4.5 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/liblibde265.so ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopenjp2.so.7 ./Release</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/RegardsViewer</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/liblibde265.so</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libexiv2.so.27</Command>
@@ -564,11 +566,13 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_objdetect.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_video.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_xphoto.so.4.5</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libx265.so.179</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libpoppler.so.104</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_features2d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_flann.so.4.5</Command>
+        <Command Enabled="yes">patchelf --remove-rpath ./Release/libopenjp2.so.7</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libraw_r.so.20</Command>
@@ -589,7 +593,9 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_highgui.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_video.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_xphoto.so.4.5</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/liblibde265.so</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopenjp2.so.7</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/RegardsViewer</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
