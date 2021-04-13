@@ -2325,16 +2325,21 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 		cout << "Width : " << src.cols << endl;
 		cout << "Height: " << src.rows << endl;
 		*/
+		case EXR:
         case HDR:
             {
 				CRegardsBitmap* picture = nullptr;
 				cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
-				cv::Mat ldr;
-				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(2.2f);
-				tonemap->process(hdr, ldr);
-				ldr.convertTo(ldr, CV_8UC4, 255);
+				//cv::Mat ldr;
+				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
+				tonemap->process(hdr, hdr);
+				hdr.convertTo(hdr, CV_8UC3, 255);
+				cv::cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
 				picture = new CRegardsBitmap();
-				picture->SetBitmap(ldr.data, ldr.cols, ldr.rows);
+				picture->SetBitmap(hdr.data, hdr.cols, hdr.rows);
+				picture->VertFlipBuf();
+				picture->SetFilename(fileName);
+				bitmap->SetPicture(picture);
             }
             break; 
 
@@ -2453,6 +2458,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			break;
 #endif
                 
+			/*
 		case EXR:
 		{
 			if (isThumbnail)
@@ -2485,14 +2491,6 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 							data[k + 1] = (int)(gvalue * 255.0);
 							data[k + 2] = (int)(rvalue * 255.0);
 							data[k + 3] = (int)(avalue * 255.0);
-							/*
-							int rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f) * 255;
-							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							color.red(rvalue);
-							color.green(gvalue);
-							color.blue(bvalue);
-							blank_image.pixelColor(j, i, color);*/
 						}
 					}
 					picture->VertFlipBuf();
@@ -2532,7 +2530,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				}
 			}
 		}
-		break;
+		break;*/
 
 		case WEBP:
 		{

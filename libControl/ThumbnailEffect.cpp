@@ -65,7 +65,7 @@ CThumbnailEffect::CThumbnailEffect(wxWindow* parent, wxWindowID id, const CTheme
 	histogramEffect = CLibResource::LoadStringFromResource("LBLHISTOGRAMEFFECT",1); //"Special Effect";
 	blackRoomEffect = CLibResource::LoadStringFromResource("LBLBLACKROOM",1);
 	videoLabelEffect = CLibResource::LoadStringFromResource("LBLVIDEOEFFECT",1);
-    hdrEffect = CLibResource::LoadStringFromResource("LBLHDREFFECT",1);
+    //hdrEffect = CLibResource::LoadStringFromResource("LBLHDREFFECT",1);
     rotateEffect = CLibResource::LoadStringFromResource("LBLROTATEEFFECT",1);
 
     //hdrEffect = "HDR Effect";
@@ -263,7 +263,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		CInfosSeparationBarEffect * infosSeparationSpecialEffect = CreateNewSeparatorBar(specialEffect);
 		CInfosSeparationBarEffect * infosSeparationHistogramEffect = CreateNewSeparatorBar(histogramEffect);
 		CInfosSeparationBarEffect * infosSeparationRotateEffect = CreateNewSeparatorBar(rotateEffect);
-        CInfosSeparationBarEffect * infosSeparationHDREffect = CreateNewSeparatorBar(hdrEffect);
+        //CInfosSeparationBarEffect * infosSeparationHDREffect = CreateNewSeparatorBar(hdrEffect);
 
 		int i = 0;
 		CRgbaquad colorQuad = CRgbaquad(themeThumbnail.colorBack.Red(), themeThumbnail.colorBack.Green(), themeThumbnail.colorBack.Blue());
@@ -354,9 +354,11 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 							infosSeparationRotateEffect->AddPhotoToList(numElement);
 							break;
                             
+							/*
                         case HDR_EFFECT:
                             infosSeparationHDREffect->AddPhotoToList(numElement);
                             break;
+							*/
 					}
 					break;
 			}
