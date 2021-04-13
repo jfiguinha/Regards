@@ -248,10 +248,15 @@ void CPreviewWnd::Resize()
             if (!showBitmapWindow->IsShown() && !showVideoWindow->IsShown() && !animationToolbar->IsShown())
                 bitmapInfosHeight = 0;
 
+			wxSize size = this->GetSize();
+			//rcAffichageBitmap = this->GetRect();
+			
             rcAffichageBitmap.x = 0;
             rcAffichageBitmap.y = 0;
-            rcAffichageBitmap.width = GetWindowWidth();
-            rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize;
+            //rcAffichageBitmap.width = GetWindowWidth();
+            //rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize;
+			rcAffichageBitmap.width = size.x;
+			rcAffichageBitmap.height = size.y - toolbarHeightSize;
 
             if (showBitmapWindow->IsShown())
             {
