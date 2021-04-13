@@ -3,21 +3,21 @@ NBPROC=$(nproc)
 echo $NBPROC
 
 #Get libjasper
-wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
-tar xf jasper-2.0.14.tar.gz
+#wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+#tar xf jasper-2.0.14.tar.gz
 
 #decompression
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 #compile jasper
-cd jasper-2.0.14
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
+#cd jasper-2.0.14
+#mkdir build
+#cd build
+#cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+#make -j$NBPROC
+#sudo make install
+#cd ..
+#cd ..
 
 #Compile exiv2-0.27.3 :
 cd exiv2-0.27.3
@@ -218,12 +218,12 @@ cd ..
 
 
 #compile OpenEXR
-unzip openexr-2.5.2.zip
-cd openexr-2.5.2
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-sudo make install
-cd .. 
-cd .. 
+#unzip openexr-2.5.2.zip
+#cd openexr-2.5.2
+#mkdir build
+#cd build
+#cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+#sudo make install
+#cd .. 
+#cd .. 
 

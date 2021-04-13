@@ -124,6 +124,8 @@
     <File Name="Source/FreeImage.h"/>
     <File Name="Source/CacheFile.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-fpermissive;-Wall;-pthread;;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
@@ -133,7 +135,7 @@
         <IncludePath Value="../../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff/libtiff"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff"/>
-        <Preprocessor Value="OPJ_STATIC"/>
+        <Preprocessor Value="OPJ_EXPORTS"/>
         <Preprocessor Value="FREEIMAGE_LIB"/>
         <Preprocessor Value="BITS_IN_JSAMPLE=8"/>
       </Compiler>
@@ -221,6 +223,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
