@@ -241,6 +241,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CCentralWindow::EndPictureThread));
     Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
+	Connect(wxEVENT_ANIMATIONSTART, wxCommandEventHandler(CCentralWindow::OnAnimationStart));
+	Connect(wxEVENT_ANIMATIONSTOP, wxCommandEventHandler(CCentralWindow::OnAnimationStop));
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
     windowManager->HideWindow(Pos::wxTOP, false);
@@ -1089,6 +1091,16 @@ void CCentralWindow::UpdateScreenRatio()
 		windowManager->UpdateScreenRatio();
 }
 
+void CCentralWindow::OnAnimationStop(wxCommandEvent& event)
+{
+	StopAnimation();
+}
+
+void CCentralWindow::OnAnimationStart(wxCommandEvent& event)
+{
+	StartAnimation();
+}
+
 void CCentralWindow::StartAnimation()
 {
 	animationPosition = 0;
@@ -1299,18 +1311,22 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 	if (refresh)
 		Refresh();
 
-	CAnimationToolbar* animationToolbar = (CAnimationToolbar*)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
-	if (animationToolbar != nullptr)
-		animationToolbar->AnimationStart();
 
 	SetPanelInfos(false);
 
-	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
-	if (window != nullptr)
+	if (previewWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
-		window->GetEventHandler()->AddPendingEvent(evt);
+		previewWindow->GetEventHandler()->AddPendingEvent(evt);
+
 	}
+
+	if (previewWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ANIMATIONSTART);
+		previewWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+	//previewWindow->Resize();
 
 	return result;
 }

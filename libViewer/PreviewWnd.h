@@ -74,7 +74,7 @@ namespace Regards
 			void ShowToolbar(wxCommandEvent& event);
 			void HideToolbar(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
-
+			void StartAnimation(wxCommandEvent& event);
             
 			CShowBitmap * showBitmapWindow;
 			CShowVideo * showVideoWindow;

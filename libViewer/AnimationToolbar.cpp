@@ -83,7 +83,8 @@ void CAnimationToolbar::AnimationStart()
 	{
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
-		mainWindow->StartAnimation();
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_ANIMATIONSTART);
+		wxQueueEvent(mainWindow, event);
 		Refresh();
 	}
 }
@@ -95,7 +96,11 @@ void CAnimationToolbar::AnimationStop()
 	{
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
-		mainWindow->StopAnimation();
+
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_ANIMATIONSTOP);
+		wxQueueEvent(mainWindow, event);
+
+		//mainWindow->StopAnimation();
 		Refresh();
 	}
 }

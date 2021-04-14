@@ -88,6 +88,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CPreviewWnd::OnFiltreCancel));
 	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CPreviewWnd::OnShowToolbar));
+	Connect(wxEVENT_ANIMATIONSTART, wxCommandEventHandler(CPreviewWnd::StartAnimation));
 }
 
 
@@ -100,6 +101,13 @@ CPreviewWnd::~CPreviewWnd()
 	delete(bitmapInfos);
 	delete(filtreToolbar);
 
+}
+
+void CPreviewWnd::StartAnimation(wxCommandEvent& event)
+{
+	if (animationToolbar != nullptr)
+		animationToolbar->AnimationStart();
+	this->Resize();
 }
 
 void CPreviewWnd::HideSaveButton(wxCommandEvent& event)
