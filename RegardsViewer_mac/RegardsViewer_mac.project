@@ -914,9 +914,11 @@
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/graphite2/lib/libgraphite2.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /opt/local/lib/gcc/10/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
+        <Command Enabled="no">cp /usr/local/lib/gcc/10/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+				<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib @executable_path/../Frameworks/libIexMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/jasper/lib/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/ffmpeg/lib/libavformat.58.dylib @executable_path/../Frameworks/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
