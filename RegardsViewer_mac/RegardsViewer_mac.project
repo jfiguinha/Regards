@@ -914,7 +914,7 @@
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libcrypto.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/openssl@1.1/lib/libssl.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/graphite2/lib/libgraphite2.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /opt/homebrew/lib/gcc/10/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/local/lib/gcc/10/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         		<Command Enabled="yes">install_name_tool -change /usr/local/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1116,7 +1116,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ffmpeg/4.4/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavresample.4.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.5.dylib @executable_path/../Frameworks/libopencv_imgproc.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_photo.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_photo.4.5.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/lib/gcc/10/libgcc_s.2.dylib @executable_path/../Frameworks/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgfortran.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/gcc/10/libgcc_s.2.dylib @executable_path/../Frameworks/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgfortran.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/libxcb/1.14_1/lib/libxcb.1.dylib @executable_path/../Frameworks/libxcb.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb-shape.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxau/lib/libXau.6.dylib @executable_path/../Frameworks/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb-shape.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib @executable_path/../Frameworks/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb-shape.0.dylib</Command>
