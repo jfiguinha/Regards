@@ -1277,12 +1277,19 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libImath-2_5.25.dylib @executable_path/../Frameworks/libImath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/openexr/lib/libIlmImf-2_5.25.dylib @executable_path/../Frameworks/libIlmImf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIex-2_5.25.dylib @executable_path/../Frameworks/libIex-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib @executable_path/../Frameworks/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIlmThread-2_5.25.dylib @executable_path/../Frameworks/libIlmThread-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtesseract.4.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libImath-2_5.25.dylib @executable_path/../Frameworks/libImath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIlmThread-2_5.25.dylib @executable_path/../Frameworks/libIlmThread-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib @executable_path/../Frameworks/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib @executable_path/../Frameworks/libIexMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIex-2_5.25.dylib @executable_path/../Frameworks/libIex-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/gcc/10.2.0_4/lib/gcc/10/libquadmath.0.dylib @executable_path/../Frameworks/libquadmath.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgfortran.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/gcc/10/libgcc_s.1.dylib @executable_path/../Frameworks/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgfortran.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gcc/lib/gcc/10/libgfortran.5.dylib @executable_path/../Frameworks/libgfortran.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopenblas.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gcc/lib/gcc/10/libgomp.1.dylib @executable_path/../Frameworks/libgomp.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopenblas.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_dnn.4.5.dylib @executable_path/../Frameworks/libopencv_dnn.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
@@ -1291,7 +1298,11 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_flann.4.5.dylib @executable_path/../Frameworks/libopencv_flann.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.5.dylib @executable_path/../Frameworks/libopencv_imgproc.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
-
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/x265/lib/libx265.199.dylib @executable_path/../Frameworks/libx265.199.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+		 <Command Enabled="yes">install_name_tool -change /usr/local/lib/gcc/10/libgcc_s.1.dylib @executable_path/../Frameworks/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgomp.1.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/gcc/lib/gcc/10/libquadmath.0.dylib @executable_path/../Frameworks/libquadmath.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopenblas.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/lib/gcc/10/libgcc_s.1.dylib @executable_path/../Frameworks/libgcc_s.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopenblas.0.dylib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
