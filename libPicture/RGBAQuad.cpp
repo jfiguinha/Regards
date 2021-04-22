@@ -1,5 +1,6 @@
 #include <header.h>
 #include "RGBAQuad.h"
+#include <algorithm>
 float const_floatcolor[256];
 bool initfloatvalue = false;
 
@@ -205,22 +206,22 @@ float CRgbaquad::GetGreyValue() const
 
 void CRgbaquad::SetRed(const uint8_t &red)
 {
-	this->red = red;
+	this->red = clamp(red, 0, 255);;
 }
 
 void CRgbaquad::SetGreen(const uint8_t &green)
 {
-	this->green = green;
+	this->green = clamp(green, 0, 255);;
 }
 
 void CRgbaquad::SetBlue(const uint8_t &blue)
 {
-	this->blue = blue;
+	this->blue = clamp(blue, 0, 255);;
 }
 
 void CRgbaquad::SetAlpha(const uint8_t &alpha)
 {
-	this->alpha = alpha;
+	this->alpha = clamp(alpha, 0, 255);;
 }
 
 void CRgbaquad::SetColorWithAlpha(CRgbaquad * color)
@@ -230,14 +231,25 @@ void CRgbaquad::SetColorWithAlpha(CRgbaquad * color)
 	blue = (uint8_t)(GetFBlue() * alphaDiff + color->GetFBlue() * alpha);
 	green = (uint8_t)(GetFGreen() * alphaDiff + color->GetFGreen() * alpha);
 	red = (uint8_t)(GetFRed() * alphaDiff + color->GetFRed() * alpha);
+
+	this->red = clamp(red, 0, 255);
+	this->green = clamp(green, 0, 255);
+	this->blue = clamp(blue, 0, 255);
+	this->alpha = clamp(alpha, 0, 255);
+}
+
+int CRgbaquad::clamp(const int & val, const int& minval, const int& maxval)
+{
+	std::clamp(val, minval, maxval);
+	//return min(max(val, minval), maxval);
 }
 
 void CRgbaquad::SetColor(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha)
 {
-	this->red = red;
-	this->green = green;
-	this->blue = blue;
-	this->alpha = alpha;
+	this->red = clamp(red,0,255);
+	this->green = clamp(green, 0, 255);
+	this->blue = clamp(blue, 0, 255);
+	this->alpha = clamp(alpha, 0, 255);
 }
 
 

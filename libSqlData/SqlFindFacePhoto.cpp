@@ -54,6 +54,7 @@ std::vector<int> CSqlFindFacePhoto::GetListFaceToRecognize()
 {
 	type = 5;
 	listFace.clear();
+	//ExecuteRequest("SELECT FACEPHOTO.NumFace FROM FACEPHOTO WHERE FACEPHOTO.NumFace not in(SELECT DISTINCT NumFace From FACE_RECOGNITION)");
 	ExecuteRequest("SELECT FACEPHOTO.NumFace, FaceDescriptor FROM FACEPHOTO INNER JOIN FACEDESCRIPTOR ON FACEPHOTO.NumFace = FACEDESCRIPTOR.NumFace WHERE FACEPHOTO.NumFace not in(SELECT DISTINCT NumFace From FACE_RECOGNITION)");
 	//ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE NumFace not in (SELECT DISTINCT NumFace From FACE_RECOGNITION)");
 	//ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where NumFaceCompatible = " + to_string(numFace));

@@ -95,6 +95,7 @@ public:
 private:
 
 	std::vector<wxString> Split(const wxString& s, char seperator);
+	int clamp(const int& val, const int& minval, const int& maxval);
 
 #if _MSC_VER >= 1800
 	uint8_t blue = 0;

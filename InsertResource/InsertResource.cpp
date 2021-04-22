@@ -1,6 +1,8 @@
 // InsertResource.cpp : définit le point d'entrée pour l'application console.
 //
 
+#ifdef REGARDS_RESOURCE
+
 #include "header.h"
 #include "SqlInit.h"
 #include <SqlResource.h>
@@ -852,3 +854,192 @@ IDR_OPENCL_ROTATION
 	return 0;
 }
 
+
+#else
+
+//#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <complex>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/features2d.hpp>
+#include <opencv2/xfeatures2d.hpp>
+#include <opencv2/xfeatures2d/nonfree.hpp>
+using namespace cv;
+using namespace std;
+using namespace cv::xfeatures2d;
+
+int main()
+{
+	//Give the names of the images to be registered
+	const char* imRef_name = "d:\\2.jpg";
+	const char* imNxt_name = "d:\\3.jpg";
+	int hessianThresh = 100, ransacThresh = 3;;
+	Mat mask, H12;
+	// Read images
+	Mat img1 = imread(imRef_name, cv::IMREAD_GRAYSCALE);
+	Mat img2 = imread(imNxt_name, cv::IMREAD_GRAYSCALE);
+	Mat img2Out;	// Registered image2 wrt image1
+
+	// Check to see if images exist
+	if (img1.empty() || img2.empty())
+	{
+		printf("Can’t read one of the images\n");
+		exit(0);
+	}
+
+
+	//-- Step 1: Detect the keypoints using SURF Detector
+	int minHessian = 400;
+	vector<KeyPoint> keypoints1, keypoints2;
+	Mat descriptors1, descriptors2;
+	Ptr<SIFT> descriptor = SIFT::create();
+	descriptor->detect(img1, keypoints1);
+
+	Ptr<SURF> detector = SURF::create(hessianThresh);
+	detector->compute(img1, keypoints1, descriptors1);
+
+
+	descriptor->detect(img2, keypoints2);
+	detector->compute(img2, keypoints2, descriptors2);
+
+	//-- Step 3: Matching descriptor vectors using FLANN matcher
+	FlannBasedMatcher matcher;
+	std::vector< DMatch > matches;
+	matcher.match(descriptors1, descriptors2, matches);
+
+	double max_dist = 0; double min_dist = 100;
+
+	//-- Quick calculation of max and min distances between keypoints
+	for (int i = 0; i < descriptors1.rows; i++)
+	{
+		double dist = matches[i].distance;
+		if (dist < min_dist) min_dist = dist;
+		if (dist > max_dist) max_dist = dist;
+	}
+
+	printf("-- Max dist : %f \n", max_dist);
+	printf("-- Min dist : %f \n", min_dist);
+
+	//-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
+	//-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
+	//-- small)
+	//-- PS.- radiusMatch can also be used here.
+	std::vector< DMatch > good_matches;
+
+	for (int i = 0; i < descriptors1.rows; i++)
+	{
+		if (matches[i].distance > 0.4 && matches[i].distance < 0.6)
+		{
+			good_matches.push_back(matches[i]);
+		}
+	}
+
+	//-- Draw only "good" matches
+	Mat img_matches;
+	drawMatches(img1, keypoints1, img2, keypoints2,
+		good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+		vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+
+	//-- Show detected matches
+	imshow("Good Matches", img_matches);
+
+	/*
+	for (int i = 0; i < (int)good_matches.size(); i++)
+	{
+		printf("-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  \n", i, good_matches[i].queryIdx, good_matches[i].trainIdx);
+	}
+	*/
+
+	// Extract indices of matched points
+	vector<int> queryIdxs(good_matches.size()), trainIdxs(good_matches.size());
+	for (size_t i = 0; i < good_matches.size(); i++)
+	{
+		queryIdxs[i] = good_matches[i].queryIdx;
+		trainIdxs[i] = good_matches[i].trainIdx;
+	}
+
+	// Extract matched points from indices
+	vector<Point2f> points1; KeyPoint::convert(keypoints1, points1, queryIdxs);
+	vector<Point2f> points2; KeyPoint::convert(keypoints2, points2, trainIdxs);
+
+	int nbPoint = 0;
+	for (int i = 0; i < points1.size(); i++)
+	{
+		if (abs(points1[i].y - points2[i].y) < 10)
+			nbPoint++;
+	}
+
+	/*
+
+	// Use RANSAC to find the homography
+	printf("\nComputing homography ... ");
+	H12 = findHomography(Mat(points2), Mat(points1), RANSAC, ransacThresh);
+
+	// Warp the second image according to the homography
+	warpPerspective(img2, img2Out, H12, cv::Size(img2.cols, img2.rows), INTER_LINEAR);
+
+	// Write result to file
+	imwrite("d:\\im2reg.png", img2Out);
+
+	*/
+	waitKey(0);
+
+	/*
+	// detecting keypoints
+	printf("Finding keypoints ... ");
+	//SURF ImgSurf(hessianThresh);
+	Ptr<SURF> extractor = SURF::create(hessianThresh);
+	vector<KeyPoint> keypoints1, keypoints2;
+	//ImgSurf(img1, mask, keypoints1);
+	//ImgSurf(img2, mask, keypoints2);
+	// computing descriptors
+	//SurfDescriptorExtractor extractor;
+	Mat descriptors1, descriptors2;
+	//extractor(img1, mask, keypoints1, descriptors1, TRUE);
+	//extractor(img2, mask, keypoints2, descriptors2, TRUE);
+	extractor->detectAndCompute(img1, mask, keypoints1, descriptors1, true);
+	extractor->detectAndCompute(img2, mask, keypoints2, descriptors2, true);
+
+	// Match the points
+	printf("\nMatching keypoints ... ");
+	FlannBasedMatcher matcher;
+	std::vector< DMatch > matches;
+	matcher.match(descriptors1, descriptors2, matches);
+
+	// Extract indices of matched points
+	vector<int> queryIdxs(matches.size()), trainIdxs(matches.size());
+	for (size_t i = 0; i < matches.size(); i++)
+	{
+		queryIdxs[i] = matches[i].queryIdx;
+		trainIdxs[i] = matches[i].trainIdx;
+	}
+
+	// Extract matched points from indices
+	vector<Point2f> points1; KeyPoint::convert(keypoints1, points1, queryIdxs);
+	vector<Point2f> points2; KeyPoint::convert(keypoints2, points2, trainIdxs);
+
+	// Use RANSAC to find the homography
+	printf("\nComputing homography ... ");
+	H12 = findHomography(Mat(points2), Mat(points1), RANSAC, ransacThresh);
+
+	// Warp the second image according to the homography
+	warpPerspective(img2, img2Out, H12, cv::Size(img2.cols, img2.rows), INTER_LINEAR);
+
+	// Write result to file
+	imwrite("im2reg.png", img2Out);
+	printf("\nDone!!!.... ");
+	*/
+	return 0;
+}
+
+#endif

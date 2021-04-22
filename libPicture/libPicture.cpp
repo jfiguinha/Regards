@@ -101,6 +101,8 @@ using namespace Regards::Picture;
 
 static float clamp(float val, float minval, float maxval)
 {
+	return std::clamp(val, minval, maxval);
+/*
 	// Branchless SSE clamp.
 	// return minss( maxss(val,minval), maxval );
 #if defined(__x86_64__) || defined(_M_AMD64)
@@ -109,6 +111,7 @@ static float clamp(float val, float minval, float maxval)
 #else
 	return min(max(val, minval), maxval);
 #endif
+*/
 
 }
 

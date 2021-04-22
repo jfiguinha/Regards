@@ -164,8 +164,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\SDL2;$(SolutionDir)libextern\FreeImage\Source;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR</IncludePath>
-    <LibraryPath>$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Release;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Release;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(SolutionDir)libextern\FreeImage\x64\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\</LibraryPath>
+    <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\SDL2;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Debug;$(oneTBBLibDir)\vc_mt;$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Debug;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Debug;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\x265_2.5\build\vc15-x86_64\Debug;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib</LibraryPath>
+    <ExecutablePath>$(ICInstallDir)bin;$(ICInstallDir)bin\Intel64;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -241,7 +242,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\libsqlite;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\otherlib\libGlew;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libsqlite;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\otherlib\libGlew;..\libPrint;..\libSqlEngine;..\libSqlData;..\otherlib\libsqlite;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\otherlib\librapidxml;..\libWindow;..\libParameter;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\xfeatures2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -249,7 +250,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libde265.lib;poppler.lib;poppler-cpp.lib;qpdf.lib;rawd.lib;psapi.lib;x265-static.lib;aom.lib;opencv_calib3d451d.lib;opencv_objdetect451d.lib;opencv_core451d.lib;opencv_video451d.lib;opencv_dnn451d.lib;opencv_features2d451d.lib;opencv_imgproc451d.lib;opencv_imgcodecs451d.lib;opencv_highgui451d.lib;opencv_face451d.lib;opencv_xphoto451d.lib;IlmImf-2_5_d.lib;webpdemuxd.lib;webpdecoderd.lib;webpd.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.80.0d.lib;tesseract41d.lib;cairod.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpegd.lib;wxpng.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;SDL2d.lib;glew32d.lib;Iex-2_5_d.lib;libcurl-d.lib;iconv.lib;Half-2_5_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libde265.lib;poppler.lib;poppler-cpp.lib;qpdf.lib;rawd.lib;psapi.lib;x265-static.lib;aom.lib;opencv_calib3d451d.lib;opencv_objdetect451d.lib;opencv_core451d.lib;opencv_video451d.lib;opencv_dnn451d.lib;opencv_xfeatures2d451d.lib;opencv_features2d451d.lib;opencv_imgproc451d.lib;opencv_imgcodecs451d.lib;opencv_highgui451d.lib;opencv_flann451d.lib;opencv_face451d.lib;opencv_xphoto451d.lib;opencv_photo451d.lib;webpdemuxd.lib;webpdecoderd.lib;webpd.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.80.0d.lib;tesseract41d.lib;cairod.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpegd.lib;wxpng.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;SDL2d.lib;glew32d.lib;libcurl-d.lib;iconv.lib;IlmImfd.lib;libopenjp2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -449,7 +450,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="..\Regards\half.h" />
     <ClInclude Include="SqlInit.h" />
   </ItemGroup>
   <ItemGroup>
@@ -459,7 +459,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\Regards\half.cpp" />
     <ClCompile Include="InsertResource.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

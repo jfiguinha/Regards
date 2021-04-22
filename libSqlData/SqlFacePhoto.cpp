@@ -37,6 +37,34 @@ int CSqlFacePhoto::GetVideoFacePosition(const int & numFaceid)
 	return numFace;
 }
 
+
+int CSqlFacePhoto::GetFaceCompatibleRecognition(const int& numFace)
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("Select distinct NumFaceCompatible FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
+	if (listFaceIndex.size() > 0)
+		return listFaceIndex[0];
+	return -1;
+}
+
+vector<int> CSqlFacePhoto::GetAllNumFaceRecognition()
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("Select NumFace FROM FACE_RECOGNITION");
+	return listFaceIndex;
+}
+
+vector<int> CSqlFacePhoto::GetAllNumFaceRecognition(const int& numFace)
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("Select NumFace FROM FACE_RECOGNITION WHERE NumFace != " + to_string(numFace));
+	return listFaceIndex;
+}
+
+
 vector<int> CSqlFacePhoto::GetAllNumFace()
 {
 	listFaceIndex.clear();

@@ -38,7 +38,7 @@ namespace Regards
 		protected:
 
 			void ShowPane(wxCommandEvent& event);
-			void ClosePane(wxCommandEvent& event);
+			void ClosePaneEvent(wxCommandEvent& event);
 			void RefreshData(wxCommandEvent& event);
 			
 			void RefreshPane(const int& id);

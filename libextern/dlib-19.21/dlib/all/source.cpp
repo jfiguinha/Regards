@@ -8,71 +8,21 @@
 #endif
 
 // ISO C++ code
-#include "../base64/base64_kernel_1.cpp"
-#include "../bigint/bigint_kernel_1.cpp"
-#include "../bigint/bigint_kernel_2.cpp"
-#include "../bit_stream/bit_stream_kernel_1.cpp"
-#include "../entropy_decoder/entropy_decoder_kernel_1.cpp"
-#include "../entropy_decoder/entropy_decoder_kernel_2.cpp"
-#include "../entropy_encoder/entropy_encoder_kernel_1.cpp"
-#include "../entropy_encoder/entropy_encoder_kernel_2.cpp"
-#include "../md5/md5_kernel_1.cpp"
-#include "../tokenizer/tokenizer_kernel_1.cpp"
-#include "../unicode/unicode.cpp"
-#include "../test_for_odr_violations.cpp"
-
-
-
+#include "../cuda/cpu_dlib.cpp"
+#include "../cuda/tensor_tools.cpp"
+#include "../threads/multithreaded_object_extension.cpp"
+#include "../threads/threaded_object_extension.cpp"
+#include "../threads/threads_kernel_1.cpp"
+//#include "../threads/threads_kernel_2.cpp"
+#include "../threads/threads_kernel_shared.cpp"
+#include "../threads/thread_pool_extension.cpp"
+#include "../threads/async.cpp"
 
 #ifndef DLIB_ISO_CPP_ONLY
 
-#ifdef __APPLE__
-
-#include "../misc_api/misc_api_kernel_2.cpp"
-#include "../threads/multithreaded_object_extension.cpp"
-#include "../threads/threaded_object_extension.cpp"
-#include "../threads/threads_kernel_1.cpp"
-#include "../threads/threads_kernel_2.cpp"
-#include "../threads/threads_kernel_shared.cpp"
-#include "../threads/thread_pool_extension.cpp"
-#include "../threads/async.cpp"
-#include "../timer/timer.cpp"
-#include "../stack_trace.cpp"
-
-#else
-// include this first so that it can disable the older version
-// of the winsock API when compiled in windows.
-#include "../sockets/sockets_kernel_1.cpp"
-#include "../bsp/bsp.cpp"
-
-#include "../dir_nav/dir_nav_kernel_1.cpp"
-#include "../dir_nav/dir_nav_kernel_2.cpp"
-#include "../dir_nav/dir_nav_extensions.cpp"
-#include "../linker/linker_kernel_1.cpp"
-#include "../logger/extra_logger_headers.cpp"
-#include "../logger/logger_kernel_1.cpp"
-#include "../logger/logger_config_file.cpp"
+//#ifdef __APPLE__
 #include "../misc_api/misc_api_kernel_1.cpp"
 #include "../misc_api/misc_api_kernel_2.cpp"
-#include "../sockets/sockets_extensions.cpp"
-#include "../sockets/sockets_kernel_2.cpp"
-#include "../sockstreambuf/sockstreambuf.cpp"
-#include "../sockstreambuf/sockstreambuf_unbuffered.cpp"
-#include "../server/server_kernel.cpp"
-#include "../server/server_iostream.cpp"
-#include "../server/server_http.cpp"
-#include "../threads/multithreaded_object_extension.cpp"
-#include "../threads/threaded_object_extension.cpp"
-#include "../threads/threads_kernel_1.cpp"
-#include "../threads/threads_kernel_2.cpp"
-#include "../threads/threads_kernel_shared.cpp"
-#include "../threads/thread_pool_extension.cpp"
-#include "../threads/async.cpp"
-#include "../timer/timer.cpp"
-#include "../stack_trace.cpp"
-
-#endif
-
 
 
 #ifdef DLIB_PNG_SUPPORT
@@ -95,14 +45,6 @@
 #include "../gui_core/gui_core_kernel_1.cpp"
 #include "../gui_core/gui_core_kernel_2.cpp"
 #endif // DLIB_NO_GUI_SUPPORT
-
-#include "../cuda/cpu_dlib.cpp"
-#include "../cuda/tensor_tools.cpp"
-#include "../data_io/image_dataset_metadata.cpp"
-#include "../data_io/mnist.cpp"
-#include "../svm/auto.cpp"
-#include "../global_optimization/global_function_search.cpp"
-#include "../filtering/kalman_filter.cpp"
 
 #endif // DLIB_ISO_CPP_ONLY
 

@@ -323,7 +323,6 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, dst.rows, dst.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 				
-				//IplImage image2 = cvIplImage(face);
 				cv_image<rgb_pixel> cimg(cvIplImage(dst));
 				faces.push_back(cimg);
 			}

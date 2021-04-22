@@ -24,6 +24,11 @@ namespace Regards
 			vector<CImageLoadingFormat * > GetAllFace();
 			vector<CImageLoadingFormat *> GetAllFace(const int &numFace);
 			CImageLoadingFormat * GetFacePicture(const int &numFace);
+
+			int GetFaceCompatibleRecognition(const int& numFace);
+			vector<int> GetAllNumFaceRecognition();
+			vector<int> GetAllNumFaceRecognition(const int& numFace);
+
 			vector<int> GetAllNumFace();
 			vector<int> GetAllNumFace(const int &numFace);
 			wxImage GetFace(const int &numFace);

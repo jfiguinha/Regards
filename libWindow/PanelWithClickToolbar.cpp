@@ -26,7 +26,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	//#define wxEVENT_SHOWPANE 214
 	//#define wxEVENT_CLOSEPANE 215
 	Connect(wxEVENT_SHOWPANE, wxCommandEventHandler(CPanelWithClickToolbar::ShowPane));
-	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePane));
+	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePaneEvent));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelWithClickToolbar::RefreshData));
 
 	if(isPanelVisible)
@@ -64,7 +64,7 @@ void CPanelWithClickToolbar::ShowPane(wxCommandEvent& event)
 	ClickShowButton(PANE_WITHCLICKTOOLBAR);
 }
 
-void CPanelWithClickToolbar::ClosePane(wxCommandEvent& event)
+void CPanelWithClickToolbar::ClosePaneEvent(wxCommandEvent& event)
 {
 	ClosePane(PANE_WITHCLICKTOOLBAR);
 }

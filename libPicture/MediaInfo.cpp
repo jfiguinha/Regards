@@ -29,6 +29,7 @@
 #include <cctype>
 #include <locale>
 #include <ConvertUtility.h>
+#include <regex>
 using namespace std;
 using namespace MediaInfoNameSpace;
 
@@ -41,10 +42,20 @@ using namespace MediaInfoNameSpace;
 #endif //__MINGW32
 
 // trim from end
+/*
 static inline std::wstring &rtrim(std::wstring &s) {
 	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 	return s;
 }
+*/
+static inline std::wstring rtrim(std::wstring &s) {
+    auto no_space = [](char ch) -> bool {
+        return !std::isspace<char>(ch, std::locale::classic());
+    };
+    s.erase(std::find_if(s.rbegin(), s.rend(), no_space).base(), s.end());
+    return s;
+}
+
 
 std::wstring CMediaInfo::delUnnecessary(std::wstring &str)
 {

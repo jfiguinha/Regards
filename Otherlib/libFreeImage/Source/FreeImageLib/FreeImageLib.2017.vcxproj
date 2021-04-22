@@ -286,7 +286,7 @@ copy ..\FreeImage.h ..\..\Dist\x32
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OPJ_STATIC;WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPJ_EXPORTS;IMF_EXPORT;WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

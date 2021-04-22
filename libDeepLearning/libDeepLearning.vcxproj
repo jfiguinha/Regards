@@ -122,6 +122,7 @@
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseInteloneTBB>true</UseInteloneTBB>
+    <UseInteloneMKL>Parallel</UseInteloneMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -145,6 +146,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseInteloneTBB>true</UseInteloneTBB>
+    <UseInteloneMKL>Parallel</UseInteloneMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -273,10 +275,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DLIB_NO_GUI_SUPPORT;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLIB_USE_MKL_WITH_TBB_STR;DLIB_USE_MKL_FFT_STR;DLIB_NO_GUI_SUPPORT;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;..\libUtility;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\xfeatures2d\include;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -284,6 +286,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>MaxSpeedHighLevel</Optimization>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -355,10 +358,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DLIB_USE_MKL_WITH_TBB_STR;DLIB_USE_MKL_FFT_STR;DLIB_NO_GUI_SUPPORT;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libUtility;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\xfeatures2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <OpenMP>GenerateParallelCode</OpenMP>
     </ClCompile>

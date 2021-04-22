@@ -388,7 +388,7 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 	}
 	else
 	{
-		posLargeur = min(max(0, int(screenXPos - middleScreenWidth)), posLargeurMax);
+		posLargeur = std::clamp(0, int(screenXPos - middleScreenWidth), posLargeurMax);
 	}
 
 	if (screenHeight > bitmapRatioHeight)
@@ -397,7 +397,7 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 	}
 	else
 	{
-		posHauteur = min(max(0, int(screenYPos - middleScreenHeight)), posHauteurMax);
+		posHauteur = std::clamp(0, int(screenYPos - middleScreenHeight), posHauteurMax);
 	}
 }
 

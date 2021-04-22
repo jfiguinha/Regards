@@ -29,6 +29,14 @@ int CSqlFaceLabel::GetNumFace(const wxString &faceName)
 	return numFace;
 }
 
+int CSqlFaceLabel::GetFaceNumLabel(int idFace)
+{
+	numFace = -1;
+	type = 2;
+	ExecuteRequest("SELECT NumFaceCompatible FROM FACE_RECOGNITION WHERE NumFace = " + to_string(idFace));
+	return numFace;
+}
+
 bool CSqlFaceLabel::UpdateNumFaceLabel(const int &numFace, const int &NewNumName)
 {
 	return (ExecuteRequestWithNoResult("UPDATE FACE_NAME SET numFace = " + to_string(NewNumName) + " where numFace = " + to_string(numFace)) != -1) ? true : false;
