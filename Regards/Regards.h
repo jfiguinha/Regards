@@ -44,7 +44,7 @@ using namespace Regards::OpenCL;
 #endif
 
 #ifdef __WXMSW__
-#include <gdiplus.h>
+//#include <gdiplus.h>
 // pour terminer, voici les lignes à inclure dans votre code source :
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -158,6 +158,10 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 }
 
 float value[256];
+float clamp(float val, float minval, float maxval)
+{
+	return std::clamp(val, minval, maxval);
+}
 
 
 //const char *x265_version_str = "x265 HEVC encoder 1.30";

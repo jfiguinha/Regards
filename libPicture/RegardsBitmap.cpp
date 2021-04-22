@@ -7,6 +7,7 @@
 #include <fstream>
 
 extern float value[256];
+extern float clamp(float val, float minval, float maxval);
 
 CRegardsBitmap& CRegardsBitmap::operator=(const CRegardsBitmap& other)
 {
@@ -48,9 +49,9 @@ void CRegardsBitmap::SetY(uint8_t * lum)
 			double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
 			double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
 
-			data[posPicture + 2] = std::clamp(R, 0.0, 255.0); //min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
-			data[posPicture + 1] = std::clamp(G, 0.0, 255.0);//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-			data[posPicture] = std::clamp(B, 0.0, 255.0);//min(Y + 2.03211f * U, 255.0f); //B
+			data[posPicture + 2] = clamp(R, 0.0, 255.0); //min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
+			data[posPicture + 1] = clamp(G, 0.0, 255.0);//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
+			data[posPicture] = clamp(B, 0.0, 255.0);//min(Y + 2.03211f * U, 255.0f); //B
 
 		}
 	}
@@ -257,10 +258,10 @@ void CRegardsBitmap::SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr)
 			float maximal = 255.0;
 
 			int position = x * 4 + y * m_iWidth * 4;
-			data[position] = std::clamp(r, minimal, maximal);
-			data[position+1] = std::clamp(g, minimal, maximal);
-			data[position+2] = std::clamp(b, minimal, maximal);
-			data[position+3] = std::clamp(a, minimal, maximal);
+			data[position] = clamp(r, minimal, maximal);
+			data[position+1] = clamp(g, minimal, maximal);
+			data[position+2] = clamp(b, minimal, maximal);
+			data[position+3] = clamp(a, minimal, maximal);
 		}
 	}
 }

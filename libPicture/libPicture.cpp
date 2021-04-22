@@ -94,26 +94,7 @@ using namespace Regards::exiv2;
 //using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
-//#include <libPicture.h>
-#if defined(__x86_64__) || defined(_M_AMD64)
-#include <xmmintrin.h>
-#endif
 
-static float clamp(float val, float minval, float maxval)
-{
-	return std::clamp(val, minval, maxval);
-/*
-	// Branchless SSE clamp.
-	// return minss( maxss(val,minval), maxval );
-#if defined(__x86_64__) || defined(_M_AMD64)
-	_mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val), _mm_set_ss(minval)), _mm_set_ss(maxval)));
-	return val;
-#else
-	return min(max(val, minval), maxval);
-#endif
-*/
-
-}
 
 #if defined(LIBBPG) && not defined(WIN32)
 

@@ -240,8 +240,8 @@ void CRgbaquad::SetColorWithAlpha(CRgbaquad * color)
 
 int CRgbaquad::clamp(const int & val, const int& minval, const int& maxval)
 {
-	std::clamp(val, minval, maxval);
-	//return min(max(val, minval), maxval);
+	//std::clamp(val, minval, maxval);
+	return min(max(val, minval), maxval);
 }
 
 void CRgbaquad::SetColor(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha)

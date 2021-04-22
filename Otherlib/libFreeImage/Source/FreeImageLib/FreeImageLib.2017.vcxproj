@@ -481,7 +481,7 @@ copy ..\FreeImage.h ..\..\Dist\x32
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OPJ_STATIC;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPJ_EXPORTS;IMF_EXPORT;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>

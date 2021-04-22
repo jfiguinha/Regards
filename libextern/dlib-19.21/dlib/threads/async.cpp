@@ -20,12 +20,6 @@ namespace dlib
     {
         unsigned long default_num_threads()
         {
-            try
-            {
-                char* nt = getenv("DLIB_NUM_THREADS");
-                if (nt)
-                    return string_cast<unsigned long>(nt);
-            } catch(string_cast_error&) {}
             return std::thread::hardware_concurrency();
         }
     }
