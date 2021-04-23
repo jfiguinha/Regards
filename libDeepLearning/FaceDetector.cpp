@@ -67,6 +67,7 @@ using anet_type = loss_metric<fc_no_bias<128, avg_pool_everything<
 
 static Net net;    // And finally we load the DNN responsible for face recognition.
 static anet_type anet;
+//static shape_predictor sp;
 
 //const size_t inWidth = 300;
 //const size_t inHeight = 300;
@@ -79,6 +80,17 @@ bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muDnnAccess;
 std::mutex CFaceDetector::muEyeAccess;
+//std::mutex CFaceDetector::muEyeDlibAccess;
+
+static cv::Rect dlibRectangleToOpenCV(dlib::rectangle r)
+{
+	return cv::Rect(cv::Point2i(r.left(), r.top()), cv::Point2i(r.right() + 1, r.bottom() + 1));
+}
+
+static dlib::rectangle openCVRectToDlib(cv::Rect r)
+{
+  return dlib::rectangle((long)r.tl().x, (long)r.tl().y, (long)r.br().x - 1, (long)r.br().y - 1);
+}
 
 CFaceDetector::CFaceDetector()
 {
@@ -271,6 +283,9 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 		deserialize(face_recognition) >> anet;
 
+		
+		//deserialize(eye_detection) >> sp;
+
 		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
@@ -302,6 +317,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		std::vector<CFace> listOfFace;
 		std::vector<cv::Rect> pointOfFace;
 		//std::vector<char> data = pictureData->CopyData();
+		pBitmap->VertFlipBuf();
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 
@@ -313,17 +329,17 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		{
 			if (face.confidence > confidence)
 			{
-				cv::Size size(150, 150);
-				cv::Mat dst;//dst image
+				//cv::Size size(150, 150);
+				//cv::Mat dst;//dst image
 				std::vector<uchar> buff;
 				//RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-				cv::resize(face.croppedImage, dst, size);
+				//cv::resize(face.croppedImage, dst, size);
 
-				ImageToJpegBuffer(dst, buff);
-				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, dst.rows, dst.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				ImageToJpegBuffer(face.croppedImage, buff);
+				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 				
-				cv_image<rgb_pixel> cimg(cvIplImage(dst));
+				cv_image<rgb_pixel> cimg(cvIplImage(face.croppedImage));
 				faces.push_back(cimg);
 			}
 		}
@@ -393,16 +409,16 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		{
 			if (listOfFace[i].confidence > confidence)
 			{
-				cv::Size size(150, 150);
-				cv::Mat dst;//dst image
+				//cv::Size size(150, 150);
+				//cv::Mat dst;//dst image
 				std::vector<uchar> buff;
-				cv::resize(face.croppedImage, dst, size);
+				//cv::resize(face.croppedImage, dst, size);
 
-				ImageToJpegBuffer(dst, buff);
-				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, dst.rows, dst.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+				ImageToJpegBuffer(face.croppedImage, buff);
+				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 
-				cv_image<rgb_pixel> cimg(cvIplImage(dst));
+				cv_image<rgb_pixel> cimg(cvIplImage(face.croppedImage));
 				faces.push_back(cimg);
 			}
 		}
@@ -464,8 +480,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 	if (isLoading)
 	{
 		std::vector<CFace> listOfFace;
-
+		pBitmap->VertFlipBuf();
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+		//imwrite("d:\\test.jpg", image);
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 			   
@@ -492,10 +509,14 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 						rectEye.height = rect.height;
 						RemoveRedEye(image, rectEye);
 					}
+
 				}
 			}
 		}
+
+		cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
 		pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		pBitmap->VertFlipBuf();
 	}
 }
 
@@ -541,17 +562,12 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 			int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
 			int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
-			//cv::rectangle(frameOpenCVDNN, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 255, 0), 22, 4);
-
-			// Setup a rectangle to define your region of interest
 			cv::Rect myROI(cv::Point(x1, y1), cv::Point(x2, y2));
-
-			// Crop the full image to that image contained by the rectangle myROI
-			// Note that this doesn't copy the data
 			face.croppedImage = frameOpenCVDNN(myROI);
 
 			listOfFace.push_back(face);
 			pointOfFace.push_back(myROI);
+
 		}
 	}
 	catch (cv::Exception& e)
@@ -560,6 +576,8 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
+
+
 }
 
 int CFaceDetector::FindNbFace(cv::Mat & image)

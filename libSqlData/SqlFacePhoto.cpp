@@ -6,6 +6,7 @@
 #include "SqlResult.h"
 #include "SqlPhotos.h"
 #include <FileUtility.h>
+#include <ImageLoadingFormat.h>
 #include <wx/mstream.h>
 #include <libPicture.h>
 #include <wx/file.h>
@@ -106,7 +107,9 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 	for (wxString file : files)
 	{
 		CLibPicture libPicture;
-		listFace.push_back(libPicture.LoadPicture(file));
+		CImageLoadingFormat* picture = libPicture.LoadPicture(file);
+		picture->Flip();
+		listFace.push_back(picture);
 	}
 
 	return listFace;
@@ -137,8 +140,12 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 	for (wxString file : files)
 	{
 		CLibPicture libPicture;
-		if(file != thumbnail)
-			listFace.push_back(libPicture.LoadPicture(file));
+		if (file != thumbnail)
+		{
+			CImageLoadingFormat* picture = libPicture.LoadPicture(file);
+			picture->Flip();
+			listFace.push_back(picture);
+		}
 	}
 
 	return listFace;
@@ -152,6 +159,7 @@ CImageLoadingFormat * CSqlFacePhoto::GetFacePicture(const int &numFace)
 	{
 		CLibPicture libPicture;
 		picture = libPicture.LoadPicture(thumbnail);
+		picture->Flip();
 	}
 	return picture;
 
@@ -324,7 +332,8 @@ wxImage CSqlFacePhoto::GetFace(const int &numFace)
 	wxImage image;
 	if (wxFileExists(thumbnail))
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
-	return image;
+	
+	return image.Mirror(false);
 }
 
 
