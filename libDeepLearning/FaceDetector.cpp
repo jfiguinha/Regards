@@ -67,7 +67,7 @@ using anet_type = loss_metric<fc_no_bias<128, avg_pool_everything<
 
 static Net net;    // And finally we load the DNN responsible for face recognition.
 static anet_type anet;
-//static shape_predictor sp;
+static shape_predictor sp;
 
 //const size_t inWidth = 300;
 //const size_t inHeight = 300;
@@ -134,7 +134,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap, std::vector<FaceRect> &
 
             cv::cvtColor(croppedImage, gray, COLOR_BGR2GRAY);
             muEyeAccess.lock();
-            eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+            eye_cascade.detectMultiScale(gray, eyes);
             muEyeAccess.unlock();
             for (cv::Rect rect : eyes)
             {
@@ -282,8 +282,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #endif
 
 		deserialize(face_recognition) >> anet;
-
-		
+				
 		//deserialize(eye_detection) >> sp;
 
 		eye_cascade.load(eye_detection);
@@ -494,11 +493,47 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 				{
 					cv::Mat gray;
 					std::vector<cv::Rect> eyes;
-
+					//cv_image<rgb_pixel> cimg(cvIplImage(listOfFace[i].croppedImage));
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
 					muEyeAccess.lock();
-					eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+					//dlib::rectangle dets = openCVRectToDlib(pointOfFace[i]);
+					//full_object_detection shape = sp(cimg, dets);
+					eye_cascade.detectMultiScale(gray, eyes, 1.3, 6, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(listOfFace[i].croppedImage.rows * 0.1, listOfFace[i].croppedImage.cols * 0.1));
 					muEyeAccess.unlock();
+
+#ifndef NDEBUG
+					cv::rectangle(image, pointOfFace[i], cv::Scalar(0, 255, 0));
+#endif
+
+					/*
+					try
+					{
+						cv::Rect rectEyeLeft;
+						rectEyeLeft.x = abs(shape.part(37).x());
+						rectEyeLeft.width = abs(shape.part(40).x() - shape.part(37).x());
+						rectEyeLeft.y = abs(shape.part(39).y());
+						rectEyeLeft.height = abs(shape.part(42).y() - shape.part(39).y());
+
+						RemoveRedEye(image, rectEyeLeft);
+
+
+
+						cv::Rect rectEyeRight;
+						rectEyeRight.x = abs(shape.part(43).x());
+						rectEyeRight.width = abs(shape.part(46).x() - shape.part(43).x());
+						rectEyeRight.y = abs(shape.part(45).y());
+						rectEyeRight.height = abs(shape.part(47).y() - shape.part(45).y());
+
+						RemoveRedEye(image, rectEyeRight);
+					}
+					catch (cv::Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+					}
+					*/
+					int k = 0;
 					for (cv::Rect rect : eyes)
 					{
 						cv::Rect rectEye;
@@ -509,7 +544,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 						rectEye.height = rect.height;
 						RemoveRedEye(image, rectEye);
 					}
-
+					
 				}
 			}
 		}
@@ -679,8 +714,9 @@ void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox
 		ymax = ymin;
 		ymin = old;
 	}
-
-
+#ifndef NDEBUG
+	cv::rectangle(image, rSelectionBox, cv::Scalar(0, 255, 0));
+#endif
 	for (int32_t y = ymin; y < ymax; y++) {
 		for (int32_t x = xmin; x < xmax; x++)
 		{
@@ -688,6 +724,7 @@ void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox
 			if (a < 0)
 				a = 0;
 			image.at<Vec4b>(Point(x, y))[2] = (uint8_t)(a*min(image.at<Vec4b>(Point(x, y))[1], image.at<Vec4b>(Point(x, y))[0]) + (1.0f - a)*image.at<Vec4b>(Point(x, y))[2]);
+		
 		}
 	}
 }
