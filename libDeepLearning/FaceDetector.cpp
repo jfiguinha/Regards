@@ -579,12 +579,23 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 
 }
 
-int CFaceDetector::FindNbFace(cv::Mat & image)
+int CFaceDetector::FindNbFace(cv::Mat & image, float &bestConfidence, const float& confidence)
 {
 	std::vector<cv::Rect> pointOfFace;
 	std::vector<CFace> listOfFace;
+	int nbFace = 0;
 	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-	return listOfFace.size();
+	for (int i = 0; i < listOfFace.size(); i++)
+	{
+		if (listOfFace[i].confidence > confidence)
+		{
+			if (listOfFace[i].confidence > bestConfidence)
+				bestConfidence = listOfFace[i].confidence;
+			nbFace++;
+		}
+	}
+
+	return nbFace;
 }
 
 

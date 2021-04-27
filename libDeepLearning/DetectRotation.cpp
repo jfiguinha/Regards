@@ -37,11 +37,35 @@ int CDetectRotation::GetExifOrientation(CPictureData * pictureDatt)
 
 int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData)
 {
-	CFaceDetector faceDetector;
-	//int angle = 0;
+	int angle = 0;
+	int selectAngle = 0;
+	int maxFace = 0;
 	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
-	cv::flip(image, image, -1);
-	return faceDetector.FindNbFace(image);
+	float confidence = 0;
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, image);
+	angle += 90;
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, image);
+	angle += 90;
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, image);
+	angle += 90;
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, image);
+	return selectAngle;
+}
+
+void CDetectRotation::RotateOpenCV(const float &angle, int & maxFace, float & confidence, int & selectAngle,const cv::Mat & image)
+{
+	float bestConfidence = 0;
+	cv::Mat dst;
+	CFaceDetector faceDetector;
+	faceDetector.RotateCorrectly(image, dst, angle);
+	int nbFace = faceDetector.FindNbFace(dst, bestConfidence, 0.7);
+	if (nbFace > 0 && (nbFace > maxFace || bestConfidence > confidence))
+	{
+		maxFace = nbFace;
+		selectAngle = angle;
+		confidence = bestConfidence;
+		bestConfidence = 0.0;
+	}
 }
 
 

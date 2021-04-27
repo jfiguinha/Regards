@@ -20,6 +20,7 @@ namespace Regards
 			int RotateToExifOrientation(const int &angle);
 			int RotateToOrientation(const int &angle);
 			int DectectOrientationByFaceDetector(CPictureData * pictureData);
+			void RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle, const cv::Mat& image);
 			static bool isload;
 			static mutex muLoading;
 		};

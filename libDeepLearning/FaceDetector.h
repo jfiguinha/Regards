@@ -30,17 +30,17 @@ namespace Regards
 			std::vector<int> FindFace(CRegardsBitmap * pBitmap);
             void DetectEyes(CRegardsBitmap * pBitmap);
 
-			int FindNbFace(cv::Mat & image);
+			int FindNbFace(cv::Mat & image, float& bestConfidence, const float& confidence = 0.5);
 			int DetectAngleOrientation(const cv::Mat & image);
 #endif
-
+			void RotateCorrectly(cv::Mat const& src, cv::Mat& dst, int angle);
 		private:
 			void RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox);
 			void ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff);
 			
             
 #ifndef __APPLE
-            void RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle);
+            
 			void detectFaceOpenCVDNN(cv::Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace);
 #endif
             
