@@ -328,11 +328,9 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		{
 			if (face.confidence > confidence)
 			{
-				//cv::Size size(150, 150);
-				//cv::Mat dst;//dst image
+				cv::Size size(150, 150);
 				std::vector<uchar> buff;
-				//RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-				//cv::resize(face.croppedImage, dst, size);
+				cv::resize(face.croppedImage, face.croppedImage, size);
 
 				ImageToJpegBuffer(face.croppedImage, buff);
 				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
@@ -408,10 +406,9 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		{
 			if (listOfFace[i].confidence > confidence)
 			{
-				//cv::Size size(150, 150);
-				//cv::Mat dst;//dst image
+				cv::Size size(150, 150);
 				std::vector<uchar> buff;
-				//cv::resize(face.croppedImage, dst, size);
+				cv::resize(face.croppedImage, face.croppedImage, size);
 
 				ImageToJpegBuffer(face.croppedImage, buff);
 				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
@@ -493,47 +490,14 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 				{
 					cv::Mat gray;
 					std::vector<cv::Rect> eyes;
-					//cv_image<rgb_pixel> cimg(cvIplImage(listOfFace[i].croppedImage));
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
 					muEyeAccess.lock();
-					//dlib::rectangle dets = openCVRectToDlib(pointOfFace[i]);
-					//full_object_detection shape = sp(cimg, dets);
 					eye_cascade.detectMultiScale(gray, eyes, 1.3, 6, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(listOfFace[i].croppedImage.rows * 0.1, listOfFace[i].croppedImage.cols * 0.1));
 					muEyeAccess.unlock();
 
 #ifndef NDEBUG
 					cv::rectangle(image, pointOfFace[i], cv::Scalar(0, 255, 0));
 #endif
-
-					/*
-					try
-					{
-						cv::Rect rectEyeLeft;
-						rectEyeLeft.x = abs(shape.part(37).x());
-						rectEyeLeft.width = abs(shape.part(40).x() - shape.part(37).x());
-						rectEyeLeft.y = abs(shape.part(39).y());
-						rectEyeLeft.height = abs(shape.part(42).y() - shape.part(39).y());
-
-						RemoveRedEye(image, rectEyeLeft);
-
-
-
-						cv::Rect rectEyeRight;
-						rectEyeRight.x = abs(shape.part(43).x());
-						rectEyeRight.width = abs(shape.part(46).x() - shape.part(43).x());
-						rectEyeRight.y = abs(shape.part(45).y());
-						rectEyeRight.height = abs(shape.part(47).y() - shape.part(45).y());
-
-						RemoveRedEye(image, rectEyeRight);
-					}
-					catch (cv::Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
-					*/
-					int k = 0;
 					for (cv::Rect rect : eyes)
 					{
 						cv::Rect rectEye;

@@ -21,13 +21,13 @@ CDetectRotation::~CDetectRotation()
 {
 
 }
-
+/*
 int CDetectRotation::GetAngleOrientation(CPictureData * pictureDat)
 {
 	int angle = DectectOrientationByFaceDetector(pictureDat);
 	return angle;
 }
-
+*/
 int CDetectRotation::GetExifOrientation(CPictureData * pictureDatt)
 {
 	int angle = DectectOrientationByFaceDetector(pictureDatt);
@@ -40,6 +40,7 @@ int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData
 	CFaceDetector faceDetector;
 	//int angle = 0;
 	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	cv::flip(image, image, -1);
 	return faceDetector.FindNbFace(image);
 }
 

@@ -176,7 +176,11 @@ wxString CFileUtility::GetDocumentFolderPath()
 	wxStandardPathsBase& stdp = wxStandardPaths::Get();
 	wxString documentPath = stdp.GetDocumentsDir();
 
+
 #ifdef WIN32
+#ifdef _DEBUG
+	documentPath = "d:\\Regards";
+#endif
 	documentPath.append("\\Regards");
 #else
 	documentPath.append("/Regards");

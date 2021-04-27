@@ -447,11 +447,14 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		{
 			if(filename != bitmap->GetFilename())
 			{
-				CThreadRotate * path = new CThreadRotate();
-				path->filename = bitmap->GetFilename();
-				path->mainWindow = this;
-				path->thread = new thread(RotateRecognition, path);
-
+				CMetadataExiv2 exiv2(filename);
+				if (exiv2.GetOrientation() == -1)
+				{
+					CThreadRotate* path = new CThreadRotate();
+					path->filename = bitmap->GetFilename();
+					path->mainWindow = this;
+					path->thread = new thread(RotateRecognition, path);
+				}
 			}
 			filename = bitmap->GetFilename();
 		}

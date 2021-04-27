@@ -14,7 +14,7 @@ namespace Regards
 			~CDetectRotation();
 
 			int GetExifOrientation(CPictureData * pictureDat);
-			int GetAngleOrientation(CPictureData * pictureDat);
+			//int GetAngleOrientation(CPictureData * pictureDat);
 
 		private:
 			int RotateToExifOrientation(const int &angle);
