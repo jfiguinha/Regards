@@ -61,6 +61,9 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE "CREATE TABLE PHOTOSWIHOUTTHUMBNAIL (FullPath NVARCHAR(255), Priority INT, ProcessStart INT)"
 #define SQL_DROP_PHOTOSWIHOUTTHUMBNAIL "DROP TABLE PHOTOSWIHOUTTHUMBNAIL"
 
+#define SQL_CREATE_PHOTO_EXIF_TABLE "CREATE TABLE PHOTO_EXIF (NumExifPhoto INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Exif INT)"
+#define SQL_DROP_PHOTO_EXIF "DROP TABLE PHOTO_EXIF"
+
 #define SQL_CREATE_FACE_PHOTO_TABLE "CREATE TABLE FACEPHOTO (NumFace INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Numberface INT, width INT, height INT, Pertinence REAL)"
 #define SQL_DROP_FACE_PHOTO "DROP TABLE FACEPHOTO"
 
@@ -322,6 +325,12 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
 		}
+		if (sqlVersion.GetVersion() == "2.65.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.66.0.0");
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_EXIF_TABLE);
+		}
     }
     return hr;
 }
@@ -394,7 +403,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.65.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.66.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -1014,6 +1023,12 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	} 
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE);
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_EXIF_TABLE);
 	if (hr == -1)
 	{
 		goto Exit;

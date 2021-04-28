@@ -163,7 +163,6 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVecto
 		//Suppression des photos du catalog
 		sqlPhoto.DeletePhoto(photo);
 
-		
 	}
 
 	sqlFindCriteria.SearchCriteriaAlone(criteriaVector);

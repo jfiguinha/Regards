@@ -15,6 +15,9 @@
 #include <ximage.h>
 #include <xfile.h>
 #include <xiofile.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
+#include <DeepLearning.h>
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -42,6 +45,7 @@
 #endif
 #endif
 #include "PictureData.h"
+#include <SqlPhotos.h>
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
@@ -91,7 +95,7 @@ using namespace Regards::exiv2;
 #define TYPE_IMAGE_REGARDSIMAGE 2
 #define OR ||
 
-//using namespace Regards::Sqlite;
+using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
 
@@ -156,6 +160,7 @@ CLibPicture::CLibPicture()
 {
 	svgWidth = 1024;
 	svgHeight = 1024;
+	configRegards = CParamInit::getInstance();
 }
 
 CLibPicture::~CLibPicture()
@@ -2089,6 +2094,28 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 	}
 	
 
+	if (imageLoading->GetOrientation() == -1 && configRegards->GetDetectOrientation())
+	{
+		CSqlPhotos sqlPhotos;
+		int exif = sqlPhotos.GetPhotoExif(fileName);
+		if (exif == -1)
+		{
+			bool pictureOK;
+			CPictureData* pictureData = LoadPictureData(fileName, pictureOK);
+			if (pictureData != nullptr)
+			{
+				if (pictureOK)
+				{
+					int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
+					imageLoading->ApplyExifOrientation(exif);
+					sqlPhotos.InsertPhotoExif(fileName, exif);
+				}
+				delete pictureData;
+			}
+		}
+
+	}
+	
 	return imageLoading;
 }
 

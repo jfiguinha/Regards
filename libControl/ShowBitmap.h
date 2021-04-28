@@ -65,7 +65,7 @@ namespace Regards
 			CImageLoadingFormat * tempImage;
 			bool defaultToolbar;
 			bool defaultViewer;
-			bool bitmapWndLocal;
+			//bool bitmapWndLocal;
 			bool isDiaporama;
 
 			bool transitionEnd;

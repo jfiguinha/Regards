@@ -10,7 +10,7 @@
 #include <RegardsConfigParam.h>
 #include <array>
 #include <ImageLoadingFormat.h>
-
+#include <SqlPhotos.h>
 #include <PictureData.h>
 #include <MetadataExiv2.h>
 #ifdef __APPLE__
@@ -18,6 +18,9 @@
 #else
 #include <DeepLearning.h>
 #endif
+
+
+using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -402,6 +405,7 @@ void CShowBitmap::RotateRecognition(void * param)
 			{
 				threadRotate->isReady = true;
 				threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
+
 			}
 			delete pictureData;
 		}
@@ -440,25 +444,38 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
-		
 		CMetadataExiv2 metaData(bitmap->GetFilename());
-		//if (configRegards->GetDetectOrientation() && metaData.GetOrientation() == -1)
-		if (configRegards->GetDetectOrientation())
+		if (configRegards->GetDetectOrientation() && !isThumbnail)
 		{
-			if(filename != bitmap->GetFilename())
+			if (metaData.GetOrientation() == -1)
 			{
-				CMetadataExiv2 exiv2(filename);
-				if (exiv2.GetOrientation() == -1)
+				CSqlPhotos sqlPhotos;
+				int exif = sqlPhotos.GetPhotoExif(bitmap->GetFilename());
+				if (exif == -1)
 				{
-					CThreadRotate* path = new CThreadRotate();
-					path->filename = bitmap->GetFilename();
-					path->mainWindow = this;
-					path->thread = new thread(RotateRecognition, path);
+					bool pictureOK;
+					CLibPicture libPicture;
+					CPictureData* pictureData = libPicture.LoadPictureData(filename, pictureOK);
+					if (pictureData != nullptr)
+					{
+						if (pictureOK)
+						{
+							bitmap->SetOrientation(Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData));
+							sqlPhotos.InsertPhotoExif(bitmap->GetFilename(), exif);
+						}
+						delete pictureData;
+					}
 				}
+
+				/*
+				CThreadRotate* path = new CThreadRotate();
+				path->filename = bitmap->GetFilename();
+				path->mainWindow = this;
+				path->thread = new thread(RotateRecognition, path);
+				*/
 			}
-			filename = bitmap->GetFilename();
 		}
-        
+		filename = bitmap->GetFilename();
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
@@ -502,7 +519,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 		//bitmapWindow->Refresh();
         
-        wxString filename = bitmap->GetFilename();
+       // wxString filename = bitmap->GetFilename();
         CLibPicture libPicture;
         if(libPicture.GetNbImage(filename) > 1)
         {

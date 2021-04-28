@@ -178,9 +178,8 @@ wxString CFileUtility::GetDocumentFolderPath()
 
 
 #ifdef WIN32
-#ifdef _DEBUG
-	documentPath = "d:\\Regards";
-#endif
+	//documentPath = "d:\\Regards";
+
 	documentPath.append("\\Regards");
 #else
 	documentPath.append("/Regards");

@@ -25,6 +25,30 @@ bool CSqlPhotos::InsertPhoto(const wxString & filepath, const int64_t &idFolder)
 	return (ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath) VALUES (" + to_string(idFolder) + ", '" + fullpath + "')") != -1) ? true : false;
 }
 
+void CSqlPhotos::DeletePhotoExif(const wxString& filepath)
+{
+	wxString fullpath = filepath;
+	fullpath.Replace("'", "''");
+	ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+}
+
+int64_t CSqlPhotos::GetPhotoExif(const wxString& filepath)
+{
+	typeResult = 4;
+	exif = -1;
+	wxString fullpath = filepath;
+	fullpath.Replace("'", "''");
+	ExecuteRequest("SELECT Exif FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	return (int)exif;
+}
+
+bool CSqlPhotos::InsertPhotoExif(const wxString& filepath, const int64_t& exif)
+{
+	wxString fullpath = filepath;
+	fullpath.Replace("'", "''");
+	return (ExecuteRequestWithNoResult("INSERT INTO PHOTOS (FullPath, Exif) VALUES ('" + fullpath + "', " + to_string(exif) + ")") != -1) ? true : false;
+}
+
 bool CSqlPhotos::UpdatePhotoCriteria(const int64_t &numPhoto)
 {
 	return (ExecuteRequestWithNoResult("UPDATE PHOTOS SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
@@ -106,12 +130,15 @@ void CSqlPhotos::DeletePhotoSearch()
 bool CSqlPhotos::DeletePhoto(const int64_t &numPhoto)
 {
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto = " + to_string(numPhoto));
+	ExecuteRequestWithNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
 }
 
 bool CSqlPhotos::DeletePhotoFolder(const int64_t &idFolder)
 {
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
+	ExecuteRequestWithNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
+
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder)) != -1) ? true : false;
 }
 
@@ -187,6 +214,18 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				{
 				case 0:
 					photoPath = sqlResult->ColumnDataText(i);
+					break;
+				}
+			}
+		}
+		else if (typeResult == 4)
+		{
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					exif = sqlResult->ColumnDataInt(i);
 					break;
 				}
 			}

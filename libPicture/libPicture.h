@@ -14,7 +14,7 @@ class CVideoThumbnail;
 class CImageVideoThumbnail;
 class CImageLoadingFormat;
 class CPictureData;
-
+class CRegardsConfigParam;
 
 namespace Regards
 {
@@ -108,7 +108,7 @@ namespace Regards
 
 			int svgWidth;
 			int svgHeight;
-
+			CRegardsConfigParam* configRegards;
 
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
