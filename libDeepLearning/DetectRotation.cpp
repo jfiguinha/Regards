@@ -2,6 +2,7 @@
 #ifndef __APPLE__
 #include "DetectRotation.h"
 #include "FaceDetector.h"
+#include <RegardsBitmap.h>
 using namespace cv;
 using namespace std;
 using namespace cv::dnn;
@@ -28,19 +29,21 @@ int CDetectRotation::GetAngleOrientation(CPictureData * pictureDat)
 	return angle;
 }
 */
-int CDetectRotation::GetExifOrientation(CPictureData * pictureDatt)
+int CDetectRotation::GetExifOrientation(CRegardsBitmap* pBitmap)
 {
-	int angle = DectectOrientationByFaceDetector(pictureDatt);
+	int angle = DectectOrientationByFaceDetector(pBitmap);
 	return RotateToExifOrientation(angle);
 }
 
 
-int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData)
+int CDetectRotation::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 {
 	int angle = 0;
 	int selectAngle = 0;
 	int maxFace = 0;
-	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	//cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 	float confidence = 0;
 	RotateOpenCV(angle, maxFace, confidence, selectAngle, image);
 	angle += 90;

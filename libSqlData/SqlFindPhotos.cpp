@@ -65,7 +65,7 @@ bool CSqlFindPhotos::SearchPhotos(PhotosVector * photosVector)
 {
 	typeResult = 0;
 	m_photosVector = photosVector;
-	return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA ORDER BY FullPath, GeoGps") != -1) ? true : false;
+	return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps") != -1) ? true : false;
 }
 
 bool CSqlFindPhotos::SearchPhotos(vector<int> * listPhoto)
@@ -112,13 +112,14 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 	wxString createDate = to_string(now->tm_year + 1900) + "." + month + "." + day;
 	wxString libelle = libelleNotGeo;//CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	wxString reqSQIn = "INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) ";
+	reqSQIn += "SELECT * FROM (";
 	reqSQIn += "SELECT NumPhoto, FullPath, \"" + createDate + "\" as CreateDate, \"" + libelle + "\" as GeoGps FROM PHOTOS WHERE CriteriaInsert = 0";
 	reqSQIn += " UNION ";
 	reqSQIn += "SELECT distinct PH.NumPhoto, PH.FullPath, ";
 	reqSQIn += "(select Libelle FROM PHOTOS as PHOTO INNER JOIN FOLDERCATALOG as FC ON PHOTO.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PHOTO.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria  where PHOTO.NumPhoto = PH.NumPhoto AND NUMCATEGORIE = 3) as CreateDate, ";
 	reqSQIn += "(select Libelle FROM PHOTOS as PHOTO INNER JOIN FOLDERCATALOG as FC ON PHOTO.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PHOTO.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria  where PHOTO.NumPhoto = PH.NumPhoto AND NUMCATEGORIE = 1) as GeoGps ";
 	reqSQIn += "FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE FC.NumCatalog = " + to_string(numCatalog);
-    
+	
     //Construction du In
     if (listFolder.size() > 0)
     {
@@ -156,7 +157,7 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 				reqSQIn.append(GetSearchSQL(listKeywordSelected));
 			reqSQIn.append(")");
 		}
-
+		reqSQIn += ") Group By NumPhoto";
         printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
         return reqSQIn;
     }

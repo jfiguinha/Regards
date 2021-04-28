@@ -2101,17 +2101,14 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 		int exif = sqlPhotos.GetPhotoExif(fileName);
 		if (exif == -1)
 		{
-			bool pictureOK;
-			CPictureData* pictureData = LoadPictureData(fileName, pictureOK);
-			if (pictureData != nullptr)
+			CRegardsBitmap * bitmap = imageLoading->GetRegardsBitmap();
+			if (bitmap != nullptr)
 			{
-				if (pictureOK)
-				{
-					int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
-					imageLoading->ApplyExifOrientation(exif);
-					sqlPhotos.InsertPhotoExif(fileName, exif);
-				}
-				delete pictureData;
+				bitmap->VertFlipBuf();
+				int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
+				imageLoading->ApplyExifOrientation(exif);
+				sqlPhotos.InsertPhotoExif(fileName, exif);
+				delete bitmap;
 			}
 		}
 

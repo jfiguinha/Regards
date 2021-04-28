@@ -54,6 +54,7 @@ vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 	}
 }
 
+/*
 vector<int> CDeepLearning::FindFace(CPictureData * pictureData)
 {
 	bool isLoading = false;
@@ -72,7 +73,7 @@ vector<int> CDeepLearning::FindFace(CPictureData * pictureData)
 		return list;
 	}
 }
-
+*/
 void CDeepLearning::LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json, const string &eye_detection)
 {
 	//CDetectRotation::LoadModel(rotation_json);
@@ -109,7 +110,7 @@ bool CDeepLearning::IsResourceReady()
 	return isLoading;
 }
 
-int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
+int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 {
 	bool isLoading = false;
 	muLoading.lock();
@@ -119,7 +120,7 @@ int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 	if (isLoading)
 	{
 		CDetectRotation detectRotation;
-		return detectRotation.GetExifOrientation(pictureData);
+		return detectRotation.GetExifOrientation(pBitmap);
 	}
 	return 0;
 

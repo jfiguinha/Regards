@@ -35,14 +35,18 @@ public:
 		exif = 0;
 		thread = nullptr;
 		mainWindow = nullptr;
+		bitmap = nullptr;
 	};
 	~CThreadRotate() {
-
+		if (bitmap != nullptr)
+			delete bitmap;
+		bitmap = nullptr;
 	};
 
 	bool isReady;
 	int exif;
 	wxString filename;
+	CRegardsBitmap* bitmap = nullptr;
 	std::thread * thread;
 	wxWindow * mainWindow;
 };
@@ -378,36 +382,20 @@ void CShowBitmap::RotateRecognition(void * param)
 	if (threadRotate != nullptr)
 	{
 #ifdef __APPLE__
-		bool pictureOK;
-		CLibPicture libPicture;
-        CImageLoadingFormat * picture = libPicture.LoadPicture(threadRotate->filename);
-        if(picture != nullptr)
+		if (threadRotate->bitmap != nullptr)
         {
-            CRegardsBitmap * bitmap = picture->GetRegardsBitmap();
-            if(bitmap != nullptr)
-            {
-                CDetectFace detectFace;
-                threadRotate->isReady = true;
-                threadRotate->exif = detectFace.GetExifOrientation(bitmap); 
-                delete bitmap; 
-            }
-
+			CDetectFace detectFace;
+			threadRotate->isReady = true;
+            threadRotate->exif = detectFace.GetExifOrientation(threadRotate->bitmap);
         }
-        delete picture;
 
 #else        
 		bool pictureOK;
-		CLibPicture libPicture;
-		CPictureData * pictureData = libPicture.LoadPictureData(threadRotate->filename, pictureOK);
-		if (pictureData != nullptr)
+		if (threadRotate->bitmap != nullptr)
 		{
-			if (pictureOK)
-			{
-				threadRotate->isReady = true;
-				threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
-
-			}
-			delete pictureData;
+			threadRotate->isReady = true;
+			threadRotate->bitmap->VertFlipBuf();
+			threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
 		}
 #endif
 		if (threadRotate->mainWindow != nullptr)
@@ -469,6 +457,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 					CThreadRotate* path = new CThreadRotate();
 					path->filename = bitmap->GetFilename();
 					path->mainWindow = this;
+					path->bitmap = bitmap->GetRegardsBitmap();
 					path->thread = new thread(RotateRecognition, path);
 					
 				}

@@ -36,6 +36,7 @@ using namespace Regards::Sqlite;
 using namespace Regards::OpenCL;
 using namespace Regards::Picture;
 #define TIMER_LOADPICTURE 2
+#define TIMER_EVENTFILEFS 3
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -191,6 +192,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//preview = nullptr;
 	m_previewModality = wxPreviewFrame_AppModal;
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
+	eventFileSysTimer = new wxTimer(this, TIMER_EVENTFILEFS);
 	wxMenu *menuFile = new wxMenu;
     
     wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize",1);//L"Decrease Icon Size";
@@ -320,6 +322,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     
     mainInterface->HideAbout();
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
+	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 }
 
 void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
@@ -462,6 +465,14 @@ void CViewerFrame::OnClose(wxCloseEvent& event)
 	Exit();
 }
 
+void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
+{
+	printf("OnFileSystemModified \n");
+	wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+	mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	eventFileSysTimer->Stop();
+}
+
 void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
 	mainWindow->ImageSuivante();
@@ -519,6 +530,8 @@ void CViewerFrame::Exit()
     {
 		nbTime = 0;
 		CWindowMain::SetEndProgram();
+		eventFileSysTimer->Stop();
+		loadPictureTimer->Stop();
 		mainWindowWaiting = new CWaitingWindow(this, wxID_ANY);
 		mainWindow->Show(false);
 		mainWindowWaiting->Show(true);
@@ -648,6 +661,11 @@ CViewerFrame::~CViewerFrame()
 
 	delete(loadPictureTimer);
 
+	if (eventFileSysTimer->IsRunning())
+		eventFileSysTimer->Stop();
+
+	delete(eventFileSysTimer);
+
 	if (mainWindow != nullptr)
 		delete(mainWindow);
 
@@ -716,13 +734,12 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 
 void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 {
+	eventFileSysTimer->Stop();
     if(mainWindow != nullptr)
     {
         if(!mainWindow->IsVideo())
         {
-            printf("OnFileSystemModified \n");
-            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
-            mainWindow->GetEventHandler()->AddPendingEvent(evt);
+			eventFileSysTimer->Start(1000);
         }
     }
 }

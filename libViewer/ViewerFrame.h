@@ -95,7 +95,8 @@ namespace Regards
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif
-
+			void OnTimereventFileSysTimer(wxTimerEvent& event);
+			void OnTimerLoadPicture(wxTimerEvent& event);
 			wxDECLARE_EVENT_TABLE();
 
 
@@ -110,8 +111,9 @@ namespace Regards
             static bool viewerMode;
             bool onExit;
             bool m_fsWatcher = true;
-			void OnTimerLoadPicture(wxTimerEvent& event);
+			
 			wxTimer * loadPictureTimer;
+			wxTimer * eventFileSysTimer;
 			wxString filenameTimer;
 			int nbTime;
 			CScannerFrame * frameScanner;
