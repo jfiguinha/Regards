@@ -141,7 +141,7 @@ inline void CImageIterator::SetY(int32_t y)
 inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
 {
 	if (n<0) n = (int32_t)ima->GetEffWidth();
-	else n = std::min(n,(int32_t)ima->GetEffWidth());
+	else n =  min(n,(int32_t)ima->GetEffWidth());
 
 	if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) memcpy(IterImage,buf,n);
 }
@@ -149,7 +149,7 @@ inline void CImageIterator::SetRow(uint8_t *buf, int32_t n)
 inline void CImageIterator::GetRow(uint8_t *buf, int32_t n)
 {
 	if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0))
-		memcpy(buf,IterImage,std::min((int32_t)n,(int32_t)ima->GetEffWidth()));
+		memcpy(buf,IterImage, min((int32_t)n,(int32_t)ima->GetEffWidth()));
 }
 /////////////////////////////////////////////////////////////////////
 inline uint8_t* CImageIterator::GetRow()

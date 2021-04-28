@@ -9,6 +9,7 @@
 
 using namespace Regards::exiv2;
 
+
 CPictureMetadataExiv::CPictureMetadataExiv(const wxString &filename)
 {
 	//Copy des infos exifs

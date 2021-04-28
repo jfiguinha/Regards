@@ -395,12 +395,12 @@ bool CxImage::RotateLeft(CxImage* iDst)
 			for (ys = 0; ys < newHeight; ys+=RBLOCK) {
 				if (head.biBitCount==24) {
 					//RGB24 optimized pixel access:
-					for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){    //do rotation
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){    //do rotation
 						info.nProgress = (int32_t)(100*x/newWidth);
 						x2=newWidth-x-1;
 						dstPtr = (uint8_t*) imgDest.BlindGetPixelPointer(x,ys);
 						srcPtr = (uint8_t*) BlindGetPixelPointer(ys, x2);
-						for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 							//imgDest.SetPixelColor(x, y, GetPixelColor(y, x2));
 							*(dstPtr) = *(srcPtr);
 							*(dstPtr+1) = *(srcPtr+1);
@@ -411,19 +411,19 @@ bool CxImage::RotateLeft(CxImage* iDst)
 					}//for x
 				} else {
 					//anything else than 24bpp (and 1bpp): palette
-					for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
 						info.nProgress = (int32_t)(100*x/newWidth); //<Anatoly Ivasyuk>
 						x2=newWidth-x-1;
-						for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 							imgDest.SetPixelIndex(x, y, BlindGetPixelIndex(y, x2));
 						}//for y
 					}//for x
 				}//if (version selection)
 #if CXIMAGE_SUPPORT_ALPHA
 				if (AlphaIsValid()) {
-					for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){
+					for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
 						x2=newWidth-x-1;
-						for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+						for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 							imgDest.AlphaSet(x,y,BlindAlphaGet(y, x2));
 						}//for y
 					}//for x
@@ -540,12 +540,12 @@ bool CxImage::RotateRight(CxImage* iDst)
 			for (ys = 0; ys < newHeight; ys+=RBLOCK) {
 				if (head.biBitCount==24) {
 					//RGB24 optimized pixel access:
-					for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 						info.nProgress = (int32_t)(100*y/newHeight); //<Anatoly Ivasyuk>
 						y2=newHeight-y-1;
 						dstPtr = (uint8_t*) imgDest.BlindGetPixelPointer(xs,y);
 						srcPtr = (uint8_t*) BlindGetPixelPointer(y2, xs);
-						for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
 							//imgDest.SetPixelColor(x, y, GetPixelColor(y2, x));
 							*(dstPtr) = *(srcPtr);
 							*(dstPtr+1) = *(srcPtr+1);
@@ -556,19 +556,19 @@ bool CxImage::RotateRight(CxImage* iDst)
 					}//for y
 				} else {
 					//anything else than BW & RGB24: palette
-					for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 						info.nProgress = (int32_t)(100*y/newHeight); //<Anatoly Ivasyuk>
 						y2=newHeight-y-1;
-						for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
 							imgDest.SetPixelIndex(x, y, BlindGetPixelIndex(y2, x));
 						}//for x
 					}//for y
 				}//if
 #if CXIMAGE_SUPPORT_ALPHA
 				if (AlphaIsValid()){
-					for (y = ys; y < std::min(newHeight, ys+RBLOCK); y++){
+					for (y = ys; y < min(newHeight, ys+RBLOCK); y++){
 						y2=newHeight-y-1;
-						for (x = xs; x < std::min(newWidth, xs+RBLOCK); x++){
+						for (x = xs; x < min(newWidth, xs+RBLOCK); x++){
 							imgDest.AlphaSet(x,y,BlindAlphaGet(y2, x));
 						}//for x
 					}//for y
@@ -725,10 +725,10 @@ bool CxImage::Rotate(float angle, CxImage* iDst)
 	newP4.x = (float)(p4.x*cos_angle - p4.y*sin_angle);
 	newP4.y = (float)(p4.x*sin_angle + p4.y*cos_angle);
 
-	leftTop.x = std::min( std::min(newP1.x,newP2.x), std::min(newP3.x,newP4.x));
-	leftTop.y =  std::min( std::min(newP1.y,newP2.y), std::min(newP3.y,newP4.y));
-	rightBottom.x =  std::max( std::max(newP1.x,newP2.x), std::max(newP3.x,newP4.x));
-	rightBottom.y =  std::max( std::max(newP1.y,newP2.y), std::max(newP3.y,newP4.y));
+	leftTop.x = min( min(newP1.x,newP2.x), min(newP3.x,newP4.x));
+	leftTop.y =  min( min(newP1.y,newP2.y), min(newP3.y,newP4.y));
+	rightBottom.x =  max( max(newP1.x,newP2.x), max(newP3.x,newP4.x));
+	rightBottom.y =  max( max(newP1.y,newP2.y), max(newP3.y,newP4.y));
 	leftBottom.x = leftTop.x;
 	leftBottom.y = rightBottom.y;
 	rightTop.x = rightBottom.x;
@@ -860,10 +860,10 @@ bool CxImage::Rotate2(float angle,
 	}//if
 
 	//(read new dimensions from location of corners)
-	float minx = (float) std::min(std::min(newp[0].x,newp[1].x),std::min(newp[2].x,newp[3].x));
-	float miny = (float) std::min(std::min(newp[0].y,newp[1].y),std::min(newp[2].y,newp[3].y));
-	float maxx = (float) std::max(std::max(newp[0].x,newp[1].x),std::max(newp[2].x,newp[3].x));
-	float maxy = (float) std::max(std::max(newp[0].y,newp[1].y),std::max(newp[2].y,newp[3].y));
+	float minx = (float) min(min(newp[0].x,newp[1].x),min(newp[2].x,newp[3].x));
+	float miny = (float) min(min(newp[0].y,newp[1].y),min(newp[2].y,newp[3].y));
+	float maxx = (float) max(max(newp[0].x,newp[1].x),max(newp[2].x,newp[3].x));
+	float maxy = (float) max(max(newp[0].y,newp[1].y),max(newp[2].y,newp[3].y));
 	int32_t newWidth = (int32_t) floor(maxx-minx+0.5f);
 	int32_t newHeight= (int32_t) floor(maxy-miny+0.5f);
 	float ssx=((maxx+minx)- ((float) newWidth-1))/2.0f;   //start for x
@@ -1123,12 +1123,12 @@ bool CxImage::Resample(int32_t newx, int32_t newy, int32_t mode, CxImage* iDst)
 				if (info.nEscape) break;
 				fY = y * yScale;
 				ifY = (int32_t)fY;
-				ifY1 = std::min(ymax, ifY+1);
+				ifY1 = min(ymax, ifY+1);
 				dy = fY - ifY;
 				for(int32_t x=0; x<newx; x++){
 					fX = x * xScale;
 					ifX = (int32_t)fX;
-					ifX1 = std::min(xmax, ifX+1);
+					ifX1 = min(xmax, ifX+1);
 					dx = fX - ifX;
 					// Interpolate using the four nearest pixels in the source
 					if (head.biClrUsed){
@@ -1455,9 +1455,9 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
 				eb=(int32_t)c.rgbBlue - (int32_t)ce.rgbBlue;
 
 				c = GetPixelColor(x+1,y);
-				c.rgbRed = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbRed + ((er*7)/16))));
-				c.rgbGreen = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbGreen + ((eg*7)/16))));
-				c.rgbBlue = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbBlue + ((eb*7)/16))));
+				c.rgbRed = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbRed + ((er*7)/16))));
+				c.rgbGreen = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbGreen + ((eg*7)/16))));
+				c.rgbBlue = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbBlue + ((eb*7)/16))));
 				SetPixelColor(x+1,y,c);
 				int32_t coeff=1;
 				for(int32_t i=-1; i<2; i++){
@@ -1470,9 +1470,9 @@ bool CxImage::DecreaseBpp(uint32_t nbit, bool errordiffusion, RGBQUAD* ppal, uin
 						coeff=1; break;
 					}
 					c = GetPixelColor(x+i,y+1);
-					c.rgbRed = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbRed + ((er * coeff)/16))));
-					c.rgbGreen = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbGreen + ((eg * coeff)/16))));
-					c.rgbBlue = (uint8_t)std::min((uint8_t)255L,std::max((uint8_t)0L,(uint8_t)(c.rgbBlue + ((eb * coeff)/16))));
+					c.rgbRed = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbRed + ((er * coeff)/16))));
+					c.rgbGreen = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbGreen + ((eg * coeff)/16))));
+					c.rgbBlue = (uint8_t)min((uint8_t)255L,max((uint8_t)0L,(uint8_t)(c.rgbBlue + ((eb * coeff)/16))));
 					SetPixelColor(x+i,y+1,c);
 				}
 			}
@@ -1586,10 +1586,10 @@ bool CxImage::Dither(int32_t method)
 				}
 
 				nlevel = GetPixelIndex(x + 1, y) + (error * 8) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 1, y, level);
 				nlevel = GetPixelIndex(x + 2, y) + (error * 4) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 2, y, level);
 				int32_t i;
 				for (i = -2; i < 3; i++) {
@@ -1611,7 +1611,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 1) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min((uint8_t)255, std::max((uint8_t)0, (uint8_t)nlevel));
+					level = (uint8_t)min((uint8_t)255, max((uint8_t)0, (uint8_t)nlevel));
 					SetPixelIndex(x + i, y + 1, level);
 				}
 			}
@@ -1640,10 +1640,10 @@ bool CxImage::Dither(int32_t method)
 				}
 
 				nlevel = GetPixelIndex(x + 1, y) + (error * 8) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 1, y, level);
 				nlevel = GetPixelIndex(x + 2, y) + (error * 4) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 2, y, level);
 				int32_t i;
 				for (i = -2; i < 3; i++) {
@@ -1665,7 +1665,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 1) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min((uint8_t)255, std::max((uint8_t)0, (uint8_t)nlevel));
+					level = (uint8_t)min((uint8_t)255, max((uint8_t)0, (uint8_t)nlevel));
 					SetPixelIndex(x + i, y + 1, level);
 				}
 				for (i = -2; i < 3; i++) {
@@ -1687,7 +1687,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 2) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min((uint8_t)255, std::max((uint8_t)0, (uint8_t)nlevel));
+					level = (uint8_t)min((uint8_t)255, max((uint8_t)0, (uint8_t)nlevel));
 					SetPixelIndex(x + i, y + 2, level);
 				}
 			}
@@ -1716,10 +1716,10 @@ bool CxImage::Dither(int32_t method)
 				}
 
 				nlevel = GetPixelIndex(x + 1, y) + (error * 7) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 1, y, level);
 				nlevel = GetPixelIndex(x + 2, y) + (error * 5) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 2, y, level);
 				int32_t i;
 				for (i = -2; i < 3; i++) {
@@ -1741,7 +1741,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 1) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+					level = (uint8_t)min(255, max(0, (int32_t)nlevel));
                     
 					SetPixelIndex(x + i, y + 1, level);
 				}
@@ -1764,7 +1764,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 2) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+					level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 					SetPixelIndex(x + i, y + 2, level);
 				}
 			}
@@ -1793,10 +1793,10 @@ bool CxImage::Dither(int32_t method)
 				}
 
 				nlevel = GetPixelIndex(x + 1, y) + (error * 5) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 1, y, level);
 				nlevel = GetPixelIndex(x + 2, y) + (error * 3) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(x + 2, y, level);
 				int32_t i;
 				for (i = -2; i < 3; i++) {
@@ -1818,7 +1818,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 1) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+					level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 					SetPixelIndex(x + i, y + 1, level);
 				}
 				for (i = -1; i < 2; i++) {
@@ -1834,7 +1834,7 @@ bool CxImage::Dither(int32_t method)
 						break;
 					}
 					nlevel = GetPixelIndex(x + i, y + 2) + (error * coeff) / TotalCoeffSum;
-					level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+					level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 					SetPixelIndex(x + i, y + 2, level);
 				}
 			}
@@ -1866,76 +1866,76 @@ bool CxImage::Dither(int32_t method)
 				int32_t tmp_index_y = y;
 				int32_t tmp_coeff = 32;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x - 3;
 				tmp_index_y = y + 1;
 				tmp_coeff = 12;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x - 1;
 				tmp_coeff = 26;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x + 1;
 				tmp_coeff = 30;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x + 3;
 				tmp_coeff = 16;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x - 2;
 				tmp_index_y = y + 2;
 				tmp_coeff = 12;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x;
 				tmp_coeff = 26;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x + 2;
 				tmp_coeff = 12;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x - 3;
 				tmp_index_y = y + 3;
 				tmp_coeff = 5;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x - 1;
 				tmp_coeff = 12;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x + 1;
 				tmp_coeff = 12;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 
 				tmp_index_x = x + 3;
 				tmp_coeff = 5;
 				nlevel = GetPixelIndex(tmp_index_x, tmp_index_y) + (error * tmp_coeff) / TotalCoeffSum;
-				level = (uint8_t)std::min(255, std::max(0, (int32_t)nlevel));
+				level = (uint8_t)min(255, max(0, (int32_t)nlevel));
 				SetPixelIndex(tmp_index_x, tmp_index_y, level);
 			}
 		}
@@ -1962,7 +1962,7 @@ bool CxImage::Dither(int32_t method)
 			Bmatrix[i] = (uint8_t)(dither);
 		}
 
-		int32_t scale = std::max(0,(8-2*order));
+		int32_t scale = max(0,(8-2*order));
 		int32_t level;
 		for (int32_t y=0;y<head.biHeight;y++){
 			info.nProgress = (int32_t)(100*y/head.biHeight);
@@ -2064,7 +2064,7 @@ bool CxImage::Dither(int32_t method)
 				}
 
 				nlevel = GetPixelIndex(x+1,y) + (error * 7)/16;
-				level = (uint8_t)std::min(255,std::max(0,(int32_t)nlevel));
+				level = (uint8_t)min(255,max(0,(int32_t)nlevel));
 				SetPixelIndex(x+1,y,level);
 				for(int32_t i=-1; i<2; i++){
 					switch(i){
@@ -2076,7 +2076,7 @@ bool CxImage::Dither(int32_t method)
 						coeff=1; break;
 					}
 					nlevel = GetPixelIndex(x+i,y+1) + (error * coeff)/16;
-					level = (uint8_t)std::min(255,std::max(0,(int32_t)nlevel));
+					level = (uint8_t)min(255,max(0,(int32_t)nlevel));
 					SetPixelIndex(x+i,y+1,level);
 				}
 			}
@@ -2114,7 +2114,7 @@ bool CxImage::CropRotatedRectangle( int32_t topx, int32_t topy, int32_t width, i
 	if ( fabs(angle)<0.0002 )
 		return Crop( topx, topy, topx+width, topy+height, iDst);
 
-	startx = std::min(topx, topx - (int32_t)(sin_angle*(double)height));
+	startx = min(topx, topx - (int32_t)(sin_angle*(double)height));
 	endx   = topx + (int32_t)(cos_angle*(double)width);
 	endy   = topy + (int32_t)(cos_angle*(double)height + sin_angle*(double)width);
 	// check: corners of the rectangle must be inside
@@ -2162,10 +2162,10 @@ bool CxImage::Crop(int32_t left, int32_t top, int32_t right, int32_t bottom, CxI
 {
 	if (!pDib) return false;
 
-	int32_t startx = std::max((int32_t)0L,std::min((int32_t)left,(int32_t)head.biWidth));
-	int32_t endx = std::max((int32_t)0L,std::min((int32_t)right,(int32_t)head.biWidth));
-	int32_t starty = head.biHeight - std::max((int32_t)0L,std::min((int32_t)top,(int32_t)head.biHeight));
-	int32_t endy = head.biHeight - std::max((int32_t)0L,std::min((int32_t)bottom,(int32_t)head.biHeight));
+	int32_t startx = max((int32_t)0L,min((int32_t)left,(int32_t)head.biWidth));
+	int32_t endx = max((int32_t)0L,min((int32_t)right,(int32_t)head.biWidth));
+	int32_t starty = head.biHeight - max((int32_t)0L,min((int32_t)top,(int32_t)head.biHeight));
+	int32_t endy = head.biHeight - max((int32_t)0L,min((int32_t)bottom,(int32_t)head.biHeight));
 
 	if (startx==endx || starty==endy) return false;
 
