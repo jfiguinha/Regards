@@ -430,8 +430,15 @@ void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
 		delete(path->thread);
 		path->thread = nullptr;
 
-		if(path->filename == filename && path->isReady)
+		if (path->filename == filename && path->isReady)
+		{
 			bitmapWindow->SetOrientation(path->exif);
+		}
+			
+
+		CSqlPhotos sqlPhotos;
+		sqlPhotos.InsertPhotoExif(path->filename, path->exif);
+
 	}
 
 	if (path != nullptr)
@@ -445,39 +452,30 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	if (bitmapWindow != nullptr)
 	{
 		CMetadataExiv2 metaData(bitmap->GetFilename());
-		if (configRegards->GetDetectOrientation() && !isThumbnail)
+		CLibPicture libPicture;
+		if (configRegards->GetDetectOrientation() && !isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) && Regards::DeepLearning::CDeepLearning::IsResourceReady())
 		{
 			if (metaData.GetOrientation() == -1)
 			{
 				CSqlPhotos sqlPhotos;
 				int exif = sqlPhotos.GetPhotoExif(bitmap->GetFilename());
-				if (exif == -1)
+				if (exif != -1)
 				{
-					bool pictureOK;
-					CLibPicture libPicture;
-					CPictureData* pictureData = libPicture.LoadPictureData(filename, pictureOK);
-					if (pictureData != nullptr)
-					{
-						if (pictureOK)
-						{
-							bitmap->SetOrientation(Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData));
-							sqlPhotos.InsertPhotoExif(bitmap->GetFilename(), exif);
-						}
-						delete pictureData;
-					}
+					bitmap->SetOrientation(exif);
+
 				}
 				else
 				{
-					bitmap->SetOrientation(exif);
+					CThreadRotate* path = new CThreadRotate();
+					path->filename = bitmap->GetFilename();
+					path->mainWindow = this;
+					path->thread = new thread(RotateRecognition, path);
+					
 				}
-				/*
-				CThreadRotate* path = new CThreadRotate();
-				path->filename = bitmap->GetFilename();
-				path->mainWindow = this;
-				path->thread = new thread(RotateRecognition, path);
-				*/
 			}
+
 		}
+
 		filename = bitmap->GetFilename();
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
@@ -520,10 +518,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
-		//bitmapWindow->Refresh();
-        
-       // wxString filename = bitmap->GetFilename();
-        CLibPicture libPicture;
+
         if(libPicture.GetNbImage(filename) > 1)
         {
             if (pictureToolbar != nullptr)

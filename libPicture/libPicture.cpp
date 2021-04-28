@@ -2094,8 +2094,8 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 		imageLoading = GetCancelPhoto(fileName, widthThumbnail, heightThumbnail);
 	}
 	
-
-	if (imageLoading->GetOrientation() == -1 && configRegards->GetDetectOrientation())
+	
+	if (imageLoading->GetOrientation() == -1 && TestIsPicture(fileName) && configRegards->GetDetectOrientation() && Regards::DeepLearning::CDeepLearning::IsResourceReady())
 	{
 		CSqlPhotos sqlPhotos;
 		int exif = sqlPhotos.GetPhotoExif(fileName);
