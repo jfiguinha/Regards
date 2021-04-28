@@ -456,10 +456,10 @@ CRegardsBitmap * CImageLoadingFormat::GetRegardsBitmap(const bool &copy)
 				for (long x = 0; x < GetWidth(); x++)
 				{
                     int position = x * 4 + y * GetWidth() * 4;
-                    *buffer++ = max(0,min(data[position + 2] * 255,255));
-					*buffer++ = max(0,min(data[position + 1] * 255,255));
-					*buffer++ = max(0,min(data[position] * 255,255));
-					*buffer++ = max(0,min(data[position + 3] * 255,255));
+                    *buffer++ = max((int32_t)0,min((int32_t)(data[position + 2] * 255),(int32_t)255));
+					*buffer++ = max((int32_t)0,min((int32_t)(data[position + 1] * 255),(int32_t)255));
+					*buffer++ = max((int32_t)0,min((int32_t)(data[position] * 255),(int32_t)255));
+					*buffer++ = max((int32_t)0,min((int32_t)(data[position + 3] * 255),(int32_t)255));
 				}
 			}
             return _local;

@@ -1372,8 +1372,8 @@ CImageLoadingFormat * CLibPicture::LoadVideoThumbnail(const  wxString & szFileNa
 	GetClipBox(screen, &rcClip);
 	ReleaseDC(0, screen);
 
-	int widthThumbnail = max(rcClip.right / 4, 200);
-	int heightThumbnail = max(rcClip.bottom / 4, 200);
+	int widthThumbnail = max((int32_t)(rcClip.right / 4), (int32_t)200);
+	int heightThumbnail = max((int32_t)(rcClip.bottom / 4), (int32_t)200);
 
 #else
 	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
@@ -1433,8 +1433,8 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 	GetClipBox(screen, &rcClip);
 	ReleaseDC(0, screen);
 
-	int widthThumbnail = max(rcClip.right / 4, 200);
-	int heightThumbnail = max(rcClip.bottom / 4, 200);
+	int widthThumbnail = max((int32_t)(rcClip.right / 4), (int32_t)200);
+	int heightThumbnail = max((int32_t)(rcClip.bottom / 4), (int32_t)200);
 
 #else
 	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
@@ -1781,8 +1781,8 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 	GetClipBox(screen, &rcClip);
 	ReleaseDC(0, screen);
 
-	int widthThumbnail = max(rcClip.right / 4, 200);
-	int heightThumbnail = max(rcClip.bottom / 4, 200);
+	int widthThumbnail = max((int32_t)(rcClip.right / 4), (int32_t)200);
+	int heightThumbnail = max((int32_t)(rcClip.bottom / 4), (int32_t)200);
 
 #else
 	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
@@ -1964,8 +1964,8 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 	GetClipBox(screen, &rcClip);
 	ReleaseDC(0, screen);
 
-	int widthThumbnail = max(rcClip.right / 4, 200);
-	int heightThumbnail = max(rcClip.bottom / 4, 200);
+	int widthThumbnail = max((int32_t)(rcClip.right / 4), (int32_t)200);
+	int heightThumbnail = max((int32_t)(rcClip.bottom / 4), (int32_t)200);
 
 #else
 	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
@@ -2608,8 +2608,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 							GetClipBox(screen, &rcClip);
 							ReleaseDC(0, screen);
 
-							int widthThumbnail = max(rcClip.right / 4, 200);
-							int heightThumbnail = max(rcClip.bottom / 4, 200);
+							int widthThumbnail = max((int32_t)(rcClip.right / 4), (int32_t)200);
+							int heightThumbnail = max((int32_t)(rcClip.bottom / 4), (int32_t)200);
 
 						#else
 							int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);

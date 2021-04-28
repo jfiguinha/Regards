@@ -389,8 +389,8 @@ RGBQUAD CxImage::RGBtoHSL(RGBQUAD lRGBColor)
 	G = lRGBColor.rgbGreen;
 	B = lRGBColor.rgbBlue;
 
-	cMax = max( max(R,G), B);	/* calculate lightness */
-	cMin = min( min(R,G), B);
+	cMax = std::max( std::max(R,G), B);	/* calculate lightness */
+	cMin = std::min( std::min(R,G), B);
 	L = (uint8_t)((((cMax+cMin)*HSLMAX)+RGBMAX)/(2*RGBMAX));
 
 	if (cMax==cMin){			/* r=g=b --> achromatic case */
@@ -2640,8 +2640,8 @@ bool CxImage::SelectiveBlur(float radius, uint8_t threshold, CxImage* iDst)
 	}
 
 	//build the difference mask
-	uint8_t thresh_dw = (uint8_t)max( 0 ,(int32_t)(128 - threshold));
-	uint8_t thresh_up = (uint8_t)min(255,(int32_t)(128 + threshold));
+	uint8_t thresh_dw = (uint8_t)std::max( 0 ,(int32_t)(128 - threshold));
+	uint8_t thresh_up = (uint8_t)std::min(255,(int32_t)(128 + threshold));
 	int32_t kernel[]={-100,-100,-100,-100,801,-100,-100,-100,-100};
 	if (!Tmp.Filter(kernel,3,800,128)){
 		strcpy(info.szLastError,Tmp.GetLastError());
@@ -3359,7 +3359,7 @@ int32_t  CxImage::OptimalThreshold(int32_t method, RECT * pBox, CxImage* pContra
 		}
 
 		//potential difference (based on Electrostatic Binarization method by J. Acharya & G. Sreechakra)
-		// L=-fabs(vdiff/vsum); è molto selettivo, sembra che L=-fabs(vdiff) o L=-(vsum)
+		// L=-fabs(vdiff/vsum); Ã¨ molto selettivo, sembra che L=-fabs(vdiff) o L=-(vsum)
 		// abbiano lo stesso valore di soglia... il che semplificherebbe molto la routine
 		double vdiff = 0;
 		for (k=gray_min;k<=i;k++)

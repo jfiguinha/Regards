@@ -59,6 +59,7 @@
  #define CXIMAGE_SUPPORT_WINDOWS 0
 #endif
 
+/*
 #ifndef minmax
 #ifndef min
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -67,6 +68,7 @@
 #define max(a,b) (((a)>(b))?(a):(b))
 #endif
 #endif
+*/
 
 #ifndef PI
  #define PI 3.141592653589793f

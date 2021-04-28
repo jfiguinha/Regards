@@ -469,7 +469,7 @@ bool CxImage::CreateFromArray(uint8_t* pArray, int size,uint32_t dwWidth,uint32_
 		}
 		else
 		{
-			memcpy(dst, src, min(info.dwEffWidth, dwBytesperline));
+			memcpy(dst, src, std::min(info.dwEffWidth, dwBytesperline));
 		}
 	}
 
@@ -512,7 +512,7 @@ bool CxImage::CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHe
 					src+=4;
 				}
 			} else {
-				memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+				memcpy(dst,src,std::min((int32_t)info.dwEffWidth,(int32_t)dwBytesperline));
 			}
 		}
 	}
