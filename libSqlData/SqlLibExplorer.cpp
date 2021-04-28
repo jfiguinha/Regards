@@ -64,6 +64,8 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_PHOTO_EXIF_TABLE "CREATE TABLE PHOTO_EXIF (NumExifPhoto INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Exif INT)"
 #define SQL_DROP_PHOTO_EXIF "DROP TABLE PHOTO_EXIF"
 
+#define SQL_INDEX_PHOTO_EXIF "CREATE UNIQUE INDEX idx_PHOTO_EXIF_FullPath ON PHOTO_EXIF(FullPath)"
+
 #define SQL_CREATE_FACE_PHOTO_TABLE "CREATE TABLE FACEPHOTO (NumFace INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), Numberface INT, width INT, height INT, Pertinence REAL)"
 #define SQL_DROP_FACE_PHOTO "DROP TABLE FACEPHOTO"
 
@@ -1034,7 +1036,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 		goto Exit;
 	}
 
-
+	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTO_EXIF);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOFOLDER);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
