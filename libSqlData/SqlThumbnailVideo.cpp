@@ -8,6 +8,7 @@
 #include <wx/mstream.h>
 #include <libPicture.h>
 #include <wx/file.h>
+#include <wx/dir.h>
 #include <FileUtility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -154,7 +155,13 @@ bool CSqlThumbnailVideo::EraseThumbnail()
 	documentPath.append("/ThumbnailVideo");
 #endif
 
-	wxRmdir(documentPath);
+	wxArrayString files;
+	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	for (wxString filename : files)
+	{
+		wxRemoveFile(filename);
+	}
+	//wxRmdir(documentPath);
 	return (ExecuteRequestWithNoResult("DELETE FROM VIDEOTHUMBNAIL") != -1) ? true : false;
 }
 

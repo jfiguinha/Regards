@@ -11,6 +11,7 @@
 #include <FileUtility.h>
 #include <libPicture.h>
 #include <wx/file.h>
+#include <wx/dir.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -182,7 +183,13 @@ bool CSqlThumbnail::EraseThumbnail()
 	documentPath.append("/Thumbnail");
 #endif
 
-	wxRmdir(documentPath);
+	wxArrayString files;
+	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	for (wxString filename : files)
+	{
+		wxRemoveFile(filename);
+	}
+	//wxRmdir(documentPath);
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
 

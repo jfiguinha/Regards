@@ -2111,7 +2111,10 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 				delete bitmap;
 			}
 		}
-
+		else
+		{
+			imageLoading->ApplyExifOrientation(exif);
+		}
 	}
 	
 	return imageLoading;

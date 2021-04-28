@@ -367,7 +367,13 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 	documentPath.append("/Face");
 #endif
 
-	wxRmdir(documentPath);
+	wxArrayString files;
+	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+	for (wxString filename : files)
+	{
+		wxRemoveFile(filename);
+	}
+	//wxRmdir(documentPath);
 
 	return (ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO") != -1) ? true : false;
 }
