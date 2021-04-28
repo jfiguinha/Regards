@@ -30,6 +30,8 @@ public:
 	void ReadVideo(bool & hasGps, bool & hasDataTime, wxString &dateTimeInfos, wxString &latitude, wxString &longitude);
 	void ReadPicture(bool & hasGps, bool & hasDataTime, wxString &dateTimeInfos, wxString &latitude, wxString &longitude);
 
+	static void WriteExif(const std::string& fileName, const int& orientation);
+
 private:
 
 	CExiv * exivData;

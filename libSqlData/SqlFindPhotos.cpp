@@ -81,7 +81,7 @@ bool CSqlFindPhotos::SearchPhotosByTypeAffichage(PhotosVector * photosVector, co
 	typeResult = 0;
 	m_photosVector = photosVector;
 	//return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM  PHOTOSSEARCHCRITERIA ORDER BY CreateDate desc, GeoGps") != -1) ? true : false;
-	return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM  PHOTOSSEARCHCRITERIA ORDER BY FullPath, GeoGps") != -1) ? true : false;
+	return (ExecuteRequest("SELECT NumPhoto,FullPath, CreateDate, GeoGps FROM  PHOTOSSEARCHCRITERIA Group By NumPhoto ORDER BY FullPath, GeoGps") != -1) ? true : false;
 }
 
 wxString CSqlFindPhotos::GetSearchSQL(vector<int> list)

@@ -1176,6 +1176,7 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 bool CCentralWindow::GetProcessEnd()
 {
 	TRACE();
+	StopAnimation();
 	if (processLoadPicture)
 		return false;
 

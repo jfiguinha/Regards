@@ -89,6 +89,10 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 		fileOut.Create(thumbnail, true);
 		fileOut.Write(zBlob, nBlob);
 		fileOut.Close();
+
+
+
+
 		returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 
 	}

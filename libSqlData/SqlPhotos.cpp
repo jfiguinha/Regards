@@ -38,7 +38,7 @@ int64_t CSqlPhotos::GetPhotoExif(const wxString& filepath)
 	exif = -1;
 	wxString fullpath = filepath;
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT Exif FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT Exif FROM PHOTO_EXIF WHERE FullPath = '" + fullpath + "'");
 	return (int)exif;
 }
 
@@ -46,12 +46,12 @@ bool CSqlPhotos::InsertPhotoExif(const wxString& filepath, const int64_t& exif)
 {
 	wxString fullpath = filepath;
 	fullpath.Replace("'", "''");
-	return (ExecuteRequestWithNoResult("INSERT INTO PHOTOS (FullPath, Exif) VALUES ('" + fullpath + "', " + to_string(exif) + ")") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("INSERT INTO PHOTO_EXIF (FullPath, Exif) VALUES ('" + fullpath + "', " + to_string(exif) + ")") != -1) ? true : false;
 }
 
 bool CSqlPhotos::UpdatePhotoCriteria(const int64_t &numPhoto)
 {
-	return (ExecuteRequestWithNoResult("UPDATE PHOTOS SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("UPDATE PHOTO_EXIF SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
 }
 
 int  CSqlPhotos::GetCriteriaInsert(const wxString & filepath)

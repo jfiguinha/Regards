@@ -18,6 +18,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <DeepLearning.h>
+
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -2899,6 +2900,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			CMetadataExiv2 metadata(fileName);
 			orientation = metadata.GetOrientation();
 			bitmap->SetOrientation(orientation);
+
 		}
 		
 #ifdef ROTDETECT

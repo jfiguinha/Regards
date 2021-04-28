@@ -466,7 +466,10 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 						delete pictureData;
 					}
 				}
-
+				else
+				{
+					bitmap->SetOrientation(exif);
+				}
 				/*
 				CThreadRotate* path = new CThreadRotate();
 				path->filename = bitmap->GetFilename();

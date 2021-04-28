@@ -16,6 +16,7 @@
 #include <ThumbnailData.h>
 #include "ThumbnailMessage.h"
 #include <libPicture.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 
@@ -729,6 +730,8 @@ void CThumbnail::LoadPicture(void * param)
 	else
 	{
 		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+
+
 	}
 
 

@@ -22,6 +22,19 @@ public:
 	wxString GetGpsfValue(const wxString& gpsValue);
 };
 
+void CPictureMetadata::WriteExif(const std::string & fileName, const int & orientation)
+{
+	Exiv2::ExifData exifData;
+	exifData["Exif.Image.Orientation"] = orientation;
+	// Finally, write the remaining Exif data to the image file
+	Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(fileName);
+	assert(image.get() != 0);
+
+	image->setExifData(exifData);
+	image->writeMetadata();
+}
+
+
 wxString CExiv::GetGpsfValue(const wxString& gpsValue)
 {
 	wxString returnValue = "";
