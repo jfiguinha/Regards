@@ -27,6 +27,7 @@ namespace Regards
 			bool CopyMetadata(const wxString &output);
 			CxMemFile * DecodeThumbnail(wxString &extension, int &orientation);
 			void SetDateTime(const wxString &dateTime);
+			void SetOrientation(const int& orientation);
 			void SetGpsInfos(const wxString &latitudeRef, const wxString & longitudeRef, const wxString &latitude, const wxString &longitude);
 			void ReadVideo(bool & hasGps, bool & hasDataTime, wxString &dateTimeInfos, wxString & latitude, wxString & longitude);
 			void ReadPicture(bool & hasGps, bool & hasDataTime, wxString &dateTimeInfos, wxString & latitude, wxString & longitude);

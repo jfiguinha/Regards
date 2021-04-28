@@ -81,6 +81,26 @@ wxString CPictureMetadataExiv::GetCreationDate()
 	return date;
 }
 
+void CPictureMetadataExiv::SetOrientation(const int& orientation)
+{
+	Exiv2::ExifData& exifData = exif->exifData();
+	if (!exifData.empty())
+	{
+		AddAsciiValue("Exif.Image.Orientation", to_string(orientation), exifData);
+		exif->setExifData(exifData);
+		exif->writeMetadata();
+	}
+	else
+	{
+		Exiv2::ExifData exifData;
+		AddAsciiValue("Exif.Image.Orientation", to_string(orientation), exifData);
+		exif->setExifData(exifData);
+		exif->writeMetadata();
+	}
+
+}
+
+
 void CPictureMetadataExiv::SetDateTime(const wxString &dateTime)
 {
 	Exiv2::ExifData &exifData = exif->exifData();
