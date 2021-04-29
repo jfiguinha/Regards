@@ -576,7 +576,8 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libcurl-.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_share.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf28.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\poppler.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -591,6 +592,7 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_calib3d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_flann451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_video451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xfeatures2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_features2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xphoto451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_photo451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -603,11 +605,15 @@ XCOPY /Y "$(ICInstallDir)redist\intel64_win\compiler\*.dll" $(SolutionDir)$(Plat
 XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbb12.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbbmalloc.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbbmalloc_proxy.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freetype.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexpat.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libde265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -616,18 +622,29 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexif.dll"  
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fftw3f.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\ 
+COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\libcairo-2.dll
 COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract41.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.80.0.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freeglut.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\glew32.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Imath-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmThread-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Half-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Imath-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmThread-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlibd1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Half-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jpeg62.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libwebpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libwebpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fontconfig-1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\intl-8.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lzma.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\$(Configuration)\  
+XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -683,7 +700,8 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libwebpmux.dll
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
 XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" $(SolutionDir)$(Platform)\$(Configuration)\Resources
-XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libcurl-.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_share.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\qpdf-master\bin\qpdf28.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\poppler.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -698,16 +716,59 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_calib3d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_flann451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_video451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_features2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xfeatures2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_features2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xphoto451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_photo451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\sqlite3.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\SDL2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(ICInstallDir)redist\intel64_win\compiler\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbb12.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbbmalloc.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(OneTBBProductDir)\redist\intel64\vc_mt\tbbmalloc_proxy.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freetype.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tiff.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexpat.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libde265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jasper.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fftw3f.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\ 
 COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\libcairo-2.dll
-</Command>
+COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract41.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.80.0.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\freeglut.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\glew32.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Imath-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmThread-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlibd1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Half-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jpeg62.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libwebpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fontconfig-1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\intl-8.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lzma.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\$(Configuration)\  
+XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
