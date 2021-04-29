@@ -237,10 +237,15 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../libextern/libRapidXML;..\libTheme;..\libWindowMain;$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\include;../libResource;../libDatastructure;../libUtility;../libPicture;../libSqlData;../libSqlEngine;../libsqlite;../libexif;../libMediaInfo</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

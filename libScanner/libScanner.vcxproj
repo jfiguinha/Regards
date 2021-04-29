@@ -248,6 +248,12 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -341,7 +347,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
-      <StringPooling>false</StringPooling>
+      <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMP>GenerateParallelCode</OpenMP>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -350,6 +356,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions3</EnableEnhancedInstructionSet>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -370,13 +377,16 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
-      <StringPooling>false</StringPooling>
+      <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMP>GenerateParallelCode</OpenMP>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>MaxSpeedHighLevel</Optimization>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

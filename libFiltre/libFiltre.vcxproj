@@ -251,6 +251,12 @@
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

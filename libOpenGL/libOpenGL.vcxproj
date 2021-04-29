@@ -240,10 +240,15 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)include;.;..\libPicture;..\libOpenCLEngine;..\libFiltreInterface;..\libDataStructure;..\LibResource;..\libUtility;..\libextern\glew-2.1.0;$(SolutionDir)Otherlib\wxSVG\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -387,7 +392,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions3</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>
@@ -430,7 +435,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>

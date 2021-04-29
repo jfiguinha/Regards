@@ -234,10 +234,15 @@
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\libWindowMain;..\libFiltre;..\libWindow;..\libextern\ffmpeg-master\include;..\libControl;..\include;..\libFiltreInterface;..\libOpenGL;..\libextern\libjpeg-turbo-1.5.1;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libOpenCLEngine;..\libUtility;..\libextern\librapidxml;..\libTheme;D:\Program Files (x86)\Visual Leak Detector\include;..\libDeepLearning;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

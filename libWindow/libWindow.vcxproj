@@ -234,10 +234,15 @@
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\libTheme;..\include;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libParameter;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource;..\Regards\Resources;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

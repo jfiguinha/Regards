@@ -295,11 +295,16 @@
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\libFiltre;..\include;..\libControl;$(SolutionDir)\libextern\poppler_windows-master\include\poppler;$(SolutionDir)\libextern\poppler_windows-master\include\poppler\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libFiltreInterface;..\libDialog;..\libSqlite</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

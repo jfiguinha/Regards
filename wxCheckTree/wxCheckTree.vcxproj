@@ -227,11 +227,16 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>wxUSE_DIRDLG;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../libUtility;../include</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -368,7 +373,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>../libUtility;../include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>Async</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>
@@ -410,7 +415,7 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>../libUtility;../include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>Async</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>

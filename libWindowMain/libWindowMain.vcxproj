@@ -236,6 +236,12 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -347,7 +353,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UseProcessorExtensions>None</UseProcessorExtensions>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>Async</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>
@@ -391,7 +397,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <UseProcessorExtensions>None</UseProcessorExtensions>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <ExceptionHandling>Async</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <Optimization>MaxSpeedHighLevel</Optimization>
     </ClCompile>
