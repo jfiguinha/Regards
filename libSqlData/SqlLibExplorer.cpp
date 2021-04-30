@@ -5,8 +5,12 @@
 #include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <libPicture.h>
+#include <FileUtility.h>
+#include <OpenCVEffect.h>
+#include <wx/dir.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
+using namespace Regards::OpenCV;
 
 #define SQL_CREATE_VERSION_TABLE "CREATE TABLE VERSION (libelle NVARCHAR(255) PRIMARY KEY)"
 #define SQL_DROP_VERSION	"DROP TABLE VERSION"
@@ -332,6 +336,23 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.66.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_EXIF_TABLE);
+			wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+			documentPath.append("\\Face");
+#else
+			documentPath.append("/Face");
+#endif
+			wxArrayString files;
+			wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+			CLibPicture libPicture;
+
+			for (wxString file : files)
+			{
+				if (libPicture.TestImageFormat(file) != 0)
+				{
+					COpenCVEffect::LoadAndRotate(file, 180);
+				}
+			}
 		}
     }
     return hr;
