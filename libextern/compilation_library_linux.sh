@@ -219,7 +219,8 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-
+#extract openjpeg lib
+tar xf openjpeg-v2.4.0-linux-x86_64.tar.gz
 
 #compile OpenEXR
 #unzip openexr-2.5.2.zip

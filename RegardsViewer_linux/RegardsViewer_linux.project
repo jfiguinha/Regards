@@ -191,6 +191,7 @@
         <LibraryPath Value="../libextern/LibRaw-0.20.0/lib/.libs"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
+        <LibraryPath Value="../libextern/openjpeg-v2.4.0-linux-x86_64/lib"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="wxCheckTree"/>
@@ -301,7 +302,7 @@
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
         <Library Value="EGL"/>
-        <Library Value="openjp2"/>
+        <Library Value="libopenjp2.a"/>
         <Library Value="exif"/>
         <Library Value="gnutls"/>
         <Library Value="vorbis"/>
