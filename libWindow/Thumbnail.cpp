@@ -353,10 +353,48 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CThumbnail::OnScrollMove));
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
+	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::OnRefreshThumbnail));
 	processIdle = true;
 
 	listProcessWindow.push_back(this);
     
+}
+
+void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
+{
+	int idPhoto = event.GetId();
+	wxString* filename = (wxString * )event.GetClientData();
+	if (filename != nullptr)
+	{
+		CIcone* icone = FindIcone(*filename);
+		if (icone != nullptr)
+		{
+			icone->DestroyCache();
+			/*
+			CThumbnailData* pThumbnailData = nullptr;
+			if (icone != nullptr && pThumbnailData == nullptr)
+				pThumbnailData = icone->GetData();
+
+			if (icone != nullptr && pThumbnailData != nullptr)
+			{
+				wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
+				CLibPicture libPicture;
+				CImageLoadingFormat* picture = libPicture.LoadPicture(thumbnail);
+				if (picture != nullptr)
+				{
+					pThumbnailData->SetIsProcess(false);
+					pThumbnailData->SetBitmap(picture);
+					pThumbnailData->SetIsLoading(false);
+					icone->DestroyCache();
+					delete picture;
+				}
+
+			}*/
+		}
+		delete filename;
+		this->Refresh();
+	}
+
 }
 
 void CThumbnail::MoveTop()

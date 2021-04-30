@@ -19,7 +19,7 @@ namespace Regards
 			static void EqualizeHistogram(CRegardsBitmap * pictureData);
 			static void BrightnessAndContrastAuto(cv::Mat & image, float clipHistPercent = 0);
 			static void BrightnessAndContrastAuto(cv::UMat & pictureData, float clipHistPercent = 0);
-
+			static void LoadAndRotate(const wxString &filePath, const int & rotate);
 		};
 	}
 }

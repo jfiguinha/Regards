@@ -46,6 +46,7 @@
 #include <ParamInit.h>
 #include "ListFace.h"
 #include <wx/busyinfo.h>
+#include <OpenCVEffect.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -195,6 +196,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
+	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -241,6 +243,24 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 
 	listProcessWindow.push_back(this);
+}
+
+void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
+{
+	int numPhoto = event.GetInt();
+	int rotate = event.GetExtraLong();
+
+	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+	Regards::OpenCV::COpenCVEffect::LoadAndRotate(thumbnail, rotate);
+	wxWindow* window = this->FindWindowById(THUMBNAILVIEWERPICTURE);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHTHUMBNAIL);
+		evt.SetInt(numPhoto);
+		evt.SetClientData(event.GetClientData());
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 }
 
 void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)

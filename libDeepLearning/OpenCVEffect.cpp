@@ -14,7 +14,6 @@ public:
 };
 
 
-
 void COpenCVEffectPimpl::EqualizeHistogram(cv::Mat &src)
 {
 	Mat chans[4];
@@ -266,4 +265,26 @@ void COpenCVEffect::EqualizeHistogram(CRegardsBitmap * pBitmap)
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	COpenCVEffectPimpl::EqualizeHistogram(image);
 	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+}
+
+
+void COpenCVEffect::LoadAndRotate(const wxString& filePath, const int& rotate)
+{
+	Mat src = imread(filePath.ToStdString());
+	if (rotate == 90) {
+		// Rotate clockwise 270 degrees
+		cv::transpose(src, src);
+		cv::flip(src, src, 0);
+	}
+	else if (rotate == 180) {
+		// Rotate clockwise 180 degrees
+		cv::flip(src, src, -1);
+	}
+	else if (rotate == 270) {
+		// Rotate clockwise 90 degrees
+		cv::transpose(src, src);
+		cv::flip(src, src, 1);
+	}
+	imwrite(filePath.ToStdString(), src);
+
 }

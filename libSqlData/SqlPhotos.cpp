@@ -42,6 +42,14 @@ int64_t CSqlPhotos::GetPhotoExif(const wxString& filepath)
 	return (int)exif;
 }
 
+bool CSqlPhotos::UpdatePhotoExif(const wxString& filepath, const int64_t& exif)
+{
+	wxString fullpath = filepath;
+	fullpath.Replace("'", "''");
+	return (ExecuteRequestWithNoResult("UPDATE PHOTO_EXIF SET Exif = " + to_string(exif) + " WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
+
+}
+
 bool CSqlPhotos::InsertPhotoExif(const wxString& filepath, const int64_t& exif)
 {
 	wxString fullpath = filepath;

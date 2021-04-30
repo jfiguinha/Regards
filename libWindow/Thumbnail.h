@@ -102,7 +102,7 @@ namespace Regards
 			virtual void RenderIcone(wxDC * dc) = 0;
 			virtual void UpdateScroll() = 0;
 			
-
+			void OnRefreshThumbnail(wxCommandEvent& event);
 			void UpdateRenderIcone(wxCommandEvent& event);
 			CIcone *  FindIcone(const wxString &filename);
 			//------------------------------------------------------------

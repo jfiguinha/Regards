@@ -129,6 +129,7 @@ namespace Regards
 
 		protected:
 
+			int GetExifOrientation(const int& angle);
 			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput) { return false; };
 #ifdef RENDEROPENGL
 			virtual void AfterRender() {};

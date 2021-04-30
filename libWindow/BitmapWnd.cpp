@@ -12,7 +12,9 @@
 #include <MetadataExiv2.h>
 #include <window_id.h>
 #include <config_id.h>
+#include <SqlPhotos.h>
 #include <OpenCLEffect.h>
+#include <FileUtility.h>
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #endif
@@ -22,7 +24,7 @@
 #include <OpenCLEngine.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
-
+using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace Regards::exiv2;
@@ -920,6 +922,27 @@ void CBitmapWnd::Rotate90()
 	angle += 90;
 	angle = angle % 360;
     updateFilter = true;
+	CSqlPhotos sqlPhotos;
+	int exif = sqlPhotos.GetPhotoExif(filename);
+	if (exif != -1)
+	{
+		exif = GetExifOrientation(angle);
+		sqlPhotos.UpdatePhotoExif(filename, exif);
+		int numPhoto = sqlPhotos.GetPhotoId(filename);
+		wxWindow* window = this->FindWindowById(idWindowMain);
+		if (window != nullptr)
+		{
+			//wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+
+			wxString* _filename = new wxString(filename);
+			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
+			evt.SetInt(numPhoto);
+			evt.SetExtraLong(90);
+			evt.SetClientData(_filename);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+	
     UpdateResized();
     RefreshWindow();
 }
@@ -930,6 +953,26 @@ void CBitmapWnd::Rotate270()
 	angle += 270;
 	angle = angle % 360;
     updateFilter = true;
+
+	CSqlPhotos sqlPhotos;
+	int exif = sqlPhotos.GetPhotoExif(filename);
+	if (exif != -1)
+	{
+		exif = GetExifOrientation(angle);
+		sqlPhotos.UpdatePhotoExif(filename, exif);
+		int id = sqlPhotos.GetPhotoId(filename);
+		wxWindow* window = this->FindWindowById(idWindowMain);
+		if (window != nullptr)
+		{
+			wxString* _filename = new wxString(filename);
+			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
+			evt.SetInt(id);
+			evt.SetExtraLong(270);
+			evt.SetClientData(_filename);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+
     UpdateResized();
     RefreshWindow();
 }
@@ -1507,7 +1550,16 @@ void CBitmapWnd::GenerateExifPosition(int & localAngle, int & localflipHorizonta
 	localAngle = localAngle % 360;
 }
 
-
+int CBitmapWnd::GetExifOrientation(const int& angle)
+{
+	if (angle > 44 && angle < 135) //Rotate 90
+		return 8;
+	else if (angle > 134 && angle < 225) //Rotate 180
+		return 3;
+	else if (angle > 224 && angle < 315)
+		return 6;
+	return 0;
+}
 
 void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutput, int &heightOutput)
 {

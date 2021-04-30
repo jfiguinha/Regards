@@ -234,7 +234,7 @@
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Release;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Release;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Release;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <IncludePath>$(SolutionDir)libextern\ffmpeg-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\SDL2;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include\OpenEXR;$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <TargetName>RegardsViewer_sse3</TargetName>
+    <TargetName>RegardsViewer</TargetName>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
@@ -628,7 +628,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5.dll"  
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fftw3f.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\ 
-COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\libcairo-2.dll
 COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract41.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.80.0.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -752,7 +751,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5.dll"  
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fftw3f.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\zlib1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\ 
-COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\libcairo-2.dll
 COPY "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\iconv-2.dll" $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tesseract41.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.80.0.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
