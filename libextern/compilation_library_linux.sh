@@ -94,7 +94,7 @@ cd ..
 git clone --depth 1 https://code.videolan.org/videolan/x264.git
 cd x264
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/ffmpeg_build/bin" --enable-static --enable-pic
+./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/ffmpeg_build/bin" --enable-shared --enable-pic
 make -j$NBPROC
 sudo make install
 cd ..
