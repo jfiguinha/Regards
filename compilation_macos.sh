@@ -6,6 +6,7 @@ echo $NBPROC
 brew update 
 brew upgrade
 xcode-select --install
+brew install -v cmake
 brew install -v opencv
 brew install -v libomp
 brew install -v jasper
