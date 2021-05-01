@@ -138,6 +138,7 @@
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
