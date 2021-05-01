@@ -383,7 +383,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_face.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx265.so.179 ./Debug</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx264.so ./Debug</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx264.so.161 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler.so.104 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.5 ./Debug</Command>
@@ -412,7 +412,7 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libx265.so.179</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libx264.so</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libx264.so.161</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libpoppler.so.104</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_features2d.so.4.5</Command>
@@ -430,7 +430,7 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_face.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_objdetect.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libx265.so.179</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libx264.so</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libx264.so.161</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libpoppler.so.104</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_features2d.so.4.5</Command>
@@ -533,7 +533,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_face.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx265.so.179 ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx264.so ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libx264.so.161 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler.so.104 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.5 ./Release</Command>
@@ -562,7 +562,7 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libx265.so.179</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libx264.so</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libx264.so.161</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libpoppler.so.104</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_features2d.so.4.5</Command>
@@ -580,7 +580,7 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_face.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_objdetect.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libx265.so.179</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libx264.so</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libx264.so.161</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libpoppler.so.104</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_features2d.so.4.5</Command>
