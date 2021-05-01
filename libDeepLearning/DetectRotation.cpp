@@ -1,5 +1,4 @@
 #include "header.h"
-#ifndef __APPLE__
 #include "DetectRotation.h"
 #include "FaceDetector.h"
 #include <RegardsBitmap.h>
@@ -61,7 +60,11 @@ void CDetectRotation::RotateOpenCV(const float &angle, int & maxFace, float & co
 	cv::Mat dst;
 	CFaceDetector faceDetector;
 	faceDetector.RotateCorrectly(image, dst, angle);
+#ifndef __APPLE__
 	int nbFace = faceDetector.FindNbFace(dst, bestConfidence, 0.7);
+#else
+    int nbFace = faceDetector.FindNbFace(dst, bestConfidence, 0.7);
+#endif
 	if (nbFace > 0 && (nbFace > maxFace || bestConfidence > confidence))
 	{
 		maxFace = nbFace;
@@ -93,22 +96,3 @@ int CDetectRotation::RotateToOrientation(const int &angle)
 		return 270;
 	return 0;
 }
-
-/*
-int DeterminePictureAngle(cv::Mat & image)
-{
-	cv::Size size(224, 224);//the dst image size,e.g.100x100
-	cv::Mat dst;//dst image
-	cv::resize(image, dst, size);
-	assert(image.isContinuous());
-	const auto model = fdeep::load_model("C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\rotnet_street_view_resnet50_keras2.json");
-	// Use the correct scaling, i.e., low and high.
-	const auto input = fdeep::tensor_from_bytes(dst.ptr(),
-		static_cast<std::size_t>(dst.rows),
-		static_cast<std::size_t>(dst.cols),
-		static_cast<std::size_t>(dst.channels()),
-		0.0f, 1.0f);
-	return model.predict_class({ input });
-}
-*/
-#endif

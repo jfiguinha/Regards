@@ -12,27 +12,6 @@ static std::thread loadModel;
 static bool isload = false;
 static std::mutex muLoading;
 
-#ifdef __APPLE__
-
-std::vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData, vector<FaceRect> & listFace)
-{
-    CFaceDetector faceDetector;
-    return faceDetector.FindFace(pictureData, listFace);
-}
-
-void CDeepLearning::LoadRessource(const string &eye_detection)
-{
-	//CDetectRotation::LoadModel(rotation_json);
-	CFaceDetector::LoadModel(eye_detection);
-}
-
-void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap, vector<FaceRect> & listFace)
-{
-    CFaceDetector faceDetector;
-    faceDetector.DetectEyes(pBitmap, listFace);
-}
-
-#else
 
     
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
@@ -54,26 +33,7 @@ vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 	}
 }
 
-/*
-vector<int> CDeepLearning::FindFace(CPictureData * pictureData)
-{
-	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
 
-	if (isLoading)
-	{
-		CFaceDetector faceDetector;
-		return faceDetector.FindFace(pictureData);
-	}
-	else
-	{
-		vector<int> list;
-		return list;
-	}
-}
-*/
 void CDeepLearning::LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json, const string &eye_detection)
 {
 	//CDetectRotation::LoadModel(rotation_json);
@@ -98,8 +58,6 @@ void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
 		faceDetector.DetectEyes(pBitmap);
 	}
 }
-   
-
 
 bool CDeepLearning::IsResourceReady()
 {
@@ -126,24 +84,7 @@ int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 
 }
 
-/*
-int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
-{
-	bool isLoading = false;
-	muLoading.lock();
-	isLoading = isload;
-	muLoading.unlock();
 
-	if (isLoading)
-	{
-		CDetectRotation detectRotation;
-		return detectRotation.GetAngleOrientation(pictureData);
-	}
-	return 0;
-}
-*/
- 
-#endif
 
 
 

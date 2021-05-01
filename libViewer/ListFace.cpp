@@ -28,9 +28,7 @@
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
 #include <RegardsConfigParam.h>
-#ifdef __APPLE__
-#include <DetectFace.h>
-#endif
+
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -131,9 +129,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(value);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
-#ifndef __APPLE__
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
-#endif
 		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 		
@@ -158,19 +154,12 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 
-#ifdef __APPLE__
-    isLoadingResource = false;
-    processIdle = true;
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
-	CDeepLearning::LoadRessource(eye.ToStdString());
-
-#else
 	isLoadingResource = true;
 	CThreadFace * path = new CThreadFace();
 	path->mainWindow = this;
 	path->thread = new thread(LoadResource, path);
     processIdle = false;
-#endif
+
 	nbProcessFacePhoto = 0;
 
 
@@ -290,7 +279,6 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
     processIdle = true;
 }
 
-#ifndef __APPLE__
 void CListFace::LoadResource(void * param)
 {
 	CThreadFace * path = (CThreadFace *)param;
@@ -337,7 +325,7 @@ void CListFace::LoadResource(void * param)
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
-#endif
+
 
 void CListFace::FacialDetectionRecognition(void * param)
 {
@@ -461,16 +449,10 @@ void CListFace::FacialRecognition(void * param)
 				pictureData->SetFilename(path->filename);
 				pictureData->SetOrientation(orientation);
 				pictureData->VertFlipBuf();
-#ifdef __APPLE__
-                vector<FaceRect> listFaceRect;
-                CDetectFace detectFace;
-                int nbFace = detectFace.DetectRectFace(pictureData, listFaceRect);
-                listFace = CDeepLearning::FindFace(pictureData,listFaceRect);
-                path->nbFace = nbFace;
-#else
+
 				listFace = CDeepLearning::FindFace(pictureData);
                 path->nbFace = listFace.size();
-#endif
+
 			}
 
 			
@@ -503,22 +485,10 @@ void CListFace::FacialRecognition(void * param)
 			}
 
 			pictureData->SetFilename(path->filename);
-            
-#ifdef __APPLE__
-            vector<FaceRect> listFaceRect;
-            CDetectFace detectFace;
-            int nbFace = detectFace.DetectRectFace(pictureData, listFaceRect);
-            listFace = CDeepLearning::FindFace(pictureData,listFaceRect);
-            path->nbFace = nbFace;
-#else
-            
+
             listFace = CDeepLearning::FindFace(pictureData);
             path->nbFace = listFace.size();
-#endif
-            
-			
-
-			
+	
 		}
 
 		if (pictureData != nullptr)

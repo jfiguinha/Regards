@@ -15,9 +15,9 @@
 #include <MetadataExiv2.h>
 #ifdef __APPLE__
 #include <DetectFace.h>
-#else
-#include <DeepLearning.h>
 #endif
+#include <DeepLearning.h>
+
 
 
 using namespace Regards::Sqlite;

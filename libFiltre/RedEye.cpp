@@ -110,15 +110,9 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 
 bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap)
 {
-#ifdef __APPLE__
-    vector<FaceRect> listFaceRect;
-    CDetectFace detectFace;
-    int nbFace = detectFace.DetectRectFace(pBitmap, listFaceRect);
-    if(nbFace > 0)
-        DeepLearning::CDeepLearning::DetectEyes(pBitmap, listFaceRect);
-#else
+
 	DeepLearning::CDeepLearning::DetectEyes(pBitmap);
-#endif
+
 	/*
 	wxString filename = pBitmap->GetFilename();
 	CLibPicture libPicture;

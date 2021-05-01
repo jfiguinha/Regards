@@ -11,9 +11,7 @@
 #include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#ifdef __APPLE__
-#include <FaceRect.h>
-#endif
+
 using namespace cv;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
@@ -99,128 +97,6 @@ CFaceDetector::CFaceDetector()
 CFaceDetector::~CFaceDetector()
 {
 }
-
-#ifdef __APPLE__
-void CFaceDetector::LoadModel(const string &eye_detection)
-{
-	try
-	{
-		eye_cascade.load(eye_detection);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-
-	isload = true;
-}
-
-void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap, std::vector<FaceRect> & listFaceRect)
-{
-	std::vector<wxRect> listEye;
-	std::vector<cv::Rect> pointOfFace;
-    cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-    if (listFaceRect.size() > 0)
-    {
-        for (FaceRect face : listFaceRect)
-        {
-            CRegardsBitmap * faceBmp = pBitmap->CropBitmap(face.x, face.y, face.width, face.height);
-            cv::Mat croppedImage(faceBmp->GetBitmapHeight(), faceBmp->GetBitmapWidth(), CV_8UC4, faceBmp->GetPtBitmap());
-
-            cv::Mat gray;
-            std::vector<cv::Rect> eyes;
-
-            cv::cvtColor(croppedImage, gray, COLOR_BGR2GRAY);
-            muEyeAccess.lock();
-            eye_cascade.detectMultiScale(gray, eyes);
-            muEyeAccess.unlock();
-            for (cv::Rect rect : eyes)
-            {
-                cv::Rect rectEye;
-
-                rectEye.x = rect.x + face.x;
-                rectEye.y = rect.y + face.y;
-                rectEye.width = rect.width;
-                rectEye.height = rect.height;
-                RemoveRedEye(image, rectEye);
-            }
-            
-            delete faceBmp;
-        }
-    }
-    pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-}
-
-std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap, std::vector<FaceRect> & listFaceRect)
-{
-    int i = 0;
-    std::vector<int> listFace;
-	CSqlFaceDescriptor sqlfaceDescritor;
-    std::vector<cv_image<rgb_pixel>> faces;
-    CSqlFacePhoto facePhoto;
-    for (FaceRect face : listFaceRect)
-    {
-        cv::Size size(150, 150);
-        cv::Mat dst;//dst image
-        std::vector<uchar> buff;
-        CRegardsBitmap * faceBmp = pBitmap->CropBitmap(face.x, face.y, face.width, face.height);
-        cv::Mat croppedImage(faceBmp->GetBitmapHeight(), faceBmp->GetBitmapWidth(), CV_8UC4, faceBmp->GetPtBitmap());
-        
-        cv::cvtColor(croppedImage, croppedImage, cv::COLOR_BGRA2BGR);
-        
-        //RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
-        cv::resize(croppedImage, dst, size);
-        
-        ImageToJpegBuffer(dst, buff);
-        int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, dst.rows, dst.cols, 0.9, reinterpret_cast<uchar*>(buff.data()), buff.size());
-        listFace.push_back(numFace);
-        
-        //IplImage image2 = cvIplImage(face);
-        cv_image<rgb_pixel> cimg(cvIplImage(dst));
-        faces.push_back(cimg);
-        delete faceBmp;
-    }
-
-    if (faces.size() == 0)
-    {
-        cout << "No faces found in image!" << endl;
-        return listFace;
-    }
-
-    try
-    {
-        // This call asks the DNN to convert each face image in faces into a 128D vector.
-        // In this 128D vector space, images from the same person will be close to each other
-        // but vectors from different people will be far apart.  So we can use these vectors to
-        // identify if a pair of images are from the same person or from different people.  
-        std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
-
-        for (int i = 0; i < faces.size(); i++)
-        {
-            matrix<float, 0, 1> face = face_descriptors[i];
-            ostringstream sout;
-            serialize(face, sout);
-
-            string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
-            sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
-            //Write into database
-
-
-        }
-    }
-    catch (cv::Exception& e)
-    {
-        const char* err_msg = e.what();
-        std::cout << "exception caught: " << err_msg << std::endl;
-        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-    }
-    return listFace;
-}
-
-
-#else
 
 void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection)
 {
@@ -655,7 +531,6 @@ void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
 	}
 }
 
-#endif
 
 void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff)
 {

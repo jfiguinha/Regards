@@ -40,6 +40,8 @@ extern COpenCLEngine * openCLEngine;
 extern COpenCLContext * openclContext;
 #endif
 
+extern float clamp(float val, float minval, float maxval);
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -390,7 +392,7 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 	}
 	else
 	{
-		posLargeur = std::clamp(0, int(screenXPos - middleScreenWidth), posLargeurMax);
+		posLargeur = clamp(0, int(screenXPos - middleScreenWidth), posLargeurMax);
 	}
 
 	if (screenHeight > bitmapRatioHeight)
@@ -399,7 +401,7 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 	}
 	else
 	{
-		posHauteur = std::clamp(0, int(screenYPos - middleScreenHeight), posHauteurMax);
+		posHauteur = clamp(0, int(screenYPos - middleScreenHeight), posHauteurMax);
 	}
 }
 
