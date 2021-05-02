@@ -317,6 +317,8 @@
         <Library Value="Iex"/>
         <Library Value="IexMath"/>
         <Library Value="liblibde265.dll"/>
+        <Library Value="lapack"/>
+        <Library Value="cblas"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -675,6 +677,10 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_flann451.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_video451.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_xphoto451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopencv_photo451.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcblas.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libblas.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblapack.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/avfilter-7.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/ffmpeg-master/bin/avformat-58.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libaom.dll ./Release</Command>
