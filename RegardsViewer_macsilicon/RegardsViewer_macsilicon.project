@@ -468,7 +468,12 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/openssl@1.1/lib/libssl.1.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/gcc/10/libgcc_s.2.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Debug/libRegardsBpg.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">chmod a+rw ./Debug/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib @executable_path/../Frameworks/libtbbmalloc_proxy.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jasper/lib/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -842,7 +847,10 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_flann.4.5.dylib @executable_path/../Frameworks/libopencv_flann.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.5.dylib @executable_path/../Frameworks/libopencv_imgproc.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_video.4.5.dylib</Command>
-        <Command Enabled="yes">codesign -fs - ./Debug/RegardsViewer.app  --deep</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/x265/lib/libx265.199.dylib @executable_path/../Frameworks/libx265.199.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libtbbmalloc_proxy.dylib</Command>
+        <Command Enabled="yes">codesign -fs - ./Debug/RegardsViewer.app --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -1061,8 +1069,8 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/openssl@1.1/lib/libssl.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/gcc/10/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
