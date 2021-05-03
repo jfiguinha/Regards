@@ -7,10 +7,6 @@
 #include <DeepLearning.h>
 #include <PictureData.h>
 #include <FileUtility.h>
-#ifdef __APPLE__
-#include <FaceRect.h>
-#include <DetectFace.h>
-#endif
 using namespace Regards::DeepLearning;
 using namespace std;
 using namespace Regards::FiltreEffet;

@@ -13,9 +13,6 @@
 #include <SqlPhotos.h>
 #include <PictureData.h>
 #include <MetadataExiv2.h>
-#ifdef __APPLE__
-#include <DetectFace.h>
-#endif
 #include <DeepLearning.h>
 
 
@@ -380,16 +377,7 @@ void CShowBitmap::RotateRecognition(void * param)
 {
 	CThreadRotate * threadRotate = (CThreadRotate *)param;
 	if (threadRotate != nullptr)
-	{
-#ifdef __APPLE__
-		if (threadRotate->bitmap != nullptr)
-        {
-			CDetectFace detectFace;
-			threadRotate->isReady = true;
-            threadRotate->exif = detectFace.GetExifOrientation(threadRotate->bitmap);
-        }
-
-#else        
+	{       
 		bool pictureOK;
 		if (threadRotate->bitmap != nullptr)
 		{
@@ -397,7 +385,7 @@ void CShowBitmap::RotateRecognition(void * param)
 			threadRotate->bitmap->VertFlipBuf();
 			threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
 		}
-#endif
+
 		if (threadRotate->mainWindow != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_ROTATEDETECT);
