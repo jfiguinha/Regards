@@ -161,7 +161,7 @@ namespace Regards
 			void SetVideo(const wxString &path, const bool &first);
 			//void SetModeViewer();
 
-			PhotosVector photoVector;
+			//PhotosVector photoVector;
 
 			CWindowManager * windowManager;
 			int windowMode;

@@ -142,10 +142,10 @@ int CListPicture::GetThumbnailHeight()
 	return thumbnailFolder->GetIconeHeight() + thumbscrollbar->GetBarHeight();
 }
 
-void CListPicture::ChangeTypeAffichage(PhotosVector* photoVector, const long& typeAffichage)
+void CListPicture::ChangeTypeAffichage(const long& typeAffichage)
 {
 	this->typeAffichage = typeAffichage;
-	thumbnailFolder->Init(photoVector, typeAffichage);
+	thumbnailFolder->Init(typeAffichage);
 }
 
 void CListPicture::SetActifItem(const int& numItem, const bool& move)
@@ -154,11 +154,11 @@ void CListPicture::SetActifItem(const int& numItem, const bool& move)
 		thumbnailFolder->SetActifItem(numItem, move);
 }
 
-void CListPicture::SetListeFile(PhotosVector* photoVector)
+void CListPicture::SetListeFile()
 {
 	if (thumbnailFolder != nullptr)
 	{
-		thumbnailFolder->Init(photoVector, typeAffichage);
+		thumbnailFolder->Init(typeAffichage);
 		thumbnailFolder->SetCheck(true);
 	}
 }

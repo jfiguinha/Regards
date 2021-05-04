@@ -168,6 +168,9 @@
     <ClInclude Include="StatusText.h">
       <Filter>DataStructure</Filter>
     </ClInclude>
+    <ClInclude Include="TreatmentData.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">

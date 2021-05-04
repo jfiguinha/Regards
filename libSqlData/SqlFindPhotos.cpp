@@ -1,7 +1,7 @@
 #include <header.h>
 #include "SqlFindPhotos.h"
 #include "SqlResult.h"
-//#include <LibResource.h>
+#include <LibResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
 using namespace Regards::Picture;
@@ -16,6 +16,14 @@ CSqlFindPhotos::CSqlFindPhotos()
 
 CSqlFindPhotos::~CSqlFindPhotos()
 {
+}
+
+bool CSqlFindPhotos::SearchPhotosByCriteria(PhotosVector* photosVector)
+{
+	typeResult = 2;
+	m_photosVector = photosVector;
+	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW";
+	return (ExecuteRequest(sqlRequest) != -1) ? true : false;
 }
 
 bool CSqlFindPhotos::GetAllPhotos(PhotosVector * photosVector)
@@ -199,8 +207,61 @@ int CSqlFindPhotos::TraitementResult(CSqlResult * sqlResult)
 	case 1:
 		nbResult = TraitementResultNumPhoto(sqlResult);
 		break;
+	case 2:
+		nbResult = TraitementResultPhotoDataCriteria(sqlResult);
+		break;
 	}
 
+	return nbResult;
+}
+
+int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
+{
+	wxString listMonth = CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1);
+	vector<wxString> MonthName = CConvertUtility::split(listMonth, ',');
+	wxString listDay = CLibResource::LoadStringFromResource(L"LBLDAYNAME", 1);
+	vector<wxString> DayName = CConvertUtility::split(listDay, ',');
+
+	int nbResult = 0;
+	while (sqlResult->Next())
+	{
+		CPhotos _cPhoto;
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		{
+
+			switch (i)
+			{
+			case 0:
+				_cPhoto.SetId(sqlResult->ColumnDataInt(i));
+				break;
+			case 1:
+				_cPhoto.SetPath(sqlResult->ColumnDataText(i));
+				break;
+			case 2:
+				_cPhoto.SetCreateDate(sqlResult->ColumnDataText(i));
+				break;
+			case 3:
+				_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(i));
+				break;
+			case 4:
+				_cPhoto.year = sqlResult->ColumnDataInt(i);
+				break;
+			case 5:
+				_cPhoto.month = sqlResult->ColumnDataInt(i);
+				_cPhoto.monthName = MonthName[_cPhoto.month - 1];
+				break;
+			case 6:
+				_cPhoto.day = sqlResult->ColumnDataInt(i);
+				break;
+			case 7:
+				_cPhoto.dayofweek = sqlResult->ColumnDataInt(i);
+				_cPhoto.dayName = DayName[_cPhoto.dayofweek];
+				break;
+			}
+		}
+		m_photosVector->push_back(_cPhoto);
+		nbResult++;
+	}
 	return nbResult;
 }
 

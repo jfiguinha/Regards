@@ -24,13 +24,22 @@ public:
 	void SetIsCriteriaInsert(const int &criteriaInsert);
 	int GetIsCriteriaInsert();
 
+	int day;
+	int month;
+	int year;
+	int dayofweek;
+	wxString monthName;
+	wxString dayName;
+	wxString gpsInfos;
+
 private:
 	int numId;
 	int numFolderId;
 	wxString path;
 	wxString createDate;
-	wxString gpsInfos;
+	
 	int criteriaInsert;
+
 };
 
 

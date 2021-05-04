@@ -62,9 +62,9 @@ namespace Regards
 			void LoadFace(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent);
 			//Draw Tree
 			void CreateElement();
-			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
+			void CreateChildTree(tree<CTreeData *>::iterator &parent);
 			void UpdateElement(const bool &init = false);
-			void UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, const bool &init);
+			void UpdateChildTree(tree<CTreeData *>::iterator &parent, const bool &init);
 
 			//Gestion des check box
 			void GestionCheckBox(CTreeDataCategory * treeData, CTreeElementCheckBox * checkBox);

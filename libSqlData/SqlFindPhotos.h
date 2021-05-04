@@ -24,8 +24,11 @@ namespace Regards
 			bool SearchPhotos(const wxString &sqlRequest);
 			bool GetAllPhotos(PhotosVector * photosVector);
             bool GetAllVideo(PhotosVector * photosVector);
-		private:
+			bool SearchPhotosByCriteria(PhotosVector* photosVector);
 
+		private:
+			
+			int TraitementResultPhotoDataCriteria(CSqlResult* sqlResult);
 			int TraitementResultPhoto(CSqlResult * sqlResult);
 			int TraitementResultNumPhoto(CSqlResult * sqlResult);
 			bool DeleteAllInSearchPhotos();

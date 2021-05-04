@@ -12,8 +12,11 @@
 #include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
 #include <SqlPhotosWithoutThumbnail.h>
+#include "TreatmentData.h"
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
+
+
 
 
 CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
@@ -71,237 +74,10 @@ void CThumbnailFolder::AddSeparatorBar(const wxString &libelle, PhotosVector * p
 		listSeparator.push_back(infosSeparationBar);
 }
 
-PhotosVector CThumbnailFolder::GetPhotoByLocalisation(PhotosVector * photoVector, const wxString & criteria, const wxString & localisation, int &index)
-{
-	PhotosVector listPhoto;
-	for (auto index = 0; index < photoVector->size(); index++)
-	{
-		CPhotos photo = photoVector->at(index);
-		if (localisation != "")
-		{
-			if (photo.GetCreateDate().find(criteria) == 0 && photo.GetGpsInfos().find(localisation) == 0)
-				listPhoto.push_back(photo);
-		}
-		else
-		{
-			if (photo.GetCreateDate().find(criteria) == 0)
-				listPhoto.push_back(photo);
-		}
-	}
-	return listPhoto;
-}
-
-PhotosVector CThumbnailFolder::GetPhotoByCriteria(PhotosVector * photoVector, const wxString & criteria, int &index)
-{
-	PhotosVector listPhoto;
-	for (auto index = 0; index < photoVector->size(); index++)
-	{
-		CPhotos photo = photoVector->at(index);
-		if (photo.GetCreateDate().find(criteria) == 0)
-			listPhoto.push_back(photo);
-	}
-	return listPhoto;
-}
-
-
-void CThumbnailFolder::ShowByYear(PhotosVector * photoVector, int &nbElement)
-{
-	vector<wxString> listOfYear;
-	CSqlFindYear findYear;
-	findYear.SearchUniqueCriteria(&listOfYear);
-	int numElement = 0;
-
-	for (wxString year : listOfYear)
-	{
-		if (year != L"")
-		{
-			PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year, numElement);	
-			copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
-			AddSeparatorBar(year, &listPhoto, nbElement);
-		}
-	}
-}
-
-void CThumbnailFolder::ShowByMonth(PhotosVector * photoVector, int &nbElement)
-{
-	CSqlFindPhotos sqlFindPhotos;
-	wxString listMonth = CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1);
-	vector<wxString> MonthName = CConvertUtility::split(listMonth, ',');
-	int imonth = 0;
-	vector<wxString> listOfYear;
-	CSqlFindYear findYear;
-	CSqlFindMonth findMonth;
-	findYear.SearchUniqueCriteria(&listOfYear);
-	int numElement = 0;
-
-	for (wxString year : listOfYear)
-	{
-		if (year != L"")
-		{
-			vector<wxString> listOfMonth;
-			findMonth.SearchUniqueCriteria(&listOfMonth, year);
-			for (wxString month : listOfMonth)
-            {
-				if (month != L"")
-				{
-					PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year + L"." + month, numElement);
-					imonth = atoi(CConvertUtility::ConvertToUTF8(month));
-					copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
-					AddSeparatorBar(MonthName.at(imonth - 1) + L" " + year, &listPhoto, nbElement);
-				}
-			}
-		}
-	}
-}
-
-int CThumbnailFolder::Dayofweek(const int & d,const int & m, const int & y)
-{
-	int year = y;
-	static int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
-	year -= m < 3;
-	return (year + year / 4 - year / 100 + year / 400 + t[m - 1] + d) % 7;
-}
-
-
-void CThumbnailFolder::ShowByLocalisation(PhotosVector * photoVector, int &nbElement)
-{
-	CSqlFindPhotos sqlFindPhotos;
-	barseparationHeight = 40;
-	vector<wxString> listOfYear;
-	CSqlFindYear findYear;
-	CSqlFindMonth findMonth;
-	CSqlFindDay findDay;
-	wxString listMonth = CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1);
-	wxString listDay = CLibResource::LoadStringFromResource(L"LBLDAYNAME", 1);
-	wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-	vector<wxString> MonthName = CConvertUtility::split(listMonth, ',');
-	vector<wxString> DayName = CConvertUtility::split(listDay, ',');
-	CSqlFindLocalisation findLocalisation;
-	int iyear = 0;
-	int imonth = 0;
-	int iday = 0;
-	int ijour = 0;
-	int numElement = 0;
-	findYear.SearchUniqueCriteria(&listOfYear);
-
-	for (wxString year : listOfYear)
-	{
-		if (year != L"")
-		{
-			vector<wxString> listOfMonth;
-			findMonth.SearchUniqueCriteria(&listOfMonth, year);
-			for (wxString month : listOfMonth)
-			{
-				if (month != L"")
-				{
-					vector<wxString> listOfDay;
-					findDay.SearchUniqueCriteria(&listOfDay, month, year);
-
-                    for (wxString day : listOfDay)
-					{
-						if (day != L"")
-						{
-							iyear = atoi(CConvertUtility::ConvertToUTF8(year));
-							imonth = atoi(CConvertUtility::ConvertToUTF8(month));
-							iday = atoi(CConvertUtility::ConvertToUTF8(day));
-							ijour = Dayofweek(iday, imonth, iyear);
-							wxString libelleDay = DayName.at(ijour) + L" " + day + L" " + MonthName.at(imonth - 1) + L" , " + year;
-
-							vector<wxString> listOfLocalisation;
-
-							findLocalisation.SearchUniqueCriteria(&listOfLocalisation, day, month, year);
-
-                            for (wxString localisation : listOfLocalisation)
-							{
-								if (localisation != L"")
-								{
-									PhotosVector listPhoto = GetPhotoByLocalisation(photoVector, year + L"." + month + L"." + day, localisation,numElement);
-									copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
-									//sqlFindPhotos.SearchPhotos(&photoVector, localisation, );
-
-									wxString libelleLocalisation = L"";
-									vector<wxString> libelle = CConvertUtility::split(localisation, '.');
-									if (libelle.size() == 1)
-										AddSeparatorBar(DayName.at(ijour) + L" " + day + L" " + MonthName.at(imonth - 1) + L" , " + year + L"@" + localisation, &listPhoto, nbElement);
-									else
-									{
-										for (auto j = (int)libelle.size() - 1; j > 0; j--)
-										{
-											libelleLocalisation.append(libelle.at(j));
-											if (j > 1)
-												libelleLocalisation.append(L", ");
-										}
-										AddSeparatorBar(DayName.at(ijour) + L" " + day + L" " + MonthName.at(imonth - 1) + L" , " + year + L"@" + libelleLocalisation, &listPhoto, nbElement);
-									}
-
-								}
-							}
-						}
-
-					}
-				}
-			}
-		}
-	}
-}
-
-void CThumbnailFolder::ShowByDay(PhotosVector * photoVector, int &nbElement)
-{
-	CSqlFindPhotos sqlFindPhotos;
-	vector<wxString> listOfYear;
-	CSqlFindYear findYear;
-	CSqlFindMonth findMonth;
-	CSqlFindDay findDay;
-	int iyear = 0;
-	int imonth = 0;
-	int iday = 0;
-	int ijour = 0;
-	int numElement = 0;
-
-	wxString listMonth = CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1);
-	wxString listDay = CLibResource::LoadStringFromResource(L"LBLDAYNAME", 1);
-	wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-	vector<wxString> MonthName = CConvertUtility::split(listMonth, ',');
-	vector<wxString> DayName = CConvertUtility::split(listDay, ',');
-	findYear.SearchUniqueCriteria(&listOfYear);
-
-	for (wxString year : listOfYear)
-	{
-		if (year != L"")
-		{
-			vector<wxString> listOfMonth;
-
-			findMonth.SearchUniqueCriteria(&listOfMonth, year);
-
-			for (wxString month : listOfMonth)
-			{
-				if (month != L"")
-				{
-					vector<wxString> listOfDay;
-					findDay.SearchUniqueCriteria(&listOfDay, month, year);
-                    for (wxString day : listOfDay)
-					{
-						if (day != L"")
-						{
-							PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year + L"." + month + L"." + day, numElement);
-							copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
-							iyear = atoi(CConvertUtility::ConvertToUTF8(year));
-							imonth = atoi(CConvertUtility::ConvertToUTF8(month));
-							iday = atoi(CConvertUtility::ConvertToUTF8(day));
-							ijour = Dayofweek(iday, imonth, iyear);
-							AddSeparatorBar(DayName.at(ijour) + L" " + day + L" " + MonthName.at(imonth - 1) + L" , " + year + L"@", &listPhoto, nbElement);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &typeAffichage)
+void CThumbnailFolder::InitTypeAffichage(const int &typeAffichage)
 {
 	threadDataProcess = false;
-	newPhotosVectorList.clear();
+
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -312,24 +88,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	vector<CThumbnailData *> listSelectItem;
 
 	GetSelectItem(listSelectItem);
-
-	/*
-	if (numSelect != nullptr)
-	{
-		CThumbnailData * data = numSelect->GetData();
-		if (data != nullptr)
-			numPhotoIdSelect = data->GetNumPhotoId();
-	}
-
-	if (numActif != nullptr)
-	{
-		CThumbnailData * data = numActif->GetData();
-		if (data != nullptr)
-			numPhotoIdActif = data->GetNumPhotoId();
-	}
-	*/
-
-	//InitScrollingPos();
 
 	EraseThumbnailList();
 
@@ -343,33 +101,30 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	int i = 0;
 	int typeLocal = typeAffichage;
 
-
-
 	if (typeLocal == SHOW_ALL)
 	{
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-		AddSeparatorBar(libellePhoto, photoVector, i);
-		if (photoVector->size() > 0)
-		{
-			newPhotosVectorList.reserve(photoVector->size());
-			copy(photoVector->begin(), photoVector->end(), back_inserter(newPhotosVectorList));
-		}
+		AddSeparatorBar(libellePhoto, &newPhotosVectorList, i);
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
-		ShowByYear(photoVector, i);
+		CTreatmentDataYear dataYear;
+		dataYear.MainTreatment(newPhotosVectorList, this);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
-		ShowByMonth(photoVector, i);
+		CTreatmentDataMonth dataMonth;
+		dataMonth.MainTreatment(newPhotosVectorList, this);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
-		ShowByLocalisation(photoVector, i);
+		CTreatmentDataLocalisation dataLocalisation;
+		dataLocalisation.MainTreatment(newPhotosVectorList, this);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
-		ShowByDay(photoVector, i);
+		CTreatmentDataDay dataDay;
+		dataDay.MainTreatment(newPhotosVectorList, this);
 	}
 
 	//m_lock.unlock();
@@ -403,6 +158,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	heightThumbnail = 0;
 	ResizeThumbnail();
 
+	/*
 	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
@@ -410,29 +166,29 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 		evt.SetClientData(&newPhotosVectorList);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-
+	*/
 	this->Refresh();
 }
 
-void CThumbnailFolder::Init(PhotosVector * photoVector, const int &typeAffichage)
+void CThumbnailFolder::Init(const int &typeAffichage)
 {
-    
+	newPhotosVectorList.clear();
+
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GeneratePhotoList();
 
-	if (photoVector != nullptr)
-	{
-		if (noVscroll)
-			SetListeFile(photoVector);
-		else
-			InitTypeAffichage(photoVector, typeAffichage);
-	}
-
+	CSqlFindPhotos findPhotos;
+	findPhotos.SearchPhotosByCriteria(&newPhotosVectorList);
+	
+	if (noVscroll)
+		SetListeFile();
+	else
+		InitTypeAffichage(typeAffichage);
 	
 	processIdle = true;	
 }
 
-void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
+void CThumbnailFolder::SetListeFile()
 {
 	threadDataProcess = false;
 
@@ -443,7 +199,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
 	int y = 0;
 	thumbnailPos = 0;
 
-	for (CPhotos fileEntry : *photoVector)
+	for (CPhotos fileEntry : newPhotosVectorList)
 	{
 		wxString filename = fileEntry.GetPath();
 		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename, testValidity);
@@ -665,27 +421,6 @@ CIcone * CThumbnailFolder::FindElement(const int &xPos, const int &yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-	/*
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
-			int top = rc.y - posHauteur;
-			int bottom = rc.y + rc.height - posHauteur;
-			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 

@@ -240,8 +240,8 @@ void CCategoryWnd::LoadFolder(const int &numCatalog, tree<CTreeData *>::iterator
 //------------------------------------------------------------------------------
 tree<CTreeData *>::iterator CCategoryWnd::FindChild(tree<CTreeData *>::iterator parent, const wxString &catlibelle)
 {
-	tree<CTreeData *>::sibling_iterator itOld;
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData *>::iterator itOld;
+	tree<CTreeData *>::iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	itOld = it;
 
@@ -894,9 +894,9 @@ bool CCategoryWnd::GetCheckState(const wxString &exifKey, const wxString &key)
 //
 //------------------------------------------------------------------------------
 
-void CCategoryWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
+void CCategoryWnd::CreateChildTree(tree<CTreeData *>::iterator &parent)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData *>::iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	CPositionElement *  posElement = nullptr;
 	CTreeElementTexte * treeElementTexte = nullptr;
@@ -984,7 +984,7 @@ void CCategoryWnd::CreateElement()
 {
 	vectorPosElement.clear();
 	vectorPosElementDynamic.clear();
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
+	tree<CTreeData *>::iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
@@ -1033,7 +1033,7 @@ void CCategoryWnd::CreateElement()
 
 void CCategoryWnd::UpdateElement(const bool &init)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
+	tree<CTreeData *>::iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
@@ -1135,9 +1135,9 @@ void CCategoryWnd::UpdateElement(const bool &init)
 	
 }
 
-void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, const bool &init)
+void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bool &init)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData *>::iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 

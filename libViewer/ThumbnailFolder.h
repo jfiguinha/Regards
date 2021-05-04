@@ -20,33 +20,27 @@ namespace Regards
 		public:
 			CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFolder(void);
-			void Init(PhotosVector * photoVector, const int &typeAffichage = SHOW_ALL);
-
+			void Init(const int &typeAffichage = SHOW_ALL);
+			void AddSeparatorBar(const wxString& libelle, PhotosVector* photoVector, int& nbElement);
 		protected:
 
 			void OnPictureClick(CThumbnailData * data);
 			void ResizeThumbnail();
-
+			
 		private:
 			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
-			void SetListeFile(PhotosVector * photoVector);
-			void ShowByMonth(PhotosVector* photoVector, int &nbElement);
-			void ShowByYear(PhotosVector * photoVector, int &nbElement);
-			void ShowByLocalisation(PhotosVector * photoVector, int &nbElement);
-			void ShowByDay(PhotosVector * photoVector, int &nbElement);
-			void AddSeparatorBar(const wxString &libelle, PhotosVector * photoVector, int &nbElement);
+			void SetListeFile();
+			
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
 			CIcone * FindIcone(const int &photoId);
 			void FindOtherElement(wxDC * dc, const int &x, const int &y);
 			CIcone * FindElement(const int &xPos, const int &yPos);
 			CInfosSeparationBar * FindSeparatorElement(const int &xPos, const int &yPos);
 			void RenderIconeWithVScroll(wxDC * dc);
-			int Dayofweek(const int & d, const int & m, const int & y);
+
 			void UpdateScrollWithVScroll();
-			void InitTypeAffichage(PhotosVector * photoVector, const int &typeAffichage);
-			PhotosVector GetPhotoByCriteria(PhotosVector * photoVector, const wxString & criteria, int &index);
-			PhotosVector GetPhotoByLocalisation(PhotosVector * photoVector, const wxString & criteria, const wxString & localisation, int &index);
+			void InitTypeAffichage(const int &typeAffichage);
 			
 			InfosSeparationBarVector listSeparator;
 			PhotosVector newPhotosVectorList;

@@ -15,6 +15,11 @@ int CImageList::GetNbElement()
      photolist.clear();
  }
 
+ PhotosVector * CImageList::GetPointer()
+ {
+     return &photolist;
+ }
+
  PhotosVector CImageList::GetCopy()
  {
 	 muList.lock();
@@ -26,6 +31,16 @@ int CImageList::GetNbElement()
 	 }
 	 muList.unlock();
 	 return listCopy;
+ }
+
+ void CImageList::Lock()
+ {
+     muList.lock();
+ }
+
+ void CImageList::Unlock()
+ {
+     muList.unlock();
  }
  
  void CImageList::SetImageList(const PhotosVector & pictures)

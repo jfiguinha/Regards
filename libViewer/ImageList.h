@@ -17,6 +17,10 @@ namespace Regards
             int FindFileIndex(const wxString & filename);
             int FindFileIndex(const int & id);
 			PhotosVector GetCopy();
+            PhotosVector* GetPointer();
+            void Lock();
+            void Unlock();
+
         private:
             PhotosVector photolist;
             mutex muList;

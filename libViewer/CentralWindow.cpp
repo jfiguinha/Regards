@@ -71,12 +71,12 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		faceDetection = regardsParam->GetFaceDetection();
 	}
 
-
+	/*
 	if (imageList != nullptr)
 	{
 		photoVector = imageList->GetCopy();
 	}
-
+	*/
 	windowManager = new CWindowManager(this, wxID_ANY, theme);
 
 	if (config != nullptr)
@@ -183,7 +183,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		thumbnailPicture->SetNoVScroll(true);
 
 		if (thumbnailPicture != nullptr)
-			thumbnailPicture->SetListeFile(&photoVector);
+		{
+			imageList->Lock();
+			thumbnailPicture->SetListeFile(imageList->GetPointer());
+			imageList->Unlock();
+		}
 
 		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
 
@@ -219,7 +223,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		listPicture = new CListPicture(windowManager, LISTPICTUREID);
 		listPicture->Show(false);
-		listPicture->SetListeFile(&photoVector);
+		listPicture->SetListeFile();
 	}
 
 	if (faceDetection)
@@ -843,7 +847,7 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 	if (listPicture != nullptr)
 	{
 		long typeAffichage = event.GetExtraLong();
-		listPicture->ChangeTypeAffichage(&photoVector, typeAffichage);
+		listPicture->ChangeTypeAffichage(typeAffichage);
 	}
 		
 }
@@ -851,20 +855,24 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 void CCentralWindow::SetListeFile(wxCommandEvent& event)
 {
 	int element = event.GetInt();
-	CImageList * picture = (CImageList *)event.GetClientData();
-	if (picture != nullptr)
-	{
-		this->photoVector.clear();
-		photoVector = picture->GetCopy();
-	}
+	CImageList* picture = (CImageList*)event.GetClientData();
 
 	if (element == 0)
 		if (listPicture != nullptr)
-			listPicture->SetListeFile(&photoVector);
+			listPicture->SetListeFile();
 
-	
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetListeFile(&photoVector);
+	if (picture != nullptr)
+	{
+		//photoVector = picture->GetCopy();
+
+		if (thumbnailPicture != nullptr)
+		{
+			picture->Lock();
+			PhotosVector* vecPhoto = picture->GetPointer();
+			thumbnailPicture->SetListeFile(vecPhoto);
+			picture->Unlock();
+		}
+	}
 }
 
 CCentralWindow::~CCentralWindow()

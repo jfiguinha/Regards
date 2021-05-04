@@ -36,8 +36,8 @@ namespace Regards
             void UpdateScreenRatio();
 			void SetActifItem(const int &numItem, const bool &move);	
 			int GetThumbnailHeight();
-			void SetListeFile(PhotosVector * photoVector);
-			void ChangeTypeAffichage(PhotosVector * photoVector, const long & typeAffichage);
+			void SetListeFile();
+			void ChangeTypeAffichage(const long & typeAffichage);
 			void Resize();
 			void ForceRefresh();
 

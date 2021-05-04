@@ -85,7 +85,7 @@ void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
 	ResizeThumbnail();
 
 	processIdle = true;
-	this->Refresh();
+	//this->Refresh();
 }
 
 CIcone * CThumbnailViewerPicture::FindIcone(const int &photoId)
