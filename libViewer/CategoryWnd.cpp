@@ -23,9 +23,9 @@ using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::Window;
 
-CCategoryWnd::CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
+CCategoryWnd::CCategoryWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl)
 {
-    sqlRequest = "";
+	sqlRequest = "";
 	treeDataModify = nullptr;
 	widthPosition = 0;
 
@@ -39,8 +39,8 @@ CCategoryWnd::CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeEl
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
 	yPos = 0;
-	MonthName = CConvertUtility::split(CLibResource::LoadStringFromResource(L"LBLMONTHNAME",1), ',');
-	config = (CMainParam *)CMainParamInit::getInstance();
+	MonthName = CConvertUtility::split(CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1), ',');
+	config = (CMainParam*)CMainParamInit::getInstance();
 	this->windowMain = windowMain;
 }
 
@@ -54,15 +54,15 @@ CCategoryWnd::~CCategoryWnd()
 
 }
 
-tree<CTreeData *>::iterator CCategoryWnd::FindExifKey(const wxString & exifkey)
+tree<CTreeData*>::iterator CCategoryWnd::FindExifKey(const wxString& exifkey)
 {
-	tree<CTreeData *>::iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 
 	//int i = 
 
 	while (it != itend) {
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 		if (data->GetExifKey() == exifkey)
 			return it;
 		it++;
@@ -72,15 +72,15 @@ tree<CTreeData *>::iterator CCategoryWnd::FindExifKey(const wxString & exifkey)
 }
 
 
-tree<CTreeData *>::iterator CCategoryWnd::FindFolderKey(const wxString & path)
+tree<CTreeData*>::iterator CCategoryWnd::FindFolderKey(const wxString& path)
 {
-	tree<CTreeData *>::iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 
 	//int i = 
 
 	while (it != itend) {
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 		if (data->GetKey() == path)
 			return it;
 		it++;
@@ -94,8 +94,8 @@ void CCategoryWnd::Init()
 
 	CSqlFindCatalog sqlCatalog;
 	CatalogVector catalogVector;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator top;
+	tree<CTreeData*>::iterator child;
 
 	LoadState();
 
@@ -107,7 +107,7 @@ void CCategoryWnd::Init()
 
 	for (CPhotoCatalog catalog : catalogVector)
 	{
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		numCatalog = catalog.GetNumCatalog();
 		treeData->SetNumElement(idElement);
 		treeData->SetIdElement(-1);
@@ -132,7 +132,7 @@ void CCategoryWnd::Init()
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-wxString CCategoryWnd::GetCatalogLibelle(const int &numCatalog)
+wxString CCategoryWnd::GetCatalogLibelle(const int& numCatalog)
 {
 	CSqlCatalog sqlCatalog;
 	return sqlCatalog.GetCatalogLibelle(numCatalog);
@@ -142,55 +142,55 @@ wxString CCategoryWnd::GetCatalogLibelle(const int &numCatalog)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::InitCatalogCategorie(tree<CTreeData *>::iterator parent, int numParent)
+void CCategoryWnd::InitCatalogCategorie(tree<CTreeData*>::iterator parent, int numParent)
 {
 
 	//Récupération des catégories principales
 	CSqlPhotoCategorie sqlCategorie;
 	PhotoCategorieVector categorieVector;
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator child;
 	sqlCategorie.LoadPhotoCategorie(&categorieVector, 1);
 
 	for (PhotoCategorieVector::iterator fit = categorieVector.begin(); fit != categorieVector.end(); fit++)
 	{
 		//if (fit->GetId() != 2)
 		//{
-			idElement++;
-			CTreeDataCategory * treeData = new CTreeDataCategory();
-			treeData->SetNumElement(idElement);
-			treeData->SetNumCatalog(numCatalog);
-			treeData->SetIdElement(-1);
-			treeData->SetNumCategorie(fit->GetId());
-			treeData->SetNumParent(numParent);
-			treeData->SetIsParent(false);
-			treeData->SetNumLevel(1);
-			treeData->SetKey(fit->GetLibelle());
-			treeData->SetTypeElement(TYPECATEGORIE);
-			child = tr.append_child(parent, treeData);
-			treeData->child = child;
-			switch(fit->GetId())
-			{
-			case 2:
-				LoadFolder(numCatalog, child, idElement);
-				break;
-			case 4:
-				LoadFace(numCatalog, child, idElement);
-				break;
-			default:
-				LoadCategorie(treeData->GetNumCategorie(), child, idElement);
-			}
+		idElement++;
+		CTreeDataCategory* treeData = new CTreeDataCategory();
+		treeData->SetNumElement(idElement);
+		treeData->SetNumCatalog(numCatalog);
+		treeData->SetIdElement(-1);
+		treeData->SetNumCategorie(fit->GetId());
+		treeData->SetNumParent(numParent);
+		treeData->SetIsParent(false);
+		treeData->SetNumLevel(1);
+		treeData->SetKey(fit->GetLibelle());
+		treeData->SetTypeElement(TYPECATEGORIE);
+		child = tr.append_child(parent, treeData);
+		treeData->child = child;
+		switch (fit->GetId())
+		{
+		case 2:
+			LoadFolder(numCatalog, child, idElement);
+			break;
+		case 4:
+			LoadFace(numCatalog, child, idElement);
+			break;
+		default:
+			LoadCategorie(treeData->GetNumCategorie(), child, idElement);
+		}
 	}
 }
 
-void CCategoryWnd::LoadFace(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent)
+void CCategoryWnd::LoadFace(const int& numCatalog, tree<CTreeData*>::iterator parent, int numParent)
 {
 	CSqlFindFacePhoto sqlFindFace;
 	std::vector<CFaceName> listFace = sqlFindFace.GetListFaceNameSelectable();
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator child;
 	for (std::vector<CFaceName>::iterator fit = listFace.begin(); fit != listFace.end(); fit++)
 	{
 		idElement++;
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		treeData->SetNumElement(idElement);
 		treeData->SetIdElement(fit->numFace);
 		treeData->SetNumCatalog(numCatalog);
@@ -208,18 +208,18 @@ void CCategoryWnd::LoadFace(const int &numCatalog, tree<CTreeData *>::iterator p
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::LoadFolder(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent)
+void CCategoryWnd::LoadFolder(const int& numCatalog, tree<CTreeData*>::iterator parent, int numParent)
 {
 
 	CSqlFindFolderCatalog sqlFolderCatalog;
 	FolderCatalogVector folderCatalogVector;
 	sqlFolderCatalog.GetFolderCatalog(&folderCatalogVector, numCatalog);
-	tree<CTreeData *>::iterator child;
+	tree<CTreeData*>::iterator child;
 
 	for (FolderCatalogVector::iterator fit = folderCatalogVector.begin(); fit != folderCatalogVector.end(); fit++)
 	{
 		idElement++;
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		treeData->SetNumElement(idElement);
 		treeData->SetIdElement(fit->GetNumFolder());
 		treeData->SetNumCatalog(numCatalog);
@@ -238,10 +238,10 @@ void CCategoryWnd::LoadFolder(const int &numCatalog, tree<CTreeData *>::iterator
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-tree<CTreeData *>::iterator CCategoryWnd::FindChild(tree<CTreeData *>::iterator parent, const wxString &catlibelle)
+tree<CTreeData*>::iterator CCategoryWnd::FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle)
 {
-	tree<CTreeData *>::iterator itOld;
-	tree<CTreeData *>::iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator itOld;
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	itOld = it;
 
@@ -249,7 +249,7 @@ tree<CTreeData *>::iterator CCategoryWnd::FindChild(tree<CTreeData *>::iterator 
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 		if (data->GetExifKey() > catlibelle)
 		{
 			return itOld;
@@ -265,7 +265,7 @@ tree<CTreeData *>::iterator CCategoryWnd::FindChild(tree<CTreeData *>::iterator 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, tree<CTreeData *>::iterator parent, const int &numParent, const wxString &catlibelle, const int &id)
+void CCategoryWnd::AddCategorie(const int& numCatalog, const int& numCategorie, tree<CTreeData*>::iterator parent, const int& numParent, const wxString& catlibelle, const int& id)
 {
 	//int item = 0;
 	//int index = 0;
@@ -274,15 +274,15 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 	int level = 2;
 	wxString exifKey = L"";
 	wchar_t libelle[1024];
-	wchar_t * next_token1 = nullptr;
-	tree<CTreeData *>::iterator child = parent;
+	wchar_t* next_token1 = nullptr;
+	tree<CTreeData*>::iterator child = parent;
 	wcscpy(libelle, catlibelle.c_str());
 	int numParentElement = numParent;
 #if defined(WIN32) && _MSC_VER < 1900
-	wchar_t * token = wcstok(libelle, seps); // C4996
+	wchar_t* token = wcstok(libelle, seps); // C4996
 #else
 	// Establish string and get the first token:
-	wchar_t * token = wcstok(libelle, seps, &next_token1); // C4996
+	wchar_t* token = wcstok(libelle, seps, &next_token1); // C4996
 #endif
 
 	// Note: strtok is deprecated; consider using strtok_s instead
@@ -294,12 +294,12 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 			exifKey.append(L".");
 		exifKey.append(token);
 
-		CTreeDataCategory * treeData = new CTreeDataCategory();
+		CTreeDataCategory* treeData = new CTreeDataCategory();
 		treeData->SetIsParent(false);
 		if (numCategorie == 3 && level == 3)
 		{
-            wchar_t * pEnd;
-			long numMonth = wcstol(token,&pEnd,10);
+			wchar_t* pEnd;
+			long numMonth = wcstol(token, &pEnd, 10);
 			treeData->SetKey(MonthName.at(numMonth - 1));
 		}
 		else
@@ -317,11 +317,11 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 			treeData->SetIdElement(-1);
 
 		//Recherche de la clé
-		tree<CTreeData *>::iterator it = FindKey(treeData->GetKey(), child);
+		tree<CTreeData*>::iterator it = FindKey(treeData->GetKey(), child);
 		if (it != nullptr)
 		{
 			child = it;
-			CTreeDataCategory * data = (CTreeDataCategory *)*it;
+			CTreeDataCategory* data = (CTreeDataCategory*)*it;
 			treeData->SetNumParent(data->GetNumParent());
 			numParentElement = data->GetNumElement();
 			delete(treeData);
@@ -330,7 +330,7 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 		{
 			numParentElement = idElement;
 			treeData->SetExifKey(exifKey);
-			tree<CTreeData *>::iterator it = FindChild(child, treeData->GetExifKey());
+			tree<CTreeData*>::iterator it = FindChild(child, treeData->GetExifKey());
 			if (it == nullptr)
 				child = tr.append_child(child, treeData);
 			else
@@ -349,7 +349,7 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::iterator parent, int numParent)
+void CCategoryWnd::LoadCategorie(const int& numCategorie, tree<CTreeData*>::iterator parent, int numParent)
 {
 	CSqlFindCriteria findCriteria;
 	CriteriaVector criteriaVector;
@@ -363,8 +363,8 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 		int level = 2;
 		wxString exifKey = L"";
 		wxString libelle = L"";
-		wchar_t * next_token1 = nullptr;
-		tree<CTreeData *>::iterator child = parent;
+		wchar_t* next_token1 = nullptr;
+		tree<CTreeData*>::iterator child = parent;
 		if (criteria.GetLibelle() != L"")
 		{
 			libelle = criteria.GetLibelle();
@@ -373,9 +373,9 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 			//int index = 0;
 			// Establish string and get the first token:
 #if defined(WIN32) && _MSC_VER < 1900
-			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps); // C4996
+			wchar_t* token = wcstok((wchar_t*)libelle.wc_str(), seps); // C4996
 #else
-			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps, &next_token1); // C4996
+			wchar_t* token = wcstok((wchar_t*)libelle.wc_str(), seps, &next_token1); // C4996
 #endif
 
 			// Note: strtok is deprecated; consider using strtok_s instead
@@ -387,14 +387,14 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 					exifKey.append(L".");
 				exifKey.append(token);
 
-				CTreeDataCategory * treeData = new CTreeDataCategory();
+				CTreeDataCategory* treeData = new CTreeDataCategory();
 				treeData->SetIsParent(false);
 
 				if (numCategorie == 3 && level == 3)
 				{
-                    wchar_t * pEnd;
-                    long numMonth = wcstol(token,&pEnd,10);
-					if(numMonth > 0 && numMonth <= 12)
+					wchar_t* pEnd;
+					long numMonth = wcstol(token, &pEnd, 10);
+					if (numMonth > 0 && numMonth <= 12)
 						treeData->SetKey(MonthName.at(numMonth - 1));
 				}
 				else
@@ -412,11 +412,11 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 					treeData->SetIdElement(-1);
 
 				//Recherche de la clé
-				tree<CTreeData *>::iterator it = FindKey(treeData->GetKey(), child);
+				tree<CTreeData*>::iterator it = FindKey(treeData->GetKey(), child);
 				if (it != nullptr)
 				{
 					child = it;
-					CTreeDataCategory * data = (CTreeDataCategory *)*it;
+					CTreeDataCategory* data = (CTreeDataCategory*)*it;
 					treeData->SetNumParent(data->GetNumParent());
 					numParentElement = data->GetNumElement();
 				}
@@ -427,7 +427,7 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 
 					//Ordonnancement par Alphabet
 					//child = tr.append_child(child, treeData);
-					tree<CTreeData *>::iterator it = FindChild(child, treeData->GetExifKey());
+					tree<CTreeData*>::iterator it = FindChild(child, treeData->GetExifKey());
 					if (it == nullptr)
 						child = tr.append_child(child, treeData);
 					else
@@ -437,9 +437,9 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 				}
 
 #if defined(WIN32) &&  _MSC_VER < 1900
-	token = wcstok(nullptr, seps); // C4996
+				token = wcstok(nullptr, seps); // C4996
 #else
-	token = wcstok(nullptr, seps, &next_token1); // C4996
+				token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 				//index++;
 
@@ -451,42 +451,42 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 
 wxString CCategoryWnd::GetSqlRequest()
 {
-	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
-    vector<int> listFolder;
+	CMainParam* viewerParam = (CMainParam*)CMainParamInit::getInstance();
+	vector<int> listFolder;
 	vector<int> listFace;
 	vector<int> listFolderNotSelected;
 	vector<int> listFaceNotSelected;
 	vector<int> listFaceSelected;
-    vector<int> listCriteriaNotIn;
+	vector<int> listCriteriaNotIn;
 	vector<int> listStarSelected;
 	vector<int> listStarNotSelected;
 	vector<int> listKeywordSelected;
 	vector<int> listKeywordNotSelected;
 	double pertinence = 0.0;
-    
-	for (CPositionElement * value : vectorPosElementDynamic)
+
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
-        if (value->GetType() == ELEMENT_CHECKBOX)
-        {
-            CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
-            CTreeDataCategory * treeData = (CTreeDataCategory *)value->GetTreeData();
-            
-            if (!checkBox->GetCheckState())
-            {
-                if ((treeData->GetNumCategorie() != 2 && treeData->GetNumCategorie() != 4 && treeData->GetNumCategorie() != 6 && treeData->GetNumCategorie() != 7) && treeData->GetIdElement() != -1)
-                    listCriteriaNotIn.push_back(treeData->GetIdElement());
-				else if(treeData->GetNumCategorie() == 2)
+		if (value->GetType() == ELEMENT_CHECKBOX)
+		{
+			CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
+			CTreeDataCategory* treeData = (CTreeDataCategory*)value->GetTreeData();
+
+			if (!checkBox->GetCheckState())
+			{
+				if ((treeData->GetNumCategorie() != 2 && treeData->GetNumCategorie() != 4 && treeData->GetNumCategorie() != 6 && treeData->GetNumCategorie() != 7) && treeData->GetIdElement() != -1)
+					listCriteriaNotIn.push_back(treeData->GetIdElement());
+				else if (treeData->GetNumCategorie() == 2)
 					listFolderNotSelected.push_back(treeData->GetIdElement());
-				else if(treeData->GetNumCategorie() == 4)
+				else if (treeData->GetNumCategorie() == 4)
 					listFaceNotSelected.push_back(treeData->GetIdElement());
-				else if(treeData->GetNumCategorie() == 6)
+				else if (treeData->GetNumCategorie() == 6)
 					listStarNotSelected.push_back(treeData->GetIdElement());
 				else if (treeData->GetNumCategorie() == 7)
 					listKeywordNotSelected.push_back(treeData->GetIdElement());
-            }
-			else if(treeData->GetIdElement() != -1)
+			}
+			else if (treeData->GetIdElement() != -1)
 			{
-				if(treeData->GetNumCategorie() == 4)
+				if (treeData->GetNumCategorie() == 4)
 					listFaceSelected.push_back(treeData->GetIdElement());
 				else if (treeData->GetNumCategorie() == 6)
 					listStarSelected.push_back(treeData->GetIdElement());
@@ -494,9 +494,9 @@ wxString CCategoryWnd::GetSqlRequest()
 					listKeywordSelected.push_back(treeData->GetIdElement());
 			}
 
-        }
-    }
-    
+		}
+	}
+
 	FolderCatalogVector folderList;
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
@@ -508,17 +508,17 @@ wxString CCategoryWnd::GetSqlRequest()
 		if (it == listFolderNotSelected.end())
 			listFolder.push_back(folderCatalog.GetNumFolder());
 	}
-  
-	if(viewerParam != nullptr)
+
+	if (viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
-    wxString libelleNotGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
-    CSqlFindPhotos sqlFindPhotos;
-    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, listKeywordSelected, listKeywordNotSelected, libelleNotGeo, pertinence);
+	wxString libelleNotGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+	CSqlFindPhotos sqlFindPhotos;
+	sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, listKeywordSelected, listKeywordNotSelected, libelleNotGeo, pertinence);
 
-    viewerParam->SetLastSqlRequest(sqlRequest);
-    
-    return sqlRequest;
+	viewerParam->SetLastSqlRequest(sqlRequest);
+
+	return sqlRequest;
 }
 
 //------------------------------------------------------------------------------
@@ -526,12 +526,12 @@ wxString CCategoryWnd::GetSqlRequest()
 //------------------------------------------------------------------------------
 void CCategoryWnd::UpdateSQLSearchCriteria()
 {
-    CSqlFindPhotos sqlFindPhotos;
-    sqlRequest = GetSqlRequest();
-    sqlFindPhotos.SearchPhotos(sqlRequest);
-    
-    CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
-    viewerParam->SetLastSqlRequest(sqlRequest);
+	CSqlFindPhotos sqlFindPhotos;
+	sqlRequest = GetSqlRequest();
+	sqlFindPhotos.SearchPhotos(sqlRequest);
+
+	CMainParam* viewerParam = (CMainParam*)CMainParamInit::getInstance();
+	viewerParam->SetLastSqlRequest(sqlRequest);
 
 	if (windowMain != nullptr)
 	{
@@ -547,15 +547,15 @@ void CCategoryWnd::SaveStateTriangle()
 	int nbElement = 0;
 	stateTriangleValue = L"";
 
-	for (CPositionElement * value : vectorPosElementDynamic)
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
 		{
 			if (value->GetType() == ELEMENT_TRIANGLE)
 			{
 				//bool isOpen = true;
-				CTreeData * treeData = value->GetTreeData();
-				CTreeElementTriangle * triangle = (CTreeElementTriangle *)value->GetTreeElement();
+				CTreeData* treeData = value->GetTreeData();
+				CTreeElementTriangle* triangle = (CTreeElementTriangle*)value->GetTreeElement();
 				if (triangle != nullptr && treeData != nullptr)
 				{
 					bool isOpen = triangle->GetOpen();
@@ -575,7 +575,7 @@ void CCategoryWnd::SaveStateTriangle()
 		}
 	}
 
-	
+
 	if (config != nullptr)
 		config->SetCatalogOpenTriangle(stateTriangleValue);
 }
@@ -588,15 +588,15 @@ void CCategoryWnd::SaveState()
 	int nbElement = 0;
 	stateValue = L"";
 
-	for (CPositionElement * value : vectorPosElementDynamic)
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
 		{
 			if (value->GetType() == ELEMENT_CHECKBOX)
 			{
 				//bool checkState = false;
-				CTreeData * treeData = value->GetTreeData();
-				CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+				CTreeData* treeData = value->GetTreeData();
+				CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
 				if (checkBox != nullptr && treeData != nullptr)
 				{
 					bool checkState = checkBox->GetCheckState();
@@ -640,25 +640,25 @@ void CCategoryWnd::LoadState()
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-CPositionElement * CCategoryWnd::VerifChildParentCheckBox(const int &numParent, bool & isAllUncheck, const bool &checkOn)
+CPositionElement* CCategoryWnd::VerifChildParentCheckBox(const int& numParent, bool& isAllUncheck, const bool& checkOn)
 {
-	CPositionElement * parent = nullptr;
+	CPositionElement* parent = nullptr;
 	isAllUncheck = true;
 
-	for (CPositionElement * value : vectorPosElementDynamic)
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
 		{
 			if (value->GetType() == ELEMENT_CHECKBOX)
 			{
-				CTreeDataCategory * treeData = (CTreeDataCategory *)value->GetTreeData();
+				CTreeDataCategory* treeData = (CTreeDataCategory*)value->GetTreeData();
 				if (treeData->GetNumElement() == numParent)
 				{
 					parent = value;
 				}
 				else if (treeData->GetNumParent() == numParent)
 				{
-					CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+					CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
 					if (checkBox->GetCheckState() == !checkOn)
 					{
 						isAllUncheck = false;
@@ -675,17 +675,17 @@ CPositionElement * CCategoryWnd::VerifChildParentCheckBox(const int &numParent, 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory * treeData, const bool &checkOn)
+void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory* treeData, const bool& checkOn)
 {
 	bool isAllUnchecked = false;
 	int numParent = treeData->GetNumParent();
-    CPositionElement * parent = nullptr;
+	CPositionElement* parent = nullptr;
 	do
 	{
 		parent = VerifChildParentCheckBox(numParent, isAllUnchecked, checkOn);
 		if (isAllUnchecked && parent != nullptr)
 		{
-			CTreeDataCategory * treeData = (CTreeDataCategory *)parent->GetTreeData();
+			CTreeDataCategory* treeData = (CTreeDataCategory*)parent->GetTreeData();
 			if (treeData != nullptr)
 			{
 				if (treeData->GetIdElement() != -1)
@@ -693,23 +693,23 @@ void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory * treeData, const bool 
 
 					if (treeData->GetNumElement() == numParent)
 					{
-						CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)parent->GetTreeElement();
+						CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)parent->GetTreeElement();
 						checkBox->SetCheckState(checkOn);
 						numParent = treeData->GetNumParent();
 					}
 				}
 				else
 				{
-                    for (CPositionElement * value : vectorPosElementDynamic)
+					for (CPositionElement* value : vectorPosElementDynamic)
 					{
 						if (value != nullptr)
 						{
 							if (value->GetType() == ELEMENT_CHECKBOX)
 							{
-								CTreeDataCategory * treeData = (CTreeDataCategory *)value->GetTreeData();
+								CTreeDataCategory* treeData = (CTreeDataCategory*)value->GetTreeData();
 								if (treeData->GetNumElement() == numParent)
 								{
-									CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+									CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
 									if (checkBox != nullptr)
 									{
 										checkBox->SetCheckState(checkOn);
@@ -725,36 +725,36 @@ void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory * treeData, const bool 
 		}
 
 	} while (isAllUnchecked && numParent > 0);
-    
-    if(checkOn)
-    {
-        if(parent != nullptr)
-        {
-            CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)parent->GetTreeElement();
-            if(!checkBox->GetCheckState())
-            {
-                checkBox->SetCheckState(checkOn);
-            }
-        }
-    }
+
+	if (checkOn)
+	{
+		if (parent != nullptr)
+		{
+			CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)parent->GetTreeElement();
+			if (!checkBox->GetCheckState())
+			{
+				checkBox->SetCheckState(checkOn);
+			}
+		}
+	}
 }
 
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::GestionCheckBoxParent(const int &numParent, const bool &check)
+void CCategoryWnd::GestionCheckBoxParent(const int& numParent, const bool& check)
 {
-	for (CPositionElement * value : vectorPosElementDynamic)
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
 		{
 			if (value->GetType() == ELEMENT_CHECKBOX)
 			{
-				CTreeDataCategory * treeData = (CTreeDataCategory *)value->GetTreeData();
+				CTreeDataCategory* treeData = (CTreeDataCategory*)value->GetTreeData();
 				if (treeData->GetNumParent() == numParent)
 				{
-					CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+					CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
 					checkBox->SetCheckState(check);
 					GestionCheckBoxParent(treeData->GetNumElement(), check);
 				}
@@ -767,7 +767,7 @@ void CCategoryWnd::GestionCheckBoxParent(const int &numParent, const bool &check
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CCategoryWnd::GestionCheckBox(CTreeDataCategory * treeDataSelect, CTreeElementCheckBox * checkBoxSelect)
+void CCategoryWnd::GestionCheckBox(CTreeDataCategory* treeDataSelect, CTreeElementCheckBox* checkBoxSelect)
 {
 	bool state = checkBoxSelect->GetCheckState();
 	wxString exifKey = treeDataSelect->GetExifKey();
@@ -777,13 +777,13 @@ void CCategoryWnd::GestionCheckBox(CTreeDataCategory * treeDataSelect, CTreeElem
 
 	if (isParent)
 	{
-        for (CPositionElement * value : vectorPosElementDynamic)
+		for (CPositionElement* value : vectorPosElementDynamic)
 		{
 			if (value != nullptr)
 			{
 				if (value->GetType() == ELEMENT_CHECKBOX)
 				{
-					CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+					CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)value->GetTreeElement();
 					checkBox->SetCheckState(state);
 				}
 			}
@@ -799,23 +799,23 @@ void CCategoryWnd::GestionCheckBox(CTreeDataCategory * treeDataSelect, CTreeElem
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void  CCategoryWnd::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+void  CCategoryWnd::ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y, const int& posLargeur, const int& posHauteur)
 {
 	//CTreeElement * treeElement = element->GetTreeElement();
 
 	if (element->GetType() == ELEMENT_CHECKBOX)
 	{
-		CTreeDataCategory * treeData = (CTreeDataCategory *)element->GetTreeData();
-		CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)element->GetTreeElement();
+		CTreeDataCategory* treeData = (CTreeDataCategory*)element->GetTreeData();
+		CTreeElementCheckBox* checkBox = (CTreeElementCheckBox*)element->GetTreeElement();
 
 		checkBox->SetCheckState(!checkBox->GetCheckState());
 
 		GestionCheckBox(treeData, checkBox);
 		if (!checkBox->GetCheckState())
-			VerifParentCheckBox(treeData,false);
+			VerifParentCheckBox(treeData, false);
 		else
-			VerifParentCheckBox(treeData,true);
-		
+			VerifParentCheckBox(treeData, true);
+
 		SaveState();
 
 		UpdateSQLSearchCriteria();
@@ -825,7 +825,7 @@ void  CCategoryWnd::ClickOnElement(CPositionElement * element, wxWindow * window
 	}
 	else if (element->GetType() == ELEMENT_TRIANGLE)
 	{
-		CTreeElementTriangle * triangle = (CTreeElementTriangle *)element->GetTreeElement();
+		CTreeElementTriangle* triangle = (CTreeElementTriangle*)element->GetTreeElement();
 		triangle->ClickElement(window, x, y);
 
 		SaveStateTriangle();
@@ -839,25 +839,25 @@ void  CCategoryWnd::ClickOnElement(CPositionElement * element, wxWindow * window
 
 void CCategoryWnd::RefreshCriteriaSearch()
 {
-    SaveState();
-    
-    UpdateSQLSearchCriteria();
-    
-    //UpdateElement();
-    eventControl->UpdateTreeControl();
+	SaveState();
+
+	UpdateSQLSearchCriteria();
+
+	//UpdateElement();
+	eventControl->UpdateTreeControl();
 }
 
 void CCategoryWnd::UpdateScreenRatio()
 {
-    printf("CCategoryWnd::UpdateScreenRatio() \n");
-    UpdateElement();
-    eventControl->UpdateTreeControl();
+	printf("CCategoryWnd::UpdateScreenRatio() \n");
+	UpdateElement();
+	eventControl->UpdateTreeControl();
 }
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool CCategoryWnd::GetTriangleState(const wxString &exifKey, const wxString &key)
+bool CCategoryWnd::GetTriangleState(const wxString& exifKey, const wxString& key)
 {
 	wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateTriangleValue.find(localkey);
@@ -875,7 +875,7 @@ bool CCategoryWnd::GetTriangleState(const wxString &exifKey, const wxString &key
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool CCategoryWnd::GetCheckState(const wxString &exifKey, const wxString &key)
+bool CCategoryWnd::GetCheckState(const wxString& exifKey, const wxString& key)
 {
 	wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateValue.find(localkey);
@@ -894,21 +894,21 @@ bool CCategoryWnd::GetCheckState(const wxString &exifKey, const wxString &key)
 //
 //------------------------------------------------------------------------------
 
-void CCategoryWnd::CreateChildTree(tree<CTreeData *>::iterator &parent)
+void CCategoryWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	tree<CTreeData *>::iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
-	CPositionElement *  posElement = nullptr;
-	CTreeElementTexte * treeElementTexte = nullptr;
+	CPositionElement* posElement = nullptr;
+	CTreeElementTexte* treeElementTexte = nullptr;
 	//CTreeElementDelete * treeElementDelete = nullptr;
-	CTreeElementCheckBox * treeElementCheck = nullptr;
-	CTreeElementTriangle * treeElementTriangle = nullptr;
+	CTreeElementCheckBox* treeElementCheck = nullptr;
+	CTreeElementTriangle* treeElementTriangle = nullptr;
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		if (profondeur == 1 && (data->GetValue().size() > 0 || it.number_of_children() == 0))
 		{
 			int xPos = widthPosition * (profondeur + 1);
@@ -949,7 +949,7 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData *>::iterator &parent)
 		else
 		{
 
-			int xPos = widthPosition *profondeur;
+			int xPos = widthPosition * profondeur;
 			bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
 			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
@@ -984,23 +984,23 @@ void CCategoryWnd::CreateElement()
 {
 	vectorPosElement.clear();
 	vectorPosElementDynamic.clear();
-	tree<CTreeData *>::iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 	widthPosition = 0;
 
 	while (it != itend) {
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementCheckBox * treeElementCheck = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CPositionElement * posElement = nullptr;
+			CTreeElementCheckBox* treeElementCheck = nullptr;
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CPositionElement* posElement = nullptr;
 			bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
 			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
@@ -1031,19 +1031,19 @@ void CCategoryWnd::CreateElement()
 
 
 
-void CCategoryWnd::UpdateElement(const bool &init)
+void CCategoryWnd::UpdateElement(const bool& init)
 {
-	tree<CTreeData *>::iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	tree<CTreeData*>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 	widthPosition = 0;
 
-	for (CPositionElement * value : vectorPosElement)
+	for (CPositionElement* value : vectorPosElement)
 	{
 		if (value != nullptr)
 		{
-			CTreeElement * treeElement = value->GetTreeElement();
+			CTreeElement* treeElement = value->GetTreeElement();
 			treeElement->SetVisible(false);
 		}
 	}
@@ -1051,16 +1051,16 @@ void CCategoryWnd::UpdateElement(const bool &init)
 	bool isVisible = true;
 
 	while (it != itend) {
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementCheckBox * treeElementCheck = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CPositionElement * posElement = GetElement(data, ELEMENT_TRIANGLE);
+			CTreeElementCheckBox* treeElementCheck = nullptr;
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
 				bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
@@ -1070,9 +1070,9 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			}
 			else
 			{
-				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
+				treeElementTriangle = (CTreeElementTriangle*)posElement->GetTreeElement();
 				treeElementTriangle->SetVisible(isVisible);
-               treeElementTriangle->SetElementPos(xPos,yPos);
+				treeElementTriangle->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 
@@ -1092,9 +1092,9 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			}
 			else
 			{
-				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
+				treeElementCheck = (CTreeElementCheckBox*)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
-                treeElementCheck->SetElementPos(xPos,yPos);
+				treeElementCheck->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1111,9 +1111,9 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
-                treeElementTexte->SetElementPos(xPos,yPos);
+				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1131,13 +1131,11 @@ void CCategoryWnd::UpdateElement(const bool &init)
 		it++;
 
 	}
-
-	
 }
 
-void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bool &init)
+void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, const bool& init)
 {
-	tree<CTreeData *>::iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 
@@ -1145,12 +1143,12 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
-		CTreeDataCategory * data = (CTreeDataCategory*)*it;
+		CTreeDataCategory* data = (CTreeDataCategory*)*it;
 		if (profondeur == 1 && (data->GetValue().size() > 0 || it.number_of_children() == 0))
 		{
 			int xPos = widthPosition * (profondeur + 1);
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CPositionElement *  posElement = GetElement(data, ELEMENT_TEXTE);
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CPositionElement* posElement = GetElement(data, ELEMENT_TEXTE);
 
 			if (posElement == nullptr)
 			{
@@ -1160,9 +1158,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
-                treeElementTexte->SetElementPos(xPos,yPos);
+				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1175,11 +1173,11 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 		else if (data->GetValue().size() > 0 || it.number_of_children() == 0)
 		{
 			//CTreeElementDelete * treeElementDelete = nullptr;
-			CTreeElementCheckBox * treeElementCheck = nullptr;
+			CTreeElementCheckBox* treeElementCheck = nullptr;
 			int xPos = widthPosition * (profondeur + 1);
-			CTreeElementTexte * treeElementTexte = nullptr;
+			CTreeElementTexte* treeElementTexte = nullptr;
 
-			CPositionElement * posElement = GetElement(data, ELEMENT_CHECKBOX);
+			CPositionElement* posElement = GetElement(data, ELEMENT_CHECKBOX);
 			if (posElement == nullptr)
 			{
 				bool check = GetCheckState(data->GetExifKey(), data->GetKey());
@@ -1189,36 +1187,15 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
+				treeElementCheck = (CTreeElementCheckBox*)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
-                treeElementCheck->SetElementPos(xPos,yPos);
+				treeElementCheck->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
 			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
 
-			/*
-			if (data->GetTypeElement() == TYPEFOLDER)
-			{
-				posElement = GetElement(data, ELEMENT_DELETE);
-				if (posElement == nullptr)
-				{
-					treeElementDelete = CreateDeleteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight());
-					treeElementDelete->SetVisible(isVisible);
-					posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementDelete->GetWidth(), treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
-				}
-				else
-				{
-					treeElementDelete = (CTreeElementDelete *)posElement->GetTreeElement();
-					treeElementDelete->SetVisible(isVisible);
-					posElement->SetX(xPos);
-					posElement->SetY(yPos);
-				}
-
-				xPos += treeElementDelete->GetWidth() + themeTree.GetMargeX();
-			}
-			*/
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
@@ -1228,9 +1205,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
-                treeElementTexte->SetElementPos(xPos,yPos);
+				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1243,13 +1220,13 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 		}
 		else
 		{
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CTreeElementCheckBox * treeElementCheck = nullptr;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
+			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementCheckBox* treeElementCheck = nullptr;
+			CTreeElementTriangle* treeElementTriangle = nullptr;
 
-			int xPos = widthPosition *profondeur;
+			int xPos = widthPosition * profondeur;
 
-			CPositionElement * posElement = GetElement(data, ELEMENT_TRIANGLE);
+			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
 				bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
@@ -1259,9 +1236,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
+				treeElementTriangle = (CTreeElementTriangle*)posElement->GetTreeElement();
 				treeElementTriangle->SetVisible(isVisible);
-                treeElementTriangle->SetElementPos(xPos,yPos);
+				treeElementTriangle->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1278,9 +1255,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
+				treeElementCheck = (CTreeElementCheckBox*)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
-                treeElementCheck->SetElementPos(xPos,yPos);
+				treeElementCheck->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1296,9 +1273,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::iterator &parent, const bo
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				CTreeElementTexte* treeElementTexte = (CTreeElementTexte*)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
-                treeElementTexte->SetElementPos(xPos,yPos);
+				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
