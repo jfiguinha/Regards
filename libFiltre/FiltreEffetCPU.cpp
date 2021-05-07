@@ -492,16 +492,11 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 
 	if (bitmap != nullptr)
 	{
-		/*
 		CBilateral * bilateral = new Regards::FiltreEffet::CBilateral(fSize, sigmaX, sigmaP);
 		bilateral->SetParameter(bitmap, backColor);
 		bilateral->Compute();
 		delete bilateral;
-		*/
-		cv::Mat dst;
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::bilateralFilter(src,dst,fSize,sigmaX, sigmaP);
-		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
 		return 0;
 	}
 	return -1;

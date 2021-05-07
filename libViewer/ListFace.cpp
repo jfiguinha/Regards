@@ -332,13 +332,13 @@ void CListFace::FacialDetectionRecognition(void * param)
 {
 	CThreadFace * path = (CThreadFace *)param;
 	wxString filename = path->filename;
+
+
 	std::vector<int> listFace;
 	if (filename == "")
 	{
 
-		CSqlFindFacePhoto facePhoto;
-		listFace = facePhoto.GetListFaceToRecognize();
-
+		CSqlFindFacePhoto facePhoto; 
 		int i = 0;
 		for (int numFace : listFace)
 		{

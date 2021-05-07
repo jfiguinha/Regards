@@ -17,7 +17,7 @@
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
 #include <libPicture.h>
-#include <face_alignement.h>
+//#include <face_alignement.h>
 //#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
@@ -238,7 +238,7 @@ bool MyApp::OnInit()
 
 #ifdef TEST_NOISE
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
-	face_alignement("C:\\Users\\jfigu\\OneDrive\\Documents\\Regards\\Face\\316.jpg", eye.ToStdString());
+	face_alignement("d:\\metart_firestarter_leaya_high_0048.jpg", eye.ToStdString());
 #endif
 	
 	frameStart = new MyFrameIntro("Welcome to Regards","REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);

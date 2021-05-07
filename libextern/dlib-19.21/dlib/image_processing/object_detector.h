@@ -122,7 +122,7 @@ namespace dlib
         template <
             typename image_type
             >
-        std::vector<rectangle> operator() (
+        std::vector<rect_detection> operator() (
             const image_type& img,
             double adjust_threshold = 0
         );
@@ -497,7 +497,7 @@ namespace dlib
     template <
         typename image_type
         >
-    std::vector<rectangle> object_detector<image_scanner_type>::
+    std::vector<rect_detection> object_detector<image_scanner_type>::
     operator() (
         const image_type& img,
         double adjust_threshold
@@ -506,9 +506,12 @@ namespace dlib
         std::vector<rect_detection> dets;
         (*this)(img,dets,adjust_threshold);
 
-        std::vector<rectangle> final_dets(dets.size());
+        std::vector<rect_detection> final_dets(dets.size());
         for (unsigned long i = 0; i < dets.size(); ++i)
-            final_dets[i] = dets[i].rect;
+        {
+            final_dets[i] = dets[i];
+        }
+            
 
         return final_dets;
     }
