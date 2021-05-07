@@ -35,7 +35,8 @@ namespace Regards
 			void RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox);
 			void ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff);  
 			void detectFaceOpenCVDNN(cv::Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace);
-			cv::Mat face_alignement(const cv::Mat& image);
+			double face_alignement(const cv::Mat& image);
+			cv::Mat RotateAndExtractFace(const double &angle,const cv::Rect & faceLocation, const cv::Mat& image);
 
             static bool isload;
 			static std::mutex muLoading;

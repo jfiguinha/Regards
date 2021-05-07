@@ -248,7 +248,10 @@ int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
 				break;
 			case 5:
 				_cPhoto.month = sqlResult->ColumnDataInt(i);
-				_cPhoto.monthName = MonthName[_cPhoto.month - 1];
+				if (_cPhoto.month > 0)
+					_cPhoto.monthName = MonthName[_cPhoto.month - 1];
+				else
+					_cPhoto.monthName = "";
 				break;
 			case 6:
 				_cPhoto.day = sqlResult->ColumnDataInt(i);

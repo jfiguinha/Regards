@@ -12,6 +12,8 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 
+#define DLIB_FACE_DETECTION
+
 using namespace cv;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
@@ -176,9 +178,10 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #endif
 
 		deserialize(face_recognition) >> anet;
-				
+		
+#ifdef DLIB_FACE_DETECTION
 		deserialize(landmarkPath) >> sp;
-
+#endif
 		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
@@ -193,19 +196,23 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 }
 
 
-cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
+double CFaceDetector::face_alignement(const cv::Mat & image) {
 
 	//Declaring a variable "image" to store input image given.
-	Mat gray, resized, detected_edges, Laugh_L, Laugh_R;
+	Mat gray, detected_edges, Laugh_L, Laugh_R;
 
 	//converts original image to gray scale and stores it in "gray".
 	cvtColor(image, gray, COLOR_BGR2GRAY);
 
 	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
-	equalizeHist(gray, resized);
+	equalizeHist(gray, gray);
+
+	//cvtColor(gray, gray, COLOR_GRAY2BGR);
+
+#ifdef DLIB_FACE_DETECTION
 
 	// Conver OpenCV image Dlib image i.e. cimg
-	cv_image<rgb_pixel> cimg(image);
+	//cv_image<rgb_pixel> cimg(gray);
 
 	dlib::rectangle rectDlib;
 	cv::Rect R;
@@ -223,11 +230,12 @@ cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
 	points in dlib::point from, which needs to be converted back to cv::Point for displaying.*/
 	//std::vector<full_object_detection> shape;
 	muDlibLandmarkAccess.lock();
-	full_object_detection shape = sp(dlib::cv_image<unsigned char>(resized), rectDlib);
+	full_object_detection shape = sp(dlib::cv_image<unsigned char>(gray), rectDlib);
 	muDlibLandmarkAccess.unlock();
 	CFaceDetectPriv::point2cv_Point(shape, landmarks);
 
 	// Extract each part using the pre fixed indicies
+	/*
 	for (size_t s = 0; s < landmarks.size(); s++) {
 		//circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
 		//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
@@ -262,8 +270,8 @@ cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
 			Nose.push_back(landmarks[s]);
 		}
 	}
-
-
+	*/
+	/*
 	// 2D image points. If you change the image, you need to change vector
 	std::vector<cv::Point2d> image_points;
 	image_points.push_back(landmarks[30]);    // Nose tip
@@ -297,24 +305,65 @@ cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
 	cv::solvePnP(model_points, image_points, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
 
 	// Draw line between two eyes
-	//cv::line(image,landmarks[45],landmarks[36],Scalar(0,255,0),4);
+	cv::line(image,landmarks[45],landmarks[36],Scalar(0,255,0),4);
 
 	// Access the last element in the Rotation Vector
 	double rot = rotation_vector.at<double>(0, 2);
+	*/
+	double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
+
+
+#else
+
+	std::vector<cv::Rect> eyes;
+
+	muEyeAccess.lock();
+	eye_cascade.detectMultiScale(gray, eyes, 1.3, 6, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(image.rows * 0.1, image.cols * 0.1));
+	muEyeAccess.unlock();
+
+	if (eyes.size() != 2)
+	{
+		return image;
+	}
+
+	cv::Point2d left_eye;
+	left_eye.x = eyes[0].x;
+	left_eye.y = eyes[0].y;
+
+	cv::Point2d right_eye;
+	right_eye.x = eyes[1].x;
+	right_eye.y = eyes[1].y;
+
+	cv::line(image, left_eye, right_eye, Scalar(0, 255, 0), 4);
+	Point2d center = cv::Point2d(image.cols / 2, image.rows / 2);
+	double rot = atan2(right_eye.y - left_eye.y, right_eye.x - left_eye.x);
+#endif
+
+
 
 	// Conver to degrees
-	double theta_deg = rot / M_PI * 180;
+	//double theta_deg = rot / M_PI * 180;
+	double theta_deg_eye = rot_eye / M_PI * 180;
+#if defined(WIN32)
+	wchar_t message[255];
+	//wsprintf(message, L"rot : x : %d \n", (int)theta_deg);
+	//OutputDebugString(message);
+	wsprintf(message, L"rot_eye : x : %d \n", (int)theta_deg_eye);
+	OutputDebugString(message);
+#endif
 
-	cout << theta_deg << " In degrees" << endl;
 
+	//cout << theta_deg << " In degrees" << endl;
 
+	return theta_deg_eye;
+	/*
 	Mat dst;
 	// Rotate around the center
 	Point2f pt(image.cols / 2., image.rows / 2.);
-	Mat r = getRotationMatrix2D(pt, theta_deg, 1.0);
+	Mat r = getRotationMatrix2D(pt, theta_deg_eye, 1.0);
 
 	// determine bounding rectangle
-	cv::Rect bbox = cv::RotatedRect(pt, image.size(), theta_deg).boundingRect();
+	cv::Rect bbox = cv::RotatedRect(pt, image.size(), theta_deg_eye).boundingRect();
 
 	// adjust transformation matrix
 	r.at<double>(0, 2) += bbox.width / 2.0 - center.x;
@@ -327,7 +376,46 @@ cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
 	//imwrite("d:\\test2.jpg", dst);
 
 	return dst;
+	*/
+}
 
+cv::Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const cv::Rect& faceLocation, const cv::Mat& image)
+{
+	Mat dst;
+	// Rotate around the center
+	Point2d center = cv::Point2d(faceLocation.x + faceLocation.width / 2, faceLocation.y + faceLocation.height / 2);
+	Point2f pt(faceLocation.width / 2., faceLocation.height / 2.);
+	
+
+	// determine bounding rectangle
+	cv::Rect bbox = cv::RotatedRect(center, cv::Size(faceLocation.width, faceLocation.height), theta_deg_eye).boundingRect();
+
+	bbox.x = max(bbox.x, 0);
+	bbox.y = max(bbox.y, 0);
+	bbox.width = max(bbox.width, 0);
+	bbox.height = max(bbox.height, 0);
+	dst = image(bbox);
+
+
+	center = cv::Point2d(dst.cols / 2, dst.rows / 2);
+	Mat r = getRotationMatrix2D(center, theta_deg_eye, 1.0);
+	// adjust transformation matrix
+	r.at<double>(0, 2) += bbox.width / 2.0 - center.x;
+	r.at<double>(1, 2) += bbox.height / 2.0 - center.y;
+
+	// Apply affine transform
+	warpAffine(dst, dst, r, bbox.size());
+
+	cv::Rect rect = faceLocation;
+	rect.x = max((bbox.width - faceLocation.width) / 2, 0);
+	rect.y = max((bbox.height - faceLocation.height) / 2, 0);
+	rect.width = max(faceLocation.width, 0);
+	rect.height = max(faceLocation.height, 0);
+	dst = dst(rect);
+	//imwrite("d:\\test1.jpg", image);
+	//imwrite("d:\\test2.jpg", dst);
+
+	return dst;
 }
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
@@ -359,7 +447,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		{
 			if (face.confidence > confidence)
 			{
-				//face.croppedImage = face_alignement(face.croppedImage);
+				double angleRot = face_alignement(face.croppedImage);
+				face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
 				cv::Size size(150, 150);
 				std::vector<uchar> buff;
 				cv::resize(face.croppedImage, face.croppedImage, size);
