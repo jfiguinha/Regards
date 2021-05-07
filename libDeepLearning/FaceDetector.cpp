@@ -78,17 +78,35 @@ bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muDnnAccess;
 std::mutex CFaceDetector::muEyeAccess;
-//std::mutex CFaceDetector::muEyeDlibAccess;
+std::mutex CFaceDetector::muDlibAccess;
+std::mutex CFaceDetector::muDlibLandmarkAccess;
 
-static cv::Rect dlibRectangleToOpenCV(dlib::rectangle r)
+class CFaceDetectPriv
 {
-	return cv::Rect(cv::Point2i(r.left(), r.top()), cv::Point2i(r.right() + 1, r.bottom() + 1));
-}
+public:
 
-static dlib::rectangle openCVRectToDlib(cv::Rect r)
-{
-  return dlib::rectangle((long)r.tl().x, (long)r.tl().y, (long)r.br().x - 1, (long)r.br().y - 1);
-}
+	static cv::Rect dlibRectangleToOpenCV(dlib::rectangle r)
+	{
+		return cv::Rect(cv::Point2i(r.left(), r.top()), cv::Point2i(r.right() + 1, r.bottom() + 1));
+	}
+
+	static dlib::rectangle openCVRectToDlib(cv::Rect r)
+	{
+		return dlib::rectangle((long)r.tl().x, (long)r.tl().y, (long)r.br().x - 1, (long)r.br().y - 1);
+	}
+
+	/** This function converts dlib::point to cv::Point and stores in a vector of landmarks
+		This function is needed because in this implementation I have used opencv and dlib bothand they
+		both have their own image processing library so when using a dlib method, its arguments should be
+		as expected */
+	static void point2cv_Point(full_object_detection& S, std::vector<Point>& L)
+	{
+		for (unsigned int i = 0; i < S.num_parts(); ++i)
+		{
+			L.push_back(Point(S.part(i).x(), S.part(i).y()));
+		}
+	}
+};
 
 CFaceDetector::CFaceDetector()
 {
@@ -98,7 +116,7 @@ CFaceDetector::~CFaceDetector()
 {
 }
 
-void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection)
+void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection, const string& landmarkPath)
 {
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
@@ -159,7 +177,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 		deserialize(face_recognition) >> anet;
 				
-		//deserialize(eye_detection) >> sp;
+		deserialize(landmarkPath) >> sp;
 
 		eye_cascade.load(eye_detection);
 	}
@@ -174,6 +192,143 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 }
 
+
+cv::Mat CFaceDetector::face_alignement(const cv::Mat & image) {
+
+	//Declaring a variable "image" to store input image given.
+	Mat gray, resized, detected_edges, Laugh_L, Laugh_R;
+
+	//converts original image to gray scale and stores it in "gray".
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+
+	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
+	equalizeHist(gray, resized);
+
+	// Conver OpenCV image Dlib image i.e. cimg
+	cv_image<rgb_pixel> cimg(image);
+
+	dlib::rectangle rectDlib;
+	cv::Rect R;
+	R.x = 0;
+	R.y = 0;
+	R.width = image.cols;
+	R.height = image.rows;
+
+	rectDlib = CFaceDetectPriv::openCVRectToDlib(R);
+
+	//landmarks vector is declared to store the 68 landmark points. The rest are for individual face components
+	std::vector<cv::Point> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
+
+	/**at each index of "shapes" vector there is an object of full_object_detection class which stores the 68 landmark
+	points in dlib::point from, which needs to be converted back to cv::Point for displaying.*/
+	//std::vector<full_object_detection> shape;
+	muDlibLandmarkAccess.lock();
+	full_object_detection shape = sp(dlib::cv_image<unsigned char>(resized), rectDlib);
+	muDlibLandmarkAccess.unlock();
+	CFaceDetectPriv::point2cv_Point(shape, landmarks);
+
+	// Extract each part using the pre fixed indicies
+	for (size_t s = 0; s < landmarks.size(); s++) {
+		//circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
+		//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
+
+		// Right Eyebrow indicies
+		if (s >= 22 && s <= 26) {
+			R_Eyebrow.push_back(landmarks[s]);
+			//circle( image,landmarks[s], 2.0, Scalar( 0, 0, 255 ), 1, 8 );
+		}
+		// Left Eyebrow indicies
+		else if (s >= 17 && s <= 21) {
+			L_Eyebrow.push_back(landmarks[s]);
+		}
+		// Left Eye indicies
+		else if (s >= 36 && s <= 41) {
+			L_Eye.push_back(landmarks[s]);
+		}
+		// Right Eye indicies
+		else if (s >= 42 && s <= 47) {
+			R_Eye.push_back(landmarks[s]);
+		}
+		// Mouth indicies
+		else if (s >= 48 && s <= 67) {
+			Mouth.push_back(landmarks[s]);
+		}
+		// Jawline Indicies
+		else if (s >= 0 && s <= 16) {
+			Jaw_Line.push_back(landmarks[s]);
+		}
+		// Nose Indicies
+		else if (s >= 27 && s <= 35) {
+			Nose.push_back(landmarks[s]);
+		}
+	}
+
+
+	// 2D image points. If you change the image, you need to change vector
+	std::vector<cv::Point2d> image_points;
+	image_points.push_back(landmarks[30]);    // Nose tip
+	image_points.push_back(landmarks[8]);    // Chin
+	image_points.push_back(landmarks[45]);     // Left eye left corner
+	image_points.push_back(landmarks[36]);    // Right eye right corner
+	image_points.push_back(landmarks[54]);    // Left Mouth corner
+	image_points.push_back(landmarks[48]);    // Right mouth corner
+
+	// 3D model points.
+	std::vector<cv::Point3d> model_points;
+	model_points.push_back(cv::Point3d(0.0f, 0.0f, 0.0f));               // Nose tip
+	model_points.push_back(cv::Point3d(0.0f, -330.0f, -65.0f));          // Chin
+	model_points.push_back(cv::Point3d(-225.0f, 170.0f, -135.0f));       // Left eye left corner
+	model_points.push_back(cv::Point3d(225.0f, 170.0f, -135.0f));        // Right eye right corner
+	model_points.push_back(cv::Point3d(-150.0f, -150.0f, -125.0f));      // Left Mouth corner
+	model_points.push_back(cv::Point3d(150.0f, -150.0f, -125.0f));       // Right mouth corner
+
+	// Camera internals
+	double focal_length = image.cols; // Approximate focal length.
+	Point2d center = cv::Point2d(image.cols / 2, image.rows / 2);
+	cv::Mat camera_matrix = (cv::Mat_<double>(3, 3) << focal_length, 0, center.x, 0, focal_length, center.y, 0, 0, 1);
+	cv::Mat dist_coeffs = cv::Mat::zeros(4, 1, cv::DataType<double>::type); // Assuming no lens distortion
+
+	// cout << "Camera Matrix " << endl << camera_matrix << endl ;
+	// Output rotation and translation
+	cv::Mat rotation_vector; // Rotation in axis-angle form
+	cv::Mat translation_vector;
+
+	// Solve for pose
+	cv::solvePnP(model_points, image_points, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
+
+	// Draw line between two eyes
+	//cv::line(image,landmarks[45],landmarks[36],Scalar(0,255,0),4);
+
+	// Access the last element in the Rotation Vector
+	double rot = rotation_vector.at<double>(0, 2);
+
+	// Conver to degrees
+	double theta_deg = rot / M_PI * 180;
+
+	cout << theta_deg << " In degrees" << endl;
+
+
+	Mat dst;
+	// Rotate around the center
+	Point2f pt(image.cols / 2., image.rows / 2.);
+	Mat r = getRotationMatrix2D(pt, theta_deg, 1.0);
+
+	// determine bounding rectangle
+	cv::Rect bbox = cv::RotatedRect(pt, image.size(), theta_deg).boundingRect();
+
+	// adjust transformation matrix
+	r.at<double>(0, 2) += bbox.width / 2.0 - center.x;
+	r.at<double>(1, 2) += bbox.height / 2.0 - center.y;
+
+	// Apply affine transform
+	warpAffine(image, dst, r, bbox.size());
+
+	//imwrite("d:\\test1.jpg", image);
+	//imwrite("d:\\test2.jpg", dst);
+
+	return dst;
+
+}
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 {
@@ -204,15 +359,15 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		{
 			if (face.confidence > confidence)
 			{
+				//face.croppedImage = face_alignement(face.croppedImage);
 				cv::Size size(150, 150);
 				std::vector<uchar> buff;
 				cv::resize(face.croppedImage, face.croppedImage, size);
-
 				ImageToJpegBuffer(face.croppedImage, buff);
 				int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 				
-				cv_image<rgb_pixel> cimg(cvIplImage(face.croppedImage));
+				cv_image<rgb_pixel> cimg(face.croppedImage);
 				faces.push_back(cimg);
 			}
 		}
@@ -229,7 +384,9 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 			// In this 128D vector space, images from the same person will be close to each other
 			// but vectors from different people will be far apart.  So we can use these vectors to
 			// identify if a pair of images are from the same person or from different people.  
+			muDlibAccess.lock();
 			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
+			muDlibAccess.unlock();
 
 			for (int i = 0; i < faces.size(); i++)
 			{
@@ -290,7 +447,7 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 				int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 				listFace.push_back(numFace);
 
-				cv_image<rgb_pixel> cimg(cvIplImage(face.croppedImage));
+				cv_image<rgb_pixel> cimg(face.croppedImage);
 				faces.push_back(cimg);
 			}
 		}
@@ -308,8 +465,9 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 			// In this 128D vector space, images from the same person will be close to each other
 			// but vectors from different people will be far apart.  So we can use these vectors to
 			// identify if a pair of images are from the same person or from different people.  
+			muDlibAccess.lock();
 			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
-
+			muDlibAccess.unlock();
 			for (int i = 0; i < faces.size(); i++)
 			{
 				matrix<float, 0, 1> face = face_descriptors[i];
@@ -437,11 +595,11 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 			int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
 			int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
-			cv::Rect myROI(cv::Point(x1, y1), cv::Point(x2, y2));
-			face.croppedImage = frameOpenCVDNN(myROI);
+			face.myROI = cv::Rect(cv::Point(x1, y1), cv::Point(x2, y2));
+			face.croppedImage = frameOpenCVDNN(face.myROI);
 
 			listOfFace.push_back(face);
-			pointOfFace.push_back(myROI);
+			pointOfFace.push_back(face.myROI);
 
 		}
 	}

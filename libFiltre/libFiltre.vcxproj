@@ -516,6 +516,7 @@
     <ClInclude Include="LensFlareFilter.h" />
     <ClInclude Include="lib_transforms.h" />
     <ClInclude Include="Line.h" />
+    <ClInclude Include="MeanShift.h" />
     <ClInclude Include="MotionBlur.h" />
     <ClInclude Include="MotionBlurEffectParameter.h" />
     <ClInclude Include="MotionBlurFilter.h" />
@@ -593,6 +594,7 @@
     <ClCompile Include="LensFlareFilter.cpp" />
     <ClCompile Include="lib_transforms.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="MeanShift.cpp" />
     <ClCompile Include="MotionBlur.cpp" />
     <ClCompile Include="MotionBlurFilter.cpp" />
     <ClCompile Include="moviestreaminfo.cpp" />

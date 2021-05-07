@@ -929,14 +929,6 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
 			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
-			/*
-			if (data->GetTypeElement() == TYPEFOLDER)
-			{
-				treeElementDelete = CreateDeleteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight());
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementDelete->GetWidth(), treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
-				xPos += treeElementDelete->GetWidth() + themeTree.GetMargeX();
-			}
-			*/
 			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 

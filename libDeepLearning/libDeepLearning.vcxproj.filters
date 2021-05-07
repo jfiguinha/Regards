@@ -45,6 +45,9 @@
     <ClCompile Include="..\libextern\dlib-19.21\dlib\all\source.cpp">
       <Filter>dlib</Filter>
     </ClCompile>
+    <ClCompile Include="Face_Alignment.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DetectRotation.h">
@@ -69,6 +72,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="VideoStabilization.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="face_alignement.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

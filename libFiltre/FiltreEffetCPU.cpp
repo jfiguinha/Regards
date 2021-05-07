@@ -23,6 +23,7 @@
 #include <ImageLoadingFormat.h>
 #include <OpenCVEffect.h>
 #include <hqdn3d.h>
+#include <MeanShift.h>
 #include <RegardsBitmap.h>
 //BM3D
 #include "bm3dfilter.h"
@@ -425,15 +426,6 @@ int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
 
 	if (bitmap != nullptr)
 	{
-		/*
-		CClahe * clahe = new Regards::FiltreEffet::CClahe();
-		CRegardsBitmap * out = clahe->ClaheFilter(bitmap, nBins, clipLevel, windowSize);
-		bitmap->SetBitmap(out->GetPtBitmap(), out->GetBitmapWidth(), out->GetBitmapHeight());
-		delete clahe;
-		delete out;
-		return 0;
-		*/
-
 		cv::Mat dst;
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		if (src.channels() >= 3) {
@@ -466,6 +458,30 @@ int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
 	return 0;
 }
 
+int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorRadius)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, dst, cv::COLOR_BGR2Lab);
+		// Initilize Mean Shift with spatial bandwith and color bandwith
+		CMeanShift msProcess(fSpatialRadius, fColorRadius);
+			//MSProc(fSpatialRadius, fColorRadius);
+		// Filtering Process
+		msProcess.MSFiltering(dst);
+		cvtColor(dst, dst, cv::COLOR_Lab2RGB);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+	return 0;
+}
+
 int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 {
 	CRegardsBitmap* bitmap = nullptr;
@@ -476,10 +492,16 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CBilateral * bilateral = new Regards::FiltreEffet::CBilateral(fSize, sigmaX, sigmaP);
 		bilateral->SetParameter(bitmap, backColor);
 		bilateral->Compute();
 		delete bilateral;
+		*/
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::bilateralFilter(src,dst,fSize,sigmaX, sigmaP);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		return 0;
 	}
 	return -1;
@@ -747,6 +769,8 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 	}
 	return 0;
 }
+
+
 //---------------------------------------------------------------------
 //Effet Clouds 
 //---------------------------------------------------------------------
@@ -1419,48 +1443,6 @@ void CFiltreEffetCPU::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr
 		bitmap = bitmapOut;
 	else
 		bitmap = pBitmap;
-
-	/*
-	int height_middle = widthOut / 2;
-	int width_middle = heightOut / 2;
-	uint8_t * src = bitmap->GetPtBitmap();
-
-	for (int y = 0; y < height_middle; y++)
-	{
-		for (int x = 0; x < width_middle; x++)
-		{
-			int r1 = 0;
-			int g1 = 0;
-			int b1 = 0;
-			int cr_position = x + y * width_middle;
-			int lum_position = (x * 2) + (y * 2) * widthOut;
-			int position = (x * 2) * 4 + (y * 2) * widthOut * 4;
-			for (int i = 0; i < 2; i++)
-			{
-				int r = src[position + 2];
-				int g = src[position + 1];
-				int b = src[position + 0];
-				r1 += r;
-				g1 += g;
-				b1 += b;
-				lum[lum_position] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
-				r = src[position + 6];
-				g = src[position + 5];
-				b = src[position + 4];
-				r1 += r;
-				g1 += g;
-				b1 += b;
-				lum[lum_position + 1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
-
-				position += widthOut * 4;
-				lum_position += widthOut;
-			}
-
-			cb[cr_position] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
-			cr[cr_position] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
-		}
-	}
-	*/
 
 	int wrap, wrap3, x, y;
 	int r, g, b, r1, g1, b1;

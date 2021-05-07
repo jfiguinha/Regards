@@ -64,6 +64,9 @@
     <Filter Include="window\Transition">
       <UniqueIdentifier>{29ad8b41-1d26-46d2-b755-04859f09bd84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Filter\MeanShift">
+      <UniqueIdentifier>{a6f92a84-e7dc-4780-a4c7-85caa8bce14b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -327,6 +330,9 @@
     <ClInclude Include="CartoonFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
+    <ClInclude Include="MeanShift.h">
+      <Filter>Filter\MeanShift</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -499,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="CartoonFilter.cpp">
       <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="MeanShift.cpp">
+      <Filter>Filter\MeanShift</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

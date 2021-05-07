@@ -94,11 +94,18 @@ int CFiltreEffet::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 {
 	return filtreEffet->BilateralFilter(fSize, sigmaX, sigmaP);
 }
-	
+
+
 int CFiltreEffet::NlmeansFilter(int fsize, int bsize, float sigma)
 {
 	return filtreEffet->NlmeansFilter(fsize, bsize, sigma);
 }
+
+int CFiltreEffet::MeanShift(const float& fSpatialRadius, const float& fColorRadius)
+{
+	return filtreEffet->MeanShift(fSpatialRadius, fColorRadius);
+}
+
 
 wxImage CFiltreEffet::RenderEffectPreviewwxImage(const int &numEffect, CEffectParameter * effectParameter)
 {
@@ -157,6 +164,8 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
         filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
     }
 }
+
+
 
 bool CFiltreEffet::OpenCLHasEnoughMemory()
 {

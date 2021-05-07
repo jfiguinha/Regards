@@ -53,6 +53,7 @@ public:
 	virtual int FiltreMosaic() = 0;
 	virtual int FlipVertical() = 0;
 	virtual int FlipHorizontal() = 0;
+	virtual int MeanShift(const float& fSpatialRadius, const float& fColorRadius) = 0;
 	virtual int MotionBlur(const double &radius, const double &sigma, const double &angle) = 0;
 	virtual int PhotoFiltre(const CRgbaquad &clValue, const int &intensity) = 0;
 	virtual int Rotate90() = 0;

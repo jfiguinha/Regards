@@ -25,6 +25,7 @@ public:
 	int NlmeansFilter(int fsize, int bsize, float sigma);
 	int GetRgbaBitmap(void * cl_image){return -1;};
     void SetBitmap(CImageLoadingFormat * bitmap);
+	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
     CRegardsFloatBitmap * GetFloatBitmap(const bool &source);

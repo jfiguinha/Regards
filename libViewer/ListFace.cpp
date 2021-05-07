@@ -298,7 +298,7 @@ void CListFace::LoadResource(void * param)
 	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
 	wxString shape = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
-	//wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
 #else
 
 #ifdef CAFFE
@@ -313,9 +313,10 @@ void CListFace::LoadResource(void * param)
 	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
 	wxString shape = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_68_face_landmarks.dat";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString(), landmark.ToStdString());
 
 
 	if (path->mainWindow != nullptr)

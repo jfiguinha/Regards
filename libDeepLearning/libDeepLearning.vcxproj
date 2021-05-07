@@ -55,6 +55,7 @@
     <ClCompile Include="DetectRotation.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="FaceRecognition.cpp" />
+    <ClCompile Include="Face_Alignment.cpp" />
     <ClCompile Include="header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">Create</PrecompiledHeader>
@@ -71,6 +72,7 @@
     <ClInclude Include="DetectRotation.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FaceRecognition.h" />
+    <ClInclude Include="face_alignement.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="OpenCVEffect.h" />
     <ClInclude Include="VideoStabilization.h" />

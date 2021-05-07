@@ -17,11 +17,12 @@
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
 #include <libPicture.h>
+#include <face_alignement.h>
 //#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
-
+//#define TEST_NOISE
 
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -248,19 +249,8 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
 #ifdef TEST_NOISE
-	float LumSpac = -1;
-	float ChromSpac = -1;
-	float LumTmp = -1;
-	float ChromTmp = -1;
-	CLibPicture libPicture;
-	CImageLoadingFormat * picture = libPicture.LoadPicture("d:\\Noise-Image.1.jpg");
-	CRegardsBitmap * test = picture->GetRegardsBitmap();
-	CFFmpegDenoise denoise;
-	CRegardsBitmap * out = denoise.ApplyDenoise3D(150,150, 80,80, test);
-	out->SaveToBmp("d:\\toto.bmp");
-	delete test;
-	delete out; 
-	delete picture;
+	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
+	face_alignement("C:\\Users\\jfigu\\OneDrive\\Documents\\Regards\\Face\\316.jpg", eye.ToStdString());
 #endif
 
 #ifdef PREPARE_DATA_TRAINING

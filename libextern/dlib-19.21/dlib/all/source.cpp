@@ -20,8 +20,8 @@
 #include "../threads/async.cpp"
 #include "../misc_api/misc_api_kernel_1.cpp"
 #include "../misc_api/misc_api_kernel_2.cpp"
-
-
+#include "../base64/base64_kernel_1.cpp"
+#include "../entropy_decoder/entropy_decoder_kernel_2.cpp"
 #define DLIB_ALL_SOURCE_END
 
 #endif // DLIB_ALL_SOURCe_
