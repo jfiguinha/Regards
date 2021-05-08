@@ -12,8 +12,11 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 
-#define DLIB_FACE_DETECTION
+//#define DLIB_FACE_DETECTION
 #define DLIB_FACE_LANDMARK_DETECTION
+
+#define WIDTH_THUMBNAIL 1920
+#define HEIGHT_THUMBNAIL 1080
 
 using namespace cv;
 using namespace cv::dnn;
@@ -156,17 +159,17 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = (float)640 / (float)(pictureWidth);
+		newRatio = (float)WIDTH_THUMBNAIL / (float)(pictureWidth);
 	else
-		newRatio = (float)480 / (float)(pictureHeight);
+		newRatio = (float)HEIGHT_THUMBNAIL / (float)(pictureHeight);
 
-	if ((pictureHeight * newRatio) > 480)
+	if ((pictureHeight * newRatio) > HEIGHT_THUMBNAIL)
 	{
-		newRatio = (float)480 / (float)(pictureHeight);
+		newRatio = (float)HEIGHT_THUMBNAIL / (float)(pictureHeight);
 	}
-	if ((pictureWidth * newRatio) > 640)
+	if ((pictureWidth * newRatio) > WIDTH_THUMBNAIL)
 	{
-		newRatio = (float)640 / (float)(pictureWidth);
+		newRatio = (float)WIDTH_THUMBNAIL / (float)(pictureWidth);
 	}
 
 	return newRatio;
@@ -175,6 +178,9 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 {
 	cv::Mat gray, resized;
+
+#ifdef DLIB_FACE_DETECTION
+
 	double scale = CalculPictureRatio(image.cols, image.rows);
 	//converts original image to gray scale and stores it in "gray".
 	cvtColor(image, gray, COLOR_BGR2GRAY);
@@ -188,8 +194,11 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 	equalizeHist(resized, resized);
 
 	cvtColor(resized, gray, COLOR_GRAY2BGR);
+#else
 
+	gray = image;
 
+#endif
 
 	int angle = 0;
 	int selectAngle = 0;
@@ -645,9 +654,10 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		RotateCorrectly(image, dest, angle);
 
 #ifdef DLIB_FACE_DETECTION
+
 		DetectFaceDlib(dest, listOfFace, pointOfFace);
 #else
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 #endif
 			   
 		if (listOfFace.size() > 0)
@@ -686,6 +696,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		}
 
 		RotateCorrectly(dest, image, (360 - angle) % 360);
+
 		cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
 		pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		pBitmap->VertFlipBuf();
@@ -698,7 +709,8 @@ void CFaceDetector::DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CF
 	try
 	{
 
-		
+		//cv::Mat resized;
+		//cv::resize(frameOpenCVDNN, resized, Size(300, 300));
 		// Conver OpenCV image Dlib image i.e. cimg
 		cv_image<rgb_pixel> cimg(frameOpenCVDNN);
 
@@ -752,10 +764,10 @@ void CFaceDetector::detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vect
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
 #ifdef CAFFE
-
+	Mat resizedFrame;
 	muDnnAccess.lock();
-	//frameOpenCVDNN.resize(300, 300);
-	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0));
+	cv::resize(frameOpenCVDNN, resizedFrame, cv::Size(300, 300));
+	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
 	//cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false, false);
 	net.setInput(inputBlob);
 	auto detection = net.forward();
@@ -835,9 +847,6 @@ int CFaceDetector::DetectAngleOrientation(const cv::Mat & image)
 		std::vector<cv::Rect> pointOfFace;
 		std::vector<CFace> listOfFace;
 		int angle_detect = tab[type];
-		//if(typeRotate == 0)
-		//	Rotate(image, dst, angle_detect);
-		//else
 		RotateCorrectly(image, dst, angle_detect);
 
 
