@@ -132,19 +132,19 @@ int64_t CSqlPhotos::GetPhotoId(const wxString & filepath)
 
 void CSqlPhotos::DeletePhotoSearch()
 {
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA");
+	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA");
 }
 
 bool CSqlPhotos::DeletePhoto(const int64_t &numPhoto)
 {
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto = " + to_string(numPhoto));
+	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto = " + to_string(numPhoto));
 	ExecuteRequestWithNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
 }
 
 bool CSqlPhotos::DeletePhotoFolder(const int64_t &idFolder)
 {
-	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
+	//ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
 	ExecuteRequestWithNoResult("DELETE FROM PHOTO_EXIF WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")");
 
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder)) != -1) ? true : false;

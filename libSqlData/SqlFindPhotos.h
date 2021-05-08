@@ -28,6 +28,7 @@ namespace Regards
 
 		private:
 			
+			bool FindIfViewExist();
 			int TraitementResultPhotoDataCriteria(CSqlResult* sqlResult);
 			int TraitementResultPhoto(CSqlResult * sqlResult);
 			int TraitementResultNumPhoto(CSqlResult * sqlResult);
@@ -37,6 +38,7 @@ namespace Regards
 			PhotosVector * m_photosVector;
 			vector<int> * m_listPhoto;
 			int typeResult;
+			wxString table_name;
 		};
 	}
 }

@@ -105,6 +105,15 @@ wxString CSqlFindPhotos::GetSearchSQL(vector<int> list)
 	return req;
 }
 
+bool CSqlFindPhotos::FindIfViewExist()
+{
+	typeResult = 4;
+	table_name = "";
+	wxString testview = "SELECT name FROM sqlite_master WHERE type = 'view' AND name = 'PHOTOSSEARCHCRITERIA'";
+	ExecuteRequest(testview);
+	return (table_name  != "") ? true : false;
+}
+
 wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, vector<int> & listStarSelected, vector<int> & listStarNotSelected, vector<int> & listKeywordSelected, vector<int> & listKeywordNotSelected, const wxString &libelleNotGeo, const double & pertinence)
 {
     //Request In
@@ -119,7 +128,11 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 
 	wxString createDate = to_string(now->tm_year + 1900) + "." + month + "." + day;
 	wxString libelle = libelleNotGeo;//CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
-	wxString reqSQIn = "INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) ";
+	wxString reqSQIn = "";
+	//if(FindIfViewExist())
+	//	ExecuteRequestWithNoResult("DROP VIEW PHOTOSSEARCHCRITERIA");
+
+	reqSQIn = "CREATE VIEW PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) AS ";
 	reqSQIn += "SELECT * FROM (";
 	reqSQIn += "SELECT NumPhoto, FullPath, \"" + createDate + "\" as CreateDate, \"" + libelle + "\" as GeoGps FROM PHOTOS WHERE CriteriaInsert = 0";
 	reqSQIn += " UNION ";
@@ -167,6 +180,7 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 		}
 		reqSQIn += ") Group By NumPhoto";
         printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
+		//ExecuteRequest(reqSQIn);
         return reqSQIn;
     }
 
@@ -177,11 +191,31 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 
 bool CSqlFindPhotos::SearchPhotos(const wxString & sqlRequest)
 {
-    if(sqlRequest != "")
+    if(sqlRequest != "" && !FindIfViewExist())
     {
-        DeleteAllInSearchPhotos();
-        return (ExecuteRequestWithNoResult(sqlRequest) != -1) ? true : false;
+        //DeleteAllInSearchPhotos();
+		int pos = sqlRequest.find("INSERT INTO PHOTOSSEARCHCRITERIA");
+		if (pos > 0)
+		{
+			wxString sql = sqlRequest;
+			sql.Replace("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps)","CREATE VIEW PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) AS ");
+			return (ExecuteRequestWithNoResult(sql) != -1) ? true : false;
+		}
+		else
+		{
+			ExecuteRequestWithNoResult(sqlRequest);
+		}
+		return true;
+        
     }
+	if (FindIfViewExist())
+	{
+		ExecuteRequestWithNoResult("DROP VIEW PHOTOSSEARCHCRITERIA");
+		ExecuteRequestWithNoResult(sqlRequest);
+		return true;
+	}
+		
+
 	return false;
 }
 
@@ -209,6 +243,24 @@ int CSqlFindPhotos::TraitementResult(CSqlResult * sqlResult)
 		break;
 	case 2:
 		nbResult = TraitementResultPhotoDataCriteria(sqlResult);
+		break;
+	case 4:
+	{
+		while (sqlResult->Next())
+		{
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+
+				switch (i)
+				{
+				case 0:
+					table_name = sqlResult->ColumnDataText(i);
+					break;
+				}
+			}
+			nbResult++;
+		}
+	}
 		break;
 	}
 

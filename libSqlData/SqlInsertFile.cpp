@@ -91,7 +91,7 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
 		}  
 
 	}
-	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
+	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
 	CommitTransection();
 
@@ -217,7 +217,8 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 
 bool CSqlInsertFile::RemovePhotos(const int &idFolder)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")") != -1) ? true : false;
+	return true;
+	//return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")") != -1) ? true : false;
 }
 
 bool CSqlInsertFile::GetPhotos(PhotosVector * photosVector)

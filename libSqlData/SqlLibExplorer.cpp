@@ -44,10 +44,10 @@ using namespace Regards::OpenCV;
 
 #define SQL_INDEX_PHOTOFOLDER "CREATE UNIQUE INDEX idx_PHOTOFOLDER_FullPath ON PHOTOFOLDER(FullPath)"
 
-#define SQL_CREATE_PHOTOSSEARCH_TABLE "CREATE TABLE PHOTOSSEARCHCRITERIA (NumPhoto INT, FullPath NVARCHAR(255), CreateDate NVARCHAR(255), GeoGps NVARCHAR(255))"
+//#define SQL_CREATE_PHOTOSSEARCH_TABLE "CREATE TABLE PHOTOSSEARCHCRITERIA (NumPhoto INT, FullPath NVARCHAR(255), CreateDate NVARCHAR(255), GeoGps NVARCHAR(255))"
 #define SQL_DROP_PHOTOSSEARCH "DROP TABLE PHOTOSSEARCHCRITERIA"
 
-#define SQL_INDEX_PHOTOSSEARCH "CREATE UNIQUE INDEX idx_PHOTOSSEARCH_FullPath ON PHOTOSSEARCHCRITERIA(FullPath)"
+//#define SQL_INDEX_PHOTOSSEARCH "CREATE UNIQUE INDEX idx_PHOTOSSEARCH_FullPath ON PHOTOSSEARCHCRITERIA(FullPath)"
 
 #define SQL_CREATE_PHOTOSTHUMBNAIL_TABLE "CREATE TABLE PHOTOSTHUMBNAIL (NumPhoto INT PRIMARY KEY, FullPath NVARCHAR(255), width INT, height INT, hash NVARCHAR(255))"
 #define SQL_DROP_PHOTOSTHUMBNAIL "DROP TABLE PHOTOSTHUMBNAIL"
@@ -157,7 +157,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 		if(sqlVersion.GetVersion() == "2.0.0.2")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOGPS_TABLE);
-			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
+			//hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.2.0.0");
@@ -166,7 +166,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 		if (sqlVersion.GetVersion() == "2.2.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSSEARCH);
-			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
+			//hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSWIHOUTTHUMBNAIL_TABLE);
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.4.0.0");
@@ -333,7 +333,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 
 
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOFOLDER);
-			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
+			//hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
 			hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
 		}
@@ -366,6 +366,14 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.InsertVersion("2.67.0.0");
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_SEARCH_VIEW_VIEW);
 		}
+		if (sqlVersion.GetVersion() == "2.67.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.68.0.0");
+			hr = ExecuteSQLWithNoResult("DROP TABLE PHOTOSSEARCHCRITERIA");
+		}
+
+		
     }
     return hr;
 }
@@ -422,11 +430,11 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
     }
 
 	// Create RESULT SEARCH table
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
-	if (hr == -1)
-	{
-		goto Exit;
-	}
+	//hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
+	//if (hr == -1)
+	//{
+	//	goto Exit;
+	//}
 
 	// Create LANGUE table
 	//
@@ -438,7 +446,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.67.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.68.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -1071,7 +1079,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTO_EXIF);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOFOLDER);
-	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
+	//hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSSEARCH);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOSTHUMBNAIL);
 	hr = ExecuteSQLWithNoResult(SQL_INDEX_PHOTOGPS);
 
