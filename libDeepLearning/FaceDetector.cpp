@@ -5,14 +5,14 @@
 #include <dlib/dnn.h>
 #include <dlib/clustering.h>
 #include <dlib/image_io.h>
-#include <dlib/image_processing/frontal_face_detector.h>
+
 #include <dlib/opencv.h>
 #include <RegardsBitmap.h>
 #include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 
-#define DLIB_FACE_DETECTION
+
 #define DLIB_FACE_LANDMARK_DETECTION
 
 #define WIDTH_THUMBNAIL 1920
@@ -80,9 +80,7 @@ const float confidence = 0.5;
 const float confidenceThreshold = 0.7;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
 static cv::CascadeClassifier eye_cascade;
-#ifdef DLIB_FACE_DETECTION
-static frontal_face_detector detector;
-#endif
+
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muDnnAccess;
@@ -119,6 +117,10 @@ public:
 
 CFaceDetector::CFaceDetector()
 {
+#ifdef DLIB_FACE_DETECTION
+	detector = get_frontal_face_detector();
+#endif
+	
 }
 
 CFaceDetector::~CFaceDetector()
@@ -278,9 +280,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #ifdef DLIB_FACE_LANDMARK_DETECTION
 		deserialize(landmarkPath) >> sp;
 #endif
-#ifdef DLIB_FACE_DETECTION
-		detector = get_frontal_face_detector();
-#endif
+
 		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
@@ -714,10 +714,9 @@ void CFaceDetector::DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CF
 		// Conver OpenCV image Dlib image i.e. cimg
 		cv_image<rgb_pixel> cimg(frameOpenCVDNN);
 
-		// Detect faces using DLib
-		muDnnAccess.lock();
+		
 		std::vector<dlib::rect_detection> face_DLib = detector(cimg);
-		muDnnAccess.unlock();
+		//muDnnAccess.unlock();
 
 		if (face_DLib.empty()) {
 			cout << "No face is deteced by DLib" << endl;
