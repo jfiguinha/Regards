@@ -12,7 +12,7 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 
-//#define DLIB_FACE_DETECTION
+#define DLIB_FACE_DETECTION
 #define DLIB_FACE_LANDMARK_DETECTION
 
 #define WIDTH_THUMBNAIL 1920
