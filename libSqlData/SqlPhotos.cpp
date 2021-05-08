@@ -59,7 +59,7 @@ bool CSqlPhotos::InsertPhotoExif(const wxString& filepath, const int64_t& exif)
 
 bool CSqlPhotos::UpdatePhotoCriteria(const int64_t &numPhoto)
 {
-	return (ExecuteRequestWithNoResult("UPDATE PHOTO_EXIF SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("UPDATE PHOTOS SET CriteriaInsert = 1 WHERE NumPhoto = " + to_string(numPhoto)) != -1) ? true : false;
 }
 
 int  CSqlPhotos::GetCriteriaInsert(const wxString & filepath)
