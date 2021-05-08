@@ -47,12 +47,12 @@ namespace Regards
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
-			void ExportFile(wxCommandEvent& event);
+			void ExportFileCmd(wxCommandEvent& event);
 			void DeleteFile(wxCommandEvent& event);
 			void CopyFile(wxCommandEvent& event);
-			void GeolocalizeFile(wxCommandEvent& event);
+			void GeolocalizeFileCmd(wxCommandEvent& event);
 			void GenerateIndexFile(wxCommandEvent& event);
-			void ChangeDateFile(wxCommandEvent& event);
+			void ChangeDateFileCmd(wxCommandEvent& event);
 			
 			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;

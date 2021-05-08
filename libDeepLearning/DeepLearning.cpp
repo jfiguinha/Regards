@@ -92,4 +92,5 @@ bool CDeepLearning::FindFaceCompatible(const int &numFace)
 {
     CFaceRecognition faceRecognition;
     return faceRecognition.FindCompatibility(numFace);
+	//return faceRecognition.FaceRecognition(numFace);
 }

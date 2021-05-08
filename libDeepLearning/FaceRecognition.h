@@ -11,10 +11,12 @@ namespace Regards
 			CFaceRecognition();
 			~CFaceRecognition();
 			
-			int FaceRecognition(CPictureData * pictureData, const int &numFace);
+			int FaceRecognition(const int &numFace);
 			bool FindCompatibility(const int &numFace);
 
 		private:
+
+			double GetSimilarity(const cv::Mat& A, const cv::Mat& B);
 			float IsCompatibleFace(std::string const& dataface1, std::string const& dataface2);
 		};
 	}

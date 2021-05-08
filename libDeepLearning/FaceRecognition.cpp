@@ -8,6 +8,7 @@
 #include <SqlFaceLabel.h>
 #include "base64.h"
 #include <RegardsBitmap.h>
+#include <FileUtility.h>
 #include <dlib/dnn.h>
 using namespace dlib;
 using namespace cv::face;
@@ -124,47 +125,99 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 	return findFaceCompatible;
 }
 
-int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &numFace)
+// Compare two images by getting the L2 error (square-root of sum of squared error).
+double CFaceRecognition::GetSimilarity(const cv::Mat &A, const cv::Mat &B)
 {
-	int predictedLabel = 0;
+	if (A.rows > 0 && A.rows == B.rows && A.cols > 0 && A.cols == B.cols) {
+		// Calculate the L2 relative error between the 2 images.
+		double errorL2 = norm(A, B, NORM_L2);
+		// Convert to a reasonable scale, since L2 error is summed across all pixels of the image.
+		double similarity = errorL2 / (double)(A.rows * A.cols);
+		return similarity;
+	}
+	else {
+		//cout << "WARNING: Images have a different size in 'getSimilarity()'." << endl;
+		return 0;  // Return a bad value
+	}
+}
+
+int CFaceRecognition::FaceRecognition(const int& numFace)
+{
+	int predictedLabel = -1;
+	double confidence = 0.0;
+	double maxConfidence = 0.0;
+
+	bool findFaceCompatible = false;
 	CSqlFacePhoto facePhoto;
-	std::vector<CImageLoadingFormat *> listPicture = facePhoto.GetAllFace(numFace);
-	std::vector<int> labels = facePhoto.GetAllNumFace(numFace);
 	CSqlFaceRecognition sqlfaceRecognition;
-	CSqlFaceLabel sqlfaceLabel;
-	wxString label = "Face number " + to_string(numFace);
-	cv::Size size(224, 224);//the dst image size,e.g.100x100
-
-	if (listPicture.size() > 1)
+	std::vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
+	Mat imageSrc = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(), IMREAD_GRAYSCALE);
+	equalizeHist(imageSrc, imageSrc);
+	if (faceRecognitonVec.size() > 1)
 	{
-		// These vectors hold the images and corresponding labels.
-		std::vector<Mat> images;
-
-		for (CImageLoadingFormat * picture : listPicture)
+		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
-			//std::vector<char> data = picture->CopyData();
-			//cv::Mat image = cv::imdecode(cv::Mat(1, picture->GetSize(), CV_8UC1, picture->GetData()), IMREAD_UNCHANGED);
-			CRegardsBitmap * pBitmap = picture->GetRegardsBitmap();
-			cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+			Mat image = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), IMREAD_GRAYSCALE);
+			equalizeHist(image, image);
+			confidence = GetSimilarity(imageSrc, image);
+			if (maxConfidence < confidence)
+			{
+				predictedLabel = picture.numFaceCompatible;
+				maxConfidence = confidence;
+			}
+				
+		}
 
-			//cv::Mat image = imdecode(Mat(data), 1);
-			cv::Mat dst;//dst image
-			cv::cvtColor(image, dst, cv::COLOR_BGR2GRAY);
-			cv::resize(dst, image, size);
+
+		if (maxConfidence > 0.8)
+		{
+			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
+			findFaceCompatible = true;
+		}
+
+		if (!findFaceCompatible)
+		{
+			CSqlFaceLabel sqlfaceLabel;
+			wxString label = "Face number " + to_string(numFace);
+			sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
+			sqlfaceLabel.InsertFaceLabel(numFace, label, true);
+		}
+	}
+	else
+	{
+		CSqlFaceLabel sqlfaceLabel;
+		wxString label = "Face number " + to_string(numFace);
+		sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
+		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
+	}
+
+
+	return findFaceCompatible;
+}
+
+/*
+int CFaceRecognition::FaceRecognition(const int &numFace)
+{
+	int predictedLabel = -1;
+	double confidence = 0.0;
+	bool findFaceCompatible = false;
+	CSqlFacePhoto facePhoto;
+	std::vector<Mat> images;
+	std::vector<int> labels;
+	CSqlFaceRecognition sqlfaceRecognition;
+	std::vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
+	Mat imageSrc = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(), IMREAD_GRAYSCALE);
+
+	if (faceRecognitonVec.size() > 1)
+	{
+
+
+		for (CFaceRecognitionData picture : faceRecognitonVec)
+		{
+			Mat image = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), IMREAD_GRAYSCALE);
 			images.push_back(image);
-
-			delete pBitmap;
+			labels.push_back(picture.numFaceCompatible);
 		}
-
-		cv::Mat testSample = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
-
-		
-		// Quit if there are not enough images for this demo.
-		if (images.size() <= 1) {
-			string error_message = "This demo needs at least 2 images to work. Please add more images to your data set!";
-			CV_Error(Error::StsError, error_message);
-		}
-		
 
 		// The following line predicts the label of a given
 		// test image:
@@ -172,24 +225,11 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 
 		try
 		{
-			/*
-			// Load Recognizer
-			model->load("../model.xml");
-			if (model.empty()) {
-				return -1;
-			}
-			*/
-
-			cv::Mat src;
-			cv::resize(testSample, src, size);
-			cv::cvtColor(src, testSample, cv::COLOR_BGR2GRAY);
-
+			images.pop_back();
+			labels.pop_back();
 			Ptr<EigenFaceRecognizer> model = EigenFaceRecognizer::create();
 			model->train(images, labels);
-			predictedLabel = model->predict(testSample);
-
-			//std::cout << "Save Recognizer" << std::endl;
-			//model->save("../model.xml");
+			model->predict(imageSrc, predictedLabel, confidence);
 		}
 		catch (cv::Exception& e)
 		{
@@ -198,29 +238,30 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
 
-		for (CImageLoadingFormat * picture : listPicture)
+		if (confidence < 0.6)
 		{
-			delete picture;
+			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
+			findFaceCompatible = true;
 		}
-		listPicture.clear();
 
-		if (predictedLabel == 0)
+		if (!findFaceCompatible)
 		{
+			CSqlFaceLabel sqlfaceLabel;
+			wxString label = "Face number " + to_string(numFace);
 			sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
-			predictedLabel = sqlfaceLabel.InsertFaceLabel(numFace, label, true);
-		}
-		else
-		{
-			sqlfaceRecognition.InsertFaceRecognition(predictedLabel, numFace);
+			sqlfaceLabel.InsertFaceLabel(numFace, label, true);
 		}
 	}
 	else
 	{
+		CSqlFaceLabel sqlfaceLabel;
+		wxString label = "Face number " + to_string(numFace);
 		sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
-		predictedLabel = sqlfaceLabel.InsertFaceLabel(numFace, label, true);
+		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
 	}
 
 
-	return predictedLabel;
+	return findFaceCompatible;
 }
+*/
 

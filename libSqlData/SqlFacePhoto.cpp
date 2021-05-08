@@ -49,14 +49,15 @@ int CSqlFacePhoto::GetFaceCompatibleRecognition(const int& numFace)
 	return -1;
 }
 
-vector<int> CSqlFacePhoto::GetAllNumFaceRecognition()
+vector<CFaceRecognitionData> CSqlFacePhoto::GetAllNumFaceRecognition()
 {
-	listFaceIndex.clear();
-	type = 4;
-	ExecuteRequest("Select NumFace FROM FACE_RECOGNITION");
-	return listFaceIndex;
+	listFaceRecognition.clear();
+	type = 5;
+	ExecuteRequest("Select NumFace, NumFaceCompatible FROM FACE_RECOGNITION");
+	return listFaceRecognition;
 }
 
+/*
 vector<int> CSqlFacePhoto::GetAllNumFaceRecognition(const int& numFace)
 {
 	listFaceIndex.clear();
@@ -64,7 +65,7 @@ vector<int> CSqlFacePhoto::GetAllNumFaceRecognition(const int& numFace)
 	ExecuteRequest("Select NumFace FROM FACE_RECOGNITION WHERE NumFace != " + to_string(numFace));
 	return listFaceIndex;
 }
-
+*/
 
 vector<int> CSqlFacePhoto::GetAllNumFace()
 {
@@ -383,6 +384,8 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
+		CFaceRecognitionData face;
+
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			if(type == 1)
@@ -415,6 +418,20 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				}
 				listFaceIndex.push_back(numFace);
 			}
+			else if (type == 5)
+			{
+				
+				switch (i)
+				{
+				case 0:
+					face.numFace = sqlResult->ColumnDataInt(i);
+					break;
+				case 1:
+					face.numFaceCompatible = sqlResult->ColumnDataInt(i);
+					break;
+				}
+				
+			}
 			else if (type == 7)
 			{
 				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
@@ -428,6 +445,8 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				}
 			}
 		}
+		if (type == 5)
+			listFaceRecognition.push_back(face);
 		nbResult++;
 	}
 	return nbResult;

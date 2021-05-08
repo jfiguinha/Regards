@@ -9,6 +9,13 @@ namespace Regards
 	{
 		class CSqlResult;
 
+		class CFaceRecognitionData
+		{
+		public:
+			int numFace;
+			int numFaceCompatible;
+		};
+
 		class CSqlFacePhoto : public CSqlExecuteRequest
 		{
 		public:
@@ -26,8 +33,8 @@ namespace Regards
 			CImageLoadingFormat * GetFacePicture(const int &numFace);
 
 			int GetFaceCompatibleRecognition(const int& numFace);
-			vector<int> GetAllNumFaceRecognition();
-			vector<int> GetAllNumFaceRecognition(const int& numFace);
+			vector<CFaceRecognitionData> GetAllNumFaceRecognition();
+			//vector<int> GetAllNumFaceRecognition(const int& numFace);
 
 			vector<int> GetAllNumFace();
 			vector<int> GetAllNumFace(const int &numFace);
@@ -48,6 +55,7 @@ namespace Regards
 			wxString filename;
 			vector<wxString> listPhoto;
 			vector<int> listFace;
+			vector<CFaceRecognitionData> listFaceRecognition;
 			//vector<CPictureData *> listFace;
 			//CPictureData * facePicture;
 			vector<int> listFaceIndex;
