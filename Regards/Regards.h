@@ -163,7 +163,6 @@ float clamp(float val, float minval, float maxval)
 	return std::clamp(val, minval, maxval);
 }
 
-bool processrecognitionison = false;
 //const char *x265_version_str = "x265 HEVC encoder 1.30";
 
 // Define a new application type, each program should derive a class from wxApp
