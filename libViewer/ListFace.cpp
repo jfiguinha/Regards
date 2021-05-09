@@ -29,6 +29,9 @@
 #include <wx/progdlg.h>
 #include <RegardsConfigParam.h>
 
+extern bool processrecognitionison;
+extern int opencvopencl;
+
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -586,6 +589,12 @@ void CListFace::ProcessIdle()
 	{
 		processIdle = false;
 	}
+
+	processrecognitionison = processIdle;
+
+	if (config != nullptr)
+		opencvopencl = config->GetFaceOpenCLProcess();
+
 }
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)

@@ -277,6 +277,7 @@ void ConfigRegards::Init()
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
+	/*
 	bool autocontrastValue = false;
 	bool openclDetection = false;
 
@@ -290,7 +291,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		isOk = false;
 		return;
 	}
-
+	*/
 
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
     
