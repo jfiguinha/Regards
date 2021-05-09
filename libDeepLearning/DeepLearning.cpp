@@ -19,12 +19,12 @@ static std::mutex muLoading;
 
 bool CDeepLearning::LockOpenCLDnn()
 {
-	CFaceDetector::LockOpenCLDnn();
+	return CFaceDetector::LockOpenCLDnn();
 }
 
 bool CDeepLearning::UnlockOpenCLDnn()
 {
-	CFaceDetector::UnlockOpenCLDnn();
+	return CFaceDetector::UnlockOpenCLDnn();
 }
 
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
