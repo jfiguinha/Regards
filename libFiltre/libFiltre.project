@@ -38,6 +38,10 @@
     <File Name="bm3d.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
+    <VirtualDirectory Name="Meanshift">
+      <File Name="MeanShift.h"/>
+      <File Name="MeanShift.cpp"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="src">
       <File Name="RedEye.cpp"/>
       <File Name="Wave.cpp"/>
@@ -212,8 +216,6 @@
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libAppleFunction"/>
-        <IncludePath Value="../libextern/ffmpeg-master/"/>
-        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libUtility"/>

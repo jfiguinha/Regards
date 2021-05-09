@@ -261,7 +261,6 @@
 #define WM_TOOLS	1018
 #define WM_MAPS		1019
 #define WM_EFFECTPARAMETER		1020
-#define WM_REFRESH		1021
 #ifndef WIN32
 #define WM_COPY		1021
 #define WM_CLEAR 1022
@@ -274,3 +273,4 @@
 #define WM_OCR 1028
 #define WM_HTMLEDITOR	1029
 #define WM_SAVE 1030
+#define WM_REFRESH		1031

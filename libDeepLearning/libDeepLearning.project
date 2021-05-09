@@ -42,6 +42,7 @@
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libUtility"/>
         <Preprocessor Value="DLIB_USE_LAPACK"/>
         <Preprocessor Value="DLIB_USE_BLAS"/>
         <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>

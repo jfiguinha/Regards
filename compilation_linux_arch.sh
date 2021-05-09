@@ -42,7 +42,7 @@ sudo pacman -S libgnutls28
 sudo pacman -S libtool
 sudo pacman -S libunistring
 sudo pacman -S libass
-sudo pacman -S libatlas-base
+sudo pacman -S lapack
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
