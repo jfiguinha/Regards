@@ -46,6 +46,9 @@ public:
 	int GetOpenCLPlatformIndex();
 	void SetOpenCLPlatformIndex(const int &numIndex);
 
+	void SetFastDetectionFace(const int& fastDetection);
+	int GetFastDetectionFace();
+
 	int GetFaceVideoDetection();
 	void SetFaceVideoDetection(const int &videoFaceDetection);
 
@@ -172,7 +175,7 @@ protected:
 
 	int videoFaceDetection = 0;
 	int faceDetection = 1;
-
+	int fastFaceDetection = 1;
 	wxString videoDecoderHardware;
 	wxString videoEncoderHardware;
 };

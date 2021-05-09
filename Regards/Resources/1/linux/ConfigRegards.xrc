@@ -98,6 +98,17 @@
 									<pos>0,0</pos>
 									<size>380,70</size>
 								</object>	
+								<object class="wxRadioBox" name="ID_RBFASTFACEDETECTION">
+									<label>Fast Face Detection</label>
+									<style>wxRA_SPECIFY_COLS</style>
+									<content>
+										<item>Yes</item>
+										<item>No</item>
+									</content>
+									<default>-1</default>
+									<pos>0,100</pos>
+									<size>380,70</size>
+								</object>
 							</object>
 					</object>			
 						<object class="notebookpage">

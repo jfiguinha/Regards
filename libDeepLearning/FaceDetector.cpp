@@ -12,9 +12,6 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 
-
-#define DLIB_FACE_LANDMARK_DETECTION
-
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -115,12 +112,10 @@ public:
 	}
 };
 
-CFaceDetector::CFaceDetector()
+CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
-#ifdef DLIB_FACE_DETECTION
 	detector = get_frontal_face_detector();
-#endif
-	
+	this->fastDetection = fastDetection;
 }
 
 CFaceDetector::~CFaceDetector()
@@ -181,26 +176,24 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 {
 	cv::Mat gray, resized;
 
-#ifdef DLIB_FACE_DETECTION
+	if (!fastDetection)
+	{
+		double scale = CalculPictureRatio(image.cols, image.rows);
+		//converts original image to gray scale and stores it in "gray".
+		cvtColor(image, gray, COLOR_BGR2GRAY);
 
-	double scale = CalculPictureRatio(image.cols, image.rows);
-	//converts original image to gray scale and stores it in "gray".
-	cvtColor(image, gray, COLOR_BGR2GRAY);
+		//resize the gray scale image for speeding the face detection.
+		cv::resize(gray, resized, Size(), scale, scale);
 
-	//resize the gray scale image for speeding the face detection.
-	cv::resize(gray, resized, Size(), scale, scale);
+		//cout<<"Resized Image"<<" Rows "<< resized.rows<<" Cols "<<resized.cols<<endl;
+		// cout<<"Original Image"<<" Rows "<< image.rows<<" Cols "<<image.cols<<endl;
+		//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
+		equalizeHist(resized, resized);
 
-	//cout<<"Resized Image"<<" Rows "<< resized.rows<<" Cols "<<resized.cols<<endl;
-	// cout<<"Original Image"<<" Rows "<< image.rows<<" Cols "<<image.cols<<endl;
-	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
-	equalizeHist(resized, resized);
-
-	cvtColor(resized, gray, COLOR_GRAY2BGR);
-#else
-
-	gray = image;
-
-#endif
+		cvtColor(resized, gray, COLOR_GRAY2BGR);
+	}
+	else
+		gray = image;
 
 	int angle = 0;
 	int selectAngle = 0;
@@ -276,11 +269,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #endif
 
 		deserialize(face_recognition) >> anet;
-		
-#ifdef DLIB_FACE_LANDMARK_DETECTION
 		deserialize(landmarkPath) >> sp;
-#endif
-
 		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
@@ -306,13 +295,6 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 
 	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
 	equalizeHist(gray, gray);
-
-	//cvtColor(gray, gray, COLOR_GRAY2BGR);
-
-#ifdef DLIB_FACE_LANDMARK_DETECTION
-
-	// Conver OpenCV image Dlib image i.e. cimg
-	//cv_image<rgb_pixel> cimg(gray);
 
 	dlib::rectangle rectDlib;
 	cv::Rect R;
@@ -419,7 +401,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	if (Mouth[0].y < landmarks[45].y)
 		angle_add = 180;
 
-#else
+/*
 
 	std::vector<cv::Rect> eyes;
 
@@ -445,9 +427,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	cv::line(image, left_eye, right_eye, Scalar(0, 255, 0), 4);
 	Point2d center = cv::Point2d(image.cols / 2, image.rows / 2);
 	double rot_eye = atan2(right_eye.y - left_eye.y, right_eye.x - left_eye.x);
-#endif
-
-
+*/
 
 	// Conver to degrees
 	//double theta_deg = rot / M_PI * 180;
@@ -460,31 +440,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	OutputDebugString(message);
 #endif
 
-
-	//cout << theta_deg << " In degrees" << endl;
-
 	return theta_deg_eye;
-	/*
-	Mat dst;
-	// Rotate around the center
-	Point2f pt(image.cols / 2., image.rows / 2.);
-	Mat r = getRotationMatrix2D(pt, theta_deg_eye, 1.0);
-
-	// determine bounding rectangle
-	cv::Rect bbox = cv::RotatedRect(pt, image.size(), theta_deg_eye).boundingRect();
-
-	// adjust transformation matrix
-	r.at<double>(0, 2) += bbox.width / 2.0 - center.x;
-	r.at<double>(1, 2) += bbox.height / 2.0 - center.y;
-
-	// Apply affine transform
-	warpAffine(image, dst, r, bbox.size());
-
-	//imwrite("d:\\test1.jpg", image);
-	//imwrite("d:\\test2.jpg", dst);
-
-	return dst;
-	*/
 }
 
 cv::Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const cv::Rect& faceLocation, const cv::Mat& image)
@@ -551,11 +507,11 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		int angle = DectectOrientationByFaceDetector(dest);
 		RotateCorrectly(dest, image, angle);
 
-#ifdef DLIB_FACE_DETECTION
-		DetectFaceDlib(image, listOfFace, pointOfFace);
-#else
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-#endif
+		if (!fastDetection)
+			DetectFaceDlib(image, listOfFace, pointOfFace);
+		else
+			detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+
 		std::vector<cv_image<rgb_pixel>> faces;
 
 		for (CFace face : listOfFace)
@@ -653,12 +609,10 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		int angle = DectectOrientationByFaceDetector(image);
 		RotateCorrectly(image, dest, angle);
 
-#ifdef DLIB_FACE_DETECTION
-
-		DetectFaceDlib(dest, listOfFace, pointOfFace);
-#else
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-#endif
+		if(!fastDetection)
+			DetectFaceDlib(dest, listOfFace, pointOfFace);
+		else
+			detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)
 		{
@@ -703,7 +657,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 	}
 }
 
-#ifdef DLIB_FACE_DETECTION
 void CFaceDetector::DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
 {
 	try
@@ -749,12 +702,7 @@ void CFaceDetector::DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CF
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
-#else
-void CFaceDetector::DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
-{
 
-}
-#endif
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
@@ -817,11 +765,11 @@ int CFaceDetector::FindNbFace(cv::Mat & image, float &bestConfidence, const floa
 	std::vector<cv::Rect> pointOfFace;
 	std::vector<CFace> listOfFace;
 	int nbFace = 0;
-#ifdef DLIB_FACE_DETECTION
-	DetectFaceDlib(image, listOfFace, pointOfFace);
-#else
-	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-#endif
+	if (!fastDetection)
+		DetectFaceDlib(image, listOfFace, pointOfFace);
+	else
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+
 	for (int i = 0; i < listOfFace.size(); i++)
 	{
 		if (listOfFace[i].confidence > confidence)
@@ -854,11 +802,11 @@ int CFaceDetector::DetectAngleOrientation(const cv::Mat & image)
 		cv::imwrite(file.ToStdString(), dst);
 #endif
 
-#ifdef DLIB_FACE_DETECTION
-		DetectFaceDlib(image, listOfFace, pointOfFace);
-#else
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-#endif
+		if (!fastDetection)
+			DetectFaceDlib(image, listOfFace, pointOfFace);
+		else
+			detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+
 		if (listOfFace.size() > 0)
 		{
 			angle = angle_detect;

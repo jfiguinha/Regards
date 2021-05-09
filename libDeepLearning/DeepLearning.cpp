@@ -3,8 +3,13 @@
 #include "FaceDetector.h"
 #include "DetectRotation.h"
 #include "FaceRecognition.h"
+#include <ConfigParam.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
+#include <ViewerParamInit.h>
 using namespace Regards::DeepLearning;
 using namespace Regards::OpenCV;
+using namespace Regards::Viewer;
 #undef AUTO_ROTATE
 
 static std::thread loadRot;
@@ -16,14 +21,19 @@ static std::mutex muLoading;
     
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 {
+	bool fastDetection = true;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
 	muLoading.unlock();
 
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		fastDetection = param->GetFastDetectionFace();
+
 	if (isLoading)
 	{
-		CFaceDetector faceDetector;
+		CFaceDetector faceDetector(fastDetection);
 		return faceDetector.FindFace(pictureData);
 	}
 	else
@@ -46,15 +56,20 @@ void CDeepLearning::LoadRessource(const string &config_file, const string &weigh
 
 void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
 {
+	bool fastDetection = true;
 	std::vector<wxRect> listEye;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
 	muLoading.unlock();
 
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		fastDetection = param->GetFastDetectionFace();
+
 	if (isLoading)
 	{
-		CFaceDetector faceDetector;
+		CFaceDetector faceDetector(fastDetection);
 		faceDetector.DetectEyes(pBitmap);
 	}
 }
@@ -70,15 +85,20 @@ bool CDeepLearning::IsResourceReady()
 
 int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 {
+	bool fastDetection = true;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
 	muLoading.unlock();
 
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		fastDetection = param->GetFastDetectionFace();
+
 	if (isLoading)
 	{
 		CDetectRotation detectRotation;
-		return detectRotation.GetExifOrientation(pBitmap);
+		return detectRotation.GetExifOrientation(pBitmap, fastDetection);
 	}
 	return 0;
 

@@ -1,10 +1,6 @@
 #pragma once
 #include <vector>
-
-#define DLIB_FACE_DETECTION
-#ifdef DLIB_FACE_DETECTION
 #include <dlib/image_processing/frontal_face_detector.h>
-#endif
 
 class CRegardsBitmap;
 class CPictureData;
@@ -24,7 +20,7 @@ namespace Regards
 		class CFaceDetector
 		{
 		public:
-			CFaceDetector();
+			CFaceDetector(const bool & fastDetection);
 			~CFaceDetector();
 
 
@@ -46,10 +42,8 @@ namespace Regards
 			double face_alignement(const cv::Mat& image, bool& findEye);
 			cv::Mat RotateAndExtractFace(const double &angle,const cv::Rect & faceLocation, const cv::Mat& image);
 			void DetectFaceDlib(const cv::Mat& frameOpenCVDNN, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-#ifdef DLIB_FACE_DETECTION
-			dlib::frontal_face_detector detector;
-#endif
-			
+			dlib::frontal_face_detector detector;		
+			bool fastDetection = false;
             static bool isload;
 			static std::mutex muLoading;
 			static std::mutex muDnnAccess;

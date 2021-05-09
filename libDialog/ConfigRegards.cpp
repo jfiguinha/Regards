@@ -55,6 +55,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
 	rbContrastCorrection = (wxRadioBox*)FindWindow(XRCID("ID_RBAUTOCONTRAST"));
+	rbFastFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBFASTFACEDETECTION"));
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
@@ -214,6 +215,12 @@ void ConfigRegards::Init()
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
 
+	int fastDetection = regardsParam->GetFastDetectionFace();
+	if (fastDetection == 0)
+		rbFastFaceDetection->SetSelection(1);
+	else
+		rbFastFaceDetection->SetSelection(0);
+
 	bool kernelInMemory = false;
 	int supportOpenCL = 0;
 	wxString platformName = "";
@@ -319,6 +326,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetAutoConstrast(1);
 	else
 		regardsParam->SetAutoConstrast(0);
+
+	int fastDetection = rbFastFaceDetection->GetSelection();
+	if (fastDetection == 0)
+		regardsParam->SetFastDetectionFace(1);
+	else
+		regardsParam->SetFastDetectionFace(0);
 
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);

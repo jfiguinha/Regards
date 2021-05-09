@@ -19,9 +19,9 @@ CDetectRotation::~CDetectRotation()
 
 }
 
-int CDetectRotation::GetExifOrientation(CRegardsBitmap* pBitmap)
+int CDetectRotation::GetExifOrientation(CRegardsBitmap* pBitmap, const bool& fastDetection)
 {
-	CFaceDetector faceDetector;
+	CFaceDetector faceDetector(fastDetection);
 	int angle = faceDetector.DectectOrientationByFaceDetector(pBitmap);
 	return RotateToExifOrientation(angle);
 }

@@ -42,6 +42,12 @@ CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, co
     plus->SetLibelleTooltip(zoomon);
 	navElement.push_back(plus);
 
+	CToolbarButton* refreshButton = new CToolbarButton(themeToolbar.button);
+	refreshButton->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
+	refreshButton->SetCommandId(WM_REFRESH);
+	refreshButton->SetLibelleTooltip(refresh);
+	navElement.push_back(refreshButton);
+
 }
 
 CThumbnailFaceToolBar::~CThumbnailFaceToolBar()
@@ -146,7 +152,13 @@ void CThumbnailFaceToolBar::EventManager(const int &id)
 				listFace->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
-
+		case WM_REFRESH:
+			if (listFace != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_THUMBNAILREFRESHFACE);
+				listFace->GetEventHandler()->AddPendingEvent(evt);
+			}
+			break;
 		}
 	}
 }

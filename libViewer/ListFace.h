@@ -47,6 +47,7 @@ namespace Regards
 			static void FacialDetectionRecognition(void * param);
 			
 			void OnIdle(wxIdleEvent& evt);
+			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);

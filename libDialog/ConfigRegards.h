@@ -42,6 +42,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbDatabaseInMemory;
 		wxRadioBox* rbAutoRotate;
 		wxRadioBox* rbContrastCorrection;
+		wxRadioBox* rbFastFaceDetection;
 		wxComboBox* rbInterpolation;
 
 		wxComboBox* cbOpenCLDevice;

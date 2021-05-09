@@ -153,6 +153,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CListFace::ThumbnailRefresh));
 	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
+	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
 
 	isLoadingResource = true;
 	CThreadFace * path = new CThreadFace();
@@ -590,7 +591,12 @@ void CListFace::ProcessIdle()
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 {
 	thumbnailFace->Init();
-    processIdle = true;
+	processIdle = true;
+}
+
+void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
+{
+	RefreshPane();
 }
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)

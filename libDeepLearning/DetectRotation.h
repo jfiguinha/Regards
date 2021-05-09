@@ -13,7 +13,7 @@ namespace Regards
 			CDetectRotation();
 			~CDetectRotation();
 
-			int GetExifOrientation(CRegardsBitmap* pBitmap);
+			int GetExifOrientation(CRegardsBitmap* pBitmap, const bool& fastDetection);
 		private:
 			int RotateToExifOrientation(const int &angle);
 			int RotateToOrientation(const int &angle);

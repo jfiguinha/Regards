@@ -38,6 +38,17 @@ CRegardsConfigParam::CRegardsConfigParam()
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
 	faceDetection = 1;
+	fastFaceDetection = 1;
+}
+
+
+void CRegardsConfigParam::SetFastDetectionFace(const int& fastDetection)
+{
+	this->fastFaceDetection = fastFaceDetection;
+}
+int CRegardsConfigParam::GetFastDetectionFace()
+{
+	return fastFaceDetection;
 }
 
 int CRegardsConfigParam::GetFaceVideoDetection()
@@ -316,6 +327,7 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
     sectionPosition->append_node(node("GpsFileByMinute", to_string(nbGpsFileByMinute)));
 	sectionPosition->append_node(node("videoFaceDetection", to_string(videoFaceDetection)));
 	sectionPosition->append_node(node("FaceDetection", to_string(faceDetection)));
+	sectionPosition->append_node(node("FastFaceDetection", to_string(fastFaceDetection)));
 }
 
 void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
@@ -462,6 +474,14 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		faceDetection = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("FastFaceDetection");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		fastFaceDetection = atoi(child_node->value());
 	}
 }
 
