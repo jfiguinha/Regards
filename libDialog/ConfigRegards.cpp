@@ -277,6 +277,21 @@ void ConfigRegards::Init()
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
+	bool autocontrastValue = false;
+	bool openclDetection = false;
+
+	autocontrastValue = rbContrastCorrection->GetSelection() == 0 ? true : false;
+	openclDetection = rdOpenCVOpenCL->GetSelection() == 0 ? true : false;
+
+	if (openclDetection && autocontrastValue)
+	{
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox("Constrast Automatic and OpenCL Face Detection no work together.", infos, wxICON_ERROR);
+		isOk = false;
+		return;
+	}
+
+
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
     
     int nbProcesseur = thread::hardware_concurrency();
@@ -327,6 +342,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetAutoConstrast(0);
 
+	
+
 	int fastDetection = rbFastFaceDetection->GetSelection();
 	if (fastDetection == 0)
 		regardsParam->SetFastDetectionFace(1);
@@ -341,7 +358,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetFaceOpenCLProcess(0);
 	else
 		regardsParam->SetFaceOpenCLProcess(1);
-	
+
+
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
  

@@ -44,7 +44,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 
 void CRegardsConfigParam::SetFastDetectionFace(const int& fastDetection)
 {
-	this->fastFaceDetection = fastFaceDetection;
+	this->fastFaceDetection = fastDetection;
 }
 int CRegardsConfigParam::GetFastDetectionFace()
 {
