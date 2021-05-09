@@ -593,7 +593,14 @@ void CListFace::ProcessIdle()
 	processrecognitionison = processIdle;
 
 	if (config != nullptr)
-		opencvopencl = config->GetFaceOpenCLProcess();
+	{
+		int fastDetection = config->GetFastDetectionFace();
+		if (fastDetection)
+			opencvopencl = config->GetFaceOpenCLProcess();
+		else
+			opencvopencl = false;
+	}
+		
 
 }
 
