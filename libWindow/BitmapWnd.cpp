@@ -1614,11 +1614,12 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
 	}
 
-
+	
 	if (regardsParam != nullptr)
 	{
 		if (regardsParam->GetAutoConstrast() && preview == 0)
 		{
+			/*
 			bool opencvopencl = false;
 			int fastDetection = regardsParam->GetFastDetectionFace();
 			if (fastDetection)
@@ -1628,11 +1629,13 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 
 			if (!(processrecognitionison && opencvopencl))
 			{
+			*/
 				filtreEffet->SetPreviewMode(true);
 				filtreEffet->BrightnessAndContrastAuto(1);
-			}
+			//}
 		}
 	}
+	
 }
 
 int CBitmapWnd::GetWidth()

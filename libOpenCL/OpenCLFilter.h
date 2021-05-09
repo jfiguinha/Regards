@@ -74,7 +74,7 @@ namespace Regards
 
 			cv::UMat GetOpenCVStruct(cl_mem inputData, int width, int height);
 			cl_mem CopyOpenCVTexture(cv::UMat & dst, int width, int height);
-
+			
 			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;

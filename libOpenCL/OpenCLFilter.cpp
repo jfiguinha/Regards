@@ -9,6 +9,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
+
 using namespace Regards::OpenCL;
 
 
@@ -68,6 +69,8 @@ cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float 
 	return CopyOpenCVTexture(cvImage, width, height);
 }
 
+
+
 cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent)
 {
 	context->GetContextForOpenCV().bind();
@@ -77,7 +80,6 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 	Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
 
 	return CopyOpenCVTexture(cvImage, width, height);
-
 }
 
 cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)

@@ -125,7 +125,7 @@ namespace Regards
 		protected:
 
 			int GetSizeData();
-
+			bool TestIfOpenCVIsUse();
 			cl_mem_flags  flag;
 			wxString filename;
 			COpenCLContext * context;

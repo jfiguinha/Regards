@@ -25,9 +25,11 @@
 #else
 #include <CL/cl_gl.h>
 #endif
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
-
+extern bool processrecognitionison;
 #define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap)
@@ -97,6 +99,8 @@ CRegardsBitmap * COpenCLEffect::GetPtBitmap()
 
 int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
+
+
 	int _width = 0;
 	int _height = 0;
 	cl_mem output = nullptr;
@@ -120,8 +124,30 @@ int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, cons
 	return 0;
 }
 
+bool COpenCLEffect::TestIfOpenCVIsUse()
+{
+	bool opencvopencl = false;
+	if (processrecognitionison)
+	{
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+		if (regardsParam != nullptr)
+		{
+			int fastDetection = regardsParam->GetFastDetectionFace();
+			if (fastDetection)
+				opencvopencl = regardsParam->GetFaceOpenCLProcess();
+			else
+				opencvopencl = false;
+		}
+	}
+
+	return opencvopencl;
+}
+
 int COpenCLEffect::OilPaintingEffect(const int &size, const int &dynRatio)
 {
+	if (TestIfOpenCVIsUse())
+		return 0;
+
 	int _width = 0;
 	int _height = 0;
 	cl_mem output = nullptr;
@@ -1509,6 +1535,9 @@ int COpenCLEffect::Negatif()
 
 int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
+	if (TestIfOpenCVIsUse())
+		return 0;
+
 	int _width = 0;
 	int _height = 0;
 	cl_mem output = nullptr;
