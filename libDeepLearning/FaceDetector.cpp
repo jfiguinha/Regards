@@ -112,6 +112,16 @@ public:
 	}
 };
 
+bool CFaceDetector::LockOpenCLDnn()
+{
+	muDnnAccess.lock();
+}
+
+bool CFaceDetector::UnlockOpenCLDnn()
+{
+	muDnnAccess.unlock();
+}
+
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
 	detector = get_frontal_face_detector();
@@ -712,10 +722,9 @@ void CFaceDetector::detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vect
 	int frameWidth = frameOpenCVDNN.cols;
 #ifdef CAFFE
 	Mat resizedFrame;
-	muDnnAccess.lock();
 	cv::resize(frameOpenCVDNN, resizedFrame, cv::Size(300, 300));
+	muDnnAccess.lock();
 	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
-	//cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, false, false);
 	net.setInput(inputBlob);
 	auto detection = net.forward();
 	muDnnAccess.unlock();

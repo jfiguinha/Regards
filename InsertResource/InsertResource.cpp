@@ -3,6 +3,11 @@
 #include "header.h"
 #define REGARDS_RESOURCE
 
+float clamp(float val, float minval, float maxval)
+{
+	return std::clamp(val, minval, maxval);
+}
+
 #ifdef REGARDS_RESOURCE
 
 

@@ -17,8 +17,16 @@ static std::thread loadModel;
 static bool isload = false;
 static std::mutex muLoading;
 
+bool CDeepLearning::LockOpenCLDnn()
+{
+	CFaceDetector::LockOpenCLDnn();
+}
 
-    
+bool CDeepLearning::UnlockOpenCLDnn()
+{
+	CFaceDetector::UnlockOpenCLDnn();
+}
+
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 {
 	bool fastDetection = true;

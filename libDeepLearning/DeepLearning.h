@@ -16,6 +16,8 @@ namespace Regards
 
             static int GetExifOrientation(CRegardsBitmap* pBitmap);
             static bool IsResourceReady();
+			static bool LockOpenCLDnn();
+			static bool UnlockOpenCLDnn();
 			static bool FindFaceCompatible(const int &numFace);
 		};
 	}

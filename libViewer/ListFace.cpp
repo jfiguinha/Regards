@@ -588,8 +588,6 @@ void CListFace::ProcessIdle()
 	{
 		processIdle = false;
 	}
-
-	processrecognitionison = processIdle;
 }
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
