@@ -601,6 +601,9 @@ void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 {
 	RefreshPane();
+	thumbnailFace->Init();
+	processIdle = true;
+	this->Refresh();
 }
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)

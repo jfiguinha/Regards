@@ -1,16 +1,19 @@
 // InsertResource.cpp : définit le point d'entrée pour l'application console.
 //
+#include "header.h"
+#define REGARDS_RESOURCE
 
 #ifdef REGARDS_RESOURCE
 
-#include "header.h"
+
+
 #include "SqlInit.h"
 #include <SqlResource.h>
 #include <wx/textfile.h>
 using namespace Regards::Sqlite;
 
 
-wxString to_string(const float & value)
+wxString to_string(const float& value)
 {
 	wxString chaine;
 	chaine << value;
@@ -20,7 +23,7 @@ wxString to_string(const float & value)
 
 float value[256];
 
-void WriteToFile(const wxString &filename, const wstring &text)
+void WriteToFile(const wxString& filename, const wstring& text)
 {
 	wxTextFile file(filename);
 	file.Create();
@@ -174,37 +177,37 @@ int _tmain(int argc, _TCHAR* argv[])
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SHARPENSTRONG", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SHARPENSTRONG.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SOFTEN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SOFTEN.cl");
 	*/
-/*
-List des shaders 
-//IDR_GLSL_SHADER_PHOTOFILTRE
-//IDR_GLSL_SHADER_RGB
-IDR_GLSL_SHADER_VIDEO
-IDR_GLSL_ALPHA_SHADER
+	/*
+	List des shaders
+	//IDR_GLSL_SHADER_PHOTOFILTRE
+	//IDR_GLSL_SHADER_RGB
+	IDR_GLSL_SHADER_VIDEO
+	IDR_GLSL_ALPHA_SHADER
 
-IDR_OPENCL_BM3D
-IDR_OPENCL_TEXTURE
-IDR_OPENCL_CONVERTTOY
-IDR_OPENCL_RAW
-IDR_OPENCL_CONVOLUTION
+	IDR_OPENCL_BM3D
+	IDR_OPENCL_TEXTURE
+	IDR_OPENCL_CONVERTTOY
+	IDR_OPENCL_RAW
+	IDR_OPENCL_CONVOLUTION
 
-IDR_OPENCL_COLORCONVERSION
-IDR_OPENCL_FFMPEG
-IDR_OPENCL_FFMPEGDXVA2YUV420
-IDR_OPENCL_FFMPEGYUV420
-IDR_OPENCL_FUSION
-IDR_BILATERALFILTER_RAW
-IDR_OPENCL_SHARPENMASKING
-IDR_OPENCL_COLOR
-IDR_OPENCL_INTERPOLATION
-IDR_OPENCL_CONVOLUTION
-IDR_OPENCL_MOSAIC
-IDR_OPENCL_DILATEERODE
-IDR_OPENCL_MEDIAN
-IDR_OPENCL_NOISE
-IDR_OPENCL_FLIP
-IDR_OPENCL_SWIRL
-IDR_OPENCL_ROTATION
-*/
+	IDR_OPENCL_COLORCONVERSION
+	IDR_OPENCL_FFMPEG
+	IDR_OPENCL_FFMPEGDXVA2YUV420
+	IDR_OPENCL_FFMPEGYUV420
+	IDR_OPENCL_FUSION
+	IDR_BILATERALFILTER_RAW
+	IDR_OPENCL_SHARPENMASKING
+	IDR_OPENCL_COLOR
+	IDR_OPENCL_INTERPOLATION
+	IDR_OPENCL_CONVOLUTION
+	IDR_OPENCL_MOSAIC
+	IDR_OPENCL_DILATEERODE
+	IDR_OPENCL_MEDIAN
+	IDR_OPENCL_NOISE
+	IDR_OPENCL_FLIP
+	IDR_OPENCL_SWIRL
+	IDR_OPENCL_ROTATION
+	*/
 
 	//sqlResource.GetText("")
 	/*
@@ -258,7 +261,7 @@ IDR_OPENCL_ROTATION
 	/*
 	sqlResource.InsertOpenGLShader(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_SHADER_VIDEO.gl");
 	sqlResource.InsertOpenGLShader(L"IDR_GLSL_ALPHA_SHADER", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_ALPHA_SHADER.gl");
-	
+
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BM3D", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BM3D.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVERTTOY", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVERTTOY.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_RAW.cl");
@@ -279,7 +282,7 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SWIRL", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SWIRL.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_ROTATION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_ROTATION.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BITMAPCONVERSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BITMAPCONVERSION.cl");
-	
+
 
 	/*
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BM3D", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BM3D.cl");
@@ -359,12 +362,12 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertLibelle(L"LBLcablue",L"Effect.Chromatic.Blue",1);
 	sqlResource.InsertLibelle(L"LBLcfaline",L"Effect.Use Line noise reduction",1);
 	sqlResource.InsertLibelle(L"LBLlinenoise",L"Effect.Line noise reduction",1);
-	sqlResource.InsertLibelle(L"LBLcfa_clean",L"Effect.Use Reduce impulse noise and Gaussian high frequency",1); 
+	sqlResource.InsertLibelle(L"LBLcfa_clean",L"Effect.Use Reduce impulse noise and Gaussian high frequency",1);
 	sqlResource.InsertLibelle(L"LBLlclean",L"Effect.Reduce impulse noise.Luminance",1);
 	sqlResource.InsertLibelle(L"LBLcclean",L"Effect.Reduce impulse noise.Color",1);
-	sqlResource.InsertLibelle(L"LBLcfa_green",L"Effect.Use Reduces maze artifacts Green",1); 
+	sqlResource.InsertLibelle(L"LBLcfa_green",L"Effect.Use Reduces maze artifacts Green",1);
 	sqlResource.InsertLibelle(L"LBLgreen_thresh",L"Effect.Reduces maze artifacts Green",1);
-	sqlResource.InsertLibelle(L"LBLexp_correc",L"Effect.Use Exposure correction before demosaic",1); 
+	sqlResource.InsertLibelle(L"LBLexp_correc",L"Effect.Use Exposure correction before demosaic",1);
 	sqlResource.InsertLibelle(L"LBLexp_shift",L"Effect.Exposure correction.Shift in linear scale",1);
 	sqlResource.InsertLibelle(L"LBLexp_preser",L"Effect.Exposure correction.Preserve highlights",1);
 	sqlResource.InsertLibelle(L"LBLwf_debanding",L"Effect.Use banding suppression",1);
@@ -478,7 +481,7 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertVector(L"IDB_CANCEL", L"d:\\resource\\res\\vector\\cancel.svg");
 	sqlResource.InsertVector(L"IDB_DELETE", L"d:\\resource\\res\\vector\\delete.svg");
 	sqlResource.InsertVector(L"IDB_CROP", L"d:\\resource\\res\\vector\\crop.svg");
-	
+
 	sqlResource.InsertVector(L"IDB_EMAIL", L"d:\\resource\\res\\vector\\email.svg");
 	sqlResource.InsertVector(L"IDB_EXIT", L"d:\\resource\\res\\vector\\exit.svg");
 
@@ -488,7 +491,7 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertVector(L"IDB_MULTIPLESELECT", L"d:\\resource\\res\\vector\\copy.svg");
 	sqlResource.InsertVector(L"IDB_NEWPNG", L"d:\\resource\\res\\vector\\new.svg");
 	sqlResource.InsertVector(L"IDB_PHOTOVIEWERPNG", L"d:\\resource\\res\\vector\\viewer.svg");
-	
+
 	sqlResource.InsertVector(L"IDB_PICTURETOOLBAR", L"d:\\resource\\res\\vector\\picture_toolbar.svg");
 	sqlResource.InsertVector(L"IDB_PICTURE", L"d:\\resource\\res\\vector\\pictures.svg");
 	sqlResource.InsertVector(L"IDB_PRINTERPNG", L"d:\\resource\\res\\vector\\Printer_Button.svg");
@@ -510,7 +513,7 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertVector(L"IDB_ZOOMMOINS", L"d:\\resource\\res\\vector\\zoommoins.svg");
 	sqlResource.InsertVector(L"IDB_ZOOMPLUS", L"d:\\resource\\res\\vector\\zoomplus.svg");
 
-	
+
 	sqlResource.InsertVector(L"IDB_PLAY_VIDEO", L"d:\\resource\\res\\vector\\play_video.svg");
 	sqlResource.InsertVector(L"IDB_PAUSE_VIDEO", L"d:\\resource\\res\\vector\\pause_video.svg");
 
@@ -614,7 +617,7 @@ IDR_OPENCL_ROTATION
 	sqlResource.InsertBitmap(L"IDB_COPY",L"PNG",L"d:\\resource\\res\\bitmap\\copy.png");
 	sqlResource.InsertBitmap(L"IDB_TITLEREGARDS",L"PNG",L"d:\\resource\\res\\bitmap\\title.png");*/
 	//return 0;
-	
+
 	/*
 	sqlResource.InsertText(L"IDR_GLSL_SHADER_BELL",L"GLSL_SHADER",L"d:\\resource\\res\\opengl\\pixel_shader_Bell.cg");
 	sqlResource.InsertText(L"IDR_GLSL_SHADER_BICUBIC",L"GLSL_SHADER",L"d:\\resource\\res\\opengl\\pixel_shader_BiCubic.cg");
@@ -853,7 +856,6 @@ IDR_OPENCL_ROTATION
 	CSqlInit::KillSqlEngine();
 	return 0;
 }
-
 
 #else
 
