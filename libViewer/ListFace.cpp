@@ -30,7 +30,6 @@
 #include <RegardsConfigParam.h>
 
 extern bool processrecognitionison;
-extern int opencvopencl;
 
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -591,17 +590,6 @@ void CListFace::ProcessIdle()
 	}
 
 	processrecognitionison = processIdle;
-
-	if (config != nullptr)
-	{
-		int fastDetection = config->GetFastDetectionFace();
-		if (fastDetection)
-			opencvopencl = config->GetFaceOpenCLProcess();
-		else
-			opencvopencl = false;
-	}
-		
-
 }
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)

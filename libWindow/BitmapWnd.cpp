@@ -33,7 +33,6 @@ const float CBitmapWnd::TabRatio[] = { 0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f,
 const long CBitmapWnd::Max = 26;
 
 extern bool processrecognitionison;
-extern int opencvopencl;
 
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
@@ -1620,6 +1619,13 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	{
 		if (regardsParam->GetAutoConstrast() && preview == 0)
 		{
+			bool opencvopencl = false;
+			int fastDetection = regardsParam->GetFastDetectionFace();
+			if (fastDetection)
+				opencvopencl = regardsParam->GetFaceOpenCLProcess();
+			else
+				opencvopencl = false;
+
 			if (!(processrecognitionison && opencvopencl))
 			{
 				filtreEffet->SetPreviewMode(true);
