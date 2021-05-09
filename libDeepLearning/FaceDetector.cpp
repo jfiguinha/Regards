@@ -114,17 +114,13 @@ public:
 
 bool CFaceDetector::LockOpenCLDnn()
 {
-#ifndef __WXGTK__
 	muDnnAccess.lock();
-#endif
     return true;
 }
 
 bool CFaceDetector::UnlockOpenCLDnn()
 {
-#ifndef __WXGTK__
 	muDnnAccess.unlock();
-#endif
     return true;
 }
 
@@ -275,14 +271,11 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-#ifndef __WXGTK__
 		if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			net.setPreferableTarget(DNN_TARGET_CPU);
-#else
-        net.setPreferableTarget(DNN_TARGET_CPU);
-#endif
+
 #else
 		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
 #endif
