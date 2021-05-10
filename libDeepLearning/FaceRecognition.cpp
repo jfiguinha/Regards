@@ -153,12 +153,14 @@ int CFaceRecognition::FaceRecognition(const int& numFace)
 	std::vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
 	Mat imageSrc = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(), IMREAD_GRAYSCALE);
 	equalizeHist(imageSrc, imageSrc);
+	imageSrc = norm_0_255(imageSrc);
 	if (faceRecognitonVec.size() > 1)
 	{
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
 			Mat image = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), IMREAD_GRAYSCALE);
 			equalizeHist(image, image);
+			image = norm_0_255(image);
 			confidence = GetSimilarity(imageSrc, image);
 			if (maxConfidence < confidence)
 			{
@@ -195,8 +197,8 @@ int CFaceRecognition::FaceRecognition(const int& numFace)
 	return findFaceCompatible;
 }
 
-/*
-int CFaceRecognition::FaceRecognition(const int &numFace)
+
+int CFaceRecognition::FaceRecognitionEigen(const int &numFace)
 {
 	int predictedLabel = -1;
 	double confidence = 0.0;
@@ -215,7 +217,7 @@ int CFaceRecognition::FaceRecognition(const int &numFace)
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
 			Mat image = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), IMREAD_GRAYSCALE);
-			images.push_back(image);
+			images.push_back(norm_0_255(image));
 			labels.push_back(picture.numFaceCompatible);
 		}
 
@@ -263,5 +265,5 @@ int CFaceRecognition::FaceRecognition(const int &numFace)
 
 	return findFaceCompatible;
 }
-*/
+
 

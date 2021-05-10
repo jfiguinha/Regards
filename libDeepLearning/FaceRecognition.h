@@ -13,7 +13,7 @@ namespace Regards
 			
 			int FaceRecognition(const int &numFace);
 			bool FindCompatibility(const int &numFace);
-
+			int FaceRecognitionEigen(const int& numFace);
 		private:
 
 			double GetSimilarity(const cv::Mat& A, const cv::Mat& B);
