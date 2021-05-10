@@ -7,9 +7,12 @@ class CTreatmentData
 {
 public:
 
-	void MainTreatment(const PhotosVector& newPhotosVectorList, CThumbnailFolder* folder)
+	void MainTreatment(const PhotosVector * photoVector, PhotosVector * newPhotosVectorList, CThumbnailFolder* folder, int & numElement)
 	{
-		for (CPhotos photos : newPhotosVectorList)
+		this->numElement = numElement;
+		this->newPhotosVectorList = newPhotosVectorList;
+
+		for (CPhotos photos : *photoVector)
 		{
 			if (TestParameter(photos))
 			{
@@ -33,13 +36,16 @@ public:
 	void CreateSeparatorBar(const wxString& libelle, CThumbnailFolder* folder)
 	{
 		int nbElement = 0;
-		folder->AddSeparatorBar(libelle, &listPhoto, nbElement);
+		copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
+		folder->AddSeparatorBar(libelle, &listPhoto, numElement);
 		listPhoto.clear();
 	};
 
 protected:
+	PhotosVector* newPhotosVectorList;
 	PhotosVector listPhoto;
 	bool first = true;
+	int numElement;
 };
 
 class CTreatmentDataYear : public CTreatmentData
@@ -126,7 +132,7 @@ public:
 
 	virtual bool TestParameter(const CPhotos& photos)
 	{
-		return photos.year != year || photos.month != month || photos.day != day;
+		return photos.year != year || photos.month != month || photos.day != day || photos.gpsInfos != libelleLocalisation;
 	};
 	virtual wxString GenerateLibelle()
 	{
@@ -139,6 +145,9 @@ public:
 			if (j > 1)
 				output.append(L", ");
 		}
+
+		if (output == "")
+			output = libelleLocalisation;
 
 		return dayName + L" " + to_string(day) + L" " + monthName + L" , " + to_string(year) + L"@" + output;
 	}

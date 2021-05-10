@@ -22,7 +22,7 @@ bool CSqlFindPhotos::SearchPhotosByCriteria(PhotosVector* photosVector)
 {
 	typeResult = 2;
 	m_photosVector = photosVector;
-	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW";
+	wxString sqlRequest = "SELECT * FROM SEARCH_VIEW Order By Year desc, Month desc, Day desc, DayOfWeek desc";
 	return (ExecuteRequest(sqlRequest) != -1) ? true : false;
 }
 
