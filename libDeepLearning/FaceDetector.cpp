@@ -564,7 +564,6 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 			return listFace;
 		}
 
-		/*
 		try
 		{
 			// This call asks the DNN to convert each face image in faces into a 128D vector.
@@ -594,7 +593,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 			std::cout << "exception caught: " << err_msg << std::endl;
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
-		*/
+		
 	}
 
 	return listFace;
