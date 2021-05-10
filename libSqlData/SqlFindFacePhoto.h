@@ -23,6 +23,7 @@ namespace Regards
 			std::vector<CFaceName> GetListFaceNameSelectable();
 			std::vector<CFaceFilePath> GetListPhotoFace(const int &numFace, const double &pertinence = 0.0);
 			std::vector<CFaceDescriptor *> GetUniqueFaceDescriptor(const int &numFace);
+			std::vector<CFaceDescriptor*> GetAllFaceDescriptor();
 		private:
 			int TraitementResult(CSqlResult * sqlResult);
 			std::vector<wxString> listPhoto;

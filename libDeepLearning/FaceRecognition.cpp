@@ -10,6 +10,7 @@
 #include <RegardsBitmap.h>
 #include <FileUtility.h>
 #include <dlib/dnn.h>
+#include <dlib/clustering.h>
 using namespace dlib;
 using namespace cv::face;
 using namespace cv;
@@ -69,9 +70,60 @@ float CFaceRecognition::IsCompatibleFace(std::string const& dataface1, std::stri
 //---------------------------------------------------------------------------------------	
 bool CFaceRecognition::FindCompatibility(const int &numFace)
 {
+#ifdef WHISPER_CHINESE
+	CSqlFaceLabel sqlfaceLabel;
+	CSqlFaceRecognition sqlfaceRecognition;
 	bool findFaceCompatible = false;
 	CSqlFaceDescriptor sqlFaceDescriptor;
-	CFaceDescriptor * faceDescriptor;
+	CSqlFindFacePhoto sqlfindFacePhoto;
+	std::vector<CFaceDescriptor*> face_descriptors = sqlfindFacePhoto.GetAllFaceDescriptor();
+
+	// In particular, one simple thing we can do is face clustering.  This next bit of code
+	// creates a graph of connected faces and then uses the Chinese whispers graph clustering
+	// algorithm to identify how many people there are and which faces belong to whom.
+	std::vector<sample_pair> edges;
+	for (size_t i = 0; i < face_descriptors.size(); ++i)
+	{
+		for (size_t j = i; j < face_descriptors.size(); ++j)
+		{
+			// Faces are connected in the graph if they are close enough.  Here we check if
+			// the distance between two face descriptors is less than 0.6, which is the
+			// decision threshold the network was trained to use.  Although you can
+			// certainly use any other threshold you find useful.
+			if (IsCompatibleFace(face_descriptors[i]->descriptor,face_descriptors[j]->descriptor) < 0.6)
+				edges.push_back(sample_pair(i, j));
+		}
+	}
+	std::vector<unsigned long> labels;
+	const auto num_clusters = chinese_whispers(edges, labels);
+
+	
+	sqlfaceRecognition.DeleteFaceRecognitionDatabase();
+
+	for (size_t j = 0; j < labels.size(); ++j)
+	{
+		sqlfaceRecognition.InsertFaceRecognition(face_descriptors[j]->numFace, face_descriptors[labels[j]]->numFace);
+	}
+	
+	sqlfaceLabel.DeleteFaceLabelDatabase();
+
+	for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
+	{
+		for (size_t j = 0; j < labels.size(); ++j)
+		{
+			if (cluster_id == labels[j])
+			{
+				wxString label = "Face number " + to_string(face_descriptors[labels[j]]->numFace);
+				sqlfaceLabel.InsertFaceLabel(face_descriptors[labels[j]]->numFace, label, true);
+			}
+		}
+	}
+		
+	return true;
+#else
+	bool findFaceCompatible = false;
+	CSqlFaceDescriptor sqlFaceDescriptor;
+	CFaceDescriptor* faceDescriptor;
 	faceDescriptor = sqlFaceDescriptor.GetFaceDescriptor(numFace);
 
 	if (faceDescriptor != nullptr)
@@ -121,8 +173,11 @@ bool CFaceRecognition::FindCompatibility(const int &numFace)
 
 		if (faceDescriptor != nullptr)
 			delete faceDescriptor;
+		
 	}
 	return findFaceCompatible;
+#endif
+	
 }
 
 // Compare two images by getting the L2 error (square-root of sum of squared error).

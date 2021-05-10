@@ -76,7 +76,7 @@ void CThumbnailFolder::AddSeparatorBar(const wxString& libelle, PhotosVector* ph
 void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& typeAffichage)
 {
 	threadDataProcess = false;
-	newPhotosVectorList.clear();
+	//newPhotosVectorList.clear();
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -104,32 +104,27 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 		
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
 		AddSeparatorBar(libellePhoto, photoVector, i);
-		if (photoVector->size() > 0)
-		{
-			newPhotosVectorList.reserve(photoVector->size());
-			copy(photoVector->begin(), photoVector->end(), back_inserter(newPhotosVectorList));
-		}
 
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
 		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(photoVector, &newPhotosVectorList, this, i);
+		dataYear.MainTreatment(photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
 		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(photoVector, &newPhotosVectorList, this, i);
+		dataMonth.MainTreatment(photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
 		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(photoVector, &newPhotosVectorList, this, i);
+		dataLocalisation.MainTreatment(photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
 		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(photoVector, &newPhotosVectorList, this, i);
+		dataDay.MainTreatment(photoVector, this, i);
 	}
 
 	//m_lock.unlock();
@@ -176,18 +171,18 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 
 void CThumbnailFolder::Init(const int& typeAffichage)
 {
-	photoVector.clear();
+	newPhotosVectorList.clear();
 
 	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotosByCriteria(&photoVector);
+	sqlFindPhotos.SearchPhotosByCriteria(&newPhotosVectorList);
 
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GeneratePhotoList();
 
 	if (noVscroll)
-		SetListeFile(&photoVector);
+		SetListeFile(&newPhotosVectorList);
 	else
-		InitTypeAffichage(&photoVector, typeAffichage);
+		InitTypeAffichage(&newPhotosVectorList, typeAffichage);
 
 	processIdle = true;
 }

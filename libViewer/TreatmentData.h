@@ -7,10 +7,9 @@ class CTreatmentData
 {
 public:
 
-	void MainTreatment(const PhotosVector * photoVector, PhotosVector * newPhotosVectorList, CThumbnailFolder* folder, int & numElement)
+	void MainTreatment(const PhotosVector * photoVector, CThumbnailFolder* folder, int & numElement)
 	{
 		this->numElement = numElement;
-		this->newPhotosVectorList = newPhotosVectorList;
 
 		for (CPhotos photos : *photoVector)
 		{
@@ -36,13 +35,12 @@ public:
 	void CreateSeparatorBar(const wxString& libelle, CThumbnailFolder* folder)
 	{
 		int nbElement = 0;
-		copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
+		//copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
 		folder->AddSeparatorBar(libelle, &listPhoto, numElement);
 		listPhoto.clear();
 	};
 
 protected:
-	PhotosVector* newPhotosVectorList;
 	PhotosVector listPhoto;
 	bool first = true;
 	int numElement;

@@ -77,11 +77,20 @@ std::vector<wxString> CSqlFindFacePhoto::GetPhotoListNotProcess()
 	return listPhoto;
 }
 
+std::vector<CFaceDescriptor*> CSqlFindFacePhoto::GetAllFaceDescriptor()
+{
+	type = 1;
+	listFaceDescriptor.clear();
+	ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR");
+	return listFaceDescriptor;
+}
+
 std::vector<CFaceDescriptor *> CSqlFindFacePhoto::GetUniqueFaceDescriptor(const int &numFace)
 {
 	type = 1;
 	listFaceDescriptor.clear();
-	ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR where NumFace != " + to_string(numFace) + " and NumFace in (select NumFace from FACE_NAME)");
+	//ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR where NumFace != " + to_string(numFace) + " and NumFace in (select NumFace from FACE_NAME)");
+	ExecuteRequest("SELECT NumFaceCompatible, FaceDescriptor FROM FACEDESCRIPTOR INNER JOIN FACE_RECOGNITION ON FACEDESCRIPTOR.NumFace = FACE_RECOGNITION.NumFace where FACEDESCRIPTOR.NumFace != " + to_string(numFace));
 	return listFaceDescriptor;
 }
 

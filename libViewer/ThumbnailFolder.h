@@ -45,7 +45,7 @@ namespace Regards
 
 			InfosSeparationBarVector listSeparator;
 			PhotosVector newPhotosVectorList;
-			PhotosVector photoVector;
+			//PhotosVector photoVector;
 			int barseparationHeight;
 			int widthThumbnail;
 			int heightThumbnail;
