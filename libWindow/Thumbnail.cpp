@@ -398,7 +398,7 @@ void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 void CThumbnail::MoveTop()
 {
 	wxWindow * parent = this->GetParent();
-
+	moveOnPaint = false;
 	if (parent != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_MOVETOP);
@@ -409,7 +409,7 @@ void CThumbnail::MoveTop()
 void CThumbnail::MoveLeft()
 {
 	wxWindow * parent = this->GetParent();
-
+	moveOnPaint = false;
 	if (parent != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_MOVELEFT);
@@ -420,7 +420,7 @@ void CThumbnail::MoveLeft()
 void CThumbnail::MoveBottom()
 {
 	wxWindow * parent = this->GetParent();
-
+	moveOnPaint = false;
 	if (parent != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
@@ -431,7 +431,7 @@ void CThumbnail::MoveBottom()
 void CThumbnail::MoveRight()
 {
 	wxWindow * parent = this->GetParent();
-
+	moveOnPaint = false;
 	if (parent != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_MOVERIGHT);
@@ -443,6 +443,7 @@ void CThumbnail::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
+	moveOnPaint = false;
 	this->Refresh();
 }
 
@@ -450,12 +451,15 @@ void CThumbnail::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
  	posHauteur = pos;
+	moveOnPaint = false;
 	this->Refresh();
 }
 
 void CThumbnail::OnScrollMove(wxCommandEvent& event)
 {
 	isMovingScroll = isMoving = event.GetInt();
+	moveOnPaint = false;
+
 }
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
@@ -1018,7 +1022,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		bitmapIconDrag = image;
 
 	}
-
+	moveOnPaint = true;
 	this->Refresh();
 
 }
@@ -1082,13 +1086,14 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		return;
 
 
-	if (numActif != nullptr && !isMovingScroll && moveOnPaint)
+	if (numSelect != nullptr && !isMovingScroll && moveOnPaint)
 	{
-		wxRect rect = numActif->GetPos();
+		wxRect rect = numSelect->GetPos();
 		int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
 		int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
 		posLargeur = xPos;
 		posHauteur = yPos;
+		moveOnPaint = false;
 	}
 	
 	TestMaxX();
