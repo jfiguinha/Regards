@@ -45,6 +45,29 @@ CMainParam::CMainParam()
 
 	pathProgramVideo = "";
 	pathProgramPicture = "";
+
+	posFace = 3;
+	posFolder = 3;
+}
+
+void CMainParam::SetSlideFacePos(const int& pos)
+{
+	posFace = pos;
+}
+
+void CMainParam::GetSlideFacePos(int& pos)
+{
+	pos = posFace;
+}
+
+void CMainParam::SetSlideFolderPos(const int& pos)
+{
+	posFolder = pos;
+}
+
+void CMainParam::GetSlideFolderPos(int& pos)
+{
+	pos = posFolder;
 }
 
 wxString CMainParam::GetPathForVideoEdit()
@@ -305,6 +328,8 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("LastFilepath", CConvertUtility::ConvertToUTF8(filepath)));
 	sectionWindow->append_node(node("VideoEditorPath", pathProgramVideo));
 	sectionWindow->append_node(node("ImageEditorPath", pathProgramPicture));
+	sectionWindow->append_node(node("SlideFacePos", to_string(posFace)));
+	sectionWindow->append_node(node("SlideFolderPos", to_string(posFolder)));
 
 	xml_node<>* sectionPosition = node("leftPosPanel");
 	SetPositionParameter(sectionPosition, leftPanelPos, "window");
@@ -587,6 +612,20 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 		pathProgramPicture = child_node->value();
 	}
 
+	child_node = window_node->first_node("SlideFacePos");
+	if (child_node != 0)
+	{
+		posFace = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("SlideFolderPos");
+	if (child_node != 0)
+	{
+		posFolder = atoi(child_node->value());
+	}
+
+
+
 	child_node = window_node->first_node("leftPosPanel");
 	if (child_node != 0)
 	{
@@ -602,6 +641,8 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 		nodeName = child_node->name();
 		GetPositionParameter(child_node, rightPanelPos);
 	}
+
+
 
 }
 

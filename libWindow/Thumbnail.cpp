@@ -362,11 +362,20 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	positionSize = 3;
 }
 
+int CThumbnail::GetTabValue()
+{
+	return positionSize;
+}
+
 void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & positionSize)
 {
 	TabSize = TabNewSize;
 	Max = TabSize.size();
 	this->positionSize = positionSize;
+	int sizeIcone = TabSize[positionSize - 1];
+	SetIconeSize(sizeIcone, sizeIcone);
+
+	this->Refresh();
 }
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)

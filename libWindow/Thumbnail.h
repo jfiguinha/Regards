@@ -54,7 +54,7 @@ namespace Regards
 			void Resize();
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
-
+			int GetTabValue();
 		protected:
 
 			int GetNbIconSelected();

@@ -94,6 +94,12 @@ namespace Regards
 			wxString GetLastShowPicture();
 			void SetLastShowPicture(const wxString &filepath);
 
+			void SetSlideFacePos(const int& pos);
+			void GetSlideFacePos(int& pos);
+
+			void SetSlideFolderPos(const int& pos);
+			void GetSlideFolderPos(int& pos);
+
 		private:
 
 			void LoadParameter();
@@ -145,6 +151,9 @@ namespace Regards
 
 			wxString pathProgramVideo;
 			wxString pathProgramPicture;
+
+			int posFace;
+			int posFolder;
 		};
 	}
 }

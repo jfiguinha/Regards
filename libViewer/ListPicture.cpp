@@ -57,13 +57,14 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	typeAffichage = SHOW_ALL;
 	std::vector<int> value = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 	wxRect rect;
-
+	int positionTab = 3;
 	bool checkValidity = false;
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-
+	if (config != nullptr)
+		config->GetSlideFolderPos(positionTab);
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
@@ -85,7 +86,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		thumbscrollbar->ShowVerticalScroll();
 		thumbnailFolder->SetNoVScroll(false);
 		thumbnailFolder->SetCheck(true);
-		thumbnailFolder->ChangeTabValue(value, 2);
+		thumbnailFolder->ChangeTabValue(value, positionTab);
 		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
 
@@ -97,7 +98,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
         viewerTheme->GetBitmapToolbarTheme(&theme);
 		thumbToolbar = new CThumbnailToolBar(windowManager, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
-		thumbToolbar->SetTrackBarPosition(2);
+		thumbToolbar->SetTrackBarPosition(positionTab - 1);
 
 		windowManager->AddWindow(thumbToolbar, Pos::wxBOTTOM, true, thumbToolbar->GetHeight(), rect, wxID_ANY, false);
 	}
@@ -132,6 +133,11 @@ void CListPicture::ForceRefresh()
 
 CListPicture::~CListPicture()
 {
+	int positionTab = thumbnailFolder->GetTabValue();
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetSlideFolderPos(positionTab);
+
 	if (windowManager != nullptr)
 		delete(windowManager);
 }

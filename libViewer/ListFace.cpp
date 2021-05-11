@@ -76,6 +76,10 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	std::vector<int> value = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
 	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
 
+	int positionTab = 3;
+	if (config != nullptr)
+		config->GetSlideFacePos(positionTab);
+
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
@@ -97,7 +101,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbscrollbar->ShowVerticalScroll();
 		thumbnailFace->SetNoVScroll(false);
 		thumbnailFace->SetCheck(true);
-		thumbnailFace->ChangeTabValue(valueZoom, 3);
+		thumbnailFace->ChangeTabValue(valueZoom, positionTab);
 		thumbnailFace->Init();
 
 		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
@@ -113,7 +117,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
             
 		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
 		thumbFaceToolbar->SetTabValue(valueZoom);
-		thumbFaceToolbar->SetTrackBarPosition(2);
+		thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
 
@@ -625,6 +629,11 @@ void CListFace::ThumbnailMove(wxCommandEvent& event)
 
 CListFace::~CListFace()
 {
+	int positionTab = thumbnailFace->GetTabValue();
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetSlideFacePos(positionTab);
+
 	delete(windowManager);
 
 }
