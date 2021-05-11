@@ -37,9 +37,9 @@ namespace Regards
 			void ImageFin();
 			void ImageDebut();
 			//void Reload();
-			void SetFullscreen();
-			void SetFullscreenMode();
-			void SetScreen();
+			bool SetFullscreen();
+			bool SetFullscreenMode();
+			bool SetScreen();
 			void TransitionEnd();
 			void VideoEnd();
 			bool OpenFolder(const wxString &path);

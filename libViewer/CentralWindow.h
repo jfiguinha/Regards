@@ -82,8 +82,8 @@ namespace Regards
 			~CCentralWindow();
 
 			void UpdateScreenRatio();
-			void FullscreenMode();
-			void ScreenMode();
+			bool FullscreenMode();
+			bool ScreenMode();
 			void HideToolbar();
 			void ShowToolbar();
 			void AnimationPictureNext();
@@ -95,6 +95,7 @@ namespace Regards
 			void OnEndThumbnail();
             bool IsVideo();
 			void SaveParameter();
+			bool IsCompatibleFullscreen();
 
 		private:
 

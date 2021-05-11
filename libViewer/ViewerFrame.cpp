@@ -606,8 +606,8 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 			{
 				if (!fullscreen)
 				{
-					mainWindow->SetFullscreen();
-					fullscreen = true;
+					if(mainWindow->SetFullscreen())
+						fullscreen = true;
 				}
 			}
 			break;
@@ -630,9 +630,11 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 
 void CViewerFrame::SetFullscreen()
 {
-	fullscreen = true;
-	this->ShowFullScreen(true);
-	mainWindow->SetFullscreenMode();
+	if (mainWindow->SetFullscreenMode())
+	{
+		fullscreen = true;
+		this->ShowFullScreen(true);
+	}
 }
 
 void CViewerFrame::SetScreen()

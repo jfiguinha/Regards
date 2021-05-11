@@ -81,6 +81,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 	bitmapInfos->Show(true);
 	previewToolbar->Show(true);
 
+	Connect(wxEVENT_SHOWSCREENBUTTON, wxCommandEventHandler(CPreviewWnd::ShowScreenButton));
+	Connect(wxEVENT_HIDESCREENBUTTON, wxCommandEventHandler(CPreviewWnd::DisableScreenButton));
 	Connect(wxEVENT_SHOWSAVEBUTTON, wxCommandEventHandler(CPreviewWnd::ShowSaveButton));
 	Connect(wxEVENT_HIDESAVEBUTTON, wxCommandEventHandler(CPreviewWnd::HideSaveButton));
 	Connect(wxEVENT_HIDETOOLBAR, wxCommandEventHandler(CPreviewWnd::HideToolbar));
@@ -120,6 +122,17 @@ void CPreviewWnd::ShowSaveButton(wxCommandEvent& event)
 {
 	if (previewToolbar != nullptr)
 		previewToolbar->EnableSaveButton();
+}
+
+void CPreviewWnd::ShowScreenButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->EnableScreenButton();
+}
+void CPreviewWnd::DisableScreenButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->DisableScreenButton();
 }
 
 void CPreviewWnd::OnShowToolbar(wxCommandEvent& event)

@@ -121,4 +121,25 @@ bool CDeepLearning::FindFaceCompatible(const int &numFace)
     CFaceRecognition faceRecognition;
     return faceRecognition.FindCompatibility(numFace);
 	//return faceRecognition.FaceRecognition(numFace);
+
+	/*
+	bool fastDetection = true;
+	std::vector<wxRect> listEye;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		fastDetection = param->GetFastDetectionFace();
+
+	if (isLoading)
+	{
+		CFaceDetector faceDetector(fastDetection);
+		faceDetector.FaceRecognition(numFace);
+	}
+
+	return true;
+	*/
 }

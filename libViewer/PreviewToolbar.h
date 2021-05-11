@@ -26,7 +26,8 @@ namespace Regards
 			void EnableNavigationButton();
 			void EnableSaveButton();
 			void DisableSaveButton();
-
+			void EnableScreenButton();
+			void DisableScreenButton();
 		private:
 
 			void DiaporamaStart();

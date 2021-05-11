@@ -1708,10 +1708,13 @@ void CMainWindow::ShowToolbar()
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ///Affichage en mode plein écran
 ////////////////////////////////////////////////////////////////////////////////////////////////
-void CMainWindow::SetFullscreen()
+bool CMainWindow::SetFullscreen()
 {
 	TRACE();
-	statusBarViewer->SetFullscreen();
+	bool work = centralWnd->IsCompatibleFullscreen();
+	if (work)
+		statusBarViewer->SetFullscreen();
+	return work;
 }
 
 void CMainWindow::SetScreenEvent(wxCommandEvent& event)
@@ -1720,34 +1723,42 @@ void CMainWindow::SetScreenEvent(wxCommandEvent& event)
 	this->Resize();
 }
 
-void CMainWindow::SetFullscreenMode()
+bool CMainWindow::SetFullscreenMode()
 {
+	bool isWork = false;
 	TRACE();
 	if (!fullscreen)
 	{
-		fullscreen = true;
-		centralWnd->FullscreenMode();
-		toolbar->Show(false);
-		statusBar->Show(false);
-
-
-		wxCommandEvent event(wxEVENT_SETSCREEN);
-		wxPostEvent(this, event);
+		if (centralWnd->FullscreenMode())
+		{
+			isWork = true;
+			fullscreen = true;
+			toolbar->Show(false);
+			statusBar->Show(false);
+			wxCommandEvent event(wxEVENT_SETSCREEN);
+			wxPostEvent(this, event);
+		}
 	}
+	return isWork;
 }
 
-void CMainWindow::SetScreen()
+bool CMainWindow::SetScreen()
 {
+	bool isWork = false;
 	TRACE();
 	if (fullscreen)
 	{
-		statusBarViewer->SetScreen();
-		fullscreen = false;
-		centralWnd->ScreenMode();
-		toolbar->Show(true);
-		statusBar->Show(true);
+		if (centralWnd->ScreenMode())
+		{
+			statusBarViewer->SetScreen();
+			fullscreen = false;
+			toolbar->Show(true);
+			statusBar->Show(true);
+			isWork = true;
+			wxCommandEvent event(wxEVENT_SETSCREEN);
+			wxPostEvent(this, event);
+		}
 
-		wxCommandEvent event(wxEVENT_SETSCREEN);
-		wxPostEvent(this, event);
 	}
+	return isWork;
 }

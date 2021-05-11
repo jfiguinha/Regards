@@ -538,34 +538,31 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		for (CFace face : listOfFace)
 		{
-			//if (face.confidence > confidence)
-			//
-				bool findEye = false;
-				//imwrite("d:\\test1.jpg", face.croppedImage);
-				double angleRot = face_alignement(face.croppedImage, findEye);
-				if (findEye)
+			cv::Mat resizedImage;
+			bool findEye = false;
+			cv::Size size(150, 150);
+			cv::resize(face.croppedImage, resizedImage, size);
+			double angleRot = face_alignement(resizedImage, findEye);
+			if (findEye)
+			{
+				try
 				{
-					try
-					{
-						face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
-						//imwrite("d:\\test2.jpg", face.croppedImage);
-						cv::Size size(150, 150);
-						std::vector<uchar> buff;
-						cv::resize(face.croppedImage, face.croppedImage, size);
-						ImageToJpegBuffer(face.croppedImage, buff);
-						int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
-						listFace.push_back(numFace);
-						cv_image<rgb_pixel> cimg(face.croppedImage);
-						faces.push_back(cimg);
-					}
-					catch (cv::Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
+					face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
+					std::vector<uchar> buff;
+					cv::resize(face.croppedImage, face.croppedImage, size);
+					ImageToJpegBuffer(face.croppedImage, buff);
+					int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+					listFace.push_back(numFace);
+					cv_image<rgb_pixel> cimg(face.croppedImage);
+					faces.push_back(cimg);
 				}
-			//}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
+			}
 		}
 
 		if (faces.size() == 0)

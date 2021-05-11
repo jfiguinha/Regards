@@ -67,6 +67,8 @@ namespace Regards
             
 		protected:
 
+			void ShowScreenButton(wxCommandEvent& event);
+			void DisableScreenButton(wxCommandEvent& event);
 			void HideSaveButton(wxCommandEvent& event);
 			void ShowSaveButton(wxCommandEvent& event);
 			void OnFiltreOK(wxCommandEvent& event);

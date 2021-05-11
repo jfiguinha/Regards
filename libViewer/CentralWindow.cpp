@@ -992,6 +992,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 	case WINDOW_VIEWER:
 		{
+			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_SHOWSCREENBUTTON);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 				windowManager->ShowWindow(Pos::wxLEFT);
 			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
@@ -1027,6 +1034,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 	case WINDOW_FACE:
 	{
+		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_HIDESCREENBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 		if (faceDetection)
 		{
 			panelInfosClick->Show(true);
@@ -1052,6 +1066,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	}
 	case WINDOW_EXPLORER:
 		{
+			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_HIDESCREENBUTTON);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+
 			panelInfosClick->Show(true);
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 				windowManager->ShowWindow(Pos::wxLEFT);
@@ -1075,14 +1096,23 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 		break;
 	case WINDOW_PICTURE:
-		if (windowManager->GetWindowIsShow(Pos::wxLEFT))
-			windowManager->HideWindow(Pos::wxLEFT);
-		if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
-			windowManager->HideWindow(Pos::wxBOTTOM);
-		if (windowManager->GetWindowIsShow(Pos::wxTOP))
-			windowManager->HideWindow(Pos::wxTOP);
-		if (windowManager->GetWindowIsShow(Pos::wxRIGHT))
-			windowManager->HideWindow(Pos::wxRIGHT);
+		{
+			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_SHOWSCREENBUTTON);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+
+			if (windowManager->GetWindowIsShow(Pos::wxLEFT))
+				windowManager->HideWindow(Pos::wxLEFT);
+			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
+				windowManager->HideWindow(Pos::wxBOTTOM);
+			if (windowManager->GetWindowIsShow(Pos::wxTOP))
+				windowManager->HideWindow(Pos::wxTOP);
+			if (windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				windowManager->HideWindow(Pos::wxRIGHT);
+		}
 		break;
 
 	}
@@ -1116,8 +1146,11 @@ void CCentralWindow::StartAnimation()
 	animationTimer->Start(DELAY_ANIMATION, wxTIMER_ONE_SHOT);
 }
 
-void CCentralWindow::FullscreenMode()
+bool CCentralWindow::FullscreenMode()
 {
+	if (!(windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE))
+		return false;
+
 	bool showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -1131,10 +1164,22 @@ void CCentralWindow::FullscreenMode()
 		//windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->Resize();
 	}
+
+	return true;
 }
 
-void CCentralWindow::ScreenMode()
+bool CCentralWindow::IsCompatibleFullscreen()
 {
+	if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		return true;
+	return false;;
+}
+
+bool CCentralWindow::ScreenMode()
+{
+	if (!(windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE))
+		return false;
+
 	bool showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -1143,11 +1188,14 @@ void CCentralWindow::ScreenMode()
 	previewWindow->SetFullscreen(false);
 	if (isFullscreen)
 	{
+		oldWindowMode = -1;
 		isFullscreen = false;
 		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 		event.SetInt(windowMode);
 		wxPostEvent(this, event);
 	}
+
+	return true;
 }
 
 

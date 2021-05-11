@@ -109,6 +109,17 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	this->toolbarInterface = toolbarInterface;
 }
 
+void CPreviewToolbar::EnableScreenButton()
+{
+	fullscreen->SetVisible(true);
+	this->Refresh();
+}
+void CPreviewToolbar::DisableScreenButton()
+{
+	fullscreen->SetVisible(false);
+	this->Refresh();
+}
+
 void  CPreviewToolbar::EnableSaveButton()
 {
 	save->SetVisible(true);
