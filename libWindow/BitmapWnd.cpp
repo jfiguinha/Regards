@@ -558,6 +558,8 @@ void CBitmapWnd::ShrinkImage(const bool &redraw)
     updateFilter = true;
 
 	UpdateScrollBar();
+
+	sliderInterface->SetTrackBarPosition(posRatio);
 }
 
 
