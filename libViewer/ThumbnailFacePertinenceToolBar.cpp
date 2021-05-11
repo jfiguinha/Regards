@@ -60,10 +60,15 @@ void CThumbnailFacePertinenceToolBar::ZoomOn()
 		dwPos++;
 		if (dwPos >= slide->GetNbValue())
 			dwPos = slide->GetNbValue() - 1;
-		SetTrackBarPosition(dwPos);
-		this->ForceRefresh();
+		else
+		{
+			SetTrackBarPosition(dwPos);
+			this->ForceRefresh();
+			OnChangeValue();
+		}
+
 	}
-	OnChangeValue();
+	
 }
 
 void CThumbnailFacePertinenceToolBar::ZoomOff()
@@ -75,10 +80,15 @@ void CThumbnailFacePertinenceToolBar::ZoomOff()
 		dwPos--;
 		if (dwPos < 0)
 			dwPos = 0;
-		SetTrackBarPosition(dwPos);
-		this->ForceRefresh();
+		else
+		{
+			SetTrackBarPosition(dwPos);
+			this->ForceRefresh();
+			OnChangeValue();
+		}
+
 	}
-	OnChangeValue();
+	
 }
 
 void CThumbnailFacePertinenceToolBar::SetTabValue(vector<int> value)

@@ -53,6 +53,7 @@ namespace Regards
 			static void LoadPicture(void * param);
 			void Resize();
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
+			void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 
 		protected:
 
@@ -140,8 +141,8 @@ namespace Regards
 
 			//wxBitmap bitmapFolder;
 			wxBitmap bitmapPhoto;
-			static const int TabSize[];
-			static const int Max;
+			vector<int> TabSize;
+			int Max;
 
             wxTimer * refreshTimer;
 			CThemeThumbnail themeThumbnail;

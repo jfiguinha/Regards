@@ -25,8 +25,7 @@ class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
 #define TIMER_REFRESH 5
-const int CThumbnail::TabSize[] = { 50,100,150,200,250,300,350,400,450,500,550,600,650,700};
-const int CThumbnail::Max = 14;
+
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 
@@ -316,7 +315,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	numActif = 0;
 	nbLigneX = 0;
 	nbLigneY = 0;
-	positionSize = 4;
+	
 	
 	numStartElement = 0;
 	nbElementToShow = 0;
@@ -358,6 +357,16 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 
 	listProcessWindow.push_back(this);
     
+	TabSize = { 100,150,200,250,300,350,400,450,500,550,600,650,700 };
+	Max = TabSize.size();
+	positionSize = 3;
+}
+
+void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & positionSize)
+{
+	TabSize = TabNewSize;
+	Max = TabSize.size();
+	this->positionSize = positionSize;
 }
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
@@ -370,26 +379,6 @@ void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 		if (icone != nullptr)
 		{
 			icone->DestroyCache();
-			/*
-			CThumbnailData* pThumbnailData = nullptr;
-			if (icone != nullptr && pThumbnailData == nullptr)
-				pThumbnailData = icone->GetData();
-
-			if (icone != nullptr && pThumbnailData != nullptr)
-			{
-				wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
-				CLibPicture libPicture;
-				CImageLoadingFormat* picture = libPicture.LoadPicture(thumbnail);
-				if (picture != nullptr)
-				{
-					pThumbnailData->SetIsProcess(false);
-					pThumbnailData->SetBitmap(picture);
-					pThumbnailData->SetIsLoading(false);
-					icone->DestroyCache();
-					delete picture;
-				}
-
-			}*/
 		}
 		delete filename;
 		this->Refresh();

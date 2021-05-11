@@ -54,29 +54,35 @@ CThumbnailFaceToolBar::~CThumbnailFaceToolBar()
 {
 }
 
-void CThumbnailFaceToolBar::ZoomOn()
+bool CThumbnailFaceToolBar::ZoomOn()
 {
 	if (slide != nullptr)
 	{
 		int dwPos = slide->GetPosition();
 		dwPos++;
 		if (dwPos >= slide->GetNbValue())
-			dwPos = slide->GetNbValue() - 1;
+		{
+			return false;
+		}
 		SetTrackBarPosition(dwPos);
 		this->ForceRefresh();
+		return true;
 	}
 }
 
-void CThumbnailFaceToolBar::ZoomOff()
+bool CThumbnailFaceToolBar::ZoomOff()
 {
 	if (slide != nullptr)
 	{
 		int dwPos = slide->GetPosition();
 		dwPos--;
 		if (dwPos < 0)
-			dwPos = 0;
+		{
+			return false;
+		}
 		SetTrackBarPosition(dwPos);
 		this->ForceRefresh();
+		return true;
 	}
 }
 
@@ -136,21 +142,25 @@ void CThumbnailFaceToolBar::EventManager(const int &id)
 			break;
                
 		case WM_ZOOMON:
-			ZoomOn();
-			if (listFace != nullptr)
 			{
-				wxCommandEvent evt(wxEVENT_THUMBNAILZOOMON);
-				listFace->GetEventHandler()->AddPendingEvent(evt);
+				if (ZoomOn() && listFace != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_THUMBNAILZOOMON);
+						listFace->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
+
 			break;
 
 		case WM_ZOOMOUT:
-			ZoomOff();
-			if (listFace != nullptr)
 			{
-				wxCommandEvent evt(wxEVENT_THUMBNAILZOOMOFF);
-				listFace->GetEventHandler()->AddPendingEvent(evt);
+				if (ZoomOff() && listFace != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_THUMBNAILZOOMOFF);
+					listFace->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
+
 			break;
 		case WM_REFRESH:
 			if (listFace != nullptr)

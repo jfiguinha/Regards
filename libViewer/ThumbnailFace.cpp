@@ -26,6 +26,7 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 	flipHorizontal = false;
 	flipVertical = true;
 	enableDragAndDrop = true;
+	moveOnPaint = false;
 }
 
 
@@ -333,6 +334,10 @@ void CThumbnailFace::MoveFace(const wxString &faceName)
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
+
+	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	wxCommandEvent* eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+	wxQueueEvent(mainWnd, eventChange);
 
 	Refresh();
 }

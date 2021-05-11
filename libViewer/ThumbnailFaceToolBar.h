@@ -17,8 +17,8 @@ namespace Regards
 
 			void SetTrackBarPosition(const int &iPos);
 			void SetTabValue(vector<int> value);
-			void ZoomOn();
-			void ZoomOff();
+			bool ZoomOn();
+			bool ZoomOff();
 			void ZoomPos(const int &position);
 
 			void SlidePosChange(const int &position, const wxString &key);

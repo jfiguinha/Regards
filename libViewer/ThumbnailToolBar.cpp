@@ -92,12 +92,15 @@ void CThumbnailToolBar::ZoomOn()
 		dwPos++;
 		if (dwPos >= slide->GetNbValue())
 			dwPos = slide->GetNbValue() - 1;
-		SetTrackBarPosition(dwPos);
+		else
+		{
+			SetTrackBarPosition(dwPos);
 #ifdef __APPLE__
-    this->CallRefresh(this);
+			this->CallRefresh(this);
 #else
-	ForceRefresh();
+			ForceRefresh();
 #endif
+		}
 	}
 }
 
@@ -109,12 +112,15 @@ void CThumbnailToolBar::ZoomOff()
 		dwPos--;
 		if (dwPos < 0)
 			dwPos = 0;
-		SetTrackBarPosition(dwPos);
+		else
+		{
+			SetTrackBarPosition(dwPos);
 #ifdef __APPLE__
-    this->CallRefresh(this);
+			this->CallRefresh(this);
 #else
-		ForceRefresh();
+			ForceRefresh();
 #endif
+		}
 	}
 }
 

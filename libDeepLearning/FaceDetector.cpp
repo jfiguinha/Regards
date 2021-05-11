@@ -419,8 +419,23 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	double rot = rotation_vector.at<double>(0, 2);
 #endif
 	double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
+	int posEyeY = 0;
+	int posMouthY = 0;
+	// Left Eye indicies
+	for(int i = 0;i < 7;i++)
+	{
+		posEyeY += landmarks[i + 36].y;
+	}
+	posEyeY /= 8;
 
-	if (Mouth[0].y < landmarks[45].y)
+	// Right Eye indicies
+	for (int i = 0; i < 20; i++)
+	{
+		posMouthY += landmarks[i + 48].y;
+	}
+	posMouthY /= 20;
+
+	if (posMouthY < posEyeY)
 		angle_add = 180;
 
 /*
