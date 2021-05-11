@@ -1135,7 +1135,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 
 				
 				dc.SetBrush(wxBrush(themeIcone.colorSelectTop));
-				dc.DrawRoundedRectangle(localx + 50, localy + 50, 100, 100, -0.25);
+				dc.DrawRoundedRectangle(localx + bitmapIconDrag.GetWidth() / 4, localy + bitmapIconDrag.GetHeight() / 4, bitmapIconDrag.GetWidth() / 2, bitmapIconDrag.GetHeight() / 2, -0.25);
 				dc.SetBrush(wxNullBrush);
 
 				dc.SetBrush(wxBrush(*wxWHITE));
