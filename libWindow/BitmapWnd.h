@@ -223,6 +223,7 @@ namespace Regards
 			void MoveLeft();
 			void MoveBottom();
 			void MoveRight();
+			int GetAngleFromExif();
 
 			int interpolation;
 			bool zoom;

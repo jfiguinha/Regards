@@ -932,7 +932,7 @@ void CBitmapWnd::Rotate90()
 	int exif = sqlPhotos.GetPhotoExif(filename);
 	if (exif != -1)
 	{
-		exif = GetExifOrientation(angle);
+		exif = GetExifOrientation(angle + GetAngleFromExif());
 		sqlPhotos.UpdatePhotoExif(filename, exif);
 		int numPhoto = sqlPhotos.GetPhotoId(filename);
 		wxWindow* window = this->FindWindowById(idWindowMain);
@@ -953,9 +953,31 @@ void CBitmapWnd::Rotate90()
     RefreshWindow();
 }
 
+int CBitmapWnd::GetAngleFromExif()
+{
+	TRACE();
+	switch (GetOrientation())
+	{
+	case 1:// top left side
+	case 2:// top right side
+		return 0;
+	case 3:// bottom right side
+	case 4:// bottom left side
+		return 180;
+	case 5://left side top
+	case 6:// right side top
+		return 90;
+	case 7:// right side bottom
+	case 8:// left side bottom
+		return 270;
+	}
+	return 0;
+}
+
 void CBitmapWnd::Rotate270()
 {
     TRACE();
+	
 	angle += 270;
 	angle = angle % 360;
     updateFilter = true;
@@ -964,7 +986,7 @@ void CBitmapWnd::Rotate270()
 	int exif = sqlPhotos.GetPhotoExif(filename);
 	if (exif != -1)
 	{
-		exif = GetExifOrientation(angle);
+		exif = GetExifOrientation(angle + GetAngleFromExif());
 		sqlPhotos.UpdatePhotoExif(filename, exif);
 		int id = sqlPhotos.GetPhotoId(filename);
 		wxWindow* window = this->FindWindowById(idWindowMain);

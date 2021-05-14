@@ -76,14 +76,17 @@ static shape_predictor sp;
 const float confidence = 0.5;
 const float confidenceThreshold = 0.7;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
-static cv::CascadeClassifier eye_cascade;
-
+//static cv::CascadeClassifier eye_cascade;
+//static cv::CascadeClassifier mouth_cascade;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muDnnAccess;
-std::mutex CFaceDetector::muEyeAccess;
+//std::mutex CFaceDetector::muEyeAccess;
 std::mutex CFaceDetector::muDlibAccess;
 std::mutex CFaceDetector::muDlibLandmarkAccess;
+
+string CFaceDetector::mouthCascadeFile;
+string CFaceDetector::eyeCascadeFile;
 
 class CFaceDetectPriv
 {
@@ -225,7 +228,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 	return selectAngle;
 }
 
-void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection, const string& landmarkPath)
+void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection, const string& landmarkPath, const string& mouth_detection)
 {
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
@@ -234,6 +237,10 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 	const std::string tensorflowConfigFile = config_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector.pbtxt";
 	const std::string tensorflowWeightFile = weight_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector_uint8.pb";
 #endif
+
+	eyeCascadeFile = eye_detection;
+	mouthCascadeFile = mouth_detection;
+
 
 	try
 	{
@@ -292,7 +299,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 		deserialize(face_recognition) >> anet;
 		deserialize(landmarkPath) >> sp;
-		eye_cascade.load(eye_detection);
+		//eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
 	{
@@ -328,7 +335,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	rectDlib = CFaceDetectPriv::openCVRectToDlib(R);
 
 	//landmarks vector is declared to store the 68 landmark points. The rest are for individual face components
-	std::vector<cv::Point> landmarks , R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
+	std::vector<cv::Point> landmarks;//, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 
 	/**at each index of "shapes" vector there is an object of full_object_detection class which stores the 68 landmark
 	points in dlib::point from, which needs to be converted back to cv::Point for displaying.*/
@@ -343,7 +350,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 
 	findEye = true;
 
-
+	/*
 	for (size_t s = 0; s < landmarks.size(); s++) {
 		//circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
 		//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
@@ -378,6 +385,7 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 			Nose.push_back(landmarks[s]);
 		}
 	}
+	*/
 	// Extract each part using the pre fixed indicies
 #ifdef FACE_DESCRIPTOR
 	// 2D image points. If you change the image, you need to change vector
@@ -480,6 +488,177 @@ double CFaceDetector::face_alignement(const cv::Mat & image, bool &findEye) {
 	return theta_deg_eye;
 }
 
+
+double CFaceDetector::MouthEyeDetection(cv::Mat& image) {
+
+	/*
+	int angle_add = 0;
+	//Declaring a variable "image" to store input image given.
+	Mat gray, detected_edges, Laugh_L, Laugh_R;
+
+	//converts original image to gray scale and stores it in "gray".
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+
+	dlib::rectangle rectDlib;
+	cv::Rect R;
+	R.x = 0;
+	R.y = 0;
+	R.width = image.cols;
+	R.height = image.rows;
+
+	rectDlib = CFaceDetectPriv::openCVRectToDlib(R);
+
+	//landmarks vector is declared to store the 68 landmark points. The rest are for individual face components
+	std::vector<cv::Point> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
+	muDlibLandmarkAccess.lock();
+	full_object_detection shape = sp(dlib::cv_image<unsigned char>(gray), rectDlib);
+	muDlibLandmarkAccess.unlock();
+	CFaceDetectPriv::point2cv_Point(shape, landmarks);
+
+	if (landmarks.size() < 45)
+		return 0;
+
+	double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
+	int posEyeY = 0;
+	int posMouthY = 0;
+	// Left Eye indicies
+	for (int i = 0; i < 7; i++)
+	{
+		circle(image, landmarks[i + 36], 2.0, Scalar(255, 0, 0), 1, 8);
+		posEyeY += landmarks[i + 36].y;
+	}
+	posEyeY /= 8;
+
+	// Right Eye indicies
+	for (int i = 0; i < 20; i++)
+	{
+		circle(image, landmarks[i + 48], 2.0, Scalar(255, 0, 0), 1, 8);
+		posMouthY += landmarks[i + 48].y;
+	}
+	posMouthY /= 20;
+
+	if (posMouthY < posEyeY)
+		angle_add = 180;
+
+	// Conver to degrees
+	//double theta_deg = rot / M_PI * 180;
+	//double theta_deg_eye = rot_eye / M_PI * 180 + angle_add;
+	return angle_add;
+	*/
+
+	cv::CascadeClassifier eye_cascade;
+	eye_cascade.load(eyeCascadeFile);
+
+
+	cv::CascadeClassifier mouth_cascade;
+	mouth_cascade.load(mouthCascadeFile);
+
+	cv::Mat gray;
+	std::vector<cv::Rect> eyes;
+	cv::cvtColor(image, gray, COLOR_BGR2GRAY);
+	eye_cascade.detectMultiScale(gray, eyes);// , 1.3, 6, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(image.rows * 0.1, image.cols * 0.1));
+
+	for (cv::Rect rect : eyes)
+	{
+		cv::Rect rectEye;
+
+		rectEye.x = rect.x;
+		rectEye.y = rect.y;
+		rectEye.width = rect.width;
+		rectEye.height = rect.height;
+		cv::rectangle(image, rectEye, cv::Scalar(255, 0, 0));
+
+	}
+
+	std::vector<cv::Rect> mouth;
+	mouth_cascade.load(mouthCascadeFile);
+	mouth_cascade.detectMultiScale(gray, mouth);// , 1.7, 11, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(image.rows * 0.1, image.cols * 0.1));
+	for (cv::Rect rect : mouth)
+	{
+		cv::Rect rectMouth;
+		rectMouth.x = rect.x;
+		rectMouth.y = rect.y;
+		rectMouth.width = rect.width;
+		rectMouth.height = rect.height;
+		cv::rectangle(image, rectMouth, cv::Scalar(0, 255, 0));
+	}
+}
+
+double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
+
+	int angle_add = 0;
+	//Declaring a variable "image" to store input image given.
+	Mat gray, detected_edges, Laugh_L, Laugh_R;
+
+	//converts original image to gray scale and stores it in "gray".
+	cvtColor(image, gray, COLOR_BGR2GRAY);
+
+	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
+	equalizeHist(gray, gray);
+
+	cv::CascadeClassifier eye_cascade;
+	eye_cascade.load(eyeCascadeFile);
+
+
+	cv::CascadeClassifier mouth_cascade;
+	mouth_cascade.load(mouthCascadeFile);
+
+	std::vector<cv::Rect> eyes;
+	std::vector<cv::Rect> mouth;
+	eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, CASCADE_FIND_BIGGEST_OBJECT);
+	mouth_cascade.detectMultiScale(gray, mouth, 1.7, 11);
+
+	if (eyes.size() == 0 || mouth.size() == 0)
+		return 0;
+
+	for (cv::Rect rect : eyes)
+	{
+		cv::Rect rectEye;
+		rectEye.x = rect.x;
+		rectEye.y = rect.y;
+		rectEye.width = rect.width;
+		rectEye.height = rect.height;
+		cv::rectangle(image, rectEye, cv::Scalar(255, 0, 0));
+	}
+
+	for (cv::Rect rect : mouth)
+	{
+		cv::Rect rectMouth;
+		rectMouth.x = rect.x;
+		rectMouth.y = rect.y;
+		rectMouth.width = rect.width;
+		rectMouth.height = rect.height;
+		cv::rectangle(image, rectMouth, cv::Scalar(0, 255, 0));
+	}
+
+	double rot_eye = atan2(eyes[1].y - eyes[0].y, eyes[1].x - eyes[0].x);
+	int posEyeY = 0;
+	int posMouthY = 0;
+	// Left Eye indicies
+	for (int i = 0; i < 2; i++)
+	{
+		posEyeY += eyes[i].y;
+	}
+	posEyeY /= 2;
+
+
+
+	// Right Eye indicies
+	for (int i = 0; i < 2; i++)
+	{
+		posMouthY += mouth[i].y;
+	}
+	posMouthY /= 2;
+
+	if (posMouthY < posEyeY)
+		angle_add = 180;
+
+	double theta_deg_eye = rot_eye / M_PI * 180 + angle_add;
+
+	return theta_deg_eye;
+}
+
+
 cv::Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const cv::Rect& faceLocation, const cv::Mat& image)
 {
 	Mat dst;
@@ -553,69 +732,84 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		for (CFace face : listOfFace)
 		{
-			cv::Mat resizedImage;
-			bool findEye = false;
-			cv::Size size(150, 150);
-			cv::resize(face.croppedImage, resizedImage, size);
-			double angleRot = face_alignement(resizedImage, findEye);
-			if (findEye)
+			if (face.confidence > 0.69)
 			{
-				try
+				double angleRot = 0;
+				cv::Mat resizedImage;
+				bool findEye = false;
+				cv::Size size(150, 150);
+				cv::resize(face.croppedImage, resizedImage, size);
+				//if (!fastDetection)
+				angleRot = face_alignement(resizedImage, findEye);
+				//else
+				//	angleRot = face_opencv_alignement(resizedImage, findEye);
+
+				//imwrite("d:\\resized_image.jpg", resizedImage);
+
+				if (findEye)
 				{
-					face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
-					std::vector<uchar> buff;
-					cv::resize(face.croppedImage, face.croppedImage, size);
-					ImageToJpegBuffer(face.croppedImage, buff);
-					int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
-					listFace.push_back(numFace);
-					cv_image<rgb_pixel> cimg(face.croppedImage);
-					faces.push_back(cimg);
-				}
-				catch (cv::Exception& e)
-				{
-					const char* err_msg = e.what();
-					std::cout << "exception caught: " << err_msg << std::endl;
-					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+					try
+					{
+						face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
+						std::vector<uchar> buff;
+						cv::resize(face.croppedImage, face.croppedImage, size);
+						/*
+						double rotation = MouthEyeDetection(face.croppedImage);
+						cout << "Angle : " << rotation << endl;
+						if (rotation == 180)
+							cv::flip(face.croppedImage, face.croppedImage, -1);
+*/
+						ImageToJpegBuffer(face.croppedImage, buff);
+						int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
+						listFace.push_back(numFace);
+						cv_image<rgb_pixel> cimg(face.croppedImage);
+						faces.push_back(cimg);
+					}
+					catch (cv::Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+					}
 				}
 			}
-		}
 
-		if (faces.size() == 0)
-		{
-			cout << "No faces found in image!" << endl;
-			return listFace;
-		}
-
-		try
-		{
-			// This call asks the DNN to convert each face image in faces into a 128D vector.
-			// In this 128D vector space, images from the same person will be close to each other
-			// but vectors from different people will be far apart.  So we can use these vectors to
-			// identify if a pair of images are from the same person or from different people.  
-			muDlibAccess.lock();
-			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
-			muDlibAccess.unlock();
-
-			for (int i = 0; i < faces.size(); i++)
+			if (faces.size() == 0)
 			{
-				matrix<float, 0, 1> face = face_descriptors[i];
-				ostringstream sout;
-				serialize(face, sout);
+				cout << "No faces found in image!" << endl;
+				return listFace;
+			}
 
-				string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
-				sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
-				//Write into database
+			try
+			{
+				// This call asks the DNN to convert each face image in faces into a 128D vector.
+				// In this 128D vector space, images from the same person will be close to each other
+				// but vectors from different people will be far apart.  So we can use these vectors to
+				// identify if a pair of images are from the same person or from different people.  
+				muDlibAccess.lock();
+				std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
+				muDlibAccess.unlock();
+
+				for (int i = 0; i < faces.size(); i++)
+				{
+					matrix<float, 0, 1> face = face_descriptors[i];
+					ostringstream sout;
+					serialize(face, sout);
+
+					string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
+					sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
+					//Write into database
 
 
+				}
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 			}
 		}
-		catch (cv::Exception& e)
-		{
-			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
-		
 	}
 
 	return listFace;
@@ -636,6 +830,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 
 	if (isLoading)
 	{
+		cv::CascadeClassifier eye_cascade;
 		cv::Mat dest;
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
@@ -643,6 +838,8 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(image);
 		RotateCorrectly(image, dest, angle);
+
+		eye_cascade.load(eyeCascadeFile);
 
 		if(!fastDetection)
 			DetectFaceDlib(dest, listOfFace, pointOfFace);
@@ -660,9 +857,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					cv::Mat gray;
 					std::vector<cv::Rect> eyes;
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
-					muEyeAccess.lock();
 					eye_cascade.detectMultiScale(gray, eyes, 1.3, 6, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(listOfFace[i].croppedImage.rows * 0.1, listOfFace[i].croppedImage.cols * 0.1));
-					muEyeAccess.unlock();
 #ifndef NDEBUG
 					cv::rectangle(image, pointOfFace[i], cv::Scalar(0, 255, 0));
 #endif

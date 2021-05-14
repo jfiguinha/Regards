@@ -73,7 +73,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	std::vector<int> value = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+	std::vector<int> value = { 70, 80, 90, 100 };
 	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
 
 	int positionTab = 3;
@@ -308,6 +308,7 @@ void CListFace::LoadResource(void * param)
 	wxString shape = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
+	wxString mouth = CFileUtility::GetResourcesFolderPath() + "\\model\\mouth.xml";
 #else
 
 #ifdef CAFFE
@@ -323,9 +324,10 @@ void CListFace::LoadResource(void * param)
 	wxString shape = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_68_face_landmarks.dat";
+	wxString mouth = CFileUtility::GetResourcesFolderPath() + "/model/mouth.xml";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString(), landmark.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString(), landmark.ToStdString(), mouth.ToStdString());
 
 
 	if (path->mainWindow != nullptr)
