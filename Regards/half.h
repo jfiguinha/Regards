@@ -84,8 +84,8 @@
 
 #ifndef _HALF_H_
 #define _HALF_H_
-
-#include "halfExport.h"    // for definition of HALF_EXPORT
+#define HALF_EXPORT
+//#include "halfExport.h"    // for definition of HALF_EXPORT
 #include <iostream>
 
 class half

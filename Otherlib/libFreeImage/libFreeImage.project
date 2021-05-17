@@ -40,7 +40,7 @@
       <File Name="Source/FreeImage/PluginTIFF.cpp"/>
       <File Name="Source/FreeImage/PluginPNG.cpp"/>
       <File Name="Source/FreeImage/PluginJPEG.cpp"/>
-      <File Name="Source/FreeImage/PluginEXR.cpp"/>
+      <File Name="Source/FreeImage/PluginEXR.cpp" ExcludeProjConfig=""/>
       <File Name="Source/FreeImage/PluginJXR.cpp" ExcludeProjConfig=""/>
       <File Name="Source/FreeImage/TIFFLogLuv.cpp"/>
       <File Name="Source/FreeImage/PSDParser.cpp"/>
