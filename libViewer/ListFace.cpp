@@ -73,7 +73,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	std::vector<int> value = { 70, 80, 90, 100 };
+	std::vector<int> value = { 60, 70, 80, 90, 100 };
 	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
 
 	int positionTab = 3;

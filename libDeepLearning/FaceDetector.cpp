@@ -26,7 +26,7 @@ using namespace std;
 static Net net;    // And finally we load the DNN responsible for face recognition.
 static Net netRecognition;
 
-const float confidenceThreshold = 0.69;
+const float confidenceThreshold = 0.59;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
 
 bool CFaceDetector::isload = false;
@@ -229,10 +229,7 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 	vector<Rect> faces;
 	int angle_add = 0;
 	//Declaring a variable "image" to store input image given.
-	Mat gray, detected_edges, Laugh_L, Laugh_R;
-
-	//converts original image to gray scale and stores it in "gray".
-	cvtColor(image, gray, COLOR_BGR2GRAY);
+	Mat detected_edges, Laugh_L, Laugh_R;
 
 	Rect rc;
 	rc.x = 0;
@@ -242,8 +239,6 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 
 	faces.push_back(rc);
 
-	//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
-	equalizeHist(gray, gray);
 	bool faceFound = false;
 	std::vector<cv::Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 	vector<vector<Point2f>> shapes;
@@ -261,7 +256,7 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 		/*
 		for (size_t s = 0; s < landmarks.size(); s++) {
 
-			//circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
+			circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
 			//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
 			// Right Eyebrow indicies
 			if (s >= 22 && s <= 26) {
@@ -298,7 +293,7 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 		int posRightEyeY = 0;
 		int posLeftEyeX = 0;
 		int posRightEyeX = 0;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			posLeftEyeY += landmarks[i + 36].y;
 			posRightEyeY += landmarks[i + 42].y;
@@ -310,10 +305,16 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 		posLeftEyeX /= 8;
 		posRightEyeX /= 8;
 
-		//double rot_eye = atan2(posRightEyeY - posLeftEyeY, posRightEyeX - posLeftEyeX);
-		double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
+		int posMouthY = 0;
+		for (int i = 48; i < 68; i++)
+			posMouthY += landmarks[i].y;
+
+		posMouthY /= 20;
+
+		double rot_eye = atan2(posRightEyeY - posLeftEyeY, posRightEyeX - posLeftEyeX);
+		//double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
 		
-		if (posLeftEyeY > (rc.height / 2) && posRightEyeY > (rc.height / 2))
+		if (posLeftEyeY > posMouthY && posRightEyeY > posMouthY)
 			angle_add += 180;
 	
 		theta_deg_eye = rot_eye / M_PI * 180 + angle_add;
@@ -382,11 +383,17 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		//std::vector<char> data = pictureData->CopyData();
 		
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+		/*
 		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(dest);
-		RotateCorrectly(dest, image, angle);
+		if (angle != 0)
+			RotateCorrectly(dest, image, angle);
+		else
+			image = dest;
+		*/
 
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 
 		for (CFace face : listOfFace)
 		{
@@ -400,6 +407,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 				angleRot = face_opencv_alignement(resizedImage, findEye);
 
+				//imwrite("d:\\test.jpg", resizedImage);
 
 				if (findEye)
 				{
@@ -435,10 +443,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 {
-	std::vector<wxRect> listEye;
-	
 	std::vector<cv::Rect> pointOfFace;
-	//int i = 0;
+	bool faceFound = false;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
@@ -451,10 +457,16 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
+		/*
+		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(image);
-		RotateCorrectly(image, dest, angle);
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+		if(angle != 0)
+			RotateCorrectly(image, dest, angle);
+		else
+			dest = image;
+		*/
+		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)
 		{
@@ -467,25 +479,19 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					//Declaring a variable "image" to store input image given.
 					Mat gray, detected_edges, Laugh_L, Laugh_R;
 
-					//converts original image to gray scale and stores it in "gray".
-					cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
-
-					Rect rc;
-					rc.x = 0;
-					rc.y = 0;
-					rc.width = image.cols;
-					rc.height = image.rows;
+					Rect rc = listOfFace[i].myROI;
+					//rc.x = 0;
+					//rc.y = 0;
+					//rc.width = listOfFace[i].croppedImage.cols;
+					//rc.height = listOfFace[i].croppedImage.rows;
 
 					faces.push_back(rc);
-
-					//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
-					equalizeHist(gray, gray);
-					bool faceFound = false;
+				
 					std::vector<cv::Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 					vector<vector<Point2f>> shapes;
 
 					muFaceMark.lock();
-					if (facemark->fit(image, faces, shapes))
+					if (facemark->fit(dest, faces, shapes))
 					{
 						faceFound = true;
 					}
@@ -495,16 +501,52 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					{
 						landmarks = shapes[0];
 
-						int posMinLeftEyeY = 0;
+						/*
+						for (size_t s = 0; s < landmarks.size(); s++) {
+
+							circle(dest, landmarks[s], 2.0, Scalar(255, 0, 0), 30, 8);
+							//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
+							// Right Eyebrow indicies
+							if (s >= 22 && s <= 26) {
+								R_Eyebrow.push_back(landmarks[s]);
+								//circle( image,landmarks[s], 2.0, Scalar( 0, 0, 255 ), 1, 8 );
+							}
+							// Left Eyebrow indicies
+							else if (s >= 17 && s <= 21) {
+								L_Eyebrow.push_back(landmarks[s]);
+							}
+							// Left Eye indicies
+							else if (s >= 36 && s <= 41) {
+								L_Eye.push_back(landmarks[s]);
+							}
+							// Right Eye indicies
+							else if (s >= 42 && s <= 47) {
+								R_Eye.push_back(landmarks[s]);
+							}
+							// Mouth indicies
+							else if (s >= 48 && s <= 67) {
+								Mouth.push_back(landmarks[s]);
+							}
+							// Jawline Indicies
+							else if (s >= 0 && s <= 16) {
+								Jaw_Line.push_back(landmarks[s]);
+							}
+							// Nose Indicies
+							else if (s >= 27 && s <= 35) {
+								Nose.push_back(landmarks[s]);
+							}
+						}
+						*/
+						int posMinLeftEyeY = landmarks[i + 36].y;
 						int posMaxLeftEyeY = 0;
 						int posMaxRightEyeY = 0;
-						int posMinRightEyeY = 0;
+						int posMinRightEyeY = landmarks[i + 42].y;
 
-						int posMinLeftEyeX = 0;
+						int posMinLeftEyeX = landmarks[i + 36].x;
 						int posMaxLeftEyeX = 0;
-						int posMinRightEyeX = 0;
+						int posMinRightEyeX = landmarks[i + 42].x;
 						int posMaxRightEyeX = 0;
-						for (int i = 0; i < 7; i++)
+						for (int i = 0; i < 6; i++)
 						{
 							if (posMinLeftEyeY > landmarks[i + 36].y)
 								posMinLeftEyeY = landmarks[i + 36].y;
@@ -535,21 +577,29 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 						//Left Eye
 						{
 							cv::Rect rectEye;
-							rectEye.x = posMinLeftEyeX + pointOfFace[i].x;
-							rectEye.y = posMinLeftEyeY + pointOfFace[i].y;
+							rectEye.x = posMinLeftEyeX;// +pointOfFace[i].x;
+							rectEye.y = posMinLeftEyeY;// +pointOfFace[i].y;
 							rectEye.width = posMaxLeftEyeX - posMinLeftEyeX;
 							rectEye.height = posMaxLeftEyeY - posMinLeftEyeY;
 							RemoveRedEye(dest, rectEye);
+
+#ifndef NDEBUG
+							cv::rectangle(dest, rectEye, cv::Scalar(255, 0, 0),10);
+#endif
 						}
 
 						//Right Eye
 						{
 							cv::Rect rectEye;
-							rectEye.x = posMinRightEyeX + pointOfFace[i].x;
-							rectEye.y = posMinRightEyeY + pointOfFace[i].y;
+							rectEye.x = posMinRightEyeX;// +pointOfFace[i].x;
+							rectEye.y = posMinRightEyeY;// +pointOfFace[i].y;
 							rectEye.width = posMaxRightEyeX - posMinRightEyeX;
 							rectEye.height = posMaxRightEyeY - posMinRightEyeY;
 							RemoveRedEye(dest, rectEye);
+
+#ifndef NDEBUG
+							cv::rectangle(dest, rectEye, cv::Scalar(255, 0, 0), 10);
+#endif
 						}
 					}
 
@@ -580,11 +630,21 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 			}
 		}
 
-		RotateCorrectly(dest, image, (360 - angle) % 360);
+		if (faceFound)
+		{
+			/*
+			if (angle != 0)
+			{
+				RotateCorrectly(dest, image, (360 - angle) % 360);
+				cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
+			}
+			else
+			*/
+			cv::cvtColor(dest, image, cv::COLOR_BGR2BGRA);
+			pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+			pBitmap->VertFlipBuf();
+		}
 
-		cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
-		pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-		pBitmap->VertFlipBuf();
 	}
 }
 
