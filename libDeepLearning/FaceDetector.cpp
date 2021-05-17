@@ -383,17 +383,14 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		//std::vector<char> data = pictureData->CopyData();
 		
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		/*
 		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(dest);
 		if (angle != 0)
 			RotateCorrectly(dest, image, angle);
 		else
 			image = dest;
-		*/
 
-		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 
 		for (CFace face : listOfFace)
 		{
@@ -457,15 +454,13 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		/*
 		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(image);
 		if(angle != 0)
 			RotateCorrectly(image, dest, angle);
 		else
 			dest = image;
-		*/
-		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
+		
 		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)
@@ -632,15 +627,14 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 
 		if (faceFound)
 		{
-			/*
+			
 			if (angle != 0)
 			{
 				RotateCorrectly(dest, image, (360 - angle) % 360);
 				cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
 			}
 			else
-			*/
-			cv::cvtColor(dest, image, cv::COLOR_BGR2BGRA);
+				cv::cvtColor(dest, image, cv::COLOR_BGR2BGRA);
 			pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 			pBitmap->VertFlipBuf();
 		}
