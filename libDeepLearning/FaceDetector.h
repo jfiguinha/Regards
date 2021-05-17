@@ -25,7 +25,7 @@ namespace Regards
 			static bool LockOpenCLDnn();
 			static bool UnlockOpenCLDnn();
 
-			static void LoadModel(const string& config_file, const string& weight_file, const string& eye_detection, const string& recognition, const string& face_landmark);
+			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark);
 			std::vector<int> FindFace(CRegardsBitmap * pBitmap);
             void DetectEyes(CRegardsBitmap * pBitmap);
 
@@ -49,7 +49,6 @@ namespace Regards
 			static std::mutex muFaceMark;
 			static std::mutex muLoading;
 			static std::mutex muDnnAccess;
-			static string eyeCascadeFile;
 		};
 	}
 }

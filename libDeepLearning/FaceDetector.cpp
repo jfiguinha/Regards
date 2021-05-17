@@ -26,15 +26,13 @@ using namespace std;
 static Net net;    // And finally we load the DNN responsible for face recognition.
 static Net netRecognition;
 
-const float confidence = 0.5;
-const float confidenceThreshold = 0.7;
+const float confidenceThreshold = 0.69;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
 
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muDnnAccess;
 std::mutex CFaceDetector::muFaceMark;
-string CFaceDetector::eyeCascadeFile;
 static Ptr<cv::face::Facemark> facemark;
 
 bool CFaceDetector::LockOpenCLDnn()
@@ -132,7 +130,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 	return selectAngle;
 }
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
-void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string & eye_detection, const string& recognition, const string& face_landmark)
+void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string& recognition, const string& face_landmark)
 {
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
@@ -141,8 +139,6 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 	const std::string tensorflowConfigFile = config_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector.pbtxt";
 	const std::string tensorflowWeightFile = weight_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector_uint8.pb";
 #endif
-
-	eyeCascadeFile = eye_detection;
 
 	try
 	{
@@ -394,7 +390,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		for (CFace face : listOfFace)
 		{
-			if (face.confidence > 0.69)
+			if (face.confidence > confidenceThreshold)
 			{
 				double angleRot = 0;
 				cv::Mat resizedImage;
@@ -451,7 +447,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 
 	if (isLoading)
 	{
-		cv::CascadeClassifier eye_cascade;
 		cv::Mat dest;
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
@@ -459,8 +454,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
 		int angle = DectectOrientationByFaceDetector(image);
 		RotateCorrectly(image, dest, angle);
-
-		eye_cascade.load(eyeCascadeFile);
 		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 			   
 		if (listOfFace.size() > 0)

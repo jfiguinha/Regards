@@ -303,7 +303,6 @@ void CListFace::LoadResource(void * param)
 	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
 #endif
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "\\model\\nn4.small2.v1.t7";
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 #else
@@ -316,12 +315,11 @@ void CListFace::LoadResource(void * param)
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
 #endif
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "/\model/haarcascade_eye.xml";
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "/model/nn4.small2.v1.t7";
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), eye.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
 
 
 	if (path->mainWindow != nullptr)
