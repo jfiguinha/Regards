@@ -270,8 +270,6 @@
         <Library Value="turbojpeg"/>
         <Library Value="omp"/>
         <Library Value="webp"/>
-        <Library Value="lapack"/>
-        <Library Value="blas"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

@@ -269,8 +269,6 @@
         <Library Value="turbojpeg"/>
         <Library Value="omp"/>
         <Library Value="webp"/>
-        <Library Value="lapack"/>
-        <Library Value="blas"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -788,11 +786,11 @@
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
         <Command Enabled="yes">cp ../Resource/theme/RegardsViewer.viewer.theme ./Release/RegardsViewer.app/Contents/MacOs/RegardsViewer.viewer.theme</Command>
-		 <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
+        <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavcodec.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavdevice.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavfilter.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavfilter.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavresample.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavutil.56.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1257,7 +1255,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nspr/lib/libplc4.dylib @executable_path/../Frameworks/libplc4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.109.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nspr/lib/libnspr4.dylib @executable_path/../Frameworks/libnspr4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.109.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nss/lib/libnss3.dylib @executable_path/../Frameworks/libnss3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.109.dylib</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/opt/nss/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.109.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/nss/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.109.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nspr/lib/libplc4.dylib @executable_path/../Frameworks/libplc4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libnssutil3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nspr/lib/libplds4.dylib @executable_path/../Frameworks/libplds4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libnssutil3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/nspr/lib/libnspr4.dylib @executable_path/../Frameworks/libnspr4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libnssutil3.dylib</Command>
