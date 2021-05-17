@@ -312,8 +312,6 @@
         <Library Value="mp3lame"/>
         <Library Value="opus"/>
         <Library Value="vpx"/>
-        <Library Value="lapack"/>
-        <Library Value="blas"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

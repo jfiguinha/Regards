@@ -834,8 +834,10 @@ Mat eval(Mat face) {
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+#ifdef WIN32
 		wxString error = err_msg;
 		OutputDebugString(error.ToStdWstring().c_str());
+#endif
 	}
 	return result;
 }
