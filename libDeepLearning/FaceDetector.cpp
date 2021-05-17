@@ -469,8 +469,99 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 			{
 				if (listOfFace[i].confidence > confidenceThreshold)
 				{
+					vector<Rect> faces;
+					int angle_add = 0;
+					//Declaring a variable "image" to store input image given.
+					Mat gray, detected_edges, Laugh_L, Laugh_R;
+
+					//converts original image to gray scale and stores it in "gray".
+					cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
+
+					Rect rc;
+					rc.x = 0;
+					rc.y = 0;
+					rc.width = image.cols;
+					rc.height = image.rows;
+
+					faces.push_back(rc);
+
+					//Histogram equalization is performed on the resized image to improve the contrast of the image which can help in detection.
+					equalizeHist(gray, gray);
+					bool faceFound = false;
+					std::vector<cv::Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
+					vector<vector<Point2f>> shapes;
+
+					muFaceMark.lock();
+					if (facemark->fit(image, faces, shapes))
+					{
+						faceFound = true;
+					}
+					muFaceMark.unlock();
+
+					if (faceFound)
+					{
+						landmarks = shapes[0];
+
+						int posMinLeftEyeY = 0;
+						int posMaxLeftEyeY = 0;
+						int posMaxRightEyeY = 0;
+						int posMinRightEyeY = 0;
+
+						int posMinLeftEyeX = 0;
+						int posMaxLeftEyeX = 0;
+						int posMinRightEyeX = 0;
+						int posMaxRightEyeX = 0;
+						for (int i = 0; i < 7; i++)
+						{
+							if (posMinLeftEyeY > landmarks[i + 36].y)
+								posMinLeftEyeY = landmarks[i + 36].y;
+
+							if (posMaxLeftEyeY < landmarks[i + 36].y)
+								posMaxLeftEyeY = landmarks[i + 36].y;
+
+							if (posMinRightEyeY > landmarks[i + 42].y)
+								posMinRightEyeY = landmarks[i + 42].y;
+
+							if (posMaxRightEyeY < landmarks[i + 42].y)
+								posMaxRightEyeY = landmarks[i + 42].y;
+
+							if (posMinLeftEyeX > landmarks[i + 36].x)
+								posMinLeftEyeX = landmarks[i + 36].x;
+
+							if (posMaxLeftEyeX < landmarks[i + 36].x)
+								posMaxLeftEyeX = landmarks[i + 36].x;
+
+							if (posMinRightEyeX > landmarks[i + 42].x)
+								posMinRightEyeX = landmarks[i + 42].x;
+
+							if (posMaxRightEyeX < landmarks[i + 42].x)
+								posMaxRightEyeX = landmarks[i + 42].x;
+
+						}
+
+						//Left Eye
+						{
+							cv::Rect rectEye;
+							rectEye.x = posMinLeftEyeX + pointOfFace[i].x;
+							rectEye.y = posMinLeftEyeY + pointOfFace[i].y;
+							rectEye.width = posMaxLeftEyeX - posMinLeftEyeX;
+							rectEye.height = posMaxLeftEyeY - posMinLeftEyeY;
+							RemoveRedEye(dest, rectEye);
+						}
+
+						//Right Eye
+						{
+							cv::Rect rectEye;
+							rectEye.x = posMinRightEyeX + pointOfFace[i].x;
+							rectEye.y = posMinRightEyeY + pointOfFace[i].y;
+							rectEye.width = posMaxRightEyeX - posMinRightEyeX;
+							rectEye.height = posMaxRightEyeY - posMinRightEyeY;
+							RemoveRedEye(dest, rectEye);
+						}
+					}
 
 
+					/*
 					cv::Mat gray;
 					std::vector<cv::Rect> eyes;
 					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
@@ -491,7 +582,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 #endif
 						RemoveRedEye(dest, rectEye);
 					}
-					
+					*/
 				}
 			}
 		}
