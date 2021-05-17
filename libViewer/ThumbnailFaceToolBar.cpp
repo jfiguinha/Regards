@@ -66,8 +66,9 @@ bool CThumbnailFaceToolBar::ZoomOn()
 		}
 		SetTrackBarPosition(dwPos);
 		this->ForceRefresh();
-		return true;
+		
 	}
+    return true;
 }
 
 bool CThumbnailFaceToolBar::ZoomOff()
@@ -82,8 +83,9 @@ bool CThumbnailFaceToolBar::ZoomOff()
 		}
 		SetTrackBarPosition(dwPos);
 		this->ForceRefresh();
-		return true;
+		
 	}
+    return true;
 }
 
 void CThumbnailFaceToolBar::SetTabValue(vector<int> value)
