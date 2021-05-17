@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libDeepLearning" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="dlib">
+    <File Name="../libextern/dlib-19.21/dlib/all/source.cpp"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="VideoStabilization.cpp"/>
+    <File Name="OpenCVEffect.cpp"/>
+    <File Name="FaceRecognition.cpp"/>
+    <File Name="FaceDetector.cpp"/>
+    <File Name="DetectRotation.cpp"/>
+    <File Name="DeepLearning.cpp"/>
+    <File Name="base64.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="VideoStabilization.h"/>
+    <File Name="OpenCVEffect.h"/>
+    <File Name="header.h"/>
+    <File Name="FaceRecognition.h"/>
+    <File Name="FaceDetector.h"/>
+    <File Name="DetectRotation.h"/>
+    <File Name="DeepLearning.h"/>
+    <File Name="base64.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../libextern/dlib-19.21/dlib/all"/>
+        <IncludePath Value="../libextern/dlib-19.21"/>
+        <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libUtility"/>
+        <Preprocessor Value="DLIB_USE_LAPACK"/>
+        <Preprocessor Value="DLIB_USE_BLAS"/>
+        <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>
+        <Preprocessor Value="CV__DISABLE_C_API_CTORS"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild>
+        <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp header.h Debug/header.h;fi</Command>
+        <Command Enabled="yes"/>
+      </PreBuild>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild>
+        <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp header.h Release/header.h;fi</Command>
+        <Command Enabled="yes"/>
+        <Command Enabled="yes"/>
+      </PreBuild>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

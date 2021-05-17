@@ -303,12 +303,9 @@ void CListFace::LoadResource(void * param)
 	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
 #endif
-	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotation_model.json";
-	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
-	wxString shape = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
-	wxString mouth = CFileUtility::GetResourcesFolderPath() + "\\model\\mouth.xml";
+	wxString recognition = CFileUtility::GetResourcesFolderPath() + "\\model\\nn4.small2.v1.t7";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 #else
 
 #ifdef CAFFE
@@ -319,15 +316,12 @@ void CListFace::LoadResource(void * param)
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
 #endif
-	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotation_model.json";
-	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
-	wxString shape = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_5_face_landmarks.dat";
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_68_face_landmarks.dat";
-	wxString mouth = CFileUtility::GetResourcesFolderPath() + "/model/mouth.xml";
+	wxString eye = CFileUtility::GetResourcesFolderPath() + "/\model/haarcascade_eye.xml";
+	wxString recognition = CFileUtility::GetResourcesFolderPath() + "/model/nn4.small2.v1.t7";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString(), landmark.ToStdString(), mouth.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), eye.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
 
 
 	if (path->mainWindow != nullptr)

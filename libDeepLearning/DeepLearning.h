@@ -10,7 +10,7 @@ namespace Regards
 		class CDeepLearning
 		{
 		public:
-			static void LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json, const string &eye_detection, const string& landmarkPath, const string& mouth_detection);
+			static void LoadRessource(const string& config_file, const string& weight_file, const string& eye_detection, const string& recognition, const string& face_landmark);
 			static vector<int> FindFace(CRegardsBitmap * pictureData);
 			static void DetectEyes(CRegardsBitmap * pBitmap);
 

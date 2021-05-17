@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="dlib">
-      <UniqueIdentifier>{e3f27eee-4dd1-4d23-ba85-b6c21b881ad0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DetectRotation.cpp">
@@ -30,9 +27,6 @@
     <ClCompile Include="DeepLearning.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="FaceRecognition.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="base64.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -40,12 +34,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.21\dlib\all\source.cpp">
-      <Filter>dlib</Filter>
-    </ClCompile>
-    <ClCompile Include="Face_Alignment.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,9 +50,6 @@
     <ClInclude Include="DeepLearning.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="FaceRecognition.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="base64.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -72,9 +57,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="VideoStabilization.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="face_alignement.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
