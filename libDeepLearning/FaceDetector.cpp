@@ -390,7 +390,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		for (CFace face : listOfFace)
 		{
-			if (face.confidence > confidenceThreshold)
+			if (face.confidence > 0.69)
 			{
 				double angleRot = 0;
 				cv::Mat resizedImage;
@@ -810,7 +810,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			//confidence = GetSimilarity(imageSrc, image);
 			if (maxConfidence < confidence)
 			{
-				predictedLabel = picture.numFace;
+				predictedLabel = picture.numFaceCompatible;
 				maxConfidence = confidence;
 			}
 
