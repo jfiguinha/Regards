@@ -65,7 +65,7 @@ void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confid
 	float bestConfidence = 0;
 	cv::Mat dst;
 	RotateCorrectly(image, dst, angle);
-	int nbFace = FindNbFace(dst, bestConfidence, 0.7);
+	int nbFace = FindNbFace(dst, bestConfidence, confidenceThreshold);
 	if (nbFace > 0 && (nbFace > maxFace || bestConfidence > confidence))
 	{
 		maxFace = nbFace;
@@ -390,7 +390,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		for (CFace face : listOfFace)
 		{
-			if (face.confidence > 0.69)
+			if (face.confidence > confidenceThreshold)
 			{
 				double angleRot = 0;
 				cv::Mat resizedImage;
