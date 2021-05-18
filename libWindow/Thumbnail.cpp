@@ -232,7 +232,7 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 					size->x = xPos;
 					size->y = yPos;
 					evt.SetClientData(size);
-					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+                    this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 				}
 
  				posLargeur = xPos;
