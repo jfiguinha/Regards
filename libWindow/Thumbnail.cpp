@@ -219,7 +219,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
  				posLargeur = xPos;
 				posHauteur = yPos;
-				isMovingScroll = true;
+				//isMovingScroll = true;
 			}
 		}
 	}

@@ -68,7 +68,7 @@ namespace Regards
             void OnPicturePrevious(wxCommandEvent& event);
             void OnPictureNext(wxCommandEvent& event);
 
-			void SetListeFile(wxCommandEvent& event);
+			//void SetListeFile(wxCommandEvent& event);
 			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);

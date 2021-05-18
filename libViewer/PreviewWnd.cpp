@@ -60,12 +60,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 		CThemeToolbar theme;
 		viewerTheme->GetFiltreToolbarTheme(&theme);
 		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
+		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 	}
-    
-    if (viewerTheme != nullptr)
-        viewerTheme->GetBitmapWindowTheme(&themeBitmap);
-
-
 
 
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);

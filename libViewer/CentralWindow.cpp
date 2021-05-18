@@ -338,6 +338,10 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 			this->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
+	else
+	{
+		listPicture->SetActifItem(numElement, true);
+	}
 	
 	return 0;
 }

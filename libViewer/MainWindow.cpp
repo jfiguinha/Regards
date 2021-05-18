@@ -191,7 +191,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
     Connect(wxEVENT_PICTUREPREVIOUS, wxCommandEventHandler(CMainWindow::OnPicturePrevious));
     Connect(wxEVENT_PICTURENEXT, wxCommandEventHandler(CMainWindow::OnPictureNext));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
-	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
+	//Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
     Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 	Connect(wxEVENT_EDITFILE, wxCommandEventHandler(CMainWindow::OnEditFile));
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
@@ -355,6 +355,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	}
 }
 
+/*
 void CMainWindow::SetListeFile(wxCommandEvent& event)
 {
 	PhotosVector* newPhotosVectorList = static_cast<PhotosVector*>(event.GetClientData());
@@ -374,8 +375,10 @@ void CMainWindow::SetListeFile(wxCommandEvent& event)
 		evt.SetInt(1);
 		centralWnd->GetEventHandler()->AddPendingEvent(evt);
 	}
-}
 
+	UpdatePicture();
+}
+*/
 void CMainWindow::OnEditFile(wxCommandEvent& event)
 {
 	CMainParam* config = CMainParamInit::getInstance();

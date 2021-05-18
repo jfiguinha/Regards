@@ -34,7 +34,7 @@ public:
 
 	void CreateSeparatorBar(const wxString& libelle, CThumbnailFolder* folder)
 	{
-		int nbElement = 0;
+		//int nbElement = 0;
 		//copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
 		folder->AddSeparatorBar(libelle, &listPhoto, numElement);
 		listPhoto.clear();
