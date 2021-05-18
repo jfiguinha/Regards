@@ -30,7 +30,7 @@ class ConfigRegards: public wxDialog
         wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;
 		wxRadioBox* rdDxva2Render;
-		wxRadioBox* rdOpenCVOpenCL;
+
 		wxComboBox* rbTransitionEffect;
 		wxRadioBox* rbRenderVideo;
 		wxRadioBox* rbEffectLibrary;
@@ -42,7 +42,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbDatabaseInMemory;
 		wxRadioBox* rbAutoRotate;
 		wxRadioBox* rbContrastCorrection;
-		wxRadioBox* rbFastFaceDetection;
+
 		wxComboBox* rbInterpolation;
 
 		wxComboBox* cbOpenCLDevice;

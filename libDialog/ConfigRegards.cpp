@@ -50,12 +50,12 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	cbOpenCLDevice = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLDEVICE"));
 	cbOpenCLPlatform = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLPLATFORM"));
 	rbKernelInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBKERNELINMEMORY"));
-	rdOpenCVOpenCL = (wxRadioBox*)FindWindow(XRCID("ID_RBOPENCLOPENCV"));
+
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
 	rbContrastCorrection = (wxRadioBox*)FindWindow(XRCID("ID_RBAUTOCONTRAST"));
-	rbFastFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBFASTFACEDETECTION"));
+
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
@@ -176,12 +176,6 @@ void ConfigRegards::Init()
 	else
 		rbContrastCorrection->SetSelection(0);
 
-	int opencvOpenCL = regardsParam->GetFaceOpenCLProcess();
-	if (opencvOpenCL == 0)
-		rdOpenCVOpenCL->SetSelection(1);
-	else
-		rdOpenCVOpenCL->SetSelection(0);
-
 	int videoFaceDetection = regardsParam->GetFaceVideoDetection();
 	if (videoFaceDetection == 0)
 		rbVideoFaceDetection->SetSelection(1);
@@ -214,12 +208,6 @@ void ConfigRegards::Init()
 
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
-
-	int fastDetection = regardsParam->GetFastDetectionFace();
-	if (fastDetection == 0)
-		rbFastFaceDetection->SetSelection(1);
-	else
-		rbFastFaceDetection->SetSelection(0);
 
 	bool kernelInMemory = false;
 	int supportOpenCL = 0;
@@ -343,23 +331,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetAutoConstrast(0);
 
-	
-
-	int fastDetection = rbFastFaceDetection->GetSelection();
-	if (fastDetection == 0)
-		regardsParam->SetFastDetectionFace(1);
-	else
-		regardsParam->SetFastDetectionFace(0);
-
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
-
-	int opencvOpenCL = rdOpenCVOpenCL->GetSelection();
-	if(opencvOpenCL == 1)
-		regardsParam->SetFaceOpenCLProcess(0);
-	else
-		regardsParam->SetFaceOpenCLProcess(1);
-
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);

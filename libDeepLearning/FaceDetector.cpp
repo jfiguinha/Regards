@@ -175,7 +175,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		if (config != nullptr)
 		{
 			if (config->GetIsOpenCLSupport())
-				openCLCompatible = config->GetFaceOpenCLProcess();
+				openCLCompatible = true;
 		}
 
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
