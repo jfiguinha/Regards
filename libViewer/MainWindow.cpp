@@ -1030,13 +1030,6 @@ void CMainWindow::ProcessIdle()
 		wxPostEvent(central, event);
 	}
 
-	/*
-	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-	event.SetInt(4);
-	wxPostEvent(central, event);
-	*/
-
 	if (!hasDoneOneThings)
 		processIdle = false;
 }
@@ -1059,22 +1052,12 @@ void CMainWindow::UpdatePicture()
 		{
 			if (firstFileToShow != L"")
 			{
-				/*
-				wxCommandEvent evt(wxEVENT_LOADPICTURE);
-				CPictureElement * pictureElement = new CPictureElement();
-				pictureElement->filename = firstFileToShow;
-				pictureElement->numElement = numElement;
-				evt.SetClientData(pictureElement);
-				centralWnd->GetEventHandler()->AddPendingEvent(evt);
-				*/
 				centralWnd->LoadPicture(firstFileToShow, numElement);
 				filename = firstFileToShow;
 			}
 		}
-		//numElementTraitement = 0;
 	}
-	//updatePicture = false;
-	//hasDoneOneThings = true;
+
 }
 
 void CMainWindow::OnIdle(wxIdleEvent& evt)
