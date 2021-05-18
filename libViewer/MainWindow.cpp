@@ -963,11 +963,14 @@ void CMainWindow::ProcessIdle()
 				firstFileToShow = filename = pictures.at(0).GetPath();
 		}
 
-
-		if (centralWnd)
-		{
-			centralWnd->SetListeFile(imageList, 0);
-		}
+       
+        if (centralWnd)
+        {
+            wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
+            evt.SetClientData(imageList);
+            evt.SetInt(0);
+            centralWnd->GetEventHandler()->AddPendingEvent(evt);
+        }
 
 		updateFolder = false;
 		UpdatePicture();

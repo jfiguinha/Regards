@@ -89,7 +89,7 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-			void SetListeFile(CImageList* picture, const int& element);
+			//void SetListeFile(CImageList* picture, const int& element);
 			int RefreshPicture(const wxString &filename, const bool &first = false);
 			int LoadPicture(const wxString &filename, const bool &first = false);
 			void OnEndThumbnail();
@@ -99,6 +99,7 @@ namespace Regards
 
 		private:
 
+            void SetListeFile(wxCommandEvent& event);
 			int GetPhotoId(const wxString& filename);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();

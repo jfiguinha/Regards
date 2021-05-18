@@ -236,7 +236,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 			listFace->Show(false);
 		}
 	}
-
+    Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
@@ -857,8 +857,11 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		
 }
 
-void CCentralWindow::SetListeFile(CImageList* picture, const int & element)
+void CCentralWindow::SetListeFile(wxCommandEvent& event)
 {
+	int element = event.GetInt();
+	CImageList* picture = (CImageList*)event.GetClientData();
+    
 	if (element == 0)
 		if (listPicture != nullptr)
 			listPicture->SetListeFile();
