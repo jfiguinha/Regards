@@ -243,12 +243,23 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 	std::vector<cv::Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 	vector<vector<Point2f>> shapes;
 
-	muFaceMark.lock();
-	if (facemark->fit(image, faces, shapes))
+    try
+    {
+        muFaceMark.lock();
+        if (facemark->fit(image, faces, shapes))
+        {
+            faceFound = true;
+        }
+        muFaceMark.unlock();
+    
+    }
+	catch (cv::Exception& e)
 	{
-		faceFound = true;
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        faceFound = false;
 	}
-	muFaceMark.unlock();
 
 	if (faceFound)
 	{
@@ -485,12 +496,25 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 					std::vector<cv::Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 					vector<vector<Point2f>> shapes;
 
-					muFaceMark.lock();
-					if (facemark->fit(dest, faces, shapes))
-					{
-						faceFound = true;
-					}
-					muFaceMark.unlock();
+
+                    try
+                    {
+                        muFaceMark.lock();
+                        if (facemark->fit(dest, faces, shapes))
+                        {
+                            faceFound = true;
+                        }
+                        muFaceMark.unlock();
+                    }
+                    catch (cv::Exception& e)
+                    {
+                        const char* err_msg = e.what();
+                        std::cout << "exception caught: " << err_msg << std::endl;
+                        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+                        faceFound = false;
+                    }
+
+
 
 					if (faceFound)
 					{
@@ -650,25 +674,25 @@ void CFaceDetector::detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vect
 {
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
-#ifdef CAFFE
-	muDnnAccess.lock();
-	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300) , (104.0, 177.0, 123.0), false, false);
-	net.setInput(inputBlob);
-	auto detection = net.forward().clone();
-	muDnnAccess.unlock();
-
-#else
-	cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, true, false);
-	net.setInput(inputBlob, "data");
-	cv::Mat detection = net.forward("detection_out");
-
-#endif
-
-	cv::Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
-
-
+    
 	try
 	{
+    #ifdef CAFFE
+        muDnnAccess.lock();
+        cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300) , (104.0, 177.0, 123.0), false, false);
+        net.setInput(inputBlob);
+        auto detection = net.forward().clone();
+        muDnnAccess.unlock();
+
+    #else
+        cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, true, false);
+        net.setInput(inputBlob, "data");
+        cv::Mat detection = net.forward("detection_out");
+
+    #endif
+
+        cv::Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
+
 		for (int i = 0; i < detectionMat.rows; i++)
 		{
 			float confidence = detectionMat.at<float>(i, 2);
