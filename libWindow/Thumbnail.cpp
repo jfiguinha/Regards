@@ -1094,7 +1094,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
 		posLargeur = xPos;
 		posHauteur = yPos;
-		moveOnPaint = false;
+		//moveOnPaint = false;
 	}
 	
 	TestMaxX();
