@@ -90,8 +90,8 @@ namespace Regards
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
 			void SetListeFile(CImageList* picture, const int& element);
-			int RefreshPicture(const wxString &filename, const int &numElement, const bool &first = false);
-			int LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
+			int RefreshPicture(const wxString &filename, const bool &first = false);
+			int LoadPicture(const wxString &filename, const bool &first = false);
 			void OnEndThumbnail();
             bool IsVideo();
 			void SaveParameter();
@@ -99,14 +99,14 @@ namespace Regards
 
 		private:
 
-			
+			int GetPhotoId(const wxString& filename);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
             //void OnShowWindow(wxShowEvent& event);
 			void LoadPictureInThread(CPictureElement * pictureElement);
-			void LoadingPicture(const wxString &filenameToShow, const int &numElement);
+			void LoadingPicture(const wxString &filenameToShow);
 			void EndPictureThread(wxCommandEvent& event);
-			void StartLoadingPicture(const int &numElement);
+			void StartLoadingPicture();
 			void OnVideoEnd(wxCommandEvent& event);
 			virtual void Resize();
            void OnVideoStart(wxCommandEvent& event);
@@ -137,7 +137,7 @@ namespace Regards
 
             bool loadPicture = false;
             wxString filename;
-            int numElement;
+            //int numElement;
 			int faceDetection = 0;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailViewerVideo * thumbnailVideo;

@@ -1398,7 +1398,7 @@ int CMainWindow::LoadPicture(const bool& first)
 		if (firstFileToShow != this->filename)
 		{
 			firstFileToShow = this->filename;
-			returnValue = centralWnd->LoadPicture(firstFileToShow, numElement, first);
+			returnValue = centralWnd->LoadPicture(firstFileToShow, first);
 		}
 
 		CMainParam* config = CMainParamInit::getInstance();

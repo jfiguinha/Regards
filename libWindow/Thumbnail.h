@@ -43,7 +43,7 @@ namespace Regards
 			int GetIconeHeight();
 			int GetIconeWidth();
 
-			virtual void SetActifItem(const int &numItem, const bool &move);
+			virtual void SetActifItem(const int& idPhoto, const bool &move);
 			virtual void GetSelectItem(vector<CThumbnailData *> &vectorData);
 
 			void SetTheme(CThemeThumbnail * theme);
@@ -56,6 +56,8 @@ namespace Regards
 			void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 			int GetTabValue();
 		protected:
+
+			int GetNumItemById(const int& idPhoto);
 
 			int GetNbIconSelected();
 			void ProcessThumbnail(CThumbnailData * pThumbnailData);

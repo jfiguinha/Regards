@@ -146,12 +146,29 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 				vectorData.push_back(pIcone->GetData());
 		}
 	}
-
 }
 
-void CThumbnail::SetActifItem(const int &numItem, const bool &move)
+int CThumbnail::GetNumItemById(const int& idPhoto)
+{
+	int numElement = iconeList->GetNbElement();
+	for (int i = 0; i < numElement; i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		if (icone != nullptr)
+		{
+			CThumbnailData* pThumbnailData = icone->GetData();
+			if (pThumbnailData->GetNumPhotoId() == idPhoto)
+				return i;
+		}
+	}
+	return 0;
+}
+
+void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 {
     TRACE();
+
+	int numItem = GetNumItemById(idPhoto);
 
 	isMovingScroll = move;
 
@@ -160,6 +177,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 		//printf("toto is back !!!!");
 		return;
 	}
+
 
 	
 

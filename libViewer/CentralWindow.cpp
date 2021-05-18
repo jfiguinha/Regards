@@ -17,6 +17,7 @@
 #include "ListPicture.h"
 #include "WindowManager.h"
 #include "ThumbnailViewerVideo.h"
+#include <SqlPhotos.h>
 #include "ThumbnailViewerPicture.h"
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
@@ -32,6 +33,7 @@
 #include <FiltreEffet.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
+using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::FiltreEffet;
 
@@ -273,7 +275,6 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     {
         CPictureElement * pictureElement = new CPictureElement();
         pictureElement->filename = filename;
-        pictureElement->numElement = numElement;  
         pictureElement->first = false;     
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
@@ -302,13 +303,12 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
-int CCentralWindow::RefreshPicture(const wxString &filename, const int &numElement, const bool &first)
+int CCentralWindow::RefreshPicture(const wxString &filename, const bool &first)
 {
     printf("CCentralWindow::RefreshPicture \n");
 	if (filename != this->filename)
 	{
 		this->filename = filename;
-		this->numElement = numElement;
 
 		if (stopVideo)
 			return 0;
@@ -330,7 +330,6 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 			loadPicture = false;
 			CPictureElement * pictureElement = new CPictureElement();
 			pictureElement->filename = filename;
-			pictureElement->numElement = numElement;
 			pictureElement->first = first;
 			wxCommandEvent evt(wxEVENT_LOADPICTURE);
 			evt.SetClientData(pictureElement);
@@ -339,13 +338,16 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 	}
 	else
 	{
-		listPicture->SetActifItem(numElement, true);
+		if(thumbnailPicture != nullptr)
+			thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
+		if (listPicture != nullptr)
+			listPicture->SetActifItem(GetPhotoId(filename), true);
 	}
 	
 	return 0;
 }
 
-int CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
+int CCentralWindow::LoadPicture(const wxString &filename, const bool &first)
 {
 	TRACE();
 
@@ -357,7 +359,7 @@ int CCentralWindow::LoadPicture(const wxString &filename, const int &numElement,
 #endif
 
     printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
-	return RefreshPicture(filename, numElement, first);
+	return RefreshPicture(filename, first);
 }
 
 void CCentralWindow::HideToolbar()
@@ -1215,13 +1217,13 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 
 		if (listPicture != nullptr)
 		{
-			listPicture->SetActifItem(pictureElement->numElement, true);
+			listPicture->SetActifItem(GetPhotoId(pictureElement->filename), true);
 			// thumbnailPicture->Refresh();
 		}
 
 		if (thumbnailPicture != nullptr)
 		{
-			thumbnailPicture->SetActifItem(pictureElement->numElement, true);
+			thumbnailPicture->SetActifItem(GetPhotoId(pictureElement->filename), true);
 			// thumbnailPicture->Refresh();
 		}
 		delete pictureElement;
@@ -1285,7 +1287,6 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 
 	if (libPicture.TestIsVideo(localFile) && isVideoValid)
 	{
-		//StartLoadingPicture(numElement);
 		SetVideo(localFile, pictureElement->first);
 		
 	}
@@ -1307,20 +1308,27 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 	}
 	else
 	{
-		StartLoadingPicture(numElement);
-		LoadingPicture(localFile, numElement);
+		StartLoadingPicture();
+		LoadingPicture(localFile);
 	}
 	//windowManager->Resize();
 }
 
-void CCentralWindow::StartLoadingPicture(const int &numElement)
+int CCentralWindow::GetPhotoId(const wxString & filename)
+{
+	CSqlPhotos photo;
+	return photo.GetPhotoId(filename);
+
+}
+
+void CCentralWindow::StartLoadingPicture()
 {
 	//showBitmapWindow->StartLoadingPicture();
 	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
 	if (bitmapWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_ONSTARTLOADINGPICTURE);
-		evt.SetExtraLong(numElement);
+		evt.SetExtraLong(GetPhotoId(filename));
 		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -1417,7 +1425,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 
 }
 
-void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &numElement)
+void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
 {
    // int processPicture = 0;
 #if defined(WIN32) && defined(_DEBUG)
@@ -1427,7 +1435,6 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 	OutputDebugString(L"\n");
 #endif
 	filename = filenameToShow;
-	this->numElement = numElement;
     printf("CCentralWindow::LoadingPicture \n");
 	TRACE();
 
@@ -1474,13 +1481,13 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 
     if (listPicture != nullptr)
     {
-        listPicture->SetActifItem(numElement, true);
+        listPicture->SetActifItem(GetPhotoId(filename), true);
        // listPicture->ForceRefresh();
     }
 
     if (thumbnailPicture != nullptr)
     {
-        thumbnailPicture->SetActifItem(numElement, true);
+        thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
        // thumbnailPicture->ForceRefresh();
     }
 
