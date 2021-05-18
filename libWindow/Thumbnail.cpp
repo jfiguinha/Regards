@@ -178,6 +178,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
 	numActif = iconeList->GetElement(numItem);
 	isMovingScroll = false;
+   
 	if (move)
 	{
 		if (numItem == 0)
@@ -230,7 +231,7 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 		numSelect->SetSelected(true);
 	}
 
-
+    moveOnPaint = true;
 	this->ForceRefresh();
 }
 
