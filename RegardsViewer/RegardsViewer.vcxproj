@@ -76,7 +76,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <WindowsAppContainer>false</WindowsAppContainer>
     <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
-    <UseInteloneMKL>Parallel</UseInteloneMKL>
+    <UseInteloneMKL>No</UseInteloneMKL>
     <UseInteloneTBB>true</UseInteloneTBB>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
@@ -119,7 +119,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
     <UseInteloneTBB>true</UseInteloneTBB>
-    <UseInteloneMKL>Parallel</UseInteloneMKL>
+    <UseInteloneMKL>No</UseInteloneMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
