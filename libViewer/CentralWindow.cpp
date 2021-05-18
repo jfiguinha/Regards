@@ -236,7 +236,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	}
 
 	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
-	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
 	Connect(VIDEO_UPDATE_ID, wxCommandEventHandler(CCentralWindow::SetVideoPos));
@@ -856,11 +855,8 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		
 }
 
-void CCentralWindow::SetListeFile(wxCommandEvent& event)
+void CCentralWindow::SetListeFile(CImageList* picture, const int & element)
 {
-	int element = event.GetInt();
-	CImageList* picture = (CImageList*)event.GetClientData();
-
 	if (element == 0)
 		if (listPicture != nullptr)
 			listPicture->SetListeFile();

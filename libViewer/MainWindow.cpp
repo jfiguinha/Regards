@@ -935,9 +935,6 @@ void CMainWindow::ProcessIdle()
 		{
 			sqlFindPhotos.SearchPhotos(requestSql);
 			sqlFindPhotos.SearchPhotosByTypeAffichage(&pictures, typeAffichage, NUMCATALOGID);
-
-			//if (imageList->GetNbElement() == 0)
-			//	sqlFindPhotos.SearchPhotos(&pictures);
 		}
 		else
 			sqlFindPhotos.SearchPhotos(&pictures);
@@ -969,10 +966,7 @@ void CMainWindow::ProcessIdle()
 
 		if (centralWnd)
 		{
-			wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
-			evt.SetInt(0);
-			evt.SetClientData(imageList);
-			centralWnd->GetEventHandler()->AddPendingEvent(evt);
+			centralWnd->SetListeFile(imageList, 0);
 		}
 
 		updateFolder = false;

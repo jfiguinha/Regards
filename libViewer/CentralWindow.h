@@ -89,7 +89,7 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-
+			void SetListeFile(CImageList* picture, const int& element);
 			int RefreshPicture(const wxString &filename, const int &numElement, const bool &first = false);
 			int LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
 			void OnEndThumbnail();
@@ -112,7 +112,7 @@ namespace Regards
            void OnVideoStart(wxCommandEvent& event);
 		   void OnAnimationStart(wxCommandEvent& event);
 		   void OnAnimationStop(wxCommandEvent& event);
-			void SetListeFile(wxCommandEvent& event);
+			
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
 			void OnShowPicture(wxCommandEvent& event);
