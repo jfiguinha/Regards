@@ -192,10 +192,6 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		else
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
 
-
-		facemark = cv::face::createFacemarkKazemi();
-		facemark->loadModel(face_landmark);
-		cout << "Loaded model" << endl;
 #else
    		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
@@ -205,6 +201,10 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		netRecognition.setPreferableTarget(DNN_TARGET_CPU);
 #endif
+
+		facemark = cv::face::createFacemarkKazemi();
+		facemark->loadModel(face_landmark);
+		cout << "Loaded model" << endl;
 
 #else
 		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
