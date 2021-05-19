@@ -20,8 +20,8 @@ namespace Regards
 		public:
 			CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailViewerPicture(void);
-			void Init(PhotosVector * photoVector, const int &typeAffichage = SHOW_ALL);
-			void SetListeFile(PhotosVector * photoVector);
+			void Init(const int &typeAffichage = SHOW_ALL);
+			void SetListeFile();
 
 			int GetHeight()
 			{

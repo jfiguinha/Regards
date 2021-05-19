@@ -186,9 +186,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		if (thumbnailPicture != nullptr)
 		{
-			imageList->Lock();
-			thumbnailPicture->SetListeFile(imageList->GetPointer());
-			imageList->Unlock();
+			thumbnailPicture->SetListeFile();
 		}
 
 		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
@@ -860,23 +858,14 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 void CCentralWindow::SetListeFile(wxCommandEvent& event)
 {
 	int element = event.GetInt();
-	CImageList* picture = (CImageList*)event.GetClientData();
     
 	if (element == 0)
 		if (listPicture != nullptr)
 			listPicture->SetListeFile();
 
-	if (picture != nullptr)
+	if (thumbnailPicture != nullptr)
 	{
-		//photoVector = picture->GetCopy();
-
-		if (thumbnailPicture != nullptr)
-		{
-			picture->Lock();
-			PhotosVector* vecPhoto = picture->GetPointer();
-			thumbnailPicture->SetListeFile(vecPhoto);
-			picture->Unlock();
-		}
+		thumbnailPicture->SetListeFile();
 	}
 }
 

@@ -4,7 +4,7 @@
 #include <ThumbnailDataSQL.h>
 #include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
-
+#include <SqlFindPhotos.h>
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
@@ -36,27 +36,27 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData * data)
 
 
 
-void CThumbnailViewerPicture::Init(PhotosVector * photoVector, const int &typeAffichage)
+void CThumbnailViewerPicture::Init(const int &typeAffichage)
 {
-	if (photoVector != nullptr)
-	{
-		SetListeFile(photoVector);
-	}
+	SetListeFile();
 	processIdle = true;
 }
 
-void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
+void CThumbnailViewerPicture::SetListeFile()
 {
+	PhotosVector pictures;
 	threadDataProcess = false;
 
 	EraseThumbnailList();
 
+	CSqlFindPhotos sqlFindPhotos;
+	sqlFindPhotos.SearchPhotos(&pictures);
 	int i = 0;
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
 
-	for (CPhotos fileEntry : *photoVector)
+	for (CPhotos fileEntry : pictures)
 	{
 		wxString filename = fileEntry.GetPath();
 		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename, testValidity);
@@ -85,6 +85,8 @@ void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
 	ResizeThumbnail();
 
 	processIdle = true;
+
+	pictures.clear();
 	this->Refresh();
 }
 

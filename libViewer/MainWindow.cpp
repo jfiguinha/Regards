@@ -355,30 +355,6 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	}
 }
 
-/*
-void CMainWindow::SetListeFile(wxCommandEvent& event)
-{
-	PhotosVector* newPhotosVectorList = static_cast<PhotosVector*>(event.GetClientData());
-	//CImageList * picture = (CImageList *)event.GetClientData();
-
-	bool isValid = false;
-	wxString filepath = imageList->GetFilePath(numElement, isValid);
-
-	imageList->SetImageList(*newPhotosVectorList);
-
-	numElement = imageList->FindFileIndex(filepath);
-
-	if (centralWnd)
-	{
-		wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
-		evt.SetClientData(imageList);
-		evt.SetInt(1);
-		centralWnd->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-	UpdatePicture();
-}
-*/
 void CMainWindow::OnEditFile(wxCommandEvent& event)
 {
 	CMainParam* config = CMainParamInit::getInstance();
@@ -967,8 +943,6 @@ void CMainWindow::ProcessIdle()
         if (centralWnd)
         {
             wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
-            evt.SetClientData(imageList);
-            evt.SetInt(0);
             centralWnd->GetEventHandler()->AddPendingEvent(evt);
         }
 

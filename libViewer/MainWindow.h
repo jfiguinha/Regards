@@ -36,7 +36,6 @@ namespace Regards
 			void ImagePrecedente();
 			void ImageFin();
 			void ImageDebut();
-			//void Reload();
 			bool SetFullscreen();
 			bool SetFullscreenMode();
 			bool SetScreen();
@@ -67,8 +66,6 @@ namespace Regards
 			void OnEditFile(wxCommandEvent& event);
             void OnPicturePrevious(wxCommandEvent& event);
             void OnPictureNext(wxCommandEvent& event);
-
-			//void SetListeFile(wxCommandEvent& event);
 			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);
@@ -80,7 +77,6 @@ namespace Regards
 			void UpdateCriteriaMessage(wxCommandEvent& event);
 			void UpdateThumbnailMessage(wxCommandEvent& event);
 			void UpdateFaceMessage(wxCommandEvent& event);
-
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);
@@ -91,7 +87,6 @@ namespace Regards
 			void OnRemoveFolder(wxCommandEvent& event);
 			void OnTimerDiaporama(wxTimerEvent& event);
 			void OnPrint(wxCommandEvent& event);
-			//void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
 			void PrintPreview(wxCommandEvent& event);
@@ -100,7 +95,6 @@ namespace Regards
 			void OnFaceInfosUpdate(wxCommandEvent& event);
 			void OnExportFile(wxCommandEvent& event);
 			void OnUpdateExifThumbnail(wxCommandEvent& event);
-            //void RefreshTimer(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
@@ -112,21 +106,17 @@ namespace Regards
 			static void CheckMD5(void * param);
 
 			bool fullscreen;
-			
 			wxGauge * progressBar;
 			wxStatusBar * statusBar;
 			CToolbar * toolbar;
 			CCentralWindow * centralWnd;
 			wxTimer * diaporamaTimer;
-			//wxTimer * refreshTimer;
 			IStatusBarInterface * statusBarViewer;
-
 			wxRect posWindow;
 			wxString filename;
 			bool startDiaporama;
 			mutex muPicture;
-			int nbProcessMD5;
-			
+			int nbProcessMD5;		
             CImageList * imageList = nullptr;
 			int numElement;
 			wxString firstFileToShow;
@@ -137,19 +127,13 @@ namespace Regards
 			int typeAffichage;
 			bool updateCriteria;
 			bool updateFolder;
-			//bool updatePicture;
 			bool refreshFolder;
 			int numElementTraitement;
 			bool start;
 			bool criteriaSendMessage;
-			//bool videoStart;
-			//bool sendMessageVideoStop;
             bool checkVersion;
-           // bool isInit = false;
             bool setViewerMode = false;
 			wxString lastFileToShow = "";
-			//bool blockImage = false;
-
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
 		};
 	}
