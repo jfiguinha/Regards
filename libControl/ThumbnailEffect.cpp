@@ -207,7 +207,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 	if(format == RAWFILE)
 	{
 		CInfosSeparationBarEffect * blackRoom = CreateNewSeparatorBar(blackRoomEffect);
-		int numElement = (int)iconeList->GetNbElement();
+		int numElement = (int)iconeListLocal->GetNbElement();
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		thumbnailData->SetNumElement(0);
 		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
@@ -234,7 +234,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 	else if(picture.TestIsVideo(filename))
 	{
 		CInfosSeparationBarEffect * videoEffect = CreateNewSeparatorBar(videoLabelEffect);
-		int numElement = (int)iconeList->GetNbElement();
+		int numElement = (int)iconeListLocal->GetNbElement();
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		thumbnailData->SetNumElement(0);
 		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
@@ -273,7 +273,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 
 		for (int numEffect = FILTER_START; numEffect < FILTER_END; numEffect++)
 		{
-			int numElement = (int)iconeList->GetNbElement();
+			int numElement = (int)iconeListLocal->GetNbElement();
 			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 			thumbnailData->SetNumElement(i++);
 			thumbnailData->SetNumPhotoId(numEffect);
