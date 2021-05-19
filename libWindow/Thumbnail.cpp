@@ -599,6 +599,8 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	numSelect = nullptr;
 	numActif = nullptr;
 	loadingIcone = nullptr;
+    delete iconeListLocal;
+    iconeListLocal = nullptr;
 }
 
 /*
