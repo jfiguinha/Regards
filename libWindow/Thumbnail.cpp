@@ -584,7 +584,7 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 	loadingIcone = nullptr;
 }
 
-
+/*
 void CThumbnail::EraseThumbnailList()
 {
     TRACE();
@@ -609,7 +609,7 @@ void CThumbnail::EraseThumbnailList()
 	numActif = nullptr;
 	loadingIcone = nullptr;
 }
-
+*/
 void CThumbnail::SetIconeSize(const int &width, const int &height)
 {
     TRACE();

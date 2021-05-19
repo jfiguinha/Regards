@@ -151,8 +151,12 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEMULTIPAGE;
+
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
 	//int rotation = 0;
-	EraseThumbnailList();
+	//EraseThumbnailList();
 
 	if (videoThumbnail.size() > 0)
 	{
@@ -191,7 +195,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 				numSelect = pBitmapIcone;
 			}
 
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
@@ -202,6 +206,12 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 		}
 		processIdle = false;
 	}
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
 	UpdateScroll();
 
 

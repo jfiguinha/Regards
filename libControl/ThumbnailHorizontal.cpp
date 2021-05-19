@@ -45,7 +45,8 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     threadDataProcess = false;
 	this->SetFocus();
     InitScrollingPos();
-    EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
 
     int i = 0;
     int x = 0;
@@ -70,12 +71,19 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
         if (i == 0)
             pBitmapIcone->SetSelected(true);
 
-        iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
         x += themeThumbnail.themeIcone.GetWidth();
         i++;
 
     }
+
+	 lockIconeList.lock();
+	 oldIconeList = iconeList;
+	 iconeList = iconeListLocal;
+	 lockIconeList.unlock();
+
+	 EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
 	AfterSetList();

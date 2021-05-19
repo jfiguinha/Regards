@@ -33,7 +33,7 @@ void CThumbnailFileSelection::OnPictureClick(CThumbnailData * data)
 
 }
 
-void CThumbnailFileSelection::AddSeparatorBar(const wxString &libelle, int &nbElement)
+void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, int &nbElement)
 {
 	CInfosSeparationBarExplorer * infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -66,7 +66,7 @@ void CThumbnailFileSelection::AddSeparatorBar(const wxString &libelle, int &nbEl
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 	}
 
 	if (photoVector.size() > 0)
@@ -76,12 +76,13 @@ void CThumbnailFileSelection::AddSeparatorBar(const wxString &libelle, int &nbEl
 void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 {
 	threadDataProcess = false;
-
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
 
-	EraseThumbnailList();
+	//EraseThumbnailList();
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
@@ -98,12 +99,19 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	if (typeLocal == THUMB_SHOW_ALL)
 	{
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLSELECTPAGE", 1);
-		AddSeparatorBar(libellePhoto, i);
+		AddSeparatorBar(iconeListLocal, libellePhoto, i);
 	}
 
 	//m_lock.unlock();
 
 	SetNbFiles(i);
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
@@ -138,7 +146,10 @@ void CThumbnailFileSelection::SetListeFile()
 {
 	threadDataProcess = false;
 
-	EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
+	//EraseThumbnailList();
 
 	//int i = 0;
 	int x = 0;
@@ -174,12 +185,20 @@ void CThumbnailFileSelection::SetListeFile()
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
 
 	}
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
+
 	AfterSetList();
 	threadDataProcess = true;
 	widthThumbnail = 0;

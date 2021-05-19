@@ -64,7 +64,7 @@ void CThumbnailFace::OnPictureClick(CThumbnailData * data)
 }
 
 
-void CThumbnailFace::AddSeparatorBar(const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement)
+void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement)
 {
 	CInfosSeparationBarFace * infosSeparationBar = new CInfosSeparationBarFace(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -95,7 +95,7 @@ void CThumbnailFace::AddSeparatorBar(const wxString &libelle, const CFaceName & 
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 	}
 
 	if (listPhotoFace.size() > 0)
@@ -156,6 +156,9 @@ void CThumbnailFace::SortSeparator(CInfosSeparationBar * infosSeparationBar)
 
 void CThumbnailFace::Init()
 {
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
 	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	threadDataProcess = false;
 
@@ -168,7 +171,7 @@ void CThumbnailFace::Init()
 	//Sauvegarde de l'état
 	//---------------------------------
 
-	EraseThumbnailList();
+	//EraseThumbnailList();
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
@@ -184,10 +187,17 @@ void CThumbnailFace::Init()
 	for(int i = 0;i < listFace.size();i++)
 	{
 		std::vector<CFaceFilePath> listPhotoFace = sqlFindFacePhoto.GetListPhotoFace(listFace.at(i).numFace, pertinence);
-		AddSeparatorBar(listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
+		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
 	SetNbFiles(nbElement);
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 

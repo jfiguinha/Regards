@@ -78,9 +78,10 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	}
 
+	lockIconeList.lock();
 	oldIconeList = iconeList;
-
 	iconeList = iconeListLocal;
+	lockIconeList.unlock();
 
 	EraseThumbnailList(oldIconeList);
 

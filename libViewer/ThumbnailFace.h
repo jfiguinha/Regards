@@ -37,7 +37,7 @@ namespace Regards
 			int FindSeparatorFace(const int &xPos, const int &yPos);
 			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
-			void AddSeparatorBar(const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);
+			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
 			void OnPictureClick(CThumbnailData * data);
 			CIcone * FindIcone(const int &photoId);

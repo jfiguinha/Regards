@@ -97,7 +97,7 @@ namespace Regards
 			void CalculControlSize();
 			virtual void OnPictureClick(CThumbnailData * data) = 0;
 			void InitScrollingPos();
-			virtual void EraseThumbnailList();
+			//virtual void EraseThumbnailList();
 			virtual void AfterSetList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
 
@@ -117,6 +117,7 @@ namespace Regards
 			void MoveRight();
 
 			//Variable
+			std::mutex lockIconeList;
             CIconeList * iconeList;
 			//IconeVector pIconeList;
 

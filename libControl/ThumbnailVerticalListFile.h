@@ -25,7 +25,7 @@ namespace Regards
 
 			void SetListeFile(const vector<wxString> & files);
 			void SetListeFile(const wxArrayString & listFile, const bool &showSelectButton = false);
-			void SetListeFile(const PhotosVector & photoVector, const bool &erase = true);
+			void SetListeFile(const PhotosVector & photoVector);
 
 			int typeAffichage;
 			int numCatalog;

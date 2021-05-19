@@ -168,7 +168,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	int y = 0;
 	int typeElement = TYPEVIDEO;
 	//int rotation = 0;
-	EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
 	CLibPicture libPicture;
 	int iFormat = libPicture.TestImageFormat(szFileName);
 	if (iFormat == PDF || iFormat == TIFF)
@@ -223,7 +225,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 				numSelect = pBitmapIcone;
 			}
 
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
@@ -270,7 +272,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 				numSelect = pBitmapIcone;
 			}
 
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
 
@@ -287,6 +289,13 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 
 		processIdle = true;
 	}
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	UpdateScroll();
 }

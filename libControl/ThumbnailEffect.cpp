@@ -181,13 +181,16 @@ void CThumbnailEffect::GetBitmapDimension(const int &width, const int &height, i
 
 void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * imageLoading)
 {
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
 	processIdle = false;
 	this->imageLoading = imageLoading;
 	CLoadingResource loadingResource;
 	this->filename = filename;
 	CRgbaquad backcolor = CRgbaquad(themeThumbnail.colorBack.Red(), themeThumbnail.colorBack.Green(), themeThumbnail.colorBack.Blue());
 	InitScrollingPos();
-	EraseThumbnailList();
+	//EraseThumbnailList();
 	CreateOrLoadStorageFile();
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
@@ -222,7 +225,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		SetNbFiles(1);
         
@@ -249,7 +252,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		SetNbFiles(1);
 
@@ -367,12 +370,18 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			iconeList->AddElement(pBitmapIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
 		}
 
 		SetNbFiles(i);
 	}
 
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
     processIdle = true;

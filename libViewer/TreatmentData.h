@@ -7,10 +7,10 @@ class CTreatmentData
 {
 public:
 
-	void MainTreatment(const PhotosVector * photoVector, CThumbnailFolder* folder, int & numElement)
+	void MainTreatment(CIconeList* iconeListLocal, const PhotosVector * photoVector, CThumbnailFolder* folder, int & numElement)
 	{
 		this->numElement = numElement;
-
+		this->iconeListLocal = iconeListLocal;
 		for (CPhotos photos : *photoVector)
 		{
 			if (TestParameter(photos))
@@ -36,7 +36,7 @@ public:
 	{
 		//int nbElement = 0;
 		//copy(listPhoto.begin(), listPhoto.end(), back_inserter(*newPhotosVectorList));
-		folder->AddSeparatorBar(libelle, &listPhoto, numElement);
+		folder->AddSeparatorBar(iconeListLocal, libelle, &listPhoto, numElement);
 		listPhoto.clear();
 	};
 
@@ -44,6 +44,7 @@ protected:
 	PhotosVector listPhoto;
 	bool first = true;
 	int numElement;
+	CIconeList* iconeListLocal;
 };
 
 class CTreatmentDataYear : public CTreatmentData

@@ -27,7 +27,7 @@ namespace Regards
 			static bool ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void SetListeFile();
-			void AddSeparatorBar(const wxString &libelle, int &nbElement);
+			void AddSeparatorBar(CIconeList * iconeListLocal, const wxString &libelle, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
 			CIcone * FindIcone(const int &photoId);
 			void FindOtherElement(wxDC * dc, const int &x, const int &y);

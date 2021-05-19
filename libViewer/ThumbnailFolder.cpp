@@ -46,7 +46,7 @@ void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
 	}
 }
 
-void CThumbnailFolder::AddSeparatorBar(const wxString& libelle, PhotosVector* photoVector, int& nbElement)
+void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector, int& nbElement)
 {
 	CInfosSeparationBarExplorer* infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
@@ -66,7 +66,7 @@ void CThumbnailFolder::AddSeparatorBar(const wxString& libelle, PhotosVector* ph
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 	}
 
 	if (photoVector->size() > 0)
@@ -77,6 +77,9 @@ void CThumbnailFolder::AddSeparatorBar(const wxString& libelle, PhotosVector* ph
 void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& typeAffichage)
 {
 	threadDataProcess = false;
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+
 	//newPhotosVectorList.clear();
 	//---------------------------------
 	//Sauvegarde de l'état
@@ -88,7 +91,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	vector<CThumbnailData*> listSelectItem;
 
 	GetSelectItem(listSelectItem);
-	EraseThumbnailList();
+	//EraseThumbnailList();
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
@@ -104,31 +107,36 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	{
 		
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
-		AddSeparatorBar(libellePhoto, photoVector, i);
+		AddSeparatorBar(iconeListLocal, libellePhoto, photoVector, i);
 
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
 		CTreatmentDataYear dataYear;
-		dataYear.MainTreatment(photoVector, this, i);
+		dataYear.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYMONTH)
 	{
 		CTreatmentDataMonth dataMonth;
-		dataMonth.MainTreatment(photoVector, this, i);
+		dataMonth.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYLOCALISATION)
 	{
 		CTreatmentDataLocalisation dataLocalisation;
-		dataLocalisation.MainTreatment(photoVector, this, i);
+		dataLocalisation.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 	else if (typeLocal == SHOW_BYDAY)
 	{
 		CTreatmentDataDay dataDay;
-		dataDay.MainTreatment(photoVector, this, i);
+		dataDay.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 
-	//m_lock.unlock();
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	SetNbFiles(i);
 
@@ -192,8 +200,9 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
 	threadDataProcess = false;
-
-	EraseThumbnailList();
+	CIconeList* iconeListLocal = new CIconeList();
+	CIconeList* oldIconeList = nullptr;
+	//EraseThumbnailList();
 
 	int i = 0;
 	int x = 0;
@@ -214,12 +223,19 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
 
 	}
+
+	lockIconeList.lock();
+	oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
