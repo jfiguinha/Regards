@@ -71,6 +71,7 @@ bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain *
 	return false;
 }
 
+
 CIcone * CThumbnail::FindElement(const int &xPos, const int &yPos)
 {
     TRACE();
@@ -148,8 +149,23 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 	}
 }
 
+bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent)   /* Définit une fonction. */
+{
+	CThumbnailData* pThumbnailData = icone->GetData();
+	if (pThumbnailData->GetNumPhotoId() == xPos)
+		return true;
+	return false;
+}
+
+
 int CThumbnail::GetNumItemById(const int& idPhoto)
 {
+	TRACE();
+	pItemCompFonct _pf = &ItemCompFonctPhotoId;
+	CIcone* icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
+	if(icone != nullptr)
+		return icone->GetNumElement();
+	/*
 	int numElement = iconeList->GetNbElement();
 	for (int i = 0; i < numElement; i++)
 	{
@@ -161,6 +177,7 @@ int CThumbnail::GetNumItemById(const int& idPhoto)
 				return i;
 		}
 	}
+	*/
 	return 0;
 }
 
