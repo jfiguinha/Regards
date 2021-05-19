@@ -177,19 +177,13 @@ void CThumbnailFileSelection::SetListeFile()
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
-
-
 		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
-
 		iconeListLocal->AddElement(pBitmapIcone);
-
 		x += themeThumbnail.themeIcone.GetWidth();
-		i++;
-
 	}
 
 	lockIconeList.lock();
