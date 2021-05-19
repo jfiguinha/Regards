@@ -58,7 +58,7 @@ namespace Regards
 		protected:
 
 			int GetNumItemById(const int& idPhoto);
-
+			void EraseThumbnailList(CIconeList* iconeListLocal);
 			int GetNbIconSelected();
 			void ProcessThumbnail(CThumbnailData * pThumbnailData);
 			virtual void EraseThumbnail(wxCommandEvent& event);

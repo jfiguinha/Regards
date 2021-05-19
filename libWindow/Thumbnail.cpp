@@ -559,6 +559,32 @@ void CThumbnail::AfterSetList()
 	}
 }
 
+void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
+{
+	TRACE();
+
+	if (numSelect != nullptr)
+	{
+		CThumbnailData* data = numSelect->GetData();
+		if (data != nullptr)
+			selectFilename = data->GetFilename();
+	}
+
+	if (numActif != nullptr)
+	{
+		CThumbnailData* data = numActif->GetData();
+		if (data != nullptr)
+			actifFilename = data->GetFilename();
+	}
+
+	iconeListLocal->EraseThumbnailList();
+
+	numSelect = nullptr;
+	numActif = nullptr;
+	loadingIcone = nullptr;
+}
+
+
 void CThumbnail::EraseThumbnailList()
 {
     TRACE();
@@ -1104,6 +1130,8 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	if (width <= 0 || height <= 0)
 		return;
 
+	if (threadDataProcess == false)
+		return;
 
 	if (numSelect != nullptr && !isMovingScroll && moveOnPaint)
 	{

@@ -46,8 +46,9 @@ void CThumbnailViewerPicture::SetListeFile()
 {
 	PhotosVector pictures;
 	threadDataProcess = false;
-
-	EraseThumbnailList();
+	CIconeList * iconeListLocal = new CIconeList();
+	CIconeList * oldIconeList = nullptr;
+	//EraseThumbnailList();
 
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotos(&pictures);
@@ -70,12 +71,18 @@ void CThumbnailViewerPicture::SetListeFile()
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		pBitmapIcone->SetWindowPos(x, y);
 
-		iconeList->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
 
 	}
+
+	oldIconeList = iconeList;
+
+	iconeList = iconeListLocal;
+
+	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
 
