@@ -151,8 +151,10 @@ static FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 
 static void MyMessageFunction(FREE_IMAGE_FORMAT fif, const char * msg)
 {
+#ifdef WIN32
 #ifndef NDEBUG
     wxMessageBox(msg,"FreeImage error", wxICON_ERROR);
+#endif
 #endif
 }
 
