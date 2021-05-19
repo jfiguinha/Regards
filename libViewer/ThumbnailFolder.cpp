@@ -55,7 +55,7 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 	for (auto i = 0; i < photoVector->size(); i++)
 	{
 		CPhotos photo = photoVector->at(i);
-		infosSeparationBar->listElement.push_back((int)iconeList->GetNbElement());
+		infosSeparationBar->listElement.push_back((int)iconeListLocal->GetNbElement());
 
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
 		thumbnailData->SetNumPhotoId(photo.GetId());

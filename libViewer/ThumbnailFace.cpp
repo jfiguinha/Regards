@@ -75,7 +75,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString 
 	for (auto i = 0; i < listPhotoFace.size();i++)
 	{
 		CFaceFilePath numFace = listPhotoFace.at(i);
-		infosSeparationBar->listElement.push_back((int)iconeList->GetNbElement());
+		infosSeparationBar->listElement.push_back((int)iconeListLocal->GetNbElement());
 
 		CSqlFaceThumbnail * thumbnailData = new CSqlFaceThumbnail(numFace.faceFilePath, numFace.numFace);
 		thumbnailData->SetNumPhotoId(numFace.numPhoto);
