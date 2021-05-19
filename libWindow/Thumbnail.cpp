@@ -1149,6 +1149,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 
 	if (threadDataProcess == false)
 		return;
+        
 
 	if (numSelect != nullptr && !isMovingScroll && moveOnPaint)
 	{
@@ -1171,8 +1172,10 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     //UpdateScroll();
     FillRect(&dc, rc, themeThumbnail.colorBack);
     
+    lockIconeList.lock();
 	RenderIcone(&dc);
-
+    lockIconeList.unlock();
+    
 	render = false;
     oldPosLargeur = posLargeur;
     oldPosHauteur = posHauteur;
