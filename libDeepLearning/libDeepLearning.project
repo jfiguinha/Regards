@@ -36,6 +36,7 @@
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libUtility"/>
+        <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
