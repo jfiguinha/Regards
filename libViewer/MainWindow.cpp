@@ -1090,9 +1090,6 @@ void CMainWindow::AddFolder(const wxString& folder)
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	if (centralWnd != nullptr)
-		centralWnd->LoadPicture(localFilename);
-
 	dialog.Destroy();
 }
 
