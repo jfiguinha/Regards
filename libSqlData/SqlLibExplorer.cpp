@@ -372,9 +372,6 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.InsertVersion("2.69.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE FACEDESCRIPTOR");
 		}
-		
-
-		
     }
     return hr;
 }

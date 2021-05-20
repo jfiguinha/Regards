@@ -361,6 +361,8 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
+	nbElementInIconeList = iconeList->GetNbElement();
+
 	EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;

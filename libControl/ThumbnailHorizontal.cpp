@@ -83,6 +83,8 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 	 iconeList = iconeListLocal;
 	 lockIconeList.unlock();
 
+	 nbElementInIconeList = iconeList->GetNbElement();
+
 	 EraseThumbnailList(oldIconeList);
 
 	threadDataProcess = true;
