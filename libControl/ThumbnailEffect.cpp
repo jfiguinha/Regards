@@ -42,6 +42,7 @@ public:
 	wxString filename;
     wxString filepath;
 	int numIcone;
+	int photoId;
     CRegardsBitmap * picture;
 	CThumbnailDataStorage * thumbnailData;
 	CImageLoadingFormat * imageLoading;
@@ -395,7 +396,7 @@ void CThumbnailEffect::LoadPicture(void * param)
         CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
         CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, thumbnail);
 
-        switch (threadLoadingBitmap->thumbnailData->GetNumPhotoId())
+        switch (threadLoadingBitmap->photoId)
         {
             case IDM_WAVE_EFFECT:
                 filtre->WaveFilter(20,20, thumbnail->GetHeight() / 2,2,20);
@@ -466,6 +467,7 @@ void CThumbnailEffect::ProcessIdle()
                         pLoadBitmap->filepath = filename;
                         pLoadBitmap->filename = pThumbnailData->GetFilename();
                         pLoadBitmap->numIcone = i;
+						pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
 						pLoadBitmap->imageLoading = imageLoading;
                         pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
                         nbProcess++;
@@ -532,7 +534,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
                     pThumbnailData = icone->GetData();
                     if (pThumbnailData->GetFilename() != threadLoadingBitmap->filename)
                     {
-                        icone = FindIcone(threadLoadingBitmap->filename);
+                        icone = GetIconeById(threadLoadingBitmap->photoId);
                         pThumbnailData = nullptr;
                     }
                     else if (icone != nullptr && pThumbnailData != nullptr)

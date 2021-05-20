@@ -22,9 +22,6 @@ namespace Regards
 			CFaceDetector(const bool & fastDetection);
 			~CFaceDetector();
 
-			static bool LockOpenCLDnn();
-			static bool UnlockOpenCLDnn();
-
 			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark);
 			std::vector<int> FindFace(CRegardsBitmap * pBitmap);
             void DetectEyes(CRegardsBitmap * pBitmap);
