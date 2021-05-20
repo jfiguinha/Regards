@@ -167,9 +167,12 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
 
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
 {
+    
     InitScrollingPos();
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
+
+    threadDataProcess = false;
 
     int i = 0;
     int x = 0;
@@ -222,6 +225,8 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
     nbElementInIconeList = iconeList->GetNbElement();
 
     EraseThumbnailList(oldIconeList);
+
+    threadDataProcess = true;
 
 	AfterSetList();
 

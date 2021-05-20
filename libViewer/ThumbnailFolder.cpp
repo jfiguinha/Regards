@@ -162,17 +162,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-
-	/*
-	CMainWindow* mainWindow = (CMainWindow*)this->FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
-		evt.SetClientData(&newPhotosVectorList);
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
-	//this->Refresh();
 }
 
 void CThumbnailFolder::Init(const int& typeAffichage)
