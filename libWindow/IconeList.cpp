@@ -23,9 +23,7 @@ public:
 
 int CIconeList::GetNbElement()
 {
-   // muList.lock();    
     int nbElement = pIconeList.size();
-   // muList.unlock();
     return nbElement;
 }
 
@@ -36,40 +34,24 @@ int CIconeList::GetNbElement()
 
 CIcone * CIconeList::GetElement(const int &numElement)
 {
-    // muList.lock();   
     CIcone * icone = nullptr;
     if(numElement < pIconeList.size())
-    {
         icone = pIconeList[numElement];
-    }
-    // muList.unlock();   
+
     return icone;
 }
 
 void CIconeList::AddElement(CIcone * icone)
 {
-   //  muList.lock();   
     pIconeList.push_back(icone);
-  //   muList.unlock();   
+ 
 }
-/*
-void CIconeList::Lock()
-{
-	muList.lock();
-}
-void CIconeList::Unlock()
-{
-	muList.unlock();
-}
-*/
 
 CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent)
 {
 	IconeVector::iterator it;
 	CIcone * element = nullptr;
-	//muList.lock();
 	it =find_if(pIconeList.begin(), pIconeList.end(), CItemPos(xPos, yPos, _pf, parent));
-	//muList.unlock();
 
 	if (it != pIconeList.end())
 		element = *it;
@@ -79,7 +61,6 @@ CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFon
 
  void CIconeList::EraseThumbnailList()
  {
-    // muList.lock();
 	for (CIcone * pIcone : pIconeList)
 	{
 		if (pIcone != nullptr)
@@ -89,15 +70,13 @@ CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFon
 		}
 	}
 	pIconeList.clear();  
-//	muList.unlock();    
+ 
  }
  
  void CIconeList::DestroyCacheThumbnailList()
  {
-     //muList.lock();
   	for (CIcone * icone : pIconeList)
     {
         icone->DestroyCache();
-    } 
-	//muList.unlock();    
+    }  
  }

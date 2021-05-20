@@ -93,23 +93,14 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 
 void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 {
-    
-    
 	int x = -posLargeur;
 	int y = 0;
 
-	//int nbPhoto = pIconeList.size();
-
-    //int i = 0;
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
-            //printf("RenderIcone Num Icone : %d \n ", i);
-
-			//if visible
 			int left = x;
 			int right = x + themeThumbnail.themeIcone.GetWidth();
 			int top = y;
@@ -139,7 +130,7 @@ void CThumbnailHorizontal::UpdateScroll()
 	if (GetWindowWidth() <= 0)
 		return;
 
-	int nbElement = (int)iconeList->GetNbElement();
+	int nbElement = (int)nbElementInIconeList;
 	if (nbElement > 0)
 	{
 		nbLigneY = 1;
@@ -181,7 +172,7 @@ CIcone * CThumbnailHorizontal::FindElement(const int &xPos, const int &yPos)
 
 	int numElement = x / themeThumbnail.themeIcone.GetWidth();
 
-	if (numElement >= iconeList->GetNbElement())
+	if (numElement >= nbElementInIconeList)
 		return nullptr;
 
 	return iconeList->GetElement(numElement);

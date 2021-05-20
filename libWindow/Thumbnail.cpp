@@ -91,8 +91,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
     CSqlThumbnail sqlThumbnail;
     sqlThumbnail.EraseThumbnail();
     
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pIcone = iconeList->GetElement(i);
 		if(pIcone != nullptr)
@@ -121,8 +120,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 void CThumbnail::SetCheck(const bool &check)
 {
     TRACE();
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
@@ -136,9 +134,7 @@ void CThumbnail::SetCheck(const bool &check)
 void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 {
     TRACE();
-	//bool find = false;
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
@@ -165,19 +161,6 @@ int CThumbnail::GetNumItemById(const int& idPhoto)
 	CIcone* icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
 	if(icone != nullptr)
 		return icone->GetNumElement();
-	/*
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData* pThumbnailData = icone->GetData();
-			if (pThumbnailData->GetNumPhotoId() == idPhoto)
-				return i;
-		}
-	}
-	*/
 	return 0;
 }
 
@@ -195,12 +178,7 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 		return;
 	}
 
-
-	
-
-    int numElement = iconeList->GetNbElement();
-
-	if (numItem >= numElement)
+	if (numItem >= nbElementInIconeList)
 		return;
 
 	if (numSelect != NULL)
@@ -416,7 +394,7 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & posit
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
-	int idPhoto = event.GetId();
+	//int idPhoto = event.GetId();
 	wxString* filename = (wxString * )event.GetClientData();
 	if (filename != nullptr)
 	{
@@ -553,7 +531,7 @@ int CThumbnail::GetIconeWidth()
 
 void CThumbnail::AfterSetList()
 {
-	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)
@@ -603,32 +581,6 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
     iconeListLocal = nullptr;
 }
 
-/*
-void CThumbnail::EraseThumbnailList()
-{
-    TRACE();
-
-	if (numSelect != nullptr)
-	{
-		CThumbnailData * data = numSelect->GetData();
-		if(data != nullptr)
-			selectFilename = data->GetFilename();
-	}
-
-	if (numActif != nullptr)
-	{
-		CThumbnailData * data = numActif->GetData();
-		if (data != nullptr)
-			actifFilename = data->GetFilename();
-	}
-
-	iconeList->EraseThumbnailList();
-	
-	numSelect = nullptr;
-	numActif = nullptr;
-	loadingIcone = nullptr;
-}
-*/
 void CThumbnail::SetIconeSize(const int &width, const int &height)
 {
     TRACE();
@@ -670,7 +622,7 @@ void CThumbnail::ProcessThumbnail(CThumbnailData * pThumbnailData)
 void CThumbnail::ProcessIdle()
 {
     TRACE();
-	if (iconeList->GetNbElement() == 0 || threadDataProcess == false)
+	if (nbElementInIconeList == 0 || threadDataProcess == false)
     {
         processIdle = false;
 		return;
@@ -699,11 +651,11 @@ void CThumbnail::ProcessIdle()
 			if (j >= photoList.size())
 				break;
 
-			if (iconeList->GetNbElement() == 0 || threadDataProcess == false)
+			if (nbElementInIconeList == 0 || threadDataProcess == false)
 				return;
 
 			wxString filename = photoList[j];
-            int nbElement = iconeList->GetNbElement();
+            int nbElement = nbElementInIconeList;
             
 			for (int i = 0; i < nbElement; i++)
 			{
@@ -760,7 +712,7 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 	CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
 	thumbnailMessage->nbPhoto = nbPhoto;
 	thumbnailMessage->thumbnailPos = thumbnailPos;
-	thumbnailMessage->nbElement = iconeList->GetNbElement();
+	thumbnailMessage->nbElement = nbElementInIconeList;
 
 	wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGETHUMBNAIL);
@@ -1094,7 +1046,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 int CThumbnail::GetNbIconSelected()
 {
 	int nbCheck = 0;
-	int nbElement = iconeList->GetNbElement();
+	int nbElement = nbElementInIconeList;
 	for (int i = 0; i < nbElement; i++)
 	{
 		CIcone * icone = iconeList->GetElement(i);
@@ -1113,7 +1065,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
     if(loadingIcone != nullptr)
        loadingIcone->StopLoadingPicture();
     
-    if (numItem >= iconeList->GetNbElement())
+    if (numItem >= nbElementInIconeList)
         return;
 
     
@@ -1422,9 +1374,7 @@ void CThumbnail::InitScrollingPos()
 CIcone * CThumbnail::FindIcone(const wxString &filename)
 {
     TRACE();
-    
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)

@@ -98,7 +98,6 @@ namespace Regards
 			void CalculControlSize();
 			virtual void OnPictureClick(CThumbnailData * data) = 0;
 			void InitScrollingPos();
-			//virtual void EraseThumbnailList();
 			virtual void AfterSetList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
 
@@ -108,7 +107,7 @@ namespace Regards
 			
 			void OnRefreshThumbnail(wxCommandEvent& event);
 			void UpdateRenderIcone(wxCommandEvent& event);
-			CIcone *  FindIcone(const wxString &filename);
+			CIcone * FindIcone(const wxString &filename);
 			//------------------------------------------------------------
 			//Variable
 			//------------------------------------------------------------
@@ -190,6 +189,7 @@ namespace Regards
 			int numOldItem = -1;
 			bool moveOnPaint = true;
 			bool enableDragAndDrop = false;
+			int nbElementInIconeList = 0;
 		};
 	}
 }

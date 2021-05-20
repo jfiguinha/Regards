@@ -111,27 +111,6 @@ CIcone * CThumbnailEffect::FindElement(const int &xPos, const int &yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-
-	/*
-	int x = xPos;
-	int y = yPos;
-
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			if ((rc.x < x && x < (rc.width + rc.x)) && (rc.y < y && y < (rc.height + rc.y)))
-			{
-				return icone;
-			}
-		}
-	}
-	return nullptr;
-	*/
-
 }
 
 
@@ -469,7 +448,7 @@ void CThumbnailEffect::ProcessIdle()
 	while(nbProcess < nbProcesseur)
 	{
 		
-		for (auto i = 0;i <  iconeList->GetNbElement();i++)
+		for (auto i = 0;i <  nbElementInIconeList;i++)
 		{
             CIcone * icone = iconeList->GetElement(i);
 			//iconeList->Lock();
@@ -501,8 +480,7 @@ void CThumbnailEffect::ProcessIdle()
 	}
 	//Test si tout a été fait
 	isAllProcess = true;
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * icone = iconeList->GetElement(i);
 		//iconeList->Lock();
@@ -549,7 +527,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 			{
 				CThumbnailData * pThumbnailData = nullptr;
 				CIcone * icone = nullptr;
-				if (threadLoadingBitmap->numIcone >= iconeList->GetNbElement())
+				if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
 					return;
 
 				icone = iconeList->GetElement(threadLoadingBitmap->numIcone);
@@ -619,8 +597,8 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 		nbElementByRow++;
 
-	int nbElementEnY = (int)iconeList->GetNbElement() / nbElementByRow;
-	if (nbElementEnY * nbElementByRow < iconeList->GetNbElement())
+	int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+	if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 		nbElementEnY++;
 
 	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();

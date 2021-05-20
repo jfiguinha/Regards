@@ -27,7 +27,6 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
 	InitScrollingPos();
-	//EraseThumbnailList();
 
 	int i = 0;
 	int x = 0;
@@ -58,15 +57,18 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
 		i++;
 
 	}
-     lockIconeList.lock();
-     oldIconeList = iconeList;
-     iconeList = iconeListLocal;
-     lockIconeList.unlock();
 
-     EraseThumbnailList(oldIconeList);
-	AfterSetList();
-	threadDataProcess = true;
-	Refresh();
+    lockIconeList.lock();
+    oldIconeList = iconeList;
+    iconeList = iconeListLocal;
+    lockIconeList.unlock();
+    nbElementInIconeList = iconeList->GetNbElement();
+
+    EraseThumbnailList(oldIconeList);
+
+    AfterSetList();
+    threadDataProcess = true;
+    Refresh();
 }
 
 CThumbnailVerticalListFile::~CThumbnailVerticalListFile(void)
@@ -100,7 +102,6 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
     InitScrollingPos();
-    //EraseThumbnailList();
     CreateOrLoadStorageFile();
 
     int i = 0;
@@ -153,6 +154,8 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
     oldIconeList = iconeList;
     iconeList = iconeListLocal;
     lockIconeList.unlock();
+
+    nbElementInIconeList = iconeList->GetNbElement();
 
     EraseThumbnailList(oldIconeList);
 
@@ -218,6 +221,8 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
     oldIconeList = iconeList;
     iconeList = iconeListLocal;
     lockIconeList.unlock();
+
+    nbElementInIconeList = iconeList->GetNbElement();
 
     EraseThumbnailList(oldIconeList);
 

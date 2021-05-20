@@ -58,39 +58,13 @@ int CThumbnailVideo::FindNumItem(const int &videoPos)
 		numItem = icone->GetNumElement() - 1;
 	}
 	return numItem;
-	/*
-	int numItem = 0;
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData * data = icone->GetData();
-            if(data != nullptr)
-            {
-                if (data->GetTimePosition() > videoPos)
-                {
-                    numItem--;
-                    break;
-                }
-            }
-		}
-		numItem++;
-	}
-
-	if (numItem >= numElement)
-		numItem = numElement - 1;
-
-	return numItem;
-	*/
 }
 
 void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 {
 	int numItem = 0;
 	CIcone * pIcone = nullptr;
-    int nbIconeElement = iconeList->GetNbElement();
+    int nbIconeElement = nbElementInIconeList;
 	//wxClientDC dc(this);
 
 	if (nbIconeElement == 0)
@@ -295,6 +269,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
+	nbElementInIconeList = iconeList->GetNbElement();
+
 	EraseThumbnailList(oldIconeList);
 
 	UpdateScroll();
@@ -361,9 +337,8 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
         
         CSqlThumbnail sqlThumbnail;
         sqlThumbnail.DeleteThumbnail(videoFilename);
-        
-        int numElement = iconeList->GetNbElement();
-        for (int i = 0;i < numElement;i++)
+
+        for (int i = 0;i < nbElementInIconeList;i++)
         {
             CIcone * pIcone = iconeList->GetElement(i);
             if(pIcone != nullptr)

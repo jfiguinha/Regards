@@ -79,19 +79,12 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
-	//newPhotosVectorList.clear();
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
-
-	//int numPhotoIdActif = 0;
-	//int numPhotoIdSelect = 0;
-
 	vector<CThumbnailData*> listSelectItem;
 
 	GetSelectItem(listSelectItem);
-	//EraseThumbnailList();
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
@@ -135,6 +128,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
+
+	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
 
@@ -202,7 +197,6 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-	//EraseThumbnailList();
 
 	int i = 0;
 	int x = 0;
@@ -235,6 +229,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
+	nbElementInIconeList = iconeList->GetNbElement();
+
 	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
@@ -249,8 +245,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 
 CIcone* CThumbnailFolder::FindIcone(const int& photoId)
 {
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* icone = iconeList->GetElement(i);
 		if (icone != nullptr)
@@ -438,27 +433,6 @@ CIcone* CThumbnailFolder::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-	/*
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-		CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
-			int top = rc.y - posHauteur;
-			int bottom = rc.y + rc.height - posHauteur;
-			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
@@ -544,7 +518,7 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 	//printf("CThumbnailFolder::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
-	if (iconeList->GetNbElement() >= 0)
+	if (nbElementInIconeList >= 0)
 	{
 		//int oldLargeur = posLargeur;
 		//int oldHauteur = posHauteur;

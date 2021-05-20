@@ -170,9 +170,6 @@ void CThumbnailFace::Init()
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
-
-	//EraseThumbnailList();
-
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
@@ -196,6 +193,8 @@ void CThumbnailFace::Init()
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
+
+	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
 
@@ -224,8 +223,7 @@ CIcone * CThumbnailFace::FindIcone(const int &photoId)
 	if(!threadDataProcess)
 		return nullptr;
 
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)
@@ -683,28 +681,6 @@ CIcone * CThumbnailFace::FindElement(const int &xPos, const int &yPos)
 
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-
-	/*
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
-			int top = rc.y - posHauteur;
-			int bottom = rc.y + rc.height - posHauteur;
-			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
@@ -792,7 +768,7 @@ void CThumbnailFace::UpdateScrollWithVScroll()
 
 
         //bool refresh = false;
-        if (iconeList->GetNbElement() >= 0)
+        if (nbElementInIconeList >= 0)
         {
             //int oldLargeur = posLargeur;
             //int oldHauteur = posHauteur;

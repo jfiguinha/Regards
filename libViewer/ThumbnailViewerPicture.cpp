@@ -48,7 +48,6 @@ void CThumbnailViewerPicture::SetListeFile()
 	threadDataProcess = false;
 	CIconeList * iconeListLocal = new CIconeList();
 	CIconeList * oldIconeList = nullptr;
-	//EraseThumbnailList();
 
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotos(&pictures);
@@ -83,6 +82,8 @@ void CThumbnailViewerPicture::SetListeFile()
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
+	nbElementInIconeList = iconeList->GetNbElement();
+
 	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
@@ -100,8 +101,7 @@ void CThumbnailViewerPicture::SetListeFile()
 
 CIcone * CThumbnailViewerPicture::FindIcone(const int &photoId)
 {
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)
@@ -134,14 +134,10 @@ void CThumbnailViewerPicture::ResizeThumbnail()
 }
 void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 {
-
 	int x = 0;
 	int y = 0;
 
-	//int nbPhoto = pIconeList.size();
-
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -158,9 +154,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 {
-	//
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -184,8 +178,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 
 CIcone * CThumbnailViewerPicture::FindElement(const int &xPos, const int &yPos)
 {
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)

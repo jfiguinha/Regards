@@ -43,7 +43,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 	for (auto i = 0; i < photoVector.size();i++)
 	{
 		CImageVideoThumbnail * thumbnail = photoVector.at(i);
-		infosSeparationBar->listElement.push_back((int)iconeList->GetNbElement());
+		infosSeparationBar->listElement.push_back((int)nbElementInIconeList);
 
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		//thumbnailData->SetStorage(nullptr);
@@ -81,9 +81,6 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
-
-	//EraseThumbnailList();
-
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
@@ -110,6 +107,8 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
+
+	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
 
@@ -149,9 +148,6 @@ void CThumbnailFileSelection::SetListeFile()
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
-	//EraseThumbnailList();
-
-	//int i = 0;
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
@@ -191,6 +187,8 @@ void CThumbnailFileSelection::SetListeFile()
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
+	nbElementInIconeList = iconeList->GetNbElement();
+
 	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
@@ -205,8 +203,7 @@ void CThumbnailFileSelection::SetListeFile()
 vector<int> CThumbnailFileSelection::GetSelectItem()
 {
 	vector<int> listElement;
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
@@ -216,29 +213,6 @@ vector<int> CThumbnailFileSelection::GetSelectItem()
 		}
 	}
 	return listElement;
-}
-
-CIcone * CThumbnailFileSelection::FindIcone(const int &photoId)
-{
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData * data = icone->GetData();
-			if (data != nullptr)
-			{
-				if (data->GetNumPhotoId() == photoId)
-				{
-					return icone;
-				}
-			}
-
-		}
-
-	}
-	return nullptr;
 }
 
 bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
@@ -253,45 +227,14 @@ bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone * ic
 
 CIcone * CThumbnailFileSelection::FindElementWithVScroll(const int &xPos, const int &yPos)
 {
-	//int x = xPos;
-	//int y = yPos;
 	pItemCompFonct _pf = &ItemCompWithVScrollFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-
-	/*
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;*/
 }
 
 
 CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &xPos, const int &yPos)
 {
-    /*
-	int x = xPos + posLargeur;
-	int y = yPos + posHauteur;
-	CInfosSeparationBar * element;
-
-	InfosSeparationBarVector::iterator it;
-	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
-	if (it != listSeparator.end())
-		element = *it;
-
-	return element;
-*/
-	int x = xPos + posLargeur;
+ 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	for (CInfosSeparationBar * separatorBar : listSeparator)
 	{
@@ -436,27 +379,6 @@ CIcone * CThumbnailFileSelection::FindElement(const int &xPos, const int &yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-	/*
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			int left = rc.x - posLargeur;
-			int right = rc.x + rc.width - posLargeur;
-			int top = rc.y - posHauteur;
-			int bottom = rc.y + rc.height - posHauteur;
-			if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
@@ -541,7 +463,7 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
     printf("CThumbnailFileSelection::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
-	if (iconeList->GetNbElement() >= 0)
+	if (nbElementInIconeList >= 0)
 	{
 		//int oldLargeur = posLargeur;
 		//int oldHauteur = posHauteur;

@@ -44,8 +44,7 @@ void CThumbnailMultiPage::OnPictureClick(CThumbnailData * data)
 int CThumbnailMultiPage::FindNumItem(const int &videoPos)
 {
 	int numItem = 0;
-	int numElement = iconeList->GetNbElement();
-	for (int i = 0; i < numElement; i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone * icone = iconeList->GetElement(i);
 		if (icone != nullptr)
@@ -62,8 +61,8 @@ int CThumbnailMultiPage::FindNumItem(const int &videoPos)
 		numItem++;
 	}
 
-	if (numItem >= numElement)
-		numItem = numElement - 1;
+	if (numItem >= nbElementInIconeList)
+		numItem = nbElementInIconeList - 1;
 
 	return numItem;
 }
@@ -72,7 +71,7 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 {
 	int numItem = 0;
 	CIcone * pIcone = nullptr;
-	int nbIconeElement = iconeList->GetNbElement();
+	int nbIconeElement = nbElementInIconeList;
 	//wxClientDC dc(this);
 
 	if (nbIconeElement == 0)
@@ -155,9 +154,6 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
-	//int rotation = 0;
-	//EraseThumbnailList();
-
 	if (videoThumbnail.size() > 0)
 	{
 		int size = videoThumbnail.size();
@@ -211,6 +207,8 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
+
+	nbElementInIconeList = iconeList->GetNbElement();
 
 	UpdateScroll();
 

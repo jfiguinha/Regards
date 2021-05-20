@@ -24,12 +24,12 @@ namespace Regards
 			void ResizeThumbnail();
 
 		private:
+
 			static bool ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void SetListeFile();
 			void AddSeparatorBar(CIconeList * iconeListLocal, const wxString &libelle, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
-			CIcone * FindIcone(const int &photoId);
 			void FindOtherElement(wxDC * dc, const int &x, const int &y);
 			CIcone * FindElement(const int &xPos, const int &yPos);
 			CInfosSeparationBar * FindSeparatorElement(const int &xPos, const int &yPos);

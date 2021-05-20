@@ -27,7 +27,7 @@ CIcone * CThumbnailVertical::FindElementWithVScroll(const int &xPos, const int &
 	int numX = x / themeThumbnail.themeIcone.GetWidth();
 	int numElement = numY * nbElementByX + numX;
 
-	if (numElement >= iconeList->GetNbElement())
+	if (numElement >= nbElementInIconeList)
 		return nullptr;
 
 	return iconeList->GetElement(numElement);
@@ -42,7 +42,7 @@ CIcone * CThumbnailVertical::FindElementWithoutVScroll(const int &xPos, const in
 
 	int numElement = x / themeThumbnail.themeIcone.GetWidth();
 
-	if (numElement >= iconeList->GetNbElement())
+	if (numElement >= nbElementInIconeList)
 		return nullptr;
 
 	return iconeList->GetElement(numElement);
@@ -81,14 +81,11 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
 	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 		nbElementByRow++;
 
-	int nbElementEnY = (int)iconeList->GetNbElement() / nbElementByRow;
-	if (nbElementEnY * nbElementByRow < iconeList->GetNbElement())
+	int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+	if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 		nbElementEnY++;
 
-
-
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pBitmapIcone = iconeList->GetElement(i);
         if(pBitmapIcone != nullptr)
@@ -137,10 +134,7 @@ void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC * deviceContext)
 	int x = -posLargeur;
 	int y = 0;
 
-	//int nbPhoto = pIconeList.size();
-
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
+	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -188,7 +182,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 	thumbnailSizeY = 0;
 
 	//bool update = false;
-	int nbElement = (int)iconeList->GetNbElement();
+	int nbElement = (int)nbElementInIconeList;
 
 	if (nbElement > 0)
 	{
@@ -196,8 +190,8 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 			nbElementByRow++;
 
-		int nbElementEnY = (int)iconeList->GetNbElement() / nbElementByRow;
-		if (nbElementEnY * nbElementByRow < iconeList->GetNbElement())
+		int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+		if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 			nbElementEnY++;
 
 		if (nbElement < nbElementByRow)
@@ -211,7 +205,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
     printf("CThumbnailVertical::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
-	if (iconeList->GetNbElement() >= 0)
+	if (nbElementInIconeList >= 0)
 	{
 		//int oldLargeur = posLargeur;
 		//int oldHauteur = posHauteur;
@@ -258,7 +252,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 
 void CThumbnailVertical::UpdateScrollWithoutVScroll()
 {
-	int nbElement = (int)iconeList->GetNbElement();
+	int nbElement = (int)nbElementInIconeList;
 	if (nbElement > 0)
 	{
 		nbLigneY = 1;
