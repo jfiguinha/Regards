@@ -938,13 +938,9 @@ void CBitmapWnd::Rotate90()
 		wxWindow* window = this->FindWindowById(idWindowMain);
 		if (window != nullptr)
 		{
-			//wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-
-			wxString* _filename = new wxString(filename);
 			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
 			evt.SetInt(numPhoto);
 			evt.SetExtraLong(90);
-			evt.SetClientData(_filename);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
@@ -992,11 +988,9 @@ void CBitmapWnd::Rotate270()
 		wxWindow* window = this->FindWindowById(idWindowMain);
 		if (window != nullptr)
 		{
-			wxString* _filename = new wxString(filename);
 			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
 			evt.SetInt(id);
 			evt.SetExtraLong(270);
-			evt.SetClientData(_filename);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}

@@ -127,8 +127,6 @@ int COpenCLEffect::HQDn3D(const double & LumSpac, const double & ChromSpac, cons
 
 int COpenCLEffect::OilPaintingEffect(const int &size, const int &dynRatio)
 {
-	CDeepLearning::LockOpenCLDnn();
-
 	int _width = 0;
 	int _height = 0;
 	cl_mem output = nullptr;
@@ -149,8 +147,6 @@ int COpenCLEffect::OilPaintingEffect(const int &size, const int &dynRatio)
 		}
 		SetOutputValue(output, _width, _height);
 	}
-
-	CDeepLearning::UnlockOpenCLDnn();
 	return 0;
 }
 
@@ -1518,8 +1514,6 @@ int COpenCLEffect::Negatif()
 
 int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
-	CDeepLearning::LockOpenCLDnn();
-
 	int _width = 0;
 	int _height = 0;
 	cl_mem output = nullptr;
@@ -1540,7 +1534,7 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 		}
 		SetOutputValue(output, _width, _height);
 	}
-	CDeepLearning::UnlockOpenCLDnn();
+
 	return 0;
 }
 

@@ -58,6 +58,7 @@ namespace Regards
 			int GetTabValue();
 		protected:
 
+			CIcone * GetIconeById(const int& idPhoto);
 			int GetNumItemById(const int& idPhoto);
 			void EraseThumbnailList(CIconeList* iconeListLocal);
 			int GetNbIconSelected();
@@ -107,7 +108,7 @@ namespace Regards
 			
 			void OnRefreshThumbnail(wxCommandEvent& event);
 			void UpdateRenderIcone(wxCommandEvent& event);
-			CIcone * FindIcone(const wxString &filename);
+
 			//------------------------------------------------------------
 			//Variable
 			//------------------------------------------------------------

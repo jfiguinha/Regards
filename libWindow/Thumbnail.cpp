@@ -48,7 +48,7 @@ public:
 	int percent;
 	wxString filename;
 	int typeElement;
-	//int numIcone;
+	int photoId;
 	int timePosition;
     CImageLoadingFormat * bitmapIcone;
 	thread * _thread;
@@ -153,6 +153,11 @@ bool CThumbnail::ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindow
 	return false;
 }
 
+CIcone* CThumbnail::GetIconeById(const int& idPhoto)
+{
+	pItemCompFonct _pf = &ItemCompFonctPhotoId;
+	return iconeList->FindElement(idPhoto, 0, &_pf, this);
+}
 
 int CThumbnail::GetNumItemById(const int& idPhoto)
 {
@@ -394,16 +399,14 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & posit
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
-	//int idPhoto = event.GetId();
-	wxString* filename = (wxString * )event.GetClientData();
-	if (filename != nullptr)
+	int idPhoto = event.GetId();
+	if(idPhoto != -1)
 	{
-		CIcone* icone = FindIcone(*filename);
+		CIcone* icone = GetIconeById(idPhoto);
 		if (icone != nullptr)
 		{
 			icone->DestroyCache();
 		}
-		delete filename;
 		this->Refresh();
 	}
 
@@ -614,6 +617,7 @@ void CThumbnail::ProcessThumbnail(CThumbnailData * pThumbnailData)
 	pLoadBitmap->percent = pThumbnailData->GetPercent();
 	pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
 	pLoadBitmap->filename = pThumbnailData->GetFilename();
+	pLoadBitmap->photoId = pThumbnailData->GetNumPhotoId();
 	pLoadBitmap->thumbnail = this;
 	pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
 	pThumbnailData->SetIsProcess(true);
@@ -1370,21 +1374,6 @@ void CThumbnail::InitScrollingPos()
 
 }
 
-CIcone * CThumbnail::FindIcone(const wxString &filename)
-{
-    TRACE();
-	for (int i = 0;i < nbElementInIconeList;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData * pThumbnailData = icone->GetData();
-			if (pThumbnailData->GetFilename() == filename)
-				return icone;
-		}
-	}
-	return nullptr;
-}
 
 void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 {
@@ -1404,7 +1393,7 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         if (threadLoadingBitmap->bitmapIcone != nullptr)
         {
 			CThumbnailData * pThumbnailData = nullptr;
-			CIcone * icone = FindIcone(threadLoadingBitmap->filename);
+			CIcone * icone = GetIconeById(threadLoadingBitmap->photoId);
 			*filename = threadLoadingBitmap->filename;
 			if (icone != nullptr && pThumbnailData == nullptr)
 				pThumbnailData = icone->GetData();

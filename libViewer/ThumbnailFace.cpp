@@ -673,8 +673,6 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC * deviceContext)
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 				else
 					pBitmapIcone->DestroyCache();
-				
-				delete pBitmapIcone;
 			}
 		}
 	}

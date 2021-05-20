@@ -257,7 +257,6 @@ void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
 	{
 		wxCommandEvent evt(wxEVENT_REFRESHTHUMBNAIL);
 		evt.SetInt(numPhoto);
-		evt.SetClientData(event.GetClientData());
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
