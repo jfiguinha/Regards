@@ -378,7 +378,6 @@ void CShowBitmap::RotateRecognition(void * param)
 	CThreadRotate * threadRotate = (CThreadRotate *)param;
 	if (threadRotate != nullptr)
 	{       
-		bool pictureOK;
 		if (threadRotate->bitmap != nullptr)
 		{
 			threadRotate->isReady = true;

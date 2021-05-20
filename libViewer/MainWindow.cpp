@@ -679,14 +679,6 @@ wxString GetFileName(const wxString& nameFile)
 	return folder;
 }
 
-/*
-void CMainWindow::RefreshTimer(wxCommandEvent& event)
-{
-    TRACE();
-    refreshTimer->Start();
-}
-*/
-
 void CMainWindow::ProcessIdle()
 {
 	TRACE();
@@ -803,8 +795,6 @@ void CMainWindow::ProcessIdle()
 			updateCriteria = true;
 		}
 		refreshFolder = false;
-		//wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
-		//this->GetEventHandler()->AddPendingEvent(evt);
 		hasDoneOneThings = true;
 		numElementTraitement = 0;
 	}
@@ -853,44 +843,40 @@ void CMainWindow::ProcessIdle()
 
 		updateFolder = false;
 
+		numElementTraitement = 0;
+
 		hasDoneOneThings = true;
 	}
 	else if (numElementTraitement < pictures.size())
 	{
-		bool isValid = false;
 		CPhotos photo = pictures[numElementTraitement]; //pictures.at(numElementTraitement);
-		if (isValid)
+
+		if (wxFileName::FileExists(photo.GetPath()))
 		{
-			if (wxFileName::FileExists(photo.GetPath()))
+			//Test si thumbnail valide
+			CMainParam* config = CMainParamInit::getInstance();
+			if (config != nullptr)
 			{
-				//Test si thumbnail valide
-				CMainParam* config = CMainParamInit::getInstance();
-				if (config != nullptr)
+				if (config->GetCheckThumbnailValidity() && nbProcessMD5 < nbProcesseur)
 				{
-					if (config->GetCheckThumbnailValidity() && nbProcessMD5 < nbProcesseur)
-					{
-						CThreadMD5* path = new CThreadMD5();
-						path->filename = photo.GetPath();
-						path->mainWindow = this;
-						path->thread = new thread(CheckMD5, path);
-						nbProcessMD5++;
-					}
-					else
-						numElementTraitement++;
+					CThreadMD5* path = new CThreadMD5();
+					path->filename = photo.GetPath();
+					path->mainWindow = this;
+					path->thread = new thread(CheckMD5, path);
+					nbProcessMD5++;
 				}
-			}
-			else
-			{
-				//Remove file
-				CSQLRemoveData::DeletePhoto(photo.GetId());
-				updateCriteria = true;
-				updateFolder = true;
-				numElementTraitement++;
+				else
+					numElementTraitement++;
 			}
 		}
 		else
+		{
+			//Remove file
+			CSQLRemoveData::DeletePhoto(photo.GetId());
+			updateCriteria = true;
+			updateFolder = true;
 			numElementTraitement++;
-
+		}
 
 		wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
 		wxString message = label + to_string(numElementTraitement) + L"/" + to_string(pictures.size());
@@ -923,8 +909,6 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 		if (diaporamaTimer->IsRunning())
 			diaporamaTimer->Stop();
 	}
-
-
 	StartThread();
 }
 

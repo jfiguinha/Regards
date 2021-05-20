@@ -11,10 +11,18 @@ using namespace Regards::OpenCV;
 using namespace Regards::Viewer;
 #undef AUTO_ROTATE
 
-static std::thread loadRot;
-static std::thread loadModel;
 static bool isload = false;
 static std::mutex muLoading;
+
+bool CDeepLearning::LockOpenCLDnn()
+{
+	return CFaceDetector::LockOpenCLDnn();
+}
+
+bool CDeepLearning::UnlockOpenCLDnn()
+{
+	return CFaceDetector::UnlockOpenCLDnn();
+}
 
 vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 {

@@ -317,12 +317,6 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToRegardsBitmap(CxImage * image, con
 CRegardsBitmap * CLibPicture::ConvertCXImageToRegardsBitmap(CxImage * image)
 {
 
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"ConvertCXImageToRegardsBitmap\n");
-#endif
-
-
 	CRegardsBitmap * bitmap = nullptr;
 	try
 	{
@@ -333,20 +327,6 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToRegardsBitmap(CxImage * image)
 	{
 
 	}
-
-#if defined(WIN32) && defined(_DEBUG)
-	/*
-	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
-	DWORD Result = LasttickCount - tickCount;
-
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-	*/
-#endif
-
 
 	return bitmap;
 }
@@ -369,18 +349,6 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToScaleRegardsBitmapCRgbaquad(CxImag
 	EXIFINFO * exif = image->GetExifInfo();
 	if (exif != nullptr)
 		bitmapOut->RotateExif(exif->Orientation);
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
-	DWORD Result = LasttickCount - tickCount;
-	/*
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-	*/
-#endif
 
 	return bitmapOut;
 }

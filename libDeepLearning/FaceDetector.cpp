@@ -35,6 +35,22 @@ std::mutex CFaceDetector::muDnnAccess;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<cv::face::Facemark> facemark;
 
+bool CFaceDetector::LockOpenCLDnn()
+{
+#ifndef __WXGTK__
+	muDnnAccess.lock();
+#endif
+	return true;
+}
+
+bool CFaceDetector::UnlockOpenCLDnn()
+{
+#ifndef __WXGTK__
+	muDnnAccess.unlock();
+#endif
+	return true;
+}
+
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
 	//this->fastDetection = fastDetection;
@@ -153,8 +169,9 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		DNN_TARGET_CUDA_FP16
 		*/
 
+#ifndef __WXGTK__
 		bool openCLCompatible = false;
-		CRegardsConfigParam * config = CParamInit::getInstance();
+		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
 		{
 			if (config->GetIsOpenCLSupport())
@@ -162,7 +179,28 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		}
 
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		if (openCLCompatible)
+			net.setPreferableTarget(DNN_TARGET_OPENCL);
+		else
+			net.setPreferableTarget(DNN_TARGET_CPU);
+
 		netRecognition = cv::dnn::readNetFromTorch(recognition);
+		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		if (openCLCompatible)
+			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
+		else
+			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
+
+#else
+		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		net.setPreferableTarget(DNN_TARGET_CPU);
+
+		netRecognition = cv::dnn::readNetFromTorch(recognition);
+		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		netRecognition.setPreferableTarget(DNN_TARGET_CPU);
+#endif
 
 		facemark = cv::face::createFacemarkKazemi();
 		facemark->loadModel(face_landmark);
