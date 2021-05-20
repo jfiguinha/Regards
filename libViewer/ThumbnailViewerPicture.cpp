@@ -99,30 +99,6 @@ void CThumbnailViewerPicture::SetListeFile()
 	this->Refresh();
 }
 
-CIcone * CThumbnailViewerPicture::FindIcone(const int &photoId)
-{
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData * data = icone->GetData();
-			if (data != nullptr)
-			{
-				if (data->GetNumPhotoId() == photoId)
-				{
-					return icone;
-				}
-			}
-
-		}
-
-	}
-	return nullptr;
-}
-
-
-
 void CThumbnailViewerPicture::ResizeThumbnail()
 {
 	ResizeThumbnailWithoutVScroll();
@@ -167,11 +143,9 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 			int right = rc.x + rc.width - posLargeur;
 
 			if (right > 0 && left < GetWindowWidth())
-			{
-				pBitmapIcone->DestroyCache();
 				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-			}
-
+			else
+				pBitmapIcone->DestroyCache();
 		}
 	}
 }

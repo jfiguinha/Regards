@@ -34,7 +34,6 @@ namespace Regards
 
 			
 			CIcone* FindElementWithVScroll(const int& xPos, const int& yPos);
-			CIcone* FindIcone(const int& photoId);
 			void FindOtherElement(wxDC* dc, const int& x, const int& y);
 			CIcone* FindElement(const int& xPos, const int& yPos);
 			CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);

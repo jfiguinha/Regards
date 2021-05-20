@@ -392,7 +392,7 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
 			int numElement = infosSeparationBar->listElement.at(j);
-			CIcone * pBitmapIcone = iconeList->GetElement(numElement);
+			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();
@@ -407,6 +407,7 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 				else
 					pBitmapIcone->DestroyCache();
+				delete pBitmapIcone;
 			}
 		}
 	}

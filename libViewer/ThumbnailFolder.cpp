@@ -143,7 +143,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	{
 		for (CThumbnailData* data : listSelectItem)
 		{
-			CIcone* icone = FindIcone(data->GetNumPhotoId());
+			int itemId = GetNumItemById(data->GetNumPhotoId());
+			CIcone* icone = iconeList->GetElement(itemId);
 			if (icone != nullptr)
 			{
 				icone->SetChecked(true);
@@ -243,27 +244,6 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	this->Refresh();
 }
 
-CIcone* CThumbnailFolder::FindIcone(const int& photoId)
-{
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData* data = icone->GetData();
-			if (data != nullptr)
-			{
-				if (data->GetNumPhotoId() == photoId)
-				{
-					return icone;
-				}
-			}
-
-		}
-
-	}
-	return nullptr;
-}
 
 bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)   /* Définit une fonction. */
 {

@@ -40,7 +40,6 @@ namespace Regards
 			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
 			void OnPictureClick(CThumbnailData * data);
-			CIcone * FindIcone(const int &photoId);
 			void FindOtherElement(wxDC * dc, const int &x, const int &y);
 			CIcone * FindElement(const int &xPos, const int &yPos);
 			CInfosSeparationBar * FindSeparatorElement(const int &xPos, const int &yPos);

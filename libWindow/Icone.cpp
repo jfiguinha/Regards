@@ -117,7 +117,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	pictureLoading = other.pictureLoading;
 	transparent = other.transparent;
 	eraseBitmap = other.eraseBitmap;
-	bitmapLocal = other.bitmapLocal;
+	//bitmapLocal = other.bitmapLocal;
 	return *this;
 }
 
@@ -181,6 +181,7 @@ void CIcone::SetTheme(CThemeIcone theme)
 
 void CIcone::DestroyCache()
 {
+	bitmapLocal.Destroy();
 	eraseBitmap = true;
 }
 
@@ -665,7 +666,7 @@ void CIcone::CalculPosition(const wxImage & render)
 	posYThumbnail = localy + top;
 }
 
-wxBitmap CIcone::GetBitmapIcone()
+wxImage CIcone::GetBitmapIcone()
 {
 	return bitmapLocal;
 }
@@ -676,7 +677,7 @@ wxBitmap CIcone::GetBitmapIcone()
 int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur, const bool & flipHorizontal, const bool & flipVertical)
 {
 	int returnValue = 0;
-	wxBitmap localmemBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());  
+	
     
     if (pThumbnailData != nullptr)
     {
@@ -689,8 +690,9 @@ int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur,
     }
     
     
-	if (eraseBitmap)
+	if (eraseBitmap || !bitmapLocal.IsOk())
 	{
+		wxBitmap localmemBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
 		wxMemoryDC memDC(localmemBitmap);
 		wxImage image;
 		wxImage scale;
@@ -739,7 +741,7 @@ int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur,
 		scale.Destroy();
 		image.Destroy();
 
-		bitmapLocal = localmemBitmap;
+		bitmapLocal = localmemBitmap.ConvertToImage();
 
 		eraseBitmap = false;
 	}

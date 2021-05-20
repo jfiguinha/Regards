@@ -45,7 +45,7 @@ namespace Regards
 			bool DataNeedToBeDelete();
 			CThumbnailData * GetCopyData();
 			void SetTheme(CThemeIcone theme);
-			wxBitmap GetBitmapIcone();
+			wxImage GetBitmapIcone();
 
 			//------------------------------------------
 			//Theme
@@ -156,7 +156,7 @@ namespace Regards
 			//COpenCLContext * openclContext;
 
 			bool eraseBitmap = true;
-			wxBitmap bitmapLocal;
+			wxImage bitmapLocal;
 		};
 		typedef tbb::concurrent_vector<CIcone *> IconeVector;
 		typedef bool(*pItemCompFonct)(int, int, CIcone *, CWindowMain *);

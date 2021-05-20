@@ -33,10 +33,7 @@ namespace Regards
 			void ResizeThumbnailWithoutVScroll();
 		private:
 
-			
-
 			void OnPictureClick(CThumbnailData * data);
-			CIcone * FindIcone(const int &photoId);
 			CIcone * FindElement(const int &xPos, const int &yPos);
 			void RenderIconeWithoutVScroll(wxDC * deviceContext);
 	

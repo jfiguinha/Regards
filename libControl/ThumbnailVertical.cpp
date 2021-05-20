@@ -94,7 +94,6 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
             pBitmapIcone->SetWindowPos(x, y);
             pBitmapIcone->SetSizeIcone(themeThumbnail.themeIcone.GetRealWidth(), themeThumbnail.themeIcone.GetRealHeight());
 
-
             //if visible
             int left = x;
             int right = x + themeThumbnail.themeIcone.GetWidth();
@@ -110,11 +109,8 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
                 }
                 RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
             }
-            else
-            {
-                pBitmapIcone->DestroyCache();
-            }
-
+			else
+				pBitmapIcone->DestroyCache();
 
             x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
             if (nbElementX == nbElementByRow)
@@ -136,7 +132,7 @@ void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC * deviceContext)
 
 	for (int i = 0;i < nbElementInIconeList;i++)
 	{
-        CIcone * pBitmapIcone = iconeList->GetElement(i);
+		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -148,15 +144,11 @@ void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC * deviceContext)
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
 
-
 			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-			{
 				RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
-			}
 			else
-			{
 				pBitmapIcone->DestroyCache();
-			}
+
 			x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}

@@ -664,7 +664,6 @@ void CThumbnail::ProcessIdle()
 				
                 bool exitfor = false;
 				CIcone * icone = iconeList->GetElement(i);
-				//iconeList->Lock();
 				
 				if (icone != nullptr)
 				{

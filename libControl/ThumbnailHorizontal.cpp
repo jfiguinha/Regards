@@ -98,26 +98,23 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 
 	for (int i = 0;i < nbElementInIconeList;i++)
 	{
-        CIcone * pBitmapIcone = iconeList->GetElement(i);
+		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
 			int left = x;
 			int right = x + themeThumbnail.themeIcone.GetWidth();
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
-
-            
             pBitmapIcone->SetWindowPos(x, y);     
             
 			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			{
-               pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 				RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
 			}
-            else
-            {
-                pBitmapIcone->DestroyCache();
-            }
+			else
+				pBitmapIcone->DestroyCache();
+
 			x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}

@@ -626,7 +626,7 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 
 		for (int numElement : infosSeparationBar->listElement)
 		{
-			CIcone * pBitmapIcone = iconeList->GetElement(numElement);
+			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
             if(pBitmapIcone != nullptr)
             {
                 pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -640,10 +640,12 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
                 int top = y;
                 int bottom = y + themeThumbnail.themeIcone.GetHeight();
 
-                if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-                {
-                    RenderBitmap(deviceContext, pBitmapIcone,0,0);
-                }
+				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+				{
+					RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
+				}
+				else
+					pBitmapIcone->DestroyCache();
 
                 x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
                 if (nbElementX == nbElementByRow)

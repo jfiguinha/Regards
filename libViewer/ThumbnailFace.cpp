@@ -217,32 +217,6 @@ void CThumbnailFace::Init()
 	Refresh();
 }
 
-
-CIcone * CThumbnailFace::FindIcone(const int &photoId)
-{
-	if(!threadDataProcess)
-		return nullptr;
-
-	for (int i = 0;i < nbElementInIconeList;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData * data = icone->GetData();
-			if (data != nullptr)
-			{
-				if (data->GetNumPhotoId() == photoId)
-				{
-					return icone;
-				}
-			}
-
-		}
-
-	}
-	return nullptr;
-}
-
 bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
@@ -495,16 +469,6 @@ void CThumbnailFace::FindOtherElement(wxDC * dc, const int &x, const int &y)
 
 void CThumbnailFace::ResizeThumbnail()
 {
-
-	/*
-    if (!noVscroll)
-        ResizeThumbnailWithVScroll();
-        
-    widthThumbnail = GetWindowWidth();
-    heightThumbnail = GetWindowHeight();
-       
-    UpdateScroll();
-	*/
 	int x = 0;
 	int y = 0;
 
@@ -709,6 +673,8 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC * deviceContext)
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 				else
 					pBitmapIcone->DestroyCache();
+				
+				delete pBitmapIcone;
 			}
 		}
 	}
