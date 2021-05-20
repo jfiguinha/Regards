@@ -518,7 +518,6 @@
     <ClInclude Include="SqlCountry.h" />
     <ClInclude Include="SqlCriteria.h" />
     <ClInclude Include="SqlExecuteRequest.h" />
-    <ClInclude Include="SqlFaceDescriptor.h" />
     <ClInclude Include="SqlFaceLabel.h" />
     <ClInclude Include="SqlFacePhoto.h" />
     <ClInclude Include="SqlFaceRecognition.h" />
@@ -570,7 +569,6 @@
     <ClCompile Include="SqlCountry.cpp" />
     <ClCompile Include="SqlCriteria.cpp" />
     <ClCompile Include="SqlExecuteRequest.cpp" />
-    <ClCompile Include="SqlFaceDescriptor.cpp" />
     <ClCompile Include="SqlFaceLabel.cpp" />
     <ClCompile Include="SqlFacePhoto.cpp" />
     <ClCompile Include="SqlFaceRecognition.cpp" />

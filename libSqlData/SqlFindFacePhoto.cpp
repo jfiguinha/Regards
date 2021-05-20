@@ -55,7 +55,6 @@ std::vector<int> CSqlFindFacePhoto::GetListFaceToRecognize()
 	type = 5;
 	listFace.clear();
 	ExecuteRequest("SELECT FACEPHOTO.NumFace FROM FACEPHOTO WHERE FACEPHOTO.NumFace not in(SELECT DISTINCT NumFace From FACE_RECOGNITION)");
-	//ExecuteRequest("SELECT FACEPHOTO.NumFace, FaceDescriptor FROM FACEPHOTO INNER JOIN FACEDESCRIPTOR ON FACEPHOTO.NumFace = FACEDESCRIPTOR.NumFace WHERE FACEPHOTO.NumFace not in(SELECT DISTINCT NumFace From FACE_RECOGNITION)");
 	return listNumFace;
 }
 
@@ -77,29 +76,11 @@ std::vector<wxString> CSqlFindFacePhoto::GetPhotoListNotProcess()
 	return listPhoto;
 }
 
-std::vector<CFaceDescriptor*> CSqlFindFacePhoto::GetAllFaceDescriptor()
-{
-	type = 1;
-	listFaceDescriptor.clear();
-	ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR");
-	return listFaceDescriptor;
-}
-
-std::vector<CFaceDescriptor *> CSqlFindFacePhoto::GetUniqueFaceDescriptor(const int &numFace)
-{
-	type = 1;
-	listFaceDescriptor.clear();
-	ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR where NumFace != " + to_string(numFace) + " and NumFace in (select NumFace from FACE_NAME)");
-	//ExecuteRequest("SELECT NumFaceCompatible, FaceDescriptor FROM FACEDESCRIPTOR INNER JOIN FACE_RECOGNITION ON FACEDESCRIPTOR.NumFace = FACE_RECOGNITION.NumFace where FACEDESCRIPTOR.NumFace != " + to_string(numFace));
-	return listFaceDescriptor;
-}
-
 
 int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 {
 	CFaceName faceName;
 	CFaceFilePath faceFilePath;
-	CFaceDescriptor * faceDescriptor;
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
@@ -112,27 +93,6 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				{
 				case 0:
 					listPhoto.push_back(sqlResult->ColumnDataText(i));
-					break;
-				}
-			}
-			else if(type == 1)
-			{
-				switch (i)
-				{
-				case 0:
-					faceDescriptor = new CFaceDescriptor();
-					faceDescriptor->numFace = sqlResult->ColumnDataInt(i);
-					break;
-				case 1:
-					{
-						int size = sqlResult->ColumnDataBlobSize(i);
-						if (size > 0)
-						{		
-							faceDescriptor->descriptor = new char[size];
-							faceDescriptor->size = size;
-							sqlResult->ColumnDataBlob(i, (void * &)faceDescriptor->descriptor, size);
-						}
-					}
 					break;
 				}
 			}
@@ -177,11 +137,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 			}
 		}
 
-		if(type == 1)
-		{
-			listFaceDescriptor.push_back(faceDescriptor);
-		}
-		else if(type == 2)
+		if(type == 2)
 		{
 			listFaceName.push_back(faceName);
 		}

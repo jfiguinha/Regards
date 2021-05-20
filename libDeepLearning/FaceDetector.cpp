@@ -1,6 +1,5 @@
 #include "header.h"
 #include "FaceDetector.h"
-#include <SqlFaceDescriptor.h>
 #include <SqlFacePhoto.h>
 #include <SqlFaceLabel.h>
 #include <RegardsBitmap.h>
@@ -374,7 +373,6 @@ cv::Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const c
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 {
-	CSqlFaceDescriptor sqlfaceDescritor;
 	std::vector<int> listFace;
 	int i = 0;
 	bool isLoading = false;

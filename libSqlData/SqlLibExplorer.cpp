@@ -44,10 +44,7 @@ using namespace Regards::OpenCV;
 
 #define SQL_INDEX_PHOTOFOLDER "CREATE UNIQUE INDEX idx_PHOTOFOLDER_FullPath ON PHOTOFOLDER(FullPath)"
 
-//#define SQL_CREATE_PHOTOSSEARCH_TABLE "CREATE TABLE PHOTOSSEARCHCRITERIA (NumPhoto INT, FullPath NVARCHAR(255), CreateDate NVARCHAR(255), GeoGps NVARCHAR(255))"
 #define SQL_DROP_PHOTOSSEARCH "DROP TABLE PHOTOSSEARCHCRITERIA"
-
-//#define SQL_INDEX_PHOTOSSEARCH "CREATE UNIQUE INDEX idx_PHOTOSSEARCH_FullPath ON PHOTOSSEARCHCRITERIA(FullPath)"
 
 #define SQL_CREATE_PHOTOSTHUMBNAIL_TABLE "CREATE TABLE PHOTOSTHUMBNAIL (NumPhoto INT PRIMARY KEY, FullPath NVARCHAR(255), width INT, height INT, hash NVARCHAR(255))"
 #define SQL_DROP_PHOTOSTHUMBNAIL "DROP TABLE PHOTOSTHUMBNAIL"
@@ -75,9 +72,6 @@ using namespace Regards::OpenCV;
 
 #define SQL_CREATE_FACE_VIDEO_TABLE "CREATE TABLE FACEVIDEO (NumFace INTEGER PRIMARY KEY, videoposition INT)"
 #define SQL_DROP_FACE_VIDEO "DROP TABLE FACEVIDEO"
-
-#define SQL_CREATE_FACE_DESCRIPTOR_TABLE "CREATE TABLE FACEDESCRIPTOR (NumFace INTEGER PRIMARY KEY, FaceDescriptor BLOB)"
-#define SQL_DROP_FACE_DESCRIPTOR "DROP TABLE FACEDESCRIPTOR"
 
 #define SQL_CREATE_FACE_RECOGNITION_TABLE "CREATE TABLE FACE_RECOGNITION (NumFace INT, NumFaceCompatible INT)"
 #define SQL_DROP_FACE_RECOGNITION "DROP TABLE FACE_RECOGNITION"
@@ -182,7 +176,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 		if (sqlVersion.GetVersion() == "2.5.0.0")
 		{
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_PHOTO_TABLE);
-			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_DESCRIPTOR_TABLE);
+			//hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_DESCRIPTOR_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_RECOGNITION_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_NAME_TABLE);	
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_PROCESSING_TABLE);
@@ -372,6 +366,13 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.InsertVersion("2.68.0.0");
 			hr = ExecuteSQLWithNoResult("DROP TABLE PHOTOSSEARCHCRITERIA");
 		}
+		if (sqlVersion.GetVersion() == "2.68.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.69.0.0");
+			hr = ExecuteSQLWithNoResult("DROP TABLE FACEDESCRIPTOR");
+		}
+		
 
 		
     }
@@ -446,7 +447,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.68.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.69.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -1035,12 +1036,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	}
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_NAME_TABLE);
-	if (hr == -1)
-	{
-		goto Exit;
-	}
-
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_FACE_DESCRIPTOR_TABLE);
 	if (hr == -1)
 	{
 		goto Exit;

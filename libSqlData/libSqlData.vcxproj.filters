@@ -102,9 +102,6 @@
     <ClInclude Include="SqlFindFacePhoto.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="SqlFaceDescriptor.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SqlFaceThumbnail.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -249,9 +246,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SqlFindFacePhoto.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="SqlFaceDescriptor.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SqlFaceThumbnail.cpp">

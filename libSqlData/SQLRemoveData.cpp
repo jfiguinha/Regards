@@ -9,7 +9,6 @@
 #include "SqlThumbnailVideo.h"
 #include "SqlFindCriteria.h"
 #include "SqlFacePhoto.h"
-#include "SqlFaceDescriptor.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
 #include "SqlThumbnailVideo.h"
@@ -55,9 +54,6 @@ bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
 	sqlFacePhoto.DeleteFaceDatabase();
 	sqlFacePhoto.DeleteFaceTreatmentDatabase();
 
-	CSqlFaceDescriptor sqlFaceDescriptor;
-	sqlFaceDescriptor.DeleteFaceDescriptorDatabase();
-
 	CSqlFaceRecognition sqlFaceRecognition;
 	sqlFaceRecognition.DeleteFaceRecognitionDatabase();
 
@@ -66,11 +62,6 @@ bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
 
 	CSqlPhotoCategorieUsenet photoCategorie;
 	photoCategorie.DeletePhotoProcessingDatabase();
-
-	//Suppression du catalog
-	//CSqlCatalog sqlCatalog;
-	//sqlCatalog.DeleteCatalog(numCatalog);
-
 	return 0;
 }
 
@@ -79,9 +70,6 @@ bool CSQLRemoveData::DeleteFaceDatabase()
 	CSqlFacePhoto sqlFacePhoto;
 	sqlFacePhoto.DeleteFaceDatabase();
 	sqlFacePhoto.DeleteFaceTreatmentDatabase();
-
-	CSqlFaceDescriptor sqlFaceDescriptor;
-	sqlFaceDescriptor.DeleteFaceDescriptorDatabase();
 
 	CSqlFaceRecognition sqlFaceRecognition;
 	sqlFaceRecognition.DeleteFaceRecognitionDatabase();
