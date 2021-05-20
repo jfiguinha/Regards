@@ -407,7 +407,6 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 				else
 					pBitmapIcone->DestroyCache();
-				delete pBitmapIcone;
 			}
 		}
 	}
