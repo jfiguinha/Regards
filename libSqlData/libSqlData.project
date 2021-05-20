@@ -80,7 +80,6 @@
     <File Name="SqlGps.cpp"/>
     <File Name="SqlVersion.cpp"/>
     <File Name="SqlPhotosWithoutThumbnail.cpp"/>
-    <File Name="SqlFaceDescriptor.cpp"/>
     <File Name="SqlFaceLabel.cpp"/>
     <File Name="SqlFacePhoto.cpp"/>
     <File Name="SqlFaceRecognition.cpp"/>
@@ -118,7 +117,6 @@
     <File Name="SqlGps.h"/>
     <File Name="SqlVersion.h"/>
     <File Name="SqlPhotosWithoutThumbnail.h"/>
-    <File Name="SqlFaceDescriptor.h"/>
     <File Name="SqlFaceLabel.h"/>
     <File Name="SqlFacePhoto.h"/>
     <File Name="SqlFaceRecognition.h"/>
