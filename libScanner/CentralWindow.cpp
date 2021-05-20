@@ -78,32 +78,6 @@ void CCentralWindow::OnScan(wxCommandEvent& event)
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
 	CSavePicture::ExportPicture(this, filename);
-	/*
-	if (filename != "")
-	{
-		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
-		if (selectFile.ShowModal() == wxID_OK)
-		{
-			vector<int> listPage = selectFile.GetSelectItem();
-			wxString fileExtract = ProcessExtractFile(listPage);
-
-			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
-				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-			if (saveFileDialog.ShowModal() == wxID_CANCEL)
-				return;     // the user changed idea...
-
-			wxString newfilename = saveFileDialog.GetPath();
-			wxCopyFile(fileExtract, newfilename);
-		}
-
-	}
-	else
-	{
-		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
-		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
-		wxMessageBox(openfile, infos, wxICON_INFORMATION);
-	}
-	*/
 }
 
 void CCentralWindow::OnDeletePage(wxCommandEvent& event)

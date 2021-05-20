@@ -43,7 +43,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 	for (auto i = 0; i < photoVector.size();i++)
 	{
 		CImageVideoThumbnail * thumbnail = photoVector.at(i);
-		infosSeparationBar->listElement.push_back((int)nbElementInIconeList);
+		infosSeparationBar->listElement.push_back(i);
 
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		//thumbnailData->SetStorage(nullptr);
@@ -71,6 +71,8 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 	if (photoVector.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
+
+	nbElement = photoVector.size();
 }
 
 void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)

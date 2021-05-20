@@ -163,7 +163,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
+	threadDataProcess = false;
 	processIdle = false;
 	this->imageLoading = imageLoading;
 	CLoadingResource loadingResource;

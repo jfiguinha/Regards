@@ -20,6 +20,7 @@ CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const 
 	numItemSelected = -1;
 	process_end = true;
 	moveOnPaint = false;
+	threadDataProcess = true;
 }
 
 CThumbnailMultiPage::~CThumbnailMultiPage(void)
@@ -152,7 +153,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEMULTIPAGE;
-
+	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
@@ -213,6 +214,8 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	nbElementInIconeList = iconeList->GetNbElement();
 
 	UpdateScroll();
+
+	threadDataProcess = true;
 
 
 }

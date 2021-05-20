@@ -142,6 +142,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEVIDEO;
+	threadDataProcess = false;
 	//int rotation = 0;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
@@ -273,6 +274,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
+	
+	threadDataProcess = true;
 
 	UpdateScroll();
 }

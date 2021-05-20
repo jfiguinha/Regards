@@ -1045,7 +1045,6 @@ void CMainWindow::AddFolder(const wxString& folder)
 {
 	TRACE();
 
-	wxString localFilename = "";
 	wxString msg = "In progress ...";
 
 	wxArrayString files;
@@ -1090,6 +1089,9 @@ void CMainWindow::AddFolder(const wxString& folder)
 		wxCommandEvent evt(wxEVENT_THUMBNAILFOLDERADD);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	if (centralWnd != nullptr)
+		centralWnd->LoadPicture(localFilename);
 
 	dialog.Destroy();
 }
