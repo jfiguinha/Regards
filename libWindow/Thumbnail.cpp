@@ -1463,14 +1463,5 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 	else
 		delete filename;
 
-	/*
-	if (idWindowToRefresh != 0)
-	{
-		wxWindow * window = this->FindWindowById(idWindowToRefresh);
-		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
-
 	this->Refresh();
 }

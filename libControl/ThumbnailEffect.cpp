@@ -451,7 +451,6 @@ void CThumbnailEffect::ProcessIdle()
 		for (auto i = 0;i <  nbElementInIconeList;i++)
 		{
             CIcone * icone = iconeList->GetElement(i);
-			//iconeList->Lock();
 			if (icone != nullptr)
 			{
 				CThumbnailData * pThumbnailData = icone->GetData();
@@ -474,16 +473,13 @@ void CThumbnailEffect::ProcessIdle()
                     }
                 }
 			}
-			//iconeList->Unlock();
-		}
-		
+		}	
 	}
 	//Test si tout a été fait
 	isAllProcess = true;
 	for (int i = 0;i < nbElementInIconeList;i++)
 	{
         CIcone * icone = iconeList->GetElement(i);
-		//iconeList->Lock();
 		if (icone != nullptr)
 		{
 			bool isLoad = false;
@@ -500,7 +496,6 @@ void CThumbnailEffect::ProcessIdle()
 				isAllProcess = false;
 			}
 		}
-		//iconeList->Unlock();
 		if (!isAllProcess)
 			break;
 	}
