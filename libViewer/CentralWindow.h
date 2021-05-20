@@ -78,8 +78,15 @@ namespace Regards
 		class CCentralWindow : public CWindowMain
 		{
 		public:
-			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal = true);
+			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CCentralWindow();
+
+			void ImageSuivante();
+			void ImagePrecedente();
+			void ImageFin();
+			void ImageDebut();
+			wxString GetFilename();
+			int GetNbElement();
 
 			void UpdateScreenRatio();
 			bool FullscreenMode();
@@ -89,9 +96,9 @@ namespace Regards
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 			void SetPosition(const long& timePosition);
-			//void SetListeFile(CImageList* picture, const int& element);
-			int RefreshPicture(const wxString &filename, const bool &first = false);
-			int LoadPicture(const wxString &filename, const bool &first = false);
+			void SetListeFile(const wxString& filename);
+			int RefreshPicture(const wxString& filename);
+			int LoadPicture(const wxString &filename);
 			void OnEndThumbnail();
             bool IsVideo();
 			void SaveParameter();
@@ -99,7 +106,6 @@ namespace Regards
 
 		private:
 
-            void SetListeFile(wxCommandEvent& event);
 			int GetPhotoId(const wxString& filename);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
@@ -125,7 +131,7 @@ namespace Regards
 			void StartAnimation();
 			bool SetAnimation(const wxString &filename);
 
-            
+
 			CPanelPhotoWnd * panelPhotoWnd;
 			CMainParam * viewerconfig;
 			CListPicture * listPicture;
@@ -160,7 +166,7 @@ namespace Regards
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail);
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
 			void SetPanelInfos(const bool &isThumbnail);
-			void SetVideo(const wxString &path, const bool &first);
+			void SetVideo(const wxString &path);
 			//void SetModeViewer();
 
 			//PhotosVector photoVector;

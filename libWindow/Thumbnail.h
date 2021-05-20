@@ -28,7 +28,13 @@ namespace Regards
 			CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnail();
 			
-			
+			wxString GetFilename(const int& numItem);
+			int ImageSuivante();
+			int ImagePrecedente();
+			int ImageFin();
+			int ImageDebut();
+			int GetNbElement();
+
 			void ZoomOn();
 			void ZoomOff();
 			void ZoomPosition(const int &position);

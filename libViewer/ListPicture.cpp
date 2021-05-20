@@ -1001,6 +1001,41 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 	}
 }
 
+int CListPicture::ImageSuivante()
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->ImageSuivante();
+	return 0;
+}
+
+int CListPicture::ImagePrecedente()
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->ImagePrecedente();
+	return 0;
+}
+
+int CListPicture::ImageFin()
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->ImageFin();
+	return 0;
+}
+
+int CListPicture::ImageDebut()
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->ImageDebut();
+	return 0;
+}
+
+wxString CListPicture::GetFilename(const int& numItem)
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->GetFilename(numItem);
+	return "";
+}
+
 void CListPicture::UpdateScreenRatio()
 {
 	if (windowManager != nullptr)

@@ -46,7 +46,7 @@ using namespace Regards::FiltreEffet;
 
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
-	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
+	const CThemeSplitter & theme, const bool &horizontal)
 	: CWindowMain("CentralWindow", parent, id)
 {
 
@@ -234,7 +234,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 			listFace->Show(false);
 		}
 	}
-    Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
+
 	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
@@ -252,12 +252,26 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
     stopVideo = false;
 
-
-
 	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 	event.SetInt(windowMode);
 	wxPostEvent(this, event);
 
+	if (listPicture != nullptr)
+		listPicture->SetListeFile();
+
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetListeFile();
+
+	wxString local = "";
+	if (config != nullptr)
+		local = config->GetLastShowPicture();
+
+	LoadPicture(local);
+}
+
+wxString CCentralWindow::GetFilename()
+{
+	return oldFilename;
 }
 
 
@@ -273,7 +287,6 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     {
         CPictureElement * pictureElement = new CPictureElement();
         pictureElement->filename = filename;
-        pictureElement->first = false;     
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt); 
@@ -301,7 +314,7 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
-int CCentralWindow::RefreshPicture(const wxString &filename, const bool &first)
+int CCentralWindow::RefreshPicture(const wxString & filename)
 {
     printf("CCentralWindow::RefreshPicture \n");
 	if (filename != this->filename)
@@ -328,36 +341,153 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const bool &first)
 			loadPicture = false;
 			CPictureElement * pictureElement = new CPictureElement();
 			pictureElement->filename = filename;
-			pictureElement->first = first;
 			wxCommandEvent evt(wxEVENT_LOADPICTURE);
 			evt.SetClientData(pictureElement);
 			this->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-	else
-	{
-		if(thumbnailPicture != nullptr)
-			thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
-		if (listPicture != nullptr)
-			listPicture->SetActifItem(GetPhotoId(filename), true);
-	}
+
+
+	if(thumbnailPicture != nullptr)
+		thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
+	if (listPicture != nullptr)
+		listPicture->SetActifItem(GetPhotoId(filename), true);
+
 	
 	return 0;
 }
 
-int CCentralWindow::LoadPicture(const wxString &filename, const bool &first)
+void CCentralWindow::ImageSuivante()
 {
-	TRACE();
+	wxString localFilename = "";
+	int numItem = 0;
+	if (windowMode)
+	{
+		if (windowMode == WINDOW_EXPLORER)
+		{
+			if (listPicture != nullptr)
+			{
+				numItem = listPicture->ImageSuivante();
+				localFilename = listPicture->GetFilename(numItem);
+			}
+		}
+		else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		{
+			if (thumbnailPicture != nullptr)
+			{
+				numItem = thumbnailPicture->ImageSuivante();
+				localFilename = thumbnailPicture->GetFilename(numItem);
+			}
+		}
+	}
 
-#if defined(WIN32) && defined(_DEBUG)
-	OutputDebugString(L"CCentralWindow::LoadPicture : ");
-	OutputDebugString(L"\n");
-	OutputDebugString(filename);
-	OutputDebugString(L"\n");
-#endif
+	if (localFilename != "")
+	{
+		LoadPicture(localFilename);
+	}
 
-    printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
-	return RefreshPicture(filename, first);
+}
+
+void CCentralWindow::ImageFin()
+{
+	wxString localFilename = "";
+	int numItem = 0;
+	if (windowMode)
+	{
+		if (windowMode == WINDOW_EXPLORER)
+		{
+			if (listPicture != nullptr)
+			{
+				numItem = listPicture->ImageFin();
+				localFilename = listPicture->GetFilename(numItem);
+			}
+		}
+		else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		{
+			if (thumbnailPicture != nullptr)
+			{
+				numItem = thumbnailPicture->ImageFin();
+				localFilename = thumbnailPicture->GetFilename(numItem);
+			}
+		}
+	}
+
+	if (localFilename != "")
+	{
+		LoadPicture(localFilename);
+	}
+}
+
+int CCentralWindow::GetNbElement()
+{
+	if (thumbnailPicture != nullptr)
+		return thumbnailPicture->GetNbElement();
+	return 0;
+}
+
+void CCentralWindow::ImageDebut()
+{
+	wxString localFilename = "";
+	int numItem = 0;
+	if (windowMode)
+	{
+		if (windowMode == WINDOW_EXPLORER)
+		{
+			if (listPicture != nullptr)
+			{
+				numItem = listPicture->ImageDebut();
+				localFilename = listPicture->GetFilename(numItem);
+			}
+		}
+		else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		{
+			if (thumbnailPicture != nullptr)
+			{
+				numItem = thumbnailPicture->ImageDebut();
+				localFilename = thumbnailPicture->GetFilename(numItem);
+			}
+		}
+	}
+
+	if (localFilename != "")
+	{
+		LoadPicture(localFilename);
+	}
+}
+
+void CCentralWindow::ImagePrecedente()
+{
+	wxString localFilename = "";
+	int numItem = 0;
+	if (windowMode)
+	{
+		if (windowMode == WINDOW_EXPLORER)
+		{
+			if (listPicture != nullptr)
+			{
+				numItem = listPicture->ImagePrecedente();
+				localFilename = listPicture->GetFilename(numItem);
+			}	
+		}
+		else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		{
+			if (thumbnailPicture != nullptr)
+			{
+				numItem = thumbnailPicture->ImagePrecedente();
+				localFilename = thumbnailPicture->GetFilename(numItem);
+			}
+		}
+	}
+
+	if (localFilename != "")
+	{
+		LoadPicture(localFilename);
+	}
+}
+
+int CCentralWindow::LoadPicture(const wxString &filename)
+{
+	return RefreshPicture(filename);
 }
 
 void CCentralWindow::HideToolbar()
@@ -833,18 +963,16 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		
 }
 
-void CCentralWindow::SetListeFile(wxCommandEvent& event)
+void CCentralWindow::SetListeFile(const wxString& filename)
 {
-	int element = event.GetInt();
-    
-	if (element == 0)
-		if (listPicture != nullptr)
-			listPicture->SetListeFile();
+	if (listPicture != nullptr)
+		listPicture->SetListeFile();
 
 	if (thumbnailPicture != nullptr)
-	{
 		thumbnailPicture->SetListeFile();
-	}
+
+	LoadPicture(filename);
+
 }
 
 CCentralWindow::~CCentralWindow()
@@ -1257,7 +1385,7 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 
 	if (libPicture.TestIsVideo(localFile) && isVideoValid)
 	{
-		SetVideo(localFile, pictureElement->first);
+		SetVideo(localFile);
 		
 	}
 	else if (libPicture.TestIsVideo(localFile) && !isVideoValid)
@@ -1367,7 +1495,7 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 }
 
 
-void CCentralWindow::SetVideo(const wxString &path, const bool &first)
+void CCentralWindow::SetVideo(const wxString &path)
 {
     printf("CCentralWindow::SetVideo \n");
 	StopAnimation();
@@ -1389,7 +1517,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	}
 
 	if (previewWindow != nullptr)
-		previewWindow->SetVideo(path, false);
+		previewWindow->SetVideo(path);
 
 	SetPanelInfos(false);
 

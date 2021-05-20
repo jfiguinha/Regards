@@ -41,6 +41,12 @@ namespace Regards
 			void Resize();
 			void ForceRefresh();
 
+			int ImageSuivante();
+			int ImagePrecedente();
+			int ImageFin();
+			int ImageDebut();
+			wxString GetFilename(const int& numItem);
+
 		private:
 			
 			

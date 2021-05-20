@@ -111,25 +111,19 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	fullscreen = false;
 	startDiaporama = false;
 	nbProcessMD5 = 0;
-	numElement = 0;
 	showToolbar = true;
 	multithread = true;
 	needToReload = false;
 	typeAffichage = THUMB_SHOW_ALL;
 	updateCriteria = true;
 	updateFolder = true;
-	//updatePicture = false;
 	refreshFolder = false;
 	numElementTraitement = 0;
 	start = true;
 	criteriaSendMessage = false;
 	//videoStart = false;
 	checkVersion = true;
-	imageList = new CImageList();
-	PhotosVector pictures;
-	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotos(&pictures);
-	imageList->SetImageList(pictures);
+
 
 	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 	viewerParam = static_cast<CMainParam*>(CMainParamInit::getInstance());
@@ -147,7 +141,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
-		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, imageList, false);
+		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, false);
 	}
 	this->statusBarViewer = statusbar;
 
@@ -206,43 +200,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	                          wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
-
-	//refreshTimer->Start(300000, wxTIMER_ONE_SHOT);
-	//diaporamaTimer->Start(2000, wxTIMER_ONE_SHOT);
-	//updatePicture = true;
-
 	refreshFolder = true;
-	if (imageList->GetNbElement() > 0)
-		processIdle = true;
-	else
-		processIdle = false;
-
+	processIdle = true;
 	updateFolder = true;
-	//processIdle = true;
+	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
-		filename = config->GetLastShowPicture();
-	if (filename != "")
-	{
-		for (int i = 0; i < imageList->GetNbElement(); i++)
-		{
-			bool isValid = false;
-			if (imageList->GetFilePath(i, isValid) == filename)
-			{
-				numElement = i;
-				break;
-			}
-		}
-	}
-
-
-	if (openFirstFile)
-		LoadPicture(true);
-
-
-
-
-	listProcessWindow.push_back(this);
+		localFilename = config->GetLastShowPicture();
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
@@ -312,9 +276,6 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 			}
 		}
 
-
-		//wxFileName file_name(filepath);
-
 		CVideoControlSoft * videoWindow = (CVideoControlSoft *)this->FindWindowById(VIDEOCONTROL);
 		COpenCLEngine * openCLEngine = videoWindow->GetOpenCLEngine();
 
@@ -329,22 +290,11 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
 				//Decoder available
 				wxString decoder = "";
-				/*
-				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-				if (regardsParam != nullptr)
-				{
-					decoder = regardsParam->GetVideoDecoderHardware();
-				}
-				*/
 				ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
 				ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
 				
 			}
 		}
-
-
-
-		//delete ffmpegEncoder;
 	}
 	else
 	{
@@ -396,7 +346,7 @@ void CMainWindow::OnEditFile(wxCommandEvent& event)
 	}
 
 
-	pathProgram = "\"" + pathProgram + "\" \"" + filename + "\"";
+	pathProgram = "\"" + pathProgram + "\" \"" + localFilename + "\"";
 	wxExecute(pathProgram);
 }
 
@@ -429,22 +379,14 @@ void CMainWindow::OnPrint(wxCommandEvent& event)
 	if(showPrintPicture)
 	{
 		CLibPicture libPicture;
-		wxString filename = GetFilename();
-		if (filename != "")
+		CImageLoadingFormat* image = libPicture.LoadPicture(localFilename);
+		if (image != nullptr)
 		{
-			CImageLoadingFormat* image = libPicture.LoadPicture(filename);
-			if (image != nullptr)
-			{
-				statusBarViewer->PrintPreview(image);
-			}
+			statusBarViewer->PrintPreview(image);
 		}
 	}
 }
 
-wxString CMainWindow::GetFilename()
-{
-	return filename;
-}
 
 void CMainWindow::UpdateThumbnailMessage(wxCommandEvent& event)
 {
@@ -570,15 +512,11 @@ void CMainWindow::OnFacePertinence()
 	processIdle = true;
 }
 
-/*
-void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
+wxString CMainWindow::GetFilename()
 {
-    TRACE();
-	refreshFolder = true;
-    processIdle = true;
-	refreshTimer->Stop();
+	return localFilename;
 }
-*/
+
 void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 {
 	wxString* threadFilename = static_cast<wxString*>(event.GetClientData());
@@ -589,14 +527,9 @@ void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
 
-	bool isValid = false;
-	CPhotos photo = imageList->GetElement(numElement, isValid);
-
-	if (*threadFilename != photo.GetPath())
+	if (*threadFilename != localFilename)
 	{
-		filename = photo.GetPath();
-		UpdatePicture();
-		//processIdle = true;
+		centralWnd->LoadPicture(*threadFilename);
 	}
 
 	if (threadFilename != nullptr)
@@ -760,20 +693,6 @@ void CMainWindow::ProcessIdle()
 	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
 
-
-	/*
-	CRegardsConfigParam * config = CParamInit::getInstance();
-	if (config != nullptr)
-		nbProcesseur = config->GetFaceProcess();
-
-	wxWindow * window = this->FindWindowById(LISTFACEID);
-	if (window)
-	{
-		wxCommandEvent evt(wxEVENT_REFRESHDATA);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
-
 	if (checkVersion)
 	{
 		wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
@@ -847,21 +766,16 @@ void CMainWindow::ProcessIdle()
 		}
 
 		//Test de la validité des fichiers
-		//PhotosVector photoList;
-		//CSqlFindPhotos findphotos;
-		//findphotos.GetAllPhotos(&photoList);
-		for (int i = 0; i < imageList->GetNbElement(); i++)
+		PhotosVector photoList;
+		CSqlFindPhotos findphotos;
+		findphotos.GetAllPhotos(&photoList);
+		for (CPhotos photo : photoList)
 		{
-			bool isValid = true;
-			CPhotos photo = imageList->GetElement(i, isValid);
-			if (isValid)
+			if (!wxFileExists(photo.GetPath()))
 			{
-				if (!wxFileExists(photo.GetPath()))
-				{
-					//Remove Folder
-					CSQLRemoveData::DeletePhoto(photo.GetId());
-					folderChange = true;
-				}
+				//Remove Folder
+				CSQLRemoveData::DeletePhoto(photo.GetId());
+				folderChange = true;
 			}
 		}
 
@@ -897,7 +811,7 @@ void CMainWindow::ProcessIdle()
 	else if (updateFolder)
 	{
 		wxString requestSql = "";
-		PhotosVector pictures;
+		pictures.clear();
 		CSqlFindPhotos sqlFindPhotos;
 		bool isValid = true;
 		//wxString photoName = imageList->GetFilePath(numElement, isValid);
@@ -914,46 +828,37 @@ void CMainWindow::ProcessIdle()
 		else
 			sqlFindPhotos.SearchPhotos(&pictures);
 
-		imageList->SetImageList(pictures);
-		numElement = 0;
+		bool isFound = false;
 
 		if (isValid)
 		{
 			int position = 0;
-			bool isFound = false;
+			
 			//Recherche du numElement en cours
 			for (CPhotos photo : pictures)
 			{
-				if (filename == photo.GetPath())
+				if (localFilename == photo.GetPath())
 				{
 					isFound = true;
 					break;
 				}
 				position++;
 			}
-
-			if (isFound)
-				numElement = position;
-			else if (pictures.size() > 0)
-				firstFileToShow = filename = pictures.at(0).GetPath();
 		}
 
-       
-        if (centralWnd)
-        {
-            wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
-            centralWnd->GetEventHandler()->AddPendingEvent(evt);
-        }
+		if (!isFound)
+			localFilename = pictures[0].GetPath();
+
+		centralWnd->SetListeFile(localFilename);
 
 		updateFolder = false;
-		UpdatePicture();
 
 		hasDoneOneThings = true;
 	}
-	else if (numElementTraitement < imageList->GetNbElement())
+	else if (numElementTraitement < pictures.size())
 	{
 		bool isValid = false;
-		CPhotos photo = imageList->GetElement(numElementTraitement, isValid); //pictures.at(numElementTraitement);
+		CPhotos photo = pictures[numElementTraitement]; //pictures.at(numElementTraitement);
 		if (isValid)
 		{
 			if (wxFileName::FileExists(photo.GetPath()))
@@ -988,7 +893,7 @@ void CMainWindow::ProcessIdle()
 
 
 		wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-		wxString message = label + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
+		wxString message = label + to_string(numElementTraitement) + L"/" + to_string(pictures.size());
 		if (statusBarViewer != nullptr)
 		{
 			statusBarViewer->SetText(3, message);
@@ -1008,32 +913,6 @@ void CMainWindow::ProcessIdle()
 
 	if (!hasDoneOneThings)
 		processIdle = false;
-}
-
-void CMainWindow::UpdatePicture()
-{
-	if (imageList->GetNbElement() > 0)
-	{
-		bool isValid = true;
-		if (filename != L"")
-		{
-			imageList->FindFileIndex(filename);
-			firstFileToShow = filename;
-		}
-		else
-			firstFileToShow = imageList->GetFilePath(numElement, isValid);
-
-
-		if (isValid)
-		{
-			if (firstFileToShow != L"")
-			{
-				centralWnd->LoadPicture(firstFileToShow, numElement);
-				filename = firstFileToShow;
-			}
-		}
-	}
-
 }
 
 void CMainWindow::OnIdle(wxIdleEvent& evt)
@@ -1066,7 +945,7 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 	nbProcessMD5--;
 	numElementTraitement++;
 	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
-	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
+	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(pictures.size());
 	if (statusBarViewer != nullptr)
 	{
 		statusBarViewer->SetText(3, message);
@@ -1100,13 +979,6 @@ void CMainWindow::CheckMD5(void* param)
 	}
 }
 
-void CMainWindow::SetSelectFile(const wxString& filename)
-{
-	TRACE();
-	this->filename = filename;
-	this->UpdatePicture();
-	//centralWnd->HidePanel();
-}
 
 void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
 {
@@ -1189,7 +1061,7 @@ void CMainWindow::AddFolder(const wxString& folder)
 {
 	TRACE();
 
-
+	wxString localFilename = "";
 	wxString msg = "In progress ...";
 
 	wxArrayString files;
@@ -1212,8 +1084,8 @@ void CMainWindow::AddFolder(const wxString& folder)
 		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
 		//Insert la liste des photos dans la base de données.
 		CSqlInsertFile sqlInsertFile;
-		sqlInsertFile.AddFileFromFolder(this, dialog, files, folder, idFolder, filename);
-		printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(filename));
+		sqlInsertFile.AddFileFromFolder(this, dialog, files, folder, idFolder, localFilename);
+		printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
 	}
 
 
@@ -1319,7 +1191,7 @@ void CMainWindow::StartDiaporama()
 			previewWindow->SetDiaporamaMode();
 
 		bool isValid = false;
-		wxString fileToLoad = imageList->GetFilePath(numElement, isValid);
+		wxString fileToLoad = localFilename;
 		if (isValid)
 		{
 			//Test is video
@@ -1347,32 +1219,22 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 	}
 }
 
-int CMainWindow::LoadPicture(const bool& first)
-{
-	int returnValue = 0;
-	bool isValid = false;
-	this->filename = imageList->GetFilePath(numElement, isValid);
-	if (isValid)
-	{
-		if (firstFileToShow != this->filename)
-		{
-			firstFileToShow = this->filename;
-			returnValue = centralWnd->LoadPicture(firstFileToShow, first);
-		}
-
-		CMainParam* config = CMainParamInit::getInstance();
-		if (config != nullptr)
-			config->SetLastShowPicture(this->filename);
-	}
-	return returnValue;
-}
 
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
 	TRACE();
 	int photoId = event.GetExtraLong();
-	numElement = imageList->FindFileIndex(photoId);
-	LoadPicture();
+	wxString filename = "";
+	for (CPhotos photo : pictures)
+	{
+		if (photo.GetId() == photoId)
+		{
+			filename = photo.GetPath();
+			break;
+		}
+	}
+
+	centralWnd->LoadPicture(filename);
 }
 
 void CMainWindow::TransitionEnd()
@@ -1444,7 +1306,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 	CPictureInfosMessage* pictureInfos = static_cast<CPictureInfosMessage*>(event.GetClientData());
 	if (pictureInfos != nullptr)
 	{
-		filename = pictureInfos->filename;
+		wxString filename = pictureInfos->filename;
 		if (filename[0] != '\0')
 		{
 			statusBarViewer->SetText(1, filename);
@@ -1472,7 +1334,7 @@ bool CMainWindow::GetProcessEnd()
 void CMainWindow::OnEndThumbnail(wxCommandEvent& event)
 {
 	wxString* thumbName = static_cast<wxString*>(event.GetClientData());
-	if (*thumbName == filename)
+	if (*thumbName == localFilename)
 		centralWnd->OnEndThumbnail();
 	delete thumbName;
 }
@@ -1522,28 +1384,17 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 		}
 	}
 
-	this->filename = fileToOpen;
-	firstFileToShow = this->filename;
-
 	if (!find)
 	{
 		AddFolder(folder);
 	}
-
-	this->filename = fileToOpen;
-	firstFileToShow = this->filename;
 
 	updateCriteria = true;
 	updateFolder = true;
 	processIdle = true;
 	setViewerMode = true;
 
-	/*
-	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-	event.SetInt(4);
-	wxPostEvent(central, event);
-	*/
+	centralWnd->LoadPicture(fileToOpen);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1605,47 +1456,33 @@ void CMainWindow::OnPictureNext(wxCommandEvent& event)
 
 void CMainWindow::ImageSuivante()
 {
-	TRACE();
-	numElement++;
-	if (numElement >= imageList->GetNbElement())
-		numElement = 0;
-
-	LoadPicture();
-
-
+	centralWnd->ImageSuivante();
+	localFilename = centralWnd->GetFilename();
 }
 
 void CMainWindow::ImagePrecedente()
 {
-	TRACE();
-
-	numElement--;
-	if (numElement < 0)
-		numElement = static_cast<int>(imageList->GetNbElement()) - 1;
-
-	LoadPicture();
-
+	centralWnd->ImagePrecedente();
+	localFilename = centralWnd->GetFilename();
 }
 
 
 void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
-	centralWnd->RefreshPicture(filename, numElement);
+	centralWnd->RefreshPicture(localFilename);
 }
 
 
 void CMainWindow::ImageFin()
 {
-	TRACE();
-	this->numElement = static_cast<int>(imageList->GetNbElement()) - 1;
-	LoadPicture();
+	centralWnd->ImageFin();
+	localFilename = centralWnd->GetFilename();
 }
 
 void CMainWindow::ImageDebut()
 {
-	TRACE();
-	this->numElement = 0;
-	LoadPicture();
+	centralWnd->ImageDebut();
+	localFilename = centralWnd->GetFilename();
 }
 
 void CMainWindow::ShowToolbar()

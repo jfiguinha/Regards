@@ -1,5 +1,6 @@
 #pragma once
 #include "FileUtility.h"
+#include <Photos.h>
 #include <WindowMain.h>
 using namespace Regards::Window;
 
@@ -51,7 +52,6 @@ namespace Regards
 			void AddFolder(const wxString &folder);
 			void OpenFile(const wxString &fileToOpen);
 			void OnFacePertinence();
-			void SetSelectFile(const wxString &filename);
 			bool GetProcessEnd();
 			void OnAddFolder(wxCommandEvent& event);
             void OnOpenFileOrFolder(wxCommandEvent& event);
@@ -98,8 +98,7 @@ namespace Regards
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
-			int LoadPicture(const bool &first = false);
-			void UpdatePicture();
+
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
 			void OnEndThumbnail(wxCommandEvent& event);
@@ -113,13 +112,11 @@ namespace Regards
 			wxTimer * diaporamaTimer;
 			IStatusBarInterface * statusBarViewer;
 			wxRect posWindow;
-			wxString filename;
+			PhotosVector pictures;
 			bool startDiaporama;
-			mutex muPicture;
-			int nbProcessMD5;		
-            CImageList * imageList = nullptr;
-			int numElement;
-			wxString firstFileToShow;
+			wxString localFilename;
+			int nbProcessMD5;
+
 			bool showToolbar;
 			CMainParam * viewerParam;
             bool multithread;
@@ -133,7 +130,7 @@ namespace Regards
 			bool criteriaSendMessage;
             bool checkVersion;
             bool setViewerMode = false;
-			wxString lastFileToShow = "";
+
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
 		};
 	}

@@ -177,12 +177,13 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 
 	isMovingScroll = move;
 
+	/*
 	if (numOldItem == numItem)
 	{
 		//printf("toto is back !!!!");
 		return;
 	}
-
+	*/
 	if (numItem >= nbElementInIconeList)
 		return;
 
@@ -263,8 +264,51 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 			numSelect->SetSelected(true);
 	}
 
+	numOldItem = numItem;
     moveOnPaint = true;
 	this->ForceRefresh();
+}
+
+int CThumbnail::ImageSuivante()
+{
+	numOldItem++;
+	if (numOldItem == nbElementInIconeList)
+		numOldItem = 0;
+	return numOldItem;
+}
+
+int CThumbnail::ImagePrecedente()
+{
+	numOldItem--;
+	if (numOldItem < 0)
+		numOldItem = nbElementInIconeList - 1;
+	return numOldItem;
+}
+
+int CThumbnail::ImageFin()
+{
+	return nbElementInIconeList - 1;
+}
+
+int CThumbnail::ImageDebut()
+{
+	return 0;
+}
+
+int CThumbnail::GetNbElement()
+{
+	return nbElementInIconeList;
+}
+
+wxString CThumbnail::GetFilename(const int &numItem)
+{
+	wxString filename = "";
+	if (iconeList != nullptr)
+	{
+		filename = iconeList->GetFilename(numItem);
+		
+	}
+	return filename;
 }
 
 void CThumbnail::SetTheme(CThemeThumbnail * theme)
