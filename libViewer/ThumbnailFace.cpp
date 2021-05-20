@@ -102,58 +102,6 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString 
 		listSeparator.push_back(infosSeparationBar);
 }
 
-void CThumbnailFace::SortSeparator(CInfosSeparationBar * infosSeparationBar)
-{
-	for(int i = 0;i < infosSeparationBar->listElement.size() - 1;i++)
-	{
-		int min = i;
-		int numElement = infosSeparationBar->listElement[i];
-		CIcone * pBitmapIcone = iconeList->GetElement(numElement);
-        if(pBitmapIcone != nullptr)
-        {
-            CSqlFaceThumbnail * thumbnailData = (CSqlFaceThumbnail *)pBitmapIcone->GetData();
-            if(thumbnailData != nullptr)
-            {
-                wxString filename = thumbnailData->GetFilename();
-                wxString filenameToChange = filename;
-                for(int j = i + 1;j < infosSeparationBar->listElement.size();j++)
-                {
-                    int numElement2 = infosSeparationBar->listElement[j];
-                    CIcone * pBitmapIcone2 = iconeList->GetElement(numElement2);
-                    if(pBitmapIcone2 != nullptr)
-                    {
-                        CSqlFaceThumbnail * thumbnailData2 = (CSqlFaceThumbnail *)pBitmapIcone2->GetData();
-                        if(thumbnailData2 != nullptr)
-                        {
-                            wxString filename2 = thumbnailData2->GetFilename();
-                            if(filenameToChange > filename2)
-                            {
-                                filenameToChange = filename2;
-                                min = j;
-                            }                              
-                        }
-                    }
-                }
-            }
-           
-        }
-
-
-        if (min != i)
-        {
-			//int element = infosSeparationBar->listElement[min];
-            //std::swap(tab[i], tab[min]); // defined in <algorithm> before C++11
-			//infosSeparationBar->listElement[min] = infosSeparationBar->listElement[i];
-			//infosSeparationBar->listElement[i] = element;
-
-			int element = infosSeparationBar->listElement[i];
-			infosSeparationBar->listElement[i] = infosSeparationBar->listElement[min];
-			infosSeparationBar->listElement[min] = element;
-        }
-	}
-}
-
-
 void CThumbnailFace::Init()
 {
 	CIconeList* iconeListLocal = new CIconeList();
@@ -203,12 +151,6 @@ void CThumbnailFace::Init()
 	thumbnailPos = 0;
 
 	threadDataProcess = true;
-
-	for(int k = 0;k < listSeparator.size();k++)
-	{
-		CInfosSeparationBar * infosSeparationBar = listSeparator.at(k);
-		SortSeparator(infosSeparationBar);
-	}
 
 	widthThumbnail = 0;
 	heightThumbnail = 0;

@@ -186,15 +186,22 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 	if (numItem >= nbElementInIconeList)
 		return;
 
-	if (numSelect != NULL)
-		numSelect->SetSelected(false);
-
-	if (numActif != nullptr)
+	if (numSelectPhotoId != -1)
 	{
-		numActif->SetActive(false);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		if(numSelect != nullptr)
+			numSelect->SetSelected(false);
+	}
+		
+
+	if (numActifPhotoId != -1)
+	{
+		CIcone* numActif = GetIconeById(numActifPhotoId);
+		if (numActif != nullptr)
+			numActif->SetSelected(false);
 	}
 
-	numActif = iconeList->GetElement(numItem);
+	numActifPhotoId = iconeList->GetPhotoId(numItem);
 	isMovingScroll = false;
    
 	if (move)
@@ -216,9 +223,14 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 		else{
 			if (!isMoving)
 			{
-				wxRect rect = numActif->GetPos();
-				//rect.x = posLargeur + rect.x;
-				//rect.y = posHauteur + rect.y;
+				wxRect rect;
+
+				if (numActifPhotoId != -1)
+				{
+					CIcone* numActif = GetIconeById(numActifPhotoId);
+					if (numActif != nullptr)
+						rect = numActif->GetPos();
+				}
 
 				//Positionnement au milieu
 				
@@ -242,11 +254,13 @@ void CThumbnail::SetActifItem(const int &idPhoto, const bool &move)
 		}
 	}
  
-	numSelect = iconeList->GetElement(numItem);
+	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 
-	if (numSelect != nullptr)
+	if (numSelectPhotoId != -1)
 	{
-		numSelect->SetSelected(true);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		if (numSelect != nullptr)
+			numSelect->SetSelected(true);
 	}
 
     moveOnPaint = true;
@@ -304,8 +318,6 @@ void CThumbnail::ZoomPosition(const int &position)
 CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CWindowMain("CThumbnail",parent, id)
 {
-	selectFilename = "";
-	actifFilename = "";
 	controlWidth = 0;
 	controlHeight = 0;
 	isMoving = 0;
@@ -313,14 +325,10 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     oldPosLargeur = 0;
     oldPosHauteur = 0;    
 	nbProcess = 0;
-	numActif = nullptr;
-	loadingIcone = nullptr;
-	numSelect = nullptr;
 	threadDataProcess = false;
 	allThreadEnd = true;
     showLoadingBitmap = false;
     stepLoading = 0;
-    loadingIcone = nullptr;
     m_animation = nullptr;
 	render = false;
 	check = false;
@@ -331,7 +339,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	thumbnailSizeY = 0;
 	posHauteur = 0;
 	posLargeur = 0;
-	numActif = 0;
 	nbLigneX = 0;
 	nbLigneY = 0;
 	
@@ -540,18 +547,16 @@ void CThumbnail::AfterSetList()
 		if (icone != nullptr)
 		{
 			CThumbnailData * data = icone->GetData();
-			if (selectFilename == data->GetFilename())
+			if (numSelectPhotoId == data->GetNumPhotoId())
 			{
-				numSelect = icone;
 				icone->SetSelected(true);
 			}
-			if (actifFilename == data->GetFilename())
+			if (numActifPhotoId == data->GetNumPhotoId())
 			{
-				numActif = icone;
 				icone->SetActive(true);
 			}
 
-			if (numSelect != nullptr && numActif != nullptr)
+			if (numSelectPhotoId != -1 && numActifPhotoId != -1)
 				break;
 		}
 	}
@@ -561,25 +566,8 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
 	TRACE();
 
-	if (numSelect != nullptr)
-	{
-		CThumbnailData* data = numSelect->GetData();
-		if (data != nullptr)
-			selectFilename = data->GetFilename();
-	}
-
-	if (numActif != nullptr)
-	{
-		CThumbnailData* data = numActif->GetData();
-		if (data != nullptr)
-			actifFilename = data->GetFilename();
-	}
-
 	iconeListLocal->EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
-	loadingIcone = nullptr;
     delete iconeListLocal;
     iconeListLocal = nullptr;
 }
@@ -810,16 +798,19 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 	{
 		int xPos = event.GetX();
 		int yPos = event.GetY();
-		if (numActif != nullptr)
+		if (numActifPhotoId != -1)
 		{
 			if (!mouseClickMove)
 				nbElementChecked = GetNbIconSelected();
 			mouseClickMove = true;
 			xPosDrag = xPos;
 			yPosDrag = yPos;
-			//numActif->SetPos(xPos, yPos);
-			numActif->SetChecked(true);
-			
+
+			if (numActifPhotoId != -1)
+			{
+				CIcone* numActif = GetIconeById(numActifPhotoId);
+				numActif->SetChecked(true);
+			}			
 		}
 
 		if (yPos < 100)
@@ -834,18 +825,24 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 		int xPos = event.GetX();
 		int yPos = event.GetY();
-
+		int iconePhotoId = -1;
 		::wxSetCursor(wxCursor(wxCURSOR_HAND));
 		CIcone * pBitmapIcone = FindElement(xPos, yPos);
 
 		if (pBitmapIcone != nullptr)
 		{
+			if (pBitmapIcone->GetData() != nullptr)
+				iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
 
-			if (numActif != nullptr)
+			if (numActifPhotoId != -1)
 			{
-				if (pBitmapIcone != numActif)
+				if (iconePhotoId != numActifPhotoId)
 				{
-					numActif->SetActive(false);
+					if (numActifPhotoId != -1)
+					{
+						CIcone* numActif = GetIconeById(numActifPhotoId);
+						numActif->SetActive(false);
+					}
 					needtoRedraw = true;
 					refreshTimer->Stop();
 				}
@@ -869,7 +866,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 			if (pBitmapIcone->GetState() != ACTIFICONE)
 			{
-				numActif = pBitmapIcone;
+				numActifPhotoId = iconePhotoId;
 				pBitmapIcone->SetActive(true);
 				if (pBitmapIcone != nullptr)
 				{
@@ -1003,18 +1000,23 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 
 	mouseClickBlock = true;
 
-	if (numSelect != nullptr)
+	if (numSelectPhotoId != -1)
 	{
-		numSelect->SetSelected(false);
-		//numSelect->RenderIcone(&winDC);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		if(numSelect != nullptr)
+			numSelect->SetSelected(false);
 	}
 
-
-
+	int iconePhotoId = -1;
 	CIcone * pBitmapIcone = FindElement(xPos, yPos);
 	if (pBitmapIcone != nullptr)
+		if (pBitmapIcone->GetData() != nullptr)
+			iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
+
+
+	if (pBitmapIcone != nullptr)
 	{
-		numSelect = pBitmapIcone;
+		numSelectPhotoId = iconePhotoId;
 		bool value = pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
         //
 		if (!value)
@@ -1031,9 +1033,13 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		FindOtherElement(&winDC, xPos, yPos);
 	}
 
-	if (numActif != nullptr && enableDragAndDrop)
+	if (numActifPhotoId != -1 && enableDragAndDrop)
 	{
-		bitmapIconDrag = numActif->GetBitmapIcone();
+		if (numActifPhotoId != -1)
+		{
+			CIcone* numActif = GetIconeById(numActifPhotoId);
+			bitmapIconDrag = numActif->GetBitmapIcone();
+		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
 		unsigned char* alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];
 		memset(alphaData, 128, image.GetWidth() * image.GetHeight());
@@ -1065,29 +1071,43 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
     TRACE();
 	int numItem = event.GetExtraLong();
 
-    if(loadingIcone != nullptr)
-       loadingIcone->StopLoadingPicture();
+	if (numloadingIconePhotoId != -1)
+	{
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
+		if (loadingIcone != nullptr)
+			loadingIcone->StopLoadingPicture();
+	}     
     
     if (numItem >= nbElementInIconeList)
         return;
 
     
-    loadingIcone = iconeList->GetElement(numItem);
+	numloadingIconePhotoId = iconeList->GetPhotoId(numItem);
     
     stepLoading = 0;
     showLoadingBitmap = true;
 
-    loadingIcone->StartLoadingPicture();
+	if (numloadingIconePhotoId != -1)
+	{
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
+		if(loadingIcone != nullptr)
+			loadingIcone->StartLoadingPicture();
+	}
 }
 
 void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 {
     TRACE();
 
-    if(loadingIcone != nullptr)
-    {
-        loadingIcone->StopLoadingPicture();
-        loadingIcone->DestroyCache();
+	if (numloadingIconePhotoId != -1)
+	{
+		CIcone* loadingIcone = GetIconeById(numloadingIconePhotoId);
+		if (loadingIcone != nullptr)
+		{
+			loadingIcone->StopLoadingPicture();
+			loadingIcone->DestroyCache();
+		}
+
     }
     
     showLoadingBitmap = false;
@@ -1108,14 +1128,17 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		return;
         
 
-	if (numSelect != nullptr && !isMovingScroll && moveOnPaint)
+	if (numSelectPhotoId != -1 && !isMovingScroll && moveOnPaint)
 	{
-		wxRect rect = numSelect->GetPos();
-		int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
-		int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
-		posLargeur = xPos;
-		posHauteur = yPos;
-		//moveOnPaint = false;
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		if (numSelect != nullptr)
+		{
+			wxRect rect = numSelect->GetPos();
+			int yPos = max((rect.y - this->GetWindowHeight() / 2), 0);
+			int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
+			posLargeur = xPos;
+			posHauteur = yPos;
+		}
 	}
 	
 	TestMaxX();

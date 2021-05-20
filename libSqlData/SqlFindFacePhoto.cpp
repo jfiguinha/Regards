@@ -28,7 +28,7 @@ std::vector<CFaceName> CSqlFindFacePhoto::GetListFaceName()
 {
 	type = 2;
 	listFaceName.clear();
-	ExecuteRequest("SELECT NumFace, FaceName, isSelectable FROM FACE_NAME");
+	ExecuteRequest("SELECT NumFace, FaceName, isSelectable FROM FACE_NAME Order By FaceName");
 	return listFaceName;
 }
 

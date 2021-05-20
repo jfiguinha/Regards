@@ -74,10 +74,11 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	if (numItem == numItemSelected)
 		return;
 	
-	if (numSelect != nullptr)
+	if (numSelectPhotoId != -1)
 	{
-		numSelect->SetSelected(false);
-		//numSelect->RenderIcone(&dc);
+		CIcone* numSelect = GetIconeById(numSelectPhotoId);
+		if(numSelect != nullptr)
+			numSelect->SetSelected(false);
 	}
 
 	pIcone = iconeList->GetElement(numItem);
@@ -130,7 +131,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 		//posLargeur = rect.x;
 	}
 
-	numSelect = pIcone;
+	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
 	Refresh();
@@ -196,7 +197,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			if (i == 0)
 			{
 				pBitmapIcone->SetSelected(true);
-				numSelect = pBitmapIcone;
+				numSelectPhotoId = i;
 			}
 
 			iconeListLocal->AddElement(pBitmapIcone);
@@ -243,7 +244,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			if (j == 0)
 			{
 				pBitmapIcone->SetSelected(true);
-				numSelect = pBitmapIcone;
+				numSelectPhotoId = j;
 			}
 
 			iconeListLocal->AddElement(pBitmapIcone);

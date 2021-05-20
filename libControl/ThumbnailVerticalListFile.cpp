@@ -168,9 +168,6 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
 {
     InitScrollingPos();
-    loadingIcone = nullptr;
-    numSelect = nullptr;
-    numActif = nullptr;
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
 

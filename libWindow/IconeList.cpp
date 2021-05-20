@@ -1,6 +1,7 @@
 #include "header.h"
 #include "IconeList.h"
 #include <WindowMain.h>
+#include <ThumbnailData.h>
 using namespace Regards::Window;
 
 //Class use for finding element in IconeList
@@ -32,6 +33,23 @@ int CIconeList::GetNbElement()
      EraseThumbnailList();
  }
 
+ int CIconeList::GetPhotoId(const int& numElement)
+ {
+	 CIcone* icone = nullptr;
+	 int photoId = -1;
+	 if (numElement < pIconeList.size())
+		 icone = pIconeList[numElement];
+
+	 if (icone != nullptr)
+	 {
+		 CThumbnailData* data = icone->GetData();
+		 if (data != nullptr)
+			 photoId = data->GetNumPhotoId();
+	 }
+
+	 return photoId;
+ }
+
 CIcone * CIconeList::GetElement(const int &numElement)
 {
     CIcone * icone = nullptr;
@@ -44,7 +62,23 @@ CIcone * CIconeList::GetElement(const int &numElement)
 void CIconeList::AddElement(CIcone * icone)
 {
     pIconeList.push_back(icone);
- 
+}
+
+wxString CIconeList::GetFilename(const int& numElement)
+{
+	CIcone* icone = nullptr;
+	wxString filename = "";
+	if (numElement < pIconeList.size())
+		icone = pIconeList[numElement];
+
+	if (icone != nullptr)
+	{
+		CThumbnailData * data =  icone->GetData();
+		if (data != nullptr)
+			filename = data->GetFilename();
+	}
+
+	return filename;
 }
 
 CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent)

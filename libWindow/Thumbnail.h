@@ -155,16 +155,25 @@ namespace Regards
 			int controlHeight;
 			int thumbnailPos;
 			int nbProcess;
+			/*
             std::mutex muActif;
             std::mutex muSelect;
             std::mutex muLoadIcone;
+
 			CIcone * numActif;
 			CIcone * numSelect;
+			CIcone* loadingIcone;
+			*/
+
+			int numActifPhotoId = -1;
+			int numSelectPhotoId = -1;
+			int numloadingIconePhotoId = -1;
+
 			bool threadDataProcess;
 			bool allThreadEnd;
             bool showLoadingBitmap;
             int stepLoading;
-            CIcone * loadingIcone;
+
             wxAnimation * m_animation;
 			bool render;
 			bool check;
@@ -176,9 +185,6 @@ namespace Regards
 			int nbElementChecked = 0;
             int oldPosLargeur;
             int oldPosHauteur;
-
-			wxString selectFilename;
-			wxString actifFilename;
 
 			int posHauteur;
 			int posLargeur;

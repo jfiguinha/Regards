@@ -102,9 +102,9 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
 
             if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
             {
-                if (numActif == nullptr && pBitmapIcone->GetNumElement() == 0)
+                if (numActifPhotoId != -1 && pBitmapIcone->GetNumElement() == 0)
                 {
-                    numActif = pBitmapIcone;
+					numActifPhotoId = iconeList->GetPhotoId(i);
                     pBitmapIcone->SetActive(true);
                 }
                 RenderBitmap(deviceContext, pBitmapIcone, 0, 0);

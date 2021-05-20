@@ -46,7 +46,7 @@ namespace Regards
 			void RenderIconeWithVScroll(wxDC * dc);
 			void UpdateScrollWithVScroll();
 			void DeleteEmptyFace();
-			void SortSeparator(CInfosSeparationBar * infosSeparationBar);
+
 
 			InfosSeparationBarVector listSeparator;
 			int nbElement;
