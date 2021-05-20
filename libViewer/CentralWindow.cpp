@@ -523,29 +523,7 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 		OutputDebugString(L"\n");
 #endif
 
-		/*
-		if (!isThumbnail)
-		{
-			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-			if (regardsParam != nullptr)
-			{
-				if (regardsParam->GetAutoConstrast())
-				{
-                    printf("Auto Contrast Enable \n");
-					CRgbaquad color;
-					CFiltreEffet * filtreLocal = new CFiltreEffet(color, nullptr, bitmap);
-					filtreLocal->BrightnessAndContrastAuto(1);
-					bitmap->UpdatePicture(filtreLocal->GetBitmap(true));
-					delete filtreLocal;
-				}
-			}
-		}
-		*/
-
-		//filename = bitmap->GetFilename();
 		SetBitmap(bitmap, isThumbnail);
-		//UpdateInfos(bitmap);
-
 		CPictureInfosMessage * pictureInfos = new CPictureInfosMessage();
 		pictureInfos->filename = filename;
 		pictureInfos->infos = to_string(bitmap->GetWidth()) + "x" + to_string(bitmap->GetHeight());
