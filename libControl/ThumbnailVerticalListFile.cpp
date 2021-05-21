@@ -23,7 +23,6 @@ wxString CThumbnailVerticalListFile::GetWaitingMessage()
 
 void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
 {
-	threadDataProcess = false;
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
 	InitScrollingPos();
@@ -57,6 +56,8 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
 		i++;
 
 	}
+
+     threadDataProcess = false;
 
     lockIconeList.lock();
     oldIconeList = iconeList;
@@ -98,7 +99,6 @@ wxString CThumbnailVerticalListFile::GetKey()
 
 void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, const bool &showSelectButton)
 {
-    threadDataProcess = false;
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
     InitScrollingPos();
@@ -148,7 +148,8 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
         i++;
 
     }
-    SetNbFiles(i);
+
+     threadDataProcess = false;
 
     lockIconeList.lock();
     oldIconeList = iconeList;
@@ -166,13 +167,10 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
 
 
 void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
-{
-    
+{ 
     InitScrollingPos();
     CIconeList* iconeListLocal = new CIconeList();
     CIconeList* oldIconeList = nullptr;
-
-    threadDataProcess = false;
 
     int i = 0;
     int x = 0;
@@ -216,7 +214,9 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
         
         i++;
     }
-    SetNbFiles(i);
+
+    threadDataProcess = false;
+
     lockIconeList.lock();
     oldIconeList = iconeList;
     iconeList = iconeListLocal;

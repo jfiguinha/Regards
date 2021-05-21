@@ -370,14 +370,13 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     oldPosLargeur = 0;
     oldPosHauteur = 0;    
 	nbProcess = 0;
-	threadDataProcess = false;
 	allThreadEnd = true;
     showLoadingBitmap = false;
     stepLoading = 0;
     m_animation = nullptr;
 	render = false;
 	check = false;
-	
+	threadDataProcess = true;
     iconeList = new CIconeList();
 	this->testValidity = testValidity;
 	thumbnailSizeX = 0;

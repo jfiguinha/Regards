@@ -76,7 +76,6 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 
 void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& typeAffichage)
 {
-	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	//---------------------------------
@@ -124,6 +123,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 		dataDay.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 
+	threadDataProcess = false;
+
 	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
@@ -132,8 +133,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
-
-	SetNbFiles(i);
 
 	//---------------------------------
 	//Application de l'tat
@@ -184,7 +183,6 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 
 void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
-	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
@@ -213,6 +211,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 		i++;
 
 	}
+
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

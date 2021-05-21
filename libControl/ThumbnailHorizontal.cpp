@@ -42,7 +42,6 @@ void CThumbnailHorizontal::InitPosition()
 
 void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 {
-    threadDataProcess = false;
 	this->SetFocus();
     InitScrollingPos();
 	CIconeList* iconeListLocal = new CIconeList();
@@ -77,6 +76,8 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
         i++;
 
     }
+
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

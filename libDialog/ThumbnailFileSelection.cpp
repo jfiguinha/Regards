@@ -77,7 +77,6 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 
 void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 {
-	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	//---------------------------------
@@ -101,9 +100,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 		AddSeparatorBar(iconeListLocal, libellePhoto, i);
 	}
 
-	//m_lock.unlock();
-
-	SetNbFiles(i);
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -145,8 +142,6 @@ void CThumbnailFileSelection::Init(const wxString &filename, const int &typeAffi
 
 void CThumbnailFileSelection::SetListeFile()
 {
-	threadDataProcess = false;
-
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
@@ -184,6 +179,8 @@ void CThumbnailFileSelection::SetListeFile()
 		x += themeThumbnail.themeIcone.GetWidth();
 	}
 
+	threadDataProcess = false;
+
 	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
@@ -194,7 +191,9 @@ void CThumbnailFileSelection::SetListeFile()
 	EraseThumbnailList(oldIconeList);
 
 	AfterSetList();
+
 	threadDataProcess = true;
+
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();

@@ -142,8 +142,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEVIDEO;
-	threadDataProcess = false;
-	//int rotation = 0;
+
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
@@ -266,6 +265,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 		processIdle = true;
 	}
 
+	threadDataProcess = false;
+
 	lockIconeList.lock();
 	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
@@ -366,7 +367,6 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
     }
 	thumbnailPos = 0;
 
-    threadDataProcess = true;
     process_end = false;
     InitScrollingPos();
     InitWithDefaultPicture(videoFilename, 20);
@@ -378,7 +378,6 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 
 void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
 {
-    threadDataProcess = true;
     process_end = false;
     InitScrollingPos();
     InitWithDefaultPicture(videoFile, size);

@@ -106,9 +106,7 @@ void CThumbnailFace::Init()
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
 	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
-	threadDataProcess = false;
 
 	double pertinence = 0.0;
 	if(viewerParam != nullptr)
@@ -135,7 +133,7 @@ void CThumbnailFace::Init()
 		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	SetNbFiles(nbElement);
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

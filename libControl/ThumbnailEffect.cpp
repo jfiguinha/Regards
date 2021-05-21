@@ -163,7 +163,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-	threadDataProcess = false;
+	
 	processIdle = false;
 	this->imageLoading = imageLoading;
 	CLoadingResource loadingResource;
@@ -206,9 +206,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
-
-		SetNbFiles(1);
-        
+       
         isAllProcess = true;
 	}
 	else if(picture.TestIsVideo(filename))
@@ -233,8 +231,6 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 		iconeListLocal->AddElement(pBitmapIcone);
-
-		SetNbFiles(1);
 
         isAllProcess = true;
 	}
@@ -352,9 +348,9 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			iconeListLocal->AddElement(pBitmapIcone);
 		}
-
-		SetNbFiles(i);
 	}
+
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

@@ -45,7 +45,6 @@ void CThumbnailViewerPicture::Init(const int &typeAffichage)
 void CThumbnailViewerPicture::SetListeFile()
 {
 	PhotosVector pictures;
-	threadDataProcess = false;
 	CIconeList * iconeListLocal = new CIconeList();
 	CIconeList * oldIconeList = nullptr;
 
@@ -76,6 +75,8 @@ void CThumbnailViewerPicture::SetListeFile()
 		i++;
 
 	}
+
+	threadDataProcess = false;
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

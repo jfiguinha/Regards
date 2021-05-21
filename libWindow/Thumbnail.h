@@ -78,7 +78,7 @@ namespace Regards
 			void OpenFileViewer(const wxString &filename);
 			void SetIconeSize(const int &width, const int &height);
 			virtual void CreateOrLoadStorageFile(){};
-			virtual void SetNbFiles(const int &nbFiles){};
+			
 			virtual CIcone * FindElement(const int &xPos, const int &yPos);
 			virtual void ResizeThumbnail(){};
 			
