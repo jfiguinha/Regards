@@ -25,6 +25,7 @@ class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
 #define TIMER_REFRESH 5
+#define TIMER_ANIMATION 6
 
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
@@ -413,6 +414,9 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     refreshTimer = new wxTimer(this, TIMER_REFRESH);
     Connect(TIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIcone), nullptr, this);
 
+	timerAnimation = new wxTimer(this, TIMER_ANIMATION);
+	Connect(TIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnAnimation), nullptr, this);
+
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
@@ -441,6 +445,11 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 int CThumbnail::GetTabValue()
 {
 	return positionSize;
+}
+
+void CThumbnail::OnAnimation(wxTimerEvent& event)
+{
+	this->Refresh();
 }
 
 void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & positionSize)
@@ -548,6 +557,8 @@ CThumbnail::~CThumbnail()
 	threadDataProcess = false;
     
     refreshTimer->Stop();
+
+	timerAnimation->Stop();
     
     while(refreshTimer->IsRunning())
     {
@@ -1188,21 +1199,21 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 			m_waitingAnimation->Show();
 			m_waitingAnimation->Start();
 			animationStart = true;
+			timerAnimation->Start(100);
 		}
 
 		m_waitingAnimation->SetSize(wxSize(width, height));
 		m_waitingAnimation->SetBackgroundColour(themeThumbnail.colorBack);
-
-		this->Refresh();
 		return;
+		
 	}
 	else if(animationStart)
 	{
+		timerAnimation->Stop();
 		m_waitingAnimation->Stop();
 		m_waitingAnimation->Hide();
 	}
-		
-        
+      
 
 	if (numSelectPhotoId != -1 && !isMovingScroll && moveOnPaint)
 	{

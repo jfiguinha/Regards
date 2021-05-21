@@ -102,7 +102,7 @@ namespace Regards
 			void InitScrollingPos();
 			virtual void AfterSetList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
-
+			void OnAnimation(wxTimerEvent& event);
             void OnRefreshIcone(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC * dc) = 0;
 			virtual void UpdateScroll() = 0;
@@ -177,6 +177,7 @@ namespace Regards
             int stepLoading;
 
             wxAnimation * m_animation;
+			wxTimer* timerAnimation;
 			bool render;
 			bool check;
 			bool testValidity;
