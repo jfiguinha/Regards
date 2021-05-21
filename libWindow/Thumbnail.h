@@ -2,18 +2,13 @@
 #include <ConfigParam.h>
 #include <ThumbnailData.h>
 #include <SqlThumbnail.h>
-
 #include "IconeList.h"
-
+#include <wx/activityindicator.h>
 #include "WindowMain.h"
 #include <wx/animate.h>
-//#include <OpenCLEngine.h>
-//using namespace Regards::OpenCL;
 using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
-
-//typedef std::vector<CThumbnailData *> ThumbnailDataVector;
 
 namespace Regards
 {
@@ -170,7 +165,8 @@ namespace Regards
 			CIcone * numSelect;
 			CIcone* loadingIcone;
 			*/
-
+			wxActivityIndicator * m_waitingAnimation;
+			bool animationStart = false;
 			int numActifPhotoId = -1;
 			int numSelectPhotoId = -1;
 			int numloadingIconePhotoId = -1;

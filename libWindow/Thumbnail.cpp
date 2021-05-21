@@ -430,6 +430,12 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	TabSize = { 100,150,200,250,300,350,400,450,500,550,600,650,700 };
 	Max = TabSize.size();
 	positionSize = 3;
+
+	m_waitingAnimation = new wxActivityIndicator(this, wxID_ANY);
+	m_waitingAnimation->Stop();
+	m_waitingAnimation->Hide();
+	//m_animation->SetSize(wxSize(this->GetHeight(), this->GetHeight()));
+	//m_animation->SetBackgroundColour(themeSlider.colorBack);
 }
 
 int CThumbnail::GetTabValue()
@@ -557,6 +563,9 @@ CThumbnail::~CThumbnail()
 	{
 		delete iconeList;
 	}
+
+	if (m_waitingAnimation != nullptr)
+		delete m_waitingAnimation;
 }
 
 int CThumbnail::GetWidth()
@@ -1169,7 +1178,30 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		return;
 
 	if (threadDataProcess == false)
+	{
+		wxBufferedPaintDC dc(this);
+		wxRect rc = GetWindowRect();
+		//UpdateScroll();
+		FillRect(&dc, rc, themeThumbnail.colorBack);
+		if (!animationStart)
+		{
+			m_waitingAnimation->Show();
+			m_waitingAnimation->Start();
+			animationStart = true;
+		}
+
+		m_waitingAnimation->SetSize(wxSize(width, height));
+		m_waitingAnimation->SetBackgroundColour(themeThumbnail.colorBack);
+
+		this->Refresh();
 		return;
+	}
+	else if(animationStart)
+	{
+		m_waitingAnimation->Stop();
+		m_waitingAnimation->Hide();
+	}
+		
         
 
 	if (numSelectPhotoId != -1 && !isMovingScroll && moveOnPaint)
