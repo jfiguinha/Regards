@@ -1519,20 +1519,6 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 					pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
 					pThumbnailData->SetIsLoading(false);
 				}
-				/*
-				if (icone != nullptr)
-				{
-					wxRect rc = icone->GetPos();
-					icone->DeleteCache();
-					//if visible
-					int left = rc.x;
-					int right = rc.x + rc.width;
-					int top = rc.y;
-					int bottom = rc.y + rc.height;
-					wxClientDC dc(this);
-					RenderBitmap(&dc, icone, 0, 0);
-				}
-				*/
 			}
 		}
 
