@@ -153,7 +153,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEMULTIPAGE;
-
+	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 
@@ -206,7 +206,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 		processIdle = false;
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;

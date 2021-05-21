@@ -82,7 +82,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	//Sauvegarde de l'état
 	//---------------------------------
 	vector<CThumbnailData*> listSelectItem;
-
+	threadDataProcess = false;
 	GetSelectItem(listSelectItem);
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
@@ -123,7 +123,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 		dataDay.MainTreatment(iconeListLocal, photoVector, this, i);
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -185,7 +185,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
+	threadDataProcess = false;
 	int i = 0;
 	int x = 0;
 	int y = 0;
@@ -212,7 +212,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -420,7 +420,7 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();
-
+				pBitmapIcone->DestroyCache();
 				//if visible
 				int left = rc.x - posLargeur;
 				int right = rc.x + rc.width - posLargeur;
@@ -429,8 +429,6 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
-				else
-					pBitmapIcone->DestroyCache();
 			}
 		}
 	}

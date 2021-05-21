@@ -79,6 +79,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
+	threadDataProcess = false;
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -100,7 +101,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 		AddSeparatorBar(iconeListLocal, libellePhoto, i);
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -144,7 +145,7 @@ void CThumbnailFileSelection::SetListeFile()
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
+	threadDataProcess = false;
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
@@ -179,7 +180,7 @@ void CThumbnailFileSelection::SetListeFile()
 		x += themeThumbnail.themeIcone.GetWidth();
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -397,7 +398,7 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();
-
+				pBitmapIcone->DestroyCache();
 				//if visible
 				int left = rc.x - posLargeur;
 				int right = rc.x + rc.width - posLargeur;
@@ -406,8 +407,6 @@ void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
-				else
-					pBitmapIcone->DestroyCache();
 			}
 		}
 	}

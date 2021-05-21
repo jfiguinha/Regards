@@ -163,7 +163,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 {
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-	
+	threadDataProcess = false;
 	processIdle = false;
 	this->imageLoading = imageLoading;
 	CLoadingResource loadingResource;
@@ -350,7 +350,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 		}
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -632,7 +632,7 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
                 pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
                 pBitmapIcone->SetWindowPos(x, y);
                 pBitmapIcone->SetSizeIcone(themeThumbnail.themeIcone.GetRealWidth(), themeThumbnail.themeIcone.GetRealHeight());
-
+				pBitmapIcone->DestroyCache();
 
                 //if visible
                 int left = x;
@@ -641,11 +641,8 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
                 int bottom = y + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-				{
 					RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
-				}
-				else
-					pBitmapIcone->DestroyCache();
+
 
                 x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
                 if (nbElementX == nbElementByRow)

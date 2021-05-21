@@ -46,7 +46,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     InitScrollingPos();
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
-
+	threadDataProcess = false;
     int i = 0;
     int x = 0;
     int y = 0;
@@ -77,7 +77,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 
     }
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -109,14 +109,12 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
             pBitmapIcone->SetWindowPos(x, y);     
-            
+			pBitmapIcone->DestroyCache();
 			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 				RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
 			}
-			else
-				pBitmapIcone->DestroyCache();
 
 			x += themeThumbnail.themeIcone.GetWidth();
 		}

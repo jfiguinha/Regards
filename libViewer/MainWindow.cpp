@@ -836,8 +836,10 @@ void CMainWindow::ProcessIdle()
 			}
 		}
 
-		if (!isFound)
+		if (!isFound && pictures.size() > 0)
 			localFilename = pictures[0].GetPath();
+		else if (!isFound)
+			localFilename = "";
 
 		centralWnd->SetListeFile(localFilename);
 

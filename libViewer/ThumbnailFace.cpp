@@ -107,7 +107,7 @@ void CThumbnailFace::Init()
 	CIconeList* iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;
 	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
-
+	threadDataProcess = false;
 	double pertinence = 0.0;
 	if(viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
@@ -133,7 +133,7 @@ void CThumbnailFace::Init()
 		AddSeparatorBar(iconeListLocal, listFace.at(i).faceName, listFace.at(i), listPhotoFace, nbElement);
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -602,7 +602,7 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC * deviceContext)
 			if (pBitmapIcone != nullptr)
 			{
 				wxRect rc = pBitmapIcone->GetPos();
-
+				pBitmapIcone->DestroyCache();
 				//if visible
 				int left = rc.x - posLargeur;
 				int right = rc.x + rc.width - posLargeur;
@@ -611,8 +611,6 @@ void CThumbnailFace::RenderIconeWithVScroll(wxDC * deviceContext)
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
-				else
-					pBitmapIcone->DestroyCache();
 			}
 		}
 	}

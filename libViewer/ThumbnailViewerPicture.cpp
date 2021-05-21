@@ -47,7 +47,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	PhotosVector pictures;
 	CIconeList * iconeListLocal = new CIconeList();
 	CIconeList * oldIconeList = nullptr;
-
+	threadDataProcess = false;
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotos(&pictures);
 	int i = 0;
@@ -76,7 +76,7 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	}
 
-	threadDataProcess = false;
+	
 
 	lockIconeList.lock();
 	oldIconeList = iconeList;
@@ -89,10 +89,11 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	AfterSetList();
 
-	threadDataProcess = true;
-	widthThumbnail = 0;
-	heightThumbnail = 0;
 	ResizeThumbnail();
+
+	threadDataProcess = true;
+
+	
 
 	processIdle = true;
 
@@ -138,15 +139,14 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			wxRect rc = pBitmapIcone->GetPos();
-			
+			pBitmapIcone->DestroyCache();
 			//if visible
 			int left = rc.x - posLargeur;
 			int right = rc.x + rc.width - posLargeur;
 
 			if (right > 0 && left < GetWindowWidth())
 				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-			else
-				pBitmapIcone->DestroyCache();
+				
 		}
 	}
 }
