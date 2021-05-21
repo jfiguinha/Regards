@@ -37,7 +37,7 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
 
-#define CAFFE
+//#define CAFFE
 
 class CThreadFace
 {

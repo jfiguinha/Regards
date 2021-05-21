@@ -18,7 +18,7 @@ using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 using namespace std;
 
-#define CAFFE
+//#define CAFFE
 //#define WRITE_OUTPUT_SAMPLE
 
 
@@ -141,7 +141,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 
 	try
 	{
-#ifdef CAFFE
+
 
 		/*
 			"{ backend     |  0 | Choose one of computation backends: "
@@ -177,7 +177,11 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 				openCLCompatible = true;
 		}
 
+#ifdef CAFFE
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+#else
+		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
+#endif
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
@@ -205,9 +209,7 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 		facemark->loadModel(face_landmark);
 		cout << "Loaded model" << endl;
 
-#else
-		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
-#endif
+
 
 
 	}
@@ -675,38 +677,43 @@ void CFaceDetector::detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vect
     
 	try
 	{
+		muDnnAccess.lock();
     #ifdef CAFFE
-        muDnnAccess.lock();
         cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300) , (104.0, 177.0, 123.0), false, false);
-        net.setInput(inputBlob);
-        auto detection = net.forward().clone();
-        muDnnAccess.unlock();
-
     #else
-        cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, inScaleFactor, cv::Size(inWidth, inHeight), meanVal, true, false);
-        net.setInput(inputBlob, "data");
-        cv::Mat detection = net.forward("detection_out");
+		
+        cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
 
     #endif
+		net.setInput(inputBlob, "data");
+		cv::Mat detection = net.forward("detection_out").clone();
+		/*
+		net.setInput(inputBlob);
+		auto detection = net.forward().clone();
+		*/
+		muDnnAccess.unlock();
 
         cv::Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
 		for (int i = 0; i < detectionMat.rows; i++)
 		{
 			float confidence = detectionMat.at<float>(i, 2);
+			if (confidence > confidenceThreshold)
+			{
+				CFace face;
+				face.confidence = confidence;
 
-			CFace face;
-			face.confidence = confidence;
+				int x1 = static_cast<int>(detectionMat.at<float>(i, 3) * frameWidth);
+				int y1 = static_cast<int>(detectionMat.at<float>(i, 4) * frameHeight);
+				int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
+				int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
-			int x1 = static_cast<int>(detectionMat.at<float>(i, 3) * frameWidth);
-			int y1 = static_cast<int>(detectionMat.at<float>(i, 4) * frameHeight);
-			int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
-			int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
+				face.myROI = cv::Rect(cv::Point(x1, y1), cv::Point(x2, y2));
+				face.croppedImage = frameOpenCVDNN(face.myROI);
+				listOfFace.push_back(face);
+				pointOfFace.push_back(face.myROI);
+			}
 
-			face.myROI = cv::Rect(cv::Point(x1, y1), cv::Point(x2, y2));
-			face.croppedImage = frameOpenCVDNN(face.myROI);
-			listOfFace.push_back(face);
-			pointOfFace.push_back(face.myROI);
 		}
 	}
 	catch (cv::Exception& e)
