@@ -93,12 +93,12 @@ void CThumbnailViewerPicture::SetListeFile()
 
 	threadDataProcess = true;
 
-	
-
 	processIdle = true;
 
 	pictures.clear();
 	this->Refresh();
+    
+
 }
 
 void CThumbnailViewerPicture::ResizeThumbnail()

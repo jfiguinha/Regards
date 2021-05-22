@@ -163,7 +163,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
 
     thumbnailPos = 0;
     threadDataProcess = true;
-
+    Refresh();
 }
 
 

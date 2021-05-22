@@ -1187,6 +1187,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     TRACE();
     int width = GetWindowWidth();
     int height = GetWindowHeight();
+
 	if (width <= 0 || height <= 0)
 		return;
 
@@ -1201,7 +1202,7 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 			m_waitingAnimation->Show();
 			m_waitingAnimation->Start();
 			animationStart = true;
-			timerAnimation->Start(100);
+			timerAnimation->Start(100, true);
 		}
 
 		m_waitingAnimation->SetSize(wxSize(width, height));
@@ -1214,8 +1215,8 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		timerAnimation->Stop();
 		m_waitingAnimation->Stop();
 		m_waitingAnimation->Hide();
+        animationStart = false;
 	}
-      
 
 	if (numSelectPhotoId != -1 && !isMovingScroll && moveOnPaint)
 	{
@@ -1229,16 +1230,13 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 			posHauteur = yPos;
 		}
 	}
-	
+
 	TestMaxX();
 	TestMaxY();
     
 	render = true;
-    //printf("CThumbnail::OnPaint \n");   
-    //printf("CThumbnail::OnPaint not buffered \n");
     wxBufferedPaintDC dc(this);
     wxRect rc = GetWindowRect();
-    //UpdateScroll();
     FillRect(&dc, rc, themeThumbnail.colorBack);
     
     lockIconeList.lock();
@@ -1258,7 +1256,6 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 		evt.SetClientData(size);
 		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 	}
-	//delete dc;
 
 	if(mouseClickBlock && mouseClickMove && enableDragAndDrop)
 	{
@@ -1282,8 +1279,6 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 				int xPos = xPosDrag - size.x / 2;
 				int yPos = yPosDrag - size.y / 2;
 
-
-				
 				dc.SetBrush(wxBrush(themeIcone.colorSelectTop));
 				dc.DrawRoundedRectangle(localx + bitmapIconDrag.GetWidth() / 4, localy + bitmapIconDrag.GetHeight() / 4, bitmapIconDrag.GetWidth() / 2, bitmapIconDrag.GetHeight() / 2, -0.25);
 				dc.SetBrush(wxNullBrush);
@@ -1293,11 +1288,12 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 				dc.SetBrush(wxNullBrush);
 			}
 		}
-		
-
-		
 	}
 	
+    if(firstRefresh)
+        if (!timerAnimation->IsRunning())
+            timerAnimation->Start(500, true);
+    firstRefresh = false;
 }
 
 void CThumbnail::Resize()

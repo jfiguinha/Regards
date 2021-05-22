@@ -200,6 +200,7 @@ namespace Regards
 			bool moveOnPaint = true;
 			bool enableDragAndDrop = false;
 			int nbElementInIconeList = 0;
+            bool firstRefresh = true;
 		};
 	}
 }

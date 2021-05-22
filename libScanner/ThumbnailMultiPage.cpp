@@ -219,7 +219,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 
 	threadDataProcess = true;
 
-	
+	Refresh();
 }
 void CThumbnailMultiPage::SetFile(const wxString &filename, vector<CImageVideoThumbnail *> & videoThumbnail)
 {

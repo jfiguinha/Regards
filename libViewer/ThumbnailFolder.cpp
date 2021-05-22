@@ -161,6 +161,8 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
+    
+    Refresh();
 }
 
 void CThumbnailFolder::Init(const int& typeAffichage)

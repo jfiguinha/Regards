@@ -279,7 +279,7 @@ int CSqlLib::ExecuteSQLWithNoResult(const wxString &query)
 		totalChange = sqlite3_total_changes(pCon);
 
 	//sync.unlock();
-    printf("Sql Query totalChange : %d \n",totalChange);
+    //printf("Sql Query totalChange : %d \n",totalChange);
 	return totalChange;
 }
 
