@@ -109,8 +109,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
-
-
 		CThemeToolbar theme;
 		//viewerTheme->GetThumbnailToolbarTheme(theme);
         viewerTheme->GetBitmapToolbarTheme(&theme);

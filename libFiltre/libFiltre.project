@@ -190,14 +190,14 @@
   </VirtualDirectory>
   <VirtualDirectory Name="interface">
     <VirtualDirectory Name="src">
-      <File Name="OpenCLEffect.h"/>
+      <File Name="OpenCLEffect.cpp"/>
       <File Name="FiltreEffetCPU.cpp"/>
       <File Name="FiltreEffet.cpp"/>
       <File Name="Filtre.cpp"/>
       <File Name="FilterData.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="OpenCLEffect.cpp"/>
+      <File Name="OpenCLEffect.h"/>
       <File Name="FiltreEffetCPU.h"/>
       <File Name="FiltreEffet.h"/>
       <File Name="Filtre.h"/>

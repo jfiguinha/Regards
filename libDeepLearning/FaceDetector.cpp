@@ -196,7 +196,11 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
 
 #else
+#ifdef CAFFE
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
+#else
+		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
+#endif
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		net.setPreferableTarget(DNN_TARGET_CPU);
 

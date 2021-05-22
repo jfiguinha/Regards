@@ -129,25 +129,34 @@ int COpenCLEffect::OilPaintingEffect(const int& size, const int& dynRatio)
 {
 	CDeepLearning::LockOpenCLDnn();
 
-	int _width = 0;
-	int _height = 0;
-	cl_mem output = nullptr;
-	if (context != nullptr)
+    try
+    {
+    	int _width = 0;
+        int _height = 0;
+        cl_mem output = nullptr;
+        if (context != nullptr)
+        {
+            COpenCLFilter openclFilter(context);
+            if (preview && paramOutput != nullptr)
+            {
+                _width = widthOut;
+                _height = heightOut;
+                output = openclFilter.OilPaintingEffect(paramOutput->GetValue(), widthOut, heightOut, size, dynRatio);
+            }
+            else
+            {
+                _width = width;
+                _height = height;
+                output = openclFilter.OilPaintingEffect(input->GetValue(), width, height, size, dynRatio);
+            }
+            SetOutputValue(output, _width, _height);
+        }
+    }
+    catch (cv::Exception& e)
 	{
-		COpenCLFilter openclFilter(context);
-		if (preview && paramOutput != nullptr)
-		{
-			_width = widthOut;
-			_height = heightOut;
-			output = openclFilter.OilPaintingEffect(paramOutput->GetValue(), widthOut, heightOut, size, dynRatio);
-		}
-		else
-		{
-			_width = width;
-			_height = height;
-			output = openclFilter.OilPaintingEffect(input->GetValue(), width, height, size, dynRatio);
-		}
-		SetOutputValue(output, _width, _height);
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 
 	CDeepLearning::UnlockOpenCLDnn();
@@ -1520,25 +1529,34 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
 	CDeepLearning::LockOpenCLDnn();
 
-	int _width = 0;
-	int _height = 0;
-	cl_mem output = nullptr;
-	if (context != nullptr)
+    try
+    {
+        int _width = 0;
+        int _height = 0;
+        cl_mem output = nullptr;
+        if (context != nullptr)
+        {
+            COpenCLFilter openclFilter(context);
+            if (preview && paramOutput != nullptr)
+            {
+                _width = widthOut;
+                _height = heightOut;
+                output = openclFilter.BrightnessAndContrastAuto(paramOutput->GetValue(), widthOut, heightOut, clipHistPercent);
+            }
+            else
+            {
+                _width = width;
+                _height = height;
+                output = openclFilter.BrightnessAndContrastAuto(input->GetValue(), width, height, clipHistPercent);
+            }
+            SetOutputValue(output, _width, _height);
+        }
+    }
+    catch (cv::Exception& e)
 	{
-		COpenCLFilter openclFilter(context);
-		if (preview && paramOutput != nullptr)
-		{
-			_width = widthOut;
-			_height = heightOut;
-			output = openclFilter.BrightnessAndContrastAuto(paramOutput->GetValue(), widthOut, heightOut, clipHistPercent);
-		}
-		else
-		{
-			_width = width;
-			_height = height;
-			output = openclFilter.BrightnessAndContrastAuto(input->GetValue(), width, height, clipHistPercent);
-		}
-		SetOutputValue(output, _width, _height);
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	CDeepLearning::UnlockOpenCLDnn();
 	return 0;
