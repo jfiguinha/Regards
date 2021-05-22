@@ -854,6 +854,8 @@ void CThumbnail::LoadPicture(void * param)
 void CThumbnail::OnMouseMove(wxMouseEvent& event)
 {
     TRACE();
+	if (threadDataProcess == false)
+		return;
 
     bool needtoRedraw = false;
 	isMovingScroll = true;
