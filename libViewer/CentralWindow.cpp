@@ -977,7 +977,9 @@ void CCentralWindow::SetListeFile(const wxString& filename)
 
 CCentralWindow::~CCentralWindow()
 {
-
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetLastShowPicture(filename);
 
 	if (windowManager != nullptr)
 		delete windowManager;
