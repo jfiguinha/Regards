@@ -75,8 +75,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
-	menuFile->Append(ID_EXPORTHTML, _("&Export PDF to HTML ..."), _("Export PDF to HTML"));
-	menuFile->Append(ID_EXPORTTXT, _("&Export PDF to TEXT ..."), _("Export PDF to TEXT"));
+	//menuFile->Append(ID_EXPORTHTML, _("&Export PDF to HTML ..."), _("Export PDF to HTML"));
+	//menuFile->Append(ID_EXPORTTXT, _("&Export PDF to TEXT ..."), _("Export PDF to TEXT"));
 	//menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 	menuFile->AppendSeparator();
@@ -150,47 +150,6 @@ int CScannerFrame::OnOpen()
 	return value;
 }
 
-/*
-void CScannerFrame::OnExportText(wxCommandEvent& event)
-{
-	wxString szFilter = "Files TEXT(*.txt) | *.txt";
-
-	wxString filename = centralWindow->GetFilename();
-	if (filename != "")
-	{
-
-		wxFileDialog saveFileDialog(nullptr, filename, "", "",
-			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;
-
-		
-		wxString file = saveFileDialog.GetPath();
-		CExportPDF::ExportPDFToTXT(filename, file);
-	}
-}
-
-void CScannerFrame::OnExportHTML(wxCommandEvent& event)
-{
-	wxString szFilter = "Files HTML(*.HTML) | *.html";
-
-	wxString filename = centralWindow->GetFilename();
-	if (filename != "")
-	{
-
-		wxFileDialog saveFileDialog(nullptr, filename, "", "",
-			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;
-
-
-		wxString file = saveFileDialog.GetPath();
-		CExportPDF::ExportPDFToHTML(filename, file);
-	}
-}
-*/
 void CScannerFrame::OnExport(wxCommandEvent& event)
 {
 	wxString filename = centralWindow->GetFilename();
@@ -235,7 +194,10 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 {
-	centralWindow->LoadFile();
+	//centralWindow->LoadFile();
+	int value = -1;
+	if (centralWindow != nullptr)
+		value = centralWindow->OnOpen(0);
 }
 
 // event handlers
@@ -463,43 +425,6 @@ wxString CScannerFrame::ScanPage()
 		if (wxFileExists(pdfFile))
 			wxRemoveFile(pdfFile);
 		picture.SaveToPDF(&image, pdfFile);
-		/*
-		int option = 0;
-		int quality = 0;
-        pdfFile = CFileUtility::GetTempFile("scanner.pdf");
-		picture.SavePictureOption(PDF, option, quality);
-
-        wxString tiffFile = CFileUtility::GetTempFile("scanner.tif");
-        wxString jpegFile = CFileUtility::GetTempFile("scanner.jpg");
-        wxArrayString arrString;
-        arrString.push_back("JPEG");
-        arrString.push_back("TIFF");
-            
-        int option = wxGetSingleChoiceIndex("PDF Compression Format",
-        "Select Compression Format",
-        arrString,
-        this);	
-        
-        if (wxFileExists(pdfFile))
-            wxRemoveFile(pdfFile);
-            
-        if (wxFileExists(tiffFile))
-            wxRemoveFile(tiffFile);
-            
-        if (wxFileExists(jpegFile))
-            wxRemoveFile(jpegFile);
-        
-        if(option == 0)
-            image.SaveFile(jpegFile, wxBITMAP_TYPE_JPEG);
-        else
-            image.SaveFile(tiffFile, wxBITMAP_TYPE_TIFF);
-
-        if(option == 0)
-            picture.SaveToPDF(&image, pdfFile, jpegFile, 0, quality);
-        else
-            picture.SaveToPDF(&image, pdfFile, tiffFile, 1, quality);
-
-			*/
 
 	}
 #endif

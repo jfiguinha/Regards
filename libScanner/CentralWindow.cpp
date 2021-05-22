@@ -499,7 +499,8 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString & listFile)
 
 void CCentralWindow::OnOpenFile(wxCommandEvent& event)
 {
-	LoadFile();
+	//LoadFile();
+	OnOpen(0);
 }
 
 void CCentralWindow::OnPrint(wxCommandEvent& event)

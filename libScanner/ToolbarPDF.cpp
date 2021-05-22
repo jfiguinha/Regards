@@ -26,7 +26,7 @@ CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & 
 {
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE", 1);
-	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
+	//wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
 	wxString lblPrint = CLibResource::LoadStringFromResource(L"LBLPRINT", 1);
@@ -58,13 +58,13 @@ CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & 
 	deletepage->SetLibelle(lblDeletePages);
 	deletepage->SetCommandId(IDM_DELETEPAGE);
 	navElement.push_back(deletepage);
-
+	/*
 	CToolbarButton* infos = new CToolbarButton(themeToolbar.button);
 	infos->SetButtonResourceId(L"IDB_SCANNER");
 	infos->SetLibelle(lblScanner);
 	infos->SetCommandId(IDM_SCANNER);
 	navElement.push_back(infos);
-
+	*/
 	CToolbarButton * print = new CToolbarButton(themeToolbar.button);
 	print->SetButtonResourceId(L"IDB_PRINTERPNG");
 	print->SetLibelle(lblPrint);
