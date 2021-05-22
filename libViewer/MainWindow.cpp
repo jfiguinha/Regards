@@ -999,6 +999,10 @@ CMainWindow::~CMainWindow()
 
 	delete(diaporamaTimer);
 
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetLastShowPicture(localFilename);
+
 	//if (refreshTimer->IsRunning())
 	//	refreshTimer->Stop();
 
