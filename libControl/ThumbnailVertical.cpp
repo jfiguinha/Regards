@@ -99,7 +99,7 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
             int right = x + themeThumbnail.themeIcone.GetWidth();
             int top = y;
             int bottom = y + themeThumbnail.themeIcone.GetHeight();
-			pBitmapIcone->DestroyCache();
+
             if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
             {
                 if (numActifPhotoId != -1 && pBitmapIcone->GetNumElement() == 0)
@@ -135,7 +135,6 @@ void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC * deviceContext)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			pBitmapIcone->SetWindowPos(x, y);
-			pBitmapIcone->DestroyCache();
 			//if visible
 			int left = x;
 			int right = x + themeThumbnail.themeIcone.GetWidth();

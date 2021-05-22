@@ -543,7 +543,6 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
                         image.SetPicture(threadLoadingBitmap->picture, true);
                         pThumbnailData->SetBitmap(&image);
                         pThumbnailData->SetIsLoading(false);
-                        icone->DestroyCache();
                         if (!render)
                         {
                             needToRefresh = true;
@@ -632,7 +631,6 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
                 pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
                 pBitmapIcone->SetWindowPos(x, y);
                 pBitmapIcone->SetSizeIcone(themeThumbnail.themeIcone.GetRealWidth(), themeThumbnail.themeIcone.GetRealHeight());
-				pBitmapIcone->DestroyCache();
 
                 //if visible
                 int left = x;

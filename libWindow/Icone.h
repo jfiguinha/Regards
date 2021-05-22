@@ -26,7 +26,6 @@ namespace Regards
             void StartLoadingPicture();
             void StopLoadingPicture();
             void SetPictureLoading(const wxImage &imageLoading);
-            void DeleteCache();
 			void SetBackgroundColor(const wxColour & backgroundColor);
 			void ShowSelectButton(const bool &show)
 			{
@@ -45,8 +44,8 @@ namespace Regards
 			bool DataNeedToBeDelete();
 			CThumbnailData * GetCopyData();
 			void SetTheme(CThemeIcone theme);
-			wxImage GetBitmapIcone();
 
+			wxBitmap GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false);
 			//------------------------------------------
 			//Theme
 			//------------------------------------------
@@ -89,9 +88,6 @@ namespace Regards
 			{
 				return pictureLoad;
 			}
-
-			void DestroyCache();
-            
 
 		private:
 
@@ -153,10 +149,6 @@ namespace Regards
             bool showLoading;
             wxImage pictureLoading;
             wxImage transparent;
-			//COpenCLContext * openclContext;
-
-			bool eraseBitmap = true;
-			wxImage bitmapLocal;
 		};
 		typedef tbb::concurrent_vector<CIcone *> IconeVector;
 		typedef bool(*pItemCompFonct)(int, int, CIcone *, CWindowMain *);

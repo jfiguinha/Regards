@@ -104,7 +104,6 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 				wxString filename = pThumbnailData->GetFilename();
 				pThumbnailData->SetIsProcess(false);
                 pThumbnailData->SetIsLoading(false);
-				pIcone->DestroyCache();
 			}
 		}
 	}
@@ -127,7 +126,6 @@ void CThumbnail::SetCheck(const bool &check)
 		if (pIcone != nullptr)
 		{
 			pIcone->ShowSelectButton(check);
-			pIcone->DestroyCache();
 		}
 	}
 }
@@ -462,19 +460,23 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int & posit
 	this->Refresh();
 }
 
+void CThumbnail::RefreshIcone(const int& idPhoto)
+{
+	wxClientDC dc(this);
+	CIcone* icone = GetIconeById(idPhoto);
+	if (icone != nullptr)
+		icone->RenderIcone(&dc, posLargeur, posHauteur, false, false);
+}
+
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	int idPhoto = event.GetId();
 	if(idPhoto != -1)
 	{
-		CIcone* icone = GetIconeById(idPhoto);
-		if (icone != nullptr)
-		{
-			icone->DestroyCache();
-		}
+		RefreshIcone(idPhoto);
 		
 	}
-	this->Refresh();
+	//this->Refresh();
 }
 
 void CThumbnail::MoveTop()
@@ -999,10 +1001,7 @@ void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const
 void CThumbnail::UpdateScreenRatio()
 {
     TRACE();
-    iconeList->DestroyCacheThumbnailList();
-	//UpdateScroll();
     this->Resize();
-	//this->ForceRefresh();
 }
 
 void CThumbnail::OpenFileViewer(const wxString &filename)
@@ -1053,6 +1052,8 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 	}
 }
 
+
+
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
     TRACE();
@@ -1100,8 +1101,9 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	{
 		if (numActifPhotoId != -1)
 		{
+			int returnValue = 0;
 			CIcone* numActif = GetIconeById(numActifPhotoId);
-			bitmapIconDrag = numActif->GetBitmapIcone();
+			bitmapIconDrag = numActif->GetBitmapIcone(returnValue);
 		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
 		unsigned char* alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];
@@ -1168,7 +1170,6 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 		if (loadingIcone != nullptr)
 		{
 			loadingIcone->StopLoadingPicture();
-			loadingIcone->DestroyCache();
 		}
 
     }
@@ -1519,6 +1520,8 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 					pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
 					pThumbnailData->SetIsLoading(false);
 				}
+
+				//RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 
@@ -1565,5 +1568,6 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 		event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, event);
 	}
-	this->Refresh();
+	if (!timerAnimation->IsRunning())
+		timerAnimation->Start(50, true);
 }

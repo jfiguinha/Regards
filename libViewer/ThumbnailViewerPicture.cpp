@@ -139,7 +139,6 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			wxRect rc = pBitmapIcone->GetPos();
-			pBitmapIcone->DestroyCache();
 			//if visible
 			int left = rc.x - posLargeur;
 			int right = rc.x + rc.width - posLargeur;

@@ -107,10 +107,3 @@ CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFon
  
  }
  
- void CIconeList::DestroyCacheThumbnailList()
- {
-  	for (CIcone * icone : pIconeList)
-    {
-        icone->DestroyCache();
-    }  
- }

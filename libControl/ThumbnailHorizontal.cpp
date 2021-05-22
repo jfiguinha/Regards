@@ -109,7 +109,6 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
             pBitmapIcone->SetWindowPos(x, y);     
-			pBitmapIcone->DestroyCache();
 			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

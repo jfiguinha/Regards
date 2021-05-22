@@ -58,7 +58,7 @@ namespace Regards
 			void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 			int GetTabValue();
 		protected:
-
+			void RefreshIcone(const int& idPhoto);
 			CIcone * GetIconeById(const int& idPhoto);
 			int GetNumItemById(const int& idPhoto);
 			void EraseThumbnailList(CIconeList* iconeListLocal);

@@ -319,7 +319,6 @@ void CThumbnailVideo::ProcessThumbnail()
 						if(thumbnail->image != nullptr)
 							thumbnailData->SetBitmap(thumbnail->image);
 						thumbnailData->SetTimePosition(thumbnail->timePosition);
-						pBitmapIcone->DestroyCache();
 					}
 				}
 				if (thumbnail != nullptr)
@@ -355,7 +354,6 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
                     wxString filename = pThumbnailData->GetFilename();
                     pThumbnailData->SetIsProcess(false);
                     pThumbnailData->SetIsLoading(false);
-                    pIcone->DestroyCache();
                 }
             }
         }
