@@ -30,6 +30,11 @@ CFilterWindowParam::~CFilterWindowParam()
     
 }
 
+void CFilterWindowParam::InitFilterOpenCLCompatible()
+{
+	supportOpenCL = COpenCLEngine::SupportOpenCL();
+}
+
 CImageLoadingFormat * CFilterWindowParam::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing)
 {
 	return nullptr;

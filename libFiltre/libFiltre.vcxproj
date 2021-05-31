@@ -505,7 +505,6 @@
     <ClInclude Include="FiltreEffetCPU.h" />
     <ClInclude Include="FiltreUpdate.h" />
     <ClInclude Include="FreeRotateEffectParameter.h" />
-    <ClInclude Include="GaussianBlur.h" />
     <ClInclude Include="GaussianBlurEffectParameter.h" />
     <ClInclude Include="GaussianBlurFilter.h" />
     <ClInclude Include="Histogramme.h" />
@@ -586,7 +585,6 @@
     <ClCompile Include="Filtre.cpp" />
     <ClCompile Include="FiltreEffet.cpp" />
     <ClCompile Include="FiltreEffetCPU.cpp" />
-    <ClCompile Include="GaussianBlur.cpp" />
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="Histogramme.cpp" />
     <ClCompile Include="hqdn3dFilter.cpp" />

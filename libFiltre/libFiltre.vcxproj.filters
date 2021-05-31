@@ -90,9 +90,6 @@
     <ClInclude Include="Color.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
-    <ClInclude Include="GaussianBlur.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
     <ClInclude Include="Histogramme.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -360,9 +357,6 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="Draw.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
-    <ClCompile Include="GaussianBlur.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="Histogramme.cpp">

@@ -15,7 +15,7 @@
 #include "Rotation.h"
 #include "Histogramme.h"
 #include "RedEye.h"
-#include "GaussianBlur.h"
+//#include "GaussianBlur.h"
 #include "InterpolationFilters.h"
 #include "Wave.h"
 #include "clahe.h"
@@ -496,7 +496,6 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 		bilateral->SetParameter(bitmap, backColor);
 		bilateral->Compute();
 		delete bilateral;
-
 		return 0;
 	}
 	return -1;
@@ -760,7 +759,7 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-
+		
 	}
 	return 0;
 }
@@ -855,10 +854,18 @@ int CFiltreEffetCPU::NiveauDeGris()
 
 	if (bitmap != nullptr)
 	{
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
+		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		/*
 		CGrayScale * filtre = new CGrayScale();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
 	}
 	return 0;
 }
@@ -875,10 +882,18 @@ int CFiltreEffetCPU::NoirEtBlanc()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CBlackAndWhite * filtre = new CBlackAndWhite();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
+		threshold(dest, dest, 127, 255, THRESH_BINARY);
+		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 	return 0;
 }
@@ -900,6 +915,23 @@ int CFiltreEffetCPU::Sepia()
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		
+		/*
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
+		cv::cvtColor(dest, dest, COLOR_GRAY2BGR);
+		cv::Mat kernel =
+			(cv::Mat_<float>(3, 3)
+				<<
+				0.272, 0.534, 0.131,
+				0.349, 0.686, 0.168,
+				0.393, 0.769, 0.189);
+		
+		cv::transform(dest, dest, kernel);
+		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		*/
 	}
 	return 0;
 }
@@ -939,6 +971,7 @@ int CFiltreEffetCPU::Blur(const int &radius)
 
 	if (bitmap != nullptr)
 	{
+		/*
 		int sizeKernel = radius * 3;
 		short * kernel = new short[sizeKernel];
 		for(int i = 0;i < sizeKernel;i++)
@@ -948,6 +981,11 @@ int CFiltreEffetCPU::Blur(const int &radius)
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::blur(image, dest, cv::Size(radius, radius));
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 	return 0;
 }
@@ -966,8 +1004,14 @@ int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
 
 	if (bitmap != nullptr)
 	{
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::GaussianBlur(image, dest, cv::Size(boxSize, boxSize), radius);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		/*
 		CGaussianBlur gaussianBlur;
 		gaussianBlur.GaussianBlur(bitmap, radius);
+		*/
 	}
 
 	return 0;
@@ -986,11 +1030,25 @@ int CFiltreEffetCPU::Emboss()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		short kernel[] = { -1, 0, 0, 0, 0, 0, 0, 0, 1 };
 		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 1, 127);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+
+		// Construct kernel (all entries initialized to 0)
+		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(2, 2) = 1.0;
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::filter2D(image, dest, image.depth(), kernel, cv::Point(-1,-1), 127);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		//filter the image
+		
 	}
 
 	return 0;
@@ -1009,11 +1067,27 @@ int CFiltreEffetCPU::SharpenStrong()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		short kernel[] = { -1, -1, -1, -1, 9, -1, -1, -1, -1 };
 		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 1, 0);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(0, 2) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 1) = 9.0;
+		kernel.at<float>(1, 2) = -1.0;
+		kernel.at<float>(2, 0) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(2, 2) = -1.0;
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::filter2D(image, dest, image.depth(), kernel);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 
 	return 0;
@@ -1032,11 +1106,23 @@ int CFiltreEffetCPU::Sharpen()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		short kernel[] = { -1, -1, -1, -1, 16, -1, -1, -1, -1 };
 		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 8, 0);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		kernel.at<float>(1, 1) = 5.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 2) = -1.0;
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::filter2D(image, dest, image.depth(), kernel);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 
 	return 0;
@@ -1055,10 +1141,18 @@ int CFiltreEffetCPU::Erode()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CErode * filtre = new CErode();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::erode(image, dest, Mat());
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
 	}
 
 	return 0;
@@ -1077,10 +1171,16 @@ int CFiltreEffetCPU::Median()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CMedian * filtre = new CMedian();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::medianBlur(image, dest, 3);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 
 	return 0;
@@ -1120,10 +1220,16 @@ int CFiltreEffetCPU::Dilate()
 
 	if (bitmap != nullptr)
 	{
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::dilate(image, dest, Mat());
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		/*
 		CDilate * filtre = new CDilate();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
 	}
 
 	return 0;
@@ -1142,10 +1248,16 @@ int CFiltreEffetCPU::Negatif()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CNegatif * filtre = new CNegatif();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::bitwise_not(image, dest);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 
 	return 0;

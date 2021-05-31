@@ -17,6 +17,7 @@
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
 #include <libPicture.h>
+#include <FilterWindowParam.h>
 //#include <face_alignement.h>
 //#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
@@ -199,6 +200,8 @@ bool MyApp::OnInit()
 
 	CLibResource::InitializeSQLServerDatabase(resourcePath);
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
+
+	CFilterWindowParam::InitFilterOpenCLCompatible();
 
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
