@@ -144,9 +144,6 @@
     <ClInclude Include="BrightAndContrastEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="ClaheEffectParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
     <ClInclude Include="CloudsEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
@@ -208,9 +205,6 @@
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="BrightAndContrastFilter.h">
-      <Filter>window\picture</Filter>
-    </ClInclude>
-    <ClInclude Include="ClaheFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="CloudsFilter.h">
@@ -396,9 +390,6 @@
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="BrightAndContrastFilter.cpp">
-      <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="ClaheFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="CloudsFilter.cpp">

@@ -25,7 +25,6 @@ public:
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual int WaveFilter(int x, int y, short height, int scale, int radius) = 0;
-	virtual int ClaheFilter(int nBins, float clipLevel, int windowSize) = 0;
 	virtual int BilateralFilter(int fSize,  float sigmaX, float sigmaP) = 0;
 	virtual int NlmeansFilter(int fsize, int bsize, float sigma) = 0;
 	virtual int GetRgbaBitmap(void * cl_image) = 0; 

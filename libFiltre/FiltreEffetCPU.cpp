@@ -413,47 +413,6 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdge
 }
 
 
-int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
-{
-	CRegardsBitmap* bitmap = nullptr;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		cv::Mat dst;
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		if (src.channels() >= 3) {
-			// READ RGB color image and convert it to Lab
-			
-			cv::Mat channel;
-			cv::cvtColor(src, dst, cv::COLOR_BGRA2BGR);
-			cv::cvtColor(dst, dst, cv::COLOR_BGR2Lab);
-
-			// Extract the L channel
-			cv::extractChannel(dst, channel, 0);
-
-			// apply the CLAHE algorithm to the L channel
-			cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
-			clahe->setClipLimit(4);
-			clahe->apply(channel, channel);
-
-			// Merge the the color planes back into an Lab image
-			cv::insertChannel(channel, dst, 0);
-
-			// convert back to RGB
-			cv::cvtColor(dst, dst, cv::COLOR_Lab2BGR);
-			cv::cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
-			// Temporary Mat not reused, so release from memory.
-			channel.release();
-		}
-
-		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-	}
-	return 0;
-}
 
 int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorRadius)
 {
@@ -654,17 +613,16 @@ int CFiltreEffetCPU::HistogramNormalize()
 	{
 		cv::Mat dest;
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-
 		cv::cvtColor(image, image, COLOR_BGRA2BGR);
-
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
-
-		normalize(bgr_planes[0], bgr_planes[0]);
-		normalize(bgr_planes[1], bgr_planes[1]);
-		normalize(bgr_planes[2], bgr_planes[2]);
-
+		int gridsize = 8;
+		cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(2.0, cv::Size(gridsize, gridsize));
+		clahe->apply(bgr_planes[0], bgr_planes[0]);
+		clahe->apply(bgr_planes[1], bgr_planes[1]);
+		clahe->apply(bgr_planes[2], bgr_planes[2]);
 		cv::merge(bgr_planes, dest);
+
 		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}

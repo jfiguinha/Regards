@@ -19,7 +19,6 @@ public:
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
-	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);
 	int GetRgbaBitmap(void * cl_image){return -1;};

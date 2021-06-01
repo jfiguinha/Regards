@@ -33,10 +33,8 @@ public:
 	virtual ~CFiltreEffet();
 	void SetPreviewMode(const bool& value);
 	void GetRgbaBitmap(void * cl_image);
-	//void SetBitmap(CRegardsBitmap * & pBitmap, int numLib);
 	void SetBitmap(CImageLoadingFormat * bitmap);
 	void SetPreview(const bool &value);
-	//wxImage RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter){};
 	int RenderEffect(const int &numEffect, CEffectParameter * effectParameter);
 	int RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter);
 	wxImage RenderEffectPreviewwxImage(const int &numEffect, CEffectParameter * effectParameter);
@@ -81,7 +79,6 @@ public:
 	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);
-	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);
     int Bm3d(const int & fSigma);

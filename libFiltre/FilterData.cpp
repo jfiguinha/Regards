@@ -32,7 +32,6 @@
 #include "DecodeRawParameter.h"
 #include "NlmeansEffectParameter.h"
 #include "bm3dWindowFilter.h"
-#include "ClaheEffectParameter.h"
 #include "WaveEffectParameter.h"
 #include "LensFlareFilter.h"
 #include "SwirlFilter.h"
@@ -48,7 +47,6 @@
 #include "BlurFilter.h"
 #include "GaussianBlurFilter.h"
 #include "NlmeansFilter.h"
-#include "ClaheFilter.h"
 #include "bilateralFilter.h"
 #include "DecodeRaw.h"
 #include "VideoFilter.h"
@@ -311,18 +309,7 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
 			}
 		}
 		break;
-
-		case IDM_FILTRE_CLAHE:
-		{
-			if (effectParameter != nullptr)
-			{
-				CClaheEffectParameter * claheEffectParameter = (CClaheEffectParameter *)effectParameter;
-				filtreEffet->ClaheFilter(claheEffectParameter->nBins, claheEffectParameter->clipLevel, claheEffectParameter->windowSize);
-                return 1;
-			}
-		}
-		break;
-        
+      
         case IDM_FILTER_BM3D:
 			if (effectParameter != nullptr)
 			{
@@ -502,11 +489,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		//filterEffect->Filter(effectParameter, source, this);
 		break;
 
-	case IDM_FILTRE_CLAHE:
-		filterEffect = new CClaheFilter();
-		//filterEffect->Filter(effectParameter, source, this);
-		break;
-
 	case IDM_FILTRE_AUDIOVIDEO:
 		filterEffect = new CAudioVideoFilter();
 		//filterEffect->Filter(effectParameter, filename, this);
@@ -600,7 +582,6 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 	switch(numFilter)
 	{   
 		case IDM_HDR_DEBLURRING:
-		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMEQUALIZE:
         case IDM_HISTOGRAMNORMALIZE:
 		case IDM_BRIGHTNESSCONTRAST_AUTO:
@@ -630,7 +611,6 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 		case IDM_WAVE_EFFECT:
 		case IDM_FILTRE_MOTIONBLUR:
 		case IDM_ROTATE_FREE:
-		case IDM_FILTRE_CLAHE:
 			return false;
 			break;
 	}
@@ -687,7 +667,6 @@ bool CFiltreData::NeedPreview(const int &numFilter)
         case IDM_FILTER_BM3D:
 		case IDM_FILTRE_BILATERAL:
 		case IDM_FILTRE_NLMEAN:
-		case IDM_FILTRE_CLAHE:
 		case IDM_DECODE_RAW:
 		case IDM_WAVE_EFFECT:
         case IDM_FILTRELENSFLARE:
@@ -743,7 +722,6 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
             break;
             
 		case IDM_BRIGHTNESSCONTRAST_AUTO:
-		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMEQUALIZE:
         case IDM_HISTOGRAMNORMALIZE:
             return HISTOGRAM_EFFECT;
@@ -797,11 +775,8 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 		case IDM_FILTRE_NLMEAN:
 			return new CNlmeansEffectParameter();
 			break;
-		case IDM_FILTRE_CLAHE:
-			return new CClaheEffectParameter();
-			break;
 
-		case IDM_FILTRE_FLOU:
+        case IDM_FILTRE_FLOU:
 			return new CBlurEffectParameter();
 			break;
 
@@ -887,7 +862,6 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:
-        case IDM_FILTRE_CLAHE:
         case IDM_FILTRE_FLOU:
         case IDM_DECODE_RAW:
         case IDM_AJUSTEMENT_SOLARISATION:
@@ -1080,13 +1054,7 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 		}
 		break;
 
-		case IDM_FILTRE_CLAHE:
-		{
-			return new CClaheEffectParameter();
-		}
-		break;
-
-		default:
+        default:
 			return new CEffectParameter();
 
     }
@@ -1102,7 +1070,6 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:
-        case IDM_FILTRE_CLAHE:
         case IDM_FILTRE_FLOU:
         case IDM_DECODE_RAW:
         case IDM_SHARPENMASKING:
@@ -1176,7 +1143,6 @@ void CFiltreData::InitFilterListLabel()
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIDEO,"LBLVIDEOEFFECT"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_NLMEAN,"LBLNLMEANS"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_BILATERAL,"LBLBILATERALDENOISING"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_CLAHE,"LBLENHANCELOCALCONTRAST"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE90, "LBLROTATE90"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE270, "LBLROTATE270"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPVERTICAL, "LBLFLIPV"));

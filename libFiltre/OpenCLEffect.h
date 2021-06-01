@@ -44,7 +44,6 @@ namespace Regards
 
             int Bm3d(const int & fSigma);
 			int MeanShift(const float& fSpatialRadius, const float& fColorRadius) { return -1; };
-			int ClaheFilter(int nBins, float clipLevel, int windowSize){ return -1; };
 			int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 			int NlmeansFilter(int fsize, int bsize, float sigma);
 			int OilPaintingEffect(const int &size, const int &dynRatio);

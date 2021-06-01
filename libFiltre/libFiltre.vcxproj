@@ -485,8 +485,6 @@
     <ClInclude Include="CartoonEffectParameter.h" />
     <ClInclude Include="CartoonFilter.h" />
     <ClInclude Include="circle.h" />
-    <ClInclude Include="ClaheEffectParameter.h" />
-    <ClInclude Include="ClaheFilter.h" />
     <ClInclude Include="CloudsEffectParameter.h" />
     <ClInclude Include="CloudsFilter.h" />
     <ClInclude Include="Color.h" />
@@ -568,7 +566,6 @@
     <ClCompile Include="BrightAndContrastFilter.cpp" />
     <ClCompile Include="CartoonFilter.cpp" />
     <ClCompile Include="circle.cpp" />
-    <ClCompile Include="ClaheFilter.cpp" />
     <ClCompile Include="CloudsFilter.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="ColorBalanceFilter.cpp" />

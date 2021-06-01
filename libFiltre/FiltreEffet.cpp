@@ -84,11 +84,6 @@ int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
 	return 0;
 }
 
-int CFiltreEffet::ClaheFilter(int nBins, float clipLevel, int windowSize)
-{
-	return filtreEffet->ClaheFilter(nBins, clipLevel, clipLevel);
-}
-
 int CFiltreEffet::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 {
 	return filtreEffet->BilateralFilter(fSize, sigmaX, sigmaP);
