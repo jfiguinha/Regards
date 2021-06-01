@@ -485,7 +485,6 @@
     <ClInclude Include="CartoonEffectParameter.h" />
     <ClInclude Include="CartoonFilter.h" />
     <ClInclude Include="circle.h" />
-    <ClInclude Include="clahe.h" />
     <ClInclude Include="ClaheEffectParameter.h" />
     <ClInclude Include="ClaheFilter.h" />
     <ClInclude Include="CloudsEffectParameter.h" />
@@ -507,7 +506,6 @@
     <ClInclude Include="FreeRotateEffectParameter.h" />
     <ClInclude Include="GaussianBlurEffectParameter.h" />
     <ClInclude Include="GaussianBlurFilter.h" />
-    <ClInclude Include="Histogramme.h" />
     <ClInclude Include="hqdn3dEffectParameter.h" />
     <ClInclude Include="hqdn3dFilter.h" />
     <ClInclude Include="LensFlare.h" />
@@ -570,7 +568,6 @@
     <ClCompile Include="BrightAndContrastFilter.cpp" />
     <ClCompile Include="CartoonFilter.cpp" />
     <ClCompile Include="circle.cpp" />
-    <ClCompile Include="clahe.cpp" />
     <ClCompile Include="ClaheFilter.cpp" />
     <ClCompile Include="CloudsFilter.cpp" />
     <ClCompile Include="Color.cpp" />
@@ -586,7 +583,6 @@
     <ClCompile Include="FiltreEffet.cpp" />
     <ClCompile Include="FiltreEffetCPU.cpp" />
     <ClCompile Include="GaussianBlurFilter.cpp" />
-    <ClCompile Include="Histogramme.cpp" />
     <ClCompile Include="hqdn3dFilter.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />

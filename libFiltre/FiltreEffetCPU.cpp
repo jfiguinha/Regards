@@ -13,12 +13,9 @@
 #include "MotionBlur.h"
 #include "Filtre.h"
 #include "Rotation.h"
-#include "Histogramme.h"
 #include "RedEye.h"
-//#include "GaussianBlur.h"
 #include "InterpolationFilters.h"
 #include "Wave.h"
-#include "clahe.h"
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <OpenCVEffect.h>
@@ -644,19 +641,65 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 	ApplyInterpolationFilters(pBitmap, bitmapOut, rc, flipH, flipV, angle, method);
 }
 
-int CFiltreEffetCPU::HistogramLog()
-{
-	return CHistogramme::HistogramLog(pBitmap);
-}
-
 int CFiltreEffetCPU::HistogramNormalize()
 {
-	return CHistogramme::HistogramNormalize(pBitmap);
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+
+	if (bitmap != nullptr)
+	{
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+		cv::cvtColor(image, image, COLOR_BGRA2BGR);
+
+		vector<Mat> bgr_planes;
+		split(image, bgr_planes);
+
+		normalize(bgr_planes[0], bgr_planes[0]);
+		normalize(bgr_planes[1], bgr_planes[1]);
+		normalize(bgr_planes[2], bgr_planes[2]);
+
+		cv::merge(bgr_planes, dest);
+		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+	return 0;
+	//return CHistogramme::HistogramNormalize(pBitmap);
 }
 
 int CFiltreEffetCPU::HistogramEqualize()
 {
-	return CHistogramme::HistogramEqualize(pBitmap);
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+
+	if (bitmap != nullptr)
+	{
+		cv::Mat dest;
+		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+		cv::cvtColor(image, image, COLOR_BGRA2BGR);
+
+		vector<Mat> bgr_planes;
+		split(image, bgr_planes);
+		cv::equalizeHist(bgr_planes[0], bgr_planes[0]);
+		cv::equalizeHist(bgr_planes[1], bgr_planes[1]);
+		cv::equalizeHist(bgr_planes[2], bgr_planes[2]);
+
+		cv::merge(bgr_planes, dest);
+		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+	return 0;
+	//return CHistogramme::HistogramEqualize(pBitmap);
 }
 
 int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)

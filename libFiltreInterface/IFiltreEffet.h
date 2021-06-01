@@ -29,7 +29,6 @@ public:
 	virtual int BilateralFilter(int fSize,  float sigmaX, float sigmaP) = 0;
 	virtual int NlmeansFilter(int fsize, int bsize, float sigma) = 0;
 	virtual int GetRgbaBitmap(void * cl_image) = 0; 
-	virtual int HistogramLog() = 0;
 	virtual int HistogramNormalize() = 0;
 	virtual int HistogramEqualize() = 0;
 	virtual int CartoonifyImage(const int & mode) = 0;

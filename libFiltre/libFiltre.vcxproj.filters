@@ -84,13 +84,7 @@
     <ClInclude Include="utilities.h">
       <Filter>bm3d</Filter>
     </ClInclude>
-    <ClInclude Include="clahe.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
-    <ClInclude Include="Histogramme.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
     <ClInclude Include="LensFlare.h">
@@ -347,9 +341,6 @@
     <ClCompile Include="circle.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
-    <ClCompile Include="clahe.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
@@ -357,9 +348,6 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="Draw.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Histogramme.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="LensFlare.cpp">

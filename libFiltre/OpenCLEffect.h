@@ -53,7 +53,6 @@ namespace Regards
 			int CartoonifyImage(const int & mode) { return -1; };
 			int NiveauDeGris();
 			int RedEye(){ return -1; };
-			int HistogramLog(){ return -1; };
 			int HistogramNormalize(){ return -1; };
 			int HistogramEqualize(){ return -1; };
 			int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);

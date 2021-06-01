@@ -105,10 +105,6 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
             filtreEffet->HistogramEqualize();
             break;
             
-        case IDM_HISTOGRAMLOG:
-            filtreEffet->HistogramLog();
-            break;
-
 		case IDM_ROTATE90:
 			filtreEffet->Rotate90();
 			break;
@@ -605,7 +601,6 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 	{   
 		case IDM_HDR_DEBLURRING:
 		case IDM_FILTRE_CLAHE:
-        case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
         case IDM_HISTOGRAMNORMALIZE:
 		case IDM_BRIGHTNESSCONTRAST_AUTO:
@@ -749,7 +744,6 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
             
 		case IDM_BRIGHTNESSCONTRAST_AUTO:
 		case IDM_FILTRE_CLAHE:
-        case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
         case IDM_HISTOGRAMNORMALIZE:
             return HISTOGRAM_EFFECT;
@@ -1177,7 +1171,6 @@ void CFiltreData::InitFilterListLabel()
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_CROP, "LBLCROP"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HISTOGRAMNORMALIZE, "LBLHistogramNormalize"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HISTOGRAMEQUALIZE, "LBLHistogramEqualize"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HISTOGRAMLOG, "LBLHistogramLog"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_SHARPENMASKING, "LBLSharpenMasking"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_DECODE_RAW, "LBLBLACKROOM"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIDEO,"LBLVIDEOEFFECT"));

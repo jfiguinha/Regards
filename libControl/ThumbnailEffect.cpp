@@ -2,7 +2,6 @@
 #include "ThumbnailEffect.h"
 #include "InfosSeparationBarEffect.h"
 #include <ThumbnailDataStorage.h>
-#include <Histogramme.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <LibResource.h>

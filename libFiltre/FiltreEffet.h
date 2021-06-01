@@ -41,7 +41,6 @@ public:
 	int RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter);
 	wxImage RenderEffectPreviewwxImage(const int &numEffect, CEffectParameter * effectParameter);
 	int SharpenMasking(const float &sharpness);
-	int HistogramLog();
 	int HistogramNormalize();
 	int HistogramEqualize();
     bool OpenCLHasEnoughMemory();

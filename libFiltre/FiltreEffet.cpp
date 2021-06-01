@@ -10,7 +10,6 @@
 #include "Rotate.h"
 #include "RedEye.h"
 #include <FilterData.h>
-#include "Histogramme.h"
 #include "InterpolationFilters.h"
 #include "WaveFilter.h"
 #include <ImageLoadingFormat.h>
@@ -242,12 +241,6 @@ void CFiltreEffet::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
  {
      return filtreEffet->GetFloatBitmap(source);
  }
-
-int CFiltreEffet::HistogramLog()
-{
-	filtreEffet->HistogramLog();
-	return 0;
-}
 
 int CFiltreEffet::HistogramNormalize()
 {
