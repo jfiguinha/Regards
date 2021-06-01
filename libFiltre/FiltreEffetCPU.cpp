@@ -1535,6 +1535,22 @@ int CFiltreEffetCPU::Rotate270()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const int &interpolation)
 {
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		cv::Mat dst(imageHeight, imageWidth, CV_8UC4);
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::resize(src, dst, dst.size(), 0, 0, INTER_CUBIC);
+		bitmap->SetBitmap(dst.data, imageWidth, imageHeight);
+	}
+	
+
+	/*
 	CRegardsBitmap * scaleBitmap = new CRegardsBitmap(imageWidth, imageHeight);
 
 	CInterpolationBicubic imageScale;
@@ -1542,7 +1558,7 @@ int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const
 	pBitmap->SetBitmap(scaleBitmap->GetPtBitmap(), imageWidth, imageHeight);
 
 	delete scaleBitmap;
-
+	*/
 	return 0;
 }
 
