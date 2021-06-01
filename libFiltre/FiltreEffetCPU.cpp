@@ -12,7 +12,6 @@
 #include "LensFlare.h"
 #include "MotionBlur.h"
 #include "Filtre.h"
-#include "Rotation.h"
 #include "RedEye.h"
 #include "InterpolationFilters.h"
 #include "Wave.h"
@@ -426,13 +425,15 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 	{
 		cv::Mat dst;
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cvtColor(src, dst, cv::COLOR_BGR2Lab);
+		cvtColor(src, dst, cv::COLOR_BGRA2BGR);
+		cvtColor(dst, dst, cv::COLOR_BGR2Lab);
 		// Initilize Mean Shift with spatial bandwith and color bandwith
 		CMeanShift msProcess(fSpatialRadius, fColorRadius);
 			//MSProc(fSpatialRadius, fColorRadius);
 		// Filtering Process
 		msProcess.MSFiltering(dst);
 		cvtColor(dst, dst, cv::COLOR_Lab2RGB);
+		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 	return 0;
@@ -448,11 +449,19 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 
 	if (bitmap != nullptr)
 	{
+		/*
 		CBilateral * bilateral = new Regards::FiltreEffet::CBilateral(fSize, sigmaX, sigmaP);
 		bilateral->SetParameter(bitmap, backColor);
 		bilateral->Compute();
 		delete bilateral;
 		return 0;
+		*/
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(),bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, dst, cv::COLOR_BGRA2BGR);
+		cv::bilateralFilter(dst, src, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
+		cvtColor(src, dst, cv::COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 	return -1;
 }
@@ -1421,9 +1430,20 @@ int CFiltreEffetCPU::RotateFree(const double &angle, const int &widthOut, const 
 
 	if (bitmap != nullptr)
 	{
-		CRotation * m_cEffet = new CRotation();
-		m_cEffet->Rotate(bitmap, angle, backColor);
-		delete m_cEffet;
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+		// get rotation matrix for rotating the image around its center in pixel coordinates
+		cv::Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
+		cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+		// determine bounding rectangle, center not relevant
+		cv::Rect2f bbox = cv::RotatedRect(cv::Point2f(), src.size(), angle).boundingRect2f();
+		// adjust transformation matrix
+		rot.at<double>(0, 2) += bbox.width / 2.0 - src.cols / 2.0;
+		rot.at<double>(1, 2) += bbox.height / 2.0 - src.rows / 2.0;
+
+		cv::warpAffine(src, dst, rot, bbox.size());
+		bitmap->SetBitmap(dst.data, dst.cols, dst.rows);
 	}
 	return 0;
 }
@@ -1449,6 +1469,27 @@ int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad &clValue, const int &intensity)
 	return 0;
 }
 
+void CFiltreEffetCPU::RotateMatrix(const int &angle, cv::Mat &src)
+{
+	cv::Mat dst;
+	if (angle == 90) {
+		// Rotate clockwise 270 degrees
+		cv::transpose(src, dst);
+		cv::flip(dst, src, 0);
+	}
+	else if (angle == 180) {
+		// Rotate clockwise 180 degrees
+		cv::flip(src, src, -1);
+	}
+	else if (angle == 270) {
+		// Rotate clockwise 90 degrees
+		cv::transpose(src, dst);
+		cv::flip(dst, src, 1);
+	}
+
+}
+
+
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
@@ -1462,9 +1503,9 @@ int CFiltreEffetCPU::Rotate90()
 
 	if (bitmap != nullptr)
 	{
-		CRotation * m_cEffet = new CRotation();
-		m_cEffet->Rotate(bitmap, 270.0f, backColor);
-		delete m_cEffet;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		RotateMatrix(270, src);
+		bitmap->SetBitmap(src.data, bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth());
 	}
 	return 0;
 }
@@ -1482,9 +1523,9 @@ int CFiltreEffetCPU::Rotate270()
 
 	if (bitmap != nullptr)
 	{
-		CRotation * m_cEffet = new CRotation();
-		m_cEffet->Rotate(bitmap, 90.0f, backColor);
-		delete m_cEffet;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		RotateMatrix(90, src);
+		bitmap->SetBitmap(src.data, bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth());
 	}
 	return 0;
 }

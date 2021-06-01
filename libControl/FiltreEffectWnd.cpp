@@ -25,7 +25,6 @@
 #include "BilateralEffectParameter.h"
 #include "NlmeansEffectParameter.h"
 #include "WaveEffectParameter.h"
-#include "ClaheEffectParameter.h"
 #include <LibResource.h>
 #include "BitmapWndViewer.h"
 #include "ShowBitmap.h"

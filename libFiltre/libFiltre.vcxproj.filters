@@ -99,12 +99,6 @@
     <ClInclude Include="RedEye.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
-    <ClInclude Include="Rotate.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
-    <ClInclude Include="Rotation.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
     <ClInclude Include="Wave.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -357,12 +351,6 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="RedEye.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Rotate.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Rotation.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="Selection.cpp">

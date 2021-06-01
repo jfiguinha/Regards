@@ -531,9 +531,7 @@
     <ClInclude Include="RedEye.h" />
     <ClInclude Include="RedEyeParameter.h" />
     <ClInclude Include="RgbEffectParameter.h" />
-    <ClInclude Include="Rotate.h" />
     <ClInclude Include="RotateFreeFilter.h" />
-    <ClInclude Include="Rotation.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="SharpenMaskingFilter.h" />
     <ClInclude Include="SharpenMaskingParameter.h" />
@@ -597,9 +595,7 @@
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />
     <ClCompile Include="RedEye.cpp" />
-    <ClCompile Include="Rotate.cpp" />
     <ClCompile Include="RotateFreeFilter.cpp" />
-    <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="SharpenMaskingFilter.cpp" />
     <ClCompile Include="SolarisationFilter.cpp" />

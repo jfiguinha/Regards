@@ -75,6 +75,7 @@ public:
 	int OilPaintingEffect(const int &size, const int &dynRatio);
 
 private:
+	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat &mask);
 	CRegardsBitmap * bitmapOut;

@@ -13,13 +13,13 @@ using namespace Regards::FiltreEffet;
 CLensFlare::CLensFlare(void)
 {
 	iColorIntensity = 100;
-	circle = new CCircle();
+
 }
 
 
 CLensFlare::~CLensFlare(void)
 {
-	delete circle;
+
 }
 
 
@@ -32,7 +32,7 @@ void CLensFlare::Halo(const int &x, const int &y,const int &iColor, const int &i
 
 	int rayon = iTaille;
     if(iTaille > 0)
-        pBitmap->InsertwxImage(circle->Halo(iColor, iColorIntensity, iTaille * 2, iWidth, fAlpha2, iCentre), x - rayon, y - rayon);
+        pBitmap->InsertwxImage(CCircle::Halo(iColor, iColorIntensity, iTaille * 2, iWidth, fAlpha2, iCentre), x - rayon, y - rayon);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ void CLensFlare::HaloGradient(const int &x, const int &y, const int &iTaille, co
 {
 	int rayon = iTaille;
     if(iTaille > 0)
-        pBitmap->InsertwxImage(circle->HaloGradient(iTaille * 2, iWidth, fAlpha2), x - rayon, y - rayon);
+        pBitmap->InsertwxImage(CCircle::HaloGradient(iTaille * 2, iWidth, fAlpha2), x - rayon, y - rayon);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ void CLensFlare::Circle(const int &x, const int &y,const CRgbaquad &m_color, con
 {
 	int rayon = iTaille / 2;
     if(rayon > 0)
-        pBitmap->InsertwxImage(circle->GenerateCircle(m_color, iTaille, fAlpha), x - rayon, y - rayon);
+        pBitmap->InsertwxImage(CCircle::GenerateCircle(m_color, iTaille, fAlpha), x - rayon, y - rayon);
 	
 }
 
@@ -64,7 +64,7 @@ void CLensFlare::CircleGradient(const int &x, const int &y,const CRgbaquad &m_co
 
 	int rayon = iTaille;
     if(rayon > 0)
-        pBitmap->InsertwxImage(circle->GradientTransparent(m_color, iTaille * 2, fAlpha), x - rayon, y - rayon);
+        pBitmap->InsertwxImage(CCircle::GradientTransparent(m_color, iTaille * 2, fAlpha), x - rayon, y - rayon);
 }
 
 
@@ -75,7 +75,7 @@ void CLensFlare::Burst(const int &x, const int &y,const int &iTaille,const int &
 {
 	int rayon = iTaille;
     if(rayon > 0)
-        pBitmap->InsertwxImage(circle->Burst(iTaille * 2, iColor, iIntensity, iColorIntensity), x - rayon, y - rayon);
+        pBitmap->InsertwxImage(CCircle::Burst(iTaille * 2, iColor, iIntensity, iColorIntensity), x - rayon, y - rayon);
 }
 
 
@@ -93,11 +93,7 @@ void CLensFlare::LensFlare(CRegardsBitmap * pBitmap, const int &iPosX, const int
 	//Chargement du lensflare 1
 	if (pBitmap->GetPtBitmap() != NULL)
 	{
-		//long Moyenne;
-		//uint8_t * pBitsSrc = NULL;
-		//unsigned int bmWidth, bmHeight;//,bmWidth2, bmHeight2;
-		//unsigned long m_lSize;
-	//	HBITMAP hBitmap;
+
 		int i = 0;
 
 		int x = iPosX;

@@ -7,7 +7,6 @@
 #include "InterpolationBicubic.h"
 #include <OpenCLParameter.h>
 #include <LibResource.h>
-#include "Rotate.h"
 #include "RedEye.h"
 #include <FilterData.h>
 #include "InterpolationFilters.h"
