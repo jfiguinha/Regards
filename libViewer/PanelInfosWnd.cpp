@@ -18,6 +18,12 @@
 #include <ShowBitmap.h>
 #include <MainParamInit.h>
 #include <GpsEngine.h>
+#include <libPicture.h>
+#include <ImageLoadingFormat.h>
+#include <RegardsBitmap.h>
+#include "PicturePanel.h"
+#include <OpenCVEffect.h>
+using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -39,7 +45,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	webBrowser = nullptr;
 	infosToolbar = nullptr;
-
+	picturePanel = nullptr;
 	//Effect Parameter
 	modificationManager = nullptr;
 
@@ -165,6 +171,20 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
         listWindow.push_back(tabInfosFile);     
     }
 
+	if (picturePanel == nullptr)
+	{
+		CThemeTree themeTree;
+		viewerTheme->GetTreeTheme(&themeTree);
+
+		picturePanel = new CPicturePanel(this, wxID_ANY, themeTree);
+		picturePanel->Show(false);
+
+		CTabWindowData* tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(picturePanel);
+		tabInfosFile->SetId(WM_HISTOGRAM);
+		listWindow.push_back(tabInfosFile);
+	}
+
 	
 	if (viewerTheme != nullptr)
 	{
@@ -219,7 +239,9 @@ CPanelInfosWnd::~CPanelInfosWnd()
 	delete(thumbnailEffectWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
+	delete(picturePanel);
     delete(modificationManager);
+
 }
 
 void CPanelInfosWnd::SetAnimationFile(const wxString &filename)
@@ -330,6 +352,7 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 		delete fileGeolocalisation;
 
 		this->isVideo = false;
+
 
 		LoadInfo();
 	}
@@ -486,6 +509,12 @@ void CPanelInfosWnd::LoadInfo()
 				windowVisible = WM_INFOS;
             }
 			break;
+
+		case WM_HISTOGRAM:
+			HistogramUpdate();
+			infosToolbar->SetHistogramPush();
+			windowVisible = WM_INFOS;
+			break;
 		}
 	//}
 	this->ForceRefresh();
@@ -495,6 +524,18 @@ void CPanelInfosWnd::LoadInfo()
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		config->SetVisibleWindowPanelInfos(windowVisible);
+}
+
+void CPanelInfosWnd::HistogramUpdate()
+{
+	CLibPicture picture;
+	CImageLoadingFormat* pictureLoad = picture.LoadPicture(filename);
+	CRegardsBitmap* bitmap = pictureLoad->GetRegardsBitmap();
+	picturePanel->SetPictureToDisplay(bitmap);
+	delete pictureLoad;
+
+	picturePanel->Show(true);
+	Resize();
 }
 
 wxString CPanelInfosWnd::MapsUpdate()

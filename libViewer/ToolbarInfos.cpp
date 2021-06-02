@@ -24,6 +24,7 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	wxString audiovideo_label = CLibResource::LoadStringFromResource(L"LBLAUDIOVIDEO", 1);//L"Effect Parameter";
 	wxString videoeffect_label = CLibResource::LoadStringFromResource(L"LBLVIDEOEFFECT", 1);//L"Effect Parameter";
 	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);//L"Effect Parameter";
+	wxString histogram_label = "Histogram";// CLibResource::LoadStringFromResource(L"LBLHISTOGRAM", 1);
 
 	infos = new CToolbarTexte(themeToolbar.texte);
 	infos->SetCommandId(WM_INFOS);
@@ -66,10 +67,20 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	effectParameter->SetLibelle(effectParameter_label);
 	navElement.push_back(effectParameter);
 
+	histogramParameter = new CToolbarTexte(themeToolbar.texte);
+	histogramParameter->SetCommandId(WM_HISTOGRAM);
+	histogramParameter->SetLibelle(histogram_label);
+	navElement.push_back(histogramParameter);
+
 }
 
 CToolbarInfos::~CToolbarInfos()
 {
+}
+
+void CToolbarInfos::SetHistogramPush()
+{
+	histogramParameter->SetPush(true);
 }
 
 void CToolbarInfos::SetInfosPush()
@@ -166,6 +177,7 @@ void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
 
 void CToolbarInfos::SetVideoToolbar()
 {
+	histogramParameter->SetVisible(false);
 	history->SetVisible(false);
 	map->SetVisible(false);
 	effectParameter->SetVisible(false);
@@ -182,6 +194,7 @@ void CToolbarInfos::SetPictureThumbnailToolbar()
 	videoeffect->SetVisible(false);
     history->SetVisible(false);
     effectParameter->SetVisible(false);
+	histogramParameter->SetVisible(false);
     Refresh();
 }
 
@@ -193,6 +206,7 @@ void CToolbarInfos::SetPictureToolbar()
 	history->SetVisible(true);
 	audiovideo->SetVisible(false);
 	effectParameter->SetVisible(false);
+	histogramParameter->SetVisible(true);
 	Refresh();
 }
 

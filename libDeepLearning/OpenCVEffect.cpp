@@ -1,8 +1,11 @@
 #include "header.h"
 #include "OpenCVEffect.h"
 #include <RegardsBitmap.h>
+#include <CvPlot/cvplot.h>
+
 using namespace Regards::OpenCV;
 using namespace cv;
+
 
 class COpenCVEffectPimpl
 {
@@ -12,6 +15,7 @@ public:
 	static void BrightnessAndContrastAuto(cv::UMat & image, float clipHistPercent);
 
 };
+
 
 
 void COpenCVEffectPimpl::EqualizeHistogram(cv::Mat &src)
@@ -286,5 +290,88 @@ void COpenCVEffect::LoadAndRotate(const wxString& filePath, const int& rotate)
 		cv::flip(src, src, 1);
 	}
 	imwrite(filePath.ToStdString(), src);
+
+}
+
+
+void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap* histogram, const int &colorChoice, const wxColour& colorBgnd)
+{
+	Mat hist;
+	cv::Mat src;
+	int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
+	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat histImage(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
+	Scalar color = Scalar(0, 0, 0);
+
+	if (colorChoice == 0)
+	{
+		cvtColor(image, src, cv::COLOR_BGRA2GRAY);
+		int histSize = 256;
+		float range[] = { 0, 256 }; //the upper boundary is exclusive
+		const float* histRange = { range };
+		bool uniform = true, accumulate = false;
+
+		calcHist(&src, 1, 0, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
+		int bin_w = cvRound((double)hist_w / histSize);
+		normalize(hist, hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+
+		for (int i = 1; i < histSize; i++)
+		{
+			line(histImage, Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
+				Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
+				Scalar(255, 255, 255), 2, 8, 0);
+		}
+	}
+	else
+	{
+		cvtColor(image, src, cv::COLOR_BGRA2BGR);
+		vector<Mat> bgr_planes;
+		split(src, bgr_planes);
+		int histSize = 256;
+		float range[] = { 0, 256 }; //the upper boundary is exclusive
+		const float* histRange = { range };
+		bool uniform = true, accumulate = false;
+		
+		if (colorChoice == 1)
+			calcHist(&bgr_planes[0], 1, 0, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		if (colorChoice == 2)
+			calcHist(&bgr_planes[1], 1, 0, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		if (colorChoice == 3)
+			calcHist(&bgr_planes[2], 1, 0, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+		int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
+		int bin_w = cvRound((double)hist_w / histSize);
+
+		
+		if (colorChoice == 1)
+			color = Scalar(255, 0, 0);
+		if (colorChoice == 2)
+			color = Scalar(0, 255, 0);
+		if (colorChoice == 3)
+			color = Scalar(0, 0, 255);
+		normalize(hist, hist, 0, histImage.rows, NORM_MINMAX, -1, Mat());
+	
+		for (int i = 1; i < histSize; i++)
+		{
+			line(histImage, Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
+					Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
+					color, 2, 8, 0);
+		}
+	}
+	
+
+	//auto axes = CvPlot::plot(hist, "-b");
+	CvPlot::Axes axes = CvPlot::makePlotAxes();
+	axes.create<CvPlot::Series>(hist)
+		.setColor(color);
+
+	cv::Mat mat = axes.render(hist_h, hist_w, cv::Scalar(colorBgnd.Red(), colorBgnd.Green(), colorBgnd.Blue()));
+
+
+	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);
+	histogram->SetBitmap(histImage.data, hist_w, hist_h);
+	histogram->VertFlipBuf();
+
+
 
 }

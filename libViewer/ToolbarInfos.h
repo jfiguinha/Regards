@@ -30,6 +30,7 @@ namespace Regards
 			void SetEffectInactif();
             void SetCriteriaPush();
 
+			void SetHistogramPush();
             void SetInfosPush();
             void SetMapPush();
             void SetEffectPush();
@@ -52,6 +53,7 @@ namespace Regards
 			CToolbarTexte * map;
 			CToolbarTexte * effectParameter;
             CToolbarTexte * criteria;
+			CToolbarTexte* histogramParameter;
 
 		};
 

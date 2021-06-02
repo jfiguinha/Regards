@@ -276,3 +276,4 @@
 #define WM_HTMLEDITOR	1029
 #define WM_SAVE 1030
 #define WM_REFRESH		1031
+#define WM_HISTOGRAM		1032

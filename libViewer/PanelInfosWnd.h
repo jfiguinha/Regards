@@ -7,6 +7,7 @@
 #include <ScrollbarWnd.h>
 #include <wx/animate.h>
 #include "CriteriaWindow.h"
+#include "PicturePanel.h"
 #include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
 #include "FiltreEffect.h"
@@ -35,6 +36,7 @@ namespace Regards
 		class CFiltreEffectScrollWnd;
 		class CThumbnailViewerEffectWnd;
 	}
+
 	namespace Viewer
 	{        
  
@@ -66,13 +68,15 @@ namespace Regards
 			void LoadInfo();
 			void AudioVideoUpdate();
 			void DisplayURL(const wxString &url);
-            
+			void HistogramUpdate();
+
 			CInfosFileWnd * infosFileWnd;
             CInfoEffectWnd * historyEffectWnd;
 			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
 			CFiltreEffectScrollWnd * filtreEffectWnd;
             CCriteriaWindow * criteriaTreeWnd;
-
+			Regards::Window::CPicturePanel * picturePanel;
+			
 			wxWebView * webBrowser = nullptr;
 			CToolbarInfos * infosToolbar;
 			CModificationManager * modificationManager;

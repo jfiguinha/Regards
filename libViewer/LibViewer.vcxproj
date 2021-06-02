@@ -536,6 +536,7 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="PanelPhotoWnd.h" />
+    <ClInclude Include="PicturePanel.h" />
     <ClInclude Include="PreviewToolbar.h" />
     <ClInclude Include="PreviewWnd.h" />
     <ClInclude Include="StatusText.h" />
@@ -582,6 +583,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="PanelPhotoWnd.cpp" />
+    <ClCompile Include="PicturePanel.cpp" />
     <ClCompile Include="PreviewToolbar.cpp" />
     <ClCompile Include="PreviewWnd.cpp" />
     <ClCompile Include="ThumbnailFace.cpp" />
