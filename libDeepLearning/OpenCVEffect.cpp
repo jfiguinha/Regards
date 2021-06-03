@@ -375,7 +375,40 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);
 	histogram->SetBitmap(histImage.data, hist_w, hist_h);
 	histogram->VertFlipBuf();
+}
 
+void COpenCVEffect::NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue, const int& maxValue)
+{
+	int min = 0;
+	int max = 255;
+	//pixel = (pixel - min) * (nmax - nmin) / (max - min) + nmin
 
-
+	//uint8_t * data = pictureData->GetPtBitmap();
+	for (int y = 0; y < pictureData->GetBitmapHeight(); y++)
+	{
+		for (int x = 0; x < pictureData->GetBitmapWidth(); x++)
+		{
+			CRgbaquad color = pictureData->GetColorValue(x, y);
+			if (colorChoice == 0)
+			{
+				color.SetRed((color.GetRed() - min) * (maxValue - minValue) / (max - min) + minValue);
+				color.SetGreen((color.GetGreen() - min) * (maxValue - minValue) / (max - min) + minValue);
+				color.SetBlue((color.GetBlue() - min) * (maxValue - minValue) / (max - min) + minValue);
+			}
+			else if (colorChoice == 1)
+			{
+				color.SetRed((color.GetRed() - min) * (maxValue - minValue) / (max - min) + minValue);
+			}
+			else if (colorChoice == 2)
+			{
+				color.SetGreen((color.GetGreen() - min) * (maxValue - minValue) / (max - min) + minValue);
+			}
+			else if (colorChoice == 3)
+			{
+				color.SetBlue( (color.GetBlue() - min) * (maxValue - minValue) / (max - min) + minValue);
+			}
+			pictureData->SetColorValue(x, y, color);
+		}
+	}
+	
 }

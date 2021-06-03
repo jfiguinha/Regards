@@ -4,6 +4,7 @@
 #include <libPicture.h>
 #include <OpenCVEffect.h>
 #include <opencv2/core.hpp>
+#include <wx/spinctrl.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme)
@@ -25,8 +26,32 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
     choice_control->AppendString("Red");
     choice_control->Select(0);
     Connect(wxEVT_COMBOBOX, (wxObjectEventFunction)&CPicturePanel::OnChannelSelect);
-}
 
+    /*
+    minValue = new wxSpinCtrl(this, -1, "Min : ", wxDefaultPosition, wxSize(100, -1));
+    maxValue = new wxSpinCtrl(this, -1, "Max : ", wxDefaultPosition, wxSize(100, -1));
+    maxValue->SetRange(0, 255);
+    minValue->SetRange(0, 255);
+    maxValue->SetValue(255);
+    minValue->SetValue(0);
+    Connect(wxEVT_SPINCTRL, (wxObjectEventFunction)&CPicturePanel::OnRangeSelect);
+
+    pictureBackup = new CRegardsBitmap();
+    */
+}
+/*
+void CPicturePanel::OnRangeSelect(wxSpinEvent& evt)
+{
+    int min = minValue->GetValue();
+    int max = maxValue->GetValue();
+
+    pictureOriginal->SetBitmap(pictureBackup->GetPtBitmap(), pictureBackup->GetBitmapWidth(), pictureBackup->GetBitmapHeight());
+    Regards::OpenCV::COpenCVEffect::NormalizeHistogram(pictureOriginal, channelSelect, min, max);
+    pictureOriginal->SaveToBmp("d:\\test_histo.bmp");
+    refreshPicture = true;
+    this->Refresh();
+}
+*/
 void CPicturePanel::CreateHistogram()
 {
 
@@ -56,6 +81,9 @@ void CPicturePanel::CreateHistogram()
         this->image = CLibPicture::ConvertRegardsBitmapToWXImage(histogram);
     }
 
+   // wxSize spinSize = minValue->GetSize();
+   // minValue->SetPosition(wxPoint(marged, newh - spinSize.GetHeight() - marged));
+   // maxValue->SetPosition(wxPoint(neww - spinSize.GetWidth() - marged, newh - spinSize.GetHeight() - marged));
 }
 
 void CPicturePanel::OnChannelSelect(wxCommandEvent& event)
@@ -79,6 +107,9 @@ CPicturePanel::~CPicturePanel()
         delete histogram;
 
     delete choice_control;
+    //delete minValue;
+   // delete maxValue;
+   // delete pictureBackup;
 }
 
 void CPicturePanel::SetPictureToDisplay(CRegardsBitmap * picture)
@@ -87,6 +118,8 @@ void CPicturePanel::SetPictureToDisplay(CRegardsBitmap * picture)
         delete pictureOriginal;
 
     pictureOriginal = picture;
+
+   // pictureBackup->SetBitmap(pictureOriginal->GetPtBitmap(), pictureOriginal->GetBitmapWidth(), pictureOriginal->GetBitmapHeight());
 
     channelSelect = 0;
     choice_control->Select(0);

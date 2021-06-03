@@ -19,10 +19,12 @@ namespace Regards
 
 			void CreateHistogram();
 			void OnChannelSelect(wxCommandEvent& event);
+			//void OnRangeSelect(wxSpinEvent& evt);
 			bool refreshPicture = true;
 			wxImage * image;
 			CRegardsBitmap* histogram = nullptr;
 			CRegardsBitmap * pictureOriginal;
+			//CRegardsBitmap * pictureBackup;
 
 			int w, h;
 			wxColour colorBack;
@@ -30,6 +32,9 @@ namespace Regards
 			int marged = 10;
 			int channelSelect = 0;
 			wxComboBox* choice_control;
+
+			//wxSpinCtrl* minValue;
+			//wxSpinCtrl* maxValue;
 		};
 	}
 }

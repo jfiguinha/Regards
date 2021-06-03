@@ -513,7 +513,7 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_HISTOGRAM:
 			HistogramUpdate();
 			infosToolbar->SetHistogramPush();
-			windowVisible = WM_INFOS;
+			windowVisible = WM_HISTOGRAM;
 			break;
 		}
 	//}
