@@ -67,6 +67,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="PicturePanel.cpp"/>
     <File Name="WaitingWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
     <File Name="MainWindow.cpp"/>
@@ -83,6 +84,7 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="PicturePanel.h"/>
     <File Name="ViewerTheme.h"/>
     <File Name="PictureElement.h"/>
     <File Name="myFrame.h"/>

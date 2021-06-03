@@ -46,18 +46,13 @@
       <File Name="RedEye.cpp"/>
       <File Name="Wave.cpp"/>
       <File Name="Selection.cpp"/>
-      <File Name="Rotation.cpp"/>
-      <File Name="Rotate.cpp"/>
       <File Name="PerlinNoise.cpp"/>
       <File Name="MotionBlur.cpp"/>
       <File Name="Line.cpp"/>
       <File Name="LensFlare.cpp"/>
-      <File Name="Histogramme.cpp"/>
-      <File Name="GaussianBlur.cpp"/>
       <File Name="Draw.cpp"/>
       <File Name="Crop.cpp"/>
       <File Name="Color.cpp"/>
-      <File Name="clahe.cpp"/>
       <File Name="circle.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
@@ -65,19 +60,13 @@
       <File Name="Wave.h"/>
       <File Name="Selection.h"/>
       <File Name="Rotation.h"/>
-      <File Name="RotateByShearRGB.h"/>
-      <File Name="RotateByShear.h"/>
-      <File Name="Rotate.h"/>
       <File Name="PerlinNoise.h"/>
       <File Name="MotionBlur.h"/>
       <File Name="Line.h"/>
       <File Name="LensFlare.h"/>
-      <File Name="Histogramme.h"/>
-      <File Name="GaussianBlur.h"/>
       <File Name="Draw.h"/>
       <File Name="Crop.h"/>
       <File Name="Color.h"/>
-      <File Name="clahe.h"/>
       <File Name="circle.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
@@ -118,7 +107,6 @@
       <File Name="FreeRotateEffectParameter.h"/>
       <File Name="DecodeRawParameter.h"/>
       <File Name="CloudsEffectParameter.h"/>
-      <File Name="ClaheEffectParameter.h"/>
       <File Name="BrightAndContrastEffectParameter.h"/>
       <File Name="BlurEffectParameter.h"/>
       <File Name="BitmapEffectParameter.h"/>
@@ -178,8 +166,6 @@
       <File Name="LensFlareFilter.cpp"/>
       <File Name="CloudsFilter.h"/>
       <File Name="CloudsFilter.cpp"/>
-      <File Name="ClaheFilter.h"/>
-      <File Name="ClaheFilter.cpp"/>
       <File Name="BrightAndContrastFilter.h"/>
       <File Name="BrightAndContrastFilter.cpp"/>
       <File Name="BlurFilter.h"/>
