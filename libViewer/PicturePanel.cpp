@@ -27,18 +27,41 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CTheme& them
 
 void CPicturePanel::CreateHistogram()
 {
-    if (histogram == nullptr)
-        histogram = new CRegardsBitmap(512, 400);
-    
-    Regards::OpenCV::COpenCVEffect::CalculateHistogram(pictureOriginal, histogram, channelSelect, colorBack);
-    this->image = CLibPicture::ConvertRegardsBitmapToWXImage(histogram);
+
+    wxSize size = this->GetSize();
+    int neww = size.GetWidth();
+    int newh = size.GetHeight();
+
+    int chW = 0;
+    int chH = 0;
+    choice_control->GetSize(&chW, &chH);
+
+    int width = neww - (marged * 2);
+    int height = newh - chH - (marged * 4);
+
+    if(histogram == nullptr)
+        histogram = new CRegardsBitmap(width, height);
+
+    if (width != histogram->GetBitmapWidth() || height != histogram->GetBitmapHeight())
+    {
+        delete histogram;
+        histogram = new CRegardsBitmap(width, height);
+    }
+     
+    if (refreshPicture)
+    {
+        Regards::OpenCV::COpenCVEffect::CalculateHistogram(pictureOriginal, histogram, channelSelect, colorBack);
+        this->image = CLibPicture::ConvertRegardsBitmapToWXImage(histogram);
+    }
+
 }
 
 void CPicturePanel::OnChannelSelect(wxCommandEvent& event)
 {
     channelSelect = choice_control->GetSelection();
-    CreateHistogram();
     refreshPicture = true;
+
+    
     this->Refresh();
 }
 
@@ -66,8 +89,6 @@ void CPicturePanel::SetPictureToDisplay(CRegardsBitmap * picture)
     channelSelect = 0;
     choice_control->Select(0);
 
-    CreateHistogram();
-
     refreshPicture = true;
     this->Refresh();
 
@@ -94,21 +115,11 @@ void CPicturePanel::OnPaint(wxPaintEvent& event)
     int xPos = (neww - chW) / 2;
     choice_control->SetPosition(wxPoint(xPos, marged));
 
+    CreateHistogram();
+
     if (image != nullptr)
     {
-        if ((neww != w || newh != h) || refreshPicture)
-        {
-
-            w = neww;
-            h = newh;
-
-            resized = wxBitmap(image->Scale(neww - (marged * 2), newh - chH - (marged * 4) /*, wxIMAGE_QUALITY_HIGH*/));
-
-            dc.DrawBitmap(resized, marged, marged * 2 + chH, false);
-        }
-        else {
-            dc.DrawBitmap(resized, marged, marged * 2 + chH, false);
-        }
+        dc.DrawBitmap(*image, marged, marged * 2 + chH, false);
     }
 
 

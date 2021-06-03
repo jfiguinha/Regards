@@ -23,7 +23,7 @@ namespace Regards
 			wxImage * image;
 			CRegardsBitmap* histogram = nullptr;
 			CRegardsBitmap * pictureOriginal;
-			wxBitmap resized;
+
 			int w, h;
 			wxColour colorBack;
 			int marged = 10;

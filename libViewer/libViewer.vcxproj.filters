@@ -171,6 +171,9 @@
     <ClInclude Include="TreatmentData.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="PicturePanel.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="ToolbarKeyword.cpp">
       <Filter>Window\Keyword Management</Filter>
+    </ClCompile>
+    <ClCompile Include="PicturePanel.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
