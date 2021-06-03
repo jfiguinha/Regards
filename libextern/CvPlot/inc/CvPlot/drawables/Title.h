@@ -15,7 +15,7 @@ class CVPLOT_LIBRARY_INTERFACE Title : public Drawable {
 public:
     Title(const std::string &title="");
     ~Title();
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     Title& setTitle(const std::string &title);
     std::string getTitle();

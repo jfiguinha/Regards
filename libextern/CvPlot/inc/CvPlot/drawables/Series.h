@@ -23,7 +23,7 @@ public:
     Series(cv::InputArray x, cv::InputArray y, const std::string &lineSpec="-");
 
     ~Series();
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
 
     //x: 

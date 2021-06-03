@@ -8,9 +8,9 @@
 namespace CvPlot {
 
 CVPLOT_DEFINE_FUN
-void Group::render(RenderTarget &renderTarget) {
+void Group::render(RenderTarget &renderTarget, cv::Scalar scalar) {
     for (const auto &drawable : drawables()) {
-        drawable->render(renderTarget);
+        drawable->render(renderTarget, scalar);
     }
 }
 

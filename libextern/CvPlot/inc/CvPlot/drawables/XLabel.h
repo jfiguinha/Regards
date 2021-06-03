@@ -15,7 +15,7 @@ class CVPLOT_LIBRARY_INTERFACE XLabel : public Drawable {
 public:
     XLabel(const std::string &label="");
     ~XLabel();
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     XLabel& setLabel(const std::string &label);
     std::string getLabel();

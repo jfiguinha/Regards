@@ -163,7 +163,7 @@ Series::Series(cv::InputArray x, cv::InputArray y, const std::string &lineSpec)
 }
 
 CVPLOT_DEFINE_FUN
-void Series::render(RenderTarget & renderTarget){
+void Series::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 

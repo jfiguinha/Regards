@@ -6,7 +6,7 @@
 #include <opencv2/core.hpp>
 using namespace Regards::Window;
 using namespace Regards::Picture;
-CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CTheme& theme)
+CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme)
 	: CWindowMain("CPicturePanel", parent, id)
 {
     w = 0;
@@ -14,6 +14,8 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CTheme& them
     pictureOriginal = nullptr;
     histogram = nullptr;
     colorBack = theme.colorBack;
+    CThemeFont themeFont = theme.themeIcone.font;
+    colorFont = themeFont.GetColorFont();
     Connect(wxEVT_PAINT, wxPaintEventHandler(CPicturePanel::OnPaint));
     image = nullptr;
     choice_control = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(100, -1));
@@ -50,7 +52,7 @@ void CPicturePanel::CreateHistogram()
      
     if (refreshPicture)
     {
-        Regards::OpenCV::COpenCVEffect::CalculateHistogram(pictureOriginal, histogram, channelSelect, colorBack);
+        Regards::OpenCV::COpenCVEffect::CalculateHistogram(pictureOriginal, histogram, channelSelect, colorBack, colorFont);
         this->image = CLibPicture::ConvertRegardsBitmapToWXImage(histogram);
     }
 

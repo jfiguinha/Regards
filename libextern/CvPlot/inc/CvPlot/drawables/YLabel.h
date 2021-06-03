@@ -16,7 +16,7 @@ class CVPLOT_LIBRARY_INTERFACE YLabel : public Drawable {
 public:
     YLabel(const std::string &label="", YAxis* yAxis=nullptr);
     ~YLabel();
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     YLabel& setLabel(const std::string &label);
     std::string getLabel();

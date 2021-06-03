@@ -15,7 +15,7 @@ public:
     const double _fontScale = .4;
     const int _fontThickness = 1;
     bool _locateRight = false;
-    cv::Scalar _color = cv::Scalar(0, 0, 0);
+   // cv::Scalar _color = cv::Scalar(0, 0, 0);
     std::vector<double> _ticks;
     bool _isLogarithmic;
     int _width = 0;
@@ -47,7 +47,7 @@ public:
         int baseline;
         return cv::getTextSize(text, _fontFace, _fontScale, _fontThickness, &baseline);
     }
-    void render(RenderTarget & renderTarget) {
+    void render(RenderTarget & renderTarget, cv::Scalar _color) {
         cv::Mat3b &outerMat = renderTarget.outerMat();
         const cv::Rect &innerRect = renderTarget.innerRect();
         if (!innerRect.area()) {
@@ -79,9 +79,9 @@ public:
                 _width = margin + size.width;
             }
         }
-        renderAxisLine(renderTarget);
+        renderAxisLine(renderTarget, _color);
     }
-    void renderAxisLine(RenderTarget & renderTarget){
+    void renderAxisLine(RenderTarget & renderTarget, cv::Scalar _color){
         cv::Mat3b &outerMat = renderTarget.outerMat();
         const cv::Rect &innerRect = renderTarget.innerRect();
         int top = innerRect.y - 1;
@@ -100,8 +100,8 @@ YAxis::YAxis(){
 }
 
 CVPLOT_DEFINE_FUN
-void YAxis::render(RenderTarget & renderTarget){
-    impl->render(renderTarget);
+void YAxis::render(RenderTarget & renderTarget, cv::Scalar scalar){
+    impl->render(renderTarget, scalar);
 }
 
 CVPLOT_DEFINE_FUN

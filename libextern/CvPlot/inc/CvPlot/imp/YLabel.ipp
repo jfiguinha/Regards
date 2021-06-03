@@ -51,7 +51,7 @@ YLabel::YLabel(const std::string &label, YAxis* yAxis) {
 }
 
 CVPLOT_DEFINE_FUN
-void YLabel::render(RenderTarget & renderTarget){
+void YLabel::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 

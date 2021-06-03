@@ -10,7 +10,7 @@ namespace Regards
 		class CPicturePanel : public CWindowMain
 		{
 		public:
-			CPicturePanel(wxWindow* parent, wxWindowID id, const CTheme& theme);
+			CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme);
 			~CPicturePanel();
 			void SetPictureToDisplay(CRegardsBitmap* picture);
 			void OnPaint(wxPaintEvent& event);
@@ -26,6 +26,7 @@ namespace Regards
 
 			int w, h;
 			wxColour colorBack;
+			wxColour colorFont;
 			int marged = 10;
 			int channelSelect = 0;
 			wxComboBox* choice_control;

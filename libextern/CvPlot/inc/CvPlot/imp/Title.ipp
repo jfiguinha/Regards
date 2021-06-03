@@ -38,7 +38,7 @@ Title::Title(const std::string &title){
 }
 
 CVPLOT_DEFINE_FUN
-void Title::render(RenderTarget & renderTarget){
+void Title::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 

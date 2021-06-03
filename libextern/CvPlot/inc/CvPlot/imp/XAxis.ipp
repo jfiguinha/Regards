@@ -14,7 +14,7 @@ public:
     const int _fontFace = cv::FONT_HERSHEY_SIMPLEX;
     const double _fontScale = .4;
     const int _fontThickness = 1;
-    cv::Scalar _color = cv::Scalar(0, 0, 0);
+    
     std::vector<double> _ticks;
     bool _isLogarithmic;
 
@@ -58,7 +58,7 @@ public:
         int baseline;
         return cv::getTextSize(text, _fontFace, _fontScale, _fontThickness, &baseline).width;
     }
-    void render(RenderTarget & renderTarget) {
+    void render(RenderTarget & renderTarget, cv::Scalar _color) {
         cv::Mat3b &outerMat = renderTarget.outerMat();
         const cv::Rect &innerRect = renderTarget.innerRect();
         if (!innerRect.area()) {
@@ -76,9 +76,9 @@ public:
             cv::putText(outerMat, label, labelPos, _fontFace, _fontScale, _color, _fontThickness, cv::LINE_AA);
             cv::line(outerMat, cv::Point(tickPix+innerRect.x, bottom), cv::Point(tickPix + innerRect.x, bottom+4), _color);
         }
-        renderAxisLine(renderTarget);
+        renderAxisLine(renderTarget, _color);
     }
-    void renderAxisLine(RenderTarget & renderTarget){
+    void renderAxisLine(RenderTarget & renderTarget, cv::Scalar _color){
         cv::Mat3b &outerMat = renderTarget.outerMat();
         const cv::Rect &innerRect = renderTarget.innerRect();
         int left = innerRect.x - 1;
@@ -90,15 +90,17 @@ public:
 
 CVPLOT_DEFINE_FUN
 XAxis::~XAxis() {
+     
 }
 
 CVPLOT_DEFINE_FUN
 XAxis::XAxis(){
+
 }
 
 CVPLOT_DEFINE_FUN
-void XAxis::render(RenderTarget & renderTarget){
-    impl->render(renderTarget);
+void XAxis::render(RenderTarget & renderTarget, cv::Scalar scalar){
+    impl->render(renderTarget, scalar);
 }
 
 CVPLOT_DEFINE_FUN

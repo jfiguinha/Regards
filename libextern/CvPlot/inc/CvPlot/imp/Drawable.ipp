@@ -27,7 +27,7 @@ Drawable::~Drawable() {
 }
 
 CVPLOT_DEFINE_FUN
-void Drawable::render(RenderTarget & renderTarget) {
+void Drawable::render(RenderTarget & renderTarget, cv::Scalar scalar) {
 }
 
 CVPLOT_DEFINE_FUN

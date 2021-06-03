@@ -26,7 +26,7 @@ public:
     int getInterpolation()const;
     Image& setNanColor(cv::Scalar nanColor);
     cv::Scalar getNanColor()const;
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
 private:
     class Impl;

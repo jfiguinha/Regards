@@ -27,7 +27,7 @@ LineBase::LineBase(const std::string &lineSpec) {
 }
 
 CVPLOT_DEFINE_FUN
-void LineBase::render(RenderTarget & renderTarget){
+void LineBase::render(RenderTarget & renderTarget, cv::Scalar scalar){
 }
 
 CVPLOT_DEFINE_FUN

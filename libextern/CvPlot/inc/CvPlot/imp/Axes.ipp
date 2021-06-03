@@ -63,7 +63,7 @@ public:
         return rawProjection;
     }
 
-    void render(cv::Mat &mat, cv::Size destinationSize, cv::Scalar color = cv::Vec3b::all(255)) const{
+    void render(cv::Mat &mat, cv::Size destinationSize, cv::Scalar color = cv::Vec3b::all(255), cv::Scalar fontcolor = cv::Vec3b::all(0)) const{
         if (destinationSize.width < 0 || destinationSize.height < 0) {
             destinationSize = { 0,0 };
         }
@@ -73,7 +73,7 @@ public:
         mat3b.setTo(color);
         RenderTarget renderTarget(rawProjection, mat3b);
         for (const auto &drawable : _axes->drawables()) {
-            drawable->render(renderTarget);
+            drawable->render(renderTarget, fontcolor);
         }
     }
 
@@ -288,9 +288,9 @@ Projection Axes::getProjection(cv::Size size) const{
     return Projection(impl->getRawProjection(size));
 }
 
-CVPLOT_DEFINE_FUN cv::Mat3b Axes::render(int rows, int cols, cv::Scalar scalar)const {
+CVPLOT_DEFINE_FUN cv::Mat3b Axes::render(int rows, int cols, cv::Scalar scalar, cv::Scalar fontcolor)const {
     cv::Mat3b mat;
-    impl->render(mat, cv::Size(cols, rows), scalar);
+    impl->render(mat, cv::Size(cols, rows), scalar, fontcolor);
     return mat;
 }
 

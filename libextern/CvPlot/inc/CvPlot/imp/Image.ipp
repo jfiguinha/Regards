@@ -209,7 +209,7 @@ cv::Scalar Image::getNanColor()const{
 }
 
 CVPLOT_DEFINE_FUN
-void Image::render(RenderTarget & renderTarget){
+void Image::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 

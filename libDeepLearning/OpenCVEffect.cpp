@@ -294,14 +294,14 @@ void COpenCVEffect::LoadAndRotate(const wxString& filePath, const int& rotate)
 }
 
 
-void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap* histogram, const int &colorChoice, const wxColour& colorBgnd)
+void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap* histogram, const int &colorChoice, const wxColour& colorBgnd, const wxColour& colorFont)
 {
 	Mat hist;
 	cv::Mat src;
 	int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	Mat histImage(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
-	Scalar color = Scalar(0, 0, 0);
+	Scalar color = Scalar(255, 255, 255);
 
 	if (colorChoice == 0)
 	{
@@ -320,7 +320,7 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 		{
 			line(histImage, Point(bin_w * (i - 1), hist_h - cvRound(hist.at<float>(i - 1))),
 				Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
-				Scalar(255, 255, 255), 2, 8, 0);
+				color, 2, 8, 0);
 		}
 	}
 	else
@@ -364,8 +364,10 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 	CvPlot::Axes axes = CvPlot::makePlotAxes();
 	axes.create<CvPlot::Series>(hist)
 		.setColor(color);
+	//axes.Set
 
-	cv::Mat mat = axes.render(hist_h, hist_w, cv::Scalar(colorBgnd.Red(), colorBgnd.Green(), colorBgnd.Blue()));
+
+	cv::Mat mat = axes.render(hist_h, hist_w, cv::Scalar(colorBgnd.Blue(), colorBgnd.Green(), colorBgnd.Red()), cv::Scalar(colorFont.Blue(), colorFont.Green(), colorFont.Red()));
 
 
 	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);

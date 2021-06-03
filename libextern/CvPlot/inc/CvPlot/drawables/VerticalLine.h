@@ -15,7 +15,7 @@ class CVPLOT_LIBRARY_INTERFACE VerticalLine : public LineBaseSub<VerticalLine> {
 public:
     VerticalLine(double pos = std::nan(""), const std::string &lineSpec = "-");
     ~VerticalLine();
-    void render(RenderTarget &renderTarget)override;
+    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     VerticalLine& setPos(double pos);
     VerticalLine& setBoundingRectEnabled(bool enabled);

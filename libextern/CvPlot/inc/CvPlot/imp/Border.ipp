@@ -22,7 +22,7 @@ Border::Border(){
 }
 
 CVPLOT_DEFINE_FUN
-void Border::render(RenderTarget & renderTarget){
+void Border::render(RenderTarget & renderTarget, cv::Scalar scalar){
     cv::Rect borderRect = renderTarget.innerRect();        
     if (!borderRect.area()) {
         return;

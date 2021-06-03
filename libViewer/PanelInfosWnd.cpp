@@ -173,10 +173,10 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	if (picturePanel == nullptr)
 	{
-		CThemeTree themeTree;
-		viewerTheme->GetTreeTheme(&themeTree);
+		CThemeThumbnail themeThumbnail;
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		picturePanel = new CPicturePanel(this, wxID_ANY, themeTree);
+		picturePanel = new CPicturePanel(this, wxID_ANY, themeThumbnail);
 		picturePanel->Show(false);
 
 		CTabWindowData* tabInfosFile = new CTabWindowData();

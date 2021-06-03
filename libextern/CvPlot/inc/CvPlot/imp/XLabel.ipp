@@ -45,7 +45,7 @@ XLabel::XLabel(const std::string &label){
 }
 
 CVPLOT_DEFINE_FUN
-void XLabel::render(RenderTarget & renderTarget){
+void XLabel::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 

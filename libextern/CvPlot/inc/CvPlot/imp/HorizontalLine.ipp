@@ -55,7 +55,7 @@ HorizontalLine::HorizontalLine(double pos, const std::string &lineSpec)
 }
 
 CVPLOT_DEFINE_FUN
-void HorizontalLine::render(RenderTarget & renderTarget){
+void HorizontalLine::render(RenderTarget & renderTarget, cv::Scalar scalar){
     impl->render(renderTarget);
 }
 
