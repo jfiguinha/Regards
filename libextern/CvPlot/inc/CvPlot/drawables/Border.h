@@ -14,7 +14,7 @@ class CVPLOT_LIBRARY_INTERFACE Border : public Drawable {
 public:
     Border();
     ~Border();
-    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
+    void render(RenderTarget &renderTarget)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
 private:
     class Impl;

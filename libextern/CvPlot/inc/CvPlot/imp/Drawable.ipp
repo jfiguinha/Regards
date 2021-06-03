@@ -10,7 +10,14 @@ namespace CvPlot {
 class Drawable::Impl {
 public:
     std::string _name;
+    cv::Scalar _color;
 };
+
+CVPLOT_DEFINE_FUN
+void Drawable::SetColor(cv::Scalar color)
+{
+    impl->_color = color;
+}
 
 CVPLOT_DEFINE_FUN
 Drawable::Drawable(std::string name) {
@@ -27,7 +34,7 @@ Drawable::~Drawable() {
 }
 
 CVPLOT_DEFINE_FUN
-void Drawable::render(RenderTarget & renderTarget, cv::Scalar scalar) {
+void Drawable::render(RenderTarget & renderTarget) {
 }
 
 CVPLOT_DEFINE_FUN

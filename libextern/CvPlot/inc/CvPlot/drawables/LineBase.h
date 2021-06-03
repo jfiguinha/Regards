@@ -17,7 +17,7 @@ class CVPLOT_LIBRARY_INTERFACE LineBase : public DrawableSub<LineBase>{
 public:
     LineBase(const std::string &lineSpec = "-");
     ~LineBase();
-    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
+    void render(RenderTarget &renderTarget)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     LineBase& setLineSpec(const std::string &lineSpec);
     LineBase& setLineType(LineType lineType);

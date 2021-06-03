@@ -22,10 +22,11 @@ public:
     
     Axes& setMargins(int left, int right, int top, int bottom);
     
-    cv::Mat3b render(int rows = 480, int cols = 640, cv::Scalar scalar = cv::Scalar(255,255,255), cv::Scalar fontcolor = cv::Scalar(0, 0, 0))const;
+    cv::Mat3b render(int rows = 480, int cols = 640)const;
     void render(const cv::Mat &mat)const;
     void render(cv::Mat &mat, cv::Size size)const;
-   
+    void SetBackgroundColor(cv::Scalar backgroundColor);
+    void SetTextColor(cv::Scalar fontcolor);
     Axes& xLabel(const std::string &label);
     Axes& yLabel(const std::string &label);
     Axes& title(const std::string &title);

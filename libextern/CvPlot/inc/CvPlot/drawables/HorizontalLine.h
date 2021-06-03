@@ -15,7 +15,7 @@ class CVPLOT_LIBRARY_INTERFACE HorizontalLine : public LineBaseSub<HorizontalLin
 public:
     HorizontalLine(double pos = std::nan(""), const std::string &lineSpec = "-");
     ~HorizontalLine();
-    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
+    void render(RenderTarget &renderTarget)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     HorizontalLine& setPos(double pos);
     HorizontalLine& setBoundingRectEnabled(bool enabled);

@@ -56,7 +56,7 @@ HorizontalGrid & HorizontalGrid::setYAxis(YAxis * yAxis) {
 }
 
 CVPLOT_DEFINE_FUN
-void HorizontalGrid::render(RenderTarget & renderTarget, cv::Scalar scalar){
+void HorizontalGrid::render(RenderTarget & renderTarget){
     impl->render(renderTarget);
 }
 

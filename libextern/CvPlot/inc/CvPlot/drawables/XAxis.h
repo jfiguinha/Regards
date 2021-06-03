@@ -15,9 +15,10 @@ class CVPLOT_LIBRARY_INTERFACE XAxis : public Drawable {
 public:
     XAxis();
     ~XAxis();
-    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
+    void render(RenderTarget &renderTarget)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     const std::vector<double> &getTicks();
+    virtual void SetColor(cv::Scalar color);
 private:
     class Impl;
     CVPLOT_NO_WARNING_DLL_INTERFACE(Internal::Pimpl<Impl>, impl);

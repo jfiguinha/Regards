@@ -16,7 +16,7 @@ public:
     HorizontalGrid(YAxis* yAxis=nullptr);
     ~HorizontalGrid();
     HorizontalGrid& setYAxis(YAxis* yAxis);
-    void render(RenderTarget &renderTarget, cv::Scalar scalar)override;
+    void render(RenderTarget &renderTarget)override;
     bool getBoundingRect(cv::Rect2d &rect)override;
     HorizontalGrid& setEnabled(bool enabled);
     bool getEnabled();

@@ -55,7 +55,7 @@ VerticalLine::VerticalLine(double pos, const std::string &lineSpec)
 }
 
 CVPLOT_DEFINE_FUN
-void VerticalLine::render(RenderTarget & renderTarget, cv::Scalar scalar){
+void VerticalLine::render(RenderTarget & renderTarget){
     impl->render(renderTarget);
 }
 

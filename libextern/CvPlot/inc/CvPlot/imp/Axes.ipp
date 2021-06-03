@@ -26,6 +26,8 @@ public:
     bool _yTight = false;
     bool _tightBox = false;
     bool _yReverse = false;
+    cv::Scalar backgroundColor = cv::Scalar(255, 255, 255);
+    cv::Scalar textColor = cv::Scalar(0, 0, 0);
     bool _fixedAspectRatio = false;
     double _aspectRatio = 1;
     std::unique_ptr<Transformation> _transformation;
@@ -63,17 +65,18 @@ public:
         return rawProjection;
     }
 
-    void render(cv::Mat &mat, cv::Size destinationSize, cv::Scalar color = cv::Vec3b::all(255), cv::Scalar fontcolor = cv::Vec3b::all(0)) const{
+    void render(cv::Mat &mat, cv::Size destinationSize) const{
         if (destinationSize.width < 0 || destinationSize.height < 0) {
             destinationSize = { 0,0 };
         }
         RawProjection rawProjection = getRawProjection(destinationSize);
         mat.create(destinationSize, CV_8UC3);
         cv::Mat3b mat3b(mat);
-        mat3b.setTo(color);
+        mat3b.setTo(backgroundColor);
         RenderTarget renderTarget(rawProjection, mat3b);
         for (const auto &drawable : _axes->drawables()) {
-            drawable->render(renderTarget, fontcolor);
+            drawable->SetColor(textColor);
+            drawable->render(renderTarget);
         }
     }
 
@@ -288,9 +291,9 @@ Projection Axes::getProjection(cv::Size size) const{
     return Projection(impl->getRawProjection(size));
 }
 
-CVPLOT_DEFINE_FUN cv::Mat3b Axes::render(int rows, int cols, cv::Scalar scalar, cv::Scalar fontcolor)const {
+CVPLOT_DEFINE_FUN cv::Mat3b Axes::render(int rows, int cols)const {
     cv::Mat3b mat;
-    impl->render(mat, cv::Size(cols, rows), scalar, fontcolor);
+    impl->render(mat, cv::Size(cols, rows));
     return mat;
 }
 
@@ -318,6 +321,18 @@ CVPLOT_DEFINE_FUN
 Axes & Axes::xLabel(const std::string & label) {
     findOrCreate<XLabel>().setLabel(label);
     return *this;
+}
+
+CVPLOT_DEFINE_FUN
+void Axes::SetBackgroundColor(cv::Scalar backgroundColor)
+{
+    impl->backgroundColor = backgroundColor;
+}
+
+CVPLOT_DEFINE_FUN
+void Axes::SetTextColor(cv::Scalar fontcolor)
+{
+    impl->textColor = fontcolor;
 }
 
 CVPLOT_DEFINE_FUN

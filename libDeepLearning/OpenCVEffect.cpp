@@ -362,12 +362,14 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 
 	//auto axes = CvPlot::plot(hist, "-b");
 	CvPlot::Axes axes = CvPlot::makePlotAxes();
+	axes.SetBackgroundColor(cv::Scalar(colorBgnd.Blue(), colorBgnd.Green(), colorBgnd.Red()));
+	axes.SetTextColor(cv::Scalar(colorFont.Blue(), colorFont.Green(), colorFont.Red()));
 	axes.create<CvPlot::Series>(hist)
 		.setColor(color);
 	//axes.Set
 
 
-	cv::Mat mat = axes.render(hist_h, hist_w, cv::Scalar(colorBgnd.Blue(), colorBgnd.Green(), colorBgnd.Red()), cv::Scalar(colorFont.Blue(), colorFont.Green(), colorFont.Red()));
+	cv::Mat mat = axes.render(hist_h, hist_w);
 
 
 	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);

@@ -57,7 +57,7 @@ VerticalGrid& VerticalGrid::setXAxis(XAxis * xAxis) {
 }
 
 CVPLOT_DEFINE_FUN
-void VerticalGrid::render(RenderTarget & renderTarget, cv::Scalar scalar){
+void VerticalGrid::render(RenderTarget & renderTarget){
     impl->render(renderTarget);
 }
 
