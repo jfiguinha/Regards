@@ -334,6 +334,8 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_xf
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_features2d451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_xphoto451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_photo451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_highgui451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_videoio451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -600,6 +602,8 @@ XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_features2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xphoto451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_photo451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_highgui451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_videoio451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
