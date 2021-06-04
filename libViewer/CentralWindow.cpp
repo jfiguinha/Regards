@@ -271,7 +271,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 wxString CCentralWindow::GetFilename()
 {
-	return oldFilename;
+	return filename;
 }
 
 

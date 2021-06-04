@@ -394,7 +394,7 @@ void CPanelInfosWnd::OnFiltreCancel()
     CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
     if (mainWindow != nullptr)
     {
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
+        wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
         mainWindow->GetEventHandler()->AddPendingEvent(evt);
     }
     ClickShowButton(WM_EFFECT);
