@@ -45,6 +45,7 @@ public:
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int NiveauDeGris();
 	int NoirEtBlanc();
+	int VignetteEffect(const double& radius, const double& power);
 	int Sepia();
 	int Soften();
 	int Blur(const int &radius);

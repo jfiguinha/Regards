@@ -73,6 +73,7 @@ public:
 	static wxImage GetwxImage(CRegardsBitmap * bitmap);
 	int BrightnessAndContrastAuto(float clipHistPercent);
 	int OilPaintingEffect(const int &size, const int &dynRatio);
+	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
 
 private:
 	void RotateMatrix(const int& angle, cv::Mat& src);
@@ -85,5 +86,8 @@ private:
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
 	//cv::Mat bitmapOpenCV;
+
+
+
 };
 

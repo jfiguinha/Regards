@@ -28,10 +28,12 @@
 #include <GaussianBlurEffectParameter.h>
 #include <BlurEffectParameter.h>
 #include <EffectVideoParameter.h>
+#include "VignetteFilter.h"
 #include "BilateralEffectParameter.h"
 #include "DecodeRawParameter.h"
 #include "NlmeansEffectParameter.h"
 #include "bm3dWindowFilter.h"
+#include "VignetteEffectParameter.h"
 #include "WaveEffectParameter.h"
 #include "LensFlareFilter.h"
 #include "SwirlFilter.h"
@@ -195,6 +197,17 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
 			}
 		}
 		break;
+
+        case IDM_FILTRE_VIGNETTE:
+        {
+            if (effectParameter != nullptr)
+            {
+                CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+                filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+                return 1;
+            }
+        }
+        break;
 
 		case IDM_FILTER_CARTOON:
 		{
@@ -459,6 +472,11 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		/// filterEffect->Filter(effectParameter, source, this);
 		break;
 
+    case IDM_FILTRE_VIGNETTE:
+        filterEffect = new CVignetteFilter();
+        /// filterEffect->Filter(effectParameter, source, this);
+        break;
+
 	case IDM_FILTER_CARTOON:
 		filterEffect = new CCartoonFilter();
 		/// filterEffect->Filter(effectParameter, source, this);
@@ -685,6 +703,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
         case IDM_AJUSTEMENT_SOLARISATION:
 		case IDM_FILTREHQDN3D:
 		case IDM_FILTER_CARTOON:
+        case IDM_FILTRE_VIGNETTE:
             return true;
 		/*
 		case IDM_FILTRELENSFLARE:
@@ -751,6 +770,7 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
         case IDM_FILTRE_ERODE:
         case IDM_AJUSTEMENT_SOLARISATION:
 		case IDM_FILTER_CARTOON:
+        case IDM_FILTRE_VIGNETTE:
             return SPECIAL_EFFECT;
             break;
 
@@ -816,7 +836,11 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 		case IDM_FILTREHQDN3D:
 			return new Chqdn3dEffectParameter();
 			break;
-            
+
+        case IDM_FILTRE_VIGNETTE:
+            return new CVignetteEffectParameter();
+            break;
+
 		case IDM_FILTER_CARTOON:
 			return new CCartoonEffectParameter();
 			break;
@@ -880,6 +904,7 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_WAVE_EFFECT:
 		case IDM_FILTREHQDN3D:
 		case IDM_FILTER_CARTOON:
+        case IDM_FILTRE_VIGNETTE:
         case IDM_FILTRELENSFLARE:
             {
                 return true;
@@ -901,6 +926,15 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 			return gaussianBlur;
 			break;
 		}
+
+        case IDM_FILTRE_VIGNETTE:
+        {
+            CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
+            vignetteEffectParameter->power = 0.8;
+            vignetteEffectParameter->radius = 1.0;
+            return vignetteEffectParameter;
+            break;
+        }
 
 		case IDM_FILTER_CARTOON:
 		{
@@ -1083,6 +1117,7 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case IDM_FILTRELENSFLARE:
 		case IDM_FILTREHQDN3D:
 		case IDM_FILTER_CARTOON:
+        case IDM_FILTRE_VIGNETTE:
         case IDM_COLOR_BALANCE:
         case IDM_FILTRE_SWIRL:
         case IDM_FILTRE_CLOUDS:
@@ -1153,4 +1188,5 @@ void CFiltreData::InitFilterListLabel()
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREHQDN3D, "LBLFILTREHQDN3D"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_OILPAINTING, "LBLfilterOilPainting"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_CARTOON, "LBLFILTRECARTOON"));
+    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIGNETTE, "LBLFILTREVIGNETTE"));
 }

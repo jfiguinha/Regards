@@ -29,6 +29,15 @@ using namespace Regards::OpenCV;
 extern float value[256];
 using namespace Regards::FiltreEffet;
 
+class CFiltreEffetCPUImpl
+{
+public:
+	//Vignette effect
+	static void generateGradient(cv::Mat& mask, const double& radius, const double& power);
+	static double getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center);
+	static double dist(cv::Point a, cv::Point b);
+};
+
 CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap)
 	: IFiltreEffet(backColor)
 {
@@ -86,6 +95,93 @@ int CFiltreEffetCPU::OilPaintingEffect(const int &size, const int &dynRatio)
 	cv::xphoto::oilPainting(dst, image, size, dynRatio, cv::COLOR_BGR2Lab);
 	cv::cvtColor(image, dst, cv::COLOR_BGR2BGRA);
 	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	return 0;
+}
+
+// Helper function to calculate the distance between 2 points.
+double CFiltreEffetCPUImpl::dist(cv::Point a, cv::Point b)
+{
+	return sqrt(pow((double)(a.x - b.x), 2) + pow((double)(a.y - b.y), 2));
+}
+
+// Helper function that computes the longest distance from the edge to the center point.
+double CFiltreEffetCPUImpl::getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center)
+{
+	// given a rect and a line
+	// get which corner of rect is farthest from the line
+
+	std::vector<cv::Point> corners(4);
+	corners[0] = cv::Point(0, 0);
+	corners[1] = cv::Point(imgSize.width, 0);
+	corners[2] = cv::Point(0, imgSize.height);
+	corners[3] = cv::Point(imgSize.width, imgSize.height);
+
+	double maxDis = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		double dis = dist(corners[i], center);
+		if (maxDis < dis)
+			maxDis = dis;
+	}
+
+	return maxDis;
+}
+
+// Helper function that creates a gradient image.   
+// firstPt, radius and power, are variables that control the artistic effect of the filter.
+void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius, const double& power)
+{
+	cv::Point firstPt = cv::Point(mask.size().width / 2, mask.size().height / 2);
+	double maxImageRad = radius * getMaxDisFromCorners(mask.size(), firstPt);
+
+	mask.setTo(cv::Scalar(1));
+	for (int i = 0; i < mask.rows; i++)
+	{
+		for (int j = 0; j < mask.cols; j++)
+		{
+			double temp = dist(firstPt, cv::Point(j, i)) / maxImageRad;
+			temp = temp * power;
+			double temp_s = pow(cos(temp), 4);
+			mask.at<double>(i, j) = temp_s;
+		}
+	}
+}
+
+int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		cv::Mat dst;
+		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, src, cv::COLOR_BGRA2BGR);
+
+		cv::Mat maskImg(src.size(), CV_64F);
+		CFiltreEffetCPUImpl::generateGradient(maskImg, radius, power);
+
+		cv::Mat labImg(src.size(), CV_8UC3);
+
+		cv::cvtColor(src, labImg, cv::COLOR_BGR2Lab);
+
+		for (int row = 0; row < labImg.size().height; row++)
+		{
+			for (int col = 0; col < labImg.size().width; col++)
+			{
+				cv::Vec3b value = labImg.at<cv::Vec3b>(row, col);
+				value.val[0] *= maskImg.at<double>(row, col);
+				labImg.at<cv::Vec3b>(row, col) = value;
+			}
+		}
+		cv::cvtColor(labImg, src, cv::COLOR_Lab2BGR);
+		cvtColor(src, dst, cv::COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	}
+
 	return 0;
 }
 

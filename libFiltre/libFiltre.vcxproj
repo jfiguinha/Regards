@@ -542,6 +542,8 @@
     <ClInclude Include="utilities.h" />
     <ClInclude Include="VideoFilter.h" />
     <ClInclude Include="videostream.h" />
+    <ClInclude Include="VignetteEffectParameter.h" />
+    <ClInclude Include="VignetteFilter.h" />
     <ClInclude Include="Wave.h" />
     <ClInclude Include="WaveEffectParameter.h" />
     <ClInclude Include="WaveFilter.h" />
@@ -603,6 +605,7 @@
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="VideoFilter.cpp" />
     <ClCompile Include="videostream.cpp" />
+    <ClCompile Include="VignetteFilter.cpp" />
     <ClCompile Include="Wave.cpp" />
     <ClCompile Include="WaveFilter.cpp" />
   </ItemGroup>

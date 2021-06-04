@@ -381,6 +381,19 @@ int CFiltreEffet::NoirEtBlanc()
 	return -1;
 }
 
+int CFiltreEffet::VignetteEffect(const double& radius, const double& power)
+{
+	try
+	{
+		return filtreEffet->VignetteEffect(radius, power);
+	}
+	catch (...)
+	{
+
+	}
+	return -1;
+}
+
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------

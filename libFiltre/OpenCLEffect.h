@@ -41,7 +41,7 @@ namespace Regards
 			};
 
 			virtual ~COpenCLEffect();
-
+			int VignetteEffect(const double& radius = 1.0, const double& power = 0.8) { return -1; };
             int Bm3d(const int & fSigma);
 			int MeanShift(const float& fSpatialRadius, const float& fColorRadius) { return -1; };
 			int BilateralFilter(int fSize,  float sigmaX, float sigmaP);

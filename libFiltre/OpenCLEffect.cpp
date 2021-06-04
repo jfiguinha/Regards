@@ -94,7 +94,7 @@ int COpenCLEffect::GetSizeData()
 
 CRegardsBitmap* COpenCLEffect::GetPtBitmap()
 {
-	return nullptr;
+	return GetBitmap(false);
 }
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)

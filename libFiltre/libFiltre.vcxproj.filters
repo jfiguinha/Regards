@@ -312,6 +312,12 @@
     <ClInclude Include="MeanShift.h">
       <Filter>Filter\MeanShift</Filter>
     </ClInclude>
+    <ClInclude Include="VignetteFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="VignetteEffectParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -469,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="MeanShift.cpp">
       <Filter>Filter\MeanShift</Filter>
+    </ClCompile>
+    <ClCompile Include="VignetteFilter.cpp">
+      <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
