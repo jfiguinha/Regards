@@ -45,7 +45,7 @@ void CFiltreToolbar::EventManager(const int &id)
 		case WM_OK:
 		{
 			wxCommandEvent evt(wxEVENT_FILTREOK);
-			evt.SetInt(id);
+			evt.SetInt(numFiltre);
 			GetParent()->GetEventHandler()->AddPendingEvent(evt);
 		}
 		break;
@@ -53,7 +53,7 @@ void CFiltreToolbar::EventManager(const int &id)
 		case WM_CANCEL:
 		{
 			wxCommandEvent evt(wxEVENT_FILTRECANCEL);
-			evt.SetInt(id);
+			evt.SetInt(numFiltre);
 			GetParent()->GetEventHandler()->AddPendingEvent(evt);
 		}
 		break;

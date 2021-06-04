@@ -5,7 +5,7 @@ class CVignetteEffectParameter : public CEffectParameter
 public:
 	CVignetteEffectParameter()
 	{
-		radius = 1.0;
+		radius = 100;
 		bitmapWidth = 0;
 		bitmapHeight = 0;
 		power = 0.8;

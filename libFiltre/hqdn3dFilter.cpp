@@ -118,7 +118,7 @@ CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParame
 	{
 		Chqdn3dEffectParameter * hqdn3dParameter = (Chqdn3dEffectParameter *)effectParameter;
 		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image;
+		CImageLoadingFormat image(false);
 		image.SetPicture(source);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp, hqdn3dParameter->ChromTmp);

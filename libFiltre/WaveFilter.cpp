@@ -140,7 +140,7 @@ CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParamete
 	CImageLoadingFormat * imageLoad = nullptr;
 	if (effectParameter != nullptr && source != nullptr)
 	{
-		CImageLoadingFormat image;
+		CImageLoadingFormat image(false);
 		source->RotateExif(source->GetOrientation());
 		image.SetPicture(source);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);

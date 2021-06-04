@@ -147,6 +147,20 @@ void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius,
 	}
 }
 
+double fastCos(double x) {
+	x += 1.57079632;
+	if (x > 3.14159265)
+		x -= 6.28318531;
+	if (x < 0)
+		return 1.27323954 * x + 0.405284735 * x * x;
+	else
+		return 1.27323954 * x - 0.405284735 * x * x;
+}
+
+double dist(double ax, double ay, double bx, double by) {
+	return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+}
+
 int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 {
 	CRegardsBitmap* bitmap = nullptr;
@@ -160,8 +174,49 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		cv::Mat dst;
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cvtColor(src, src, cv::COLOR_BGRA2BGR);
+		//Mat dst = Mat::zeros(src.size(), src.type());
+	
+		Mat kernel_X = getGaussianKernel(src.cols, radius);
+		Mat kernel_Y = getGaussianKernel(src.rows, radius);
+		Mat kernel_X_transpose;
+		transpose(kernel_X, kernel_X_transpose);
+		Mat kernel = kernel_Y * kernel_X_transpose;
 
-		cv::Mat maskImg(src.size(), CV_64F);
+		vector<Mat> bgr_planes;
+		split(src, bgr_planes);	
+
+		Mat mask_v;
+		normalize(kernel, mask_v, 0, 1, NORM_MINMAX);
+		for (int i = 0; i < 3; i++)
+		{
+			Mat proc_img;
+			bgr_planes[i].convertTo(proc_img, CV_64F);
+			multiply(mask_v, proc_img, proc_img);
+			convertScaleAbs(proc_img, proc_img);
+			proc_img.convertTo(bgr_planes[i], CV_8U);
+		}
+
+
+		/*
+		double cx = (double)src.cols / 2, cy = (double)src.rows / 2;
+		double maxDis = radius * dist(0, 0, cx, cy);
+		double temp;
+		for (int y = 0; y < src.rows; y++) {
+			for (int x = 0; x < src.cols; x++) {
+				temp = fastCos(dist(cx, cy, x, y) / maxDis);
+				temp *= temp;
+				dst.at<Vec3b>(y, x)[0] =
+					saturate_cast<uchar>((src.at<Vec3b>(y, x)[0]) * temp);
+				dst.at<Vec3b>(y, x)[1] =
+					saturate_cast<uchar>((src.at<Vec3b>(y, x)[1]) * temp);
+				dst.at<Vec3b>(y, x)[2] =
+					saturate_cast<uchar>((src.at<Vec3b>(y, x)[2]) * temp);
+
+			}
+		}
+		*/
+		/*
+		cv::Mat maskImg = cv::Mat::zeros(src.size(), CV_64F);
 		CFiltreEffetCPUImpl::generateGradient(maskImg, radius, power);
 
 		cv::Mat labImg(src.size(), CV_8UC3);
@@ -177,8 +232,11 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 				labImg.at<cv::Vec3b>(row, col) = value;
 			}
 		}
-		cv::cvtColor(labImg, src, cv::COLOR_Lab2BGR);
-		cvtColor(src, dst, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(labImg, dst, cv::COLOR_Lab2BGR);
+		*/
+
+		cv::merge(bgr_planes, dst);
+		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 

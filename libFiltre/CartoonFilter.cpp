@@ -97,7 +97,7 @@ CImageLoadingFormat * CCartoonFilter::ApplyEffect(CEffectParameter * effectParam
 	{
 		CCartoonEffectParameter * cartoonEffectParameter = (CCartoonEffectParameter *)effectParameter;
 		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image;
+		CImageLoadingFormat image(false);
 		image.SetPicture(source);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);

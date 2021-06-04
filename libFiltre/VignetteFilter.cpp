@@ -25,7 +25,7 @@ CVignetteFilter::CVignetteFilter()
 
 CVignetteFilter::~CVignetteFilter()
 {
-
+	delete source;
 }
 
 int CVignetteFilter::TypeApplyFilter()
@@ -45,9 +45,9 @@ int CVignetteFilter::GetTypeFilter()
 
 void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)
 {
-	this->source = source;
-
 	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+
+	this->source = source;
 
 	vignetteEffectParameter->bitmapWidth = source->GetBitmapWidth();
 	vignetteEffectParameter->bitmapHeight = source->GetBitmapHeight();
@@ -57,25 +57,23 @@ void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* 
 		elementPower.push_back(i);
 
 	vector<int> elementRadius;
-	for (auto i = 0; i < 300; i++)
+	for (auto i = 0; i < vignetteEffectParameter->bitmapWidth; i+=10)
 		elementRadius.push_back(i);
 
-	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius * 100), &elementRadius);
-	filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power * 10), &elementPower);
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius), &elementRadius);
+	//filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power * 10), &elementPower);
 }
 
 void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData, const wxString& key)
 {
 	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
 
-	this->source = source;
-
 	CTreeElementValueInt* valueInt = (CTreeElementValueInt*)valueData;
 	int value = valueInt->GetValue();
 	//Video Parameter
 	if (key == libelleEffectRadius)
 	{
-		vignetteEffectParameter->radius = (float)value / 100.0;
+		vignetteEffectParameter->radius = (float)value;
 	}
 	if (key == libelleEffectPower)
 	{
@@ -90,7 +88,10 @@ void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBit
 	CImageLoadingFormat image;
 	image.SetPicture(bitmapOut);
 	CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-	filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+
+
+	float ratio = (float)bitmapOut->GetBitmapWidth() / (float)vignetteEffectParameter->bitmapWidth;
+	filtre->VignetteEffect(vignetteEffectParameter->radius * ratio, vignetteEffectParameter->power);
 
 	filtreEffet->SetPreview(true);
 
@@ -109,7 +110,7 @@ CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParame
 	{
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
 		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image;
+		CImageLoadingFormat image(false);
 		image.SetPicture(source);
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
@@ -126,7 +127,13 @@ void CVignetteFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* 
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-		filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+		if (preview)
+		{
+			float ratio = (float)filtreEffet->GetWidth() / (float)vignetteEffectParameter->bitmapWidth;
+			filtreEffet->VignetteEffect(vignetteEffectParameter->radius * ratio, vignetteEffectParameter->power);
+		}
+		else
+			filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 	}
 }
 
@@ -144,6 +151,6 @@ CEffectParameter* CVignetteFilter::GetDefaultEffectParameter()
 {
 	CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
 	vignetteEffectParameter->power = 0.8;
-	vignetteEffectParameter->radius = 1.0;
+	vignetteEffectParameter->radius = 100;
 	return vignetteEffectParameter;
 }
