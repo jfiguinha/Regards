@@ -64,10 +64,30 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 	}
 }
 
+bool CFilterWindowParam::SupportMouseClick()
+{
+	return false;
+}
+
+void CFilterWindowParam::SetCursor()
+{
+	::wxSetCursor(wxCursor(wxCURSOR_ARROW));
+}
+
+bool CFilterWindowParam::SupportMouseSelection()
+{
+	return false;
+}
+
+bool CFilterWindowParam::IsOpenCLCompatible()
+{
+	return true;
+}
+
 bool CFilterWindowParam::IsOpenGLCompatible()
 {
-	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
-		return true;
+	//if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
+	//	return true;
 	return false;
 }
 

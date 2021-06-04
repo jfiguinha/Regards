@@ -28,9 +28,14 @@ CVignetteFilter::~CVignetteFilter()
 
 }
 
+int CVignetteFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 int CVignetteFilter::GetTypeFilter()
 {
-	return IDM_FILTRE_VIGNETTE;
+	return SPECIAL_EFFECT; //return IDM_FILTRE_VIGNETTE;
 }
 
 void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)
@@ -50,7 +55,7 @@ void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* 
 	for (auto i = 0; i < 300; i++)
 		elementRadius.push_back(i);
 
-	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius * 10), &elementRadius);
+	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius * 100), &elementRadius);
 	filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power * 10), &elementPower);
 }
 
@@ -65,11 +70,11 @@ void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTree
 	//Video Parameter
 	if (key == libelleEffectRadius)
 	{
-		vignetteEffectParameter->radius = value / 10;
+		vignetteEffectParameter->radius = (float)value / 100.0;
 	}
 	if (key == libelleEffectPower)
 	{
-		vignetteEffectParameter->power = value / 10;
+		vignetteEffectParameter->power = (float)value / (float)10;
 	}
 }
 
@@ -109,4 +114,31 @@ CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParame
 	}
 
 	return imageLoad;
+}
+
+void CVignetteFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+		filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+	}
+}
+
+bool CVignetteFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CVignetteFilter::GetEffectPointer()
+{
+	return new CVignetteEffectParameter();
+}
+
+CEffectParameter* CVignetteFilter::GetDefaultEffectParameter()
+{
+	CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
+	vignetteEffectParameter->power = 0.8;
+	vignetteEffectParameter->radius = 1.0;
+	return vignetteEffectParameter;
 }

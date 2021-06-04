@@ -12,6 +12,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CBilateralFilter::CBilateralFilter()
@@ -21,6 +22,11 @@ CBilateralFilter::CBilateralFilter()
 	libelleEffectsigmaP= CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMAP",1);//"Effect.Sigma.P";
 }
 
+int CBilateralFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CBilateralFilter::~CBilateralFilter()
 {
     
@@ -28,7 +34,7 @@ CBilateralFilter::~CBilateralFilter()
 
 int CBilateralFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_BILATERAL;
+	return CONVOLUTION_EFFECT; //return IDM_FILTRE_BILATERAL;
 }
 
 void CBilateralFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -89,4 +95,28 @@ void CBilateralFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
     {
         bilateralEffectParameter->sigmaP = value;
     }
+}
+
+void CBilateralFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
+		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+	}
+}
+
+bool CBilateralFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CBilateralFilter::GetEffectPointer()
+{
+	return new CBilateralEffectParameter();
+}
+
+CEffectParameter* CBilateralFilter::GetDefaultEffectParameter()
+{
+	return new CBilateralEffectParameter();
 }

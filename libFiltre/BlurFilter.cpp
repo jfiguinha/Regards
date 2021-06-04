@@ -6,13 +6,13 @@
 //  Created by figuinha jacques on 12/04/2016.
 //  Copyright © 2016 figuinha jacques. All rights reserved.
 //
-
+#include <FiltreEffet.h>
 #include "BlurFilter.h"
 #include "BlurEffectParameter.h"
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()
@@ -27,7 +27,7 @@ CBlurFilter::~CBlurFilter()
 
 int CBlurFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_FLOU;
+    return CONVOLUTION_EFFECT; //return IDM_FILTRE_FLOU;
 }
 
 void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -54,4 +54,28 @@ void CBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
         blurEffectParameter->size = value->GetValue();
     }
 
+}
+
+void CBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    CBlurEffectParameter* blurEffectParameter = (CBlurEffectParameter*)effectParameter;
+    if(blurEffectParameter != nullptr && filtreEffet != nullptr)
+        filtreEffet->Blur(blurEffectParameter->size);
+}
+
+bool CBlurFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* CBlurFilter::GetEffectPointer()
+{
+    return new CBlurEffectParameter();
+}
+
+CEffectParameter* CBlurFilter::GetDefaultEffectParameter()
+{
+    CBlurEffectParameter* blurEffect = new CBlurEffectParameter();
+    blurEffect->size = 3;
+    return blurEffect;
 }

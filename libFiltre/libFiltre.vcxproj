@@ -500,6 +500,7 @@
     <ClInclude Include="Filtre.h" />
     <ClInclude Include="FiltreEffet.h" />
     <ClInclude Include="FiltreEffetCPU.h" />
+    <ClInclude Include="FiltreImplementation.h" />
     <ClInclude Include="FiltreUpdate.h" />
     <ClInclude Include="FreeRotateEffectParameter.h" />
     <ClInclude Include="GaussianBlurEffectParameter.h" />

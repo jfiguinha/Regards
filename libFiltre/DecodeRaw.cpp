@@ -78,9 +78,24 @@ CDecodeRaw::~CDecodeRaw()
 		delete rawDecoder;
 }
 
+bool CDecodeRaw::IsOpenCLCompatible()
+{
+	return false;
+}
+
+int CDecodeRaw::TypeApplyFilter()
+{
+	return 2;
+}
+
 int CDecodeRaw::GetTypeFilter()
 {
     return IDM_DECODE_RAW;
+}
+
+bool CDecodeRaw::NeedPreview()
+{
+	return true;
 }
 
 void CDecodeRaw::AddMetadataElement(vector<CMetadata> & element, wxString value, int key)
@@ -427,5 +442,10 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapD
 		}
 		rawParameter->update = false;
 	}
+
+}
+
+void CDecodeRaw::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
 
 }

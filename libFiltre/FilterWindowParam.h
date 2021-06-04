@@ -28,7 +28,18 @@ class CFilterWindowParam : public IMouseUpdate
 public:
     CFilterWindowParam();
     virtual ~CFilterWindowParam();
+	virtual CEffectParameter* GetEffectPointer() {
+		return new CEffectParameter();
+	};
+	virtual int TypeApplyFilter() {
+		return 3;
+	};
+	virtual CEffectParameter * GetDefaultEffectParameter() {
+		return new CEffectParameter();
+	};;
     virtual int GetTypeFilter() = 0;
+	virtual bool NeedPreview() { return false; };
+	virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview) = 0;
     virtual void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key) = 0;
@@ -39,6 +50,10 @@ public:
 	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
 	virtual void DisableOpenGLShader();
 	virtual bool IsOpenGLCompatible();
+	virtual bool IsOpenCLCompatible();
+	virtual bool SupportMouseSelection();
+	virtual bool SupportMouseClick();
+	virtual void SetCursor();
 	static void InitFilterOpenCLCompatible();
     //static void SetOpenCLCompatible(const bool & openCLCompatible);
 

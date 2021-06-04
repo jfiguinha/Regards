@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "header.h"
 #include <Regards.h>
+#include <FilterData.h>
 //#include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
@@ -205,6 +206,8 @@ bool MyApp::OnInit()
 
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
+
+	CFiltreData::CreateFilterList();
 
 	if (!configFileExist)
 	{

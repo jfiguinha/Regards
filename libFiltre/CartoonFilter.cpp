@@ -19,10 +19,14 @@ CCartoonFilter::~CCartoonFilter()
 {
 }
 
+int CCartoonFilter::TypeApplyFilter()
+{
+	return 2;
+}
 
 int CCartoonFilter::GetTypeFilter()
 {
-    return IDM_FILTER_CARTOON;
+	return SPECIAL_EFFECT;// return IDM_FILTER_CARTOON;
 }
 
 void CCartoonFilter::AddMetadataElement(vector<CMetadata> & element, wxString value, int key)
@@ -100,3 +104,28 @@ CImageLoadingFormat * CCartoonFilter::ApplyEffect(CEffectParameter * effectParam
 	return imageLoad;
 }
 
+void CCartoonFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
+		filtreEffet->CartoonifyImage(cartoonEffectParameter->mode);
+	}
+}
+
+bool CCartoonFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CCartoonFilter::GetEffectPointer()
+{
+	return new CCartoonEffectParameter();
+}
+
+CEffectParameter* CCartoonFilter::GetDefaultEffectParameter()
+{
+	CCartoonEffectParameter* cartoonEffectParameter = new CCartoonEffectParameter();
+	cartoonEffectParameter->mode = 0;
+	return cartoonEffectParameter;
+}

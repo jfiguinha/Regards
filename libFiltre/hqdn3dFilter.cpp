@@ -16,6 +16,7 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 Chqdn3dFilter::Chqdn3dFilter()
@@ -34,9 +35,14 @@ Chqdn3dFilter::~Chqdn3dFilter()
     
 }
 
+int Chqdn3dFilter::TypeApplyFilter()
+{
+    return 2;
+}
+
 int Chqdn3dFilter::GetTypeFilter()
 {
-    return IDM_FILTREHQDN3D;
+    return CONVOLUTION_EFFECT; //return IDM_FILTREHQDN3D;
 }
 
 void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -117,4 +123,33 @@ CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParame
 	}
 
 	return imageLoad;
+}
+
+void Chqdn3dFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    if (effectParameter != nullptr && filtreEffet != nullptr)
+    {
+        Chqdn3dEffectParameter* hq3dn = (Chqdn3dEffectParameter*)effectParameter;
+        filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
+    }
+}
+
+bool Chqdn3dFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* Chqdn3dFilter::GetEffectPointer()
+{
+    return new Chqdn3dEffectParameter();
+}
+
+CEffectParameter* Chqdn3dFilter::GetDefaultEffectParameter()
+{
+    Chqdn3dEffectParameter* hq3deffect = new Chqdn3dEffectParameter();
+    hq3deffect->LumSpac = 4;
+    hq3deffect->ChromSpac = 4;
+    hq3deffect->LumTmp = 3;
+    hq3deffect->ChromTmp = 3;
+    return hq3deffect;
 }

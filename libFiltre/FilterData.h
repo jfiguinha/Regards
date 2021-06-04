@@ -9,6 +9,7 @@
 #pragma once
 #include <FilterWindowParam.h>
 #include <AfterEffect.h>
+#include <map>
 class CFiltreEffet;
 class CEffectParameter;
 
@@ -67,12 +68,12 @@ class CEffectParameter;
 #define FILTER_END 45
 #define IDM_OCR 99
 #define IDM_FILTRE_PAGECURL 91
-#define IDM_HDR_DEBLURRING 90
 
 #define IDM_AFTEREFFECT_NONE 300
 #define IDM_AFTEREFFECT_FUSION 301
 #define IDM_AFTEREFFECT_MOVE 302
 #define IDM_AFTEREFFECT_PAGECURL 303
+#define IDM_AFTEREFFECT_BITMAPFUSION 304
 
 #define IDM_DIAPORAMA_TRANSITION 100
 
@@ -106,27 +107,26 @@ public:
     CFiltreData();
     ~CFiltreData();
     
-    static wxString GetFilterLabel(const int &numFilter);
-    static CEffectParameter * GetDefaultEffectParameter(const int &numFilter);
-    static CFilterWindowParam * CreateEffectPointer(const int &numFilter);
-    static CEffectParameter * GetEffectPointer(const int &numItem);
+    static void CreateFilterList();
+    static CFilterWindowParam* CreateEffectPointer(const int& numFilter);
     static int GetTypeEffect(const int &numFilter);
 	static bool SupportMouseClick(const int &numFilter);
 	static void SetCursor(const int &numFilter);
 	static bool SupportMouseSelection(const int &numFilter);
     static bool NeedPreview(const int &numFilter);
-    static bool NeedOriginalPreview(const int &numFilter);
-    static bool IsOpenCLPreviewCompatible(const int &numFilter);
 	static bool IsOpenGLCompatible(const int &numFilter);
 	static bool IsOpenCLCompatible(const int &numFilter);
-    static bool OnFiltreOk(const int &numFiltre);
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);
 	static IAfterEffect * AfterEffectPt(const int &numFilter);
 	static void DeleteAfterEffectPt(IAfterEffect * filter);
     static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
+    static wxString GetFilterLabel(const int& numFilter); 
+    static CEffectParameter* GetDefaultEffectParameter(const int& numFilter);
+    static CEffectParameter* GetEffectPointer(const int& numItem);
+
 private:
-    
+
     class CLabelFilter
     {
     public:
@@ -138,5 +138,7 @@ private:
     
     static void InitFilterListLabel();
     static vector<CLabelFilter> labelFilterList;
+    static std::map<int, CFilterWindowParam *> filterList;
+    static std::map<int, IAfterEffect*> afterEffectList;
 };
 

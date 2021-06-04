@@ -318,6 +318,9 @@
     <ClInclude Include="VignetteEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="FiltreImplementation.h">
+      <Filter>interface\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">

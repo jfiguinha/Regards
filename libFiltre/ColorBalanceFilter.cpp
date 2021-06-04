@@ -14,6 +14,7 @@
 #include <FilterData.h>
 #include <GLTexture.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::OpenGL;
 using namespace Regards::Filter;
 
@@ -24,14 +25,24 @@ CColorBalanceFilter::CColorBalanceFilter()
     libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE",1);
 }
 
+int CColorBalanceFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CColorBalanceFilter::~CColorBalanceFilter()
 {
     
 }
 
+bool CColorBalanceFilter::IsOpenGLCompatible()
+{
+	return true;
+}
+
 int CColorBalanceFilter::GetTypeFilter()
 {
-    return IDM_COLOR_BALANCE;
+	return COLOR_EFFECT;// return IDM_COLOR_BALANCE;
 }
 
 void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -114,3 +125,30 @@ void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 }
 
 
+void CColorBalanceFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+		filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
+	}
+}
+
+bool CColorBalanceFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CColorBalanceFilter::GetEffectPointer()
+{
+	return new CRgbEffectParameter();
+}
+
+CEffectParameter* CColorBalanceFilter::GetDefaultEffectParameter()
+{
+	CRgbEffectParameter* rgbFilter = new CRgbEffectParameter();
+	rgbFilter->red = 120;
+	rgbFilter->green = 120;
+	rgbFilter->blue = 120;
+	return rgbFilter;
+}

@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 COilPaintingFilter::COilPaintingFilter()
@@ -20,10 +20,14 @@ COilPaintingFilter::~COilPaintingFilter()
 {
 }
 
+int COilPaintingFilter::TypeApplyFilter()
+{
+	return 2;
+}
 
 int COilPaintingFilter::GetTypeFilter()
 {
-    return IDM_FILTER_OILPAINTING;
+	return SPECIAL_EFFECT; //return IDM_FILTER_OILPAINTING;
 }
 
 void COilPaintingFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -82,3 +86,29 @@ void COilPaintingFilter::FilterChangeParam(CEffectParameter * effectParameter,  
 	}
 }
 
+void COilPaintingFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr)
+	{
+		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+	}
+}
+
+bool COilPaintingFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* COilPaintingFilter::GetEffectPointer()
+{
+	return new COilPaintingEffectParameter();
+}
+
+CEffectParameter* COilPaintingFilter::GetDefaultEffectParameter()
+{
+	COilPaintingEffectParameter* oilpainteffect = new COilPaintingEffectParameter();
+	oilpainteffect->size = 10;
+	oilpainteffect->dynRatio = 1;
+	return oilpainteffect;
+}

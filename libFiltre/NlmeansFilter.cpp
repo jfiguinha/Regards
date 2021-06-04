@@ -12,7 +12,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CNlmeansFilter::CNlmeansFilter()
@@ -22,6 +22,11 @@ CNlmeansFilter::CNlmeansFilter()
 	libelleEffectsigma= CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);//LBLEFFECTSIGMA;//"Effect.Sigma";
 }
 
+int CNlmeansFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CNlmeansFilter::~CNlmeansFilter()
 {
     
@@ -29,7 +34,7 @@ CNlmeansFilter::~CNlmeansFilter()
 
 int CNlmeansFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_NLMEAN;
+	return CONVOLUTION_EFFECT; //return IDM_FILTRE_NLMEAN;
 }
 
 void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -90,4 +95,28 @@ void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
     {
         nlmeansEffectParameter->sigma = value;
     }
+}
+
+void CNlmeansFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
+		filtreEffet->NlmeansFilter(nlmeansEffectParameter->fSize, nlmeansEffectParameter->bSize, nlmeansEffectParameter->sigma);
+	}
+}
+
+bool CNlmeansFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CNlmeansFilter::GetEffectPointer()
+{
+	return new CNlmeansEffectParameter();
+}
+
+CEffectParameter* CNlmeansFilter::GetDefaultEffectParameter()
+{
+	return new CNlmeansEffectParameter();
 }

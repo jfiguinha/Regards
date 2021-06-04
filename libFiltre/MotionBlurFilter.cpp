@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CMotionBlurFilter::CMotionBlurFilter()
@@ -22,6 +23,11 @@ CMotionBlurFilter::CMotionBlurFilter()
     libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE",1);
 }
 
+int CMotionBlurFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CMotionBlurFilter::~CMotionBlurFilter()
 {
     
@@ -29,7 +35,7 @@ CMotionBlurFilter::~CMotionBlurFilter()
 
 int CMotionBlurFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_MOTIONBLUR;
+	return CONVOLUTION_EFFECT;// IDM_FILTRE_MOTIONBLUR;
 }
 
 void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -80,6 +86,11 @@ void CMotionBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 			motionBlurParameter->angle = value;
 		}
 	}
+}
+
+bool CMotionBlurFilter::NeedPreview()
+{
+	return true;
 }
 
 void CMotionBlurFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
@@ -136,4 +147,27 @@ uniform float top;
 			}
 		}
 	}
+}
+
+void CMotionBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
+		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+	}
+}
+
+CEffectParameter* CMotionBlurFilter::GetEffectPointer()
+{
+	return new CMotionBlurEffectParameter();
+}
+
+CEffectParameter* CMotionBlurFilter::GetDefaultEffectParameter()
+{
+	CMotionBlurEffectParameter* motionBlur = new CMotionBlurEffectParameter();
+	motionBlur->radius = 20;
+	motionBlur->sigma = 5;
+	motionBlur->angle = 40;
+	return motionBlur;
 }

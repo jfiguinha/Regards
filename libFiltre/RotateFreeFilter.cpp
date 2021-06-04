@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CRotateFreeFilter::CRotateFreeFilter()
@@ -17,9 +17,14 @@ CRotateFreeFilter::~CRotateFreeFilter()
     
 }
 
+int CRotateFreeFilter::TypeApplyFilter()
+{
+    return 2;
+}
+
 int CRotateFreeFilter::GetTypeFilter()
 {
-    return IDM_ROTATE_FREE;
+    return ROTATE_EFFECT; //return IDM_ROTATE_FREE;
 }
 
 void CRotateFreeFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -46,4 +51,30 @@ void CRotateFreeFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
     {
         freeRotateEffectParameter->angle = value;
     }
+}
+
+void CRotateFreeFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    if (effectParameter != nullptr && filtreEffet != nullptr)
+    {
+        CFreeRotateEffectParameter* freeRotate = (CFreeRotateEffectParameter*)effectParameter;
+        filtreEffet->RotateFree(freeRotate->angle);
+    }
+}
+
+bool CRotateFreeFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* CRotateFreeFilter::GetEffectPointer()
+{
+    return new CFreeRotateEffectParameter();
+}
+
+CEffectParameter* CRotateFreeFilter::GetDefaultEffectParameter()
+{
+    CFreeRotateEffectParameter* rotate = new CFreeRotateEffectParameter();
+    rotate->angle = 50;
+    return rotate;
 }

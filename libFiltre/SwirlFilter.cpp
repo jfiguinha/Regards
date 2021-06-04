@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CSwirlFilter::CSwirlFilter()
@@ -26,9 +27,19 @@ CSwirlFilter::~CSwirlFilter()
     
 }
 
+int CSwirlFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
+bool CSwirlFilter::IsOpenGLCompatible()
+{
+	return true;
+}
+
 int CSwirlFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+	return SPECIAL_EFFECT; //return IDM_FILTRE_SWIRL;
 }
 
 void CSwirlFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -130,4 +141,38 @@ uniform float angleDegree;
 			}
 		}
 	}
+}
+
+void CSwirlFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+		if (preview)
+		{
+			float ratio = (float)filtreEffet->GetWidth() / (float)swirlParameter->bitmapWidth;
+			filtreEffet->Swirl(swirlParameter->radius * ratio, swirlParameter->angle);
+		}
+		else
+			filtreEffet->Swirl(swirlParameter->radius, swirlParameter->angle);
+	}
+}
+
+bool CSwirlFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CSwirlFilter::GetEffectPointer()
+{
+	return new CSwirlEffectParameter();
+}
+
+
+CEffectParameter* CSwirlFilter::GetDefaultEffectParameter()
+{
+	CSwirlEffectParameter* swirl = new CSwirlEffectParameter();
+	swirl->angle = 20;
+	swirl->radius = 20;
+	return swirl;
 }

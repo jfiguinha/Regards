@@ -142,3 +142,9 @@ void CAudioVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 		videoEffectParameter->enableSubtitle = value;
 	}
 }
+
+void CAudioVideoFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+
+}
+

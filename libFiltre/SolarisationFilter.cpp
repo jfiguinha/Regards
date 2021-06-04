@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CSolarisationFilter::CSolarisationFilter()
@@ -25,9 +26,19 @@ CSolarisationFilter::~CSolarisationFilter()
     
 }
 
+int CSolarisationFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
+bool CSolarisationFilter::IsOpenGLCompatible()
+{
+	return true;
+}
+
 int CSolarisationFilter::GetTypeFilter()
 {
-    return IDM_AJUSTEMENT_SOLARISATION;
+	return SPECIAL_EFFECT; //return IDM_AJUSTEMENT_SOLARISATION;
 }
 
 void CSolarisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -81,4 +92,31 @@ void CSolarisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 		}
 	}
 }
+
+void CSolarisationFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
+		filtreEffet->Solarize(solarisationEffectParameter->threshold);
+	}
+}
+
+bool CSolarisationFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CSolarisationFilter::GetEffectPointer()
+{
+	return new CSolarisationEffectParameter();
+}
+
+CEffectParameter* CSolarisationFilter::GetDefaultEffectParameter()
+{
+	CSolarisationEffectParameter* solarisation = new CSolarisationEffectParameter();
+	solarisation->threshold = 50;
+	return solarisation;
+}
+
 

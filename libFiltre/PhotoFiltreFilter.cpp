@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CPhotoFiltreFilter::CPhotoFiltreFilter()
@@ -28,9 +29,19 @@ CPhotoFiltreFilter::~CPhotoFiltreFilter()
     
 }
 
+bool CPhotoFiltreFilter::IsOpenGLCompatible()
+{
+    return true;
+}
+
+int CPhotoFiltreFilter::TypeApplyFilter()
+{
+    return 2;
+}
+
 int CPhotoFiltreFilter::GetTypeFilter()
 {
-    return ID_AJUSTEMENT_PHOTOFILTRE;
+    return COLOR_EFFECT; //return ID_AJUSTEMENT_PHOTOFILTRE;
 }
 
 void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -119,4 +130,33 @@ void CPhotoFiltreFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffect
 			}
 		}
 	}
+}
+
+void CPhotoFiltreFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    if (effectParameter != nullptr && filtreEffet != nullptr)
+    {
+        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
+        filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+    }
+}
+
+bool CPhotoFiltreFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* CPhotoFiltreFilter::GetEffectPointer()
+{
+    return new CPhotoFiltreEffectParameter();
+}
+
+CEffectParameter* CPhotoFiltreFilter::GetDefaultEffectParameter()
+{
+    CPhotoFiltreEffectParameter* photoFiltre = new CPhotoFiltreEffectParameter();
+    photoFiltre->red = 255;
+    photoFiltre->green = 0;
+    photoFiltre->blue = 0;
+    photoFiltre->intensity = 30;
+    return photoFiltre;
 }

@@ -18,13 +18,21 @@ namespace Regards
 		public:
 			CCropFilter();
 			~CCropFilter();
+			bool IsOpenCLCompatible();
 			int GetTypeFilter();
+			bool SupportMouseSelection();
+			void SetCursor();
+			int TypeApplyFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface) {};
 			void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
 			void FilterChangeParam(CEffectParameter * effectParameter, CTreeElementValue * valueData, const wxString &key);
 			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
-
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
+			bool NeedPreview();
+			CEffectParameter* GetEffectPointer();
+			CEffectParameter* GetDefaultEffectParameter();
+			bool SupportMouseClick();
 		private:
 
 			void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);

@@ -19,10 +19,34 @@ CCropFilter::~CCropFilter()
 {
 }
 
+bool CCropFilter::IsOpenCLCompatible()
+{
+	return false;
+}
+
+void CCropFilter::SetCursor()
+{
+	::wxSetCursor(wxCursor(wxCURSOR_CROSS));
+}
+
+bool CCropFilter::SupportMouseClick()
+{
+	return true;
+}
+
+bool CCropFilter::SupportMouseSelection()
+{
+	return true;
+}
 
 int CCropFilter::GetTypeFilter()
 {
 	return IDM_CROP;
+}
+
+int CCropFilter::TypeApplyFilter()
+{
+	return 2;
 }
 
 void CCropFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -76,4 +100,24 @@ void CCropFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw 
 void CCropFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	DrawingToPicture(effectParameter, bitmapViewer, filtreEffet, m_cDessin);
+}
+
+void CCropFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+
+}
+
+bool CCropFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CCropFilter::GetEffectPointer()
+{
+
+}
+
+CEffectParameter* CCropFilter::GetDefaultEffectParameter()
+{
+
 }

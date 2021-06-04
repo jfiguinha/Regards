@@ -12,7 +12,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CBm3dWindowFilter::CBm3dWindowFilter()
@@ -25,9 +25,14 @@ CBm3dWindowFilter::~CBm3dWindowFilter()
     
 }
 
+int CBm3dWindowFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 int CBm3dWindowFilter::GetTypeFilter()
 {
-    return IDM_FILTER_BM3D;
+	return CONVOLUTION_EFFECT;// return IDM_FILTER_BM3D;
 }
 
 void CBm3dWindowFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -74,4 +79,30 @@ void CBm3dWindowFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
         bm3dEffectParameter->fSize = value;
     }
 
+}
+
+void CBm3dWindowFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CBm3dEffectParameter* bm3dParameter = (CBm3dEffectParameter*)effectParameter;
+		filtreEffet->Bm3d(bm3dParameter->fSize);
+	}
+}
+
+bool CBm3dWindowFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CBm3dWindowFilter::GetEffectPointer()
+{
+	return new CBm3dEffectParameter();
+}
+
+CEffectParameter* CBm3dWindowFilter::GetDefaultEffectParameter()
+{
+	CBm3dEffectParameter* bm3dParameter = new CBm3dEffectParameter();
+	bm3dParameter->fSize = 25;
+	return bm3dParameter;
 }

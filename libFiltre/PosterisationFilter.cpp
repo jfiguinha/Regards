@@ -13,7 +13,13 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
+
+int CPosterisationFilter::TypeApplyFilter()
+{
+	return 2;
+}
 
 CPosterisationFilter::CPosterisationFilter()
 {
@@ -26,9 +32,15 @@ CPosterisationFilter::~CPosterisationFilter()
     
 }
 
+bool CPosterisationFilter::IsOpenGLCompatible()
+{
+	return true;
+}
+
+
 int CPosterisationFilter::GetTypeFilter()
 {
-    return ID_AJUSTEMENT_POSTERISATION;
+	return SPECIAL_EFFECT; //return ID_AJUSTEMENT_POSTERISATION;
 }
 
 void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -96,4 +108,29 @@ void CPosterisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffe
 	}
 }
 
+void CPosterisationFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+		filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+	}
+}
 
+bool CPosterisationFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CPosterisationFilter::GetEffectPointer()
+{
+	return new CPosterisationEffectParameter();
+}
+
+CEffectParameter* CPosterisationFilter::GetDefaultEffectParameter()
+{
+	CPosterisationEffectParameter* posterization = new CPosterisationEffectParameter();
+	posterization->gamma = 20;
+	posterization->level = 20;
+	return posterization;
+}

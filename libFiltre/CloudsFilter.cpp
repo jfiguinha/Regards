@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CCloudsFilter::CCloudsFilter()
@@ -25,9 +25,19 @@ CCloudsFilter::~CCloudsFilter()
     
 }
 
+int CCloudsFilter::TypeApplyFilter()
+{
+    return 2;
+}
+
+bool CCloudsFilter::IsOpenCLCompatible()
+{
+    return false;
+}
+
 int CCloudsFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_CLOUDS;
+    return SPECIAL_EFFECT;// return IDM_FILTRE_CLOUDS;
 }
 
 void CCloudsFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -101,4 +111,35 @@ void CCloudsFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTree
     {
         cloudsEffectParameter->colorBack = CRgbaquad(cloudsEffectParameter->colorBack.GetRed(), cloudsEffectParameter->colorBack.GetGreen(), value->GetValue());
     }
+}
+
+void CCloudsFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    if (effectParameter != nullptr && filtreEffet != nullptr)
+    {
+        CCloudsEffectParameter* cloudsParameter = (CCloudsEffectParameter*)effectParameter;
+        filtreEffet->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
+    }
+}
+
+bool CCloudsFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* CCloudsFilter::GetEffectPointer()
+{
+    return new CCloudsEffectParameter();
+}
+
+CEffectParameter* CCloudsFilter::GetDefaultEffectParameter()
+{
+    CCloudsEffectParameter* clouds = new CCloudsEffectParameter();
+    clouds->colorFront = CRgbaquad(0, 0, 0);
+    clouds->colorBack = CRgbaquad(255, 255, 255);
+    clouds->amplitude = 1;
+    clouds->frequence = 65;
+    clouds->octave = 8;
+    clouds->transparency = 50;
+    return clouds;
 }

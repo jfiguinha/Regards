@@ -18,6 +18,11 @@
 #include <BitmapDisplay.h>
 using namespace Regards::Filter;
 
+int CLensFlareFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CLensFlareFilter::CLensFlareFilter()
 {
     libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS",1);
@@ -29,6 +34,16 @@ CLensFlareFilter::CLensFlareFilter()
 CLensFlareFilter::~CLensFlareFilter()
 {
     
+}
+
+bool CLensFlareFilter::IsOpenCLCompatible()
+{
+	return false;
+}
+
+bool CLensFlareFilter::SupportMouseClick()
+{
+	return true;
 }
 
 int CLensFlareFilter::GetTypeFilter()
@@ -161,5 +176,24 @@ void CLensFlareFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, C
 
 	if (m_cDessin != nullptr)
 		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+}
+
+void CLensFlareFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+
+}
+bool CLensFlareFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CLensFlareFilter::GetEffectPointer()
+{
+	return new CLensFlareEffectParameter();
+}
+
+CEffectParameter* CLensFlareFilter::GetDefaultEffectParameter()
+{
+	return new CLensFlareEffectParameter();
 }
 

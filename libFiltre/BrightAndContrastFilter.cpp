@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CBrightAndContrastFilter::CBrightAndContrastFilter()
@@ -26,9 +27,19 @@ CBrightAndContrastFilter::~CBrightAndContrastFilter()
     
 }
 
+bool CBrightAndContrastFilter::IsOpenGLCompatible()
+{
+    return true;
+}
+
+int CBrightAndContrastFilter::TypeApplyFilter()
+{
+    return 2;
+}
+
 int CBrightAndContrastFilter::GetTypeFilter()
 {
-    return IDM_IMAGE_LIGHTCONTRAST;
+    return COLOR_EFFECT; //return IDM_IMAGE_LIGHTCONTRAST;
 }
 
 void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -86,4 +97,31 @@ void CBrightAndContrastFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, C
 			}
 		}
 	}
+}
+
+void CBrightAndContrastFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+    if (effectParameter != nullptr && filtreEffet != nullptr)
+    {
+        CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
+        filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
+    }
+}
+
+bool CBrightAndContrastFilter::NeedPreview()
+{
+    return true;
+}
+
+CEffectParameter* CBrightAndContrastFilter::GetEffectPointer()
+{
+    return new CBrightAndContrastEffectParameter();
+}
+
+CEffectParameter* CBrightAndContrastFilter::GetDefaultEffectParameter()
+{
+    CBrightAndContrastEffectParameter* brightness = new CBrightAndContrastEffectParameter();
+    brightness->brightness = 20;
+    brightness->contrast = 20;
+    return brightness;
 }

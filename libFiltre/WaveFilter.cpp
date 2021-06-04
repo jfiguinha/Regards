@@ -18,6 +18,11 @@
 #include <Draw.h>
 using namespace Regards::Filter;
 
+int CWaveFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 CWaveFilter::CWaveFilter()
 {
     libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS",1);
@@ -26,9 +31,19 @@ CWaveFilter::CWaveFilter()
 
 }
 
+bool CWaveFilter::IsOpenCLCompatible()
+{
+	return false;
+}
+
 CWaveFilter::~CWaveFilter()
 {
     
+}
+
+bool CWaveFilter::SupportMouseClick()
+{
+	return true;
 }
 
 int CWaveFilter::GetTypeFilter()
@@ -150,5 +165,25 @@ void CWaveFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw 
 
 	if (m_cDessin != nullptr)
 		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+}
+
+void CWaveFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+
+}
+
+bool CWaveFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CWaveFilter::GetEffectPointer()
+{
+	return new CWaveEffectParameter();
+}
+
+CEffectParameter* CWaveFilter::GetDefaultEffectParameter()
+{
+	return new CWaveEffectParameter();
 }
 

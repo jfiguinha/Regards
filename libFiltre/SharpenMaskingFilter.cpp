@@ -5,6 +5,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <RenderOpenGL.h>
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CSharpenMaskingFilter::CSharpenMaskingFilter()
@@ -12,6 +13,15 @@ CSharpenMaskingFilter::CSharpenMaskingFilter()
 	libelleSharpness = CLibResource::LoadStringFromResource(L"LBLSHARPNESS", 1);
 }
 
+int CSharpenMaskingFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
+bool CSharpenMaskingFilter::IsOpenGLCompatible()
+{
+	return true;
+}
 
 CSharpenMaskingFilter::~CSharpenMaskingFilter()
 {
@@ -19,7 +29,7 @@ CSharpenMaskingFilter::~CSharpenMaskingFilter()
 
 int CSharpenMaskingFilter::GetTypeFilter()
 {
-	return IDM_SHARPENMASKING;
+	return CONVOLUTION_EFFECT; //return IDM_SHARPENMASKING;
 }
 
 void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -77,4 +87,30 @@ void CSharpenMaskingFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEff
 			}
 		}
 	}
+}
+
+void CSharpenMaskingFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+		filtreEffet->SharpenMasking(sharpenParameter->sharpness);
+	}
+}
+
+bool CSharpenMaskingFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CSharpenMaskingFilter::GetEffectPointer()
+{
+	return new CSharpenMaskingEffectParameter();
+}
+
+CEffectParameter* CSharpenMaskingFilter::GetDefaultEffectParameter()
+{
+	CSharpenMaskingEffectParameter* sharpen = new CSharpenMaskingEffectParameter();
+	sharpen->sharpness = 1.0f;
+	return sharpen;
 }

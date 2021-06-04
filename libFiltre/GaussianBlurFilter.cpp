@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
 using namespace Regards::Filter;
 
 CGaussianBlurFilter::CGaussianBlurFilter()
@@ -18,9 +18,14 @@ CGaussianBlurFilter::~CGaussianBlurFilter()
 
 }
 
+int CGaussianBlurFilter::TypeApplyFilter()
+{
+	return 2;
+}
+
 int CGaussianBlurFilter::GetTypeFilter()
 {
-	return IDM_FILTRE_FLOUGAUSSIEN;
+	return CONVOLUTION_EFFECT; //return IDM_FILTRE_FLOUGAUSSIEN;
 }
 
 void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -53,4 +58,32 @@ void CGaussianBlurFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 		gaussianBlurEffectParameter->boxSize = value;
 	}
 
+}
+
+
+void CGaussianBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+	if (effectParameter != nullptr && filtreEffet != nullptr)
+	{
+		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+		filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+	}
+}
+
+bool CGaussianBlurFilter::NeedPreview()
+{
+	return true;
+}
+
+CEffectParameter* CGaussianBlurFilter::GetEffectPointer()
+{
+	return new CGaussianBlurEffectParameter();
+}
+
+CEffectParameter* CGaussianBlurFilter::GetDefaultEffectParameter()
+{
+	CGaussianBlurEffectParameter* gaussianBlur = new CGaussianBlurEffectParameter();
+	gaussianBlur->radius = 5;
+	gaussianBlur->boxSize = 3;
+	return gaussianBlur;
 }

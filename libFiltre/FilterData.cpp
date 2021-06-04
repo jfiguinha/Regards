@@ -12,29 +12,8 @@
 #include <DecodeRaw.h>
 #include <EffectParameter.h>
 #include <LibResource.h>
-#include <RgbEffectParameter.h>
-#include <BrightAndContrastEffectParameter.h>
-#include <bm3dEffectParameter.h>
-#include <CloudsEffectParameter.h>
-#include <FreeRotateEffectParameter.h>
-#include <MotionBlurEffectParameter.h>
-#include <PhotoFiltreEffectParameter.h>
-#include <PosterisationEffectParameter.h>
-#include <RgbEffectParameter.h>
-#include <SolarisationEffectParameter.h>
-#include <LensFlareEffectParameter.h>
-#include <SharpenMaskingParameter.h>
-#include <SwirlEffectParameter.h>
-#include <GaussianBlurEffectParameter.h>
-#include <BlurEffectParameter.h>
-#include <EffectVideoParameter.h>
 #include "VignetteFilter.h"
-#include "BilateralEffectParameter.h"
-#include "DecodeRawParameter.h"
-#include "NlmeansEffectParameter.h"
 #include "bm3dWindowFilter.h"
-#include "VignetteEffectParameter.h"
-#include "WaveEffectParameter.h"
 #include "LensFlareFilter.h"
 #include "SwirlFilter.h"
 #include "ColorBalanceFilter.h"
@@ -59,332 +38,31 @@
 #include <Selection.h>
 #include <BitmapFusionFilter.h>
 #include <PageCurlFilter.h>
-#include <BitmapFusionEffectParameter.h>
 #include <hqdn3dFilter.h>
 #include <OilPaintingFilter.h>
-#include <hqdn3dEffectParameter.h>
-#include <OilPaintingEffectParameter.h>
 #include <CartoonFilter.h>
-#include <CartoonEffectParameter.h>
+#include "FiltreImplementation.h"
 using namespace Regards::Filter;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
+map<int, CFilterWindowParam*> CFiltreData::filterList;
+
+void CFiltreData::CreateFilterList()
+{
+    for (int numEffect = FILTER_START; numEffect < FILTER_END; numEffect++)
+    {
+        filterList.insert(std::make_pair(numEffect, CreateEffectPointer(numEffect)));
+    }
+}
 
 CFiltreData::CFiltreData(){}
 CFiltreData::~CFiltreData(){}
 
 
-bool CFiltreData::NeedOriginalPreview(const int &numFilter)
-{
-    /*
-    switch (numFilter)
-    {
-        case IDM_FILTER_BM3D:
-            return true;
-    }
-    */
-    return false;
-}
-
 int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview)
 {
-    switch (numEffect)
-    {      
-        case IDM_FILTRE_SOFTEN:
-            filtreEffet->Soften();
-            break;
-
-		case IDM_BRIGHTNESSCONTRAST_AUTO:
-			filtreEffet->BrightnessAndContrastAuto(0);
-			break;
-            
-        case IDM_HISTOGRAMNORMALIZE:
-            filtreEffet->HistogramNormalize();
-            break;
-            
-        case IDM_HISTOGRAMEQUALIZE:
-            filtreEffet->HistogramEqualize();
-            break;
-            
-		case IDM_ROTATE90:
-			filtreEffet->Rotate90();
-			break;
-
-		case IDM_ROTATE270:
-			filtreEffet->Rotate270();
-			break;
-
-		case IDM_FLIPVERTICAL:
-			filtreEffet->FlipVertical();
-			break;
-
-		case IDM_FLIPHORIZONTAL:
-			filtreEffet->FlipHorizontal();
-			break;
-            
-        case IDM_FILTRE_FLOU:
-            if (effectParameter != nullptr)
-            {
-                CBlurEffectParameter * blurEffect = (CBlurEffectParameter *)effectParameter;
-                filtreEffet->Blur(blurEffect->size);
-                return 1;
-            }
-            break;
-            
-        case IDM_AJUSTEMENT_SOLARISATION:
-        {
-            if (effectParameter != nullptr)
-            {
-                CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-                filtreEffet->Solarize(solarisationEffectParameter->threshold);
-                return 1;
-            }
-        }
-            break;
-            
-        case IDM_FILTRE_FLOUGAUSSIEN:
-			if (effectParameter != nullptr)
-			{
-				CGaussianBlurEffectParameter  * gaussianBlur = (CGaussianBlurEffectParameter *)effectParameter;
-				filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
-                return 1;
-			}
-            break;
-            
-        case IDM_FILTREANTIBRUIT:
-            filtreEffet->Median();
-            break;
-            
-        case IDM_FILTRE_MOTIONBLUR:
-        {
-            if (effectParameter != nullptr)
-            {
-                CMotionBlurEffectParameter * motionblurEffectParameter = (CMotionBlurEffectParameter *)effectParameter;
-                filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
-                return 1;
-            }
-            break;
-        }
-            break;
-        case IDM_ROTATE_FREE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
-                filtreEffet->RotateFree(freeRotate->angle);
-                return 1;
-            }
-        }
-            break;
-            
-        case IDM_IMAGE_LIGHTCONTRAST:
-        {
-            if (effectParameter != nullptr)
-            {
-                CBrightAndContrastEffectParameter  * brightAndContrast = (CBrightAndContrastEffectParameter *)effectParameter;
-                filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
-                return 1;
-            }
-        }
-            break;
-
-		case IDM_FILTREHQDN3D:
-		{
-			if (effectParameter != nullptr)
-			{
-				Chqdn3dEffectParameter  * hq3dn = (Chqdn3dEffectParameter *)effectParameter;
-				filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
-				return 1;
-			}
-		}
-		break;
-
-        case IDM_FILTRE_VIGNETTE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-                filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
-                return 1;
-            }
-        }
-        break;
-
-		case IDM_FILTER_CARTOON:
-		{
-			if (effectParameter != nullptr)
-			{
-				CCartoonEffectParameter * cartoonEffectParameter = (CCartoonEffectParameter *)effectParameter;
-				filtreEffet->CartoonifyImage(cartoonEffectParameter->mode);
-				return 1;
-			}
-		}
-		break;
-            
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CPhotoFiltreEffectParameter * photoFiltreParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-                filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-                return 1;
-            }
-        }
-            break;
-        case ID_AJUSTEMENT_POSTERISATION:
-        {
-            if (effectParameter != nullptr)
-            {
-                CPosterisationEffectParameter * posterisationFiltreParameter = (CPosterisationEffectParameter *)effectParameter;
-                filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
-                return 1;
-            }
-        }
-            break;
-        case IDM_COLOR_BALANCE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CRgbEffectParameter * rgbParameter = (CRgbEffectParameter *)effectParameter;
-                filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
-                return 1;
-            }
-        }
-            break;
-        case IDM_FILTRE_SWIRL:
-        {
-            if (effectParameter != nullptr)
-            {
-                CSwirlEffectParameter * swirlParameter = (CSwirlEffectParameter *)effectParameter;
-                if(preview)
-                {
-                    float ratio = (float)filtreEffet->GetWidth() / (float)swirlParameter->bitmapWidth;
-                    filtreEffet->Swirl(swirlParameter->radius * ratio, swirlParameter->angle);
-                }
-                else
-                    filtreEffet->Swirl(swirlParameter->radius, swirlParameter->angle);
-                    
-                return 1;
-            }
-        }
-            break;
-            
-        case IDM_FILTRE_CLOUDS:
-        {
-            if (effectParameter != nullptr)
-            {
-                CCloudsEffectParameter * cloudsParameter = (CCloudsEffectParameter *)effectParameter;
-				filtreEffet->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
-                return 1;
-            }
-        }
-            break;
-
-		case IDM_FILTER_OILPAINTING:
-		{
-			if (effectParameter != nullptr)
-			{
-				COilPaintingEffectParameter * oilPaintingParam = (COilPaintingEffectParameter *)effectParameter;
-				filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
-				return 1;
-			}
-		}
-		break;
-
-		case IDM_SHARPENMASKING:
-		{
-			if (effectParameter != nullptr)
-			{
-				CSharpenMaskingEffectParameter * sharpenParameter = (CSharpenMaskingEffectParameter *)effectParameter;
-				filtreEffet->SharpenMasking(sharpenParameter->sharpness);
-                return 1;
-			}
-		}
-		break;
-
-		case IDM_FILTRE_BILATERAL:
-		{
-			if (effectParameter != nullptr)
-			{
-				CBilateralEffectParameter * bilateralEffectParameter = (CBilateralEffectParameter *)effectParameter;
-				filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
-                return 1;
-			}
-		}
-		break;
-
-		case IDM_FILTRE_NLMEAN:
-		{
-			if (effectParameter != nullptr)
-			{
-				CNlmeansEffectParameter * nlmeansEffectParameter = (CNlmeansEffectParameter *)effectParameter;
-				filtreEffet->NlmeansFilter(nlmeansEffectParameter->fSize, nlmeansEffectParameter->bSize, nlmeansEffectParameter->sigma);
-                return 1;
-			}
-		}
-		break;
-      
-        case IDM_FILTER_BM3D:
-			if (effectParameter != nullptr)
-			{
-				CBm3dEffectParameter * bm3dParameter = (CBm3dEffectParameter *)effectParameter;
-				filtreEffet->Bm3d(bm3dParameter->fSize);
-                return 1;
-			}
-            break;
-
-        case IDM_FILTRE_ERODE:
-            filtreEffet->Erode();
-            break;
-            
-        case IDM_FILTRE_DILATE:
-            filtreEffet->Dilate();
-            break;
-            
-        case IDM_FILTRE_SHARPEN:
-            filtreEffet->Sharpen();
-            break;
-            
-        case IDM_FILTRE_SHARPENSTRONG:
-            filtreEffet->SharpenStrong();
-            break;
-            
-        case IDM_FILTRENOISE:
-            filtreEffet->Noise();
-            break;
-            
-        case IDM_FILTRE_MOSAIQUE:
-            filtreEffet->FiltreMosaic();
-            break;
-            
-        case IDM_FILTRE_EMBOSS:
-            filtreEffet->Emboss();
-            break;
-            
-        case IDM_GREY_LEVEL:
-            filtreEffet->NiveauDeGris();
-            break;
-            
-        case IDM_IMAGE_SEPIA:
-            filtreEffet->Sepia();
-            break;
-            
-        case IDM_BLACKANDWHITE:
-            filtreEffet->NoirEtBlanc();
-            break;
-            
-        case IDM_FILTRE_EDGE:
-            filtreEffet->FiltreEdge();
-            break;
-            
-        case IDM_NEGATIF:
-            filtreEffet->Negatif();
-            break;
-
-		case IDM_REDEYE:
-			filtreEffet->RedEye();
-			break;
-
-    }
+    CFilterWindowParam* filterEffect = filterList[numEffect];
+    if (filterEffect != nullptr)
+        filterEffect->RenderEffect(filtreEffet, effectParameter, preview);
     return 0;
 }
 
@@ -394,122 +72,222 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
     CFilterWindowParam * filterEffect = nullptr;
 	switch (numFilter)
 	{
-	case IDM_FILTRE_MOTIONBLUR:
-        filterEffect = new CMotionBlurFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
+    case IDM_FILTRE_SOFTEN:
+        filterEffect = new CSoftenFilter();
+        break;
 
-	case IDM_FILTRE_CLOUDS:
-        filterEffect = new CCloudsFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
+    case IDM_BRIGHTNESSCONTRAST_AUTO:
+        filterEffect = new CBrightnessAutoFilter();
+        break;
 
-	case IDM_FILTER_OILPAINTING:
-		filterEffect = new COilPaintingFilter();
-		break;
+    case IDM_HISTOGRAMNORMALIZE:
+        filterEffect = new CHistogramNormalizeFilter();
+        break;
+
+    case IDM_HISTOGRAMEQUALIZE:
+        filterEffect = new CHistogramEqualizeFilter();
+        break;
+
+    case IDM_ROTATE90:
+        filterEffect = new CRotate90Filter();
+        break;
+
+    case IDM_ROTATE270:
+        filterEffect = new CRotate270Filter();
+        break;
+
+    case IDM_FLIPVERTICAL:
+        filterEffect = new CFlipVerticalFilter();
+        break;
+
+    case IDM_FLIPHORIZONTAL:
+        filterEffect = new CFlipHorizontalFilter();
+        break;
+
+    case IDM_FILTRE_FLOU:
+        filterEffect = new CBlurFilter();
+        break;
+
+    case IDM_AJUSTEMENT_SOLARISATION:
+        filterEffect = new CSolarisationFilter();
+        break;
+
+    case IDM_FILTRE_FLOUGAUSSIEN:
+        filterEffect = new CGaussianBlurFilter();
+        break;
+
+    case IDM_FILTREANTIBRUIT:
+        filterEffect = new CMedianFilter();
+        break;
+
+    case IDM_FILTRE_MOTIONBLUR:
+    {
+        filterEffect = new  CMotionBlurFilter();
+        break;
+    }
+
+    case IDM_ROTATE_FREE:
+    {
+        filterEffect = new  CRotateFreeFilter();
+        break;
+    }
+
+    case IDM_IMAGE_LIGHTCONTRAST:
+    {
+        filterEffect = new  CBrightAndContrastFilter();
+        break;
+    }
+
+    case IDM_FILTREHQDN3D:
+    {
+        filterEffect = new  Chqdn3dFilter();
+        break;
+    }
+
+    case IDM_FILTRE_VIGNETTE:
+    {
+        filterEffect = new  CVignetteFilter();
+        break;
+    }
+
+    case IDM_FILTER_CARTOON:
+    {
+        filterEffect = new  CCartoonFilter();
+        break;
+    }
+
+    case ID_AJUSTEMENT_PHOTOFILTRE:
+    {
+        filterEffect = new  CPhotoFiltreFilter();
+        break;
+    }
+
+    case ID_AJUSTEMENT_POSTERISATION:
+    {
+        filterEffect = new  CPosterisationFilter();
+        break;
+    }
+
+    case IDM_COLOR_BALANCE:
+    {
+        filterEffect = new  CColorBalanceFilter();
+        break;
+    }
+
+    case IDM_FILTRE_SWIRL:
+    {
+        filterEffect = new  CSwirlFilter();
+        break;
+    }
+
+    case IDM_FILTRE_CLOUDS:
+    {
+        filterEffect = new  CCloudsFilter();
+        break;
+    }
+
+    case IDM_FILTER_OILPAINTING:
+    {
+        filterEffect = new  COilPaintingFilter();
+        break;
+    }
+    break;
+
+    case IDM_SHARPENMASKING:
+    {
+        filterEffect = new  CSharpenMaskingFilter();
+        break;
+    }
+
+    case IDM_FILTRE_BILATERAL:
+    {
+        filterEffect = new  CBilateralFilter();
+        break;
+    }
+
+    case IDM_FILTRE_NLMEAN:
+    {
+        filterEffect = new  CNlmeansFilter();
+        break;
+    }
+
+
+    case IDM_FILTER_BM3D:
+        filterEffect = new  CBm3dWindowFilter();
+        break;
+
+    case IDM_FILTRE_ERODE:
+        filterEffect = new  CErodeFilter();
+        break;
+
+    case IDM_FILTRE_DILATE:
+        filterEffect = new  CDilateFilter();
+        break;
+
+    case IDM_FILTRE_SHARPEN:
+        filterEffect = new  CSharpenFilter();
+        break;
+
+    case IDM_FILTRE_SHARPENSTRONG:
+        filterEffect = new CSharpenStrongFilter();
+        break;
+
+    case IDM_FILTRENOISE:
+        filterEffect = new CNoiseFilter();
+        break;
+
+    case IDM_FILTRE_MOSAIQUE:
+        filterEffect = new CMosaicFilter();
+        break;
+
+    case IDM_FILTRE_EMBOSS:
+        filterEffect = new CEmbossFilter();
+        break;
+
+    case IDM_GREY_LEVEL:
+        filterEffect = new CGrayLevelFilter();
+        break;
+
+    case IDM_IMAGE_SEPIA:
+        filterEffect = new CSepiaFilter();
+        break;
+
+    case IDM_BLACKANDWHITE:
+        filterEffect = new CNoirEtBlancFilter();
+        break;
+
+    case IDM_FILTRE_EDGE:
+        filterEffect = new CEdgeFilter();
+        break;
+
+    case IDM_NEGATIF:
+        filterEffect = new CNegatifFilter();
+        break;
+
+    case IDM_REDEYE:
+        filterEffect = new CRedEyeFilter();
+        break;
 
 	case IDM_DECODE_RAW:
         filterEffect = new CDecodeRaw();
-        //filterEffect->Filter(effectParameter, source, this);
-		break;
-               
-    case IDM_FILTER_BM3D:
-        filterEffect = new CBm3dWindowFilter();
-        break;
-
-	case IDM_SHARPENMASKING:
-		filterEffect = new CSharpenMaskingFilter();
-		//filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_FILTRE_SWIRL:
-        filterEffect = new CSwirlFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_COLOR_BALANCE:
-        filterEffect = new CColorBalanceFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case ID_AJUSTEMENT_POSTERISATION:
-        filterEffect = new CPosterisationFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case ID_AJUSTEMENT_PHOTOFILTRE:
-        filterEffect = new CPhotoFiltreFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_IMAGE_LIGHTCONTRAST:
-        filterEffect = new CBrightAndContrastFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_AJUSTEMENT_SOLARISATION:
-        filterEffect = new CSolarisationFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_FILTRE_FLOU:
-        filterEffect = new CBlurFilter();
-       // filterEffect->Filter(effectParameter, source, this);
-		break;
+		break;     
 
 	case IDM_WAVE_EFFECT:
 		filterEffect = new CWaveFilter();
-		//filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_FILTRELENSFLARE:
         filterEffect = new CLensFlareFilter();
-       /// filterEffect->Filter(effectParameter, source, this);
 		break;
 
-	case IDM_FILTREHQDN3D:
-		filterEffect = new Chqdn3dFilter();
-		/// filterEffect->Filter(effectParameter, source, this);
-		break;
-
-    case IDM_FILTRE_VIGNETTE:
-        filterEffect = new CVignetteFilter();
-        /// filterEffect->Filter(effectParameter, source, this);
-        break;
-
-	case IDM_FILTER_CARTOON:
-		filterEffect = new CCartoonFilter();
-		/// filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_ROTATE_FREE:
-        filterEffect = new CRotateFreeFilter();
-        //filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_FILTRE_FLOUGAUSSIEN:
-		filterEffect = new CGaussianBlurFilter();
-		//filterEffect->Filter(effectParameter, source, this);
-		break;
 
 	case IDM_FILTRE_VIDEO:
 		filterEffect = new CVideoFilter();
-		//filterEffect->Filter(effectParameter, filename, this);
 		break;   
 
-	case IDM_FILTRE_BILATERAL:
-		filterEffect = new CBilateralFilter();
-		//filterEffect->Filter(effectParameter, source, this);
-		break;
-
-	case IDM_FILTRE_NLMEAN:
-		filterEffect = new CNlmeansFilter();
-		//filterEffect->Filter(effectParameter, source, this);
-		break;
 
 	case IDM_FILTRE_AUDIOVIDEO:
 		filterEffect = new CAudioVideoFilter();
-		//filterEffect->Filter(effectParameter, filename, this);
 		break;
 
 	case IDM_CROP:
@@ -530,38 +308,37 @@ CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int
 
 void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
 {
-	int type = filter->GetTypeFilter();
+    int type = filter->GetTypeFilter();
 
 	switch (type)
 	{
-	case IDM_AFTEREFFECT_PAGECURL:
-	{
-		CPageCurlFilter * pageCurl = (CPageCurlFilter *)filter;
-		delete pageCurl;
-		break;
+	    case IDM_AFTEREFFECT_PAGECURL:
+	    {
+		    CPageCurlFilter * pageCurl = (CPageCurlFilter *)filter;
+		    delete pageCurl;
+		    break;
+	    }
+	    default:
+	    {
+		    CBitmapFusionFilter * fusionFilter = (CBitmapFusionFilter *)filter;
+		    delete fusionFilter;
+		    break;
+	    }
 	}
-	default:
-	{
-		CBitmapFusionFilter * fusionFilter = (CBitmapFusionFilter *)filter;
-		delete fusionFilter;
-		break;
-	}
-	}
-
 }
 
 
 IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	case IDM_AFTEREFFECT_PAGECURL:
-		return new CPageCurlFilter();
-	default:
-		return new CBitmapFusionFilter();
-		break;
-	}
-	return nullptr;
+    switch (numFilter)
+    {
+    case IDM_AFTEREFFECT_PAGECURL:
+        return new CPageCurlFilter();
+    default:
+        return new CBitmapFusionFilter();
+        break;
+    }
+    return nullptr;
 }
 
 CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
@@ -580,551 +357,88 @@ CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 
 bool CFiltreData::IsOpenGLCompatible(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	case IDM_FILTRE_SWIRL:
-	case IDM_AJUSTEMENT_SOLARISATION:
-	case IDM_SHARPENMASKING:
-	case ID_AJUSTEMENT_POSTERISATION:
-	case ID_AJUSTEMENT_PHOTOFILTRE:
-	case IDM_IMAGE_LIGHTCONTRAST:
-	case IDM_COLOR_BALANCE:
-		return true;
-	}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->IsOpenGLCompatible();
 
 	return false;
 }
 
 bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {
-	switch(numFilter)
-	{   
-		case IDM_HDR_DEBLURRING:
-        case IDM_HISTOGRAMEQUALIZE:
-        case IDM_HISTOGRAMNORMALIZE:
-		case IDM_BRIGHTNESSCONTRAST_AUTO:
-		case IDM_FILTRE_CLOUDS:
-		case IDM_CROP:
-		case IDM_REDEYE:
-		case IDM_DECODE_RAW:
-		case IDM_WAVE_EFFECT:
-		case IDM_FILTRELENSFLARE:
-		case IDM_FILTRE_MOTIONBLUR:
-			return false;
-			break;
-	}
-	return true;
-}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->IsOpenCLCompatible();
 
-bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
-{
-	switch(numFilter)
-	{
-        case IDM_HDR_DEBLURRING:
-		case IDM_FILTRE_CLOUDS:
-		case IDM_CROP:
-		case IDM_REDEYE:
-		case IDM_DECODE_RAW:
-		case IDM_FILTRELENSFLARE:
-		case IDM_WAVE_EFFECT:
-		case IDM_FILTRE_MOTIONBLUR:
-		case IDM_ROTATE_FREE:
-			return false;
-			break;
-	}
-	return true;
+	return false;
 }
 
 bool CFiltreData::SupportMouseSelection(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	case IDM_CROP:
-	//case IDM_REDEYE:
-		return true;
-		break;
-	}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->SupportMouseSelection();
+
 	return false;
 }
 
 void CFiltreData::SetCursor(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	case IDM_CROP:
-	//case IDM_REDEYE:
-		::wxSetCursor(wxCursor(wxCURSOR_CROSS));
-		break;
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->SetCursor();
 
-	default:
-		::wxSetCursor(wxCursor(wxCURSOR_ARROW));
-	}
 }
 
 bool CFiltreData::SupportMouseClick(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	case IDM_CROP:
-	case IDM_WAVE_EFFECT:
-	//case IDM_REDEYE:
-	case IDM_FILTRELENSFLARE:
-		return true;
-		break;
-	}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->SupportMouseClick();
+
 	return false;
 }
 
 bool CFiltreData::NeedPreview(const int &numFilter)
 {
-    switch(numFilter)
-    {
-		
-		case IDM_CROP:
-		//case IDM_REDEYE:
-        case IDM_FILTER_BM3D:
-		case IDM_FILTRE_BILATERAL:
-		case IDM_FILTRE_NLMEAN:
-		case IDM_DECODE_RAW:
-		case IDM_WAVE_EFFECT:
-        case IDM_FILTRELENSFLARE:
-        case IDM_FILTRE_MOTIONBLUR:
-        case IDM_ROTATE_FREE:
-        case IDM_IMAGE_LIGHTCONTRAST:
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        case ID_AJUSTEMENT_POSTERISATION:
-        case IDM_COLOR_BALANCE:
-        case IDM_FILTRE_SWIRL:
-		case IDM_SHARPENMASKING:
-        case IDM_FILTRE_CLOUDS:
-		case IDM_FILTER_OILPAINTING:
-		case IDM_FILTRE_FLOUGAUSSIEN:
-		case IDM_FILTRE_FLOU:
-        case IDM_AJUSTEMENT_SOLARISATION:
-		case IDM_FILTREHQDN3D:
-		case IDM_FILTER_CARTOON:
-        case IDM_FILTRE_VIGNETTE:
-            return true;
-		/*
-		case IDM_FILTRELENSFLARE:
-		case IDM_FILTRE_SWIRL:
-		case IDM_WAVE_EFFECT:
-		case IDM_CROP:
-		case IDM_REDEYE:
-			return true;
-		*/
-    }
-    
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->NeedPreview();
     return false;
 }
 
 int CFiltreData::GetTypeEffect(const int &numFilter)
 {
-    switch(numFilter)
-    {
-        case IDM_HDR_DEBLURRING:
-            return HDR_EFFECT;
-            //Convolution
-        case IDM_FILTER_BM3D:
-		case IDM_FILTRE_BILATERAL:
-		case IDM_FILTRE_NLMEAN:	
-        case IDM_FILTRE_MOTIONBLUR:
-        case IDM_FILTRE_SHARPEN:
-        case IDM_FILTRE_SHARPENSTRONG:
-        case IDM_FILTREANTIBRUIT:
-		case IDM_SHARPENMASKING:
-        case IDM_FILTRE_FLOUGAUSSIEN:
-        case IDM_FILTRE_FLOU:
-        case IDM_FILTRE_SOFTEN:
-		case IDM_FILTREHQDN3D:
-            return CONVOLUTION_EFFECT;
-            break;
-            
-		case IDM_BRIGHTNESSCONTRAST_AUTO:
-        case IDM_HISTOGRAMEQUALIZE:
-        case IDM_HISTOGRAMNORMALIZE:
-            return HISTOGRAM_EFFECT;
-            break;
-            
-            //Color Effect
-        case IDM_COLOR_BALANCE:
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        case IDM_IMAGE_LIGHTCONTRAST:
-        case IDM_NEGATIF:
-        case IDM_BLACKANDWHITE:
-        case IDM_IMAGE_SEPIA:
-        case IDM_GREY_LEVEL:
-            return COLOR_EFFECT;
-            break;
-            
-            //Special Effect
-        case IDM_FILTRE_CLOUDS:
-        case ID_AJUSTEMENT_POSTERISATION:
-        case IDM_FILTRE_SWIRL:
-        case IDM_FILTRE_EDGE:
-        case IDM_FILTRE_EMBOSS:
-        case IDM_FILTRE_MOSAIQUE:
-		case IDM_FILTER_OILPAINTING:
-        case IDM_FILTRENOISE:
-        case IDM_FILTRE_DILATE:
-        case IDM_FILTRE_ERODE:
-        case IDM_AJUSTEMENT_SOLARISATION:
-		case IDM_FILTER_CARTOON:
-        case IDM_FILTRE_VIGNETTE:
-            return SPECIAL_EFFECT;
-            break;
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->GetTypeFilter();
 
-		case IDM_ROTATE90:
-		case IDM_ROTATE270:
-		case IDM_FLIPVERTICAL:
-		case IDM_FLIPHORIZONTAL:
-		case IDM_ROTATE_FREE:
-			return ROTATE_EFFECT;
-			break;
-        }
     return 0;
 }
 
 CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 {
-    switch (numItem)
-    {
-		case IDM_FILTRE_BILATERAL:
-			return new CBilateralEffectParameter();
-			break;
-		case IDM_FILTRE_NLMEAN:
-			return new CNlmeansEffectParameter();
-			break;
-
-        case IDM_FILTRE_FLOU:
-			return new CBlurEffectParameter();
-			break;
-
-		case IDM_FILTRE_VIDEO:
-			return new CVideoEffectParameter();
-			break;
-
-		case IDM_DECODE_RAW:
-            return new CDecodeRawParameter();
-            break;
-        case IDM_AJUSTEMENT_SOLARISATION:
-            return new CSolarisationEffectParameter();
-            break;
-        case IDM_FILTRE_MOTIONBLUR:
-            return new CMotionBlurEffectParameter();
-            break;
-        case IDM_ROTATE_FREE:
-            return new CFreeRotateEffectParameter();
-            break;
-        case IDM_IMAGE_LIGHTCONTRAST:
-            return new CBrightAndContrastEffectParameter();
-            break;
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-            return new CPhotoFiltreEffectParameter();
-            break;
-        case ID_AJUSTEMENT_POSTERISATION:
-            return new CPosterisationEffectParameter();
-            break;
-		case IDM_SHARPENMASKING:
-			return new CSharpenMaskingEffectParameter();
-			break;
-            
-        case IDM_FILTER_BM3D:
-            return new CBm3dEffectParameter();
-            break;
-            
-		case IDM_FILTREHQDN3D:
-			return new Chqdn3dEffectParameter();
-			break;
-
-        case IDM_FILTRE_VIGNETTE:
-            return new CVignetteEffectParameter();
-            break;
-
-		case IDM_FILTER_CARTOON:
-			return new CCartoonEffectParameter();
-			break;
-
-        case IDM_FILTRELENSFLARE:
-            return new CLensFlareEffectParameter();
-            break;
-		case IDM_WAVE_EFFECT:
-			return new CWaveEffectParameter();
-			break;
-        case IDM_COLOR_BALANCE:
-            return new CRgbEffectParameter();
-            break;
-        case IDM_FILTRE_SWIRL:
-            return new CSwirlEffectParameter();
-            break;
-        case IDM_FILTRE_CLOUDS:
-            return new CCloudsEffectParameter();
-            break;
-
-		case IDM_FILTER_OILPAINTING:
-			return new COilPaintingEffectParameter();
-			break;
-
-		case IDM_FILTRE_FLOUGAUSSIEN:
-			return new CGaussianBlurEffectParameter();
-			break;
-
-		case IDM_AFTEREFFECT_MOVE:
-		case IDM_AFTEREFFECT_FUSION:
-			return new CBitmapFusionEffectParameter();
-
-		default:
-			return new CEffectParameter();
-    }
+    CFilterWindowParam* filterEffect = filterList[numItem];
+    if (filterEffect != nullptr)
+        return filterEffect->GetEffectPointer();
     return nullptr;
-}
-
-bool CFiltreData::OnFiltreOk(const int &numFiltre)
-{
-    switch (numFiltre)
-    {
-        case IDM_FILTER_BM3D:
-        case IDM_FILTRE_BILATERAL:
-        case IDM_FILTRE_NLMEAN:
-        case IDM_FILTRE_FLOU:
-        case IDM_DECODE_RAW:
-        case IDM_AJUSTEMENT_SOLARISATION:
-        case IDM_ROTATE_FREE:
-        case IDM_IMAGE_LIGHTCONTRAST:
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        case ID_AJUSTEMENT_POSTERISATION:
-        case IDM_COLOR_BALANCE:
-        case IDM_FILTRE_SWIRL:
-        case IDM_FILTRE_CLOUDS:
-		case IDM_FILTER_OILPAINTING:
-        case IDM_SHARPENMASKING:
-       // case IDM_REDEYE:
-        case IDM_CROP:
-        case IDM_FILTRE_MOTIONBLUR:
-        case IDM_WAVE_EFFECT:
-		case IDM_FILTREHQDN3D:
-		case IDM_FILTER_CARTOON:
-        case IDM_FILTRE_VIGNETTE:
-        case IDM_FILTRELENSFLARE:
-            {
-                return true;
-            }
-            break;
-    }    
-    return false;
 }
 
 CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 {
-    switch (numFilter)
-    {
-		case IDM_FILTRE_FLOUGAUSSIEN:
-		{
-			CGaussianBlurEffectParameter * gaussianBlur = new CGaussianBlurEffectParameter();
-			gaussianBlur->radius = 5;
-			gaussianBlur->boxSize = 3;
-			return gaussianBlur;
-			break;
-		}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->GetDefaultEffectParameter();
 
-        case IDM_FILTRE_VIGNETTE:
-        {
-            CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
-            vignetteEffectParameter->power = 0.8;
-            vignetteEffectParameter->radius = 1.0;
-            return vignetteEffectParameter;
-            break;
-        }
-
-		case IDM_FILTER_CARTOON:
-		{
-			CCartoonEffectParameter * cartoonEffectParameter = new CCartoonEffectParameter();
-			cartoonEffectParameter->mode = 0;
-			return cartoonEffectParameter;
-			break;
-		}
-
-		case IDM_FILTREHQDN3D:
-		{
-			Chqdn3dEffectParameter * hq3deffect = new Chqdn3dEffectParameter();
-			hq3deffect->LumSpac = 4;
-			hq3deffect->ChromSpac= 4;
-			hq3deffect->LumTmp = 3;
-			hq3deffect->ChromTmp = 3;
-			return hq3deffect;
-			break;
-		}
-
-        case IDM_FILTRE_MOTIONBLUR:
-        {
-            CMotionBlurEffectParameter * motionBlur = new CMotionBlurEffectParameter();
-            motionBlur->radius = 20;
-            motionBlur->sigma = 5;
-            motionBlur->angle = 40;
-            return motionBlur;
-            break;
-        }
-            //Color Effect
-        case IDM_IMAGE_LIGHTCONTRAST:
-        {
-            CBrightAndContrastEffectParameter * brightness = new CBrightAndContrastEffectParameter();
-            brightness->brightness = 20;
-            brightness->contrast = 20;
-            return brightness;
-            break;
-        }
-            
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        {
-            CPhotoFiltreEffectParameter * photoFiltre = new CPhotoFiltreEffectParameter();
-            photoFiltre->red = 255;
-            photoFiltre->green = 0;
-            photoFiltre->blue = 0;
-            photoFiltre->intensity = 30;
-            return photoFiltre;
-            break;
-        }
-            
-        case IDM_COLOR_BALANCE:
-        {
-            CRgbEffectParameter * rgbFilter = new CRgbEffectParameter();
-            rgbFilter->red = 120;
-            rgbFilter->green = 120;
-            rgbFilter->blue = 120;
-            return rgbFilter;
-            break;
-        }
-
-		case IDM_FILTRE_FLOU:
-			{
-				CBlurEffectParameter * blurEffect = new CBlurEffectParameter();
-				blurEffect->size = 3;
-				return blurEffect;
-			}
-			break;
-            
-        case IDM_AJUSTEMENT_SOLARISATION:
-        {
-            CSolarisationEffectParameter * solarisation = new CSolarisationEffectParameter();
-            solarisation->threshold = 50;
-            return solarisation;
-            break;
-        }
-            
-        case IDM_ROTATE_FREE:
-        {
-            CFreeRotateEffectParameter * rotate = new CFreeRotateEffectParameter();
-            rotate->angle = 50;
-            return rotate;
-            break;
-        }
-            
-        case ID_AJUSTEMENT_POSTERISATION:
-        {
-            CPosterisationEffectParameter * posterization = new CPosterisationEffectParameter();
-            posterization->gamma = 20;
-            posterization->level = 20;
-            return posterization;
-            break;
-        }
-            
-        case IDM_FILTRE_SWIRL:
-        {
-            CSwirlEffectParameter * swirl = new CSwirlEffectParameter();
-            swirl->angle = 20;
-            swirl->radius = 20;
-            return swirl;
-            break;
-        }
-
-		case IDM_SHARPENMASKING:
-		{
-			CSharpenMaskingEffectParameter * sharpen = new CSharpenMaskingEffectParameter();
-			sharpen->sharpness = 1.0f;
-			return sharpen;
-			break;
-		}
-        
-        case IDM_FILTER_BM3D:
-        {
-            CBm3dEffectParameter * bm3dParameter = new CBm3dEffectParameter();
-            bm3dParameter->fSize = 25;
-            return bm3dParameter;
-            break;
-        }
-        
-		case IDM_FILTER_OILPAINTING:
-		{
-			COilPaintingEffectParameter * oilpainteffect = new COilPaintingEffectParameter();
-			oilpainteffect->size = 10;
-			oilpainteffect->dynRatio = 1;
-			return oilpainteffect;
-			break;
-		}
-            
-
-        case IDM_FILTRE_CLOUDS:
-        {
-            CCloudsEffectParameter * clouds = new CCloudsEffectParameter();
-            clouds->colorFront = CRgbaquad(0, 0, 0);
-            clouds->colorBack = CRgbaquad(255, 255, 255);
-            clouds->amplitude = 1;
-            clouds->frequence = 65;
-            clouds->octave = 8;
-			clouds->transparency = 50;
-            return clouds;
-            break;
-        }
-
-		case IDM_FILTRE_BILATERAL:
-		{
-			return new CBilateralEffectParameter();
-		}
-		break;
-
-		case IDM_FILTRE_NLMEAN:
-		{
-			return new CNlmeansEffectParameter();
-		}
-		break;
-
-        default:
-			return new CEffectParameter();
-
-    }
     return nullptr;
 }
 
+
 int CFiltreData::TypeApplyFilter(const int &numItem)
 {
-    switch (numItem)
-    {
-        case IDM_CROP:
-       // case IDM_REDEYE:
-        case IDM_FILTER_BM3D:
-        case IDM_FILTRE_BILATERAL:
-        case IDM_FILTRE_NLMEAN:
-        case IDM_FILTRE_FLOU:
-        case IDM_DECODE_RAW:
-        case IDM_SHARPENMASKING:
-        case IDM_FILTRE_FLOUGAUSSIEN:
-        case IDM_FILTRE_MOTIONBLUR:
-        case IDM_ROTATE_FREE:
-        case IDM_IMAGE_LIGHTCONTRAST:
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        case ID_AJUSTEMENT_POSTERISATION:
-        case IDM_WAVE_EFFECT:
-        case IDM_FILTRELENSFLARE:
-		case IDM_FILTREHQDN3D:
-		case IDM_FILTER_CARTOON:
-        case IDM_FILTRE_VIGNETTE:
-        case IDM_COLOR_BALANCE:
-        case IDM_FILTRE_SWIRL:
-        case IDM_FILTRE_CLOUDS:
-        case IDM_AJUSTEMENT_SOLARISATION:
-		case IDM_FILTER_OILPAINTING:
-            return 2;
-    }
+    CFilterWindowParam* filterEffect = filterList[numItem];
+    if (filterEffect != nullptr)
+        return filterEffect->TypeApplyFilter();
     return 3;
 }
 

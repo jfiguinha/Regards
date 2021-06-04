@@ -325,3 +325,8 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 		videoEffectParameter->openglDenoise = value;
 	}
 }
+
+void CVideoFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+{
+
+}
