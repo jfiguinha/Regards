@@ -32,6 +32,11 @@ CNlmeansFilter::~CNlmeansFilter()
     
 }
 
+int CNlmeansFilter::GetNameFilter()
+{
+	return IDM_FILTRE_NLMEAN;
+}
+
 int CNlmeansFilter::GetTypeFilter()
 {
 	return CONVOLUTION_EFFECT; //return IDM_FILTRE_NLMEAN;

@@ -33,6 +33,11 @@ CMotionBlurFilter::~CMotionBlurFilter()
     
 }
 
+int CMotionBlurFilter::GetNameFilter()
+{
+	return IDM_FILTRE_MOTIONBLUR;
+}
+
 int CMotionBlurFilter::GetTypeFilter()
 {
 	return CONVOLUTION_EFFECT;// IDM_FILTRE_MOTIONBLUR;
@@ -86,6 +91,16 @@ void CMotionBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 			motionBlurParameter->angle = value;
 		}
 	}
+}
+
+bool CMotionBlurFilter::IsOpenCLCompatible()
+{
+	return true;
+}
+
+bool CMotionBlurFilter::IsOpenGLCompatible()
+{
+	return false;
 }
 
 bool CMotionBlurFilter::NeedPreview()

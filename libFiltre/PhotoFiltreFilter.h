@@ -19,6 +19,7 @@ namespace Regards
             int TypeApplyFilter();
             CPhotoFiltreFilter();
             ~CPhotoFiltreFilter();
+            int GetNameFilter();
             bool IsOpenGLCompatible();
             int GetTypeFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};

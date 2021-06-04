@@ -36,10 +36,11 @@ public:
 	};
 	virtual CEffectParameter * GetDefaultEffectParameter() {
 		return new CEffectParameter();
-	};;
+	};
+	virtual int GetNameFilter() = 0;
     virtual int GetTypeFilter() = 0;
 	virtual bool NeedPreview() { return false; };
-	virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview) = 0;
+	virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview) {};
     virtual void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key) = 0;

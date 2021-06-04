@@ -556,6 +556,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 {
 	bool renderPreview = false;
 	textureDisplay->Enable();
+
 	if (mousUpdate != nullptr)
 	{
 		if (mousUpdate->IsOpenGLCompatible())
@@ -567,7 +568,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 		}
 
 	}
-
+	
 	if(!renderPreview)
 	{
 		RenderQuad(textureDisplay, left, top, inverted);

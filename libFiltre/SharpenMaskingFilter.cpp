@@ -27,6 +27,11 @@ CSharpenMaskingFilter::~CSharpenMaskingFilter()
 {
 }
 
+int CSharpenMaskingFilter::GetNameFilter()
+{
+	return IDM_SHARPENMASKING;
+}
+
 int CSharpenMaskingFilter::GetTypeFilter()
 {
 	return CONVOLUTION_EFFECT; //return IDM_SHARPENMASKING;

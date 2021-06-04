@@ -25,6 +25,11 @@ int COilPaintingFilter::TypeApplyFilter()
 	return 2;
 }
 
+int COilPaintingFilter::GetNameFilter()
+{
+	return IDM_FILTER_OILPAINTING;
+}
+
 int COilPaintingFilter::GetTypeFilter()
 {
 	return SPECIAL_EFFECT; //return IDM_FILTER_OILPAINTING;

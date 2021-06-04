@@ -18,8 +18,10 @@ namespace Regards
         public:
             CMotionBlurFilter();
             ~CMotionBlurFilter();
+            int GetNameFilter();
             int GetTypeFilter();
             int TypeApplyFilter();
+            bool IsOpenCLCompatible();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
@@ -28,7 +30,7 @@ namespace Regards
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
-
+            bool IsOpenGLCompatible();
         private:
             wxString libelleEffectRadius;
             wxString libelleEffectSigma;

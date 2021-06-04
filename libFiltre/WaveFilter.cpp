@@ -46,6 +46,11 @@ bool CWaveFilter::SupportMouseClick()
 	return true;
 }
 
+int CWaveFilter::GetNameFilter()
+{
+	return IDM_WAVE_EFFECT;
+}
+
 int CWaveFilter::GetTypeFilter()
 {
     return IDM_WAVE_EFFECT;
@@ -167,10 +172,6 @@ void CWaveFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw 
 		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
 }
 
-void CWaveFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
-{
-
-}
 
 bool CWaveFilter::NeedPreview()
 {

@@ -31,8 +31,12 @@ namespace Regards
 		class CSoftenFilter : public CDefaultFilter
 		{
 		public:
-			CSoftenFilter() {};
-			~CSoftenFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_SOFTEN;
+			}
+
 
 			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -44,8 +48,11 @@ namespace Regards
 		class CBrightnessAutoFilter : public CDefaultFilter
 		{
 		public:
-			CBrightnessAutoFilter() {};
-			~CBrightnessAutoFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_BRIGHTNESSCONTRAST_AUTO;
+			}
 
 			int GetTypeFilter()
 			{
@@ -62,12 +69,16 @@ namespace Regards
 		class CHistogramNormalizeFilter : public CDefaultFilter
 		{
 		public:
-			CHistogramNormalizeFilter() {};
-			~CHistogramNormalizeFilter() {};
 
 			bool IsOpenCLCompatible()
 			{
 				return false;
+			}
+
+
+			int GetNameFilter()
+			{
+				return IDM_HISTOGRAMNORMALIZE;
 			}
 
 			int GetTypeFilter()
@@ -85,8 +96,11 @@ namespace Regards
 		class CHistogramEqualizeFilter : public CDefaultFilter
 		{
 		public:
-			CHistogramEqualizeFilter() {};
-			~CHistogramEqualizeFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_HISTOGRAMEQUALIZE;
+			}
 
 			bool IsOpenCLCompatible()
 			{
@@ -108,8 +122,11 @@ namespace Regards
 		class CRotate90Filter : public CDefaultFilter
 		{
 		public:
-			CRotate90Filter() {};
-			~CRotate90Filter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_ROTATE90;
+			}
 
 			int GetTypeFilter()
 			{
@@ -126,8 +143,11 @@ namespace Regards
 		class CRotate270Filter : public CDefaultFilter
 		{
 		public:
-			CRotate270Filter() {};
-			~CRotate270Filter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_ROTATE270;
+			}
 
 			int GetTypeFilter()
 			{
@@ -144,8 +164,11 @@ namespace Regards
 		class CFlipVerticalFilter : public CDefaultFilter
 		{
 		public:
-			CFlipVerticalFilter() {};
-			~CFlipVerticalFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FLIPVERTICAL;
+			}
 
 			int GetTypeFilter()
 			{
@@ -162,8 +185,11 @@ namespace Regards
 		class CFlipHorizontalFilter : public CDefaultFilter
 		{
 		public:
-			CFlipHorizontalFilter() {};
-			~CFlipHorizontalFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FLIPHORIZONTAL;
+			}
 
 			int GetTypeFilter()
 			{
@@ -180,8 +206,11 @@ namespace Regards
 		class CMedianFilter : public CDefaultFilter
 		{
 		public:
-			CMedianFilter() {};
-			~CMedianFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTREANTIBRUIT;
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -193,13 +222,16 @@ namespace Regards
 		class CErodeFilter : public CDefaultFilter
 		{
 		public:
-			CErodeFilter() {};
-			~CErodeFilter() {};
 
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
 			};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_ERODE;
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -211,13 +243,16 @@ namespace Regards
 		class CDilateFilter : public CDefaultFilter
 		{
 		public:
-			CDilateFilter() {};
-			~CDilateFilter() {};
 
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
 			};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_DILATE;
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -229,8 +264,10 @@ namespace Regards
 		class CSharpenFilter : public CDefaultFilter
 		{
 		public:
-			CSharpenFilter() {};
-			~CSharpenFilter() {};
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_SHARPEN;
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -242,8 +279,11 @@ namespace Regards
 		class CSharpenStrongFilter : public CDefaultFilter
 		{
 		public:
-			CSharpenStrongFilter() {};
-			~CSharpenStrongFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_SHARPENSTRONG;
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -257,6 +297,11 @@ namespace Regards
 		public:
 			CMosaicFilter() {};
 			~CMosaicFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_MOSAIQUE;
+			}
 
 			int GetTypeFilter()
 			{
@@ -276,6 +321,11 @@ namespace Regards
 			CNoiseFilter() {};
 			~CNoiseFilter() {};
 
+			int GetNameFilter()
+			{
+				return IDM_FILTRENOISE;
+			}
+
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
@@ -293,6 +343,11 @@ namespace Regards
 		public:
 			CEmbossFilter() {};
 			~CEmbossFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_EMBOSS;
+			}
 
 			int GetTypeFilter()
 			{
@@ -312,6 +367,11 @@ namespace Regards
 			CGrayLevelFilter() {};
 			~CGrayLevelFilter() {};
 
+			int GetNameFilter()
+			{
+				return IDM_GREY_LEVEL;
+			}
+
 			int GetTypeFilter()
 			{
 				return COLOR_EFFECT;
@@ -329,6 +389,11 @@ namespace Regards
 		public:
 			CSepiaFilter() {};
 			~CSepiaFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_IMAGE_SEPIA;
+			}
 
 			int GetTypeFilter()
 			{
@@ -348,6 +413,11 @@ namespace Regards
 			CNoirEtBlancFilter() {};
 			~CNoirEtBlancFilter() {};
 
+			int GetNameFilter()
+			{
+				return IDM_BLACKANDWHITE;
+			}
+
 			int GetTypeFilter()
 			{
 				return COLOR_EFFECT;
@@ -365,6 +435,11 @@ namespace Regards
 		public:
 			CEdgeFilter() {};
 			~CEdgeFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_FILTRE_EDGE;
+			}
 
 			int GetTypeFilter()
 			{
@@ -384,6 +459,11 @@ namespace Regards
 			CNegatifFilter() {};
 			~CNegatifFilter() {};
 
+			int GetNameFilter()
+			{
+				return IDM_NEGATIF;
+			}
+
 			int GetTypeFilter()
 			{
 				return COLOR_EFFECT;
@@ -401,6 +481,11 @@ namespace Regards
 		public:
 			CRedEyeFilter() {};
 			~CRedEyeFilter() {};
+
+			int GetNameFilter()
+			{
+				return IDM_REDEYE;
+			}
 
 			bool IsOpenCLCompatible()
 			{

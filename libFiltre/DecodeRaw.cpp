@@ -88,6 +88,11 @@ int CDecodeRaw::TypeApplyFilter()
 	return 2;
 }
 
+int CDecodeRaw::GetNameFilter()
+{
+	return IDM_DECODE_RAW;
+}
+
 int CDecodeRaw::GetTypeFilter()
 {
     return IDM_DECODE_RAW;
@@ -442,10 +447,4 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapD
 		}
 		rawParameter->update = false;
 	}
-
-}
-
-void CDecodeRaw::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
-{
-
 }

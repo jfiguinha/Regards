@@ -30,6 +30,12 @@ CAudioVideoFilter::~CAudioVideoFilter()
     
 }
 
+
+int CAudioVideoFilter::GetNameFilter()
+{
+	return IDM_FILTRE_AUDIOVIDEO;
+}
+
 int CAudioVideoFilter::GetTypeFilter()
 {
     return IDM_FILTRE_AUDIOVIDEO;
@@ -143,8 +149,4 @@ void CAudioVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 	}
 }
 
-void CAudioVideoFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
-{
-
-}
 

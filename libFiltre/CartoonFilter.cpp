@@ -24,9 +24,14 @@ int CCartoonFilter::TypeApplyFilter()
 	return 2;
 }
 
+int CCartoonFilter::GetNameFilter()
+{
+	return IDM_FILTER_CARTOON;
+}
+
 int CCartoonFilter::GetTypeFilter()
 {
-	return SPECIAL_EFFECT;// return IDM_FILTER_CARTOON;
+	return SPECIAL_EFFECT;// 
 }
 
 void CCartoonFilter::AddMetadataElement(vector<CMetadata> & element, wxString value, int key)

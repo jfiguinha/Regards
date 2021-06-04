@@ -37,10 +37,14 @@ bool CPosterisationFilter::IsOpenGLCompatible()
 	return true;
 }
 
+int CPosterisationFilter::GetNameFilter()
+{
+	return ID_AJUSTEMENT_POSTERISATION;
+}
 
 int CPosterisationFilter::GetTypeFilter()
 {
-	return SPECIAL_EFFECT; //return ID_AJUSTEMENT_POSTERISATION;
+	return SPECIAL_EFFECT; //
 }
 
 void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

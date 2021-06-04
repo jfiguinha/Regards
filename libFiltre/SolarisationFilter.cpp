@@ -36,6 +36,11 @@ bool CSolarisationFilter::IsOpenGLCompatible()
 	return true;
 }
 
+int CSolarisationFilter::GetNameFilter()
+{
+	return IDM_AJUSTEMENT_SOLARISATION;
+}
+
 int CSolarisationFilter::GetTypeFilter()
 {
 	return SPECIAL_EFFECT; //return IDM_AJUSTEMENT_SOLARISATION;

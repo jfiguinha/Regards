@@ -25,9 +25,14 @@ CBlurFilter::~CBlurFilter()
     
 }
 
+int CBlurFilter::GetNameFilter()
+{
+    return IDM_FILTRE_FLOU;
+}
+
 int CBlurFilter::GetTypeFilter()
 {
-    return CONVOLUTION_EFFECT; //return IDM_FILTRE_FLOU;
+    return CONVOLUTION_EFFECT; //
 }
 
 void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

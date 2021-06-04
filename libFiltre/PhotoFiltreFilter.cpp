@@ -39,9 +39,14 @@ int CPhotoFiltreFilter::TypeApplyFilter()
     return 2;
 }
 
+int CPhotoFiltreFilter::GetNameFilter()
+{
+    return ID_AJUSTEMENT_PHOTOFILTRE;
+}
+
 int CPhotoFiltreFilter::GetTypeFilter()
 {
-    return COLOR_EFFECT; //return ID_AJUSTEMENT_PHOTOFILTRE;
+    return COLOR_EFFECT; //
 }
 
 void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

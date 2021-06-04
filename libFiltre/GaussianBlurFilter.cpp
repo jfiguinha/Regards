@@ -23,9 +23,14 @@ int CGaussianBlurFilter::TypeApplyFilter()
 	return 2;
 }
 
+int CGaussianBlurFilter::GetNameFilter()
+{
+	return IDM_FILTRE_FLOUGAUSSIEN;
+}
+
 int CGaussianBlurFilter::GetTypeFilter()
 {
-	return CONVOLUTION_EFFECT; //return IDM_FILTRE_FLOUGAUSSIEN;
+	return CONVOLUTION_EFFECT; //
 }
 
 void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

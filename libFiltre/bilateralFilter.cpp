@@ -32,9 +32,14 @@ CBilateralFilter::~CBilateralFilter()
     
 }
 
+int CBilateralFilter::GetNameFilter()
+{
+	return IDM_FILTRE_BILATERAL;
+}
+
 int CBilateralFilter::GetTypeFilter()
 {
-	return CONVOLUTION_EFFECT; //return IDM_FILTRE_BILATERAL;
+	return CONVOLUTION_EFFECT; //
 }
 
 void CBilateralFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

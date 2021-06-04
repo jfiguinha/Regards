@@ -40,9 +40,14 @@ bool CColorBalanceFilter::IsOpenGLCompatible()
 	return true;
 }
 
+int CColorBalanceFilter::GetNameFilter()
+{
+	return IDM_COLOR_BALANCE;
+}
+
 int CColorBalanceFilter::GetTypeFilter()
 {
-	return COLOR_EFFECT;// return IDM_COLOR_BALANCE;
+	return COLOR_EFFECT;// 
 }
 
 void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

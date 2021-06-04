@@ -49,6 +49,11 @@ int CCropFilter::TypeApplyFilter()
 	return 2;
 }
 
+int CCropFilter::GetNameFilter()
+{
+	return IDM_CROP;
+}
+
 void CCropFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
 	this->source = source;
@@ -112,12 +117,4 @@ bool CCropFilter::NeedPreview()
 	return true;
 }
 
-CEffectParameter* CCropFilter::GetEffectPointer()
-{
 
-}
-
-CEffectParameter* CCropFilter::GetDefaultEffectParameter()
-{
-
-}

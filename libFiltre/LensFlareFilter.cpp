@@ -46,6 +46,11 @@ bool CLensFlareFilter::SupportMouseClick()
 	return true;
 }
 
+int CLensFlareFilter::GetNameFilter()
+{
+	return IDM_FILTRELENSFLARE;
+}
+
 int CLensFlareFilter::GetTypeFilter()
 {
     return IDM_FILTRELENSFLARE;

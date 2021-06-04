@@ -53,6 +53,12 @@ CVideoFilter::~CVideoFilter()
     
 }
 
+int CVideoFilter::GetNameFilter()
+{
+	return IDM_FILTRE_VIDEO;
+}
+
+
 int CVideoFilter::GetTypeFilter()
 {
     return IDM_FILTRE_VIDEO;
@@ -324,9 +330,4 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->openglDenoise = value;
 	}
-}
-
-void CVideoFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
-{
-
 }

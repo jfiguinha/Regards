@@ -30,6 +30,11 @@ int CBm3dWindowFilter::TypeApplyFilter()
 	return 2;
 }
 
+int CBm3dWindowFilter::GetNameFilter()
+{
+	return IDM_FILTER_BM3D;
+}
+
 int CBm3dWindowFilter::GetTypeFilter()
 {
 	return CONVOLUTION_EFFECT;// return IDM_FILTER_BM3D;

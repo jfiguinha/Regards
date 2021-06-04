@@ -33,9 +33,14 @@ int CVignetteFilter::TypeApplyFilter()
 	return 2;
 }
 
+int CVignetteFilter::GetNameFilter()
+{
+	return IDM_FILTRE_VIGNETTE;
+}
+
 int CVignetteFilter::GetTypeFilter()
 {
-	return SPECIAL_EFFECT; //return IDM_FILTRE_VIGNETTE;
+	return SPECIAL_EFFECT; //
 }
 
 void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)

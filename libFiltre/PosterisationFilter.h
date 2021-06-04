@@ -21,6 +21,7 @@ namespace Regards
             CPosterisationFilter();
             ~CPosterisationFilter();
             bool IsOpenGLCompatible();
+            int GetNameFilter();
             int GetTypeFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

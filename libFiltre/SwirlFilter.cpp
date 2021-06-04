@@ -37,9 +37,14 @@ bool CSwirlFilter::IsOpenGLCompatible()
 	return true;
 }
 
+int CSwirlFilter::GetNameFilter()
+{
+	return IDM_FILTRE_SWIRL;
+}
+
 int CSwirlFilter::GetTypeFilter()
 {
-	return SPECIAL_EFFECT; //return IDM_FILTRE_SWIRL;
+	return SPECIAL_EFFECT; //
 }
 
 void CSwirlFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

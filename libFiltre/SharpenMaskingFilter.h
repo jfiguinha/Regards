@@ -12,6 +12,7 @@ namespace Regards
 			~CSharpenMaskingFilter();
 			bool IsOpenGLCompatible();
 			int TypeApplyFilter();
+			int GetNameFilter();
 			int GetTypeFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
 			void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

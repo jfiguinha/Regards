@@ -19,6 +19,7 @@ namespace Regards
             int TypeApplyFilter();
 			CWaveFilter();
             ~CWaveFilter();
+            int GetNameFilter();
             int GetTypeFilter();
             bool SupportMouseClick();
             bool IsOpenCLCompatible();
@@ -26,7 +27,6 @@ namespace Regards
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
 			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
-            void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();

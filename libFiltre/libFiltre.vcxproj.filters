@@ -319,7 +319,7 @@
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="FiltreImplementation.h">
-      <Filter>interface\include</Filter>
+      <Filter>window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

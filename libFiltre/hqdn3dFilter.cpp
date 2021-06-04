@@ -40,9 +40,14 @@ int Chqdn3dFilter::TypeApplyFilter()
     return 2;
 }
 
+int Chqdn3dFilter::GetNameFilter()
+{
+    return IDM_FILTREHQDN3D;
+}
+
 int Chqdn3dFilter::GetTypeFilter()
 {
-    return CONVOLUTION_EFFECT; //return IDM_FILTREHQDN3D;
+    return CONVOLUTION_EFFECT; //
 }
 
 void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

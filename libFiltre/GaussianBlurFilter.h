@@ -10,6 +10,7 @@ namespace Regards
 		public:
 			CGaussianBlurFilter();
 			~CGaussianBlurFilter();
+			int GetNameFilter();
 			int GetTypeFilter();
 			int TypeApplyFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};

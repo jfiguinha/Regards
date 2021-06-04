@@ -20,6 +20,7 @@ namespace Regards
             CBrightAndContrastFilter();
             ~CBrightAndContrastFilter();
             int GetTypeFilter();
+            int GetNameFilter();
             bool IsOpenGLCompatible();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

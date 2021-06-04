@@ -20,6 +20,7 @@ namespace Regards
             int TypeApplyFilter();
             CLensFlareFilter();
             ~CLensFlareFilter();
+            int GetNameFilter();
             int GetTypeFilter();
             bool SupportMouseClick();
             bool IsOpenCLCompatible();

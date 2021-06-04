@@ -35,9 +35,14 @@ bool CCloudsFilter::IsOpenCLCompatible()
     return false;
 }
 
+int CCloudsFilter::GetNameFilter()
+{
+    return IDM_FILTRE_CLOUDS;
+}
+
 int CCloudsFilter::GetTypeFilter()
 {
-    return SPECIAL_EFFECT;// return IDM_FILTRE_CLOUDS;
+    return SPECIAL_EFFECT;// 
 }
 
 void CCloudsFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

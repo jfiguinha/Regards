@@ -18,6 +18,7 @@ namespace Regards
 		public:
 			CCropFilter();
 			~CCropFilter();
+			int GetNameFilter();
 			bool IsOpenCLCompatible();
 			int GetTypeFilter();
 			bool SupportMouseSelection();
@@ -30,8 +31,6 @@ namespace Regards
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
 			bool NeedPreview();
-			CEffectParameter* GetEffectPointer();
-			CEffectParameter* GetDefaultEffectParameter();
 			bool SupportMouseClick();
 		private:
 

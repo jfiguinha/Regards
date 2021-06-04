@@ -22,12 +22,11 @@ namespace Regards
         public:
             CVideoFilter();
             ~CVideoFilter();
+			int GetNameFilter();
             int GetTypeFilter();
 			void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
-
 
         private:
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);

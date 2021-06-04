@@ -20,6 +20,7 @@ namespace Regards
             ~CSwirlFilter();
             int GetTypeFilter();
             int TypeApplyFilter();
+            int GetNameFilter();
             bool IsOpenGLCompatible();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

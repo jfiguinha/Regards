@@ -22,9 +22,14 @@ int CRotateFreeFilter::TypeApplyFilter()
     return 2;
 }
 
+int CRotateFreeFilter::GetNameFilter()
+{
+    return IDM_ROTATE_FREE;
+}
+
 int CRotateFreeFilter::GetTypeFilter()
 {
-    return ROTATE_EFFECT; //return IDM_ROTATE_FREE;
+    return ROTATE_EFFECT; //
 }
 
 void CRotateFreeFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

@@ -37,6 +37,11 @@ int CBrightAndContrastFilter::TypeApplyFilter()
     return 2;
 }
 
+int CBrightAndContrastFilter::GetNameFilter()
+{
+    return IDM_IMAGE_LIGHTCONTRAST;
+}
+
 int CBrightAndContrastFilter::GetTypeFilter()
 {
     return COLOR_EFFECT; //return IDM_IMAGE_LIGHTCONTRAST;
@@ -83,10 +88,10 @@ void CBrightAndContrastFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, C
 		if (m_pShader != nullptr)
 		{
 			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
+            if (!m_pShader->SetTexture("textureScreen", textureID))
+            {
+                printf("SetTexture textureScreen failed \n ");
+            }
 			if (!m_pShader->SetParam("contrast", brightAndContrastEffectParameter->contrast))
 			{
 				printf("SetParam contrast failed \n ");

@@ -12,6 +12,7 @@ namespace Regards
             CNlmeansFilter();
             ~CNlmeansFilter();
             int GetTypeFilter();
+            int GetNameFilter();
             int TypeApplyFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

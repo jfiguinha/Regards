@@ -93,12 +93,12 @@ bool CFilterWindowParam::IsOpenGLCompatible()
 
 void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
 {
-	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
+	if (CFiltreData::IsOpenGLCompatible(GetNameFilter()))
 		return;
 
 	filtreEffet->SetPreview(true);
-	if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()) && supportOpenCL)
-		filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
+	if (CFiltreData::IsOpenCLCompatible(GetNameFilter()) && supportOpenCL)
+		filtreEffet->RenderEffect(GetNameFilter(), effectParameter);
 	else
 	{
 		CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
@@ -107,7 +107,7 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 			CImageLoadingFormat image;
 			image.SetPicture(bitmap);
 			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-			filtre->RenderEffect(GetTypeFilter(), effectParameter);
+			filtre->RenderEffect(GetNameFilter(), effectParameter);
 			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
 			filtreEffet->SetBitmap(imageLoad);
@@ -200,7 +200,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 
 CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
-	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetTypeFilter());
+	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetNameFilter());
 	return imageLoad;
 }
 

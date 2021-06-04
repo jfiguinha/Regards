@@ -18,6 +18,7 @@ namespace Regards
         public:
             CColorBalanceFilter();
             ~CColorBalanceFilter();
+            int GetNameFilter();
             int GetTypeFilter();
             bool IsOpenGLCompatible();
             int TypeApplyFilter();
