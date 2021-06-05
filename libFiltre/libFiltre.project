@@ -26,7 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="video"/>
   <VirtualDirectory Name="bm3d">
     <File Name="bm3dfilter.h"/>
     <File Name="bm3dfilter.cpp"/>
@@ -88,6 +87,7 @@
       <File Name="FilterWindowParam.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="data structure">
+      <File Name="VignetteEffectParameter.h"/>
       <File Name="CartoonEffectParameter.h"/>
       <File Name="OilPaintingEffectParameter.h"/>
       <File Name="BitmapFusionEffectParameter.h"/>
@@ -129,6 +129,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="VignetteFilter.h"/>
+      <File Name="VignetteFilter.cpp"/>
       <File Name="CartoonFilter.h"/>
       <File Name="CartoonFilter.cpp"/>
       <File Name="OilPaintingFilter.h"/>

@@ -176,8 +176,8 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		cvtColor(src, src, cv::COLOR_BGRA2BGR);
 		//Mat dst = Mat::zeros(src.size(), src.type());
 	
-		Mat kernel_X = getGaussianKernel(src.cols, radius);
-		Mat kernel_Y = getGaussianKernel(src.rows, radius);
+		Mat kernel_X = getGaussianKernel(src.cols, (float)(radius / 100.0) * (float)src.cols);
+		Mat kernel_Y = getGaussianKernel(src.rows, (float)(radius / 100.0) * (float)src.rows);
 		Mat kernel_X_transpose;
 		transpose(kernel_X, kernel_X_transpose);
 		Mat kernel = kernel_Y * kernel_X_transpose;

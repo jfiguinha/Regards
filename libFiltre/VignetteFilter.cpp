@@ -4,7 +4,7 @@
 //  Regards.libViewer
 //
 //  Created by figuinha jacques on 12/04/2016.
-//  Copyright © 2016 figuinha jacques. All rights reserved.
+//  Copyright Â© 2016 figuinha jacques. All rights reserved.
 //
 
 #include "VignetteFilter.h"
@@ -58,13 +58,10 @@ void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* 
 	vignetteEffectParameter->bitmapWidth = source->GetBitmapWidth();
 	vignetteEffectParameter->bitmapHeight = source->GetBitmapHeight();
 
-	vector<int> elementPower;
-	for (auto i = 0; i < 100; i++)
-		elementPower.push_back(i);
-
 	vector<int> elementRadius;
-	for (auto i = 0; i < vignetteEffectParameter->bitmapWidth; i+=10)
+	for (auto i = 0; i < 100; i++)
 		elementRadius.push_back(i);
+
 
 	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius), &elementRadius);
 	//filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power * 10), &elementPower);
@@ -81,10 +78,7 @@ void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTree
 	{
 		vignetteEffectParameter->radius = (float)value;
 	}
-	if (key == libelleEffectPower)
-	{
-		vignetteEffectParameter->power = (float)value / (float)10;
-	}
+
 }
 
 void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
@@ -96,8 +90,8 @@ void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBit
 	CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
 
-	float ratio = (float)bitmapOut->GetBitmapWidth() / (float)vignetteEffectParameter->bitmapWidth;
-	filtre->VignetteEffect(vignetteEffectParameter->radius * ratio, vignetteEffectParameter->power);
+	//float ratio = (float)bitmapOut->GetBitmapWidth() / (float)vignetteEffectParameter->bitmapWidth;
+	filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 
 	filtreEffet->SetPreview(true);
 
@@ -135,8 +129,8 @@ void CVignetteFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* 
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
 		if (preview)
 		{
-			float ratio = (float)filtreEffet->GetWidth() / (float)vignetteEffectParameter->bitmapWidth;
-			filtreEffet->VignetteEffect(vignetteEffectParameter->radius * ratio, vignetteEffectParameter->power);
+			//float ratio = (float)filtreEffet->GetWidth() / (float)vignetteEffectParameter->bitmapWidth;
+			filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 		}
 		else
 			filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
@@ -156,7 +150,7 @@ CEffectParameter* CVignetteFilter::GetEffectPointer()
 CEffectParameter* CVignetteFilter::GetDefaultEffectParameter()
 {
 	CVignetteEffectParameter* vignetteEffectParameter = new CVignetteEffectParameter();
-	vignetteEffectParameter->power = 0.8;
-	vignetteEffectParameter->radius = 100;
+	//vignetteEffectParameter->power = 0.8;
+	vignetteEffectParameter->radius = 50;
 	return vignetteEffectParameter;
 }
