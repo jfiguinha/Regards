@@ -26,7 +26,7 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
     choice_control->AppendString("Red");
     choice_control->Select(0);
     Connect(wxEVT_COMBOBOX, (wxObjectEventFunction)&CPicturePanel::OnChannelSelect);
-
+    processEnd = true;
     /*
     minValue = new wxSpinCtrl(this, -1, "Min : ", wxDefaultPosition, wxSize(100, -1));
     maxValue = new wxSpinCtrl(this, -1, "Max : ", wxDefaultPosition, wxSize(100, -1));

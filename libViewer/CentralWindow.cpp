@@ -557,6 +557,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	OutputDebugString(L"\n");
 #endif
 	
+	processLoadPicture = false;
 	bool isPictureToShow = false;
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
     int redraw = event.GetInt();
@@ -1645,10 +1646,13 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 		bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
 		bitmap->SetFilename(pictureData->picture);
 
+		/*
 		wxString* _fileName = new wxString(pictureData->picture);
 		wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
 		event->SetClientData(_fileName);
 		wxQueueEvent(pictureData->mainWindow, event);
+		*/
+		
 	}
 
 	if (bitmap != nullptr)
