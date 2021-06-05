@@ -37,7 +37,7 @@ public:
 	virtual CEffectParameter * GetDefaultEffectParameter() {
 		return new CEffectParameter();
 	};
-	virtual CEffectParameter * GetEffectParameter()
+	virtual CEffectParameter * GetEffectPointer()
 	{
 		return new CEffectParameter();
 	}

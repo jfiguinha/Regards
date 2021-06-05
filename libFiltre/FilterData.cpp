@@ -382,7 +382,7 @@ CEffectParameter* CFiltreData::GetEffectParameter(const int& numFilter)
 {
     CFilterWindowParam* filterEffect = filterList[numFilter];
     if (filterEffect != nullptr)
-        return filterEffect->GetEffectParameter();
+        return filterEffect->GetEffectPointer();
 
     return nullptr;
 }

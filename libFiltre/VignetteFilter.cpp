@@ -25,7 +25,7 @@ CVignetteFilter::CVignetteFilter()
 
 CVignetteFilter::~CVignetteFilter()
 {
-	delete source;
+
 }
 
 int CVignetteFilter::TypeApplyFilter()
