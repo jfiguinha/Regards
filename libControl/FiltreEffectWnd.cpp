@@ -162,7 +162,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 							delete bitmap;
 						bitmap = nullptr;
 
-						effectParameter = CFiltreData::GetDefaultEffectParameter(numItem);
+						effectParameter = CFiltreData::GetEffectParameter(numItem);
 						
 
 						bitmapViewer->SetBitmapPreviewEffect(numItem);

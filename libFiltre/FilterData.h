@@ -122,6 +122,7 @@ public:
    static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
     static wxString GetFilterLabel(const int& numFilter); 
     static CEffectParameter* GetDefaultEffectParameter(const int& numFilter);
+    static CEffectParameter* GetEffectParameter(const int& numFilter);
 
 private:
     static std::map<int, CFilterWindowParam *> filterList;

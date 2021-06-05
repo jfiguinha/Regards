@@ -37,6 +37,11 @@ public:
 	virtual CEffectParameter * GetDefaultEffectParameter() {
 		return new CEffectParameter();
 	};
+	virtual CEffectParameter * GetEffectParameter()
+	{
+		return new CEffectParameter();
+	}
+
 	virtual int GetNameFilter() = 0;
     virtual int GetTypeFilter() = 0;
 	virtual bool NeedPreview() { return false; };
