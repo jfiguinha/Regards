@@ -30,6 +30,13 @@ int CBm3dWindowFilter::TypeApplyFilter()
 	return 2;
 }
 
+
+wxString CBm3dWindowFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLFILTREBM3D", 1);
+}
+
+
 int CBm3dWindowFilter::GetNameFilter()
 {
 	return IDM_FILTER_BM3D;

@@ -39,6 +39,11 @@ int CPhotoFiltreFilter::TypeApplyFilter()
     return 2;
 }
 
+wxString CPhotoFiltreFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLfilterPhoto", 1);
+}
+
 int CPhotoFiltreFilter::GetNameFilter()
 {
     return ID_AJUSTEMENT_PHOTOFILTRE;

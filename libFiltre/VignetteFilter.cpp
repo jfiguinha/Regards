@@ -33,6 +33,12 @@ int CVignetteFilter::TypeApplyFilter()
 	return 2;
 }
 
+wxString CVignetteFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLFILTREVIGNETTE", 1);
+}
+
+
 int CVignetteFilter::GetNameFilter()
 {
 	return IDM_FILTRE_VIGNETTE;

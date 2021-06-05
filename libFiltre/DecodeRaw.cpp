@@ -88,6 +88,11 @@ int CDecodeRaw::TypeApplyFilter()
 	return 2;
 }
 
+wxString CDecodeRaw::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLBLACKROOM", 1);
+}
+
 int CDecodeRaw::GetNameFilter()
 {
 	return IDM_DECODE_RAW;

@@ -37,6 +37,11 @@ int CBrightAndContrastFilter::TypeApplyFilter()
     return 2;
 }
 
+wxString CBrightAndContrastFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLfilterLight", 1);
+}
+
 int CBrightAndContrastFilter::GetNameFilter()
 {
     return IDM_IMAGE_LIGHTCONTRAST;

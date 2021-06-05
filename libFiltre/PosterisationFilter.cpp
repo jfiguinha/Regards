@@ -37,6 +37,11 @@ bool CPosterisationFilter::IsOpenGLCompatible()
 	return true;
 }
 
+wxString CPosterisationFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterPosterisation", 1);
+}
+
 int CPosterisationFilter::GetNameFilter()
 {
 	return ID_AJUSTEMENT_POSTERISATION;

@@ -22,6 +22,11 @@ int CRotateFreeFilter::TypeApplyFilter()
     return 2;
 }
 
+wxString CRotateFreeFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLfilterRotate", 1);
+}
+
 int CRotateFreeFilter::GetNameFilter()
 {
     return IDM_ROTATE_FREE;

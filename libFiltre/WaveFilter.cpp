@@ -16,11 +16,17 @@
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include <Draw.h>
+#include <Selection.h>
 using namespace Regards::Filter;
 
 int CWaveFilter::TypeApplyFilter()
 {
 	return 2;
+}
+
+CDraw* CWaveFilter::GetDrawingPt()
+{
+	return new CSelection();
 }
 
 CWaveFilter::CWaveFilter()
@@ -45,6 +51,12 @@ bool CWaveFilter::SupportMouseClick()
 {
 	return true;
 }
+
+wxString CWaveFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLWAVEFILTER", 1);
+}
+
 
 int CWaveFilter::GetNameFilter()
 {

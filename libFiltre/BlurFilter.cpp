@@ -25,6 +25,12 @@ CBlurFilter::~CBlurFilter()
     
 }
 
+wxString CBlurFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLfilterBlur", 1);
+}
+
+
 int CBlurFilter::GetNameFilter()
 {
     return IDM_FILTRE_FLOU;

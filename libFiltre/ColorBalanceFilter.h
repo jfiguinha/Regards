@@ -20,6 +20,7 @@ namespace Regards
             ~CColorBalanceFilter();
             int GetNameFilter();
             int GetTypeFilter();
+            wxString GetFilterLabel();
             bool IsOpenGLCompatible();
             int TypeApplyFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};

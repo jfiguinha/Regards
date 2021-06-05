@@ -28,9 +28,9 @@ class CFilterWindowParam : public IMouseUpdate
 public:
     CFilterWindowParam();
     virtual ~CFilterWindowParam();
-	virtual CEffectParameter* GetEffectPointer() {
-		return new CEffectParameter();
-	};
+
+	virtual wxString GetFilterLabel() = 0;
+
 	virtual int TypeApplyFilter() {
 		return 3;
 	};
@@ -57,7 +57,10 @@ public:
 	virtual void SetCursor();
 	static void InitFilterOpenCLCompatible();
     //static void SetOpenCLCompatible(const bool & openCLCompatible);
-
+	virtual CDraw* GetDrawingPt()
+	{
+		return nullptr;
+	}
 protected:
 
 	static void RotateExif(const int & orientation, CFiltreEffet * filtre);

@@ -23,6 +23,12 @@ int CGaussianBlurFilter::TypeApplyFilter()
 	return 2;
 }
 
+wxString CGaussianBlurFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterGaussian", 1);
+}
+
+
 int CGaussianBlurFilter::GetNameFilter()
 {
 	return IDM_FILTRE_FLOUGAUSSIEN;

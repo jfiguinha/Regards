@@ -37,6 +37,12 @@ bool CSwirlFilter::IsOpenGLCompatible()
 	return true;
 }
 
+wxString CSwirlFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterSwirl", 1);
+}
+
+
 int CSwirlFilter::GetNameFilter()
 {
 	return IDM_FILTRE_SWIRL;

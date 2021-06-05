@@ -36,6 +36,11 @@ bool CSolarisationFilter::IsOpenGLCompatible()
 	return true;
 }
 
+wxString CSolarisationFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterSolarize", 1);
+}
+
 int CSolarisationFilter::GetNameFilter()
 {
 	return IDM_AJUSTEMENT_SOLARISATION;

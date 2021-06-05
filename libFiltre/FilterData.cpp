@@ -34,8 +34,6 @@
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
 #include "CropFilter.h"
-#include <Crop.h>
-#include <Selection.h>
 #include <BitmapFusionFilter.h>
 #include <PageCurlFilter.h>
 #include <hqdn3dFilter.h>
@@ -43,7 +41,7 @@
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
 using namespace Regards::Filter;
-vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
+
 map<int, CFilterWindowParam*> CFiltreData::filterList;
 
 void CFiltreData::CreateFilterList()
@@ -292,39 +290,9 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 
 	case IDM_CROP:
 		filterEffect = new CCropFilter();
-		//filterEffect->Filter(effectParameter, filename, this);
 		break;
 	}  
     return filterEffect;
-}
-
-CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int &filter, const wxString &numResource)
-{
-    CLabelFilter labelFilter;
-    labelFilter.label = CLibResource::LoadStringFromResource(numResource,1);
-    labelFilter.filter = filter;
-    return labelFilter;
-}
-
-void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
-{
-    int type = filter->GetTypeFilter();
-
-	switch (type)
-	{
-	    case IDM_AFTEREFFECT_PAGECURL:
-	    {
-		    CPageCurlFilter * pageCurl = (CPageCurlFilter *)filter;
-		    delete pageCurl;
-		    break;
-	    }
-	    default:
-	    {
-		    CBitmapFusionFilter * fusionFilter = (CBitmapFusionFilter *)filter;
-		    delete fusionFilter;
-		    break;
-	    }
-	}
 }
 
 
@@ -343,15 +311,9 @@ IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
 
 CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 {
-	switch (numFilter)
-	{
-	//case IDM_REDEYE:
-	case IDM_CROP:
-		return new CCrop();
-	case IDM_WAVE_EFFECT:
-	case IDM_FILTRELENSFLARE:
-		return new CSelection();
-	}
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->GetDrawingPt();
 	return nullptr;
 }
 
@@ -416,14 +378,6 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
     return 0;
 }
 
-CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
-{
-    CFilterWindowParam* filterEffect = filterList[numItem];
-    if (filterEffect != nullptr)
-        return filterEffect->GetEffectPointer();
-    return nullptr;
-}
-
 CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 {
     CFilterWindowParam* filterEffect = filterList[numFilter];
@@ -444,63 +398,8 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
 
 wxString CFiltreData::GetFilterLabel(const int &numFilter)
 {
-    if(labelFilterList.size() == 0)
-        InitFilterListLabel();
-    
-    for(CLabelFilter labelFilter : labelFilterList)
-    {
-        if(labelFilter.filter == numFilter)
-            return labelFilter.label;
-    }
+    CFilterWindowParam* filterEffect = filterList[numFilter];
+    if (filterEffect != nullptr)
+        return filterEffect->GetFilterLabel();
     return "";
-}
-
-void CFiltreData::InitFilterListLabel()
-{
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_SOFTEN, "LBLfilterSoften"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_FLOU, "LBLfilterBlur"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_AJUSTEMENT_SOLARISATION, "LBLfilterSolarize"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_FLOUGAUSSIEN, "LBLfilterGaussian"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREANTIBRUIT, "LBLfilterMedian"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_MOTIONBLUR, "LBLfilterMotion"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE_FREE, "LBLfilterRotate"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_IMAGE_LIGHTCONTRAST, "LBLfilterLight"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(ID_AJUSTEMENT_PHOTOFILTRE, "LBLfilterPhoto"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(ID_AJUSTEMENT_POSTERISATION, "LBLfilterPosterisation"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_COLOR_BALANCE, "LBLfilterColor"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_SWIRL, "LBLfilterSwirl"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_CLOUDS, "LBLfilterClouds"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_ERODE, "LBLfilterErode"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_DILATE, "LBLfilterDilate"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_SHARPEN, "LBLfilterSharpen"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_SHARPENSTRONG, "LBLfilterSharpenStrong"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRENOISE, "LBLfilterNoise"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_MOSAIQUE, "LBLfilterMosaic"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_EMBOSS, "LBLfilterEmboss"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_GREY_LEVEL, "LBLfilterGrey"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_IMAGE_SEPIA, "LBLfilterSepia"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BLACKANDWHITE, "LBLfilterBlack"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_EDGE, "LBLfilterEdge"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_NEGATIF, "LBLfilterNegatif"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRELENSFLARE, "LBLfilterLensFlare"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_REDEYE, "LBLfilterRedEye"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_CROP, "LBLCROP"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HISTOGRAMNORMALIZE, "LBLHistogramNormalize"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HISTOGRAMEQUALIZE, "LBLHistogramEqualize"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_SHARPENMASKING, "LBLSharpenMasking"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_DECODE_RAW, "LBLBLACKROOM"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIDEO,"LBLVIDEOEFFECT"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_NLMEAN,"LBLNLMEANS"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_BILATERAL,"LBLBILATERALDENOISING"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE90, "LBLROTATE90"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE270, "LBLROTATE270"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPVERTICAL, "LBLFLIPV"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPHORIZONTAL, "LBLFLIPH"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_WAVE_EFFECT, "LBLWAVEFILTER"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BRIGHTNESSCONTRAST_AUTO, "LBLBRIGHTNESSCONTRASTAUTO"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTREHQDN3D, "LBLFILTREHQDN3D"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_OILPAINTING, "LBLfilterOilPainting"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_CARTOON, "LBLFILTRECARTOON"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIGNETTE, "LBLFILTREVIGNETTE"));
 }

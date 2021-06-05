@@ -32,6 +32,12 @@ CBilateralFilter::~CBilateralFilter()
     
 }
 
+wxString CBilateralFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLBILATERALDENOISING", 1);
+}
+
+
 int CBilateralFilter::GetNameFilter()
 {
 	return IDM_FILTRE_BILATERAL;

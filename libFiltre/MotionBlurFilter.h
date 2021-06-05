@@ -19,6 +19,7 @@ namespace Regards
             CMotionBlurFilter();
             ~CMotionBlurFilter();
             int GetNameFilter();
+            wxString GetFilterLabel();
             int GetTypeFilter();
             int TypeApplyFilter();
             bool IsOpenCLCompatible();

@@ -19,6 +19,7 @@ namespace Regards
             CRotateFreeFilter();
             ~CRotateFreeFilter();
             int GetTypeFilter();
+            wxString GetFilterLabel();
             int TypeApplyFilter();
             int GetNameFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};

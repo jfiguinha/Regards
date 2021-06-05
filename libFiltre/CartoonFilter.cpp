@@ -24,6 +24,11 @@ int CCartoonFilter::TypeApplyFilter()
 	return 2;
 }
 
+wxString CCartoonFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLFILTRECARTOON", 1);
+}
+
 int CCartoonFilter::GetNameFilter()
 {
 	return IDM_FILTER_CARTOON;

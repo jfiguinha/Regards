@@ -53,6 +53,12 @@ CVideoFilter::~CVideoFilter()
     
 }
 
+wxString CVideoFilter::GetFilterLabel()
+{
+	return "";
+}
+
+
 int CVideoFilter::GetNameFilter()
 {
 	return IDM_FILTRE_VIDEO;

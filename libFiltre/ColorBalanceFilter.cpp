@@ -40,6 +40,12 @@ bool CColorBalanceFilter::IsOpenGLCompatible()
 	return true;
 }
 
+wxString CColorBalanceFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterColor", 1);
+}
+
+
 int CColorBalanceFilter::GetNameFilter()
 {
 	return IDM_COLOR_BALANCE;

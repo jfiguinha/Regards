@@ -8,6 +8,7 @@
 #include <Draw.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
+#include <Crop.h>
 using namespace Regards::Filter;
 
 CCropFilter::CCropFilter()
@@ -17,6 +18,11 @@ CCropFilter::CCropFilter()
 
 CCropFilter::~CCropFilter()
 {
+}
+
+CDraw* CCropFilter::GetDrawingPt()
+{
+	return new CCrop();
 }
 
 bool CCropFilter::IsOpenCLCompatible()
@@ -52,6 +58,12 @@ int CCropFilter::TypeApplyFilter()
 int CCropFilter::GetNameFilter()
 {
 	return IDM_CROP;
+}
+
+
+wxString CCropFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLCROP", 1);
 }
 
 void CCropFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

@@ -35,6 +35,11 @@ bool CCloudsFilter::IsOpenCLCompatible()
     return false;
 }
 
+wxString CCloudsFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLfilterClouds", 1);
+}
+
 int CCloudsFilter::GetNameFilter()
 {
     return IDM_FILTRE_CLOUDS;

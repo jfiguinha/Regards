@@ -40,6 +40,12 @@ int Chqdn3dFilter::TypeApplyFilter()
     return 2;
 }
 
+wxString Chqdn3dFilter::GetFilterLabel()
+{
+    return CLibResource::LoadStringFromResource("LBLFILTREHQDN3D", 1);
+}
+
+
 int Chqdn3dFilter::GetNameFilter()
 {
     return IDM_FILTREHQDN3D;

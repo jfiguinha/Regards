@@ -30,6 +30,10 @@ CAudioVideoFilter::~CAudioVideoFilter()
     
 }
 
+wxString CAudioVideoFilter::GetFilterLabel()
+{
+	return "";
+}
 
 int CAudioVideoFilter::GetNameFilter()
 {

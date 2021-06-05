@@ -443,7 +443,7 @@ void CBitmapWndViewer::EndTransition()
 
 	if (afterEffect != nullptr)
 	{
-		CFiltreData::DeleteAfterEffectPt(afterEffect);
+		delete(afterEffect);
 		afterEffect = nullptr;
 	}
 	startTransition = false;
@@ -473,7 +473,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	if (afterEffect != nullptr)
 	{
-		CFiltreData::DeleteAfterEffectPt(afterEffect);
+		delete(afterEffect);
 		afterEffect = nullptr;
 	}
 	

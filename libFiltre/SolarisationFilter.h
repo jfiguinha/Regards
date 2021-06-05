@@ -19,6 +19,7 @@ namespace Regards
             CSolarisationFilter();
             ~CSolarisationFilter();
             int GetTypeFilter();
+            wxString GetFilterLabel();
             bool IsOpenGLCompatible();
             int TypeApplyFilter();
             int GetNameFilter();

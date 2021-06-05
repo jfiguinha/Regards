@@ -119,26 +119,11 @@ public:
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);
 	static IAfterEffect * AfterEffectPt(const int &numFilter);
-	static void DeleteAfterEffectPt(IAfterEffect * filter);
-    static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
+   static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
     static wxString GetFilterLabel(const int& numFilter); 
     static CEffectParameter* GetDefaultEffectParameter(const int& numFilter);
-    static CEffectParameter* GetEffectPointer(const int& numItem);
 
 private:
-
-    class CLabelFilter
-    {
-    public:
-        int filter;
-        wxString label;
-        static CLabelFilter CreateLabelFilter(const int &filter, const wxString &numResource);
-    };
-    
-    
-    static void InitFilterListLabel();
-    static vector<CLabelFilter> labelFilterList;
     static std::map<int, CFilterWindowParam *> filterList;
-    static std::map<int, IAfterEffect*> afterEffectList;
 };
 

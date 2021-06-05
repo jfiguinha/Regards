@@ -12,6 +12,7 @@ namespace Regards
             ~CCartoonFilter();
             int GetTypeFilter();
             int TypeApplyFilter();
+            wxString GetFilterLabel();
             int GetNameFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

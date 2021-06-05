@@ -20,6 +20,7 @@ namespace Regards
             CPhotoFiltreFilter();
             ~CPhotoFiltreFilter();
             int GetNameFilter();
+            wxString GetFilterLabel();
             bool IsOpenGLCompatible();
             int GetTypeFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};

@@ -18,6 +18,8 @@ namespace Regards
 		public:
 			CCropFilter();
 			~CCropFilter();
+			CDraw* GetDrawingPt();
+			wxString GetFilterLabel();
 			int GetNameFilter();
 			bool IsOpenCLCompatible();
 			int GetTypeFilter();

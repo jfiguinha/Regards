@@ -22,7 +22,9 @@ namespace Regards
             ~CLensFlareFilter();
             int GetNameFilter();
             int GetTypeFilter();
+            wxString GetFilterLabel();
             bool SupportMouseClick();
+            CDraw* GetDrawingPt();
             bool IsOpenCLCompatible();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

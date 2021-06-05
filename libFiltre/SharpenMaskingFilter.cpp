@@ -27,6 +27,11 @@ CSharpenMaskingFilter::~CSharpenMaskingFilter()
 {
 }
 
+wxString CSharpenMaskingFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLSharpenMasking", 1);
+}
+
 int CSharpenMaskingFilter::GetNameFilter()
 {
 	return IDM_SHARPENMASKING;

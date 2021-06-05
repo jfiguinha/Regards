@@ -33,6 +33,12 @@ CMotionBlurFilter::~CMotionBlurFilter()
     
 }
 
+wxString CMotionBlurFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterMotion", 1);
+}
+
+
 int CMotionBlurFilter::GetNameFilter()
 {
 	return IDM_FILTRE_MOTIONBLUR;

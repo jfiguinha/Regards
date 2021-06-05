@@ -17,6 +17,7 @@ namespace Regards
         {
         public:
             int TypeApplyFilter();
+            wxString GetFilterLabel();
             CBrightAndContrastFilter();
             ~CBrightAndContrastFilter();
             int GetTypeFilter();

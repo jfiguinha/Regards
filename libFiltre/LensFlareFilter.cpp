@@ -16,11 +16,17 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
+#include <Selection.h>
 using namespace Regards::Filter;
 
 int CLensFlareFilter::TypeApplyFilter()
 {
 	return 2;
+}
+
+CDraw* CLensFlareFilter::GetDrawingPt()
+{
+	return new CSelection();
 }
 
 CLensFlareFilter::CLensFlareFilter()
@@ -45,6 +51,12 @@ bool CLensFlareFilter::SupportMouseClick()
 {
 	return true;
 }
+
+wxString CLensFlareFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterLensFlare", 1);
+}
+
 
 int CLensFlareFilter::GetNameFilter()
 {

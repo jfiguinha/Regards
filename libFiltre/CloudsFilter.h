@@ -18,6 +18,7 @@ namespace Regards
         public:
             CCloudsFilter();
             ~CCloudsFilter();
+            wxString GetFilterLabel();
             int GetTypeFilter();
             bool IsOpenCLCompatible();
             int TypeApplyFilter();

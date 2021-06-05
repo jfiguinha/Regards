@@ -13,6 +13,7 @@ namespace Regards
             ~CBm3dWindowFilter();
             int GetNameFilter();
             int GetTypeFilter();
+            wxString GetFilterLabel();
             int TypeApplyFilter();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);

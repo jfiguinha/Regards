@@ -32,6 +32,11 @@ CNlmeansFilter::~CNlmeansFilter()
     
 }
 
+wxString CNlmeansFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLNLMEANS", 1);
+}
+
 int CNlmeansFilter::GetNameFilter()
 {
 	return IDM_FILTRE_NLMEAN;

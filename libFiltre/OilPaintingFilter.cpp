@@ -25,6 +25,11 @@ int COilPaintingFilter::TypeApplyFilter()
 	return 2;
 }
 
+wxString COilPaintingFilter::GetFilterLabel()
+{
+	return CLibResource::LoadStringFromResource("LBLfilterOilPainting", 1);
+}
+
 int COilPaintingFilter::GetNameFilter()
 {
 	return IDM_FILTER_OILPAINTING;

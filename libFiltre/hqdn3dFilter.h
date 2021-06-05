@@ -18,6 +18,7 @@ namespace Regards
         public:
             Chqdn3dFilter();
             ~Chqdn3dFilter();
+            wxString GetFilterLabel();
             int TypeApplyFilter();
             int GetTypeFilter();
             int GetNameFilter();

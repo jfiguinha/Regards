@@ -37,6 +37,11 @@ namespace Regards
 				return IDM_FILTRE_SOFTEN;
 			}
 
+			wxString GetFilterLabel()
+			{
+				return CLibResource::LoadStringFromResource("LBLfilterSoften", 1);
+			}
+
 
 			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -59,6 +64,11 @@ namespace Regards
 				return HISTOGRAM_EFFECT;
 			};
 
+			wxString GetFilterLabel()
+			{
+				return CLibResource::LoadStringFromResource("LBLBRIGHTNESSCONTRASTAUTO", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -75,6 +85,10 @@ namespace Regards
 				return false;
 			}
 
+			wxString GetFilterLabel()
+			{
+				return CLibResource::LoadStringFromResource("LBLHistogramNormalize", 1);
+			}
 
 			int GetNameFilter()
 			{
@@ -100,6 +114,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_HISTOGRAMEQUALIZE;
+			}
+
+			wxString GetFilterLabel()
+			{
+				return CLibResource::LoadStringFromResource("LBLHistogramEqualize", 1);
 			}
 
 			bool IsOpenCLCompatible()
@@ -133,6 +152,11 @@ namespace Regards
 				return ROTATE_EFFECT; //return HISTOGRAM_EFFECT;
 			};
 
+			wxString GetFilterLabel()
+			{
+				return CLibResource::LoadStringFromResource("LBLROTATE90", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -153,6 +177,11 @@ namespace Regards
 			{
 				return ROTATE_EFFECT;
 			};
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLROTATE270", 1);
+			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
@@ -175,6 +204,11 @@ namespace Regards
 				return ROTATE_EFFECT;
 			};
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLFLIPV", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -196,6 +230,11 @@ namespace Regards
 				return ROTATE_EFFECT;
 			};
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLFLIPH", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -210,6 +249,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_FILTREANTIBRUIT;
+			}
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterMedian", 1);
 			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
@@ -233,6 +277,11 @@ namespace Regards
 				return IDM_FILTRE_ERODE;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterErode", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -254,6 +303,11 @@ namespace Regards
 				return IDM_FILTRE_DILATE;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterDilate", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -267,6 +321,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_FILTRE_SHARPEN;
+			}
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterSharpen", 1);
 			}
 
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
@@ -285,6 +344,11 @@ namespace Regards
 				return IDM_FILTRE_SHARPENSTRONG;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterSharpenStrong", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -301,6 +365,12 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_FILTRE_MOSAIQUE;
+			}
+
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterMosaic", 1);
 			}
 
 			int GetTypeFilter()
@@ -326,6 +396,11 @@ namespace Regards
 				return IDM_FILTRENOISE;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterNoise", 1);
+			}
+
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
@@ -349,6 +424,11 @@ namespace Regards
 				return IDM_FILTRE_EMBOSS;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterEmboss", 1);
+			}
+
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
@@ -370,6 +450,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_GREY_LEVEL;
+			}
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterGrey", 1);
 			}
 
 			int GetTypeFilter()
@@ -400,6 +485,11 @@ namespace Regards
 				return COLOR_EFFECT;
 			};
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterSepia", 1);
+			}
+
 			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 			{
 				if (filtreEffet != nullptr)
@@ -416,6 +506,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_BLACKANDWHITE;
+			}
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterBlack", 1);
 			}
 
 			int GetTypeFilter()
@@ -441,6 +536,11 @@ namespace Regards
 				return IDM_FILTRE_EDGE;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterEdge", 1);
+			}
+
 			int GetTypeFilter()
 			{
 				return SPECIAL_EFFECT;
@@ -464,6 +564,11 @@ namespace Regards
 				return IDM_NEGATIF;
 			}
 
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterNegatif", 1);
+			}
+
 			int GetTypeFilter()
 			{
 				return COLOR_EFFECT;
@@ -485,6 +590,11 @@ namespace Regards
 			int GetNameFilter()
 			{
 				return IDM_REDEYE;
+			}
+
+			wxString GetFilterLabel()
+			{
+			return CLibResource::LoadStringFromResource("LBLfilterRedEye", 1);
 			}
 
 			bool IsOpenCLCompatible()
