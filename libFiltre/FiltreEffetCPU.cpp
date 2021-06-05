@@ -126,27 +126,6 @@ double CFiltreEffetCPUImpl::getMaxDisFromCorners(const cv::Size& imgSize, const 
 
 	return maxDis;
 }
-
-// Helper function that creates a gradient image.   
-// firstPt, radius and power, are variables that control the artistic effect of the filter.
-void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius, const double& power)
-{
-	cv::Point firstPt = cv::Point(mask.size().width / 2, mask.size().height / 2);
-	double maxImageRad = radius * getMaxDisFromCorners(mask.size(), firstPt);
-
-	mask.setTo(cv::Scalar(1));
-	for (int i = 0; i < mask.rows; i++)
-	{
-		for (int j = 0; j < mask.cols; j++)
-		{
-			double temp = dist(firstPt, cv::Point(j, i)) / maxImageRad;
-			temp = temp * power;
-			double temp_s = pow(cos(temp), 4);
-			mask.at<double>(i, j) = temp_s;
-		}
-	}
-}
-
 double fastCos(double x) {
 	x += 1.57079632;
 	if (x > 3.14159265)
@@ -156,6 +135,51 @@ double fastCos(double x) {
 	else
 		return 1.27323954 * x - 0.405284735 * x * x;
 }
+
+// Helper function that creates a gradient image.   
+// firstPt, radius and power, are variables that control the artistic effect of the filter.
+void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius, const double& power)
+{
+	cv::Point firstPt = cv::Point(mask.size().width / 2, mask.size().height / 2);
+	double maxImageRad = (radius * getMaxDisFromCorners(mask.size(), firstPt)) ;
+	double maxImageRadPower = maxImageRad * power;
+	mask.setTo(cv::Scalar(1));
+	for (int i = 0; i < mask.rows; i++)
+	{
+		for (int j = 0; j < mask.cols; j++)
+		{
+			double temp = dist(firstPt, cv::Point(j, i));
+
+			if (temp > maxImageRad)
+			{
+				mask.at<double>(i, j) = 0;
+				/*
+				double value = temp - maxImageRad;
+				if(value > maxImageRad)
+					mask.at<double>(i, j) = 0;
+				else
+					mask.at<double>(i, j) = (maxImageRad - value) / maxImageRad;
+				*/
+			}
+			else
+			{
+				if (temp > maxImageRadPower)
+				{
+					double max = maxImageRad - maxImageRadPower;
+					double value = temp - maxImageRadPower;
+					mask.at<double>(i, j) = (max - value) / max;
+				}
+				else
+					mask.at<double>(i, j) = 1;
+				//temp = temp * power;
+				//double temp_s = pow(fastCos(temp), 4);
+				//mask.at<double>(i, j) = 1;
+			}
+
+		}
+	}
+}
+
 
 double dist(double ax, double ay, double bx, double by) {
 	return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
@@ -171,11 +195,11 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dst;
+		
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cvtColor(src, src, cv::COLOR_BGRA2BGR);
-		//Mat dst = Mat::zeros(src.size(), src.type());
-	
+		cv::Mat dst = Mat::zeros(src.size(), src.type());
+	/*
 		Mat kernel_X = getGaussianKernel(src.cols, (float)(radius / 100.0) * (float)src.cols);
 		Mat kernel_Y = getGaussianKernel(src.rows, (float)(radius / 100.0) * (float)src.rows);
 		Mat kernel_X_transpose;
@@ -187,6 +211,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 
 		Mat mask_v;
 		normalize(kernel, mask_v, 0, 1, NORM_MINMAX);
+
 		for (int i = 0; i < 3; i++)
 		{
 			Mat proc_img;
@@ -196,9 +221,12 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 			proc_img.convertTo(bgr_planes[i], CV_8U);
 		}
 
+		cv::merge(bgr_planes, dst);
+		
 
 		/*
-		double cx = (double)src.cols / 2, cy = (double)src.rows / 2;
+		dst = Mat::zeros(src.size(), src.type());
+		double cx = (float)(radius / 100.0) * (float)src.cols, cy = (float)(radius / 100.0) * (float)src.rows;
 		double maxDis = radius * dist(0, 0, cx, cy);
 		double temp;
 		for (int y = 0; y < src.rows; y++) {
@@ -215,14 +243,21 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 			}
 		}
 		*/
-		/*
+
+		
 		cv::Mat maskImg = cv::Mat::zeros(src.size(), CV_64F);
-		CFiltreEffetCPUImpl::generateGradient(maskImg, radius, power);
+		CFiltreEffetCPUImpl::generateGradient(maskImg, (float)(radius / 100.0), (float)(power / 100.0));
 
 		cv::Mat labImg(src.size(), CV_8UC3);
 
 		cv::cvtColor(src, labImg, cv::COLOR_BGR2Lab);
 
+		//vector<Mat> lab_planes;
+		//split(src, lab_planes);
+		//lab_planes[0].mul(maskImg);
+		//multiply(maskImg, lab_planes[0], lab_planes[0]);
+
+		
 		for (int row = 0; row < labImg.size().height; row++)
 		{
 			for (int col = 0; col < labImg.size().width; col++)
@@ -232,10 +267,12 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 				labImg.at<cv::Vec3b>(row, col) = value;
 			}
 		}
-		cv::cvtColor(labImg, dst, cv::COLOR_Lab2BGR);
-		*/
+		
 
-		cv::merge(bgr_planes, dst);
+		//cv::merge(lab_planes, labImg);
+		cv::cvtColor(labImg, dst, cv::COLOR_Lab2BGR);
+	
+		
 		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}

@@ -74,16 +74,16 @@ namespace Regards
 			CScrollbarVerticalWnd * scrollVertical;
 			void OnTopPosition(wxCommandEvent& event);
 
-			void TestMaxX();
-			void TestMaxY();
+			void TestMaxX(int& posLargeur);
+			void TestMaxY(int& posHauteur);
 
 			bool showV;
 			bool showH;
             bool _showV = false;
             bool _showH = false;
             bool _useScaleFactor = false;
-			int posHauteur;
-			int posLargeur;
+			//int posHauteur;
+			//int posLargeur;
 			int controlHeight;
 			int controlWidth;
 

@@ -64,7 +64,7 @@ void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* 
 
 
 	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(vignetteEffectParameter->radius), &elementRadius);
-	//filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power * 10), &elementPower);
+	filtreInterface->AddTreeInfos(libelleEffectPower, new CTreeElementValueInt(vignetteEffectParameter->power), &elementRadius);
 }
 
 void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData, const wxString& key)
@@ -78,7 +78,10 @@ void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTree
 	{
 		vignetteEffectParameter->radius = (float)value;
 	}
-
+	if (key == libelleEffectPower)
+	{
+		vignetteEffectParameter->power = (float)value;
+	}
 }
 
 void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)

@@ -51,8 +51,8 @@ void CScrollbarWnd::DefaultConstructor()
 	//scrollInterface = nullptr;
 	showV = true;
 	showH = true;
-	posHauteur = 0;
-	posLargeur = 0;
+	//posHauteur = 0;
+	//posLargeur = 0;
 	controlHeight = 0;
 	controlWidth = 0;
 	loadingTimer = new wxTimer(this, TIMER_HIDE);
@@ -98,12 +98,13 @@ void CScrollbarWnd::OnScrollMove(wxCommandEvent& event)
 void CScrollbarWnd::OnMoveLeft(wxCommandEvent& event)
 {
 	int pageSize = defaultPageSize;
+	int posLargeur = scrollHorizontal->GetPosition();
 	if (scrollVertical != nullptr)
 	{
 		pageSize = scrollHorizontal->GetPageSize();
 	}
 	posLargeur -= pageSize;
-	TestMaxX();
+	TestMaxX(posLargeur);
 	scrollHorizontal->SetPosition(posLargeur);
 
 	if (centralWindow->GetWindow() != nullptr)
@@ -117,12 +118,13 @@ void CScrollbarWnd::OnMoveLeft(wxCommandEvent& event)
 void CScrollbarWnd::OnMoveRight(wxCommandEvent& event)
 {
 	int pageSize = defaultPageSize;
+	int posLargeur = scrollHorizontal->GetPosition();
 	if (scrollHorizontal != nullptr)
 	{
 		pageSize = scrollHorizontal->GetPageSize();
 	}
 	posLargeur += pageSize;
-	TestMaxX();
+	TestMaxX(posLargeur);
 	scrollHorizontal->SetPosition(posLargeur);
 
 	if (centralWindow->GetWindow() != nullptr)
@@ -135,13 +137,14 @@ void CScrollbarWnd::OnMoveRight(wxCommandEvent& event)
 
 void CScrollbarWnd::OnMoveTop(wxCommandEvent& event)
 {
+	int posHauteur = scrollVertical->GetPosition();
 	int pageSize = defaultPageSize;
 	if (scrollVertical != nullptr)
 	{
 		pageSize = scrollVertical->GetPageSize();
 	}
 	posHauteur -= pageSize;
-	TestMaxY();
+	TestMaxY(posHauteur);
 	scrollVertical->SetPosition(posHauteur);
 
 
@@ -155,13 +158,14 @@ void CScrollbarWnd::OnMoveTop(wxCommandEvent& event)
 
 void CScrollbarWnd::OnMoveBottom(wxCommandEvent& event)
 {
+	int posHauteur = scrollVertical->GetPosition();
 	int pageSize = defaultPageSize;
 	if (scrollVertical != nullptr)
 	{
 		pageSize = scrollVertical->GetPageSize();
 	}
 	posHauteur += pageSize;
-	TestMaxY();
+	TestMaxY(posHauteur);
 	scrollVertical->SetPosition(posHauteur);
 
 	if (centralWindow->GetWindow() != nullptr)
@@ -217,7 +221,7 @@ int CScrollbarWnd::GetWidth()
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void CScrollbarWnd::TestMaxX()
+void CScrollbarWnd::TestMaxX(int & posLargeur)
 {
 	TRACE();
 	if (centralWindow->GetWindow() != nullptr)
@@ -235,7 +239,7 @@ void CScrollbarWnd::TestMaxX()
 ////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////
-void CScrollbarWnd::TestMaxY()
+void CScrollbarWnd::TestMaxY(int& posHauteur)
 {
 	TRACE();
 
@@ -320,7 +324,7 @@ void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
 int CScrollbarWnd::GetPosLargeur()
 {
 	int pictureWidth = GetWindowWidth();
-
+	int posLargeur = scrollHorizontal->GetPosition();
     if(scrollVertical != nullptr && showV)
     {
         bool valueV = scrollVertical->IsShown();
@@ -337,7 +341,7 @@ int CScrollbarWnd::GetPosLargeur()
 int CScrollbarWnd::GetPosHauteur()
 {
 	int pictureHeight = GetWindowHeight();
-
+	int posHauteur = scrollVertical->GetPosition();
     if(scrollHorizontal != nullptr && showH)
     {
         bool valueH = scrollHorizontal->IsShown();
@@ -383,8 +387,8 @@ void CScrollbarWnd::HideHorizontalScroll()
 
 void CScrollbarWnd::SetPosition(const int &posX, const int &posY)
 {
-	posHauteur = std::max(posY, 0);
-	posLargeur = std::max(posX, 0);
+	int posHauteur = std::max(posY, 0);
+	int posLargeur = std::max(posX, 0);
 
 	int pictureWidth = GetWindowWidth();
 	int pictureHeight = GetWindowHeight();
@@ -425,6 +429,8 @@ void CScrollbarWnd::Resize()
 	int pictureHeight = GetWindowHeight();
 	bool _showScrollV = false;
 	bool _showScrollH = false;
+	int posLargeur = scrollHorizontal->GetPosition();
+	int posHauteur = scrollVertical->GetPosition();
 
 	if (!(pictureWidth > 0 && pictureHeight > 0))
 		return;

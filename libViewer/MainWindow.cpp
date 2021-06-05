@@ -527,9 +527,13 @@ void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
 
-	if (*threadFilename != localFilename)
+	if (*threadFilename != localFilename && *threadFilename != "")
 	{
 		centralWnd->LoadPicture(*threadFilename);
+	}
+	else if(*threadFilename == "")
+	{
+		printf("toto");
 	}
 
 	if (threadFilename != nullptr)

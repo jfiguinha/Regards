@@ -348,6 +348,10 @@ void CScrollbarHorizontalWnd::OnMouseLeave(wxMouseEvent& event)
 	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
 	evt.SetInt(0);
 	GetParent()->GetEventHandler()->AddPendingEvent(evt);
+
+	if (HasCapture())
+		ReleaseMouse();
+	captureBar = false;
 }
 
 void CScrollbarHorizontalWnd::OnMouseHover(wxMouseEvent& event)

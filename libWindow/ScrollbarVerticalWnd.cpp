@@ -423,6 +423,10 @@ void CScrollbarVerticalWnd::OnMouseLeave(wxMouseEvent& event)
 	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
 	evt.SetInt(0);
 	GetParent()->GetEventHandler()->AddPendingEvent(evt);
+
+	if (HasCapture())
+		ReleaseMouse();
+	captureBar = false;
 }
 
 void CScrollbarVerticalWnd::OnMouseHover(wxMouseEvent& events)
@@ -749,6 +753,8 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 		pageTop->Stop();
 	if (pageBottom->IsRunning())
 		pageBottom->Stop();
+
+	captureBar = false;
 }
 
 void CScrollbarVerticalWnd::PaintNow()

@@ -557,7 +557,6 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	OutputDebugString(L"\n");
 #endif
 	
-	wxString * _filename = new wxString();
 	bool isPictureToShow = false;
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
     int redraw = event.GetInt();
@@ -581,8 +580,6 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 			else
 				isThumbnail = true;
 
-			*_filename = pictureData->bitmap->GetFilename();
-
 			delete pictureData;
 		}
 	}
@@ -603,11 +600,11 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 	}
     
-    if (redraw && *_filename == this->filename)
+    if (redraw)
     {
         CThreadPictureData * pictureData = new CThreadPictureData();
 		pictureData->mainWindow = this;
-		pictureData->picture = *_filename;
+		pictureData->picture = this->filename;
 		pictureData->isVisible = true;
 		thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
 		pictureData->myThread = threadloadPicture;
@@ -616,6 +613,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 	if (!isThumbnail)
 	{
+		wxString* _filename = new wxString(this->filename);
 		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
 		evt.SetClientData(_filename);
@@ -1646,6 +1644,11 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 
 		bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
 		bitmap->SetFilename(pictureData->picture);
+
+		wxString* _fileName = new wxString(pictureData->picture);
+		wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
+		event->SetClientData(_fileName);
+		wxQueueEvent(pictureData->mainWindow, event);
 	}
 
 	if (bitmap != nullptr)
@@ -1660,8 +1663,8 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 	}
 
 	
-	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
-	event->SetClientData(pictureData);
-	wxQueueEvent(pictureData->mainWindow, event);
+//	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
+//	event->SetClientData(pictureData);
+//	wxQueueEvent(pictureData->mainWindow, event);
 	
 }
