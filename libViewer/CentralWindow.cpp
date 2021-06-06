@@ -630,7 +630,6 @@ void CCentralWindow::StopLoadingPicture()
 	if (bitmapWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_ONSTOPLOADINGPICTURE);
-		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -1644,15 +1643,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 			delete bitmap;
 
 		bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
-		bitmap->SetFilename(pictureData->picture);
-
-		/*
-		wxString* _fileName = new wxString(pictureData->picture);
-		wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
-		event->SetClientData(_fileName);
-		wxQueueEvent(pictureData->mainWindow, event);
-		*/
-		
+		bitmap->SetFilename(pictureData->picture);	
 	}
 
 	if (bitmap != nullptr)
@@ -1663,12 +1654,8 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 		bitmapReturn->bitmap = bitmap;
 		wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
 		event->SetClientData(bitmapReturn);
+		event->SetInt(0);
 		wxQueueEvent(pictureData->mainWindow, event);
 	}
 
-	
-//	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
-//	event->SetClientData(pictureData);
-//	wxQueueEvent(pictureData->mainWindow, event);
-	
 }
