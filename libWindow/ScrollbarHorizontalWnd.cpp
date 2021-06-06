@@ -115,47 +115,13 @@ void CScrollbarHorizontalWnd::UpdateScreenRatio()
 bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 {
 	bool value = true;
-    if (left != currentXPos)
+	if (left != currentXPos)
 	{
 		currentXPos = left;
-		TestMaxX();
-
-		if (TestMaxX() && showTriangle)
-		{
-			ClickRightTriangle();
-		}
-		else
-		{
-			barPosX = barStartX + currentXPos / lineSize;
-
-			rcPosBar.x = barPosX;
-			rcPosBar.width = barPosX + barSize;
-			rcPosBar.y = themeScroll.GetMarge();
-			rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-		}
+		MoveBar(currentXPos, themeScroll.colorBarActif);
 	}
 	else
-	{
-		if (TestMaxX())
-		{
-			barPosX = barStartX + currentXPos / lineSize;
-			rcPosBar.x = barPosX;
-			rcPosBar.width = barPosX + barSize;
-			rcPosBar.y = themeScroll.GetMarge();
-			rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-		}
-		if (TestMinX())
-		{
-			barPosX = barStartX + currentXPos / lineSize;
-			rcPosBar.x = barPosX;
-			rcPosBar.width = barPosX + barSize;
-			rcPosBar.y = themeScroll.GetMarge();
-			rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-		}
 		value = false;
-	}
-
-	PaintNow();
 	return value;
 }
 
@@ -423,6 +389,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 bool CScrollbarHorizontalWnd::TestMaxX()
 {
 	int diff = pictureWidth - screenWidth;
+
 	if (currentXPos > diff)
 	{
 		currentXPos = diff;
@@ -504,7 +471,6 @@ void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 		rcPosBar.width = barStartX + barSize;
 	}
 
-	//DrawRectangleElement(&dc, color);
 	PaintNow();
 }
 

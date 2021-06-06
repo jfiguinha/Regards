@@ -33,6 +33,11 @@ namespace Regards
             void UpdateScreenRatio();
 
 			void SetShowWindow(const bool &showValue);
+
+			void ClickLeftTriangle();
+			void ClickRightTriangle();
+			void ClickLeftPage();
+			void ClickRightPage();
             
 		protected:
 
@@ -56,10 +61,7 @@ namespace Regards
 
 			void SendLeftPosition(const int &value);
 
-			void ClickLeftTriangle();
-			void ClickRightTriangle();
-			void ClickLeftPage();
-			void ClickRightPage();
+
 
 			bool FindLeftTriangle(const int &yPosition, const int &xPosition);
 			bool FindRightTriangle(const int &yPosition, const int &xPosition);

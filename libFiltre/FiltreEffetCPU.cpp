@@ -153,13 +153,6 @@ void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius,
 			if (temp > maxImageRad)
 			{
 				mask.at<double>(i, j) = 0;
-				/*
-				double value = temp - maxImageRad;
-				if(value > maxImageRad)
-					mask.at<double>(i, j) = 0;
-				else
-					mask.at<double>(i, j) = (maxImageRad - value) / maxImageRad;
-				*/
 			}
 			else
 			{
@@ -171,9 +164,6 @@ void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius,
 				}
 				else
 					mask.at<double>(i, j) = 1;
-				//temp = temp * power;
-				//double temp_s = pow(fastCos(temp), 4);
-				//mask.at<double>(i, j) = 1;
 			}
 
 		}
@@ -184,6 +174,9 @@ void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius,
 double dist(double ax, double ay, double bx, double by) {
 	return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
 }
+
+
+
 
 int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 {
@@ -198,7 +191,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cvtColor(src, src, cv::COLOR_BGRA2BGR);
-		cv::Mat dst = Mat::zeros(src.size(), src.type());
+		//cv::Mat dst = Mat::zeros(src.size(), src.type());
 	/*
 		Mat kernel_X = getGaussianKernel(src.cols, (float)(radius / 100.0) * (float)src.cols);
 		Mat kernel_Y = getGaussianKernel(src.rows, (float)(radius / 100.0) * (float)src.rows);
@@ -222,59 +215,40 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		}
 
 		cv::merge(bgr_planes, dst);
-		
-
-		/*
-		dst = Mat::zeros(src.size(), src.type());
-		double cx = (float)(radius / 100.0) * (float)src.cols, cy = (float)(radius / 100.0) * (float)src.rows;
-		double maxDis = radius * dist(0, 0, cx, cy);
-		double temp;
-		for (int y = 0; y < src.rows; y++) {
-			for (int x = 0; x < src.cols; x++) {
-				temp = fastCos(dist(cx, cy, x, y) / maxDis);
-				temp *= temp;
-				dst.at<Vec3b>(y, x)[0] =
-					saturate_cast<uchar>((src.at<Vec3b>(y, x)[0]) * temp);
-				dst.at<Vec3b>(y, x)[1] =
-					saturate_cast<uchar>((src.at<Vec3b>(y, x)[1]) * temp);
-				dst.at<Vec3b>(y, x)[2] =
-					saturate_cast<uchar>((src.at<Vec3b>(y, x)[2]) * temp);
-
-			}
-		}
 		*/
 
-		
-		cv::Mat maskImg = cv::Mat::zeros(src.size(), CV_64F);
-		CFiltreEffetCPUImpl::generateGradient(maskImg, (float)(radius / 100.0), (float)(power / 100.0));
+
+		cv::Point firstPt = cv::Point(src.size().width / 2, src.size().height / 2);
+		double maxImageRad = ((float)(radius / 100.0) * CFiltreEffetCPUImpl::getMaxDisFromCorners(src.size(), firstPt));
+		double maxImageRadPower = maxImageRad * (float)(power / 100.0);
 
 		cv::Mat labImg(src.size(), CV_8UC3);
 
 		cv::cvtColor(src, labImg, cv::COLOR_BGR2Lab);
-
-		//vector<Mat> lab_planes;
-		//split(src, lab_planes);
-		//lab_planes[0].mul(maskImg);
-		//multiply(maskImg, lab_planes[0], lab_planes[0]);
-
 		
-		for (int row = 0; row < labImg.size().height; row++)
+		for (int row = 0, j = 0; row < src.size().height; row++)
 		{
-			for (int col = 0; col < labImg.size().width; col++)
+			for (int col = 0, i = 0; col < src.size().width; col++)
 			{
-				cv::Vec3b value = labImg.at<cv::Vec3b>(row, col);
-				value.val[0] *= maskImg.at<double>(row, col);
-				labImg.at<cv::Vec3b>(row, col) = value;
+				float l = 0, a = 0, b=  0;
+				double temp = CFiltreEffetCPUImpl::dist(firstPt, cv::Point(col, row));			
+				if (temp > maxImageRad)
+					labImg.at<cv::Vec3b>(row, col)[0] = 0;
+				else
+				{
+					if (temp > maxImageRadPower)
+					{
+						double max = maxImageRad - maxImageRadPower;
+						double _value = temp - maxImageRadPower;
+						labImg.at<cv::Vec3b>(row, col)[0] *= (max - _value) / max;
+					}
+				}
 			}
 		}
-		
 
-		//cv::merge(lab_planes, labImg);
-		cv::cvtColor(labImg, dst, cv::COLOR_Lab2BGR);
-	
-		
-		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
-		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		cv::cvtColor(labImg, src, cv::COLOR_Lab2BGR);
+		cvtColor(src, src, cv::COLOR_BGR2BGRA);
+		bitmap->SetBitmap(src.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	}
 
 	return 0;

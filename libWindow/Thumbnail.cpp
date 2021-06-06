@@ -1291,10 +1291,12 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 	}
 	
 
+	/*
     if(firstRefresh)
         if (!timerAnimation->IsRunning())
             timerAnimation->Start(500, true);
     firstRefresh = false;
+	*/
      
 }
 

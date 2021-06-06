@@ -15,12 +15,13 @@ namespace Regards
 			void ShowEmptyRectangle(const bool &show, const int &heightSize);
 
 			bool DefineSize(const int &screenHeight, const int &pictureHeight);
-			bool SetPosition(const int &top);
+			//bool SetPosition(const int &top);
 
 			void SetPageSize(const int &pageSize);
 			int GetPageSize();
 			void SetLineSize(const int &lineSize);
 			int GetLineSize();
+
 
 			int GetPosition();
 
@@ -34,6 +35,13 @@ namespace Regards
             void UpdateScreenRatio();
 
 			void SetShowWindow(const bool &showValue);
+
+			void ClickTopTriangle();
+			void ClickBottomTriangle();
+			void ClickTopPage();
+			void ClickBottomPage();
+
+			bool SetPosition(const int& top);
 
 		protected:
 
@@ -57,10 +65,7 @@ namespace Regards
 			void Resize();
 			void CalculBarSize();
 
-			void ClickTopTriangle();
-			void ClickBottomTriangle();
-			void ClickTopPage();
-			void ClickBottomPage();
+
 
 			bool FindTopTriangle(const int &yPosition, const int &xPosition);
 			bool FindBottomTriangle(const int &yPosition, const int &xPosition);

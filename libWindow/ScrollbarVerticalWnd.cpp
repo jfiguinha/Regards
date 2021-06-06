@@ -193,46 +193,10 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 	if (top != currentYPos)
 	{
 		currentYPos = top;
-
-		if (TestMaxY() && showTriangle)
-		{
-			ClickBottomTriangle();
-		}
-		else
-		{
-			barPosY = barStartY + currentYPos / lineSize;
-
-			//Test si bar est trop haut
-
-
-			rcPosBar.x = themeScroll.GetMarge();
-			rcPosBar.width = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-			rcPosBar.y = barPosY;
-			rcPosBar.height = barPosY + barSize;
-		}
+		MoveBar(currentYPos, themeScroll.colorBarActif);
 	}
 	else
-	{
-		if (TestMaxY())
-		{
-			barPosY = barStartY + currentYPos / lineSize;
-			rcPosBar.x = themeScroll.GetMarge();
-			rcPosBar.width = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-			rcPosBar.y = barPosY;
-			rcPosBar.height = barPosY + barSize;
-		}
-		if (TestMinY())
-		{
-			barPosY = barStartY + currentYPos / lineSize;
-			rcPosBar.x = themeScroll.GetMarge();
-			rcPosBar.width = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
-			rcPosBar.y = barPosY;
-			rcPosBar.height = barPosY + barSize;
-		}
 		value = false;
-	}
-	
-	PaintNow();
 	return value;
 }
 
@@ -513,17 +477,6 @@ bool CScrollbarVerticalWnd::FindRectangleBar(const int &yPosition, const int &xP
 
 void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 {
-	/*
-	wxClientDC dc(this);
-
-	wxRect rc;
-	rc.x = 0;
-	rc.width = width;
-	rc.y = rcPosTriangleTop.height;
-	rc.height = rcPosTriangleBottom.y - rcPosTriangleTop.height;
-
-	FillRect(&dc, rc, themeScroll.colorBack);
-	*/
 	int diff = pictureHeight - screenHeight;
 	float currentPosPourcentage = ((float)currentPos / (float)diff);
 	float sizeFree = (barEndY - barStartY) - barSize;
@@ -531,8 +484,6 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 
 	rcPosBar.y = barStartY + posY;
 	rcPosBar.height = barStartY + posY + barSize;
-	//rcPosBar.y += diffY;
-	//rcPosBar.height += diffY;
 	
 	if (rcPosBar.height > barEndY)
 	{
@@ -545,8 +496,6 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 		rcPosBar.y = barStartY;
 		rcPosBar.height = barStartY + barSize;
 	}
-
-	//DrawRectangleElement(&dc, color);
 	PaintNow();
 }
 
@@ -595,6 +544,8 @@ void CScrollbarVerticalWnd::SendTopPosition(const int &value)
 bool CScrollbarVerticalWnd::TestMaxY()
 {
 	int diff = pictureHeight - screenHeight;
+	//if (showEmptyRectangle)
+	//	diff -= heightSize;
 	if (currentYPos > diff)
 	{
 		currentYPos = diff;
