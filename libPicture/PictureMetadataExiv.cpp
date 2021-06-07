@@ -584,6 +584,26 @@ vector<CMetadata> CPictureMetadataExiv::ReadExif(Exiv2::ExifData &exifData)
 		CMetadata metadata;
 		metadata.key = i->key();
 		metadata.value = Exiv2::toString(*i);
+
+		/*
+		vector<wxString> listKey = CConvertUtility::split(metadata.key, '.');
+
+		if (listKey.size() == 3)
+		{
+			if (listKey[2] == "MakerNote")
+			{
+				int len = metadata.value.length();
+				wxString newString;
+				for (int i = 0; i < len; i += 3)
+				{
+					wxString byte = metadata.value.substr(i, 2);
+					char chr = (char)(int)strtol(byte.c_str(), nullptr, 16);
+					newString.append(chr);
+				}
+				metadata.value = newString;
+			}
+		}
+		*/
 		metadataList.push_back(metadata);
 
 	}

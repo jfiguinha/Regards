@@ -94,9 +94,6 @@
     <ClCompile Include="webpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="PictureMetadata.cpp">
-      <Filter>libexif</Filter>
-    </ClCompile>
     <ClCompile Include="CompressionOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -227,9 +224,6 @@
     </ClInclude>
     <ClInclude Include="webpOption.h">
       <Filter>Dialog</Filter>
-    </ClInclude>
-    <ClInclude Include="PictureMetadata.h">
-      <Filter>libexif</Filter>
     </ClInclude>
     <ClInclude Include="CompressionOption.h">
       <Filter>Dialog</Filter>

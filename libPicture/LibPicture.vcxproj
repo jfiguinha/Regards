@@ -523,7 +523,6 @@
     <ClInclude Include="PDFOption.h" />
     <ClInclude Include="pfm.h" />
     <ClInclude Include="PictureData.h" />
-    <ClInclude Include="PictureMetadata.h" />
     <ClInclude Include="PictureMetadataExiv.h" />
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="raw.h" />
@@ -576,7 +575,6 @@
     <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="pfm.cpp" />
     <ClCompile Include="PictureData.cpp" />
-    <ClCompile Include="PictureMetadata.cpp" />
     <ClCompile Include="PictureMetadataExiv.cpp" />
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="raw.cpp" />
