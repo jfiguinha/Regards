@@ -105,7 +105,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		if(viewerconfig != nullptr)
 			viewerconfig->GetShowFilter(isPanelVisible);
 
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLSELECTFILE", 1);
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFOLDERCATEGORY", 1);
 		CThemePane theme;
 		viewerTheme->GetPaneTheme(&theme);
 

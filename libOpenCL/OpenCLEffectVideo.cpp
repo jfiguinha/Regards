@@ -427,6 +427,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 		{
 			cv::UMat image_local = openCVStabilization->CorrectFrame(cvImage);
 			image_local.copyTo(cvImage);
+			image_local.release();
 		}
 	}
 
@@ -440,6 +441,8 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 	{
 		CopyOpenCVTexture(cvImage, true);
 	}
+
+	cvImage.release();
 }
 
 void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)

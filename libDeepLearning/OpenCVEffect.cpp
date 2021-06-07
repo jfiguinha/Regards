@@ -262,6 +262,8 @@ void COpenCVEffect::BrightnessAndContrastAuto(CRegardsBitmap * pBitmap, float cl
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
 	pBitmap->SetBitmap(dest.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	dest.release();
+	image.release();
 }
 
 void COpenCVEffect::EqualizeHistogram(CRegardsBitmap * pBitmap)
@@ -269,6 +271,7 @@ void COpenCVEffect::EqualizeHistogram(CRegardsBitmap * pBitmap)
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	COpenCVEffectPimpl::EqualizeHistogram(image);
 	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	image.release();
 }
 
 
@@ -290,7 +293,7 @@ void COpenCVEffect::LoadAndRotate(const wxString& filePath, const int& rotate)
 		cv::flip(src, src, 1);
 	}
 	imwrite(filePath.ToStdString(), src);
-
+	src.release();
 }
 
 
@@ -357,6 +360,10 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 					Point(bin_w * (i), hist_h - cvRound(hist.at<float>(i))),
 					color, 2, 8, 0);
 		}
+
+		bgr_planes[0].release();
+		bgr_planes[1].release();
+		bgr_planes[2].release();
 	}
 	
 
@@ -375,6 +382,12 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap * pBitmap, CRegardsBitmap*
 	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);
 	histogram->SetBitmap(histImage.data, hist_w, hist_h);
 	histogram->VertFlipBuf();
+
+	hist.release();
+	image.release();
+	src.release();
+	mat.release();
+	histImage.release();
 }
 
 void COpenCVEffect::NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue, const int& maxValue)

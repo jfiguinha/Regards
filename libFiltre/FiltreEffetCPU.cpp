@@ -95,6 +95,8 @@ int CFiltreEffetCPU::OilPaintingEffect(const int &size, const int &dynRatio)
 	cv::xphoto::oilPainting(dst, image, size, dynRatio, cv::COLOR_BGR2Lab);
 	cv::cvtColor(image, dst, cv::COLOR_BGR2BGRA);
 	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	dst.release();
+	image.release();
 	return 0;
 }
 
@@ -249,6 +251,9 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		cv::cvtColor(labImg, src, cv::COLOR_Lab2BGR);
 		cvtColor(src, src, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(src.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		labImg.release();
+		src.release();
 	}
 
 	return 0;
@@ -459,6 +464,7 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 		edges += edges2;
 		threshold(edges, mask, 12, 255, cv::THRESH_BINARY_INV);
 		medianBlur(mask, mask, 3);
+		edges2.release();
 	}
 	//imshow("edges", edges);
 	//imshow("mask", mask);
@@ -468,6 +474,11 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 		// The output image has 3 channels, not a single channel.
 		cvtColor(mask, dst, cv::COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		dst.release();
+		mask.release();
+		src.release();
+		edges.release();
 		return -1;
 	}
 
@@ -507,7 +518,14 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	// Use the blurry cartoon image, except for the strong edges that we will leave black.
 	src.copyTo(dst, mask);
 	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-    
+
+	dst.release();
+	mask.release();
+	src.release();
+	tmp.release();
+	srcBgr.release();
+	smallImg.release();
+	edges.release();
     return 0;
 }
 
@@ -575,6 +593,11 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdge
 	int Green = 70;
 	int Blue = 0;
 	add(smallImgBGR, cv::Scalar(Blue, Green, Red), smallImgBGR, mask);
+
+	edgeMask.release();
+	yuv.release();
+	maskPlusBorder.release();
+	mask.release();
 }
 
 
@@ -601,6 +624,9 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 		cvtColor(dst, dst, cv::COLOR_Lab2RGB);
 		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		dst.release();
+		src.release();
 	}
 	return 0;
 }
@@ -628,6 +654,8 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 		cv::bilateralFilter(dst, src, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
 		cvtColor(src, dst, cv::COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dst.release();
+		src.release();
 	}
 	return -1;
 }
@@ -800,6 +828,12 @@ int CFiltreEffetCPU::HistogramNormalize()
 
 		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		bgr_planes[0].release();
+		bgr_planes[1].release();
+		bgr_planes[2].release();
+		dest.release();
+		image.release();
 	}
 	return 0;
 	//return CHistogramme::HistogramNormalize(pBitmap);
@@ -830,6 +864,12 @@ int CFiltreEffetCPU::HistogramEqualize()
 		cv::merge(bgr_planes, dest);
 		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+		bgr_planes[0].release();
+		bgr_planes[1].release();
+		bgr_planes[2].release();
+		dest.release();
+		image.release();
 	}
 	return 0;
 	//return CHistogramme::HistogramEqualize(pBitmap);
@@ -1035,7 +1075,8 @@ int CFiltreEffetCPU::NiveauDeGris()
 		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
 		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-
+		dest.release();
+		image.release();
 		/*
 		CGrayScale * filtre = new CGrayScale();
 		filtre->SetParameter(bitmap, backColor);
@@ -1070,6 +1111,8 @@ int CFiltreEffetCPU::NoirEtBlanc()
 		threshold(dest, dest, 127, 255, THRESH_BINARY);
 		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 	}
 	return 0;
 }
@@ -1162,6 +1205,8 @@ int CFiltreEffetCPU::Blur(const int &radius)
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::blur(image, dest, cv::Size(radius, radius));
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 	}
 	return 0;
 }
@@ -1184,6 +1229,8 @@ int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::GaussianBlur(image, dest, cv::Size(boxSize, boxSize), radius);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 		/*
 		CGaussianBlur gaussianBlur;
 		gaussianBlur.GaussianBlur(bitmap, radius);
@@ -1222,7 +1269,9 @@ int CFiltreEffetCPU::Emboss()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::filter2D(image, dest, image.depth(), kernel, cv::Point(-1,-1), 127);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-
+		dest.release();
+		image.release();
+		kernel.release();
 		//filter the image
 		
 	}
@@ -1264,6 +1313,9 @@ int CFiltreEffetCPU::SharpenStrong()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::filter2D(image, dest, image.depth(), kernel);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
+		kernel.release();
 	}
 
 	return 0;
@@ -1299,6 +1351,9 @@ int CFiltreEffetCPU::Sharpen()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::filter2D(image, dest, image.depth(), kernel);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
+		kernel.release();
 	}
 
 	return 0;
@@ -1328,6 +1383,8 @@ int CFiltreEffetCPU::Erode()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::erode(image, dest, Mat());
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 
 	}
 
@@ -1357,6 +1414,8 @@ int CFiltreEffetCPU::Median()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::medianBlur(image, dest, 3);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 	}
 
 	return 0;
@@ -1400,6 +1459,8 @@ int CFiltreEffetCPU::Dilate()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::dilate(image, dest, Mat());
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 		/*
 		CDilate * filtre = new CDilate();
 		filtre->SetParameter(bitmap, backColor);
@@ -1434,6 +1495,8 @@ int CFiltreEffetCPU::Negatif()
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::bitwise_not(image, dest);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dest.release();
+		image.release();
 	}
 
 	return 0;
@@ -1610,6 +1673,10 @@ int CFiltreEffetCPU::RotateFree(const double &angle, const int &widthOut, const 
 
 		cv::warpAffine(src, dst, rot, bbox.size());
 		bitmap->SetBitmap(dst.data, dst.cols, dst.rows);
+
+		dst.release();
+		src.release();
+		rot.release();
 	}
 	return 0;
 }
@@ -1713,6 +1780,8 @@ int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const
 		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		cv::resize(src, dst, dst.size(), 0, 0, INTER_CUBIC);
 		bitmap->SetBitmap(dst.data, imageWidth, imageHeight);
+		dst.release();
+		src.release();
 	}
 	
 

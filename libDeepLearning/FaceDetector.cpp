@@ -72,6 +72,7 @@ void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confid
 		confidence = bestConfidence;
 		bestConfidence = 0.0;
 	}
+	dst.release();
 }
 
 
@@ -79,7 +80,9 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 {
 	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
-	return DectectOrientationByFaceDetector(image);
+	int value = DectectOrientationByFaceDetector(image);
+	image.release();
+	return value;
 }
 
 
@@ -126,6 +129,10 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat & image)
 	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
 	angle += 90;
 	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
+
+	gray.release();
+	resized.release();
+
 	return selectAngle;
 }
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
@@ -234,7 +241,7 @@ double CFaceDetector::face_opencv_alignement(cv::Mat& image, bool& findEye) {
 	vector<Rect> faces;
 	int angle_add = 0;
 	//Declaring a variable "image" to store input image given.
-	Mat detected_edges, Laugh_L, Laugh_R;
+	//Mat detected_edges, Laugh_L, Laugh_R;
 
 	Rect rc;
 	rc.x = 0;
@@ -371,8 +378,8 @@ cv::Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const c
 	rect.width = max(faceLocation.width, 0);
 	rect.height = max(faceLocation.height, 0);
 	dst = dst(rect);
-	//imwrite("d:\\test1.jpg", image);
-	//imwrite("d:\\test2.jpg", dst);
+
+	r.release();
 
 	return dst;
 }
@@ -431,6 +438,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 						ImageToJpegBuffer(face.croppedImage, buff);
 						int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 						listFace.push_back(numFace);
+						face.croppedImage.release();
 					}
 					catch (cv::Exception& e)
 					{
@@ -439,6 +447,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 					}
 				}
+
+				resizedImage.release();
 			}
 
 			if (listFace.size() == 0)
@@ -447,6 +457,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 				return listFace;
 			}
 		}
+		image.release();
+		dest.release();
 	}
 
 	return listFace;
@@ -667,6 +679,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 			pBitmap->VertFlipBuf();
 		}
 
+		image.release();
+		dest.release();
+
 	}
 }
 
@@ -719,6 +734,9 @@ void CFaceDetector::detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vect
 			}
 
 		}
+
+		detectionMat.release();
+		inputBlob.release();
 	}
 	catch (cv::Exception& e)
 	{
@@ -777,7 +795,16 @@ int CFaceDetector::DetectAngleOrientation(const cv::Mat & image)
 			break;
 		}
 
+		if (listOfFace.size() > 0)
+		{
+			for (int i = 0; i < listOfFace.size(); i++)
+				listOfFace[i].croppedImage.release();
+		}
+
 	}
+
+	dst.release();
+
 	return angle;
 }
 
@@ -861,6 +888,7 @@ Mat eval(Mat face) {
 		Mat blob = blobFromImage(face, 1.0 / 255, Size(96, 96), Scalar(0, 0, 0, 0), true, false);
 		netRecognition.setInput(blob);
 		result = netRecognition.forward().clone();
+		blob.release();
 	}
 	catch (cv::Exception& e)
 	{
@@ -903,6 +931,8 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 				maxConfidence = confidence;
 			}
 
+			face2.release();
+			face2Vec.release();
 		}
 
 
@@ -928,5 +958,8 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
 	}
 
+
+	face1.release();
+	face1Vec.release();
 	return findFaceCompatible;
 }

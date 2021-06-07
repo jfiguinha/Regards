@@ -35,7 +35,11 @@ cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height,
 	cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
 	cv::xphoto::oilPainting(cvSrc, cvDest, size, dynRatio, cv::COLOR_BGR2Lab);
 	cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
-	return CopyOpenCVTexture(cvImage, width, height);
+	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
+	cvDest.release();
+	cvSrc.release();
+	cvImage.release();
+	return value;
 
 }
 
@@ -66,7 +70,12 @@ cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float 
 	// Temporary Mat not reused, so release from memory.
 	yChannel.release();
 
-	return CopyOpenCVTexture(cvImage, width, height);
+	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
+
+	cvImage.release();
+	ycbcr.release();
+	yChannelOut.release();
+	return value;
 }
 
 
@@ -79,7 +88,11 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 
 	Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
 
-	return CopyOpenCVTexture(cvImage, width, height);
+	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
+
+	cvImage.release();
+
+	return value;
 }
 
 cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)

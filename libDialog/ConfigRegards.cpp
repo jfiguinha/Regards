@@ -347,7 +347,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetFaceDetection(0);
 
-	if(_faceDetection != faceDetection)
+	if(_faceDetection == faceDetection)
 		showInfosRestart = true;
 
 	int autoContrast = rbContrastCorrection->GetSelection();
