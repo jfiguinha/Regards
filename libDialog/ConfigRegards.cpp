@@ -265,23 +265,35 @@ void ConfigRegards::Init()
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
-	/*
-	bool autocontrastValue = false;
-	bool openclDetection = false;
-
-	autocontrastValue = rbContrastCorrection->GetSelection() == 0 ? true : false;
-	openclDetection = rdOpenCVOpenCL->GetSelection() == 0 ? true : false;
-
-	if (openclDetection && autocontrastValue)
-	{
-		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-		wxMessageBox("Constrast Automatic and OpenCL Face Detection no work together.", infos, wxICON_ERROR);
-		isOk = false;
-		return;
-	}
-	*/
-
+	bool showInfosRestart = false;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CMainParam* mainparam = CMainParamInit::getInstance();
+
+	//Get old value to compare with new value
+	int _transition = max((regardsParam->GetEffect() - 300), 0);
+	int _autoRotate = regardsParam->GetDetectOrientation();
+	int _autoContrast = regardsParam->GetAutoConstrast();
+	int _videoFaceDetection = regardsParam->GetFaceVideoDetection();
+	int _faceDetection = regardsParam->GetFaceDetection();
+	int _timeDiaporama = regardsParam->GetDiaporamaTime();
+	int _thumbnailProcess = regardsParam->GetThumbnailProcess();
+	int _exifProcess = regardsParam->GetExifProcess();
+	int _faceProcess = regardsParam->GetFaceProcess();
+	int _dataInMemory = regardsParam->GetDatabaseInMemory();
+	int _interpolation = regardsParam->GetInterpolationType();
+
+	int _supportOpenCL = 0;
+	wxString _platformName = "";
+	wxString _deviceName = "";
+	int _indexDevice = -1;
+	
+	if (regardsParam != nullptr)
+	{
+		_platformName = regardsParam->GetOpenCLPlatformName();
+		_indexDevice = regardsParam->GetOpenCLPlatformIndex();
+		_supportOpenCL = regardsParam->GetIsOpenCLSupport();
+	}
+
     
     int nbProcesseur = thread::hardware_concurrency();
 
@@ -292,9 +304,19 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetOpenCLLoadFromBinaries(kernelInMemory);
 		regardsParam->SetOpenCLPlatformIndex(GetDeviceIndex());
 		regardsParam->SetOpenCLPlatformName(GetPlatformName());
+
+		if (_platformName != GetPlatformName())
+			showInfosRestart = true;
+
+		if (_indexDevice != GetDeviceIndex())
+			showInfosRestart = true;
+
+		if (regardsParam->GetOpenCLLoadFromBinaries() != kernelInMemory)
+			showInfosRestart = true;
+
 	}
 
-	CMainParam* mainparam = CMainParamInit::getInstance();
+
 	if (mainparam != nullptr)
 	{
 		mainparam->SetPathForVideoEdit(txtVideoPath->GetValue());
@@ -324,6 +346,9 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetFaceDetection(1);
 	else
 		regardsParam->SetFaceDetection(0);
+
+	if(_faceDetection != faceDetection)
+		showInfosRestart = true;
 
 	int autoContrast = rbContrastCorrection->GetSelection();
 	if (autoContrast == 0)
@@ -364,6 +389,14 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
             regardsParam->SetDatabaseInMemory(1);
         else
             regardsParam->SetDatabaseInMemory(0);
+
+		if (showInfosRestart)
+		{
+			wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1);
+			wxString lblInfos = CLibResource::LoadStringFromResource(L"labelInformations", 1);
+			wxMessageBox(labelRestart, lblInfos);
+		}
+
 
         this->Close();        
     }

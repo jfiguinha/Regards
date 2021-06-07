@@ -254,6 +254,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 	return 0;
 }
 
+
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	if (preview)
