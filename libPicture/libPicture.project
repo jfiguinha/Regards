@@ -62,8 +62,6 @@
     <File Name="MetadataExiv2.cpp"/>
     <File Name="PictureMetadataExiv.h"/>
     <File Name="PictureMetadataExiv.cpp"/>
-    <File Name="PictureMetadata.h"/>
-    <File Name="PictureMetadata.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Dialog">
     <File Name="GifOption.h"/>
