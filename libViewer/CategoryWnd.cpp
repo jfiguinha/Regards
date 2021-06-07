@@ -19,6 +19,8 @@
 #include <SqlFindCatalog.h>
 #include <theme.h>
 #include <TreeWindow.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::Window;
@@ -144,6 +146,12 @@ wxString CCategoryWnd::GetCatalogLibelle(const int& numCatalog)
 //------------------------------------------------------------------------------
 void CCategoryWnd::InitCatalogCategorie(tree<CTreeData*>::iterator parent, int numParent)
 {
+	int faceDetection = 0;
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
 
 	//Récupération des catégories principales
 	CSqlPhotoCategorie sqlCategorie;
@@ -155,6 +163,10 @@ void CCategoryWnd::InitCatalogCategorie(tree<CTreeData*>::iterator parent, int n
 	{
 		//if (fit->GetId() != 2)
 		//{
+		
+		if (fit->GetId() == 4 && !faceDetection)
+			continue;
+
 		idElement++;
 		CTreeDataCategory* treeData = new CTreeDataCategory();
 		treeData->SetNumElement(idElement);

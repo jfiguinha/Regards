@@ -37,7 +37,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	videoDecoderHardware = "";
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
-	faceDetection = 1;
+	faceDetection = 0;
 	fastFaceDetection = 1;
 }
 
