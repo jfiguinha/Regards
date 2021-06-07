@@ -801,7 +801,11 @@ void CMainWindow::ProcessIdle()
 		}
 
 		if (!isFound && pictures.size() > 0)
-			localFilename = pictures[0].GetPath();
+		{
+			centralWnd->ImageSuivante();
+			localFilename = centralWnd->GetFilename();
+			//localFilename = pictures[0].GetPath();
+		}
 		else if (!isFound)
 			localFilename = "";
 
@@ -1089,6 +1093,10 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 	wxString* info = static_cast<wxString*>(event.GetClientData());
 	if (*info != "")
 	{
+
+		//centralWnd->ImageSuivante();
+		localFilename = centralWnd->GetFilename();
+
 		wxBusyInfo wait("Please wait, working...");
 
 		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
@@ -1113,6 +1121,8 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 			wxString dir = wxString(*info);
 			statusBarViewer->RemoveFSEntry(dir);
 		}
+
+		
 
 		//delete mainWindowWaiting;
 		SetStopProcess(false);
