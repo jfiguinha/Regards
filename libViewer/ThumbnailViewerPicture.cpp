@@ -143,6 +143,7 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 			int left = rc.x - posLargeur;
 			int right = rc.x + rc.width - posLargeur;
 
+            printf("void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext) left : %d right : %d \n", left, right);
 			if (right > 0 && left < GetWindowWidth())
 				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
 				
