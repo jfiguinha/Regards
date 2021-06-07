@@ -6,10 +6,11 @@
 #include <window_id.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-
+#include "CheckVersion.h"
+#include <wx/mimetype.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-
+using namespace Regards::Internet;
 
 //
 #define IDM_WINDOWSEARCH 152
@@ -23,6 +24,7 @@ using namespace Regards::Viewer;
 #define IDM_PICTUREMODE 160
 #define IDM_EDIT 161
 #define IDM_EXPORT 162
+#define IDM_NEWVERSION 163
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
@@ -48,6 +50,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 	wxString lblPictureMode = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1);
 	wxString lblEditor = CLibResource::LoadStringFromResource(L"LBLEDITORMODE", 1);
+	wxString lblNewVersion = CLibResource::LoadStringFromResource(L"LBLUPDATE", 1);
 
 	/*
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
@@ -116,6 +119,15 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	export_button->SetLibelleTooltip(export_label);
 	navElement.push_back(export_button);
 
+	if (NewVersionAvailable())
+	{
+		CToolbarButton* imageNewVersion = new CToolbarButton(themeToolbar.button);
+		imageNewVersion->SetButtonResourceId(L"IDB_REFRESH");
+		imageNewVersion->SetLibelle(lblNewVersion);
+		imageNewVersion->SetCommandId(IDM_NEWVERSION);
+		navElement.push_back(imageNewVersion);
+	}
+
 	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);
@@ -127,7 +139,48 @@ CToolbar::~CToolbar()
 {
 }
 
+bool CToolbar::NewVersionAvailable()
+{
+	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
+	wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
+	CCheckVersion _checkVersion(serverURL);
+	wxString serverVersion = _checkVersion.GetLastVersion();
+	serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
 
+	long localValueVersion;
+	long localServerVersion;
+
+	localVersion.Replace(".", "");
+	serverVersion.Replace(".", "");
+
+	if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
+	if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
+
+
+	if (serverVersion != "error" && serverVersion != "")
+	{
+		if (localValueVersion < localServerVersion)
+		{
+			/*
+			wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+			wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE", 1);
+
+			int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, nullptr);
+			if (answer == wxYES)
+			{
+				wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
+				wxMimeTypesManager manager;
+				wxFileType* filetype = manager.GetFileTypeFromExtension("html");
+				wxString command = filetype->GetOpenCommand(siteweb);
+				wxExecute(command);
+			}
+			*/
+			return true;
+		}
+	}
+	return false;
+
+}
 void CToolbar::EventManager(const int &id)
 {
 	switch (id)
@@ -223,6 +276,16 @@ void CToolbar::EventManager(const int &id)
 			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
 			wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
 			wxQueueEvent(central, event);
+		}
+		break;
+		
+	case IDM_NEWVERSION:
+		{
+			wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
+			wxMimeTypesManager manager;
+			wxFileType* filetype = manager.GetFileTypeFromExtension("html");
+			wxString command = filetype->GetOpenCommand(siteweb);
+			wxExecute(command);
 		}
 		break;
 	}

@@ -17,7 +17,7 @@ namespace Regards
 		private:
 
 			void EventManager(const int &id);
-
+			bool NewVersionAvailable();
 		};
 	}
 }

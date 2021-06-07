@@ -33,8 +33,7 @@
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
-#include "CheckVersion.h"
-#include <wx/mimetype.h>
+
 #include <ShowBitmap.h>
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
@@ -688,45 +687,6 @@ void CMainWindow::ProcessIdle()
 	TRACE();
 	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
-
-	if (checkVersion)
-	{
-		wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
-		wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION", 1);
-		CCheckVersion _checkVersion(serverURL);
-		wxString serverVersion = _checkVersion.GetLastVersion();
-		serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
-
-		long localValueVersion;
-		long localServerVersion;
-
-		localVersion.Replace(".", "");
-		serverVersion.Replace(".", "");
-
-		if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
-		if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
-
-
-		if (serverVersion != "error" && serverVersion != "")
-		{
-			if (localValueVersion < localServerVersion)
-			{
-				wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-				wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE", 1);
-
-				int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, nullptr);
-				if (answer == wxYES)
-				{
-					wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
-					wxMimeTypesManager manager;
-					wxFileType* filetype = manager.GetFileTypeFromExtension("html");
-					wxString command = filetype->GetOpenCommand(siteweb);
-					wxExecute(command);
-				}
-			}
-		}
-		checkVersion = false;
-	}
 
 	if (updateCriteria)
 	{
