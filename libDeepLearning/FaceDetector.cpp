@@ -894,7 +894,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		{
 			Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
 			Mat face2Vec = eval(face2);
-			cout << "Face2Vec" << face2Vec << endl;
+			//cout << "Face2Vec" << face2Vec << endl;
 			double confidence = face1Vec.dot(face2Vec);
 			//confidence = GetSimilarity(imageSrc, image);
 			if (maxConfidence < confidence)
