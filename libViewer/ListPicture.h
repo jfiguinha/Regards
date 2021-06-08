@@ -34,6 +34,7 @@ namespace Regards
 			CListPicture(wxWindow* parent, wxWindowID id);
 			~CListPicture();
             void UpdateScreenRatio();
+			int GetNumItem();
 			void SetActifItem(const int &numItem, const bool &move);	
 			int GetThumbnailHeight();
 			void SetListeFile();

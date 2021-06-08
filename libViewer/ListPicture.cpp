@@ -159,6 +159,14 @@ void CListPicture::SetActifItem(const int& numItem, const bool& move)
 		thumbnailFolder->SetActifItem(numItem, move);
 }
 
+int CListPicture::GetNumItem()
+{
+	if (thumbnailFolder != nullptr)
+		return thumbnailFolder->GetNumItem();
+
+	return 0;
+}
+
 void CListPicture::SetListeFile()
 {
 	if (thumbnailFolder != nullptr)

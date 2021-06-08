@@ -276,6 +276,11 @@ int CThumbnail::ImageSuivante()
 	return numOldItem;
 }
 
+int CThumbnail::GetNumItem()
+{
+	return numOldItem;
+}
+
 int CThumbnail::ImagePrecedente()
 {
 	numOldItem--;

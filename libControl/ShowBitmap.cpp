@@ -421,6 +421,11 @@ void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
 
 }
 
+void CShowBitmap::IsNextPicture(const bool& value)
+{
+	bitmapWindow->SetNextPictureMove(value);
+}
+
 bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail)
 {
 	TRACE();

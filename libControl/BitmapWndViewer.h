@@ -1,6 +1,6 @@
 #pragma once
 #include "BitmapWnd.h"
-#include <RenderPreviewBitmap.h>
+//#include <RenderPreviewBitmap.h>
 #include <BitmapInterface.h>
 #include <Draw.h>
 #include <AfterEffect.h>
@@ -61,6 +61,7 @@ namespace Regards
 			void SetBitmapPreviewEffect(const int &effect);
 			void SetDiaporamaMode();
 			void SetNormalMode();
+			void SetNextPictureMove(const bool& value);
 			void UpdateFiltre(CEffectParameter * effectParameter);
 			void OnFiltreOk();
 			void OnFiltreCancel();
@@ -133,6 +134,8 @@ namespace Regards
 			wxTimer * selectEffectTimer;
 			wxTimer * clickTimer;
 			int typeClick = 0;
+
+			bool isNext = false;
 
 #ifdef RENDEROPENGL
 			/*

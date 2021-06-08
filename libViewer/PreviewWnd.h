@@ -47,6 +47,7 @@ namespace Regards
 			void ImageSuivante();
 			void ImagePrecedente();
 			void Resize();
+			void IsNextPicture(const bool& value);
 			//void SetVideoPosition(const int &videoTime);
             void UpdateScreenRatio();
 

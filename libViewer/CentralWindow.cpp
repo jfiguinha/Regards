@@ -316,6 +316,24 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 
 int CCentralWindow::RefreshPicture(const wxString & filename)
 {
+
+	int numLocalItem = 0;
+
+	if (windowMode == WINDOW_EXPLORER)
+	{
+		if (listPicture != nullptr)
+		{
+			numLocalItem = listPicture->GetNumItem();
+		}
+	}
+	else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+	{
+		if (thumbnailPicture != nullptr)
+		{
+			numLocalItem = thumbnailPicture->GetNumItem();
+		}
+	}
+
     printf("CCentralWindow::RefreshPicture \n");
 	if (filename != this->filename)
 	{
@@ -353,7 +371,31 @@ int CCentralWindow::RefreshPicture(const wxString & filename)
 	if (listPicture != nullptr)
 		listPicture->SetActifItem(GetPhotoId(filename), true);
 
-	
+	int outItem = 0;
+
+	if (windowMode == WINDOW_EXPLORER)
+	{
+		if (listPicture != nullptr)
+		{
+			outItem = listPicture->GetNumItem();
+		}
+	}
+	else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+	{
+		if (thumbnailPicture != nullptr)
+		{
+			outItem = thumbnailPicture->GetNumItem();
+		}
+	}
+
+	if (outItem != numLocalItem)
+	{
+		if (outItem > numLocalItem)
+			isNext = true;
+		else
+			isNext = false;
+	}
+
 	return 0;
 }
 
@@ -383,6 +425,7 @@ wxString CCentralWindow::ImageSuivante(const bool &loadPicture)
 
 	if (localFilename != "" && loadPicture)
 	{
+		isNext = true;
 		LoadPicture(localFilename);
 	}
 	return localFilename;
@@ -485,6 +528,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 
 	if (localFilename != "" && loadPicture)
 	{
+		isNext = false;
 		LoadPicture(localFilename);
 	}
 	return localFilename;
@@ -720,7 +764,7 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 	OutputDebugString(L"\n");
 #endif
 
-
+	previewWindow->IsNextPicture(isNext);
 
     printf("CCentralWindow::SetBitmap \n");
 	TRACE();

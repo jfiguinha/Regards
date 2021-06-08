@@ -504,7 +504,6 @@
     <ClInclude Include="EmptyWindow.h" />
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
-    <ClInclude Include="RenderPreviewBitmap.h" />
     <ClInclude Include="SliderInterface.h" />
     <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
@@ -583,7 +582,6 @@
     <ClCompile Include="Pane.cpp" />
     <ClCompile Include="PanelWithClickToolbar.cpp" />
     <ClCompile Include="PositionElement.cpp" />
-    <ClCompile Include="RenderPreviewBitmap.cpp" />
     <ClCompile Include="ScrollbarHorizontalWnd.cpp" />
     <ClCompile Include="ScrollbarVerticalWnd.cpp" />
     <ClCompile Include="ScrollbarWnd.cpp" />

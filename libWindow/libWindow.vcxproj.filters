@@ -192,9 +192,6 @@
     <ClInclude Include="KeywordDialogBox.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="RenderPreviewBitmap.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="Tree.h">
       <Filter>Datastructure</Filter>
     </ClInclude>
@@ -364,9 +361,6 @@
     </ClCompile>
     <ClCompile Include="KeywordDialogBox.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderPreviewBitmap.cpp">
-      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="TreeData.cpp">
       <Filter>Datastructure</Filter>

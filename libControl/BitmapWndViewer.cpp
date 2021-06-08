@@ -46,17 +46,7 @@ enum
 };
 
 
-
 #define PREVIEW_NONE 0
-#define PREVIEW_PHOTOFITLRE 1
-#define PREVIEW_RGB 2
-#define PREVIEW_ROTATEFREE 3
-#define PREVIEW_SWIRL 4
-#define PREVIEW_LIGHTANDCONTRAST 5
-#define PREVIEW_POSTERIZE 6
-#define PREVIEW_SOLARIZE 7
-#define PREVIEW_CLOUDS 8
-
 #define TIMER_TRANSITION_TIME 30
 #define TIMER_TRANSITION 31
 #define TIMER_CLICK 32
@@ -642,6 +632,12 @@ CDraw * CBitmapWndViewer::GetDessinPt()
 {
 	return m_cDessin;
 }
+
+void CBitmapWndViewer::SetNextPictureMove(const bool& value)
+{
+	isNext = value;
+}
+
 #ifdef RENDEROPENGL
 void CBitmapWndViewer::AfterRender()
 {
@@ -699,10 +695,26 @@ void CBitmapWndViewer::AfterRender()
 						else
 							afterEffect->GenerateBitmapEffect(nextPicture, this, out);
 
-						int xtexture = (float)(this->GetWidth() - (out.x * scale_factor));
-						int pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
-						if (renderOpenGL != nullptr)
-							renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width  * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+						int xtexture = 0;
+						int pos = 0;
+
+						if (isNext)
+						{
+							xtexture = (float)(this->GetWidth() - (out.x * scale_factor));
+							pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
+							if (renderOpenGL != nullptr)
+								renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+
+						}
+						else
+						{
+							xtexture = (float)(out.width) * scale_factor;
+							pos = (((out.x + xtexture) * scale_factor) * ((float)(etape) / 100.0f)) - xtexture;
+							if (renderOpenGL != nullptr)
+								renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+
+						}
+							
 					}
 				}
 				break;
@@ -764,8 +776,22 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 		switch (numEffect)
 		{
 			case IDM_AFTEREFFECT_MOVE:
-				if(etape < 100)
-					x = x - ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
+			{
+				if (etape > 0)
+				{
+					if (isNext)
+					{
+						if (etape < 100)
+							x = x - ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
+					}
+					else
+					{
+						if (etape < 100)
+							x = x + ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
+					}
+				}
+
+			}
 				break;
 		}
 

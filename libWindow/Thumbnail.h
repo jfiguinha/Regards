@@ -30,6 +30,8 @@ namespace Regards
 			int ImageDebut();
 			int GetNbElement();
 
+			int GetNumItem();
+
 			void ZoomOn();
 			void ZoomOff();
 			void ZoomPosition(const int &position);

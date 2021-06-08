@@ -534,6 +534,11 @@ void CPreviewWnd::UpdateInfos()
         bitmapInfos->UpdateData();
 }
 
+void CPreviewWnd::IsNextPicture(const bool& value)
+{
+	showBitmapWindow->IsNextPicture(value);
+}
+
 bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation )
 {
 #if defined(WIN32) && defined(_DEBUG)

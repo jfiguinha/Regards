@@ -20,7 +20,7 @@ namespace Regards
 
 			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config, const bool &exportPicture);
 			~CShowBitmap();
-
+			void IsNextPicture(const bool& value);
 			void HideToolbar();
 			void ShowToolbar();
 			void FlipVertical();

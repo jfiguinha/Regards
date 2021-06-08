@@ -136,7 +136,7 @@ namespace Regards
 			CMainParam * viewerconfig;
 			CListPicture * listPicture;
 			CPanelWithClickToolbar * panelInfosClick;
-
+			bool isNext = false;
 			//Face List
 #ifndef __NOFACE_DETECTION__
 			CListFace * listFace;
