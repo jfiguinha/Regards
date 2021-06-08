@@ -19,7 +19,7 @@
 #include <ImageLoadingFormat.h>
 #include <OpenCVEffect.h>
 #include <hqdn3d.h>
-#include <MeanShift.h>
+#include "MeanShift.h"
 #include <RegardsBitmap.h>
 //BM3D
 #include "bm3dfilter.h"
