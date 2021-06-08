@@ -388,7 +388,7 @@ wxString CCentralWindow::ImageSuivante(const bool &loadPicture)
 	return localFilename;
 }
 
-void CCentralWindow::ImageFin()
+wxString CCentralWindow::ImageFin(const bool& loadPicture)
 {
 	wxString localFilename = "";
 	int numItem = 0;
@@ -412,10 +412,12 @@ void CCentralWindow::ImageFin()
 		}
 	}
 
-	if (localFilename != "")
+
+	if (localFilename != "" && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
+	return localFilename;
 }
 
 int CCentralWindow::GetNbElement()
@@ -425,7 +427,7 @@ int CCentralWindow::GetNbElement()
 	return 0;
 }
 
-void CCentralWindow::ImageDebut()
+wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 {
 	wxString localFilename = "";
 	int numItem = 0;
@@ -449,13 +451,14 @@ void CCentralWindow::ImageDebut()
 		}
 	}
 
-	if (localFilename != "")
+	if (localFilename != "" && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
+	return localFilename;
 }
 
-void CCentralWindow::ImagePrecedente()
+wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 {
 	wxString localFilename = "";
 	int numItem = 0;
@@ -479,10 +482,12 @@ void CCentralWindow::ImagePrecedente()
 		}
 	}
 
-	if (localFilename != "")
+
+	if (localFilename != "" && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
+	return localFilename;
 }
 
 int CCentralWindow::LoadPicture(const wxString &filename)

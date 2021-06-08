@@ -62,6 +62,10 @@ namespace Regards
             
 		private:
         
+
+			bool FindNextValidFile();
+			bool FindPreviousValidFile();
+
 			void OnEndDecompressFile(wxCommandEvent& event);
 			void OnEditFile(wxCommandEvent& event);
             void OnPicturePrevious(wxCommandEvent& event);

@@ -682,6 +682,68 @@ wxString GetFileName(const wxString& nameFile)
 	return folder;
 }
 
+bool CMainWindow::FindNextValidFile()
+{
+	bool isFound = false;
+	wxString lastFile = centralWnd->ImageFin(false);
+	do
+	{
+		auto p = std::find_if(
+			pictures.begin(), pictures.end(),
+			[&](const auto& val)
+			{
+				CPhotos photo = static_cast<CPhotos>(val);
+				return photo.GetPath() == localFilename;
+			}
+		);
+
+		if (p != pictures.end())
+			isFound = true;
+
+		if (!isFound)
+		{
+			if (lastFile == localFilename)
+				break;
+
+			localFilename = centralWnd->ImageSuivante(false);
+		}
+
+	} while (!isFound);
+
+	return isFound;
+}
+
+bool CMainWindow::FindPreviousValidFile()
+{
+	bool isFound = false;
+	wxString firstFile = centralWnd->ImageDebut(false);
+	do
+	{
+		auto p = std::find_if(
+			pictures.begin(), pictures.end(),
+			[&](const auto& val)
+			{
+				CPhotos photo = static_cast<CPhotos>(val);
+				return photo.GetPath() == localFilename;
+			}
+		);
+
+		if (p != pictures.end())
+			isFound = true;
+
+		if (!isFound)
+		{
+			if (firstFile == localFilename)
+				break;
+
+			localFilename = centralWnd->ImagePrecedente(false);
+		}
+
+	} while (!isFound);
+
+	return isFound;
+}
+
 void CMainWindow::ProcessIdle()
 {
 	TRACE();
@@ -786,29 +848,9 @@ void CMainWindow::ProcessIdle()
 
 		if (!isFound && pictures.size() > 0 && localFilename != "")
 		{
-			int i = 0;
-			do
-			{
-				auto p = std::find_if(
-					pictures.begin(), pictures.end(),
-					[&](const auto& val)
-					{
-						CPhotos photo = static_cast<CPhotos>(val);
-						return photo.GetPath() == localFilename;
-					}
-				);
-
-				if (p != pictures.end())
-					isFound = true;
-
-				if (!isFound)
-				{
-					localFilename = centralWnd->ImageSuivante(false);
-				}
-				i++;
-
-			} while (!isFound || i  == pictures.size());
-
+			isFound = FindNextValidFile();
+			if (!isFound)
+				isFound = FindPreviousValidFile();
 		}
 		
 		if (!isFound)

@@ -82,9 +82,9 @@ namespace Regards
 			~CCentralWindow();
 
 			wxString ImageSuivante(const bool& loadPicture = true);
-			void ImagePrecedente();
-			void ImageFin();
-			void ImageDebut();
+			wxString ImagePrecedente(const bool& loadPicture = true);
+			wxString ImageFin(const bool& loadPicture = true);
+			wxString ImageDebut(const bool& loadPicture = true);
 			wxString GetFilename();
 			int GetNbElement();
 
