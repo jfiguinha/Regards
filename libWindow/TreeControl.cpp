@@ -118,7 +118,6 @@ void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, 
 	int diffHauteur = posHauteur % 20;
 	int startHauteur = (diffHauteur != 0) ? posHauteur - (20 - diffHauteur) : posHauteur;
 
-
 	for (CPositionElement * value : vectorPosElement)
 	{
 		if (value->GetY() > (posHauteur + height))
@@ -154,6 +153,7 @@ void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, 
 			}
 		}
 	}
+	
 }
 
 CTreeElementCheckBox * CTreeControl::CreateCheckBoxElement(const int &width, const int &height, const bool &check)
@@ -274,9 +274,6 @@ void CTreeControl::ClearData()
 void CTreeControl::EraseChildTree(tree<CTreeData *>::sibling_iterator &parent)
 {
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
-	//tree<CTreeData *>::iterator itend = tr.end(parent);
-
-	//int i = 
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
@@ -299,6 +296,23 @@ void CTreeControl::EraseChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 CPositionElement * CTreeControl::GetElement(CTreeData * data, const int &typeElement)
 {
+
+	auto p = std::find_if(
+		vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(),
+		[&](const auto& val)
+		{
+			CPositionElement* value = (CPositionElement*)val;
+			CTreeData* dataElement = value->GetTreeData();
+			return (dataElement == data && value->GetType() == typeElement);
+		}
+	);
+
+	if (p == vectorPosElementDynamic.end())
+		return nullptr;
+
+	return *p;
+
+	/*
 	for (CPositionElement * value : vectorPosElement)
 	{
 		if (value != nullptr)
@@ -312,6 +326,7 @@ CPositionElement * CTreeControl::GetElement(CTreeData * data, const int &typeEle
 	}
 
 	return nullptr;
+	*/
 }
 
 
@@ -320,15 +335,40 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	if(vectorPosElementDynamic.size() == 0)
 		return nullptr;
 
-	/*
-	CPositionElement * treeElement = nullptr;
-	PositionElementVector::iterator it;
-	it = find_if(vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(), treeElementPos(x, y, this));
-	if (it != vectorPosElementDynamic.end())
-		treeElement = *it;
+	auto p = std::find_if(
+		vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(),
+		[&](const auto& data)
+		{
+			CPositionElement* value = (CPositionElement*)data;
+			CTreeElement* treeElement = value->GetTreeElement();
+			if (treeElement != nullptr)
+			{
+				if (treeElement->IsVisible())
+				{
+					int xPos = 0;
+					if (value->GetRow() > 0)
+						xPos = GetWidthRow(value->GetRow() - 1);
 
-	return treeElement;
-*/
+					int x1 = value->GetX() + xPos;
+					int x2 = value->GetX() + xPos + value->GetWidth();
+					int y1 = value->GetY();
+					int y2 = value->GetY() + value->GetHeight();
+					if ((x1 <= x && x <= x2) && (y1 <= y && y <= y2))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	);
+
+	if (p == vectorPosElementDynamic.end())
+		return nullptr;
+
+	return *p;
+
+	/*
 	for (CPositionElement * value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
@@ -363,7 +403,7 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	}
 	
 	return nullptr;
-	
+	*/
 }
 
 CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData, const bool &dynamic)
@@ -383,10 +423,22 @@ CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &
 
 tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTreeData *>::iterator &parent)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
-	//tree<CTreeData *>::iterator itend = tr.end(parent);
+	auto p = std::find_if(
+		tr.begin(parent), tr.end(parent),
+		[&](const auto& data)
+		{
+			//CPhotos photo = static_cast<CPhotos>(val);
+			return data->GetKey() == key;
+		}
+	);
 
-	//int i = 
+	if(p == tr.end(parent))
+		return nullptr;
+
+	return p;
+
+	/*
+	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
@@ -399,10 +451,12 @@ tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTr
 	}
 
 	return nullptr;
+	*/
 }
 
 tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key)
 {
+	/*
 	tree<CTreeData *>::iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	while (it != itend) {
@@ -413,4 +467,18 @@ tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key)
 	}
 
 	return nullptr;
+	*/
+	auto p = std::find_if(
+		tr.begin(), tr.end(),
+		[&](const auto& data)
+		{
+			//CPhotos photo = static_cast<CPhotos>(val);
+			return data->GetKey() == key;
+		}
+	);
+
+	if (p == tr.end())
+		return nullptr;
+
+	return p;
 }
