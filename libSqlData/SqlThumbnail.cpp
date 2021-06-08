@@ -29,24 +29,6 @@ CSqlThumbnail::~CSqlThumbnail()
 {
 }
 
-/*
-CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
-{
-	type = 5;
-	wxString thumbnail = CFileUtility::GetThumbnailPath(path);
-	if (wxFileExists(thumbnail))
-	{
-		CLibPicture libPicture;
-		libPicture.LoadPicture(thumbnail);
-	}
-
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath, width, height, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-	return picture;
-}
-*/
-
 bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 {
 	type = 2;
@@ -90,10 +72,6 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 		fileOut.Create(thumbnail, true);
 		fileOut.Write(zBlob, nBlob);
 		fileOut.Close();
-
-
-
-
 		returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 
 	}
@@ -185,10 +163,25 @@ bool CSqlThumbnail::EraseThumbnail()
 
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+
+	//auto values = std::vector<double>(10000);
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				wxString filename = files[i];
+				if (wxFileExists(filename))
+					wxRemoveFile(filename);
+			}
+		});
+	/*
 	for (wxString filename : files)
 	{
 		wxRemoveFile(filename);
 	}
+	*/
 	//wxRmdir(documentPath);
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
@@ -198,6 +191,22 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
 	type = 7;
 	listPhoto.clear();
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder));
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, listPhoto.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				int idPhoto = listPhoto[i];
+				wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
+				if (wxFileExists(thumbnail))
+				{
+					wxRemoveFile(thumbnail);
+				}
+			}
+		});
+
+	/*
 	for (int idPhoto : listPhoto)
 	{
 		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
@@ -206,6 +215,7 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
 			wxRemoveFile(thumbnail);
 		}
 	}
+	*/
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
 }
 
@@ -239,36 +249,6 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 				case 3:
 					hash = sqlResult->ColumnDataText(i);
 					break;
-
-				/*
-				case 4:
-				{
-					int size = sqlResult->ColumnDataBlobSize(i);
-					if (size > 0)
-					{
-						uint8_t* data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void*&)data, size);
-						if (type == 3)
-						{
-							tjhandle _jpegDecompressor = tjInitDecompress();
-							regardsBitmap = new CRegardsBitmap(width, height);
-
-							tjDecompress2(_jpegDecompressor, data, size, regardsBitmap->GetPtBitmap(), regardsBitmap->GetBitmapWidth(), 0, regardsBitmap->GetBitmapHeight(), TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
-
-							tjDestroy(_jpegDecompressor);
-
-						}
-						else
-						{
-							wxMemoryInputStream jpegStream(data, size);
-							bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);	
-						}
-						delete[] data;
-					}
-
-				}
-				break;
-				*/
 				}
 			}
 			break;
@@ -309,44 +289,6 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 				}
 			}
 			break;
-			/*
-		case 5:
-			picture = new CPictureData();
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-				switch (i)
-				{
-				case 0:
-					picture->SetFilename(sqlResult->ColumnDataText(i));
-					break;
-				case 1:
-					picture->SetWidth(sqlResult->ColumnDataInt(i));
-					break;
-				case 2:
-					picture->SetHeight(sqlResult->ColumnDataInt(i));
-					break;
-				case 3:
-					
-					find = true;
-
-					int size = sqlResult->ColumnDataBlobSize(i);
-					if (size > 0)
-					{	
-						uint8_t * data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-						if (data != nullptr)
-						{
-							picture->SetData(data, size);
-
-							delete[] data;
-							data = nullptr;
-						}
-					}
-					break;
-				}
-			}
-			break;
-			*/
 		}
 
 		nbResult++;

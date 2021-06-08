@@ -357,7 +357,7 @@ int CCentralWindow::RefreshPicture(const wxString & filename)
 	return 0;
 }
 
-void CCentralWindow::ImageSuivante()
+wxString CCentralWindow::ImageSuivante(const bool &loadPicture)
 {
 	wxString localFilename = "";
 	int numItem = 0;
@@ -381,11 +381,11 @@ void CCentralWindow::ImageSuivante()
 		}
 	}
 
-	if (localFilename != "")
+	if (localFilename != "" && loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
-
+	return localFilename;
 }
 
 void CCentralWindow::ImageFin()

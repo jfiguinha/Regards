@@ -768,7 +768,7 @@ void CMainWindow::ProcessIdle()
 		pictures.clear();
 		CSqlFindPhotos sqlFindPhotos;
 		bool isValid = true;
-		//wxString photoName = imageList->GetFilePath(numElement, isValid);
+
 		CCategoryFolderWindow* categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 			CATEGORYFOLDERWINDOWID));
 		if (categoryFolder != nullptr)
@@ -784,31 +784,36 @@ void CMainWindow::ProcessIdle()
 
 		bool isFound = false;
 
-		if (isValid)
+		if (!isFound && pictures.size() > 0 && localFilename != "")
 		{
-			int position = 0;
-			
-			//Recherche du numElement en cours
-			for (CPhotos photo : pictures)
+			int i = 0;
+			do
 			{
-				if (localFilename == photo.GetPath())
-				{
+				auto p = std::find_if(
+					pictures.begin(), pictures.end(),
+					[&](const auto& val)
+					{
+						CPhotos photo = static_cast<CPhotos>(val);
+						return photo.GetPath() == localFilename;
+					}
+				);
+
+				if (p != pictures.end())
 					isFound = true;
-					break;
+
+				if (!isFound)
+				{
+					localFilename = centralWnd->ImageSuivante(false);
 				}
-				position++;
-			}
-		}
+				i++;
 
-		if (!isFound && pictures.size() > 0)
-		{
-			centralWnd->ImageSuivante();
-			localFilename = centralWnd->GetFilename();
-			//localFilename = pictures[0].GetPath();
-		}
-		else if (!isFound)
-			localFilename = "";
+			} while (!isFound || i  == pictures.size());
 
+		}
+		
+		if (!isFound)
+			localFilename = pictures[0].GetPath();
+		
 		centralWnd->SetListeFile(localFilename);
 
 		updateFolder = false;
@@ -819,7 +824,7 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (numElementTraitement < pictures.size())
 	{
-		CPhotos photo = pictures[numElementTraitement]; //pictures.at(numElementTraitement);
+		CPhotos photo = pictures[numElementTraitement];
 
 		if (wxFileName::FileExists(photo.GetPath()))
 		{
@@ -914,7 +919,6 @@ void CMainWindow::CheckMD5(void* param)
 	{
 		CSqlThumbnail sqlThumbnail;
 		CSqlThumbnailVideo sqlThumbnailVideo;
-		//wxString md5file = md5.GetFileMD5(path->filename);
 		wxFileName file(path->filename);
 		wxULongLong sizeFile = file.GetSize();
 		wxString md5file = sizeFile.ToString();
@@ -967,12 +971,6 @@ CMainWindow::~CMainWindow()
 
 	delete(diaporamaTimer);
 
-
-
-	//if (refreshTimer->IsRunning())
-	//	refreshTimer->Stop();
-
-	//delete(refreshTimer);
 	delete(centralWnd);
 	delete(toolbar);
 }

@@ -105,6 +105,22 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
+	listFace.resize(files.size());
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				wxString file = files[i];
+				CLibPicture libPicture;
+				CImageLoadingFormat* picture = libPicture.LoadPicture(file);
+				picture->Flip();
+				listFace[i] = picture;
+			}
+		});
+
+	/*
 	for (wxString file : files)
 	{
 		CLibPicture libPicture;
@@ -112,7 +128,7 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 		picture->Flip();
 		listFace.push_back(picture);
 	}
-
+	*/
 	return listFace;
 }
 
@@ -133,11 +149,42 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 	documentPath.append("/Face");
 #endif
 
+	
+
 	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
+	listFace.resize(files.size());
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				wxString file = files[i];
+				CLibPicture libPicture;
+				CImageLoadingFormat* picture = libPicture.LoadPicture(file);
+				picture->Flip();
+				listFace[i] = picture;
+			}
+		});
+
+
+	auto p = std::find_if(
+		listFace.begin(), listFace.end(),
+		[&](const auto& val) 
+		{ 
+			CImageLoadingFormat* picture_val = (CImageLoadingFormat *)val;
+			return picture_val->GetFilename() == thumbnail;
+		}
+	);
+
+	if (p != listFace.end())
+		listFace.erase(p);
+
+	/*
 	for (wxString file : files)
 	{
 		CLibPicture libPicture;
@@ -148,6 +195,7 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 			listFace.push_back(picture);
 		}
 	}
+	*/
 
 	return listFace;
 }
@@ -185,17 +233,27 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 
 		CSqlFindFacePhoto findFacePhoto;
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);
+
+		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
+			[&](tbb::blocked_range<int> r)
+			{
+				for (int i = r.begin(); i < r.end(); ++i)
+				{
+					CFaceName facename = listFace[i];
+					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
+					if (wxFileExists(thumbnail))
+					{
+						wxRemoveFile(thumbnail);
+					}
+				}
+			});
+
 		for (CFaceName facename : listFace)
 		{
-			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
-			if (wxFileExists(thumbnail))
-			{
-				wxRemoveFile(thumbnail);
-			}
-
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
 		}
+		
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
 	}
     
@@ -209,6 +267,8 @@ void CSqlFacePhoto::RebuildLink()
 	CSqlFaceRecognition faceRecognition;
 	CSqlFaceLabel faceLabel;
 	vector<int> listFace = faceLabel.GetFaceLabelAlone();
+
+	/*
 	for(int i = 0;i < listFace.size();i++)
 	{
 		int oldNumFace = listFace[i];
@@ -221,6 +281,25 @@ void CSqlFacePhoto::RebuildLink()
 		}
 		
 	}
+	*/
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				int oldNumFace = listFace[i];
+				numFace = -1;
+				ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ORDER BY numFace ASC LIMIT 1");
+				if (numFace != -1)
+				{
+					faceLabel.UpdateNumFaceLabel(oldNumFace, numFace);
+					faceRecognition.UpdateFaceRecognition(oldNumFace, numFace);
+				}
+			}
+		});
+
+
     DeleteFaceNameAlone();
 }
 
@@ -235,6 +314,28 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 
 		CSqlFindFacePhoto findFacePhoto;
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
+
+		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
+			[&](tbb::blocked_range<int> r)
+			{
+				for (int i = r.begin(); i < r.end(); ++i)
+				{
+					CFaceName facename = listFace[i];
+					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
+					if (wxFileExists(thumbnail))
+					{
+						wxRemoveFile(thumbnail);
+					}
+
+				}
+			});
+
+		for (CFaceName facename : listFace)
+		{
+			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
+			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
+		}
+		/*
 		for (CFaceName facename : listFace)
 		{
 			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
@@ -246,7 +347,7 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
 			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
 		}
-
+		*/
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
 	RebuildLink();
@@ -345,6 +446,22 @@ bool CSqlFacePhoto::DeletePhotoFaceDatabase(const wxString & path)
 	type = 7;
 	listFace.clear();
 	ExecuteRequest("SELECT NumFace FROM FACEPHOTO WHERE FullPath = '" + fullpath + "'");
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				int idFace = listFace[i];
+				wxString thumbnail = CFileUtility::GetFaceThumbnailPath(idFace);
+				if (wxFileExists(thumbnail))
+				{
+					wxRemoveFile(thumbnail);
+				}
+			}
+		});
+
+	/*
 	for (int idFace : listFace)
 	{
 		wxString thumbnail = CFileUtility::GetFaceThumbnailPath(idFace);
@@ -353,7 +470,7 @@ bool CSqlFacePhoto::DeletePhotoFaceDatabase(const wxString & path)
 			wxRemoveFile(thumbnail);
 		}
 	}
-
+	*/
 	return (ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 }
 
@@ -368,10 +485,26 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
+
+	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = r.begin(); i < r.end(); ++i)
+			{
+				wxString filename = files[i];
+				if (wxFileExists(filename))
+				{
+					wxRemoveFile(filename);
+				}
+			}
+		});
+
+	/*
 	for (wxString filename : files)
 	{
 		wxRemoveFile(filename);
 	}
+	*/
 	//wxRmdir(documentPath);
 
 	return (ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO") != -1) ? true : false;

@@ -81,7 +81,7 @@ namespace Regards
 			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CCentralWindow();
 
-			void ImageSuivante();
+			wxString ImageSuivante(const bool& loadPicture = true);
 			void ImagePrecedente();
 			void ImageFin();
 			void ImageDebut();
