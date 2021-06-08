@@ -8,7 +8,6 @@
 
 #pragma once
 #include <FilterWindowParam.h>
-#include <AfterEffect.h>
 #include <map>
 class CFiltreEffet;
 class CEffectParameter;
@@ -118,7 +117,6 @@ public:
 	static bool IsOpenCLCompatible(const int &numFilter);
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);
-	static IAfterEffect * AfterEffectPt(const int &numFilter);
    static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
     static wxString GetFilterLabel(const int& numFilter); 
     static CEffectParameter* GetDefaultEffectParameter(const int& numFilter);

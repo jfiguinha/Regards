@@ -103,6 +103,12 @@
     <ClCompile Include="FFmpegTranscodingPimpl.cpp">
       <Filter>Video\Core\Encoding</Filter>
     </ClCompile>
+    <ClCompile Include="BitmapFusionFilter.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="PageCurlFilter.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -222,6 +228,18 @@
     <ClInclude Include="FFmpegTranscodingPimpl.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
+    <ClInclude Include="AfterEffect.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapFusionEffectParameter.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapFusionFilter.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="PageCurlFilter.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -265,6 +283,9 @@
     </Filter>
     <Filter Include="Video\Core\Encoding">
       <UniqueIdentifier>{21d0ca21-54e3-46c7-bb55-45df9af45d9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bitmap\PostEffect">
+      <UniqueIdentifier>{d2ded3d8-c62a-4d3f-baf6-98f01aabb7b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

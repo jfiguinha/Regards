@@ -34,8 +34,6 @@
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
 #include "CropFilter.h"
-#include <BitmapFusionFilter.h>
-#include <PageCurlFilter.h>
 #include <hqdn3dFilter.h>
 #include <OilPaintingFilter.h>
 #include <CartoonFilter.h>
@@ -296,18 +294,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 }
 
 
-IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
-{
-    switch (numFilter)
-    {
-    case IDM_AFTEREFFECT_PAGECURL:
-        return new CPageCurlFilter();
-    default:
-        return new CBitmapFusionFilter();
-        break;
-    }
-    return nullptr;
-}
 
 CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 {

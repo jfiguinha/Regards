@@ -3,7 +3,7 @@
 //#include <RenderPreviewBitmap.h>
 #include <BitmapInterface.h>
 #include <Draw.h>
-#include <AfterEffect.h>
+#include "AfterEffect.h"
 #include <FiltreUpdate.h>
 using namespace Regards::OpenCL;
 class CDecodeRawPicture;
@@ -72,7 +72,7 @@ namespace Regards
 			wxPoint GetMousePosition();
 
 		private:
-
+			IAfterEffect * AfterEffectPt(const int& numFilter);
 			virtual void RenderTexture(const bool &invertPos);
 			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 #ifdef RENDEROPENGL

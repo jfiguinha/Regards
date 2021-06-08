@@ -506,6 +506,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="AfterEffect.h" />
+    <ClInclude Include="BitmapFusionEffectParameter.h" />
+    <ClInclude Include="BitmapFusionFilter.h" />
     <ClInclude Include="BitmapPrintout.h" />
     <ClInclude Include="BitmapToolbar.h" />
     <ClInclude Include="BitmapWndViewer.h" />
@@ -527,6 +530,7 @@
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
     <ClInclude Include="ModificationManager.h" />
+    <ClInclude Include="PageCurlFilter.h" />
     <ClInclude Include="PrintEngine.h" />
     <ClInclude Include="ShowBitmap.h" />
     <ClInclude Include="ShowVideo.h" />
@@ -556,6 +560,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="BitmapFusionFilter.cpp" />
     <ClCompile Include="BitmapPrintout.cpp" />
     <ClCompile Include="BitmapToolbar.cpp" />
     <ClCompile Include="BitmapWndViewer.cpp" />
@@ -575,6 +580,7 @@
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
+    <ClCompile Include="PageCurlFilter.cpp" />
     <ClCompile Include="PrintEngine.cpp" />
     <ClCompile Include="ShowBitmap.cpp" />
     <ClCompile Include="ShowVideo.cpp" />

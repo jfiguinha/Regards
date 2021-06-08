@@ -466,14 +466,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="AfterEffect.h" />
     <ClInclude Include="AudioVideoFilter.h" />
     <ClInclude Include="BilateralEffectParameter.h" />
     <ClInclude Include="bilateralFilter.h" />
     <ClInclude Include="BitmapDisplay.h" />
     <ClInclude Include="BitmapEffectParameter.h" />
     <ClInclude Include="BitmapFusionEffectParameter.h" />
-    <ClInclude Include="BitmapFusionFilter.h" />
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="bm3d.h" />
@@ -522,7 +520,6 @@
     <ClInclude Include="OilPaintingEffectParameter.h" />
     <ClInclude Include="OilPaintingFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
-    <ClInclude Include="PageCurlFilter.h" />
     <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
@@ -559,7 +556,6 @@
     </ClCompile>
     <ClCompile Include="AudioVideoFilter.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
-    <ClCompile Include="BitmapFusionFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="bm3d.cpp" />
     <ClCompile Include="bm3dfilter.cpp" />
@@ -593,7 +589,6 @@
     <ClCompile Include="NlmeansFilter.cpp" />
     <ClCompile Include="OilPaintingFilter.cpp" />
     <ClCompile Include="OpenCLEffect.cpp" />
-    <ClCompile Include="PageCurlFilter.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />

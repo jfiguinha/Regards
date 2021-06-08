@@ -61,9 +61,6 @@
     <Filter Include="Main">
       <UniqueIdentifier>{712230a6-6eee-4f04-814e-a7e1f37bfab8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="window\Transition">
-      <UniqueIdentifier>{29ad8b41-1d26-46d2-b755-04859f09bd84}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Filter\MeanShift">
       <UniqueIdentifier>{a6f92a84-e7dc-4780-a4c7-85caa8bce14b}</UniqueIdentifier>
     </Filter>
@@ -258,9 +255,6 @@
     <ClInclude Include="BitmapFusionEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="AfterEffect.h">
-      <Filter>window\main</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapDisplay.h">
       <Filter>window\main</Filter>
     </ClInclude>
@@ -278,12 +272,6 @@
     </ClInclude>
     <ClInclude Include="PenDrawInfo.h">
       <Filter>Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="PageCurlFilter.h">
-      <Filter>window\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapFusionFilter.h">
-      <Filter>window\Transition</Filter>
     </ClInclude>
     <ClInclude Include="moviestreaminfo.h">
       <Filter>window\video</Filter>
@@ -454,12 +442,6 @@
     </ClCompile>
     <ClCompile Include="OpenCLEffect.cpp">
       <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="PageCurlFilter.cpp">
-      <Filter>window\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapFusionFilter.cpp">
-      <Filter>window\Transition</Filter>
     </ClCompile>
     <ClCompile Include="moviestreaminfo.cpp">
       <Filter>window\video</Filter>

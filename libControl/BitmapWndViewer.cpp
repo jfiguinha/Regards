@@ -21,7 +21,7 @@
 #include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>
-#include <PageCurlFilter.h>
+#include "PageCurlFilter.h"
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -52,6 +52,20 @@ enum
 #define TIMER_CLICK 32
 #define TIMER_CLICK_TIME 200
 
+IAfterEffect* CBitmapWndViewer::AfterEffectPt(const int& numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_AFTEREFFECT_PAGECURL:
+		return new CPageCurlFilter();
+	default:
+		return new CBitmapFusionFilter();
+		break;
+	}
+	return nullptr;
+}
+
+
 void CBitmapWndViewer::SendEmail()
 {
     wxString subject = CLibResource::LoadStringFromResource(L"LBLEMAILSUBJECT", 1);;
@@ -73,23 +87,6 @@ void CBitmapWndViewer::SendEmail()
 		m_cMapi.SendEmail("", attachment);
 
 #else
-/*
-    wxEmailMessage email("My Photo","This is my Photo \n","");
-    email.AddFile(filename);
-    
-    wxStandardPathsBase& stdp = wxStandardPaths::Get();
-    wxString documentPath = stdp.GetDocumentsDir();
-    
-    wxString emailFile = documentPath + "/temp.eml";
-    
-    wxFileOutputStream outputFile(emailFile);
-    //filename.Assign(emailFile);
-    email.Encode(outputFile);
-	//wxLaunchDefaultApplication(emailFile);
-    wxMimeTypesManager manager;
-    wxFileType *filetype=manager.GetFileTypeFromExtension("eml");
-    wxString command=filetype->GetOpenCommand(emailFile);
-     * */
     wxExecute("thunderbird -remote \"xfeDoCommand(composeMessage,subject='" + subject + "',body='" + body + "',attachment='" + filename + "')\"");    
 #endif
 }
@@ -156,8 +153,6 @@ void CBitmapWndViewer::PrintPicture()
 		evt.SetClientData(bitmap);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	//statusBarInterface->PrintPreview(bitmap);
-	//delete bitmap;
 }
 
 void CBitmapWndViewer::LoadingResource()
@@ -494,14 +489,14 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 			nextPicture = bmpSecond;
 			etape = 0;
 
-			afterEffect = CFiltreData::AfterEffectPt(numEffect);
+			afterEffect = AfterEffectPt(numEffect);
 			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			break;
 		}
 
 	default:
 		{
-			afterEffect = CFiltreData::AfterEffectPt(numEffect);
+			afterEffect = AfterEffectPt(numEffect);
 
 			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
