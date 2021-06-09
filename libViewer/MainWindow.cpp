@@ -1264,7 +1264,7 @@ void CMainWindow::StopDiaporama()
 	{
 		CPreviewWnd* previewWindow = static_cast<CPreviewWnd*>(this->FindWindowById(PREVIEWVIEWERID));
 		if (previewWindow != nullptr)
-			previewWindow->SetNormalMode();
+			previewWindow->StopDiaporamaMode();
 
 		startDiaporama = false;
 		if (diaporamaTimer->IsRunning())

@@ -62,7 +62,7 @@ namespace Regards
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void SetFaceMode();
-
+			void StopDiaporamaMode();
             void UpdateInfos();
 
             

@@ -1589,23 +1589,26 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
 	//--------------------------------------------------------------------------------
 	//Load Thumbnail
 	//--------------------------------------------------------------------------------
-
-	CSqlThumbnail sqlThumbnail;
-	//CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-	CImageLoadingFormat * _loadingPicture = sqlThumbnail.GetPictureThumbnail(filenameToShow);
-	if (_loadingPicture != nullptr && _loadingPicture->IsOk())
+	if (!isDiaporama)
 	{
-		_loadingPicture->SetFilename(filenameToShow);
-		//_loadingPicture->SetPicture(bitmapThumbnail);
-		CBitmapReturn * bitmapReturn = new CBitmapReturn();
-		bitmapReturn->myThread = nullptr;
-		bitmapReturn->isThumbnail = true;
-		bitmapReturn->bitmap = _loadingPicture;
-        wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
-		event->SetClientData(bitmapReturn);
-        event->SetInt(processLoadPicture ? 1 : 0);
-		wxQueueEvent(this, event);
-    }
+		CSqlThumbnail sqlThumbnail;
+		//CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
+		CImageLoadingFormat* _loadingPicture = sqlThumbnail.GetPictureThumbnail(filenameToShow);
+		if (_loadingPicture != nullptr && _loadingPicture->IsOk())
+		{
+			_loadingPicture->SetFilename(filenameToShow);
+			//_loadingPicture->SetPicture(bitmapThumbnail);
+			CBitmapReturn* bitmapReturn = new CBitmapReturn();
+			bitmapReturn->myThread = nullptr;
+			bitmapReturn->isThumbnail = true;
+			bitmapReturn->bitmap = _loadingPicture;
+			wxCommandEvent* event = new wxCommandEvent(EVENT_SHOWPICTURE);
+			event->SetClientData(bitmapReturn);
+			event->SetInt(processLoadPicture ? 1 : 0);
+			wxQueueEvent(this, event);
+		}
+	}
+
 
     
     if (!processLoadPicture)

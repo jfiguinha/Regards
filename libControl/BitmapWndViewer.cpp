@@ -63,7 +63,21 @@ public:
 		int xtexture = 0;
 		int pos = 0;
 
-		GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+		wxRect local;
+		float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
+		local.width = nextPicture->GetWidth() * newRatio;
+		local.height = nextPicture->GetHeight() * newRatio;
+		local.x = (bmpViewer->GetWidth() - out.width) / 2;
+		local.y = (bmpViewer->GetHeight() - out.height) / 2;
+
+
+		if (local.width != out.width)
+		{
+			if (isOpenCL)
+				GenerateTexture(nextPicture);
+
+			GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+		}
 
 		if (isNext)
 		{
@@ -526,6 +540,7 @@ void CBitmapWndViewer::EndTransition()
 {
 	if (nextPicture != nullptr)
 	{
+
 		SetBitmap(nextPicture, false);
 		nextPicture = nullptr;
 	}
@@ -562,12 +577,12 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 	}
 
 	int numEffect = 0;
-	bool start = (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename());
+	bool start = false;// (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename());
 	
 	if (isDiaporama)
 	{
-		if(nextPicture != nullptr)
-			SetBitmap(nextPicture, false);
+		//if(nextPicture != nullptr)
+		//	SetBitmap(nextPicture, false);
 		nextPicture = nullptr;
 		numEffect = config->GetDiaporamaTransitionEffect();
 	}
@@ -585,7 +600,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	afterEffect = AfterEffectPt(numEffect);
 	if (afterEffect != nullptr)
-		afterEffect->SetTransitionBitmap(IsOpenCLCompatible(), start, this, bmpSecond);
+		afterEffect->SetTransitionBitmap(IsOpenCLCompatible(), true, this, bmpSecond);
 	/*
 	switch (numEffect)
 	{

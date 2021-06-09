@@ -356,11 +356,19 @@ void CPreviewWnd::SetDiaporamaMode()
 	this->Resize();
 }
 
-void CPreviewWnd::SetNormalMode()
+void CPreviewWnd::StopDiaporamaMode()
 {
 	previewToolbar->EnableNavigationButton();
 	isDiaporama = false;
 	showBitmapWindow->SetNormalMode();
+	this->Resize();
+}
+
+void CPreviewWnd::SetNormalMode()
+{
+	previewToolbar->EnableNavigationButton();
+	//isDiaporama = false;
+	//showBitmapWindow->SetNormalMode();
 	this->Resize();
 }
 

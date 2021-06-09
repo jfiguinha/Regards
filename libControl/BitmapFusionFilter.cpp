@@ -108,6 +108,9 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& openCL, const bool& st
 	{
 		if (openCL)
 			GenerateTexture(bmpSecond);
+
+		GenerateEffectTexture(bmpSecond, openCL, bmpViewer);
+
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
 	}
 	else
@@ -126,8 +129,21 @@ void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture
 
 void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
 {
+	wxRect local;
+	float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
+	local.width = nextPicture->GetWidth() * newRatio;
+	local.height = nextPicture->GetHeight() * newRatio;
+	local.x = (bmpViewer->GetWidth() - out.width) / 2;
+	local.y = (bmpViewer->GetHeight() - out.height) / 2;
 
-	GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+
+	if (local.width != out.width)
+	{
+		if (isOpenCL)
+			GenerateTexture(nextPicture);
+
+		GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+	}
 
 	if (renderOpenGL != nullptr)
 		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
@@ -192,9 +208,9 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextP
 
 		}
 
-		float newRatio = bmpViewer->CalculPictureRatio(width, height);
-		rcOut.width = width * newRatio;
-		rcOut.height =height * newRatio;
+		float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
+		rcOut.width = nextPicture->GetWidth() * newRatio;
+		rcOut.height = nextPicture->GetHeight() * newRatio;
 		rcOut.x = (bmpViewer->GetWidth() - rcOut.width) / 2;
 		rcOut.y = (bmpViewer->GetHeight() - rcOut.height) / 2;
 	}
