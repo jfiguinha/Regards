@@ -524,8 +524,11 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
-	//if (isDiaporama)
-	SetBitmap(bmpSecond, false);
+	if (nextPicture != nullptr)
+	{
+		nextPicture = nullptr;
+		SetBitmap(nextPicture, false);
+	}
 
 	if (afterEffect != nullptr)
 	{
@@ -553,9 +556,6 @@ bool CBitmapWndViewer::IsOpenCLCompatible()
 //---------------------------------------------------------
 void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 {
-
-	this->bmpSecond = bmpSecond;
-
 	if (etape != 0)
 	{
 		StopTransition();
@@ -566,7 +566,9 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 	
 	if (isDiaporama)
 	{
-		
+		if(nextPicture != nullptr)
+			SetBitmap(nextPicture, false);
+		nextPicture = nullptr;
 		numEffect = config->GetDiaporamaTransitionEffect();
 	}
     else if (config != nullptr)
@@ -625,8 +627,11 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool &setPicture)
 {
-	if(setPicture)
+	if (setPicture)
+	{
+		nextPicture = nullptr;
 		SetBitmap(bmpSecond, false);
+	}
 	else
 		nextPicture = bmpSecond;
 	startTransition = true;
@@ -639,8 +644,9 @@ void CBitmapWndViewer::StopTransitionEffect(CImageLoadingFormat* bmpSecond)
 {
 	etape = 0;
 	m_bTransition = false;
-	//SetBitmap(bmpSecond, false);
+	SetBitmap(bmpSecond, false);
 	startTransition = false;
+	nextPicture = nullptr;
 	EndTransition();
 }
 
@@ -817,6 +823,9 @@ void CBitmapWndViewer::AfterRender()
 		}
 
 	}
+
+		
+
 }
 
 void CBitmapWndViewer::RenderTexture(const bool &invertPos)

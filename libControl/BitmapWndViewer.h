@@ -122,7 +122,7 @@ namespace Regards
 			int etape;
 			bool fixArrow;
 			CBitmapInterface * bitmapInterface;
-			CImageLoadingFormat* bmpSecond;
+			//CImageLoadingFormat* bmpSecond;
 
 			
 			IAfterEffect * afterEffect;

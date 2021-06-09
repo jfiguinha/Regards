@@ -166,10 +166,10 @@ void ConfigRegards::Init()
 		rbTransitionEffect->SetSelection(transition);
 
 	int transitionDiaporama = max((regardsParam->GetDiaporamaTransitionEffect() - 400), 0);
-	if (transition == 0)
+	if (transitionDiaporama == 0)
 		rbTransitionDiaporamaEffect->SetSelection(0);
 	else
-		rbTransitionDiaporamaEffect->SetSelection(transition);
+		rbTransitionDiaporamaEffect->SetSelection(transitionDiaporama);
 
 	int autoRotate = regardsParam->GetDetectOrientation();
 	if (autoRotate == 0)
