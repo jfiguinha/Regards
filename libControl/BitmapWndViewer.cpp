@@ -526,8 +526,8 @@ void CBitmapWndViewer::EndTransition()
 {
 	if (nextPicture != nullptr)
 	{
-		nextPicture = nullptr;
 		SetBitmap(nextPicture, false);
+		nextPicture = nullptr;
 	}
 
 	if (afterEffect != nullptr)

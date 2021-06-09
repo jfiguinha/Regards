@@ -519,13 +519,14 @@ wxString CMainWindow::GetFilename()
 void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 {
 	wxString* threadFilename = static_cast<wxString*>(event.GetClientData());
+	/*
 	if (startDiaporama)
 	{
 		printf("OnEndPictureLoad \n");
 		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
-
+	*/
 	if (*threadFilename != localFilename && *threadFilename != "")
 	{
 		centralWnd->LoadPicture(*threadFilename);
