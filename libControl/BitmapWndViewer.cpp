@@ -52,19 +52,133 @@ enum
 #define TIMER_CLICK 32
 #define TIMER_CLICK_TIME 200
 
+class CMoveEffectTextureEffect : public CBitmapFusionFilter
+{
+public:
+	CMoveEffectTextureEffect() {};
+	~CMoveEffectTextureEffect() {};
+
+	void AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float & scale_factor, const bool & isNext, float& ratio)
+	{
+		int xtexture = 0;
+		int pos = 0;
+
+		GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+
+		if (isNext)
+		{
+			xtexture = (float)(bmpViewer->GetWidth() - (out.x * scale_factor));
+			pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
+			if (renderOpenGL != nullptr)
+				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+
+		}
+		else
+		{
+			xtexture = (float)(out.width) * scale_factor;
+			pos = (((out.x + xtexture) * scale_factor) * ((float)(etape) / 100.0f)) - xtexture;
+			if (renderOpenGL != nullptr)
+				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+
+		}
+	}
+
+	virtual void RenderMoveTexture(int & x, int & y, GLTexture* glTexture, const int &etape, const bool &isNext)
+	{
+		if (etape > 0 && etape < 110)
+		{
+			if (isNext)
+			{
+				x = x - ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
+			}
+			else
+			{
+				x = x + ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
+			}
+		}
+	}
+
+	int GetTypeFilter()
+	{
+		return IDM_AFTEREFFECT_MOVE;
+	}
+
+};
+
+class CNoneEffectTextureEffect : public CBitmapFusionFilter
+{
+public:
+	CNoneEffectTextureEffect() {};
+	~CNoneEffectTextureEffect() {};
+
+	int GetTypeFilter()
+	{
+		return IDM_AFTEREFFECT_NONE;
+	}
+
+	void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+	{
+		bmpViewer->StopTransitionEffect(bmpSecond);
+	}
+
+};
+
+class CDiaporamaEffect : public CBitmapFusionFilter
+{
+public:
+	CDiaporamaEffect() {};
+	~CDiaporamaEffect() {};
+
+	int GetTypeFilter()
+	{
+		return IDM_DIAPORAMA_TRANSITION;
+	}
+
+	void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+	{
+		bmpViewer->StartTransitionEffect(bmpSecond, true);
+	}
+
+	virtual void AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
+	{
+		if (etape < 110)
+		{
+			ratio = ratio + 0.0005;
+			bmpViewer->CalculCenterPositionPicture();
+		}
+	}
+};
+
 IAfterEffect* CBitmapWndViewer::AfterEffectPt(const int& numFilter)
 {
 	switch (numFilter)
 	{
+	case IDM_DIAPORAMA_TRANSITION:
+		return new CDiaporamaEffect();
+
+	case IDM_DIAPORAMA_MOVE:
+	case IDM_AFTEREFFECT_MOVE:
+		return new CMoveEffectTextureEffect();
+
 	case IDM_AFTEREFFECT_PAGECURL:
 		return new CPageCurlFilter();
-	default:
+
+	case IDM_DIAPORAMA_FUSION:
+	case IDM_AFTEREFFECT_FUSION:
 		return new CBitmapFusionFilter();
-		break;
+
+	default:
+		return new CNoneEffectTextureEffect();
+
 	}
 	return nullptr;
 }
 
+
+void CBitmapWndViewer::CalculCenterPositionPicture()
+{
+	CalculPositionPicture(centerX, centerY);
+}
 
 void CBitmapWndViewer::SendEmail()
 {
@@ -213,12 +327,6 @@ void CBitmapWndViewer::OnClick(wxTimerEvent& event)
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
-	int numEffect = 0;
-	if (isDiaporama)
-		numEffect = config->GetDiaporamaTransitionEffect();
-	else if (config != nullptr)
-		numEffect = config->GetEffect();
-
 	if (m_bTransition)
 	{
 		if(isDiaporama)
@@ -416,15 +524,8 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
-	int numEffect = 0;
-
-	if (isDiaporama)
-		numEffect = config->GetDiaporamaTransitionEffect();
-	else if (config != nullptr)
-		numEffect = config->GetEffect();
-
-	if (!bitmapLoad)
-		numEffect = 0;
+	//if (isDiaporama)
+	SetBitmap(bmpSecond, false);
 
 	if (afterEffect != nullptr)
 	{
@@ -433,6 +534,18 @@ void CBitmapWndViewer::EndTransition()
 	}
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
+		
+}
+
+bool CBitmapWndViewer::IsOpenCLCompatible()
+{
+	if (openclContext == nullptr)
+		return false;
+
+	if (filtreEffet == nullptr)
+		return false;
+
+	return (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL);
 }
 
 //---------------------------------------------------------
@@ -441,15 +554,21 @@ void CBitmapWndViewer::EndTransition()
 void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 {
 
+	this->bmpSecond = bmpSecond;
+
 	if (etape != 0)
 	{
 		StopTransition();
 	}
 
 	int numEffect = 0;
+	bool start = (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename());
 	
 	if (isDiaporama)
+	{
+		
 		numEffect = config->GetDiaporamaTransitionEffect();
+	}
     else if (config != nullptr)
 		numEffect = config->GetEffect();
 
@@ -461,72 +580,68 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 		delete(afterEffect);
 		afterEffect = nullptr;
 	}
-	
+
+	afterEffect = AfterEffectPt(numEffect);
+	if (afterEffect != nullptr)
+		afterEffect->SetTransitionBitmap(IsOpenCLCompatible(), start, this, bmpSecond);
+	/*
 	switch (numEffect)
 	{
-	case IDM_AFTEREFFECT_NONE: //Pas d'effet
-		{
-			SetBitmap(bmpSecond, false);
-			startTransition = false;
-			bitmapInterface->TransitionEnd();
-		}
+		case IDM_AFTEREFFECT_NONE: //Pas d'effet
+			{
+				StopTransitionEffect(bmpSecond);
+			}
+			break;
+
+		case IDM_DIAPORAMA_TRANSITION:
+			{
+				StartTransitionEffect(bmpSecond, true);
+			}
 		break;
 
-	case IDM_DIAPORAMA_TRANSITION:
-		{
-			SetBitmap(bmpSecond, false);
-			startTransition = true;
-			m_bTransition = true;
-			etape = 0;
-			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
-		}
-	break;
-
-	case IDM_AFTEREFFECT_PAGECURL:
-		{
-			startTransition = true;
-			m_bTransition = true;
-			nextPicture = bmpSecond;
-			etape = 0;
-
-			afterEffect = AfterEffectPt(numEffect);
-			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
-			break;
-		}
+		case IDM_AFTEREFFECT_PAGECURL:
+			{
+				StartTransitionEffect(bmpSecond, false);
+				break;
+			}
 
 	default:
 		{
-			afterEffect = AfterEffectPt(numEffect);
-
 			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
-				startTransition = true;
-				m_bTransition = true;
-				nextPicture = bmpSecond;
-				etape = 0;
-
-#ifdef RENDEROPENGL
-				if (renderOpenGL != nullptr && afterEffect != nullptr)
-				{
-
-					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-						afterEffect->GenerateTexture(nextPicture);
-				}
-#endif
-				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+				if (IsOpenCLCompatible() && afterEffect != nullptr)
+					afterEffect->GenerateTexture(bmpSecond);
+				StartTransitionEffect(bmpSecond, false);
 			}
 			else
 			{
-				etape = 0;
-				m_bTransition = false;
-				SetBitmap(bmpSecond, false);
-				startTransition = false;
-				EndTransition();
+				StopTransitionEffect(bmpSecond);
 			}
 		}
 		break;
 	}
+	*/
+}
 
+void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool &setPicture)
+{
+	if(setPicture)
+		SetBitmap(bmpSecond, false);
+	else
+		nextPicture = bmpSecond;
+	startTransition = true;
+	m_bTransition = true;
+	etape = 0;
+	transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+}
+
+void CBitmapWndViewer::StopTransitionEffect(CImageLoadingFormat* bmpSecond)
+{
+	etape = 0;
+	m_bTransition = false;
+	//SetBitmap(bmpSecond, false);
+	startTransition = false;
+	EndTransition();
 }
 
 void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
@@ -662,6 +777,12 @@ void CBitmapWndViewer::AfterRender()
 			}
 		}
 
+		if (numEffect != 0 && (etape > 0 && etape < 110) && afterEffect != nullptr)
+		{
+			afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext, ratio);
+		}
+
+		/*
 		switch (numEffect)
 		{
 			case IDM_DIAPORAMA_TRANSITION:
@@ -674,64 +795,16 @@ void CBitmapWndViewer::AfterRender()
 				break;
 			}
 
-			case IDM_AFTEREFFECT_PAGECURL:
-				break;
-
-			case IDM_AFTEREFFECT_MOVE:
-			{
-				if (etape > 0 && etape < 110)
-				{
-					wxRect out;
-					//Génération de la texture
-					if (renderOpenGL != nullptr && nextPicture != nullptr)
-					{
-						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-							afterEffect->GenerateBitmapOpenCLEffect(nextPicture, this, out);
-						else
-							afterEffect->GenerateBitmapEffect(nextPicture, this, out);
-
-						int xtexture = 0;
-						int pos = 0;
-
-						if (isNext)
-						{
-							xtexture = (float)(this->GetWidth() - (out.x * scale_factor));
-							pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
-							if (renderOpenGL != nullptr)
-								renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
-
-						}
-						else
-						{
-							xtexture = (float)(out.width) * scale_factor;
-							pos = (((out.x + xtexture) * scale_factor) * ((float)(etape) / 100.0f)) - xtexture;
-							if (renderOpenGL != nullptr)
-								renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
-
-						}
-							
-					}
-				}
-				break;
-			}
-
 			default:
 			{
-				if (numEffect != 0 && etape < 110 && nextPicture != nullptr && afterEffect != nullptr)
+				if (numEffect != 0 && (etape > 0 && etape < 110) && nextPicture != nullptr && afterEffect != nullptr)
 				{
-					wxRect out;
-
-					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-						afterEffect->GenerateBitmapOpenCLEffect(nextPicture, this, out);
-					else
-						afterEffect->GenerateBitmapEffect(nextPicture, this, out);
-
-					if (renderOpenGL != nullptr)
-						renderOpenGL->ShowSecondBitmapWithAlpha(afterEffect->GetTexture(0), etape, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+					afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext);
 				}
 				break;
 			}
 		}
+		*/
 	}
 
 	if (!isDiaporama)
@@ -767,41 +840,14 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 		else if (config != nullptr)
 			numEffect = config->GetEffect();
 
+		if (afterEffect != nullptr)
+			afterEffect->RenderMoveTexture(x, y, glTexture,  etape,  isNext);
 
-		switch (numEffect)
-		{
-			case IDM_AFTEREFFECT_MOVE:
-			{
-				if (etape > 0)
-				{
-					if (isNext)
-					{
-						if (etape < 100)
-							x = x - ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
-					}
-					else
-					{
-						if (etape < 100)
-							x = x + ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
-					}
-				}
+		bool isValid = false;
+		if(afterEffect != nullptr)
+			isValid = afterEffect->RenderTexture(nextPicture, source, this, renderOpenGL, scale_factor, etape);
 
-			}
-				break;
-		}
-
-		if (numEffect == IDM_AFTEREFFECT_PAGECURL && (etape > 0 && etape < 110))
-		{
-			CPageCurlFilter * afterEffectNext = (CPageCurlFilter *)afterEffect;
-			if (afterEffectNext != nullptr)
-			{
-				afterEffectNext->GenerateTexture(nextPicture, source, this);
-                int widthOutput = GetWidth() * scale_factor;
-                int heightOutput = GetHeight() * scale_factor;
-				renderOpenGL->RenderWithPageCurl(afterEffectNext->GetTexture(0), afterEffectNext->GetTexture(1), etape, false, widthOutput, heightOutput, 0, 0);
-			}
-		}
-		else
+		if(!isValid)
 			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
 
 		xPosImage = x;

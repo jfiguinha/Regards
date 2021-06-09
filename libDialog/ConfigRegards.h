@@ -43,6 +43,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbAutoRotate;
 		wxRadioBox* rbContrastCorrection;
 
+		wxComboBox* rbTransitionDiaporamaEffect;
 		wxComboBox* rbInterpolation;
 
 		wxComboBox* cbOpenCLDevice;

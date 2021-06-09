@@ -57,7 +57,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 #endif
 {
 #ifdef RENDEROPENGL
-	pageCurlOpenGL = nullptr;
 	glTexture = nullptr;
 	openCLEngine = nullptr;
 	renderOpenGL = nullptr;

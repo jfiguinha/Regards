@@ -126,7 +126,9 @@ namespace Regards
 			void ReinitPicture();
 			void SetOrientation(const int &exif);
 			virtual void RemoveListener() {};
-
+			virtual void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) {};
+			virtual void StopTransitionEffect(CImageLoadingFormat* bmpSecond) {};
+			virtual void CalculCenterPositionPicture() {};
 		protected:
 
 			int GetExifOrientation(const int& angle);
@@ -273,7 +275,7 @@ namespace Regards
 			//int filterInterpolation;
 #ifdef RENDEROPENGL
 			CRenderBitmapOpenGL * renderOpenGL = nullptr;
-			CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
+			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
 			GLTexture * glTexture = nullptr;
 			GLTexture * glTextureSrc = nullptr;
 			COpenCLEngine * openCLEngine = nullptr;

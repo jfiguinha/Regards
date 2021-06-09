@@ -1191,19 +1191,8 @@ void CMainWindow::StartDiaporama()
 		if (previewWindow != nullptr)
 			previewWindow->SetDiaporamaMode();
 
-		bool isValid = false;
-		wxString fileToLoad = localFilename;
-		if (isValid)
-		{
-			//Test is video
-
-			CLibPicture libPicture;
-			if (!libPicture.TestIsVideo(fileToLoad))
-			{
-				int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-				diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
-			}
-		}
+		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
 
 	startDiaporama = true;

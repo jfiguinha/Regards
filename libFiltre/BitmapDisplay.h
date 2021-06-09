@@ -42,4 +42,7 @@ public:
 	virtual int GetOrientation() = 0;
 	virtual CRegardsBitmap* GetBitmap(const bool& source) = 0;
 	virtual CRegardsFloatBitmap* GetFloatBitmap(const bool& source) = 0;
+	virtual void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) = 0;
+	virtual void StopTransitionEffect(CImageLoadingFormat* bmpSecond) = 0;
+	virtual void CalculCenterPositionPicture() = 0;
 };

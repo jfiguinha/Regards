@@ -68,10 +68,15 @@ namespace Regards
 			CRgbaquad GetBackColor();
 			int GetOrientation();
 			CDraw * GetDessinPt();
-			
+			void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture);
+			void StopTransitionEffect(CImageLoadingFormat* bmpSecond);
 			wxPoint GetMousePosition();
+			void CalculCenterPositionPicture();
 
 		private:
+
+
+			bool IsOpenCLCompatible();
 			IAfterEffect * AfterEffectPt(const int& numFilter);
 			virtual void RenderTexture(const bool &invertPos);
 			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput);
@@ -117,7 +122,7 @@ namespace Regards
 			int etape;
 			bool fixArrow;
 			CBitmapInterface * bitmapInterface;
-
+			CImageLoadingFormat* bmpSecond;
 
 			
 			IAfterEffect * afterEffect;

@@ -90,40 +90,6 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const in
 	glTexture->Disable();
 }
 
-void CRenderBitmapOpenGL::RenderWithPageCurl(GLTexture * glTexture, GLTexture * textureTransition, const float &time, const float &invert, const int &width, const int &height, const int &left, const int &top)
-{
-	glTexture->Enable();
-	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_PAGECURL");
-	if (m_pShader != nullptr)
-	{
-		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("sourceTex", glTexture->GetTextureID()))
-		{
-			printf("SetTexture sourceTex failed \n ");
-		}
-		if (!m_pShader->SetTexture("targetTex", textureTransition->GetTextureID()))
-		{
-			printf("SetTexture sourceTex failed \n ");
-		}
-		if (!m_pShader->SetParam("time", time))
-		{
-			printf("SetParam intensity failed \n ");
-		}
-		if (!m_pShader->SetParam("invertTex", invert))
-		{
-			printf("SetParam intensity failed \n ");
-		}
-	}
-
-	ShowSecondBitmap(textureTransition, width, height, left, top, true);
-	
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-
-	//glDisable(GL_BLEND);
-	glTexture->Disable();
-}
-
 void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const bool &blend)
 {
 	textureTransition->Enable();

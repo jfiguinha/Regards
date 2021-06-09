@@ -16,7 +16,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numLibEffect = 0;
 	numLibVideo = 0;
 	diaporamaTime = 3;
-	diaporamaEffect = 0;
+	diaporamaEffect = 400;
 	diaporamaFullscreen = 1;
 	openCLPlatformName = "";
 	dataInMemory = 0;
@@ -752,7 +752,7 @@ void CRegardsConfigParam::SetDectectOrientation(const int& detectOrientation)
 
 int CRegardsConfigParam::GetDiaporamaTransitionEffect()
 {
-	return 100;// diaporamaEffect;
+	return diaporamaEffect;
 }
 
 void CRegardsConfigParam::SetDiaporamaTransitionEffect(const int &diaporamaEffect)

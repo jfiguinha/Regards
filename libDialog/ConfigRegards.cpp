@@ -31,6 +31,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
 	rbTransitionEffect = (wxComboBox*)FindWindow(XRCID("ID_RBTRANSITIONEFFECT"));
+	rbTransitionDiaporamaEffect = (wxComboBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
 	sbDiaporama = (wxStaticBox*)FindWindow(XRCID("ID_SBDIAPORAMA"));
 	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
 	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
@@ -163,6 +164,12 @@ void ConfigRegards::Init()
 		rbTransitionEffect->SetSelection(0);
 	else
 		rbTransitionEffect->SetSelection(transition);
+
+	int transitionDiaporama = max((regardsParam->GetDiaporamaTransitionEffect() - 400), 0);
+	if (transition == 0)
+		rbTransitionDiaporamaEffect->SetSelection(0);
+	else
+		rbTransitionDiaporamaEffect->SetSelection(transition);
 
 	int autoRotate = regardsParam->GetDetectOrientation();
 	if (autoRotate == 0)
@@ -328,6 +335,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetEffect(0);
 	else
 		regardsParam->SetEffect(transition + 300);
+
+	int transitionDiaporama = rbTransitionDiaporamaEffect->GetSelection();
+	if (transitionDiaporama == 0)
+		regardsParam->SetDiaporamaTransitionEffect(0);
+	else
+		regardsParam->SetDiaporamaTransitionEffect(transitionDiaporama + 400);
 
 	int autoRotate = rbAutoRotate->GetSelection();
 	if (autoRotate == 0)

@@ -82,6 +82,23 @@
 										<pos>0,74</pos>
 										<size>180,70</size>
 									</object>
+									<object class="wxStaticBox" name="sbInterpolation">
+										<label>Transition Diaporama Effect</label>
+										<pos>0,150</pos>
+										<size>180,70</size>
+									</object>
+									<object class="wxComboBox" name="ID_RBDIAPORAMATRANSITIONEFFECT">
+										<default>0</default>
+										<pos>5,170</pos>
+										<size>170,20</size>
+										<value>Diaporama Transition Effect</value>
+										<content>
+											<item>None</item>
+											<item>Zoom</item>
+											<item>Fading</item>
+											<item>Move</item>
+										</content>
+									</object>
 							</object>
 						</object>		
 						<object class="notebookpage">

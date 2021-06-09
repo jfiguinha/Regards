@@ -52,6 +52,8 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
+
+
 CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapTexture(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	CRegardsBitmap * bitmapOut = nullptr;
@@ -99,6 +101,39 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapTexture(CImageLoadingFormat 
 
 	return bitmapOut;
 }
+
+void CBitmapFusionFilter::SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+{
+	if (start)
+	{
+		if (openCL)
+			GenerateTexture(bmpSecond);
+		bmpViewer->StartTransitionEffect(bmpSecond, false);
+	}
+	else
+	{
+		bmpViewer->StopTransitionEffect(bmpSecond);
+	}
+}
+
+void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, const bool& isOpenCL, IBitmapDisplay* bmpViewer)
+{
+	if (isOpenCL)
+		GenerateBitmapOpenCLEffect(nextPicture, bmpViewer, out);
+	else
+		GenerateBitmapEffect(nextPicture, bmpViewer, out);
+}
+
+void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
+{
+
+	GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+
+	if (renderOpenGL != nullptr)
+		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+
+}
+
 
 void CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
