@@ -31,36 +31,30 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(wxGLCanvas * canvas)
 
 void CRenderBitmapOpenGL::LoadingResource(const double & scale_factor)
 {
-   
-	//if(textureArrowRight == nullptr && textureArrowLeft == nullptr)
-	//{
-		wxColor colorToReplace = wxColor(0, 0, 0);
-		wxColor colorActifReplacement = wxColor(255, 255, 255);
-		wxImage arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG" , 32 * scale_factor, 32 * scale_factor);
-		arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-		wxImage arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
-		arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	wxColor colorToReplace = wxColor(0, 0, 0);
+	wxColor colorActifReplacement = wxColor(255, 255, 255);
+	wxImage arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG" , 32 * scale_factor, 32 * scale_factor);
+	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	wxImage arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
+	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
-		CLibPicture libPicture;
-		CRegardsBitmap * arrowLeft = libPicture.ConvertwxImageToRegardsBitmap(arrowPrevious);
-		CRegardsBitmap * arrowRight = libPicture.ConvertwxImageToRegardsBitmap(arrowNext);
+	CLibPicture libPicture;
+	CRegardsBitmap * arrowLeft = libPicture.ConvertwxImageToRegardsBitmap(arrowPrevious);
+	CRegardsBitmap * arrowRight = libPicture.ConvertwxImageToRegardsBitmap(arrowNext);
 
-		//arrowLeft->SaveToBmp(L"e:\\test.bmp");
-		//arrowRight->SaveToBmp(L"e:\\tes2t.bmp");
+	if(textureArrowRight == nullptr)
+		textureArrowRight = new GLTexture();
+	textureArrowRight->Create(arrowRight->GetBitmapHeight(), arrowRight->GetBitmapWidth(), arrowRight->GetPtBitmap());
 
-		if(textureArrowRight == nullptr)
-			textureArrowRight = new GLTexture();
-		textureArrowRight->Create(arrowRight->GetBitmapHeight(), arrowRight->GetBitmapWidth(), arrowRight->GetPtBitmap());
+	if(textureArrowLeft == nullptr)
+		textureArrowLeft = new GLTexture();
+	textureArrowLeft->Create(arrowLeft->GetBitmapHeight(), arrowLeft->GetBitmapWidth(), arrowLeft->GetPtBitmap());
 
-		if(textureArrowLeft == nullptr)
-			textureArrowLeft = new GLTexture();
-		textureArrowLeft->Create(arrowLeft->GetBitmapHeight(), arrowLeft->GetBitmapWidth(), arrowLeft->GetPtBitmap());
+	delete arrowLeft;
+	delete arrowRight;
 
-		delete arrowLeft;
-		delete arrowRight;
-	//}
 }
 
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top,const bool & flipH, const bool & flipV, const bool & inverted)
@@ -179,21 +173,6 @@ CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 	if (textureArrowLeft != nullptr)
 		delete(textureArrowLeft);
 
-}
-
-
-void CRenderBitmapOpenGL::ReloadResource(const double& scale_factor)
-{
-	//if (textureArrowRight != nullptr)
-	//	delete(textureArrowRight);
-
-	//if (textureArrowLeft != nullptr)
-	//	delete(textureArrowLeft);
-
-	//textureArrowRight = nullptr;
-	//textureArrowLeft = nullptr;
-
-	LoadingResource(scale_factor);
 }
 
 void CRenderBitmapOpenGL::ShowArrowNext()

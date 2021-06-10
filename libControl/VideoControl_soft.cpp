@@ -1083,6 +1083,11 @@ void CVideoControlSoft::UpdateScreenRatio()
     this->Refresh();
 }
 
+void CVideoControlSoft::ReloadResource()
+{
+	reloadResource = true;
+}
+
 void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 {
 	// This is a dummy, to avoid an endless succession of paint messages.
@@ -1096,6 +1101,29 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 #else
     double scale_factor = 1.0f;
 #endif
+
+	if (reloadResource)
+	{
+		if (renderBitmapOpenGL != nullptr)
+		{
+			delete renderBitmapOpenGL;
+			renderBitmapOpenGL = nullptr;
+		}
+
+		if (openCLEngine != nullptr)
+		{
+			delete openCLEngine;
+			openCLEngine = nullptr;
+		}
+
+		if (openclEffectYUV != nullptr)
+		{
+			delete openclEffectYUV;
+			openclEffectYUV = nullptr;
+		}
+
+		reloadResource = false;
+	}
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;

@@ -286,6 +286,7 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     {
         CPictureElement * pictureElement = new CPictureElement();
         pictureElement->filename = filename;
+		pictureElement->reloadResource = true;
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt); 
@@ -1461,6 +1462,7 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 	}
 	else if (libPicture.TestIsAnimation(localFile))
 	{
+
 		SetAnimation(localFile);
 
 		if (isDiaporama)

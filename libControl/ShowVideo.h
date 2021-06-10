@@ -42,6 +42,7 @@ namespace Regards
 			void SetVideoPreviewEffect(CEffectParameter * effectParameter);
 			CEffectParameter * GetParameter();
 			void UpdateFiltre(CEffectParameter * effectParameter);
+			void ReloadResource();
 
 			void SlidePosChange(const int &position, const wxString &key) {};
 			void ZoomPos(const int &position) {};

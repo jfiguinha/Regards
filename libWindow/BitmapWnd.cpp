@@ -1911,11 +1911,21 @@ int CBitmapWnd::IsOpenGLDecoding()
 	return supportOpenGL;  
 }
 
+void CBitmapWnd::ReloadResource()
+{
+	reloadResource = true;
+}
+
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
 	TRACE();
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CBitmapWnd::OnPaint");
@@ -1929,7 +1939,24 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
+	if (reloadResource)
+	{
+		DeleteTexture();
 
+		if (renderOpenGL != nullptr)
+		{
+			delete renderOpenGL;
+			renderOpenGL = nullptr;
+		}
+
+		if (openCLEngine != nullptr)
+		{
+			delete openCLEngine;
+			openCLEngine = nullptr;
+		}
+
+		reloadResource = false;
+	}
 
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD tickCount = GetTickCount();
@@ -1943,14 +1970,17 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		//Now we have a context, retrieve pointers to OGL functions
 		renderOpenGL->Init(this);
 
-#ifndef WIN32
-		double scale_factor = GetContentScaleFactor();
-#else
-		double scale_factor = 1.0f;
-#endif 
-
 		renderOpenGL->LoadingResource(scale_factor);
 	}
+
+	/*
+	if (reloadResource)
+	{
+		renderOpenGL->Init(this);
+		renderOpenGL->LoadingResource(scale_factor);
+		reloadResource = false;
+	}
+	*/
 
 	if (IsSupportOpenCL())
 	{
@@ -1969,6 +1999,13 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	{
 		renderOpenGL->SetCurrent(*this);
 
+		/*
+		if (reloadResource)
+		{
+			renderOpenGL->LoadingResource(scale_factor);
+			reloadResource = false;
+		}
+		*/
 		if (!IsSupportOpenCL())
         {
             printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
@@ -2000,20 +2037,29 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 #endif
 
 #ifndef __APPLE__
-	
-    if(openclContext != nullptr)
-    {
-       if (!openclContext->IsSharedContextCompatible())
-       {
-            DeleteTexture();
-           
-            if (renderOpenGL != nullptr)
-            {
-                delete renderOpenGL;
-                renderOpenGL = nullptr;
-            }  
-       }   
-    }
+	/*
+
+	if(openclContext != nullptr)
+	{
+		if (!openclContext->IsSharedContextCompatible())
+		{
+			DeleteTexture();
+
+			if (renderOpenGL != nullptr)
+			{
+				delete renderOpenGL;
+				renderOpenGL = nullptr;
+			}
+
+			if (openCLEngine != nullptr)
+			{
+				delete openCLEngine;
+				openCLEngine = nullptr;
+			}
+		}
+	}   
+
+	*/
 	
 #endif
 

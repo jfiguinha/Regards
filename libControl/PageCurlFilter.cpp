@@ -110,7 +110,6 @@ bool CPageCurlFilter::RenderTexture(CImageLoadingFormat* nextPicture, CImageLoad
 
 void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer)
 {
-	wxRect out;
 	{
 		bool init = false;
 		if (bitmapNext == nullptr)
@@ -129,7 +128,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
 			bitmapNext->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
-			CRegardsBitmap * bitmapOut = GenerateBitmapTexture(nextPicture, bmpViewer, out);
+			CRegardsBitmap * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
 				bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;
@@ -144,16 +143,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
             pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
         }
 	}
-
 	{
-		if (bitmapTemp != nullptr)
-			delete bitmapTemp;
-		bitmapTemp = nullptr;
-
-		if (bitmapOutCopy != nullptr)
-			delete bitmapOutCopy;
-		bitmapOutCopy = nullptr;
-
 		bool init = false;
 		if (bitmapFirst == nullptr)
 		{
@@ -171,7 +161,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
 			bitmapFirst->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
-			CRegardsBitmap * bitmapOut = GenerateBitmapTexture(source, bmpViewer, out);
+			CRegardsBitmap * bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
 				bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;

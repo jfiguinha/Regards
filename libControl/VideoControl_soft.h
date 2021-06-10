@@ -44,6 +44,9 @@ class CVideoControlSoft : public CWindowMain, public CVideoControlInterface
 public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControlSoft();
+
+	void ReloadResource();
+
 	COpenCLEngine * GetOpenCLEngine();
 	bool IsPause();
 	void SetVideoDuration(const int64_t & duration, const int64_t & startTime);
@@ -258,7 +261,6 @@ protected:
 	int oldheightDenoise = 0;
 	void GetDenoiserPt(const int &width, const int &height);
 	CRegardsBitmap * GetBitmapRGBA(AVFrame * tmp_frame);
-
     bool firstMovie = true;
     wxTimer * playStopTimer;
     void OnPlayStop(wxTimerEvent& event);
@@ -266,4 +268,5 @@ protected:
 	CRegardsBitmap * bitmapData = nullptr;
 	COpenCVStabilization * openCVStabilization = nullptr;
 	SwsContext* localContext = nullptr;
+	bool reloadResource = false;
 };

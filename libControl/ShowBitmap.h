@@ -34,7 +34,7 @@ namespace Regards
 			void StopTransition();
 			void TransitionEnd();
 			CRegardsBitmap* GetBitmap(const bool& source);
-
+			void ReloadResource();
 			void UpdateScreenRatio();
 			void SetDiaporamaMode();
 			void SetNormalMode();

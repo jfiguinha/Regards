@@ -77,6 +77,11 @@ void CShowBitmap::UpdateScreenRatio()
     this->Resize();
 }
 
+void CShowBitmap::ReloadResource()
+{
+	bitmapWindow->ReloadResource();
+}
+
 void CShowBitmap::SavePicture()
 {
 	if (bitmapWindow != nullptr)
@@ -344,13 +349,14 @@ void CShowBitmap::TransitionEnd()
 		transitionEnd = false;
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
-		bitmapWindow->Refresh();
+		//bitmapWindow->Refresh();
 	}
 }
 
 void CShowBitmap::OnIdle(wxIdleEvent& evt)
 {
     //TRACE();
+	/*
 	int numEffect = 0;
 		
 	if (configRegards != nullptr)
@@ -368,6 +374,7 @@ void CShowBitmap::OnIdle(wxIdleEvent& evt)
 			bitmapWindow->Refresh();
 		}
 	}
+	*/
 }
 
 //---------------------------------------------------------------------------------------
@@ -428,6 +435,12 @@ void CShowBitmap::IsNextPicture(const bool& value)
 
 bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail)
 {
+	if (tempImage != nullptr && !isThumbnail)
+	{
+		delete tempImage;
+		tempImage = nullptr;
+	}
+
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{

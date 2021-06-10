@@ -158,6 +158,11 @@ bool CShowVideo::IsPause()
 	return videoWindow->IsPause();
 }
 
+void CShowVideo::ReloadResource()
+{
+	videoWindow->ReloadResource();
+}
+
 void CShowVideo::OnClose(wxCommandEvent& event)
 {
 	slideToolbar->Show(false);

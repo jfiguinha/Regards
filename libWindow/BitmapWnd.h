@@ -63,7 +63,7 @@ namespace Regards
 			bool GetZoom();
 			void SetZoomPosition(const int& position);
 			wxString GetFilename();
-
+			void ReloadResource();
 			int GetWidth();
 			int GetHeight();
 			virtual CFiltreEffet * GetFiltreEffet();
@@ -237,7 +237,7 @@ namespace Regards
 			int posRatio;
 			bool postEffect;
 				
-			
+			bool reloadResource = false;
             bool isThumbnail;
 			bool isInUse;
 			int toolOption;

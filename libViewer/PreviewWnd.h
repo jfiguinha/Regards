@@ -50,7 +50,6 @@ namespace Regards
 			void IsNextPicture(const bool& value);
 			//void SetVideoPosition(const int &videoTime);
             void UpdateScreenRatio();
-
 			bool IsToolbarVisible();
 
 			void ShowValidationToolbar(const bool &visible, const int &filtre);

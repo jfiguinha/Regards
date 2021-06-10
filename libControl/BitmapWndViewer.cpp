@@ -544,12 +544,6 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
-	if (nextPicture != nullptr)
-	{
-
-		SetBitmap(nextPicture, false);
-		nextPicture = nullptr;
-	}
 
 	if (afterEffect != nullptr)
 	{
@@ -701,6 +695,8 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 	}
 }
 
+
+
 CRgbaquad CBitmapWndViewer::GetBackColor()
 {
 	return CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
@@ -780,6 +776,7 @@ void CBitmapWndViewer::AfterRender()
 		//Insertion dans le HBITMAP
 		if (fixArrow && (etape == 0 || etape == 100))
 		{
+			/*
 #ifndef WIN32
 			double scale_factor = GetContentScaleFactor();
 #else
@@ -788,7 +785,7 @@ void CBitmapWndViewer::AfterRender()
 
 			if(renderOpenGL != nullptr)
 				renderOpenGL->ReloadResource(scale_factor);
-
+			*/
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
 		}
@@ -835,6 +832,9 @@ void CBitmapWndViewer::DeleteTexture()
 {
 	if (afterEffect != nullptr)
 		afterEffect->DeleteTexture();
+
+	if (renderOpenGL != nullptr)
+		renderOpenGL->DeleteTexture();
 }
 
 #else
