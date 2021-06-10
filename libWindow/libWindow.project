@@ -90,7 +90,6 @@
     <File Name="CalendarSelect.cpp"/>
     <File Name="MapDialogBox.cpp"/>
     <File Name="MapSelect.cpp"/>
-    <File Name="RenderPreviewBitmap.cpp"/>
     <File Name="TreeElementListBox.cpp"/>
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
@@ -147,7 +146,6 @@
     <File Name="CalendarSelect.h"/>
     <File Name="MapDialogBox.h"/>
     <File Name="MapSelect.h"/>
-    <File Name="RenderPreviewBitmap.h"/>
     <File Name="TreeElementListBox.h"/>
     <File Name="IconeList.h"/>
   </VirtualDirectory>

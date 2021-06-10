@@ -70,10 +70,7 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="window">
-    <VirtualDirectory Name="Transition">
-      <File Name="PageCurlFilter.h"/>
-      <File Name="PageCurlFilter.cpp"/>
-    </VirtualDirectory>
+    <VirtualDirectory Name="Transition"/>
     <VirtualDirectory Name="drawing">
       <File Name="CropFilter.h"/>
       <File Name="CropFilter.cpp"/>
@@ -81,7 +78,6 @@
     <VirtualDirectory Name="main">
       <File Name="PenDrawInfo.h"/>
       <File Name="BitmapDisplay.h"/>
-      <File Name="AfterEffect.h"/>
       <File Name="FiltreUpdate.h"/>
       <File Name="FilterWindowParam.h"/>
       <File Name="FilterWindowParam.cpp"/>
@@ -138,8 +134,6 @@
       <File Name="hqdn3dFilter.h"/>
       <File Name="hqdn3dFilter.cpp"/>
       <File Name="hqdn3dEffectParameter.h"/>
-      <File Name="BitmapFusionFilter.h"/>
-      <File Name="BitmapFusionFilter.cpp"/>
       <File Name="bm3dWindowFilter.h"/>
       <File Name="bm3dWindowFilter.cpp"/>
       <File Name="GaussianBlurFilter.h"/>

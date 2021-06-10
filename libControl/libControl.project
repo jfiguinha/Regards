@@ -76,6 +76,16 @@
     <File Name="BitmapPrintout.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="ShowBitmap">
+    <VirtualDirectory Name="PostEffect">
+      <File Name="VideoCompressOption.h"/>
+      <File Name="PageCurlFilter.h"/>
+      <File Name="PageCurlFilter.cpp"/>
+      <File Name="BitmapViewerImpl.h"/>
+      <File Name="BitmapFusionFilter.h"/>
+      <File Name="BitmapFusionFilter.cpp"/>
+      <File Name="BitmapFusionEffectParameter.h"/>
+      <File Name="AfterEffect.h"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="Toolbar">
       <File Name="BitmapToolbar.h"/>
       <File Name="BitmapToolbar.cpp"/>
