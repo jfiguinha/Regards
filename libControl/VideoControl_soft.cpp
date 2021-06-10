@@ -845,14 +845,17 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 	if (!endProgram)
 	{
    		videoEnd = true;
-		if (eventPlayer != nullptr)
+		if (!stopVideo)
 		{
-			eventPlayer->OnPositionVideo(0);
-			eventPlayer->OnVideoEnd();
+			if (eventPlayer != nullptr)
+			{
+				eventPlayer->OnPositionVideo(0);
+				eventPlayer->OnVideoEnd();
+			}
+			fpsTimer->Stop();
+			videoRenderStart = false;
+			stopVideo = true;
 		}
-		fpsTimer->Stop();
-		videoRenderStart = false;
-		stopVideo = true;
 	}
 	else
 	{

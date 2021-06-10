@@ -131,8 +131,6 @@ void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const 
 #else
     glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 #endif
-    
-	
 
 	glPopMatrix();
 
@@ -181,9 +179,22 @@ CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 	if (textureArrowLeft != NULL)
 		delete(textureArrowLeft);
 
-
 }
 
+
+void CRenderBitmapOpenGL::ReloadResource(const double& scale_factor)
+{
+	if (textureArrowRight != NULL)
+		delete(textureArrowRight);
+
+	if (textureArrowLeft != NULL)
+		delete(textureArrowLeft);
+
+	textureArrowRight = nullptr;
+	textureArrowLeft = nullptr;
+
+	LoadingResource(scale_factor);
+}
 
 void CRenderBitmapOpenGL::ShowArrowNext()
 {

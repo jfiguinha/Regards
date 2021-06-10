@@ -103,7 +103,8 @@ namespace Regards
             bool IsVideo();
 			void SaveParameter();
 			bool IsCompatibleFullscreen();
-
+			void StopDiaporama();
+			void StartDiaporama();
 		private:
 
 			int GetPhotoId(const wxString& filename);

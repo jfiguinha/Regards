@@ -24,7 +24,7 @@ namespace Regards
 		public:
 
 
-
+			void ReloadResource(const double& scale_factor);
 			CRenderBitmapOpenGL(wxGLCanvas *canvas);
 			virtual ~CRenderBitmapOpenGL();
             void LoadingResource(const double & scale_factor);

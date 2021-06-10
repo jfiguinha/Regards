@@ -282,7 +282,6 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     stopVideo = false;
 	videoStart = false;
 
-
     if(loadPicture)
     {
         CPictureElement * pictureElement = new CPictureElement();
@@ -290,9 +289,27 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt); 
-        loadPicture = false;   
+          
     }
+	else if (isDiaporama)
+	{
+		ImageSuivante();
+	}
 
+	loadPicture = false;
+
+	
+}
+
+void CCentralWindow::StopDiaporama()
+{
+	isDiaporama = false;
+}
+
+
+void CCentralWindow::StartDiaporama()
+{
+	isDiaporama = true;
 }
 
 void CCentralWindow::OnEndThumbnail()

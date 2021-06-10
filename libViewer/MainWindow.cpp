@@ -997,11 +997,7 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 		wxCommandEvent evt(VIDEO_END_ID);
 		centralWnd->GetEventHandler()->AddPendingEvent(evt);
 	}
-	if (startDiaporama)
-	{
-		//int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-		diaporamaTimer->Start(100, wxTIMER_ONE_SHOT);
-	}
+	
 }
 
 CMainWindow::~CMainWindow()
@@ -1196,6 +1192,9 @@ void CMainWindow::StartDiaporama()
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
 
+	if (centralWnd != nullptr)
+		centralWnd->StartDiaporama();
+
 	startDiaporama = true;
 }
 
@@ -1252,8 +1251,7 @@ void CMainWindow::VideoEnd()
 	//Fin de la video
 	if (startDiaporama)
 	{
-		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+		ImageSuivante();
 	}
 }
 
@@ -1269,6 +1267,9 @@ void CMainWindow::StopDiaporama()
 		startDiaporama = false;
 		if (diaporamaTimer->IsRunning())
 			diaporamaTimer->Stop();
+
+		if (centralWnd != nullptr)
+			centralWnd->StopDiaporama();
 	}
 }
 

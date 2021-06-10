@@ -261,6 +261,13 @@ void CBitmapWndViewer::SetDiaporamaMode()
 
 void CBitmapWndViewer::SetNormalMode()
 {
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif   
+
+	renderOpenGL->ReloadResource(scale_factor);
 	isDiaporama = false;
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
@@ -600,43 +607,6 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 	afterEffect = AfterEffectPt(numEffect);
 	if (afterEffect != nullptr)
 		afterEffect->SetTransitionBitmap(IsOpenCLCompatible(), true, this, bmpSecond);
-	/*
-	switch (numEffect)
-	{
-		case IDM_AFTEREFFECT_NONE: //Pas d'effet
-			{
-				StopTransitionEffect(bmpSecond);
-			}
-			break;
-
-		case IDM_DIAPORAMA_TRANSITION:
-			{
-				StartTransitionEffect(bmpSecond, true);
-			}
-		break;
-
-		case IDM_AFTEREFFECT_PAGECURL:
-			{
-				StartTransitionEffect(bmpSecond, false);
-				break;
-			}
-
-	default:
-		{
-			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
-			{
-				if (IsOpenCLCompatible() && afterEffect != nullptr)
-					afterEffect->GenerateTexture(bmpSecond);
-				StartTransitionEffect(bmpSecond, false);
-			}
-			else
-			{
-				StopTransitionEffect(bmpSecond);
-			}
-		}
-		break;
-	}
-	*/
 }
 
 void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool &setPicture)
@@ -681,13 +651,6 @@ void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
 
 void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 {
-#ifndef WIN32
-    //double scale_factor = GetContentScaleFactor();
-#else
-    //double scale_factor = 1.0f;
-#endif
-    
-
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = CBitmapWnd::GetHPos();
@@ -801,30 +764,6 @@ void CBitmapWndViewer::AfterRender()
 		{
 			afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext, ratio);
 		}
-
-		/*
-		switch (numEffect)
-		{
-			case IDM_DIAPORAMA_TRANSITION:
-			{
-				if (etape < 100)
-				{
-					ratio = ratio + 0.0005;
-					CalculPositionPicture(centerX, centerY);
-				}
-				break;
-			}
-
-			default:
-			{
-				if (numEffect != 0 && (etape > 0 && etape < 110) && nextPicture != nullptr && afterEffect != nullptr)
-				{
-					afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext);
-				}
-				break;
-			}
-		}
-		*/
 	}
 
 	if (!isDiaporama)
@@ -835,11 +774,7 @@ void CBitmapWndViewer::AfterRender()
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
 		}
-
 	}
-
-		
-
 }
 
 void CBitmapWndViewer::RenderTexture(const bool &invertPos)
