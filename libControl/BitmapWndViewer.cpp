@@ -267,7 +267,7 @@ void CBitmapWndViewer::SetNormalMode()
 	double scale_factor = 1.0f;
 #endif   
 
-	renderOpenGL->ReloadResource(scale_factor);
+	//renderOpenGL->ReloadResource(scale_factor);
 	isDiaporama = false;
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
@@ -577,6 +577,15 @@ bool CBitmapWndViewer::IsOpenCLCompatible()
 //---------------------------------------------------------
 void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 {
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	//if(renderOpenGL != nullptr)
+	//	renderOpenGL->ReloadResource(scale_factor);
+
 	if (etape != 0)
 	{
 		StopTransition();
@@ -771,6 +780,15 @@ void CBitmapWndViewer::AfterRender()
 		//Insertion dans le HBITMAP
 		if (fixArrow && (etape == 0 || etape == 100))
 		{
+#ifndef WIN32
+			double scale_factor = GetContentScaleFactor();
+#else
+			double scale_factor = 1.0f;
+#endif 
+
+			if(renderOpenGL != nullptr)
+				renderOpenGL->ReloadResource(scale_factor);
+
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
 		}

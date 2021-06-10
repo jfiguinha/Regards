@@ -845,7 +845,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 	if (!endProgram)
 	{
    		videoEnd = true;
-		if (!stopVideo)
+		if (videoRenderStart)
 		{
 			if (eventPlayer != nullptr)
 			{

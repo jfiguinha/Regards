@@ -32,8 +32,8 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(wxGLCanvas * canvas)
 void CRenderBitmapOpenGL::LoadingResource(const double & scale_factor)
 {
    
-	if(textureArrowRight == nullptr && textureArrowLeft == nullptr)
-	{
+	//if(textureArrowRight == nullptr && textureArrowLeft == nullptr)
+	//{
 		wxColor colorToReplace = wxColor(0, 0, 0);
 		wxColor colorActifReplacement = wxColor(255, 255, 255);
 		wxImage arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG" , 32 * scale_factor, 32 * scale_factor);
@@ -60,7 +60,7 @@ void CRenderBitmapOpenGL::LoadingResource(const double & scale_factor)
 
 		delete arrowLeft;
 		delete arrowRight;
-	}
+	//}
 }
 
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top,const bool & flipH, const bool & flipV, const bool & inverted)
@@ -173,10 +173,10 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture * textureTransitio
 CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 {
 
-	if (textureArrowRight != NULL)
+	if (textureArrowRight != nullptr)
 		delete(textureArrowRight);
 
-	if (textureArrowLeft != NULL)
+	if (textureArrowLeft != nullptr)
 		delete(textureArrowLeft);
 
 }
@@ -184,14 +184,14 @@ CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 
 void CRenderBitmapOpenGL::ReloadResource(const double& scale_factor)
 {
-	if (textureArrowRight != NULL)
-		delete(textureArrowRight);
+	//if (textureArrowRight != nullptr)
+	//	delete(textureArrowRight);
 
-	if (textureArrowLeft != NULL)
-		delete(textureArrowLeft);
+	//if (textureArrowLeft != nullptr)
+	//	delete(textureArrowLeft);
 
-	textureArrowRight = nullptr;
-	textureArrowLeft = nullptr;
+	//textureArrowRight = nullptr;
+	//textureArrowLeft = nullptr;
 
 	LoadingResource(scale_factor);
 }
