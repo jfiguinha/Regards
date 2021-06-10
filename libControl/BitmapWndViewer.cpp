@@ -87,7 +87,9 @@ public:
 		else
 		{
 			//xtexture = (float)(out.width) * scale_factor;
-			pos = out.x - (bmpViewer->GetWidth() * ((float)(etape) / 100.0f));
+			//pos = out.x - (bmpViewer->GetWidth() * ((float)(etape) / 100.0f));
+			xtexture = (float)(out.width) * scale_factor;
+			pos = (((out.x + xtexture) * scale_factor) * ((float)(etape) / 100.0f)) - xtexture;
 			if (renderOpenGL != nullptr)
 				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor, false);
 
@@ -544,6 +546,11 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
+    if(isDiaporama)
+    {
+		SetBitmap(nextPicture, false);
+        nextPicture	= nullptr;
+    }
 
 	if (afterEffect != nullptr)
 	{
