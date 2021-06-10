@@ -1973,14 +1973,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		renderOpenGL->LoadingResource(scale_factor);
 	}
 
-	/*
-	if (reloadResource)
-	{
-		renderOpenGL->Init(this);
-		renderOpenGL->LoadingResource(scale_factor);
-		reloadResource = false;
-	}
-	*/
 
 	if (IsSupportOpenCL())
 	{
@@ -1999,13 +1991,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	{
 		renderOpenGL->SetCurrent(*this);
 
-		/*
-		if (reloadResource)
-		{
-			renderOpenGL->LoadingResource(scale_factor);
-			reloadResource = false;
-		}
-		*/
 		if (!IsSupportOpenCL())
         {
             printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
@@ -2036,32 +2021,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-#ifndef __APPLE__
-	/*
-
-	if(openclContext != nullptr)
-	{
-		if (!openclContext->IsSharedContextCompatible())
-		{
-			DeleteTexture();
-
-			if (renderOpenGL != nullptr)
-			{
-				delete renderOpenGL;
-				renderOpenGL = nullptr;
-			}
-
-			if (openCLEngine != nullptr)
-			{
-				delete openCLEngine;
-				openCLEngine = nullptr;
-			}
-		}
-	}   
-
-	*/
-	
-#endif
 
 	oldWidth = GetWidth();
 	oldHeight = GetHeight();

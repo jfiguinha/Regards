@@ -50,7 +50,7 @@ CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLo
 	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
 	int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
-	bitmapTemp->SetAlphaValue(0);
+	//bitmapTemp->SetAlphaValue(0);
 
 	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
 	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;

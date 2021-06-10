@@ -24,15 +24,6 @@ CPageCurlFilter::CPageCurlFilter()
 
 CPageCurlFilter::~CPageCurlFilter()
 {
-	if (bitmapNext != nullptr)
-	{
-		delete bitmapNext;
-	}
-	if (bitmapFirst != nullptr)
-	{
-		delete bitmapFirst;
-	}
-
 	if (pictureFirst != nullptr)
 		delete(pictureFirst);
 }
@@ -110,19 +101,15 @@ bool CPageCurlFilter::RenderTexture(CImageLoadingFormat* nextPicture, CImageLoad
 
 void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer)
 {
+	
+	bool init = false;
+	if (initTexture || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
 	{
-		bool init = false;
-		if (bitmapNext == nullptr)
-		{
-			bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
-			init = true;
-		}
-		else if (initTexture || (bitmapNext->GetBitmapWidth() != bmpViewer->GetWidth() && bitmapNext->GetBitmapHeight() != bmpViewer->GetHeight()))
-		{
-			delete bitmapNext;
-			bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
-			init = true;
-		}
+		init = true;
+	}
+
+	{
+		CRegardsBitmap* bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
 
 		if (init)
 		{
@@ -136,26 +123,11 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
                pictureNext = new GLTexture();
 			pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
 		}
-        
-        if(pictureNext == nullptr)
-        {
-            pictureNext = new GLTexture();
-            pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
-        }
+
+		delete bitmapNext;
 	}
 	{
-		bool init = false;
-		if (bitmapFirst == nullptr)
-		{
-			bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
-			init = true;
-		}
-		else if (initTexture || (bitmapFirst->GetBitmapWidth() != bmpViewer->GetWidth() && bitmapFirst->GetBitmapHeight() != bmpViewer->GetHeight()))
-		{
-			delete bitmapFirst;
-			bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
-			init = true;
-		}
+		CRegardsBitmap* bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
 
 		if (init)
 		{
@@ -169,12 +141,8 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
                 pictureFirst = new GLTexture();
 			pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
 		}
-        
-        if(pictureFirst == nullptr)
-        {
-            pictureFirst = new GLTexture();
-            pictureFirst->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
-        }
+
+		delete bitmapFirst;
 	}
 
 	initTexture = false;

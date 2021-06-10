@@ -27,8 +27,6 @@ namespace Regards
 			void RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert, const int& width, const int& height, const int& left, const int& top);
 
 			Regards::OpenGL::GLTexture * pictureFirst;
-			CRegardsBitmap * bitmapNext = nullptr;
-			CRegardsBitmap * bitmapFirst = nullptr;
 			bool initTexture = false;
 		};
 	}
