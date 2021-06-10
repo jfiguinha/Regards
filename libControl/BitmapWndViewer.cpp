@@ -73,26 +73,23 @@ public:
 
 		if (local.width != out.width)
 		{
-			if (isOpenCL)
-				GenerateTexture(nextPicture);
-
 			GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
 		}
 
 		if (isNext)
 		{
-			xtexture = (float)(bmpViewer->GetWidth() - (out.x * scale_factor));
-			pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
+			int posMin = (bmpViewer->GetWidth() - out.width) / 2;
+			pos = (posMin * scale_factor) + bmpViewer->GetWidth() * ((float)(100 - etape) / 100.0f);
 			if (renderOpenGL != nullptr)
-				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor, false);
 
 		}
 		else
 		{
-			xtexture = (float)(out.width) * scale_factor;
-			pos = (((out.x + xtexture) * scale_factor) * ((float)(etape) / 100.0f)) - xtexture;
+			//xtexture = (float)(out.width) * scale_factor;
+			pos = out.x - (bmpViewer->GetWidth() * ((float)(etape) / 100.0f));
 			if (renderOpenGL != nullptr)
-				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+				renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos, out.y * scale_factor, false);
 
 		}
 	}
@@ -347,7 +344,9 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 			etape += 1;
 		else
 			etape += 10;
-		if (etape == 110)
+
+
+		if (etape > 100)
 		{
 			etape = 0;
 			EndTransition();
@@ -798,7 +797,7 @@ void CBitmapWndViewer::AfterRender()
 			}
 		}
 
-		if (numEffect != 0 && (etape > 0 && etape < 110) && afterEffect != nullptr)
+		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)
 		{
 			afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext, ratio);
 		}

@@ -31,7 +31,7 @@ public:
 	virtual bool RenderTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source, IBitmapDisplay* bmpViewer, CRenderBitmapOpenGL* renderOpenGL, const float& scale_factor, const int& etape) { return false; };
 #ifdef RENDEROPENGL
 	virtual void GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
-	virtual void GenerateTexture(CImageLoadingFormat * nextPicture) = 0;
+	virtual void GenerateTexture(CRegardsBitmap* bitmap) = 0;
 	virtual GLTexture * GetTexture(const int &numTexture) = 0;
 	virtual void DeleteTexture() = 0;
 #endif

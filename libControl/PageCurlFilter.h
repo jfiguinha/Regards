@@ -15,7 +15,7 @@ namespace Regards
 			CPageCurlFilter();
 			~CPageCurlFilter();
 			virtual int GetTypeFilter();
-			virtual void GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer);
+			
 			virtual GLTexture * GetTexture(const int &numTexture);
 			virtual void DeleteTexture();
 			virtual void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond);
@@ -23,6 +23,7 @@ namespace Regards
 			virtual bool RenderTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source, IBitmapDisplay* bmpViewer, CRenderBitmapOpenGL* renderOpenGL, const float& scale_factor, const int& etape);
 		private:
 
+			void GenerateTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source, IBitmapDisplay* bmpViewer);
 			void RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert, const int& width, const int& height, const int& left, const int& top);
 
 			Regards::OpenGL::GLTexture * pictureFirst;
