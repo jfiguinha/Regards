@@ -340,10 +340,10 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
 	if (m_bTransition)
 	{
-		if(isDiaporama)
-			etape += 1;
-		else
-			etape += 10;
+		//if(isDiaporama)
+		//	etape += 1;
+		//else
+		etape += 10;
 
 
 		if (etape > 100)
