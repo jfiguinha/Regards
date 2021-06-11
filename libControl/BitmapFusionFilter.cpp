@@ -72,9 +72,11 @@ CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLo
 
 void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 {
+    DeleteTexture();
+    
 	if (start)
 	{
-		GenerateEffectTexture(bmpSecond, bmpViewer);
+		//GenerateEffectTexture(bmpSecond, bmpViewer);
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
 	}
 	else
