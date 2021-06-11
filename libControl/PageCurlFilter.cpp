@@ -82,6 +82,8 @@ void CPageCurlFilter::DeleteTexture()
 
 void CPageCurlFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 {
+    DeleteTexture();
+    
 	bmpViewer->StartTransitionEffect(bmpSecond, false);
 }
 
@@ -103,7 +105,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 {
 	
 	bool init = false;
-	if (initTexture || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
+	if (initTexture || pictureFirst == nullptr || pictureNext == nullptr || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
 	{
 		init = true;
 	}
