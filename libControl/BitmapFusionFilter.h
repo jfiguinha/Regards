@@ -12,17 +12,16 @@ namespace Regards
 			CBitmapFusionFilter();
 			~CBitmapFusionFilter();
 			virtual int GetTypeFilter();
-			virtual void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond);
-			virtual void AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio);
-#ifdef RENDEROPENGL
-			void GenerateEffectTexture(CImageLoadingFormat* nextPicture, const bool& isOpenCL, IBitmapDisplay* bmpViewer);
-			virtual void GenerateTexture(CRegardsBitmap* bitmap);
+			virtual void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond);
+			virtual void AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio);
 			virtual GLTexture * GetTexture(const int &numTexture);
 			virtual void DeleteTexture();
-#endif
 
 		protected:
-
+#ifdef RENDEROPENGL
+			virtual void GenerateTexture(CRegardsBitmap* bitmap);
+			virtual void GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
+#endif
 			CRegardsBitmap* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 			Regards::OpenGL::GLTexture * pictureNext;
 			CRegardsBitmap * _bmpSecond;

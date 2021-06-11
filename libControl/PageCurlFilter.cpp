@@ -80,7 +80,7 @@ void CPageCurlFilter::DeleteTexture()
 	pictureFirst = nullptr;
 }
 
-void CPageCurlFilter::SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+void CPageCurlFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 {
 	bmpViewer->StartTransitionEffect(bmpSecond, false);
 }

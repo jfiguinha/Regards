@@ -94,7 +94,7 @@ namespace Regards
 			CScrollbarWnd * scrollbar;
 			CSliderVideo * videoSlider;
 			CVideoControlSoft * videoWindow;
-			CVideoEffectParameter * videoEffectParameter;
+			//CVideoEffectParameter * videoEffectParameter;
 			CWindowMain * windowMain;
 			bool showToolbarSup = false;
 			bool play;
@@ -108,7 +108,7 @@ namespace Regards
 			vector<CStreamInfo> listStream;
 			std::vector<int> value;
             wxString filename;
-            bool firstMovie = true;
+            //bool firstMovie = true;
 		};
 	}
 }

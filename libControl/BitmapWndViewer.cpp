@@ -58,7 +58,7 @@ public:
 	CMoveEffectTextureEffect() {};
 	~CMoveEffectTextureEffect() {};
 
-	void AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float & scale_factor, const bool & isNext, float& ratio)
+	virtual void AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float & scale_factor, const bool & isNext, float& ratio)
 	{
 		int xtexture = 0;
 		int pos = 0;
@@ -73,7 +73,7 @@ public:
 
 		if (local.width != out.width)
 		{
-			GenerateEffectTexture(nextPicture, isOpenCL, bmpViewer);
+			GenerateEffectTexture(nextPicture, bmpViewer);
 		}
 
 		if (isNext)
@@ -129,7 +129,7 @@ public:
 		return IDM_AFTEREFFECT_NONE;
 	}
 
-	void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+	virtual void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 	{
 		bmpViewer->StopTransitionEffect(bmpSecond);
 	}
@@ -147,12 +147,12 @@ public:
 		return IDM_DIAPORAMA_TRANSITION;
 	}
 
-	void SetTransitionBitmap(const bool& openCL, const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+	virtual void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 	{
 		bmpViewer->StartTransitionEffect(bmpSecond, true);
 	}
 
-	virtual void AfterRender(CImageLoadingFormat* nextPicture, const bool& isOpenCL, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
+	virtual void AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
 	{
 		if (etape < 110)
 		{
@@ -263,13 +263,6 @@ void CBitmapWndViewer::SetDiaporamaMode()
 
 void CBitmapWndViewer::SetNormalMode()
 {
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif   
-
-	//renderOpenGL->ReloadResource(scale_factor);
 	isDiaporama = false;
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
@@ -578,27 +571,15 @@ bool CBitmapWndViewer::IsOpenCLCompatible()
 //---------------------------------------------------------
 void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 {
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	//if(renderOpenGL != nullptr)
-	//	renderOpenGL->ReloadResource(scale_factor);
-
 	if (etape != 0)
 	{
 		StopTransition();
 	}
 
 	int numEffect = 0;
-	bool start = false;// (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename());
 	
 	if (isDiaporama)
 	{
-		//if(nextPicture != nullptr)
-		//	SetBitmap(nextPicture, false);
 		nextPicture = nullptr;
 		numEffect = config->GetDiaporamaTransitionEffect();
 	}
@@ -616,7 +597,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	afterEffect = AfterEffectPt(numEffect);
 	if (afterEffect != nullptr)
-		afterEffect->SetTransitionBitmap(IsOpenCLCompatible(), true, this, bmpSecond);
+		afterEffect->SetTransitionBitmap(true, this, bmpSecond);
 }
 
 void CBitmapWndViewer::StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool &setPicture)
@@ -774,7 +755,7 @@ void CBitmapWndViewer::AfterRender()
 
 		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)
 		{
-			afterEffect->AfterRender(nextPicture, IsOpenCLCompatible(), renderOpenGL, this, etape, scale_factor, isNext, ratio);
+			afterEffect->AfterRender(nextPicture, renderOpenGL, this, etape, scale_factor, isNext, ratio);
 		}
 	}
 
