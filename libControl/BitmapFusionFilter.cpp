@@ -96,7 +96,19 @@ void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture
 
 void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
 {
-	GenerateEffectTexture(nextPicture, bmpViewer);
+	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	int orientation = nextPicture->GetOrientation();
+	bitmapTemp->RotateExif(orientation);
+	//bitmapTemp->SetAlphaValue(0);
+
+	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
+	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
+	int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+    
+    delete bitmapTemp;
+    
+    if(pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+        GenerateEffectTexture(nextPicture, bmpViewer);
 
 	if (renderOpenGL != nullptr)
 		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
