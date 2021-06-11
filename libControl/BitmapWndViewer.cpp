@@ -63,15 +63,19 @@ public:
 		int xtexture = 0;
 		int pos = 0;
 
-		wxRect local;
-		float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
-		local.width = nextPicture->GetWidth() * newRatio;
-		local.height = nextPicture->GetHeight() * newRatio;
-		local.x = (bmpViewer->GetWidth() - out.width) / 2;
-		local.y = (bmpViewer->GetHeight() - out.height) / 2;
+        CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
+        int orientation = nextPicture->GetOrientation();
+        bitmapTemp->RotateExif(orientation);
+        //bitmapTemp->SetAlphaValue(0);
+
+        float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
+        int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
+        int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+        
+        delete bitmapTemp;
 
 
-		if (local.width != out.width)
+		if(pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
 		{
 			GenerateEffectTexture(nextPicture, bmpViewer);
 		}
