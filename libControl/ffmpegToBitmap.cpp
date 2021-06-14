@@ -15,9 +15,6 @@ AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
 
  CffmpegToBitmap::CffmpegToBitmap(const bool & rgba)
  {
-#ifdef RENDEROPENGL  
-    // glTexture = new GLTexture();
-#endif
      if(rgba)
          pixelFormat = AV_PIX_FMT_BGRA;
      else

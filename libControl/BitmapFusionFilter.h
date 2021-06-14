@@ -18,10 +18,10 @@ namespace Regards
 			virtual void DeleteTexture();
 
 		protected:
-#ifdef RENDEROPENGL
+
 			virtual void GenerateTexture(CRegardsBitmap* bitmap);
 			virtual void GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
-#endif
+
 			CRegardsBitmap* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 			Regards::OpenGL::GLTexture * pictureNext;
 			CRegardsBitmap * _bmpSecond;

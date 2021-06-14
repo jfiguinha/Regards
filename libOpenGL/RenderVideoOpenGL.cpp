@@ -3,7 +3,6 @@
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
-#ifdef RENDEROPENGL
 #include "RenderVideoOpenGL.h"
 #include <GLSLShader.h>
 #include <RegardsBitmap.h>
@@ -374,5 +373,3 @@ GLTexture * CRenderVideoOpenGL::GetVideoTextureCopyPt()
 	//CopyTexture();
 	return textureVideoCopy;
 }
-
-#endif

@@ -33,7 +33,7 @@ wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame * copyFrameBuffer = nullptr;
 
-#ifdef RENDEROPENGL
+
 #ifdef GLUT
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -42,20 +42,11 @@ AVFrame * copyFrameBuffer = nullptr;
 #endif
 #endif
 #include <CL/cl_gl.h>
-#else
-extern COpenCLEngine * openCLEngine;
-extern COpenCLContext * openclContext;
-#endif
 
 
 CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
-#ifdef RENDEROPENGL  
 : CWindowOpenGLMain("CVideoControl",parent, id)
-#else
-: CWindowMain("CVideoControl", parent, id)
-#endif
 {
-#ifdef RENDEROPENGL  
 	renderBitmapOpenGL = nullptr;
 #ifdef GLUT
 #ifndef __APPLE__
@@ -63,8 +54,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
 	glutInit(&argc, argv);
 #endif
-#endif
-
 #endif
 	hq3d = nullptr;// new Chqdn3d(videoEffectParameter.denoisingLevel);
 	widthVideo = 0;
@@ -116,10 +105,10 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	videoEnd = true;
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
-#ifdef RENDEROPENGL 
+
 	openCLEngine = nullptr;
 	openclContext = nullptr;
-#endif
+
 	openclEffectYUV = nullptr;
 	
 	hCursorHand = CResourceCursor::GetClosedHand();
@@ -909,7 +898,7 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	delete playStartTimer;
 	delete fpsTimer;
-#ifdef RENDEROPENGL   
+
 	if (renderBitmapOpenGL != nullptr)
 	{
 		renderBitmapOpenGL->SetCurrent(*this);
@@ -920,7 +909,7 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete openCLEngine;
 	openCLEngine = nullptr;
 
-#endif
+
 	if(openclEffectYUV != nullptr)
 		delete openclEffectYUV;
     
@@ -1125,7 +1114,6 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 		reloadResource = false;
 	}
 
-#ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
 	GLTexture * glTextureOutput = nullptr;
 
@@ -1148,7 +1136,6 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
                 openclContext = openCLEngine->GetInstance();
         }
     }
-#endif 
 
     std::clock_t start;
     start = std::clock();    
@@ -1179,7 +1166,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
             fpsTimer->Start(1000);
 	}
 
-#ifdef RENDEROPENGL 
+
 	if (videoRenderStart)
 	{
 		if (thumbnailVideo != nullptr && pause && pictureVideo != nullptr)
@@ -1254,18 +1241,6 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
-        
-    //if(deleteTexture)
-    //renderBitmapOpenGL->DeleteTexture();
-
-#endif
-   // double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-
-
-    //std::cout<<"Video OnPaint Time : "<< duration <<'\n';
-    
-
-   // printf("OnPaint end \n");
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1833,8 +1808,6 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	rect->height = FFMAX(height, 1);
 }
 
-#ifdef RENDEROPENGL
-
 GLTexture * CVideoControlSoft::RenderToTexture(CRegardsBitmap * bitmap)
 {
 	GLTexture * glTexture = new GLTexture();
@@ -2256,7 +2229,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 	//delete bitmap;
 	return glTexture;
 }
-#endif
+
 
 void CVideoControlSoft::Rotate90()
 {
@@ -2394,7 +2367,7 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 //-------------------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------------------
-#ifdef RENDEROPENGL
+
 GLTexture * CVideoControlSoft::RenderToGLTexture()
 {
 	// printf("RenderToBitmap  \n"); 
@@ -2429,100 +2402,3 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
        
 	return glTexture;
 }
-#else
-
-CRegardsBitmap * CVideoControlSoft::GenerateBitmap(COpenCLEffectVideo * openclEffect)
-{
-	muVideoEffect.lock();
-	int bicubic = videoEffectParameter.BicubicEnable;
-	muVideoEffect.unlock();
-	wxRect rect;
-
-	if (angle == 90 || angle == 270)
-	{
-		calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-		openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
-	}
-	else
-	{
-		calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-		openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
-	}
-	muVideoEffect.lock();
-	openclEffect->ApplyVideoEffect(&videoEffectParameter);
-	muVideoEffect.unlock();
-	CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
-	return bitmap;
-}
-
-CRegardsBitmap * CVideoControlSoft::RenderToBitmap(COpenCLEffectVideo * openclEffect)
-{
-	// printf("RenderToBitmap  \n"); 
-	std::clock_t start;
-	start = std::clock();
-	double duration;
-	CRegardsBitmap * picture = nullptr;
-	if (!isffmpegDecode)
-	{
-
-		//printf("VideoControl Is use_opencl \n");
-		if (openclEffect != nullptr && openclEffect->IsOk())
-		{
-			muBitmap.lock();
-			picture = GenerateBitmap(openclEffect);
-			muBitmap.unlock();
-		}
-
-		deleteTexture = false;
-	}
-	else
-	{
-		muBitmap.lock();
-		picture = ffmpegToBitmap->ConvertFrameToBitmapWithInterpolation(angle);
-		muBitmap.unlock();
-		deleteTexture = false;
-	}
-
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-
-	//std::cout<<"RenderToBitmap Time Execution: "<< duration <<'\n';
-
-	return picture;
-}
-
-
-CRegardsBitmap * CVideoControlSoft::RenderToBitmap()
-{
-	// printf("RenderToBitmap  \n"); 
-	std::clock_t start;
-	start = std::clock();
-	double duration;
-	CRegardsBitmap * picture = nullptr;
-	if (!isffmpegDecode)
-	{
-
-		//printf("VideoControl Is use_opencl \n");
-		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
-		{
-			muBitmap.lock();
-			picture = GenerateBitmap(openclEffectYUV);
-			muBitmap.unlock();
-		}
-
-		deleteTexture = false;
-	}
-	else
-	{
-		muBitmap.lock();
-		picture = ffmpegToBitmap->ConvertFrameToBitmapWithInterpolation(angle);
-		muBitmap.unlock();
-		deleteTexture = false;
-	}
-
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-
-	//std::cout<<"RenderToBitmap Time Execution: "<< duration <<'\n';
-
-	return picture;
-}
-#endif

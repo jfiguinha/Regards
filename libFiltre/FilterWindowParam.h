@@ -11,7 +11,7 @@
 #include <TreeElementValue.h>
 #include <EffectParameter.h>
 #include <MouseUpdate.h>
-//#include <RenderOpenGL.h>
+
 class CFiltreEffet;
 class CRegardsBitmap;
 class CImageLoadingFormat;

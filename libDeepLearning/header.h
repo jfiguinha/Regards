@@ -10,7 +10,6 @@
 #define EXIV2
 #define FFMPEG
 #define USECURL
-#define RENDEROPENGL
 #define GLUT
 //#define WX_PRECOMP
 

@@ -1,6 +1,4 @@
 #pragma once
-#ifdef RENDEROPENGL
-
 #include "GLcontext.h"
 #include <cstring>
 
@@ -177,5 +175,3 @@ namespace Regards
 
 	}
 }
-
-#endif

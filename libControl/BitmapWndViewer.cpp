@@ -375,6 +375,13 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	if (clickTimer->IsRunning())
 		clickTimer->Stop();
 
+	if (afterEffect != nullptr)
+	{
+		afterEffect->DeleteTexture();
+		delete(afterEffect);
+		afterEffect = nullptr;
+	}
+
 	//delete(openclEffectVideo);
 	delete(transitionTimer);
 	delete(clickTimer);
@@ -549,11 +556,14 @@ void CBitmapWndViewer::EndTransition()
         nextPicture	= nullptr;
     }
 
+	/*
 	if (afterEffect != nullptr)
 	{
+		afterEffect->DeleteTexture();
 		delete(afterEffect);
 		afterEffect = nullptr;
 	}
+	*/
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
 		
@@ -593,13 +603,18 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 	if(!bitmapLoad)
 		numEffect = 0;
 
-	if (afterEffect != nullptr)
+	if (oldTransNumEffect != numEffect)
 	{
-		delete(afterEffect);
-		afterEffect = nullptr;
+		if (afterEffect != nullptr)
+		{
+			delete(afterEffect);
+			afterEffect = nullptr;
+		}
+		afterEffect = AfterEffectPt(numEffect);
+
+		oldTransNumEffect = numEffect;
 	}
 
-	afterEffect = AfterEffectPt(numEffect);
 	if (afterEffect != nullptr)
 		afterEffect->SetTransitionBitmap(true, this, bmpSecond);
 }
@@ -728,7 +743,7 @@ void CBitmapWndViewer::SetNextPictureMove(const bool& value)
 	isNext = value;
 }
 
-#ifdef RENDEROPENGL
+
 void CBitmapWndViewer::AfterRender()
 {
 #ifndef WIN32
@@ -768,16 +783,6 @@ void CBitmapWndViewer::AfterRender()
 		//Insertion dans le HBITMAP
 		if (fixArrow && (etape == 0 || etape == 100))
 		{
-			/*
-#ifndef WIN32
-			double scale_factor = GetContentScaleFactor();
-#else
-			double scale_factor = 1.0f;
-#endif 
-
-			if(renderOpenGL != nullptr)
-				renderOpenGL->ReloadResource(scale_factor);
-			*/
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
 		}
@@ -829,91 +834,6 @@ void CBitmapWndViewer::DeleteTexture()
 		renderOpenGL->DeleteTexture();
 }
 
-#else
-
-void CBitmapWndViewer::LoadingResource(const double & scale_factor)
-{
-	wxColor colorToReplace = wxColor(0, 0, 0);
-	wxColor colorActifReplacement = wxColor(255, 255, 255);
-	arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG", 32 * scale_factor, 32 * scale_factor);
-	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-	arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
-	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-}
-
-void CBitmapWndViewer::ShowArrowNext(wxDC * memDC)
-{
-	int left = width - arrowNext.GetWidth();
-	int top = (height - arrowNext.GetHeight()) / 2;
-	memDC->DrawBitmap(arrowNext, left, top);
-
-}
-
-void CBitmapWndViewer::ShowArrowPrevious(wxDC * memDC)
-{
-
-	int left = 0;
-	int top = (height - arrowPrevious.GetHeight()) / 2;
-	memDC->DrawBitmap(arrowPrevious, left, top);
-
-}
-
-void CBitmapWndViewer::AfterRender(wxDC * dc)
-{
-
-
-	if(!arrowPrevious.IsOk())
-		LoadingResource(scale_factor);
-
-	if(bitmapLoad)
-	{
-		//Affichage de la transition
-		int numEffect = 0;
-
-		if (isDiaporama)
-			numEffect = config->GetDiaporamaTransitionEffect();
-		if (config != nullptr)
-			numEffect = config->GetEffect();
-
-		if (isDiaporama)
-		{
-			if (isDiaporama && numEffect == 0)
-			{
-				startTransition = false;
-				bitmapInterface->TransitionEnd();
-			}
-		}
-
-		if (numEffect != 0)
-		{
-			wxRect out;
-			CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
-			if (bitmapOut != nullptr)
-			{
-				CImageLoadingFormat image;
-				image.SetPicture(bitmapOut);
-				wxImage * imageR = image.GetwxImage();
-				dc->DrawBitmap(*imageR, out.x, out.y, true);
-				delete imageR;
-
-			}
-		}
-	}
-
-	if (!isDiaporama)
-	{
-		//Insertion dans le HBITMAP
-		if (fixArrow && (etape == 0 || etape == 100))
-		{
-			ShowArrowPrevious(dc);
-			ShowArrowNext(dc);
-		}
-
-	}
-}
-#endif
 void CBitmapWndViewer::KeyPress(const int &key)
 {
 	if (key == WXK_ESCAPE)
@@ -945,9 +865,6 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
         int x = (xPos - xPosImage);
         int y = (yPos - yPosImage);
         
-    printf("MouseMove xPos : %d \n",x);
-    printf("MouseMove yPos : %d \n",y);
-
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
 		{

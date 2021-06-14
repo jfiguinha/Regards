@@ -2,7 +2,6 @@
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
-#ifdef RENDEROPENGL
 #pragma once
 #include <GLTexture.h>
 #include <GLSLShader.h>
@@ -81,5 +80,3 @@ namespace Regards
 		};
 	}
 }
-
-#endif

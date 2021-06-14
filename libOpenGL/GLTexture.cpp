@@ -1,5 +1,4 @@
 #include <header.h>
-#ifdef RENDEROPENGL
 #include "GLTexture.h"
 
 using namespace Regards::OpenGL;
@@ -184,5 +183,3 @@ void GLTexture::Enable()
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, m_nTextureID );
 }
-
-#endif

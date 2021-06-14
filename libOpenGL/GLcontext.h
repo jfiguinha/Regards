@@ -1,5 +1,3 @@
-#ifdef RENDEROPENGL
-
 #include <GL/glew.h>
 #if defined(WIN32)
 #include <GL/wglew.h>
@@ -34,6 +32,4 @@ extern GLXEWContext _glxewctx;
 #else
 #include <CL/cl.h>
 #include <CL/cl_gl.h>
-#endif
-
 #endif

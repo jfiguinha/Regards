@@ -1,5 +1,4 @@
 #pragma once
-#ifdef RENDEROPENGL
 #include <GLcontext.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -83,4 +82,3 @@ namespace Regards
 		};
 	}
 }
-#endif

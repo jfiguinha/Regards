@@ -3,9 +3,7 @@
 //#define RENDEROPENGL
 
 #include "WindowMain.h"
-#ifdef RENDEROPENGL
 #include "WindowOpenGLMain.h"
-#endif
 #include <RegardsConfigParam.h>
 #include <theme.h>
 
@@ -48,11 +46,7 @@ namespace Regards
 {
 	namespace Window
 	{
-#ifdef RENDEROPENGL
 		class CBitmapWnd : public CWindowOpenGLMain, public IBitmapDisplay
-#else
-		class CBitmapWnd : public CWindowMain, public IBitmapDisplay
-#endif
 		{
 		public:
 			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
@@ -133,11 +127,7 @@ namespace Regards
 
 			int GetExifOrientation(const int& angle);
 			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput) { return false; };
-#ifdef RENDEROPENGL
 			virtual void AfterRender() {};
-#else
-			virtual void AfterRender(wxDC * dc) {};
-#endif
 			int UpdateResized();
 
 			int IsSupportOpenCL();
@@ -182,13 +172,8 @@ namespace Regards
 #ifdef KeyPress
 #undef KeyPress
 #endif			
-#ifdef RENDEROPENGL
 			void RenderToScreenWithOpenCLSupport();
 			void RenderToScreenWithoutOpenCLSupport();
-#else
-			void RenderToScreenWithOpenCLSupport(wxDC * dc);
-			void RenderToScreenWithoutOpenCLSupport(wxDC * dc);
-#endif
 			void RefreshWindow();
 			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
@@ -272,15 +257,14 @@ namespace Regards
 
 
 			CFiltreEffet * filtreEffet;
-			//int filterInterpolation;
-#ifdef RENDEROPENGL
+
 			CRenderBitmapOpenGL * renderOpenGL = nullptr;
 			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
 			GLTexture * glTexture = nullptr;
 			GLTexture * glTextureSrc = nullptr;
 			COpenCLEngine * openCLEngine = nullptr;
 			COpenCLContext * openclContext = nullptr;
-#endif
+
 			//Preview Parameter
 			int preview = 0;
 

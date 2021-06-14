@@ -24,10 +24,6 @@
 #define USECURL
 #endif
 
-#ifndef RENDEROPENGL
-#define RENDEROPENGL
-#endif
-
 #ifndef GLUT
 #define GLUT
 #endif

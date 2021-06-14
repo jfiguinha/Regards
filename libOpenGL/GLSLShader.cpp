@@ -1,5 +1,4 @@
 #include <header.h>
-#ifdef RENDEROPENGL
 #include "GLSLShader.h"
 #include <LibResource.h>
 #include <ConvertUtility.h>
@@ -320,4 +319,3 @@ bool GLSLShader::SetMatrixParam(const char * pParamName_i, float * tabVecs)
 
 	return (GL_NO_ERROR == glGetError());
 }
-#endif

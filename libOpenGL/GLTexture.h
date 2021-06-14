@@ -1,4 +1,3 @@
-#ifdef RENDEROPENGL
 #pragma once
 #include "GLcontext.h"
 
@@ -48,4 +47,3 @@ namespace Regards
 
 	}
 }
-#endif

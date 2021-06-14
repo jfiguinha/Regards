@@ -80,15 +80,10 @@ namespace Regards
 			IAfterEffect * AfterEffectPt(const int& numFilter);
 			virtual void RenderTexture(const bool &invertPos);
 			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput);
-#ifdef RENDEROPENGL
+
 			virtual void AfterRender();
             virtual void DeleteTexture();
-#else
-			void LoadingResource(const double & scale_factor);
-			virtual void AfterRender(wxDC * dc);
-			void ShowArrowPrevious(wxDC * memDC);
-			void ShowArrowNext(wxDC * memDC);
-#endif
+
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
 			
@@ -141,17 +136,7 @@ namespace Regards
 			int typeClick = 0;
 
 			bool isNext = false;
-
-#ifdef RENDEROPENGL
-			/*
-			Regards::OpenGL::GLTexture * pictureNext;
-			Regards::OpenGL::GLTexture * pictureFirst;
-			CRegardsBitmap * bitmapNext = nullptr;
-			CRegardsBitmap * bitmapFirst = nullptr;
-			bool initTexture = false;
-			*/
-#endif
-			
+			int oldTransNumEffect = -1;		
 
 		};
 	}

@@ -1,9 +1,6 @@
 #pragma once
 #include "VideoControlInterface.h"
-
-#ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
-#endif
 
 #include <OpenCLContext.h>
 #include <OpenCLEngine.h>
@@ -34,12 +31,8 @@ using namespace Regards::OpenGL;
 class CFFmfc;
 class CThumbnailVideo;
 class Chqdn3d;
-
-#ifdef RENDEROPENGL  
+ 
 class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
-#else
-class CVideoControlSoft : public CWindowMain, public CVideoControlInterface
-#endif
 {
 public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
@@ -212,12 +205,9 @@ protected:
 	GLTexture * glTextureSrc = nullptr;
 	CRegardsBitmap * bitmap = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
-	//CffmpegToBitmap * ffmpegToBitmap = nullptr;
-#ifdef RENDEROPENGL
 	COpenCLEngine * openCLEngine = nullptr;
 	COpenCLContext * openclContext = nullptr;
 	CRenderVideoOpenGL * renderBitmapOpenGL;
-#endif
 	CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;

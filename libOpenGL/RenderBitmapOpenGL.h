@@ -2,9 +2,7 @@
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
-
 #pragma once
-#ifdef RENDEROPENGL
 #include <RenderOpenGL.h>
 #include <RGBAQuad.h>
 #include <EffectParameter.h>
@@ -40,4 +38,3 @@ namespace Regards
 		};
 	}
 }
-#endif

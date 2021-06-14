@@ -49,18 +49,11 @@ extern float clamp(float val, float minval, float maxval);
 //-----------------------------------------------------------------------------
 
 CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID idMain, const CThemeBitmapWindow & theme)
-//	: CWindowMain(parent, id)
-#ifdef RENDEROPENGL
 : CWindowOpenGLMain("CBitmapWnd", parent, id)
-#else
-: CWindowMain("CBitmapWnd", parent, id)
-#endif
 {
-#ifdef RENDEROPENGL
 	glTexture = nullptr;
 	openCLEngine = nullptr;
 	renderOpenGL = nullptr;
-#endif
 	idWindowMain = idMain;
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
@@ -247,8 +240,6 @@ CBitmapWnd::~CBitmapWnd(void)
 		delete filtreEffet;
 	filtreEffet = nullptr;
 
-#ifdef RENDEROPENGL
-
 	if (renderOpenGL)
 		renderOpenGL->SetCurrent(*this);
 
@@ -258,7 +249,7 @@ CBitmapWnd::~CBitmapWnd(void)
 	if (openCLEngine != nullptr)
 		delete openCLEngine;
 	openCLEngine = nullptr;
-#endif
+
 }
 
 void CBitmapWnd::SetKey(const int &iKey)
@@ -1666,8 +1657,6 @@ int CBitmapWnd::GetHeight()
 	return GetWindowHeight();
 }
 
-#ifdef RENDEROPENGL
-
 void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
@@ -2025,169 +2014,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	oldWidth = GetWidth();
 	oldHeight = GetHeight();
 }
-
-#else
-
-void CBitmapWnd::RenderToScreenWithOpenCLSupport(wxDC * dc)
-{
-	CRgbaquad color;
-
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	if (width == 0 || height == 0)
-		return;
-
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
-
-
-	muBitmap.lock();
-
-	if (openCLEngine != nullptr && source != nullptr)
-	{
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-
-		filtreEffet = new CFiltreEffet(color, openclContext, source);
-	}
-
-
-	muBitmap.unlock();
-
-	bool update = false;
-	UpdateScrollBar(update);
-
-	wxImage picture;
-
-	if (bitmapLoad && width > 0 && height > 0)
-	{
-		int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-		int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
-
-		if (widthOutput < 0 || heightOutput < 0)
-			return;
-
-		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-		ApplyPreviewEffect(widthOutput, heightOutput);
-
-		picture = filtreEffet->GetwxImage();
-
-	}
-
-	if (picture.IsOk())
-	{
-		int x = (width - picture.GetWidth()) / 2;
-		int y = (height - picture.GetHeight()) / 2;
-		dc->DrawBitmap(picture, x, y);
-		xPosImage = x;
-		yPosImage = y;
-	}
-
-}
-
-void CBitmapWnd::RenderToScreenWithoutOpenCLSupport(wxDC * dc)
-{
-	CRgbaquad color;
-
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	if (width == 0 || height == 0)
-		return;
-
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
-
-	wxImage picture;
-
-	if (source != nullptr && bitmapLoad)
-	{
-		//CRegardsBitmap* bitmapSpecial = nullptr;
-
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-
-		filtreEffet = new CFiltreEffet(color, nullptr, source);
-
-		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-		ApplyPreviewEffect(widthOutput, heightOutput);
-
-		picture = filtreEffet->GetwxImage();
-	}
-
-	if (picture.IsOk())
-	{
-		int x = (width - picture.GetWidth()) / 2;
-		int y = (height - picture.GetHeight()) / 2;
-		dc->DrawBitmap(picture, x, y);
-		xPosImage = x;
-		yPosImage = y;
-	}
-}
-
-//-----------------------------------------------------------------
-//Dessin de l'image
-//-----------------------------------------------------------------
-void CBitmapWnd::OnPaint(wxPaintEvent& event)
-{
-	TRACE();
-	wxPaintDC dc(this);
-	wxBitmap localmemBitmap(width,height);
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
-	wxMemoryDC memDC(localmemBitmap);
-
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"OnPaint\n");
-#endif
-
-	printf("CBitmapWnd OnPaint \n");
-
-	FillRect(&memDC, rc, themeBitmap.colorBack);
-
-	if (!IsSupportOpenCL())
-		RenderToScreenWithoutOpenCLSupport(&memDC);
-	else
-		RenderToScreenWithOpenCLSupport(&memDC);
-
-	AfterRender(&memDC);
-
-	memDC.SelectObject(wxNullBitmap);
-
-	dc.DrawBitmap(localmemBitmap, 0, 0);
-
-	printf("CBitmapWnd End OnPaint \n");
-	//scrollbar->SetPosition(posLargeur, posHauteur);
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
-	DWORD Result = LasttickCount - tickCount;
-
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-#endif
-
-
-}
-
-#endif
 
 void CBitmapWnd::RefreshWindow()
 {

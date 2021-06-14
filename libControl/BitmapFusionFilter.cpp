@@ -36,8 +36,7 @@ CBitmapFusionFilter::CBitmapFusionFilter()
 
 CBitmapFusionFilter::~CBitmapFusionFilter()
 {
-	if (pictureNext != nullptr)
-		delete(pictureNext);
+	DeleteTexture();
 }
 
 int CBitmapFusionFilter::GetTypeFilter()
@@ -75,14 +74,9 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay*
     DeleteTexture();
     
 	if (start)
-	{
-		//GenerateEffectTexture(bmpSecond, bmpViewer);
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
-	}
 	else
-	{
 		bmpViewer->StopTransitionEffect(bmpSecond);
-	}
 }
 
 void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
@@ -117,8 +111,6 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 
 }
 
-#ifdef RENDEROPENGL
-
 void  CBitmapFusionFilter::GenerateTexture(CRegardsBitmap* bitmap)
 {
     if(pictureNext == nullptr)
@@ -138,5 +130,3 @@ GLTexture * CBitmapFusionFilter::GetTexture(const int &numTexture)
 {
 	return pictureNext;
 }
-
-#endif

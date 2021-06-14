@@ -92,15 +92,6 @@ int MyApp::Close()
 	if (frameStart != nullptr)
 		frameStart->Destroy();
 
-	//if (frameViewer != nullptr)
-	//	frameViewer->Destroy();
-    
-#ifndef RENDEROPENGL  
-
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-
-#endif
 
 	sqlite3_shutdown();
 #ifdef USECURL
@@ -218,18 +209,6 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);
 	}
 
-
-
-
-
-#ifndef RENDEROPENGL  
-
-	openCLEngine = new COpenCLEngine();
-
-	if (openCLEngine != nullptr)
-		openclContext = openCLEngine->GetInstance();
-
-#endif
 
 #ifdef WIN32
     wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

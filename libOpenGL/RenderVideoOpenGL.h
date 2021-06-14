@@ -4,7 +4,6 @@
 //
 
 #pragma once
-#ifdef RENDEROPENGL
 #include <RenderOpenGL.h>
 #include "EffectVideoParameter.h"
 #include <RGBAQuad.h>
@@ -76,5 +75,3 @@ namespace Regards
 		};
 	}
 }
-
-#endif
