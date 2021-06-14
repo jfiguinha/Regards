@@ -99,34 +99,24 @@ namespace Regards
 			void MouseRelease(const int &xPos, const int &yPos);
 			int GetRawBitmapWidth();
 			int GetRawBitmapHeight();
-			//int GetOrientation();
 			void AfterSetBitmap();
-
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
 			void OnClick(wxTimerEvent& event);
-            void LoadingResource();
 
             
 			wxCursor hCursorCross;
 			CDraw * m_cDessin;
 			CImageLoadingFormat * nextPicture;
-			wxImage arrowPrevious;
-			wxImage arrowNext;
 			bool startTransition;
 			int etape;
 			bool fixArrow;
 			CBitmapInterface * bitmapInterface;
-			//CImageLoadingFormat* bmpSecond;
-
-			
 			IAfterEffect * afterEffect;
-
 			wxPoint oldMouse;
 
 			//Thread Parameter
 			bool m_bTransition;
-
 			bool isDiaporama;
 			bool isInUse;
 			bool invertColor;
@@ -134,10 +124,10 @@ namespace Regards
 			wxTimer * selectEffectTimer;
 			wxTimer * clickTimer;
 			int typeClick = 0;
-
 			bool isNext = false;
 			int oldTransNumEffect = -1;		
-
+			wxRect arrowPrevious;
+			wxRect arrowNext;
 		};
 	}
 }

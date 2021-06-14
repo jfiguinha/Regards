@@ -177,19 +177,6 @@ void CBitmapWndViewer::PrintPicture()
 	}
 }
 
-void CBitmapWndViewer::LoadingResource()
-{
-	wxColor colorToReplace = wxColor(0, 0, 0);
-	wxColor colorActifReplacement = wxColor(255, 255, 255);
-	arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG" , 32 * scaleFactor, 32 * scaleFactor);
-	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-	arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scaleFactor, 32 * scaleFactor);
-	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-
-}
-
 CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface)
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
@@ -204,7 +191,6 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	transitionTimer = nullptr;
 	selectEffectTimer = nullptr;
 	clickTimer = nullptr;
-    LoadingResource();
 	etape = 0;
 	fixArrow = true;
 	nextPicture = nullptr;
@@ -218,6 +204,16 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	clickTimer = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, this);
 	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnClick), nullptr, this);
+
+	arrowPrevious.x = 0;
+	arrowPrevious.y = 0;
+	arrowPrevious.width = 32 * scaleFactor;
+	arrowPrevious.height = 32 * scaleFactor;
+
+	arrowNext.x = 0;
+	arrowNext.y = 0;
+	arrowNext.width = 32 * scaleFactor;
+	arrowNext.height = 32 * scaleFactor;
 }
 
 void CBitmapWndViewer::OnClick(wxTimerEvent& event)
@@ -447,14 +443,6 @@ void CBitmapWndViewer::EndTransition()
         nextPicture	= nullptr;
     }
 
-	/*
-	if (afterEffect != nullptr)
-	{
-		afterEffect->DeleteTexture();
-		delete(afterEffect);
-		afterEffect = nullptr;
-	}
-	*/
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
 		
