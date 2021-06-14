@@ -21,6 +21,7 @@
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <filesystem>
 #include "ImageList.h"
 #include <ConvertUtility.h>
 #include <window_id.h>
@@ -217,6 +218,29 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 	if (centralWnd != nullptr)
 		list = centralWnd->GetFileList();
 
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+	if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		tempVideoFile = tempFolder + "\\thumbnail.mp4";
+#else
+		tempVideoFile = tempFolder + "/thumbnail.mp4";
+#endif
+
+		if (wxFileExists(tempVideoFile))
+			wxRemoveFile(tempVideoFile);
+
+	}
+
 	CRegardsConfigParam* config = CParamInit::getInstance();
 
 	int timeDelai = viewerParam->GetDelaiDiaporamaOption();
@@ -233,11 +257,9 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	wxString filepath = saveFileDialog.GetPath();
 
-	CThumbnailVideoExport::GenerateVideoFromList(filepath, list, timeDelai, 30, 1920, 1080, numEffect);
+	CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
 
-	wxString filecompleted = CLibResource::LoadStringFromResource("LBLFILEENCODINGCOMPLETED", 1);
-	wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-	wxMessageBox(filecompleted, infos);
+	ExportVideo(tempVideoFile, filepath);
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
@@ -265,20 +287,24 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		ffmpegEncoder->EndDecodeFile(ret);
 		delete ffmpegEncoder;
 		ffmpegEncoder = nullptr;
+
 	}
+
+
+	if (wxFileExists(tempVideoFile))
+		wxRemoveFile(tempVideoFile);
 }
 
-void CMainWindow::OnExportFile(wxCommandEvent& event)
+void CMainWindow::ExportVideo(const wxString &filename, const wxString& filenameOutput)
 {
-
-
-	if (IsVideo())
+	wxString filepath = filenameOutput;
+	if (filenameOutput == "")
 	{
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
-		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		//wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
-				"mp4 " + filename + " (*.mp4)|*.mp4|webm " + filename + " (*.webm)|*.webm|mov " + filename + " (*.mov)|*.mov|mkv " + filename + " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			"mp4 " + filename + " (*.mp4)|*.mp4|webm " + filename + " (*.webm)|*.webm|mov " + filename + " (*.mov)|*.mov|mkv " + filename + " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
@@ -288,7 +314,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 		wxFileName file_path(filepath);
 		wxString extension = file_path.GetExt();
 
-		if(extension != "mp4" && extension != "webm" && extension != "mov" && extension != "mkv")
+		if (extension != "mp4" && extension != "webm" && extension != "mov" && extension != "mkv")
 		{
 			switch (index)
 			{
@@ -306,26 +332,46 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 				break;
 			}
 		}
+	}
 
-		CVideoControlSoft * videoWindow = (CVideoControlSoft *)this->FindWindowById(VIDEOCONTROL);
-		COpenCLEngine * openCLEngine = videoWindow->GetOpenCLEngine();
 
-		CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath, openCLEngine);
-		compressAudioVideoOption.ShowModal();
-		if (compressAudioVideoOption.IsOk())
+	CVideoControlSoft* videoWindow = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
+	COpenCLEngine* openCLEngine = videoWindow->GetOpenCLEngine();
+
+	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath, openCLEngine);
+	compressAudioVideoOption.ShowModal();
+	if (compressAudioVideoOption.IsOk())
+	{
+
+		if (ffmpegEncoder == nullptr)
 		{
-			
-			if (ffmpegEncoder == nullptr)
-			{
-				CVideoOptionCompress * videoCompressOption = new CVideoOptionCompress();
-				compressAudioVideoOption.GetCompressionOption(videoCompressOption);
-				//Decoder available
-				wxString decoder = "";
-				ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
-				ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
-				
-			}
+			CVideoOptionCompress* videoCompressOption = new CVideoOptionCompress();
+			compressAudioVideoOption.GetCompressionOption(videoCompressOption);
+			//Decoder available
+			wxString decoder = "";
+			ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
+			ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
+
 		}
+	}
+	else if (filenameOutput != "")
+	{
+		wxCopyFile(filename, filepath);
+
+		wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
+		event.SetInt(0);
+		wxPostEvent(this, event);
+	}
+
+
+}
+
+void CMainWindow::OnExportFile(wxCommandEvent& event)
+{
+
+	if (IsVideo())
+	{
+		ExportVideo(this->centralWnd->GetFilename());
 	}
 	else
 	{

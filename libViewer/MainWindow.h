@@ -103,12 +103,13 @@ namespace Regards
             void SetScreenEvent(wxCommandEvent& event);
 			void OnExportDiaporama(wxCommandEvent& event);
 			void Resize();
-
+			void ExportVideo(const wxString& filename, const wxString& filenameOutput = "");
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
 			void OnEndThumbnail(wxCommandEvent& event);
 			static void CheckMD5(void * param);
 
+			wxString tempVideoFile = "";
 			bool fullscreen;
 			wxGauge * progressBar;
 			wxStatusBar * statusBar;

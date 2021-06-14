@@ -63,6 +63,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	else
 		windowVisible = WM_INFOS;
 
+	if(windowVisible == WM_HISTOGRAM)
+		windowVisible = WM_INFOS;
 	
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();

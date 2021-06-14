@@ -25,8 +25,8 @@ CThumbnailVideoExport::~CThumbnailVideoExport()
 
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
-    int codec = VideoWriter::fourcc('H', 'V', 'C', '1');
-    //int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
+    //int codec = VideoWriter::fourcc('H', 'V', 'C', '1');
+    int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
     Size S = Size((int)width,    // Acquire input size
         (int)height);
     VideoWriter outputVideo;                                        // Open the output
