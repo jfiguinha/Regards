@@ -109,6 +109,9 @@
     <ClCompile Include="PageCurlFilter.cpp">
       <Filter>Bitmap\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="MoveEffectTexture.cpp">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -238,6 +241,15 @@
       <Filter>Bitmap\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="PageCurlFilter.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveEffectTexture.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="NoneEffectTextureEffect.h">
+      <Filter>Bitmap\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DiaporamaEffect.h">
       <Filter>Bitmap\PostEffect</Filter>
     </ClInclude>
   </ItemGroup>

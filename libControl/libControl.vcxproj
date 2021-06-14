@@ -514,6 +514,7 @@
     <ClInclude Include="BitmapWndViewer.h" />
     <ClInclude Include="CriteriaTree.h" />
     <ClInclude Include="CriteriaTreeWnd.h" />
+    <ClInclude Include="DiaporamaEffect.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="ffmfcpimpl.h" />
     <ClInclude Include="ffmpeg.h" />
@@ -530,6 +531,8 @@
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
     <ClInclude Include="ModificationManager.h" />
+    <ClInclude Include="MoveEffectTexture.h" />
+    <ClInclude Include="NoneEffectTextureEffect.h" />
     <ClInclude Include="PageCurlFilter.h" />
     <ClInclude Include="PrintEngine.h" />
     <ClInclude Include="ShowBitmap.h" />
@@ -580,6 +583,7 @@
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
+    <ClCompile Include="MoveEffectTexture.cpp" />
     <ClCompile Include="PageCurlFilter.cpp" />
     <ClCompile Include="PrintEngine.cpp" />
     <ClCompile Include="ShowBitmap.cpp" />
