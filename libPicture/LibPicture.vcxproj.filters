@@ -118,6 +118,9 @@
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailVideoExport.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -264,6 +267,9 @@
     <ClInclude Include="buffer_data.h">
       <Filter>ThumbnailVideo</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailVideoExport.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -298,6 +304,9 @@
     </Filter>
     <Filter Include="hqdb3d">
       <UniqueIdentifier>{531a7516-7c4b-4759-ad3f-783dd329bc7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThumbnailVideoGenerator">
+      <UniqueIdentifier>{c208792d-80f5-4021-b146-20e9d88e01be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

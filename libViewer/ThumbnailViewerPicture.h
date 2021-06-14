@@ -22,7 +22,7 @@ namespace Regards
 			virtual ~CThumbnailViewerPicture(void);
 			void Init(const int &typeAffichage = SHOW_ALL);
 			void SetListeFile();
-
+			vector<wxString> GetFileList();
 			int GetHeight()
 			{
 				return GetIconeHeight();

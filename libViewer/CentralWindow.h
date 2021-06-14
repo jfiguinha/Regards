@@ -105,6 +105,8 @@ namespace Regards
 			bool IsCompatibleFullscreen();
 			void StopDiaporama();
 			void StartDiaporama();
+			vector<wxString> GetFileList();
+
 		private:
 
 			int GetPhotoId(const wxString& filename);

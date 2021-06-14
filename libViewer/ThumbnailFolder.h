@@ -20,6 +20,7 @@ namespace Regards
 		public:
 			CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail& themeThumbnail, const bool& testValidity);
 			virtual ~CThumbnailFolder(void);
+			vector<wxString> GetFileList();
 			void Init(const int& typeAffichage = SHOW_ALL);
 			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector, int& nbElement);
 		protected:

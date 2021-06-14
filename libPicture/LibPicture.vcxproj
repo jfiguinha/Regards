@@ -537,6 +537,7 @@
     <ClInclude Include="StreamInfo.h" />
     <ClInclude Include="ThumbnailData.h" />
     <ClInclude Include="ThumbnailDataStorage.h" />
+    <ClInclude Include="ThumbnailVideoExport.h" />
     <ClInclude Include="TiffOption.h" />
     <ClInclude Include="videothumb.h" />
     <ClInclude Include="webpOption.h" />
@@ -586,6 +587,7 @@
     <ClCompile Include="ScaleThumbnail.cpp" />
     <ClCompile Include="ThumbnailData.cpp" />
     <ClCompile Include="ThumbnailDataStorage.cpp" />
+    <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
     <ClCompile Include="videothumb.cpp" />
     <ClCompile Include="webpOption.cpp" />

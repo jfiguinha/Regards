@@ -33,6 +33,15 @@ CThumbnailFolder::~CThumbnailFolder(void)
 
 }
 
+vector<wxString> CThumbnailFolder::GetFileList()
+{
+	vector<wxString> list;
+	for (CPhotos photo : newPhotosVectorList)
+	{
+		list.push_back(photo.GetPath());
+	}
+	return list;
+}
 
 void CThumbnailFolder::OnPictureClick(CThumbnailData* data)
 {

@@ -25,12 +25,14 @@ using namespace Regards::Internet;
 #define IDM_EDIT 161
 #define IDM_EXPORT 162
 #define IDM_NEWVERSION 163
+#define IDM_EXPORT_DIAPORAMA 164
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
 {
 	int faceDetection = 0;
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
+	wxString export_diaporama = CLibResource::LoadStringFromResource(L"LBLEXPORTDIAPORAMA", 1);
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
@@ -118,6 +120,13 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	export_button->SetCommandId(IDM_EXPORT);
 	export_button->SetLibelleTooltip(export_label);
 	navElement.push_back(export_button);
+
+	CToolbarButton* export_diaporama_button = new CToolbarButton(themeToolbar.button);
+	export_diaporama_button->SetButtonResourceId("IDB_EXPORT");
+	export_diaporama_button->SetLibelle(export_diaporama);
+	export_diaporama_button->SetCommandId(IDM_EXPORT_DIAPORAMA);
+	export_diaporama_button->SetLibelleTooltip(export_diaporama);
+	navElement.push_back(export_diaporama_button);
 
 	if (NewVersionAvailable())
 	{
@@ -267,6 +276,14 @@ void CToolbar::EventManager(const int &id)
 	{
 		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXPORTFILE);
+		wxQueueEvent(central, event);
+		break;
+	}
+
+	case IDM_EXPORT_DIAPORAMA:
+	{
+		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXPORTDIAPORAMA);
 		wxQueueEvent(central, event);
 		break;
 	}

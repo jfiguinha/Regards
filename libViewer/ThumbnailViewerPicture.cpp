@@ -42,6 +42,20 @@ void CThumbnailViewerPicture::Init(const int &typeAffichage)
 	processIdle = true;
 }
 
+vector<wxString> CThumbnailViewerPicture::GetFileList()
+{
+	PhotosVector pictures;
+	CSqlFindPhotos sqlFindPhotos;
+	sqlFindPhotos.SearchPhotos(&pictures);
+
+	vector<wxString> list;
+	for (CPhotos photo : pictures)
+	{
+		list.push_back(photo.GetPath());
+	}
+	return list;
+}
+
 void CThumbnailViewerPicture::SetListeFile()
 {
 	PhotosVector pictures;

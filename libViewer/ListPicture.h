@@ -41,7 +41,7 @@ namespace Regards
 			void ChangeTypeAffichage(const long & typeAffichage);
 			void Resize();
 			void ForceRefresh();
-
+			vector<wxString> GetFileList();
 			int ImageSuivante();
 			int ImagePrecedente();
 			int ImageFin();

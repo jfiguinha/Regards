@@ -136,8 +136,6 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
     wxClientDC dc(this);
     int i = 0;
     
-    //printf("CToolbarWindow::OnMouseMove x : %d y : %d \n", xPos, yPos);
-    
     for (CToolbarElement * nav : navElement)
     {
         if (nav != nullptr)

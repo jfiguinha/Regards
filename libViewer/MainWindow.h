@@ -101,6 +101,7 @@ namespace Regards
 			void OnUpdateExifThumbnail(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
+			void OnExportDiaporama(wxCommandEvent& event);
 			void Resize();
 
 			void ProcessIdle();

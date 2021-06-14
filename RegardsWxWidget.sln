@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{03F02712-6B4F-4FAF-8369-9242E482A156}"
 	ProjectSection(SolutionItems) = preProject
 		include\config_id.h = include\config_id.h
+		include\effect_id.h = include\effect_id.h
 		include\font_quality.h = include\font_quality.h
 		include\header.cpp = include\header.cpp
 		include\header.h = include\header.h

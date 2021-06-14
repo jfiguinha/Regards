@@ -45,6 +45,7 @@
 #include <ParamInit.h>
 #include "ListFace.h"
 #include <wx/busyinfo.h>
+#include <ThumbnailVideoExport.h>
 #include <OpenCVEffect.h>
 //#include <jpge.h>
 //using namespace jpge;
@@ -190,6 +191,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_EXPORTFILE, wxCommandEventHandler(CMainWindow::OnExportFile));
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
+	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -206,6 +208,36 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		localFilename = config->GetLastShowPicture();
+}
+
+void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
+{
+	int numEffect = 0;
+	vector<wxString> list;
+	if (centralWnd != nullptr)
+		list = centralWnd->GetFileList();
+
+	CRegardsConfigParam* config = CParamInit::getInstance();
+
+	int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+	if(config != nullptr)
+		numEffect = config->GetDiaporamaTransitionEffect();
+
+	wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
+	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+
+	wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
+		"mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	wxString filepath = saveFileDialog.GetPath();
+
+	CThumbnailVideoExport::GenerateVideoFromList(filepath, list, timeDelai, 30, 1920, 1080, numEffect);
+
+	wxString filecompleted = CLibResource::LoadStringFromResource("LBLFILEENCODINGCOMPLETED", 1);
+	wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+	wxMessageBox(filecompleted, infos);
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)

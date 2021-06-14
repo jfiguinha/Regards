@@ -1028,6 +1028,29 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		
 }
 
+vector<wxString> CCentralWindow::GetFileList()
+{
+	vector<wxString> listFile;
+	if (windowMode)
+	{
+		if (windowMode == WINDOW_EXPLORER)
+		{
+			if (listPicture != nullptr)
+			{
+				listFile = listPicture->GetFileList();
+			}
+		}
+		else if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE)
+		{
+			if (thumbnailPicture != nullptr)
+			{
+				listFile = thumbnailPicture->GetFileList();
+			}
+		}
+	}
+	return listFile;
+}
+
 void CCentralWindow::SetListeFile(const wxString& filename)
 {
 	if (listPicture != nullptr)
