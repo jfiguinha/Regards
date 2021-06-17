@@ -122,7 +122,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	navElement.push_back(export_button);
 
 	CToolbarButton* export_diaporama_button = new CToolbarButton(themeToolbar.button);
-	export_diaporama_button->SetButtonResourceId("IDB_EXPORT");
+	export_diaporama_button->SetButtonResourceId("IDB_MOVIE");
 	export_diaporama_button->SetLibelle(export_diaporama);
 	export_diaporama_button->SetCommandId(IDM_EXPORT_DIAPORAMA);
 	export_diaporama_button->SetLibelleTooltip(export_diaporama);
