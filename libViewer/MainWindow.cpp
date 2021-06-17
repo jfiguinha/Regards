@@ -34,7 +34,7 @@
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
-
+#include <ffmpeg_application.h>
 #include <ShowBitmap.h>
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
@@ -239,6 +239,16 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 		if (wxFileExists(tempVideoFile))
 			wxRemoveFile(tempVideoFile);
 
+#ifdef WIN32
+		tempAudioVideoFile = tempFolder + "\\thumbnail_audio.mp4";
+#else
+		tempAudioVideoFile = tempFolder + "/thumbnail_audio.mp4";
+#endif
+
+		if (wxFileExists(tempAudioVideoFile))
+			wxRemoveFile(tempAudioVideoFile);
+		
+
 	}
 
 	CRegardsConfigParam* config = CParamInit::getInstance();
@@ -257,9 +267,43 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	wxString filepath = saveFileDialog.GetPath();
 
-	CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
+	int time_movie = CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
 
-	ExportVideo(tempVideoFile, filepath);
+	wxString openideofile = CLibResource::LoadStringFromResource(L"LBLSELECT", 1);
+
+	wxFileDialog openFileDialog(nullptr, openideofile, "", filename,
+		"mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_OK)
+	{
+		wxString tempAudio = "";
+		//Execute Crop Audio
+		wxString filepathAudio = openFileDialog.GetPath();
+#ifdef WIN32
+		tempAudio = tempFolder + "\\audio.";
+#else
+		tempAudio = tempFolder + "/audio.";
+#endif
+
+
+
+		wxFileName file_path(filepathAudio);
+		wxString extension = file_path.GetExt();
+
+		tempAudio.Append(extension);
+
+		if (wxFileExists(tempAudio))
+			wxRemoveFile(tempAudio);
+
+		CFFmpegApp::CropAudio(filepathAudio, to_string(time_movie), extension, tempAudio);
+		CFFmpegApp::ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
+		
+		if (wxFileExists(tempAudio))
+			wxRemoveFile(tempAudio);
+
+		ExportVideo(tempAudioVideoFile, filepath);
+	}
+	else 
+		ExportVideo(tempVideoFile, filepath);
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
@@ -289,7 +333,8 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		ffmpegEncoder = nullptr;
 
 	}
-
+	if (wxFileExists(tempAudioVideoFile))
+		wxRemoveFile(tempAudioVideoFile);
 
 	if (wxFileExists(tempVideoFile))
 		wxRemoveFile(tempVideoFile);
@@ -301,14 +346,14 @@ void CMainWindow::ExportVideo(const wxString &filename, const wxString& filename
 	if (filenameOutput == "")
 	{
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
-		//wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
-			"mp4 " + filename + " (*.mp4)|*.mp4|webm " + filename + " (*.webm)|*.webm|mov " + filename + " (*.mov)|*.mov|mkv " + filename + " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			"mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label + " (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label + " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
-		wxString filepath = saveFileDialog.GetPath();
+		filepath = saveFileDialog.GetPath();
 		int index = saveFileDialog.GetFilterIndex();
 
 		wxFileName file_path(filepath);

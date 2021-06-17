@@ -10,6 +10,8 @@
 #endif
 #include <iostream>
 
+
+
 // AVX CPU dispatching - based on Agner Fog's C++ vector class library:
 // http://www.agner.org/optimize/vectorclass.zip
 
@@ -268,6 +270,8 @@ int main(int argc, char* argv[]) {
     bool hasAVX = iset >= 7;
     std::string filename = "";
     std::string program = "";
+
+    //CFFmpegApp::ExecuteFFmpegApp("-ss 00:00:00 -t 30 -i \"d:\video\file_example_MP4_1920_18MG.mp4\" -ss 0:00:00 -t 30 -i \"d:\\video\\song.mp3\" -c:v copy -c:a copy -map 0:v:0 -map 1:a:0 -y \"d:\\video\\output.mp4\"");
     
 #ifdef WIN32
     if (argc > 1)
@@ -285,7 +289,7 @@ int main(int argc, char* argv[]) {
     else
         printf("Exec RegardsViewer with sse \n");
         
-    wxExecute(program, wxEXEC_ASYNC);
+    //wxExecute(program, wxEXEC_ASYNC);
     return 0;
 #else
     if (argc > 1)

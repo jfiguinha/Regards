@@ -25,6 +25,7 @@ CThumbnailVideoExport::~CThumbnailVideoExport()
 
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
+    int movie_duration = 0;
     //int codec = VideoWriter::fourcc('H', 'V', 'C', '1');
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
     Size S = Size((int)width,    // Acquire input size
@@ -42,7 +43,7 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
                 picturefile.push_back(listOfFile[i]);
         }
 
-
+        movie_duration = delay * picturefile.size();
         int countNbFrame = delay * fps * picturefile.size();
         int nbFrameByPicture = delay * fps;
         Mat src1;
@@ -109,6 +110,8 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 
                     if (effect != IDM_DIAPORAMA_NONE && effect != IDM_DIAPORAMA_TRANSITION)
                     {
+                        movie_duration += 2;
+
                         for (int k = 0; k < nbFrameEffect; k++)
                         {
                             cv::Mat dst;
@@ -179,5 +182,5 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 
     outputVideo.release();
 
-    return 0;
+    return movie_duration;
 }

@@ -110,6 +110,7 @@ namespace Regards
 			static void CheckMD5(void * param);
 
 			wxString tempVideoFile = "";
+			wxString tempAudioVideoFile = "";
 			bool fullscreen;
 			wxGauge * progressBar;
 			wxStatusBar * statusBar;

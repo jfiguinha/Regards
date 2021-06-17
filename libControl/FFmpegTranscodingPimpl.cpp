@@ -1557,6 +1557,7 @@ int CFFmpegTranscodingPimpl::init_filters(void)
 	return 0;
 }
 #endif
+
 int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame *filt_frame, unsigned int stream_index)
 {
 	StreamContext *stream = &stream_ctx[stream_index];

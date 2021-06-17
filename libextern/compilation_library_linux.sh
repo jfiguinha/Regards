@@ -136,8 +136,8 @@ sudo make install
 cd ..
 
 #Compille ffmpeg
-tar xf ffmpeg-4.3.1.tar.xz
-mv ffmpeg-4.3.1 ffmpeg-master
+tar xf ffmpeg-4.4.tar.xz
+mv ffmpeg-4.4 ffmpeg-master
 cd ffmpeg-master
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 #./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom

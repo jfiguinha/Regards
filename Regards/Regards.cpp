@@ -11,7 +11,6 @@
 #include "header.h"
 #include <Regards.h>
 #include <FilterData.h>
-//#include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
@@ -19,8 +18,6 @@
 #include <wx/window.h>
 #include <libPicture.h>
 #include <FilterWindowParam.h>
-//#include <face_alignement.h>
-//#include <ffmpeg_denoise.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
@@ -208,7 +205,6 @@ bool MyApp::OnInit()
 		else
 			regardsParam->SetIsOpenCLSupport(true);
 	}
-
 
 #ifdef WIN32
     wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
