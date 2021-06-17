@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libPicture" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="VideoDiaporama">
+    <File Name="ThumbnailVideoExport.h"/>
+    <File Name="ThumbnailVideoExport.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
