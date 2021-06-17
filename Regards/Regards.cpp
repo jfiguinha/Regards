@@ -18,7 +18,7 @@
 #include <wx/window.h>
 #include <libPicture.h>
 #include <FilterWindowParam.h>
-#include <ffmpeg_application.h>
+//#include <ffmpeg_application.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 

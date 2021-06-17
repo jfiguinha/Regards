@@ -270,6 +270,7 @@
         <Library Value="turbojpeg"/>
         <Library Value="omp"/>
         <Library Value="webp"/>
+        <Library Value="ffmpeg"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -902,6 +903,7 @@
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../Otherlib/libavif/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
+        <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Release"/>
         <LibraryPath Value="../libOpenCLEngine/Release"/>
       </Linker>
@@ -1068,7 +1070,7 @@
         <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/openexr/lib/libIex-3_0.27.dylib @executable_path/../Frameworks/libIex-3_0.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/imath/lib/libImath-3_0.28.dylib @executable_path/../Frameworks/libImath-3_0.28.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_videoio.4.5.dylib @executable_path/../Frameworks/libopencv_videoio.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_videoio.4.5.dylib @executable_path/../Frameworks/libopencv_videoio.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/openexr/lib/libOpenEXR-3_0.27.dylib @executable_path/../Frameworks/libOpenEXR-3_0.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib @executable_path/../Frameworks/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>

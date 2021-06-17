@@ -27,6 +27,11 @@
     <VirtualDirectory Name="Freeimage">
       <Project Name="libFreeImage" Path="Otherlib/libFreeImage/libFreeImage.project" Active="No"/>
     </VirtualDirectory>
+    <VirtualDirectory Name="video">
+      <VirtualDirectory Name="ffmpeg">
+        <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
@@ -144,6 +149,7 @@
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="libSqlite" ConfigName="Debug"/>
+      <Project Name="libffmpeg" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -217,6 +223,7 @@
       <Project Name="MacOsLibExplorer" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="libSqlite" ConfigName="Release"/>
+      <Project Name="libffmpeg" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

@@ -27,17 +27,19 @@
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
+#include "cmdutils.h"
 //#include <stdlib.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdatomic.h>
 #include <stdint.h>
+#include <fcntl.h>
 
 #if HAVE_IO_H
 #include <io.h>
 #endif
 
-
+#include <unistd.h>
 
 #include "libavformat/avformat.h"
 #include "libavdevice/avdevice.h"
@@ -392,7 +394,7 @@ static int decode_interrupt_cb(void* ctx)
 
 const AVIOInterruptCB int_cb = { decode_interrupt_cb, NULL };
 
-static void ffmpeg_cleanup(int ret)
+void ffmpeg_cleanup(int ret)
 {
     int i, j;
 

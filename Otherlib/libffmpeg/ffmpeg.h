@@ -20,20 +20,15 @@
 #define FFTOOLS_FFMPEG_H
 
 #include "config.h"
-
+#include "cmd_struct.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <signal.h>
 
-#include "cmdutils.h"
-
 #include "libavformat/avformat.h"
 #include "libavformat/avio.h"
-
 #include "libavcodec/avcodec.h"
-
 #include "libavfilter/avfilter.h"
-
 #include "libavutil/avutil.h"
 #include "libavutil/dict.h"
 #include "libavutil/eval.h"
@@ -46,7 +41,8 @@
 
 #include "libswresample/swresample.h"
 
-
+void show_usage(void);
+void ffmpeg_cleanup(int ret);
 int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), int (*progress)(int, void*), void * wndProgress);
 
 #define VSYNC_AUTO       -1
@@ -646,8 +642,7 @@ extern char* qsv_device;
 extern HWDevice* filter_hw_device;
 
 
-void show_usage(void);
-void ffmpeg_cleanup(int ret);
+
 
 void remove_avoptions(AVDictionary** a, AVDictionary* b);
 void assert_avoptions(AVDictionary* m);

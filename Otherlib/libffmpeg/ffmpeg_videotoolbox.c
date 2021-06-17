@@ -17,6 +17,7 @@
  */
 
 #include "config.h"
+#ifdef __APPLE__
 
 #if HAVE_UTGETOSTYPEFROMSTRING
 #include <CoreServices/CoreServices.h>
@@ -167,3 +168,6 @@ fail:
     videotoolbox_uninit(s);
     return ret;
 }
+
+
+#endif
