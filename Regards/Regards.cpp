@@ -167,6 +167,21 @@ bool MyApp::OnInit()
 
     CLibPicture::Initx265Decoder();
 
+#ifdef TEST_FFMPEG
+	wxString tempAudio = "d:\\video\\audio.mp3";
+	wxString filepathAudio = "d:\\video\\song.mp3";
+	wxString extension = "mp3";
+	CFFmpegApp fmpegApp;
+	try
+	{
+		fmpegApp.CropAudio(filepathAudio, to_string(60), extension, tempAudio);
+}
+	catch (int e)
+	{
+		fmpegApp.Cleanup(e);
+	}
+#endif
+
 #if not defined(WIN32) && defined(LIBBPG)
     printf("LoadBpgDll\n");
     CLibPicture::LoadBpgDll();
@@ -186,22 +201,6 @@ bool MyApp::OnInit()
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
-	/*
-	CFFmpegApp ffmpeg;
-
-	try
-	{
-		ffmpeg.TestFFmpeg("");
-	}
-	catch (int e)
-	{
-		ffmpeg.Cleanup(e);
-	}
-	catch (...)
-	{
-
-	}
-	*/
 	CLibResource::InitializeSQLServerDatabase(resourcePath);
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
 

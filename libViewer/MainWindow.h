@@ -73,6 +73,7 @@ namespace Regards
 			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);
+			void OnProgressVideo(wxCommandEvent& event);
 			void OnSetRangeProgressBar(wxCommandEvent& event);
 			void OnSetValueProgressBar(wxCommandEvent& event);
 			void OnEndPictureLoad(wxCommandEvent& event);

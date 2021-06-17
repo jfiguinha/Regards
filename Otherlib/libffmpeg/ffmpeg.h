@@ -47,7 +47,7 @@
 #include "libswresample/swresample.h"
 
 
-int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), void (*progress)(int, void*), void * wndProgress);
+int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), int (*progress)(int, void*), void * wndProgress);
 
 #define VSYNC_AUTO       -1
 #define VSYNC_PASSTHROUGH 0
@@ -626,7 +626,6 @@ extern int abort_on_flags;
 extern int print_stats;
 extern int64_t stats_period;
 extern int qp_hist;
-extern int stdin_interaction;
 extern int frame_bits_per_raw_sample;
 extern AVIOContext* progress_avio;
 extern float max_error_rate;

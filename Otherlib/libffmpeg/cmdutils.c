@@ -125,7 +125,7 @@ void init_dynload(void)
 }
 
 static void (*program_exit)(int ret);
-static void (*program_progress)(int, void*);
+static int (*program_progress)(int, void*);
 
 void register_exit(void (*cb)(int ret))
 {
@@ -135,9 +135,16 @@ void register_exit(void (*cb)(int ret))
 /**
  * Register a program-progress cleanup routine.
  */
-void register_programprogressbar(void (*cb)(int, void*))
+void register_programprogressbar(int (*cb)(int, void*))
 {
     program_progress = cb;
+}
+
+int window_progress(int ret, void * wndProgress)
+{
+    if (program_progress)
+        return program_progress(ret, wndProgress);
+    return 0;
 }
 
 void exit_program(int ret)

@@ -51,22 +51,21 @@ extern AVDictionary *swr_opts;
 extern AVDictionary *format_opts, *codec_opts, *resample_opts;
 extern int hide_banner;
 
-static void * wndExternalProgress;
-
 /**
  * Register a program-specific cleanup routine.
  */
 void register_exit(void (*cb)(int ret));
 
 /**
- * Register a program-error cleanup routine.
- */
-void register_programerror(void (*cb)(int ret));
-
-/**
  * Register a program-progress cleanup routine.
  */
-void register_programprogressbar(void (*cb)(int, void*));
+void register_programprogressbar(int (*cb)(int, void*));
+
+
+/**
+ * Wraps exit with a program-specific cleanup routine.
+ */
+int window_progress(int ret, void* wndProgress);
 
 /**
  * Wraps exit with a program-specific cleanup routine.

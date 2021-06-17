@@ -6,10 +6,11 @@ using namespace std;
 class CFFmpegApp
 {
 public:
-	CFFmpegApp() {};
+	CFFmpegApp() {
+	};
 	~CFFmpegApp() {};
 	
-	static void ProgressBarFunction(int x, void* progressWnd);
+	static int ProgressBarFunction(int x, void* progressWnd);
 	static void ExitFunction(int x);
 
 	void Cleanup(int x);

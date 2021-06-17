@@ -3247,6 +3247,7 @@ static void init_encoder_time_base(OutputStream* ost, AVRational default_time_ba
 {
     InputStream* ist = get_input_stream(ost);
     AVCodecContext* enc_ctx = ost->enc_ctx;
+ 
     AVFormatContext* oc;
 
     if (ost->enc_timebase.num > 0) {
@@ -4703,22 +4704,19 @@ static int transcode_step(void)
 /*
  * The following code is the main loop of the file converter
  */
-static int transcode(void)
+static int transcode(void * wndProgress)
 {
     int ret, i;
     AVFormatContext* os;
     OutputStream* ost;
     InputStream* ist;
     int64_t timer_start;
+    int64_t timer_end;
     int64_t total_packets_written = 0;
 
     ret = transcode_init();
     if (ret < 0)
         goto fail;
-
-    if (stdin_interaction) {
-        av_log(NULL, AV_LOG_INFO, "Press [q] to stop, [?] for help\n");
-    }
 
     timer_start = av_gettime_relative();
 
@@ -4727,13 +4725,10 @@ static int transcode(void)
         goto fail;
 #endif
 
-    while (!received_sigterm) {
-        int64_t cur_time = av_gettime_relative();
+    int pos = 0;
 
-        /* if 'q' pressed, exits */
-        if (stdin_interaction)
-            if (check_keyboard_interaction(cur_time) < 0)
-                break;
+    while (!window_progress(pos++, wndProgress)) {
+        int64_t cur_time = av_gettime_relative();
 
         /* check if there's any stream where output is still needed */
         if (!need_output()) {
@@ -4916,7 +4911,7 @@ void InitValue()
     abort_on_flags = 0;
     print_stats = -1;
     qp_hist = 0;
-    stdin_interaction = 1;
+
     frame_bits_per_raw_sample = 0;
     max_error_rate = 2.0 / 3;
     filter_nbthreads = 0;
@@ -4939,14 +4934,12 @@ void InitValue()
     nb_filtergraphs = 0;
 }
 
-int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), void (*progress)(int,void *), void* wndProgress)
+int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), int (*progress)(int,void *), void* wndProgress)
 {
     int i, ret;
     BenchmarkTimeStamps ti;
 
     InitValue();
-
-    wndExternalProgress = wndProgress;
 
     register_exit(foo);
     register_programprogressbar(progress);
@@ -4990,7 +4983,7 @@ int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), void (*progres
     }
 
     current_time = ti = get_benchmark_time_stamps();
-    if (transcode() < 0)
+    if (transcode(wndProgress) < 0)
     {
         exit_program(1);
     }

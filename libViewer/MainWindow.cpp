@@ -193,7 +193,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
-
+	Connect(wxEVENT_PROGRESSVIDEOFFMPEG, wxCommandEventHandler(CMainWindow::OnProgressVideo));
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
@@ -209,6 +209,10 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		localFilename = config->GetLastShowPicture();
+}
+
+void CMainWindow::OnProgressVideo(wxCommandEvent& event)
+{
 }
 
 void CMainWindow::OnExportDiaporama(wxCommandEvent& event)

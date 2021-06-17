@@ -7,7 +7,7 @@
 #include <wx/progdlg.h>
 #include <stdexcept>
 #include "ffmpeg_application.h"
-
+#include <window_id.h>
 extern "C"
 {
     #include "ffmpeg.h"
@@ -38,10 +38,12 @@ void CFFmpegApp::ExitFunction(int x)
     throw x;
 }
 
-void CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
+int CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
 {
     wxProgressDialog* dialog = (wxProgressDialog*)progressWnd;
-
+    if (false == dialog->Update(x%1000, "Video Progress ..."))
+        return 1;
+    return 0;
 }
 
 void CFFmpegApp::ExecuteFFmpeg()
@@ -51,14 +53,14 @@ void CFFmpegApp::ExecuteFFmpeg()
     for (int i = 0; i < arrayOfStrings.size(); ++i)
         arrayOfCstrings[i] = (char*)arrayOfStrings[i].c_str();
 
-    wxProgressDialog dialog("Export File", "Checking...", 0, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+    wxProgressDialog dialog("Export File", "Checking...", 1000, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
     try
     {
         void (*foo)(int);
         foo = &ExitFunction;
 
-        void (*progress)(int, void*);
+        int (*progress)(int, void*);
         progress = &ProgressBarFunction;
 
         ret = ExecuteFFMpegProgram(arrayOfStrings.size(), arrayOfCstrings, foo, progress, &dialog);
@@ -78,6 +80,14 @@ void CFFmpegApp::ExecuteFFmpeg()
 int CFFmpegApp::TestFFmpeg(const wxString& commandline)
 {
     arrayOfStrings.push_back("ffmpeg");
+    arrayOfStrings.push_back("-i");
+    arrayOfStrings.push_back("d:\\video\\IMG_1293.MOV");
+    arrayOfStrings.push_back("-c:v");
+    arrayOfStrings.push_back("vp9");
+    arrayOfStrings.push_back("-c:a");
+    arrayOfStrings.push_back("libvorbis");
+    arrayOfStrings.push_back("d:\\video\\output.mkv");
+
     ExecuteFFmpeg();
 
 }
@@ -92,6 +102,8 @@ void CFFmpegApp::Cleanup(int ret)
 int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVideo, const wxString& extension, const wxString& outputFile)
 {
     arrayOfStrings.push_back("ffmpeg");
+    arrayOfStrings.push_back("-stream_loop");
+    arrayOfStrings.push_back("-1");
     arrayOfStrings.push_back("-i");
     arrayOfStrings.push_back(inputAudioFile.ToStdString());
     arrayOfStrings.push_back("-c:a");
