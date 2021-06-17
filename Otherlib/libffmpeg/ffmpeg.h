@@ -47,7 +47,7 @@
 #include "libswresample/swresample.h"
 
 
-int ExecuteFFMpegProgram(int argc, char** argv);
+int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), void (*progress)(int, void*), void * wndProgress);
 
 #define VSYNC_AUTO       -1
 #define VSYNC_PASSTHROUGH 0
@@ -647,10 +647,8 @@ extern char* qsv_device;
 extern HWDevice* filter_hw_device;
 
 
-void term_init(void);
-void term_exit(void);
-
 void show_usage(void);
+void ffmpeg_cleanup(int ret);
 
 void remove_avoptions(AVDictionary** a, AVDictionary* b);
 void assert_avoptions(AVDictionary* m);

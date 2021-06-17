@@ -63,6 +63,7 @@
 #include <windows.h>
 #endif
 
+
 static int init_report(const char *env);
 
 AVDictionary *sws_dict;
@@ -124,10 +125,19 @@ void init_dynload(void)
 }
 
 static void (*program_exit)(int ret);
+static void (*program_progress)(int, void*);
 
 void register_exit(void (*cb)(int ret))
 {
     program_exit = cb;
+}
+
+/**
+ * Register a program-progress cleanup routine.
+ */
+void register_programprogressbar(void (*cb)(int, void*))
+{
+    program_progress = cb;
 }
 
 void exit_program(int ret)
@@ -135,7 +145,6 @@ void exit_program(int ret)
     if (program_exit)
         program_exit(ret);
 
-    exit(ret);
 }
 
 double parse_number_or_die(const char *context, const char *numstr, int type,

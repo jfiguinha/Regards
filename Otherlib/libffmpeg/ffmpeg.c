@@ -27,7 +27,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdatomic.h>
@@ -36,9 +36,8 @@
 #if HAVE_IO_H
 #include <io.h>
 #endif
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+
+
 
 #include "libavformat/avformat.h"
 #include "libavdevice/avdevice.h"
@@ -325,22 +324,6 @@ static void sub2video_flush(InputStream* ist)
     }
 }
 
-/* end of sub2video hack */
-
-static void term_exit_sigsafe(void)
-{
-#if HAVE_TERMIOS_H
-    if (restore_tty)
-        tcsetattr(0, TCSANOW, &oldtty);
-#endif
-}
-
-void term_exit(void)
-{
-    av_log(NULL, AV_LOG_QUIET, "%s", "");
-    term_exit_sigsafe();
-}
-
 static volatile int received_sigterm = 0;
 static volatile int received_nb_signals = 0;
 static atomic_int transcode_init_done = ATOMIC_VAR_INIT(0);
@@ -348,111 +331,6 @@ static volatile int ffmpeg_exited = 0;
 static int main_return_code = 0;
 static int64_t copy_ts_first_pts = AV_NOPTS_VALUE;
 
-static void
-sigterm_handler(int sig)
-{
-    int ret;
-    received_sigterm = sig;
-    received_nb_signals++;
-    term_exit_sigsafe();
-    if (received_nb_signals > 3) {
-        ret = write(2/*STDERR_FILENO*/, "Received > 3 system signals, hard exiting\n",
-            strlen("Received > 3 system signals, hard exiting\n"));
-        if (ret < 0) { /* Do nothing */ };
-        exit(123);
-    }
-}
-
-#if HAVE_SETCONSOLECTRLHANDLER
-static BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
-{
-    av_log(NULL, AV_LOG_DEBUG, "\nReceived windows signal %ld\n", fdwCtrlType);
-
-    switch (fdwCtrlType)
-    {
-    case CTRL_C_EVENT:
-    case CTRL_BREAK_EVENT:
-        sigterm_handler(SIGINT);
-        return TRUE;
-
-    case CTRL_CLOSE_EVENT:
-    case CTRL_LOGOFF_EVENT:
-    case CTRL_SHUTDOWN_EVENT:
-        sigterm_handler(SIGTERM);
-        /* Basically, with these 3 events, when we return from this method the
-           process is hard terminated, so stall as long as we need to
-           to try and let the main thread(s) clean up and gracefully terminate
-           (we have at most 5 seconds, but should be done far before that). */
-        while (!ffmpeg_exited) {
-            Sleep(0);
-        }
-        return TRUE;
-
-    default:
-        av_log(NULL, AV_LOG_ERROR, "Received unknown windows signal %ld\n", fdwCtrlType);
-        return FALSE;
-    }
-}
-#endif
-
-#ifdef __linux__
-#define SIGNAL(sig, func)               \
-    do {                                \
-        action.sa_handler = func;       \
-        sigaction(sig, &action, NULL);  \
-    } while (0)
-#else
-#define SIGNAL(sig, func) \
-    signal(sig, func)
-#endif
-
-void term_init(void)
-{
-#if defined __linux__
-    struct sigaction action = { 0 };
-    action.sa_handler = sigterm_handler;
-
-    /* block other interrupts while processing this one */
-    sigfillset(&action.sa_mask);
-
-    /* restart interruptible functions (i.e. don't fail with EINTR)  */
-    action.sa_flags = SA_RESTART;
-#endif
-
-#if HAVE_TERMIOS_H
-    if (!run_as_daemon && stdin_interaction) {
-        struct termios tty;
-        if (tcgetattr(0, &tty) == 0) {
-            oldtty = tty;
-            restore_tty = 1;
-
-            tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
-                | INLCR | IGNCR | ICRNL | IXON);
-            tty.c_oflag |= OPOST;
-            tty.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN);
-            tty.c_cflag &= ~(CSIZE | PARENB);
-            tty.c_cflag |= CS8;
-            tty.c_cc[VMIN] = 1;
-            tty.c_cc[VTIME] = 0;
-
-            tcsetattr(0, TCSANOW, &tty);
-        }
-        SIGNAL(SIGQUIT, sigterm_handler); /* Quit (POSIX).  */
-    }
-#endif
-
-    SIGNAL(SIGINT, sigterm_handler); /* Interrupt (ANSI).    */
-    SIGNAL(SIGTERM, sigterm_handler); /* Termination (ANSI).  */
-#ifdef SIGXCPU
-    SIGNAL(SIGXCPU, sigterm_handler);
-#endif
-#ifdef SIGPIPE
-    signal(SIGPIPE, SIG_IGN); /* Broken pipe (POSIX). */
-#endif
-#if HAVE_SETCONSOLECTRLHANDLER
-    SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE);
-#endif
-}
 
 /* read a key without blocking */
 static int read_key(void)
@@ -672,7 +550,7 @@ static void ffmpeg_cleanup(int ret)
     else if (ret && atomic_load(&transcode_init_done)) {
         av_log(NULL, AV_LOG_INFO, "Conversion failed!\n");
     }
-    term_exit();
+
     ffmpeg_exited = 1;
 }
 
@@ -4885,8 +4763,6 @@ static int transcode(void)
     }
     flush_encoders();
 
-    term_exit();
-
     /* write the trailer if needed and close file */
     for (i = 0; i < nb_output_files; i++) {
         os = output_files[i]->ctx;
@@ -5063,12 +4939,17 @@ void InitValue()
     nb_filtergraphs = 0;
 }
 
-int ExecuteFFMpegProgram(int argc, char** argv)
+int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), void (*progress)(int,void *), void* wndProgress)
 {
     int i, ret;
     BenchmarkTimeStamps ti;
 
     InitValue();
+
+    wndExternalProgress = wndProgress;
+
+    register_exit(foo);
+    register_programprogressbar(progress);
 
     setvbuf(stderr, NULL, _IONBF, 0); /* win32 runtime needs this */
 
@@ -5088,22 +4969,19 @@ int ExecuteFFMpegProgram(int argc, char** argv)
     ret = ffmpeg_parse_options(argc, argv);
     if (ret < 0)
     {
-        main_return_code = 1;
-        goto cleanup;
+        exit_program(1);
     }
 
     if (nb_output_files <= 0 && nb_input_files == 0) {
         show_usage();
         av_log(NULL, AV_LOG_WARNING, "Use -h to get full help or, even better, run 'man %s'\n", program_name);
-        main_return_code = 1;
-        goto cleanup;
+        exit_program(1);
     }
 
     /* file converter / grab */
     if (nb_output_files <= 0) {
         av_log(NULL, AV_LOG_FATAL, "At least one output file must be specified\n");
-        main_return_code = 1;
-        goto cleanup;
+        exit_program(1);
     }
 
     for (i = 0; i < nb_output_files; i++) {
@@ -5114,8 +4992,7 @@ int ExecuteFFMpegProgram(int argc, char** argv)
     current_time = ti = get_benchmark_time_stamps();
     if (transcode() < 0)
     {
-        main_return_code = 1;
-        goto cleanup;
+        exit_program(1);
     }
     if (do_benchmark) {
         int64_t utime, stime, rtime;
@@ -5131,14 +5008,9 @@ int ExecuteFFMpegProgram(int argc, char** argv)
         decode_error_stat[0], decode_error_stat[1]);
     if ((decode_error_stat[0] + decode_error_stat[1]) * max_error_rate < decode_error_stat[1])
     {
-        main_return_code = 69;
-        goto cleanup;
+        exit_program(69);
     }
 
-    //exit_program(received_nb_signals ? 255 : main_return_code);
-
-cleanup:
-
-    ffmpeg_cleanup(ret);
+    
     return main_return_code;
 }

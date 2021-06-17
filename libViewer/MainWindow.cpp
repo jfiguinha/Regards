@@ -285,7 +285,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 #endif
 
 
-
+		
 		wxFileName file_path(filepathAudio);
 		wxString extension = file_path.GetExt();
 
@@ -294,9 +294,29 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 		if (wxFileExists(tempAudio))
 			wxRemoveFile(tempAudio);
 
-		CFFmpegApp::CropAudio(filepathAudio, to_string(time_movie), extension, tempAudio);
-		CFFmpegApp::ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
-		
+		{
+			CFFmpegApp fmpegApp;
+			try
+			{
+				fmpegApp.CropAudio(filepathAudio, to_string(time_movie), extension, tempAudio);
+			}
+			catch (int e)
+			{
+				fmpegApp.Cleanup(e);
+			}
+		}
+		{
+			CFFmpegApp fmpegApp;
+			try
+			{
+				fmpegApp.ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
+			}
+			catch (int e)
+			{
+				fmpegApp.Cleanup(e);
+			}
+		}
+
 		if (wxFileExists(tempAudio))
 			wxRemoveFile(tempAudio);
 

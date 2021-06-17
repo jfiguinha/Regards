@@ -1003,13 +1003,12 @@ static void assert_file_overwrite(const char *filename)
             if (stdin_interaction && !no_file_overwrite) {
                 fprintf(stderr,"File '%s' already exists. Overwrite? [y/N] ", filename);
                 fflush(stderr);
-                term_exit();
-                signal(SIGINT, SIG_DFL);
+
                 if (!read_yesno()) {
                     av_log(NULL, AV_LOG_FATAL, "Not overwriting - exiting\n");
                     exit_program(1);
                 }
-                term_init();
+
             }
             else {
                 av_log(NULL, AV_LOG_FATAL, "File '%s' already exists. Exiting.\n", filename);
@@ -3370,9 +3369,6 @@ int ffmpeg_parse_options(int argc, char **argv)
         av_log(NULL, AV_LOG_FATAL, "Error parsing global options: ");
         goto fail;
     }
-
-    /* configure terminal and setup signal handlers */
-    term_init();
 
     /* open input files */
     ret = open_files(&octx.groups[GROUP_INFILE], "input", open_input_file);

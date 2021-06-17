@@ -18,6 +18,7 @@
 #include <wx/window.h>
 #include <libPicture.h>
 #include <FilterWindowParam.h>
+#include <ffmpeg_application.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
@@ -185,8 +186,22 @@ bool MyApp::OnInit()
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
+	/*
+	CFFmpegApp ffmpeg;
 
+	try
+	{
+		ffmpeg.TestFFmpeg("");
+	}
+	catch (int e)
+	{
+		ffmpeg.Cleanup(e);
+	}
+	catch (...)
+	{
 
+	}
+	*/
 	CLibResource::InitializeSQLServerDatabase(resourcePath);
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
 

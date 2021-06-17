@@ -293,7 +293,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libFiltre;..\include;..\libControl;$(SolutionDir)\libextern\poppler_windows-master\include\poppler;$(SolutionDir)\libextern\poppler_windows-master\include\poppler\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libFiltreInterface;..\libDialog;..\libSqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Otherlib\libffmpeg;..\libFiltre;..\include;..\libControl;$(SolutionDir)\libextern\poppler_windows-master\include\poppler;$(SolutionDir)\libextern\poppler_windows-master\include\poppler\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libFiltreInterface;..\libDialog;..\libSqlite</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

@@ -4,7 +4,8 @@
 #include <wx/wx.h>
 #endif
 
-
+#include <wx/progdlg.h>
+#include <stdexcept>
 #include "ffmpeg_application.h"
 
 extern "C"
@@ -32,148 +33,102 @@ std::string convertSecondsToHHMMSS(int value) {
     return result;
 }
 
+void CFFmpegApp::ExitFunction(int x)
+{
+    throw x;
+}
+
+void CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
+{
+    wxProgressDialog* dialog = (wxProgressDialog*)progressWnd;
+
+}
+
+void CFFmpegApp::ExecuteFFmpeg()
+{
+    arrayOfCstrings = new char* [arrayOfStrings.size()];
+
+    for (int i = 0; i < arrayOfStrings.size(); ++i)
+        arrayOfCstrings[i] = (char*)arrayOfStrings[i].c_str();
+
+    wxProgressDialog dialog("Export File", "Checking...", 0, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+    try
+    {
+        void (*foo)(int);
+        foo = &ExitFunction;
+
+        void (*progress)(int, void*);
+        progress = &ProgressBarFunction;
+
+        ret = ExecuteFFMpegProgram(arrayOfStrings.size(), arrayOfCstrings, foo, progress, &dialog);
+    }
+    catch (int e)
+    {
+        ret = e;
+    }
+    catch (...)
+    {
+
+    }
+
+    Cleanup(ret);
+}
+
+int CFFmpegApp::TestFFmpeg(const wxString& commandline)
+{
+    arrayOfStrings.push_back("ffmpeg");
+    ExecuteFFmpeg();
+
+}
+
+void CFFmpegApp::Cleanup(int ret)
+{
+    ffmpeg_cleanup(ret);
+    delete[] arrayOfCstrings;
+}
+
+
 int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVideo, const wxString& extension, const wxString& outputFile)
 {
-    int i = 0;
-    char* args[24];
-    args[i] = new char[255];
-    strcpy(args[i++], "ffmpeg");
-    args[i] = new char[255];
-    strcpy(args[i++], "-i");
-    args[i] = new char[255];
-    strcpy(args[i++], inputAudioFile);
-    args[i] = new char[255];
-    strcpy(args[i++], "-c:a");
-    args[i] = new char[255];
-    strcpy(args[i++], extension);
-    args[i] = new char[255];
-    strcpy(args[i++], "-t");
-    args[i] = new char[255];
-    strcpy(args[i++], convertSecondsToHHMMSS(atoi(timeVideo)).c_str());
-    args[i] = new char[255];
-    strcpy(args[i++], "-vn");
-    args[i] = new char[255];
-    strcpy(args[i++], "-y");
-    args[i] = new char[255];
-    strcpy(args[i++], outputFile);
-
-    ExecuteFFMpegProgram(10, args);
-
-    for (int i = 0; i < 10; i++)
-        delete[] args[i];
+    arrayOfStrings.push_back("ffmpeg");
+    arrayOfStrings.push_back("-i");
+    arrayOfStrings.push_back(inputAudioFile.ToStdString());
+    arrayOfStrings.push_back("-c:a");
+    arrayOfStrings.push_back(extension.ToStdString());
+    arrayOfStrings.push_back("-t");
+    arrayOfStrings.push_back(convertSecondsToHHMMSS(atoi(timeVideo)).c_str());
+    arrayOfStrings.push_back("-vn");
+    arrayOfStrings.push_back("-y");
+    arrayOfStrings.push_back(outputFile.ToStdString());
+    ExecuteFFmpeg();
 }
 
 int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString& inputAudioFile, const wxString& timeVideo, const wxString& outputFile)
 {
-    int i = 0;
-    char* args[24];
-    args[i] = new char[255];
-    strcpy(args[i++], "ffmpeg");
-    args[i] = new char[255];
-    strcpy(args[i++], "-ss");
-    args[i] = new char[255];
-    strcpy(args[i++], "00:00:00");
-    args[i] = new char[255];
-    strcpy(args[i++], "-t");
-    args[i] = new char[255];
-    strcpy(args[i++], timeVideo);
-    args[i] = new char[255];
-    strcpy(args[i++], "-i");
-    args[i] = new char[255];
-    strcpy(args[i++], inputVideoFile);
-    args[i] = new char[255];
-    strcpy(args[i++], "-ss");
-    args[i] = new char[255];
-    strcpy(args[i++], "00:00:00");
-    args[i] = new char[255];
-    strcpy(args[i++], "-t");
-    args[i] = new char[255];
-    strcpy(args[i++], timeVideo);
-    args[i] = new char[255];
-    strcpy(args[i++], "-i");
-    args[i] = new char[255];
-    strcpy(args[i++], inputAudioFile);
-    args[i] = new char[255];
-    strcpy(args[i++], "-c:v");
-    args[i] = new char[255];
-    strcpy(args[i++], "copy");
-    args[i] = new char[255];
-    strcpy(args[i++], "-c:a");
-    args[i] = new char[255];
-    strcpy(args[i++], "copy");
-    args[i] = new char[255];
-    strcpy(args[i++], "-map");
-    args[i] = new char[255];
-    strcpy(args[i++], "0:v:0");
-    args[i] = new char[255];
-    strcpy(args[i++], "-map");
-    args[i] = new char[255];
-    strcpy(args[i++], "1:a:0");
-    args[i] = new char[255];
-    strcpy(args[i++], "-y");
-    args[i] = new char[255];
-    strcpy(args[i++], outputFile);
-
-    ExecuteFFMpegProgram(23, args);
-
-    for (int i = 0; i < 23; i++)
-        delete[] args[i];
+    arrayOfStrings.push_back("ffmpeg");
+    arrayOfStrings.push_back("-ss");
+    arrayOfStrings.push_back("00:00:00");
+    arrayOfStrings.push_back("-t");
+    arrayOfStrings.push_back(timeVideo.ToStdString());
+    arrayOfStrings.push_back("-i");
+    arrayOfStrings.push_back(inputVideoFile.ToStdString());
+    arrayOfStrings.push_back("-ss");
+    arrayOfStrings.push_back("00:00:00");
+    arrayOfStrings.push_back("-t");
+    arrayOfStrings.push_back(timeVideo.ToStdString());
+    arrayOfStrings.push_back("-i");
+    arrayOfStrings.push_back(inputAudioFile.ToStdString());
+    arrayOfStrings.push_back("-c:v");
+    arrayOfStrings.push_back("copy");
+    arrayOfStrings.push_back("-c:a");
+    arrayOfStrings.push_back("copy");
+    arrayOfStrings.push_back("-map");
+    arrayOfStrings.push_back("0:v:0");
+    arrayOfStrings.push_back("-map");
+    arrayOfStrings.push_back("1:a:0");
+    arrayOfStrings.push_back("-y");
+    arrayOfStrings.push_back(outputFile.ToStdString());
+    ExecuteFFmpeg();
 }
 
-int CFFmpegApp::ExecuteFFmpegApp(const wxString& commandLine)
-{
-    //-ss 00:00:00  -t 30 -i "d:\video\file_example_MP4_1920_18MG.mp4" -ss 0:00:00 -t 30 -i "d:\video\song.mp3" -c:v copy -c:a copy -map 0:v:0 -map 1:a:0 -y "d:\video\output.mp4"
-    int i = 0;
-    char* args[24];
-    args[i] = new char[255];
-    strcpy(args[i++], "ffmpeg");
-    args[i] = new char[255];
-    strcpy(args[i++], "-ss");
-    args[i] = new char[255];
-    strcpy(args[i++], "00:00:00");
-    args[i] = new char[255];
-    strcpy(args[i++], "-t");
-    args[i] = new char[255];
-    strcpy(args[i++], "30");
-    args[i] = new char[255];
-    strcpy(args[i++], "-i");
-    args[i] = new char[255];
-    strcpy(args[i++], "d:\\video\\file_example_MP4_1920_18MG.mp4");
-    args[i] = new char[255];
-    strcpy(args[i++], "-ss");
-    args[i] = new char[255];
-    strcpy(args[i++], "00:00:00");
-    args[i] = new char[255];
-    strcpy(args[i++], "-t");
-    args[i] = new char[255];
-    strcpy(args[i++], "30");
-    args[i] = new char[255];
-    strcpy(args[i++], "-i");
-    args[i] = new char[255];
-    strcpy(args[i++], "d:\\video\\song.mp3");
-    args[i] = new char[255];
-    strcpy(args[i++], "-c:v");
-    args[i] = new char[255];
-    strcpy(args[i++], "copy");
-    args[i] = new char[255];
-    strcpy(args[i++], "-c:a");
-    args[i] = new char[255];
-    strcpy(args[i++], "copy");
-    args[i] = new char[255];
-    strcpy(args[i++], "-map");
-    args[i] = new char[255];
-    strcpy(args[i++], "0:v:0");
-    args[i] = new char[255];
-    strcpy(args[i++], "-map");
-    args[i] = new char[255];
-    strcpy(args[i++], "1:a:0");
-    args[i] = new char[255];
-    strcpy(args[i++], "-y");
-    args[i] = new char[255];
-    strcpy(args[i++], "d:\\video\\output.mp4");
-
-    ExecuteFFMpegProgram(23, args);
-
-    for (int i = 0; i < 23; i++)
-        delete[] args[i];
-}
