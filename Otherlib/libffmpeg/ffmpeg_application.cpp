@@ -41,7 +41,7 @@ void CFFmpegApp::ExitFunction(int x)
 int CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
 {
     wxProgressDialog* dialog = (wxProgressDialog*)progressWnd;
-    if (false == dialog->Update(x%1000, "Video Progress ..."))
+    if (false == dialog->Update(x, "Video Progress ..."))
         return 1;
     return 0;
 }
@@ -53,7 +53,7 @@ void CFFmpegApp::ExecuteFFmpeg()
     for (int i = 0; i < arrayOfStrings.size(); ++i)
         arrayOfCstrings[i] = (char*)arrayOfStrings[i].c_str();
 
-    wxProgressDialog dialog("Export File", "Checking...", 1000, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+    wxProgressDialog dialog("FFmpeg Process", "Checking...", 100, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
     try
     {

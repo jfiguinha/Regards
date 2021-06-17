@@ -4726,9 +4726,15 @@ static int transcode(void * wndProgress)
 #endif
 
     int pos = 0;
+    int64_t duration = output_files[0]->ctx->duration;
 
-    while (!window_progress(pos++, wndProgress)) {
+    while (!window_progress(pos, wndProgress)) {
+        
         int64_t cur_time = av_gettime_relative();
+       // int cur_sec = (cur_time - timer_start) / 1000000;
+      //  int dur = duration / 1000000;
+        pos = (int)(((double)(cur_time - timer_start) / (double)(duration)) * 100);
+
 
         /* check if there's any stream where output is still needed */
         if (!need_output()) {
@@ -4743,7 +4749,7 @@ static int transcode(void * wndProgress)
         }
 
         /* dump report by using the output first video and audio streams */
-        print_report(0, timer_start, cur_time);
+        //print_report(0, timer_start, cur_time);
     }
 #if HAVE_THREADS
     free_input_threads();
