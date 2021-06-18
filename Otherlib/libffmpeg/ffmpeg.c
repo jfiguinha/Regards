@@ -39,7 +39,9 @@
 #include <io.h>
 #endif
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #include "libavformat/avformat.h"
 #include "libavdevice/avdevice.h"
