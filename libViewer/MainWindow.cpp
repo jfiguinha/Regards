@@ -278,7 +278,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	wxString musicDiaporama = config->GetMusicDiaporama();
 
-	if (musicDiaporama != "")
+	if (musicDiaporama != "" && wxFileExists(musicDiaporama))
 	{
 		wxString tempAudio = "";
 		//Execute Crop Audio
@@ -1364,7 +1364,7 @@ void CMainWindow::StartDiaporama()
 	
 	if(config != nullptr )
 		musicDiaporama = config->GetMusicDiaporama();
-	if (ffmfc == nullptr && musicDiaporama != "")
+	if (ffmfc == nullptr && musicDiaporama != "" && wxFileExists(musicDiaporama))
 	{
 		ffmfc = new CFFmfc(this, wxNewId());
 		
@@ -1378,7 +1378,7 @@ void CMainWindow::StartDiaporama()
 			}
 		}
 	}
-	else if (musicDiaporama != "")
+	else if (musicDiaporama != "" && wxFileExists(musicDiaporama))
 		ffmfc->Play();
 
 
