@@ -89,6 +89,8 @@ int CFFmpegApp::TestFFmpeg(const wxString& commandline)
     arrayOfStrings.push_back("d:\\video\\output.mkv");
 
     ExecuteFFmpeg();
+    
+    return 0;
 
 }
 
@@ -114,6 +116,8 @@ int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVi
     arrayOfStrings.push_back("-y");
     arrayOfStrings.push_back(outputFile.ToStdString());
     ExecuteFFmpeg();
+    
+    return 0;
 }
 
 int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString& inputAudioFile, const wxString& timeVideo, const wxString& outputFile)
@@ -142,5 +146,7 @@ int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString&
     arrayOfStrings.push_back("-y");
     arrayOfStrings.push_back(outputFile.ToStdString());
     ExecuteFFmpeg();
+    
+    return 0;
 }
 

@@ -1,13 +1,9 @@
 #pragma once
-
 #include "config.h"
 #include "libavcodec/avcodec.h"
 #include "libavfilter/avfilter.h"
 #include "libavformat/avformat.h"
 #include "libswscale/swscale.h"
-
-
-
 
 typedef struct SpecifierOpt {
     char *specifier;    /**< stream/chapter/program/... specifier */

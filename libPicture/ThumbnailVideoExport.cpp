@@ -98,6 +98,8 @@ int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &
     dest.release();
 
 #endif
+    
+    return 0;
 }
 
 CRegardsBitmap* CThumbnailVideoExportImpl::GenerateBitmapForVideo(const wxString& filename, int width, int height)
@@ -260,6 +262,8 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
     src2.release();
     src1.release();
     dest.release();
+    
+    return 0;
 }
 
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
