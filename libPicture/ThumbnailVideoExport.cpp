@@ -21,17 +21,11 @@ public:
 
     static wxString GenerateOutputFileName(int numStart);
     static CRegardsBitmap* GenerateBitmapForVideo(const wxString& filename, int width, int height);
-#ifdef PICTURE_SAVING
-    static int CopyPicture(const wxString& filename, const int& numStart, const int& nbFrame, int width, int height);
-    static int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& numStart, const int& nbFrame, int width, int height, int effect);
-
-#else
     static int CopyPicture(const wxString& filename, const int& numStart, const int& nbFrame, int width, int height, VideoWriter & outputVideo);
     static int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& numStart, const int& nbFrame, int width, int height, int effect, VideoWriter & outputVideo);
-#endif
 };
 
-//#define PICTURE_SAVING 1
+//#define PICTURE_SAVING
 
 CThumbnailVideoExport::CThumbnailVideoExport()
 {
@@ -82,6 +76,7 @@ int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &
     loadingFormat.SetPicture(src_bitmap);
     loadingFormat.SaveToJpeg(fileOut);
 
+#pragma omp parallel for 
     for (int i = 1; i < nbFrame; i++)
     {
         wxString fileOutCopy = GenerateOutputFileName(numStart + i);
@@ -166,6 +161,7 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
         {
             if (filename1 != "")
             {
+#pragma omp parallel for 
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
@@ -188,6 +184,7 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
         {
             float ratio = 1.0;
 
+#pragma omp parallel for 
             for (int k = 0; k < nbFrame; k++)
             {
                 ratio = ratio + 0.0005;
@@ -213,6 +210,7 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
             {
                 CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
 
+#pragma omp parallel for 
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
@@ -260,6 +258,7 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
 
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
+    int countNbFrame = 0;
     int movie_duration = 0;
     //int codec = VideoWriter::fourcc('H', 'V', 'C', '1');
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
@@ -283,13 +282,14 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
         Mat src2;
         int nbFrameEffect = fps * 2;
         int j = 0;
-        int countNbFrame = delay * fps * picturefile.size();
+        countNbFrame = delay * fps * picturefile.size();
         if(effect != IDM_DIAPORAMA_TRANSITION)
             countNbFrame += nbFrameEffect * (picturefile.size() - 1);
 
         movie_duration = countNbFrame / fps;
 
         wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+       
         for (int i = 0; i < picturefile.size(); i++)
         {
             int position = 0;
@@ -327,8 +327,23 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
             {
                 break;
             }
+            
         }
     }
+
+#ifdef PICTURE_SAVING
+    for (int i = 0; i < countNbFrame;i++)
+    {
+        wxString fileOutCopy = CThumbnailVideoExportImpl::GenerateOutputFileName(i);
+        outputVideo << imread(fileOutCopy.ToStdString());
+
+        wxString message = "In progress : " + to_string(i) + "/" + to_string(countNbFrame);
+        if (false == dialog.Update(i, message))
+        {
+            break;
+        }
+    }
+#endif
 
     outputVideo.release();
 
