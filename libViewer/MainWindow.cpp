@@ -196,6 +196,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_PROGRESSVIDEOFFMPEG, wxCommandEventHandler(CMainWindow::OnProgressVideo));
 	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CMainWindow::OnStopAudio));
+	Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CMainWindow::OnQuitAudio));
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
@@ -1160,6 +1161,11 @@ CMainWindow::~CMainWindow()
 
 	delete(diaporamaTimer);
 
+	if (ffmfc != nullptr)
+	{
+		delete ffmfc;
+	}
+
 	delete(centralWnd);
 	delete(toolbar);
 }
@@ -1328,18 +1334,26 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 	processIdle = true;
 }
 
+void CMainWindow::OnQuitAudio(wxCommandEvent& event)
+{
+	musicStop = true;
+	//wxSleep(1);
+}
+
 void CMainWindow::OnStopAudio(wxCommandEvent& event)
 {
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	wxString musicDiaporama = "";
-
+	musicStop = true;
 	if (config != nullptr)
 		musicDiaporama = config->GetMusicDiaporama();
-	if (musicDiaporama != "")
+	if (musicDiaporama != "" && !ffmfcQuit)
 	{
 		ffmfc->Quit();
 		ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+		musicStop = false;
 	}
+
 }
 
 void CMainWindow::StartDiaporama()
@@ -1358,8 +1372,10 @@ void CMainWindow::StartDiaporama()
 		{
 			
 			if (musicDiaporama != "")
+			{
 				ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
-			
+				musicStop = false;
+			}
 		}
 	}
 	else if (musicDiaporama != "")
@@ -1510,6 +1526,21 @@ bool CMainWindow::GetProcessEnd()
 	TRACE();
 	if (nbProcessMD5 > 0)
 		return false;
+
+	if (startDiaporama)
+	{
+		if (ffmfc != nullptr && !ffmfcQuit)
+		{
+			startDiaporama = false;
+			if (diaporamaTimer->IsRunning())
+				diaporamaTimer->Stop();
+
+			ffmfc->Quit();
+			ffmfcQuit = true;
+			
+		}
+		return musicStop;
+	}
 
 	return true;
 }

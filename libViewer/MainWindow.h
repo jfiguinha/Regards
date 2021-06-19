@@ -66,6 +66,7 @@ namespace Regards
 
 			bool FindNextValidFile();
 			bool FindPreviousValidFile();
+			void OnQuitAudio(wxCommandEvent& event);
 			void OnStopAudio(wxCommandEvent& event);
 			void OnEndDecompressFile(wxCommandEvent& event);
 			void OnEditFile(wxCommandEvent& event);
@@ -141,6 +142,8 @@ namespace Regards
             bool setViewerMode = false;
 			CFFmfc* ffmfc = nullptr;
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
+			bool musicStop = true;
+			bool ffmfcQuit = false;
 		};
 	}
 
