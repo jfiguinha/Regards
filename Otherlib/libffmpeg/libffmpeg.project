@@ -28,7 +28,7 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../../libextern/ffmpeg-4.4/"/>
+        <IncludePath Value="../../libextern/ffmpeg-master/"/>
         <IncludePath Value="../../include"/>
       </Compiler>
       <Linker Options="">

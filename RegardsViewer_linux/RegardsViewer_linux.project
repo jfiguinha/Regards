@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../libextern/ffmpeg-master/libavfilter/graphdump.c"/>
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
@@ -122,6 +123,7 @@
     <Project Name="libFreeImage"/>
     <Project Name="libOpenCLEngine"/>
     <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -193,6 +195,7 @@
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/openjpeg-v2.4.0-linux-x86_64/lib"/>
         <Library Value="Viewer"/>
+        <Library Value="ffmpeg"/>
         <Library Value="Scanner"/>
         <Library Value="wxCheckTree"/>
         <Library Value="Control"/>
@@ -296,6 +299,7 @@
         <Library Value="opencv_video"/>
         <Library Value="opencv_xphoto"/>
         <Library Value="opencv_photo"/>
+        <Library Value="opencv_videoio"/>
         <Library Value="x265"/>
         <Library Value="x264"/>
         <Library Value="wayland-egl"/>
@@ -340,6 +344,7 @@
         <LibraryPath Value="../libWindowMain/Debug"/>
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
+        <LibraryPath Value="../Otherlib/libffmpeg/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
@@ -387,6 +392,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_highgui.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_video.so.4.5 ./Debug</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_videoio.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_xphoto.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.so.4.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/liblibde265.so ./Debug</Command>
@@ -406,6 +412,7 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_face.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_objdetect.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_video.so.4.5</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_videoio.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libx265.so.179</Command>
@@ -434,6 +441,7 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_flann.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_highgui.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_video.so.4.5</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_videoio.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/liblibde265.so</Command>
@@ -494,6 +502,7 @@
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
+        <LibraryPath Value="../Otherlib/libffmpeg/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../Otherlib/libavif/Release"/>
@@ -537,6 +546,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_highgui.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_video.so.4.5 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_videoio.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_xphoto.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_photo.so.4.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/liblibde265.so ./Release</Command>
@@ -556,6 +566,7 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_face.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_objdetect.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_video.so.4.5</Command>
+        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_videoio.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libx265.so.179</Command>
@@ -584,6 +595,7 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_flann.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_highgui.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_video.so.4.5</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_videoio.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/liblibde265.so</Command>

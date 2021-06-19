@@ -35,4 +35,9 @@ cd fftw-3.3.8
 make -j$NBPROC
 cd ..
 
-
+tar xf ffmpeg-4.4.tar.xz
+mv ffmpeg-4.4 ffmpeg-master
+cd ffmpeg-master
+./configure
+make -j$NBPROC
+cd ..

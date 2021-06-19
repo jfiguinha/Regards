@@ -69,9 +69,9 @@
 #include "libavcodec/mathops.h"
 #include "libavformat/os_support.h"
 
-# include "libavfilter/avfilter.h"
-# include "libavfilter/buffersrc.h"
-# include "libavfilter/buffersink.h"
+#include "libavfilter/avfilter.h"
+#include "libavfilter/buffersrc.h"
+#include "libavfilter/buffersink.h"
 
 #if HAVE_SYS_RESOURCE_H
 #include <sys/time.h>
