@@ -161,6 +161,7 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
   --enable-libvpx \
   --enable-libx264 \
   --enable-libx265 \
+  --disable-indevs \
   --enable-nonfree
 
 make -j$NBPROC
