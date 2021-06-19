@@ -297,7 +297,7 @@ bool CFFmfc::Quit()
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
-		if (_pimpl->dlg->GetDXVA2Compatible())
+		if (_pimpl->dlg != nullptr && _pimpl->dlg->GetDXVA2Compatible())
 		{
 			_pimpl->StopStream();
 			wxSleep(1);
@@ -530,8 +530,12 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 		_pimpl->do_exit(nullptr);
 	}
 
-	_pimpl->g_is->width = _pimpl->dlg->getWidth();
-	_pimpl->g_is->height = _pimpl->dlg->getHeight();
+	if (_pimpl->dlg != nullptr)
+	{
+		_pimpl->g_is->width = _pimpl->dlg->getWidth();
+		_pimpl->g_is->height = _pimpl->dlg->getHeight();
+	}
+
 
     wxCommandEvent event(EVENT_VIDEOSTART);
     wxPostEvent(_pimpl->parent, event);

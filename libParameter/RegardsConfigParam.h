@@ -37,6 +37,9 @@ public:
 	wxString GetVideoDecoderHardware();
 	void SetVideoDecoderHardware(const wxString &numLib);
 
+	wxString GetMusicDiaporama();
+	void SetMusicDiaporama(const wxString& musicDiaporama);
+
 	int GetEffectLibrary();
 	void SetEffectLibrary(const int &numLib);
 
@@ -178,5 +181,7 @@ protected:
 	int fastFaceDetection = 1;
 	wxString videoDecoderHardware;
 	wxString videoEncoderHardware;
+
+	wxString musicDiaporama;
 };
 

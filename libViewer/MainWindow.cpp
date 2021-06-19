@@ -48,6 +48,7 @@
 #include <wx/busyinfo.h>
 #include <ThumbnailVideoExport.h>
 #include <OpenCVEffect.h>
+#include <ffplaycore.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Picture;
@@ -194,6 +195,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
 	Connect(wxEVENT_PROGRESSVIDEOFFMPEG, wxCommandEventHandler(CMainWindow::OnProgressVideo));
+	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CMainWindow::OnStopAudio));
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
@@ -273,23 +275,19 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	int time_movie = CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
 
-	wxString openideofile = CLibResource::LoadStringFromResource(L"LBLSELECT", 1);
+	wxString musicDiaporama = config->GetMusicDiaporama();
 
-	wxFileDialog openFileDialog(nullptr, openideofile, "", filename,
-		"mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_OK)
+	if (musicDiaporama != "")
 	{
 		wxString tempAudio = "";
 		//Execute Crop Audio
-		wxString filepathAudio = openFileDialog.GetPath();
+		wxString filepathAudio = musicDiaporama;
 #ifdef WIN32
 		tempAudio = tempFolder + "\\audio.";
 #else
 		tempAudio = tempFolder + "/audio.";
 #endif
 
-
-		
 		wxFileName file_path(filepathAudio);
 		wxString extension = file_path.GetExt();
 
@@ -706,6 +704,9 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 void CMainWindow::OnVideoStart(wxCommandEvent& event)
 {
 	TRACE();
+
+	if (ffmfc != nullptr)
+		ffmfc->Pause();
 
 	if (centralWnd != nullptr)
 	{
@@ -1137,6 +1138,8 @@ void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
 
 void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 {
+	
+
 	TRACE();
 	if (centralWnd != nullptr)
 	{
@@ -1325,9 +1328,44 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 	processIdle = true;
 }
 
+void CMainWindow::OnStopAudio(wxCommandEvent& event)
+{
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	wxString musicDiaporama = "";
+
+	if (config != nullptr)
+		musicDiaporama = config->GetMusicDiaporama();
+	if (musicDiaporama != "")
+	{
+		ffmfc->Quit();
+		ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+	}
+}
+
 void CMainWindow::StartDiaporama()
 {
 	TRACE();
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	wxString musicDiaporama = "";
+	
+	if(config != nullptr )
+		musicDiaporama = config->GetMusicDiaporama();
+	if (ffmfc == nullptr && musicDiaporama != "")
+	{
+		ffmfc = new CFFmfc(this, wxNewId());
+		
+		if (config != nullptr)
+		{
+			
+			if (musicDiaporama != "")
+				ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+			
+		}
+	}
+	else if (musicDiaporama != "")
+		ffmfc->Play();
+
+
 
 	if (viewerParam != nullptr)
 	{
@@ -1398,12 +1436,18 @@ void CMainWindow::VideoEnd()
 	//Fin de la video
 	if (startDiaporama)
 	{
+		if (ffmfc != nullptr)
+			ffmfc->Play();
+
 		ImageSuivante();
 	}
 }
 
 void CMainWindow::StopDiaporama()
 {
+	if (ffmfc != nullptr)
+		ffmfc->Pause();
+
 	TRACE();
 	if (startDiaporama)
 	{

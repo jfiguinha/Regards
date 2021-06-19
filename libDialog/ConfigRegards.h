@@ -24,6 +24,10 @@ class ConfigRegards: public wxDialog
 		//(*Declarations(ConfigRegards)
 		wxButton* btOk;
 		wxStaticBox* sbDiaporama;
+
+		wxTextCtrl* txtMusicDiaporamaPath;
+		wxButton* btMusicDiaporamaPath;
+
 		wxSpinCtrl* scTime;
 		wxSpinCtrl* scProcessFace;
         wxSpinCtrl* scProcessExif;
@@ -67,7 +71,7 @@ class ConfigRegards: public wxDialog
 		//*)
 
 	private:
-
+		void OnBtnMusicDiaporamaClick(wxCommandEvent& event);
 		void OnbtnPathVideoClick(wxCommandEvent& event);
 		void OnBtnPathPictureClick(wxCommandEvent& event);
 		int GetDeviceIndex();

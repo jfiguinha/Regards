@@ -10,6 +10,7 @@ class CPictureCategorieLoadData;
 class CPictureCategorie;
 class IStatusBarInterface;
 class CFFmpegTranscoding;
+class CFFmfc;
 
 namespace Regards
 {
@@ -65,7 +66,7 @@ namespace Regards
 
 			bool FindNextValidFile();
 			bool FindPreviousValidFile();
-
+			void OnStopAudio(wxCommandEvent& event);
 			void OnEndDecompressFile(wxCommandEvent& event);
 			void OnEditFile(wxCommandEvent& event);
             void OnPicturePrevious(wxCommandEvent& event);
@@ -138,7 +139,7 @@ namespace Regards
 			bool criteriaSendMessage;
             bool checkVersion;
             bool setViewerMode = false;
-
+			CFFmfc* ffmfc = nullptr;
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
 		};
 	}

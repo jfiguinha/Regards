@@ -57,6 +57,10 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
 	rbContrastCorrection = (wxRadioBox*)FindWindow(XRCID("ID_RBAUTOCONTRAST"));
 
+	txtMusicDiaporamaPath = (wxTextCtrl*)FindWindow(XRCID("ID_TXTMUSICDIAPORAMAPATH"));
+	btMusicDiaporamaPath = (wxButton*)FindWindow(XRCID("ID_MUSICDIAPORAMAPATH"));
+
+
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
@@ -64,6 +68,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	//Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&ConfigRegards::OnInit);
 	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
 	Connect(XRCID("ID_PICTUREPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnPathPictureClick);
+	Connect(XRCID("ID_MUSICDIAPORAMAPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnMusicDiaporamaClick);
 
 
     Init();
@@ -97,6 +102,19 @@ void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
 		allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtPicturePath->SetValue(openFileDialog.GetPath());
+}
+
+void ConfigRegards::OnBtnMusicDiaporamaClick(wxCommandEvent& event)
+{
+	wxString label = CLibResource::LoadStringFromResource(L"LBLSELECTPICTUREEDITOR", 1);
+	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
+	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+
+	wxFileDialog openFileDialog(nullptr, label, "", filename,
+		"mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	if (openFileDialog.ShowModal() == wxID_OK)
+		txtMusicDiaporamaPath->SetValue(openFileDialog.GetPath());
 }
 
 ConfigRegards::~ConfigRegards()
@@ -194,6 +212,8 @@ void ConfigRegards::Init()
 		rbFaceDetection->SetSelection(1);
 	else
 		rbFaceDetection->SetSelection(0);
+
+	txtMusicDiaporamaPath->SetValue(regardsParam->GetMusicDiaporama());
 
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
@@ -329,6 +349,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		mainparam->SetPathForVideoEdit(txtVideoPath->GetValue());
 		mainparam->SetPathForPictureEdit(txtPicturePath->GetValue());
 	}
+
+	regardsParam->SetMusicDiaporama(txtMusicDiaporamaPath->GetValue());
 
 	int transition = rbTransitionEffect->GetSelection();
 	if (transition == 0)

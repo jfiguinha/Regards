@@ -99,6 +99,21 @@
 											<item>Move</item>
 										</content>
 									</object>
+									<object class="wxStaticBox" name="sbInterpolation">
+										<label>Diaporama Music</label>
+										<pos>200,150</pos>
+										<size>180,70</size>
+									</object>
+									<object class="wxTextCtrl" name="ID_TXTMUSICDIAPORAMAPATH">
+										<default>0</default>
+										<pos>205,170</pos>
+										<size>100,20</size>
+									</object>
+									<object class="wxButton" name="ID_MUSICDIAPORAMAPATH">
+										<label>...</label>
+										<pos>290,170</pos>
+										<size>20,20</size>
+									</object>
 							</object>
 						</object>	
 						<object class="notebookpage">

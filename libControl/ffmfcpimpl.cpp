@@ -402,13 +402,14 @@ void CFFmfcPimpl::video_display(VideoState *is)
 									bitmap->SetColorValue(x, y, color);
 								}
 							}
-							dlg->SetSubtitulePicture(bitmap);
+							if(dlg != nullptr)
+								dlg->SetSubtitulePicture(bitmap);
 						}
 					}
 				}
 
 			}
-			else
+			else if (dlg != nullptr)
 			{
 				dlg->DeleteSubtitulePicture();
 			}
@@ -742,8 +743,9 @@ void CFFmfcPimpl::video_refresh(VideoState *is)
 
 	dlg->SetCurrentclock(currentclockstr);*/
 
-	if(!is->paused)
-		dlg->SetPos(get_master_clock(is) * 1000);
+	if (dlg != nullptr)
+		if(!is->paused)
+			dlg->SetPos(get_master_clock(is) * 1000);
 
 	/*
 	if (show_status)
@@ -886,7 +888,8 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 		else
 			video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
 
-		dlg->SetData(src_frame, video_aspect_ratio, nullptr);
+		if (dlg != nullptr)
+			dlg->SetData(src_frame, video_aspect_ratio, nullptr);
 
 		//av_frame_unref(src_frame);
 #else
@@ -2032,7 +2035,8 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		if (matrix)
 		{
 			long rotation = lround(av_display_rotation_get(matrix));
-			dlg->SetRotation(rotation);
+			if (dlg != nullptr)
+				dlg->SetRotation(rotation);
 		}
 	}
 	break;
@@ -2392,7 +2396,8 @@ int CFFmfcPimpl::read_thread(void *arg)
 
 	//×¢Òâ£ºÔÚ´Ë´¦ÉèÖÃMFC²ÎÊý
 	//ffmfc_param_global(is);
-	is->_pimpl->dlg->SetVideoDuration(is->ic->duration, is->ic->start_time);
+	if(is->_pimpl->dlg != nullptr)
+		is->_pimpl->dlg->SetVideoDuration(is->ic->duration, is->ic->start_time);
 
 	for (;;) {
 

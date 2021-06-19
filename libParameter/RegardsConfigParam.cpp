@@ -39,8 +39,19 @@ CRegardsConfigParam::CRegardsConfigParam()
 	videoFaceDetection = 0;
 	faceDetection = 0;
 	fastFaceDetection = 1;
+	musicDiaporama = "";
 }
 
+
+wxString CRegardsConfigParam::GetMusicDiaporama()
+{
+	return musicDiaporama;
+}
+
+void CRegardsConfigParam::SetMusicDiaporama(const wxString& musicDiaporama)
+{
+	this->musicDiaporama = musicDiaporama;
+}
 
 void CRegardsConfigParam::SetFastDetectionFace(const int& fastDetection)
 {
@@ -709,6 +720,7 @@ void CRegardsConfigParam::SetDiaporamaParameter(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("Time", to_string(diaporamaTime)));
 	sectionPosition->append_node(node("Effect", to_string(diaporamaEffect)));
 	sectionPosition->append_node(node("Fullscreen", to_string(diaporamaFullscreen)));
+	sectionPosition->append_node(node("MusicDiaporama", musicDiaporama));
 }
 
 void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
@@ -737,6 +749,14 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		diaporamaFullscreen = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("MusicDiaporama");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		musicDiaporama = child_node->value();
 	}
 }
 
