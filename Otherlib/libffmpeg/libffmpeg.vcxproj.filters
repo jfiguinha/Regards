@@ -22,13 +22,13 @@
     <Filter Include="ffmpeg\inc">
       <UniqueIdentifier>{11549653-526c-4385-8a3a-be20aac28a29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="iso_c">
+      <UniqueIdentifier>{6de7b9d6-bfe0-4577-ad96-0daeb9f1c350}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ffmpeg_application.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="stdatomic.c">
-      <Filter>ffmpeg\src</Filter>
     </ClCompile>
     <ClCompile Include="ffmpeg_opt.c">
       <Filter>ffmpeg\src</Filter>
@@ -45,6 +45,9 @@
     <ClCompile Include="ffmpeg.c">
       <Filter>ffmpeg\src</Filter>
     </ClCompile>
+    <ClCompile Include="win32\stdatomic.c">
+      <Filter>iso_c</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ffmpeg_application.h">
@@ -56,17 +59,17 @@
     <ClInclude Include="ffmpeg.h">
       <Filter>ffmpeg\inc</Filter>
     </ClInclude>
-    <ClInclude Include="stdalign.h">
-      <Filter>ffmpeg\inc</Filter>
-    </ClInclude>
-    <ClInclude Include="stdatomic.h">
-      <Filter>ffmpeg\inc</Filter>
-    </ClInclude>
-    <ClInclude Include="threads.h">
-      <Filter>ffmpeg\inc</Filter>
-    </ClInclude>
     <ClInclude Include="cmd_struct.h">
       <Filter>ffmpeg\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\stdalign.h">
+      <Filter>iso_c</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\stdatomic.h">
+      <Filter>iso_c</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\threads.h">
+      <Filter>iso_c</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
