@@ -161,7 +161,9 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
         {
             if (filename1 != "")
             {
+#ifdef PICTURE_SAVING
 #pragma omp parallel for 
+#endif
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
@@ -184,7 +186,9 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
         {
             float ratio = 1.0;
 
+#ifdef PICTURE_SAVING
 #pragma omp parallel for 
+#endif
             for (int k = 0; k < nbFrame; k++)
             {
                 ratio = ratio + 0.0005;
@@ -210,7 +214,9 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
             {
                 CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
 
+#ifdef PICTURE_SAVING
 #pragma omp parallel for 
+#endif
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
