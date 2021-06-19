@@ -18,17 +18,9 @@
  * along with libheif.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "heif.h"
-#include "heif_plugin.h"  // needed to avoid 'unresolved symbols' on Visual Studio compiler
+#ifndef LIBHEIF_HEIF_DECODER_DAV1D_H
+#define LIBHEIF_HEIF_DECODER_DAV1D_H
 
-struct heif_error heif_error_ok = {heif_error_Ok, heif_suberror_Unspecified, "Success"};
+const struct heif_decoder_plugin* get_decoder_plugin_dav1d();
 
-struct heif_error heif_error_unsupported_parameter = {heif_error_Usage_error,
-                                                      heif_suberror_Unsupported_parameter,
-                                                      "Unsupported encoder parameter"};
-
-struct heif_error heif_error_invalid_parameter_value = {heif_error_Usage_error,
-                                                        heif_suberror_Invalid_parameter_value,
-                                                        "Invalid parameter value"};
-
-
+#endif

@@ -26,11 +26,10 @@
 #include "config.h"
 #endif
 
-#include <memory>
 #include <string>
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
+#include <cstring>
+#include <cstdio>
+#include <cassert>
 #include <vector>
 
 extern "C" {
@@ -38,8 +37,9 @@ extern "C" {
 }
 
 
-const char* kError_unsupported_bit_depth = "Bit depth not supported by x265";
-const char* kError_unsupported_image_size = "Images smaller than 16 pixels are not supported";
+static const char* kError_unsupported_bit_depth = "Bit depth not supported by x265";
+static const char* kError_unsupported_image_size = "Images smaller than 16 pixels are not supported";
+static const char* kError_out_of_memory = "Out of memory";
 
 
 enum parameter_type
@@ -169,7 +169,7 @@ static const char* const kParam_tune_valid_values[] = {
 
 static const char* kParam_chroma = "chroma";
 static const char* const kParam_chroma_valid_values[] = {
-    "420", "422", "444"
+    "420", "422", "444", nullptr
 };
 
 
@@ -185,17 +185,17 @@ static void x265_set_default_parameters(void* encoder);
 
 static const char* x265_plugin_name()
 {
-	/*
   strcpy(plugin_name, "x265 HEVC encoder");
+
   const char* x265_version = (x265_version_str != nullptr ? x265_version_str : "null");
-	
+  
   if (strlen(x265_version) + strlen(plugin_name) + 4 < MAX_PLUGIN_NAME_LENGTH) {
     strcat(plugin_name, " (");
     strcat(plugin_name, x265_version);
     strcat(plugin_name, ")");
   }
-  */
-  return "x265 HEVC encoder 1.30";
+
+  return plugin_name;
 }
 
 
@@ -794,24 +794,28 @@ static struct heif_error x265_encode_image(void* encoder_raw, const struct heif_
     api->param_parse(param, "range", "full");
   }
 
-  if (nclx) {
-    std::stringstream sstr;
-    sstr << nclx->get_colour_primaries();
-    api->param_parse(param, "colorprim", sstr.str().c_str());
-  }
+  if (nclx &&
+      (input_class == heif_image_input_class_normal ||
+       input_class == heif_image_input_class_thumbnail)) {
 
-  if (nclx) {
-    std::stringstream sstr;
-    sstr << nclx->get_transfer_characteristics();
-    api->param_parse(param, "transfer", sstr.str().c_str());
-  }
+    {
+      std::stringstream sstr;
+      sstr << nclx->get_colour_primaries();
+      api->param_parse(param, "colorprim", sstr.str().c_str());
+    }
 
-  if (nclx) {
-    std::stringstream sstr;
-    sstr << nclx->get_matrix_coefficients();
-    api->param_parse(param, "colormatrix", sstr.str().c_str());
-  }
+    {
+      std::stringstream sstr;
+      sstr << nclx->get_transfer_characteristics();
+      api->param_parse(param, "transfer", sstr.str().c_str());
+    }
 
+    {
+      std::stringstream sstr;
+      sstr << nclx->get_matrix_coefficients();
+      api->param_parse(param, "colormatrix", sstr.str().c_str());
+    }
+  }
 
   for (const auto& p : encoder->parameters) {
     if (p.name == heif_encoder_parameter_name_quality) {
@@ -861,7 +865,15 @@ static struct heif_error x265_encode_image(void* encoder_raw, const struct heif_
   param->sourceWidth = rounded_size(param->sourceWidth);
   param->sourceHeight = rounded_size(param->sourceHeight);
 
-  image->image->extend_to_aligned_border();
+  bool success = image->image->extend_padding_to_size(param->sourceWidth, param->sourceHeight);
+  if (!success) {
+    struct heif_error err = {
+        heif_error_Memory_allocation_error,
+        heif_suberror_Unspecified,
+        kError_out_of_memory
+    };
+    return err;
+  }
 
   x265_picture* pic = api->picture_alloc();
   api->picture_init(param, pic);

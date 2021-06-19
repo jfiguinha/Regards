@@ -253,6 +253,8 @@ namespace heif {
 
     int peek_bits(int n);
 
+    void skip_bytes(int nBytes);
+
     void skip_bits(int n);
 
     void skip_bits_fast(int n);
@@ -266,6 +268,11 @@ namespace heif {
     int get_current_byte_index() const
     {
       return data_length - bytes_remaining - nextbits_cnt / 8;
+    }
+
+    int64_t get_bits_remaining() const
+    {
+      return bytes_remaining*8 + nextbits_cnt;
     }
 
   private:

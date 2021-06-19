@@ -240,7 +240,9 @@ namespace heif {
 
     bool has_compatible_brand(uint32_t brand) const;
 
+    std::vector<uint32_t> list_brands() const { return m_compatible_brands; }
 
+    
     void set_major_brand(uint32_t major_brand)
     { m_major_brand = major_brand; }
 
@@ -429,6 +431,8 @@ namespace heif {
     uint8_t m_index_size = 0;
 
     void patch_iloc_header(StreamWriter& writer) const;
+
+    int m_idat_offset = 0; // only for writing: offset of next data array
   };
 
 
@@ -959,10 +963,24 @@ namespace heif {
                     uint64_t start, uint64_t length,
                     std::vector<uint8_t>& out_data) const;
 
+    int append_data(const std::vector<uint8_t>& data) {
+      auto pos = m_data_for_writing.size();
+
+      m_data_for_writing.insert(m_data_for_writing.end(),
+                                data.begin(),
+                                data.end());
+
+      return (int)pos;
+    }
+
+    Error write(StreamWriter& writer) const override;
+
   protected:
     Error parse(BitstreamRange& range) override;
 
     std::streampos m_data_start_pos;
+
+    std::vector<uint8_t> m_data_for_writing;
   };
 
 
@@ -1046,6 +1064,10 @@ namespace heif {
 
     int get_bits_per_channel(int channel) const
     { return m_bits_per_channel[channel]; }
+
+    void add_channel_bits(uint8_t c){
+      m_bits_per_channel.push_back(c);
+    }
 
     std::string dump(Indent&) const override;
 
@@ -1135,6 +1157,8 @@ namespace heif {
     { m_full_range_flag = full_range; }
 
     void set_default();
+
+    void set_undefined();
 
     Error get_nclx_color_profile(struct heif_color_profile_nclx** out_data) const;
 

@@ -60,7 +60,7 @@ namespace heif {
 
     void new_empty_file();
 
-    void set_brand(heif_compression_format format);
+    void set_brand(heif_compression_format format, bool miaf_compatible);
 
     void write(StreamWriter& writer);
 
@@ -137,7 +137,9 @@ namespace heif {
     void add_clap_property(heif_item_id id, uint32_t clap_width, uint32_t clap_height,
                            uint32_t image_width, uint32_t image_height);
 
-    void append_iloc_data(heif_item_id id, const std::vector<uint8_t>& nal_packets);
+    void add_pixi_property(heif_item_id id, uint8_t c1, uint8_t c2=0, uint8_t c3=0);
+
+    void append_iloc_data(heif_item_id id, const std::vector<uint8_t>& nal_packets, uint8_t construction_method = 0);
 
     void append_iloc_data_with_4byte_size(heif_item_id id, const uint8_t* data, size_t size);
 
@@ -150,7 +152,12 @@ namespace heif {
 
     void set_color_profile(heif_item_id id, const std::shared_ptr<const color_profile> profile);
 
+    // TODO: the hdlr box is probably not the right place for this. Into which box should we write comments?
     void set_hdlr_library_info(std::string encoder_plugin_version);
+
+#ifdef _MSC_VER
+    static std::wstring convert_utf8_path_to_utf16(std::string pathutf8);
+#endif
 
   private:
 #if ENABLE_PARALLEL_TILE_DECODING

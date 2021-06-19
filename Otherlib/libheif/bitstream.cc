@@ -21,8 +21,8 @@
 #include "bitstream.h"
 
 #include <utility>
-#include <string.h>
-#include <assert.h>
+#include <cstring>
+#include <cassert>
 
 #define MAX_UVLC_LEADING_ZEROS 20
 
@@ -386,6 +386,14 @@ int BitReader::peek_bits(int n)
   return (int) val;
 }
 
+void BitReader::skip_bytes(int nBytes)
+{
+  // TODO: this is slow
+  while (nBytes--) {
+    skip_bits(8);
+  }
+}
+
 void BitReader::skip_bits(int n)
 {
   if (nextbits_cnt < n) {
@@ -452,7 +460,7 @@ bool BitReader::get_svlc(int* value)
 void BitReader::refill()
 {
 #if 0
-  // TODO: activate me one I'm sure this works
+  // TODO: activate me once I'm sure this works
   while (nextbits_cnt <= 64-8 && bytes_remaining) {
     uint64_t newval = *data++;
     bytes_remaining--;

@@ -27,17 +27,16 @@
 #include "config.h"
 #endif
 
-#include <math.h>
-#include <memory>
-#include <string>
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
 #include <vector>
+#include <memory>
+#include <cstring>
+#include <cassert>
+#include <string>
+#include <algorithm>
 
 #include <iostream>  // TODO: remove me
 
-#include "rav1e/rav1e.h"
+#include "rav1e.h"
 
 
 struct encoder_struct_rav1e
@@ -59,6 +58,7 @@ struct encoder_struct_rav1e
   bool data_read = false;
 };
 
+static const char* kError_out_of_memory = "Out of memory";
 
 static const char* kParam_min_q = "min-q";
 static const char* kParam_threads = "threads";
@@ -66,7 +66,7 @@ static const char* kParam_speed = "speed";
 
 static const char* kParam_chroma = "chroma";
 static const char* const kParam_chroma_valid_values[] = {
-    "420", "422", "444"
+    "420", "422", "444", nullptr
 };
 
 static int valid_tile_num_values[] = {1, 2, 4, 8, 16, 32, 64};
@@ -136,7 +136,7 @@ static void rav1e_init_parameters()
   p->type = heif_encoder_parameter_type_integer;
   p->integer.default_value = 4;
   p->has_default = true;
-  p->integer.have_minimum_maximum = true;
+  p->integer.have_minimum_maximum = false;
   p->integer.valid_values = valid_tile_num_values;
   p->integer.num_valid_values = 7;
   d[i++] = p++;
@@ -147,7 +147,7 @@ static void rav1e_init_parameters()
   p->type = heif_encoder_parameter_type_integer;
   p->integer.default_value = 4;
   p->has_default = true;
-  p->integer.have_minimum_maximum = true;
+  p->integer.have_minimum_maximum = false;
   p->integer.valid_values = valid_tile_num_values;
   p->integer.num_valid_values = 7;
   d[i++] = p++;
@@ -478,10 +478,38 @@ void rav1e_query_input_colorspace2(void* encoder_raw, heif_colorspace* colorspac
 }
 
 
+void rav1e_query_encoded_size(void* encoder, uint32_t input_width, uint32_t input_height,
+                              uint32_t* encoded_width, uint32_t* encoded_height)
+{
+  *encoded_width = std::max(input_width, 16U);
+  *encoded_height = std::max(input_height, 16U);
+}
+
+
 struct heif_error rav1e_encode_image(void* encoder_raw, const struct heif_image* image,
                                      heif_image_input_class input_class)
 {
   auto* encoder = (struct encoder_struct_rav1e*) encoder_raw;
+
+  // --- round image size to minimum size
+
+  uint32_t rounded_width, rounded_height;
+  rav1e_query_encoded_size(encoder,
+                           image->image->get_width(),
+                           image->image->get_height(),
+                           &rounded_width,
+                           &rounded_height);
+
+  bool success = image->image->extend_padding_to_size(rounded_width, rounded_height);
+  if (!success) {
+    struct heif_error err = {
+        heif_error_Memory_allocation_error,
+        heif_suberror_Unspecified,
+        kError_out_of_memory
+    };
+    return err;
+  }
+
 
   const heif_chroma chroma = heif_image_get_chroma_format(image);
 
@@ -538,11 +566,13 @@ struct heif_error rav1e_encode_image(void* encoder_raw, const struct heif_image*
     return heif_error_codec_library_error;
   }
 
-  if (nclx) {
+  if (nclx &&
+      (input_class == heif_image_input_class_normal ||
+       input_class == heif_image_input_class_thumbnail)) {
     if (rav1e_config_set_color_description(rav1eConfig.get(),
-                                           (RaMatrixCoefficients)nclx->get_matrix_coefficients(),
-                                           (RaColorPrimaries)nclx->get_colour_primaries(),
-                                           (RaTransferCharacteristics)nclx->get_transfer_characteristics()) == -1) {
+                                           (RaMatrixCoefficients) nclx->get_matrix_coefficients(),
+                                           (RaColorPrimaries) nclx->get_colour_primaries(),
+                                           (RaTransferCharacteristics) nclx->get_transfer_characteristics()) == -1) {
       return heif_error_codec_library_error;
     }
   }
@@ -663,7 +693,7 @@ struct heif_error rav1e_get_compressed_data(void* encoder_raw, uint8_t** data, i
 
 static const struct heif_encoder_plugin encoder_plugin_rav1e
     {
-        /* plugin_api_version */ 2,
+        /* plugin_api_version */ 3,
         /* compression_format */ heif_compression_AV1,
         /* id_name */ "rav1e",
         /* priority */ RAV1E_PLUGIN_PRIORITY,
@@ -690,7 +720,8 @@ static const struct heif_encoder_plugin encoder_plugin_rav1e
         /* query_input_colorspace */ rav1e_query_input_colorspace,
         /* encode_image */ rav1e_encode_image,
         /* get_compressed_data */ rav1e_get_compressed_data,
-        /* query_input_colorspace (v2) */ rav1e_query_input_colorspace2
+        /* query_input_colorspace (v2) */ rav1e_query_input_colorspace2,
+        /* query_encoded_size (v3) */ rav1e_query_encoded_size
     };
 
 const struct heif_encoder_plugin* get_encoder_plugin_rav1e()

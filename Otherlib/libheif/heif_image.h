@@ -40,9 +40,18 @@ namespace heif {
 
   heif_chroma chroma_from_subsampling(int h, int v);
 
+  void get_subsampled_size(int width, int height,
+                           heif_channel channel,
+                           heif_chroma chroma,
+                           int* subsampled_width, int* subsampled_height);
+
   bool is_chroma_with_alpha(heif_chroma chroma);
 
   int num_interleaved_pixels_per_plane(heif_chroma chroma);
+
+  bool is_integer_multiple_of_chroma_size(int width,
+                                          int height,
+                                          heif_chroma chroma);
 
 
   class HeifPixelImage : public std::enable_shared_from_this<HeifPixelImage>,
@@ -62,21 +71,21 @@ namespace heif {
     // Has alpha information either as a separate channel or in the interleaved format.
     bool has_alpha() const;
 
-    int get_width() const
-    { return m_width; }
+    bool is_premultiplied_alpha() const { return m_premultiplied_alpha; }
 
-    int get_height() const
-    { return m_height; }
+    void set_premultiplied_alpha(bool flag) { m_premultiplied_alpha = flag; }
+
+    int get_width() const { return m_width; }
+
+    int get_height() const { return m_height; }
 
     int get_width(enum heif_channel channel) const;
 
     int get_height(enum heif_channel channel) const;
 
-    heif_chroma get_chroma_format() const
-    { return m_chroma; }
+    heif_chroma get_chroma_format() const { return m_chroma; }
 
-    heif_colorspace get_colorspace() const
-    { return m_colorspace; }
+    heif_colorspace get_colorspace() const { return m_colorspace; }
 
     std::set<enum heif_channel> get_channel_set() const;
 
@@ -112,38 +121,43 @@ namespace heif {
 
     Error scale_nearest_neighbor(std::shared_ptr<HeifPixelImage>& output, int width, int height) const;
 
-    void set_color_profile_nclx(std::shared_ptr<const color_profile_nclx> profile)
-    { m_color_profile_nclx = profile; }
+    void set_color_profile_nclx(std::shared_ptr<const color_profile_nclx> profile) { m_color_profile_nclx = profile; }
 
-    std::shared_ptr<const color_profile_nclx> get_color_profile_nclx() const
-    { return m_color_profile_nclx; }
+    std::shared_ptr<const color_profile_nclx> get_color_profile_nclx() const { return m_color_profile_nclx; }
 
-    void set_color_profile_icc(std::shared_ptr<const color_profile_raw> profile)
-    { m_color_profile_icc = profile; }
+    void set_color_profile_icc(std::shared_ptr<const color_profile_raw> profile) { m_color_profile_icc = profile; }
 
-    std::shared_ptr<const color_profile_raw> get_color_profile_icc() const
-    { return m_color_profile_icc; }
+    std::shared_ptr<const color_profile_raw> get_color_profile_icc() const { return m_color_profile_icc; }
 
     void debug_dump() const;
 
-    void extend_to_aligned_border();
+    bool extend_padding_to_size(int width, int height);
 
   private:
     struct ImagePlane
     {
-      int width = 0;
-      int height = 0;
-      uint8_t bit_depth = 0;
+      bool alloc(int width, int height, int bit_depth, heif_chroma chroma);
+
+      uint8_t m_bit_depth = 0;
+
+      // the "visible" area of the plane
+      int m_width = 0;
+      int m_height = 0;
+
+      // the allocated memory size
+      int m_mem_width = 0;
+      int m_mem_height = 0;
 
       uint8_t* mem = nullptr; // aligned memory start
       uint8_t* allocated_mem = nullptr; // unaligned memory we allocated
-      uint32_t stride = 0;
+      uint32_t stride = 0; // bytes per line
     };
 
     int m_width = 0;
     int m_height = 0;
     heif_colorspace m_colorspace = heif_colorspace_undefined;
     heif_chroma m_chroma = heif_chroma_undefined;
+    bool m_premultiplied_alpha = false;
     std::shared_ptr<const color_profile_nclx> m_color_profile_nclx;
     std::shared_ptr<const color_profile_raw> m_color_profile_icc;
 

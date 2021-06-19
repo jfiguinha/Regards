@@ -216,6 +216,8 @@ namespace heif {
 
     bool has_alpha_channel() const noexcept;
 
+    bool is_premultiplied_alpha() const noexcept;
+
     int get_luma_bits_per_pixel() const noexcept;
 
     int get_chroma_bits_per_pixel() const noexcept;
@@ -352,6 +354,10 @@ namespace heif {
 
     void set_raw_color_profile(heif_color_profile_type type,
                                const std::vector<uint8_t>& data);
+
+    bool is_premultiplied_alpha() const noexcept;
+
+    void set_premultiplied_alpha(bool is_premultiplied_alpha) noexcept;
 
     class ScalingOptions
     {
@@ -669,6 +675,11 @@ namespace heif {
     return heif_image_handle_has_alpha_channel(m_image_handle.get()) != 0;
   }
 
+  inline bool ImageHandle::is_premultiplied_alpha() const noexcept
+  {
+    return heif_image_handle_is_premultiplied_alpha(m_image_handle.get()) != 0;
+  }
+
   inline int ImageHandle::get_luma_bits_per_pixel() const noexcept
   {
     return heif_image_handle_get_luma_bits_per_pixel(m_image_handle.get());
@@ -898,7 +909,7 @@ namespace heif {
   }
 
   // throws Error
-  ColorProfile_nclx Image::get_nclx_color_profile() const
+  inline ColorProfile_nclx Image::get_nclx_color_profile() const
   {
     heif_color_profile_nclx* nclx = nullptr;
     Error err = Error(heif_image_get_nclx_color_profile(m_image.get(), &nclx));
@@ -910,13 +921,13 @@ namespace heif {
   }
 
 
-  heif_color_profile_type Image::get_color_profile_type() const
+  inline heif_color_profile_type Image::get_color_profile_type() const
   {
     return heif_image_get_color_profile_type(m_image.get());
   }
 
   // throws Error
-  std::vector<uint8_t> Image::get_raw_color_profile() const
+  inline std::vector<uint8_t> Image::get_raw_color_profile() const
   {
     auto size = heif_image_get_raw_color_profile_size(m_image.get());
     std::vector<uint8_t> profile(size);
@@ -924,7 +935,7 @@ namespace heif {
     return profile;
   }
 
-  void Image::set_raw_color_profile(heif_color_profile_type type,
+  inline void Image::set_raw_color_profile(heif_color_profile_type type,
                                     const std::vector<uint8_t>& data)
   {
     const char* profile_type = nullptr;
@@ -949,6 +960,15 @@ namespace heif {
     }
   }
 
+  inline bool Image::is_premultiplied_alpha() const noexcept
+  {
+    return heif_image_is_premultiplied_alpha(m_image.get()) != 0;
+  }
+
+  inline void Image::set_premultiplied_alpha(bool is_premultiplied_alpha) noexcept
+  {
+    heif_image_set_premultiplied_alpha(m_image.get(), is_premultiplied_alpha);
+  }
 
   inline Image Image::scale_image(int width, int height,
                                   const ScalingOptions&) const

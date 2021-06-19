@@ -70,8 +70,7 @@ namespace heif {
 
     ~HeifContext();
 
-    void set_max_decoding_threads(int max_threads)
-    { m_max_decoding_threads = max_threads; }
+    void set_max_decoding_threads(int max_threads) { m_max_decoding_threads = max_threads; }
 
     void set_maximum_image_size_limit(int maximum_size)
     {
@@ -92,6 +91,13 @@ namespace heif {
 
       ~Image();
 
+      void clear() {
+        m_thumbnails.clear();
+        m_alpha_channel.reset();
+        m_depth_channel.reset();
+        m_aux_images.clear();
+      }
+
       void set_resolution(int w, int h)
       {
         m_width = w;
@@ -104,32 +110,31 @@ namespace heif {
         m_ispe_height = h;
       }
 
-      void set_primary(bool flag = true)
-      { m_is_primary = flag; }
+      void set_primary(bool flag = true) { m_is_primary = flag; }
 
-      heif_item_id get_id() const
-      { return m_id; }
+      heif_item_id get_id() const { return m_id; }
 
       //void set_id(heif_item_id id) { m_id=id; }  (already set in constructor)
 
-      int get_width() const
-      { return m_width; }
+      int get_width() const { return m_width; }
 
-      int get_height() const
-      { return m_height; }
+      int get_height() const { return m_height; }
 
-      int get_ispe_width() const
-      { return m_ispe_width; }
+      int get_ispe_width() const { return m_ispe_width; }
 
-      int get_ispe_height() const
-      { return m_ispe_height; }
+      int get_ispe_height() const { return m_ispe_height; }
 
       int get_luma_bits_per_pixel() const;
 
       int get_chroma_bits_per_pixel() const;
 
-      bool is_primary() const
-      { return m_is_primary; }
+      bool is_primary() const { return m_is_primary; }
+
+      void set_size(int w, int h)
+      {
+        m_width = w;
+        m_height = h;
+      }
 
 
       // -- thumbnails
@@ -140,32 +145,31 @@ namespace heif {
         m_thumbnail_ref_id = id;
       }
 
-      void add_thumbnail(const std::shared_ptr<Image>& img)
-      { m_thumbnails.push_back(img); }
+      void add_thumbnail(const std::shared_ptr<Image>& img) { m_thumbnails.push_back(img); }
 
-      bool is_thumbnail() const
-      { return m_is_thumbnail; }
+      bool is_thumbnail() const { return m_is_thumbnail; }
 
-      std::vector<std::shared_ptr<Image>> get_thumbnails() const
-      { return m_thumbnails; }
+      const std::vector<std::shared_ptr<Image>>& get_thumbnails() const { return m_thumbnails; }
 
 
       // --- alpha channel
 
-      void set_is_alpha_channel_of(heif_item_id id)
+      void set_is_alpha_channel_of(heif_item_id id, bool consumed)
       {
         m_is_alpha_channel = true;
         m_alpha_channel_ref_id = id;
+        m_implicitly_consumed_alpha = consumed;
       }
 
-      void set_alpha_channel(std::shared_ptr<Image> img)
-      { m_alpha_channel = std::move(img); }
+      void set_alpha_channel(std::shared_ptr<Image> img) { m_alpha_channel = std::move(img); }
 
-      bool is_alpha_channel() const
-      { return m_is_alpha_channel; }
+      bool is_alpha_channel() const { return m_is_alpha_channel; }
 
-      std::shared_ptr<Image> get_alpha_channel() const
-      { return m_alpha_channel; }
+      const std::shared_ptr<Image>& get_alpha_channel() const { return m_alpha_channel; }
+
+      void set_is_premultiplied_alpha(bool flag) { m_premultiplied_alpha = flag; }
+
+      bool is_premultiplied_alpha() const { return m_premultiplied_alpha; }
 
 
       // --- depth channel
@@ -176,14 +180,11 @@ namespace heif {
         m_depth_channel_ref_id = id;
       }
 
-      void set_depth_channel(std::shared_ptr<Image> img)
-      { m_depth_channel = std::move(img); }
+      void set_depth_channel(std::shared_ptr<Image> img) { m_depth_channel = std::move(img); }
 
-      bool is_depth_channel() const
-      { return m_is_depth_channel; }
+      bool is_depth_channel() const { return m_is_depth_channel; }
 
-      std::shared_ptr<Image> get_depth_channel() const
-      { return m_depth_channel; }
+      const std::shared_ptr<Image>& get_depth_channel() const { return m_depth_channel; }
 
 
       void set_depth_representation_info(struct heif_depth_representation_info& info)
@@ -203,6 +204,47 @@ namespace heif {
       }
 
 
+      // --- generic aux image
+
+      void set_is_aux_image_of(heif_item_id id, const std::string& aux_type)
+      {
+        m_is_aux_image = true;
+        m_aux_image_ref_id = id;
+        m_aux_image_type = aux_type;
+      }
+
+      void add_aux_image(std::shared_ptr<Image> img) { m_aux_images.push_back(std::move(img)); }
+
+      bool is_aux_image() const { return m_is_aux_image; }
+
+      const std::string& get_aux_type() const { return m_aux_image_type; }
+
+      std::vector<std::shared_ptr<Image>> get_aux_images(int aux_image_filter = 0) const
+      {
+        if (aux_image_filter == 0) {
+          return m_aux_images;
+        }
+        else {
+          std::vector<std::shared_ptr<Image>> auxImgs;
+          for (auto aux : m_aux_images) {
+            if ((aux_image_filter & LIBHEIF_AUX_IMAGE_FILTER_OMIT_ALPHA) &&
+                aux->is_alpha_channel() && aux->m_implicitly_consumed_alpha) {
+              continue;
+            }
+
+            if ((aux_image_filter & LIBHEIF_AUX_IMAGE_FILTER_OMIT_DEPTH) &&
+                aux->is_depth_channel()) {
+              continue;
+            }
+
+            auxImgs.push_back(aux);
+          }
+
+          return auxImgs;
+        }
+      }
+
+
       // --- metadata
 
       void add_metadata(std::shared_ptr<ImageMetadata> metadata)
@@ -210,29 +252,36 @@ namespace heif {
         m_metadata.push_back(std::move(metadata));
       }
 
-      std::vector<std::shared_ptr<ImageMetadata>> get_metadata() const
-      { return m_metadata; }
+      const std::vector<std::shared_ptr<ImageMetadata>>& get_metadata() const { return m_metadata; }
+
+
+      // --- miaf
+
+      void mark_not_miaf_compatible() { m_miaf_compatible = false; }
+
+      bool is_miaf_compatible() const { return m_miaf_compatible; }
 
 
       // === writing ===
 
       void set_preencoded_hevc_image(const std::vector<uint8_t>& data);
 
-      Error encode_image_as_hevc(std::shared_ptr<HeifPixelImage> image,
-                                 struct heif_encoder* encoder,
-                                 const struct heif_encoding_options* options,
-                                 enum heif_image_input_class input_class);
+      const std::shared_ptr<const color_profile_nclx>& get_color_profile_nclx() const { return m_color_profile_nclx; }
 
-      Error encode_image_as_av1(std::shared_ptr<HeifPixelImage> image,
-                                struct heif_encoder* encoder,
-                                const struct heif_encoding_options* options,
-                                enum heif_image_input_class input_class);
-
-      std::shared_ptr<const color_profile> get_color_profile() const
-      { return m_color_profile; }
+      const std::shared_ptr<const color_profile_raw>& get_color_profile_icc() const { return m_color_profile_icc; }
 
       void set_color_profile(std::shared_ptr<const color_profile> profile)
-      { m_color_profile = std::move(profile); };
+      {
+        auto icc = std::dynamic_pointer_cast<const color_profile_raw>(profile);
+        if (icc) {
+          m_color_profile_icc = std::move(icc);
+        }
+
+        auto nclx = std::dynamic_pointer_cast<const color_profile_nclx>(profile);
+        if (nclx) {
+          m_color_profile_nclx = std::move(nclx);
+        }
+      };
 
     private:
       HeifContext* m_heif_context;
@@ -248,6 +297,8 @@ namespace heif {
       std::vector<std::shared_ptr<Image>> m_thumbnails;
 
       bool m_is_alpha_channel = false;
+      bool m_premultiplied_alpha = false;
+      bool m_implicitly_consumed_alpha = false; // alpha data was integrated into main color image
       heif_item_id m_alpha_channel_ref_id = 0;
       std::shared_ptr<Image> m_alpha_channel;
 
@@ -258,16 +309,22 @@ namespace heif {
       bool m_has_depth_representation_info = false;
       struct heif_depth_representation_info m_depth_representation_info;
 
+      heif_item_id m_aux_image_ref_id = 0;
+      bool m_is_aux_image = false;
+      std::string m_aux_image_type;
+      std::vector<std::shared_ptr<Image>> m_aux_images;
+
       std::vector<std::shared_ptr<ImageMetadata>> m_metadata;
 
-      std::shared_ptr<const color_profile> m_color_profile;
+      std::shared_ptr<const color_profile_nclx> m_color_profile_nclx;
+      std::shared_ptr<const color_profile_raw> m_color_profile_icc;
+
+      bool m_miaf_compatible = true;
     };
 
-    std::vector<std::shared_ptr<Image>> get_top_level_images()
-    { return m_top_level_images; }
+    std::vector<std::shared_ptr<Image>> get_top_level_images() { return m_top_level_images; }
 
-    std::shared_ptr<Image> get_primary_image()
-    { return m_primary_image; }
+    std::shared_ptr<Image> get_primary_image() { return m_primary_image; }
 
     void register_decoder(const heif_decoder_plugin* decoder_plugin);
 
@@ -298,12 +355,23 @@ namespace heif {
                        enum heif_image_input_class input_class,
                        std::shared_ptr<Image>& out_image);
 
+    Error encode_image_as_hevc(std::shared_ptr<HeifPixelImage> image,
+                               struct heif_encoder* encoder,
+                               const struct heif_encoding_options* options,
+                               enum heif_image_input_class input_class,
+                               std::shared_ptr<Image>& out_image);
+
+    Error encode_image_as_av1(std::shared_ptr<HeifPixelImage> image,
+                              struct heif_encoder* encoder,
+                              const struct heif_encoding_options* options,
+                              enum heif_image_input_class input_class,
+                              std::shared_ptr<Image>& out_image);
+
     void set_primary_image(std::shared_ptr<Image> image);
 
     Error set_primary_item(heif_item_id id);
 
-    bool is_primary_image_set() const
-    { return m_primary_image != nullptr; }
+    bool is_primary_image_set() const { return m_primary_image != nullptr; }
 
     Error assign_thumbnail(std::shared_ptr<Image> master_image,
                            std::shared_ptr<Image> thumbnail_image);
