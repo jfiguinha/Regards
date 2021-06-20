@@ -379,6 +379,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 // Setting up the codec:
     avcodec_get_context_defaults3(stream->codec, codec);
     //c=avcodec_alloc_context3(codec);
+    int videoBitRate = 2500;
     c = stream->codec;
     c->width = width;
     c->height = height;
@@ -386,7 +387,11 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     c->time_base = { 1, fps };
     c->framerate = { fps, 1 };
     c->bit_rate = 2500000;
-
+    /* Average bitrate */
+    c->bit_rate = 1000 * videoBitRate;
+    // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >=
+    // bitrate * fps
+    c->bit_rate_tolerance = videoBitRate * av_q2d(c->framerate) + 1;
     // Setting up the format, its stream(s), linking with the codec(s) and write the header:
     if (oc->oformat->flags & AVFMT_GLOBALHEADER) // Some formats require a global header.
         c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
