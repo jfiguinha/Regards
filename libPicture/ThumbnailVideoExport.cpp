@@ -15,26 +15,38 @@
 using namespace cv;
 using namespace Regards::Picture;
 
-#define FFMPEG_SAVING
+//**********************************************************************
+//
+//**********************************************************************
+class CThumbnailDiaporama
+{
+public:
+    CRegardsBitmap* GenerateBitmapForVideo(const wxString& filename, int width, int height);
+    int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame, int width, int height, int effect);
+    virtual void WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitmap, int width, int height) = 0;
+    int SendMessageProgress();
+    virtual int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height) = 0;
+    int ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps, int width, int height, int effect);
+    wxProgressDialog* dialog;
+    bool endProcess = false;
+    int countNbFrame = 0;
+    int numWriteFrame = 0;
+};
 
-class CThumbnailVideoExportImpl
+//**********************************************************************
+//
+//**********************************************************************
+class CThumbnailVideoExportImpl : public CThumbnailDiaporama
 {
 public:
 
-    wxString GenerateOutputFileName(int numStart);
-    CRegardsBitmap* GenerateBitmapForVideo(const wxString& filename, int width, int height);
-    int CopyPicture(const wxString& filename, const int& numStart, const int& nbFrame, int width, int height);
-    int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& numStart, const int& nbFrame, int width, int height, int effect);
+    int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height);
+    void WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitmap, int width, int height);
     
-    
-#ifndef FFMPEG_SAVING
-    VideoWriter outputVideo;
-#endif
-
-#ifdef FFMPEG_SAVING 
     int GenerateFFmpegVideoFromList(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps, int width, int height, int effect);
-    int WritePicture(CRegardsBitmap* bitmapData, int numFrame);
+    int WritePicture(CRegardsBitmap* bitmapData);
     int encode(AVCodecContext* enc_ctx, AVFrame* frame, AVPacket* pkt);
+   
     int fps;
 
 private:
@@ -48,7 +60,21 @@ private:
     AVCodecContext* c = NULL;
     AVPacket* pkt;
     AVFrame* yuvpic;
-#endif
+    
+};
+
+//**********************************************************************
+//
+//**********************************************************************
+class CThumbnailVideoOpenCVExportImpl : public CThumbnailDiaporama
+{
+public:
+    
+    wxString GenerateOutputFileName(int numStart);
+    int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height);
+    void WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitmap, int width, int height);
+
+    VideoWriter outputVideo;
 };
 
 //#define PICTURE_SAVING
@@ -63,37 +89,26 @@ CThumbnailVideoExport::~CThumbnailVideoExport()
 
 }
 
-wxString CThumbnailVideoExportImpl::GenerateOutputFileName(int numStart)
+
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailDiaporama::SendMessageProgress()
 {
-    wxString fileOutName;
-    wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-    wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
-#else
-    wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-        // handle the error here
-    }
-    else
+    wxString message = "In progress : " + to_string(numWriteFrame) + "/" + to_string(countNbFrame);
+    if (false == dialog->Update(numWriteFrame, message))
     {
-#ifdef WIN32
-        fileOutName = tempFolder + "\\picture";
-#else
-        fileOutName = tempFolder + "/picture";
-#endif
-
+        endProcess = true;
+        return 1;
     }
-    fileOutName.append(to_string(numStart));
-    fileOutName.append(".jpg");
-
-    return fileOutName;
+    numWriteFrame++;
+    return 0;
 }
 
-
-#ifdef FFMPEG_SAVING 
-int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap * bitmapData, int numFrame)
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap * bitmapData)
 {
     int ret = 0;
     uint8_t* convertedFrameBuffer = bitmapData->GetPtBitmap();
@@ -105,19 +120,43 @@ int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap * bitmapData, int num
     av_init_packet(pkt);
     pkt->data = NULL;
     pkt->size = 0;
-    yuvpic->pts = numFrame; // The PTS of the frame are just in a reference unit, unrelated to the format we are using. We set them, for instance, as the corresponding frame number.
+    yuvpic->pts = numWriteFrame; // The PTS of the frame are just in a reference unit, unrelated to the format we are using. We set them, for instance, as the corresponding frame number.
     /* encode the image */
     encode(c, yuvpic, pkt);
 
     return 0;
 }
-#endif
 
-int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &numStart, const int &nbFrame, int width, int height)
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const int& nbFrame, int width, int height)
 {
+    CRegardsBitmap* src_bitmap = CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
+    src_bitmap->VertFlipBuf();
+    Mat dest = cv::Mat(src_bitmap->GetBitmapHeight(), src_bitmap->GetBitmapWidth(), CV_8UC4, src_bitmap->GetPtBitmap());
+    cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
 
-#ifdef FFMPEG_SAVING
-    CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(filename, width, height);
+    for (int i = 0; i < nbFrame; i++)
+    {
+        outputVideo << dest;
+        
+        SendMessageProgress();
+        if (endProcess)
+            break;
+    }
+
+    delete src_bitmap;
+    dest.release();
+    return 0;
+}
+
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &nbFrame, int width, int height)
+{
+    CRegardsBitmap* src_bitmap = CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
     src_bitmap->VertFlipBuf();
 
     int ret = 0;
@@ -132,32 +171,21 @@ int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &
         av_init_packet(pkt);
         pkt->data = NULL;
         pkt->size = 0;
-        yuvpic->pts = numStart + i;
+        yuvpic->pts = numWriteFrame;
         encode(c, yuvpic, pkt);
-        //WritePicture(src_bitmap, numStart + i);
+        SendMessageProgress();
+        if (endProcess)
+            break;
     }
     delete src_bitmap;
-#else
-
-    CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(filename, width, height);
-    src_bitmap->VertFlipBuf();
-    Mat dest = cv::Mat(src_bitmap->GetBitmapHeight(), src_bitmap->GetBitmapWidth(), CV_8UC4, src_bitmap->GetPtBitmap());
-    cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
-
-    for (int i = 0; i < nbFrame; i++)
-    {
-        outputVideo << dest;
-    }
-
-    delete src_bitmap;
-    dest.release();
-
-#endif
     
     return 0;
 }
 
-CRegardsBitmap* CThumbnailVideoExportImpl::GenerateBitmapForVideo(const wxString& filename, int width, int height)
+//**********************************************************************
+//
+//**********************************************************************
+CRegardsBitmap* CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int width, int height)
 {
     CRegardsBitmap* src_bitmap = new CRegardsBitmap(width, height);
     CLibPicture libPicture;
@@ -176,7 +204,43 @@ CRegardsBitmap* CThumbnailVideoExportImpl::GenerateBitmapForVideo(const wxString
     return src_bitmap;
 }
 
-int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& numStart, const int& nbFrame, int width, int height, int effect)
+//**********************************************************************
+//
+//**********************************************************************
+void CThumbnailVideoOpenCVExportImpl::WriteVideoFrame(Mat * dest, CRegardsBitmap* pBitmap, int width, int height)
+{
+    if (dest == nullptr)
+    {
+        cv::Mat dest = cv::Mat(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+        cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
+        outputVideo << dest;
+        dest.release();
+    }
+    else
+        outputVideo << *dest;
+}
+
+//**********************************************************************
+//
+//**********************************************************************
+void CThumbnailVideoExportImpl::WriteVideoFrame(Mat * dest, CRegardsBitmap* pBitmap, int width, int height)
+{
+    if (dest == nullptr)
+    {
+        WritePicture(pBitmap);
+    }
+    else
+    {
+        pBitmap->SetBitmap(dest->data, width, height);
+        WritePicture(pBitmap);
+    }
+
+}
+
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame, int width, int height, int effect)
 {
     CLibPicture libPicture;
     bool pictureOK = true;
@@ -214,98 +278,83 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
 
     switch (effect)
     {
-    case IDM_DIAPORAMA_FUSION:
-    {
-        if (filename1 != "")
+        case IDM_DIAPORAMA_FUSION:
         {
-            CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
-            for (int k = 0; k < nbFrame; k++)
+            if (filename1 != "")
             {
-                float alpha = (float)k / (float)nbFrame;
-                float beta = 1.0 - alpha;
-                addWeighted(src1, alpha, src2, beta, 0.0, dest);
-#ifdef FFMPEG_SAVING
-                pBitmap->SetBitmap(dest.data, width, height);        
-                WritePicture(pBitmap, numStart + k);
-#else
-                outputVideo << dest;
-#endif
-            }
-            delete pBitmap;
-        }
+                CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+                for (int k = 0; k < nbFrame; k++)
+                {
+                    float alpha = (float)k / (float)nbFrame;
+                    float beta = 1.0 - alpha;
+                    addWeighted(src1, alpha, src2, beta, 0.0, dest);
+                    WriteVideoFrame(&dest, pBitmap, width, height);
 
-
-    }
-    break;
-
-    case IDM_DIAPORAMA_TRANSITION:
-    {
-        float ratio = 1.0;
-
-        CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
-        for (int k = 0; k < nbFrame; k++)
-        {
-            ratio = ratio + 0.0005;
-            resize(src2, dest, Size(), ratio, ratio);
-            cv::Size sDst = dest.size();
-            cv::Size sSrc = src2.size();
-            int y = (sDst.height - sSrc.height) / 2;
-            int x = (sDst.width - sSrc.width) / 2;
-            cv::Rect myROI(x, y, 1920, 1080);
-#ifdef FFMPEG_SAVING
-            dest = dest(myROI);
-            pBitmap->SetBitmap(dest.data, width, height);
-            WritePicture(pBitmap, numStart + k);
-#else
-            outputVideo << dest(myROI);
-#endif
-        }
-
-        delete pBitmap;
-    }
-    break;
-
-    case IDM_DIAPORAMA_MOVE:
-    {
-        if (filename1 != "")
-        {
-            CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
-
-#ifdef PICTURE_SAVING
-#pragma omp parallel for 
-#endif
-            for (int k = 0; k < nbFrame; k++)
-            {
-                float alpha = (float)k / (float)nbFrame;
-                float beta = 1.0 - alpha;
-
-                int x = 1920 - (alpha * 1920);
-                int x2 = -(alpha * 1920);
-
-                pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
-                pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
-                pBitmap->InsertBitmap(pBitmap2, x, 0, false);
-
-
-#ifdef FFMPEG_SAVING
-                pBitmap->VertFlipBuf();
-                WritePicture(pBitmap, numStart + k);
-#else
-                pBitmap->VertFlipBuf();
-                cv::Mat dest = cv::Mat(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-                cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
-                outputVideo << dest;
-                dest.release();
-#endif
-                
-
+                    SendMessageProgress();
+                    if (endProcess)
+                        break;
+                }
+                delete pBitmap;
             }
 
-            delete pBitmap;
-        }
 
+        }
         break;
-    }
+
+        case IDM_DIAPORAMA_TRANSITION:
+        {
+            float ratio = 1.0;
+
+            CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+            for (int k = 0; k < nbFrame; k++)
+            {
+                ratio = ratio + 0.0005;
+                resize(src2, dest, Size(), ratio, ratio);
+                cv::Size sDst = dest.size();
+                cv::Size sSrc = src2.size();
+                int y = (sDst.height - sSrc.height) / 2;
+                int x = (sDst.width - sSrc.width) / 2;
+                cv::Rect myROI(x, y, 1920, 1080);
+                dest = dest(myROI);
+                WriteVideoFrame(&dest, pBitmap, width, height);
+
+                SendMessageProgress();
+                if (endProcess)
+                    break;
+            }
+
+            delete pBitmap;
+        }
+        break;
+
+        case IDM_DIAPORAMA_MOVE:
+        {
+            if (filename1 != "")
+            {
+                CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+                for (int k = 0; k < nbFrame; k++)
+                {
+                    float alpha = (float)k / (float)nbFrame;
+                    float beta = 1.0 - alpha;
+
+                    int x = 1920 - (alpha * 1920);
+                    int x2 = -(alpha * 1920);
+
+                    pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
+                    pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
+                    pBitmap->InsertBitmap(pBitmap2, x, 0, false);
+                    pBitmap->VertFlipBuf();
+                    WriteVideoFrame(nullptr, pBitmap, width, height);
+                    SendMessageProgress();
+                    if (endProcess)
+                        break;
+                }
+
+                delete pBitmap;
+            }
+
+            break;
+        }
 
     }
 
@@ -322,7 +371,9 @@ int CThumbnailVideoExportImpl::ExecuteEffect(const wxString& filename1, const wx
     return 0;
 }
 
-#ifdef FFMPEG_SAVING 
+//**********************************************************************
+//
+//**********************************************************************
 int CThumbnailVideoExportImpl::encode(AVCodecContext* enc_ctx, AVFrame* frame, AVPacket* pkt)
 {
     int ret;
@@ -358,10 +409,90 @@ int CThumbnailVideoExportImpl::encode(AVCodecContext* enc_ctx, AVFrame* frame, A
     return ret;
 }
 
+//**********************************************************************
+//
+//**********************************************************************
+int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps, int width, int height, int effect)
+{
+    int movie_duration = 0;
+    CLibPicture libPicture;
+    vector<wxString> picturefile;
+    for (int i = 0; i < listOfFile.size(); i++)
+    {
+        if (libPicture.TestIsPicture(listOfFile[i]))
+            picturefile.push_back(listOfFile[i]);
+    }
+
+    int position = 0;
+    int nbFrameByPicture = delay * fps;
+    int nbFrameEffect = fps * 2;
+    int j = 0;
+    countNbFrame = delay * fps * picturefile.size();
+
+    if (effect != IDM_DIAPORAMA_TRANSITION)
+        countNbFrame += nbFrameEffect * (picturefile.size() - 1);
+
+    movie_duration = countNbFrame / fps;
+
+    wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+    this->dialog = &dialog;
+
+    for (int i = 0; i < picturefile.size(); i++)
+    {
+
+        if (i == 0 && effect != IDM_DIAPORAMA_TRANSITION)
+        {
+            CopyPicture(picturefile[i], nbFrameByPicture, width, height);
+            position = nbFrameByPicture;
+            if (endProcess)
+                break;
+        }
+        else
+        {
+            switch (effect)
+            {
+            case IDM_DIAPORAMA_TRANSITION:
+            {
+                int iStart = i * nbFrameByPicture;
+                ExecuteEffect("", picturefile[i], nbFrameEffect, width, height, effect);
+                position = iStart + nbFrameByPicture;
+                if (endProcess)
+                    break;
+            }
+            break;
+
+            default:
+            {
+                int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
+                ExecuteEffect(picturefile[i - 1], picturefile[i], nbFrameEffect, width, height, effect);
+                iStart += nbFrameEffect;
+                if (endProcess)
+                    break;
+
+                CopyPicture(picturefile[i], nbFrameByPicture, width, height);
+                position = iStart + nbFrameByPicture;
+                if (endProcess)
+                    break;
+            }
+            break;
+            }
+        }
+
+        if (endProcess)
+            break;
+    }
+
+    if (endProcess)
+        movie_duration = 0;
+
+    return movie_duration;
+}
+
+//**********************************************************************
+//
+//**********************************************************************
 int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps, int width, int height, int effect)
 {
-
-    int countNbFrame = 0;
     int movie_duration = 0;
     int ret = 0;
     convertCtx = sws_getContext(width, height, AV_PIX_FMT_BGRA, width, height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL); // Preparing to convert my generated RGB images to YUV frames.
@@ -369,9 +500,9 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     avformat_alloc_output_context2(&oc, NULL, NULL, outfile);
     stream = avformat_new_stream(oc, 0);
 
-    codec = avcodec_find_encoder_by_name("libx264");
+    codec = avcodec_find_encoder_by_name("libx265");
     if (!codec) {
-        fprintf(stderr, "Codec '%s' not found\n", "libx264");
+        fprintf(stderr, "Codec '%s' not found\n", "libx265");
         return 0;
     }
 
@@ -401,7 +532,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     ret = avcodec_open2(c, codec, NULL);
     if (ret < 0) {
        // fprintf(stderr, "Could not open codec: %s\n", av_err2str(ret));
-        exit(1);
+        return 0;
     }
 
     stream->time_base = { 1, fps };
@@ -422,68 +553,11 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     yuvpic->height = height;
     ret = av_frame_get_buffer(yuvpic, 1);
 
-    CLibPicture libPicture;
-    vector<wxString> picturefile;
-    for (int i = 0; i < listOfFile.size(); i++)
-    {
-        if (libPicture.TestIsPicture(listOfFile[i]))
-            picturefile.push_back(listOfFile[i]);
-    }
-
-    int position = 0;
-    int nbFrameByPicture = delay * fps;
-    int nbFrameEffect = fps * 2;
-    int j = 0;
-    countNbFrame = delay * fps * picturefile.size();
-
-    if (effect != IDM_DIAPORAMA_TRANSITION)
-        countNbFrame += nbFrameEffect * (picturefile.size() - 1);
-
-    movie_duration = countNbFrame / fps;
-
-    wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-
-    for (int i = 0; i < picturefile.size(); i++)
-    {
-            
-        if (i == 0 && effect != IDM_DIAPORAMA_TRANSITION)
-        {
-            CopyPicture(picturefile[i], 0, nbFrameByPicture, width, height);
-            position = nbFrameByPicture;
-        }
-        else
-        {
-            switch (effect)
-            {
-            case IDM_DIAPORAMA_TRANSITION:
-            {
-                int iStart = i * nbFrameByPicture;
-                ExecuteEffect("", picturefile[i], iStart, nbFrameByPicture, width, height, effect);
-                position = iStart + nbFrameByPicture;
-            }
-            break;
-
-            default:
-            {
-                int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
-                ExecuteEffect(picturefile[i - 1], picturefile[i], iStart, nbFrameByPicture, width, height, effect);
-                iStart += nbFrameEffect;
-                CopyPicture(picturefile[i], iStart, nbFrameByPicture, width, height);
-                position = iStart + nbFrameByPicture;
-            }
-            break;
-            }
-        }
-
-        wxString message = "In progress : " + to_string(position) + "/" + to_string(countNbFrame);
-        if (false == dialog.Update(position, message))
-        {
-            break;
-        }
-    }
+    movie_duration = ExecuteProcess(outfile, listOfFile, delay, fps, width, height, effect);
 
     /* flush the encoder */
-    encode(c, NULL, pkt);
+    if(!endProcess)
+        encode(c, NULL, pkt);
 
     av_write_trailer(oc); // Writing the end of the file.
     if (!(fmt->flags & AVFMT_NOFILE))
@@ -496,93 +570,43 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     av_frame_free(&yuvpic);
     av_packet_free(&pkt);
 
+    if (endProcess)
+        movie_duration = 0;
+
     return movie_duration;
 }
-#endif
 
+
+//**********************************************************************
+//
+//**********************************************************************
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
-#ifdef FFMPEG_SAVING
-    CThumbnailVideoExportImpl thumbnailImpl;
-    thumbnailImpl.fps = fps;
-    return thumbnailImpl.GenerateFFmpegVideoFromList(outfile, listOfFile, delay, fps, width, height, effect);
-
-#else
-    CThumbnailVideoExportImpl thumbnailImpl;
-    int countNbFrame = 0;
+   
+   // CThumbnailVideoOpenCVExportImpl thumbnailImpl;
     int movie_duration = 0;
-    //int codec = VideoWriter::fourcc('H', 'V', 'C', '1');
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
     Size S = Size((int)width,    // Acquire input size
         (int)height);
-                                   // Open the output
+
+    // Open the output
     thumbnailImpl.outputVideo.open(outfile.ToStdString(), codec, fps, S, true);
 
     if (thumbnailImpl.outputVideo.isOpened())
     {
-        CLibPicture libPicture;
-        vector<wxString> picturefile;
-        for (int i = 0; i < listOfFile.size(); i++)
-        {
-            if (libPicture.TestIsPicture(listOfFile[i]))
-                picturefile.push_back(listOfFile[i]);
-        }
+        movie_duration = thumbnailImpl.ExecuteProcess(outfile, listOfFile, delay, fps, width, height, effect);
 
-        int nbFrameByPicture = delay * fps;
-        int nbFrameEffect = fps * 2;
-        int j = 0;
-        countNbFrame = delay * fps * picturefile.size();
-        if(effect != IDM_DIAPORAMA_TRANSITION)
-            countNbFrame += nbFrameEffect * (picturefile.size() - 1);
+        thumbnailImpl.outputVideo.release();
 
-        movie_duration = countNbFrame / fps;
-
-        wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-       
-        for (int i = 0; i < picturefile.size(); i++)
-        {
-            int position = 0;
-            if (i == 0 && effect != IDM_DIAPORAMA_TRANSITION)
-            {
-                thumbnailImpl.CopyPicture(picturefile[i], 0, nbFrameByPicture, width, height);
-                position = nbFrameByPicture;
-            }
-            else
-            {
-                switch (effect)
-                {
-                    case IDM_DIAPORAMA_TRANSITION:
-                        {
-                            int iStart = i * nbFrameByPicture;
-                            thumbnailImpl.ExecuteEffect("", picturefile[i], iStart, nbFrameByPicture, width, height, effect);
-                            position = iStart + nbFrameByPicture;
-                        }
-                    break;
-
-                    default:
-                        {
-                            int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
-                            thumbnailImpl.ExecuteEffect(picturefile[i - 1], picturefile[i], iStart, nbFrameByPicture, width, height, effect);
-                            iStart += nbFrameEffect;
-                            thumbnailImpl.CopyPicture(picturefile[i], iStart, nbFrameByPicture, width, height);
-                            position = iStart + nbFrameByPicture;
-                        }
-                    break;
-                }
-            }
-
-            wxString message = "In progress : " + to_string(position) + "/" + to_string(countNbFrame);
-            if (false == dialog.Update(position, message))
-            {
-                break;
-            }
-            
-        }
+        if (thumbnailImpl.endProcess)
+            movie_duration = 0;
     }
+    else
+    {
+        CThumbnailVideoExportImpl thumbnailImpl;
+        thumbnailImpl.fps = fps;
+        movie_duration = thumbnailImpl.GenerateFFmpegVideoFromList(outfile, listOfFile, delay, fps, width, height, effect);
 
-    thumbnailImpl.outputVideo.release();
-
+    }
     return movie_duration;
-
-#endif
 }
