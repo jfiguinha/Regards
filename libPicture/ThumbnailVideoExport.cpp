@@ -31,6 +31,8 @@ public:
     bool endProcess = false;
     int countNbFrame = 0;
     int numWriteFrame = 0;
+    CRegardsBitmap * pBitmap = nullptr;
+    map<wxString,CRegardsBitmap*> listOfPicture;
 };
 
 //**********************************************************************
@@ -132,8 +134,7 @@ int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap * bitmapData)
 //**********************************************************************
 int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const int& nbFrame, int width, int height)
 {
-    CRegardsBitmap* src_bitmap = CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
-    src_bitmap->VertFlipBuf();
+    CRegardsBitmap* src_bitmap = listOfPicture[filename]; //CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
     Mat dest = cv::Mat(src_bitmap->GetBitmapHeight(), src_bitmap->GetBitmapWidth(), CV_8UC4, src_bitmap->GetPtBitmap());
     cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
 
@@ -146,7 +147,7 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const
             break;
     }
 
-    delete src_bitmap;
+    //delete src_bitmap;
     dest.release();
     return 0;
 }
@@ -156,9 +157,7 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const
 //**********************************************************************
 int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &nbFrame, int width, int height)
 {
-    CRegardsBitmap* src_bitmap = CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
-    src_bitmap->VertFlipBuf();
-
+    CRegardsBitmap* src_bitmap = listOfPicture[filename]; //GenerateBitmapForVideo(filename, width, height);
     int ret = 0;
     uint8_t* convertedFrameBuffer = src_bitmap->GetPtBitmap();
     int linesize = src_bitmap->GetBitmapWidth() * 4;
@@ -177,7 +176,7 @@ int CThumbnailVideoExportImpl::CopyPicture(const wxString &filename, const int &
         if (endProcess)
             break;
     }
-    delete src_bitmap;
+    //delete src_bitmap;
     
     return 0;
 }
@@ -198,6 +197,7 @@ CRegardsBitmap* CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& file
         int x = (width - pBitmap->GetBitmapWidth()) / 2;
         int y = (height - pBitmap->GetBitmapHeight()) / 2;
         src_bitmap->InsertBitmap(pBitmap, x, y, false);
+        src_bitmap->VertFlipBuf();
     }
 
     delete pBitmap;
@@ -246,12 +246,12 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
     bool pictureOK = true;
     CRegardsBitmap* pBitmap1 = nullptr;
     if (filename1 != "")
-        pBitmap1 = GenerateBitmapForVideo(filename1, width, height);
+        pBitmap1 = listOfPicture[filename1];// GenerateBitmapForVideo(filename1, width, height);
 
 
     CRegardsBitmap* pBitmap2 = nullptr;
     if (filename2 != "")
-        pBitmap2 = GenerateBitmapForVideo(filename2, width, height);
+        pBitmap2 = listOfPicture[filename2]; //GenerateBitmapForVideo(filename2, width, height);
 
     Mat src2;
     Mat src1;
@@ -261,7 +261,6 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
     {
         if (filename1 != "")
         {
-            pBitmap1->VertFlipBuf();
             dest = cv::Mat(pBitmap1->GetBitmapHeight(), pBitmap1->GetBitmapWidth(), CV_8UC4, pBitmap1->GetPtBitmap());
             cvtColor(dest, src1, cv::COLOR_BGRA2BGR);
             dest.release();
@@ -269,7 +268,6 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 
         if (filename2 != "")
         {
-            pBitmap2->VertFlipBuf();
             dest = cv::Mat(pBitmap2->GetBitmapHeight(), pBitmap2->GetBitmapWidth(), CV_8UC4, pBitmap2->GetPtBitmap());
             cvtColor(dest, src2, cv::COLOR_BGRA2BGR);
             dest.release();
@@ -282,7 +280,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
         {
             if (filename1 != "")
             {
-                CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+               // CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
@@ -294,7 +292,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                     if (endProcess)
                         break;
                 }
-                delete pBitmap;
+               // delete pBitmap;
             }
 
 
@@ -305,7 +303,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
         {
             float ratio = 1.0;
 
-            CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+           // CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
             for (int k = 0; k < nbFrame; k++)
             {
                 ratio = ratio + 0.0005;
@@ -323,7 +321,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                     break;
             }
 
-            delete pBitmap;
+            //delete pBitmap;
         }
         break;
 
@@ -331,7 +329,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
         {
             if (filename1 != "")
             {
-                CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
+               // CRegardsBitmap* pBitmap = new CRegardsBitmap(width, height);
                 for (int k = 0; k < nbFrame; k++)
                 {
                     float alpha = (float)k / (float)nbFrame;
@@ -343,14 +341,13 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                     pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
                     pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
                     pBitmap->InsertBitmap(pBitmap2, x, 0, false);
-                    pBitmap->VertFlipBuf();
                     WriteVideoFrame(nullptr, pBitmap, width, height);
                     SendMessageProgress();
                     if (endProcess)
                         break;
                 }
 
-                delete pBitmap;
+                //delete pBitmap;
             }
 
             break;
@@ -358,11 +355,11 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 
     }
 
-    if (pBitmap1)
-        delete pBitmap1;
+   // if (pBitmap1)
+    //    delete pBitmap1;
 
-    if (pBitmap2)
-        delete pBitmap2;
+   // if (pBitmap2)
+   //     delete pBitmap2;
 
     src2.release();
     src1.release();
@@ -417,10 +414,18 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
     int movie_duration = 0;
     CLibPicture libPicture;
     vector<wxString> picturefile;
+
+    pBitmap = new CRegardsBitmap(width, height);
+
     for (int i = 0; i < listOfFile.size(); i++)
     {
         if (libPicture.TestIsPicture(listOfFile[i]))
+        {
             picturefile.push_back(listOfFile[i]);
+            CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+            listOfPicture[listOfFile[i]] = src_bitmap;
+        }
+            
     }
 
     int position = 0;
@@ -485,6 +490,15 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
     if (endProcess)
         movie_duration = 0;
 
+    for (int i = 0; i < listOfFile.size(); i++)
+    {
+        CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i]];
+        if (src_bitmap != nullptr)
+            delete src_bitmap;
+
+    }
+    listOfPicture.clear();
+    delete pBitmap;
     return movie_duration;
 }
 
@@ -500,9 +514,9 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     avformat_alloc_output_context2(&oc, NULL, NULL, outfile);
     stream = avformat_new_stream(oc, 0);
 
-    codec = avcodec_find_encoder_by_name("libx265");
+    codec = avcodec_find_encoder(AV_CODEC_ID_H265);
     if (!codec) {
-        fprintf(stderr, "Codec '%s' not found\n", "libx265");
+        fprintf(stderr, "Codec '%s' not found\n", "AV_CODEC_ID_H265");
         return 0;
     }
 
@@ -510,14 +524,14 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 // Setting up the codec:
     avcodec_get_context_defaults3(stream->codec, codec);
     //c=avcodec_alloc_context3(codec);
-    int videoBitRate = 2500;
+    int videoBitRate = 1500;
     c = stream->codec;
     c->width = width;
     c->height = height;
     c->pix_fmt = AV_PIX_FMT_YUV420P;
     c->time_base = { 1, fps };
     c->framerate = { fps, 1 };
-    c->bit_rate = 2500000;
+    //c->bit_rate = 2500000;
     /* Average bitrate */
     c->bit_rate = 1000 * videoBitRate;
     // ffmpeg's mpeg2 encoder requires that the bit_rate_tolerance be >=
@@ -588,6 +602,8 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
     Size S = Size((int)width,    // Acquire input size
         (int)height);
+
+    
 
     // Open the output
     thumbnailImpl.outputVideo.open(outfile.ToStdString(), codec, fps, S, true);

@@ -276,57 +276,67 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	int time_movie = CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
 
-	wxString musicDiaporama = config->GetMusicDiaporama();
-
-	if (musicDiaporama != "" && wxFileExists(musicDiaporama))
+	if (time_movie == 0)
 	{
-		wxString tempAudio = "";
-		//Execute Crop Audio
-		wxString filepathAudio = musicDiaporama;
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox("Unable to generate diaporama movie !", infos, wxICON_ERROR);
+	}
+	else
+	{
+		wxString musicDiaporama = config->GetMusicDiaporama();
+
+		if (musicDiaporama != "" && wxFileExists(musicDiaporama))
+		{
+			wxString tempAudio = "";
+			//Execute Crop Audio
+			wxString filepathAudio = musicDiaporama;
 #ifdef WIN32
-		tempAudio = tempFolder + "\\audio.";
+			tempAudio = tempFolder + "\\audio.";
 #else
-		tempAudio = tempFolder + "/audio.";
+			tempAudio = tempFolder + "/audio.";
 #endif
 
-		wxFileName file_path(filepathAudio);
-		wxString extension = file_path.GetExt();
+			wxFileName file_path(filepathAudio);
+			wxString extension = file_path.GetExt();
 
-		tempAudio.Append(extension);
+			tempAudio.Append(extension);
 
-		if (wxFileExists(tempAudio))
-			wxRemoveFile(tempAudio);
+			if (wxFileExists(tempAudio))
+				wxRemoveFile(tempAudio);
 
-		{
-			CFFmpegApp fmpegApp;
-			try
 			{
-				fmpegApp.CropAudio(filepathAudio, to_string(time_movie), extension, tempAudio);
+				CFFmpegApp fmpegApp;
+				try
+				{
+					fmpegApp.CropAudio(filepathAudio, to_string(time_movie), extension, tempAudio);
+				}
+				catch (int e)
+				{
+					fmpegApp.Cleanup(e);
+				}
 			}
-			catch (int e)
 			{
-				fmpegApp.Cleanup(e);
+				CFFmpegApp fmpegApp;
+				try
+				{
+					fmpegApp.ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
+				}
+				catch (int e)
+				{
+					fmpegApp.Cleanup(e);
+				}
 			}
-		}
-		{
-			CFFmpegApp fmpegApp;
-			try
-			{
-				fmpegApp.ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
-			}
-			catch (int e)
-			{
-				fmpegApp.Cleanup(e);
-			}
-		}
 
-		if (wxFileExists(tempAudio))
-			wxRemoveFile(tempAudio);
+			if (wxFileExists(tempAudio))
+				wxRemoveFile(tempAudio);
 
-		ExportVideo(tempAudioVideoFile, filepath);
+			ExportVideo(tempAudioVideoFile, filepath);
 	}
-	else 
-		ExportVideo(tempVideoFile, filepath);
+		else
+			ExportVideo(tempVideoFile, filepath);
+	}
+
+
 }
 
 void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
