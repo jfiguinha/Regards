@@ -3,9 +3,6 @@
 #include "FFmpegDecodeFrame.h"
 #include "RegardsBitmap.h"
 #include <opencv2/opencv.hpp>
-#include <opencv2/dnn.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/core/ocl.hpp>
 #include <opencv2/core.hpp>
 #include "libPicture.h"
 #include <wx/progdlg.h>
@@ -14,6 +11,8 @@
 #include <FileUtility.h>
 using namespace cv;
 using namespace Regards::Picture;
+
+//#define EXPORT_DIAPORAMA_OPENCV
 
 //**********************************************************************
 //
@@ -65,6 +64,7 @@ private:
     
 };
 
+#ifdef EXPORT_DIAPORAMA_OPENCV
 //**********************************************************************
 //
 //**********************************************************************
@@ -79,6 +79,7 @@ public:
     VideoWriter outputVideo;
 };
 
+#endif
 //#define PICTURE_SAVING
 
 CThumbnailVideoExport::CThumbnailVideoExport()
@@ -128,7 +129,7 @@ int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap * bitmapData)
 
     return 0;
 }
-
+#ifdef EXPORT_DIAPORAMA_OPENCV
 //**********************************************************************
 //
 //**********************************************************************
@@ -151,7 +152,7 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const
     dest.release();
     return 0;
 }
-
+#endif
 //**********************************************************************
 //
 //**********************************************************************
@@ -204,6 +205,7 @@ CRegardsBitmap* CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& file
     return src_bitmap;
 }
 
+#ifdef EXPORT_DIAPORAMA_OPENCV
 //**********************************************************************
 //
 //**********************************************************************
@@ -219,7 +221,7 @@ void CThumbnailVideoOpenCVExportImpl::WriteVideoFrame(Mat * dest, CRegardsBitmap
     else
         outputVideo << *dest;
 }
-
+#endif
 //**********************************************************************
 //
 //**********************************************************************
@@ -422,8 +424,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
         if (libPicture.TestIsPicture(listOfFile[i]))
         {
             picturefile.push_back(listOfFile[i]);
-            CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
-            listOfPicture[listOfFile[i]] = src_bitmap;
+
         }
             
     }
@@ -445,8 +446,12 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
     for (int i = 0; i < picturefile.size(); i++)
     {
 
+
         if (i == 0 && effect != IDM_DIAPORAMA_TRANSITION)
         {
+            CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+            listOfPicture[listOfFile[i]] = src_bitmap;
+
             CopyPicture(picturefile[i], nbFrameByPicture, width, height);
             position = nbFrameByPicture;
             if (endProcess)
@@ -454,32 +459,46 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
         }
         else
         {
+            CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+            listOfPicture[listOfFile[i]] = src_bitmap;
+
             switch (effect)
             {
-            case IDM_DIAPORAMA_TRANSITION:
-            {
-                int iStart = i * nbFrameByPicture;
-                ExecuteEffect("", picturefile[i], nbFrameEffect, width, height, effect);
-                position = iStart + nbFrameByPicture;
-                if (endProcess)
-                    break;
-            }
-            break;
+                case IDM_DIAPORAMA_TRANSITION:
+                {
+                    int iStart = i * nbFrameByPicture;
+                    ExecuteEffect("", picturefile[i], nbFrameEffect, width, height, effect);
+                    position = iStart + nbFrameByPicture;
+                    if (endProcess)
+                        break;
+                }
+                break;
 
-            default:
-            {
-                int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
-                ExecuteEffect(picturefile[i - 1], picturefile[i], nbFrameEffect, width, height, effect);
-                iStart += nbFrameEffect;
-                if (endProcess)
-                    break;
+                default:
+                {
+                    int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
+                    ExecuteEffect(picturefile[i - 1], picturefile[i], nbFrameEffect, width, height, effect);
+                    iStart += nbFrameEffect;
+                    if (endProcess)
+                        break;
 
-                CopyPicture(picturefile[i], nbFrameByPicture, width, height);
-                position = iStart + nbFrameByPicture;
-                if (endProcess)
-                    break;
+                    CopyPicture(picturefile[i], nbFrameByPicture, width, height);
+                    position = iStart + nbFrameByPicture;
+                    if (endProcess)
+                        break;
+                }
+                break;
             }
-            break;
+        }
+
+        if (i > 2)
+        {
+            for (int i = i - 2; i < i - 1; i++)
+            {
+                CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i]];
+                if (src_bitmap != nullptr)
+                    delete src_bitmap;
+                listOfPicture[listOfFile[i]] = nullptr;
             }
         }
 
@@ -596,7 +615,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 //**********************************************************************
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
-   
+#ifdef EXPORT_DIAPORAMA_OPENCV  
     CThumbnailVideoOpenCVExportImpl thumbnailImpl;
     int movie_duration = 0;
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
@@ -619,10 +638,13 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
     }
     else
     {
+#endif
         CThumbnailVideoExportImpl thumbnailImpl;
         thumbnailImpl.fps = fps;
+        return thumbnailImpl.GenerateFFmpegVideoFromList(outfile, listOfFile, delay, fps, width, height, effect);
+#ifdef EXPORT_DIAPORAMA_OPENCV  
         movie_duration = thumbnailImpl.GenerateFFmpegVideoFromList(outfile, listOfFile, delay, fps, width, height, effect);
-
     }
     return movie_duration;
+#endif
 }
