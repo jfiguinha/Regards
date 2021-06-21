@@ -583,7 +583,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector<wxString> & listOfFile, int delay, int fps, int width, int height, int effect)
 {
    
-   // CThumbnailVideoOpenCVExportImpl thumbnailImpl;
+    CThumbnailVideoOpenCVExportImpl thumbnailImpl;
     int movie_duration = 0;
     int codec = VideoWriter::fourcc('M', 'P', '4', 'V'); 
     Size S = Size((int)width,    // Acquire input size
