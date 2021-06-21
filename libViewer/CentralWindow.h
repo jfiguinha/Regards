@@ -122,7 +122,7 @@ namespace Regards
            void OnVideoStart(wxCommandEvent& event);
 		   void OnAnimationStart(wxCommandEvent& event);
 		   void OnAnimationStop(wxCommandEvent& event);
-			
+		   void OnVideoStop(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
 			void OnShowPicture(wxCommandEvent& event);

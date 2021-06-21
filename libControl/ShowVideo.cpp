@@ -389,6 +389,22 @@ void CShowVideo::OnVideoEnd()
 #endif
 }
 
+void CShowVideo::OnVideoStop()
+{
+	videoSlider->SetPause();
+	if (windowMain != nullptr)
+	{
+		wxCommandEvent evt(wxVIDEO_STOP);
+		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+	}
+#ifdef __APPLE__
+	videoSlider->CallRefresh(videoSlider);
+#else
+	videoSlider->Refresh();
+#endif
+}
+
+
 void CShowVideo::SetVideoDuration(const int64_t &position)
 {
 	if (videoWindow != nullptr && videoSlider != nullptr)
@@ -421,11 +437,6 @@ void CShowVideo::OnVideoStart()
 #else
 	videoSlider->Refresh();
 #endif
-}
-
-void CShowVideo::OnVideoStop()
-{
-
 }
 
 void CShowVideo::OnVideoPause()

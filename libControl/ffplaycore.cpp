@@ -441,6 +441,17 @@ int CFFmfc::GetVolume()
 	return _pimpl->volume;
 }
 
+int64_t CFFmfc::GetTimePosition()
+{
+	int64_t time_position = 0;
+	if (_pimpl != nullptr)
+	{
+		time_position = _pimpl->GetPosition(cur_stream);
+	}
+
+	return time_position;
+}
+
 
 void CFFmfc::SetTimePosition(int64_t time)
 {

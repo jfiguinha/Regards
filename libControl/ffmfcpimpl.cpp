@@ -811,6 +811,11 @@ void CFFmfcPimpl::video_refresh(VideoState *is)
 	}*/
 }
 
+int CFFmfcPimpl::GetPosition(VideoState* is)
+{
+	return get_master_clock(is) * 1000;
+}
+
 /* allocate a picture (needs to do that in main thread to avoid
 potential locking problems */
 void CFFmfcPimpl::alloc_picture(VideoState *is)

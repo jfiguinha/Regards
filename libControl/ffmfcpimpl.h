@@ -359,6 +359,8 @@ public:
 
 	void packet_queue_start(PacketQueue *q);
 
+	int GetPosition(VideoState* is);
+
 	/* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
 	int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block);
 

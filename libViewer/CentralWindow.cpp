@@ -244,6 +244,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CCentralWindow::EndPictureThread));
     Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
+	Connect(wxVIDEO_STOP, wxCommandEventHandler(CCentralWindow::OnVideoStop));
 	Connect(wxEVENT_ANIMATIONSTART, wxCommandEventHandler(CCentralWindow::OnAnimationStart));
 	Connect(wxEVENT_ANIMATIONSTOP, wxCommandEventHandler(CCentralWindow::OnAnimationStop));
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
@@ -296,7 +297,7 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 	{
 		ImageSuivante();
 	}
-
+	
 	loadPicture = false;
 
 	
@@ -320,6 +321,16 @@ void CCentralWindow::OnEndThumbnail()
 		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
 		thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);
 	}
+}
+
+void CCentralWindow::OnVideoStop(wxCommandEvent& event)
+{
+	if (videoStart)
+	{
+		stopVideo = true;
+		previewWindow->StopVideo();
+	}
+
 }
 
 void CCentralWindow::OnVideoStart(wxCommandEvent& event)

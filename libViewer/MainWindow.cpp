@@ -197,6 +197,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_PROGRESSVIDEOFFMPEG, wxCommandEventHandler(CMainWindow::OnProgressVideo));
 	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CMainWindow::OnStopAudio));
 	Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CMainWindow::OnQuitAudio));
+	Connect(wxVIDEO_STOP, wxCommandEventHandler(CMainWindow::OnVideoStop));
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
@@ -717,7 +718,11 @@ void CMainWindow::OnVideoStart(wxCommandEvent& event)
 	TRACE();
 
 	if (ffmfc != nullptr)
-		ffmfc->Pause();
+	{
+		StopMusic();
+		musicPause = true;
+	}
+		
 
 	if (centralWnd != nullptr)
 	{
@@ -1147,10 +1152,18 @@ void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
 	ImageSuivante();
 }
 
+void CMainWindow::OnVideoStop(wxCommandEvent& event)
+{
+	if (centralWnd != nullptr && startDiaporama)
+	{
+		//blockImage = false;
+		wxCommandEvent evt(wxVIDEO_STOP);
+		centralWnd->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 {
-	
-
 	TRACE();
 	if (centralWnd != nullptr)
 	{
@@ -1366,32 +1379,52 @@ void CMainWindow::OnStopAudio(wxCommandEvent& event)
 
 }
 
-void CMainWindow::StartDiaporama()
+void CMainWindow::StartMusic()
 {
 	TRACE();
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	wxString musicDiaporama = "";
-	
-	if(config != nullptr )
+
+	if (config != nullptr)
 		musicDiaporama = config->GetMusicDiaporama();
 	if (ffmfc == nullptr && musicDiaporama != "" && wxFileExists(musicDiaporama))
 	{
 		ffmfc = new CFFmfc(this, wxNewId());
-		
-		if (config != nullptr)
+	}
+	
+	
+	if (musicDiaporama != "" && wxFileExists(musicDiaporama))
+	{
+		if (musicDiaporama != "")
 		{
-			
-			if (musicDiaporama != "")
-			{
-				ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
-				musicStop = false;
-			}
+			ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+			musicStop = false;
+			ffmfc->SetTimePosition(musicPosition);
 		}
 	}
-	else if (musicDiaporama != "" && wxFileExists(musicDiaporama))
-		ffmfc->Play();
 
+	
+}
 
+void CMainWindow::StopMusic()
+{
+	if (!musicStop)
+	{
+		musicPosition = ffmfc->GetTimePosition();
+		if (ffmfc != nullptr)
+			ffmfc->Pause();
+		ffmfcQuit = true;
+		musicStop = true;
+	}
+
+}
+
+void CMainWindow::StartDiaporama()
+{
+	TRACE();
+	CRegardsConfigParam* config = CParamInit::getInstance();
+
+	StartMusic();
 
 	if (viewerParam != nullptr)
 	{
@@ -1445,6 +1478,12 @@ void CMainWindow::TransitionEnd()
 	{
 		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+		if (musicPause)
+		{
+			musicPause = false;
+			StartMusic();
+		}
+			
 	}
 	else
 	{
@@ -1472,7 +1511,11 @@ void CMainWindow::VideoEnd()
 void CMainWindow::StopDiaporama()
 {
 	if (ffmfc != nullptr)
-		ffmfc->Pause();
+	{
+		StopMusic();
+		musicPause = true;
+	}
+		
 
 	TRACE();
 	if (startDiaporama)

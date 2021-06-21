@@ -105,6 +105,7 @@ namespace Regards
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void OnExportDiaporama(wxCommandEvent& event);
+			void OnVideoStop(wxCommandEvent& event);
 			void Resize();
 			void ExportVideo(const wxString& filename, const wxString& filenameOutput = "");
 			void ProcessIdle();
@@ -112,6 +113,10 @@ namespace Regards
 			void OnEndThumbnail(wxCommandEvent& event);
 			static void CheckMD5(void * param);
 
+			void StartMusic();
+			void StopMusic();
+
+			int64_t musicPosition = 0;
 			wxString tempVideoFile = "";
 			wxString tempAudioVideoFile = "";
 			bool fullscreen;
@@ -144,6 +149,7 @@ namespace Regards
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
 			bool musicStop = true;
 			bool ffmfcQuit = false;
+			bool musicPause = false;
 		};
 	}
 
