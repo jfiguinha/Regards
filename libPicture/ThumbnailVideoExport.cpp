@@ -593,7 +593,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
         encode(c, NULL, pkt);
 
     av_write_trailer(oc); // Writing the end of the file.
-    if (!(fmt->flags & AVFMT_NOFILE))
+    //if (!(fmt->flags & AVFMT_NOFILE))
         avio_closep(&oc->pb); // Closing the file.
     avcodec_close(stream->codec);
 

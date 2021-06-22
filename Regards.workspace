@@ -57,8 +57,8 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
   </VirtualDirectory>
@@ -77,7 +77,7 @@
     <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
@@ -152,7 +152,7 @@
       <Project Name="libffmpeg" ConfigName="Debug"/>
       <Project Name="libffmpeg" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>
