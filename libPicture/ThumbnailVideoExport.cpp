@@ -534,7 +534,6 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
     int movie_duration = 0;
     int ret = 0;
     convertCtx = sws_getContext(width, height, AV_PIX_FMT_BGRA, width, height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL); // Preparing to convert my generated RGB images to YUV frames.
-
     avformat_alloc_output_context2(&oc, NULL, NULL, outfile);
     stream = avformat_new_stream(oc, 0);
 
@@ -598,8 +597,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
         encode(c, NULL, pkt);
 
     av_write_trailer(oc); // Writing the end of the file.
-    //if (!(fmt->flags & AVFMT_NOFILE))
-        avio_closep(&oc->pb); // Closing the file.
+    avio_closep(&oc->pb); // Closing the file.
     avcodec_close(stream->codec);
 
     // Freeing all the allocated memory:

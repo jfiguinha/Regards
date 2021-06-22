@@ -275,6 +275,14 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 
 	wxString filepath = saveFileDialog.GetPath();
 
+	wxFileName file_path(filepath);
+	wxString extension = file_path.GetExt();
+	if (extension != "mp4")
+	{
+		filepath.append(".mp4");
+	}
+
+
 	int time_movie = CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080, numEffect);
 
 	if (time_movie == 0)
