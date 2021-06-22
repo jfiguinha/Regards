@@ -440,7 +440,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
     int j = 0;
     countNbFrame = delay * fps * picturefile.size();
 
-    if (effect != IDM_DIAPORAMA_TRANSITION)
+    if (effect != IDM_DIAPORAMA_TRANSITION && effect != IDM_DIAPORAMA_NONE)
         countNbFrame += nbFrameEffect * (picturefile.size() - 1);
 
     movie_duration = countNbFrame / fps;
@@ -452,7 +452,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
     {
 
 
-        if (i == 0 && effect != IDM_DIAPORAMA_TRANSITION)
+        if ((i == 0 || effect == IDM_DIAPORAMA_NONE) && effect != IDM_DIAPORAMA_TRANSITION)
         {
             CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
             listOfPicture[listOfFile[i]] = src_bitmap;
