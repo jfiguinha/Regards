@@ -107,11 +107,11 @@
 									<object class="wxTextCtrl" name="ID_TXTMUSICDIAPORAMAPATH">
 										<default>0</default>
 										<pos>205,170</pos>
-										<size>100,20</size>
+										<size>140,20</size>
 									</object>
 									<object class="wxButton" name="ID_MUSICDIAPORAMAPATH">
 										<label>...</label>
-										<pos>290,170</pos>
+										<pos>350,170</pos>
 										<size>20,20</size>
 									</object>
 							</object>

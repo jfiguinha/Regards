@@ -265,6 +265,9 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 	if(config != nullptr)
 		numEffect = config->GetDiaporamaTransitionEffect();
 
+	if (numEffect < 400)
+		numEffect += 400;
+
 	wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
 	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
