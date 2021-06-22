@@ -233,8 +233,11 @@ void CThumbnailVideoExportImpl::WriteVideoFrame(Mat * dest, CRegardsBitmap* pBit
     }
     else
     {
-        pBitmap->SetBitmap(dest->data, width, height);
+        cv::Mat destination;
+        cvtColor(*dest, destination, cv::COLOR_BGR2BGRA);
+        pBitmap->SetBitmap(destination.data, width, height);
         WritePicture(pBitmap);
+        destination.release();
     }
 
 }
@@ -287,7 +290,9 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                 {
                     float alpha = (float)k / (float)nbFrame;
                     float beta = 1.0 - alpha;
-                    addWeighted(src1, alpha, src2, beta, 0.0, dest);
+                    addWeighted(src2, alpha, src1, beta, 0.0, dest);
+
+
                     WriteVideoFrame(&dest, pBitmap, width, height);
 
                     SendMessageProgress();
@@ -467,7 +472,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
                 case IDM_DIAPORAMA_TRANSITION:
                 {
                     int iStart = i * nbFrameByPicture;
-                    ExecuteEffect("", picturefile[i], nbFrameEffect, width, height, effect);
+                    ExecuteEffect("", picturefile[i], nbFrameByPicture, width, height, effect);
                     position = iStart + nbFrameByPicture;
                     if (endProcess)
                         break;
