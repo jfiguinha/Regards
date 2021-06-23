@@ -23,6 +23,9 @@
 #pragma warning (disable : 4786) // identifier was truncated to 'number' characters
 #endif
 
+#include <string>
+#include <vector>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 #include "FreeImageTag.h"
@@ -145,7 +148,7 @@ read_iptc_profile(FIBITMAP *dib, const BYTE *dataptr, unsigned int datalen) {
 					iptc_value[i] = profile[offset + i];
 				}
 				iptc_value[tagByteCount] = '\0';
-				FreeImage_SetTagValue(tag, (char*)&iptc_value[0]);
+				FreeImage_SetTagValue(tag, &iptc_value[0]);
 				break;
 			}
 		}
@@ -196,7 +199,7 @@ read_iptc_profile(FIBITMAP *dib, const BYTE *dataptr, unsigned int datalen) {
 		FreeImage_SetTagDescription(tag, tag_lib.getTagDescription(TagLib::IPTC, TAG_KEYWORDS));
 		FreeImage_SetTagLength(tag, (DWORD)Keywords.length());
 		FreeImage_SetTagCount(tag, (DWORD)Keywords.length());
-		FreeImage_SetTagValue(tag, (char*)Keywords.c_str());
+		FreeImage_SetTagValue(tag, Keywords.c_str());
 		FreeImage_SetMetadata(FIMD_IPTC, dib, FreeImage_GetTagKey(tag), tag);
 	}
 
@@ -208,7 +211,7 @@ read_iptc_profile(FIBITMAP *dib, const BYTE *dataptr, unsigned int datalen) {
 		FreeImage_SetTagDescription(tag, tag_lib.getTagDescription(TagLib::IPTC, TAG_SUPPLEMENTAL_CATEGORIES));
 		FreeImage_SetTagLength(tag, (DWORD)SupplementalCategory.length());
 		FreeImage_SetTagCount(tag, (DWORD)SupplementalCategory.length());
-		FreeImage_SetTagValue(tag, (char*)SupplementalCategory.c_str());
+		FreeImage_SetTagValue(tag, SupplementalCategory.c_str());
 		FreeImage_SetMetadata(FIMD_IPTC, dib, FreeImage_GetTagKey(tag), tag);
 	}
 
@@ -240,7 +243,7 @@ append_iptc_tag(BYTE *profile, unsigned *profile_size, WORD id, DWORD length, co
 	buffer[3] = (BYTE)(length >> 8);
 	buffer[4] = (BYTE)(length & 0xFF);
 	// add the tag value
-	memcpy(buffer + 5, (BYTE*)value, length);
+	memcpy(buffer + 5, value, length);
 	// append the previous profile
 	if(NULL == profile)	{
 		*profile_size = (5 + length);

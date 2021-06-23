@@ -1,7 +1,6 @@
 #pragma once
 #include <Metadata.h>
 #include <exiv2/image.hpp>
-#include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 
 class CRegardsBitmap;

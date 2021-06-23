@@ -31,9 +31,14 @@
 #pragma warning (disable : 4786) // identifier was truncated to 'number' characters
 #endif
 
+#include <algorithm>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 #include "FreeImageTag.h"
+#include <cctype>
+#include <stack>
+#include <vector>
 
 // ==========================================================
 // Exif JPEG routines
@@ -459,7 +464,7 @@ processExifTag(FIBITMAP *dib, FITAG *tag, char *pval, BOOL msb_order, TagLib::MD
 			DWORD *value = (DWORD*)&exif_value[0];						
 			for(i = 0; i < 2 * FreeImage_GetTagCount(tag); i++) {
 				// read a sequence of (numerator, denominator)
-				value[i] = ReadUint32(msb_order, n*i + (char*)pval);
+				value[i] = ReadUint32(msb_order, n*i + pval);
 			}
 			FreeImage_SetTagValue(tag, value);
 			break;
@@ -471,7 +476,7 @@ processExifTag(FIBITMAP *dib, FITAG *tag, char *pval, BOOL msb_order, TagLib::MD
 			LONG *value = (LONG*)&exif_value[0];
 			for(i = 0; i < 2 * FreeImage_GetTagCount(tag); i++) {
 				// read a sequence of (numerator, denominator)
-				value[i] = ReadInt32(msb_order, n*i + (char*)pval);
+				value[i] = ReadInt32(msb_order, n*i + pval);
 			}
 			FreeImage_SetTagValue(tag, value);
 			break;
@@ -599,7 +604,7 @@ jpeg_read_exif_dir(FIBITMAP *dib, const BYTE *tiffp, DWORD dwOffsetIfd0, DWORD d
 			FreeImage_SetTagID(tag, tag_id);
 
 			// get the tag type
-			WORD tag_type = (WORD)ReadUint16(msb_order, pde + 2);
+			WORD tag_type = ReadUint16(msb_order, pde + 2);
             if((tag_type - 1) >= EXIF_NUM_FORMATS) {
                 // a problem occured : delete the tag (not free'd after)
 			    FreeImage_DeleteTag(tag);

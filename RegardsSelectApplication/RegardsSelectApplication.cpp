@@ -8,15 +8,12 @@
 #include <wx/wx.h>
 #endif
 #endif
-#include <iostream>
-
 
 
 // AVX CPU dispatching - based on Agner Fog's C++ vector class library:
 // http://www.agner.org/optimize/vectorclass.zip
 
 #include <stdio.h>
-#include <stdbool.h>
 #include <string>
 
 //------------------------------------------------------------------------------
@@ -73,7 +70,6 @@
 #elif INSTRSET == 3
 # include <pmmintrin.h>                 // SSE3
 #elif INSTRSET == 2
-# include <emmintrin.h>                 // SSE2
 #elif INSTRSET == 1
 # include <xmmintrin.h>                 // SSE
 #endif // INSTRSET

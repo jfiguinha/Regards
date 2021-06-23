@@ -15,7 +15,7 @@ CConfigParam::~CConfigParam()
 	doc.clear();
 }
 
-bool CConfigParam::OpenFile(const wxString &configFile)
+bool CConfigParam::OpenFile(const wxString& configFile)
 {
 	filename = configFile;
 	doc.clear();
@@ -30,7 +30,6 @@ bool CConfigParam::OpenFile(const wxString &configFile)
 		LoadParameter();
 	}
 	return true;
-
 }
 
 bool CConfigParam::SaveFile()
@@ -42,13 +41,13 @@ bool CConfigParam::SaveFile()
 // allocate the given string from xml document memory
 // to ensure that it says alive for the duration of xml
 // operations
-const char* CConfigParam::stralloc(const wxString & str)
+const char* CConfigParam::stralloc(const wxString& str)
 {
 	return doc.allocate_string(str.c_str());
 }
 
 // create a node
-xml_node<>*  CConfigParam::node(const wxString & name, const wxString& content)
+xml_node<>* CConfigParam::node(const wxString& name, const wxString& content)
 {
 	return doc.allocate_node(node_element, stralloc(name), stralloc(content));
 }

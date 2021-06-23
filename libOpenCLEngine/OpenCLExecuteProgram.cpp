@@ -162,7 +162,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t & outputBufferSize)
 	if (cl_output_buffer == (cl_mem)0)
 		throw Error("Failed to create Output Buffer!");
 
-	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_output_buffer);
+	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_output_buffer);
 	Error::CheckError(err);
 	
 
@@ -259,7 +259,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t * offset, size_t * gs_d, size
 	}
 
 	size_t local_size_max;
-	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), (void *)&local_size_max, nullptr);
+	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &local_size_max, nullptr);
 	Error::CheckError(err);
 
 	cl_event event;
@@ -308,7 +308,7 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t & global_size, const si
 	if (cl_output_buffer == (cl_mem)0)
 		throw Error("Failed to create Output Buffer!");
 
-	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&cl_output_buffer);
+	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_output_buffer);
 	Error::CheckError(err);
 
 
@@ -324,7 +324,7 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t & global_size, const si
 	
 	// get maximum workgroup size
 	size_t local_size_max;
-	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), (void *)&local_size_max, nullptr);
+	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &local_size_max, nullptr);
 	Error::CheckError(err);
 
 	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, 1, nullptr, &global_size, local_size ? &local_size : nullptr, 0, nullptr, &cl_perf_event);

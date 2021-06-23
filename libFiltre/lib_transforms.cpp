@@ -22,8 +22,6 @@
 #include "lib_transforms.h"
 #include <math.h>
 
-#include <numeric>
-
 using namespace std;
 
 /**

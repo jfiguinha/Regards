@@ -14,12 +14,14 @@
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
-#include <ImageLoadingFormat.h>
 #include <wx/window.h>
+#include "SqlInit.h"
 #include <libPicture.h>
 #include <FilterWindowParam.h>
-//#include <ffmpeg_application.h>
-#include <RegardsBitmap.h>
+#include <ConvertUtility.h>
+#include <FileUtility.h>
+
+#include "ParamInit.h"
 using namespace Regards::Picture;
 
 //#define TEST_NOISE
@@ -34,20 +36,20 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
-    /*
-    wxString nbArgument = to_string(wxGetApp().argc);
-    wxMessageBox(nbArgument);
+	/*
+	wxString nbArgument = to_string(wxGetApp().argc);
+	wxMessageBox(nbArgument);
 	//silent_mode = parser.Found(wxT("s"));
-    wxString  par2(wxGetApp().argv[0]);
-    wxMessageBox(par2);
-    wxString par(wxGetApp().argv[1]);
-    wxMessageBox(par);
-     * */
+	wxString  par2(wxGetApp().argv[0]);
+	wxMessageBox(par2);
+	wxString par(wxGetApp().argv[1]);
+	wxMessageBox(par);
+	 * */
 	// to get at your unnamed parameters use
 	wxArrayString files;
 	for (auto i = 0; i < parser.GetParamCount(); i++)
 	{
-        printf("Files to show : %s \n",CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
+		printf("Files to show : %s \n", CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
 		files.Add(parser.GetParam(i));
 		break;
 	}
@@ -76,7 +78,6 @@ void MyApp::MacOpenFile(const wxString &fileName)
 
 int MyApp::Close()
 {
-
 	//COpenCLEngine::kill();
 
 	CSqlInit::KillSqlEngine();
@@ -93,19 +94,19 @@ int MyApp::Close()
 
 	sqlite3_shutdown();
 #ifdef USECURL
-    curl_global_cleanup();
+	curl_global_cleanup();
 #endif
 	this->Exit();
 
 	CWindowMain::listMainWindow.clear();
-    
-    CLibPicture::Uninitx265Decoder();
 
-    CLibPicture::UninitFreeImage();
+	CLibPicture::Uninitx265Decoder();
+
+	CLibPicture::UninitFreeImage();
 
 
 #ifdef __WXMSW__
-	
+
 
 	CoUninitialize();
 
@@ -117,7 +118,7 @@ int MyApp::Close()
 
 #ifdef FFMPEG
 	avformat_network_deinit();
-    //av_lockmgr_register(nullptr);
+	//av_lockmgr_register(nullptr);
 #endif
 
 #if defined(__WXMSW__) && defined(_DEBUG)
@@ -142,7 +143,8 @@ bool MyApp::OnInit()
 #endif
 
 	int retCode = sqlite3_config(SQLITE_CONFIG_SERIALIZED);
-	if (retCode == SQLITE_OK) {
+	if (retCode == SQLITE_OK)
+	{
 		printf("SQLite in serialized mode \n");
 	}
 
@@ -153,19 +155,19 @@ bool MyApp::OnInit()
 	CLibPicture::InitFreeImage();
 
 #ifdef wxUSE_PDF
-	    AddImageHandler(new wxPDFHandler);
+	AddImageHandler(new wxPDFHandler);
 #endif
-    
+
 	wxSocketBase::Initialize();
 
 	CPrintEngine::Initialize();
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    
-    printf("Document Path %s \n",CConvertUtility::ConvertToUTF8(documentPath));
-    printf("Resource Path %s \n",CConvertUtility::ConvertToUTF8(resourcePath));
 
-    CLibPicture::Initx265Decoder();
+	printf("Document Path %s \n", CConvertUtility::ConvertToUTF8(documentPath));
+	printf("Resource Path %s \n", CConvertUtility::ConvertToUTF8(resourcePath));
+
+	CLibPicture::Initx265Decoder();
 
 #ifdef TEST_FFMPEG
 	wxString tempAudio = "d:\\video\\audio.mp3";
@@ -221,7 +223,7 @@ bool MyApp::OnInit()
 	}
 
 #ifdef WIN32
-    wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
+	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
 #else
 #ifdef __APPLE__
 	wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/osx";
@@ -235,14 +237,13 @@ bool MyApp::OnInit()
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
 	face_alignement("d:\\metart_firestarter_leaya_high_0048.jpg", eye.ToStdString());
 #endif
-	
-	frameStart = new MyFrameIntro("Welcome to Regards","REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
+
+	frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);
 	frameStart->Show(true);
-    
+
 	CViewerFrame::SetViewerMode(true);
 
-   
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the
@@ -255,32 +256,31 @@ bool MyApp::OnInit()
 //
 wxString MyApp::GetImageFilter()
 {
-    return _( "All image files" ) + wxString( wxT( "|" ) )
-           + m_strImageFilter + wxT( "|" )
-           + m_strImageFilterList
-           + _( "All files" ) + wxT( "|*.*" );
+	return _("All image files") + wxString(wxT("|"))
+		+ m_strImageFilter + wxT("|")
+		+ m_strImageFilterList
+		+ _("All files") + wxT("|*.*");
 }
-
 
 
 // Image handler and extension filter handling.
 //
 // Adds image handlers to the image handler list.
 //
-void MyApp::AddImageHandler( wxImageHandler* poHandler )
+void MyApp::AddImageHandler(wxImageHandler* poHandler)
 {
-    if( poHandler )
-    {
-        wxString strExtension= poHandler->GetExtension();
+	if (poHandler)
+	{
+		wxString strExtension = poHandler->GetExtension();
 
-        // TODO: Is there a posibility to get files by extension fully
-        //       case insensitive?
-        //
+		// TODO: Is there a posibility to get files by extension fully
+		//       case insensitive?
+		//
 #ifdef __WXMSW__
-        m_strImageFilter += wxT( "*." ) + strExtension + wxT( ";" );
-        m_strImageFilterList += poHandler->GetMimeType() + wxT( " (*." )
-                                + strExtension
-                                + wxT( ")|*." ) + strExtension + wxT( "|" );
+		m_strImageFilter += wxT("*.") + strExtension + wxT(";");
+		m_strImageFilterList += poHandler->GetMimeType() + wxT(" (*.")
+			+ strExtension
+			+ wxT(")|*.") + strExtension + wxT("|");
 #else
         m_strImageFilter += wxT( "*." ) + strExtension.Lower() + wxT( ";" )
                          +  wxT( "*." ) + strExtension.Upper() + wxT( ";" );
@@ -292,13 +292,13 @@ void MyApp::AddImageHandler( wxImageHandler* poHandler )
                                 + strExtension.Upper()
                                 + wxT( "|" );
 #endif
-        if( wxImage::FindHandler( poHandler->GetName() ) )
-        {
-            delete poHandler;
-        }
-        else
-        {
-            wxImage::AddHandler( poHandler );
-        }
-    }
+		if (wxImage::FindHandler(poHandler->GetName()))
+		{
+			delete poHandler;
+		}
+		else
+		{
+			wxImage::AddHandler(poHandler);
+		}
+	}
 }

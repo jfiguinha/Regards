@@ -1520,7 +1520,7 @@ TagLib::getTagInfo(MDMODEL md_model, WORD tagID) {
 
 	if(_table_map.find(md_model) != _table_map.end()) {
 
-		TAGINFO *info_map = (TAGINFO*)_table_map[md_model];
+		TAGINFO *info_map = _table_map[md_model];
 		if(info_map->find(tagID) != info_map->end()) {
 			return (*info_map)[tagID];
 		}
@@ -1559,11 +1559,11 @@ int TagLib::getTagID(MDMODEL md_model, const char *key) {
 
 	if(_table_map.find(md_model) != _table_map.end()) {
 
-		TAGINFO *info_map = (TAGINFO*)_table_map[md_model];
+		TAGINFO *info_map = _table_map[md_model];
 		for(TAGINFO::iterator i = info_map->begin(); i != info_map->end(); i++) {
 			const TagInfo *info = (*i).second;
 			if(info && (strcmp(info->fieldname, key) == 0)) {
-				return (int)info->tag;
+				return info->tag;
 			}
 		}
 	}

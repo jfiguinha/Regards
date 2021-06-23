@@ -277,9 +277,9 @@ FreeImage_AdjustGamma(FIBITMAP *src, double gamma) {
 	// Build the lookup table
 
 	double exponent = 1 / gamma;
-	double v = 255.0 * (double)pow((double)255, -exponent);
+	double v = 255.0 * pow((double)255, -exponent);
 	for(int i = 0; i < 256; i++) {
-		double color = (double)pow((double)i, exponent) * v;
+		double color = pow((double)i, exponent) * v;
 		if(color > 255)
 			color = 255;
 		LUT[i] = (BYTE)floor(color + 0.5);
@@ -542,7 +542,7 @@ FreeImage_GetAdjustColorsLookupTable(BYTE *LUT, double brightness, double contra
 	if ((gamma > 0) && (gamma != 1.0)) {
 		// modify lookup table with gamma adjustment data
 		double exponent = 1 / gamma;
-		const double v = 255.0 * (double)pow((double)255, -exponent);
+		const double v = 255.0 * pow((double)255, -exponent);
 		for (int i = 0; i < 256; i++) {
 			value = pow(dblLUT[i], exponent) * v;
 			dblLUT[i] = MAX(0.0, MIN(value, 255.0));

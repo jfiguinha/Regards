@@ -4,7 +4,6 @@ using namespace std;
 using namespace HEIF;
 #include "avif.h"
 #include <RegardsBitmap.h>
-#include <picture_id.h>
 #include <cstdint>
 #include <avif/avif.h>
 #include <iostream>

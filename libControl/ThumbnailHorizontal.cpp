@@ -127,7 +127,7 @@ void CThumbnailHorizontal::UpdateScroll()
 	if (GetWindowWidth() <= 0)
 		return;
 
-	int nbElement = (int)nbElementInIconeList;
+	int nbElement = nbElementInIconeList;
 	if (nbElement > 0)
 	{
 		nbLigneY = 1;

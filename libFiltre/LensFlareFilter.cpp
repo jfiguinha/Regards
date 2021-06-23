@@ -17,6 +17,8 @@
 #include <Draw.h>
 #include <BitmapDisplay.h>
 #include <Selection.h>
+
+#include "TreeElementValue.h"
 using namespace Regards::Filter;
 
 int CLensFlareFilter::TypeApplyFilter()
@@ -168,7 +170,7 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 		float puissance = (float)lensFlareParameter->size;
 		float brightness = (float)lensFlareParameter->brightness;
 		float colorIntensity = (float)lensFlareParameter->colorIntensity;
-		puissance = ((float)(source->GetBitmapWidth() / 4) * ((float)puissance / 100.0f));
+		puissance = ((float)(source->GetBitmapWidth() / 4) * (puissance / 100.0f));
 		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
 		imageLoad = new CImageLoadingFormat();

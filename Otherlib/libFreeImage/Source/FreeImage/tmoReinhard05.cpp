@@ -100,8 +100,8 @@ ToneMappingReinhard05(FIBITMAP *dib, FIBITMAP *Y, float f, float m, float a, flo
 
 	// tone map image
 
-	bits  = (BYTE*)FreeImage_GetBits(dib);
-	Ybits = (BYTE*)FreeImage_GetBits(Y);
+	bits  = FreeImage_GetBits(dib);
+	Ybits = FreeImage_GetBits(Y);
 
 	if((a == 1) && (c == 0)) {
 		// when using default values, use a fastest code
@@ -133,7 +133,7 @@ ToneMappingReinhard05(FIBITMAP *dib, FIBITMAP *Y, float f, float m, float a, flo
 		Cav[0] = Cav[1] = Cav[2] = 0;
 		if((a != 1) && (c != 0)) {
 			// channel averages are not needed when (a == 1) or (c == 0)
-			bits = (BYTE*)FreeImage_GetBits(dib);
+			bits = FreeImage_GetBits(dib);
 			for(y = 0; y < height; y++) {
 				float *color = (float*)bits;
 				for(x = 0; x < width; x++) {
@@ -153,7 +153,7 @@ ToneMappingReinhard05(FIBITMAP *dib, FIBITMAP *Y, float f, float m, float a, flo
 
 		// perform tone mapping
 
-		bits = (BYTE*)FreeImage_GetBits(dib);
+		bits = FreeImage_GetBits(dib);
 		for(y = 0; y < height; y++) {
 			const float *Y     = (float*)Ybits;
 			float *color = (float*)bits;
@@ -181,7 +181,7 @@ ToneMappingReinhard05(FIBITMAP *dib, FIBITMAP *Y, float f, float m, float a, flo
 	// normalize intensities
 
 	if(max_color != min_color) {
-		bits = (BYTE*)FreeImage_GetBits(dib);
+		bits = FreeImage_GetBits(dib);
 		const float range = max_color - min_color;
 		for(y = 0; y < height; y++) {
 			float *color = (float*)bits;

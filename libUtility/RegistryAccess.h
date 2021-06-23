@@ -7,7 +7,7 @@ public:
 	CRegistryAccess(void);
 	~CRegistryAccess(void);
 
-	int GetKeyValue(HKEY KeyD, LPCWSTR Key, LPCWSTR SubKey, wchar_t * Value);
+	int GetKeyValue(HKEY KeyD, LPCWSTR Key, LPCWSTR SubKey, wchar_t* Value);
 	int SetKeyValue(HKEY KeyD, LPCWSTR Key, LPCWSTR SubKey, LPCWSTR NewValue, DWORD dwType = 1);
 	int CreateNewKey(LPTSTR sNewKeyName, HKEY lPredefinedKey);
 
@@ -19,16 +19,14 @@ public:
 
 	//Read
 	long OpenKeyValue(LPCWSTR cKeyValue);
-	int ReadStringValue(wchar_t * cValue,int iSize, LPCWSTR KeyName);
+	int ReadStringValue(wchar_t* cValue, int iSize, LPCWSTR KeyName);
 	int ReadIntValue(LPCWSTR KeyName);
 
 	long WriteBinValue(LPCWSTR KeyName);
 
 private:
-
-	HKEY  hKey; 
-	DWORD  dwDisposition; 
-
+	HKEY hKey;
+	DWORD dwDisposition;
 };
 
 #endif

@@ -31,6 +31,8 @@
 #pragma warning (disable : 4786) // identifier was truncated to 'number' characters
 #endif
 
+#include <memory>
+
 #include "CacheFile.h"
 #include "FreeImageIO.h"
 #include "Plugin.h"
@@ -430,7 +432,7 @@ FreeImage_SaveMultiBitmapToHandle(FREE_IMAGE_FORMAT fif, FIMULTIBITMAP *bitmap, 
 							
 							BYTE *compressed_data = (BYTE*)malloc(i->getSize() * sizeof(BYTE));
 							
-							header->m_cachefile.readFile((BYTE *)compressed_data, i->getReference(), i->getSize());
+							header->m_cachefile.readFile(compressed_data, i->getReference(), i->getSize());
 							
 							// uncompress the data
 							
@@ -498,7 +500,7 @@ FreeImage_CloseMultiBitmap(FIMULTIBITMAP *bitmap, int flags) {
 						FreeImage_OutputMessageProc(header->fif, "Failed to open %s, %s", spool_name.c_str(), strerror(errno));
 						success = FALSE;
 					} else {
-						success = FreeImage_SaveMultiBitmapToHandle(header->fif, bitmap, &header->io, (fi_handle)f, flags);
+						success = FreeImage_SaveMultiBitmapToHandle(header->fif, bitmap, &header->io, f, flags);
 
 						// close the files
 
@@ -890,7 +892,7 @@ FreeImage_SaveMultiBitmapToMemory(FREE_IMAGE_FORMAT fif, FIMULTIBITMAP *bitmap, 
 		FreeImageIO io;
 		SetMemoryIO(&io);
 
-		return FreeImage_SaveMultiBitmapToHandle(fif, bitmap, &io, (fi_handle)stream, flags);
+		return FreeImage_SaveMultiBitmapToHandle(fif, bitmap, &io, stream, flags);
 	}
 
 	return FALSE;

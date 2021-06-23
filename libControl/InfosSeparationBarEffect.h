@@ -9,15 +9,16 @@ namespace Regards
 		class CInfosSeparationBarEffect : public CInfosSeparationBar
 		{
 		public:
-			CInfosSeparationBarEffect(const CThemeInfosSeparationBar &theme)
+			CInfosSeparationBarEffect(const CThemeInfosSeparationBar& theme)
 				: CInfosSeparationBar(theme)
 			{
 			};
-			virtual ~CInfosSeparationBarEffect(void){};
 
-			void AddPhotoToList(const int &numElement);
+			~CInfosSeparationBarEffect(void) override
+			{
+			};
 
+			void AddPhotoToList(const int& numElement);
 		};
-
 	}
 }

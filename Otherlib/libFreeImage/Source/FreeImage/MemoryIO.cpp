@@ -47,7 +47,7 @@ FreeImage_OpenMemory(BYTE *data, DWORD size_in_bytes) {
 			if(data && size_in_bytes) {
 				// wrap a user buffer
 				mem_header->delete_me = FALSE;
-				mem_header->data = (BYTE*)data;
+				mem_header->data = data;
 				mem_header->data_length = mem_header->file_length = size_in_bytes;
 			} else {
 				mem_header->delete_me = TRUE;
@@ -84,7 +84,7 @@ FreeImage_LoadFromMemory(FREE_IMAGE_FORMAT fif, FIMEMORY *stream, int flags) {
 		FreeImageIO io;
 		SetMemoryIO(&io);
 
-		return FreeImage_LoadFromHandle(fif, &io, (fi_handle)stream, flags);
+		return FreeImage_LoadFromHandle(fif, &io, stream, flags);
 	}
 
 	return NULL;
@@ -100,7 +100,7 @@ FreeImage_SaveToMemory(FREE_IMAGE_FORMAT fif, FIBITMAP *dib, FIMEMORY *stream, i
 		FIMEMORYHEADER *mem_header = (FIMEMORYHEADER*)(stream->data);
 
 		if(mem_header->delete_me == TRUE) {
-			return FreeImage_SaveToHandle(fif, dib, &io, (fi_handle)stream, flags);
+			return FreeImage_SaveToHandle(fif, dib, &io, stream, flags);
 		} else {
 			// do not save in a user buffer
 			FreeImage_OutputMessageProc(fif, "Memory buffer is read only");
@@ -206,7 +206,7 @@ FreeImage_WriteMemory(const void *buffer, unsigned size, unsigned count, FIMEMOR
 		FreeImageIO io;
 		SetMemoryIO(&io);
 
-		FIMEMORYHEADER *mem_header = (FIMEMORYHEADER*)(((FIMEMORY*)stream)->data);
+		FIMEMORYHEADER *mem_header = (FIMEMORYHEADER*)(stream->data);
 
 		if(mem_header->delete_me == TRUE) {
 			return io.write_proc((void *)buffer, size, count, stream);

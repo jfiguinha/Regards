@@ -7,7 +7,6 @@
 #include "SqlPhotos.h"
 #include <FileUtility.h>
 #include <ImageLoadingFormat.h>
-#include <wx/mstream.h>
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>

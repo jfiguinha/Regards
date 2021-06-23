@@ -1,6 +1,5 @@
 #pragma once
 #include "ThumbnailHorizontal.h"
-#include <ImageVideoThumbnail.h>
 
 namespace Regards
 {

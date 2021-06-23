@@ -83,8 +83,8 @@ FreeImage_ConvertToFloat(FIBITMAP *dib) {
 	const unsigned src_pitch = FreeImage_GetPitch(src);
 	const unsigned dst_pitch = FreeImage_GetPitch(dst);
 
-	const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-	BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+	const BYTE *src_bits = FreeImage_GetBits(src);
+	BYTE *dst_bits = FreeImage_GetBits(dst);
 
 	switch(src_type) {
 		case FIT_BITMAP:

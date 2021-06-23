@@ -2,7 +2,6 @@
 #include <ToolbarWindow.h>
 #include <ToolbarInterface.h>
 #include <ToolbarTexte.h>
-#include <ConfigParam.h>
 using namespace Regards::Window;
 
 

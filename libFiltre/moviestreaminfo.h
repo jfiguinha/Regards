@@ -19,7 +19,6 @@
 
 #define CONFIG_AVFILTER 1
 
-#include <inttypes.h>
 #include <StreamInfo.h>
 
 extern "C" {

@@ -3,20 +3,18 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "RegardsFloatBitmap.h"
-#include <iostream>
 #include <fstream>
-#include <memory.h>
 
 
 bool CRegardsFloatBitmap::IsValid()
 {
-	if(data == nullptr || GetHeight() == 0 || GetWidth() == 0 || GetSize() == 0)
+	if (data == nullptr || GetHeight() == 0 || GetWidth() == 0 || GetSize() == 0)
 		return false;
 
 	return true;
 }
 
-CRegardsFloatBitmap::CRegardsFloatBitmap(const int &iWidth, const int &iHeight)
+CRegardsFloatBitmap::CRegardsFloatBitmap(const int& iWidth, const int& iHeight)
 {
 	data = nullptr;
 	m_iWidth = iWidth;
@@ -34,13 +32,14 @@ bool CRegardsFloatBitmap::Rotate180()
 	if (data == nullptr)
 		return false;
 
-	for (auto x = 0; x < m_iWidth / 2; x++)// because you only have to loop on half the image
+	for (auto x = 0; x < m_iWidth / 2; x++) // because you only have to loop on half the image
 	{
 		for (auto y = 0; y < m_iHeight; y++)
 		{
 			float temp[4];
 			memcpy(temp, data + GetPosition(x, y), 4 * sizeof(float));
-			memcpy(data + GetPosition(x, y), data + GetPosition(m_iWidth - x - 1, m_iHeight - y - 1), 4 * sizeof(float));
+			memcpy(data + GetPosition(x, y), data + GetPosition(m_iWidth - x - 1, m_iHeight - y - 1),
+			       4 * sizeof(float));
 			memcpy(data + GetPosition(m_iWidth - x - 1, m_iHeight - y - 1), temp, 4 * sizeof(float));
 		}
 	}
@@ -56,9 +55,9 @@ bool CRegardsFloatBitmap::Rotate90()
 	if (data == nullptr)
 		return false;
 
-	CRegardsFloatBitmap * out = new CRegardsFloatBitmap(m_iHeight, m_iWidth);
-	float * outColor = out->GetData();
-	float * inColor = GetData();
+	auto out = new CRegardsFloatBitmap(m_iHeight, m_iWidth);
+	float* outColor = out->GetData();
+	float* inColor = GetData();
 	for (auto y = 0; y < m_iHeight; y++)
 	{
 		for (auto x = 0; x < m_iWidth; x++)
@@ -89,20 +88,20 @@ CRegardsFloatBitmap::CRegardsFloatBitmap()
 	m_lSize = 0;
 }
 
-int CRegardsFloatBitmap::GetPosition(const int &x, const int &y)
+int CRegardsFloatBitmap::GetPosition(const int& x, const int& y)
 {
 	return ((x << 2) + (y * (m_iWidth << 2)));
 }
 
 
-float * CRegardsFloatBitmap::GetColorValue(const int &x, const int &y)
+float* CRegardsFloatBitmap::GetColorValue(const int& x, const int& y)
 {
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)
 	{
 		int i = GetPosition(x, y);
 		return &data[i];
 	}
-	return nullptr;    
+	return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -114,9 +113,7 @@ CRegardsFloatBitmap::~CRegardsFloatBitmap()
 		delete[] data;
 
 	data = nullptr;
-
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +125,7 @@ bool CRegardsFloatBitmap::HorzFlipBuf()
 		return false;
 
 	int MiddleX = (m_iWidth >> 1);
-	
+
 #pragma omp parallel for
 	for (auto y = 0; y < m_iHeight; y++)
 	{
@@ -138,9 +135,9 @@ bool CRegardsFloatBitmap::HorzFlipBuf()
 			float m_bDataBuffer;
 			int iPos = y * m_iWidth;
 			int iPos2 = iPos + m_iWidth;
-			m_bDataBuffer = data[iPos+x];
-			data[iPos+x] = data[iPos2-x];
-			data[iPos2-x] = m_bDataBuffer;
+			m_bDataBuffer = data[iPos + x];
+			data[iPos + x] = data[iPos2 - x];
+			data[iPos2 - x] = m_bDataBuffer;
 		}
 	}
 
@@ -154,8 +151,8 @@ bool CRegardsFloatBitmap::HorzFlipBuf()
 //////////////////////////////////////////////////////////////////////////////////////////
 bool CRegardsFloatBitmap::VertFlipBuf()
 {
-	float  *tb1;
-	float  *tb2;
+	float* tb1;
+	float* tb2;
 
 	if (data == nullptr)
 		return false;
@@ -163,22 +160,24 @@ bool CRegardsFloatBitmap::VertFlipBuf()
 	int bufsize = m_iWidth * sizeof(float);
 
 	tb1 = new float[bufsize];
-	if (tb1 == nullptr) {
+	if (tb1 == nullptr)
+	{
 		return false;
 	}
 
 	tb2 = new float[bufsize];
-	if (tb2 == nullptr) {
+	if (tb2 == nullptr)
+	{
 		delete[] tb1;
 		return false;
 	}
 
 	int endValue = (m_iHeight + 1) / 2;
 
-	for (auto row_cnt = 0; row_cnt< endValue; row_cnt++)
+	for (auto row_cnt = 0; row_cnt < endValue; row_cnt++)
 	{
-		int off1 = row_cnt*bufsize;
-		int off2 = ((m_iHeight - 1) - row_cnt)*bufsize;
+		int off1 = row_cnt * bufsize;
+		int off2 = ((m_iHeight - 1) - row_cnt) * bufsize;
 		memcpy(tb1, data + off1, bufsize);
 		memcpy(tb2, data + off2, bufsize);
 		memcpy(data + off1, tb2, bufsize);
@@ -200,7 +199,7 @@ long CRegardsFloatBitmap::GetSize()
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-float * CRegardsFloatBitmap::GetData()
+float* CRegardsFloatBitmap::GetData()
 {
 	return data;
 }
@@ -217,4 +216,3 @@ const int CRegardsFloatBitmap::GetHeight()
 {
 	return m_iHeight;
 }
-

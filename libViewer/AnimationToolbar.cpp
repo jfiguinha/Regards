@@ -15,19 +15,20 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CAnimationToolbar::CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+CAnimationToolbar::CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+                                     CToolbarInterface* toolbarInterface, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	imagePlayDiaporama = nullptr;
 	imageStopDiaporama = nullptr;
 
-	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS",1);
-	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY",1);
-	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP",1);
-	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT",1);
+	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS", 1);
+	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY", 1);
+	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP", 1);
+	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT", 1);
 
 
-	CToolbarButton * imagePrec = new CToolbarButton(themeToolbar.button);
+	auto imagePrec = new CToolbarButton(themeToolbar.button);
 	imagePrec->SetButtonResourceId(L"IDB_ARROWLPNG");
 	imagePrec->SetLibelle(libellePrevious);
 	imagePrec->SetCommandId(WM_IMAGES_PRCDENTE);
@@ -47,7 +48,7 @@ CAnimationToolbar::CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThe
 	imageStopDiaporama->SetVisible(false);
 	navElement.push_back(imageStopDiaporama);
 
-	CToolbarButton * imageSuiv = new CToolbarButton(themeToolbar.button);
+	auto imageSuiv = new CToolbarButton(themeToolbar.button);
 	imageSuiv->SetButtonResourceId(L"IDB_ARROWRPNG");
 	imageSuiv->SetCommandId(WM_IMAGES_SUIVANTE);
 	imageSuiv->SetRepeatable(true);
@@ -64,26 +65,26 @@ CAnimationToolbar::~CAnimationToolbar()
 
 void CAnimationToolbar::NextPicture()
 {
-	CCentralWindow * mainWindow = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	auto mainWindow = static_cast<CCentralWindow*>(this->FindWindowById(CENTRALVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->AnimationPictureNext();
 }
 
 void CAnimationToolbar::PreviousPicture()
 {
-	CCentralWindow * mainWindow = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	auto mainWindow = static_cast<CCentralWindow*>(this->FindWindowById(CENTRALVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->AnimationPicturePrevious();
 }
 
 void CAnimationToolbar::AnimationStart()
 {
-	CCentralWindow * mainWindow = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	auto mainWindow = static_cast<CCentralWindow*>(this->FindWindowById(CENTRALVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_ANIMATIONSTART);
+		auto event = new wxCommandEvent(wxEVENT_ANIMATIONSTART);
 		wxQueueEvent(mainWindow, event);
 		Refresh();
 	}
@@ -91,13 +92,13 @@ void CAnimationToolbar::AnimationStart()
 
 void CAnimationToolbar::AnimationStop()
 {
-	CCentralWindow * mainWindow = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	auto mainWindow = static_cast<CCentralWindow*>(this->FindWindowById(CENTRALVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
 
-		wxCommandEvent* event = new wxCommandEvent(wxEVENT_ANIMATIONSTOP);
+		auto event = new wxCommandEvent(wxEVENT_ANIMATIONSTOP);
 		wxQueueEvent(mainWindow, event);
 
 		//mainWindow->StopAnimation();
@@ -106,7 +107,7 @@ void CAnimationToolbar::AnimationStop()
 }
 
 
-void CAnimationToolbar::EventManager(const int &id)
+void CAnimationToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
@@ -125,9 +126,6 @@ void CAnimationToolbar::EventManager(const int &id)
 	case WM_IMAGES_SUIVANTE:
 		NextPicture();
 		break;
+	default: ;
 	}
 }
-
-
-
-

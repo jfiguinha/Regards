@@ -218,7 +218,7 @@ typedef struct avifSampleTable
 
 static avifSampleTable * avifSampleTableCreate()
 {
-    avifSampleTable * sampleTable = (avifSampleTable *)avifAlloc(sizeof(avifSampleTable));
+    avifSampleTable * sampleTable = avifAlloc(sizeof(avifSampleTable));
     memset(sampleTable, 0, sizeof(avifSampleTable));
     avifArrayCreate(&sampleTable->chunks, sizeof(avifSampleTableChunk), 16);
     avifArrayCreate(&sampleTable->sampleDescriptions, sizeof(avifSampleDescription), 2);
@@ -309,7 +309,7 @@ AVIF_ARRAY_DECLARE(avifTrackArray, avifTrack, track);
 
 avifCodecDecodeInput * avifCodecDecodeInputCreate(void)
 {
-    avifCodecDecodeInput * decodeInput = (avifCodecDecodeInput *)avifAlloc(sizeof(avifCodecDecodeInput));
+    avifCodecDecodeInput * decodeInput = avifAlloc(sizeof(avifCodecDecodeInput));
     memset(decodeInput, 0, sizeof(avifCodecDecodeInput));
     avifArrayCreate(&decodeInput->samples, sizeof(avifDecodeSample), 1);
     return decodeInput;
@@ -353,12 +353,12 @@ static avifBool avifCodecDecodeInputGetSamples(avifCodecDecodeInput * decodeInpu
                 sampleSize = sampleSizePtr->size;
             }
 
-            avifDecodeSample * sample = (avifDecodeSample *)avifArrayPushPtr(&decodeInput->samples);
+            avifDecodeSample * sample = avifArrayPushPtr(&decodeInput->samples);
             sample->data.data = rawInput->data + sampleOffset;
             sample->data.size = sampleSize;
             sample->sync = AVIF_FALSE; // to potentially be set to true following the outer loop
 
-            if ((sampleOffset + sampleSize) > (uint64_t)rawInput->size) {
+            if ((sampleOffset + sampleSize) > rawInput->size) {
                 return AVIF_FALSE;
             }
 
@@ -465,7 +465,7 @@ typedef struct avifMeta
 
 static avifMeta * avifMetaCreate()
 {
-    avifMeta * meta = (avifMeta *)avifAlloc(sizeof(avifMeta));
+    avifMeta * meta = avifAlloc(sizeof(avifMeta));
     memset(meta, 0, sizeof(avifMeta));
     avifArrayCreate(&meta->items, sizeof(avifDecoderItem), 8);
     avifArrayCreate(&meta->properties, sizeof(avifProperty), 16);
@@ -499,7 +499,7 @@ static avifDecoderItem * avifMetaFindItem(avifMeta * meta, uint32_t itemID)
         }
     }
 
-    avifDecoderItem * item = (avifDecoderItem *)avifArrayPushPtr(&meta->items);
+    avifDecoderItem * item = avifArrayPushPtr(&meta->items);
     avifArrayCreate(&item->properties, sizeof(avifProperty), 16);
     avifArrayCreate(&item->extents, sizeof(avifDecoderItemExtent), 1);
     item->id = itemID;
@@ -530,7 +530,7 @@ typedef struct avifDecoderData
 
 static avifDecoderData * avifDecoderDataCreate()
 {
-    avifDecoderData * data = (avifDecoderData *)avifAlloc(sizeof(avifDecoderData));
+    avifDecoderData * data = avifAlloc(sizeof(avifDecoderData));
     memset(data, 0, sizeof(avifDecoderData));
     data->meta = avifMetaCreate();
     avifArrayCreate(&data->tracks, sizeof(avifTrack), 2);
@@ -554,7 +554,7 @@ static void avifDecoderDataResetCodec(avifDecoderData * data)
 
 static avifTile * avifDecoderDataCreateTile(avifDecoderData * data)
 {
-    avifTile * tile = (avifTile *)avifArrayPushPtr(&data->tiles);
+    avifTile * tile = avifArrayPushPtr(&data->tiles);
     tile->image = avifImageCreateEmpty();
     tile->input = avifCodecDecodeInputCreate();
     return tile;
@@ -562,7 +562,7 @@ static avifTile * avifDecoderDataCreateTile(avifDecoderData * data)
 
 static avifTrack * avifDecoderDataCreateTrack(avifDecoderData * data)
 {
-    avifTrack * track = (avifTrack *)avifArrayPushPtr(&data->tracks);
+    avifTrack * track = avifArrayPushPtr(&data->tracks);
     track->meta = avifMetaCreate();
     return track;
 }
@@ -647,7 +647,7 @@ static const uint8_t * avifDecoderDataCalcItemPtr(avifDecoderData * data, avifDe
             return NULL;
         }
         uint64_t offsetSize = (uint64_t)extent->offset + (uint64_t)extent->size;
-        if (offsetSize > (uint64_t)offsetBuffer->size) {
+        if (offsetSize > offsetBuffer->size) {
             return NULL;
         }
         return offsetBuffer->data + extent->offset;
@@ -669,7 +669,7 @@ static const uint8_t * avifDecoderDataCalcItemPtr(avifDecoderData * data, avifDe
             return NULL;
         }
         uint64_t offsetSize = (uint64_t)extent->offset + (uint64_t)extent->size;
-        if (offsetSize > (uint64_t)offsetBuffer->size) {
+        if (offsetSize > offsetBuffer->size) {
             return NULL;
         }
         if ((size_t)extent->size > remainingBytes) {
@@ -723,7 +723,7 @@ static avifBool avifDecoderDataGenerateImageGridTiles(avifDecoderData * data, av
             }
 
             avifTile * tile = avifDecoderDataCreateTile(data);
-            avifDecodeSample * sample = (avifDecodeSample *)avifArrayPushPtr(&tile->input->samples);
+            avifDecodeSample * sample = avifArrayPushPtr(&tile->input->samples);
             sample->data.data = avifDecoderDataCalcItemPtr(data, item);
             sample->data.size = item->size;
             sample->sync = AVIF_TRUE;
@@ -738,7 +738,7 @@ static avifBool avifDecoderDataGenerateImageGridTiles(avifDecoderData * data, av
                 if (!srcProp) {
                     return AVIF_FALSE;
                 }
-                avifProperty * dstProp = (avifProperty *)avifArrayPushPtr(&gridItem->properties);
+                avifProperty * dstProp = avifArrayPushPtr(&gridItem->properties);
                 memcpy(dstProp, srcProp, sizeof(avifProperty));
             }
         }
@@ -1051,7 +1051,7 @@ static avifBool avifParseItemLocationBox(avifMeta * meta, const uint8_t * raw, s
             uint64_t extentLength; // unsigned int(offset_size*8) extent_length;
             CHECK(avifROStreamReadUX8(&s, &extentLength, lengthSize));
 
-            avifDecoderItemExtent * extent = (avifDecoderItemExtent *)avifArrayPushPtr(&item->extents);
+            avifDecoderItemExtent * extent = avifArrayPushPtr(&item->extents);
             if (extentOffset > UINT64_MAX - baseOffset) {
                 return AVIF_FALSE;
             }
@@ -1365,7 +1365,7 @@ static avifBool avifParseItemPropertyAssociation(avifMeta * meta, const uint8_t 
                 }
             }
             if (supportedType) {
-                avifProperty * dstProp = (avifProperty *)avifArrayPushPtr(&item->properties);
+                avifProperty * dstProp = avifArrayPushPtr(&item->properties);
                 memcpy(dstProp, srcProp, sizeof(avifProperty));
             } else {
                 if (essential) {
@@ -1720,7 +1720,7 @@ static avifBool avifParseChunkOffsetBox(avifSampleTable * sampleTable, avifBool 
             offset = (uint64_t)offset32;
         }
 
-        avifSampleTableChunk * chunk = (avifSampleTableChunk *)avifArrayPushPtr(&sampleTable->chunks);
+        avifSampleTableChunk * chunk = avifArrayPushPtr(&sampleTable->chunks);
         chunk->offset = offset;
     }
     return AVIF_TRUE;
@@ -1735,7 +1735,7 @@ static avifBool avifParseSampleToChunkBox(avifSampleTable * sampleTable, const u
     uint32_t entryCount;
     CHECK(avifROStreamReadU32(&s, &entryCount)); // unsigned int(32) entry_count;
     for (uint32_t i = 0; i < entryCount; ++i) {
-        avifSampleTableSampleToChunk * sampleToChunk = (avifSampleTableSampleToChunk *)avifArrayPushPtr(&sampleTable->sampleToChunks);
+        avifSampleTableSampleToChunk * sampleToChunk = avifArrayPushPtr(&sampleTable->sampleToChunks);
         CHECK(avifROStreamReadU32(&s, &sampleToChunk->firstChunk));             // unsigned int(32) first_chunk;
         CHECK(avifROStreamReadU32(&s, &sampleToChunk->samplesPerChunk));        // unsigned int(32) samples_per_chunk;
         CHECK(avifROStreamReadU32(&s, &sampleToChunk->sampleDescriptionIndex)); // unsigned int(32) sample_description_index;
@@ -1757,7 +1757,7 @@ static avifBool avifParseSampleSizeBox(avifSampleTable * sampleTable, const uint
         sampleTable->allSamplesSize = allSamplesSize;
     } else {
         for (uint32_t i = 0; i < sampleCount; ++i) {
-            avifSampleTableSampleSize * sampleSize = (avifSampleTableSampleSize *)avifArrayPushPtr(&sampleTable->sampleSizes);
+            avifSampleTableSampleSize * sampleSize = avifArrayPushPtr(&sampleTable->sampleSizes);
             CHECK(avifROStreamReadU32(&s, &sampleSize->size)); // unsigned int(32) entry_size;
         }
     }
@@ -1776,7 +1776,7 @@ static avifBool avifParseSyncSampleBox(avifSampleTable * sampleTable, const uint
     for (uint32_t i = 0; i < entryCount; ++i) {
         uint32_t sampleNumber = 0;
         CHECK(avifROStreamReadU32(&s, &sampleNumber)); // unsigned int(32) sample_number;
-        avifSyncSample * syncSample = (avifSyncSample *)avifArrayPushPtr(&sampleTable->syncSamples);
+        avifSyncSample * syncSample = avifArrayPushPtr(&sampleTable->syncSamples);
         syncSample->sampleNumber = sampleNumber;
     }
     return AVIF_TRUE;
@@ -1792,7 +1792,7 @@ static avifBool avifParseTimeToSampleBox(avifSampleTable * sampleTable, const ui
     CHECK(avifROStreamReadU32(&s, &entryCount)); // unsigned int(32) entry_count;
 
     for (uint32_t i = 0; i < entryCount; ++i) {
-        avifSampleTableTimeToSample * timeToSample = (avifSampleTableTimeToSample *)avifArrayPushPtr(&sampleTable->timeToSamples);
+        avifSampleTableTimeToSample * timeToSample = avifArrayPushPtr(&sampleTable->timeToSamples);
         CHECK(avifROStreamReadU32(&s, &timeToSample->sampleCount)); // unsigned int(32) sample_count;
         CHECK(avifROStreamReadU32(&s, &timeToSample->sampleDelta)); // unsigned int(32) sample_delta;
     }
@@ -1812,7 +1812,7 @@ static avifBool avifParseSampleDescriptionBox(avifSampleTable * sampleTable, con
         avifBoxHeader sampleEntryHeader;
         CHECK(avifROStreamReadBoxHeader(&s, &sampleEntryHeader));
 
-        avifSampleDescription * description = (avifSampleDescription *)avifArrayPushPtr(&sampleTable->sampleDescriptions);
+        avifSampleDescription * description = avifArrayPushPtr(&sampleTable->sampleDescriptions);
         avifArrayCreate(&description->properties, sizeof(avifProperty), 16);
         memcpy(description->format, sampleEntryHeader.type, sizeof(description->format));
         size_t remainingBytes = avifROStreamRemainingBytes(&s);
@@ -2038,7 +2038,7 @@ avifBool avifPeekCompatibleFileType(const avifROData * input)
 
 avifDecoder * avifDecoderCreate(void)
 {
-    avifDecoder * decoder = (avifDecoder *)avifAlloc(sizeof(avifDecoder));
+    avifDecoder * decoder = avifAlloc(sizeof(avifDecoder));
     memset(decoder, 0, sizeof(avifDecoder));
     return decoder;
 }
@@ -2397,7 +2397,7 @@ avifResult avifDecoderReset(avifDecoder * decoder)
             }
 
             avifTile * colorTile = avifDecoderDataCreateTile(data);
-            avifDecodeSample * colorSample = (avifDecodeSample *)avifArrayPushPtr(&colorTile->input->samples);
+            avifDecodeSample * colorSample = avifArrayPushPtr(&colorTile->input->samples);
             memcpy(&colorSample->data, &colorOBU, sizeof(avifROData));
             colorSample->sync = AVIF_TRUE;
             data->colorTileCount = 1;
@@ -2415,7 +2415,7 @@ avifResult avifDecoderReset(avifDecoder * decoder)
                 }
 
                 avifTile * alphaTile = avifDecoderDataCreateTile(data);
-                avifDecodeSample * alphaSample = (avifDecodeSample *)avifArrayPushPtr(&alphaTile->input->samples);
+                avifDecodeSample * alphaSample = avifArrayPushPtr(&alphaTile->input->samples);
                 memcpy(&alphaSample->data, &alphaOBU, sizeof(avifROData));
                 alphaSample->sync = AVIF_TRUE;
                 alphaTile->input->alpha = AVIF_TRUE;

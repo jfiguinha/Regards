@@ -1,7 +1,7 @@
 #pragma once
 #include "BitmapFusionFilter.h"
 #include "BitmapDisplay.h"
-#include <FilterData.h>
+
 namespace Regards
 {
 	namespace Filter
@@ -9,15 +9,21 @@ namespace Regards
 		class CNoneEffectTextureEffect : public CBitmapFusionFilter
 		{
 		public:
-			CNoneEffectTextureEffect() {};
-			~CNoneEffectTextureEffect() {};
+			CNoneEffectTextureEffect()
+			{
+			};
 
-			int GetTypeFilter()
+			~CNoneEffectTextureEffect() override
+			{
+			};
+
+			int GetTypeFilter() override
 			{
 				return IDM_AFTEREFFECT_NONE;
 			}
 
-			virtual void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+			void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
+			                         CImageLoadingFormat* bmpSecond) override
 			{
 				bmpViewer->StopTransitionEffect(bmpSecond);
 			}

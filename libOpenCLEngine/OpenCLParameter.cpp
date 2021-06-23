@@ -14,7 +14,7 @@ void COpenCLParameterInt::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_int), (void *) &value);
+    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_int), &value);
     Error::CheckError(err);;
 }
 
@@ -22,7 +22,7 @@ void COpenCLParameterUShort::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_ushort), (void *) &value);
+    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_ushort), &value);
     Error::CheckError(err);;
 }
 
@@ -30,7 +30,7 @@ void COpenCLParameterUInt::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_uint), (void *) &value);
+    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_uint), &value);
     Error::CheckError(err);;
 }
 
@@ -38,7 +38,7 @@ void COpenCLParameterFloat::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_float), (void *) &value);
+    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_float), &value);
     Error::CheckError(err);;
 }
 
@@ -56,7 +56,7 @@ void COpenCLParameterByteArray::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
     Error::CheckError(err);;
 }
 
@@ -74,7 +74,7 @@ void COpenCLParameterIntArray::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -93,7 +93,7 @@ void COpenCLParameterFloatArray::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -109,7 +109,7 @@ void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short * 
 void COpenCLParameterUShortArray::Add(cl_kernel kernelHandle, int numArg)
 {
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -139,7 +139,7 @@ void COpenCLParameterColorData::Add(cl_kernel kernelHandle, int numArg)
 {
     
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -155,7 +155,7 @@ void COpenCLParameterClMem::SetValue(cl_mem memValue)
 void COpenCLParameterClMem::Add(cl_kernel kernelHandle, int numArg)
 {
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -173,7 +173,7 @@ void COpenCLParameterUCharArray::Add(cl_kernel kernelHandle, int numArg)
 {
 
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -191,7 +191,7 @@ void COpenCLParameterShortArray::Add(cl_kernel kernelHandle, int numArg)
 {
 
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
 	Error::CheckError(err);;
 }
 
@@ -209,6 +209,6 @@ void COpenCLParameterUintArray::Add(cl_kernel kernelHandle, int numArg)
 {
 
 	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void*)& cl_buffer);
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), & cl_buffer);
 	Error::CheckError(err);;
 }

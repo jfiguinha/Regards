@@ -21,6 +21,7 @@
 
 #ifndef FREEIMAGE_FIRATIONAL_H
 #define FREEIMAGE_FIRATIONAL_H
+#include <string>
 
 /**
 Helper class to deal with rational numbers. 
@@ -64,7 +65,7 @@ public:
 	/// Converts rational value by truncating towards zero
 	LONG truncate() {
 		// Return truncated rational
-		return _denominator ? (LONG) (_numerator / _denominator) : 0;
+		return _denominator ? _numerator / _denominator : 0;
 	}
 
 	/**@name Implicit conversions */
@@ -76,7 +77,7 @@ public:
 		return (int)truncate();
 	}
 	LONG longValue() {
-		return (LONG)truncate();
+		return truncate();
 	}
 	float floatValue() {
 		return _denominator ? ((float)_numerator)/((float)_denominator) : 0;

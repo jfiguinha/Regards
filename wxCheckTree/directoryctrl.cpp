@@ -18,7 +18,6 @@
 #if wxUSE_DIRDLG || wxUSE_FILEDLG
 
 #include "directoryctrl.h"
-#include <ConvertUtility.h>
 
 #ifndef WX_PRECOMP
     #include "wx/hash.h"
@@ -56,7 +55,6 @@
 #endif
 
 #ifdef __WINDOWS__
-#include <windows.h>
 #include "wx/msw/winundef.h"
 #include "wx/volume.h"
 
@@ -378,8 +376,8 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
         treeStyle |= wxNO_BORDER;
 
-	m_treeCtrl = (wxCheckTree*)CreateTreeCtrl(this, wxID_TREECTRL,
-                                wxPoint(0,0), GetClientSize(), treeStyle);
+	m_treeCtrl = CreateTreeCtrl(this, wxID_TREECTRL,
+	                            wxPoint(0,0), GetClientSize(), treeStyle);
 
 
 
@@ -1703,7 +1701,7 @@ int wxFileIconsTable::GetIconID(const wxString& extension, const wxString& mime)
     int size = m_size.x;
 
     int treeid = m_smallImageList->GetImageCount();
-    if ((bmp.GetWidth() == (int) size) && (bmp.GetHeight() == (int) size))
+    if ((bmp.GetWidth() == size) && (bmp.GetHeight() == size))
     {
         m_smallImageList->Add(bmp);
     }

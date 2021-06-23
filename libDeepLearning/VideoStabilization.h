@@ -13,34 +13,31 @@ namespace Regards
 {
 	namespace OpenCV
 	{
-		
 		class COpenCVStabilization
 		{
 		public:
-			COpenCVStabilization(const int &nbFrame);
+			COpenCVStabilization(const int& nbFrame);
 			~COpenCVStabilization();
-			void AddFrame(CRegardsBitmap * pictureData);
-			void BufferFrame(CRegardsBitmap * pBitmap);
-			void CorrectFrame(CRegardsBitmap * pictureData);
+			void AddFrame(CRegardsBitmap* pictureData);
+			void BufferFrame(CRegardsBitmap* pBitmap);
+			void CorrectFrame(CRegardsBitmap* pictureData);
 
-			void AddFrame(const cv::Mat & pictureData);
-			void BufferFrame(const cv::Mat & pBitmap);
+			void AddFrame(const cv::Mat& pictureData);
+			void BufferFrame(const cv::Mat& pBitmap);
 
-			void AddFrame(const cv::UMat & pictureData);
-			void BufferFrame(const cv::UMat & pBitmap);
-			cv::UMat CorrectFrame(cv::UMat & pictureData);
-			void CorrectFrame(cv::Mat & image);
+			void AddFrame(const cv::UMat& pictureData);
+			void BufferFrame(const cv::UMat& pBitmap);
+			cv::UMat CorrectFrame(cv::UMat& pictureData);
+			void CorrectFrame(cv::Mat& image);
 
 			void Init();
 			int GetNbFrame();
 			int GetNbFrameBuffer();
-			void SetNbFrameBuffer(const int &nbFrame);
+			void SetNbFrameBuffer(const int& nbFrame);
 		private:
-
-			COpenCVStabilizationPimpl_ * pimpl;
+			COpenCVStabilizationPimpl_* pimpl;
 			int nbFrame = 0;
 			int nbFrameBuffer = 0;
-			
 		};
 	}
 }

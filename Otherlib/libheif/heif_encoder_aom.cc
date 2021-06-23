@@ -738,7 +738,7 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
   aom_codec_flags_t encoder_flags = 0;
   if (bpp_y > 8) {
-    encoder_flags = (aom_codec_flags_t) (encoder_flags | AOM_CODEC_USE_HIGHBITDEPTH);
+    encoder_flags = encoder_flags | AOM_CODEC_USE_HIGHBITDEPTH;
   }
 
   if (aom_codec_enc_init(&codec, iface, &cfg, encoder_flags)) {

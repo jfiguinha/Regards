@@ -1,13 +1,10 @@
 #pragma once
 #include <ThemeParam.h>
-#include "BitmapInterface.h"
 #include "PreviewToolbar.h"
 #include "SliderVideoPreview.h"
 #include "ScrollbarWnd.h"
 #include "BitmapWnd.h"
-#include <wx/gauge.h>
 #include <VideoCompressOption.h>
-#include <wx/activityindicator.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
 

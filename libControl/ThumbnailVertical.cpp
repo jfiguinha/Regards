@@ -81,7 +81,7 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
 	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 		nbElementByRow++;
 
-	int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+	int nbElementEnY = nbElementInIconeList / nbElementByRow;
 	if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 		nbElementEnY++;
 
@@ -169,7 +169,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 	thumbnailSizeY = 0;
 
 	//bool update = false;
-	int nbElement = (int)nbElementInIconeList;
+	int nbElement = nbElementInIconeList;
 
 	if (nbElement > 0)
 	{
@@ -177,7 +177,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 			nbElementByRow++;
 
-		int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+		int nbElementEnY = nbElementInIconeList / nbElementByRow;
 		if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 			nbElementEnY++;
 
@@ -239,7 +239,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 
 void CThumbnailVertical::UpdateScrollWithoutVScroll()
 {
-	int nbElement = (int)nbElementInIconeList;
+	int nbElement = nbElementInIconeList;
 	if (nbElement > 0)
 	{
 		nbLigneY = 1;

@@ -6,7 +6,6 @@
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
 #include <wxSVG/SVGDocument.h>
-#include <wx/sstream.h>
 
 CSliderVideoSelection::CSliderVideoSelection(wxWindow* parent, wxWindowID id, wxWindow * eventWnd, const CThemeSlider & themeSlider)
 	: CWindowMain("CSliderVideoSelection",parent, id)
@@ -81,7 +80,7 @@ int CSliderVideoSelection::GetHeight()
 void CSliderVideoSelection::DrawShapeElement(wxDC * dc, const wxRect &rc)
 {
 	float pourcentage = 0.0;
-	pourcentage = (float)secondTimePast / (float)secondTotalTime;
+	pourcentage = secondTimePast / secondTotalTime;
 
 	wxRect rcPast;
 	wxRect rcBefore;
@@ -93,7 +92,7 @@ void CSliderVideoSelection::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 	if (secondTotalTime > 0)
 	{
-		pourcentage = (float)secondTimeTo / (float)secondTotalTime;
+		pourcentage = secondTimeTo / secondTotalTime;
 		rcPast.x = rcBefore.x + rcBefore.width;
 		rcPast.width = (rc.width * pourcentage) - rcBefore.width;
 		rcPast.y = rc.y;
@@ -207,7 +206,7 @@ void CSliderVideoSelection::CalculPositionButton()
 {
 	if (secondTotalTime > 0)
 	{
-		float pourcentage = (float)secondTimePast / (float)secondTotalTime;
+		float pourcentage = secondTimePast / secondTotalTime;
 		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
 	}
 	else
@@ -222,7 +221,7 @@ void CSliderVideoSelection::CalculPositionButtonTo()
 {
 	if (secondTotalTime > 0)
 	{
-		float pourcentage = (float)secondTimeTo / (float)secondTotalTime;
+		float pourcentage = secondTimeTo / secondTotalTime;
 		CalculPositionButtonTo(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
 	}
 	else

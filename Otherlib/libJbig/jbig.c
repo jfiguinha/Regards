@@ -2708,9 +2708,9 @@ int jbg_dec_in(struct jbg_dec_state *s, unsigned char *data, size_t len,
 	     ((long) s->buffer[4] <<  8) | (long) s->buffer[5]);
 	  s->at_tx[s->at_moves] = (signed char) s->buffer[6];
 	  s->at_ty[s->at_moves] = s->buffer[7];
-	  if (s->at_tx[s->at_moves] < - (int) s->mx ||
-	      s->at_tx[s->at_moves] >   (int) s->mx ||
-	      s->at_ty[s->at_moves] >   (int) s->my ||
+	  if (s->at_tx[s->at_moves] < - s->mx ||
+	      s->at_tx[s->at_moves] >   s->mx ||
+	      s->at_ty[s->at_moves] >   s->my ||
 	      (s->at_ty[s->at_moves] == 0 && s->at_tx[s->at_moves] < 0))
 	    return JBG_EINVAL;
 	  if (s->at_ty[s->at_moves] != 0)

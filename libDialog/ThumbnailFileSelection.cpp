@@ -1,12 +1,9 @@
 ﻿#include <header.h>
 #include "ThumbnailFileSelection.h"
-#include <window_id.h>
 #include <LibResource.h>
 #include <ThumbnailDataStorage.h>
 #include <libPicture.h>
-#include <ConvertUtility.h>
 #include <ScrollbarHorizontalWnd.h>
-#include <ScrollbarVerticalWnd.h>
 #include <ScrollbarWnd.h>
 #include <ImageVideoThumbnail.h>
 using namespace Regards::Scanner;

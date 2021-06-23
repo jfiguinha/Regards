@@ -917,7 +917,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 				int garblen = 0;
 
 				if (header.color_map_type != 0) {
-					garblen = (int)((header.cm_size + 7) / 8) * header.cm_length; /* should byte align */
+					garblen = (header.cm_size + 7) / 8 * header.cm_length; /* should byte align */
 
 				} else {
 					garblen = 0;

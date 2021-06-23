@@ -704,7 +704,7 @@ FreeImage_AllocateExT(FREE_IMAGE_TYPE type, int width, int height, int bpp, cons
  */
 FIBITMAP * DLL_CALLCONV
 FreeImage_AllocateEx(int width, int height, int bpp, const RGBQUAD *color, int options, const RGBQUAD *palette, unsigned red_mask, unsigned green_mask, unsigned blue_mask) {
-	return FreeImage_AllocateExT(FIT_BITMAP, width, height, bpp, ((void *)color), options, palette, red_mask, green_mask, blue_mask);
+	return FreeImage_AllocateExT(FIT_BITMAP, width, height, bpp, color, options, palette, red_mask, green_mask, blue_mask);
 }
 
 /** @brief Enlarges or shrinks an image selectively per side and fills newly added areas

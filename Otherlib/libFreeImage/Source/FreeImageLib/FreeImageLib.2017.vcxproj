@@ -699,6 +699,7 @@ copy ..\FreeImage.h ..\..\Dist\x64
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CacheFile.h" />
+    <ClInclude Include="..\FreeImageToolkit\Filters.h" />
     <ClInclude Include="..\MapIntrospector.h" />
     <ClInclude Include="..\Metadata\FIRational.h" />
     <ClInclude Include="..\FreeImage.h" />

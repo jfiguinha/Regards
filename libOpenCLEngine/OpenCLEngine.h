@@ -46,7 +46,7 @@ namespace Regards
 
 				if (i != listOfPlatform.end())
 				{
-					return ((OpenCLPlatform *)*i);
+					return *i;
 				}
 
 				/*
@@ -71,7 +71,7 @@ namespace Regards
 
 				if (i != listOfPlatform.end())
 				{
-					return ((OpenCLPlatform *)*i);
+					return *i;
 				}
 				/*
 				for (OpenCLPlatform * openCLPlatform : listOfPlatform)

@@ -36,7 +36,6 @@
 #include "memtrace.h"
 #endif
 
-#include <stdlib.h>
 #include <string.h>
 
 #if !(defined(__ANSI__))

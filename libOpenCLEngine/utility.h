@@ -1,13 +1,5 @@
 #pragma once
-#include <cstdlib>
-#include <cassert>
 #include <stdexcept>
-#include <sstream>
-#include <typeinfo>
-#include <cstdlib>
-#include <algorithm>
-#include <iomanip>
-#include <exception>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else

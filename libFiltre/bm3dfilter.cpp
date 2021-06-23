@@ -5,13 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <math.h>
 #include <string.h>
 #include <thread>
 #include <RegardsBitmap.h>
 #include "bm3d.h"
-#include "utilities.h"
-#include "window_id.h"
 
 #define YUV       0
 #define YCBCR     1

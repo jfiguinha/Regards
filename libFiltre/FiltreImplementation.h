@@ -1,6 +1,7 @@
 #pragma once
 #include "FilterWindowParam.h"
-#include <Metadata.h>
+#include "LibResource.h"
+
 namespace Regards
 {
 	namespace Filter
@@ -8,21 +9,35 @@ namespace Regards
 		class CDefaultFilter : public CFilterWindowParam
 		{
 		public:
-			CDefaultFilter() {};
-			~CDefaultFilter() {};
-			
-			virtual void Filter(CEffectParameter* effectParameter, const wxString& filename, IFiltreEffectInterface* filtreInterface) {};
-			
-			virtual void Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface) {};
-			
-			virtual void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData, const wxString& key) {};
-			
-			virtual int GetTypeFilter()
-			{ 
-				return CONVOLUTION_EFFECT; 
+			CDefaultFilter()
+			{
 			};
 
-			virtual bool IsOpenCLCompatible()
+			~CDefaultFilter() override
+			{
+			};
+
+			void Filter(CEffectParameter* effectParameter, const wxString& filename,
+			            IFiltreEffectInterface* filtreInterface) override
+			{
+			};
+
+			void Filter(CEffectParameter* effectParameter, CRegardsBitmap* source,
+			            IFiltreEffectInterface* filtreInterface) override
+			{
+			};
+
+			void FilterChangeParam(CEffectParameter* effectParameter, CTreeElementValue* valueData,
+			                       const wxString& key) override
+			{
+			};
+
+			int GetTypeFilter() override
+			{
+				return CONVOLUTION_EFFECT;
+			};
+
+			bool IsOpenCLCompatible() override
 			{
 				return true;
 			}
@@ -31,19 +46,19 @@ namespace Regards
 		class CSoftenFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_SOFTEN;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
 				return CLibResource::LoadStringFromResource("LBLfilterSoften", 1);
 			}
 
 
-			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Soften();
@@ -53,23 +68,23 @@ namespace Regards
 		class CBrightnessAutoFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_BRIGHTNESSCONTRAST_AUTO;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return HISTOGRAM_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
 				return CLibResource::LoadStringFromResource("LBLBRIGHTNESSCONTRASTAUTO", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->BrightnessAndContrastAuto(0);
@@ -79,28 +94,28 @@ namespace Regards
 		class CHistogramNormalizeFilter : public CDefaultFilter
 		{
 		public:
-
-			bool IsOpenCLCompatible()
+			bool IsOpenCLCompatible() override
 			{
 				return false;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
 				return CLibResource::LoadStringFromResource("LBLHistogramNormalize", 1);
 			}
 
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_HISTOGRAMNORMALIZE;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return HISTOGRAM_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->HistogramNormalize();
@@ -110,28 +125,28 @@ namespace Regards
 		class CHistogramEqualizeFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_HISTOGRAMEQUALIZE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
 				return CLibResource::LoadStringFromResource("LBLHistogramEqualize", 1);
 			}
 
-			bool IsOpenCLCompatible()
+			bool IsOpenCLCompatible() override
 			{
 				return false;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return HISTOGRAM_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->HistogramNormalize();
@@ -141,23 +156,23 @@ namespace Regards
 		class CRotate90Filter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_ROTATE90;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return ROTATE_EFFECT; //return HISTOGRAM_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
 				return CLibResource::LoadStringFromResource("LBLROTATE90", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Rotate90();
@@ -167,23 +182,23 @@ namespace Regards
 		class CRotate270Filter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_ROTATE270;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return ROTATE_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLROTATE270", 1);
+				return CLibResource::LoadStringFromResource("LBLROTATE270", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Rotate270();
@@ -193,23 +208,23 @@ namespace Regards
 		class CFlipVerticalFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FLIPVERTICAL;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return ROTATE_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLFLIPV", 1);
+				return CLibResource::LoadStringFromResource("LBLFLIPV", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->FlipVertical();
@@ -219,23 +234,23 @@ namespace Regards
 		class CFlipHorizontalFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FLIPHORIZONTAL;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return ROTATE_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLFLIPH", 1);
+				return CLibResource::LoadStringFromResource("LBLFLIPH", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->FlipHorizontal();
@@ -245,18 +260,18 @@ namespace Regards
 		class CMedianFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTREANTIBRUIT;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterMedian", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterMedian", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Median();
@@ -266,23 +281,23 @@ namespace Regards
 		class CErodeFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_ERODE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterErode", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterErode", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Erode();
@@ -292,23 +307,23 @@ namespace Regards
 		class CDilateFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_DILATE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterDilate", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterDilate", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Dilate();
@@ -318,17 +333,18 @@ namespace Regards
 		class CSharpenFilter : public CDefaultFilter
 		{
 		public:
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_SHARPEN;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterSharpen", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterSharpen", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Sharpen();
@@ -338,18 +354,18 @@ namespace Regards
 		class CSharpenStrongFilter : public CDefaultFilter
 		{
 		public:
-
-			int GetNameFilter()
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_SHARPENSTRONG;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterSharpenStrong", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterSharpenStrong", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->SharpenStrong();
@@ -359,26 +375,32 @@ namespace Regards
 		class CMosaicFilter : public CDefaultFilter
 		{
 		public:
-			CMosaicFilter() {};
-			~CMosaicFilter() {};
+			CMosaicFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CMosaicFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_MOSAIQUE;
 			}
 
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterMosaic", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterMosaic", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->FiltreMosaic();
@@ -388,25 +410,31 @@ namespace Regards
 		class CNoiseFilter : public CDefaultFilter
 		{
 		public:
-			CNoiseFilter() {};
-			~CNoiseFilter() {};
+			CNoiseFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CNoiseFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_FILTRENOISE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterNoise", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterNoise", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Noise();
@@ -416,25 +444,31 @@ namespace Regards
 		class CEmbossFilter : public CDefaultFilter
 		{
 		public:
-			CEmbossFilter() {};
-			~CEmbossFilter() {};
+			CEmbossFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CEmbossFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_EMBOSS;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterEmboss", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterEmboss", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Emboss();
@@ -444,25 +478,31 @@ namespace Regards
 		class CGrayLevelFilter : public CDefaultFilter
 		{
 		public:
-			CGrayLevelFilter() {};
-			~CGrayLevelFilter() {};
+			CGrayLevelFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CGrayLevelFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_GREY_LEVEL;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterGrey", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterGrey", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return COLOR_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->NiveauDeGris();
@@ -472,25 +512,31 @@ namespace Regards
 		class CSepiaFilter : public CDefaultFilter
 		{
 		public:
-			CSepiaFilter() {};
-			~CSepiaFilter() {};
+			CSepiaFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CSepiaFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_IMAGE_SEPIA;
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return COLOR_EFFECT;
 			};
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterSepia", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterSepia", 1);
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Sepia();
@@ -500,25 +546,31 @@ namespace Regards
 		class CNoirEtBlancFilter : public CDefaultFilter
 		{
 		public:
-			CNoirEtBlancFilter() {};
-			~CNoirEtBlancFilter() {};
+			CNoirEtBlancFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CNoirEtBlancFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_BLACKANDWHITE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterBlack", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterBlack", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return COLOR_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->NoirEtBlanc();
@@ -528,25 +580,31 @@ namespace Regards
 		class CEdgeFilter : public CDefaultFilter
 		{
 		public:
-			CEdgeFilter() {};
-			~CEdgeFilter() {};
+			CEdgeFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CEdgeFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_FILTRE_EDGE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterEdge", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterEdge", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return SPECIAL_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->FiltreEdge();
@@ -556,25 +614,31 @@ namespace Regards
 		class CNegatifFilter : public CDefaultFilter
 		{
 		public:
-			CNegatifFilter() {};
-			~CNegatifFilter() {};
+			CNegatifFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CNegatifFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_NEGATIF;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterNegatif", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterNegatif", 1);
 			}
 
-			int GetTypeFilter()
+			int GetTypeFilter() override
 			{
 				return COLOR_EFFECT;
 			};
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->Negatif();
@@ -584,25 +648,31 @@ namespace Regards
 		class CRedEyeFilter : public CDefaultFilter
 		{
 		public:
-			CRedEyeFilter() {};
-			~CRedEyeFilter() {};
+			CRedEyeFilter()
+			{
+			};
 
-			int GetNameFilter()
+			~CRedEyeFilter() override
+			{
+			};
+
+			int GetNameFilter() override
 			{
 				return IDM_REDEYE;
 			}
 
-			wxString GetFilterLabel()
+			wxString GetFilterLabel() override
 			{
-			return CLibResource::LoadStringFromResource("LBLfilterRedEye", 1);
+				return CLibResource::LoadStringFromResource("LBLfilterRedEye", 1);
 			}
 
-			bool IsOpenCLCompatible()
+			bool IsOpenCLCompatible() override
 			{
 				return false;
 			}
 
-			virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
+			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter,
+			                  const bool& preview) override
 			{
 				if (filtreEffet != nullptr)
 					filtreEffet->RedEye();

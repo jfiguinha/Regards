@@ -68,8 +68,8 @@ bool IndexGenerator::IsOk()
 void IndexGenerator::SetThumbnailSize(const int &width, const int &height)
 {
 
-	txtWidth->SetValue(wxString::Format(wxT("%d"), (int)width));
-	txtHeight->SetValue(wxString::Format(wxT("%d"), (int)height));
+	txtWidth->SetValue(wxString::Format(wxT("%d"), width));
+	txtHeight->SetValue(wxString::Format(wxT("%d"), height));
 }
 
 void IndexGenerator::OnbtOkClick(wxCommandEvent& event)

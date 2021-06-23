@@ -57,8 +57,8 @@ void CWaitingWindow::Resize()
 
 	if (m_animationCtrl->IsShown())
 	{
-		wxAnimation animation = m_animationCtrl->GetAnimation();
-		wxSize animationSize = animation.GetSize();
+		const wxAnimation animation = m_animationCtrl->GetAnimation();
+		const wxSize animationSize = animation.GetSize();
 
 		int xPos = rcAffichageBitmap.x + (GetWindowWidth() / scale_factor - animationSize.GetWidth()) / 2;
 		int yPos = (GetWindowHeight() / scale_factor - animationSize.GetHeight()) / 2;

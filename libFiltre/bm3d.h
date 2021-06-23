@@ -5,8 +5,7 @@
 #include <vector>
 
 #ifdef _OPENMP
-    #include <omp.h>
-    #define _NO_OPENMP 0
+#define _NO_OPENMP 0
 #else
     #define _NO_OPENMP 1
 #endif

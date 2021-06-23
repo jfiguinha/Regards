@@ -17,9 +17,7 @@ extern "C"
 #include "WindowMain.h"
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
-#include <BitmapYUV.h>
 #include <ParamInit.h>
-#include <RegardsConfigParam.h>
 
 #include "RenderVideoOpenGL.h"
 

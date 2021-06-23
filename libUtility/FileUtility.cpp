@@ -14,58 +14,58 @@ CFileUtility::~CFileUtility(void)
 }
 
 
-wxString CFileUtility::GetTempFile(wxString filename, const bool &removeFile)
+wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 {
 	wxString file;
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+	wxString documentPath = GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
     if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
 #endif
-	
+
 		throw("Error folder doesn't exist.");
 	}
 
 #ifdef WIN32
-    file = tempFolder + "\\" + filename;
+	file = tempFolder + "\\" + filename;
 #else
     file = tempFolder + "/" + filename;
 #endif
 
-    if (removeFile)
-    {
-        if (wxFileExists(file))
-            wxRemoveFile(file);
-    }
+	if (removeFile)
+	{
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+	}
 
 	return file;
 }
 
 
-wxString CFileUtility::GetFileExtension(const wxString &szFilePath)
+wxString CFileUtility::GetFileExtension(const wxString& szFilePath)
 {
-	wxFileName filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath.c_str());
 	return filename.GetExt();
 }
 
-wxString CFileUtility::GetFileName(const wxString &szFilePath)
+wxString CFileUtility::GetFileName(const wxString& szFilePath)
 {
-	wxFileName filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath.c_str());
 	return filename.GetFullName();
 }
 
-wxString CFileUtility::GetFolder(const wxString &szFilePath)
+wxString CFileUtility::GetFolder(const wxString& szFilePath)
 {
-	wxFileName filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath.c_str());
 	return filename.GetPath();
 }
 
 wxString CFileUtility::GetResourcesFolderPath()
 {
-
 #if defined(__APPLE__) && not defined(__LLVM__)
 
      //printf("toto 1 GetResourcesFolderPath \n");
@@ -81,18 +81,18 @@ wxString CFileUtility::GetResourcesFolderPath()
 
 #else
 
-  	wxString path = GetFolder(wxStandardPaths::Get().GetExecutablePath());
-	#ifdef WIN32
-		path.append("\\Resources");
-	#else
+	wxString path = GetFolder(wxStandardPaths::Get().GetExecutablePath());
+#ifdef WIN32
+	path.append("\\Resources");
+#else
 		path.append("/Resources");
-	#endif
-	return path;  
+#endif
+	return path;
 
 #endif
 }
 
-wxString CFileUtility::GetFaceThumbnailPath(const int &numFace)
+wxString CFileUtility::GetFaceThumbnailPath(const int& numFace)
 {
 	wxString documentPath = GetDocumentFolderPath();
 #ifdef WIN32
@@ -115,7 +115,7 @@ wxString CFileUtility::GetFaceThumbnailPath(const int &numFace)
 	return documentPath;
 }
 
-wxString CFileUtility::GetVideoThumbnailPath(const wxString & path, const int &numFrame)
+wxString CFileUtility::GetVideoThumbnailPath(const wxString& path, const int& numFrame)
 {
 	wxString ext;
 	wxString dirpath;
@@ -143,7 +143,7 @@ wxString CFileUtility::GetVideoThumbnailPath(const wxString & path, const int &n
 	return documentPath;
 }
 
-wxString CFileUtility::GetThumbnailPath(const wxString & path)
+wxString CFileUtility::GetThumbnailPath(const wxString& path)
 {
 	wxString ext;
 	wxString dirpath;
@@ -195,8 +195,8 @@ wxString CFileUtility::GetDocumentFolderPath()
 wxString CFileUtility::GetProgramFolderPath()
 {
 #ifdef WIN32
-    wxString path = wxStandardPaths::Get().GetExecutablePath();
-    return GetFolder(path);
+	wxString path = wxStandardPaths::Get().GetExecutablePath();
+	return GetFolder(path);
 #elif defined(__APPLE__) && not defined(__LLVM__)
     
     wxString exeFolderMacOs = ".app/Contents/";
@@ -207,7 +207,7 @@ wxString CFileUtility::GetProgramFolderPath()
     realPath.append("MacOS");
     
     return realPath;
-#else 
+#else
     wxString path = wxStandardPaths::Get().GetExecutablePath();
     return GetFolder(path);
 #endif
@@ -216,7 +216,7 @@ wxString CFileUtility::GetProgramFolderPath()
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 
-wxString CFileUtility::GetFileTime(const wxString &szFileName)
+wxString CFileUtility::GetFileTime(const wxString& szFileName)
 {
 	wxStructStat strucStat;
 	wxStat(szFileName.c_str(), &strucStat);

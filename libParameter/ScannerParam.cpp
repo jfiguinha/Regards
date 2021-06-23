@@ -30,18 +30,17 @@ CMainParam::CMainParam()
 	showInfos = true;
 	showFilter = true;
 	delai = 3;
-	fullscreen = 1;
-	enAvant = 1;
+	fullscreen = true;
+	enAvant = true;
 	folder = "";
 	showFolder = true;
 	pertinence = 0.0;
-	
 }
 
 
 wxString CMainParam::GetLastSqlRequest()
 {
-    return sqlRequest;
+	return sqlRequest;
 }
 
 bool CMainParam::GetCheckThumbnailValidity()
@@ -49,48 +48,48 @@ bool CMainParam::GetCheckThumbnailValidity()
 	return false;
 }
 
-void CMainParam::SetLastSqlRequest(const wxString &sqlRequest)
+void CMainParam::SetLastSqlRequest(const wxString& sqlRequest)
 {
-    this->sqlRequest = sqlRequest;
+	this->sqlRequest = sqlRequest;
 }
 
-void CMainParam::SetCheckIsUpdate(const bool &infos)
+void CMainParam::SetCheckIsUpdate(const bool& infos)
 {
 	check = infos;
 }
 
-void CMainParam::GetCheckIsUpdate(bool &infos)
+void CMainParam::GetCheckIsUpdate(bool& infos)
 {
 	infos = check;
 }
 
 
-void CMainParam::SetShowFolder(const bool &infos)
+void CMainParam::SetShowFolder(const bool& infos)
 {
 	showFolder = infos;
 }
 
-void CMainParam::GetShowFolder(bool &infos)
+void CMainParam::GetShowFolder(bool& infos)
 {
 	infos = showFolder;
 }
 
-void CMainParam::SetShowFace(const bool &infos)
+void CMainParam::SetShowFace(const bool& infos)
 {
 	showFace = infos;
 }
 
-void CMainParam::GetShowFace(bool &infos)
+void CMainParam::GetShowFace(bool& infos)
 {
 	infos = showFace;
 }
 
-void CMainParam::SetShowFilter(const bool &infos)
+void CMainParam::SetShowFilter(const bool& infos)
 {
 	showFilter = infos;
 }
 
-void CMainParam::GetShowFilter(bool &infos)
+void CMainParam::GetShowFilter(bool& infos)
 {
 	infos = showFilter;
 }
@@ -100,7 +99,7 @@ int CMainParam::GetPositionCriteriaPreview()
 	return positionCriteriaPreview;
 }
 
-void CMainParam::SetPositionCriteriaPreview(const int &pos)
+void CMainParam::SetPositionCriteriaPreview(const int& pos)
 {
 	positionCriteriaPreview = pos;
 }
@@ -110,12 +109,12 @@ bool CMainParam::IsThumbnailBottom()
 	return isThumbnailBottom;
 }
 
-void CMainParam::SetThumbnailBottom(const bool &isBottom)
+void CMainParam::SetThumbnailBottom(const bool& isBottom)
 {
 	isThumbnailBottom = isBottom;
 }
 
-void CMainParam::SetPositionPreviewThumbnail(const int &pos)
+void CMainParam::SetPositionPreviewThumbnail(const int& pos)
 {
 	positionPreviewThumbnail = pos;
 }
@@ -125,7 +124,7 @@ int CMainParam::GetPositionPreviewThumbnail()
 	return positionPreviewThumbnail;
 }
 
-void CMainParam::SetCatalogOpenTriangle(const wxString &state)
+void CMainParam::SetCatalogOpenTriangle(const wxString& state)
 {
 	criteriaTriangleList = state;
 }
@@ -137,7 +136,7 @@ wxString CMainParam::GetCatalogOpenTriangle()
 	return value;
 }
 
-void CMainParam::SetCatalogCriteria(const wxString &state)
+void CMainParam::SetCatalogCriteria(const wxString& state)
 {
 	criteriaList = state;
 }
@@ -166,7 +165,7 @@ wxString CMainParam::GetLastFolder()
 	return folder;
 }
 
-void CMainParam::SetLastFolder(const wxString &folder)
+void CMainParam::SetLastFolder(const wxString& folder)
 {
 	this->folder = folder;
 }
@@ -237,7 +236,7 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("Filter", to_string(showFilter)));
 	sectionWindow->append_node(node("Folder", to_string(showFolder)));
 	sectionWindow->append_node(node("Face", to_string(showFace)));
-    sectionWindow->append_node(node("LastRequest", sqlRequest));
+	sectionWindow->append_node(node("LastRequest", sqlRequest));
 	sectionWindow->append_node(node("PositionPreviewThumbnail", to_string(positionPreviewThumbnail)));
 	sectionWindow->append_node(node("ThumbnailBottom", to_string(isThumbnailBottom)));
 	sectionWindow->append_node(node("PositionCriteriaFolder", to_string(positionFolderCriteria)));
@@ -247,7 +246,7 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CMainParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, const wxRect &rc)
+void CMainParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, const wxRect& rc)
 {
 	sectionWindowPosition->append_node(node("Left", to_string(rc.x)));
 	sectionWindowPosition->append_node(node("Right", to_string(rc.width)));
@@ -270,60 +269,60 @@ void CMainParam::SetPositionParameter(xml_node<>* sectionPosition)
 //////////////////////////////////////////////////////////////////////////////////////////
 void CMainParam::LoadParameter()
 {
-	xml_node<> * root_node;
+	xml_node<>* root_node;
 	//long nodeSize = 0;
 	root_node = doc.first_node("Parameter");
 
-	xml_node<> * child_node = root_node->first_node("Diaporama");
-	if (child_node != 0)
+	xml_node<>* child_node = root_node->first_node("Diaporama");
+	if (child_node != nullptr)
 		GetDiaporamaParameter(child_node);
 
 	child_node = root_node->first_node("Window");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetWindowParameter(child_node);
 
 	child_node = root_node->first_node("Position");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetPositionParameter(child_node);
 
 	child_node = root_node->first_node("Criteria");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetCriteriaParameter(child_node);
 }
 
 
-void CMainParam::GetCriteriaParameter(xml_node<> * position_node)
+void CMainParam::GetCriteriaParameter(xml_node<>* position_node)
 {
-	xml_node<> * child_node = position_node->first_node("Value");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("Value");
+	if (child_node != nullptr)
 		criteriaList = child_node->value();
 	child_node = position_node->first_node("TriangleValue");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		criteriaTriangleList = child_node->value();
 }
 
 
-void CMainParam::GetPositionParameter(xml_node<> * position_node)
+void CMainParam::GetPositionParameter(xml_node<>* position_node)
 {
-	xml_node<> * child_node = position_node->first_node("Window");
+	xml_node<>* child_node = position_node->first_node("Window");
 	positionRegardsViewer = GetWindowPositionParameter(child_node);
 }
 
-wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
+wxRect CMainParam::GetWindowPositionParameter(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
 	wxRect rc;
-	xml_node<> * child_node = position_node->first_node("Left");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("Left");
+	if (child_node != nullptr)
 	{
-        value = child_node->value();
-        nodeName = child_node->name();
+		value = child_node->value();
+		nodeName = child_node->name();
 		rc.x = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("Right");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -331,7 +330,7 @@ wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("Bottom");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -339,7 +338,7 @@ wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("Top");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -349,12 +348,12 @@ wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
 	return rc;
 }
 
-void CMainParam::GetWindowParameter(xml_node<> * window_node)
+void CMainParam::GetWindowParameter(xml_node<>* window_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = window_node->first_node("Thumbnail");
-	if (child_node != 0)
+	xml_node<>* child_node = window_node->first_node("Thumbnail");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -362,7 +361,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("VideoThumbnail");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -370,7 +369,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("Infos");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -378,7 +377,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("Position");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -386,7 +385,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("LastFolder");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -394,7 +393,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("PositionCriteriaPreview");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -402,7 +401,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("PositionPreviewFace");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -410,7 +409,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("PositionPreviewThumbnail");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -418,7 +417,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("PositionCriteriaFolder");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -426,7 +425,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("ThumbnailBottom");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -435,7 +434,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 
 
 	child_node = window_node->first_node("Filter");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -443,7 +442,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("Folder");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -451,37 +450,36 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 	}
 
 	child_node = window_node->first_node("Face");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		showFace = atoi(child_node->value());
 	}
-    
-    child_node = window_node->first_node("LastRequest");
-    if (child_node != 0)
-    {
-        value = child_node->value();
-        nodeName = child_node->name();
-        sqlRequest = child_node->value();
-    }
 
-    child_node = window_node->first_node("FacePertinence");
-    if (child_node != 0)
-    {
-        value = child_node->value();
-        nodeName = child_node->name();
-        pertinence = atoi(child_node->value());
-    }
-	
+	child_node = window_node->first_node("LastRequest");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		sqlRequest = child_node->value();
+	}
+
+	child_node = window_node->first_node("FacePertinence");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		pertinence = atoi(child_node->value());
+	}
 }
 
-void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
+void CMainParam::GetDiaporamaParameter(xml_node<>* diaporama_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = diaporama_node->first_node("Fullscreen");
-	if (child_node != 0)
+	xml_node<>* child_node = diaporama_node->first_node("Fullscreen");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -489,7 +487,7 @@ void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 	}
 
 	child_node = diaporama_node->first_node("Effect");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -497,7 +495,7 @@ void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 	}
 
 	child_node = diaporama_node->first_node("Delai");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -505,16 +503,15 @@ void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 	}
 
 	child_node = diaporama_node->first_node("Forward");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		enAvant = atoi(child_node->value());
 	}
-
 }
 
-void CMainParam::SetPertinenceValue(const double &value)
+void CMainParam::SetPertinenceValue(const double& value)
 {
 	pertinence = value;
 }
@@ -527,7 +524,7 @@ double CMainParam::GetPertinenceValue()
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CMainParam::SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant)
+void CMainParam::SetOptionDiaporama(const bool& fullscreen, const int& effect, const int& delai, const bool& enAvant)
 {
 	this->fullscreen = fullscreen;
 	this->numEffect = effect;
@@ -535,27 +532,27 @@ void CMainParam::SetOptionDiaporama(const bool &fullscreen, const  int &effect, 
 	this->enAvant = enAvant;
 }
 
-void CMainParam::SetPositionWindow(const wxRect &rc)
+void CMainParam::SetPositionWindow(const wxRect& rc)
 {
 	positionRegardsViewer = rc;
 }
 
-void CMainParam::SetShowThumbnail(const bool &show)
+void CMainParam::SetShowThumbnail(const bool& show)
 {
 	showThumbnail = show;
 }
 
-void CMainParam::SetShowVideoThumbnail(const bool &show)
+void CMainParam::SetShowVideoThumbnail(const bool& show)
 {
 	showVideoThumbnail = show;
 }
 
-void CMainParam::SetShowInfos(const bool &infos)
+void CMainParam::SetShowInfos(const bool& infos)
 {
 	showInfos = infos;
 }
 
-void CMainParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant)
+void CMainParam::GetOptionDiaporama(bool& fullscreen, int& effect, int& delai, bool& enAvant)
 {
 	fullscreen = this->fullscreen;
 	effect = this->numEffect;
@@ -570,16 +567,15 @@ int CMainParam::GetDefaultPositionPreviewFace()
 
 int CMainParam::GetPositionPreviewFace()
 {
-
 	return positionPreviewFace;
 }
 
-void CMainParam::SetPositionPreviewFace(const int &pos)
+void CMainParam::SetPositionPreviewFace(const int& pos)
 {
 	positionPreviewFace = pos;
 }
 
-void CMainParam::SetPositionCriteriaFolder(const int &pos)
+void CMainParam::SetPositionCriteriaFolder(const int& pos)
 {
 	positionFolderCriteria = pos;
 }
@@ -604,32 +600,32 @@ int CMainParam::GetDelaiDiaporamaOption()
 	return delai;
 }
 
-void CMainParam::GetPositionWindow(wxRect &rc)
+void CMainParam::GetPositionWindow(wxRect& rc)
 {
 	rc = positionRegardsViewer;
 }
 
-void CMainParam::GetShowThumbnail(bool &show)
+void CMainParam::GetShowThumbnail(bool& show)
 {
 	show = showThumbnail;
 }
 
-void CMainParam::GetShowVideoThumbnail(bool &show)
+void CMainParam::GetShowVideoThumbnail(bool& show)
 {
 	show = showVideoThumbnail;
 }
 
-void CMainParam::GetShowInfos(bool &infos)
+void CMainParam::GetShowInfos(bool& infos)
 {
 	infos = showInfos;
 }
 
-void CMainParam::GetPositionSplitter(int &position)
+void CMainParam::GetPositionSplitter(int& position)
 {
 	position = this->position;
 }
 
-void CMainParam::SetPositionSplitter(const int &position)
+void CMainParam::SetPositionSplitter(const int& position)
 {
 	this->position = position;
 }

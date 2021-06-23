@@ -1,5 +1,4 @@
 #pragma once
-#include <wx/sizer.h>
 
 class wxImagePanel : public wxPanel
     {

@@ -12,9 +12,10 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-#include <GLTexture.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+
+#include "TreeElementValue.h"
 using namespace Regards::OpenGL;
 using namespace Regards::Filter;
 

@@ -7,7 +7,6 @@
 #include <WindowMain.h>
 #include "ImageList.h"
 */
-#include <Photos.h>
 #include <ExportFile.h>
 #include <WindowMain.h>
 using namespace Regards::Window;

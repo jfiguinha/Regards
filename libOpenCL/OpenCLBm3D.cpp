@@ -1,5 +1,6 @@
 #include <header.h>
 #include "OpenCLBm3D.h"
+#include "OpenCLContext.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
@@ -86,7 +87,7 @@ void COpenCLBm3D::InitData(cl_mem dataInput, int sizeInput, int width, int heigh
 	this->height = height;
 	this->sizeoutput = sizeInput;
 	paramInput = new COpenCLParameterClMem();
-	((COpenCLParameterClMem *)paramInput)->SetLibelle("input");
+	paramInput->SetLibelle("input");
 	((COpenCLParameterClMem *)paramInput)->SetValue(dataInput);
 }
 

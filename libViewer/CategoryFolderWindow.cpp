@@ -20,15 +20,13 @@
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
-
-#include "BitmapInfos.h"
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
 #define NUMCATALOGID 1
-//wxDEFINE_EVENT(EVENT_CRITERIAUPDATE, wxCommandEvent);
+
 wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 
 
@@ -59,10 +57,9 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, co
                                              const CThemeTree& theme)
 	: CTreeWithScrollbar("CCategoryFolderWindow", parent, id, themeScroll, theme)
 {
-
-	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->AddWindow(this);
-	
+
 	catalogWndOld = nullptr;
 	explorerconfig = nullptr;
 	oldPos = 0;
@@ -72,15 +69,12 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, co
 	nbProcesseur = 1;
 	refreshFolder = false;
 	needToSendMessage = false;
-	//nbPhotos = 0;
-	//nbProcesseur =  thread::hardware_concurrency();
+
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		nbProcesseur = config->GetExifProcess();
 
-	//this->statusBarViewer = statusBarViewer;
 	catalogWndOld = nullptr;
-
 	gpsLocalisationFinish = true;
 
 
@@ -94,7 +88,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, co
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CCategoryFolderWindow::OnIdle));
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CCategoryFolderWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CCategoryFolderWindow::OnUpdateGpsInfos));
-	
+
 	update = true;
 	threadDataProcess = true;
 	noCategoryMessage = false;
@@ -124,7 +118,7 @@ void CCategoryFolderWindow::RefreshCriteriaSearch()
 
 void CCategoryFolderWindow::OnUpdateGpsInfos(wxCommandEvent& event)
 {
-	wxString * filename = (wxString *)event.GetClientData();
+	auto filename = static_cast<wxString*>(event.GetClientData());
 	if (filename != nullptr)
 		delete filename;
 
@@ -148,7 +142,7 @@ CCategoryFolderWindow::~CCategoryFolderWindow()
 
 void CCategoryFolderWindow::InitSaveParameter()
 {
-	CMainParam* config = static_cast<CMainParam*>(CMainParamInit::getInstance());
+	auto config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
 		config->SetCatalogOpenTriangle("");
@@ -167,10 +161,10 @@ void CCategoryFolderWindow::UpdateCriteria(const bool& needToSendMessage)
 {
 	printf("CCategoryFolderWindow::UpdateCriteria() \n");
 	this->needToSendMessage = needToSendMessage;
-	CWindowMain* windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr && treeWindow != nullptr)
 	{
-		CCategoryWnd* catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
+		auto catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
 		catalogWnd->Init();
 		treeWindow->SetTreeControl(catalogWnd);
 		delete(catalogWndOld);
@@ -195,7 +189,6 @@ wxString CCategoryFolderWindow::GetWaitingMessage()
 
 void CCategoryFolderWindow::ProcessIdle()
 {
-
 	TRACE();
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
@@ -209,7 +202,7 @@ void CCategoryFolderWindow::ProcessIdle()
 	{
 		//Put in a thread
 		CSqlInsertFile sqlInsertFile;
-		CFindPhotoCriteria* findPhotoCriteria = new CFindPhotoCriteria();
+		auto findPhotoCriteria = new CFindPhotoCriteria();
 		CPhotos photo = sqlInsertFile.GetPhotoToProcess();
 
 		printf("CCategoryFolderWindow::ProcessIdle : Nb Photo : %d Path : %s \n", nbPhotos,
@@ -246,7 +239,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		folder.GetFolderCatalog(&catalogfolderVector, 1);
 
 		{
-			CThumbnailMessage* thumbnailMessage = new CThumbnailMessage();
+			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 1;
 			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
@@ -257,7 +250,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		for (CFolderCatalog folder : catalogfolderVector)
 		{
 			counter++;
-			CThumbnailMessage* thumbnailMessage = new CThumbnailMessage();
+			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->thumbnailPos = counter;
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 2;
@@ -302,7 +295,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		if (gpsLocalisationFinish && nbGpsFile < nbGpsFileByMinute)
 		{
-			CFindPhotoCriteria* findPhotoCriteria = new CFindPhotoCriteria();
+			auto findPhotoCriteria = new CFindPhotoCriteria();
 			findPhotoCriteria->urlServer = urlServer;
 			findPhotoCriteria->mainWindow = this;
 			findPhotoCriteria->numPhoto = numPhoto;
@@ -361,19 +354,18 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 
 void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
-
-	CListOfWindow * geoloc = CGpsEngine::getInstance();
+	CListOfWindow* geoloc = CGpsEngine::getInstance();
 	CSqlPhotoCriteria photoCriteria;
 
 	wxString urlServer = "";
 	//Géolocalisation
-	CRegardsConfigParam * param = CParamInit::getInstance();
+	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
 		urlServer = param->GetUrlServer();
 	}
-	
-     wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+
+	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	CListCriteriaPhoto listCriteriaPhoto;
 	CFileGeolocation fileGeolocalisation(urlServer);
 	listCriteriaPhoto.numCatalog = NUMCATALOGID;
@@ -389,19 +381,20 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 	{
 		printf("Has GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 		fileGeolocalisation.Geolocalisation(&listCriteriaPhoto);
-		photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, fileGeolocalisation.HasGps(),
+		photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew,
+		                                      fileGeolocalisation.HasGps(),
 		                                      findPhotoCriteria->numFolderId);
 	}
 
 	findPhotoCriteria->hasGps = fileGeolocalisation.HasGps();
 	findPhotoCriteria->fromGps = true;
 
-	if(geoloc != nullptr)
+	if (geoloc != nullptr)
 		geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 1);
 
 	if (findPhotoCriteria->mainWindow != nullptr)
 	{
-		wxCommandEvent* event = new wxCommandEvent(EVENT_CRITERIAPHOTOUPDATE);
+		auto event = new wxCommandEvent(EVENT_CRITERIAPHOTOUPDATE);
 		event->SetClientData(findPhotoCriteria);
 		wxQueueEvent(findPhotoCriteria->mainWindow, event);
 	}
@@ -411,7 +404,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 
 void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
-     wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	CFileGeolocation geoloc(findPhotoCriteria->urlServer);
 	CSqlPhotoCriteria photoCriteria;
 
@@ -427,7 +420,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	if (!geoloc.HasGps())
 	{
 		printf("Has not GPS %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
-		CInsertCriteria* insertCriteria = new CInsertCriteria();
+		auto insertCriteria = new CInsertCriteria();
 		insertCriteria->type = CATEGORIE_GEO;
 		insertCriteria->value = CLibResource::LoadStringFromResource(L"LBLNOTGEO", 1);
 		listCriteriaPhoto.listCriteria.push_back(insertCriteria);
@@ -464,11 +457,11 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 					datetime.append(".");
 			}
 
-			CInsertCriteria* insertCriteria = new CInsertCriteria();
+			auto insertCriteria = new CInsertCriteria();
 			insertCriteria->type = CATEGORIE_DATE;
 			insertCriteria->value = datetime;
 			listCriteriaPhoto.listCriteria.push_back(insertCriteria);
-			CListOfWindow * geoloc = CGpsEngine::getInstance();
+			CListOfWindow* geoloc = CGpsEngine::getInstance();
 			if (geoloc != nullptr)
 				geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 2);
 		}
@@ -478,7 +471,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, geoloc.HasGps(),
 	                                      findPhotoCriteria->numFolderId);
 
-	for (CInsertCriteria * criteria : listCriteriaPhoto.listCriteria)
+	for (CInsertCriteria* criteria : listCriteriaPhoto.listCriteria)
 	{
 		if (criteria != nullptr)
 		{
@@ -488,10 +481,10 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	}
 
 	listCriteriaPhoto.listCriteria.clear();
-	
+
 	if (findPhotoCriteria->mainWindow != nullptr)
 	{
-		wxCommandEvent* event = new wxCommandEvent(EVENT_CRITERIAPHOTOUPDATE);
+		auto event = new wxCommandEvent(EVENT_CRITERIAPHOTOUPDATE);
 		event->SetClientData(findPhotoCriteria);
 		wxQueueEvent(findPhotoCriteria->mainWindow, event);
 	}
@@ -506,7 +499,7 @@ wxString CCategoryFolderWindow::GetSqlRequest()
 
 void CCategoryFolderWindow::CriteriaPhotoUpdate(wxCommandEvent& event)
 {
-	CFindPhotoCriteria* findPhotoCriteria = static_cast<CFindPhotoCriteria*>(event.GetClientData());
+	auto findPhotoCriteria = static_cast<CFindPhotoCriteria*>(event.GetClientData());
 
 	if (findPhotoCriteria->criteriaNew)
 	{

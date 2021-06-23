@@ -41,7 +41,7 @@ void PertinenceValue::SetValue(const double &pertinence)
 
 double PertinenceValue::GetValue()
 {
-	return (double)((double)spValue->GetValue() / 100.0f);
+	return (double)spValue->GetValue() / 100.0f;
 }
 
 bool PertinenceValue::IsOk()

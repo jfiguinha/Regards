@@ -4,38 +4,38 @@
 #include <LibResource.h>
 #include <PictureData.h>
 
-CRegardsBitmap * CLoadingResource::LoadRegardsBmpResource(const wxString & resourceName)
+CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 {
 	CLibResource libResource;
-	CPictureData * data = libResource.LoadBitmapFromResource(resourceName);
-	CRegardsBitmap * bitmap = new CRegardsBitmap();
+	CPictureData* data = libResource.LoadBitmapFromResource(resourceName);
+	auto bitmap = new CRegardsBitmap();
 	data->CopyData(bitmap);
 	delete data;
 	return bitmap;
 }
 
-wxImage CLoadingResource::LoadImageResource(const wxString & resourceName)
+wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {
-	CRegardsBitmap * bitmap = LoadRegardsBmpResource(resourceName);
+	CRegardsBitmap* bitmap = LoadRegardsBmpResource(resourceName);
 	wxImage out = ConvertTowxImageRGB(bitmap);
 	delete bitmap;
 	return out;
 }
 
-wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap * bitmap)
+wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap* bitmap)
 {
 	int width = bitmap->GetBitmapWidth();
 	int height = bitmap->GetBitmapHeight();
 	//int widthSrcSize = width * 4;
-	unsigned char * data = bitmap->GetPtBitmap();
+	unsigned char* data = bitmap->GetPtBitmap();
 	//int posData = 0;
 	//int posDataOut = 0;
 	//int posAlpha = 0;
 	wxImage anImage(width, height, false);
-	unsigned char * dataOut = anImage.GetData();
-    int size = width*height;
-    //bitmap->VertFlipBuf();
-    
+	unsigned char* dataOut = anImage.GetData();
+	int size = width * height;
+	//bitmap->VertFlipBuf();
+
 	if (data != nullptr)
 	{
 #pragma omp parallel for
@@ -50,8 +50,7 @@ wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap * bitmap)
 			dataOut[position + 1] = data[positionInput + 1];
 			dataOut[position + 2] = data[positionInput];
 		}
-
 	}
-    
-    return anImage;
+
+	return anImage;
 }

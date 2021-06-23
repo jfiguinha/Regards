@@ -1,7 +1,6 @@
 #pragma once
 #include <SqlEngine.h>
 #include <SqlLibExplorer.h>
-#include <FileUtility.h>
 #include <LibResource.h>
 using namespace Regards::Sqlite;
 

@@ -1,7 +1,6 @@
 #include <header.h>
 #include "SqlFaceThumbnail.h"
 #include "SqlFacePhoto.h"
-#include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 
 CSqlFaceThumbnail::CSqlFaceThumbnail(const wxString & filename, const int &numFace)

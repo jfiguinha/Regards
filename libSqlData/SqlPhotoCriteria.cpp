@@ -2,7 +2,6 @@
 #include "SqlPhotoCriteria.h"
 #include "SqlCriteria.h"
 #include "SqlPhotos.h"
-#include "SqlPhotoCriteria.h"
 #include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 

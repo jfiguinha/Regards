@@ -4,7 +4,6 @@
 #include <RegardsBitmap.h>
 #include <cstdint>
 #include <heifreader.h>
-#include <thread>
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
@@ -253,7 +252,7 @@ CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder)
 	if (decoderContext == nullptr)
 		decoderContext = de265_new_decoder();
 	else
-		decoderContext = (de265_decoder_context *)externDecoder;
+		decoderContext = externDecoder;
 
 	err = de265_push_data(decoderContext, data, length, 0, NULL);
 	if (err == de265_error::DE265_OK)
@@ -499,13 +498,13 @@ void CHeic::SavePicture(const string &filenameOut, CRegardsBitmap * source, cons
 			// encode the image
 			heif_image* image; // code to fill in the image omitted in this example
 
-			err = heif_image_create((int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+			err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
 				heif_colorspace_RGB,
 				heif_chroma_interleaved_RGBA,
 				&image);
 			(void)err;
 
-			heif_image_add_plane(image, heif_channel_interleaved, (int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
 				32);
 
 			int stride;

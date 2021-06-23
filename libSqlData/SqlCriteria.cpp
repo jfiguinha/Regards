@@ -50,13 +50,14 @@ int64_t CSqlCriteria::GetCriteriaIdByCategorie(const int& numPhoto, const int& n
 	return criteriaId;
 }
 
-bool CSqlCriteria::UpdateCriteria(const int64_t &numCatalog, const int64_t &numCategorie, const wxString & libelle)
+bool CSqlCriteria::UpdateCriteria(const int64_t& numCatalog, const int64_t& numCategorie, const wxString& libelle)
 {
 	return (ExecuteRequestWithNoResult(
-		"UPDATE CRITERIA SET Libelle = '" + libelle + "' WHERE NumCatalog = " + to_string(numCatalog) + " and NumCriteria = " + to_string(
-			numCategorie)) != -1)
-		? true
-		: false;
+		       "UPDATE CRITERIA SET Libelle = '" + libelle + "' WHERE NumCatalog = " + to_string(numCatalog) +
+		       " and NumCriteria = " + to_string(
+			       numCategorie)) != -1)
+		       ? true
+		       : false;
 }
 
 int64_t CSqlCriteria::GetCriteriaId(const int64_t& numCatalog, const int64_t& numCategorie, const wxString& libelle)
@@ -84,16 +85,18 @@ int64_t CSqlCriteria::GetOrInsertCriteriaId(const int64_t& numCatalog, const int
 	return id;
 }
 
-bool CSqlCriteria::DeleteCriteria(const int &numCriteria, const int &numCategory)
+bool CSqlCriteria::DeleteCriteria(const int& numCriteria, const int& numCategory)
 {
-	wxString request = "Delete from CRITERIA where NumCriteria = " + to_string(numCriteria) + " and NumCategorie = " + to_string(numCategory);
+	wxString request = "Delete from CRITERIA where NumCriteria = " + to_string(numCriteria) + " and NumCategorie = " +
+		to_string(numCategory);
 	return (ExecuteRequestWithNoResult(request)) != -1 ? true : false;
 }
 
 bool CSqlCriteria::DeleteCriteriaAlone()
 {
 	return (ExecuteRequestWithNoResult(
-		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategorie not in(5,6,7)") != -1)
+			       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategorie not in(5,6,7)")
+		       != -1)
 		       ? true
 		       : false;
 }

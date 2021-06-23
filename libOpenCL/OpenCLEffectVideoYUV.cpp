@@ -4,7 +4,6 @@
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
-#include <RegardsBitmap.h>
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)

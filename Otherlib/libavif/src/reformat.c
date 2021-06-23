@@ -3,9 +3,6 @@
 
 #include "avif/internal.h"
 
-#include <math.h>
-#include <string.h>
-
 struct YUVBlock
 {
     float y;

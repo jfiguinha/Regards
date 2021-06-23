@@ -11,20 +11,14 @@
 #include <header.h>
 #include "wx/xrc/xmlres.h"
 #include "wx/url.h"
-#include "SqlInit.h"
 #include <PrintEngine.h>
 #include <MainInterface.h>
 #include <RegardsConfigParam.h>
-#include <ParamInit.h>
-#include <LibResource.h>
 #include <MyFrameIntro.h>
 #include <ViewerFrame.h>
-#include "wx/stdpaths.h"
 #include "wx/sysopt.h"
 #include <wx/cmdline.h>
-#include <SqlResource.h>
 #include <libPicture.h>
-#include <ConvertUtility.h>
 #include <wx/textfile.h>
 
 //#define TEST_WINDOWMANAGER
@@ -64,14 +58,8 @@ using namespace Regards::OpenCL;
 extern "C"
 {
 #include "libavformat/avformat.h"
-#include "libavdevice/avdevice.h"
-#include "libswscale/swscale.h"
-#include "libavutil/opt.h"
-#include "libavcodec/avfft.h"
-#include "libswresample/swresample.h"
 
 #if CONFIG_AVFILTER
-#include "libavfilter/avfilter.h"
 #endif
 }
 
@@ -94,7 +82,6 @@ using namespace Regards::Viewer;
 
 #include <GL/glew.h>
 #if defined(_WIN32)
-#include <GL/wglew.h>
 #elif defined(_WIN64)
 #include <GL/wglew.h>
 #elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)

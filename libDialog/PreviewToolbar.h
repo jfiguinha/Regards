@@ -1,6 +1,5 @@
 #pragma once
 #include <BitmapWnd.h>
-#include "BitmapWndViewer.h"
 #include <ToolbarWindow.h>
 #include <SliderInterface.h>
 #include <ToolbarSlide.h>

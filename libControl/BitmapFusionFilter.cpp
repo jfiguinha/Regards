@@ -8,23 +8,18 @@
 //
 
 #include "BitmapFusionFilter.h"
-#include "BitmapFusionEffectParameter.h"
 #include <RegardsBitmap.h>
-#include <LibResource.h>
-#include <FilterData.h>
-#include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <InterpolationBicubic.h>
 #include <utility.h>
-#include <OpenCLEffectVideo.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
 #include <OpenCLContext.h>
+#include <effect_id.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #include <opencl/cl_gl.h>
 #else
-#include <CL/cl.h>
 #endif
 using namespace Regards::Filter;
 
@@ -47,13 +42,13 @@ int CBitmapFusionFilter::GetTypeFilter()
 CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
 {
 	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
-	int orientation = nextPicture->GetOrientation();
+	const int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
 	//bitmapTemp->SetAlphaValue(0);
 
-	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
-	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
-	int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
+	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
+	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
 
 	CRegardsBitmap* bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	CInterpolationBicubic interpolation;
@@ -93,13 +88,13 @@ void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture
 void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
 {
 	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
-	int orientation = nextPicture->GetOrientation();
+	const int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
 	//bitmapTemp->SetAlphaValue(0);
 
-	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
-	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
-	int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
+	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
+	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
     
     delete bitmapTemp;
     

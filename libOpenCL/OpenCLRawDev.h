@@ -1,6 +1,5 @@
 #pragma once
 #include "OpenCLContext.h"
-#include "OpenCLProgram.h"
 #include "OpenCLParameter.h"
 #ifdef __APPLE__
 #include <OpenCL/cl.h>

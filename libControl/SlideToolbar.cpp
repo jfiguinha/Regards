@@ -1,7 +1,6 @@
 #include <header.h>
 #include "SlideToolbar.h"
 #include <LibResource.h>
-#include <ConfigParam.h>
 using namespace Regards::Video;
 
 #define WM_EMAIL 4

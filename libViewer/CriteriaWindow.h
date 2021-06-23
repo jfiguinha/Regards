@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Splitter.h>
-#include <wx/webview.h>
 using namespace std;
 using namespace Regards::Window;
 

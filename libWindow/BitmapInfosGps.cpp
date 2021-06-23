@@ -1,7 +1,6 @@
 #include "header.h"
 #include "BitmapInfosGps.h"
 #include <wx/dcbuffer.h>
-#include <RegardsConfigParam.h>
 #include <wx/sstream.h>
 #include <wxSVG/SVGDocument.h>
 using namespace Regards::Window;

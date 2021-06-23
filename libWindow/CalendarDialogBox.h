@@ -8,13 +8,10 @@
 
 #pragma once
 #include <wx/dialog.h>
-#include <wx/sizer.h>
 #include <wx/statline.h>
-#include <wx/button.h>
 #include <wx/calctrl.h>
 
 #if wxUSE_DATEPICKCTRL
-#include "wx/datectrl.h"
 #if wxUSE_DATEPICKCTRL_GENERIC
 #include "wx/generic/datectrl.h"
 #endif // wxUSE_DATEPICKCTRL_GENERIC
@@ -28,7 +25,6 @@
 #endif // wxUSE_TIMEPICKCTRL
 
 #ifdef wxHAS_NATIVE_CALENDARCTRL
-#include "wx/generic/calctrlg.h"
 #endif
 
 namespace Regards

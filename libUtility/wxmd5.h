@@ -33,15 +33,15 @@
  */
 #pragma once
 #include "wx/string.h"
-#include "wx/wfstream.h"
 
-typedef unsigned char md5byte;
-typedef uint32_t UWORD32;
+using md5byte = unsigned char;
+using UWORD32 = uint32_t;
 
-struct MD5_CTX {
-    UWORD32 buf[4];
-    UWORD32 bytes[2];
-    UWORD32 in[16];
+struct MD5_CTX
+{
+	UWORD32 buf[4];
+	UWORD32 bytes[2];
+	UWORD32 in[16];
 };
 
 
@@ -49,13 +49,17 @@ struct MD5_CTX {
 class wxMD5
 {
 public:
-	wxMD5() {}
-	virtual ~wxMD5() {}
+	wxMD5()
+	{
+	}
+
+	virtual ~wxMD5()
+	{
+	}
 
 public:
-
 #ifdef WIN32
-	static wxString GetFileMD5(const wxString &filename);
+	static wxString GetFileMD5(const wxString& filename);
 #else
 	//! Returns the MD5 checksum for the given file
 	static wxString GetFileMD5(wxInputStream &str);
@@ -65,5 +69,3 @@ public:
 	static wxString GetMD5(const wxString &str);
 #endif
 };
-
-

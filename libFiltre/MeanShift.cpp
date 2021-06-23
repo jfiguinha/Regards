@@ -1,7 +1,6 @@
 //---------------- Head  File ---------------------------------------
 #include <header.h>
 #include "MeanShift.h"
-#include <math.h>
 
 //---------------- Name space ---------------------------------------
 using namespace cv;
@@ -118,7 +117,7 @@ void CMeanShift::MSFiltering(Mat& Img){
 			Top = (i - hs) > 0 ? (i - hs) : 0;						// Get Top boundary of the filter
 			Bottom = (i + hs) < ROWS ? (i + hs) : ROWS;				// Get Bottom boundary of the filter
 			// Set current point and scale it to Lab color range
-			PtCur.MSPOint5DSet(i, j, (float)IMGChannels[0].at<uchar>(i, j), (float)IMGChannels[1].at<uchar>(i, j), (float)IMGChannels[2].at<uchar>(i, j));
+			PtCur.MSPOint5DSet(i, j, IMGChannels[0].at<uchar>(i, j), IMGChannels[1].at<uchar>(i, j), IMGChannels[2].at<uchar>(i, j));
 			PtCur.PointLab();
 			step = 0;				// count the times
 			do{
@@ -128,7 +127,7 @@ void CMeanShift::MSFiltering(Mat& Img){
 				for(int hx = Top; hx < Bottom; hx++){
 					for(int hy = Left; hy < Right; hy++){
 						// Set point in the spatial bandwidth
-						Pt.MSPOint5DSet(hx, hy, (float)IMGChannels[0].at<uchar>(hx, hy), (float)IMGChannels[1].at<uchar>(hx, hy), (float)IMGChannels[2].at<uchar>(hx, hy));
+						Pt.MSPOint5DSet(hx, hy, IMGChannels[0].at<uchar>(hx, hy), IMGChannels[1].at<uchar>(hx, hy), IMGChannels[2].at<uchar>(hx, hy));
 						Pt.PointLab();
 
 						// Check it satisfied color bandwidth or not
@@ -177,7 +176,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 			Right = (j + hs) < COLS ? (j + hs) : COLS;
 			Top = (i - hs) > 0 ? (i - hs) : 0;
 			Bottom = (i + hs) < ROWS ? (i + hs) : ROWS;
-			PtCur.MSPOint5DSet(i, j, (float)IMGChannels[0].at<uchar>(i, j), (float)IMGChannels[1].at<uchar>(i, j), (float)IMGChannels[2].at<uchar>(i, j));
+			PtCur.MSPOint5DSet(i, j, IMGChannels[0].at<uchar>(i, j), IMGChannels[1].at<uchar>(i, j), IMGChannels[2].at<uchar>(i, j));
 			PtCur.PointLab();
 			step = 0;
 			do{
@@ -187,7 +186,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 				for(int hx = Top; hx < Bottom; hx++){
 					for(int hy = Left; hy < Right; hy++){
 						
-						Pt.MSPOint5DSet(hx, hy, (float)IMGChannels[0].at<uchar>(hx, hy), (float)IMGChannels[1].at<uchar>(hx, hy), (float)IMGChannels[2].at<uchar>(hx, hy));
+						Pt.MSPOint5DSet(hx, hy, IMGChannels[0].at<uchar>(hx, hy), IMGChannels[1].at<uchar>(hx, hy), IMGChannels[2].at<uchar>(hx, hy));
 						Pt.PointLab();
 
 						if(Pt.MSPoint5DColorDistance(PtCur) < hr){
@@ -232,7 +231,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 			if(Labels[i][j] < 0){
 				Labels[i][j] = ++label;		// Give it a new label number
 				// Get the point
-				PtCur.MSPOint5DSet(i, j, (float)IMGChannels[0].at<uchar>(i, j), (float)IMGChannels[1].at<uchar>(i, j), (float)IMGChannels[2].at<uchar>(i, j));
+				PtCur.MSPOint5DSet(i, j, IMGChannels[0].at<uchar>(i, j), IMGChannels[1].at<uchar>(i, j), IMGChannels[2].at<uchar>(i, j));
 				PtCur.PointLab();
 
 				// Store each value of Lab
@@ -253,7 +252,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 						int hy = Pt.y + dxdy[k][1];
 						if((hx >= 0) && (hy >= 0) && (hx < ROWS) && (hy < COLS) && (Labels[hx][hy] < 0)){
 							Point5D P;
-							P.MSPOint5DSet(hx, hy, (float)IMGChannels[0].at<uchar>(hx, hy), (float)IMGChannels[1].at<uchar>(hx, hy), (float)IMGChannels[2].at<uchar>(hx, hy));
+							P.MSPOint5DSet(hx, hy, IMGChannels[0].at<uchar>(hx, hy), IMGChannels[1].at<uchar>(hx, hy), IMGChannels[2].at<uchar>(hx, hy));
 							P.PointLab();
 
 							// Check the color

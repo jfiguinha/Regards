@@ -25,7 +25,7 @@ CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 
 	if (i != _listOfBase.end())
 	{
-		return ((DataBase)*i)._singleton;
+		return (*i)._singleton;
 	}
 	//for (DataBase db : _listOfBase)
 	//	if (db.baseName == baseName)
@@ -73,7 +73,7 @@ void CSqlEngine::kill(const wxString &baseName)
 
 	if (i != _listOfBase.end())
 	{
-		DataBase db = (DataBase)*i;
+		DataBase db = *i;
 		db._singleton->CloseConnection();
 		delete db._singleton;
 		db._singleton = nullptr;

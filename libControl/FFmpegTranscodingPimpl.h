@@ -5,12 +5,9 @@ extern "C"
 {
 	#include <libavcodec/avcodec.h>
 	#include <libavformat/avformat.h>
-	#include <libavfilter/buffersink.h>
-	#include <libavfilter/buffersrc.h>
-	#include <libavutil/opt.h>
-	#include <libavutil/pixdesc.h>
-	#include <libavutil/imgutils.h>
-	#include <libswscale/swscale.h>
+#include <libavfilter/buffersrc.h>
+#include <libavutil/pixdesc.h>
+#include <libswscale/swscale.h>
 	#include <libavutil/timestamp.h>
 }
 
@@ -20,7 +17,6 @@ extern "C"
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideoYUV.h>
 #include <OpenCLEngine.h>
-#include <EffectVideoParameter.h>
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
 #include <VideoStabilization.h>

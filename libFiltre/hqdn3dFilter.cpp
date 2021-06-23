@@ -16,7 +16,8 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
-#include <FiltreEffet.h>
+
+#include "TreeElementValue.h"
 using namespace Regards::Filter;
 
 Chqdn3dFilter::Chqdn3dFilter()

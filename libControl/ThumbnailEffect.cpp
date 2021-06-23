@@ -15,6 +15,7 @@
 #include <picture_id.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
+#include <Tracing.h>
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Control;
@@ -186,7 +187,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 	if(format == RAWFILE)
 	{
 		CInfosSeparationBarEffect * blackRoom = CreateNewSeparatorBar(blackRoomEffect);
-		int numElement = (int)iconeListLocal->GetNbElement();
+		int numElement = iconeListLocal->GetNbElement();
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		thumbnailData->SetNumElement(0);
 		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
@@ -211,7 +212,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 	else if(picture.TestIsVideo(filename))
 	{
 		CInfosSeparationBarEffect * videoEffect = CreateNewSeparatorBar(videoLabelEffect);
-		int numElement = (int)iconeListLocal->GetNbElement();
+		int numElement = iconeListLocal->GetNbElement();
 		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 		thumbnailData->SetNumElement(0);
 		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
@@ -248,7 +249,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 
 		for (int numEffect = FILTER_START; numEffect < FILTER_END; numEffect++)
 		{
-			int numElement = (int)iconeListLocal->GetNbElement();
+			int numElement = iconeListLocal->GetNbElement();
 			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
 			thumbnailData->SetNumElement(i++);
 			thumbnailData->SetNumPhotoId(numEffect);
@@ -590,7 +591,7 @@ void CThumbnailEffect::RenderIcone(wxDC * deviceContext)
 	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
 		nbElementByRow++;
 
-	int nbElementEnY = (int)nbElementInIconeList / nbElementByRow;
+	int nbElementEnY = nbElementInIconeList / nbElementByRow;
 	if (nbElementEnY * nbElementByRow < nbElementInIconeList)
 		nbElementEnY++;
 

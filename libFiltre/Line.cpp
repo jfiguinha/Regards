@@ -2,8 +2,6 @@
 #include "Line.h"
 #include <RegardsBitmap.h>
 #include <RGBAQuad.h>
-#include <LibResource.h>
-#include "Color.h"
 
 CLine::CLine(const int & heightMax, const int & widthMax)
 {

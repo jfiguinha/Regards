@@ -1,7 +1,9 @@
 #include <header.h>
 #include "PreviewToolbar.h"
 #include <LibResource.h>
-#include <ConfigParam.h>
+#include <BitmapWndViewer.h>
+
+
 using namespace Regards::Control;
 
 #define WM_EMAIL 4

@@ -46,7 +46,7 @@ void write_ppm(libraw_processed_image_t *img, std::vector<uint8_t> *p)
 			SWAP(img->data[i], img->data[i + 1]);
 #undef SWAP
 
-	p->insert(p->end(), (uint8_t *)img->data, img->data + img->data_size);
+	p->insert(p->end(), img->data, img->data + img->data_size);
 }
 
 CxImage * CRegardsRaw::GetPicture(const string & fileName)

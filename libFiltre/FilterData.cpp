@@ -11,7 +11,6 @@
 #include <FiltreEffet.h>
 #include <DecodeRaw.h>
 #include <EffectParameter.h>
-#include <LibResource.h>
 #include "VignetteFilter.h"
 #include "bm3dWindowFilter.h"
 #include "LensFlareFilter.h"
@@ -29,7 +28,6 @@
 #include "GaussianBlurFilter.h"
 #include "NlmeansFilter.h"
 #include "bilateralFilter.h"
-#include "DecodeRaw.h"
 #include "VideoFilter.h"
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"

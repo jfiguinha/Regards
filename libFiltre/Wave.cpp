@@ -71,7 +71,7 @@ void CWaveFilter::ProcessWaves()
 			//damping
 			if (GetWaveData(x, y, newBuffer) != 0)
 			{
-				short value = (short)GetWaveData(x, y, newBuffer);
+				short value = GetWaveData(x, y, newBuffer);
 				value -= (short)(GetWaveData(x, y, newBuffer) >> 4);
 				SetWaveData(x, y, newBuffer, value);
 				wavesFound = true;
@@ -105,8 +105,8 @@ void CWaveFilter::WaterEffect(CRegardsBitmap * bitmap)
             {
                 for (int y = 1; y < _bmpHeight - 1; y++)
                 {
-                    int waveX = (int)x >> _scale;
-                    int waveY = (int)y >> _scale;
+                    int waveX = x >> _scale;
+                    int waveY = y >> _scale;
 
                     //check bounds
                     if (waveX <= 0) waveX = 1;

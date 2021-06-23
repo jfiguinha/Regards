@@ -1,11 +1,7 @@
 #include <header.h>
 #include "SqlThumbnailVideo.h"
-#include "SqlLib.h"
-#include "SqlEngine.h"
 #include "SqlResult.h"
-#include <RegardsBitmap.h>
 #include <ImageVideoThumbnail.h>
-#include <wx/mstream.h>
 #include <libPicture.h>
 #include <wx/file.h>
 #include <wx/dir.h>

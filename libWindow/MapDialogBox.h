@@ -9,11 +9,8 @@
 #pragma once
 
 #include <wx/dialog.h>
-#include <wx/sizer.h>
 #include <wx/statline.h>
-#include <wx/button.h>
 #include <wx/webview.h>
-#include <wx/html/webkit.h>
 
 
 namespace Regards

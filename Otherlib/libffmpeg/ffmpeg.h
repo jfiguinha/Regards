@@ -39,8 +39,6 @@
 #include "libavutil/thread.h"
 #include "libavutil/threadmessage.h"
 
-#include "libswresample/swresample.h"
-
 void show_usage(void);
 void ffmpeg_cleanup(int ret);
 int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), int (*progress)(int, void*), void * wndProgress);

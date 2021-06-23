@@ -26,10 +26,7 @@
 #include <cstring>
 #include <algorithm>
 #include <iostream>
-#include <limits>
-#include <cmath>
-#include <deque>
-
+#include <sstream>
 #if ENABLE_PARALLEL_TILE_DECODING
 #include <future>
 #endif

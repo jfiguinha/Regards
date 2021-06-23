@@ -1,20 +1,14 @@
 #include <header.h>
 #include "FiltreEffet.h"
 #include <OpenCLContext.h>
-#include <math.h>
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
-#include "InterpolationBicubic.h"
 #include <OpenCLParameter.h>
-#include <LibResource.h>
 #include "RedEye.h"
 #include <FilterData.h>
-#include "InterpolationFilters.h"
 #include "WaveFilter.h"
 #include <ImageLoadingFormat.h>
-#include <RegardsFloatBitmap.h>
 #include <config_id.h>
-#include <hqdn3d.h>
 extern float value[256];
 
 using namespace Regards::FiltreEffet;

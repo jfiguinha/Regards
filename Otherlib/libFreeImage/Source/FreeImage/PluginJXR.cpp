@@ -1073,8 +1073,8 @@ CopyPixels(PKImageDecode *pDecoder, PKPixelFormatGUID out_guid_format, FIBITMAP 
 			// now copy pixels into the dib
 			const size_t line_size = FreeImage_GetLine(dib);
 			for(int y = 0; y < height; y++) {
-				BYTE *src_bits = (BYTE*)(pb + y * cbStride);
-				BYTE *dst_bits = (BYTE*)FreeImage_GetScanLine(dib, y);
+				BYTE *src_bits = pb + y * cbStride;
+				BYTE *dst_bits = FreeImage_GetScanLine(dib, y);
 				memcpy(dst_bits, src_bits, line_size);
 			}
 			

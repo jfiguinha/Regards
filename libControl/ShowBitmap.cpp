@@ -11,10 +11,9 @@
 #include <array>
 #include <ImageLoadingFormat.h>
 #include <SqlPhotos.h>
-#include <PictureData.h>
 #include <MetadataExiv2.h>
 #include <DeepLearning.h>
-
+#include <Tracing.h>
 
 
 using namespace Regards::Sqlite;
@@ -22,10 +21,10 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::exiv2;
+
 class CThreadRotate
 {
 public:
-
 	CThreadRotate()
 	{
 		isReady = false;
@@ -34,7 +33,9 @@ public:
 		mainWindow = nullptr;
 		bitmap = nullptr;
 	};
-	~CThreadRotate() {
+
+	~CThreadRotate()
+	{
 		if (bitmap != nullptr)
 			delete bitmap;
 		bitmap = nullptr;
@@ -44,8 +45,8 @@ public:
 	int exif;
 	wxString filename;
 	CRegardsBitmap* bitmap = nullptr;
-	std::thread * thread;
-	wxWindow * mainWindow;
+	std::thread* thread;
+	wxWindow* mainWindow;
 };
 
 
@@ -63,7 +64,7 @@ void CShowBitmap::SetNormalMode()
 	this->Resize();
 }
 
-void CShowBitmap::SetFullscreen(const bool &fullscreen)
+void CShowBitmap::SetFullscreen(const bool& fullscreen)
 {
 	this->fullscreen = fullscreen;
 	bitmapWindow->SetFullscreen(fullscreen);
@@ -71,10 +72,10 @@ void CShowBitmap::SetFullscreen(const bool &fullscreen)
 
 void CShowBitmap::UpdateScreenRatio()
 {
-    scrollbar->UpdateScreenRatio();
-    pictureToolbar->UpdateScreenRatio();
-    bitmapWindow->UpdateScreenRatio();
-    this->Resize();
+	scrollbar->UpdateScreenRatio();
+	pictureToolbar->UpdateScreenRatio();
+	bitmapWindow->UpdateScreenRatio();
+	this->Resize();
 }
 
 void CShowBitmap::ReloadResource()
@@ -89,7 +90,8 @@ void CShowBitmap::SavePicture()
 }
 
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config, const bool &exportPicture)
+                         wxWindowID mainViewerId, CBitmapInterface* bitmapInterface, CThemeParam* config,
+                         const bool& exportPicture)
 	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
@@ -108,7 +110,10 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
 	CThemeToolbar themeToolbar;
-	std::vector<int> value = { 1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
+	std::vector<int> value = {
+		1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200,
+		1600
+	};
 
 	this->bitmapInterface = bitmapInterface;
 
@@ -116,8 +121,8 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	{
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
-    
-    pictureToolbar = nullptr;
+
+	pictureToolbar = nullptr;
 
 	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false, exportPicture);
 	pictureToolbar->SetTabValue(value);
@@ -125,19 +130,20 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	if (config != nullptr)
 		config->GetBitmapWindowTheme(&themeBitmap);
 
-	bitmapWindow = new CBitmapWndViewer(this, bitmapViewerId, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
+	bitmapWindow = new CBitmapWndViewer(this, bitmapViewerId, pictureToolbar, mainViewerId, themeBitmap,
+	                                    bitmapInterface);
 
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
-        
-    scrollbar = nullptr;
+
+	scrollbar = nullptr;
 
 	scrollbar = new CScrollbarWnd(this, bitmapWindow, wxID_ANY, "BitmapScroll");
 
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
-    Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
-    Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
-    Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
+	Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
+	Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
+	Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
 
 	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CShowBitmap::OnMoveLeft));
 	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CShowBitmap::OnMoveRight));
@@ -146,7 +152,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CShowBitmap::OnControlSize));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowBitmap::OnSetPosition));
 	Connect(wxEVENT_ROTATEDETECT, wxCommandEventHandler(CShowBitmap::OnRotateDetect));
-    progressValue = 0;
+	progressValue = 0;
 	filename = "";
 }
 
@@ -212,22 +218,21 @@ void CShowBitmap::OnMoveBottom(wxCommandEvent& event)
 
 void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
 {
-    if (pictureToolbar != nullptr)
-    {
-        if (pictureToolbar->IsShown())
-        {
-            HideToolbar();
-        }
-        else
-        {
-            ShowToolbar();
-        }
-    }
+	if (pictureToolbar != nullptr)
+	{
+		if (pictureToolbar->IsShown())
+		{
+			HideToolbar();
+		}
+		else
+		{
+			ShowToolbar();
+		}
+	}
 }
 
 CShowBitmap::~CShowBitmap()
 {
-
 	delete(pictureToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
@@ -284,11 +289,10 @@ void CShowBitmap::ShowToolbar()
 
 void CShowBitmap::Resize()
 {
-
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
-		return;    
+		return;
 
 	if (!showToolbar && fullscreen)
 	{
@@ -312,12 +316,12 @@ void CShowBitmap::Resize()
 	{
 		if (pictureToolbar->IsShown())
 		{
-            int pictureWidth = width;
-            int pictureHeight = height - pictureToolbar->GetHeight();
+			int pictureWidth = width;
+			int pictureHeight = height - pictureToolbar->GetHeight();
 
-            scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+			scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
 			scrollbar->Refresh();
-            pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
+			pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
 			pictureToolbar->Refresh();
 		}
 		else
@@ -326,11 +330,9 @@ void CShowBitmap::Resize()
 			scrollbar->Refresh();
 		}
 	}
- 
-	
 }
 
-void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
+void CShowBitmap::SetBitmapPreviewEffect(const int& effect)
 {
 	if (bitmapWindow != nullptr)
 	{
@@ -342,7 +344,7 @@ void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
 void CShowBitmap::TransitionEnd()
 {
 	transitionEnd = true;
-	if(tempImage != nullptr)
+	if (tempImage != nullptr)
 	{
 		bitmapWindow->SetBitmap(tempImage);
 		tempImage = nullptr;
@@ -355,7 +357,7 @@ void CShowBitmap::TransitionEnd()
 
 void CShowBitmap::OnIdle(wxIdleEvent& evt)
 {
-    //TRACE();
+	//TRACE();
 	/*
 	int numEffect = 0;
 		
@@ -380,16 +382,16 @@ void CShowBitmap::OnIdle(wxIdleEvent& evt)
 //---------------------------------------------------------------------------------------
 //Test FacialRecognition
 //---------------------------------------------------------------------------------------
-void CShowBitmap::RotateRecognition(void * param)
+void CShowBitmap::RotateRecognition(void* param)
 {
-	CThreadRotate * threadRotate = (CThreadRotate *)param;
+	auto threadRotate = static_cast<CThreadRotate*>(param);
 	if (threadRotate != nullptr)
-	{       
+	{
 		if (threadRotate->bitmap != nullptr)
 		{
 			threadRotate->isReady = true;
 			threadRotate->bitmap->VertFlipBuf();
-			threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
+			threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
 		}
 
 		if (threadRotate->mainWindow != nullptr)
@@ -399,13 +401,11 @@ void CShowBitmap::RotateRecognition(void * param)
 			threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
-
 }
 
 void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
 {
-	CThreadRotate * path = (CThreadRotate *)event.GetClientData();
+	auto path = static_cast<CThreadRotate*>(event.GetClientData());
 	if (path->thread != nullptr)
 	{
 		path->thread->join();
@@ -416,16 +416,14 @@ void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
 		{
 			bitmapWindow->SetOrientation(path->exif);
 		}
-			
+
 
 		CSqlPhotos sqlPhotos;
 		sqlPhotos.InsertPhotoExif(path->filename, path->exif);
-
 	}
 
 	if (path != nullptr)
 		delete path;
-
 }
 
 void CShowBitmap::IsNextPicture(const bool& value)
@@ -433,7 +431,7 @@ void CShowBitmap::IsNextPicture(const bool& value)
 	bitmapWindow->SetNextPictureMove(value);
 }
 
-bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail)
+bool CShowBitmap::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail)
 {
 	if (tempImage != nullptr && !isThumbnail)
 	{
@@ -446,7 +444,8 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	{
 		CMetadataExiv2 metaData(bitmap->GetFilename());
 		CLibPicture libPicture;
-		if (configRegards->GetDetectOrientation() && !isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) && Regards::DeepLearning::CDeepLearning::IsResourceReady())
+		if (configRegards->GetDetectOrientation() && !isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) &&
+			DeepLearning::CDeepLearning::IsResourceReady())
 		{
 			if (metaData.GetOrientation() == -1)
 			{
@@ -455,24 +454,21 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 				if (exif != -1)
 				{
 					bitmap->SetOrientation(exif);
-
 				}
 				else
 				{
-					CThreadRotate* path = new CThreadRotate();
+					auto path = new CThreadRotate();
 					path->filename = bitmap->GetFilename();
 					path->mainWindow = this;
 					path->bitmap = bitmap->GetRegardsBitmap();
 					path->thread = new thread(RotateRecognition, path);
-					
 				}
 			}
-
 		}
 
 		filename = bitmap->GetFilename();
 		//bitmapWindow->FixArrowNavigation(true);
-        bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
+		bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
 
 		if (isDiaporama)
@@ -513,40 +509,39 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 
-        if(libPicture.GetNbImage(filename) > 1)
-        {
-            if (pictureToolbar != nullptr)
-            {
-                pictureToolbar->ShowExportButton();
-				wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+		if (libPicture.GetNbImage(filename) > 1)
+		{
+			if (pictureToolbar != nullptr)
+			{
+				pictureToolbar->ShowExportButton();
+				wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 				if (window != nullptr)
 				{
 					wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
 					window->GetEventHandler()->AddPendingEvent(evt);
 				}
-            }
-			
-        }
-        else
-        {
-            if (pictureToolbar != nullptr)
-            {
-				wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+			}
+		}
+		else
+		{
+			if (pictureToolbar != nullptr)
+			{
+				wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 				if (window != nullptr)
 				{
 					wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
 					window->GetEventHandler()->AddPendingEvent(evt);
 				}
-                pictureToolbar->HideExportButton();
-            } 
-        }
-       
+				pictureToolbar->HideExportButton();
+			}
+		}
+
 		return true;
 	}
 	return false;
 }
 
-CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
+CRegardsBitmap* CShowBitmap::GetBitmap(const bool& source)
 {
 	if (bitmapWindow != nullptr)
 		return bitmapWindow->GetBitmap(source);
@@ -556,14 +551,14 @@ CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
 
 void CShowBitmap::OnViewerZoomIn(wxCommandEvent& event)
 {
-    if(pictureToolbar != nullptr)
-        pictureToolbar->ChangeZoomInPos();
+	if (pictureToolbar != nullptr)
+		pictureToolbar->ChangeZoomInPos();
 }
 
 void CShowBitmap::OnViewerZoomOut(wxCommandEvent& event)
 {
-    if(pictureToolbar != nullptr)
-        pictureToolbar->ChangeZoomOutPos();
+	if (pictureToolbar != nullptr)
+		pictureToolbar->ChangeZoomOutPos();
 }
 
 void CShowBitmap::FlipVertical()

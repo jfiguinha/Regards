@@ -1,6 +1,5 @@
 #pragma once
 #include "FilterWindowParam.h"
-#include <StreamInfo.h>
 
 class CVideoEffectParameter;
 class CMetadata;

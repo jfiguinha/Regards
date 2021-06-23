@@ -2,8 +2,8 @@
 #include "PrintEngine.h"
 using namespace Regards::Print;
 
-wxPrintData * CPrintEngine::g_printData = nullptr;
-wxPageSetupDialogData * CPrintEngine::g_pageSetupData = nullptr;
+wxPrintData* CPrintEngine::g_printData = nullptr;
+wxPageSetupDialogData* CPrintEngine::g_pageSetupData = nullptr;
 
 void CPrintEngine::Initialize()
 {
@@ -39,12 +39,12 @@ void CPrintEngine::Kill()
 		delete(g_pageSetupData);
 }
 
-wxPrintData * CPrintEngine::GetPrintData()
+wxPrintData* CPrintEngine::GetPrintData()
 {
 	return g_printData;
 }
 
-wxPageSetupDialogData * CPrintEngine::GetPageSetupDialogData()
+wxPageSetupDialogData* CPrintEngine::GetPageSetupDialogData()
 {
 	return g_pageSetupData;
 }

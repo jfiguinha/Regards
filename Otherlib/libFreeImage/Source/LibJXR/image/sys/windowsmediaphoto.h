@@ -33,7 +33,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #if defined(__cplusplus) && !defined(EXTERN_C)
 #define EXTERN_C extern "C"

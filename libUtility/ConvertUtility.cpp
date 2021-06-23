@@ -11,7 +11,7 @@ CConvertUtility::~CConvertUtility(void)
 {
 }
 
-const std::wstring CConvertUtility::ConvertToStdWstring(const wxString & s)
+const std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
 {
 #ifdef __WXGTK__
     std::string chaine = ConvertToStdString(s);
@@ -19,33 +19,33 @@ const std::wstring CConvertUtility::ConvertToStdWstring(const wxString & s)
     ws.assign(chaine.begin(), chaine.end());
     return ws;
 #else
-    return s.ToStdWstring();
+	return s.ToStdWstring();
 #endif
 }
 
-const std::string CConvertUtility::ConvertToStdString(const wxString & s)
+const std::string CConvertUtility::ConvertToStdString(const wxString& s)
 {
 #ifdef __WXGTK__
     return std::string(ConvertToUTF8(s)); 
 #else
-    return s.ToStdString();
-#endif    
+	return s.ToStdString();
+#endif
 }
 
-const char * CConvertUtility::ConvertToUTF8(const wxString & s)
+const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 {
-    /*
+	/*
 #ifdef __WXGTK__    
-    const char* str = (const char*)s.mb_str(wxConvUTF8);
-    return s.ToUTF8();
+	const char* str = (const char*)s.mb_str(wxConvUTF8);
+	return s.ToUTF8();
 #else
-    return s.mb_str(wxConvUTF8);
+	return s.mb_str(wxConvUTF8);
 #endif
  * */
-    return s.ToUTF8();
+	return s.ToUTF8();
 }
 
-wxString CConvertUtility::GetTimeLibelle(const int &timePosition)
+wxString CConvertUtility::GetTimeLibelle(const int& timePosition)
 {
 	wxString libelle = L"";
 	//wchar_t buf[255];
@@ -75,7 +75,7 @@ wxString CConvertUtility::GetTimeLibelle(const int &timePosition)
 	return libelle;
 }
 
-std::vector<wxString> CConvertUtility::split(const wxString & s, char seperator)
+std::vector<wxString> CConvertUtility::split(const wxString& s, char seperator)
 {
 	std::vector<wxString> output;
 
@@ -94,4 +94,3 @@ std::vector<wxString> CConvertUtility::split(const wxString & s, char seperator)
 
 	return output;
 }
-

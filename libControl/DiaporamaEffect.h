@@ -1,7 +1,7 @@
 #pragma once
 #include "BitmapFusionFilter.h"
 #include "BitmapDisplay.h"
-#include <FilterData.h>
+
 namespace Regards
 {
 	namespace Filter

@@ -1,7 +1,6 @@
 #include "header.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/opengl.hpp>
-#include <opencv2/core/ocl.hpp>
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
@@ -16,16 +15,14 @@
 #include <utility.h>
 #endif
 #include <InterpolationFilters.h>
-#include <SavePicture.h>
-#include <ImageLoadingFormat.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
-#include <libPicture.h>
-#include <InterpolationBicubic.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
 #include <OpenCVEffect.h>
+#include <Tracing.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
@@ -481,7 +478,7 @@ float CVideoControlSoft::GetZoomRatio()
 	{
 		
 		muVideoEffect.lock();
-		zoom = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+		zoom = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
 		muVideoEffect.unlock();
 	}
 	return zoom;
@@ -1787,7 +1784,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	float zoom = GetZoomRatio();
 
 	muVideoEffect.lock();
-	aspect_ratio = (float)videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
+	aspect_ratio = videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
 	muVideoEffect.unlock();
 
 	if (aspect_ratio == 1.0)

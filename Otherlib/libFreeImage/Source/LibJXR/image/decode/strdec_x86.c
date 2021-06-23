@@ -26,7 +26,6 @@
 //
 //*@@@---@@@@******************************************************************
 #include "strcodec.h"
-#include "decode.h"
 
 #if defined(WMP_OPT_SSE2)
 #include <emmintrin.h>

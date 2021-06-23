@@ -1,5 +1,6 @@
 #include "header.h"
 #include "Splitter.h"
+#include "SeparationBar.h"
 using namespace Regards::Window;
 
 CSplitter::CSplitter(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal)

@@ -1,6 +1,5 @@
 #include "header.h"
 #include "PictureData.h"
-//#include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
 
 
@@ -12,36 +11,37 @@ CPictureData::~CPictureData()
 	data = nullptr;
 }
 
-int  CPictureData::GetWidth()
+int CPictureData::GetWidth()
 {
 	return width;
 }
 
-void CPictureData::SetWidth(const int &width)
+void CPictureData::SetWidth(const int& width)
 {
 	this->width = width;
 }
 
-int  CPictureData::GetHeight()
+int CPictureData::GetHeight()
 {
 	return height;
 }
-void  CPictureData::SetHeight(const int &height)
+
+void CPictureData::SetHeight(const int& height)
 {
 	this->height = height;
 }
 
-wxString  CPictureData::GetFilename()
+wxString CPictureData::GetFilename()
 {
 	return filename;
 }
 
-void  CPictureData::SetFilename(const wxString &filename)
+void CPictureData::SetFilename(const wxString& filename)
 {
 	this->filename = filename;
 }
 
-uint8_t * CPictureData::GetData()
+uint8_t* CPictureData::GetData()
 {
 	return data;
 }
@@ -50,6 +50,7 @@ int CPictureData::GetSize()
 {
 	return size;
 }
+
 /*
 std::vector<char> CPictureData::CopyData()
 {
@@ -57,7 +58,7 @@ std::vector<char> CPictureData::CopyData()
 	return _data;
 }
 */
-void CPictureData::SetData(uint8_t * & extdata, const int &size)
+void CPictureData::SetData(uint8_t* & extdata, const int& size)
 {
 	if (extdata != nullptr && size > 0)
 	{
@@ -69,41 +70,42 @@ void CPictureData::SetData(uint8_t * & extdata, const int &size)
 	}
 }
 
-void CPictureData::CopyData(CRegardsBitmap * & bitmap)
+void CPictureData::CopyData(CRegardsBitmap* & bitmap)
 {
-	if(bitmap != nullptr)
+	if (bitmap != nullptr)
 		bitmap->SetBitmap(data, width, height, false, true);
 }
-		
 
-float CPictureData::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput)
+
+float CPictureData::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& widthOutput,
+                                       const int& heightOutput)
 {
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
-	float newRatio = 1;
+	float newRatio;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = (float)widthOutput / (float)(pictureWidth);
+		newRatio = static_cast<float>(widthOutput) / static_cast<float>(pictureWidth);
 	else
-		newRatio = (float)heightOutput / (float)(pictureHeight);
+		newRatio = static_cast<float>(heightOutput) / static_cast<float>(pictureHeight);
 
 	if ((pictureHeight * newRatio) > heightOutput)
 	{
-		newRatio = (float)heightOutput / (float)(pictureHeight);
+		newRatio = static_cast<float>(heightOutput) / static_cast<float>(pictureHeight);
 	}
 	else
 	{
 		if ((pictureWidth * newRatio) > widthOutput)
 		{
-			newRatio = (float)widthOutput / (float)(pictureWidth);
+			newRatio = static_cast<float>(widthOutput) / static_cast<float>(pictureWidth);
 		}
 	}
 
 	return newRatio;
 }
 
-void CPictureData::SetJpegData(uint8_t * & extdata, const int &outputsize)
+void CPictureData::SetJpegData(uint8_t* & extdata, const int& outputsize)
 {
 	data = new uint8_t[outputsize];
 	memcpy(data, extdata, outputsize);

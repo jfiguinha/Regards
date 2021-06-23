@@ -1,13 +1,15 @@
 #pragma once
 #include <header.h>
+
+#include "ConvertUtility.h"
 #include "ThumbnailFolder.h"
 using namespace Regards::Viewer;
 
 class CTreatmentData
 {
 public:
-
-	void MainTreatment(CIconeList* iconeListLocal, const PhotosVector * photoVector, CThumbnailFolder* folder, int & numElement)
+	void MainTreatment(CIconeList* iconeListLocal, const PhotosVector* photoVector, CThumbnailFolder* folder,
+	                   int& numElement)
 	{
 		this->numElement = numElement;
 		this->iconeListLocal = iconeListLocal;
@@ -50,17 +52,17 @@ protected:
 class CTreatmentDataYear : public CTreatmentData
 {
 public:
-
-	virtual bool TestParameter(const CPhotos& photos)
+	bool TestParameter(const CPhotos& photos) override
 	{
 		return photos.year != year;
 	};
-	virtual wxString GenerateLibelle()
+
+	wxString GenerateLibelle() override
 	{
 		return to_string(year);
 	}
 
-	virtual void UpdateVariable(const CPhotos& photos)
+	void UpdateVariable(const CPhotos& photos) override
 	{
 		year = photos.year;
 	}
@@ -72,17 +74,17 @@ private:
 class CTreatmentDataMonth : public CTreatmentData
 {
 public:
-
-	virtual bool TestParameter(const CPhotos& photos)
+	bool TestParameter(const CPhotos& photos) override
 	{
 		return photos.year != year || photos.month != month;
 	};
-	virtual wxString GenerateLibelle()
+
+	wxString GenerateLibelle() override
 	{
 		return monthName + L" " + to_string(year);
 	}
 
-	virtual void UpdateVariable(const CPhotos& photos)
+	void UpdateVariable(const CPhotos& photos) override
 	{
 		year = photos.year;
 		month = photos.month;
@@ -98,17 +100,17 @@ private:
 class CTreatmentDataDay : public CTreatmentData
 {
 public:
-
-	virtual bool TestParameter(const CPhotos& photos)
+	bool TestParameter(const CPhotos& photos) override
 	{
 		return photos.year != year || photos.month != month || photos.day != day;
 	};
-	virtual wxString GenerateLibelle()
+
+	wxString GenerateLibelle() override
 	{
 		return dayName + L" " + to_string(day) + L" " + monthName + L" , " + to_string(year) + L"@";
 	}
 
-	virtual void UpdateVariable(const CPhotos& photos)
+	void UpdateVariable(const CPhotos& photos) override
 	{
 		year = photos.year;
 		month = photos.month;
@@ -128,17 +130,18 @@ private:
 class CTreatmentDataLocalisation : public CTreatmentData
 {
 public:
-
-	virtual bool TestParameter(const CPhotos& photos)
+	bool TestParameter(const CPhotos& photos) override
 	{
-		return photos.year != year || photos.month != month || photos.day != day || photos.gpsInfos != libelleLocalisation;
+		return photos.year != year || photos.month != month || photos.day != day || photos.gpsInfos !=
+			libelleLocalisation;
 	};
-	virtual wxString GenerateLibelle()
+
+	wxString GenerateLibelle() override
 	{
 		wxString output = "";
 		vector<wxString> libelle = CConvertUtility::split(libelleLocalisation, '.');
 
-		for (auto j = (int)libelle.size() - 1; j > 0; j--)
+		for (auto j = static_cast<int>(libelle.size()) - 1; j > 0; j--)
 		{
 			output.append(libelle.at(j));
 			if (j > 1)
@@ -151,7 +154,7 @@ public:
 		return dayName + L" " + to_string(day) + L" " + monthName + L" , " + to_string(year) + L"@" + output;
 	}
 
-	virtual void UpdateVariable(const CPhotos& photos)
+	void UpdateVariable(const CPhotos& photos) override
 	{
 		year = photos.year;
 		month = photos.month;

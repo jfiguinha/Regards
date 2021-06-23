@@ -14,6 +14,8 @@
 #include <Metadata.h>
 #include "videostream.h"
 #include <RegardsBitmap.h>
+#include <effect_id.h>
+#include "TreeElementValue.h"
 using namespace Regards::Filter;
 using namespace Regards::Video;
 

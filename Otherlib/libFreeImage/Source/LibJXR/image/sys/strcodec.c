@@ -488,7 +488,7 @@ ERR CloseWS_List(struct WMPStream** ppWS)
 
     if (ppWS) {
         U8 *pBuf = (U8 *)(ppWS[0] + 1); // pointer to buffer
-        U8 *pNext = (U8 *)(((void **)pBuf)[0]);
+        U8 *pNext = ((void **)pBuf)[0];
         while (pNext) {
 //struct WMPStream *pWS = ppWS[0];
             pBuf = pNext;
@@ -734,7 +734,7 @@ Int allocateBitIOInfo(CWMImageStrCodec* pSC)
     if(cNumBitIO > 0){
         U32 i = 0;
         size_t cb = sizeof(BitIOInfo) * cNumBitIO + (PACKETLENGTH * 4 - 1) + PACKETLENGTH * 4 * cNumBitIO;
-        U8* pb = (U8*)malloc(cb);
+        U8* pb = malloc(cb);
 
         if (NULL == pb) return ICERR_ERROR;
         memset(pb, 0, cb);

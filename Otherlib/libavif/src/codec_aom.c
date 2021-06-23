@@ -490,7 +490,7 @@ const char * avifCodecVersionAOM(void)
 
 avifCodec * avifCodecCreateAOM(void)
 {
-    avifCodec * codec = (avifCodec *)avifAlloc(sizeof(avifCodec));
+    avifCodec * codec = avifAlloc(sizeof(avifCodec));
     memset(codec, 0, sizeof(struct avifCodec));
     codec->open = aomCodecOpen;
     codec->getNextImage = aomCodecGetNextImage;

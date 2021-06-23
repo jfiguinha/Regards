@@ -262,7 +262,7 @@ static FIBITMAP* PhiMatrix(FIBITMAP **gradients, float *avgGrad, int nlevels, fl
 			// also, note the factor of 2**k in the denominator; 
 			// that is there to correct for the fact that an average gradient avgGrad(H) over 2**k pixels 
 			// in the original image will appear as a gradient grad(Hk) = 2**k*avgGrad(H) over a single pixel in Hk. 
-			float ALPHA =  alpha * avgGrad[k] * (float)((int)1 << k);
+			float ALPHA =  alpha * avgGrad[k] * (float)(1 << k);
 			if(ALPHA == 0) ALPHA = EPSILON;
 
 			phi[k] = FreeImage_AllocateT(FIT_FLOAT, width, height);
@@ -274,7 +274,7 @@ static FIBITMAP* PhiMatrix(FIBITMAP **gradients, float *avgGrad, int nlevels, fl
 				for(unsigned x = 0; x < width; x++) {
 					// compute (alpha / grad) * (grad / alpha) ** beta
 					const float v = src_pixel[x] / ALPHA;
-					const float value = (float)pow((float)v, (float)(beta-1));
+					const float value = pow(v, beta-1);
 					dst_pixel[x] = (value > 1) ? 1 : value;
 				}
 				// next line
@@ -430,7 +430,7 @@ static FIBITMAP* LogLuminance(FIBITMAP *Y) {
 		// find max & min luminance values
 		float maxLum = -1e20F, minLum = 1e20F;
 
-		BYTE *bits = (BYTE*)FreeImage_GetBits(H);
+		BYTE *bits = FreeImage_GetBits(H);
 		for(unsigned y = 0; y < height; y++) {
 			const float *pixel = (float*)bits;
 			for(unsigned x = 0; x < width; x++) {
@@ -445,7 +445,7 @@ static FIBITMAP* LogLuminance(FIBITMAP *Y) {
 
 		// normalize to range 0..100 and take the logarithm
 		const float scale = 100.F / (maxLum - minLum);
-		bits = (BYTE*)FreeImage_GetBits(H);
+		bits = FreeImage_GetBits(H);
 		for(unsigned y = 0; y < height; y++) {
 			float *pixel = (float*)bits;
 			for(unsigned x = 0; x < width; x++) {
@@ -473,7 +473,7 @@ static void ExpLuminance(FIBITMAP *Y) {
 	const unsigned height = FreeImage_GetHeight(Y);
 	const unsigned pitch = FreeImage_GetPitch(Y);
 
-	BYTE *bits = (BYTE*)FreeImage_GetBits(Y);
+	BYTE *bits = FreeImage_GetBits(Y);
 	for(unsigned y = 0; y < height; y++) {
 		float *pixel = (float*)bits;
 		for(unsigned x = 0; x < width; x++) {
@@ -646,9 +646,9 @@ FreeImage_TmoFattal02(FIBITMAP *dib, double color_saturation, double attenuation
 		const unsigned rgb_pitch = FreeImage_GetPitch(src);
 		const unsigned y_pitch = FreeImage_GetPitch(Yin);
 
-		BYTE *bits      = (BYTE*)FreeImage_GetBits(src);
-		BYTE *bits_yin  = (BYTE*)FreeImage_GetBits(Yin);
-		BYTE *bits_yout = (BYTE*)FreeImage_GetBits(Yout);
+		BYTE *bits      = FreeImage_GetBits(src);
+		BYTE *bits_yin  = FreeImage_GetBits(Yin);
+		BYTE *bits_yout = FreeImage_GetBits(Yout);
 
 		for(unsigned y = 0; y < height; y++) {
 			float *Lin = (float*)bits_yin;

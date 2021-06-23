@@ -1,7 +1,5 @@
 #include <header.h>
 #include "SelectPage.h"
-#include "MainTheme.h"
-#include "MainThemeInit.h"
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 

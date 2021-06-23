@@ -339,7 +339,7 @@ Int getROI(CWMImageInfo * pII, CCoreParameters * pCore, CWMIStrCodecParam * pSCP
     const ORIENTATION oO = pParam->oOrientation;
     size_t iLeft, iTop, cWidth, cHeight, i, j;
     size_t mbLeft, mbRight, mbTop, mbBottom;
-    size_t * iTile = (size_t *)malloc(MAX_TILES * sizeof(size_t));
+    size_t * iTile = malloc(MAX_TILES * sizeof(size_t));
 
     if(iTile == NULL)
         return ICERR_ERROR;

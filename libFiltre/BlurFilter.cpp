@@ -12,7 +12,8 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-#include <FiltreEffet.h>
+
+#include "TreeElementValue.h"
 using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()

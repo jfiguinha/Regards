@@ -1,6 +1,5 @@
 #include <header.h>
 #include "KeywordManagementWindow.h"
-#include <LibResource.h>
 #include "KeywordWnd.h"
 #include "TreeWindow.h"
 using namespace std;

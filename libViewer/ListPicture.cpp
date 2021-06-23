@@ -7,7 +7,6 @@
 #include "MainThemeInit.h"
 #include <LibResource.h>
 #include "MainWindow.h"
-#include "ImageList.h"
 #include <picture_id.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>
@@ -18,7 +17,6 @@
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <IndexGenerator.h>
-#include <ThumbnailDataSQL.h>
 #include <SavePicture.h>
 #include <wx/progdlg.h>
 #include <SqlCriteria.h>
@@ -30,13 +28,11 @@
 #include "ThumbnailToolBar.h"
 #include "ThumbnailToolBarZoom.h"
 #include <GpsEngine.h>
-#include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ImageLoadingFormat.h>
 #include <WindowMain.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
-
 #elif defined(WIN32)
 #include <SetMetadataGps.h>
 #include <SetMetadataDate.h>
@@ -55,7 +51,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	thumbToolbarZoom = nullptr;
 	thumbnailFolder = nullptr;
 	typeAffichage = SHOW_ALL;
-	std::vector<int> value = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
+	std::vector<int> value = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
 	wxRect rect;
 	int positionTab = 3;
 	bool checkValidity = false;
@@ -92,10 +88,9 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
-		
 		CThemeToolbar theme;
 		//viewerTheme->GetThumbnailToolbarTheme(theme);
-        viewerTheme->GetBitmapToolbarTheme(&theme);
+		viewerTheme->GetBitmapToolbarTheme(&theme);
 		thumbToolbar = new CThumbnailToolBar(windowManager, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
 		thumbToolbar->SetTrackBarPosition(positionTab - 1);
@@ -107,7 +102,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	{
 		CThemeToolBarZoom theme;
 		viewerTheme->GetThumbnailToolbarZoomTheme(theme);
-        //viewerTheme->GetBitmapToolbarTheme(&theme);
+		//viewerTheme->GetBitmapToolbarTheme(&theme);
 		thumbToolbarZoom = new CThumbnailToolBarZoom(windowManager, wxID_ANY, theme);
 		windowManager->AddWindow(thumbToolbarZoom, Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY,
 		                         false);
@@ -204,7 +199,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 		{
 			int width, height, nbPictureLine;
 			wxColour color = indexGenerator.GetColor();
-			wxColour fontColor = wxColour(255 - color.Red(), 255 - color.Green(), 255 - color.Blue());
+			auto fontColor = wxColour(255 - color.Red(), 255 - color.Green(), 255 - color.Blue());
 			indexGenerator.GetThumbnailSize(width, height);
 			nbPictureLine = indexGenerator.GetNbPictureByLine();
 
@@ -216,7 +211,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 			wxString libelle = indexGenerator.GetIndexTitle();
 			int bitmapWidth = nbPictureLine * width;
 			int bitmapHeight = getNbLine * height;
-			wxBitmap bitmap = wxBitmap(bitmapWidth, bitmapHeight + heightLibelle);
+			auto bitmap = wxBitmap(bitmapWidth, bitmapHeight + heightLibelle);
 			wxMemoryDC memdc;
 			memdc.SelectObject(bitmap);
 			memdc.SetBackground(color);
@@ -237,7 +232,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				CThumbnailData* data = listItem[i];
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
-				CIcone* pBitmapIcone = new CIcone();
+				auto pBitmapIcone = new CIcone();
 				pBitmapIcone->SetNumElement(data->GetNumElement());
 				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);
@@ -253,7 +248,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 
 			wxImage picture = bitmap.ConvertToImage();
 
-			CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
+			auto imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(&picture);
 			CSavePicture::SavePicture(nullptr, imageLoad, "photoindex.png");
 			delete imageLoad;
@@ -337,7 +332,7 @@ void CListPicture::GeolocalizeFile(const wxString& filename, const float& latitu
 	sqlGps.DeleteGps(filename);
 	sqlGps.InsertGps(filename, lat, lng);
 
-	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->SendMessageToWindow(filename, 1);
 }
 
@@ -994,7 +989,7 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 		copyFile.ShowModal();
 		*/
 		//Mise à jour du répertoire des fichiers
-		CMainWindow* mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+		auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 		if (mainWindow != nullptr)
 		{
 			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);

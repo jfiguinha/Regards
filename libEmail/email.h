@@ -7,8 +7,7 @@
  #ifndef EMAIL_H
  #define EMAIL_H
 
- #include <wx/wx.h>
- #include <wx/filename.h>
+#include <wx/filename.h>
  #include <wx/wfstream.h>
 
  #include "mime.h"

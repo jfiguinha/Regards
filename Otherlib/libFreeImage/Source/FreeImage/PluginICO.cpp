@@ -20,6 +20,8 @@
 // Use at your own risk!
 // ==========================================================
 
+#include <vector>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 
@@ -103,7 +105,7 @@ CalculateImageOffset(std::vector<FIBITMAP*>& vPages, int nIndex ) {
     dwSize += (DWORD)( vPages.size() * sizeof(ICONDIRENTRY) );
     // add the sizes of the previous images
     for(int k = 0; k < nIndex; k++) {
-		FIBITMAP *icon_dib = (FIBITMAP*)vPages[k];
+		FIBITMAP *icon_dib = vPages[k];
 		dwSize += CalculateImageSize(icon_dib);
 	}
 
@@ -592,7 +594,7 @@ SaveStandardIcon(FreeImageIO *io, FIBITMAP *dib, fi_handle handle) {
 				case 1:
 				{
 					for(int y = 0; y < height; y++) {
-						BYTE *bits = (BYTE*)FreeImage_GetScanLine(dib, y);
+						BYTE *bits = FreeImage_GetScanLine(dib, y);
 						for(int x = 0; x < width; x++) {
 							// get pixel at (x, y)
 							BYTE index = (bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
@@ -609,7 +611,7 @@ SaveStandardIcon(FreeImageIO *io, FIBITMAP *dib, fi_handle handle) {
 				case 4:
 				{
 					for(int y = 0; y < height; y++) {
-						BYTE *bits = (BYTE*)FreeImage_GetScanLine(dib, y);
+						BYTE *bits = FreeImage_GetScanLine(dib, y);
 						for(int x = 0; x < width; x++) {
 							// get pixel at (x, y)
 							BYTE shift = (BYTE)((1 - x % 2) << 2);
@@ -627,7 +629,7 @@ SaveStandardIcon(FreeImageIO *io, FIBITMAP *dib, fi_handle handle) {
 				case 8:
 				{
 					for(int y = 0; y < height; y++) {
-						BYTE *bits = (BYTE*)FreeImage_GetScanLine(dib, y);
+						BYTE *bits = FreeImage_GetScanLine(dib, y);
 						for(int x = 0; x < width; x++) {
 							// get pixel at (x, y)
 							BYTE index = bits[x];
@@ -719,7 +721,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 		memset(icon_list, 0, icon_header->idCount * sizeof(ICONDIRENTRY));
 
 		for(k = 0; k < icon_header->idCount; k++) {
-			icon_dib = (FIBITMAP*)vPages[k];
+			icon_dib = vPages[k];
 
 			// convert internal format to ICONDIRENTRY
 			// take into account Vista icons whose size is 256x256
@@ -748,7 +750,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 		DWORD dwImageOffset = (DWORD)io->tell_proc(handle);
 
 		for(k = 0; k < icon_header->idCount; k++) {
-			icon_dib = (FIBITMAP*)vPages[k];
+			icon_dib = vPages[k];
 			
 			if((icon_list[k].bWidth == 0) && (icon_list[k].bHeight == 0)) {
 				// Vista icon support
@@ -780,7 +782,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 
 		// free the vector class
 		for(k = 0; k < icon_header->idCount; k++) {
-			icon_dib = (FIBITMAP*)vPages[k];
+			icon_dib = vPages[k];
 			FreeImage_Unload(icon_dib);
 		}
 
@@ -789,7 +791,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 	} catch(const char *text) {
 		// free the vector class
 		for(size_t k = 0; k < vPages.size(); k++) {
-			FIBITMAP *icon_dib = (FIBITMAP*)vPages[k];
+			FIBITMAP *icon_dib = vPages[k];
 			FreeImage_Unload(icon_dib);
 		}
 		FreeImage_OutputMessageProc(s_format_id, text);

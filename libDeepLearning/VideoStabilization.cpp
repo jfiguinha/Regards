@@ -7,18 +7,15 @@ using namespace cv;
 const int SMOOTHING_RADIUS = 50; // In frames. The larger the more stable the video, but less reactive to sudden panning
 
 
-
-
-
-
 class COpenCVStabilizationPimpl_
 {
 public:
-
-
 	struct TransformParam
 	{
-		TransformParam() {}
+		TransformParam()
+		{
+		}
+
 		TransformParam(double _dx, double _dy, double _da)
 		{
 			dx = _dx;
@@ -30,7 +27,7 @@ public:
 		double dy;
 		double da; // angle
 
-		void getTransform(Mat &T)
+		void getTransform(Mat& T)
 		{
 			// Reconstruct transformation matrix accordingly to new values
 			T.at<double>(0, 0) = cos(da);
@@ -45,8 +42,12 @@ public:
 
 	struct Trajectory
 	{
-		Trajectory() {}
-		Trajectory(double _x, double _y, double _a) {
+		Trajectory()
+		{
+		}
+
+		Trajectory(double _x, double _y, double _a)
+		{
 			x = _x;
 			y = _y;
 			a = _a;
@@ -57,21 +58,21 @@ public:
 		double a; // angle
 	};
 
-	void fixBorder(Mat &frame_stabilized)
+	void fixBorder(Mat& frame_stabilized)
 	{
 		Mat T = getRotationMatrix2D(Point2f(frame_stabilized.cols / 2, frame_stabilized.rows / 2), 0, 1.04);
 		warpAffine(frame_stabilized, frame_stabilized, T, frame_stabilized.size());
 	}
 
-	void fixBorder(UMat &frame_stabilized)
+	void fixBorder(UMat& frame_stabilized)
 	{
 		Mat T = getRotationMatrix2D(Point2f(frame_stabilized.cols / 2, frame_stabilized.rows / 2), 0, 1.04);
 		warpAffine(frame_stabilized, frame_stabilized, T, frame_stabilized.size());
 	}
 
-	vector<Trajectory> cumsum(vector<TransformParam> &transforms)
+	vector<Trajectory> cumsum(vector<TransformParam>& transforms)
 	{
-		vector <Trajectory> trajectory; // trajectory at all frames
+		vector<Trajectory> trajectory; // trajectory at all frames
 		// Accumulated frame to frame transform
 		double a = 0;
 		double x = 0;
@@ -84,23 +85,25 @@ public:
 			a += transforms[i].da;
 
 			trajectory.push_back(Trajectory(x, y, a));
-
 		}
 
 		return trajectory;
 	}
 
-	vector <Trajectory> smooth(vector <Trajectory>& trajectory, int radius)
+	vector<Trajectory> smooth(vector<Trajectory>& trajectory, int radius)
 	{
-		vector <Trajectory> smoothed_trajectory;
-		for (size_t i = 0; i < trajectory.size(); i++) {
+		vector<Trajectory> smoothed_trajectory;
+		for (size_t i = 0; i < trajectory.size(); i++)
+		{
 			double sum_x = 0;
 			double sum_y = 0;
 			double sum_a = 0;
 			int count = 0;
 
-			for (int j = -radius; j <= radius; j++) {
-				if (i + j >= 0 && i + j < trajectory.size()) {
+			for (int j = -radius; j <= radius; j++)
+			{
+				if (i + j >= 0 && i + j < trajectory.size())
+				{
 					sum_x += trajectory[i + j].x;
 					sum_y += trajectory[i + j].y;
 					sum_a += trajectory[i + j].a;
@@ -124,11 +127,11 @@ public:
 		transforms_smooth.clear();
 
 		// Compute trajectory using cumulative sum of transformations
-		vector <Trajectory> trajectory = cumsum(transforms);
+		vector<Trajectory> trajectory = cumsum(transforms);
 
 		// Smooth trajectory using moving average filter
-		vector <Trajectory> smoothed_trajectory = smooth(trajectory, SMOOTHING_RADIUS);
-			
+		vector<Trajectory> smoothed_trajectory = smooth(trajectory, SMOOTHING_RADIUS);
+
 
 		for (size_t i = 0; i < transforms.size(); i++)
 		{
@@ -146,7 +149,7 @@ public:
 		}
 	}
 
-	void AnalyseFrame(const cv::UMat & curr)
+	void AnalyseFrame(const UMat& curr)
 	{
 		if (first)
 		{
@@ -154,9 +157,9 @@ public:
 			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
 			return;
 		}
-		cv::UMat curr_gray;
+		UMat curr_gray;
 		// Vector from previous and current feature points
-		vector <Point2f> curr_pts;
+		vector<Point2f> curr_pts;
 
 		// Detect features in previous frame
 
@@ -166,7 +169,7 @@ public:
 		cvtColor(curr, curr_gray, COLOR_BGR2GRAY);
 
 		// Calculate optical flow (i.e. track feature points)
-		vector <uchar> status;
+		vector<uchar> status;
 		UMat err;
 
 		try
@@ -175,7 +178,6 @@ public:
 		}
 		catch (...)
 		{
-
 		}
 
 		// Filter only valid points
@@ -185,8 +187,8 @@ public:
 		{
 			if (status[k])
 			{
-				prev_it++;
-				curr_it++;
+				++prev_it;
+				++curr_it;
 			}
 			else
 			{
@@ -224,7 +226,7 @@ public:
 		curr_gray.copyTo(prev_gray);
 	}
 
-	void AnalyseFrame(const cv::Mat & curr)
+	void AnalyseFrame(const Mat& curr)
 	{
 		if (first)
 		{
@@ -232,19 +234,19 @@ public:
 			cvtColor(curr, prev_gray, COLOR_BGR2GRAY);
 			return;
 		}
-		cv::UMat curr_gray;
+		UMat curr_gray;
 		// Vector from previous and current feature points
-		vector <Point2f> curr_pts;
+		vector<Point2f> curr_pts;
 
 		// Detect features in previous frame
-	
+
 		goodFeaturesToTrack(prev_gray, prev_pts, 200, 0.01, 30);
 
 		// Convert to grayscale
 		cvtColor(curr, curr_gray, COLOR_BGR2GRAY);
 
 		// Calculate optical flow (i.e. track feature points)
-		vector <uchar> status;
+		vector<uchar> status;
 		UMat err;
 
 		try
@@ -253,7 +255,6 @@ public:
 		}
 		catch (...)
 		{
-
 		}
 
 		// Filter only valid points
@@ -263,8 +264,8 @@ public:
 		{
 			if (status[k])
 			{
-				prev_it++;
-				curr_it++;
+				++prev_it;
+				++curr_it;
 			}
 			else
 			{
@@ -290,7 +291,7 @@ public:
 		// Extract rotation angle
 		double da = atan2(T.at<double>(1, 0), T.at<double>(0, 0));
 
-		while(transforms.size() > nbFrameMax)
+		while (transforms.size() > nbFrameMax)
 			transforms.erase(transforms.begin());
 
 		// Store transformation 
@@ -302,10 +303,10 @@ public:
 		curr_gray.copyTo(prev_gray);
 	}
 
-	cv::UMat CorrectedFrame(cv::UMat & frame)
+	UMat CorrectedFrame(UMat& frame)
 	{
 		Mat T(2, 3, CV_64F);
-		cv::Mat frame_stabilized;
+		Mat frame_stabilized;
 
 		if (transforms_smooth.size() > 0)
 		{
@@ -326,13 +327,13 @@ public:
 		return frame;
 	}
 
-	void CorrectedFrame(cv::Mat & frame)
+	void CorrectedFrame(Mat& frame)
 	{
 		Mat T(2, 3, CV_64F);
 
 		if (transforms_smooth.size() > 0)
 		{
-			cv::Mat frame_stabilized;
+			Mat frame_stabilized;
 
 			int i = transforms_smooth.size() - 1;
 
@@ -360,17 +361,17 @@ public:
 
 	// Define variable for storing frames
 	//cv::UMat curr_gray;
-	cv::UMat prev_gray;
-	vector <Point2f> prev_pts;
+	UMat prev_gray;
+	vector<Point2f> prev_pts;
 	vector<TransformParam> transforms;
-	vector <TransformParam> transforms_smooth;
+	vector<TransformParam> transforms_smooth;
 
 	bool first = true;
 	int nbFrameMax = 60;
 	//std::map<int, cv::Mat> picture_stabilization;
 };
 
-COpenCVStabilization::COpenCVStabilization(const int &nbFrame)
+COpenCVStabilization::COpenCVStabilization(const int& nbFrame)
 {
 	pimpl = new COpenCVStabilizationPimpl_();
 	this->nbFrame = nbFrame;
@@ -383,14 +384,13 @@ COpenCVStabilization::~COpenCVStabilization()
 }
 
 
-
-void COpenCVStabilization::AddFrame(CRegardsBitmap * pBitmap)
+void COpenCVStabilization::AddFrame(CRegardsBitmap* pBitmap)
 {
 	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->AnalyseFrame(image);
 }
 
-void COpenCVStabilization::SetNbFrameBuffer(const int &nbFrame)
+void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
 {
 	pimpl->nbFrameMax = nbFrame;
 }
@@ -400,9 +400,9 @@ int COpenCVStabilization::GetNbFrame()
 	return nbFrame;
 }
 
-void COpenCVStabilization::BufferFrame(CRegardsBitmap * pBitmap)
+void COpenCVStabilization::BufferFrame(CRegardsBitmap* pBitmap)
 {
-	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->AnalyseFrame(image);
 	nbFrameBuffer++;
 }
@@ -418,43 +418,43 @@ int COpenCVStabilization::GetNbFrameBuffer()
 	return nbFrameBuffer;
 }
 
-void COpenCVStabilization::CorrectFrame(CRegardsBitmap * pBitmap)
+void COpenCVStabilization::CorrectFrame(CRegardsBitmap* pBitmap)
 {
-	cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->CalculTransformation();
 	pimpl->CorrectedFrame(image);
 	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 }
 
-void COpenCVStabilization::AddFrame(const cv::Mat & image)
+void COpenCVStabilization::AddFrame(const Mat& image)
 {
 	pimpl->AnalyseFrame(image);
 }
 
-void COpenCVStabilization::BufferFrame(const cv::Mat & image)
-{
-	pimpl->AnalyseFrame(image);
-	nbFrameBuffer++;
-}
-
-void COpenCVStabilization::AddFrame(const cv::UMat & image)
-{
-	pimpl->AnalyseFrame(image);
-}
-
-void COpenCVStabilization::BufferFrame(const cv::UMat & image)
+void COpenCVStabilization::BufferFrame(const Mat& image)
 {
 	pimpl->AnalyseFrame(image);
 	nbFrameBuffer++;
 }
 
-void COpenCVStabilization::CorrectFrame(cv::Mat & image)
+void COpenCVStabilization::AddFrame(const UMat& image)
+{
+	pimpl->AnalyseFrame(image);
+}
+
+void COpenCVStabilization::BufferFrame(const UMat& image)
+{
+	pimpl->AnalyseFrame(image);
+	nbFrameBuffer++;
+}
+
+void COpenCVStabilization::CorrectFrame(Mat& image)
 {
 	pimpl->CalculTransformation();
 	pimpl->CorrectedFrame(image);
 }
 
-cv::UMat COpenCVStabilization::CorrectFrame(cv::UMat & image)
+UMat COpenCVStabilization::CorrectFrame(UMat& image)
 {
 	//cv::Mat frame;
 	//image.copyTo(frame);

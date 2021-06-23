@@ -1,6 +1,5 @@
 #include <header.h>
 #include "SQLRemoveData.h"
-#include "SqlCatalog.h"
 #include "SqlFolderCatalog.h"
 #include "SqlPhotos.h"
 #include "SqlCriteria.h"
@@ -11,7 +10,6 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
-#include "SqlThumbnailVideo.h"
 #include "SqlPhotoCategorieUsenet.h"
 using namespace Regards::Sqlite;
 

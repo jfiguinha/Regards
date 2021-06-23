@@ -1,6 +1,5 @@
 #include "header.h"
 #include "SqlLibResource.h"
-//#include <wx/filefn.h> 
 using namespace Regards::Sqlite;
 
 CSqlLibResource::CSqlLibResource(const bool &readOnly, const bool &load_inmemory)

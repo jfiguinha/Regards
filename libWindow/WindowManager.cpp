@@ -225,7 +225,7 @@ void CWindowManager::HidePaneWindow(Pos position, const int &refresh)
 	{
 		if (window->isPanel)
 		{
-			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->GetPanel();
+			CPanelWithClickToolbar * panel = window->GetPanel();
 			if (panel != nullptr)
 			{
 				if (panel->IsPanelVisible())
@@ -258,7 +258,7 @@ int CWindowManager::GetPaneState(Pos position)
 	{
 		if (window->isPanel)
 		{
-			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->GetPanel();
+			CPanelWithClickToolbar * panel = window->GetPanel();
 			if (panel != nullptr)
 			{
 				if (!panel->IsPanelVisible())
@@ -283,7 +283,7 @@ void CWindowManager::ShowPaneWindow(Pos position, const int &refresh)
 	{
 		if (window->isPanel)
 		{
-			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->GetPanel();
+			CPanelWithClickToolbar * panel = window->GetPanel();
 			if (panel != nullptr)
 			{
 				if (!panel->IsPanelVisible())

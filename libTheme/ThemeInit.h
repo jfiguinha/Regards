@@ -8,11 +8,9 @@ public:
 	CThemeInit();
 	~CThemeInit();
 
-	static CThemeParam * getInstance();
-	static void Initialize(CThemeParam * param);
+	static CThemeParam* getInstance();
+	static void Initialize(CThemeParam* param);
 
 private:
-
-	static CThemeParam *_singleton;
+	static CThemeParam* _singleton;
 };
-

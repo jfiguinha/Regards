@@ -7,20 +7,20 @@ using namespace Regards::Control;
 #define WM_OK 1
 #define WM_CANCEL 2
 
-CFiltreToolbar::CFiltreToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CFiltreToolbar::CFiltreToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	numFiltre = 0;
-	wxString libelleOk = CLibResource::LoadStringFromResource(L"IDS_LBLOK",1);
-	wxString libelleCancel = CLibResource::LoadStringFromResource(L"IDS_LBLCANCEL",1);
+	wxString libelleOk = CLibResource::LoadStringFromResource(L"IDS_LBLOK", 1);
+	wxString libelleCancel = CLibResource::LoadStringFromResource(L"IDS_LBLCANCEL", 1);
 
-	CToolbarButton * ok = new CToolbarButton(themeToolbar.button);
+	auto ok = new CToolbarButton(themeToolbar.button);
 	ok->SetButtonResourceId(L"IDB_OK");
 	ok->SetCommandId(WM_OK);
 	ok->SetLibelle(libelleOk);
 	navElement.push_back(ok);
 
-	CToolbarButton * cancel = new CToolbarButton(themeToolbar.button);
+	auto cancel = new CToolbarButton(themeToolbar.button);
 	cancel->SetButtonResourceId(L"IDB_CANCEL");
 	cancel->SetCommandId(WM_CANCEL);
 	cancel->SetLibelle(libelleCancel);
@@ -33,16 +33,16 @@ CFiltreToolbar::~CFiltreToolbar()
 }
 
 
-void CFiltreToolbar::SetNumFiltre(const int &numFiltre)
+void CFiltreToolbar::SetNumFiltre(const int& numFiltre)
 {
 	this->numFiltre = numFiltre;
 }
 
-void CFiltreToolbar::EventManager(const int &id)
+void CFiltreToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
-		case WM_OK:
+	case WM_OK:
 		{
 			wxCommandEvent evt(wxEVENT_FILTREOK);
 			evt.SetInt(numFiltre);
@@ -50,7 +50,7 @@ void CFiltreToolbar::EventManager(const int &id)
 		}
 		break;
 
-		case WM_CANCEL:
+	case WM_CANCEL:
 		{
 			wxCommandEvent evt(wxEVENT_FILTRECANCEL);
 			evt.SetInt(numFiltre);
@@ -58,8 +58,7 @@ void CFiltreToolbar::EventManager(const int &id)
 		}
 		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 }
-

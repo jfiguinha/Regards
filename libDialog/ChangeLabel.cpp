@@ -11,7 +11,7 @@
 //*)
 using namespace Regards::Sqlite;
 
-BEGIN_EVENT_TABLE(ChangeLabel,wxDialog)
+BEGIN_EVENT_TABLE(ChangeLabel, wxDialog)
 	//(*EventTable(ChangeLabel)
 	//*)
 END_EVENT_TABLE()
@@ -19,15 +19,15 @@ END_EVENT_TABLE()
 ChangeLabel::ChangeLabel(wxWindow* parent)
 {
 	//(*Initialize(ChangeLabel)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("ChangeLabel"),_T("wxDialog"));
-	txtCtrlFaceName = (wxTextCtrl*)FindWindow(XRCID("ID_TXTFACENAME"));
-	btOK = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
-	btCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
-	stFaceName = (wxStaticText*)FindWindow(XRCID("ID_STFACENAME"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("ChangeLabel"),_T("wxDialog"));
+	txtCtrlFaceName = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTFACENAME")));
+	btOK = static_cast<wxButton*>(FindWindow(XRCID("ID_BUTTON1")));
+	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
+	stFaceName = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STFACENAME")));
 	//*)
 
-	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ChangeLabel::OnbtnOkClick);
-	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ChangeLabel::OnBtnCancelClick);
+	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ChangeLabel::OnbtnOkClick);
+	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ChangeLabel::OnBtnCancelClick);
 }
 
 ChangeLabel::~ChangeLabel()
@@ -36,7 +36,7 @@ ChangeLabel::~ChangeLabel()
 	//*)
 }
 
-void ChangeLabel::SetLabel(const wxString &labelFaceName)
+void ChangeLabel::SetLabel(const wxString& labelFaceName)
 {
 	this->labelFaceName = labelFaceName;
 	txtCtrlFaceName->SetValue(labelFaceName);
@@ -44,7 +44,6 @@ void ChangeLabel::SetLabel(const wxString &labelFaceName)
 
 wxString ChangeLabel::GetNewLabel()
 {
-	
 	return labelFaceName;
 }
 
@@ -56,17 +55,17 @@ bool ChangeLabel::IsOk()
 
 void ChangeLabel::OnbtnOkClick(wxCommandEvent& event)
 {
-    wxString wronglabelname = CLibResource::LoadStringFromResource(L"wronglabelname",1);
-    wxString wronglabelsize = CLibResource::LoadStringFromResource(L"wronglabelsize",1);
-    wxString error_labelname = CLibResource::LoadStringFromResource(L"ErrorLabelName",1);
-    wxString error_labelsize = CLibResource::LoadStringFromResource(L"erroronlabelsize",1);
+	wxString wronglabelname = CLibResource::LoadStringFromResource(L"wronglabelname", 1);
+	wxString wronglabelsize = CLibResource::LoadStringFromResource(L"wronglabelsize", 1);
+	wxString error_labelname = CLibResource::LoadStringFromResource(L"ErrorLabelName", 1);
+	wxString error_labelsize = CLibResource::LoadStringFromResource(L"erroronlabelsize", 1);
 	labelFaceName = txtCtrlFaceName->GetValue();
-	if(labelFaceName.size() > 3)
+	if (labelFaceName.size() > 3)
 	{
 		//Test si label existe déjà
 		CSqlFaceLabel sqlFaceLabel;
 		int numFace = sqlFaceLabel.GetNumFace(labelFaceName);
-		if(numFace == -1)
+		if (numFace == -1)
 		{
 			isOk = true;
 			this->Close();

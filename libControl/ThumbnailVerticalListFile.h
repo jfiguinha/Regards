@@ -1,9 +1,6 @@
 #pragma once
 #include "ThumbnailVertical.h"
 #include <Photos.h>
-#include <PhotoCatalog.h>
-#include <Criteria.h>
-#include <PhotoCategorie.h>
 using namespace Regards::Window;
 
 namespace Regards

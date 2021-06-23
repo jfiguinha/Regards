@@ -164,7 +164,7 @@ avifBool avifROStreamReadBoxHeader(avifROStream * stream, avifBoxHeader * header
     if ((size < bytesRead) || ((size - bytesRead) > SIZE_MAX)) {
         return AVIF_FALSE;
     }
-    header->size = (size_t)(size - bytesRead);
+    header->size = size - bytesRead;
 
     // Make the assumption here that this box's contents must fit in the remaining portion of the parent stream
     if (header->size > avifROStreamRemainingBytes(stream)) {

@@ -1,5 +1,4 @@
 #pragma once
-#include <Photos.h>
 #include <WindowMain.h>
 using namespace std;
 using namespace Regards::Window;

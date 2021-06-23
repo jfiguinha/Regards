@@ -1,6 +1,5 @@
 #pragma once
 #include <theme.h>
-#include <EffectVideoParameter.h>
 #include <SliderInterface.h>
 #include "WindowMain.h"
 #include <wx/activityindicator.h>

@@ -114,7 +114,7 @@ void CThumbnailFacePertinenceToolBar::SlidePosChange(const int &position, const 
 
 void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 {
-	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
+	CMainParam * viewerParam = CMainParamInit::getInstance();
 	if(viewerParam != nullptr)
 	{
 		viewerParam->SetPertinenceValue(slide->GetPositionValue());
@@ -128,7 +128,7 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
 #endif
-	wxWindow * mainWindow = (wxWindow *)this->FindWindowById(LISTFACEID);
+	wxWindow * mainWindow = this->FindWindowById(LISTFACEID);
 	if(mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);

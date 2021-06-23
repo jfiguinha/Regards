@@ -6,7 +6,6 @@
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
 #include <wxSVG/SVGDocument.h>
-#include <wx/sstream.h>
 using namespace Regards::Control;
 
 wxDEFINE_EVENT(TIMER_MOUSE, wxTimerEvent);
@@ -123,7 +122,7 @@ void CSliderVideoPreview::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 	if (secondTotalTime > 0)
 	{
-		pourcentage = (float)secondTimePast / (float)secondTotalTime;
+		pourcentage = secondTimePast / secondTotalTime;
 		rcPast.width = (rc.width * pourcentage);
 		rcPast.y = rc.y;
 		rcPast.height = themeSlider.GetRectangleHeight();
@@ -330,7 +329,7 @@ void CSliderVideoPreview::CalculPositionButton()
 {
 	if (secondTotalTime > 0)
 	{
-		float pourcentage = (float)secondTimePast / (float)secondTotalTime;
+		float pourcentage = secondTimePast / secondTotalTime;
 		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
 	}
 	else

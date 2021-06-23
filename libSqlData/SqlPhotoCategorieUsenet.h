@@ -1,6 +1,5 @@
 #pragma once
 #include "SqlExecuteRequest.h"
-#include <PhotoCategorieUsenet.h>
 
 namespace Regards
 {

@@ -206,13 +206,13 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 			// encode the image
 			heif_image* image; // code to fill in the image omitted in this example
 
-			err = heif_image_create((int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+			err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
 				heif_colorspace_RGB,
 				heif_chroma_interleaved_RGBA,
 				&image);
 			(void)err;
 
-			heif_image_add_plane(image, heif_channel_interleaved, (int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
 				32);
 
 			int stride;

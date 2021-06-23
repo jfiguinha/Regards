@@ -43,7 +43,6 @@ IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 834-848, February 19
 */
 
 
-#include <float.h>
 #include "FreeImage.h"
 #include "Utilities.h"
 
@@ -176,7 +175,7 @@ GetColumn(double *Image, long Width, long x, double *Line, long Height) {
 
 	Image = Image + x;
 	for(y = 0L; y < Height; y++) {
-		Line[y] = (double)*Image;
+		Line[y] = *Image;
 		Image += Width;
 	}
 }
@@ -195,7 +194,7 @@ GetRow(double *Image, long y, double *Line, long Width) {
 
 	Image = Image + (y * Width);
 	for(x = 0L; x < Width; x++) {
-		Line[x] = (double)*Image++;
+		Line[x] = *Image++;
 	}
 }
 
@@ -228,7 +227,7 @@ PutColumn(double *Image, long Width, long x, double *Line, long Height) {
 
 	Image = Image + x;
 	for(y = 0L; y < Height; y++) {
-		*Image = (double)Line[y];
+		*Image = Line[y];
 		Image += Width;
 	}
 }
@@ -247,7 +246,7 @@ PutRow(double *Image, long y, double *Line, long Width) {
 
 	Image = Image + (y * Width);
 	for(x = 0L; x < Width; x++) {
-		*Image++ = (double)Line[x];
+		*Image++ = Line[x];
 	}
 }
 
@@ -615,14 +614,14 @@ Rotate8Bit(FIBITMAP *dib, double angle, double x_shift, double y_shift, double x
 					p = 0;
 				}
 				else {
-					p = (double)InterpolatedValue(ImageRasterArray, width, height, x1, y1, spline);
+					p = InterpolatedValue(ImageRasterArray, width, height, x1, y1, spline);
 				}
 			}
 			else {
-				p = (double)InterpolatedValue(ImageRasterArray, width, height, x1, y1, spline);
+				p = InterpolatedValue(ImageRasterArray, width, height, x1, y1, spline);
 			}
 			// clamp and convert to BYTE
-			dst_bits[x] = (BYTE)MIN(MAX((int)0, (int)(p + 0.5)), (int)255);
+			dst_bits[x] = (BYTE)MIN(MAX(0, (int)(p + 0.5)), 255);
 		}
 	}
 

@@ -4,11 +4,6 @@
 #include <LibResource.h>
 #include <ThumbnailDataSQL.h>
 #include <SqlFindPhotos.h>
-#include <SqlFindYear.h>
-#include <SqlFindMonth.h>
-#include <SqlFindDay.h>
-#include <SqlFindLocalisation.h>
-#include <ConvertUtility.h>
 #include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
 #include <SqlPhotosWithoutThumbnail.h>
@@ -64,7 +59,7 @@ void CThumbnailFolder::AddSeparatorBar(CIconeList* iconeListLocal, const wxStrin
 	for (auto i = 0; i < photoVector->size(); i++)
 	{
 		CPhotos photo = photoVector->at(i);
-		infosSeparationBar->listElement.push_back((int)iconeListLocal->GetNbElement());
+		infosSeparationBar->listElement.push_back(iconeListLocal->GetNbElement());
 
 		CThumbnailDataSQL* thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
 		thumbnailData->SetNumPhotoId(photo.GetId());

@@ -1,7 +1,6 @@
 #include <header.h>
 #include "CompressVideo.h"
 #include <window_id.h>
-#include <ImageLoadingFormat.h>
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CompressVideo)
 	//*)

@@ -3,7 +3,7 @@
 #include "ThemeParam.h"
 #include <wx/stdpaths.h>
 
-CThemeParam * CThemeInit::_singleton = nullptr;
+CThemeParam* CThemeInit::_singleton = nullptr;
 
 
 CThemeInit::CThemeInit()
@@ -16,30 +16,30 @@ CThemeInit::~CThemeInit()
 }
 
 
-CThemeParam * CThemeInit::getInstance()
+CThemeParam* CThemeInit::getInstance()
 {
 	return _singleton;
 }
 
-void CThemeInit::Initialize(CThemeParam * param)
+void CThemeInit::Initialize(CThemeParam* param)
 {
 	if (nullptr == _singleton)
 	{
-        /*
+		/*
 		wxString filename = wxStandardPaths::Get().GetExecutablePath();
 		filename.append(L".theme");
 		_singleton = param;
 		_singleton->OpenFile(filename);
-        */
-        wxString filepath = wxStandardPaths::Get().GetExecutablePath();
+		*/
+		wxString filepath = wxStandardPaths::Get().GetExecutablePath();
 
-        
+
 #ifdef WIN32
-		
+
 		filepath = filepath.SubString(0, filepath.size() - 4);
-        filepath.append("theme");
-        _singleton = param;
-        _singleton->OpenFile(filepath);
+		filepath.append("theme");
+		_singleton = param;
+		_singleton->OpenFile(filepath);
 #else
 
         wxStandardPathsBase& stdp = wxStandardPaths::Get();
@@ -48,6 +48,5 @@ void CThemeInit::Initialize(CThemeParam * param)
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif
-
 	}
 }

@@ -8,13 +8,11 @@
 #include <RegardsConfigParam.h>
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
-#include <FilterData.h>
 #include <MetadataExiv2.h>
 #include <window_id.h>
 #include <config_id.h>
 #include <SqlPhotos.h>
 #include <OpenCLEffect.h>
-#include <FileUtility.h>
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #endif

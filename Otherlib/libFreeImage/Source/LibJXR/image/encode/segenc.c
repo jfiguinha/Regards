@@ -293,7 +293,7 @@ static Int AdaptiveScanTrim (const PixelI *pCoeffs, CAdaptiveScan *pScan,
 
     iLevel = pCoeffs[pScan[1].uScan];
 
-    if ((unsigned int)(iLevel + iThOff) >= iTh) {
+    if (iLevel + iThOff >= iTh) {
         iTemp = abs (iLevel) >> iModelBits;
         pScan[1].uTotal++;
         pRLCoeffs[iNumNonzero * 2] = 0;
@@ -304,7 +304,7 @@ static Int AdaptiveScanTrim (const PixelI *pCoeffs, CAdaptiveScan *pScan,
     for (k = 2; k < iCount; k++) {
         iRun++;
         iLevel = pCoeffs[pScan[k].uScan];
-        if ((unsigned int)(iLevel + iThOff) >= iTh) {
+        if (iLevel + iThOff >= iTh) {
             iTemp = abs (iLevel) >> iModelBits;
             pScan[k].uTotal++;
             if (pScan[k].uTotal > pScan[k - 1].uTotal) {
@@ -362,7 +362,7 @@ static Int AdaptiveScan (const PixelI *pCoeffs, Int *pResidual,
 
         iLevel = pCoeffs[pScan[1].uScan];
 
-        if ((unsigned int)(iLevel + iThOff) >= iTh) {
+        if (iLevel + iThOff >= iTh) {
             iTemp1 = abs (iLevel);
             iTemp = iTemp1 >> iModelBits;
             pResidual[pScan[1].uScan] = (iTemp1 & iThOff) * 2;
@@ -385,7 +385,7 @@ static Int AdaptiveScan (const PixelI *pCoeffs, Int *pResidual,
             const Int sk = pScan[k].uScan;
             //pResidual++;
             iLevel = pCoeffs[sk];
-            if ((unsigned int)(iLevel + iThOff) >= iTh) {
+            if (iLevel + iThOff >= iTh) {
                 const Int iSign = -(iLevel < 0);
                 iTemp1 = (iSign ^ iLevel) - iSign;
                 iTemp = iTemp1 >> iModelBits;
@@ -421,7 +421,7 @@ static Int AdaptiveScan (const PixelI *pCoeffs, Int *pResidual,
 
         iLevel = pCoeffs[pScan[1].uScan];
         //pResidual++;
-        if ((unsigned int)(iLevel + iThOff) >= iTh) {
+        if (iLevel + iThOff >= iTh) {
             iTemp1 = abs (iLevel);
             iTemp = iTemp1 >> iModelBits;
             pResidual[pScan[1].uScan] = ((iTemp1 & iThOff) >> iTrimBits) * 2;
@@ -442,7 +442,7 @@ static Int AdaptiveScan (const PixelI *pCoeffs, Int *pResidual,
             const Int sk = pScan[k].uScan;
             //pResidual++;
 			iLevel = pCoeffs[sk];
-            if ((unsigned int)(iLevel + iThOff) >= iTh) {
+            if (iLevel + iThOff >= iTh) {
                 iTemp1 = abs (iLevel);
                 iTemp = iTemp1 >> iModelBits;
                 pResidual[sk] = ((iTemp1 & iThOff) >> iTrimBits) * 2;

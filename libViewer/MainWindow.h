@@ -1,5 +1,4 @@
 #pragma once
-#include "FileUtility.h"
 #include <Photos.h>
 #include <WindowMain.h>
 using namespace Regards::Window;

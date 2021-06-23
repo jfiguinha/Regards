@@ -1,17 +1,12 @@
 #include <header.h>
 #include "CompressionAudioVideoOption.h"
-#include <window_id.h>
 #include <VideoCompressOption.h>
-#include <ImageLoadingFormat.h>
-#include <RegardsBitmap.h>
 #include <wx/filename.h>
 #include <libPicture.h>
 #include "SliderVideoSelection.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <FiltreEffet.h>
 #include "PreviewDlg.h"
 #include <videothumb.h>
 #include "ShowPreview.h"

@@ -28,7 +28,6 @@
 #include "strcodec.h"
 #include "decode.h"
 #include "strTransform.h"
-#include <math.h>
 #include "perfTimer.h"
 
 #ifdef MEM_TRACE
@@ -473,7 +472,7 @@ static _FORCEINLINE float pixel2float(PixelI _h, const char _c, const unsigned c
 
     // assert (_c <= 127);
 
-    iTempH = (I32) _h ;
+    iTempH = _h ;
     s = (iTempH >> 31);
     iTempH = (iTempH ^ s) - s; // abs(iTempH)
 
@@ -708,7 +707,7 @@ Void outputNChannel(CWMImageStrCodec * pSC, size_t iFirstRow, size_t iFirstColum
                         PixelI p = ((pChannel[iChannel & 15][((iColumn >> 4) << 8) + idxCC[iRow][iColumn & 0xf]] + iBias) >> iShift);
 
                         p <<= nLen;
-                        pDst[iChannel] = (I32)(p);
+                        pDst[iChannel] = p;
                     }
                 }
             }
@@ -1806,7 +1805,7 @@ Void outputNChannelThumbnail(CWMImageStrCodec * pSC, const PixelI cMul, const si
                     for(iChannel = 0; iChannel < cChannel; iChannel ++){
                         PixelI p = ((pChannel[iChannel & 15][((iColumn >> 4) << 8) + idxCC[iRow][iColumn & 15]] * cMul) >> rShiftY) << nLen;
                         
-                        pDst[iChannel] = (I32)(p);
+                        pDst[iChannel] = p;
                     }
                 }
             }
@@ -2250,9 +2249,9 @@ Int decodeThumbnail(CWMImageStrCodec * pSC)
                         _ICC(r, g, b);
                         
                         pDst = (I32 *)pSC->WMIBI.pv + pOffsetX[iColumn >> nBits] + iY;
-                        pDst[0] = (I32)(r << nLen);
-                        pDst[1] = (I32)(g << nLen);
-                        pDst[2] = (I32)(b << nLen);
+                        pDst[0] = r << nLen;
+                        pDst[1] = g << nLen;
+                        pDst[2] = b << nLen;
                     }
                 }
                 break;
@@ -2962,7 +2961,7 @@ Int ReadWMIHeader(
 // 0
     /** signature **/
     Call(pWS->Read(pWS, szMS, sizeof(szMS)));
-    FailIf(szMS != (U8 *) strstr((char *) szMS, "WMPHOTO"), WMP_errUnsupportedFormat);
+    FailIf(szMS != (U8 *) strstr(szMS, "WMPHOTO"), WMP_errUnsupportedFormat);
     //================================
     Call(attach_SB(pSB, pWS));
 
@@ -3035,10 +3034,10 @@ pSCP->bdBitDepth = BD_LONG; // remove when optimization is done
 // tile sizes
     pSCP->uiTileX[0] = pSCP->uiTileY[0] = 0;
     for(i = 0; i < pSCP->cNumOfSliceMinus1V; i ++){ // width in MB of vertical slices, not needed for last slice!
-        pSCP->uiTileX[i + 1] = (U32) getBit32_SB(pSB, bAbbreviatedHeader ? 8 : 16) + pSCP->uiTileX[i];
+        pSCP->uiTileX[i + 1] = getBit32_SB(pSB, bAbbreviatedHeader ? 8 : 16) + pSCP->uiTileX[i];
     }
     for(i = 0; i < pSCP->cNumOfSliceMinus1H; i ++){ // width in MB of vertical slices, not needed for last slice!
-        pSCP->uiTileY[i + 1] = (U32) getBit32_SB(pSB, bAbbreviatedHeader ? 8 : 16) + pSCP->uiTileY[i];
+        pSCP->uiTileY[i + 1] = getBit32_SB(pSB, bAbbreviatedHeader ? 8 : 16) + pSCP->uiTileY[i];
     }
     if (bTileStretch) {  // no handling of tile stretching enabled as of now
         for (i = 0; i < (pSCP->cNumOfSliceMinus1V + 1) * (pSCP->cNumOfSliceMinus1H + 1); i++)
@@ -3413,7 +3412,7 @@ Int ImageStrDecDecode(
 #endif
     )
 {
-    CWMImageStrCodec* pSC = (CWMImageStrCodec*)ctxSC;
+    CWMImageStrCodec* pSC = ctxSC;
     CWMImageStrCodec* pNextSC = pSC->m_pNextSC;
     size_t cMBRow, k;
 
@@ -3603,7 +3602,7 @@ Int ImageStrDecDecode(
 Int ImageStrDecTerm(
     CTXSTRCODEC ctxSC)
 {
-    CWMImageStrCodec* pSC = (CWMImageStrCodec*)ctxSC;
+    CWMImageStrCodec* pSC = ctxSC;
     if (NULL == pSC)
     {
         return ICERR_OK;

@@ -25,7 +25,6 @@
 // we need at least one C++ header included, 
 // that defines the C++ Standard Library's version macro, 
 // that is used below to identify the library.
-#include <cstdlib>
 
 /**
 Class MapIntrospector - STL std::map Introspector

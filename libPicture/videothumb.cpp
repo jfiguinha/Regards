@@ -1,27 +1,15 @@
 #include "header.h"
 #include "videothumb.h"
-#include "Metadata.h"
 #include "FFmpegDecodeFrame.h"
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
-#include <ConvertUtility.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
-#include <rapidxml.hpp>
 
 
 CThumbnailVideo::CThumbnailVideo(const wxString & fileName)
 {
 	filename = fileName;
 	wxString decoder = "";
-	/*
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
-	*/
 	decodeFrame = new CFFmpegDecodeFrame(decoder);
 	decodeFrame->OpenFile(fileName);
 }

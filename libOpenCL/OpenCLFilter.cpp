@@ -98,7 +98,6 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 {
 	cv::UMat dst;
-	cl_int err = 0;
 
 	cl_mem_object_type mem_type = 0;
 	clGetMemObjectInfo(clImage, CL_MEM_TYPE, sizeof(cl_mem_object_type), &mem_type, 0);
@@ -161,9 +160,10 @@ cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 	}
 	else
 	{
+		cl_int err = 0;
 		dst.create((int)h, (int)w, type);
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
+		cl_command_queue q = context->GetCommandQueue();
 		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
@@ -1710,8 +1710,8 @@ cl_mem COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, c
 		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, width, height);
 
 		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
-		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
-		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
+		memDataOut->SetLibelle("input");
+		memDataOut->SetValue(context->GetContext(), dataOut, size, flag);
 
 
 		output = openclFilter.InsertYValue(memDataOut->GetValue(), inputData, width, height, "InsertYValueFromUchar");
@@ -1798,8 +1798,8 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 {
 	cl_mem outputValue = nullptr;
 	
-	COpenCLProgram * programCL = nullptr;
-	programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;

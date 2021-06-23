@@ -28,7 +28,6 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <io.h>
 #else
 #include <ctype.h>
 #endif // _WIN32
@@ -428,7 +427,7 @@ FreeImage_Load(FREE_IMAGE_FORMAT fif, const char *filename, int flags) {
 	FILE *handle = fopen(filename, "rb");
 
 	if (handle) {
-		FIBITMAP *bitmap = FreeImage_LoadFromHandle(fif, &io, (fi_handle)handle, flags);
+		FIBITMAP *bitmap = FreeImage_LoadFromHandle(fif, &io, handle, flags);
 
 		fclose(handle);
 
@@ -448,7 +447,7 @@ FreeImage_LoadU(FREE_IMAGE_FORMAT fif, const wchar_t *filename, int flags) {
 	FILE *handle = _wfopen(filename, L"rb");
 
 	if (handle) {
-		FIBITMAP *bitmap = FreeImage_LoadFromHandle(fif, &io, (fi_handle)handle, flags);
+		FIBITMAP *bitmap = FreeImage_LoadFromHandle(fif, &io, handle, flags);
 
 		fclose(handle);
 
@@ -496,7 +495,7 @@ FreeImage_Save(FREE_IMAGE_FORMAT fif, FIBITMAP *dib, const char *filename, int f
 	FILE *handle = fopen(filename, "w+b");
 	
 	if (handle) {
-		BOOL success = FreeImage_SaveToHandle(fif, dib, &io, (fi_handle)handle, flags);
+		BOOL success = FreeImage_SaveToHandle(fif, dib, &io, handle, flags);
 
 		fclose(handle);
 
@@ -516,7 +515,7 @@ FreeImage_SaveU(FREE_IMAGE_FORMAT fif, FIBITMAP *dib, const wchar_t *filename, i
 	FILE *handle = _wfopen(filename, L"w+b");
 	
 	if (handle) {
-		BOOL success = FreeImage_SaveToHandle(fif, dib, &io, (fi_handle)handle, flags);
+		BOOL success = FreeImage_SaveToHandle(fif, dib, &io, handle, flags);
 
 		fclose(handle);
 

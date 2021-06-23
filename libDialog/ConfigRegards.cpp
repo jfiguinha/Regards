@@ -297,17 +297,17 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	CMainParam* mainparam = CMainParamInit::getInstance();
 
 	//Get old value to compare with new value
-	int _transition = max((regardsParam->GetEffect() - 300), 0);
-	int _autoRotate = regardsParam->GetDetectOrientation();
-	int _autoContrast = regardsParam->GetAutoConstrast();
-	int _videoFaceDetection = regardsParam->GetFaceVideoDetection();
+	//int _transition = max((regardsParam->GetEffect() - 300), 0);
+	//int _autoRotate = regardsParam->GetDetectOrientation();
+	//int _autoContrast = regardsParam->GetAutoConstrast();
+	//int _videoFaceDetection = regardsParam->GetFaceVideoDetection();
 	int _faceDetection = regardsParam->GetFaceDetection();
-	int _timeDiaporama = regardsParam->GetDiaporamaTime();
-	int _thumbnailProcess = regardsParam->GetThumbnailProcess();
-	int _exifProcess = regardsParam->GetExifProcess();
-	int _faceProcess = regardsParam->GetFaceProcess();
-	int _dataInMemory = regardsParam->GetDatabaseInMemory();
-	int _interpolation = regardsParam->GetInterpolationType();
+	//int _timeDiaporama = regardsParam->GetDiaporamaTime();
+	//int _thumbnailProcess = regardsParam->GetThumbnailProcess();
+	//int _exifProcess = regardsParam->GetExifProcess();
+	//int _faceProcess = regardsParam->GetFaceProcess();
+	//int _dataInMemory = regardsParam->GetDatabaseInMemory();
+	//int _interpolation = regardsParam->GetInterpolationType();
 
 	int _supportOpenCL = 0;
 	wxString _platformName = "";

@@ -16,26 +16,24 @@ namespace Regards
 		class CCriteriaTreeWnd : public CTreeWithScrollbar
 		{
 		public:
+			CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int& mainWindowID, const CThemeTree& theme,
+			                 const CThemeScrollBar& themeScroll);
+			~CCriteriaTreeWnd(void) override;
+			void SetFile(const wxString& filename);
 
-			CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, const CThemeTree & theme,const CThemeScrollBar & themeScroll);
-            ~CCriteriaTreeWnd(void);
-            void SetFile(const wxString & filename);
-            
 		private:
+			void ShowCalendar(wxCommandEvent& event);
+			void ShowMap(wxCommandEvent& event);
+			wxString GenerateUrl();
+			void UpdateTreeData();
+			void ShowKeyWord(wxCommandEvent& event);
 
-            void ShowCalendar(wxCommandEvent &event);
-            void ShowMap(wxCommandEvent &event);
-            wxString GenerateUrl();
-            void UpdateTreeData();
-			void ShowKeyWord(wxCommandEvent &event);
-
-			CFileGeolocation * fileGeolocalisation;
-            CCriteriaTree * criteriaTree;
-            CCriteriaTree * oldCriteriaTree;
-            wxString filename;
-            int numPhotoId;
-            int mainWindowID;
+			CFileGeolocation* fileGeolocalisation;
+			CCriteriaTree* criteriaTree;
+			CCriteriaTree* oldCriteriaTree;
+			wxString filename;
+			int numPhotoId;
+			int mainWindowID;
 		};
-
 	}
 }

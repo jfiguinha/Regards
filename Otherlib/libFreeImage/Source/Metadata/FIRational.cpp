@@ -22,7 +22,7 @@
 #include "FreeImage.h"
 #include "Utilities.h"
 #include "FIRational.h"
-
+#include <sstream>
 /// Initialize and normalize a rational number
 void FIRational::initialize(LONG n, LONG d) {
 	if(d) {
@@ -60,7 +60,7 @@ FIRational::FIRational(const FITAG *tag) {
 		case FIDT_SRATIONAL:	// 64-bit signed fraction 
 		{
 			LONG *pvalue = (LONG*)FreeImage_GetTagValue((FITAG*)tag);
-			initialize((LONG)pvalue[0], (LONG)pvalue[1]);
+			initialize(pvalue[0], pvalue[1]);
 			break;
 		}
 	}

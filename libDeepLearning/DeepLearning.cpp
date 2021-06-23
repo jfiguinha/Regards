@@ -2,7 +2,6 @@
 #include "DeepLearning.h"
 #include "FaceDetector.h"
 #include "DetectRotation.h"
-#include <ConfigParam.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ViewerParamInit.h>
@@ -24,7 +23,7 @@ bool CDeepLearning::UnlockOpenCLDnn()
 	return CFaceDetector::UnlockOpenCLDnn();
 }
 
-vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
+vector<int> CDeepLearning::FindFace(CRegardsBitmap* pictureData)
 {
 	bool fastDetection = true;
 	bool isLoading = false;
@@ -41,15 +40,13 @@ vector<int> CDeepLearning::FindFace(CRegardsBitmap * pictureData)
 		CFaceDetector faceDetector(fastDetection);
 		return faceDetector.FindFace(pictureData);
 	}
-	else
-	{
-		vector<int> list;
-		return list;
-	}
+	vector<int> list;
+	return list;
 }
 
 
-void CDeepLearning::LoadRessource(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark)
+void CDeepLearning::LoadRessource(const string& config_file, const string& weight_file, const string& recognition,
+                                  const string& face_landmark)
 {
 	//CDetectRotation::LoadModel(rotation_json);
 	CFaceDetector::LoadModel(config_file, weight_file, recognition, face_landmark);
@@ -59,7 +56,7 @@ void CDeepLearning::LoadRessource(const string& config_file, const string& weigh
 }
 
 
-void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
+void CDeepLearning::DetectEyes(CRegardsBitmap* pBitmap)
 {
 	bool fastDetection = true;
 	std::vector<wxRect> listEye;
@@ -106,11 +103,10 @@ int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 		return detectRotation.GetExifOrientation(pBitmap, fastDetection);
 	}
 	return 0;
-
 }
 
 
-bool CDeepLearning::FindFaceCompatible(const int &numFace)
+bool CDeepLearning::FindFaceCompatible(const int& numFace)
 {
 	bool returnValue = false;
 	bool fastDetection = true;

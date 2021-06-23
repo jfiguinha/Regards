@@ -96,7 +96,7 @@ ToneMappingDrago03(FIBITMAP *dib, const float maxLum, const float avgLum, float 
 	Normal tone mapping of every pixel
 	further acceleration is obtained by a Padé approximation of log(x + 1)
 	*/
-	BYTE *bits = (BYTE*)FreeImage_GetBits(dib);
+	BYTE *bits = FreeImage_GetBits(dib);
 	for(y = 0; y < height; y++) {
 		FIRGBF *pixel = (FIRGBF*)bits;
 		for(x = 0; x < width; x++) {
@@ -228,7 +228,7 @@ REC709GammaCorrection(FIBITMAP *dib, const float gammaval) {
 	const unsigned height = FreeImage_GetHeight(dib);
 	const unsigned pitch  = FreeImage_GetPitch(dib);
 
-	BYTE *bits = (BYTE*)FreeImage_GetBits(dib);
+	BYTE *bits = FreeImage_GetBits(dib);
 	for(unsigned y = 0; y < height; y++) {
 		float *pixel = (float*)bits;
 		for(unsigned x = 0; x < width; x++) {

@@ -6,7 +6,6 @@
 #include <wx/dcbuffer.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <Gps.h>
 #include <SqlPhotos.h>
 #include <FileGeolocation.h>
 #include <GpsEngine.h>

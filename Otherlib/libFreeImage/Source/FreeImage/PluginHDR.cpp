@@ -21,6 +21,7 @@
 
 #include "FreeImage.h"
 #include "Utilities.h"
+#include <cctype>
 
 // ==========================================================
 // Plugin Interface
@@ -172,7 +173,7 @@ However we wanted pixels in the range [0,1] to map back into the range [0,1].
 static inline void 
 rgbe_RGBEToFloat(FIRGBF *rgbf, BYTE rgbe[4]) {
 	if (rgbe[3]) {   // nonzero pixel
-		const float f = (float)(ldexp(1.0, rgbe[3] - (int)(128+8)));
+		const float f = (float)(ldexp(1.0, rgbe[3] - (128+8)));
 		rgbf->red   = rgbe[0] * f;
 		rgbf->green = rgbe[1] * f;
 		rgbf->blue  = rgbe[2] * f;

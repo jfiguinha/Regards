@@ -63,7 +63,7 @@ void CalcMetadataSizeLPWSTR(const DPKPROPVARIANT var,
 {
     if (DPKVT_EMPTY != var.vt)
     {
-        U32 uiCBWithNull = sizeof(U16) * ((U32)wcslen((wchar_t *) var.VT.pwszVal) + 1); // +1 for NULL term;
+        U32 uiCBWithNull = sizeof(U16) * ((U32)wcslen(var.VT.pwszVal) + 1); // +1 for NULL term;
         assert(DPKVT_LPWSTR == var.vt);
 
         // We only use offset if size > 4
@@ -148,7 +148,7 @@ ERR CopyDescMetadata(DPKPROPVARIANT *pvarDst,
             
         case DPKVT_LPWSTR:
             pvarDst->vt = DPKVT_LPWSTR;
-            uiSize = sizeof(U16) * (wcslen((wchar_t *) varSrc.VT.pwszVal) + 1); // +1 for NULL term
+            uiSize = sizeof(U16) * (wcslen(varSrc.VT.pwszVal) + 1); // +1 for NULL term
             Call(PKAlloc((void **) &pvarDst->VT.pszVal, uiSize));
             memcpy(pvarDst->VT.pwszVal, varSrc.VT.pwszVal, uiSize);
             break;
@@ -345,7 +345,7 @@ ERR WriteContainerPre(
     // Header (8 bytes)
     Call(pWS->Write(pWS, IIMM, sizeof(IIMM))); offPos += 2;
     Call(PutUShort(pWS, offPos, 0x01bc)); offPos += 2;
-    Call(PutULong(pWS, offPos, (U32)OFFSET_OF_PFD)); offPos += 4;
+    Call(PutULong(pWS, offPos, OFFSET_OF_PFD)); offPos += 4;
 
     //================
     // Write overflow area

@@ -8,15 +8,11 @@
 #include <wx/progdlg.h>
 #include <wx/filename.h>
 #include <ConvertUtility.h>
-#include <window_id.h>
 #include <chrono>
-#include "VideoCompressOption.h"
 #include <FiltreEffet.h>
 #include <OpenCLFilter.h>
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideoYUV.h>
-#include <OpenCLEngine.h>
-#include <OpenCVEffect.h>
 
 using namespace Regards::OpenCL;
 //static const int dst_width = 1920;
@@ -261,7 +257,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void * data)
 		wxString frame = wxString::Format("%d fps", (int)(ffmpeg_trans->nbframe / dif));
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
 
-		double pourcentage = ((double)posVideo / (double)duration_total) * 100.0f;
+		double pourcentage = ((double)posVideo / duration_total) * 100.0f;
 		double timeMissing = (dif * 100.0f) / pourcentage;
 
 		frame = ConvertSecondToTime((int)(timeMissing - dif));
@@ -2014,7 +2010,7 @@ void CFFmpegTranscodingPimpl::VideoInfos(CFFmpegTranscodingPimpl::StreamContext 
 	int posVideo = (int)pos - videoCompressOption->startTime;
 	pourcentage = (posVideo / duration_total) * 100.0f;
 	this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-	sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+	sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, posVideo, (int)duration_total);
 	muWriteData.unlock();
 }
 
@@ -2258,7 +2254,7 @@ void CFFmpegTranscodingPimpl::DecodeHardwareFrame(AVFrame * & tmp_frame, AVFrame
 	av_frame_copy_props(dst, stream->dec_frame);
 
 	sws_scale(scaleContext,
-		(uint8_t const * const *)sw_frame->data, sw_frame->linesize, 0, (int)stream->dec_frame->height,
+		sw_frame->data, sw_frame->linesize, 0, stream->dec_frame->height,
 		dst->data, dst->linesize);
 
 	//av_freep(&sw_frame->data[0]);
@@ -2449,7 +2445,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame * dst)
                     int posVideo = (int)pos - videoCompressOption->startTime;
                     pourcentage = (posVideo / duration_total) * 100.0f;
                     this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-                    sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, (int)posVideo, (int)duration_total);
+                    sprintf(duration, "Progress : %d percent - Total Second : %d / %d", (int)pourcentage, posVideo, (int)duration_total);
                     muWriteData.unlock();
 
                     SetFrameData(tmp_frame, m_dlgProgress);

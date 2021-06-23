@@ -239,7 +239,7 @@ int NNQuantizer::contest(int b, int g, int r) {
 	int bestpos,bestbiaspos,bestd,bestbiasd;
 	int *p,*f, *n;
 
-	bestd = ~(((int) 1)<<31);
+	bestd = ~(1<<31);
 	bestbiasd = bestd;
 	bestpos = -1;
 	bestbiaspos = bestpos;
@@ -503,5 +503,5 @@ FIBITMAP* NNQuantizer::Quantize(FIBITMAP *dib, int ReserveSize, RGBQUAD *Reserve
 		}
 	}
 
-	return (FIBITMAP*) new_dib;
+	return new_dib;
 }

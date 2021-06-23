@@ -9,8 +9,6 @@
 #ifndef JBG_H
 #define JBG_H
 
-#include <stddef.h>
-
 /*
  * JBIG-KIT version number
  */

@@ -4,7 +4,7 @@
 #include <wx/stdpaths.h>
 using namespace Regards::Scanner;
 
-CMainTheme * CMainThemeInit::_singleton = nullptr;
+CMainTheme* CMainThemeInit::_singleton = nullptr;
 
 
 CMainThemeInit::CMainThemeInit()
@@ -17,36 +17,36 @@ CMainThemeInit::~CMainThemeInit()
 }
 
 
-CMainTheme * CMainThemeInit::getInstance()
+CMainTheme* CMainThemeInit::getInstance()
 {
 	if (nullptr == _singleton)
 	{
-		CMainTheme * viewerTheme = new CMainTheme();
-		CMainThemeInit::Initialize(viewerTheme);
+		auto viewerTheme = new CMainTheme();
+		Initialize(viewerTheme);
 		return viewerTheme;
 	}
 	return _singleton;
 }
 
-void CMainThemeInit::Initialize(CMainTheme * param)
+void CMainThemeInit::Initialize(CMainTheme* param)
 {
 	if (nullptr == _singleton)
 	{
-        /*
+		/*
 		wxString filename = wxStandardPaths::Get().GetExecutablePath();
 		filename.append(L".viewer.theme");
 		_singleton = param;
 		_singleton->OpenFile(filename);
-        */
- 
-        wxStandardPathsBase& stdp = wxStandardPaths::Get();
-        wxString documentPath = stdp.GetDocumentsDir();       
-        
+		*/
+
+		wxStandardPathsBase& stdp = wxStandardPaths::Get();
+		wxString documentPath = stdp.GetDocumentsDir();
+
 #ifdef WIN32
-		
-        documentPath.append("\\Regards\\Regards.viewer.theme");
-        _singleton = param;
-        _singleton->OpenFile(documentPath);
+
+		documentPath.append("\\Regards\\Regards.viewer.theme");
+		_singleton = param;
+		_singleton->OpenFile(documentPath);
 #else
 
 
@@ -54,7 +54,6 @@ void CMainThemeInit::Initialize(CMainTheme * param)
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif
-
 	}
 }
 

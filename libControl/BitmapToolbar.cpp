@@ -1,47 +1,32 @@
 #include <header.h>
 #include "BitmapToolbar.h"
 #include <LibResource.h>
-#include <ConfigParam.h>
+#include "BitmapWndViewer.h"
+
+
+
 using namespace Regards::Control;
 
-#define WM_EMAIL 4
-#define WM_IMPRIMER 5
-#define WM_CROP 6
-#define IDM_SETSHRINK 7
-#define WM_EXPORT 8
+constexpr auto WM_EMAIL = 4;
+constexpr auto WM_IMPRIMER = 5;
+constexpr auto IDM_SETSHRINK = 7;
+constexpr auto WM_EXPORT = 8;
 
-
-
-/*
-void CBitmapToolbar::SetBitmapDisplayPt(Regards::Control::CBitmapWndViewer * bitmapWindow)
-{
-	this->bitmapWindow = bitmapWindow;
-}
-*/
-
-CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical, const bool &exportPicture)
+CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar& theme,
+                               const bool& vertical, const bool& exportPicture)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	slide = nullptr;
 	this->parentId = viewerId;
 	this->exportPicture = exportPicture;
-	//wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
-	wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1);// "Save";
-	wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL",1);//"Emai";
-	wxString printLibelle = CLibResource::LoadStringFromResource("LBLPRINT",1);//"Print";
-	//wxString cropLibelle = CLibResource::LoadStringFromResource("LBLCROP",1);//"Crop";
-	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK",1);//"Shrink Picture";
-	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON",1);// "Zoom On";
-	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF",1);// "Zoom Off";
 
-	/*
-	save = new CToolbarButton(themeToolbar.button);
-	save->SetButtonResourceId("IDB_SAVE");
-	save->SetCommandId(WM_SAVE);
-	save->SetLibelleTooltip(saveLibelle);
-	navElement.push_back(save);
-	*/
+	const wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1); // "Save";
+	const wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL", 1); //"Emai";
+	const wxString printLibelle = CLibResource::LoadStringFromResource("LBLPRINT", 1); //"Print";
+	const wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1); //"Shrink Picture";
+	const wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
+	const wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
 
 	export_button = new CToolbarButton(themeToolbar.button);
 	export_button->SetButtonResourceId("IDB_SAVE");
@@ -55,27 +40,27 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	email->SetLibelleTooltip(emailLibelle);
 	navElement.push_back(email);
 
-	CToolbarButton * printer = new CToolbarButton(themeToolbar.button);
+	auto printer = new CToolbarButton(themeToolbar.button);
 	printer->SetButtonResourceId("IDB_PRINTERPNG");
 	printer->SetCommandId(WM_IMPRIMER);
 	printer->SetLibelleTooltip(printLibelle);
 	navElement.push_back(printer);
 
-    /*
+	/*
 	crop = new CToolbarButton(themeToolbar.button);
 	crop->SetButtonResourceId("IDB_CROP");
 	crop->SetCommandId(WM_CROP);
 	crop->SetLibelleTooltip(cropLibelle);
 	navElement.push_back(crop);
-    */
+	*/
 
-	CToolbarButton * shrink = new CToolbarButton(themeToolbar.button);
+	auto shrink = new CToolbarButton(themeToolbar.button);
 	shrink->SetButtonResourceId("IDB_SHRINK");
 	shrink->SetCommandId(IDM_SETSHRINK);
 	shrink->SetLibelleTooltip(shrinkLibelle);
 	navElement.push_back(shrink);
 
-	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
+	auto moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId("IDB_ZOOMMOINS");
 	moins->SetCommandId(WM_ZOOMOUT);
 	moins->SetLibelleTooltip(zoomOff);
@@ -84,7 +69,7 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 
-	CToolbarButton * plus = new CToolbarButton(themeToolbar.button);
+	auto plus = new CToolbarButton(themeToolbar.button);
 	plus->SetButtonResourceId("IDB_ZOOMPLUS");
 	plus->SetCommandId(WM_ZOOMON);
 	plus->SetLibelleTooltip(zoomOn);
@@ -95,63 +80,61 @@ CBitmapToolbar::~CBitmapToolbar()
 {
 }
 
-void CBitmapToolbar::ZoomPos(const int &position)
+void CBitmapToolbar::ZoomPos(const int& position)
 {
-	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-	
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+
 	if (bitmapWindow != nullptr)
 		bitmapWindow->SetRatioPos(position);
 }
 
 void CBitmapToolbar::ZoomOn()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
+	CBitmapWndViewer * bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		bitmapWindow->ZoomOn();
 	}
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
-    ChangeZoomInPos();
-
+	ChangeZoomInPos();
 }
 
 void CBitmapToolbar::ChangeZoomInPos()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
-    if (slide != nullptr && bitmapWindow != nullptr)
-    {
-        int dwPos = bitmapWindow->GetPosRatio();
-        dwPos++;
-        if (dwPos >= slide->GetNbValue())
-            dwPos = slide->GetNbValue() - 1;
-        SetTrackBarPosition(dwPos);
-    }
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	if (slide != nullptr && bitmapWindow != nullptr)
+	{
+		int dwPos = bitmapWindow->GetPosRatio();
+		dwPos++;
+		if (dwPos >= slide->GetNbValue())
+			dwPos = slide->GetNbValue() - 1;
+		SetTrackBarPosition(dwPos);
+	}
 }
 
 void CBitmapToolbar::ChangeZoomOutPos()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
-    if (slide != nullptr && bitmapWindow != nullptr)
-    {
-        int dwPos = bitmapWindow->GetPosRatio();
-        dwPos--;
-        if (dwPos < 0)
-            dwPos = 0;
-        SetTrackBarPosition(dwPos);
-    }
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	if (slide != nullptr && bitmapWindow != nullptr)
+	{
+		int dwPos = bitmapWindow->GetPosRatio();
+		dwPos--;
+		if (dwPos < 0)
+			dwPos = 0;
+		SetTrackBarPosition(dwPos);
+	}
 }
 
 
 void CBitmapToolbar::ZoomOut()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 		bitmapWindow->ZoomOut();
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
-    ChangeZoomOutPos();
-
+	ChangeZoomOutPos();
 }
 
 void CBitmapToolbar::SetTabValue(vector<int> value)
@@ -160,12 +143,11 @@ void CBitmapToolbar::SetTabValue(vector<int> value)
 		slide->SetTabValue(value);
 }
 
-void CBitmapToolbar::ClickButton(const int &id)
+void CBitmapToolbar::ClickButton(const int& id)
 {
-
 }
 
-void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
+void CBitmapToolbar::SetTrackBarPosition(const int& iPos)
 {
 	int positionTrackBar = iPos;
 	if (slide != nullptr)
@@ -178,39 +160,39 @@ void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
 
 void CBitmapToolbar::ShowExportButton()
 {
-  	if (export_button != nullptr)
+	if (export_button != nullptr)
 	{
 		if (!export_button->IsVisible())
 		{
 			export_button->SetVisible(true);
 			Refresh();
 		}
-	}  
+	}
 }
 
 void CBitmapToolbar::HideExportButton()
 {
-  	if (export_button != nullptr)
+	if (export_button != nullptr)
 	{
 		if (export_button->IsVisible())
 		{
 			export_button->SetVisible(false);
 			Refresh();
 		}
-	}  
+	}
 }
 
-void CBitmapToolbar::SlidePosChange(const int &position, const wxString &key)
+void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
-	if(bitmapWindow != nullptr)
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	if (bitmapWindow != nullptr)
 		bitmapWindow->SetZoomPosition(position);
 }
 
 
-void CBitmapToolbar::EventManager(const int &id)
+void CBitmapToolbar::EventManager(const int& id)
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
+	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		switch (id)
@@ -225,23 +207,23 @@ void CBitmapToolbar::EventManager(const int &id)
 			break;
 
 		case WM_EXPORT:
-		{
-			if (bitmapWindow != nullptr)
 			{
-				if (exportPicture)
-					bitmapWindow->ExportPicture();
-				else
-					bitmapWindow->SavePicture();
-			}
+				if (bitmapWindow != nullptr)
+				{
+					if (exportPicture)
+						bitmapWindow->ExportPicture();
+					else
+						bitmapWindow->SavePicture();
+				}
 
-			break;
-		}
-		/*
-		case WM_SAVE:
-			if (bitmapWindow != nullptr)
-				bitmapWindow->SavePicture();
-			break;
-*/
+				break;
+			}
+			/*
+			case WM_SAVE:
+				if (bitmapWindow != nullptr)
+					bitmapWindow->SavePicture();
+				break;
+	*/
 		case WM_EMAIL:
 			if (bitmapWindow != nullptr)
 				bitmapWindow->SendEmail();
@@ -256,7 +238,3 @@ void CBitmapToolbar::EventManager(const int &id)
 		}
 	}
 }
-
-
-
-

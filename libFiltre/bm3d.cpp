@@ -1028,8 +1028,7 @@ void ht_filtering_hadamard(
     //! Weight for aggregation
     if (doWeight)
         for (unsigned c = 0; c < chnls; c++)
-            weight_table[c] = (weight_table[c] > 0.0f ? 1.0f / (float)
-                    (sigma_table[c] * sigma_table[c] * weight_table[c]) : 1.0f);
+            weight_table[c] = (weight_table[c] > 0.0f ? 1.0f / (sigma_table[c] * sigma_table[c] * weight_table[c]) : 1.0f);
 }
 
 /**
@@ -1101,8 +1100,7 @@ void wiener_filtering_hadamard(
     //! Weight for aggregation
     if (doWeight)
         for (unsigned c = 0; c < chnls; c++)
-            weight_table[c] = (weight_table[c] > 0.0f ? 1.0f / (float)
-                    (sigma_table[c] * sigma_table[c] * weight_table[c]) : 1.0f);
+            weight_table[c] = (weight_table[c] > 0.0f ? 1.0f / (sigma_table[c] * sigma_table[c] * weight_table[c]) : 1.0f);
 }
 
 /**

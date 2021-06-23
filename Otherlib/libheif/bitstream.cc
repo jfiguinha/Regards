@@ -175,7 +175,7 @@ uint8_t BitstreamRange::read8()
   uint8_t buf;
 
   auto istr = get_istream();
-  bool success = istr->read((char*) &buf, 1);
+  bool success = istr->read(&buf, 1);
 
   if (!success) {
     set_eof_while_reading();
@@ -195,7 +195,7 @@ uint16_t BitstreamRange::read16()
   uint8_t buf[2];
 
   auto istr = get_istream();
-  bool success = istr->read((char*) buf, 2);
+  bool success = istr->read(buf, 2);
 
   if (!success) {
     set_eof_while_reading();
@@ -215,7 +215,7 @@ uint32_t BitstreamRange::read32()
   uint8_t buf[4];
 
   auto istr = get_istream();
-  bool success = istr->read((char*) buf, 4);
+  bool success = istr->read(buf, 4);
 
   if (!success) {
     set_eof_while_reading();
@@ -257,7 +257,7 @@ std::string BitstreamRange::read_string()
       break;
     }
     else {
-      str += (char) c;
+      str += c;
     }
   }
 
@@ -430,7 +430,7 @@ bool BitReader::get_uvlc(int* value)
 
   int offset = 0;
   if (num_zeros != 0) {
-    offset = (int) get_bits(num_zeros);
+    offset = get_bits(num_zeros);
     *value = offset + (1 << num_zeros) - 1;
     assert(*value > 0);
     return true;
@@ -560,7 +560,7 @@ void StreamWriter::write(int size, uint64_t value)
     write32((uint32_t) value);
   }
   else if (size == 8) {
-    write64((uint64_t) value);
+    write64(value);
   }
   else {
     assert(false); // unimplemented size

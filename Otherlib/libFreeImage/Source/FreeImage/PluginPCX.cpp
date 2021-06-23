@@ -568,7 +568,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 					bit = (BYTE)(1 << plane);
 
 					for (unsigned x = 0; x < width; x++) {
-						index = (unsigned)((x / 8) + plane * header.bytes_per_line);
+						index = x / 8 + plane * header.bytes_per_line;
 						mask = (BYTE)(0x80 >> (x & 0x07));
 						buffer[x] |= (line[index] & mask) ? bit : 0;
 					}

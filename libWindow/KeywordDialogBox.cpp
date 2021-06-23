@@ -1,8 +1,6 @@
 #include <header.h>
 #include "KeywordDialogBox.h"
 #include <RegardsConfigParam.h>
-#include <LibResource.h>
-#include <ParamInit.h>
 
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)

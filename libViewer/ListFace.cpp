@@ -1,7 +1,6 @@
 #include <header.h>
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
-#include <ConfigParam.h>
 #include <ParamInit.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
@@ -14,20 +13,17 @@
 #include <SQLRemoveData.h>
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
-#include <PictureData.h>
 #include <RegardsBitmap.h>
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
-#include "TitleBar.h"
 #include "LibResource.h"
 #include <videothumb.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-#include <RegardsConfigParam.h>
 
 extern bool processrecognitionison;
 
@@ -42,45 +38,44 @@ using namespace Regards::DeepLearning;
 class CThreadFace
 {
 public:
-
 	CThreadFace()
 	{
 		thread = nullptr;
 		mainWindow = nullptr;
 	};
-	~CThreadFace() {
 
+	~CThreadFace()
+	{
 	};
 
 
-
 	wxString filename;
-	std::thread * thread = nullptr;
-	wxWindow * mainWindow = nullptr;
-	wxProgressDialog * dialog = nullptr;
+	std::thread* thread = nullptr;
+	wxWindow* mainWindow = nullptr;
+	wxProgressDialog* dialog = nullptr;
 	int nbFace = 0;
 };
 
 CListFace::CListFace(wxWindow* parent, wxWindowID id)
-	: CWindowMain("CListFace",parent, id)
+	: CWindowMain("CListFace", parent, id)
 {
 	wxRect rect;
 	thumbscrollbar = nullptr;
 	thumbFaceToolbar = nullptr;
 	thumbnailFace = nullptr;
 	bool checkValidity = false;
-	CMainParam * config = CMainParamInit::getInstance();
+	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	std::vector<int> value = { 60, 70, 80, 90, 100 };
-	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
+	std::vector<int> value = {60, 70, 80, 90, 100};
+	std::vector<int> valueZoom = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600};
 
 	int positionTab = 3;
 	if (config != nullptr)
 		config->GetSlideFacePos(positionTab);
 
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
@@ -111,31 +106,34 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	{
 		CThemeToolbar theme;
 		//viewerTheme->GetThumbnailToolbarTheme(theme);
-        viewerTheme->GetBitmapToolbarTheme(&theme);
-            
+		viewerTheme->GetBitmapToolbarTheme(&theme);
+
 		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
 		thumbFaceToolbar->SetTabValue(valueZoom);
 		thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
 
-		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
+		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY,
+		                         false);
 
 		int position = 2;
-		if(config != nullptr)
+		if (config != nullptr)
 		{
 			double pertinence = config->GetPertinenceValue();
 			int pertinenceValue = pertinence;
-			for(int i = 0;i < value.size();i++)
+			for (int i = 0; i < value.size(); i++)
 			{
-				if(pertinenceValue == value[i])
+				if (pertinenceValue == value[i])
 					position = i;
 			}
 		}
-	
-        viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
+
+		viewerTheme->GetThumbnailToolbarTheme(theme);
+		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);
+		//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(value);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
-		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
+		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(),
+		                         rect, wxID_ANY, false);
 		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 		
@@ -145,10 +143,9 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		titleBar->SetClosable(false);
 		windowManager->AddWindow(titleBar, Pos::wxTOP, true, titleBar->GetHeight(), rect, wxID_ANY, false);
 		*/
-		
 	}
 
-	
+
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
 	Connect(wxEVENT_FACEVIDEOADD, wxCommandEventHandler(CListFace::OnFaceVideoAdd));
@@ -162,10 +159,10 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
 
 	isLoadingResource = true;
-	CThreadFace * path = new CThreadFace();
+	auto path = new CThreadFace();
 	path->mainWindow = this;
 	path->thread = new thread(LoadResource, path);
-    processIdle = false;
+	processIdle = false;
 
 	nbProcessFacePhoto = 0;
 
@@ -175,7 +172,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 void CListFace::ClosePane()
 {
-	
 }
 
 void CListFace::RefreshPane()
@@ -198,7 +194,7 @@ void CListFace::RefreshPane()
 
 void CListFace::OnResourceLoad(wxCommandEvent& event)
 {
-	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	auto path = static_cast<CThreadFace*>(event.GetClientData());
 	if (path->thread != nullptr)
 	{
 		path->thread->join();
@@ -221,15 +217,15 @@ void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
 
 void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
 {
-	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	auto path = static_cast<CThreadFace*>(event.GetClientData());
 	//int nbFace = 0;
 	if (path != nullptr)
 	{
 		//Update criteria
 		if (path->nbFace > 0)
 		{
-			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 			wxQueueEvent(mainWnd, eventChange);
 		}
 	}
@@ -239,13 +235,12 @@ void CListFace::OnFaceVideoAdd(wxCommandEvent& event)
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
-
 }
 
 
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
-	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	auto path = static_cast<CThreadFace*>(event.GetClientData());
 	int nbFace = 0;
 	if (path != nullptr)
 	{
@@ -261,8 +256,8 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 		//Update criteria
 		if (path->nbFace > 0)
 		{
-			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 			wxQueueEvent(mainWnd, eventChange);
 		}
 
@@ -283,12 +278,12 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		this->GetEventHandler()->AddPendingEvent(evt);
 	}
-    processIdle = true;
+	processIdle = true;
 }
 
-void CListFace::LoadResource(void * param)
+void CListFace::LoadResource(void* param)
 {
-	CThreadFace * path = (CThreadFace *)param;
+	auto path = static_cast<CThreadFace*>(param);
 
 	//load Ressource
 
@@ -317,7 +312,8 @@ void CListFace::LoadResource(void * param)
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(),
+	                             landmark.ToStdString());
 
 
 	if (path->mainWindow != nullptr)
@@ -329,17 +325,16 @@ void CListFace::LoadResource(void * param)
 }
 
 
-void CListFace::FacialDetectionRecognition(void * param)
+void CListFace::FacialDetectionRecognition(void* param)
 {
-	CThreadFace * path = (CThreadFace *)param;
+	auto path = static_cast<CThreadFace*>(param);
 	wxString filename = path->filename;
 
 
 	std::vector<int> listFace;
 	if (filename == "")
 	{
-
-		CSqlFindFacePhoto facePhoto; 
+		CSqlFindFacePhoto facePhoto;
 		int i = 0;
 		for (int numFace : listFace)
 		{
@@ -375,7 +370,7 @@ void CListFace::FacialDetectionRecognition(void * param)
 void CListFace::FacialRecognitionReload()
 {
 	int nbProcesseur = 1;
-	CRegardsConfigParam * config = CParamInit::getInstance();
+	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
 
@@ -386,7 +381,7 @@ void CListFace::FacialRecognitionReload()
 		CSqlFindFacePhoto facePhoto;
 		std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
 		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
-			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
 		int i = 0;
 		for (int numFace : listFace)
@@ -398,10 +393,10 @@ void CListFace::FacialRecognitionReload()
 		}
 
 		//Update criteria
-		if (listFace.size() > 0)
+		if (!listFace.empty())
 		{
-			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 			wxQueueEvent(mainWnd, eventChange);
 
 			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
@@ -410,25 +405,26 @@ void CListFace::FacialRecognitionReload()
 	}
 }
 
-void CListFace::FindFaceCompatible(const vector<int> & listFace)
+void CListFace::FindFaceCompatible(const vector<int>& listFace)
 {
 	for (int numFace : listFace)
 	{
 		CDeepLearning::FindFaceCompatible(numFace);
 	}
 }
+
 //---------------------------------------------------------------------------------------
 //Test FacialRecognition
 //---------------------------------------------------------------------------------------
-void CListFace::FacialRecognition(void * param)
+void CListFace::FacialRecognition(void* param)
 {
-	CThreadFace * path = (CThreadFace *)param;
+	auto path = static_cast<CThreadFace*>(param);
 	bool pictureOK = false;
 	CLibPicture libPicture;
 	path->nbFace = 0;
 	vector<int> listFace;
 	int faceVideoDetection = 0;
-	CRegardsConfigParam * config = CParamInit::getInstance();
+	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		faceVideoDetection = config->GetFaceVideoDetection();
 
@@ -438,14 +434,14 @@ void CListFace::FacialRecognition(void * param)
 		CThumbnailVideo video(path->filename);
 		int width = 0;
 		int height = 0;
-		
+
 		int orientation = 0;
 		video.GetVideoDimensions(width, height, orientation);
 		int timeinsecond = video.GetMovieDuration();
 		for (int i = 0; i < timeinsecond; i++)
 		{
-            path->nbFace = 0;
-			CRegardsBitmap * pictureData = video.GetVideoFrame(i, 0, 0);
+			path->nbFace = 0;
+			CRegardsBitmap* pictureData = video.GetVideoFrame(i, 0, 0);
 			if (pictureData != nullptr)
 			{
 				pictureData->SetFilename(path->filename);
@@ -453,11 +449,9 @@ void CListFace::FacialRecognition(void * param)
 				pictureData->VertFlipBuf();
 
 				listFace = CDeepLearning::FindFace(pictureData);
-                path->nbFace = listFace.size();
-
+				path->nbFace = listFace.size();
 			}
 
-			
 
 			CSqlFacePhoto facePhoto;
 			for (int numFace : listFace)
@@ -478,7 +472,7 @@ void CListFace::FacialRecognition(void * param)
 	}
 	else
 	{
-		CRegardsBitmap * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
+		CRegardsBitmap* pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 		if (pictureOK && pictureData != nullptr)
 		{
 			if (libPicture.TestIsVideo(path->filename))
@@ -488,9 +482,8 @@ void CListFace::FacialRecognition(void * param)
 
 			pictureData->SetFilename(path->filename);
 
-            listFace = CDeepLearning::FindFace(pictureData);
-            path->nbFace = listFace.size();
-	
+			listFace = CDeepLearning::FindFace(pictureData);
+			path->nbFace = listFace.size();
 		}
 
 		if (pictureData != nullptr)
@@ -505,7 +498,6 @@ void CListFace::FacialRecognition(void * param)
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-
 }
 
 void CListFace::OnIdle(wxIdleEvent& evt)
@@ -530,7 +522,7 @@ void CListFace::ProcessIdle()
 {
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
-	CRegardsConfigParam * config = CParamInit::getInstance();
+	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
 	//Find picture to examine
@@ -544,7 +536,7 @@ void CListFace::ProcessIdle()
 		CSqlFacePhoto sqlFacePhoto;
 		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
 
-		CThreadFace * path = new CThreadFace();
+		auto path = new CThreadFace();
 		path->filename = listPhoto.at(0);
 		path->mainWindow = this;
 		path->thread = new thread(FacialRecognition, path);
@@ -553,12 +545,12 @@ void CListFace::ProcessIdle()
 
 		if (sendMessageStatus)
 		{
-			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->nbPhoto = listPhoto.size();
 			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
 			thumbnailMessage->nbElement = listPhoto.size();
 
-			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
 			eventChange.SetClientData(thumbnailMessage);
 			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
@@ -572,7 +564,7 @@ void CListFace::ProcessIdle()
 	{
 		if (listFace.size() > 0)
 		{
-			CThreadFace * path = new CThreadFace();
+			auto path = new CThreadFace();
 			path->mainWindow = this;
 			path->filename = "internal";
 			path->thread = new thread(FacialDetectionRecognition, path);
@@ -604,14 +596,14 @@ void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)
 {
-	vector<CThumbnailData *> listItem;
+	vector<CThumbnailData*> listItem;
 	thumbnailFace->GetSelectItem(listItem);
 	if (listItem.size() > 0)
 	{
 		//Choix de la Face
 		MoveFaceDialog moveFaceDialog(this);
 		moveFaceDialog.ShowModal();
-		if(moveFaceDialog.IsOk())
+		if (moveFaceDialog.IsOk())
 		{
 			thumbnailFace->MoveFace(moveFaceDialog.GetFaceNameSelected());
 		}
@@ -627,7 +619,6 @@ CListFace::~CListFace()
 		config->SetSlideFacePos(positionTab);
 
 	delete(windowManager);
-
 }
 
 int CListFace::GetThumbnailHeight()
@@ -635,7 +626,7 @@ int CListFace::GetThumbnailHeight()
 	return thumbnailFace->GetIconeHeight() + thumbscrollbar->GetBarHeight();
 }
 
-void CListFace::SetActifItem(const int &numItem, const bool &move)
+void CListFace::SetActifItem(const int& numItem, const bool& move)
 {
 	if (thumbnailFace != nullptr)
 		thumbnailFace->SetActifItem(numItem, move);

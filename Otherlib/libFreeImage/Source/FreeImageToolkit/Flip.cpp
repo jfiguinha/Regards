@@ -77,8 +77,8 @@ FreeImage_FlipHorizontal(FIBITMAP *src) {
 
 			case 8:
 			{				
-				BYTE *dst_data = (BYTE*) bits; 				
-				BYTE *src_data = (BYTE*) (new_bits + line - bytespp); 				
+				BYTE *dst_data = bits; 				
+				BYTE *src_data = new_bits + line - bytespp; 				
 				for(unsigned c = 0; c < width; c++) { 			
 					*dst_data++ = *src_data--;  
 				} 
@@ -102,8 +102,8 @@ FreeImage_FlipHorizontal(FIBITMAP *src) {
 			case 96:
 			case 128:
 			{				
-				BYTE *dst_data = (BYTE*) bits; 				
-				BYTE *src_data = (BYTE*) (new_bits + line - bytespp); 				
+				BYTE *dst_data = bits; 				
+				BYTE *src_data = new_bits + line - bytespp; 				
 				for(unsigned c = 0; c < width; c++) { 		
 					for(unsigned k = 0; k < bytespp; k++) {
 						*dst_data++ = src_data[k];  

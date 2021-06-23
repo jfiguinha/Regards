@@ -15,31 +15,31 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CSplitterWithPanel :public CSplitter, public CPaneInterface, public CToolbarInterface
+		class CSplitterWithPanel : public CSplitter, public CPaneInterface, public CToolbarInterface
 		{
 		public:
-			CSplitterWithPanel(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const CThemeToolbar & themeInfosToolbar, const bool &horizontal);
-			~CSplitterWithPanel();
-			void SetHorizontal(const bool &horizontal);
-			void UpdateScreenRatio();
-			void ClickShowButton(const int &id);
-			void ClosePane(const int &id);
+			CSplitterWithPanel(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme,
+			                   const CThemeToolbar& themeInfosToolbar, const bool& horizontal);
+			~CSplitterWithPanel() override;
+			void SetHorizontal(const bool& horizontal);
+			void UpdateScreenRatio() override;
+			void ClickShowButton(const int& id);
+			void ClosePane(const int& id);
 			void ShowWindow();
-			int GetPosition(const int &panel);
-			void FixWindow(const int &numWindow, const int &size);
+			int GetPosition(const int& panel);
+			void FixWindow(const int& numWindow, const int& size);
 
 		protected:
-
 			//void ShowWindow(const bool & showInfos);
-			void ShowWindow(const int &id, const bool &show);
+			void ShowWindow(const int& id, const bool& show);
 			virtual int GetDefaultPositionForWindow2();
 			virtual int GetDefaultPositionForWindow1();
 			int posBarInfos;
-			CPane * paneWindow1;
-			CClickToolbar * clickWindow1Toolbar;
+			CPane* paneWindow1;
+			CClickToolbar* clickWindow1Toolbar;
 			bool showclickWindow1Toolbar;
-			CPane * paneWindow2;
-			CClickToolbar * clickWindow2Toolbar;
+			CPane* paneWindow2;
+			CClickToolbar* clickWindow2Toolbar;
 			bool showclickWindow2Toolbar;
 			bool fullscreen;
 			int lastWindow;

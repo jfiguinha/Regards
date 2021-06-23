@@ -4,7 +4,6 @@
 //(*Headers(PertinenceValue)
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
-#include <wx/button.h>
 #include <wx/dialog.h>
 //*)
 

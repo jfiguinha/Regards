@@ -35,7 +35,7 @@ void COpenCLRawDev::InitData(void * dataInput, int sizeInput, int sizeOutput, in
 		delete paramOutput;
 
 	paramOutput = new COpenCLParameterUShortArray();
-	((COpenCLParameterUShortArray *)paramOutput)->SetLibelle("input");
+	paramOutput->SetLibelle("input");
 	((COpenCLParameterUShortArray *)paramOutput)->SetValue(context->GetContext(), (unsigned short *)dataInput, sizeInput, flag);
 
 	cl_mem cloutput = InitData(scale);

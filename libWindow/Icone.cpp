@@ -11,10 +11,9 @@
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #ifdef WIN32
-#include <FiltreEffetCPU.h>
 #endif
-#include <RegardsBitmap.h>
 #include <RegardsConfigParam.h>
+#include <RegardsBitmap.h>
 
 using namespace Regards::Window;
 
@@ -161,12 +160,8 @@ void CIcone::SetSizeIcone(const int &width, const int &height)
 }
 
 void CIcone::SetTheme(CThemeIcone theme)
-{
-    int width = themeIcone.GetRealWidth();
-    int height = themeIcone.GetRealHeight();
-    
+{   
     themeIcone = theme;
-   
 }
 
 

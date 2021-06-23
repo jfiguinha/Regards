@@ -12,7 +12,7 @@
 #else
 #include <GL/glut.h>
 #endif
-
+#include <EffectVideoParameter.h>
 #include <utility.h>
 
 using namespace Regards::OpenGL;

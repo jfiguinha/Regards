@@ -18,7 +18,7 @@ CThumbnailViewerEffect::~CThumbnailViewerEffect(void)
 
 void CThumbnailViewerEffect::OnPictureClick(CThumbnailData * data)
 {
-	wxWindow * panelInfos = (wxWindow *)this->FindWindowById(panelInfosId);
+	wxWindow * panelInfos = this->FindWindowById(panelInfosId);
 	int numItem = data->GetNumPhotoId();
 	if (panelInfos != nullptr)
 	{

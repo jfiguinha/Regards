@@ -44,7 +44,7 @@ static void writeConfigBox(avifRWStream * s, avifCodecConfigurationBox * cfg);
 
 avifCodecEncodeOutput * avifCodecEncodeOutputCreate(void)
 {
-    avifCodecEncodeOutput * encodeOutput = (avifCodecEncodeOutput *)avifAlloc(sizeof(avifCodecEncodeOutput));
+    avifCodecEncodeOutput * encodeOutput = avifAlloc(sizeof(avifCodecEncodeOutput));
     memset(encodeOutput, 0, sizeof(avifCodecEncodeOutput));
     avifArrayCreate(&encodeOutput->samples, sizeof(avifEncodeSample), 1);
     return encodeOutput;
@@ -52,7 +52,7 @@ avifCodecEncodeOutput * avifCodecEncodeOutputCreate(void)
 
 void avifCodecEncodeOutputAddSample(avifCodecEncodeOutput * encodeOutput, const uint8_t * data, size_t len, avifBool sync)
 {
-    avifEncodeSample * sample = (avifEncodeSample *)avifArrayPushPtr(&encodeOutput->samples);
+    avifEncodeSample * sample = avifArrayPushPtr(&encodeOutput->samples);
     avifRWDataSet(&sample->data, data, len);
     sample->sync = sync;
 }
@@ -117,7 +117,7 @@ typedef struct avifEncoderData
 
 static avifEncoderData * avifEncoderDataCreate()
 {
-    avifEncoderData * data = (avifEncoderData *)avifAlloc(sizeof(avifEncoderData));
+    avifEncoderData * data = avifAlloc(sizeof(avifEncoderData));
     memset(data, 0, sizeof(avifEncoderData));
     data->imageMetadata = avifImageCreateEmpty();
     avifArrayCreate(&data->items, sizeof(avifEncoderItem), 8);
@@ -127,7 +127,7 @@ static avifEncoderData * avifEncoderDataCreate()
 
 static avifEncoderItem * avifEncoderDataCreateItem(avifEncoderData * data, const char * type, const char * infeName, size_t infeNameSize)
 {
-    avifEncoderItem * item = (avifEncoderItem *)avifArrayPushPtr(&data->items);
+    avifEncoderItem * item = avifArrayPushPtr(&data->items);
     ++data->lastItemID;
     item->id = data->lastItemID;
     memcpy(item->type, type, sizeof(item->type));
@@ -157,7 +157,7 @@ static void avifEncoderDataDestroy(avifEncoderData * data)
 
 static void avifEncoderItemAddMdatFixup(avifEncoderItem * item, const avifRWStream * s)
 {
-    avifOffsetFixup * fixup = (avifOffsetFixup *)avifArrayPushPtr(&item->mdatFixups);
+    avifOffsetFixup * fixup = avifArrayPushPtr(&item->mdatFixups);
     fixup->offset = avifRWStreamOffset(s);
 }
 
@@ -165,7 +165,7 @@ static void avifEncoderItemAddMdatFixup(avifEncoderItem * item, const avifRWStre
 
 avifEncoder * avifEncoderCreate(void)
 {
-    avifEncoder * encoder = (avifEncoder *)avifAlloc(sizeof(avifEncoder));
+    avifEncoder * encoder = avifAlloc(sizeof(avifEncoder));
     memset(encoder, 0, sizeof(avifEncoder));
     encoder->maxThreads = 1;
     encoder->minQuantizer = AVIF_QUANTIZER_LOSSLESS;
@@ -485,7 +485,7 @@ avifResult avifEncoderAddImage(avifEncoder * encoder, const avifImage * image, u
         }
     }
 
-    avifEncoderFrame * frame = (avifEncoderFrame *)avifArrayPushPtr(&encoder->data->frames);
+    avifEncoderFrame * frame = avifArrayPushPtr(&encoder->data->frames);
     frame->durationInTimescales = durationInTimescales;
     return AVIF_RESULT_OK;
 }
@@ -617,7 +617,7 @@ avifResult avifEncoderFinish(avifEncoder * encoder, avifRWData * output)
         avifRWStreamWriteU16(&s, 1);                     // unsigned int(16) extent_count;
         avifEncoderItemAddMdatFixup(item, &s);           //
         avifRWStreamWriteU32(&s, 0 /* set later */);     // unsigned int(offset_size*8) extent_offset;
-        avifRWStreamWriteU32(&s, (uint32_t)contentSize); // unsigned int(length_size*8) extent_length;
+        avifRWStreamWriteU32(&s, contentSize); // unsigned int(length_size*8) extent_length;
     }
 
     avifRWStreamFinishBox(&s, iloc);

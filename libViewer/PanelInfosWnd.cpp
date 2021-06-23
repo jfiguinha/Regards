@@ -1,6 +1,5 @@
 #include <header.h>
 #include "PanelInfosWnd.h"
-#include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
 #include "MainTheme.h"
@@ -17,12 +16,10 @@
 #include "ViewerParamInit.h"
 #include <ShowBitmap.h>
 #include <MainParamInit.h>
-#include <GpsEngine.h>
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
-#include <RegardsBitmap.h>
 #include "PicturePanel.h"
-#include <OpenCVEffect.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;
@@ -34,14 +31,14 @@ wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
-	: CTabWindow("CPanelInfosWnd",parent, id)
+	: CTabWindow("CPanelInfosWnd", parent, id)
 {
 	infosFileWnd = nullptr;
 	firstTime = true;
-    historyEffectWnd = nullptr;
+	historyEffectWnd = nullptr;
 	thumbnailEffectWnd = nullptr;
 	filtreEffectWnd = nullptr;
-    criteriaTreeWnd = nullptr;
+	criteriaTreeWnd = nullptr;
 
 	webBrowser = nullptr;
 	infosToolbar = nullptr;
@@ -49,13 +46,13 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	//Effect Parameter
 	modificationManager = nullptr;
 
-    isThumbnail = false;
+	isThumbnail = false;
 	isVideo = false;
 	filename = L"";
 	//bitmap = new CRegardsBitmap();
 	width = 0;
 	height = 0;
-    url = "http://www.google.fr";
+	url = "http://www.google.fr";
 
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -63,36 +60,36 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	else
 		windowVisible = WM_INFOS;
 
-	if(windowVisible == WM_HISTOGRAM)
+	if (windowVisible == WM_HISTOGRAM)
 		windowVisible = WM_INFOS;
-	
-	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
-    
-    wxString folder = CFileUtility::GetDocumentFolderPath();
-    
+	//CRegardsConfigParam * config = CParamInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+
+
+	wxString folder = CFileUtility::GetDocumentFolderPath();
+
 	modificationManager = new CModificationManager(folder);
 
 	if (viewerTheme != nullptr)
 	{
-        CThemeScrollBar themeScroll;
-        viewerTheme->GetScrollTheme(&themeScroll);
-        
-        CThemeTree theme;
-        viewerTheme->GetTreeTheme(&theme);
-        
-        infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeTree theme;
+		viewerTheme->GetTreeTheme(&theme);
+
+		infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
 
 		infosFileWnd->Show(false);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(infosFileWnd);
 		tabInfosFile->SetId(WM_INFOS);
-        listWindow.push_back(tabInfosFile);
+		listWindow.push_back(tabInfosFile);
 	}
-	
- 	if (viewerTheme != nullptr)
+
+	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetScrollTheme(&themeScroll);
@@ -100,20 +97,20 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
 
-        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
-        filtreEffectWnd->Show(false);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
+		filtreEffectWnd->Show(false);
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(filtreEffectWnd);
 		tabInfosFile->SetId(WM_EFFECTPARAMETER);
-        listWindow.push_back(tabInfosFile);
+		listWindow.push_back(tabInfosFile);
 
-		CTabWindowData * tabInfosFileVideo = new CTabWindowData();
+		auto tabInfosFileVideo = new CTabWindowData();
 		tabInfosFileVideo->SetWindow(filtreEffectWnd);
 		tabInfosFileVideo->SetId(WM_VIDEOEFFECT);
 		listWindow.push_back(tabInfosFileVideo);
 
-		CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
+		auto tabInfosFileAudioVideo = new CTabWindowData();
 		tabInfosFileAudioVideo->SetWindow(filtreEffectWnd);
 		tabInfosFileAudioVideo->SetId(WM_AUDIOVIDEO);
 		listWindow.push_back(tabInfosFileAudioVideo);
@@ -128,16 +125,16 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		viewerTheme->GetTreeTheme(&themeTree);
 		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
 		historyEffectWnd->Show(false);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(historyEffectWnd);
 		tabInfosFile->SetId(WM_HISTORY);
-        listWindow.push_back(tabInfosFile);
+		listWindow.push_back(tabInfosFile);
 	}
-	
-    if (viewerTheme != nullptr)
-        viewerTheme->GetBitmapWindowTheme(&themeBitmap);
-    
+
+	if (viewerTheme != nullptr)
+		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
+
 	if (viewerTheme != nullptr)
 	{
 		bool checkValidity = false;
@@ -148,30 +145,31 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		CMainParam * config = CMainParamInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
 			checkValidity = config->GetCheckThumbnailValidity();
-        
-		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID, checkValidity);
-		
+
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID,
+		                                                   checkValidity);
+
 		thumbnailEffectWnd->Show(false);
 
-        CTabWindowData * tabInfosFileEffect = new CTabWindowData();
+		auto tabInfosFileEffect = new CTabWindowData();
 		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
 		tabInfosFileEffect->SetId(WM_EFFECT);
-        listWindow.push_back(tabInfosFileEffect);
+		listWindow.push_back(tabInfosFileEffect);
 	}
-    
-    if(webBrowser == nullptr)
-    {
-        webBrowser = wxWebView::New(this, wxID_ANY);
-        webBrowser->Show(false);   
 
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+	if (webBrowser == nullptr)
+	{
+		webBrowser = wxWebView::New(this, wxID_ANY);
+		webBrowser->Show(false);
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(webBrowser);
 		tabInfosFile->SetId(WM_MAPS);
-        listWindow.push_back(tabInfosFile);     
-    }
+		listWindow.push_back(tabInfosFile);
+	}
 
 	if (picturePanel == nullptr)
 	{
@@ -181,45 +179,44 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		picturePanel = new CPicturePanel(this, wxID_ANY, themeThumbnail);
 		picturePanel->Show(false);
 
-		CTabWindowData* tabInfosFile = new CTabWindowData();
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(picturePanel);
 		tabInfosFile->SetId(WM_HISTOGRAM);
 		listWindow.push_back(tabInfosFile);
 	}
 
-	
+
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetInfosToolbarTheme(&theme);
 		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this, false);
 	}
-    
-    if (viewerTheme != nullptr)
-    {
-        CThemeScrollBar themeScroll;
-        viewerTheme->GetScrollTheme(&themeScroll);
-        
-        CThemeSplitter themeSplitter;
-        viewerTheme->GetSplitterTheme(&themeSplitter);
-        criteriaTreeWnd = new CCriteriaWindow(this, wxID_ANY, themeSplitter);
-    
-        CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->SetWindow(criteriaTreeWnd);
-		tabInfosFile->SetId(WM_CRITERIA);
-        listWindow.push_back(tabInfosFile);
-    }
 
-    toolbarWindow = infosToolbar;
-    
+	if (viewerTheme != nullptr)
+	{
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeSplitter themeSplitter;
+		viewerTheme->GetSplitterTheme(&themeSplitter);
+		criteriaTreeWnd = new CCriteriaWindow(this, wxID_ANY, themeSplitter);
+
+		auto tabInfosFile = new CTabWindowData();
+		tabInfosFile->SetWindow(criteriaTreeWnd);
+		tabInfosFile->SetId(WM_CRITERIA);
+		listWindow.push_back(tabInfosFile);
+	}
+
+	toolbarWindow = infosToolbar;
+
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
-
 }
 
-CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
+CFiltreEffect* CPanelInfosWnd::GetFilterWindow(int& numFiltre)
 {
-	if(filtreEffectWnd != nullptr)
+	if (filtreEffectWnd != nullptr)
 	{
 		numFiltre = filtreEffectWnd->GetNumFiltre();
 		return filtreEffectWnd->GetFiltreEffect();
@@ -234,19 +231,18 @@ wxString CPanelInfosWnd::GetFilename()
 
 CPanelInfosWnd::~CPanelInfosWnd()
 {
-	delete(infosFileWnd);  
+	delete(infosFileWnd);
 	delete(historyEffectWnd);
 	delete(filtreEffectWnd);
-    delete(criteriaTreeWnd);
+	delete(criteriaTreeWnd);
 	delete(thumbnailEffectWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
 	delete(picturePanel);
-    delete(modificationManager);
-
+	delete(modificationManager);
 }
 
-void CPanelInfosWnd::SetAnimationFile(const wxString &filename)
+void CPanelInfosWnd::SetAnimationFile(const wxString& filename)
 {
 	if (this->filename != filename)
 	{
@@ -260,7 +256,7 @@ void CPanelInfosWnd::SetAnimationFile(const wxString &filename)
 	}
 }
 
-void CPanelInfosWnd::SetVideoFile(const wxString &filename)
+void CPanelInfosWnd::SetVideoFile(const wxString& filename)
 {
 	if (this->filename != filename)
 	{
@@ -268,16 +264,16 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 		this->filename = filename;
 
 		wxString urlServer;
-		CRegardsConfigParam * param = CParamInit::getInstance();
+		CRegardsConfigParam* param = CParamInit::getInstance();
 		if (param != nullptr)
 		{
 			urlServer = param->GetUrlServer();
 		}
-		
-        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
-		CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
+
+		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+		auto fileGeolocalisation = new CFileGeolocation(urlServer);
 		fileGeolocalisation->SetFile(filename, notGeo);
-        
+
 		if (!this->isVideo)
 		{
 			infosToolbar->SetVideoToolbar();
@@ -285,8 +281,8 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 
 			if (!fileGeolocalisation->HasGps())
 				infosToolbar->SetMapInactif();
-            else
-                infosToolbar->SetMapActif();
+			else
+				infosToolbar->SetMapActif();
 		}
 		else
 		{
@@ -297,12 +293,10 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 
 				infosToolbar->SetMapInactif();
 			}
-            else
-            {
-                infosToolbar->SetMapActif();
-            }
-            
-           
+			else
+			{
+				infosToolbar->SetMapActif();
+			}
 		}
 
 		delete fileGeolocalisation;
@@ -311,9 +305,9 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 	}
 }
 
-void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumbnail)
+void CPanelInfosWnd::SetBitmapFile(const wxString& filename, const bool& isThumbnail)
 {
-	if(!isThumbnail)
+	if (!isThumbnail)
 		infosToolbar->SetPictureToolbar();
 	else
 		infosToolbar->SetPictureThumbnailToolbar();
@@ -321,25 +315,25 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 
 	if (this->filename != filename)
 	{
-        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+		wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 		wxString urlServer;
-		CRegardsConfigParam * param = CParamInit::getInstance();
+		CRegardsConfigParam* param = CParamInit::getInstance();
 		if (param != nullptr)
 		{
 			urlServer = param->GetUrlServer();
 		}
-		CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
-		
+		auto fileGeolocalisation = new CFileGeolocation(urlServer);
+
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
-        fileGeolocalisation->SetFile(filename, notGeo);
+		fileGeolocalisation->SetFile(filename, notGeo);
 
 		if (!fileGeolocalisation->HasGps())
 			infosToolbar->SetMapInactif();
 		else
 			infosToolbar->SetMapActif();
 
-		if(windowVisible == WM_INFOS)
+		if (windowVisible == WM_INFOS)
 			infosToolbar->SetInfosActif();
 
 		if (!fileGeolocalisation->HasGps())
@@ -358,7 +352,6 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 
 		LoadInfo();
 	}
-    
 }
 
 void CPanelInfosWnd::ShowFiltreEvent(wxCommandEvent& event)
@@ -376,30 +369,30 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, filename, false, PANELINFOSWNDID, PREVIEWVIEWERID);
 }
 
-void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
+void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 {
-    filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
+	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ClickShowButton(WM_EFFECT);
 }
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
-   
-    if (bitmapViewer != nullptr)
+	auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+
+	if (bitmapViewer != nullptr)
 	{
 		bitmapViewer->OnFiltreCancel();
-        bitmapViewer->SetBitmapPreviewEffect(0);
+		bitmapViewer->SetBitmapPreviewEffect(0);
 	}
-    
-    
-    CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-    if (mainWindow != nullptr)
-    {
-        wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
-        mainWindow->GetEventHandler()->AddPendingEvent(evt);
-    }
-    ClickShowButton(WM_EFFECT);
+
+
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+	ClickShowButton(WM_EFFECT);
 }
 
 void CPanelInfosWnd::EffectUpdate()
@@ -410,14 +403,14 @@ void CPanelInfosWnd::EffectUpdate()
 	}
 }
 
-void CPanelInfosWnd::ShowFiltre(const wxString &title)
+void CPanelInfosWnd::ShowFiltre(const wxString& title)
 {
 	HideAllWindow();
 	infosToolbar->SetEffectParameterPush();
 	filtreEffectWnd->Show(true);
-	if(windowVisible == WM_EFFECT)
+	if (windowVisible == WM_EFFECT)
 	{
-		infosToolbar->SetEffectParameterActif(title);	
+		infosToolbar->SetEffectParameterActif(title);
 	}
 	Resize();
 }
@@ -440,13 +433,13 @@ void CPanelInfosWnd::VideoEffectUpdate()
 
 void CPanelInfosWnd::HistoryUpdate()
 {
-	if(!isVideo)
+	if (!isVideo)
 	{
 		wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
-		CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-		if(bitmapViewer != nullptr)
+		auto bitmapViewer = static_cast<CShowBitmap*>(this->FindWindowById(SHOWBITMAPVIEWERID));
+		if (bitmapViewer != nullptr)
 		{
-			CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+			CRegardsBitmap* bitmap = bitmapViewer->GetBitmap(true);
 			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
 			delete bitmap;
 		}
@@ -457,67 +450,69 @@ void CPanelInfosWnd::LoadInfo()
 {
 	//if (this->IsShown())
 	//{
-		switch (windowVisible)
+	switch (windowVisible)
+	{
+	case WM_INFOS:
+		InfosUpdate();
+		infosToolbar->SetInfosPush();
+		windowVisible = WM_INFOS;
+		break;
+	case WM_CRITERIA:
+		criteriaTreeWnd->SetFile(filename);
+		infosToolbar->SetCriteriaPush();
+		windowVisible = WM_CRITERIA;
+		break;
+	case WM_HISTORY:
+		HistoryUpdate();
+		infosToolbar->SetHistoryPush();
+		windowVisible = WM_INFOS;
+		break;
+	case WM_EFFECT:
+		if (!thumbnailEffectWnd->IsShown())
+			thumbnailEffectWnd->Show(true);
+		EffectUpdate();
+		infosToolbar->SetEffectPush();
+		thumbnailEffectWnd->Refresh();
+		windowVisible = WM_INFOS;
+		break;
+	case WM_AUDIOVIDEO:
+		if (!thumbnailEffectWnd->IsShown())
+			thumbnailEffectWnd->Show(true);
+		filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID,
+		                             PREVIEWVIEWERID);
+		AudioVideoUpdate();
+		infosToolbar->SetAudioVideoPush();
+		thumbnailEffectWnd->Refresh();
+		windowVisible = WM_INFOS;
+		break;
+	case WM_VIDEOEFFECT:
+		if (!thumbnailEffectWnd->IsShown())
+			thumbnailEffectWnd->Show(true);
+		filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID,
+		                             PREVIEWVIEWERID);
+		VideoEffectUpdate();
+		infosToolbar->SetVideoEffectPush();
+		thumbnailEffectWnd->Refresh();
+		windowVisible = WM_INFOS;
+		break;
+
+	case WM_MAPS:
 		{
-		case WM_INFOS:
-			InfosUpdate();
-            infosToolbar->SetInfosPush();
+			wxString newUrl = MapsUpdate();
+			if (url != newUrl)
+				DisplayURL(newUrl);
+			url = newUrl;
+			infosToolbar->SetMapPush();
 			windowVisible = WM_INFOS;
-			break;
-        case WM_CRITERIA:
-            criteriaTreeWnd->SetFile(filename);
-            infosToolbar->SetCriteriaPush();
-			windowVisible = WM_CRITERIA;
-            break;
-		case WM_HISTORY:
-			HistoryUpdate();
-            infosToolbar->SetHistoryPush();
-			windowVisible = WM_INFOS;
-			break;
-		case WM_EFFECT:
-            if (!thumbnailEffectWnd->IsShown())
-                thumbnailEffectWnd->Show(true);
-			EffectUpdate();
-            infosToolbar->SetEffectPush();
-            thumbnailEffectWnd->Refresh();
-			windowVisible = WM_INFOS;
-			break;
-		case WM_AUDIOVIDEO:
-            if (!thumbnailEffectWnd->IsShown())
-                thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWVIEWERID);
-			AudioVideoUpdate();
-            infosToolbar->SetAudioVideoPush();
-            thumbnailEffectWnd->Refresh();
-			windowVisible = WM_INFOS;
-			break;
-		case WM_VIDEOEFFECT:
-            if (!thumbnailEffectWnd->IsShown())
-                thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWVIEWERID);
-			VideoEffectUpdate();
-            infosToolbar->SetVideoEffectPush();
-            thumbnailEffectWnd->Refresh();
-			windowVisible = WM_INFOS;
-			break;
-
-		case WM_MAPS:
-            {
-                wxString newUrl = MapsUpdate();
-                if(url != newUrl)
-                    DisplayURL(newUrl);
-                url = newUrl;
-                infosToolbar->SetMapPush();
-				windowVisible = WM_INFOS;
-            }
-			break;
-
-		case WM_HISTOGRAM:
-			HistogramUpdate();
-			infosToolbar->SetHistogramPush();
-			windowVisible = WM_HISTOGRAM;
-			break;
 		}
+		break;
+
+	case WM_HISTOGRAM:
+		HistogramUpdate();
+		infosToolbar->SetHistogramPush();
+		windowVisible = WM_HISTOGRAM;
+		break;
+	}
 	//}
 	this->ForceRefresh();
 	//this->Refresh();
@@ -543,14 +538,14 @@ void CPanelInfosWnd::HistogramUpdate()
 wxString CPanelInfosWnd::MapsUpdate()
 {
 	wxString urlServer;
-	CRegardsConfigParam * param = CParamInit::getInstance();
+	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
 		urlServer = param->GetUrlServer();
 	}
-	
-    wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
-	CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
+
+	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+	auto fileGeolocalisation = new CFileGeolocation(urlServer);
 	fileGeolocalisation->SetFile(filename, notGeo);
 	wxString url = L"http://www.openstreetmap.org/?mlat=";
 	url.append(fileGeolocalisation->GetLatitude());
@@ -563,11 +558,11 @@ wxString CPanelInfosWnd::MapsUpdate()
 
 
 	delete fileGeolocalisation;
-	
-    return url;
+
+	return url;
 }
 
-void CPanelInfosWnd::DisplayURL(const wxString &url)
+void CPanelInfosWnd::DisplayURL(const wxString& url)
 {
 	webBrowser->LoadURL(url);
 	infosToolbar->SetMapActif();
@@ -576,6 +571,6 @@ void CPanelInfosWnd::DisplayURL(const wxString &url)
 
 void CPanelInfosWnd::InfosUpdate()
 {
-    if(infosFileWnd != nullptr)
-        infosFileWnd->InfosUpdate(filename);
+	if (infosFileWnd != nullptr)
+		infosFileWnd->InfosUpdate(filename);
 }

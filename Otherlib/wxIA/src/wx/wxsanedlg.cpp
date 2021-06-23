@@ -12,9 +12,6 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 
 
-#include <header.h>
-#include <wx/wxscan.h>
-
 #if __WXSCANSANE__
 
 #include "wxImagePanel.h"

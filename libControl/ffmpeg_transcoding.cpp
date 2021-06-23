@@ -1,20 +1,15 @@
 #include "header.h"
 #include "ffmpeg_transcoding.h"
 #include "FFmpegTranscodingPimpl.h"
-#include <RegardsBitmap.h>
 #include <CompressVideo.h>
-#include <ImageLoadingFormat.h>
 #include "ffmpegToBitmap.h"
 #include "VideoCompressOption.h"
 #include <wx/progdlg.h>
 #include <wx/filename.h>
-#include <ConvertUtility.h>
 #include <window_id.h>
-#include <chrono>
 #include <LibResource.h>
 extern "C"
 {
-	#include <libswscale/swscale.h>
 }
 
 CFFmpegTranscoding::CFFmpegTranscoding(const wxString & acceleratorHardware, COpenCLEngine * openCLEngine)

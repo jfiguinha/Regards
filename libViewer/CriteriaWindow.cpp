@@ -6,7 +6,6 @@
 #include "MainThemeInit.h"
 #include <window_id.h>
 #include <RegardsConfigParam.h>
-#include <ParamInit.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Control;

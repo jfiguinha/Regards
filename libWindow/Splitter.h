@@ -1,6 +1,5 @@
 #pragma once
 #include "IMoveWindow.h"
-#include "SeparationBar.h"
 #include "WindowMain.h"
 
 namespace Regards

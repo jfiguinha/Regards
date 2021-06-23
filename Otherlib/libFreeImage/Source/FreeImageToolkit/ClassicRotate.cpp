@@ -91,7 +91,7 @@ HorizontalSkewT(FIBITMAP *src, FIBITMAP *dst, int row, int iOffset, double weigh
 
 	for(unsigned i = 0; i < src_width; i++) {
 		// loop through row pixels
-		AssignPixel((BYTE*)&pxlSrc[0], (BYTE*)src_bits, bytespp);
+		AssignPixel((BYTE*)&pxlSrc[0], src_bits, bytespp);
 		// calculate weights
 		for(unsigned j = 0; j < samples; j++) {
 			pxlLeft[j] = static_cast<T>(pxlBkg[j] + (pxlSrc[j] - pxlBkg[j]) * weight + 0.5);
@@ -103,7 +103,7 @@ HorizontalSkewT(FIBITMAP *src, FIBITMAP *dst, int row, int iOffset, double weigh
 			for(unsigned j = 0; j < samples; j++) {
 				pxlSrc[j] = pxlSrc[j] - (pxlLeft[j] - pxlOldLeft[j]);
 			}
-			AssignPixel((BYTE*)&dst_bits[iXPos*bytespp], (BYTE*)&pxlSrc[0], bytespp);
+			AssignPixel(&dst_bits[iXPos*bytespp], (BYTE*)&pxlSrc[0], bytespp);
 		}
 		// save leftover for next pixel in scan
 		AssignPixel((BYTE*)&pxlOldLeft[0], (BYTE*)&pxlLeft[0], bytespp);
@@ -119,7 +119,7 @@ HorizontalSkewT(FIBITMAP *src, FIBITMAP *dst, int row, int iOffset, double weigh
 		dst_bits = FreeImage_GetScanLine(dst, row) + iXPos * bytespp;
 
 		// If still in image bounds, put leftovers there
-		AssignPixel((BYTE*)dst_bits, (BYTE*)&pxlOldLeft[0], bytespp);
+		AssignPixel(dst_bits, (BYTE*)&pxlOldLeft[0], bytespp);
 
 		// clear to the right of the skewed line with background
 		dst_bits += bytespp;
@@ -256,13 +256,13 @@ VerticalSkewT(FIBITMAP *src, FIBITMAP *dst, int col, int iOffset, double weight,
 		dst_bits = FreeImage_GetScanLine(dst, iYPos) + index;
 
 		// if still in image bounds, put leftovers there				
-		AssignPixel((BYTE*)(dst_bits), (BYTE*)(&pxlOldLeft[0]), bytespp);
+		AssignPixel(dst_bits, (BYTE*)(&pxlOldLeft[0]), bytespp);
 
 		// clear below skewed line with background
 		if(bkcolor) {
 			while(++iYPos < (int)dst_height) {					
 				dst_bits += dst_pitch;
-				AssignPixel((BYTE*)(dst_bits), (BYTE*)(bkcolor), bytespp);
+				AssignPixel(dst_bits, (BYTE*)(bkcolor), bytespp);
 			}
 		} else {
 			while(++iYPos < (int)dst_height) {					

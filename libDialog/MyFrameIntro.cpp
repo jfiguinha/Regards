@@ -1,6 +1,7 @@
 #include <header.h>
 #include "MyFrameIntro.h"
 #include "IntroTheme.h"
+#include "TitleIntro.h"
 using namespace Regards::Introduction;
 
 #ifndef wxHAS_IMAGES_IN_RESOURCES

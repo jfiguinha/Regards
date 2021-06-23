@@ -317,7 +317,7 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 	{
 		dst.create((int)h, (int)w, type);
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
+		cl_command_queue q = context->GetCommandQueue();
 		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
@@ -392,7 +392,7 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 		size_t h = src ? srcheight : heightOut;
 
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
+		cl_command_queue q = context->GetCommandQueue();
 		err = clEnqueueCopyBuffer(q, clBuffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
@@ -1260,8 +1260,8 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 		uint8_t * dataOut = hq3d->ApplyDenoise3D(data_picture, _width, _height);
 
 		COpenCLParameterByteArray * memDataOut = new COpenCLParameterByteArray();
-		((COpenCLParameterByteArray *)memDataOut)->SetLibelle("input");
-		((COpenCLParameterByteArray *)memDataOut)->SetValue(context->GetContext(), (uint8_t *)dataOut, size, flag);
+		memDataOut->SetLibelle("input");
+		memDataOut->SetValue(context->GetContext(), dataOut, size, flag);
 
 
 		cl_mem output = nullptr;

@@ -13,6 +13,8 @@
 #include <RegardsBitmap.h>
 #include <BitmapDisplay.h>
 #include <GLTexture.h>
+
+#include "effect_id.h"
 using namespace Regards::Filter;
 using namespace Regards::OpenGL;
 
@@ -27,7 +29,8 @@ CPageCurlFilter::~CPageCurlFilter()
 	DeleteTexture();
 }
 
-void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert, const int& width, const int& height, const int& left, const int& top)
+void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,
+                                    const int& width, const int& height, const int& left, const int& top)
 {
 	pictureFirst->Enable();
 	pictureNext->Enable();
@@ -81,12 +84,14 @@ void CPageCurlFilter::DeleteTexture()
 
 void CPageCurlFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
 {
-    DeleteTexture();
-    
+	DeleteTexture();
+
 	bmpViewer->StartTransitionEffect(bmpSecond, false);
 }
 
-bool CPageCurlFilter::RenderTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source, IBitmapDisplay* bmpViewer, CRenderBitmapOpenGL* renderOpenGL, const float& scale_factor, const int& etape)
+bool CPageCurlFilter::RenderTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source,
+                                    IBitmapDisplay* bmpViewer, CRenderBitmapOpenGL* renderOpenGL,
+                                    const float& scale_factor, const int& etape)
 {
 	if (etape > 0 && etape < 110)
 	{
@@ -100,47 +105,51 @@ bool CPageCurlFilter::RenderTexture(CImageLoadingFormat* nextPicture, CImageLoad
 	return false;
 }
 
-void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer)
+void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLoadingFormat* source,
+                                      IBitmapDisplay* bmpViewer)
 {
-	
 	bool init = false;
-	if (initTexture || pictureFirst == nullptr || pictureNext == nullptr || (pictureFirst->GetWidth() != bmpViewer->GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
+	if (initTexture || pictureFirst == nullptr || pictureNext == nullptr || (pictureFirst->GetWidth() != bmpViewer->
+		GetWidth() && pictureFirst->GetHeight() != bmpViewer->GetHeight()))
 	{
 		init = true;
 	}
 
 	{
-		CRegardsBitmap* bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
+		auto bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapNext->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
-			CRegardsBitmap * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+			bitmapNext->SetBackgroundColor(
+				CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			CRegardsBitmap* bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
 				bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;
-            if(pictureNext == nullptr)
-               pictureNext = new GLTexture();
+			if (pictureNext == nullptr)
+				pictureNext = new GLTexture();
 			pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
 		}
 
 		delete bitmapNext;
 	}
 	{
-		CRegardsBitmap* bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
+		auto bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapFirst->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
-			CRegardsBitmap * bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
+			bitmapFirst->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(),
+			                                          255));
+			CRegardsBitmap* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
 				bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;
-            if(pictureFirst == nullptr)
-                pictureFirst = new GLTexture();
-			pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
+			if (pictureFirst == nullptr)
+				pictureFirst = new GLTexture();
+			pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(),
+			                     bitmapFirst->GetPtBitmap());
 		}
 
 		delete bitmapFirst;
@@ -150,7 +159,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 }
 
 
-GLTexture * CPageCurlFilter::GetTexture(const int &numTexture)
+GLTexture* CPageCurlFilter::GetTexture(const int& numTexture)
 {
 	if (numTexture == 0)
 		return pictureFirst;

@@ -495,7 +495,7 @@ static _FORCEINLINE Int DecodeBlockHighpass (const Bool bChroma, struct CAdaptiv
     UInt  iLoc = 1;
     Int iSR, iSRn, iIndex, iNumNonzero = 1, iCont, iSign, iLevel;
     struct CAdaptiveHuffman **pAH1 = pAHexpt + iContextOffset + bChroma * 3;
-    const CAdaptiveScan *pConstScan = (const CAdaptiveScan *) pScan;
+    const CAdaptiveScan *pConstScan = pScan;
 
     /** first symbol **/
     DecodeFirstIndex (&iIndex, /*&iSign, */pAH1[0], pIO);
@@ -516,7 +516,7 @@ static _FORCEINLINE Int DecodeBlockHighpass (const Bool bChroma, struct CAdaptiv
        iLoc += DecodeSignificantRun (15 - iLoc, pAHexpt[0], pIO);
     }
     iLoc &= 0xf;
-	pCoef[pConstScan[iLoc].uScan] = (PixelI) iLevel;//(PixelI)(iQP * iLevel);
+	pCoef[pConstScan[iLoc].uScan] = iLevel;//(PixelI)(iQP * iLevel);
     pScan[iLoc].uTotal++;
 	if (iLoc && pScan[iLoc].uTotal > pScan[iLoc - 1].uTotal) {
 		CAdaptiveScan cTemp = pScan[iLoc];
@@ -549,7 +549,7 @@ static _FORCEINLINE Int DecodeBlockHighpass (const Bool bChroma, struct CAdaptiv
         //    iLevel = (1 | iSign); // 0 -> 1; -1 -> -1 (was 1 + (iSign * 2))
         //}
        
-	    pCoef[pConstScan[iLoc].uScan] = (PixelI) iLevel;//(PixelI)(iQP * iLevel);
+	    pCoef[pConstScan[iLoc].uScan] = iLevel;//(PixelI)(iQP * iLevel);
         pScan[iLoc].uTotal++;
 	    if (iLoc && pScan[iLoc].uTotal > pScan[iLoc - 1].uTotal) {
 		    CAdaptiveScan cTemp = pScan[iLoc];
@@ -593,14 +593,14 @@ static _FORCEINLINE Int DecodeBlockAdaptive (Bool bNoSkip, Bool bChroma, CAdapti
                 PixelI *pk = pCoeffs + pOrder[k];
                 if (*pk < 0) {
                     Int fine = _getBit16(pIOFL, iFlex);
-                    *pk -= (PixelI)(fine);
+                    *pk -= fine;
                 }
                 else if (*pk > 0) {
                     Int fine = _getBit16(pIOFL, iFlex);
-                    *pk += (PixelI)(fine);
+                    *pk += fine;
                 }
                 else {
-                    *pk = (PixelI)(_getBit16s(pIOFL, iFlex));
+                    *pk = _getBit16s(pIOFL, iFlex);
                 }
             }
         }
@@ -610,14 +610,14 @@ static _FORCEINLINE Int DecodeBlockAdaptive (Bool bNoSkip, Bool bChroma, CAdapti
                 kk = pCoeffs[pOrder[k]];
                 if (kk < 0) {
                     Int fine = _getBit16(pIOFL, iFlex);
-                    pCoeffs[pOrder[k]] -= (PixelI)(iQP1 * fine);
+                    pCoeffs[pOrder[k]] -= iQP1 * fine;
                 }
                 else if (kk > 0) {
                     Int fine = _getBit16(pIOFL, iFlex);
-                    pCoeffs[pOrder[k]] += (PixelI)(iQP1 * fine);
+                    pCoeffs[pOrder[k]] += iQP1 * fine;
                 }
                 else {
-                    pCoeffs[pOrder[k]] = (PixelI)(iQP1 * _getBit16s(pIOFL, iFlex));
+                    pCoeffs[pOrder[k]] = iQP1 * _getBit16s(pIOFL, iFlex);
                 }
             }
         }

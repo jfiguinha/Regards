@@ -238,10 +238,10 @@ ConvertAnyTag(FITAG *tag) {
 		case FIDT_UNDEFINED:// 8-bit untyped data 
 		default:
 		{
-			int max_size = MIN((int)FreeImage_GetTagLength(tag), (int)MAX_TEXT_EXTENT);
+			int max_size = MIN((int)FreeImage_GetTagLength(tag), MAX_TEXT_EXTENT);
 			if(max_size == MAX_TEXT_EXTENT)
 				max_size--;
-			memcpy(format, (char*)FreeImage_GetTagValue(tag), max_size);
+			memcpy(format, FreeImage_GetTagValue(tag), max_size);
 			format[max_size] = '\0';
 			buffer += format;
 			break;

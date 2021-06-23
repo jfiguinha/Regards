@@ -4,7 +4,7 @@
 float const_floatcolor[256];
 bool initfloatvalue = false;
 
-CRgbaquad::CRgbaquad(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha)
+CRgbaquad::CRgbaquad(const uint8_t& red, const uint8_t& green, const uint8_t& blue, const uint8_t& alpha)
 {
 	this->red = red;
 	this->green = green;
@@ -14,7 +14,7 @@ CRgbaquad::CRgbaquad(const uint8_t &red, const uint8_t &green, const uint8_t &bl
 	if (!initfloatvalue)
 	{
 		for (auto i = 0; i < 256; i++)
-			const_floatcolor[i] = (float)i;
+			const_floatcolor[i] = static_cast<float>(i);
 
 		initfloatvalue = true;
 	}
@@ -30,14 +30,13 @@ CRgbaquad::CRgbaquad()
 	if (!initfloatvalue)
 	{
 		for (auto i = 0; i < 256; i++)
-			const_floatcolor[i] = (float)i;
+			const_floatcolor[i] = static_cast<float>(i);
 
 		initfloatvalue = true;
 	}
-
 }
 
-CRgbaquad::CRgbaquad(const wxString &hexacolor)
+CRgbaquad::CRgbaquad(const wxString& hexacolor)
 {
 	SetHexaColor(hexacolor);
 }
@@ -47,7 +46,7 @@ CRgbaquad::~CRgbaquad()
 }
 
 
-void CRgbaquad::SetColor(const uint8_t &color)
+void CRgbaquad::SetColor(const uint8_t& color)
 {
 	this->red = color;
 	this->green = color;
@@ -55,7 +54,7 @@ void CRgbaquad::SetColor(const uint8_t &color)
 	this->alpha = 0;
 }
 
-std::vector<wxString> CRgbaquad::Split(const wxString & s, char seperator)
+std::vector<wxString> CRgbaquad::Split(const wxString& s, char seperator)
 {
 	std::vector<wxString> output;
 
@@ -76,7 +75,7 @@ std::vector<wxString> CRgbaquad::Split(const wxString & s, char seperator)
 }
 
 
-void CRgbaquad::SetHexaColor(const wxString &hexacolor)
+void CRgbaquad::SetHexaColor(const wxString& hexacolor)
 {
 	vector<wxString> listcolor = Split(hexacolor, ';');
 	if (listcolor.size() == 3)
@@ -94,56 +93,56 @@ wxString CRgbaquad::GetHexacolor()
 	return chex;
 }
 
-void CRgbaquad::Add(const float &value)
+void CRgbaquad::Add(const float& value)
 {
-	red += (uint8_t)value;
-	green += (uint8_t)value;
-	blue += (uint8_t)value;
+	red += static_cast<uint8_t>(value);
+	green += static_cast<uint8_t>(value);
+	blue += static_cast<uint8_t>(value);
 }
 
-void CRgbaquad::Add(const CRgbaquad &value)
+void CRgbaquad::Add(const CRgbaquad& value)
 {
 	red += value.red;
 	green += value.green;
 	blue += value.blue;
 }
 
-void CRgbaquad::Sub(const CRgbaquad &value)
+void CRgbaquad::Sub(const CRgbaquad& value)
 {
 	red -= value.red;
 	green -= value.green;
 	blue -= value.blue;
 }
 
-void CRgbaquad::Mul(const uint8_t &value)
+void CRgbaquad::Mul(const uint8_t& value)
 {
 	red *= value;
 	green *= value;
 	blue *= value;
 }
 
-void CRgbaquad::Mul(const float &value)
+void CRgbaquad::Mul(const float& value)
 {
-	red = (uint8_t)(const_floatcolor[red] * value);
-	green = (uint8_t)(const_floatcolor[green] * value);
-	blue = (uint8_t)(const_floatcolor[blue] * value);
+	red = static_cast<uint8_t>(const_floatcolor[red] * value);
+	green = static_cast<uint8_t>(const_floatcolor[green] * value);
+	blue = static_cast<uint8_t>(const_floatcolor[blue] * value);
 }
 
-void CRgbaquad::Div(const float &value)
+void CRgbaquad::Div(const float& value)
 {
-	red = (uint8_t)(const_floatcolor[red] / value);
-	green = (uint8_t)(const_floatcolor[green] / value);
-	blue = (uint8_t)(const_floatcolor[blue] / value);
+	red = static_cast<uint8_t>(const_floatcolor[red] / value);
+	green = static_cast<uint8_t>(const_floatcolor[green] / value);
+	blue = static_cast<uint8_t>(const_floatcolor[blue] / value);
 }
 
-void CRgbaquad::Sub(const uint8_t &value)
+void CRgbaquad::Sub(const uint8_t& value)
 {
 	red = value - red;
 	green = value - green;
 	blue = value - blue;
 }
 
-void CRgbaquad::Min(const uint8_t &value)
+void CRgbaquad::Min(const uint8_t& value)
 {
 	red = min(value, red);
 	green = min(value, green);
@@ -157,7 +156,7 @@ void CRgbaquad::Min(CRgbaquad value)
 	blue = min(value.GetBlue(), blue);
 }
 
-void CRgbaquad::Max(const uint8_t &value)
+void CRgbaquad::Max(const uint8_t& value)
 {
 	red = max(value, red);
 	green = max(value, green);
@@ -201,36 +200,37 @@ float CRgbaquad::GetFAlpha() const
 
 float CRgbaquad::GetGreyValue() const
 {
-	return (float)(const_floatcolor[red] * 0.299 + const_floatcolor[green] * 0.587 + const_floatcolor[blue] *0.114);
+	return static_cast<float>(const_floatcolor[red] * 0.299 + const_floatcolor[green] * 0.587 + const_floatcolor[blue] *
+		0.114);
 }
 
-void CRgbaquad::SetRed(const uint8_t &red)
+void CRgbaquad::SetRed(const uint8_t& red)
 {
-	this->red = clamp(red, 0, 255);;
+	this->red = clamp(red, 0, 255);
 }
 
-void CRgbaquad::SetGreen(const uint8_t &green)
+void CRgbaquad::SetGreen(const uint8_t& green)
 {
-	this->green = clamp(green, 0, 255);;
+	this->green = clamp(green, 0, 255);
 }
 
-void CRgbaquad::SetBlue(const uint8_t &blue)
+void CRgbaquad::SetBlue(const uint8_t& blue)
 {
-	this->blue = clamp(blue, 0, 255);;
+	this->blue = clamp(blue, 0, 255);
 }
 
-void CRgbaquad::SetAlpha(const uint8_t &alpha)
+void CRgbaquad::SetAlpha(const uint8_t& alpha)
 {
-	this->alpha = clamp(alpha, 0, 255);;
+	this->alpha = clamp(alpha, 0, 255);
 }
 
-void CRgbaquad::SetColorWithAlpha(CRgbaquad * color)
+void CRgbaquad::SetColorWithAlpha(CRgbaquad* color)
 {
 	float alpha = color->GetFAlpha() / 255.0f;
 	float alphaDiff = 1.0f - alpha;
-	blue = (uint8_t)(GetFBlue() * alphaDiff + color->GetFBlue() * alpha);
-	green = (uint8_t)(GetFGreen() * alphaDiff + color->GetFGreen() * alpha);
-	red = (uint8_t)(GetFRed() * alphaDiff + color->GetFRed() * alpha);
+	blue = static_cast<uint8_t>(GetFBlue() * alphaDiff + color->GetFBlue() * alpha);
+	green = static_cast<uint8_t>(GetFGreen() * alphaDiff + color->GetFGreen() * alpha);
+	red = static_cast<uint8_t>(GetFRed() * alphaDiff + color->GetFRed() * alpha);
 
 	this->red = clamp(red, 0, 255);
 	this->green = clamp(green, 0, 255);
@@ -238,15 +238,15 @@ void CRgbaquad::SetColorWithAlpha(CRgbaquad * color)
 	this->alpha = clamp(alpha, 0, 255);
 }
 
-int CRgbaquad::clamp(const int & val, const int& minval, const int& maxval)
+int CRgbaquad::clamp(const int& val, const int& minval, const int& maxval)
 {
 	//std::clamp(val, minval, maxval);
 	return min(max(val, minval), maxval);
 }
 
-void CRgbaquad::SetColor(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha)
+void CRgbaquad::SetColor(const uint8_t& red, const uint8_t& green, const uint8_t& blue, const uint8_t& alpha)
 {
-	this->red = clamp(red,0,255);
+	this->red = clamp(red, 0, 255);
 	this->green = clamp(green, 0, 255);
 	this->blue = clamp(blue, 0, 255);
 	this->alpha = clamp(alpha, 0, 255);
@@ -258,17 +258,17 @@ uint8_t CRgbaquad::GetRed() const
 	return red;
 }
 
-uint8_t  CRgbaquad::GetGreen() const
+uint8_t CRgbaquad::GetGreen() const
 {
 	return green;
 }
 
-uint8_t  CRgbaquad::GetBlue() const
+uint8_t CRgbaquad::GetBlue() const
 {
 	return blue;
 }
 
-uint8_t  CRgbaquad::GetAlpha() const
+uint8_t CRgbaquad::GetAlpha() const
 {
 	return alpha;
 }

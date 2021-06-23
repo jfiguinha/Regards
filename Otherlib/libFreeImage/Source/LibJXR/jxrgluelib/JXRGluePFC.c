@@ -502,7 +502,7 @@ ERR RGB96Float_RGB128Float(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, 
     {
         I32 x;
         float *pfltDstPixel = (float*)(pb + cbStride*y);
-        const float *pfltSrcPixel = (float*)pfltDstPixel;
+        const float *pfltSrcPixel = pfltDstPixel;
 
         for (x = iWidth - 1; x >= 0; x--)
         {
@@ -529,7 +529,7 @@ ERR RGB128Float_RGB96Float(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, 
     {
         I32 x;
         float *pfltDstPixel = (float*)(pb + cbStride*y);
-        const float *pfltSrcPixel = (float*)pfltDstPixel;
+        const float *pfltSrcPixel = pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
         {
@@ -556,7 +556,7 @@ ERR RGB48Half_RGB64Half(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32
     {
         I32 x;
         I16 *piDstPixel = (I16*)(pb + cbStride*y);
-        const I16 *piSrcPixel = (I16*)piDstPixel;
+        const I16 *piSrcPixel = piDstPixel;
 
         for (x = iWidth - 1; x >= 0; x--)
         {
@@ -583,7 +583,7 @@ ERR RGB64Half_RGB48Half(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32
     {
         I32 x;
         I16 *piDstPixel = (I16*)(pb + cbStride*y);
-        const short *piSrcPixel = (I16*)piDstPixel;
+        const short *piSrcPixel = piDstPixel;
 
         for (x = 0; x < iWidth; x++)
         {
@@ -968,7 +968,7 @@ ERR RGB96Float_RGBE(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbS
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const float *pfltSrcPixel = (float*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1408,7 +1408,7 @@ ERR RGBA32_BGRA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbStr
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piPixel = (U8*)(pb + cbStride*y);
+        U8 *piPixel = pb + cbStride*y;
 
         for (x = 0; x < iWidthX4; x += 4)
         {
@@ -1442,7 +1442,7 @@ ERR BlackWhite_Gray8(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
         I32 x;
 		I32 n;
         U8 *piDstPixel = (pb + cbStride*y);
-        const U8 *piSrcPixel = (U8*)piDstPixel;
+        const U8 *piSrcPixel = piDstPixel;
 
 		if (iWidth % 8 != 0)
 		{
@@ -1502,7 +1502,7 @@ ERR RGB48_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbStrid
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1532,7 +1532,7 @@ ERR RGBA64_RGBA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbStr
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1564,7 +1564,7 @@ ERR Gray32Float_Gray8(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const float *piSrcPixel = (float*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1590,7 +1590,7 @@ ERR RGB96Float_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const float *piSrcPixel = (float*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1620,7 +1620,7 @@ ERR RGB128Float_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const float *piSrcPixel = (float*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1650,7 +1650,7 @@ ERR RGBA128Float_RGBA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const float *piSrcPixel = (float*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1683,7 +1683,7 @@ ERR Gray16Fixed_Gray8(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const I16 *piSrcPixel = (I16*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1708,7 +1708,7 @@ ERR Gray32Fixed_Gray8(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const I32 *piSrcPixel = (I32*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1732,7 +1732,7 @@ ERR RGB48Fixed_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I16 *piSrcPixel = (I16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1758,7 +1758,7 @@ ERR RGB64Fixed_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I16 *piSrcPixel = (I16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1784,7 +1784,7 @@ ERR RGB96Fixed_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I32 *piSrcPixel = (I32*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1810,7 +1810,7 @@ ERR RGB128Fixed_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I32 *piSrcPixel = (I32*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1836,7 +1836,7 @@ ERR RGBA64Fixed_RGBA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I16 *piSrcPixel = (I16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1863,7 +1863,7 @@ ERR RGBA128Fixed_RGBA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const I32 *piSrcPixel = (I32*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1890,7 +1890,7 @@ ERR Gray16Half_Gray8(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cb
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1915,7 +1915,7 @@ ERR RGB48Half_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbS
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1944,7 +1944,7 @@ ERR RGB64Half_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbS
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -1973,7 +1973,7 @@ ERR RGBA64Half_RGBA32(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 c
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *pfltDstPixel = (U8*)(pb + cbStride*y);
+        U8 *pfltDstPixel = pb + cbStride*y;
         const U16 *piSrcPixel = (U16*)pfltDstPixel;
 
         for (x = 0; x < iWidth; x++)
@@ -2005,7 +2005,7 @@ ERR RGB101010_RGB24(PKFormatConverter* pFC, const PKRect* pRect, U8* pb, U32 cbS
     for (y = 0; y < iHeight; y++)
     {
         I32 x;
-        U8 *piDstPixel = (U8*)(pb + cbStride*y);
+        U8 *piDstPixel = pb + cbStride*y;
         const U32 *piSrcPixel = (U32*)piDstPixel;
 
         for (x = 0; x < iWidth; x++)

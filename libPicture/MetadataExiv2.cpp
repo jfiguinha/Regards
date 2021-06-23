@@ -2,8 +2,6 @@
 #include "MetadataExiv2.h"
 #include "PictureMetadataExiv.h"
 #include <ximage.h>
-#include <xfile.h>
-#include <xiofile.h>
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>

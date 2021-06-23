@@ -2,7 +2,6 @@
 #include "ffplaycore.h"
 #include <window_id.h>
 #include <fstream>
-#include <iostream>
 
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)

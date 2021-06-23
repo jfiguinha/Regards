@@ -456,7 +456,7 @@ COpenCLEngine::COpenCLEngine(const bool &attachOpenCV)
 				[&](const auto& val) { return val->platformId == device->platformId; });
 
 			if (i != listPlatform.end())
-				platform = (OpenCLPlatform *)(*i);
+				platform = *i;
 
 			_singleton->SetPlatformName(platform->platformName);
 		}
@@ -513,7 +513,7 @@ OpenCLDevice * COpenCLDeviceList::SelectDevice(const wxString &deviceName)
 		[&](const auto& val) { return val->deviceName == deviceName; });
 
 	if (i != listOfDevice.end())
-		return (OpenCLDevice *)(*i);
+		return *i;
 	/*
     for (OpenCLDevice * openCL : listOfDevice)
     {
@@ -563,7 +563,7 @@ OpenCLDevice * COpenCLDeviceList::SelectDevice(OpenCLPlatform * platform, const 
 		[&](const auto& openCL) { return openCL->deviceIndex == index && platform->platformId == openCL->platformId; });
 
 	if (i != listOfDevice.end())
-		return (OpenCLDevice *)(*i);	
+		return *i;	
        
 	return nullptr;	   
 	/*

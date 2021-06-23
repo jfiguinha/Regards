@@ -2,10 +2,8 @@
 #include "Slider.h"
 #include <ConvertUtility.h>
 #include <LibResource.h>
-#include <time.h>
 #include <wx/dcbuffer.h>
 #include <ClosedHandCursor.h>
-#include "LoadingResource.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include "SliderInterface.h"
@@ -60,7 +58,7 @@ void CSlider::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 	if (secondTotalTime > 0)
 	{
-		pourcentage = (float)secondTimePast / (float)secondTotalTime;
+		pourcentage = secondTimePast / secondTotalTime;
 		rcPast.width = (rc.width * pourcentage);
 		rcPast.y = rc.y;
 		rcPast.height = themeSlider.GetRectangleHeight();
@@ -176,7 +174,7 @@ void CSlider::CalculPositionButton()
 {
 	if (secondTotalTime > 0)
 	{
-		float pourcentage = (float)secondTimePast / (float)secondTotalTime;
+		float pourcentage = secondTimePast / secondTotalTime;
 		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
 	}
 	else

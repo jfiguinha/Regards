@@ -24,6 +24,9 @@
 
 // ----------------------------------------------------------
 
+#include <list>
+#include <string>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 

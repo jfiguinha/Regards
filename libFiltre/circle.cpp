@@ -1,6 +1,5 @@
 #include <header.h>
 #include "circle.h"
-#include <RegardsBitmap.h>
 #include <RGBAQuad.h>
 #include <LibResource.h>
 #include "Color.h"
@@ -191,7 +190,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 		int j = iTaille - i;
 		if (!(j < 0))
 		{
-			double m_iIntensity = ((double)((double)(i) / (double)(100)));
+			double m_iIntensity = (double)i / (double)100;
 
 			m_iIntensity = asin(m_iIntensity);
 
@@ -311,7 +310,7 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 			fAlpha = 1.0f;
 		else
 		{
-			double m_iIntensity = ((double)((double)(i) / m_dCent));
+			double m_iIntensity = (double)i / m_dCent;
 
 			m_iIntensity = asin(m_iIntensity);
 

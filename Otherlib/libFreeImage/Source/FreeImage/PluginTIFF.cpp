@@ -155,8 +155,6 @@ _tiffCloseProc(thandle_t fd) {
 	return 0;
 }
 
-#include <sys/stat.h>
-
 static toff_t
 _tiffSizeProc(thandle_t handle) {
     fi_TIFFIO *fio = (fi_TIFFIO*)handle;
@@ -216,7 +214,7 @@ _TIFFmalloc(tmsize_t s) {
 void* 
 _TIFFcalloc(tmsize_t nmemb, tmsize_t siz) {
 	if (nmemb == 0 || siz == 0) {
-		return ((void *)NULL);
+		return NULL;
 	}
 	return calloc((size_t)nmemb, (size_t)siz);
 }
@@ -1055,11 +1053,11 @@ Open(FreeImageIO *io, fi_handle handle, BOOL read) {
 	fio->handle = handle;
 
 	if (read) {
-		fio->tif = TIFFFdOpen((thandle_t)fio, "", "r");
+		fio->tif = TIFFFdOpen(fio, "", "r");
 	} else {
 		// mode = "w"	: write Classic TIFF
 		// mode = "w8"	: write Big TIFF
-		fio->tif = TIFFFdOpen((thandle_t)fio, "", "w");
+		fio->tif = TIFFFdOpen(fio, "", "w");
 	}
 	if(fio->tif == NULL) {
 		free(fio);
@@ -1084,7 +1082,7 @@ static int DLL_CALLCONV
 PageCount(FreeImageIO *io, fi_handle handle, void *data) {
 	if(data) {
 		fi_TIFFIO *fio = (fi_TIFFIO*)data;
-		TIFF *tif = (TIFF *)fio->tif;
+		TIFF *tif = fio->tif;
 		int nr_ifd = 0;
 
 		do {

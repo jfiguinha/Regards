@@ -6,7 +6,6 @@
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
 #include "OpenCLFilter.h"
-#include "hqdn3d.h"
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
@@ -14,8 +13,6 @@
 //#include <RegardsConfigParam.h>
 //#include <ParamInit.h>
 #include "OpenCLBm3D.h"
-#include <OpenCVEffect.h>
-#include <hqdn3d.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
@@ -23,7 +20,6 @@
 #include <GL/glx.h>
 #include <CL/cl_gl.h>
 #else
-#include <CL/cl_gl.h>
 #endif
 #include <DeepLearning.h>
 using namespace Regards::OpenCL;

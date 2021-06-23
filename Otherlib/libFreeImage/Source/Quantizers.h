@@ -105,7 +105,7 @@ static const int ncycles = 100;
 //@{
 /// bias for fractions
 static const int intbiasshift = 16;
-static const int intbias = (((int)1) << intbiasshift);
+static const int intbias = (1 << intbiasshift);
 /// gamma = 1024
 static const int gammashift = 10;
 // static const int gamma = (((int)1) << gammashift);
@@ -121,7 +121,7 @@ static const int betagamma = (intbias << (gammashift-betashift));
 //static const int initrad = (netsize >> 3);
 /// at 32.0 biased by 6 bits
 static const int radiusbiasshift = 6;
-static const int radiusbias = (((int)1) << radiusbiasshift);
+static const int radiusbias = (1 << radiusbiasshift);
 /// and decreases by a 
 //static const int initradius	= (initrad * radiusbias);
 // factor of 1/30 each cycle
@@ -132,15 +132,15 @@ static const int radiusdec = 30;
 //@{
 /// alpha starts at 1.0
 static const int alphabiasshift = 10;
-static const int initalpha = (((int)1) << alphabiasshift);
+static const int initalpha = (1 << alphabiasshift);
 //@}
 
 /**@name radbias and alpharadbias used for radpower calculation */
 //@{
 static const int radbiasshift = 8;
-static const int radbias = (((int)1) << radbiasshift);
+static const int radbias = (1 << radbiasshift);
 static const int alpharadbshift = (alphabiasshift+radbiasshift);
-static const int alpharadbias = (((int)1) << alpharadbshift);	
+static const int alpharadbias = (1 << alpharadbshift);	
 //@}
 
 class NNQuantizer

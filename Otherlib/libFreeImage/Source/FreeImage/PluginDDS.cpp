@@ -698,8 +698,8 @@ LoadDXT_Helper(FreeImageIO *io, fi_handle handle, FIBITMAP *dib, int width, int 
 		return;
 	}
 
-	const int widthRest = (int) width & 3;
-	const int heightRest = (int) height & 3;
+	const int widthRest = width & 3;
+	const int heightRest = height & 3;
 	const int inputLine = (width + 3) / 4;
 	int y = 0;
 

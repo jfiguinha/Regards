@@ -349,13 +349,13 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 #define BUFSIZE 1024
 #define MD5LEN  16
 
-wxString wxMD5::GetFileMD5(const wxString &filename)
+wxString wxMD5::GetFileMD5(const wxString& filename)
 {
 	DWORD dwStatus = 0;
 	BOOL bResult = FALSE;
 	HCRYPTPROV hProv = 0;
 	HCRYPTHASH hHash = 0;
-	HANDLE hFile = NULL;
+	HANDLE hFile = nullptr;
 	BYTE rgbFile[BUFSIZE];
 	DWORD cbRead = 0;
 	BYTE rgbHash[MD5LEN];
@@ -365,12 +365,12 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 	// Logic to check usage goes here.
 
 	hFile = CreateFile(filename.c_str(),
-		GENERIC_READ,
-		FILE_SHARE_READ,
-		NULL,
-		OPEN_EXISTING,
-		FILE_FLAG_SEQUENTIAL_SCAN,
-		NULL);
+	                   GENERIC_READ,
+	                   FILE_SHARE_READ,
+	                   nullptr,
+	                   OPEN_EXISTING,
+	                   FILE_FLAG_SEQUENTIAL_SCAN,
+	                   nullptr);
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
@@ -382,10 +382,10 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 
 	// Get handle to the crypto provider
 	if (!CryptAcquireContext(&hProv,
-		NULL,
-		NULL,
-		PROV_RSA_FULL,
-		CRYPT_VERIFYCONTEXT))
+	                         nullptr,
+	                         nullptr,
+	                         PROV_RSA_FULL,
+	                         CRYPT_VERIFYCONTEXT))
 	{
 		dwStatus = GetLastError();
 		//printf("CryptAcquireContext failed: %d\n", dwStatus);
@@ -402,7 +402,7 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 		return "";
 	}
 
-	while (bResult = ReadFile(hFile, rgbFile, BUFSIZE,&cbRead, NULL))
+	while (bResult = ReadFile(hFile, rgbFile, BUFSIZE, &cbRead, nullptr))
 	{
 		if (0 == cbRead)
 		{
@@ -433,13 +433,12 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 	cbHash = MD5LEN;
 	if (CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0))
 	{
-		
 		//printf("MD5 hash of file %s is: ", filename);
 		for (DWORD i = 0; i < cbHash; i++)
 		{
 			char message[10];
 			sprintf(message, "%c%c", rgbDigits[rgbHash[i] >> 4],
-				rgbDigits[rgbHash[i] & 0xf]);
+			        rgbDigits[rgbHash[i] & 0xf]);
 			output.append(message);
 		}
 	}

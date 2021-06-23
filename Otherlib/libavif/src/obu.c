@@ -36,8 +36,6 @@
 
 #include "avif/internal.h"
 
-#include <string.h>
-
 // ---------------------------------------------------------------------------
 // avifBits - Originally dav1d's GetBits struct (see dav1d's getbits.c)
 

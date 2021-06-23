@@ -3,7 +3,6 @@
 //
 // GetBitmapHeaderSize
 //
-#include <Windows.h>
 
 ULONG GetBitmapHeaderSize(LPCVOID pDib);
 

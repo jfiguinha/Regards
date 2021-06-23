@@ -105,8 +105,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 			// calculate the number of bytes per pixel (4 for 32-bit)
 			const unsigned bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
 
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const BYTE *src_pixel = (BYTE*)src_bits;
@@ -129,8 +129,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 
 		case FIT_UINT16:
 		{
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const WORD *src_pixel = (WORD*)src_bits;
@@ -152,8 +152,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 
 		case FIT_RGB16:
 		{
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const FIRGB16 *src_pixel = (FIRGB16*)src_bits;
@@ -174,8 +174,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 
 		case FIT_RGBA16:
 		{
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const FIRGBA16 *src_pixel = (FIRGBA16*)src_bits;
@@ -196,8 +196,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 
 		case FIT_FLOAT:
 		{
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const float *src_pixel = (float*)src_bits;
@@ -220,8 +220,8 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 
 		case FIT_RGBF:
 		{
-			const BYTE *src_bits = (BYTE*)FreeImage_GetBits(src);
-			BYTE *dst_bits = (BYTE*)FreeImage_GetBits(dst);
+			const BYTE *src_bits = FreeImage_GetBits(src);
+			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
 				const FIRGBF *src_pixel = (FIRGBF*)src_bits;

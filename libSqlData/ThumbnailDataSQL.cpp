@@ -4,7 +4,6 @@
 #include "SqlThumbnailVideo.h"
 #include <wxmd5.h>
 #include <libPicture.h>
-#include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>

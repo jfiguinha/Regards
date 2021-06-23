@@ -394,9 +394,9 @@ ReadColorTable( FreeImageIO *io, fi_handle handle, WORD* pNumColors, RGBQUAD* pP
 			throw "pixel value greater than color table size.";
 		}
 		// Mac colour tables contain 16-bit values for R, G, and B...
-		pPal[val].rgbRed = ((BYTE) (((WORD) (Read16( io, handle )) >> 8) & 0xFF));
-		pPal[val].rgbGreen = ((BYTE) (((WORD) (Read16( io, handle )) >> 8) & 0xFF));
-		pPal[val].rgbBlue = ((BYTE) (((WORD) (Read16( io, handle )) >> 8) & 0xFF));
+		pPal[val].rgbRed = ((BYTE) ((Read16( io, handle ) >> 8) & 0xFF));
+		pPal[val].rgbGreen = ((BYTE) ((Read16( io, handle ) >> 8) & 0xFF));
+		pPal[val].rgbBlue = ((BYTE) ((Read16( io, handle ) >> 8) & 0xFF));
 	}
 }
 
@@ -609,7 +609,7 @@ Unpack32Bits( FreeImageIO *io, fi_handle handle, FIBITMAP* dib, MacRect* bounds,
 				
 				// Convert plane-oriented data into pixel-oriented data &
 				// copy into destination bitmap.
-				BYTE* dst = (BYTE*)FreeImage_GetScanLine( dib, height - 1 - i);
+				BYTE* dst = FreeImage_GetScanLine( dib, height - 1 - i);
 				
 				if ( numPlanes == 3 ) {
 					for ( int j = 0; j < width; j++ ) { 
@@ -667,7 +667,7 @@ Unpack8Bits( FreeImageIO *io, fi_handle handle, FIBITMAP* dib, MacRect* bounds, 
 		} else {
 			linelen = Read8( io, handle );
 		}
-		BYTE* dst = (BYTE*)FreeImage_GetScanLine( dib, height - 1 - i);				
+		BYTE* dst = FreeImage_GetScanLine( dib, height - 1 - i);				
 		dst = UnpackPictRow( io, handle, dst, width, rowBytes, linelen );
 	}
 }
@@ -733,7 +733,7 @@ UnpackBits( FreeImageIO *io, fi_handle handle, FIBITMAP* dib, MacRect* bounds, W
 		if (rowBytes < 8) { 
 			// ah-ha!  The bits aren't actually packed.  This will be easy.
 			for ( int i = 0; i < height; i++ ) {
-				BYTE* dst = (BYTE*)FreeImage_GetScanLine( dib, height - 1 - i);
+				BYTE* dst = FreeImage_GetScanLine( dib, height - 1 - i);
 				if (pixelSize == 16) {
 					expandBuf( io, handle, width, pixelSize, dst );
 				} else {
@@ -751,7 +751,7 @@ UnpackBits( FreeImageIO *io, fi_handle handle, FIBITMAP* dib, MacRect* bounds, W
 					linelen = Read8( io, handle );
 				}
 				
-				BYTE* dst = (BYTE*)FreeImage_GetScanLine( dib, height - 1 - i);
+				BYTE* dst = FreeImage_GetScanLine( dib, height - 1 - i);
 				BYTE FlagCounter;
 				
 				// Unpack RLE. The data is packed bytewise - except for

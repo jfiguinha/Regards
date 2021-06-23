@@ -1,10 +1,6 @@
 #include "header.h"
 #include "SqlResult.h"
-#include <iostream>
-#include <locale>
 #include <wx/ustring.h>
-#include <string>
-
 using namespace std;
 using namespace Regards::Sqlite;
 

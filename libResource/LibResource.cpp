@@ -22,16 +22,16 @@ wxString CLibResource::GetPhotoCancel()
 #endif
 }
 
-void CLibResource::InitializeSQLServerDatabase(const wxString & folder)
+void CLibResource::InitializeSQLServerDatabase(const wxString& folder)
 {
-	CSqlLibResource * libResource = new CSqlLibResource(true, true);
+	auto libResource = new CSqlLibResource(true, true);
 	wxString filename = folder;
 #ifdef WIN32
 	filename.append(L"\\resource.db");
 #else
     filename.append(L"/resource.db");
 #endif
-    printf("ResourceDB %s \n", CConvertUtility::ConvertToUTF8(filename));
+	printf("ResourceDB %s \n", CConvertUtility::ConvertToUTF8(filename));
 	CSqlEngine::Initialize(filename, L"ResourceDB", libResource);
 }
 
@@ -43,13 +43,13 @@ void CLibResource::KillSqlEngine()
 wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight)
 {
 	wxImage img;
-	wxString vector = CLibResource::GetVector(idName);
+	wxString vector = GetVector(idName);
 	if (vector.size() > 0)
 	{
 		wxStringInputStream memBuffer(vector);
 		wxSVGDocument svgDoc;
 		svgDoc.Load(memBuffer);
-		img = svgDoc.Render(buttonWidth, buttonHeight, NULL, true, true);
+		img = svgDoc.Render(buttonWidth, buttonHeight, nullptr, true, true);
 	}
 	else
 	{
@@ -58,47 +58,47 @@ wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& bu
 	return img;
 }
 
-wxString CLibResource::LoadExifNameFromResource(const wxString &id)
+wxString CLibResource::LoadExifNameFromResource(const wxString& id)
 {
 	CSqlResource sqlResource;
 	wxString libelle = sqlResource.GetExifLibelle(id);
 	return libelle;
 }
 
-CPictureData * CLibResource::LoadBitmapFromResource(const wxString &idName)
+CPictureData* CLibResource::LoadBitmapFromResource(const wxString& idName)
 {
 	CSqlResource sqlResource;
 	return sqlResource.GetBitmap(idName);
 }
 
-wxString CLibResource::LoadStringFromResource(const wxString &idName, const int &idLang)
+wxString CLibResource::LoadStringFromResource(const wxString& idName, const int& idLang)
 {
 	CSqlResource sqlResource;
 	int numLanguage = idLang;
 
-    CRegardsConfigParam * config = (CRegardsConfigParam*)CParamInit::getInstance();
-	if(config != nullptr)
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
 		numLanguage = config->GetNumLanguage();
 
 	wxString libelle = sqlResource.GetLibelle(idName, numLanguage);
 	return libelle;
 }
 
-wxString CLibResource::GetVector(const wxString &idName)
+wxString CLibResource::GetVector(const wxString& idName)
 {
-    CSqlResource sqlResource;
-    wxString libelle = sqlResource.GetVectorFromFile(idName);
-    return libelle;
+	CSqlResource sqlResource;
+	wxString libelle = sqlResource.GetVectorFromFile(idName);
+	return libelle;
 }
 
-int CLibResource::GetExtensionId(const wxString &extension)
+int CLibResource::GetExtensionId(const wxString& extension)
 {
-    CSqlResource sqlResource;
-    int id = sqlResource.GetExtensionId(extension);
-    return id;
+	CSqlResource sqlResource;
+	int id = sqlResource.GetExtensionId(extension);
+	return id;
 }
 
-wxString CLibResource::GetOpenGLShaderProgram(const wxString &idName)
+wxString CLibResource::GetOpenGLShaderProgram(const wxString& idName)
 {
 	CSqlResource sqlResource;
 	wxString program = sqlResource.GetOpenGLFromFile(idName);

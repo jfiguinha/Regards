@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ValidationToolbar.h"
 #include <LibResource.h>
-#include <window_id.h>
 using namespace Regards::Scanner;
 
 #define WM_OK 1

@@ -1,5 +1,4 @@
 #pragma once
-#include <BitmapInterface.h>
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 

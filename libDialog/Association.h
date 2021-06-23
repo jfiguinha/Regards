@@ -11,40 +11,37 @@
 //(*Headers(TiffOption)
 //*)
 
-class Association: public wxDialog
+class Association : public wxDialog
 {
-	public:
+public:
+	Association(wxWindow* parent);
+	~Association() override;
 
-		Association(wxWindow* parent);
-		virtual ~Association();
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxCheckListBox* checkListAssociation;
+	wxCheckBox* checkSelect;
+	//*)
+	bool IsOk();
+	bool AssociateExtension();
 
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxCheckListBox * checkListAssociation;
-		wxCheckBox * checkSelect;
-		//*)
-        bool IsOk();
-		bool AssociateExtension();
+protected:
+	//(*Identifiers(TiffOption)
+	//*)
 
-	protected:
-
-		//(*Identifiers(TiffOption)
-		//*)
-
-	private:
-
-		BOOL IsAppRunningAsAdminMode();
-		//(*Handlers(TiffOption)
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		void OnbtnCheckClick(wxCommandEvent& event);
-		int AssociateRegards();
-		int AssociateExtension(LPCWSTR szFileExtension);
-		int GetWindowsVersionAvance();
-		void AssociateApplication(HKEY classesDefined);
-		//*)
-        bool isOk;
-		DECLARE_EVENT_TABLE()
+private:
+	BOOL IsAppRunningAsAdminMode();
+	//(*Handlers(TiffOption)
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	void OnbtnCheckClick(wxCommandEvent& event);
+	int AssociateRegards();
+	int AssociateExtension(LPCWSTR szFileExtension);
+	int GetWindowsVersionAvance();
+	void AssociateApplication(HKEY classesDefined);
+	//*)
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

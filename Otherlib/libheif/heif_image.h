@@ -26,7 +26,6 @@
 #include "error.h"
 #include "box.h" // only for color_profile, TODO: maybe move the color_profiles to its own header
 
-#include <vector>
 #include <memory>
 #include <map>
 #include <set>

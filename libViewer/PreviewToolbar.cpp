@@ -10,25 +10,26 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+                                 CToolbarInterface* toolbarInterface, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	imagePlayDiaporama = nullptr;
 	imageStopDiaporama = nullptr;
 	fullscreen = nullptr;
 
-	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN",1);
-	wxString libelleFirst = CLibResource::LoadStringFromResource(L"LBLFIRST",1);
-	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS",1);
-	wxString libelleRotate90 = CLibResource::LoadStringFromResource(L"LBLROTATE90",1);
-	wxString libelleRotate270 = CLibResource::LoadStringFromResource(L"LBLROTATE270",1);
-	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY",1);
-	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP",1);
-	wxString libelleFlipVertical = CLibResource::LoadStringFromResource(L"LBLFLIPV",1);
-	wxString libelleFlipHorizontal = CLibResource::LoadStringFromResource(L"LBLFLIPH",1);
-	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT",1);
-	wxString libelleEnd = CLibResource::LoadStringFromResource(L"LBLEND",1);
-	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE", 1);// "Save";
+	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN", 1);
+	wxString libelleFirst = CLibResource::LoadStringFromResource(L"LBLFIRST", 1);
+	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS", 1);
+	wxString libelleRotate90 = CLibResource::LoadStringFromResource(L"LBLROTATE90", 1);
+	wxString libelleRotate270 = CLibResource::LoadStringFromResource(L"LBLROTATE270", 1);
+	wxString libellePlay = CLibResource::LoadStringFromResource(L"LBLPLAY", 1);
+	wxString libelleStop = CLibResource::LoadStringFromResource(L"LBLSTOP", 1);
+	wxString libelleFlipVertical = CLibResource::LoadStringFromResource(L"LBLFLIPV", 1);
+	wxString libelleFlipHorizontal = CLibResource::LoadStringFromResource(L"LBLFLIPH", 1);
+	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT", 1);
+	wxString libelleEnd = CLibResource::LoadStringFromResource(L"LBLEND", 1);
+	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE", 1); // "Save";
 
 
 	fullscreen = new CToolbarButton(themeToolbar.button);
@@ -57,13 +58,13 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	imagePrec->SetRepeatable(true);
 	navElement.push_back(imagePrec);
 
-	CToolbarButton * rotate90 = new CToolbarButton(themeToolbar.button);
+	auto rotate90 = new CToolbarButton(themeToolbar.button);
 	rotate90->SetButtonResourceId(L"IDB_ROTATION90");
 	rotate90->SetCommandId(WM_ROTATE90);
 	rotate90->SetLibelle(libelleRotate90);
 	navElement.push_back(rotate90);
 
-	CToolbarButton * rotate180 = new CToolbarButton(themeToolbar.button);
+	auto rotate180 = new CToolbarButton(themeToolbar.button);
 	rotate180->SetButtonResourceId(L"IDB_ROTATION270");
 	rotate180->SetCommandId(WM_ROTATE270);
 	rotate180->SetLibelle(libelleRotate270);
@@ -82,13 +83,13 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	imageStopDiaporama->SetVisible(false);
 	navElement.push_back(imageStopDiaporama);
 
-	CToolbarButton * flipVertical = new CToolbarButton(themeToolbar.button);
+	auto flipVertical = new CToolbarButton(themeToolbar.button);
 	flipVertical->SetButtonResourceId(L"IDB_FLIPVERT");
 	flipVertical->SetCommandId(WM_FLIPVERTICAL);
 	flipVertical->SetLibelle(libelleFlipVertical);
 	navElement.push_back(flipVertical);
 
-	CToolbarButton * flipHorizontal = new CToolbarButton(themeToolbar.button);
+	auto flipHorizontal = new CToolbarButton(themeToolbar.button);
 	flipHorizontal->SetButtonResourceId(L"IDB_FLIPHORZ");
 	flipHorizontal->SetCommandId(WM_FLIPHORIZONTAL);
 	flipHorizontal->SetLibelle(libelleFlipHorizontal);
@@ -114,20 +115,21 @@ void CPreviewToolbar::EnableScreenButton()
 	fullscreen->SetVisible(true);
 	this->Refresh();
 }
+
 void CPreviewToolbar::DisableScreenButton()
 {
 	fullscreen->SetVisible(false);
 	this->Refresh();
 }
 
-void  CPreviewToolbar::EnableSaveButton()
+void CPreviewToolbar::EnableSaveButton()
 {
 	save->SetVisible(true);
 	this->Refresh();
 }
 
 
-void  CPreviewToolbar::DisableSaveButton()
+void CPreviewToolbar::DisableSaveButton()
 {
 	save->SetVisible(false);
 	this->Refresh();
@@ -135,35 +137,34 @@ void  CPreviewToolbar::DisableSaveButton()
 
 void CPreviewToolbar::DisableNavigationButton()
 {
-    if(navigationButtonEnable)
-    {
-        navigationButtonEnable = false;
-        imagePlayDiaporama->SetVisible(false);
-        imageStopDiaporama->SetVisible(false);
-        fullscreen->SetVisible(false);
-        imageEnd->SetVisible(false);
-        imageSuiv->SetVisible(false);
-        imageFirst->SetVisible(false);
-        imagePrec->SetVisible(false);
-        this->Refresh();  
-    }
-
+	if (navigationButtonEnable)
+	{
+		navigationButtonEnable = false;
+		imagePlayDiaporama->SetVisible(false);
+		imageStopDiaporama->SetVisible(false);
+		fullscreen->SetVisible(false);
+		imageEnd->SetVisible(false);
+		imageSuiv->SetVisible(false);
+		imageFirst->SetVisible(false);
+		imagePrec->SetVisible(false);
+		this->Refresh();
+	}
 }
 
 void CPreviewToolbar::EnableNavigationButton()
 {
-    if(!navigationButtonEnable)
-    {
-        navigationButtonEnable = true;
-        imagePlayDiaporama->SetVisible(true);
-        imageStopDiaporama->SetVisible(true);
-        fullscreen->SetVisible(true);
-        imageEnd->SetVisible(true);
-        imageSuiv->SetVisible(true);
-        imageFirst->SetVisible(true);
-        imagePrec->SetVisible(true);
-        this->Refresh();
-    }
+	if (!navigationButtonEnable)
+	{
+		navigationButtonEnable = true;
+		imagePlayDiaporama->SetVisible(true);
+		imageStopDiaporama->SetVisible(true);
+		fullscreen->SetVisible(true);
+		imageEnd->SetVisible(true);
+		imageSuiv->SetVisible(true);
+		imageFirst->SetVisible(true);
+		imagePrec->SetVisible(true);
+		this->Refresh();
+	}
 }
 
 
@@ -173,16 +174,16 @@ CPreviewToolbar::~CPreviewToolbar()
 
 void CPreviewToolbar::SetFullscreen()
 {
-    wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLSCREEN",1);
-    fullscreen->SetLibelle(libelleFullscreen);
-    Refresh();
+	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLSCREEN", 1);
+	fullscreen->SetLibelle(libelleFullscreen);
+	Refresh();
 }
 
 void CPreviewToolbar::SetScreen()
 {
-    wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN",1);
-    fullscreen->SetLibelle(libelleFullscreen);
-    Refresh();
+	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN", 1);
+	fullscreen->SetLibelle(libelleFullscreen);
+	Refresh();
 }
 
 void CPreviewToolbar::Rotate90()
@@ -217,7 +218,7 @@ void CPreviewToolbar::Save()
 
 void CPreviewToolbar::Fullscreen()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		if (mainWindow->IsFullscreen())
@@ -229,28 +230,28 @@ void CPreviewToolbar::Fullscreen()
 
 void CPreviewToolbar::NextPicture()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->ImageSuivante();
 }
 
 void CPreviewToolbar::PreviousPicture()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->ImagePrecedente();
 }
 
 void CPreviewToolbar::FirstPicture()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->ImageDebut();
 }
 
 void CPreviewToolbar::DiaporamaStart()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		imagePlayDiaporama->SetVisible(false);
@@ -262,7 +263,7 @@ void CPreviewToolbar::DiaporamaStart()
 
 void CPreviewToolbar::DiaporamaStop()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 	{
 		imageStopDiaporama->SetVisible(false);
@@ -274,12 +275,12 @@ void CPreviewToolbar::DiaporamaStop()
 
 void CPreviewToolbar::LastPicture()
 {
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (mainWindow != nullptr)
 		mainWindow->ImageFin();
 }
 
-void CPreviewToolbar::EventManager(const int &id)
+void CPreviewToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
@@ -326,10 +327,5 @@ void CPreviewToolbar::EventManager(const int &id)
 	case WM_IMAGES_END:
 		LastPicture();
 		break;
-
 	}
 }
-
-
-
-

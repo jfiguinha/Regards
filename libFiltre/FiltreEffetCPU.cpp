@@ -5,15 +5,12 @@
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
 #include "InterpolationBicubic.h"
-#include "InterpolationBilinear.h"
-#include "Interpolation.h"
 #include "InterpolationFilters.h"
 #include "PerlinNoise.h"
 #include "LensFlare.h"
 #include "MotionBlur.h"
 #include "Filtre.h"
 #include "RedEye.h"
-#include "InterpolationFilters.h"
 #include "Wave.h"
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>

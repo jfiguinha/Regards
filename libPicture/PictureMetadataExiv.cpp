@@ -1,7 +1,5 @@
 #include "header.h"
 #include <ximage.h>
-#include <xfile.h>
-#include <xiofile.h>
 #include <ConvertUtility.h>
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>

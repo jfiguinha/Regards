@@ -1,10 +1,7 @@
 #pragma once
 #include <RGBAQuad.h>
 #include "OpenCLContext.h"
-#include "OpenCLProgram.h"
 #include "OpenCLParameter.h"
-#include <stdint.h>
-#include <string>
 #include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>

@@ -26,7 +26,7 @@ namespace Regards
 			CInfosFile(CThemeTree * theme, Regards::Window::CTreeElementControlInterface * interfaceControl);
 			~CInfosFile(void){};
 			void SetFile(const wxString & filename);
-			wxString GetFilename();
+			const wxString GetFilename();
             void UpdateScreenRatio();
             void CreateElement();
             void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};

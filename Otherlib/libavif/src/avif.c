@@ -108,7 +108,7 @@ static void avifImageSetDefaults(avifImage * image)
 
 avifImage * avifImageCreate(int width, int height, int depth, avifPixelFormat yuvFormat)
 {
-    avifImage * image = (avifImage *)avifAlloc(sizeof(avifImage));
+    avifImage * image = avifAlloc(sizeof(avifImage));
     avifImageSetDefaults(image);
     image->width = width;
     image->height = height;
@@ -433,7 +433,7 @@ void avifCodecSpecificOptionsSet(avifCodecSpecificOptions * csOptions, const cha
     }
 
     // Add a new key
-    avifCodecSpecificOption * entry = (avifCodecSpecificOption *)avifArrayPushPtr(csOptions);
+    avifCodecSpecificOption * entry = avifArrayPushPtr(csOptions);
     entry->key = avifStrdup(key);
     entry->value = avifStrdup(value);
 }

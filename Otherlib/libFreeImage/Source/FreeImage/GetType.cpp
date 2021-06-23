@@ -68,7 +68,7 @@ FreeImage_GetFileType(const char *filename, int size) {
 	FILE *handle = fopen(filename, "rb");
 
 	if (handle != NULL) {
-		FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeFromHandle(&io, (fi_handle)handle, size);
+		FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeFromHandle(&io, handle, size);
 
 		fclose(handle);
 
@@ -86,7 +86,7 @@ FreeImage_GetFileTypeU(const wchar_t *filename, int size) {
 	FILE *handle = _wfopen(filename, L"rb");
 
 	if (handle != NULL) {
-		FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeFromHandle(&io, (fi_handle)handle, size);
+		FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeFromHandle(&io, handle, size);
 
 		fclose(handle);
 
@@ -106,7 +106,7 @@ FreeImage_GetFileTypeFromMemory(FIMEMORY *stream, int size) {
 	SetMemoryIO(&io);
 
 	if (stream != NULL) {
-		return FreeImage_GetFileTypeFromHandle(&io, (fi_handle)stream, size);
+		return FreeImage_GetFileTypeFromHandle(&io, stream, size);
 	}
 
 	return FIF_UNKNOWN;
@@ -127,7 +127,7 @@ FreeImage_Validate(FREE_IMAGE_FORMAT fif, const char *filename) {
 	FILE *handle = fopen(filename, "rb");
 
 	if (handle != NULL) {
-		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, (fi_handle)handle);
+		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, handle);
 		fclose(handle);
 		return bIsValidFIF;
 	}
@@ -143,7 +143,7 @@ FreeImage_ValidateU(FREE_IMAGE_FORMAT fif, const wchar_t *filename) {
 	FILE *handle = _wfopen(filename, L"rb");
 
 	if (handle != NULL) {
-		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, (fi_handle)handle);
+		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, handle);
 		fclose(handle);
 		return bIsValidFIF;
 	}
@@ -157,7 +157,7 @@ FreeImage_ValidateFromMemory(FREE_IMAGE_FORMAT fif, FIMEMORY *stream) {
 	SetMemoryIO(&io);
 
 	if (stream != NULL) {
-		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, (fi_handle)stream);
+		BOOL bIsValidFIF = FreeImage_ValidateFromHandle(fif, &io, stream);
 		return bIsValidFIF;
 	}
 

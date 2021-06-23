@@ -24,11 +24,11 @@ CRegardsConfigParam::CRegardsConfigParam()
 	thumbnailQuality = 1;
 	thumbnailIconeCache = 1;
 	pictureSize = 0;
-    nbProcessThumbnail = 1;
-    nbProcessExif = 1;
-    nbProcessFace = 1;
-    nbGpsFileByMinute = 60;
-    numLanguage = 1;
+	nbProcessThumbnail = 1;
+	nbProcessExif = 1;
+	nbProcessFace = 1;
+	nbGpsFileByMinute = 60;
+	numLanguage = 1;
 	numInterpolation = 0;
 	openCLSupport = 0;
 	useDxva2 = 0;
@@ -57,6 +57,7 @@ void CRegardsConfigParam::SetFastDetectionFace(const int& fastDetection)
 {
 	this->fastFaceDetection = fastDetection;
 }
+
 int CRegardsConfigParam::GetFastDetectionFace()
 {
 	return fastFaceDetection;
@@ -67,7 +68,7 @@ int CRegardsConfigParam::GetFaceVideoDetection()
 	return videoFaceDetection;
 }
 
-void CRegardsConfigParam::SetFaceVideoDetection(const int &videoFaceDetection)
+void CRegardsConfigParam::SetFaceVideoDetection(const int& videoFaceDetection)
 {
 	this->videoFaceDetection = videoFaceDetection;
 }
@@ -77,7 +78,7 @@ wxString CRegardsConfigParam::GetVideoDecoderHardware()
 	return videoDecoderHardware;
 }
 
-void CRegardsConfigParam::SetVideoDecoderHardware(const wxString &numLib)
+void CRegardsConfigParam::SetVideoDecoderHardware(const wxString& numLib)
 {
 	videoDecoderHardware = numLib;
 }
@@ -87,12 +88,12 @@ int CRegardsConfigParam::GetAutoConstrast()
 	return autoContrast;
 }
 
-void CRegardsConfigParam::SetAutoConstrast(const int &autoContrast)
+void CRegardsConfigParam::SetAutoConstrast(const int& autoContrast)
 {
 	this->autoContrast = autoContrast;
 }
 
-void CRegardsConfigParam::SetDxva2Actif(const int &useDxva2)
+void CRegardsConfigParam::SetDxva2Actif(const int& useDxva2)
 {
 	this->useDxva2 = useDxva2;
 }
@@ -122,33 +123,34 @@ void CRegardsConfigParam::SetInterpolationType(const int& numInterpolation)
 	this->numInterpolation = numInterpolation;
 }
 
-int CRegardsConfigParam::GetOpenCLLoadFromBinaries(){
-    return loadFromBinaries;
-    
-}
-void CRegardsConfigParam::SetOpenCLLoadFromBinaries(const int &loadFromBinaries)
+int CRegardsConfigParam::GetOpenCLLoadFromBinaries()
 {
-    this->loadFromBinaries = loadFromBinaries;
+	return loadFromBinaries;
+}
+
+void CRegardsConfigParam::SetOpenCLLoadFromBinaries(const int& loadFromBinaries)
+{
+	this->loadFromBinaries = loadFromBinaries;
 }
 
 int CRegardsConfigParam::GetThumbnailProcess()
 {
-    return nbProcessThumbnail;
+	return nbProcessThumbnail;
 }
 
-void CRegardsConfigParam::SetThumbnailProcess(const int &nbProcess)
+void CRegardsConfigParam::SetThumbnailProcess(const int& nbProcess)
 {
-    nbProcessThumbnail = nbProcess;
+	nbProcessThumbnail = nbProcess;
 }
 
 int CRegardsConfigParam::GetNumLanguage()
 {
-    return numLanguage;
+	return numLanguage;
 }
 
-void CRegardsConfigParam::SetNumLanguage(const int &numLanguage)
+void CRegardsConfigParam::SetNumLanguage(const int& numLanguage)
 {
-    this->numLanguage = numLanguage;
+	this->numLanguage = numLanguage;
 }
 
 int CRegardsConfigParam::GetFaceDetection()
@@ -156,7 +158,7 @@ int CRegardsConfigParam::GetFaceDetection()
 	return faceDetection;
 }
 
-void CRegardsConfigParam::SetFaceDetection(const int &faceDetection)
+void CRegardsConfigParam::SetFaceDetection(const int& faceDetection)
 {
 	this->faceDetection = faceDetection;
 }
@@ -166,29 +168,29 @@ int CRegardsConfigParam::GetFaceOpenCLProcess()
 	return openCLFaceSupport;
 }
 
-void CRegardsConfigParam::SetFaceOpenCLProcess(const int &openclProcess)
+void CRegardsConfigParam::SetFaceOpenCLProcess(const int& openclProcess)
 {
 	this->openCLFaceSupport = openclProcess;
 }
 
 int CRegardsConfigParam::GetFaceProcess()
 {
-    return nbProcessFace;
+	return nbProcessFace;
 }
 
-void CRegardsConfigParam::SetFaceProcess(const int &nbProcess)
+void CRegardsConfigParam::SetFaceProcess(const int& nbProcess)
 {
-    nbProcessFace = nbProcess;
+	nbProcessFace = nbProcess;
 }
 
 int CRegardsConfigParam::GetExifProcess()
 {
-    return nbProcessExif;
+	return nbProcessExif;
 }
 
-void CRegardsConfigParam::SetExifProcess(const int &nbProcess)
+void CRegardsConfigParam::SetExifProcess(const int& nbProcess)
 {
-    nbProcessExif = nbProcess;
+	nbProcessExif = nbProcess;
 }
 
 int CRegardsConfigParam::GetFaceDetectionPictureSize()
@@ -196,7 +198,7 @@ int CRegardsConfigParam::GetFaceDetectionPictureSize()
 	return pictureSize;
 }
 
-void CRegardsConfigParam::SetFaceDetectionPictureSize(const int &numIndex)
+void CRegardsConfigParam::SetFaceDetectionPictureSize(const int& numIndex)
 {
 	pictureSize = numIndex;
 }
@@ -206,19 +208,19 @@ bool CRegardsConfigParam::GetDatabaseInMemory()
 	return dataInMemory;
 }
 
-void CRegardsConfigParam::SetDatabaseInMemory(const int &value)
+void CRegardsConfigParam::SetDatabaseInMemory(const int& value)
 {
 	dataInMemory = value;
 }
 
 float CRegardsConfigParam::GetIconSizeRatio()
 {
-    return iconSizeRatio;
+	return iconSizeRatio;
 }
 
-void CRegardsConfigParam::SetIconSizeRatio(const float &ratio)
+void CRegardsConfigParam::SetIconSizeRatio(const float& ratio)
 {
-    this->iconSizeRatio = ratio;
+	this->iconSizeRatio = ratio;
 }
 
 int CRegardsConfigParam::GetThumbnailQuality()
@@ -226,7 +228,7 @@ int CRegardsConfigParam::GetThumbnailQuality()
 	return thumbnailQuality;
 }
 
-void CRegardsConfigParam::SetThumbnailQuality(const int &quality)
+void CRegardsConfigParam::SetThumbnailQuality(const int& quality)
 {
 	thumbnailQuality = quality;
 }
@@ -236,7 +238,7 @@ int CRegardsConfigParam::GetThumbnailIconeCache()
 	return thumbnailIconeCache;
 }
 
-void CRegardsConfigParam::SetThumbnailIconeCache(const int &iconeCache)
+void CRegardsConfigParam::SetThumbnailIconeCache(const int& iconeCache)
 {
 	thumbnailIconeCache = iconeCache;
 }
@@ -262,7 +264,7 @@ int CRegardsConfigParam::GetVideoLibrary()
 	return numLibVideo;
 }
 
-void CRegardsConfigParam::SetVideoLibrary(const int &numLib)
+void CRegardsConfigParam::SetVideoLibrary(const int& numLib)
 {
 	numLibVideo = numLib;
 }
@@ -277,21 +279,22 @@ int CRegardsConfigParam::GetSoundVolume()
 	return soundVolume;
 }
 
-void CRegardsConfigParam::SetSoundVolume(const int &soundVolume)
+void CRegardsConfigParam::SetSoundVolume(const int& soundVolume)
 {
 	this->soundVolume = soundVolume;
 }
 
-void CRegardsConfigParam::SetEffectLibrary(const int &numLib)
+void CRegardsConfigParam::SetEffectLibrary(const int& numLib)
 {
 	numLibEffect = numLib;
 }
 
 int CRegardsConfigParam::GetPreviewLibrary()
 {
-    return LIBOPENCL;
+	return LIBOPENCL;
 }
-void CRegardsConfigParam::SetPreviewLibrary(const int &numLib)
+
+void CRegardsConfigParam::SetPreviewLibrary(const int& numLib)
 {
 	this->numLibPreview = numLib;
 }
@@ -301,7 +304,7 @@ int CRegardsConfigParam::GetOpenCLPlatformIndex()
 	return openCLNumIndex;
 }
 
-void CRegardsConfigParam::SetOpenCLPlatformIndex(const int &numIndex)
+void CRegardsConfigParam::SetOpenCLPlatformIndex(const int& numIndex)
 {
 	openCLNumIndex = numIndex;
 }
@@ -311,7 +314,7 @@ wxString CRegardsConfigParam::GetOpenCLPlatformName()
 	return openCLPlatformName;
 }
 
-void CRegardsConfigParam::SetOpenCLPlatformName(const wxString &platformName)
+void CRegardsConfigParam::SetOpenCLPlatformName(const wxString& platformName)
 {
 	openCLPlatformName = platformName;
 }
@@ -323,7 +326,7 @@ int CRegardsConfigParam::GetEffect()
 	return numEffect;
 }
 
-void CRegardsConfigParam::SetEffect(const int &numEffect)
+void CRegardsConfigParam::SetEffect(const int& numEffect)
 {
 	this->numEffect = numEffect;
 }
@@ -332,10 +335,10 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibEffect)));
 	sectionPosition->append_node(node("NumEffect", to_string(numEffect)));
-    sectionPosition->append_node(node("NbProcessThumbnail", to_string(nbProcessThumbnail)));
-    sectionPosition->append_node(node("NbProcessExif", to_string(nbProcessExif)));
-    sectionPosition->append_node(node("NbProcessFace", to_string(nbProcessFace)));
-    sectionPosition->append_node(node("GpsFileByMinute", to_string(nbGpsFileByMinute)));
+	sectionPosition->append_node(node("NbProcessThumbnail", to_string(nbProcessThumbnail)));
+	sectionPosition->append_node(node("NbProcessExif", to_string(nbProcessExif)));
+	sectionPosition->append_node(node("NbProcessFace", to_string(nbProcessFace)));
+	sectionPosition->append_node(node("GpsFileByMinute", to_string(nbGpsFileByMinute)));
 	sectionPosition->append_node(node("videoFaceDetection", to_string(videoFaceDetection)));
 	sectionPosition->append_node(node("FaceDetection", to_string(faceDetection)));
 	sectionPosition->append_node(node("FastFaceDetection", to_string(fastFaceDetection)));
@@ -355,7 +358,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibPreview)));
 	sectionPosition->append_node(node("OpenCLNumIndex", to_string(openCLNumIndex)));
 	sectionPosition->append_node(node("OpenCLPlatformName", openCLPlatformName));
-    sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
+	sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
 	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
@@ -369,17 +372,17 @@ int CRegardsConfigParam::GetDiaporamaTime()
 	return diaporamaTime;
 }
 
-void CRegardsConfigParam::SetDiaporamaTime(const int &diaporamaTime)
+void CRegardsConfigParam::SetDiaporamaTime(const int& diaporamaTime)
 {
 	this->diaporamaTime = diaporamaTime;
 }
 
-void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
+void CRegardsConfigParam::GetVideoLibrary(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("NumLibrary");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("NumLibrary");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -387,7 +390,7 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("HardwareDecoder");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -395,7 +398,7 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("HardwareEncoder");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -403,7 +406,7 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("UseDXVA2");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -411,7 +414,7 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("SoundVolume");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -419,12 +422,12 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 	}
 }
 
-void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
+void CRegardsConfigParam::GetEffectLibrary(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("NumLibrary");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("NumLibrary");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -432,39 +435,39 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("NumEffect");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		numEffect = atoi(child_node->value());
 	}
-    
+
 	child_node = position_node->first_node("NbProcessThumbnail");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		nbProcessThumbnail = atoi(child_node->value());
 	}
-    
+
 	child_node = position_node->first_node("NbProcessExif");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		nbProcessExif = atoi(child_node->value());
 	}
-    
+
 	child_node = position_node->first_node("NbProcessFace");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		nbProcessFace = atoi(child_node->value());
 	}
-    
+
 	child_node = position_node->first_node("GpsFileByMinute");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -472,7 +475,7 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("videoFaceDetection");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -480,7 +483,7 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("FaceDetection");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -488,7 +491,7 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("FastFaceDetection");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -496,12 +499,12 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 	}
 }
 
-void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
+void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("NumLibrary");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("NumLibrary");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -509,7 +512,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("OpenCLNumIndex");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -517,7 +520,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("OpenCLPlatformName");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -525,7 +528,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("LoadFromBinaries");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -533,15 +536,15 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("NumInterpolation");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		numInterpolation = atoi(child_node->value());
-	}	
+	}
 
 	child_node = position_node->first_node("OpenCLSupport");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -549,7 +552,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("detectOrientation");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -557,7 +560,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("autoContrast");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -565,14 +568,13 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("openCLFaceSupport");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		openCLFaceSupport = atoi(child_node->value());
 	}
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -613,9 +615,9 @@ void CRegardsConfigParam::SaveParameter()
 	xml_node<>* sectionThumbnail = node("Thumbnail");
 	SetThumbnail(sectionThumbnail);
 	root->append_node(sectionThumbnail);
-    xml_node<>* sectionIcon = node("Icon");
-    SetIconParameter(sectionIcon);
-    root->append_node(sectionIcon);
+	xml_node<>* sectionIcon = node("Icon");
+	SetIconParameter(sectionIcon);
+	root->append_node(sectionIcon);
 	// save the xml data to a file (could equally well use any other ostream)
 	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
 	if (file.is_open())
@@ -631,83 +633,82 @@ void CRegardsConfigParam::SaveParameter()
 //////////////////////////////////////////////////////////////////////////////////////////
 void CRegardsConfigParam::LoadParameter()
 {
-	xml_node<> * root_node;
+	xml_node<>* root_node;
 	//long nodeSize = 0;
 	root_node = doc.first_node("Parameter");
 
-	xml_node<> * child_node = root_node->first_node("ImageLibrary");
-	if (child_node != 0)
+	xml_node<>* child_node = root_node->first_node("ImageLibrary");
+	if (child_node != nullptr)
 		GetImageLibrary(child_node);
 
 	child_node = root_node->first_node("VideoLibrary");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetVideoLibrary(child_node);
 
 	child_node = root_node->first_node("EffectLibrary");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetEffectLibrary(child_node);
 
 	child_node = root_node->first_node("Database");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetDatabaseParameter(child_node);
 
 	child_node = root_node->first_node("Diaporama");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetDiaporamaParameter(child_node);
 
 	child_node = root_node->first_node("Geolocalisation");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetGeolocalisationServer(child_node);
 
 	child_node = root_node->first_node("Thumbnail");
-	if (child_node != 0)
+	if (child_node != nullptr)
 		GetThumbnail(child_node);
-    
-    child_node = root_node->first_node("Icon");
-    if (child_node != 0)
-        GetIconParameter(child_node);
-    
+
+	child_node = root_node->first_node("Icon");
+	if (child_node != nullptr)
+		GetIconParameter(child_node);
 }
 
 void CRegardsConfigParam::SetIconParameter(xml_node<>* sectionPosition)
 {
-    sectionPosition->append_node(node("Ratio", to_string(iconSizeRatio)));
+	sectionPosition->append_node(node("Ratio", to_string(iconSizeRatio)));
 }
 
 void CRegardsConfigParam::GetIconParameter(xml_node<>* position_node)
 {
-    wxString value = "";
-    wxString nodeName = "";
-    xml_node<> * child_node = position_node->first_node("Ratio");
-    if (child_node != 0)
-    {
-        value = child_node->value();
-        nodeName = child_node->name();
-        iconSizeRatio = atof(child_node->value());
-    }
+	wxString value = "";
+	wxString nodeName = "";
+	xml_node<>* child_node = position_node->first_node("Ratio");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		iconSizeRatio = atof(child_node->value());
+	}
 }
 
 
 void CRegardsConfigParam::SetDatabaseParameter(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("InMemory", to_string(dataInMemory)));
-    sectionPosition->append_node(node("Language", to_string(numLanguage)));
+	sectionPosition->append_node(node("Language", to_string(numLanguage)));
 }
 
-void CRegardsConfigParam::GetDatabaseParameter(xml_node<> * position_node)
+void CRegardsConfigParam::GetDatabaseParameter(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("InMemory");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("InMemory");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		dataInMemory = atoi(child_node->value());
 	}
 
-    child_node = position_node->first_node("Language");
-	if (child_node != 0)
+	child_node = position_node->first_node("Language");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -723,12 +724,12 @@ void CRegardsConfigParam::SetDiaporamaParameter(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("MusicDiaporama", musicDiaporama));
 }
 
-void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
+void CRegardsConfigParam::GetDiaporamaParameter(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("Time");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("Time");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -736,7 +737,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("Effect");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -744,7 +745,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("Fullscreen");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -752,7 +753,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("MusicDiaporama");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -762,7 +763,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 
 int CRegardsConfigParam::GetDetectOrientation()
 {
-	return detectOrientation;// diaporamaEffect;
+	return detectOrientation; // diaporamaEffect;
 }
 
 void CRegardsConfigParam::SetDectectOrientation(const int& detectOrientation)
@@ -775,7 +776,7 @@ int CRegardsConfigParam::GetDiaporamaTransitionEffect()
 	return diaporamaEffect;
 }
 
-void CRegardsConfigParam::SetDiaporamaTransitionEffect(const int &diaporamaEffect)
+void CRegardsConfigParam::SetDiaporamaTransitionEffect(const int& diaporamaEffect)
 {
 	this->diaporamaEffect = diaporamaEffect;
 }
@@ -785,7 +786,7 @@ int CRegardsConfigParam::GetDiaporamaFullscreen()
 	return diaporamaFullscreen;
 }
 
-void CRegardsConfigParam::SetDiaporamaFullscreen(const int &diaporamaFullscreen)
+void CRegardsConfigParam::SetDiaporamaFullscreen(const int& diaporamaFullscreen)
 {
 	this->diaporamaFullscreen = diaporamaFullscreen;
 }
@@ -795,12 +796,12 @@ void CRegardsConfigParam::SetGeolocalisationServer(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("Url", geolocUrl));
 }
 
-void CRegardsConfigParam::GetGeolocalisationServer(xml_node<> * position_node)
+void CRegardsConfigParam::GetGeolocalisationServer(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("Url");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("Url");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -815,12 +816,12 @@ void CRegardsConfigParam::SetThumbnail(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("FacePictureSize", to_string(pictureSize)));
 }
 
-void CRegardsConfigParam::GetThumbnail(xml_node<> * position_node)
+void CRegardsConfigParam::GetThumbnail(xml_node<>* position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * child_node = position_node->first_node("Quality");
-	if (child_node != 0)
+	xml_node<>* child_node = position_node->first_node("Quality");
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -828,7 +829,7 @@ void CRegardsConfigParam::GetThumbnail(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("IconeCache");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
@@ -836,7 +837,7 @@ void CRegardsConfigParam::GetThumbnail(xml_node<> * position_node)
 	}
 
 	child_node = position_node->first_node("FacePictureSize");
-	if (child_node != 0)
+	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();

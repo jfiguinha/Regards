@@ -1,14 +1,11 @@
 #pragma once
 #include <FileGeolocation.h>
-#include <RegardsBitmap.h>
 #include "ToolbarInfos.h"
 #include "ModificationManager.h"
 #include <wx/webview.h>
-#include <ScrollbarWnd.h>
 #include <wx/animate.h>
 #include "CriteriaWindow.h"
 #include "PicturePanel.h"
-#include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
 #include "FiltreEffect.h"
 #include "TabWindow.h"

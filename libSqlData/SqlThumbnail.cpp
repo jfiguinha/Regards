@@ -1,13 +1,6 @@
 #include <header.h>
 #include "SqlThumbnail.h"
-#include "SqlLib.h"
-#include "SqlEngine.h"
 #include "SqlResult.h"
-#include <RegardsBitmap.h>
-#include <wx/mstream.h>
-#include <turbojpeg.h>
-#include <ConvertUtility.h>
-#include <PictureData.h>
 #include <FileUtility.h>
 #include <libPicture.h>
 #include <wx/file.h>

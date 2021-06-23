@@ -11,26 +11,25 @@ using namespace Regards::Print;
 
 CBitmapPrintout::~CBitmapPrintout()
 {
-	
-	if(m_bitmap != nullptr)
-		delete(m_bitmap);	
-	if(m_picture != nullptr)
+	if (m_bitmap != nullptr)
+		delete(m_bitmap);
+	if (m_picture != nullptr)
 		delete(m_picture);
 
 	m_bitmap = nullptr;
 	m_picture = nullptr;
-	
 }
 
 CBitmapPrintout::CBitmapPrintout()
 {
+	m_bitmap = nullptr;
 	m_picture = nullptr;
 }
 
 
 bool CBitmapPrintout::OnPrintPage(int page)
 {
-	wxDC *dc = GetDC();
+	wxDC* dc = GetDC();
 	if (dc)
 	{
 		DrawPicture(page);
@@ -43,8 +42,7 @@ bool CBitmapPrintout::OnPrintPage(int page)
 
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
 
 bool CBitmapPrintout::OnBeginDocument(int startPage, int endPage)
@@ -55,7 +53,7 @@ bool CBitmapPrintout::OnBeginDocument(int startPage, int endPage)
 	return true;
 }
 
-void CBitmapPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
+void CBitmapPrintout::GetPageInfo(int* minPage, int* maxPage, int* selPageFrom, int* selPageTo)
 {
 	if (typeImage == 1)
 	{
@@ -64,7 +62,7 @@ void CBitmapPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, 
 		*selPageFrom = 1;
 		*selPageTo = m_picture->GetNbPage();
 	}
-	else if(typeImage == 2)
+	else if (typeImage == 2)
 	{
 		*minPage = 1;
 		*maxPage = 1;
@@ -88,7 +86,7 @@ bool CBitmapPrintout::HasPage(int pageNum)
 	return false;
 }
 
-void CBitmapPrintout::DrawPicture(const int & pageNum)
+void CBitmapPrintout::DrawPicture(const int& pageNum)
 {
 	// You might use THIS code if you were scaling graphics of known size to fit
 	// on the page. The commented-out code illustrates different ways of scaling
@@ -96,13 +94,13 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 
 	// We know the graphic is 230x350. If we didn't know this, we'd need to
 	// calculate it.
-	CImageLoadingFormat * image = nullptr;
+	CImageLoadingFormat* image = nullptr;
 
 	if (typeImage == 1)
 	{
 		image = m_picture->GetPage(pageNum - 1);
 	}
-	else if(typeImage == 2)
+	else if (typeImage == 2)
 	{
 		image = new CImageLoadingFormat(false);
 		image->SetPicture(m_bitmap);
@@ -110,7 +108,7 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 
 	wxCoord maxX = image->GetWidth();
 	wxCoord maxY = image->GetHeight();
-	wxPageSetupDialogData * g_pageSetupData = CPrintEngine::GetPageSetupDialogData();
+	wxPageSetupDialogData* g_pageSetupData = CPrintEngine::GetPageSetupDialogData();
 
 	// This sets the user scale and origin of the DC so that the image fits
 	// within the page margins as specified by g_PageSetupData, which you can
@@ -127,8 +125,8 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 	wxCoord yoff = (fitRect.height - maxY) / 2;
 	OffsetLogicalOrigin(xoff, yoff);
 
-	wxDC * dc = GetDC();
-	wxImage * _local = image->GetwxImage();
+	wxDC* dc = GetDC();
+	wxImage* _local = image->GetwxImage();
 	dc->DrawBitmap(*_local, 0, 0);
 	delete _local;
 	delete image;
@@ -136,7 +134,7 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 
 
 // Writes a header on a page. Margin units are in millimetres.
-bool CBitmapPrintout::WritePageHeader(wxPrintout *printout, wxDC *dc, const wxString&text, float mmToLogical)
+bool CBitmapPrintout::WritePageHeader(wxPrintout* printout, wxDC* dc, const wxString& text, float mmToLogical)
 {
 	/*
 #if 0

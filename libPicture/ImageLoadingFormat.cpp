@@ -21,12 +21,12 @@ using namespace Regards::Picture;
 
 extern float value[256];
 
-void CImageLoadingFormat::SetMemoryDelete(const bool &memoryDelete)
+void CImageLoadingFormat::SetMemoryDelete(const bool& memoryDelete)
 {
 	this->memoryDelete = memoryDelete;
 }
 
-CImageLoadingFormat::CImageLoadingFormat(const bool &memoryDelete)
+CImageLoadingFormat::CImageLoadingFormat(const bool& memoryDelete)
 {
 	_image = nullptr;
 	_cxImage = nullptr;
@@ -40,7 +40,7 @@ CImageLoadingFormat::CImageLoadingFormat(const bool &memoryDelete)
 
 CImageLoadingFormat::~CImageLoadingFormat()
 {
-	if(memoryDelete)
+	if (memoryDelete)
 	{
 		DeletePicture();
 	}
@@ -76,10 +76,10 @@ void CImageLoadingFormat::DeletePicture()
 
 int CImageLoadingFormat::GetWidth()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return 0;
 
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
@@ -115,10 +115,10 @@ int CImageLoadingFormat::GetWidth()
 
 int CImageLoadingFormat::GetHeight()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return 0;
 
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
@@ -154,10 +154,10 @@ int CImageLoadingFormat::GetHeight()
 
 void CImageLoadingFormat::Mirror()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return;
 
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
@@ -187,10 +187,10 @@ void CImageLoadingFormat::Mirror()
 
 void CImageLoadingFormat::Rotate90()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return;
 
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
@@ -220,10 +220,10 @@ void CImageLoadingFormat::Rotate90()
 
 void CImageLoadingFormat::Flip()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return;
 
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
@@ -254,7 +254,7 @@ void CImageLoadingFormat::Flip()
 
 int CImageLoadingFormat::GetOrientation()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return 0;
 
 	return orientation;
@@ -269,6 +269,7 @@ int CImageLoadingFormat::GetResolution()
 {
 	return resolution;
 }
+
 /*
 From exiftool documentation
 
@@ -283,38 +284,40 @@ From exiftool documentation
 
 */
 
-void CImageLoadingFormat::SetOrientation(const int &orientation)
+void CImageLoadingFormat::SetOrientation(const int& orientation)
 {
 	this->orientation = orientation;
 }
 
 
-void CImageLoadingFormat::SetFilename(const wxString &filename)
+void CImageLoadingFormat::SetFilename(const wxString& filename)
 {
 	this->filename = wxString(filename);
 }
 
-void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap * image, const bool & flip)
+void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap* image, const bool& flip)
 {
 	if (image != nullptr)
 	{
 		format = TYPE_IMAGE_REGARDSJPEGIMAGE;
-		_jpegImage = new CRegardsJpegPicture(image->GetPtBitmap(), image->GetBitmapWidth(), image->GetBitmapHeight(), flip);
+		_jpegImage = new CRegardsJpegPicture(image->GetPtBitmap(), image->GetBitmapWidth(), image->GetBitmapHeight(),
+		                                     flip);
 		filename = image->GetFilename();
 	}
 }
-void CImageLoadingFormat::UpdatePicture(CRegardsBitmap * image)
+
+void CImageLoadingFormat::UpdatePicture(CRegardsBitmap* image)
 {
 	DeletePicture();
 	_image = image;
 }
 
-void CImageLoadingFormat::SetPicture(CRegardsBitmap * image, const bool &convertToRGB24)
+void CImageLoadingFormat::SetPicture(CRegardsBitmap* image, const bool& convertToRGB24)
 {
-	if(image != nullptr)
+	if (image != nullptr)
 	{
 		format = TYPE_IMAGE_REGARDSIMAGE;
-		
+
 		_image = image;
 		orientation = image->GetOrientation();
 		if (orientation < 0)
@@ -324,106 +327,105 @@ void CImageLoadingFormat::SetPicture(CRegardsBitmap * image, const bool &convert
 	}
 }
 
-void CImageLoadingFormat::SetPicture(CxImage * image)
+void CImageLoadingFormat::SetPicture(CxImage* image)
 {
-	if(image != nullptr)
+	if (image != nullptr)
 	{
 		_cxImage = image;
 		format = TYPE_IMAGE_CXIMAGE;
 	}
 }
 
-void CImageLoadingFormat::SetPicture(wxImage * image)
+void CImageLoadingFormat::SetPicture(wxImage* image)
 {
-	if(image != nullptr)
+	if (image != nullptr)
 	{
 		_wxImage = image;
 		format = TYPE_IMAGE_WXIMAGE;
 	}
 }
 
-void CImageLoadingFormat::SetPicture(CRegardsFloatBitmap * image)
+void CImageLoadingFormat::SetPicture(CRegardsFloatBitmap* image)
 {
-	if(image != nullptr)
+	if (image != nullptr)
 	{
 		_floatImage = image;
 		format = TYPE_IMAGE_REGARDSFLOATIMAGE;
 	}
 }
 
-CRegardsFloatBitmap * CImageLoadingFormat::GetFloatBitmap(const bool &copy)
+CRegardsFloatBitmap* CImageLoadingFormat::GetFloatBitmap(const bool& copy)
 {
-	if(!IsOk())
+	if (!IsOk())
 	{
 		return nullptr;
 	}
 
 	CLibPicture libPicture;
-	CRegardsFloatBitmap * _local = nullptr;
-	switch(format)
+	CRegardsFloatBitmap* _local = nullptr;
+	switch (format)
 	{
-		case TYPE_IMAGE_WXIMAGE:
-			{
-				_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
-				CxImage * _image = libPicture.ConvertwxImageToCxImage(*_wxImage);
-				_image->Encode2BGRAFloat(_local->GetData(), _local->GetSize(), true);
-			}
-			break;
+	case TYPE_IMAGE_WXIMAGE:
+		{
+			_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
+			CxImage* _image = libPicture.ConvertwxImageToCxImage(*_wxImage);
+			_image->Encode2BGRAFloat(_local->GetData(), _local->GetSize(), true);
+		}
+		break;
 
-		case TYPE_IMAGE_CXIMAGE:
-			{
-				_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
-				_cxImage->Encode2BGRAFloat(_local->GetData(), _local->GetSize(), true);
-			}
-			break;
+	case TYPE_IMAGE_CXIMAGE:
+		{
+			_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
+			_cxImage->Encode2BGRAFloat(_local->GetData(), _local->GetSize(), true);
+		}
+		break;
 
-		case TYPE_IMAGE_REGARDSIMAGE:
+	case TYPE_IMAGE_REGARDSIMAGE:
+		{
+			_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
+			float* buffer = _local->GetData();
+			for (long y = 0; y < _image->GetBitmapHeight(); y++)
 			{
-				_local = new CRegardsFloatBitmap(GetWidth(), GetHeight());
-				float * buffer = _local->GetData();
-				for (long y = 0; y < _image->GetBitmapHeight(); y++)
+				for (long x = 0; x < _image->GetBitmapWidth(); x++)
 				{
-					for (long x = 0; x < _image->GetBitmapWidth(); x++)
-					{
-						CRgbaquad color = _image->GetColorValue(x, y);
-						*buffer++ = value[color.GetRed()] / 255.0f;
-						*buffer++ = value[color.GetGreen()] / 255.0f;
-						*buffer++ = value[color.GetBlue()] / 255.0f;
-						*buffer++ = value[color.GetAlpha()] / 255.0f;
-					}
+					CRgbaquad color = _image->GetColorValue(x, y);
+					*buffer++ = value[color.GetRed()] / 255.0f;
+					*buffer++ = value[color.GetGreen()] / 255.0f;
+					*buffer++ = value[color.GetBlue()] / 255.0f;
+					*buffer++ = value[color.GetAlpha()] / 255.0f;
 				}
 			}
-			break;
+		}
+		break;
 
-		case TYPE_IMAGE_REGARDSFLOATIMAGE:
+	case TYPE_IMAGE_REGARDSFLOATIMAGE:
+		{
+			if (copy)
 			{
-				if(copy)
-				{
-					CRegardsFloatBitmap * _local = new CRegardsFloatBitmap(this->GetWidth(), this->GetHeight());
-					memcpy(_local->GetData(), _floatImage->GetData(), _floatImage->GetSize());
-					return _local;
-				}
-				else
-					return _floatImage;
+				auto _local = new CRegardsFloatBitmap(this->GetWidth(), this->GetHeight());
+				memcpy(_local->GetData(), _floatImage->GetData(), _floatImage->GetSize());
+				return _local;
 			}
-			break;
+			return _floatImage;
+		}
+		break;
 	}
 	return _local;
 }
 
-CRegardsBitmap * CImageLoadingFormat::GetRegardsBitmap(const bool &copy)
+CRegardsBitmap* CImageLoadingFormat::GetRegardsBitmap(const bool& copy)
 {
-	if(!IsOk())
+	if (!IsOk())
 	{
 		return nullptr;
 	}
 
 	CLibPicture libPicture;
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
-			CRegardsBitmap * _local = libPicture.ConvertCXImageToRegardsBitmap(_cxImage,0);
+			CRegardsBitmap* _local = libPicture.ConvertCXImageToRegardsBitmap(_cxImage, 0);
 			return _local;
 		}
 
@@ -435,53 +437,51 @@ CRegardsBitmap * CImageLoadingFormat::GetRegardsBitmap(const bool &copy)
 
 	case TYPE_IMAGE_REGARDSIMAGE:
 		{
-			if(copy)
+			if (copy)
 			{
-				CRegardsBitmap * _local = new CRegardsBitmap();
+				auto _local = new CRegardsBitmap();
 				*_local = *_image;
 				return _local;
 			}
-			else
-				return _image;
+			return _image;
 		}
 		break;
 
 	case TYPE_IMAGE_REGARDSFLOATIMAGE:
 		{
-			CRegardsBitmap * _local = new CRegardsBitmap(GetWidth(), GetHeight());
-			uint8_t * buffer = _local->GetPtBitmap();
-			float * data = _floatImage->GetData();
+			auto _local = new CRegardsBitmap(GetWidth(), GetHeight());
+			uint8_t* buffer = _local->GetPtBitmap();
+			float* data = _floatImage->GetData();
 			for (long y = 0; y < GetHeight(); y++)
 			{
 				for (long x = 0; x < GetWidth(); x++)
 				{
-                    int position = x * 4 + y * GetWidth() * 4;
-                    *buffer++ = max((int32_t)0,min((int32_t)(data[position + 2] * 255),(int32_t)255));
-					*buffer++ = max((int32_t)0,min((int32_t)(data[position + 1] * 255),(int32_t)255));
-					*buffer++ = max((int32_t)0,min((int32_t)(data[position] * 255),(int32_t)255));
-					*buffer++ = max((int32_t)0,min((int32_t)(data[position + 3] * 255),(int32_t)255));
+					int position = x * 4 + y * GetWidth() * 4;
+					*buffer++ = max(0, min(static_cast<int32_t>(data[position + 2] * 255), 255));
+					*buffer++ = max(0, min(static_cast<int32_t>(data[position + 1] * 255), 255));
+					*buffer++ = max(0, min(static_cast<int32_t>(data[position] * 255), 255));
+					*buffer++ = max(0, min(static_cast<int32_t>(data[position + 3] * 255), 255));
 				}
 			}
-            return _local;
+			return _local;
 		}
 		break;
 	}
 	return nullptr;
 }
 
-void CImageLoadingFormat::DestroyJpegData(uint8_t * & data, const int & compressMethod)
+void CImageLoadingFormat::DestroyJpegData(uint8_t* & data, const int& compressMethod)
 {
 	if (compressMethod == 1)
 	{
-	#ifdef TURBOJPEG
-			tjFree(data);
-	#else
+#ifdef TURBOJPEG
+		tjFree(data);
+#else
 			delete[] data;
-	#endif	
+#endif
 	}
 	else
 	{
-
 		switch (format)
 		{
 		case TYPE_IMAGE_CXIMAGE:
@@ -503,31 +503,32 @@ void CImageLoadingFormat::DestroyJpegData(uint8_t * & data, const int & compress
 	data = nullptr;
 }
 
-void CImageLoadingFormat::SaveToJpeg(const wxString &filename)
+void CImageLoadingFormat::SaveToJpeg(const wxString& filename)
 {
 	int compressMethod = 0;
 	unsigned long outputsize = 0;
 	convertToRGB24 = true;
-	uint8_t * data = GetJpegData(outputsize, compressMethod);
+	uint8_t* data = GetJpegData(outputsize, compressMethod);
 	wxFileOutputStream outputStream(filename);
 	outputStream.Write(data, outputsize);
 	outputStream.Close();
 	DestroyJpegData(data, compressMethod);
 }
 
-void CImageLoadingFormat::ConvertToBGR(const bool &convert)
+void CImageLoadingFormat::ConvertToBGR(const bool& convert)
 {
 	convertToBGR = convert;
 }
 
-void CImageLoadingFormat::ConvertToRGB24(const bool &convert)
+void CImageLoadingFormat::ConvertToRGB24(const bool& convert)
 {
 	convertToRGB24 = convert;
 }
 
-uint8_t * CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char * buffer, int width, int height, unsigned long & outputsize)
+uint8_t* CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char* buffer, int width, int height,
+                                                          unsigned long& outputsize)
 {
-	uint8_t * data = nullptr;
+	uint8_t* data = nullptr;
 	//bool result = true;
 	const int JPEG_QUALITY = 75;
 	//const int COLOR_COMPONENTS = 3;
@@ -537,54 +538,54 @@ uint8_t * CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char * buffe
 	if (convertToRGB24)
 	{
 		tjCompress2(_jpegCompressor, buffer, width, 0, height, TJPF_BGRX,
-			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
-			TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+		            &data, &outputsize, TJSAMP_444, JPEG_QUALITY,
+		            TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
 	}
 	else
 	{
 		tjCompress2(_jpegCompressor, buffer, width, 0, height, TJPF_RGBX,
-			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
-			TJFLAG_FASTDCT);
+		            &data, &outputsize, TJSAMP_444, JPEG_QUALITY,
+		            TJFLAG_FASTDCT);
 	}
 	tjDestroy(_jpegCompressor);
-	
+
 	return data;
 }
 
 
-uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &compressMethod)
+uint8_t* CImageLoadingFormat::GetJpegData(unsigned long& outputsize, int& compressMethod)
 {
-	if(!IsOk())
+	if (!IsOk())
 	{
 		outputsize = 0;
 		return nullptr;
 	}
 
 	compressMethod = 0;
-	uint8_t * data = nullptr;
-	switch(format)
+	uint8_t* data = nullptr;
+	switch (format)
 	{
 	case TYPE_IMAGE_REGARDSJPEGIMAGE:
-	{
-		if (_jpegImage != nullptr)
 		{
-			outputsize = _jpegImage->GetSize();
-			data = new uint8_t[outputsize];
-			compressMethod = 0;
-			memcpy(data, _jpegImage->GetData(), outputsize);
-			return data;
+			if (_jpegImage != nullptr)
+			{
+				outputsize = _jpegImage->GetSize();
+				data = new uint8_t[outputsize];
+				compressMethod = 0;
+				memcpy(data, _jpegImage->GetData(), outputsize);
+				return data;
+			}
 		}
-	}
-	break;
+		break;
 	case TYPE_IMAGE_CXIMAGE:
 		{
-			data = NULL;
+			data = nullptr;
 			int32_t size = 0;
 			if (_cxImage->IsIndexed() || _cxImage->IsGrayScale())
 			{
-
-				CRegardsBitmap * bitmap = GetRegardsBitmap();
-				data = CompressRegardsBitmapToJpeg(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), outputsize);
+				CRegardsBitmap* bitmap = GetRegardsBitmap();
+				data = CompressRegardsBitmapToJpeg(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(),
+				                                   bitmap->GetBitmapHeight(), outputsize);
 				compressMethod = 1;
 				delete bitmap;
 			}
@@ -611,39 +612,40 @@ uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &comp
 
 	case TYPE_IMAGE_REGARDSIMAGE:
 		{
-			data =  CompressRegardsBitmapToJpeg(_image->GetPtBitmap(), _image->GetBitmapWidth(), _image->GetBitmapHeight(), outputsize);
+			data = CompressRegardsBitmapToJpeg(_image->GetPtBitmap(), _image->GetBitmapWidth(),
+			                                   _image->GetBitmapHeight(), outputsize);
 			compressMethod = 1;
 		}
 		break;
-        
+
 	case TYPE_IMAGE_REGARDSFLOATIMAGE:
 		{
-            int width =  _floatImage->GetWidth();
-            int height =  _floatImage->GetHeight();
-            uint8_t * inputBuffer = new uint8_t[width * height * 4];
-            float * buffer = _floatImage->GetData();
-            int k = 0;
-            for (int i = 0; i < height; i++)
-            {
-                for (int j = 0; j < width; j++, k+=4)
-                {
-                    inputBuffer[k] = (int)(buffer[k+2] * 255.0);
-                    inputBuffer[k+1] = (int)(buffer[k+1] * 255.0);
-                    inputBuffer[k+2] = (int)(buffer[k] * 255.0);
-                    inputBuffer[k+3] = (int)(buffer[k+3] * 255.0);    
-                }
-            }
-			data = CompressRegardsBitmapToJpeg(inputBuffer,width, height, outputsize);
-            delete[] inputBuffer;
+			int width = _floatImage->GetWidth();
+			int height = _floatImage->GetHeight();
+			auto inputBuffer = new uint8_t[width * height * 4];
+			float* buffer = _floatImage->GetData();
+			int k = 0;
+			for (int i = 0; i < height; i++)
+			{
+				for (int j = 0; j < width; j++, k += 4)
+				{
+					inputBuffer[k] = static_cast<int>(buffer[k + 2] * 255.0);
+					inputBuffer[k + 1] = static_cast<int>(buffer[k + 1] * 255.0);
+					inputBuffer[k + 2] = static_cast<int>(buffer[k] * 255.0);
+					inputBuffer[k + 3] = static_cast<int>(buffer[k + 3] * 255.0);
+				}
+			}
+			data = CompressRegardsBitmapToJpeg(inputBuffer, width, height, outputsize);
+			delete[] inputBuffer;
 			compressMethod = 1;
 		}
-		break;        
+		break;
 	}
 	return data;
 }
 
 
-float CImageLoadingFormat::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight)
+float CImageLoadingFormat::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
@@ -653,18 +655,18 @@ float CImageLoadingFormat::CalculPictureRatio(const int &pictureWidth, const int
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = (float)(pictureWidth) / (float)GetWidth();
+		newRatio = static_cast<float>(pictureWidth) / static_cast<float>(GetWidth());
 	else
-		newRatio = (float)(pictureHeight) / (float)GetHeight();
+		newRatio = static_cast<float>(pictureHeight) / static_cast<float>(GetHeight());
 
 	if ((GetHeight() * newRatio) > pictureHeight)
 	{
-		newRatio = (float)(pictureHeight) / (float)GetHeight();
+		newRatio = static_cast<float>(pictureHeight) / static_cast<float>(GetHeight());
 	}
 
 	if ((GetWidth() * newRatio) > pictureWidth)
 	{
-		newRatio =  (float)(pictureWidth) / (float)GetWidth();
+		newRatio = static_cast<float>(pictureWidth) / static_cast<float>(GetWidth());
 	}
 
 	return newRatio;
@@ -673,61 +675,60 @@ float CImageLoadingFormat::CalculPictureRatio(const int &pictureWidth, const int
 
 bool CImageLoadingFormat::IsOk()
 {
-		switch(format)
+	switch (format)
+	{
+	case TYPE_IMAGE_CXIMAGE:
 		{
-		case TYPE_IMAGE_CXIMAGE:
-			{
-				if(_cxImage == nullptr)
-					return false;
-				return _cxImage->IsValid();
-			}
-			break;
-
-		case TYPE_IMAGE_WXIMAGE:
-			{
-				if(_wxImage == nullptr)
-					return false;
-				return _wxImage->IsOk();
-
-			}
-			break;
-
-		case TYPE_IMAGE_REGARDSIMAGE:
-			{
-				if(_image == nullptr)
-					return false;
-				return _image->IsValid();
-			}
-			break;
-
-		case TYPE_IMAGE_REGARDSFLOATIMAGE:
-			{
-				if(_floatImage == nullptr)
-					return false;
-				return _floatImage->IsValid();
-			}
-			break;
-
-		case TYPE_IMAGE_REGARDSJPEGIMAGE:
-			{
-				if (_jpegImage == nullptr)
-					return false;
-				return _jpegImage->IsValid();
-			}
-			break;
+			if (_cxImage == nullptr)
+				return false;
+			return _cxImage->IsValid();
 		}
+		break;
+
+	case TYPE_IMAGE_WXIMAGE:
+		{
+			if (_wxImage == nullptr)
+				return false;
+			return _wxImage->IsOk();
+		}
+		break;
+
+	case TYPE_IMAGE_REGARDSIMAGE:
+		{
+			if (_image == nullptr)
+				return false;
+			return _image->IsValid();
+		}
+		break;
+
+	case TYPE_IMAGE_REGARDSFLOATIMAGE:
+		{
+			if (_floatImage == nullptr)
+				return false;
+			return _floatImage->IsValid();
+		}
+		break;
+
+	case TYPE_IMAGE_REGARDSJPEGIMAGE:
+		{
+			if (_jpegImage == nullptr)
+				return false;
+			return _jpegImage->IsValid();
+		}
+		break;
+	}
 	return false;
 }
 
 void CImageLoadingFormat::ApplyExifOrientation()
 {
-	if(!IsOk())
+	if (!IsOk())
 		return;
 
-	
+
 	int exifOrientation = 0;
 	CLibPicture libPicture;
-	if(libPicture.TestIsExifCompatible(filename))
+	if (libPicture.TestIsExifCompatible(filename))
 	{
 		CMetadataExiv2 metadata(filename);
 		exifOrientation = metadata.GetOrientation();
@@ -759,7 +760,7 @@ void CImageLoadingFormat::ApplyExifOrientation()
 }
 
 
-void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
+void CImageLoadingFormat::ApplyExifOrientation(const int& exifMethod)
 {
 	if (!IsOk())
 		return;
@@ -767,70 +768,69 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
-	{
-		printf("TYPE_IMAGE_CXIMAGE Exif Method : %d \n", exifMethod);
-		_cxImage->RotateExif(exifMethod);
-	}
-	break;
+		{
+			printf("TYPE_IMAGE_CXIMAGE Exif Method : %d \n", exifMethod);
+			_cxImage->RotateExif(exifMethod);
+		}
+		break;
 
 	case TYPE_IMAGE_WXIMAGE:
-	{
-		printf("TYPE_IMAGE_WXIMAGE Exif Method : %d \n", exifMethod);
-		switch (exifMethod)
 		{
-		case 1:// top left side
-			break;
-		case 2:// top right side
-			break;
-		case 3:// bottom right side
-		{
-			wxImage image = _wxImage->Rotate180();
-			delete _wxImage;
-			_wxImage = new wxImage(image);
+			printf("TYPE_IMAGE_WXIMAGE Exif Method : %d \n", exifMethod);
+			switch (exifMethod)
+			{
+			case 1: // top left side
+				break;
+			case 2: // top right side
+				break;
+			case 3: // bottom right side
+				{
+					wxImage image = _wxImage->Rotate180();
+					delete _wxImage;
+					_wxImage = new wxImage(image);
+				}
+				break;
+			case 4: // bottom left side
+				break;
+			case 5: //left side top
+				break;
+			case 6: // right side top
+				{
+					wxImage image = _wxImage->Rotate180();
+					image = image.Rotate90();
+					delete _wxImage;
+					_wxImage = new wxImage(image);
+				}
+				break;
+			case 7: // right side bottom
+				break;
+			case 8: // left side bottom
+				{
+					wxImage image = _wxImage->Rotate90();
+					delete _wxImage;
+					_wxImage = new wxImage(image);
+				}
+				break;
+			}
 		}
 		break;
-		case 4:// bottom left side
-			break;
-		case 5://left side top
-			break;
-		case 6:// right side top
-		{
-			wxImage image = _wxImage->Rotate180();
-			image = image.Rotate90();
-			delete _wxImage;
-			_wxImage = new wxImage(image);
-		}
-		break;
-		case 7:// right side bottom
-			break;
-		case 8:// left side bottom
-		{
-			wxImage image = _wxImage->Rotate90();
-			delete _wxImage;
-			_wxImage = new wxImage(image);
-		}
-		break;
-		}
-	}
-	break;
 
 	case TYPE_IMAGE_REGARDSIMAGE:
-	{
-
-		printf("TYPE_IMAGE_REGARDSIMAGE Exif Method : %d \n", exifMethod);
-		//if(exifMethod == 0)
-		//	_image->RotateRawExif(exifOrientation);
-		//else
-		_image->RotateExif(exifMethod);
-	}
-	break;
+		{
+			printf("TYPE_IMAGE_REGARDSIMAGE Exif Method : %d \n", exifMethod);
+			//if(exifMethod == 0)
+			//	_image->RotateRawExif(exifOrientation);
+			//else
+			_image->RotateExif(exifMethod);
+		}
+		break;
 	}
 }
 
-CImageLoadingFormat * CImageLoadingFormat::GetPage(const int &numPage)
+CImageLoadingFormat* CImageLoadingFormat::GetPage(const int& numPage)
 {
 	CLibPicture libPicture;
-	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename, false, numPage);
+	CImageLoadingFormat* imageLoading = libPicture.LoadPicture(filename, false, numPage);
 	return imageLoading;
 }
 
@@ -841,27 +841,27 @@ int CImageLoadingFormat::GetNbPage()
 	return nbPage;
 }
 
-int CImageLoadingFormat::Resize(const int &pictureWidth, const int &pictureHeight, const int &method)
+int CImageLoadingFormat::Resize(const int& pictureWidth, const int& pictureHeight, const int& method)
 {
-	if(!IsOk())
+	if (!IsOk())
 		return -1;
 
 	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
 	int thumbnailWidth = this->GetWidth() * newRatio;
-	int thumbnailHeight =  this->GetHeight() * newRatio;
+	int thumbnailHeight = this->GetHeight() * newRatio;
 
-	if(thumbnailWidth > 0 && thumbnailHeight > 0)
-	{	
-		switch(format)
+	if (thumbnailWidth > 0 && thumbnailHeight > 0)
+	{
+		switch (format)
 		{
 		case TYPE_IMAGE_CXIMAGE:
 			{
-				if(method == 0)
+				if (method == 0)
 				{
 					//RGBQUAD color = {0,0,0,0};
 					_image = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
-					uint8_t * data = _image->GetPtBitmap();
-					if(convertToBGR)
+					uint8_t* data = _image->GetPtBitmap();
+					if (convertToBGR)
 						_cxImage->InterpolationBicubicBGR(data, thumbnailWidth, thumbnailHeight);
 					else
 						_cxImage->InterpolationBicubicRGB(data, thumbnailWidth, thumbnailHeight);
@@ -869,7 +869,7 @@ int CImageLoadingFormat::Resize(const int &pictureWidth, const int &pictureHeigh
 					_cxImage = nullptr;
 					format = TYPE_IMAGE_REGARDSIMAGE;
 				}
-				else if(method == 1)
+				else if (method == 1)
 				{
 					_cxImage->Resample(thumbnailWidth, thumbnailHeight);
 				}
@@ -878,7 +878,7 @@ int CImageLoadingFormat::Resize(const int &pictureWidth, const int &pictureHeigh
 
 		case TYPE_IMAGE_WXIMAGE:
 			{
-				if(method == 0)
+				if (method == 0)
 				{
 					CInterpolationBicubic interpolation;
 					_image = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
@@ -887,65 +887,64 @@ int CImageLoadingFormat::Resize(const int &pictureWidth, const int &pictureHeigh
 					_wxImage = nullptr;
 					format = TYPE_IMAGE_REGARDSIMAGE;
 				}
-				else if(method == 1)
+				else if (method == 1)
 				{
 					wxImage image = _wxImage->ResampleBicubic(thumbnailWidth, thumbnailHeight);
 					delete _wxImage;
 					_wxImage = new wxImage(image);
-				}				
+				}
 			}
 			break;
 
 		case TYPE_IMAGE_REGARDSIMAGE:
-			{	
+			{
 				CInterpolationBicubic interpolation;
-				CRegardsBitmap * bitmapOut = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
+				auto bitmapOut = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
 				interpolation.Execute(_image, bitmapOut);
 				delete _image;
 				_image = bitmapOut;
 			}
 			break;
-            
+
 		case TYPE_IMAGE_REGARDSFLOATIMAGE:
-			{	
+			{
 				CInterpolationFloatBicubic interpolation;
-				CRegardsFloatBitmap * bitmapOut = new CRegardsFloatBitmap(thumbnailWidth, thumbnailHeight);
+				auto bitmapOut = new CRegardsFloatBitmap(thumbnailWidth, thumbnailHeight);
 				interpolation.Execute(_floatImage, bitmapOut);
 				delete _floatImage;
 				_floatImage = bitmapOut;
 			}
-			break;            
+			break;
 		}
 	}
 	return 0;
 }
 
-wxImage * CImageLoadingFormat::GetwxImage(const bool &copy)
+wxImage* CImageLoadingFormat::GetwxImage(const bool& copy)
 {
-	if(!IsOk())
+	if (!IsOk())
 		return nullptr;
 
 	CLibPicture libPicture;
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
-			CRegardsBitmap * _local = libPicture.ConvertCXImageToRegardsBitmap(_cxImage, 0);
-			wxImage * _wxImage = libPicture.ConvertRegardsBitmapToWXImage(_local);
+			CRegardsBitmap* _local = libPicture.ConvertCXImageToRegardsBitmap(_cxImage, 0);
+			wxImage* _wxImage = libPicture.ConvertRegardsBitmapToWXImage(_local);
 			delete _local;
 			return _wxImage;
 		}
 
 	case TYPE_IMAGE_WXIMAGE:
 		{
-			if(copy)
+			if (copy)
 			{
-				wxImage * local = new wxImage();
+				auto local = new wxImage();
 				*local = *_wxImage;
 				return local;
 			}
-			else
-				return  _wxImage;
+			return _wxImage;
 		}
 		break;
 
@@ -957,7 +956,7 @@ wxImage * CImageLoadingFormat::GetwxImage(const bool &copy)
 		{
 			if (_jpegImage != nullptr)
 			{
-				wxImage * _wxImage = new wxImage();
+				auto _wxImage = new wxImage();
 				wxMemoryInputStream jpegStream(_jpegImage->GetData(), _jpegImage->GetSize());
 				_wxImage->LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);
 				return _wxImage;
@@ -968,24 +967,23 @@ wxImage * CImageLoadingFormat::GetwxImage(const bool &copy)
 	return nullptr;
 }
 
-CxImage * CImageLoadingFormat::GetCxImage(const bool &copy)
+CxImage* CImageLoadingFormat::GetCxImage(const bool& copy)
 {
-	if(!IsOk())
+	if (!IsOk())
 		return nullptr;
 
 	CLibPicture libPicture;
-	switch(format)
+	switch (format)
 	{
 	case TYPE_IMAGE_CXIMAGE:
 		{
-			if(copy)
+			if (copy)
 			{
-				CxImage * local = new CxImage();
+				auto local = new CxImage();
 				*local = *_cxImage;
 				return local;
 			}
-			else
-				return _cxImage;
+			return _cxImage;
 		}
 		break;
 
@@ -993,7 +991,7 @@ CxImage * CImageLoadingFormat::GetCxImage(const bool &copy)
 		{
 			wxMemoryOutputStream outputStream;
 			_wxImage->SaveFile(outputStream, wxBITMAP_TYPE_PNG);
-			uint8_t * data = new uint8_t[outputStream.GetSize()];
+			auto data = new uint8_t[outputStream.GetSize()];
 			outputStream.CopyTo(data, outputStream.GetSize());
 			CxMemFile memFile(data, outputStream.GetSize());
 			return new CxImage(&memFile, CxImage::GetTypeIdFromName("png"));

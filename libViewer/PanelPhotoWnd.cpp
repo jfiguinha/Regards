@@ -16,47 +16,48 @@ using namespace Regards::Viewer;
 //using namespace Regards::Control;
 
 CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
-	: CTabWindow("CPanelPhotoWnd",parent, id)
+	: CTabWindow("CPanelPhotoWnd", parent, id)
 {
-    categoryFolderWnd = nullptr;
+	categoryFolderWnd = nullptr;
 	photoToolbar = nullptr;
-    folderWnd = nullptr;
- 
+	folderWnd = nullptr;
+
 
 	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
-        CThemeTree themeTree;
-		folderWnd = new wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY);
-		if(folderWnd->GetTreeCtrl() != nullptr)
+		CThemeTree themeTree;
+		folderWnd = new wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition,
+		                                 wxDefaultSize, wxDIRCTRL_DIR_ONLY);
+		if (folderWnd->GetTreeCtrl() != nullptr)
 		{
 			folderWnd->GetTreeCtrl()->SetBackgroundColour(themeTree.bgColorOne);
-			folderWnd->GetTreeCtrl()->SetForegroundColour(themeTree.bgColorBackground);	
+			folderWnd->GetTreeCtrl()->SetForegroundColour(themeTree.bgColorBackground);
 		}
-        folderWnd->Show(true);
-        
-        FolderCatalogVector folderList;
-        CSqlFindFolderCatalog folderCatalog;
-        folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+		folderWnd->Show(true);
 
-        for (CFolderCatalog folderCatalog : folderList)
-        {
-			wxTreeItemId treeitem;
-            folderWnd->SetPath(folderCatalog.GetFolderPath());
-			if(folderWnd->GetTreeCtrl() != nullptr)
-            {
+		FolderCatalogVector folderList;
+		CSqlFindFolderCatalog folderCatalog;
+		folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+
+		for (CFolderCatalog folderCatalog : folderList)
+		{
+			folderWnd->SetPath(folderCatalog.GetFolderPath());
+			if (folderWnd->GetTreeCtrl() != nullptr)
+			{
+				wxTreeItemId treeitem;
 				treeitem = folderWnd->GetTreeCtrl()->GetSelection();
-            	folderWnd->GetTreeCtrl()->Check(treeitem);
+				folderWnd->GetTreeCtrl()->Check(treeitem);
 			}
-        }
+		}
 
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(folderWnd);
 		tabInfosFile->SetId(WM_FOLDER);
-        listWindow.push_back(tabInfosFile);
+		listWindow.push_back(tabInfosFile);
 	}
 
 	if (viewerTheme != nullptr)
@@ -69,13 +70,13 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 
 		categoryFolderWnd = new CCategoryFolderWindow(this, CATEGORYFOLDERWINDOWID, themeScroll, theme);
 		categoryFolderWnd->Show(false);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
+
+		auto tabInfosFile = new CTabWindowData();
 		tabInfosFile->SetWindow(categoryFolderWnd);
 		tabInfosFile->SetId(WM_CRITERIA);
-        listWindow.push_back(tabInfosFile);
+		listWindow.push_back(tabInfosFile);
 	}
-    
+
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
@@ -83,25 +84,25 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 		photoToolbar = new CToolbarPhoto(this, wxID_ANY, theme, this, false);
 	}
 
-    toolbarWindow = photoToolbar;
-    photoToolbar->SetFolderPush();
+	toolbarWindow = photoToolbar;
+	photoToolbar->SetFolderPush();
 	windowVisible = WM_FOLDER;
-    
-	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), NULL, this);
+
+	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), nullptr, this);
 	Connect(wxEVENT_SETFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
 	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
 	Connect(wxEVENT_SELCHANGED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
-	categoryFolderWnd->UpdateCriteria(0);
+	categoryFolderWnd->UpdateCriteria(false);
 }
 
 CPanelPhotoWnd::~CPanelPhotoWnd()
 {
-	delete(categoryFolderWnd);  
+	delete(categoryFolderWnd);
 	delete(folderWnd);
-    delete(photoToolbar);
+	delete(photoToolbar);
 }
 
 void CPanelPhotoWnd::SaveParameter(wxCommandEvent& event)
@@ -115,11 +116,11 @@ void CPanelPhotoWnd::UpdateCriteria(wxCommandEvent& event)
 	if (categoryFolderWnd != nullptr)
 	{
 		long needToSendMessage = event.GetExtraLong();
-		if(needToSendMessage < 2)
+		if (needToSendMessage < 2)
 		{
 			categoryFolderWnd->UpdateCriteria((needToSendMessage == 1) ? true : false);
 		}
-		else if(needToSendMessage == 2)
+		else if (needToSendMessage == 2)
 		{
 			categoryFolderWnd->RefreshCriteriaSearch();
 		}
@@ -147,12 +148,12 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 	if (folderEvent.GetClientData() != nullptr)
 	{
 		wxTreeItemId treeitem;
-		wxString * folder = (wxString *)folderEvent.GetClientData();
+		auto folder = static_cast<wxString*>(folderEvent.GetClientData());
 		folderWnd->SetPath(*folder);
-		if(folderWnd->GetTreeCtrl() != nullptr)
+		if (folderWnd->GetTreeCtrl() != nullptr)
 		{
 			treeitem = folderWnd->GetTreeCtrl()->GetSelection();
-			folderWnd->GetTreeCtrl()->Check(treeitem);			
+			folderWnd->GetTreeCtrl()->Check(treeitem);
 		}
 		delete folder;
 	}
@@ -160,12 +161,12 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 
 void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 {
-	CWindowMain * windowMain = (CWindowMain *)this->FindWindowById(MAINVIEWERWINDOWID);
+	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr)
 	{
- 		wxString getSelectPath = folderWnd->GetPath();
+		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
-		wxString * path = new wxString();
+		auto path = new wxString();
 		*path = getSelectPath;
 		if (isChecked)
 		{
@@ -193,7 +194,7 @@ void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)
 			wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
 			if (window != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+				const wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
@@ -219,11 +220,12 @@ void CPanelPhotoWnd::LoadInfo()
 		switch (windowVisible)
 		{
 		case WM_FOLDER:
-            photoToolbar->SetFolderPush();
+			photoToolbar->SetFolderPush();
 			break;
-        case WM_CRITERIA:
-            photoToolbar->SetCriteriaPush();
-            break;
+		case WM_CRITERIA:
+			photoToolbar->SetCriteriaPush();
+			break;
+		default: ;
 		}
 	}
 }

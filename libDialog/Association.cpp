@@ -4,12 +4,11 @@
 #include "Association.h"
 #include <registryaccess.h>
 #include <strsafe.h>
-#include <wbemidl.h>
 #include <shlobj.h>
 #include <LibResource.h>
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(Association)
-	//*)
+//(*InternalHeadersPCH(Association)
+//*)
 #endif
 //(*InternalHeaders(Association)
 #include <wx/xrc/xmlres.h>
@@ -18,22 +17,22 @@
 //(*IdInit(Association)
 //*)
 
-BEGIN_EVENT_TABLE(Association,wxDialog)
+BEGIN_EVENT_TABLE(Association, wxDialog)
 	//(*EventTable(Association)
 	//*)
 END_EVENT_TABLE()
 
 Association::Association(wxWindow* parent)
 {
-    isOk = false;
+	isOk = false;
 	//(*Initialize(Association)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("Association"),_T("wxDialog"));
-	checkListAssociation = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLIST"));
-	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	checkSelect = (wxCheckBox*)FindWindow(XRCID("ID_CHECKSELECT"));
-	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Association::OnbtnOKClick);
-	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Association::OnbtnCancelClick);
+	wxXmlResource::Get()->LoadObject(this, parent,_T("Association"),_T("wxDialog"));
+	checkListAssociation = static_cast<wxCheckListBox*>(FindWindow(XRCID("ID_CHECKLIST")));
+	btnOK = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
+	checkSelect = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CHECKSELECT")));
+	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&Association::OnbtnOKClick);
+	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&Association::OnbtnCancelClick);
 	Connect(XRCID("ID_CHECKSELECT"), wxEVT_CHECKBOX, (wxObjectEventFunction)&Association::OnbtnCheckClick);
 }
 
@@ -52,12 +51,11 @@ bool Association::AssociateExtension()
 		{
 			wxString filecompleted = CLibResource::LoadStringFromResource("LBLRESTARTADMINMODE", 1);
 			wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
-			
+
 			wxMessageBox(filecompleted, infos, wxICON_ERROR);
 		}
 		else
 		{
-
 			int nbCount = checkListAssociation->GetCount();
 
 			AssociateRegards();
@@ -75,14 +73,13 @@ bool Association::AssociateExtension()
 			SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_DWORD | SHCNF_FLUSH, nullptr, nullptr);
 			Sleep(1000);
 		}
-
 	}
 	return S_OK;
 }
 
 bool Association::IsOk()
 {
-    return isOk;
+	return isOk;
 }
 
 void Association::OnbtnCheckClick(wxCommandEvent& event)
@@ -106,21 +103,21 @@ void Association::OnbtnCheckClick(wxCommandEvent& event)
 
 void Association::OnbtnOKClick(wxCommandEvent& event)
 {
-    isOk = true;
-    //compressOption = rbCompression->GetSelection();
-    this->Close();
+	isOk = true;
+	//compressOption = rbCompression->GetSelection();
+	this->Close();
 }
 
 void Association::OnbtnCancelClick(wxCommandEvent& event)
 {
-    isOk = false;
-    this->Close();
+	isOk = false;
+	this->Close();
 }
 
 
 int Association::AssociateExtension(LPCWSTR szFileExtension)
 {
-	CRegistryAccess * m_cRegistryAccess = new CRegistryAccess();
+	auto m_cRegistryAccess = new CRegistryAccess();
 	TCHAR Temp[255];
 	StringCchPrintf(Temp, 255, L"%s", szFileExtension);
 	m_cRegistryAccess->CreateNewKey(Temp, HKEY_CLASSES_ROOT);
@@ -134,7 +131,7 @@ BOOL Association::IsAppRunningAsAdminMode()
 {
 	BOOL fIsRunAsAdmin = FALSE;
 	DWORD dwError = ERROR_SUCCESS;
-	PSID pAdministratorsGroup = NULL;
+	PSID pAdministratorsGroup = nullptr;
 
 	// Allocate and initialize a SID of the administrators group.
 	SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
@@ -152,10 +149,9 @@ BOOL Association::IsAppRunningAsAdminMode()
 
 	// Determine whether the SID of administrators group is enabled in 
 	// the primary access token of the process.
-	if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin))
+	if (!CheckTokenMembership(nullptr, pAdministratorsGroup, &fIsRunAsAdmin))
 	{
 		dwError = GetLastError();
-		goto Cleanup;
 	}
 
 Cleanup:
@@ -163,7 +159,7 @@ Cleanup:
 	if (pAdministratorsGroup)
 	{
 		FreeSid(pAdministratorsGroup);
-		pAdministratorsGroup = NULL;
+		pAdministratorsGroup = nullptr;
 	}
 
 	// Throw the error if something failed in the function.
@@ -177,7 +173,7 @@ Cleanup:
 
 int Association::AssociateRegards()
 {
-	CRegistryAccess * m_cRegistryAccess = new CRegistryAccess();
+	auto m_cRegistryAccess = new CRegistryAccess();
 	//Dim sPath As String
 	TCHAR sPath[MAX_PATH];
 	TCHAR cDirLong[MAX_PATH];
@@ -189,7 +185,7 @@ int Association::AssociateRegards()
 	//Convertir LongPath en ShortPath
 	StringCchPrintfW(cDirLong, MAX_PATH, L"%s\\x64\\Release", cDirLong);
 	StringCchPrintfW(sPath, MAX_PATH, L"\"%s\\RegardsViewer.exe\" \"%%1\"", cDirLong);
-	
+
 	m_cRegistryAccess->CreateNewKey(L"RegardsViewer.Files", HKEY_CLASSES_ROOT);
 	m_cRegistryAccess->CreateNewKey(L"RegardsViewer.Files\\shell\\open\\command", HKEY_CLASSES_ROOT);
 	m_cRegistryAccess->CreateNewKey(L"RegardsViewer.Files\\shell\\edit\\command", HKEY_CLASSES_ROOT);
@@ -198,11 +194,12 @@ int Association::AssociateRegards()
 	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files", L"", L"RegardsViewer.Files");
 	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\shell", L"", L"open");
 	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\shell\\open\\command", L"", sPath);
-	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\shell\\edit", L"", L"Edit RegardsViewer.Image");
+	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\shell\\edit", L"",
+	                               L"Edit RegardsViewer.Image");
 	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\shell\\edit\\command", L"", sPath);
 	StringCchPrintfW(sPath, MAX_PATH, L"%s\\RegardsViewer.exe,1", cDirLong);
 	m_cRegistryAccess->SetKeyValue(HKEY_CLASSES_ROOT, L"RegardsViewer.Files\\DefaultIcon", L"", sPath);
-	
+
 	delete m_cRegistryAccess;
 	return 0;
 }

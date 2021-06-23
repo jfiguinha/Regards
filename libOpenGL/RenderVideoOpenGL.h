@@ -5,12 +5,9 @@
 
 #pragma once
 #include <RenderOpenGL.h>
-#include "EffectVideoParameter.h"
-#include <RGBAQuad.h>
 using namespace Regards::OpenGL;
 
-//#define RENDEROPENGL WM_USER+1
-
+class CVideoEffectParameter;
 class CRegardsBitmap;
 
 namespace Regards

@@ -87,7 +87,6 @@ void CThemeParam::InitPaneTheme()
 }
 
 
-
 void CThemeParam::GetTreeTheme(CThemeTree* theme)
 {
 	*theme = themeTree;
@@ -116,8 +115,6 @@ void CThemeParam::InitThumbnail()
 	themeThumbnail.themeSeparation.themeFont.SetFontQuality(ANTIALIASED_QUALITY);
 	themeThumbnail.themeSeparation.SetHeight(40);
 }
-
-
 
 
 void CThemeParam::GetClickToolbarTheme(CThemeToolbar* theme)
@@ -166,15 +163,14 @@ void CThemeParam::InitClickToolbarTheme()
 void CThemeParam::InitBitmapWindow()
 {
 	themeBitmapWindow.colorBack.Set(0, 0, 0);
-	themeBitmapWindow.colorScreen.Set(50, 54, 63); 
+	themeBitmapWindow.colorScreen.Set(50, 54, 63);
 	themeBitmapWindow.colorFullscreen.Set(0, 0, 0);
 }
 
-void CThemeParam::GetBitmapWindowTheme(CThemeBitmapWindow * theme)
+void CThemeParam::GetBitmapWindowTheme(CThemeBitmapWindow* theme)
 {
 	*theme = themeBitmapWindow;
 }
-
 
 
 void CThemeParam::InitVideoSlider()
@@ -191,12 +187,12 @@ void CThemeParam::InitVideoControl()
 	themeVideoControl.colorBack.Set(0, 0, 0);
 }
 
-void  CThemeParam::GetVideoSliderTheme(CThemeSlider * theme)
+void CThemeParam::GetVideoSliderTheme(CThemeSlider* theme)
 {
 	*theme = themeSliderVideo;
 }
 
-void CThemeParam::GetVideoControlTheme(CTheme * theme)
+void CThemeParam::GetVideoControlTheme(CTheme* theme)
 {
 	*theme = themeVideoControl;
 }
@@ -230,7 +226,7 @@ void CThemeParam::InitBitmapToolbar()
 	themeBitmapToolbar.colorBack.Set(45, 48, 56);
 	themeBitmapToolbar.colorTop.Set(45, 48, 56);
 	//themeBitmapToolbar.colorBottom.Set(74, 74, 74);
-    themeBitmapToolbar.colorBottom.Set(45, 48, 56);
+	themeBitmapToolbar.colorBottom.Set(45, 48, 56);
 	themeBitmapToolbar.position = NAVIGATOR_CENTER;
 	themeBitmapToolbar.SetHeight(40);
 	themeBitmapToolbar.SetMargeX(5);
@@ -256,7 +252,7 @@ void CThemeParam::InitBitmapToolbar()
 	themeBitmapToolbar.slider.colorBack.Set(45, 48, 56);
 	themeBitmapToolbar.slider.SetWidth(200);
 	themeBitmapToolbar.slider.SetHeight(30);
-    
+
 	//themeBitmapToolbar.slider.rectangleNext.Set(45, 48, 56);
 	//themeBitmapToolbar.slider.rectanglePast.Set(45, 48, 56);
 	//themeBitmapToolbar.slider.SetWidth(200);
@@ -264,22 +260,22 @@ void CThemeParam::InitBitmapToolbar()
 }
 
 
-void CThemeParam::GetVideoToolbarTheme(CThemeToolbar * theme)
+void CThemeParam::GetVideoToolbarTheme(CThemeToolbar* theme)
 {
 	*theme = themeVideoToolbar;
 }
 
-void CThemeParam::GetBitmapToolbarTheme(CThemeToolbar * theme)
+void CThemeParam::GetBitmapToolbarTheme(CThemeToolbar* theme)
 {
 	*theme = themeBitmapToolbar;
 }
 
-bool CThemeParam::OpenFile(const wxString &configFile)
+bool CThemeParam::OpenFile(const wxString& configFile)
 {
 	filename = configFile;
 	doc.clear();
 	// Read the xml file into a vector
-    //const char * fichier = CConvertUtility::ConvertFromwxString(filename);
+	//const char * fichier = CConvertUtility::ConvertFromwxString(filename);
 	ifstream theFile(CConvertUtility::ConvertToStdString(filename));
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	if (buffer.size() > 0)
@@ -293,7 +289,6 @@ bool CThemeParam::OpenFile(const wxString &configFile)
 		InitTheme();
 
 	return true;
-
 }
 
 bool CThemeParam::SaveFile()
@@ -311,7 +306,7 @@ const char* CThemeParam::stralloc(const wxString& str)
 }
 
 // create a node
-xml_node<>*  CThemeParam::node(const wxString& name, const wxString& content)
+xml_node<>* CThemeParam::node(const wxString& name, const wxString& content)
 {
 	return doc.allocate_node(node_element, stralloc(name), stralloc(content));
 }

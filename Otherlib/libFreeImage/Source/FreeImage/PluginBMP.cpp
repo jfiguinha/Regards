@@ -312,7 +312,7 @@ LoadPixelDataRLE4(FreeImageIO *io, fi_handle handle, int width, int height, FIBI
 		{
 			// Convert to 4-bit
 			for(int y = 0; y < height; y++) {
-				const BYTE *src = (BYTE*)pixels + y * width;
+				const BYTE *src = pixels + y * width;
 				BYTE *dst = FreeImage_GetScanLine(dib, y);
 
 				BOOL hinibble = TRUE;
@@ -1483,7 +1483,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 		}
 		else {
 			for (unsigned y = 0; y < dst_height; y++) {
-				BYTE *line = (BYTE*)FreeImage_GetScanLine(dib, y);
+				BYTE *line = FreeImage_GetScanLine(dib, y);
 				
 				if (io->write_proc(line, dst_pitch, 1, handle) != 1) {
 					return FALSE;

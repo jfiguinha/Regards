@@ -3,7 +3,6 @@
 #include <libPicture.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include <ImageLoadingFormat.h>
 #include "ShowPreview.h"
 #include <theme.h>
 #include <wx/xrc/xmlres.h>

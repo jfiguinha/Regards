@@ -1,7 +1,6 @@
 #include "header.h"
 #include "SqlLib.h"
 #include "SqlResult.h"
-#include <wx/strconv.h>
 #include <ConvertUtility.h>
 using namespace std;
 using namespace Regards::Sqlite;
@@ -274,7 +273,7 @@ int CSqlLib::ExecuteSQLWithNoResult(const wxString &query)
     //printf("Sql Query : %s \n",sqlquery);
 
 	if (sqlite3_exec(pCon, CConvertUtility::ConvertToUTF8(query), nullptr, 0, &err) != SQLITE_OK)
-		m_strLastError = (char *)sqlite3_errmsg(pCon);
+		m_strLastError = sqlite3_errmsg(pCon);
 	else
 		totalChange = sqlite3_total_changes(pCon);
 

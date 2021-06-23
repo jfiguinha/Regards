@@ -1,12 +1,8 @@
 #include <header.h>
 #include "RedEye.h"
-#include "InterpolationBicubic.h"
-#include <LibResource.h>
 #include "Filtre.h"
 #include <RegardsBitmap.h>
 #include <DeepLearning.h>
-#include <PictureData.h>
-#include <FileUtility.h>
 using namespace Regards::DeepLearning;
 using namespace std;
 using namespace Regards::FiltreEffet;
@@ -90,7 +86,7 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 	for (int32_t y = ymin; y < ymax; y++) {
 		for (int32_t x = xmin; x < xmax; x++)
 		{
-			float a = 1.0f - 5.0f*((float)((x - 0.5f*(xmax + xmin))*(x - 0.5f*(xmax + xmin)) + (y - 0.5f*(ymax + ymin))*(y - 0.5f*(ymax + ymin)))) / ((float)((xmax - xmin)*(ymax - ymin)));
+			float a = 1.0f - 5.0f*((x - 0.5f*(xmax + xmin))*(x - 0.5f*(xmax + xmin)) + (y - 0.5f*(ymax + ymin))*(y - 0.5f*(ymax + ymin))) / ((float)((xmax - xmin)*(ymax - ymin)));
 			if (a < 0)
 				a = 0;
 

@@ -3,11 +3,9 @@
 
 #include "avif/internal.h"
 
-#include <string.h>
-
 static int calcMaxChannel(uint32_t depth, avifRange range)
 {
-    int maxChannel = (int)((1 << depth) - 1);
+    int maxChannel = (1 << depth) - 1;
     if (range == AVIF_RANGE_LIMITED) {
         maxChannel = avifFullToLimitedY(depth, maxChannel);
     }

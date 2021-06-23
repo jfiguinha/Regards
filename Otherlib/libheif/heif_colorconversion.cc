@@ -2041,8 +2041,8 @@ Op_RGB24_32_to_YCbCr::convert_colorspace(const std::shared_ptr<const HeifPixelIm
         out_cr[(y / chromaSubV) * out_cr_stride + (x / chromaSubH)] = clip_f_u8(cr + 128);
       }
       else {
-        out_cb[(y / chromaSubV) * out_cb_stride + (x / chromaSubH)] = (uint8_t) clip_f_u8(cb * 0.875f + 128.0f);
-        out_cr[(y / chromaSubV) * out_cr_stride + (x / chromaSubH)] = (uint8_t) clip_f_u8(cr * 0.875f + 128.0f);
+        out_cb[(y / chromaSubV) * out_cb_stride + (x / chromaSubH)] = clip_f_u8(cb * 0.875f + 128.0f);
+        out_cr[(y / chromaSubV) * out_cr_stride + (x / chromaSubH)] = clip_f_u8(cr * 0.875f + 128.0f);
       }
     }
   }

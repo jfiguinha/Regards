@@ -77,7 +77,7 @@ _WriteProc(png_structp png_ptr, unsigned char *data, png_size_t size) {
 
 static void
 _FlushProc(png_structp png_ptr) {
-	(png_structp)png_ptr;
+	png_ptr;
 	// empty flush implementation
 }
 
@@ -91,7 +91,7 @@ error_handler(png_structp png_ptr, const char *error) {
 
 static void
 warning_handler(png_structp png_ptr, const char *warning) {
-	(png_structp)png_ptr;
+	png_ptr;
 	(char*)warning;
 }
 
@@ -532,7 +532,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 			
 			// create the chunk manage structure
 
-			png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, (png_voidp)NULL, error_handler, warning_handler);
+			png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, error_handler, warning_handler);
 
 			if (!png_ptr) {
 				return NULL;			
@@ -543,7 +543,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 		    info_ptr = png_create_info_struct(png_ptr);
 
 			if (!info_ptr) {
-				png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+				png_destroy_read_struct(&png_ptr, NULL, NULL);
 				return NULL;
 			}
 
@@ -656,12 +656,12 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 					}
 					// check for a full transparency table, too
 					else if ((trans_alpha) && (pixel_depth <= 8)) {
-						FreeImage_SetTransparencyTable(dib, (BYTE *)trans_alpha, num_trans);
+						FreeImage_SetTransparencyTable(dib, trans_alpha, num_trans);
 					}
 
 				} else if((color_type == PNG_COLOR_TYPE_PALETTE) && trans_alpha) {
 					// transparency table
-					FreeImage_SetTransparencyTable(dib, (BYTE *)trans_alpha, num_trans);
+					FreeImage_SetTransparencyTable(dib, trans_alpha, num_trans);
 				}
 			}
 
@@ -725,7 +725,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 				ReadMetadata(png_ptr, info_ptr, dib);
 				if (png_ptr) {
 					// clean up after the read, and free any memory allocated - REQUIRED
-					png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+					png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 				}
 				return dib;
 			}
@@ -777,14 +777,14 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 
 			if (png_ptr) {
 				// clean up after the read, and free any memory allocated - REQUIRED
-				png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+				png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 			}
 
 			return dib;
 
 		} catch (const char *text) {
 			if (png_ptr) {
-				png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+				png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 			}
 			if (row_pointers) {
 				free(row_pointers);
@@ -826,7 +826,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 		try {
 			// create the chunk manage structure
 
-			png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)NULL, error_handler, warning_handler);
+			png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, error_handler, warning_handler);
 
 			if (!png_ptr)  {
 				return FALSE;
@@ -837,7 +837,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 			info_ptr = png_create_info_struct(png_ptr);
 
 			if (!info_ptr)  {
-				png_destroy_write_struct(&png_ptr,  (png_infopp)NULL);
+				png_destroy_write_struct(&png_ptr, NULL);
 				return FALSE;
 			}
 
@@ -858,8 +858,8 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 
 			// set physical resolution
 
-			png_uint_32 res_x = (png_uint_32)FreeImage_GetDotsPerMeterX(dib);
-			png_uint_32 res_y = (png_uint_32)FreeImage_GetDotsPerMeterY(dib);
+			png_uint_32 res_x = FreeImage_GetDotsPerMeterX(dib);
+			png_uint_32 res_y = FreeImage_GetDotsPerMeterY(dib);
 
 			if ((res_x > 0) && (res_y > 0))  {
 				png_set_pHYs(png_ptr, info_ptr, res_x, res_y, PNG_RESOLUTION_METER);

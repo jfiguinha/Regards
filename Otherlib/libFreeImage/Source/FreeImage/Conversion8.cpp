@@ -206,7 +206,7 @@ FreeImage_ConvertTo8Bits(FIBITMAP *dib) {
 
 			for (unsigned rows = 0; rows < height; rows++) {
 				const WORD *const src_pixel = (WORD*)src_bits;
-				BYTE *dst_pixel = (BYTE*)dst_bits;
+				BYTE *dst_pixel = dst_bits;
 				for(unsigned cols = 0; cols < width; cols++) {
 					dst_pixel[cols] = (BYTE)(src_pixel[cols] >> 8);
 				}

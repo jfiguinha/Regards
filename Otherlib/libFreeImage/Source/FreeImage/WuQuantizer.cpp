@@ -550,7 +550,7 @@ WuQuantizer::Quantize(int PaletteSize, int ReserveSize, RGBQUAD *ReservePalette)
 
 		free(tag);
 
-		return (FIBITMAP*) new_dib;
+		return new_dib;
 	} catch(...) {
 		free(tag);
 	}

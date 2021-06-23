@@ -5,7 +5,6 @@
 #endif
 #include <stdint.h>
 #include <string>
-#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else

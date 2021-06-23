@@ -1,6 +1,5 @@
 #ifdef _MSC_VER
 
-#include <stdio.h>
 #include <intrin.h>
 
 #include "stdatomic.h"

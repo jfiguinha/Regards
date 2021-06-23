@@ -20,16 +20,12 @@
 #include "MediaInfoDLL/MediaInfoDLL.h" //Dynamicly-loaded library (.dll or .so)
 #define MediaInfoNameSpace MediaInfoDLL;
 #endif //MEDIAINFO_LIBRARY
-#include <iostream>
-#include <iomanip>
 #include <string>
 #include <vector>
 #include <algorithm> 
-#include <functional> 
 #include <cctype>
 #include <locale>
 #include <ConvertUtility.h>
-#include <regex>
 using namespace std;
 using namespace MediaInfoNameSpace;
 

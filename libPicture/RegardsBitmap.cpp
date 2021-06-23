@@ -3,7 +3,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "RegardsBitmap.h"
-#include <iostream>
 #include <fstream>
 
 extern float value[256];
@@ -18,41 +17,42 @@ CRegardsBitmap& CRegardsBitmap::operator=(const CRegardsBitmap& other)
 }
 
 
-void CRegardsBitmap::GetY(uint8_t * & lum)
+void CRegardsBitmap::GetY(uint8_t* & lum)
 {
-
 	for (int posY = 0; posY < GetBitmapHeight(); posY++)
 	{
 		for (int posX = 0; posX < GetBitmapWidth(); posX++)
 		{
 			int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
 			int posLocal = posX + posY * GetBitmapWidth();
-			lum[posLocal] = 0.257f * value[data[posPicture + 2]] + 0.504f * value[data[posPicture + 1]] + 0.098f * value[data[posPicture]] + 16;
+			lum[posLocal] = 0.257f * value[data[posPicture + 2]] + 0.504f * value[data[posPicture + 1]] + 0.098f * value
+				[data[posPicture]] + 16;
 		}
 	}
 }
 
-void CRegardsBitmap::SetY(uint8_t * lum)
+void CRegardsBitmap::SetY(uint8_t* lum)
 {
 	for (int posY = 0; posY < GetBitmapHeight(); posY++)
 	{
 		for (int posX = 0; posX < GetBitmapWidth(); posX++)
 		{
-			int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
-			int posLocal = posX + posY * GetBitmapWidth();
+			const int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
+			const int posLocal = posX + posY * GetBitmapWidth();
 
 			float Y = lum[posLocal];
-			float cr = (0.439 * value[data[posPicture + 2]]) - (0.368 * value[data[posPicture + 1]]) - (0.071 * value[data[posPicture]]) + 128;
-			float cb = -(0.148 * value[data[posPicture + 2]]) - (0.291 * value[data[posPicture + 1]]) + (0.439 * value[data[posPicture]]) + 128;
+			float cr = (0.439 * value[data[posPicture + 2]]) - (0.368 * value[data[posPicture + 1]]) - (0.071 * value[
+				data[posPicture]]) + 128;
+			float cb = -(0.148 * value[data[posPicture + 2]]) - (0.291 * value[data[posPicture + 1]]) + (0.439 * value[
+				data[posPicture]]) + 128;
 
 			double B = 1.164 * (Y - 16) + 2.018 * (cb - 128);
 			double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
 			double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
 
 			data[posPicture + 2] = clamp(R, 0.0, 255.0); //min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
-			data[posPicture + 1] = clamp(G, 0.0, 255.0);//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-			data[posPicture] = clamp(B, 0.0, 255.0);//min(Y + 2.03211f * U, 255.0f); //B
-
+			data[posPicture + 1] = clamp(G, 0.0, 255.0); //min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
+			data[posPicture] = clamp(B, 0.0, 255.0); //min(Y + 2.03211f * U, 255.0f); //B
 		}
 	}
 }
@@ -62,14 +62,14 @@ int CRegardsBitmap::GetOrientation()
 	return orientation;
 }
 
-void CRegardsBitmap::SetOrientation(const int &orientation)
+void CRegardsBitmap::SetOrientation(const int& orientation)
 {
 	this->orientation = orientation;
 }
 
 bool CRegardsBitmap::IsValid()
 {
-	if(data == nullptr || GetBitmapHeight() == 0 || GetBitmapWidth() == 0 || GetBitmapSize() == 0)
+	if (data == nullptr || GetBitmapHeight() == 0 || GetBitmapWidth() == 0 || GetBitmapSize() == 0)
 		return false;
 
 	return true;
@@ -79,9 +79,8 @@ bool CRegardsBitmap::IsValid()
 
 #include <Windows.h>
 
-HBITMAP GenerateHBitmap(const uint8_t * pbyData, const int &nWidth, const int &nHeight)
+HBITMAP GenerateHBitmap(const uint8_t* pbyData, const int& nWidth, const int& nHeight)
 {
-	HBITMAP hBitmapRender;
 	BITMAPINFO bmiInfos;
 	memset(&bmiInfos, 0, sizeof(BITMAPINFO));
 	bmiInfos.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -90,20 +89,21 @@ HBITMAP GenerateHBitmap(const uint8_t * pbyData, const int &nWidth, const int &n
 	bmiInfos.bmiHeader.biPlanes = 1;
 	bmiInfos.bmiHeader.biCompression = BI_RGB;
 	bmiInfos.bmiHeader.biBitCount = 32;
-	bmiInfos.bmiHeader.biSizeImage = nWidth * nHeight << 2; //((iTaille * bitmap.bmWidth + iTaille) & ~iTaille) * bitmap.bmHeight;
-	hBitmapRender = CreateDIBitmap(GetDC(nullptr),
-		&bmiInfos.bmiHeader,
-		CBM_INIT,
-		pbyData,
-		(LPBITMAPINFO)&bmiInfos,
-		DIB_RGB_COLORS);
+	bmiInfos.bmiHeader.biSizeImage = nWidth * nHeight << 2;
+	//((iTaille * bitmap.bmWidth + iTaille) & ~iTaille) * bitmap.bmHeight;
+	HBITMAP hBitmapRender = CreateDIBitmap(GetDC(nullptr),
+	                                       &bmiInfos.bmiHeader,
+	                                       CBM_INIT,
+	                                       pbyData,
+	                                       &bmiInfos,
+	                                       DIB_RGB_COLORS);
 
 	return hBitmapRender;
 }
 
-void CRegardsBitmap::SaveToBmp(const wxString &filename)
+void CRegardsBitmap::SaveToBmp(const wxString& filename)
 {
-	HBITMAP hBitmap = GenerateHBitmap(data, m_iWidth, m_iHeight);
+	const HBITMAP hBitmap = GenerateHBitmap(data, m_iWidth, m_iHeight);
 	HDC hDC = GetDC(nullptr);
 	WORD wBitCount;
 	DWORD dwPaletteSize = 0, dwBmBitsSize = 0, dwDIBSize = 0, dwWritten = 0;
@@ -113,7 +113,7 @@ void CRegardsBitmap::SaveToBmp(const wxString &filename)
 	LPBITMAPINFOHEADER lpbi;
 	HANDLE fh, hDib, hPal, hOldPal2 = nullptr;
 	wBitCount = 24;
-	GetObject(hBitmap, sizeof(Bitmap0), (LPSTR)&Bitmap0);
+	GetObject(hBitmap, sizeof(Bitmap0), &Bitmap0);
 	bi.biSize = sizeof(BITMAPINFOHEADER);
 	bi.biWidth = Bitmap0.bmWidth;
 	bi.biHeight = -Bitmap0.bmHeight;
@@ -128,30 +128,30 @@ void CRegardsBitmap::SaveToBmp(const wxString &filename)
 	dwBmBitsSize = ((Bitmap0.bmWidth * wBitCount + 31) & ~31) / 8
 		* Bitmap0.bmHeight;
 	hDib = GlobalAlloc(GHND, dwBmBitsSize + dwPaletteSize + sizeof(BITMAPINFOHEADER));
-	lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDib);
+	lpbi = static_cast<LPBITMAPINFOHEADER>(GlobalLock(hDib));
 	*lpbi = bi;
 
 	hPal = GetStockObject(DEFAULT_PALETTE);
 	if (hPal)
 	{
 		hDC = GetDC(nullptr);
-		hOldPal2 = SelectPalette(hDC, (HPALETTE)hPal, FALSE);
+		hOldPal2 = SelectPalette(hDC, static_cast<HPALETTE>(hPal), FALSE);
 		RealizePalette(hDC);
 	}
 
 
-	GetDIBits(hDC, hBitmap, 0, (UINT)Bitmap0.bmHeight, (LPSTR)lpbi + sizeof(BITMAPINFOHEADER)
-		+ dwPaletteSize, (BITMAPINFO *)lpbi, DIB_RGB_COLORS);
+	GetDIBits(hDC, hBitmap, 0, static_cast<UINT>(Bitmap0.bmHeight), (LPSTR)lpbi + sizeof(BITMAPINFOHEADER)
+	          + dwPaletteSize, (BITMAPINFO*)lpbi, DIB_RGB_COLORS);
 
 	if (hOldPal2)
 	{
-		SelectPalette(hDC, (HPALETTE)hOldPal2, TRUE);
+		SelectPalette(hDC, static_cast<HPALETTE>(hOldPal2), TRUE);
 		RealizePalette(hDC);
 		ReleaseDC(nullptr, hDC);
 	}
 
 	fh = CreateFile(filename.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+	                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 
 	if (fh == INVALID_HANDLE_VALUE)
 		return;
@@ -161,15 +161,15 @@ void CRegardsBitmap::SaveToBmp(const wxString &filename)
 	bmfHdr.bfSize = dwDIBSize;
 	bmfHdr.bfReserved1 = 0;
 	bmfHdr.bfReserved2 = 0;
-	bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER) + dwPaletteSize;
+	bmfHdr.bfOffBits = static_cast<DWORD>(sizeof(BITMAPFILEHEADER)) + static_cast<DWORD>(sizeof(BITMAPINFOHEADER)) +
+		dwPaletteSize;
 
-	::WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, nullptr);
+	::WriteFile(fh, &bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, nullptr);
 
-	::WriteFile(fh, (LPSTR)lpbi, dwDIBSize, &dwWritten, nullptr);
+	::WriteFile(fh, lpbi, dwDIBSize, &dwWritten, nullptr);
 	GlobalUnlock(hDib);
 	GlobalFree(hDib);
 	CloseHandle(fh);
-
 }
 
 #endif
@@ -177,7 +177,8 @@ void CRegardsBitmap::SaveToBmp(const wxString &filename)
 #define SCALEBITS            8
 #define ONE_HALF             (1 << (SCALEBITS - 1))
 #define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
-void CRegardsBitmap::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr)
+
+void CRegardsBitmap::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr)
 {
 	int width_middle = m_iWidth / 2;
 	int height_middle = m_iHeight / 2;
@@ -201,26 +202,30 @@ void CRegardsBitmap::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr)
 				r1 += r;
 				g1 += g;
 				b1 += b;
-				lum[lum_position] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+				lum[lum_position] = static_cast<int>((FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b +
+					ONE_HALF)) >> SCALEBITS;
 				r = value[data[position + 6]];
 				g = value[data[position + 5]];
 				b = value[data[position + 4]];
 				r1 += r;
 				g1 += g;
 				b1 += b;
-				lum[lum_position + 1] = ((int)(FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF)) >> SCALEBITS;
+				lum[lum_position + 1] = static_cast<int>((FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b +
+					ONE_HALF)) >> SCALEBITS;
 
 				position += m_iWidth * 4;
 				lum_position += m_iWidth;
 			}
 
-			cb[cr_position] = ((((int)(-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
-			cr[cr_position] = ((((int)(FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 * ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
+			cb[cr_position] = ((static_cast<int>(-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 *
+				ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cr[cr_position] = ((static_cast<int>((FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 *
+				ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
 		}
 	}
 }
 
-void CRegardsBitmap::SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr)
+void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 {
 #pragma omp parallel for
 	for (int y = 0; y < m_iHeight; y++)
@@ -249,9 +254,9 @@ void CRegardsBitmap::SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr)
 			float yComp = lum[positionSrc];
 			// RGB conversion
 
-			float b = (1.164 * (yComp - 16) + 1.596*(vComp - 128));
-			float g = (1.164 * (yComp - 16) - 0.391*(uComp - 128) - 0.813*(vComp - 128));
-			float r = (1.164 * (yComp - 16) + 2.018*(uComp - 128));
+			float b = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
+			float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
+			float r = (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
 			float a = 255.0f;
 
 			float minimal = 0.0;
@@ -259,26 +264,26 @@ void CRegardsBitmap::SetYUV420P(uint8_t * lum, uint8_t * cb, uint8_t * cr)
 
 			int position = x * 4 + y * m_iWidth * 4;
 			data[position] = clamp(r, minimal, maximal);
-			data[position+1] = clamp(g, minimal, maximal);
-			data[position+2] = clamp(b, minimal, maximal);
-			data[position+3] = clamp(a, minimal, maximal);
+			data[position + 1] = clamp(g, minimal, maximal);
+			data[position + 2] = clamp(b, minimal, maximal);
+			data[position + 3] = clamp(a, minimal, maximal);
 		}
 	}
 }
 
-void CRegardsBitmap::ReadFile(const wxString &filename)
+void CRegardsBitmap::ReadFile(const wxString& filename)
 {
 	if (data != nullptr)
 		delete[] data;
 
-	FILE *file = nullptr;
-	file = fopen(filename.c_str(), "rb");      // File pointer
+	FILE* file = nullptr;
+	file = fopen(filename.c_str(), "rb"); // File pointer
 	if (file != nullptr)
 	{
 		fread(&m_iWidth, sizeof(int), sizeof(m_iWidth), file);
 		fread(&m_iHeight, sizeof(int), sizeof(m_iHeight), file);
 		fread(&orientation, sizeof(int), sizeof(orientation), file);
-		long size = m_iWidth *m_iHeight * 4;
+		long size = m_iWidth * m_iHeight * 4;
 		data = new uint8_t[size];
 		fread(data, sizeof(uint8_t), size, file);
 		fclose(file);
@@ -286,15 +291,16 @@ void CRegardsBitmap::ReadFile(const wxString &filename)
 	m_sDepth = 32;
 }
 
-void CRegardsBitmap::WriteFile(const wxString &filename)
+void CRegardsBitmap::WriteFile(const wxString& filename)
 {
-	long size = m_iWidth *m_iHeight * 4;
-	FILE *file = nullptr;
-	file = fopen(filename.c_str(), "wb");      // File pointer
-	if (file != nullptr){
-		fwrite((const void *)&m_iWidth, sizeof(int), sizeof(m_iWidth), file);
-		fwrite((const void *)&m_iHeight, sizeof(int), sizeof(m_iHeight), file);
-		fwrite((const void *)&orientation, sizeof(int), sizeof(orientation), file);
+	long size = m_iWidth * m_iHeight * 4;
+	FILE* file = nullptr;
+	file = fopen(filename.c_str(), "wb"); // File pointer
+	if (file != nullptr)
+	{
+		fwrite(&m_iWidth, sizeof(int), sizeof(m_iWidth), file);
+		fwrite(&m_iHeight, sizeof(int), sizeof(m_iHeight), file);
+		fwrite(&orientation, sizeof(int), sizeof(orientation), file);
 		fwrite(data, sizeof(uint8_t), size, file);
 		fclose(file);
 	}
@@ -303,7 +309,8 @@ void CRegardsBitmap::WriteFile(const wxString &filename)
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void CRegardsBitmap::SetBitmap(CRgbaquad * m_bBuffer, const unsigned int &bmWidth, const unsigned int &bmHeight, const bool &m_bFlip)
+void CRegardsBitmap::SetBitmap(CRgbaquad* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight,
+                               const bool& m_bFlip)
 {
 	m_sDepth = 32;
 
@@ -322,12 +329,9 @@ void CRegardsBitmap::SetBitmap(CRgbaquad * m_bBuffer, const unsigned int &bmWidt
 
 	m_iWidth = bmWidth;
 	m_iHeight = bmHeight;
-
-
-
 }
 
-void CRegardsBitmap::SetBitmap(const int &iWidth, const int &iHeight, const int &iDepth)
+void CRegardsBitmap::SetBitmap(const int& iWidth, const int& iHeight, const int& iDepth)
 {
 	if (m_iWidth != iWidth || m_iHeight != iHeight)
 	{
@@ -346,13 +350,13 @@ void CRegardsBitmap::SetBitmap(const int &iWidth, const int &iHeight, const int 
 }
 
 
-CRegardsBitmap::CRegardsBitmap(const int &iWidth, const int &iHeight, const int &iDepth)
+CRegardsBitmap::CRegardsBitmap(const int& iWidth, const int& iHeight, const int& iDepth)
 {
 	data = nullptr;
 	m_sDepth = iDepth;
 	m_iWidth = iWidth;
 	m_iHeight = iHeight;
-	m_lSize = iWidth*iHeight * 4;
+	m_lSize = iWidth * iHeight * 4;
 	//needRotate = false;
 	data = new uint8_t[m_lSize];
 	orientation = 0;
@@ -386,7 +390,7 @@ CRegardsBitmap::~CRegardsBitmap()
 	}
 }
 
-void CRegardsBitmap::DeleteMemory(const bool &keepMem)
+void CRegardsBitmap::DeleteMemory(const bool& keepMem)
 {
 	this->keepMem = keepMem;
 }
@@ -400,7 +404,7 @@ bool CRegardsBitmap::HorzFlipBuf()
 		return false;
 
 	int MiddleX = (m_iWidth >> 1) << 2;
-	
+
 	int iWidth4 = m_iWidth << 2;
 
 	for (auto y = 0; y < m_iHeight; y++)
@@ -421,7 +425,6 @@ bool CRegardsBitmap::HorzFlipBuf()
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -430,7 +433,7 @@ bool CRegardsBitmap::Rotation90()
 	if (data == nullptr)
 		return false;
 
-	CRegardsBitmap * out = new CRegardsBitmap(m_iHeight, m_iWidth);
+	auto out = new CRegardsBitmap(m_iHeight, m_iWidth);
 
 #pragma omp parallel for
 	for (auto y = 0; y < m_iHeight; y++)
@@ -453,33 +456,35 @@ bool CRegardsBitmap::Rotation90()
 //////////////////////////////////////////////////////////////////////////////////////////
 bool CRegardsBitmap::VertFlipBuf()
 {
-	uint8_t  *tb1;
-	uint8_t  *tb2;
+	uint8_t* tb1;
+	uint8_t* tb2;
 
 	if (data == nullptr)
 		return false;
 
 	int bufsize;
 
-	bufsize = (int)GetWidthSize();
+	bufsize = static_cast<int>(GetWidthSize());
 
-	tb1 = (uint8_t *)new uint8_t[bufsize];
-	if (tb1 == nullptr) {
+	tb1 = new uint8_t[bufsize];
+	if (tb1 == nullptr)
+	{
 		return false;
 	}
 
-	tb2 = (uint8_t *)new uint8_t[bufsize];
-	if (tb2 == nullptr) {
+	tb2 = new uint8_t[bufsize];
+	if (tb2 == nullptr)
+	{
 		delete[] tb1;
 		return false;
 	}
 
 	int endValue = (m_iHeight + 1) / 2;
 
-	for (auto row_cnt = 0; row_cnt< endValue; row_cnt++)
+	for (auto row_cnt = 0; row_cnt < endValue; row_cnt++)
 	{
-		int off1 = row_cnt*bufsize;
-		int off2 = ((m_iHeight - 1) - row_cnt)*bufsize;
+		int off1 = row_cnt * bufsize;
+		int off2 = ((m_iHeight - 1) - row_cnt) * bufsize;
 		memcpy(tb1, data + off1, bufsize);
 		memcpy(tb2, data + off2, bufsize);
 		memcpy(data + off1, tb2, bufsize);
@@ -494,11 +499,11 @@ bool CRegardsBitmap::VertFlipBuf()
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////////////
-void CRegardsBitmap::SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth, const unsigned int &bmHeight, const bool &m_bFlip, const bool &copy)
+void CRegardsBitmap::SetBitmap(uint8_t* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight,
+                               const bool& m_bFlip, const bool& copy)
 {
 	if (m_bBuffer == nullptr)
 		return;
@@ -538,38 +543,38 @@ void CRegardsBitmap::SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth,
 	}
 }
 
-bool CRegardsBitmap::RotateRawExif(const int & orientation)
+bool CRegardsBitmap::RotateRawExif(const int& orientation)
 {
 	bool ret = true;
 	switch (orientation)
 	{
-	case 1:// top left side
+	case 1: // top left side
 		break;
-	case 2:// top right side
+	case 2: // top right side
 		this->HorzFlipBuf();
 		break;
-	case 3:// bottom right side
+	case 3: // bottom right side
 		this->HorzFlipBuf();
 		this->VertFlipBuf();
 		break;
-	case 4:// bottom left side
+	case 4: // bottom left side
 		this->VertFlipBuf();
 		break;
-	case 5://left side top
-        this->Rotation90();
-        //this->VertFlipBuf();
-		break;
-	case 6:// right side top
-        this->Rotation90();
+	case 5: //left side top
+		this->Rotation90();
 		//this->VertFlipBuf();
-        this->HorzFlipBuf();
 		break;
-	case 7:// right side bottom
-        this->Rotation90();
+	case 6: // right side top
+		this->Rotation90();
+		//this->VertFlipBuf();
+		this->HorzFlipBuf();
+		break;
+	case 7: // right side bottom
+		this->Rotation90();
 		this->HorzFlipBuf();
 		this->VertFlipBuf();
 		break;
-	case 8:// left side bottom
+	case 8: // left side bottom
 		this->Rotation90();
 		this->VertFlipBuf();
 		break;
@@ -577,41 +582,41 @@ bool CRegardsBitmap::RotateRawExif(const int & orientation)
 	return ret;
 }
 
-bool CRegardsBitmap::RotateExif(const int & orientation)
+bool CRegardsBitmap::RotateExif(const int& orientation)
 {
-    bool ret = true;
-    switch (orientation)
-    {
-        case 1:// top left side
-            break;
-        case 2:// top right side
-            this->HorzFlipBuf();
-            break;
-        case 3:// bottom right side
-            this->HorzFlipBuf();
-            this->VertFlipBuf();
-            break;
-        case 4:// bottom left side
-            this->VertFlipBuf();
-            break;
-        case 5://left side top
-            this->Rotation90();
-            this->VertFlipBuf();
-            this->HorzFlipBuf();
-            break;
-        case 6:// right side top
-            this->Rotation90();
-            this->VertFlipBuf();
-            break;
-        case 7:// right side bottom
-            this->Rotation90();
-            break;
-        case 8:// left side bottom
-            this->Rotation90();
-            this->HorzFlipBuf();
-            break;
-    }
-    return ret;
+	bool ret = true;
+	switch (orientation)
+	{
+	case 1: // top left side
+		break;
+	case 2: // top right side
+		this->HorzFlipBuf();
+		break;
+	case 3: // bottom right side
+		this->HorzFlipBuf();
+		this->VertFlipBuf();
+		break;
+	case 4: // bottom left side
+		this->VertFlipBuf();
+		break;
+	case 5: //left side top
+		this->Rotation90();
+		this->VertFlipBuf();
+		this->HorzFlipBuf();
+		break;
+	case 6: // right side top
+		this->Rotation90();
+		this->VertFlipBuf();
+		break;
+	case 7: // right side bottom
+		this->Rotation90();
+		break;
+	case 8: // left side bottom
+		this->Rotation90();
+		this->HorzFlipBuf();
+		break;
+	}
+	return ret;
 }
 
 /*
@@ -692,7 +697,7 @@ bool CRegardsBitmap::RotateExif(const int & orientation)
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-uint8_t * CRegardsBitmap::GetPtBitmap()
+uint8_t* CRegardsBitmap::GetPtBitmap()
 {
 	return data;
 }
@@ -726,7 +731,7 @@ const short CRegardsBitmap::GetBitmapDepth()
 	return m_sDepth;
 }
 
-int CRegardsBitmap::GetPosition(const int &x, const int &y)
+int CRegardsBitmap::GetPosition(const int& x, const int& y)
 {
 	return (x << 2) + (y * (m_iWidth << 2));
 }
@@ -734,7 +739,7 @@ int CRegardsBitmap::GetPosition(const int &x, const int &y)
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void CRegardsBitmap::SetFilename(const wxString & szFilename)
+void CRegardsBitmap::SetFilename(const wxString& szFilename)
 {
 	filename = szFilename;
 }
@@ -747,34 +752,34 @@ wxString CRegardsBitmap::GetFilename()
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CRgbaquad CRegardsBitmap::GetColorValue(const int &x, const int &y)
+CRgbaquad CRegardsBitmap::GetColorValue(const int& x, const int& y)
 {
 	//CRgbaquad color = COLOR_RGBA_BLACK;
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)
 	{
 		int i = GetPosition(x, y);
-		return *((CRgbaquad *)(data + i));
+		return *((CRgbaquad*)(data + i));
 	}
 	return COLOR_RGBA_BLACK;
 }
 
 
-CRgbaquad * CRegardsBitmap::GetPtColorValue(const int &x, const int &y)
+CRgbaquad* CRegardsBitmap::GetPtColorValue(const int& x, const int& y)
 {
-	CRgbaquad * color = nullptr;
+	CRgbaquad* color = nullptr;
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)
 	{
 		int i = GetPosition(x, y);
-		color = ((CRgbaquad *)(data + i));
+		color = ((CRgbaquad*)(data + i));
 	}
 	return color;
 }
- 
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void CRegardsBitmap::SetColorValue(const int &x, const int &y, const CRgbaquad &color)
+void CRegardsBitmap::SetColorValue(const int& x, const int& y, const CRgbaquad& color)
 {
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)
 	{
@@ -793,15 +798,16 @@ long CRegardsBitmap::GetBitmapSize()
 
 const long CRegardsBitmap::GetWidthSize()
 {
-	if(m_sDepth == 24)
+	if (m_sDepth == 24)
 		return ((((m_iWidth * 24) + 31) & ~31) >> 3);
 
 	return m_iWidth * 4;
 }
-void CRegardsBitmap::SetAlphaValue(const int &value)
+
+void CRegardsBitmap::SetAlphaValue(const int& value)
 {
-    uint8_t alphaValue = ((float)value / 100.0f) * 255;
- 	if (data != nullptr)
+	uint8_t alphaValue = (static_cast<float>(value) / 100.0f) * 255;
+	if (data != nullptr)
 	{
 #pragma omp parallel for
 		for (auto y = 0; y < GetBitmapHeight(); y++)
@@ -809,7 +815,7 @@ void CRegardsBitmap::SetAlphaValue(const int &value)
 #pragma omp parallel for
 			for (auto x = 0; x < m_iWidth; x++)
 			{
-				CRgbaquad * colorSrc = GetPtColorValue(x, y);
+				CRgbaquad* colorSrc = GetPtColorValue(x, y);
 				colorSrc->SetAlpha(alphaValue);
 			}
 		}
@@ -819,7 +825,7 @@ void CRegardsBitmap::SetAlphaValue(const int &value)
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-int CRegardsBitmap::SetValueToTranspColor(const CRgbaquad & backgroundValue)
+int CRegardsBitmap::SetValueToTranspColor(const CRgbaquad& backgroundValue)
 {
 	if (data != nullptr)
 	{
@@ -829,18 +835,18 @@ int CRegardsBitmap::SetValueToTranspColor(const CRgbaquad & backgroundValue)
 #pragma omp parallel for
 			for (auto x = 0; x < m_iWidth; x++)
 			{
-                /*
+				/*
 				CRgbaquad * colorSrc = GetPtColorValue(x, y);
 				if (colorSrc->GetAlpha() == 0)
 				{
 					*colorSrc = backgroundValue;
 				}
-                 */
-                CRgbaquad colorSrc = GetColorValue(x, y);
-                if (colorSrc.GetAlpha() == 0)
-                {
-                    SetColorValue(x, y, backgroundValue);
-                }
+				 */
+				CRgbaquad colorSrc = GetColorValue(x, y);
+				if (colorSrc.GetAlpha() == 0)
+				{
+					SetColorValue(x, y, backgroundValue);
+				}
 			}
 		}
 	}
@@ -852,26 +858,25 @@ void CRegardsBitmap::ConvertToBgr()
 {
 	if (data != nullptr)
 	{
-    #pragma omp parallel for
-            for (auto y = 0; y < GetBitmapHeight(); y++)
-            {
-    #pragma omp parallel for
-                for (auto x = 0; x < m_iWidth; x++)
-                {
-                    
-                    CRgbaquad * colorSrc = GetPtColorValue(x, y);
-                    if (colorSrc != nullptr)
-                    {
-                        uint8_t blue = colorSrc->GetBlue();
-                        colorSrc->SetBlue(colorSrc->GetRed());
-                        colorSrc->SetRed(blue);
-                    }
-                }
-            }
+#pragma omp parallel for
+		for (auto y = 0; y < GetBitmapHeight(); y++)
+		{
+#pragma omp parallel for
+			for (auto x = 0; x < m_iWidth; x++)
+			{
+				CRgbaquad* colorSrc = GetPtColorValue(x, y);
+				if (colorSrc != nullptr)
+				{
+					uint8_t blue = colorSrc->GetBlue();
+					colorSrc->SetBlue(colorSrc->GetRed());
+					colorSrc->SetRed(blue);
+				}
+			}
+		}
 	}
 }
 
-int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos, const bool &withalpha)
+int CRegardsBitmap::InsertBitmap(CRegardsBitmap* bitmap, int xPos, int yPos, const bool& withalpha)
 {
 	if (data != nullptr && bitmap != nullptr)
 	{
@@ -890,7 +895,7 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos, co
 #pragma omp parallel for
 			for (auto x = xPos; x < xEnd; x++)
 			{
-                CRgbaquad * colorSrc = GetPtColorValue(x, y);
+				CRgbaquad* colorSrc = GetPtColorValue(x, y);
 				if (colorSrc != nullptr)
 				{
 					if (withalpha)
@@ -920,7 +925,7 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos, co
 }
 
 
-int CRegardsBitmap::InsertwxImage(const wxImage & bitmap, int xPos, int yPos)
+int CRegardsBitmap::InsertwxImage(const wxImage& bitmap, int xPos, int yPos)
 {
 	if (data != nullptr && bitmap.IsOk())
 	{
@@ -934,20 +939,20 @@ int CRegardsBitmap::InsertwxImage(const wxImage & bitmap, int xPos, int yPos)
 		if (xEnd > m_iWidth)
 			xEnd = m_iWidth;
 
-		uint8_t * data = bitmap.GetData();
-		uint8_t * alpha = bitmap.GetAlpha();
-		
+		uint8_t* data = bitmap.GetData();
+		uint8_t* alpha = bitmap.GetAlpha();
+
 #pragma omp parallel for
 		for (auto y = yPos; y < yEnd; y++)
 		{
-	#pragma omp parallel for
-			for (auto x = xPos; x < xEnd; x++)	
+#pragma omp parallel for
+			for (auto x = xPos; x < xEnd; x++)
 			{
 				int i = (y - yPos) * withwxImage + (x - xPos);
-				CRgbaquad * colorSrc = GetPtColorValue(x, y);
+				CRgbaquad* colorSrc = GetPtColorValue(x, y);
 				if (colorSrc != nullptr)
 				{
-					CRgbaquad color = CRgbaquad(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], alpha[i]);
+					auto color = CRgbaquad(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], alpha[i]);
 					float alpha = color.GetFAlpha() / 255.0f;
 					float alphaDiff = 1.0f - alpha;
 					if (alphaDiff < 1.0f)
@@ -965,9 +970,9 @@ int CRegardsBitmap::InsertwxImage(const wxImage & bitmap, int xPos, int yPos)
 	return 0;
 }
 
-CRegardsBitmap * CRegardsBitmap::CropBitmap(const int &xPos, const int &yPos, const int &width, const int &height)
+CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, const int& width, const int& height)
 {
-	CRegardsBitmap * bitmap = new CRegardsBitmap(width, height);
+	auto bitmap = new CRegardsBitmap(width, height);
 	//bitmap->SetBackgroundColor(COLOR_RGBA_BLACK);
 	//uint8_t * dataPicture = bitmap->GetPtBitmap();
 
@@ -996,7 +1001,7 @@ CRegardsBitmap * CRegardsBitmap::CropBitmap(const int &xPos, const int &yPos, co
 			{
 				//CRgbaquad * color = bitmap->GetPtColorValue(x - xPos, y - yPos);
 				//*color = GetColorValue(x, y);
-                bitmap->SetColorValue(x - xPos, y - yPos, GetColorValue(x, y));
+				bitmap->SetColorValue(x - xPos, y - yPos, GetColorValue(x, y));
 			}
 		}
 	}
@@ -1007,7 +1012,7 @@ CRegardsBitmap * CRegardsBitmap::CropBitmap(const int &xPos, const int &yPos, co
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad &Transp)
+int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad& Transp)
 {
 	if (data != nullptr)
 	{
@@ -1018,30 +1023,30 @@ int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad &Transp)
 			for (auto x = 0; x < m_iWidth; x++)
 
 			{
-                /*
+				/*
 				CRgbaquad * color = GetPtColorValue(x, y);
 				if (*color == Transp)
 					color->SetAlpha(0);
 				else
 					color->SetAlpha(255);
-                */
-                CRgbaquad color = GetColorValue(x, y);
-                if (color == Transp)
-                    color.SetAlpha(0);
-                else
-                    color.SetAlpha(255);
-                
-                SetColorValue(x, y, color);
+				*/
+				CRgbaquad color = GetColorValue(x, y);
+				if (color == Transp)
+					color.SetAlpha(0);
+				else
+					color.SetAlpha(255);
+
+				SetColorValue(x, y, color);
 			}
 		}
 	}
 	return 0;
 }
 
-void CRegardsBitmap::SetBackgroundColor(const CRgbaquad &m_cValue)
+void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 {
 	int size = m_iWidth << 2;
-	uint8_t * buffer = new uint8_t[size];
+	auto buffer = new uint8_t[size];
 
 #pragma omp parallel for
 	for (auto x = 0; x < m_iWidth; x++)
@@ -1058,16 +1063,15 @@ void CRegardsBitmap::SetBackgroundColor(const CRgbaquad &m_cValue)
 			int position = GetPosition(0, y);
 			memcpy(data + position, buffer, size);
 		}
-
 	}
 
 	delete[] buffer;
 }
 
 
-int CRegardsBitmap::InsertBitmapWithoutAlpha(CRegardsBitmap * picture, int xPos, int yPos)
+int CRegardsBitmap::InsertBitmapWithoutAlpha(CRegardsBitmap* picture, int xPos, int yPos)
 {
-	uint8_t * pictureData = picture->GetPtBitmap();
+	uint8_t* pictureData = picture->GetPtBitmap();
 	int pictureWidth = picture->GetBitmapWidth();
 	//int pictureHeight = picture->GetBitmapHeight();
 	if (data != nullptr && pictureData != nullptr)
@@ -1099,7 +1103,7 @@ int CRegardsBitmap::InsertBitmapWithoutAlpha(CRegardsBitmap * picture, int xPos,
 }
 
 
-int CRegardsBitmap::FusionBitmap(CRegardsBitmap * nextPicture, const float &pourcentage)
+int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourcentage)
 {
 	//uint8_t * dest = nextPicture->GetPtBitmap();
 
@@ -1112,27 +1116,27 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap * nextPicture, const float &pour
 #pragma omp parallel for
 			for (auto x = 0; x < m_iWidth; x++)
 			{
-                /*
+				/*
 				CRgbaquad color1 = nextPicture->GetColorValue(x,y);
 				CRgbaquad * color2 = GetPtColorValue(x, y);
 				color1.Mul(pourcentage);
 				color2->Mul(diff);
 				color2->Add(color1);
-                */
-                
-                CRgbaquad color1 = nextPicture->GetColorValue(x,y);
-                CRgbaquad color2 = GetColorValue(x, y);
-                color1.Mul(pourcentage);
-                color2.Mul(diff);
-                color2.Add(color1);
-                SetColorValue(x, y, color2);
+				*/
+
+				CRgbaquad color1 = nextPicture->GetColorValue(x, y);
+				CRgbaquad color2 = GetColorValue(x, y);
+				color1.Mul(pourcentage);
+				color2.Mul(diff);
+				color2.Add(color1);
+				SetColorValue(x, y, color2);
 			}
 		}
 	}
 	return 0;
 }
 
-void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap * background, const int &xStart, const int &yStart)
+void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap* background, const int& xStart, const int& yStart)
 {
 	//uint8_t * m_bBackgound = background->GetPtBitmap();
 
@@ -1144,19 +1148,18 @@ void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap * background, const int 
 #pragma omp parallel for
 			for (auto x = 0; x < m_iWidth; x++)
 			{
-                /*
+				/*
 				CRgbaquad * color2 = GetPtColorValue(x, y);
 				if (color2->GetAlpha() == 0)
 				{
 					*color2 = background->GetColorValue(x + xStart, y + yStart);
 				}
-                */
-                
-                CRgbaquad color2 = GetColorValue(x, y);
-                if (color2.GetAlpha() == 0)
-                    SetColorValue(x, y, background->GetColorValue(x + xStart, y + yStart));
+				*/
+
+				CRgbaquad color2 = GetColorValue(x, y);
+				if (color2.GetAlpha() == 0)
+					SetColorValue(x, y, background->GetColorValue(x + xStart, y + yStart));
 			}
 		}
-
 	}
 }
