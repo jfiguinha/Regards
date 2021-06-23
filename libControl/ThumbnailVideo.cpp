@@ -10,6 +10,7 @@
 #include <SqlThumbnail.h>
 #include <SqlPhotosWithoutThumbnail.h>
 #include <LibResource.h>
+#include <ImageVideoThumbnail.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;

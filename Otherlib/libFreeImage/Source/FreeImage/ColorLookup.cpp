@@ -20,6 +20,8 @@
 //
 // ==========================================================
 
+#include <cctype>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 

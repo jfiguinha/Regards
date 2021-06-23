@@ -31,7 +31,7 @@
 #include <cstdio>
 #include <cassert>
 #include <vector>
-
+#include <sstream>
 extern "C" {
 #include <x265.h>
 }

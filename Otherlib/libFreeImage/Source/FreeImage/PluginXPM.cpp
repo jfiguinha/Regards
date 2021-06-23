@@ -35,6 +35,8 @@
 // * supports symbolic color names
 // ==========================================================
 
+#include <string>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 

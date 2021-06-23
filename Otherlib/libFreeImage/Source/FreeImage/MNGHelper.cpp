@@ -19,6 +19,8 @@
 // Use at your own risk!
 // ==========================================================
 
+#include <string>
+
 #include "FreeImage.h"
 #include "Utilities.h"
 
