@@ -1075,6 +1075,7 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbbmalloc_proxy.dylib @executable_path/../Frameworks/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/opencv/lib/libopencv_videoio.4.5.dylib @executable_path/../Frameworks/libopencv_videoio.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jasper/lib/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/ffmpeg/lib/libavformat.58.dylib @executable_path/../Frameworks/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/ffmpeg/lib/libavcodec.58.dylib @executable_path/../Frameworks/libavcodec.58.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
