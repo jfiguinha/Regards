@@ -378,8 +378,13 @@ void CShowVideo::OnVideoEnd()
 	videoSlider->SetPause();
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(VIDEO_END_ID);
-		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+		wxWindow * centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if(centralWindow != nullptr)
+		{
+			wxCommandEvent evt(VIDEO_END_ID);
+			centralWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 	}
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
@@ -393,8 +398,12 @@ void CShowVideo::OnVideoStop()
 	videoSlider->SetPause();
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxVIDEO_STOP);
-		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+		wxWindow* centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (centralWindow != nullptr)
+		{
+			wxCommandEvent evt(wxVIDEO_STOP);
+			centralWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 #ifdef __APPLE__
 	videoSlider->CallRefresh(videoSlider);
@@ -428,8 +437,13 @@ void CShowVideo::OnVideoStart()
     
     if (windowMain != nullptr)
     {
-        wxCommandEvent evt(VIDEO_START);
-        this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+		wxWindow* centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+    	if(centralWindow != nullptr)
+    	{
+			wxCommandEvent evt(VIDEO_START);
+			centralWindow->GetEventHandler()->AddPendingEvent(evt);
+    	}
+
     }
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
@@ -493,11 +507,6 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 		videoSlider->Refresh();
 #endif
 	}
-	//wxPostEvent(main, event);
-
-	//CLocalWindow * mainWindow = (CLocalWindow *)CWindowManagerEngine::getInstance()->GetWindow(L"MainWindow");
-	//if (mainWindow != nullptr)
-	//	mainWindow->OnCommand(WM_SETPOSITION, 0, position / 1000);
 }
 
 //------------------------------------------------------------

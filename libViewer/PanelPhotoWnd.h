@@ -26,8 +26,13 @@ namespace Regards
 			void SaveParameter(wxCommandEvent& event);
 			void UpdateCriteria(wxCommandEvent& event);
 			void OnRefreshData(wxCommandEvent& event);
+
 			void LoadInfo();
-            
+			
+			
+			void RemoveFolder(const wxString& folder);
+			wxString AddFolder(const wxString& folder);
+			
 			CCategoryFolderWindow * categoryFolderWnd;
 			wxGenericDirCtrl * folderWnd;
             CToolbarPhoto * photoToolbar;

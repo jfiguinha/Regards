@@ -10,6 +10,18 @@
 #include <SqlInsertFile.h>
 #include <LibResource.h>
 #include <directoryctrl.h>
+#include <wx/dir.h>
+#include <wx/busyinfo.h>
+#include "ConvertUtility.h"
+#include "SqlFolderCatalog.h"
+#include "SQLRemoveData.h"
+
+namespace Regards {
+	namespace Viewer {
+		class CListFace;
+	}
+}
+
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -89,7 +101,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	windowVisible = WM_FOLDER;
 
 	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), nullptr, this);
-	Connect(wxEVENT_SETFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
+	Connect(wxEVENT_SETFOLDER, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
 	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
 	Connect(wxEVENT_SELCHANGED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
@@ -164,24 +176,34 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr)
 	{
+		wxString firstFile = "";
 		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
 		auto path = new wxString();
 		*path = getSelectPath;
+		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
+
+
+		wxBusyInfo wait("Please wait, working...", windowMain);
+		
 		if (isChecked)
 		{
 			folderWnd->AddPath(getSelectPath);
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ADDFOLDER);
-			evt.SetClientData(path);
-			windowMain->GetEventHandler()->AddPendingEvent(evt);
+			firstFile = AddFolder(getSelectPath);
+			evt.SetInt(0);
+
 		}
 		else
 		{
+			evt.SetInt(1);
 			folderWnd->RemovePath(getSelectPath);
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REMOVEFOLDER);
-			evt.SetClientData(path);
-			windowMain->GetEventHandler()->AddPendingEvent(evt);
+			RemoveFolder(getSelectPath);
 		}
+
+		wxString* newPath = new wxString(firstFile);
+
+		evt.SetClientData(newPath);
+		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -226,6 +248,94 @@ void CPanelPhotoWnd::LoadInfo()
 			photoToolbar->SetCriteriaPush();
 			break;
 		default: ;
+		}
+	}
+}
+
+
+//Add and Remove Folder Management
+
+wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
+{
+	TRACE();
+	wxString localFilename = "";
+	wxString msg = "In progress ...";
+
+	wxArrayString files;
+	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+	if (files.size() > 0)
+		sort(files.begin(), files.end());
+
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), this, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+	int updatesize = 0;
+	dialog.Update(updatesize, msg);
+
+	//Indication d'imporation des critères 
+	CSqlFolderCatalog sqlFolderCatalog;
+	int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
+
+	printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
+
+	if (idFolder == -1)
+	{
+		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
+		//Insert la liste des photos dans la base de données.
+		CSqlInsertFile sqlInsertFile;
+		sqlInsertFile.AddFileFromFolder(this, dialog, files, folder, idFolder, localFilename);
+		//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
+	}
+
+	wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+	if (window)
+	{
+		auto newFolder = new wxString(folder);
+		wxCommandEvent evt(wxEVENT_SETFOLDER);
+		evt.SetClientData(newFolder);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	window = this->FindWindowById(LISTFACEID);
+	if (window)
+	{
+		wxCommandEvent evt(wxEVENT_THUMBNAILFOLDERADD);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	dialog.Destroy();
+}
+
+
+void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
+{
+	TRACE();
+
+	if (!folder.IsEmpty())
+	{
+
+
+		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+		StopAllProcess(title, message, this);
+
+		//Indication d'imporation des critères 
+		CSqlFolderCatalog sqlFolderCatalog;
+		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
+		if (idFolder != -1)
+		{
+			CSqlInsertFile sqlInsertFile;
+			sqlInsertFile.RemovePhotos(idFolder);
+
+			CSQLRemoveData sqlRemoveData;
+			sqlRemoveData.DeleteFolder(idFolder);
+		}
+
+		SetStopProcess(false);
+
+		wxWindow * listFace = this->FindWindowById(LISTFACEID);
+		if (listFace != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+			listFace->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
 }

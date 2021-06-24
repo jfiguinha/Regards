@@ -230,23 +230,42 @@ void CPreviewToolbar::Fullscreen()
 
 void CPreviewToolbar::NextPicture()
 {
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
-		mainWindow->ImageSuivante();
+	{
+		wxCommandEvent evt(wxEVENT_PICTURENEXT);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CPreviewToolbar::PreviousPicture()
 {
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
-		mainWindow->ImagePrecedente();
+	{
+		wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CPreviewToolbar::LastPicture()
+{
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_PICTURELAST);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CPreviewToolbar::FirstPicture()
 {
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
-		mainWindow->ImageDebut();
+	{
+		wxCommandEvent evt(wxEVENT_PICTUREFIRST);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CPreviewToolbar::DiaporamaStart()
@@ -256,7 +275,14 @@ void CPreviewToolbar::DiaporamaStart()
 	{
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
-		mainWindow->StartDiaporama();
+
+		wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_STARTDIAPORAMA);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+		
 		this->Resize();
 	}
 }
@@ -268,17 +294,19 @@ void CPreviewToolbar::DiaporamaStop()
 	{
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
-		mainWindow->StopDiaporama();
+
+		wxWindow* window = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_STOPDIAPORAMA);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 		this->Resize();
 	}
 }
 
-void CPreviewToolbar::LastPicture()
-{
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
-	if (mainWindow != nullptr)
-		mainWindow->ImageFin();
-}
+
 
 void CPreviewToolbar::EventManager(const int& id)
 {

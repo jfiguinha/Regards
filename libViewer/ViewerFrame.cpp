@@ -470,7 +470,12 @@ void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
 
 void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
 {
-	mainWindow->ImageSuivante();
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_PICTURENEXT);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 	loadPictureTimer->Stop();
 }
 
@@ -546,38 +551,50 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 			}
 			break;
 
+		case WXK_SPACE:
 		case WXK_PAGEUP:
 			{
 				printf("Image Suivante \n");
-				mainWindow->ImageSuivante();
+				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+				if (mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_PICTURENEXT);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
 			break;
 
 		case WXK_PAGEDOWN:
 			{
-				mainWindow->ImagePrecedente();
+				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+				if (mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
 			break;
 
-
-		case WXK_SPACE:
-			{
-				printf("Image Suivante \n");
-				mainWindow->ImageSuivante();
-				//if (!loadPictureTimer->IsRunning())
-				//	loadPictureTimer->Start(10);
-			}
-			break;
 
 		case WXK_END:
 			{
-				mainWindow->ImageFin();
+				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+				if (mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_PICTURELAST);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
 			break;
 
 		case WXK_HOME:
 			{
-				mainWindow->ImageDebut();
+				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+				if (mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_PICTUREFIRST);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
 			break;
 
@@ -687,8 +704,12 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 		{
 			//Suppression de toutes les Faces
 			CSQLRemoveData::DeleteFaceDatabase();
-			mainWindow->OnFacePertinence();
 
+			if (mainWindow != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_REFRESHFOLDERLIST);
+				mainWindow->GetEventHandler()->AddPendingEvent(evt);
+			}
 
 			wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 			if (window)
@@ -867,7 +888,11 @@ void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 		if (configFile.IsOk())
 		{
 			viewerParam->SetPertinenceValue(configFile.GetValue());
-			mainWindow->OnFacePertinence();
+			if (mainWindow != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_REFRESHFOLDERLIST);
+				mainWindow->GetEventHandler()->AddPendingEvent(evt);
+			}
 		}
 	}
 }

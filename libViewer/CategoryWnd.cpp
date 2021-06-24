@@ -549,8 +549,8 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
 
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_CRITERIASHOWUPDATE);
-		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+		wxCommandEvent evt(wxEVENT_REFRESHFOLDERLIST);
+		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 

@@ -28,8 +28,7 @@ void CThumbnailViewerVideo::OnPictureClick(CThumbnailData * data)
 #else
 		int timePosition = data->GetTimePosition() * 1000;
 #endif
-		//mainWindow->PictureVideoClick(timePosition);
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PICTUREVIDEOCLICK);
+		wxCommandEvent evt(wxEVENT_PICTUREVIDEOCLICK);
 		evt.SetExtraLong(timePosition);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}

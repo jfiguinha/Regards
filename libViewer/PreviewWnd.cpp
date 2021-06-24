@@ -665,14 +665,20 @@ void CPreviewWnd::TransitionEnd()
 
 void CPreviewWnd::ImageSuivante()
 {
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
-		mainWindow->ImageSuivante();
+	{
+		wxCommandEvent evt(wxEVENT_PICTURENEXT);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CPreviewWnd::ImagePrecedente()
 {
-	auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
-		mainWindow->ImagePrecedente();
+	{
+		wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }

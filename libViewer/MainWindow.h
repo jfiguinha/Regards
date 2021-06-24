@@ -9,7 +9,7 @@ class CPictureCategorieLoadData;
 class CPictureCategorie;
 class IStatusBarInterface;
 class CFFmpegTranscoding;
-class CFFmfc;
+
 
 namespace Regards
 {
@@ -30,73 +30,64 @@ namespace Regards
 		public:
 			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, const bool & openFirstFile);
 			~CMainWindow();
-            void UpdateScreenRatio();
-			void StartDiaporama();
-			void StopDiaporama();
-			void ImageSuivante();
-			void ImagePrecedente();
-			void ImageFin();
-			void ImageDebut();
+            void UpdateScreenRatio() override;
+
 			bool SetFullscreen();
 			bool SetFullscreenMode();
 			bool SetScreen();
 			void TransitionEnd();
-			void VideoEnd();
+
 			bool OpenFolder(const wxString &path);
 			bool IsFullscreen();
 			void ShowToolbar();
-			
+			bool IsVideo();
+
 			void SetText(const int &numPos, const wxString &libelle);
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
-			void AddFolder(const wxString &folder);
+
 			void OpenFile(const wxString &fileToOpen);
-			void OnFacePertinence();
+
 			bool GetProcessEnd();
 			void OnAddFolder(wxCommandEvent& event);
             void OnOpenFileOrFolder(wxCommandEvent& event);
 			wxString GetFilename();
-            bool IsVideo();
 
 			void SaveParameter();
             
 		private:
-        
 
+			void SetDataToStatusBar(void * thumbnailMessage, const wxString& message);
+			
 			bool FindNextValidFile();
 			bool FindPreviousValidFile();
-			void OnQuitAudio(wxCommandEvent& event);
-			void OnStopAudio(wxCommandEvent& event);
+
 			void OnEndDecompressFile(wxCommandEvent& event);
 			void OnEditFile(wxCommandEvent& event);
-            void OnPicturePrevious(wxCommandEvent& event);
-            void OnPictureNext(wxCommandEvent& event);
+
 			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);
-			void OnProgressVideo(wxCommandEvent& event);
+
 			void OnSetRangeProgressBar(wxCommandEvent& event);
 			void OnSetValueProgressBar(wxCommandEvent& event);
-			void OnEndPictureLoad(wxCommandEvent& event);
+
 			void OnRefreshPicture(wxCommandEvent& event);
 			void OnScanner(wxCommandEvent& event);
-			void UpdateCriteriaMessage(wxCommandEvent& event);
-			void UpdateThumbnailMessage(wxCommandEvent& event);
-			void UpdateFaceMessage(wxCommandEvent& event);
+			
+			void UpdateStatusBarMessage(wxCommandEvent& event);
+			
+
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);
             void CriteriaChange(wxCommandEvent& event);
-			void OnVideoEnd(wxCommandEvent& event);
-            void OnVideoStart(wxCommandEvent& event);
-			void StartDiaporamaMessage(wxCommandEvent& event);
-			void OnRemoveFolder(wxCommandEvent& event);
-			void OnTimerDiaporama(wxTimerEvent& event);
+
 			void OnPrint(wxCommandEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
 			void PrintPreview(wxCommandEvent& event);
-			void RefreshCriteriaPictureList(wxCommandEvent& event);
+
 			void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
 			void OnFaceInfosUpdate(wxCommandEvent& event);
 			void OnExportFile(wxCommandEvent& event);
@@ -104,7 +95,10 @@ namespace Regards
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void OnExportDiaporama(wxCommandEvent& event);
-			void OnVideoStop(wxCommandEvent& event);
+			void RefreshFolderList(wxCommandEvent& event);
+
+			void OnUpdateFolder(wxCommandEvent& event);
+			
 			void Resize();
 			void ExportVideo(const wxString& filename, const wxString& filenameOutput = "");
 			void ProcessIdle();
@@ -112,10 +106,12 @@ namespace Regards
 			void OnEndThumbnail(wxCommandEvent& event);
 			static void CheckMD5(void * param);
 
-			void StartMusic();
-			void StopMusic();
 
-			int64_t musicPosition = 0;
+			void UpdateCriteria();
+			void RefreshFolder();
+			void UpdateFolder();
+			void PhotoProcess(CPhotos* photo);
+			
 			wxString tempVideoFile = "";
 			wxString tempAudioVideoFile = "";
 			bool fullscreen;
@@ -123,11 +119,11 @@ namespace Regards
 			wxStatusBar * statusBar;
 			CToolbar * toolbar;
 			CCentralWindow * centralWnd;
-			wxTimer * diaporamaTimer;
+			
 			IStatusBarInterface * statusBarViewer;
 			wxRect posWindow;
 			PhotosVector pictures;
-			bool startDiaporama;
+
 			wxString localFilename;
 			int nbProcessMD5;
 
@@ -144,11 +140,9 @@ namespace Regards
 			bool criteriaSendMessage;
             bool checkVersion;
             bool setViewerMode = false;
-			CFFmfc* ffmfc = nullptr;
+			
 			CFFmpegTranscoding * ffmpegEncoder = nullptr;
-			bool musicStop = true;
-			bool ffmfcQuit = false;
-			bool musicPause = false;
+
 		};
 	}
 

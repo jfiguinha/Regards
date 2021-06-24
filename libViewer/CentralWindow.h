@@ -6,7 +6,7 @@ using namespace Regards::Window;
 class CImageLoadingFormat;
 class CPictureElement;
 class CImageVideoThumbnail;
-
+class CFFmfc;
 #define CATALOG_FILTER 2
 
 namespace Regards
@@ -80,10 +80,13 @@ namespace Regards
 			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CCentralWindow();
 
+
 			wxString ImageSuivante(const bool& loadPicture = true);
 			wxString ImagePrecedente(const bool& loadPicture = true);
 			wxString ImageFin(const bool& loadPicture = true);
 			wxString ImageDebut(const bool& loadPicture = true);
+
+			
 			wxString GetFilename();
 			int GetNbElement();
 
@@ -102,12 +105,15 @@ namespace Regards
             bool IsVideo();
 			void SaveParameter();
 			bool IsCompatibleFullscreen();
-			void StopDiaporama();
-			void StartDiaporama();
+
 			vector<wxString> GetFileList();
+			void TransitionEnd();
+
+			bool IsDiaporamaStart();
 
 		private:
 
+			
 			int GetPhotoId(const wxString& filename);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
@@ -118,14 +124,28 @@ namespace Regards
 			void StartLoadingPicture();
 			void OnVideoEnd(wxCommandEvent& event);
 			virtual void Resize();
-           void OnVideoStart(wxCommandEvent& event);
-		   void OnAnimationStart(wxCommandEvent& event);
-		   void OnAnimationStop(wxCommandEvent& event);
-		   void OnVideoStop(wxCommandEvent& event);
+			void OnVideoStart(wxCommandEvent& event);
+			void OnAnimationStart(wxCommandEvent& event);
+			void OnAnimationStop(wxCommandEvent& event);
+
+			void StartDiaporamaMessage(wxCommandEvent& event);
+			void StopAnimationEvent(wxCommandEvent& event);
+			void OnTimerDiaporama(wxTimerEvent& event);
+
+			void OnPicturePrevious(wxCommandEvent& event);
+			void OnPictureNext(wxCommandEvent& event);
+			void OnPictureFirst(wxCommandEvent& event);
+			void OnPictureLast(wxCommandEvent& event);
+
+			void StopDiaporama(wxCommandEvent& event);
+			void StartDiaporama(wxCommandEvent& event);
+			
+			void OnVideoStop(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
 			void OnShowPicture(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
+			
 			void OnTimerAnimation(wxTimerEvent& event);
 			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
 			void StopLoadingPicture();
@@ -195,6 +215,21 @@ namespace Regards
             bool stopVideo;
             bool init = false;
 			bool windowInit = true;
+
+
+			//Music Management
+			void OnQuitAudio(wxCommandEvent& event);
+			void OnStopAudio(wxCommandEvent& event);
+			void StartMusic();
+			void StopMusic();
+			CFFmfc* ffmfc = nullptr;
+			bool musicStop = true;
+			bool ffmfcQuit = false;
+			bool musicPause = false;
+			int64_t musicPosition = 0;
+
+
+			wxTimer* diaporamaTimer;
 
 		};
 	}

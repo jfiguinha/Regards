@@ -243,7 +243,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 1;
 			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
 			eventChange.SetClientData(thumbnailMessage);
 		}
 
@@ -257,7 +257,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 			if (mainWnd != nullptr)
 			{
-				wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
 				eventChange.SetClientData(thumbnailMessage);
 				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 			}

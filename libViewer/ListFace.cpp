@@ -549,9 +549,9 @@ void CListFace::ProcessIdle()
 			thumbnailMessage->nbPhoto = listPhoto.size();
 			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
 			thumbnailMessage->nbElement = listPhoto.size();
-
+			thumbnailMessage->typeMessage = 4;
 			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
+			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
 			eventChange.SetClientData(thumbnailMessage);
 			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 		}
