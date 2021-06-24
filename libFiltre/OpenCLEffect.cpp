@@ -95,23 +95,21 @@ CRegardsBitmap* COpenCLEffect::GetPtBitmap()
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
 {
-
-
-	int _width = 0;
-	int _height = 0;
-	cl_mem output = nullptr;
 	if (context != nullptr)
 	{
+		cl_mem output;
+		int _height;
+		int _width;
 		COpenCLFilter openclFilter(context);
 		if (preview && paramOutput != nullptr)
 		{
-			_width = widthOut;
-			_height = heightOut;
+			int _width = widthOut;
+			int _height = heightOut;
 			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
-			_width = width;
+			int _width = width;
 			_height = height;
 			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input->GetValue(), width, height);
 		}

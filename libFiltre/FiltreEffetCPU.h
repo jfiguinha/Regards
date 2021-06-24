@@ -11,7 +11,7 @@ namespace cv
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
-	CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap);
+	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
     int Bm3d(const int & fSigma);
 	int HistogramNormalize();
@@ -85,6 +85,7 @@ private:
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
+	const CRgbaquad& back_color_;
 	//cv::Mat bitmapOpenCV;
 
 

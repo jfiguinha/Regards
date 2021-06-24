@@ -155,29 +155,34 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dial
 	{
 		CLibPicture libPicture;
 		BeginTransaction();
-		
-#pragma omp parallel for
-		for (size_t i = 0; i < files.size(); i++) 
-		{
-			wxString file = files[i];
-			
-			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+
+		tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
+			[&](tbb::blocked_range<int> r)
 			{
-				const int extensionId = libPicture.TestImageFormat(file);
-				file.Replace("'", "''");
-				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
-			}
+				for (int i = r.begin(); i < r.end(); ++i)
+				{
+					wxString file = files[i];
+
+					if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+					{
+						const int extensionId = libPicture.TestImageFormat(file);
+						file.Replace("'", "''");
+						ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+					}
 
 
-			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
-			dialog.Update(i, message);
-		}
+					wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+					dialog.Update(i, message);
+				}
+			});
+		
+		CommitTransection();
 
 		bool first = true;
 		for (size_t i = 0; i < files.size(); i++)
 		{
 			wxString file = files[i];
-			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+			if (libPicture.TestImageFormat(file) != 0)
 			{
 				if (first)
 				{
@@ -188,7 +193,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dial
 			}
 		}
 		
-		CommitTransection();
+		
 
 	}
 	return files.size();

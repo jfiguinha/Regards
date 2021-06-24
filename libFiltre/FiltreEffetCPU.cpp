@@ -30,18 +30,17 @@ class CFiltreEffetCPUImpl
 {
 public:
 	//Vignette effect
-	static void generateGradient(cv::Mat& mask, const double& radius, const double& power);
-	static double getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center);
-	static double dist(cv::Point a, cv::Point b);
+	static void generateGradient(Mat& mask, const double& radius, const double& power);
+	static double getMaxDisFromCorners(const Size& imgSize, const Point& center);
+	static double dist(Point a, Point b);
 };
 
-CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap)
-	: IFiltreEffet(backColor)
+CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingFormat* bitmap)
+	: IFiltreEffet(back_color), back_color_(back_color)
 {
-	this->backColor = backColor;
+	this->backColor = back_color;
 	bitmapOut = nullptr;
 	pBitmap = bitmap->GetRegardsBitmap();
-
 }
 
 int CFiltreEffetCPU::GetWidth()
@@ -74,23 +73,23 @@ int CFiltreEffetCPU::GetHeight()
 	return 0;
 }
 
-CRegardsBitmap * CFiltreEffetCPU::GetPtBitmap()
+CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 {
 	return pBitmap;
 }
 
-int CFiltreEffetCPU::OilPaintingEffect(const int &size, const int &dynRatio)
+int CFiltreEffetCPU::OilPaintingEffect(const int& size, const int& dynRatio)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
 		bitmap = pBitmap;
-	cv::Mat dst;
-	cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-	cv::cvtColor(image, dst, cv::COLOR_BGRA2BGR);
-	cv::xphoto::oilPainting(dst, image, size, dynRatio, cv::COLOR_BGR2Lab);
-	cv::cvtColor(image, dst, cv::COLOR_BGR2BGRA);
+	Mat dst;
+	Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	cvtColor(image, dst, COLOR_BGRA2BGR);
+	xphoto::oilPainting(dst, image, size, dynRatio, COLOR_BGR2Lab);
+	cvtColor(image, dst, COLOR_BGR2BGRA);
 	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	dst.release();
 	image.release();
@@ -98,22 +97,22 @@ int CFiltreEffetCPU::OilPaintingEffect(const int &size, const int &dynRatio)
 }
 
 // Helper function to calculate the distance between 2 points.
-double CFiltreEffetCPUImpl::dist(cv::Point a, cv::Point b)
+double CFiltreEffetCPUImpl::dist(Point a, Point b)
 {
-	return sqrt(pow((double)(a.x - b.x), 2) + pow((double)(a.y - b.y), 2));
+	return sqrt(pow(static_cast<double>(a.x - b.x), 2) + pow(static_cast<double>(a.y - b.y), 2));
 }
 
 // Helper function that computes the longest distance from the edge to the center point.
-double CFiltreEffetCPUImpl::getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center)
+double CFiltreEffetCPUImpl::getMaxDisFromCorners(const Size& imgSize, const Point& center)
 {
 	// given a rect and a line
 	// get which corner of rect is farthest from the line
 
-	std::vector<cv::Point> corners(4);
-	corners[0] = cv::Point(0, 0);
-	corners[1] = cv::Point(imgSize.width, 0);
-	corners[2] = cv::Point(0, imgSize.height);
-	corners[3] = cv::Point(imgSize.width, imgSize.height);
+	std::vector<Point> corners(4);
+	corners[0] = Point(0, 0);
+	corners[1] = Point(imgSize.width, 0);
+	corners[2] = Point(0, imgSize.height);
+	corners[3] = Point(imgSize.width, imgSize.height);
 
 	double maxDis = 0;
 	for (int i = 0; i < 4; ++i)
@@ -125,29 +124,30 @@ double CFiltreEffetCPUImpl::getMaxDisFromCorners(const cv::Size& imgSize, const 
 
 	return maxDis;
 }
-double fastCos(double x) {
+
+double fastCos(double x)
+{
 	x += 1.57079632;
 	if (x > 3.14159265)
 		x -= 6.28318531;
 	if (x < 0)
 		return 1.27323954 * x + 0.405284735 * x * x;
-	else
-		return 1.27323954 * x - 0.405284735 * x * x;
+	return 1.27323954 * x - 0.405284735 * x * x;
 }
 
 // Helper function that creates a gradient image.   
 // firstPt, radius and power, are variables that control the artistic effect of the filter.
-void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius, const double& power)
+void CFiltreEffetCPUImpl::generateGradient(Mat& mask, const double& radius, const double& power)
 {
-	cv::Point firstPt = cv::Point(mask.size().width / 2, mask.size().height / 2);
-	double maxImageRad = (radius * getMaxDisFromCorners(mask.size(), firstPt)) ;
+	auto firstPt = Point(mask.size().width / 2, mask.size().height / 2);
+	double maxImageRad = (radius * getMaxDisFromCorners(mask.size(), firstPt));
 	double maxImageRadPower = maxImageRad * power;
-	mask.setTo(cv::Scalar(1));
+	mask.setTo(Scalar(1));
 	for (int i = 0; i < mask.rows; i++)
 	{
 		for (int j = 0; j < mask.cols; j++)
 		{
-			double temp = dist(firstPt, cv::Point(j, i));
+			double temp = dist(firstPt, Point(j, i));
 
 			if (temp > maxImageRad)
 			{
@@ -158,28 +158,26 @@ void CFiltreEffetCPUImpl::generateGradient(cv::Mat& mask, const double & radius,
 				if (temp > maxImageRadPower)
 				{
 					double max = maxImageRad - maxImageRadPower;
-					double value = temp - maxImageRadPower;
+					const double value = temp - maxImageRadPower;
 					mask.at<double>(i, j) = (max - value) / max;
 				}
 				else
 					mask.at<double>(i, j) = 1;
 			}
-
 		}
 	}
 }
 
 
-double dist(double ax, double ay, double bx, double by) {
+double dist(double ax, double ay, double bx, double by)
+{
 	return sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
 }
 
 
-
-
 int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -187,66 +185,66 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 
 	if (bitmap != nullptr)
 	{
-		
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cvtColor(src, src, cv::COLOR_BGRA2BGR);
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, src, COLOR_BGRA2BGR);
 		//cv::Mat dst = Mat::zeros(src.size(), src.type());
-	/*
-		Mat kernel_X = getGaussianKernel(src.cols, (float)(radius / 100.0) * (float)src.cols);
-		Mat kernel_Y = getGaussianKernel(src.rows, (float)(radius / 100.0) * (float)src.rows);
-		Mat kernel_X_transpose;
-		transpose(kernel_X, kernel_X_transpose);
-		Mat kernel = kernel_Y * kernel_X_transpose;
-
-		vector<Mat> bgr_planes;
-		split(src, bgr_planes);	
-
-		Mat mask_v;
-		normalize(kernel, mask_v, 0, 1, NORM_MINMAX);
-
-		for (int i = 0; i < 3; i++)
-		{
-			Mat proc_img;
-			bgr_planes[i].convertTo(proc_img, CV_64F);
-			multiply(mask_v, proc_img, proc_img);
-			convertScaleAbs(proc_img, proc_img);
-			proc_img.convertTo(bgr_planes[i], CV_8U);
-		}
-
-		cv::merge(bgr_planes, dst);
-		*/
-
-
-		cv::Point firstPt = cv::Point(src.size().width / 2, src.size().height / 2);
-		double maxImageRad = ((float)(radius / 100.0) * CFiltreEffetCPUImpl::getMaxDisFromCorners(src.size(), firstPt));
-		double maxImageRadPower = maxImageRad * (float)(power / 100.0);
-
-		cv::Mat labImg(src.size(), CV_8UC3);
-
-		cv::cvtColor(src, labImg, cv::COLOR_BGR2Lab);
-		
-		for (int row = 0, j = 0; row < src.size().height; row++)
-		{
-			for (int col = 0, i = 0; col < src.size().width; col++)
+		/*
+			Mat kernel_X = getGaussianKernel(src.cols, (float)(radius / 100.0) * (float)src.cols);
+			Mat kernel_Y = getGaussianKernel(src.rows, (float)(radius / 100.0) * (float)src.rows);
+			Mat kernel_X_transpose;
+			transpose(kernel_X, kernel_X_transpose);
+			Mat kernel = kernel_Y * kernel_X_transpose;
+	
+			vector<Mat> bgr_planes;
+			split(src, bgr_planes);	
+	
+			Mat mask_v;
+			normalize(kernel, mask_v, 0, 1, NORM_MINMAX);
+	
+			for (int i = 0; i < 3; i++)
 			{
-				float l = 0, a = 0, b=  0;
-				double temp = CFiltreEffetCPUImpl::dist(firstPt, cv::Point(col, row));			
+				Mat proc_img;
+				bgr_planes[i].convertTo(proc_img, CV_64F);
+				multiply(mask_v, proc_img, proc_img);
+				convertScaleAbs(proc_img, proc_img);
+				proc_img.convertTo(bgr_planes[i], CV_8U);
+			}
+	
+			cv::merge(bgr_planes, dst);
+			*/
+
+
+		auto firstPt = Point(src.size().width / 2, src.size().height / 2);
+		double maxImageRad = static_cast<float>(radius / 100.0) * CFiltreEffetCPUImpl::getMaxDisFromCorners(
+			src.size(), firstPt);
+		double maxImageRadPower = maxImageRad * static_cast<float>(power / 100.0);
+
+		Mat labImg(src.size(), CV_8UC3);
+
+		cvtColor(src, labImg, COLOR_BGR2Lab);
+
+		for (int row = 0; row < src.size().height; row++)
+		{
+			for (int col = 0; col < src.size().width; col++)
+			{
+
+				double temp = CFiltreEffetCPUImpl::dist(firstPt, Point(col, row));
 				if (temp > maxImageRad)
-					labImg.at<cv::Vec3b>(row, col)[0] = 0;
+					labImg.at<Vec3b>(row, col)[0] = 0;
 				else
 				{
 					if (temp > maxImageRadPower)
 					{
 						double max = maxImageRad - maxImageRadPower;
 						double _value = temp - maxImageRadPower;
-						labImg.at<cv::Vec3b>(row, col)[0] *= (max - _value) / max;
+						labImg.at<Vec3b>(row, col)[0] *= (max - _value) / max;
 					}
 				}
 			}
 		}
 
-		cv::cvtColor(labImg, src, cv::COLOR_Lab2BGR);
-		cvtColor(src, src, cv::COLOR_BGR2BGRA);
+		cvtColor(labImg, src, COLOR_Lab2BGR);
+		cvtColor(src, src, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(src.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 		labImg.release();
@@ -257,7 +255,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 }
 
 
-void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
+void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (preview)
 	{
@@ -271,12 +269,11 @@ void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 			delete pBitmap;
 		pBitmap = bitmap->GetRegardsBitmap();
 	}
-
 }
 
 int CFiltreEffetCPU::RedEye()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -290,22 +287,22 @@ int CFiltreEffetCPU::RedEye()
 	return 0;
 }
 
-CRegardsFloatBitmap * CFiltreEffetCPU::GetFloatBitmap(const bool &source)
+CRegardsFloatBitmap* CFiltreEffetCPU::GetFloatBitmap(const bool& source)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
 		bitmap = pBitmap;
 
-    CImageLoadingFormat imageLoading(false);
-    imageLoading.SetPicture(bitmap);
-    return imageLoading.GetFloatBitmap(true);
+	CImageLoadingFormat imageLoading(false);
+	imageLoading.SetPicture(bitmap);
+	return imageLoading.GetFloatBitmap(true);
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -313,7 +310,7 @@ int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radiu
 
 	if (bitmap != nullptr)
 	{
-		CWaveFilter * waveFilter = new  CWaveFilter();
+		auto waveFilter = new CWaveFilter();
 		waveFilter->ProcessEffect(bitmap, x, y, height, scale, radius);
 		delete waveFilter;
 		return 0;
@@ -321,9 +318,9 @@ int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radiu
 	return -1;
 }
 
-int CFiltreEffetCPU::Bm3d(const int & fSigma)
+int CFiltreEffetCPU::Bm3d(const int& fSigma)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -331,14 +328,14 @@ int CFiltreEffetCPU::Bm3d(const int & fSigma)
 
 	if (bitmap != nullptr)
 	{
-		int nbProcess = thread::hardware_concurrency();
-        CBm3DFilter * bm3dFilter = new CBm3DFilter(bitmap, value[fSigma]);
+		const int nbProcess = thread::hardware_concurrency();
+		auto bm3dFilter = new CBm3DFilter(bitmap, value[fSigma]);
 		bm3dFilter->DetermineData(nbProcess - 1);
 		bm3dFilter->ExecuteFilter();
-		CRegardsBitmap * copyBitmap = bm3dFilter->GetResult();
+		CRegardsBitmap* copyBitmap = bm3dFilter->GetResult();
 		memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
 		delete bm3dFilter;
-        return 0; 
+		return 0;
 	}
 	return -1;
 }
@@ -346,16 +343,17 @@ int CFiltreEffetCPU::Bm3d(const int & fSigma)
 // Remove black dots (upto 4x4 in size) of noise from a pure black & white image.
 // ie: The input image should be mostly white (255) and just contains some black (0) noise
 // in addition to the black (0) edges.
-void CFiltreEffetCPU::RemovePepperNoise(cv::Mat &mask)
+void CFiltreEffetCPU::RemovePepperNoise(Mat& mask)
 {
 	// For simplicity, ignore the top & bottom row border.
-	for (int y = 2; y < mask.rows - 2; y++) {
+	for (int y = 2; y < mask.rows - 2; y++)
+	{
 		// Get access to each of the 5 rows near this pixel.
-		uchar *pThis = mask.ptr(y);
-		uchar *pUp1 = mask.ptr(y - 1);
-		uchar *pUp2 = mask.ptr(y - 2);
-		uchar *pDown1 = mask.ptr(y + 1);
-		uchar *pDown2 = mask.ptr(y + 2);
+		uchar* pThis = mask.ptr(y);
+		uchar* pUp1 = mask.ptr(y - 1);
+		uchar* pUp2 = mask.ptr(y - 2);
+		uchar* pDown1 = mask.ptr(y + 1);
+		uchar* pDown2 = mask.ptr(y + 2);
 
 		// For simplicity, ignore the left & right row border.
 		pThis += 2;
@@ -363,17 +361,20 @@ void CFiltreEffetCPU::RemovePepperNoise(cv::Mat &mask)
 		pUp2 += 2;
 		pDown1 += 2;
 		pDown2 += 2;
-		for (int x = 2; x < mask.cols - 2; x++) {
-			uchar v = *pThis;   // Get the current pixel value (either 0 or 255).
+		for (int x = 2; x < mask.cols - 2; x++)
+		{
+			uchar v = *pThis; // Get the current pixel value (either 0 or 255).
 			// If the current pixel is black, but all the pixels on the 2-pixel-radius-border are white
 			// (ie: it is a small island of black pixels, surrounded by white), then delete that island.
-			if (v == 0) {
+			if (v == 0)
+			{
 				bool allAbove = *(pUp2 - 2) && *(pUp2 - 1) && *(pUp2) && *(pUp2 + 1) && *(pUp2 + 2);
 				bool allLeft = *(pUp1 - 2) && *(pThis - 2) && *(pDown1 - 2);
 				bool allBelow = *(pDown2 - 2) && *(pDown2 - 1) && *(pDown2) && *(pDown2 + 1) && *(pDown2 + 2);
 				bool allRight = *(pUp1 + 2) && *(pThis + 2) && *(pDown1 + 2);
 				bool surroundings = allAbove && allLeft && allBelow && allRight;
-				if (surroundings == true) {
+				if (surroundings == true)
+				{
 					// Fill the whole 5x5 block as white. Since we know the 5x5 borders
 					// are already white, just need to fill the 3x3 inner region.
 					*(pUp1 - 1) = 255;
@@ -404,7 +405,7 @@ void CFiltreEffetCPU::RemovePepperNoise(cv::Mat &mask)
 	}
 }
 
-int CFiltreEffetCPU::CartoonifyImage(const int & mode)
+int CFiltreEffetCPU::CartoonifyImage(const int& mode)
 {
 	bool sketchMode = false;
 	bool alienMode = false;
@@ -425,41 +426,43 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 		break;
 	}
 
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
 		bitmap = pBitmap;
 
-	cv::Mat dst;
-	cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	Mat dst;
+	Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 
 	// Convert from BGR color to Grayscale
-	cv::Mat srcGray;
-	cv::cvtColor(src, srcGray, cv::COLOR_BGRA2GRAY);
+	Mat srcGray;
+	cvtColor(src, srcGray, COLOR_BGRA2GRAY);
 
 	// Remove the pixel noise with a good Median filter, before we start detecting edges.
 	medianBlur(srcGray, srcGray, 7);
 
-	cv::Size size = src.size();
-	cv::Mat mask = cv::Mat(size, CV_8U);
-	cv::Mat edges = cv::Mat(size, CV_8U);
-	if (!evilMode) {
+	Size size = src.size();
+	auto mask = Mat(size, CV_8U);
+	auto edges = Mat(size, CV_8U);
+	if (!evilMode)
+	{
 		// Generate a nice edge mask, similar to a pencil line drawing.
 		Laplacian(srcGray, edges, CV_8U, 5);
-		threshold(edges, mask, 80, 255, cv::THRESH_BINARY_INV);
+		threshold(edges, mask, 80, 255, THRESH_BINARY_INV);
 		// Mobile cameras usually have lots of noise, so remove small
 		// dots of black noise from the black & white edge mask.
 		RemovePepperNoise(mask);
 	}
-	else {
+	else
+	{
 		// Evil mode, making everything look like a scary bad guy.
 		// (Where "srcGray" is the original grayscale image plus a medianBlur of size 7x7).
-		cv::Mat edges2;
+		Mat edges2;
 		Scharr(srcGray, edges, CV_8U, 1, 0);
 		Scharr(srcGray, edges2, CV_8U, 1, 0, -1);
 		edges += edges2;
-		threshold(edges, mask, 12, 255, cv::THRESH_BINARY_INV);
+		threshold(edges, mask, 12, 255, THRESH_BINARY_INV);
 		medianBlur(mask, mask, 3);
 		edges2.release();
 	}
@@ -467,9 +470,10 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	//imshow("mask", mask);
 
 	// For sketch mode, we just need the mask!
-	if (sketchMode) {
+	if (sketchMode)
+	{
 		// The output image has 3 channels, not a single channel.
-		cvtColor(mask, dst, cv::COLOR_GRAY2BGRA);
+		cvtColor(mask, dst, COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 		dst.release();
@@ -481,36 +485,38 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 
 	// Do the bilateral filtering at a shrunken scale, since it
 	// runs so slowly but doesn't need full resolution for a good effect.
-	cv::Size smallSize;
+	Size smallSize;
 	smallSize.width = size.width / 2;
 	smallSize.height = size.height / 2;
 
-	cv::Mat srcBgr;
-	cv::cvtColor(src, srcBgr, cv::COLOR_BGRA2BGR);
-	cv::Mat smallImg = cv::Mat(smallSize, CV_8UC3);
-	resize(srcBgr, smallImg, smallSize, 0, 0, cv::INTER_LINEAR);
+	Mat srcBgr;
+	cvtColor(src, srcBgr, COLOR_BGRA2BGR);
+	auto smallImg = Mat(smallSize, CV_8UC3);
+	resize(srcBgr, smallImg, smallSize, 0, 0, INTER_LINEAR);
 
 	// Perform many iterations of weak bilateral filtering, to enhance the edges
 	// while blurring the flat regions, like a cartoon.
-	cv::Mat tmp = cv::Mat(smallSize, CV_8UC3);
-	int repetitions = 7;        // Repetitions for strong cartoon effect.
-	for (int i = 0; i < repetitions; i++) {
-		int size = 9;           // Filter size. Has a large effect on speed.
-		double sigmaColor = 9;  // Filter color strength.
-		double sigmaSpace = 7;  // Positional strength. Effects speed.
-		bilateralFilter(smallImg, tmp, size, sigmaColor, sigmaSpace);
-		bilateralFilter(tmp, smallImg, size, sigmaColor, sigmaSpace);
+	auto tmp = Mat(smallSize, CV_8UC3);
+	int repetitions = 7; // Repetitions for strong cartoon effect.
+	for (int i = 0; i < repetitions; i++)
+	{
+		int d = 9; // Filter size. Has a large effect on speed.
+		double sigmaColor = 9; // Filter color strength.
+		double sigmaSpace = 7; // Positional strength. Effects speed.
+		bilateralFilter(smallImg, tmp, d, sigmaColor, sigmaSpace);
+		bilateralFilter(tmp, smallImg, d, sigmaColor, sigmaSpace);
 	}
 
-	if (alienMode) {
+	if (alienMode)
+	{
 		// Apply an "alien" filter, when given a shrunken image and the full-res edge mask.
 		// Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
 		ChangeFacialSkinColor(smallImg, edges);
 	}
 
 	// Go back to the original scale.
-	cv::cvtColor(smallImg, srcBgr, cv::COLOR_BGR2BGRA);
-	resize(srcBgr, src, size, 0, 0, cv::INTER_LINEAR);
+	cvtColor(smallImg, srcBgr, COLOR_BGR2BGRA);
+	resize(srcBgr, src, size, 0, 0, INTER_LINEAR);
 
 	// Use the blurry cartoon image, except for the strong edges that we will leave black.
 	src.copyTo(dst, mask);
@@ -523,44 +529,44 @@ int CFiltreEffetCPU::CartoonifyImage(const int & mode)
 	srcBgr.release();
 	smallImg.release();
 	edges.release();
-    return 0;
+	return 0;
 }
 
 // Apply an "alien" filter, when given a shrunken BGR image and the full-res edge mask.
 // Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
-void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges)
+void CFiltreEffetCPU::ChangeFacialSkinColor(Mat smallImgBGR, Mat bigEdges)
 {
 	// Convert to Y'CrCb color-space, since it is better for skin detection and color adjustment.
-	cv::Mat yuv = cv::Mat(smallImgBGR.size(), CV_8UC3);
-	cvtColor(smallImgBGR, yuv, cv::COLOR_BGR2YCrCb);
+	auto yuv = Mat(smallImgBGR.size(), CV_8UC3);
+	cvtColor(smallImgBGR, yuv, COLOR_BGR2YCrCb);
 
 	// The floodFill mask has to be 2 pixels wider and 2 pixels taller than the small image.
 	// The edge mask is the full src image size, so we will shrink it to the small size,
 	// storing into the floodFill mask data.
 	int sw = smallImgBGR.cols;
 	int sh = smallImgBGR.rows;
-	cv::Mat maskPlusBorder = cv::Mat::zeros(sh + 2, sw + 2, CV_8U);
-	cv::Mat mask = maskPlusBorder(cv::Rect(1, 1, sw, sh));  // mask is a ROI in maskPlusBorder.
+	Mat maskPlusBorder = Mat::zeros(sh + 2, sw + 2, CV_8U);
+	Mat mask = maskPlusBorder(Rect(1, 1, sw, sh)); // mask is a ROI in maskPlusBorder.
 	resize(bigEdges, mask, smallImgBGR.size());
 
 	// Make the mask values just 0 or 255, to remove weak edges.
-	threshold(mask, mask, 80, 255, cv::THRESH_BINARY);
+	threshold(mask, mask, 80, 255, THRESH_BINARY);
 	// Connect the edges together, if there was a pixel gap between them.
-	dilate(mask, mask, cv::Mat());
-	erode(mask, mask, cv::Mat());
+	dilate(mask, mask, Mat());
+	erode(mask, mask, Mat());
 	//imshow("constraints for floodFill", mask);
 
 	// YCrCb Skin detector and color changer using multiple flood fills into a mask.
 	// Apply flood fill on many points around the face, to cover different shades & colors of the face.
 	// Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
-	int const NUM_SKIN_POINTS = 6;
-	cv::Point skinPts[NUM_SKIN_POINTS];
-	skinPts[0] = cv::Point(sw / 2, sh / 2 - sh / 6);
-	skinPts[1] = cv::Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
-	skinPts[2] = cv::Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
-	skinPts[3] = cv::Point(sw / 2, sh / 2 + sh / 16);
-	skinPts[4] = cv::Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
-	skinPts[5] = cv::Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
+	const int NUM_SKIN_POINTS = 6;
+	Point skinPts[NUM_SKIN_POINTS];
+	skinPts[0] = Point(sw / 2, sh / 2 - sh / 6);
+	skinPts[1] = Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
+	skinPts[2] = Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
+	skinPts[3] = Point(sw / 2, sh / 2 + sh / 16);
+	skinPts[4] = Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
+	skinPts[5] = Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
 	// Skin might be fairly dark, or slightly less colorful.
 	// Skin might be very bright, or slightly more colorful but not much more blue.
 	const int LOWER_Y = 60;
@@ -569,15 +575,16 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdge
 	const int UPPER_Cr = 15;
 	const int LOWER_Cb = 20;
 	const int UPPER_Cb = 15;
-	cv::Scalar lowerDiff = cv::Scalar(LOWER_Y, LOWER_Cr, LOWER_Cb);
-	cv::Scalar upperDiff = cv::Scalar(UPPER_Y, UPPER_Cr, UPPER_Cb);
+	auto lowerDiff = Scalar(LOWER_Y, LOWER_Cr, LOWER_Cb);
+	auto upperDiff = Scalar(UPPER_Y, UPPER_Cr, UPPER_Cb);
 	// Instead of drawing into the "yuv" image, just draw 1's into the "maskPlusBorder" image, so we can apply it later.
 	// The "maskPlusBorder" is initialized with the edges, because floodFill() will not go across non-zero mask pixels.
-	cv::Mat edgeMask = mask.clone();    // Keep an duplicate copy of the edge mask.
-	for (int i = 0; i < NUM_SKIN_POINTS; i++) {
+	Mat edgeMask = mask.clone(); // Keep an duplicate copy of the edge mask.
+	for (int i = 0; i < NUM_SKIN_POINTS; i++)
+	{
 		// Use the floodFill() mode that stores to an external mask, instead of the input image.
-		const int flags = 4 | cv::FLOODFILL_FIXED_RANGE | cv::FLOODFILL_MASK_ONLY;
-		floodFill(yuv, maskPlusBorder, skinPts[i], cv::Scalar(), NULL, lowerDiff, upperDiff, flags);
+		const int flags = 4 | FLOODFILL_FIXED_RANGE | FLOODFILL_MASK_ONLY;
+		floodFill(yuv, maskPlusBorder, skinPts[i], Scalar(), nullptr, lowerDiff, upperDiff, flags);
 	}
 
 	// After the flood fill, "mask" contains both edges and skin pixels, whereas
@@ -589,7 +596,7 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdge
 	int Red = 0;
 	int Green = 70;
 	int Blue = 0;
-	add(smallImgBGR, cv::Scalar(Blue, Green, Red), smallImgBGR, mask);
+	add(smallImgBGR, Scalar(Blue, Green, Red), smallImgBGR, mask);
 
 	edgeMask.release();
 	yuv.release();
@@ -598,10 +605,9 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdge
 }
 
 
-
 int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorRadius)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -609,17 +615,17 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dst;
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cvtColor(src, dst, cv::COLOR_BGRA2BGR);
-		cvtColor(dst, dst, cv::COLOR_BGR2Lab);
+		Mat dst;
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, dst, COLOR_BGRA2BGR);
+		cvtColor(dst, dst, COLOR_BGR2Lab);
 		// Initilize Mean Shift with spatial bandwith and color bandwith
 		CMeanShift msProcess(fSpatialRadius, fColorRadius);
-			//MSProc(fSpatialRadius, fColorRadius);
+		//MSProc(fSpatialRadius, fColorRadius);
 		// Filtering Process
 		msProcess.MSFiltering(dst);
-		cvtColor(dst, dst, cv::COLOR_Lab2RGB);
-		cvtColor(dst, dst, cv::COLOR_BGR2BGRA);
+		cvtColor(dst, dst, COLOR_Lab2RGB);
+		cvtColor(dst, dst, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 		dst.release();
@@ -628,9 +634,9 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 	return 0;
 }
 
-int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
+int CFiltreEffetCPU::BilateralFilter(int fSize, float sigmaX, float sigmaP)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -638,18 +644,11 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 
 	if (bitmap != nullptr)
 	{
-		/*
-		CBilateral * bilateral = new Regards::FiltreEffet::CBilateral(fSize, sigmaX, sigmaP);
-		bilateral->SetParameter(bitmap, backColor);
-		bilateral->Compute();
-		delete bilateral;
-		return 0;
-		*/
-		cv::Mat dst;
-		cv::Mat src(bitmap->GetBitmapHeight(),bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cvtColor(src, dst, cv::COLOR_BGRA2BGR);
-		cv::bilateralFilter(dst, src, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
-		cvtColor(src, dst, cv::COLOR_BGR2BGRA);
+		Mat dst;
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, dst, COLOR_BGRA2BGR);
+		bilateralFilter(dst, src, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
+		cvtColor(src, dst, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dst.release();
 		src.release();
@@ -659,7 +658,7 @@ int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 
 int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -667,7 +666,7 @@ int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
 
 	if (bitmap != nullptr)
 	{
-		CNlmeans * nlmeans = new Regards::FiltreEffet::CNlmeans(fsize, bsize, sigma);
+		auto nlmeans = new CNlmeans(fsize, bsize, sigma);
 		nlmeans->SetParameter(bitmap, backColor);
 		nlmeans->Compute();
 		delete nlmeans;
@@ -677,9 +676,9 @@ int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
 }
 
 
-int CFiltreEffetCPU::SharpenMasking(const float &sharpness)
+int CFiltreEffetCPU::SharpenMasking(const float& sharpness)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -687,7 +686,7 @@ int CFiltreEffetCPU::SharpenMasking(const float &sharpness)
 
 	if (bitmap != nullptr)
 	{
-		CSharpenMasking * sharpenMasking = new Regards::FiltreEffet::CSharpenMasking(sharpness);
+		auto sharpenMasking = new CSharpenMasking(sharpness);
 		sharpenMasking->SetParameter(bitmap, backColor);
 		sharpenMasking->Compute();
 		delete sharpenMasking;
@@ -698,13 +697,13 @@ int CFiltreEffetCPU::SharpenMasking(const float &sharpness)
 
 CFiltreEffetCPU::~CFiltreEffetCPU()
 {
-	if(bitmapOut != nullptr)
+	if (bitmapOut != nullptr)
 		delete bitmapOut;
 	bitmapOut = nullptr;
-    
-    if(pBitmap != nullptr)
-        delete pBitmap;
-    pBitmap = nullptr;
+
+	if (pBitmap != nullptr)
+		delete pBitmap;
+	pBitmap = nullptr;
 
 	if (hq3d != nullptr)
 		delete hq3d;
@@ -712,10 +711,10 @@ CFiltreEffetCPU::~CFiltreEffetCPU()
 
 wxImage CFiltreEffetCPU::GetwxImage()
 {
-	int width = 0;
-	int height = 0;
-	unsigned char * data = nullptr;
-	if(bitmapOut != nullptr)
+	int width;
+	int height;
+	unsigned char* data;
+	if (bitmapOut != nullptr)
 	{
 		width = bitmapOut->GetBitmapWidth();
 		height = bitmapOut->GetBitmapHeight();
@@ -728,8 +727,8 @@ wxImage CFiltreEffetCPU::GetwxImage()
 		data = pBitmap->GetPtBitmap();
 	}
 	wxImage anImage(width, height, false);
-	unsigned char * dataOut = anImage.GetData();
-	int size = width*height;
+	unsigned char* dataOut = anImage.GetData();
+	int size = width * height;
 	//pBitmap->VertFlipBuf();
 
 	if (data != nullptr)
@@ -737,27 +736,26 @@ wxImage CFiltreEffetCPU::GetwxImage()
 #pragma omp parallel for
 		for (int i = 0; i < size; ++i)
 		{
-			int y = i / width;
-			int x = i - (y * width);
-			int calcul = (height - y - 1) * width + x;
+			const int y = i / width;
+			const int x = i - (y * width);
+			const int calcul = (height - y - 1) * width + x;
 			dataOut[i * 3] = data[(calcul << 2) + 2]; // R
 			dataOut[i * 3 + 1] = data[(calcul << 2) + 1]; // G
 			dataOut[i * 3 + 2] = data[(calcul << 2)]; // B
 		}
-
 	}
 
 	return anImage;
 }
 
-wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap * bitmap)
+wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 {
-	int width = bitmap->GetBitmapWidth();
-	int height = bitmap->GetBitmapHeight();
-	unsigned char * data = bitmap->GetPtBitmap();
+	const int width = bitmap->GetBitmapWidth();
+	const int height = bitmap->GetBitmapHeight();
+	unsigned char* data = bitmap->GetPtBitmap();
 	wxImage anImage(width, height, false);
-	unsigned char * dataOut = anImage.GetData();
-	int size = width*height;
+	unsigned char* dataOut = anImage.GetData();
+	const int size = width * height;
 	//pBitmap->VertFlipBuf();
 
 	if (data != nullptr)
@@ -765,34 +763,35 @@ wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap * bitmap)
 #pragma omp parallel for
 		for (int i = 0; i < size; ++i)
 		{
-			int y = i / width;
-			int x = i - (y * width);
-			int pos = i * 3;
-			int calcul = ((height - y - 1) * width + x) << 2;
+			const int y = i / width;
+			const int x = i - (y * width);
+			const int pos = i * 3;
+			const int calcul = ((height - y - 1) * width + x) << 2;
 			//int calcul = y * width + x;
 			dataOut[pos] = data[calcul + 2]; // R
 			dataOut[pos + 1] = data[calcul + 1]; // G
 			dataOut[pos + 2] = data[calcul]; // B
 		}
-
 	}
 
 	return anImage;
 }
 
 
-void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle)
+void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV,
+                                    int angle)
 {
-	if(bitmapOut != nullptr)
+	if (bitmapOut != nullptr)
 		delete bitmapOut;
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 	ApplyInterpolationFilters(pBitmap, bitmapOut, flipH, flipV, angle, method);
 }
 
-void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle)
+void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+                                    int flipH, int flipV, int angle)
 {
-	if(bitmapOut != nullptr)
+	if (bitmapOut != nullptr)
 		delete bitmapOut;
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
@@ -802,7 +801,7 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 
 int CFiltreEffetCPU::HistogramNormalize()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -811,19 +810,19 @@ int CFiltreEffetCPU::HistogramNormalize()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::cvtColor(image, image, COLOR_BGRA2BGR);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(image, image, COLOR_BGRA2BGR);
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
 		int gridsize = 8;
-		cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(2.0, cv::Size(gridsize, gridsize));
+		Ptr<CLAHE> clahe = createCLAHE(2.0, Size(gridsize, gridsize));
 		clahe->apply(bgr_planes[0], bgr_planes[0]);
 		clahe->apply(bgr_planes[1], bgr_planes[1]);
 		clahe->apply(bgr_planes[2], bgr_planes[2]);
 		cv::merge(bgr_planes, dest);
 
-		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
+		cvtColor(dest, dest, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 		bgr_planes[0].release();
@@ -838,7 +837,7 @@ int CFiltreEffetCPU::HistogramNormalize()
 
 int CFiltreEffetCPU::HistogramEqualize()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -847,19 +846,19 @@ int CFiltreEffetCPU::HistogramEqualize()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 
-		cv::cvtColor(image, image, COLOR_BGRA2BGR);
+		cvtColor(image, image, COLOR_BGRA2BGR);
 
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
-		cv::equalizeHist(bgr_planes[0], bgr_planes[0]);
-		cv::equalizeHist(bgr_planes[1], bgr_planes[1]);
-		cv::equalizeHist(bgr_planes[2], bgr_planes[2]);
+		equalizeHist(bgr_planes[0], bgr_planes[0]);
+		equalizeHist(bgr_planes[1], bgr_planes[1]);
+		equalizeHist(bgr_planes[2], bgr_planes[2]);
 
 		cv::merge(bgr_planes, dest);
-		cv::cvtColor(dest, dest, COLOR_BGR2BGRA);
+		cvtColor(dest, dest, COLOR_BGR2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 		bgr_planes[0].release();
@@ -872,9 +871,10 @@ int CFiltreEffetCPU::HistogramEqualize()
 	//return CHistogramme::HistogramEqualize(pBitmap);
 }
 
-int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp,
+                            const double& ChromTmp)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -887,7 +887,8 @@ int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, co
 		{
 			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
 		}
-		else if (oldLevelDenoise != LumSpac || bitmap->GetBitmapWidth() != oldwidthDenoise || bitmap->GetBitmapHeight() != oldheightDenoise)
+		else if (oldLevelDenoise != LumSpac || bitmap->GetBitmapWidth() != oldwidthDenoise || bitmap->GetBitmapHeight()
+			!= oldheightDenoise)
 		{
 			delete hq3d;
 			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
@@ -895,13 +896,14 @@ int CFiltreEffetCPU::HQDn3D(const double & LumSpac, const double & ChromSpac, co
 
 		hq3d->ApplyDenoise3D(bitmap);
 	}
-		
+
 	return 0;
 }
 
-int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)
+int CFiltreEffetCPU::LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType,
+                               const int& iIntensity, const int& iColor, const int& iColorIntensity)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -909,10 +911,9 @@ int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iP
 
 	if (bitmap != nullptr)
 	{
-		CLensFlare * filtre = new CLensFlare();
+		auto filtre = new CLensFlare();
 		filtre->LensFlare(bitmap, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 		delete filtre;
-
 	}
 	return 0;
 }
@@ -920,9 +921,9 @@ int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iP
 //---------------------------------------------------------------------
 //Effet CRgbaquad 
 //---------------------------------------------------------------------
-int CFiltreEffetCPU::RGBFilter(const int &red, const int &green, const int &blue)
+int CFiltreEffetCPU::RGBFilter(const int& red, const int& green, const int& blue)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -930,18 +931,17 @@ int CFiltreEffetCPU::RGBFilter(const int &red, const int &green, const int &blue
 
 	if (bitmap != nullptr)
 	{
-		CRgbFiltre * filtre = new CRgbFiltre(red, green, blue);
+		auto filtre = new CRgbFiltre(red, green, blue);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-
 	}
 	return 0;
 }
 
-int CFiltreEffetCPU::Solarize(const long &threshold)
+int CFiltreEffetCPU::Solarize(const long& threshold)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -949,18 +949,17 @@ int CFiltreEffetCPU::Solarize(const long &threshold)
 
 	if (bitmap != nullptr)
 	{
-		CSolarize * filtre = new CSolarize((int)threshold);
+		auto filtre = new CSolarize(static_cast<int>(threshold));
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-
 	}
 	return 0;
 }
 
-int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
+int CFiltreEffetCPU::Posterize(const float& level, const float& gamma)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -968,11 +967,10 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 
 	if (bitmap != nullptr)
 	{
-		CPosterize * filtre = new CPosterize(level, gamma);
+		auto filtre = new CPosterize(level, gamma);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-		
 	}
 	return 0;
 }
@@ -981,9 +979,10 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 //---------------------------------------------------------------------
 //Effet Clouds 
 //---------------------------------------------------------------------
-int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity)
+int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& color2, const float& amplitude,
+                                  const float& frequence, const int& octave, const int& intensity)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -991,9 +990,9 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &colo
 
 	if (bitmap != nullptr)
 	{
-		CPerlinNoise * m_perlinNoise = new Regards::FiltreEffet::CPerlinNoise();
-		CRegardsBitmap localBitmap(250,250);
-		CRegardsBitmap * _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		auto m_perlinNoise = new CPerlinNoise();
+		CRegardsBitmap localBitmap(250, 250);
+		auto _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
 		CInterpolationBicubic interpolation;
@@ -1007,9 +1006,9 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &colo
 //---------------------------------------------------------------------
 //Effet Swirl 
 //---------------------------------------------------------------------
-int CFiltreEffetCPU::Swirl(const float &radius, const float &angle)
+int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1017,7 +1016,7 @@ int CFiltreEffetCPU::Swirl(const float &radius, const float &angle)
 
 	if (bitmap != nullptr)
 	{
-		CSwirl * filtre = new CSwirl(angle, radius);
+		auto filtre = new CSwirl(angle, radius);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1028,7 +1027,7 @@ int CFiltreEffetCPU::Swirl(const float &radius, const float &angle)
 //---------------------------------------------------------------------
 //Lumière et Contraste 
 //---------------------------------------------------------------------
-int CFiltreEffetCPU::BrightnessAndContrast(const double &brightness, const double &contrast)
+int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
 	double offset;
 
@@ -1059,7 +1058,7 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double &brightness, const doubl
 //////////////////////////////////////////////////////////////////
 int CFiltreEffetCPU::NiveauDeGris()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1067,10 +1066,10 @@ int CFiltreEffetCPU::NiveauDeGris()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
-		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(image, dest, COLOR_BGRA2GRAY);
+		cvtColor(dest, dest, COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1088,7 +1087,7 @@ int CFiltreEffetCPU::NiveauDeGris()
 //////////////////////////////////////////////////////////////////
 int CFiltreEffetCPU::NoirEtBlanc()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1102,11 +1101,11 @@ int CFiltreEffetCPU::NoirEtBlanc()
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::cvtColor(image, dest, COLOR_BGRA2GRAY);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(image, dest, COLOR_BGRA2GRAY);
 		threshold(dest, dest, 127, 255, THRESH_BINARY);
-		cv::cvtColor(dest, dest, COLOR_GRAY2BGRA);
+		cvtColor(dest, dest, COLOR_GRAY2BGRA);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1119,7 +1118,7 @@ int CFiltreEffetCPU::NoirEtBlanc()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Sepia()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1127,11 +1126,11 @@ int CFiltreEffetCPU::Sepia()
 
 	if (bitmap != nullptr)
 	{
-		CSepiaFiltre * filtre = new CSepiaFiltre();
+		auto filtre = new CSepiaFiltre();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-		
+
 		/*
 		cv::Mat dest;
 		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
@@ -1157,7 +1156,7 @@ int CFiltreEffetCPU::Sepia()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Soften()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1165,8 +1164,8 @@ int CFiltreEffetCPU::Soften()
 
 	if (bitmap != nullptr)
 	{
-		short kernel[] = { 1, 1, 1, 1, 8, 1, 1, 1, 1 };
-		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 16, 0);
+		short kernel[] = {1, 1, 1, 1, 8, 1, 1, 1, 1};
+		auto filtre = new CMatrixConvolution(kernel, 3, 16, 0);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1177,9 +1176,9 @@ int CFiltreEffetCPU::Soften()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Blur(const int &radius)
+int CFiltreEffetCPU::Blur(const int& radius)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1198,9 +1197,9 @@ int CFiltreEffetCPU::Blur(const int &radius)
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::blur(image, dest, cv::Size(radius, radius));
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		blur(image, dest, Size(radius, radius));
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1212,9 +1211,9 @@ int CFiltreEffetCPU::Blur(const int &radius)
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
+int CFiltreEffetCPU::GaussianBlur(const int& radius, const int& boxSize)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1222,9 +1221,9 @@ int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::GaussianBlur(image, dest, cv::Size(boxSize, boxSize), radius);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cv::GaussianBlur(image, dest, Size(boxSize, boxSize), radius);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1242,7 +1241,7 @@ int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Emboss()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1259,18 +1258,17 @@ int CFiltreEffetCPU::Emboss()
 		*/
 
 		// Construct kernel (all entries initialized to 0)
-		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(0, 0) = -1.0;
 		kernel.at<float>(2, 2) = 1.0;
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::filter2D(image, dest, image.depth(), kernel, cv::Point(-1,-1), 127);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		filter2D(image, dest, image.depth(), kernel, Point(-1, -1), 127);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
 		kernel.release();
 		//filter the image
-		
 	}
 
 	return 0;
@@ -1281,7 +1279,7 @@ int CFiltreEffetCPU::Emboss()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::SharpenStrong()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1296,7 +1294,7 @@ int CFiltreEffetCPU::SharpenStrong()
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(0, 0) = -1.0;
 		kernel.at<float>(0, 1) = -1.0;
 		kernel.at<float>(0, 2) = -1.0;
@@ -1306,9 +1304,9 @@ int CFiltreEffetCPU::SharpenStrong()
 		kernel.at<float>(2, 0) = -1.0;
 		kernel.at<float>(2, 1) = -1.0;
 		kernel.at<float>(2, 2) = -1.0;
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::filter2D(image, dest, image.depth(), kernel);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		filter2D(image, dest, image.depth(), kernel);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1323,7 +1321,7 @@ int CFiltreEffetCPU::SharpenStrong()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Sharpen()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1338,15 +1336,15 @@ int CFiltreEffetCPU::Sharpen()
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(1, 1) = 5.0;
 		kernel.at<float>(0, 1) = -1.0;
 		kernel.at<float>(2, 1) = -1.0;
 		kernel.at<float>(1, 0) = -1.0;
 		kernel.at<float>(1, 2) = -1.0;
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::filter2D(image, dest, image.depth(), kernel);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		filter2D(image, dest, image.depth(), kernel);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1361,7 +1359,7 @@ int CFiltreEffetCPU::Sharpen()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Erode()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1376,13 +1374,12 @@ int CFiltreEffetCPU::Erode()
 		delete filtre;
 		*/
 
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::erode(image, dest, Mat());
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		erode(image, dest, Mat());
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
-
 	}
 
 	return 0;
@@ -1393,7 +1390,7 @@ int CFiltreEffetCPU::Erode()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Median()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1407,9 +1404,9 @@ int CFiltreEffetCPU::Median()
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::medianBlur(image, dest, 3);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		medianBlur(image, dest, 3);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1423,7 +1420,7 @@ int CFiltreEffetCPU::Median()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Noise()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1431,7 +1428,7 @@ int CFiltreEffetCPU::Noise()
 
 	if (bitmap != nullptr)
 	{
-		CNoise * filtre = new CNoise();
+		auto filtre = new CNoise();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1444,7 +1441,7 @@ int CFiltreEffetCPU::Noise()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Dilate()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1452,9 +1449,9 @@ int CFiltreEffetCPU::Dilate()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::dilate(image, dest, Mat());
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		dilate(image, dest, Mat());
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1474,7 +1471,7 @@ int CFiltreEffetCPU::Dilate()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Negatif()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1488,9 +1485,9 @@ int CFiltreEffetCPU::Negatif()
 		filtre->Compute();
 		delete filtre;
 		*/
-		cv::Mat dest;
-		cv::Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::bitwise_not(image, dest);
+		Mat dest;
+		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		bitwise_not(image, dest);
 		bitmap->SetBitmap(dest.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		dest.release();
 		image.release();
@@ -1502,9 +1499,9 @@ int CFiltreEffetCPU::Negatif()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Contrast(const double &contrast,const uint8_t & offset)
+int CFiltreEffetCPU::Contrast(const double& contrast, const uint8_t& offset)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1512,7 +1509,7 @@ int CFiltreEffetCPU::Contrast(const double &contrast,const uint8_t & offset)
 
 	if (bitmap != nullptr)
 	{
-		CContrast * filtre = new CContrast(contrast, offset);
+		auto filtre = new CContrast(contrast, offset);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1521,9 +1518,9 @@ int CFiltreEffetCPU::Contrast(const double &contrast,const uint8_t & offset)
 	return 0;
 }
 
-int CFiltreEffetCPU::Lightness(const double &factor)
+int CFiltreEffetCPU::Lightness(const double& factor)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1531,7 +1528,7 @@ int CFiltreEffetCPU::Lightness(const double &factor)
 
 	if (bitmap != nullptr)
 	{
-		CLightness * filtre = new CLightness(factor);
+		auto filtre = new CLightness(factor);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1545,7 +1542,7 @@ int CFiltreEffetCPU::Lightness(const double &factor)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FiltreEdge()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1553,8 +1550,8 @@ int CFiltreEffetCPU::FiltreEdge()
 
 	if (bitmap != nullptr)
 	{
-		short kernel[] = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
-		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 1, 0);
+		short kernel[] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+		auto filtre = new CMatrixConvolution(kernel, 3, 1, 0);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1568,7 +1565,7 @@ int CFiltreEffetCPU::FiltreEdge()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FiltreMosaic()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1576,7 +1573,7 @@ int CFiltreEffetCPU::FiltreMosaic()
 
 	if (bitmap != nullptr)
 	{
-		CMosaic * filtre = new CMosaic(5);
+		auto filtre = new CMosaic(5);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1591,7 +1588,7 @@ int CFiltreEffetCPU::FiltreMosaic()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FlipVertical()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1603,12 +1600,13 @@ int CFiltreEffetCPU::FlipVertical()
 	}
 	return 0;
 }
+
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FlipHorizontal()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1625,9 +1623,9 @@ int CFiltreEffetCPU::FlipHorizontal()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::MotionBlur(const double &radius, const double &sigma, const double &angle)
+int CFiltreEffetCPU::MotionBlur(const double& radius, const double& sigma, const double& angle)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1635,10 +1633,9 @@ int CFiltreEffetCPU::MotionBlur(const double &radius, const double &sigma, const
 
 	if (bitmap != nullptr)
 	{
-		CMotionBlur * filtre = new CMotionBlur();
+		auto filtre = new CMotionBlur();
 		filtre->MotionBlur(bitmap, radius, sigma, angle);
 		delete filtre;
-
 	}
 	return 0;
 }
@@ -1646,9 +1643,9 @@ int CFiltreEffetCPU::MotionBlur(const double &radius, const double &sigma, const
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::RotateFree(const double &angle, const int &widthOut, const int &heightOut)
+int CFiltreEffetCPU::RotateFree(const double& angle, const int& widthOut, const int& heightOut)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1656,19 +1653,19 @@ int CFiltreEffetCPU::RotateFree(const double &angle, const int &widthOut, const 
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dst;
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		Mat dst;
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 
 		// get rotation matrix for rotating the image around its center in pixel coordinates
-		cv::Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
-		cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+		const Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
+		Mat rot = getRotationMatrix2D(center, angle, 1.0);
 		// determine bounding rectangle, center not relevant
-		cv::Rect2f bbox = cv::RotatedRect(cv::Point2f(), src.size(), angle).boundingRect2f();
+		Rect2f bbox = RotatedRect(Point2f(), src.size(), angle).boundingRect2f();
 		// adjust transformation matrix
 		rot.at<double>(0, 2) += bbox.width / 2.0 - src.cols / 2.0;
 		rot.at<double>(1, 2) += bbox.height / 2.0 - src.rows / 2.0;
 
-		cv::warpAffine(src, dst, rot, bbox.size());
+		warpAffine(src, dst, rot, bbox.size());
 		bitmap->SetBitmap(dst.data, dst.cols, dst.rows);
 
 		dst.release();
@@ -1681,9 +1678,9 @@ int CFiltreEffetCPU::RotateFree(const double &angle, const int &widthOut, const 
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad &clValue, const int &intensity)
+int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1691,7 +1688,7 @@ int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad &clValue, const int &intensity)
 
 	if (bitmap != nullptr)
 	{
-		CPhotoFiltre * filtre = new CPhotoFiltre(clValue, intensity);
+		auto filtre = new CPhotoFiltre(clValue, intensity);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -1699,24 +1696,26 @@ int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad &clValue, const int &intensity)
 	return 0;
 }
 
-void CFiltreEffetCPU::RotateMatrix(const int &angle, cv::Mat &src)
+void CFiltreEffetCPU::RotateMatrix(const int& angle, Mat& src)
 {
-	cv::Mat dst;
-	if (angle == 90) {
+	Mat dst;
+	if (angle == 90)
+	{
 		// Rotate clockwise 270 degrees
-		cv::transpose(src, dst);
-		cv::flip(dst, src, 0);
+		transpose(src, dst);
+		flip(dst, src, 0);
 	}
-	else if (angle == 180) {
+	else if (angle == 180)
+	{
 		// Rotate clockwise 180 degrees
-		cv::flip(src, src, -1);
+		flip(src, src, -1);
 	}
-	else if (angle == 270) {
+	else if (angle == 270)
+	{
 		// Rotate clockwise 90 degrees
-		cv::transpose(src, dst);
-		cv::flip(dst, src, 1);
+		transpose(src, dst);
+		flip(dst, src, 1);
 	}
-
 }
 
 
@@ -1725,7 +1724,7 @@ void CFiltreEffetCPU::RotateMatrix(const int &angle, cv::Mat &src)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Rotate90()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1733,7 +1732,7 @@ int CFiltreEffetCPU::Rotate90()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		RotateMatrix(270, src);
 		bitmap->SetBitmap(src.data, bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth());
 	}
@@ -1745,7 +1744,7 @@ int CFiltreEffetCPU::Rotate90()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Rotate270()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1753,7 +1752,7 @@ int CFiltreEffetCPU::Rotate270()
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		RotateMatrix(90, src);
 		bitmap->SetBitmap(src.data, bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth());
 	}
@@ -1763,9 +1762,9 @@ int CFiltreEffetCPU::Rotate270()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const int &interpolation)
+int CFiltreEffetCPU::Resize(const int& imageWidth, const int& imageHeight, const int& interpolation)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1773,14 +1772,14 @@ int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const
 
 	if (bitmap != nullptr)
 	{
-		cv::Mat dst(imageHeight, imageWidth, CV_8UC4);
-		cv::Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cv::resize(src, dst, dst.size(), 0, 0, INTER_CUBIC);
+		Mat dst(imageHeight, imageWidth, CV_8UC4);
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		resize(src, dst, dst.size(), 0, 0, INTER_CUBIC);
 		bitmap->SetBitmap(dst.data, imageWidth, imageHeight);
 		dst.release();
 		src.release();
 	}
-	
+
 
 	/*
 	CRegardsBitmap * scaleBitmap = new CRegardsBitmap(imageWidth, imageHeight);
@@ -1797,9 +1796,9 @@ int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage)
+int CFiltreEffetCPU::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
@@ -1812,7 +1811,7 @@ int CFiltreEffetCPU::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcent
 	return 0;
 }
 
-void CFiltreEffetCPU::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
+void CFiltreEffetCPU::GetBitmap(CRegardsBitmap* & bitmap, const bool& source)
 {
 	if (bitmap != nullptr)
 	{
@@ -1827,36 +1826,34 @@ void CFiltreEffetCPU::GetBitmap(CRegardsBitmap * & bitmap, const bool &source)
 			bitmap->SetBitmap(pBitmap->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		}
 	}
-
 }
+
 #define SCALEBITS            8
 #define ONE_HALF             (1 << (SCALEBITS - 1))
 #define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
 
-void CFiltreEffetCPU::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr, const int &widthOut, const int &heightOut)
+void CFiltreEffetCPU::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr, const int& widthOut,
+                                 const int& heightOut)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
 		bitmap = pBitmap;
 
-	int wrap, wrap3, x, y;
-	int r, g, b, r1, g1, b1;
-	uint8_t *p;
-	wrap = bitmap->GetBitmapWidth();
-	wrap3 = bitmap->GetBitmapWidth() * 4;
-	p = bitmap->GetPtBitmap();
-	for (y = 0; y < bitmap->GetBitmapHeight(); y += 2)
+	const int wrap = bitmap->GetBitmapWidth();
+	const int wrap3 = bitmap->GetBitmapWidth() * 4;
+	uint8_t* p = bitmap->GetPtBitmap();
+	for (int y = 0; y < bitmap->GetBitmapHeight(); y += 2)
 	{
-		for (x = 0; x < bitmap->GetBitmapWidth(); x += 2)
+		for (int x = 0; x < bitmap->GetBitmapWidth(); x += 2)
 		{
-			r = p[2];
-			g = p[1];
-			b = p[0];
-			r1 = r;
-			g1 = g;
-			b1 = b;
+			int r = p[2];
+			int g = p[1];
+			int b = p[0];
+			int r1 = r;
+			int g1 = g;
+			int b1 = b;
 			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
 			r = p[6];
 			g = p[5];
@@ -1896,9 +1893,9 @@ void CFiltreEffetCPU::GetYUV420P(uint8_t * & lum, uint8_t * & cb, uint8_t * & cr
 	}
 }
 
-CRegardsBitmap * CFiltreEffetCPU::GetBitmap(const bool &source)
+CRegardsBitmap* CFiltreEffetCPU::GetBitmap(const bool& source)
 {
-	CRegardsBitmap * copy = new CRegardsBitmap();
+	auto copy = new CRegardsBitmap();
 	if (bitmapOut != nullptr && !source)
 	{
 		copy->SetFilename(bitmapOut->GetFilename());
@@ -1914,7 +1911,7 @@ CRegardsBitmap * CFiltreEffetCPU::GetBitmap(const bool &source)
 
 int CFiltreEffetCPU::BrightnessAndContrastAuto(float clipHistPercent)
 {
-	CRegardsBitmap* bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (preview)
 		bitmap = bitmapOut;
 	else
