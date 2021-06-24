@@ -6,7 +6,7 @@ using namespace Regards::Viewer;
 CWaitingWindow::CWaitingWindow(wxWindow* parent, wxWindowID id) : CWindowMain("CWaitingWindow", parent, id)
 {
 	textToShow = "Please wait ...";
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	const wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	//m_animation = new wxAnimation(resourcePath + "/loading.gif");
 	m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
 	m_animationCtrl->Show(true);
@@ -46,7 +46,7 @@ void CWaitingWindow::Resize()
 	double scale_factor = GetContentScaleFactor();
 #endif
 #else
-	double scale_factor = 1.0f;
+	const double scale_factor = 1.0f;
 #endif
 	wxRect rcAffichageBitmap;
 
@@ -60,8 +60,8 @@ void CWaitingWindow::Resize()
 		const wxAnimation animation = m_animationCtrl->GetAnimation();
 		const wxSize animationSize = animation.GetSize();
 
-		int xPos = rcAffichageBitmap.x + (GetWindowWidth() / scale_factor - animationSize.GetWidth()) / 2;
-		int yPos = (GetWindowHeight() / scale_factor - animationSize.GetHeight()) / 2;
+		const int xPos = rcAffichageBitmap.x + (GetWindowWidth() / scale_factor - animationSize.GetWidth()) / 2;
+		const int yPos = (GetWindowHeight() / scale_factor - animationSize.GetHeight()) / 2;
 
 		m_animationCtrl->SetSize(xPos, yPos, animationSize.GetWidth(), animationSize.GetHeight());
 	}
@@ -89,14 +89,14 @@ void CWaitingWindow::OnPaint(wxPaintEvent& event)
 	//dc.SetBackgroundMode(wxTRANSPARENT);
 	//dc.SetBackground(*wxTRANSPARENT_BRUSH);
 	wxRect rc = GetRect();
-	this->FillRect(&dc, rc, wxColour("white"));
+	Regards::Viewer::CWaitingWindow::FillRect(&dc, rc, wxColour("white"));
 	font.SetColorFont(wxColour("black"));
 
-	wxSize size = GetSizeTexte(&dc, textToShow, font);
-	int xPos = (GetWindowWidth() / scale_factor - size.x) / 2;
+	const wxSize size = GetSizeTexte(&dc, textToShow, font);
+	const int xPos = (GetWindowWidth() / scale_factor - size.x) / 2;
 
-	wxAnimation animation = m_animationCtrl->GetAnimation();
-	wxSize animationSize = animation.GetSize();
+	const wxAnimation animation = m_animationCtrl->GetAnimation();
+	const wxSize animationSize = animation.GetSize();
 	int yPos = (GetWindowHeight() / scale_factor - animationSize.GetHeight()) / 2;
 	yPos -= size.y * 2;
 	DrawTexte(&dc, textToShow, xPos, yPos, font);

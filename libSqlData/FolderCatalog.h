@@ -6,22 +6,20 @@ public:
 	CFolderCatalog();
 	~CFolderCatalog();
 
-	void SetNumFolder(const int &numFolder);
+	void SetNumFolder(const int& numFolder);
 	int GetNumFolder();
 
-	void SetNumCatalog(const int &numCatalog);
+	void SetNumCatalog(const int& numCatalog);
 	int GetNumCatalog();
 
-	void SetFolderPath(const wxString &folderPath);
+	void SetFolderPath(const wxString& folderPath);
 	wxString GetFolderPath();
 
-    
-    
+
 private:
 	int numFolder;
 	int numCatalog;
 	wxString folderPath;
-
 };
 
-typedef vector<CFolderCatalog> FolderCatalogVector;
+using FolderCatalogVector = vector<CFolderCatalog>;

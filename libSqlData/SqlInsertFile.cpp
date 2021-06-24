@@ -150,38 +150,48 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 
 int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile)
 {
-	CLibPicture libPicture;
-    BeginTransaction();
-	   
-	int i = 0;
 
 	if (files.size() > 0)
 	{
-		for (wxString file : files)
+		CLibPicture libPicture;
+		BeginTransaction();
+		
+#pragma omp parallel for
+		for (size_t i = 0; i < files.size(); i++) 
 		{
-			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
-			if (false == dialog.Update(i, message))
-			{
-				break;
-			}
-
-
+			wxString file = files[i];
+			
 			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{
-				int extensionId = libPicture.TestImageFormat(file);
-				if (i == 0)
-					firstFile = file;
-                printf("CSqlInsertFile::AddFileFromFolder : %s \n", CConvertUtility::ConvertToUTF8(file));
-                    
+				const int extensionId = libPicture.TestImageFormat(file);
 				file.Replace("'", "''");
 				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
-				i++;         
+			}
+
+
+			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+			dialog.Update(i, message);
+		}
+
+		bool first = true;
+		for (size_t i = 0; i < files.size(); i++)
+		{
+			wxString file = files[i];
+			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+			{
+				if (first)
+				{
+					firstFile = file;
+					break;
+				}
+					
 			}
 		}
+		
 		CommitTransection();
 
 	}
-	return i;
+	return files.size();
 }
 
 

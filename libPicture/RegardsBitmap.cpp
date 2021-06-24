@@ -91,12 +91,12 @@ HBITMAP GenerateHBitmap(const uint8_t* pbyData, const int& nWidth, const int& nH
 	bmiInfos.bmiHeader.biBitCount = 32;
 	bmiInfos.bmiHeader.biSizeImage = nWidth * nHeight << 2;
 	//((iTaille * bitmap.bmWidth + iTaille) & ~iTaille) * bitmap.bmHeight;
-	HBITMAP hBitmapRender = CreateDIBitmap(GetDC(nullptr),
-	                                       &bmiInfos.bmiHeader,
-	                                       CBM_INIT,
-	                                       pbyData,
-	                                       &bmiInfos,
-	                                       DIB_RGB_COLORS);
+	const HBITMAP hBitmapRender = CreateDIBitmap(GetDC(nullptr),
+	                                             &bmiInfos.bmiHeader,
+	                                             CBM_INIT,
+	                                             pbyData,
+	                                             &bmiInfos,
+	                                             DIB_RGB_COLORS);
 
 	return hBitmapRender;
 }
@@ -233,7 +233,7 @@ void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 #pragma omp parallel for
 		for (int x = 0; x < m_iWidth; x++)
 		{
-			int positionSrc = x + y * m_iWidth;
+			const int positionSrc = x + y * m_iWidth;
 			int positionUV = 0;
 			if (x & 1)
 			{

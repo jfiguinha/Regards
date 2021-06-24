@@ -8,7 +8,7 @@ namespace Regards
 	{
 		class CSqlResult;
 
-		class CSqlCriteria : public CSqlExecuteRequest
+		class CSqlCriteria final : public CSqlExecuteRequest
 		{
 		public:
 			CSqlCriteria(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);

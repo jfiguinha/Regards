@@ -159,9 +159,6 @@
     <ClInclude Include="FaceFilePath.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="FaceDescriptor.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
     <ClInclude Include="Criteria.h">
       <Filter>datastructure</Filter>
     </ClInclude>

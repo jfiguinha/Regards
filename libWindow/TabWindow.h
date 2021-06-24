@@ -14,7 +14,9 @@ namespace Regards
 		class CTabWindowData
 		{
 		public:
-			CTabWindowData() {};
+			CTabWindowData(): windowName(0)
+			{
+			} ;
 			~CTabWindowData() {};
 
 			void SetWindow(wxWindow * window)
@@ -27,13 +29,13 @@ namespace Regards
 				this->windowMain = window;
 			}
 
-			void UpdateScreenRatio()
+			void UpdateScreenRatio() const
 			{
 				if (windowMain != nullptr)
 					windowMain->UpdateScreenRatio();
 			}
 
-			bool IsShown()
+			bool IsShown() const
 			{
 				if (window != nullptr)
 					return window->IsShown();
@@ -43,7 +45,7 @@ namespace Regards
 				return false;
 			}
 			
-			void ShowWindow(const bool &show = true)
+			void ShowWindow(const bool &show = true) const
 			{
 				if (window != nullptr)
 					window->Show(show);
@@ -51,7 +53,7 @@ namespace Regards
 					windowMain->Show(show);
 			}
 
-			wxWindow * GetWindow()
+			wxWindow * GetWindow() const
 			{
 				if (window != nullptr)
 					return window;
@@ -61,7 +63,7 @@ namespace Regards
 				return nullptr;
 			}
 
-			int GetId()
+			int GetId() const
 			{
 				return windowName;
 			}
@@ -82,18 +84,18 @@ namespace Regards
 		public:
 
 			CTabWindow(const wxString & windowName, wxWindow* parent, wxWindowID id);
-			~CTabWindow();
-			void UpdateScreenRatio();
+			~CTabWindow() override;
+			void UpdateScreenRatio() override;
 
         private:
             
-			void OnSize(wxSizeEvent& event);
+			void OnSize(wxSizeEvent& event) override;
             void OnPaint(wxPaintEvent& event);       
 
 		protected:
 
-            void Resize();
-            void ClickShowButton(const int& id, const int &refresh = 1);
+            void Resize() override;
+            void ClickShowButton(const int& id, const int &refresh = 1) override;
             void HideAllWindow();
 			virtual void LoadInfo() = 0;
 			CModificationManager * modificationManager;

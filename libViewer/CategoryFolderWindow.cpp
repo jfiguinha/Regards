@@ -33,25 +33,27 @@ wxDEFINE_EVENT(EVENT_CRITERIAPHOTOUPDATE, wxCommandEvent);
 class CFindPhotoCriteria
 {
 public:
-	CFindPhotoCriteria()
-	{
-		mainWindow = nullptr;
-		criteriaNew = false;
-		hasGps = false;
-		fromGps = false;
-		phthread = nullptr;
-	};
+	CFindPhotoCriteria();;
 
 	wxString urlServer;
 	CCategoryFolderWindow* mainWindow;
 	bool criteriaNew;
-	int numPhoto;
-	int numFolderId;
+	int numPhoto{};
+	int numFolderId{};
 	wxString photoPath;
 	thread* phthread;
 	bool hasGps;
 	bool fromGps;
 };
+
+CFindPhotoCriteria::CFindPhotoCriteria()
+{
+	mainWindow = nullptr;
+	criteriaNew = false;
+	hasGps = false;
+	fromGps = false;
+	phthread = nullptr;
+}
 
 CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
                                              const CThemeTree& theme)
@@ -196,7 +198,6 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	CSqlInsertFile sqlInsertFile;
 	nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
-	//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
@@ -242,7 +243,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			auto thumbnailMessage = new CThumbnailMessage();
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 1;
-			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			//wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);  // NOLINT(clang-diagnostic-shorten-64-to-32)
 			wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
 			eventChange.SetClientData(thumbnailMessage);
 		}
@@ -435,13 +436,13 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	findPhotoCriteria->fromGps = false;
 
 	wxString datetime = geoloc.GetDateTimeInfos();
-	vector<wxString> vDateTime;
 
 	printf("FindPhotoCriteria %s datetime %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath),
 	       CConvertUtility::ConvertToUTF8(datetime));
 
 	if (datetime.Length() > 10)
 	{
+		vector<wxString> vDateTime;
 		datetime = datetime.substr(0, 10);
 		wxChar separator = datetime[4];
 		vDateTime = CConvertUtility::split(datetime, separator);

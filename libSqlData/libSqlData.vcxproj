@@ -503,7 +503,6 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="Country.h" />
     <ClInclude Include="Criteria.h" />
-    <ClInclude Include="FaceDescriptor.h" />
     <ClInclude Include="FaceFilePath.h" />
     <ClInclude Include="FaceName.h" />
     <ClInclude Include="FolderCatalog.h" />

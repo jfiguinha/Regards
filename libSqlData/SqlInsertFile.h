@@ -13,7 +13,7 @@ namespace Regards
 		public:
 
 			CSqlInsertFile();
-			~CSqlInsertFile();
+			virtual ~CSqlInsertFile();
 			bool RemovePhotos(const int &idFolder);
 			void InsertPhotoFolderToRefresh(const wxString &folder);
             //void UpdateFolder(const vector<wxString> &listFile, const int &idFolder);

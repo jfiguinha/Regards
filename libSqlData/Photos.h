@@ -6,22 +6,22 @@ public:
 	CPhotos();
 	~CPhotos();
 
-	void SetId(const int &numId);
+	void SetId(const int& numId);
 	int GetId();
 
-	void SetFolderId(const int &numId);
+	void SetFolderId(const int& numId);
 	int GetFolderId();
 
-	void SetPath(const wxString &path);
+	void SetPath(const wxString& path);
 	wxString GetPath();
 
-	void SetGpsInfos(const wxString &gpsInfos);
+	void SetGpsInfos(const wxString& gpsInfos);
 	wxString GetGpsInfos();
 
-	void SetCreateDate(const wxString &createDate);
+	void SetCreateDate(const wxString& createDate);
 	wxString GetCreateDate();
 
-	void SetIsCriteriaInsert(const int &criteriaInsert);
+	void SetIsCriteriaInsert(const int& criteriaInsert);
 	int GetIsCriteriaInsert();
 
 	int day;
@@ -37,10 +37,9 @@ private:
 	int numFolderId;
 	wxString path;
 	wxString createDate;
-	
-	int criteriaInsert;
 
+	int criteriaInsert;
 };
 
 
-typedef std::vector<CPhotos> PhotosVector;
+using PhotosVector = std::vector<CPhotos>;

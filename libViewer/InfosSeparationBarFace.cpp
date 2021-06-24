@@ -25,9 +25,6 @@ CInfosSeparationBarFace::CInfosSeparationBarFace(const CThemeInfosSeparationBar&
 	parentWindow = nullptr;
 	isSelected = false;
 	isSelectIcone = false;
-	// checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
-	// checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
-	//editVector = CLibResource::GetVector(L"IDB_EDIT_LABEL");
 	libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSELECTABLE", 1);
 	libelleSelectIcone = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
 }

@@ -8,7 +8,7 @@ using namespace Regards::Viewer;
 
 
 CKeywordManagementWindow::CKeywordManagementWindow(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
-                                             const CThemeTree& theme)
+                                                   const CThemeTree& theme)
 	: CTreeWithScrollbar("CKeywordManagementWindow", parent, id, themeScroll, theme)
 {
 	keywordWndOld = nullptr;
@@ -18,7 +18,6 @@ CKeywordManagementWindow::CKeywordManagementWindow(wxWindow* parent, wxWindowID 
 
 CKeywordManagementWindow::~CKeywordManagementWindow()
 {
-
 }
 
 void CKeywordManagementWindow::UpdateKeyword(wxCommandEvent& event)
@@ -26,10 +25,10 @@ void CKeywordManagementWindow::UpdateKeyword(wxCommandEvent& event)
 	Init(filename);
 }
 
-void CKeywordManagementWindow::Init(const wxString & filename)
+void CKeywordManagementWindow::Init(const wxString& filename)
 {
 	this->filename = filename;
-	CKeywordWnd * keyword = new CKeywordWnd(this, treeWindow->GetTheme(), treeWindow);
+	auto keyword = new CKeywordWnd(this, treeWindow->GetTheme(), treeWindow);
 	keyword->Init(filename);
 	treeWindow->SetTreeControl(keyword);
 	delete(keywordWndOld);

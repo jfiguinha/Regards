@@ -179,19 +179,15 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 		wxString firstFile = "";
 		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
-		auto path = new wxString();
-		*path = getSelectPath;
 		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
 
-
-		wxBusyInfo wait("Please wait, working...", windowMain);
-		
 		if (isChecked)
 		{
 			folderWnd->AddPath(getSelectPath);
 			firstFile = AddFolder(getSelectPath);
 			evt.SetInt(0);
-
+			wxString* newPath = new wxString(firstFile);
+			evt.SetClientData(newPath);
 		}
 		else
 		{
@@ -200,9 +196,7 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 			RemoveFolder(getSelectPath);
 		}
 
-		wxString* newPath = new wxString(firstFile);
 
-		evt.SetClientData(newPath);
 		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -258,6 +252,7 @@ void CPanelPhotoWnd::LoadInfo()
 wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 {
 	TRACE();
+	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString localFilename = "";
 	wxString msg = "In progress ...";
 
@@ -266,7 +261,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), this, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), windowMain, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 	int updatesize = 0;
 	dialog.Update(updatesize, msg);
 
@@ -302,13 +297,16 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 	}
 
 	dialog.Destroy();
+
+	return localFilename;
 }
 
 
 void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 {
+	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	TRACE();
-
+	wxBusyInfo wait("Please wait, working...", windowMain);
 	if (!folder.IsEmpty())
 	{
 

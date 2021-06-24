@@ -98,7 +98,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	frameScanner = nullptr;
 	viewerParam = new CMainParam();
 	CMainParamInit::Initialize(viewerParam);
-	this->Maximize();
+	this->wxTopLevelWindowMSW::Maximize();
 	viewerTheme = new CMainTheme();
 	CMainThemeInit::Initialize(viewerTheme);
 
@@ -129,7 +129,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 		}
 		else
 		{
-			AddFSEntry(folderlocal.GetFolderPath());
+			CViewerFrame::AddFSEntry(folderlocal.GetFolderPath());
 		}
 	}
 
@@ -246,9 +246,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuSizeIcon, labelSizeIcon);
 	menuBar->Append(menuHelp, labelHelp);
-	SetMenuBar(menuBar);
+	wxFrameBase::SetMenuBar(menuBar);
 
-	SetLabel(wxT("Regards Viewer"));
+	wxWindow::SetLabel(wxT("Regards Viewer"));
 	//Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
 	Connect(wxEVENT_CLOSESCANNER, wxCommandEventHandler(CViewerFrame::HideScanner));
@@ -338,8 +338,8 @@ void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)
 		configFile.ShowModal();
 		if (configFile.IsOk())
 		{
-			wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1); //L"&Thumbnail";
-			wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
+			const wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1); //L"&Thumbnail";
+			const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
 			CRegardsConfigParam* config = CParamInit::getInstance();
 			if (config != nullptr)
 			{
@@ -353,8 +353,8 @@ void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)
 	}
 	else
 	{
-		wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
-		wxString openclDevice = CLibResource::LoadStringFromResource(L"LBLOPENCLDEVICEREQUIRED", 1);
+		const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
+		const wxString openclDevice = CLibResource::LoadStringFromResource(L"LBLOPENCLDEVICEREQUIRED", 1);
 		wxMessageBox(openclDevice, labelInformations);
 	}
 }
@@ -372,7 +372,7 @@ int CViewerFrame::ShowScanner()
 		frameScanner->Centre(wxBOTH);
 		frameScanner->Show(true);
 	}
-	int value = frameScanner->OnOpen();
+	const int value = frameScanner->OnOpen();
 	if (value == -1)
 	{
 		frameScanner->Show(false);
@@ -422,7 +422,7 @@ void CViewerFrame::OnPrint(wxCommandEvent& event)
 	const wxString filename = mainWindow->GetFilename();
 	if (filename != "")
 	{
-		CImageLoadingFormat * image = nullptr;
+		CImageLoadingFormat* image = nullptr;
 		CLibPicture libPicture;
 		image = libPicture.LoadPicture(filename);
 		if (image != nullptr)
@@ -737,11 +737,10 @@ void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
 {
-	float ratio = 1.0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
-		ratio = config->GetIconSizeRatio();
+		float ratio = config->GetIconSizeRatio();
 		if (ratio > 1.0)
 			ratio = ratio - 0.25;
 		config->SetIconSizeRatio(ratio);
@@ -753,11 +752,10 @@ void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
 
 void CViewerFrame::OnIconSizeMore(wxCommandEvent& event)
 {
-	float ratio = 1.0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
-		ratio = config->GetIconSizeRatio();
+		float ratio = config->GetIconSizeRatio();
 		if (ratio < 2.0)
 			ratio = ratio + 0.25;
 		config->SetIconSizeRatio(ratio);
@@ -789,10 +787,10 @@ void CViewerFrame::PrintImagePreview(CRegardsBitmap* imageToPrint)
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
-	auto bitmapPreview = new CRegardsBitmap();
+	const auto bitmapPreview = new CRegardsBitmap();
 	*bitmapPreview = *imageToPrint;
-	auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview),
-	                                  &printDialogData);
+	const auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview),
+	                                        &printDialogData);
 	if (!preview->IsOk())
 	{
 		delete preview;
@@ -800,7 +798,7 @@ void CViewerFrame::PrintImagePreview(CRegardsBitmap* imageToPrint)
 		return;
 	}
 
-	wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
+	const wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
 	auto frame =
 		new wxPreviewFrame(preview, this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
 	frame->Centre(wxBOTH);
@@ -815,12 +813,12 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
 {
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
-	wxPrintDialogData printDialogData(*g_printData);
-	CRegardsBitmap* bitmapPreview = imageToPrint->GetRegardsBitmap(true);
+	wxPrintDialogData print_dialog_data(*g_printData);
+	CRegardsBitmap* bitmap_preview = imageToPrint->GetRegardsBitmap(true);
 
 
-	auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview),
-	                                  &printDialogData);
+	const auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmap_preview),
+	                                        &print_dialog_data);
 	if (!preview->IsOk())
 	{
 		delete preview;
@@ -828,7 +826,7 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
 		return;
 	}
 
-	wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
+	const wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
 	auto frame =
 		new wxPreviewFrame(preview, this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
 	frame->Centre(wxBOTH);
@@ -840,8 +838,8 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
 
 void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 {
-	wxString erasedatabase = CLibResource::LoadStringFromResource(L"EraseDatabase", 1);
-	wxString informations = CLibResource::LoadStringFromResource(L"labelInformations", 1);
+	const wxString erasedatabase = CLibResource::LoadStringFromResource(L"EraseDatabase", 1);
+	const wxString informations = CLibResource::LoadStringFromResource(L"labelInformations", 1);
 	if (wxMessageBox(erasedatabase, informations, wxYES_NO | wxICON_WARNING) == wxYES)
 	{
 		CSQLRemoveData::DeleteCatalog(1);
@@ -877,7 +875,7 @@ void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 
 void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 {
-	auto viewerParam = CMainParamInit::getInstance();
+	CMainParam* viewerParam = CMainParamInit::getInstance();
 	double pertinence = 0.0;
 	if (viewerParam != nullptr)
 	{

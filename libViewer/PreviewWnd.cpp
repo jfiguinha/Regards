@@ -369,7 +369,7 @@ void CPreviewWnd::HideToolbar(wxCommandEvent& event)
 	{
 		if (previewToolbar != nullptr)
 		{
-			bool previewToolbarMouseOver = previewToolbar->IsMouseOver();
+			bool previewToolbarMouseOver;
 			if (isVideo)
 				previewToolbarMouseOver = showVideoWindow->IsToolbarMouseOver();
 			else

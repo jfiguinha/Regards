@@ -2951,13 +2951,10 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& flip, const bool& loadAlpha)
 {
-	int width = bitmap->GetBitmapWidth();
-	int height = bitmap->GetBitmapHeight();
-	int widthSrcSize = width * 4;
+	const int width = bitmap->GetBitmapWidth();
+	const int height = bitmap->GetBitmapHeight();
+	const int widthSrcSize = width * 4;
 	unsigned char* data = bitmap->GetPtBitmap();
-	int posData = 0;
-	int posDataOut = 0;
-	int posAlpha = 0;
 	wxImage anImage(width, height, true);
 	if (loadAlpha)
 		anImage.InitAlpha();
@@ -2967,23 +2964,24 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const
 
 	if (data != nullptr)
 	{
+		int pos_data;
 		for (auto y = 0; y < height; y++)
 		{
 			if (flip)
-				posData = y * widthSrcSize;
+				pos_data = y * widthSrcSize;
 			else
-				posData = ((height - y) * widthSrcSize) - widthSrcSize;
-			posDataOut = y * (width * 3);
-			posAlpha = y * width;
+				pos_data = ((height - y) * widthSrcSize) - widthSrcSize;
+			int posDataOut = y * (width * 3);
+			int posAlpha = y * width;
 			for (auto x = 0; x < width; x++)
 			{
-				dataOut[posDataOut] = data[posData + 2];
-				dataOut[posDataOut + 1] = data[posData + 1];
-				dataOut[posDataOut + 2] = data[posData];
+				dataOut[posDataOut] = data[pos_data + 2];
+				dataOut[posDataOut + 1] = data[pos_data + 1];
+				dataOut[posDataOut + 2] = data[pos_data];
 
 				if (loadAlpha)
-					dataAlpha[posAlpha++] = data[posData + 3];
-				posData += 4;
+					dataAlpha[posAlpha++] = data[pos_data + 3];
+				pos_data += 4;
 				posDataOut += 3;
 			}
 		}
@@ -2994,13 +2992,10 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const
 
 wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& loadAlpha)
 {
-	int width = bitmap->GetBitmapWidth();
-	int height = bitmap->GetBitmapHeight();
-	int widthSrcSize = width * 4;
+	const int width = bitmap->GetBitmapWidth();
+	const int height = bitmap->GetBitmapHeight();
+	const int widthSrcSize = width * 4;
 	unsigned char* data = bitmap->GetPtBitmap();
-	int posData = 0;
-	int posDataOut = 0;
-	int posAlpha = 0;
 	auto anImage = new wxImage(width, height, true);
 	if (loadAlpha)
 		anImage->InitAlpha();
@@ -3012,9 +3007,9 @@ wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, cons
 	{
 		for (auto y = 0; y < height; y++)
 		{
-			posData = ((height - y) * widthSrcSize) - widthSrcSize;
-			posDataOut = y * (width * 3);
-			posAlpha = y * width;
+			int posData = ((height - y) * widthSrcSize) - widthSrcSize;
+			int posDataOut = y * (width * 3);
+			int posAlpha = y * width;
 			for (auto x = 0; x < width; x++)
 			{
 				dataOut[posDataOut] = data[posData + 2];
@@ -3035,7 +3030,7 @@ wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, cons
 bool CLibPicture::HasThumbnail(const wxString& filename)
 {
 #if defined(EXIV2)
-	int iFormat = TestImageFormat(filename);
+	const int iFormat = TestImageFormat(filename);
 	if (iFormat == RAWFILE)
 		return true;
 	if (iFormat == TIFF || iFormat == JPEG)

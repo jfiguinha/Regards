@@ -7,15 +7,13 @@ static const char kMetadataTypeExif[] = "Exif";
 
 CHeifAvif::CHeifAvif()
 {
-
 }
 
 CHeifAvif::~CHeifAvif()
 {
-
 }
 
-int CHeifAvif::GetNbFrame(const string &filename)
+int CHeifAvif::GetNbFrame(const string& filename)
 {
 	int num_images = 0;
 	heif_context* ctx = heif_context_alloc();
@@ -24,7 +22,8 @@ int CHeifAvif::GetNbFrame(const string &filename)
 		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		num_images = heif_context_get_number_of_top_level_images(ctx);
-		if (num_images == 0) {
+		if (num_images == 0)
+		{
 			fprintf(stderr, "File doesn't contain any images\n");
 			return num_images;
 		}
@@ -34,9 +33,9 @@ int CHeifAvif::GetNbFrame(const string &filename)
 	return num_images;
 }
 
-CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
+CRegardsBitmap* CHeifAvif::GetThumbnailPicture(const string& filename)
 {
-	CRegardsBitmap * outputBitmap = nullptr;
+	CRegardsBitmap* outputBitmap = nullptr;
 	struct heif_error err;
 	bool thumbnail_from_primary_image_only = true;
 	heif_context* ctx = heif_context_alloc();
@@ -51,13 +50,16 @@ CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
 		{
 			// --- if image has a thumbnail, use that instead
 
-			if (!thumbnail_from_primary_image_only) {
+			if (!thumbnail_from_primary_image_only)
+			{
 				heif_item_id thumbnail_ID;
 				int nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, &thumbnail_ID, 1);
-				if (nThumbnails > 0) {
+				if (nThumbnails > 0)
+				{
 					struct heif_image_handle* thumbnail_handle;
 					err = heif_image_handle_get_thumbnail(handle, thumbnail_ID, &thumbnail_handle);
-					if (err.code) {
+					if (err.code)
+					{
 						std::cerr << "Could not read HEIF image : " << err.message << "\n";
 						return outputBitmap;
 					}
@@ -89,7 +91,7 @@ CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
 				int iPos = 0;
 
 				outputBitmap = new CRegardsBitmap(image_width, image_height);
-				uint8_t * dataOut = outputBitmap->GetPtBitmap();
+				uint8_t* dataOut = outputBitmap->GetPtBitmap();
 				for (int y = 0; y < image_height; y++)
 					for (int x = 0; x < image_width; x++)
 					{
@@ -101,7 +103,6 @@ CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);
 			}
-
 		}
 
 		heif_context_free(ctx);
@@ -109,7 +110,7 @@ CRegardsBitmap * CHeifAvif::GetThumbnailPicture(const string &filename)
 	return outputBitmap;
 }
 
-void CHeifAvif::GetPictureDimension(const string &filename, int &width, int &height)
+void CHeifAvif::GetPictureDimension(const string& filename, int& width, int& height)
 {
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
@@ -130,16 +131,15 @@ void CHeifAvif::GetPictureDimension(const string &filename, int &width, int &hei
 				height = heif_image_handle_get_height(handle);
 				heif_image_release(img);
 			}
-
 		}
 
 		heif_context_free(ctx);
 	}
 }
 
-CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
+CRegardsBitmap* CHeifAvif::GetPicture(const string& filename)
 {
-	CRegardsBitmap * outputBitmap = nullptr;
+	CRegardsBitmap* outputBitmap = nullptr;
 
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
@@ -165,7 +165,7 @@ CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
 				int iPos = 0;
 
 				outputBitmap = new CRegardsBitmap(image_width, image_height);
-				uint8_t * dataOut = outputBitmap->GetPtBitmap();
+				uint8_t* dataOut = outputBitmap->GetPtBitmap();
 				for (int y = 0; y < image_height; y++)
 					for (int x = 0; x < image_width; x++)
 					{
@@ -173,12 +173,10 @@ CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
 						dataOut[pos + 2] = data[iPos++];
 						dataOut[pos + 1] = data[iPos++];
 						dataOut[pos] = data[iPos++];
-
 					}
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);
 			}
-
 		}
 
 		heif_context_free(ctx);
@@ -186,7 +184,7 @@ CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
 	return outputBitmap;
 }
 
-void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegardsBitmap * source, const int & compression)
+void CHeifAvif::SavePicture(const string& filenameOut, const int& type, CRegardsBitmap* source, const int& compression)
 {
 	struct heif_error err;
 	if (source)
@@ -196,9 +194,9 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 		{
 			// get the default encoder
 			heif_encoder* encoder;
-			if(type == AVIF)
+			if (type == AVIF)
 				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
-			else if(type == HEIC)
+			else if (type == HEIC)
 				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);
@@ -207,17 +205,17 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 			heif_image* image; // code to fill in the image omitted in this example
 
 			err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
-				heif_colorspace_RGB,
-				heif_chroma_interleaved_RGBA,
-				&image);
+			                        heif_colorspace_RGB,
+			                        heif_chroma_interleaved_RGBA,
+			                        &image);
 			(void)err;
 
 			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
-				32);
+			                     32);
 
 			int stride;
 			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
-			uint8_t * data = source->GetPtBitmap();
+			uint8_t* data = source->GetPtBitmap();
 			source->ConvertToBgr();
 			//source->HorzFlipBuf();
 			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
@@ -243,7 +241,7 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 }
 
 // static
-bool CHeifAvif::HasExifMetaData(const string &filename)
+bool CHeifAvif::HasExifMetaData(const string& filename)
 {
 	int count = 0;
 	heif_context* ctx = heif_context_alloc();
@@ -258,7 +256,7 @@ bool CHeifAvif::HasExifMetaData(const string &filename)
 		{
 			heif_item_id metadata_id;
 			count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
-				&metadata_id, 1);
+			                                                         &metadata_id, 1);
 		}
 		heif_context_free(ctx);
 	}
@@ -266,7 +264,7 @@ bool CHeifAvif::HasExifMetaData(const string &filename)
 }
 
 // static
-void CHeifAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
+void CHeifAvif::GetMetadata(const string& filename, uint8_t* & data, long& size)
 {
 	//int count = 0;
 	heif_context* ctx = heif_context_alloc();
@@ -281,7 +279,7 @@ void CHeifAvif::GetMetadata(const string &filename, uint8_t * & data, long & siz
 		{
 			heif_item_id metadata_id;
 			int count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
-				&metadata_id, 1);
+			                                                             &metadata_id, 1);
 
 			if (count > 0)
 			{

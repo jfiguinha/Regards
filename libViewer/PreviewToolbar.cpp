@@ -282,7 +282,7 @@ void CPreviewToolbar::DiaporamaStart()
 			wxCommandEvent evt(wxEVENT_STARTDIAPORAMA);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
-		
+
 		this->Resize();
 	}
 }
@@ -305,7 +305,6 @@ void CPreviewToolbar::DiaporamaStop()
 		this->Resize();
 	}
 }
-
 
 
 void CPreviewToolbar::EventManager(const int& id)
@@ -355,5 +354,6 @@ void CPreviewToolbar::EventManager(const int& id)
 	case WM_IMAGES_END:
 		LastPicture();
 		break;
+	default: ;
 	}
 }

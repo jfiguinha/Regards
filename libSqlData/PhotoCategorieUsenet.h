@@ -3,7 +3,7 @@
 class CPhotoCategorieUsenet
 {
 public:
-    int numPhoto;
-    int numCategorie;
-    wxString libelle;
+	int numPhoto;
+	int numCategorie;
+	wxString libelle;
 };

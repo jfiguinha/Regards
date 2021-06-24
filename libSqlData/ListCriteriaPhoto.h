@@ -3,16 +3,20 @@
 class CInsertCriteria
 {
 public:
-
-	CInsertCriteria(){
+	CInsertCriteria()
+	{
 		value = "";
 		type = 0;
 		id = 0;
 		isNew = false;
 	};
-	~CInsertCriteria(){};
 
-	CInsertCriteria& operator=(const CInsertCriteria& other) {
+	~CInsertCriteria()
+	{
+	};
+
+	CInsertCriteria& operator=(const CInsertCriteria& other)
+	{
 		value = other.value;
 		type = other.type;
 		id = other.id;
@@ -29,12 +33,17 @@ public:
 class CListCriteriaPhoto
 {
 public:
+	CListCriteriaPhoto(): numPhotoId(0), numCatalog(0)
+	{
+	}
+	;
 
-	CListCriteriaPhoto(){};
-	~CListCriteriaPhoto(){};
-	
+	~CListCriteriaPhoto()
+	{
+	};
+
 	wxString photoPath;
 	int numPhotoId;
 	int numCatalog;
-	vector<CInsertCriteria *> listCriteria;
+	vector<CInsertCriteria*> listCriteria;
 };

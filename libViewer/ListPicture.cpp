@@ -816,6 +816,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 			case PDF:
 				file.append(".pdf");
 				break;
+			default: ;
 			}
 
 			//Sauvegarde de l'image
@@ -854,7 +855,6 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 			{
 				int optionPicture;
 				int qualityPicture;
-				CLibPicture libPicture;
 				wxString folderPath = dlg.GetPath();
 				CSqlFindCriteria sqlFindCriteria;
 				InfoExportFile infoFile = exportFile.GetInfoExportFile();
@@ -919,6 +919,7 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 
 				if (infoFile.outputFormat != 0)
 				{
+					CLibPicture libPicture;
 					libPicture.SavePictureOption(infoFile.outputFormat, optionPicture, qualityPicture);
 				}
 
@@ -934,17 +935,6 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 					if (false == dialog.Update(i, message))
 						break;
 				}
-
-				/*
-				CopyFileDlg copyFile(this);
-				copyFile.SetSelectItem(&listItem);
-				copyFile.SetMode(2);
-				copyFile.SetDestinationFolder(folderPath);
-				copyFile.SetInfosFile(infoFile);
-				copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
-				copyFile.Start();
-				copyFile.ShowModal();
-				*/
 			}
 		}
 	}

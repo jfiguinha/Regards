@@ -26,22 +26,22 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 	choice_control->AppendString("Green");
 	choice_control->AppendString("Red");
 	choice_control->Select(0);
-	Connect(wxEVT_COMBOBOX, (wxObjectEventFunction)&CPicturePanel::OnChannelSelect);
+	Connect(wxEVT_COMBOBOX, reinterpret_cast<wxObjectEventFunction>(&CPicturePanel::OnChannelSelect));
 	processEnd = true;
 }
 
 void CPicturePanel::CreateHistogram()
 {
 	wxSize size = this->GetSize();
-	int neww = size.GetWidth();
-	int newh = size.GetHeight();
+	const int neww = size.GetWidth();
+	const int newh = size.GetHeight();
 
-	int chW = 0;
-	int chH = 0;
-	choice_control->GetSize(&chW, &chH);
+	int ch_w = 0;
+	int ch_h = 0;
+	choice_control->GetSize(&ch_w, &ch_h);
 
-	int width = neww - (marged * 2);
-	int height = newh - chH - (marged * 4);
+	const int width = neww - (marged * 2);
+	const int height = newh - ch_h - (marged * 4);
 
 	if (histogram == nullptr)
 		histogram = new CRegardsBitmap(width, height);
@@ -104,23 +104,23 @@ void CPicturePanel::UpdateScreenRatio()
 void CPicturePanel::OnPaint(wxPaintEvent& event)
 {
 	wxPaintDC dc(this);
-	wxRect rc = GetWindowRect();
+	const wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, colorBack);
 
 	int neww, newh;
 	dc.GetSize(&neww, &newh);
 
-	int chW = 0;
-	int chH = 0;
-	choice_control->GetSize(&chW, &chH);
+	int ch_w = 0;
+	int ch_h = 0;
+	choice_control->GetSize(&ch_w, &ch_h);
 
-	int xPos = (neww - chW) / 2;
+	int xPos = (neww - ch_w) / 2;
 	choice_control->SetPosition(wxPoint(xPos, marged));
 
 	CreateHistogram();
 
 	if (image != nullptr)
 	{
-		dc.DrawBitmap(*image, marged, marged * 2 + chH, false);
+		dc.DrawBitmap(*image, marged, marged * 2 + ch_h, false);
 	}
 }

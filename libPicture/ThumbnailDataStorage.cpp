@@ -3,7 +3,7 @@
 #include "ImageLoadingFormat.h"
 
 
-CThumbnailDataStorage::CThumbnailDataStorage(const wxString & filename)
+CThumbnailDataStorage::CThumbnailDataStorage(const wxString& filename)
 	: CThumbnailData(filename)
 {
 	localbitmap = nullptr;
@@ -34,11 +34,10 @@ wxImage CThumbnailDataStorage::GetwxImage()
 	return wxImage();
 }
 
-void CThumbnailDataStorage::SetBitmap(CImageLoadingFormat * bitmap)
+void CThumbnailDataStorage::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	if(bitmap->IsOk())
+	if (bitmap->IsOk())
 	{
 		localbitmap = bitmap->GetwxImage();
 	}
 }
-

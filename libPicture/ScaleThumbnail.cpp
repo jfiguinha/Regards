@@ -4,6 +4,7 @@
 #include <InterpolationBicubic.h>
 
 using namespace Regards::Picture;
+
 CScaleThumbnail::CScaleThumbnail(void)
 {
 }
@@ -17,26 +18,26 @@ CScaleThumbnail::~CScaleThumbnail(void)
 //-----------------------------------------------------------------
 //Calcul du ratio pour l'image plein écran
 //-----------------------------------------------------------------
-float CScaleThumbnail::CalculRatio(CRegardsBitmap * pBitmap, const int &xMax, const int &yMax)
+float CScaleThumbnail::CalculRatio(CRegardsBitmap* pBitmap, const int& xMax, const int& yMax)
 {
 	float newRatio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
-	if(pBitmap->GetBitmapWidth() > pBitmap->GetBitmapHeight())
-		newRatio = (float)xMax / (float)(pBitmap->GetBitmapWidth());
+	if (pBitmap->GetBitmapWidth() > pBitmap->GetBitmapHeight())
+		newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetBitmapWidth());
 	else
-		newRatio = (float)yMax / (float)(pBitmap->GetBitmapHeight());
+		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetBitmapHeight());
 
-	if((pBitmap->GetBitmapHeight() * newRatio) > yMax)
+	if ((pBitmap->GetBitmapHeight() * newRatio) > yMax)
 	{
-		newRatio = (float)yMax / (float)(pBitmap->GetBitmapHeight());
+		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetBitmapHeight());
 	}
 	else
 	{
-		if((pBitmap->GetBitmapWidth() * newRatio) > xMax)
+		if ((pBitmap->GetBitmapWidth() * newRatio) > xMax)
 		{
-			newRatio = (float)xMax / (float)(pBitmap->GetBitmapWidth());
+			newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetBitmapWidth());
 		}
 	}
 
@@ -46,55 +47,50 @@ float CScaleThumbnail::CalculRatio(CRegardsBitmap * pBitmap, const int &xMax, co
 //-----------------------------------------------------------------
 //Calcul du ratio pour l'image plein écran
 //-----------------------------------------------------------------
-float CScaleThumbnail::CalculRatio(const int &width, const int &height, const int &xMax, const int &yMax)
+float CScaleThumbnail::CalculRatio(const int& width, const int& height, const int& xMax, const int& yMax)
 {
 	float newRatio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (width > height)
-		newRatio = (float)xMax / (float)(width);
+		newRatio = static_cast<float>(xMax) / static_cast<float>(width);
 	else
-		newRatio = (float)yMax / (float)(height);
+		newRatio = static_cast<float>(yMax) / static_cast<float>(height);
 
 	if ((height * newRatio) > yMax)
 	{
-		newRatio = (float)yMax / (float)(height);
+		newRatio = static_cast<float>(yMax) / static_cast<float>(height);
 	}
 	else
 	{
 		if ((width * newRatio) > xMax)
 		{
-			newRatio = (float)xMax / (float)(width);
+			newRatio = static_cast<float>(xMax) / static_cast<float>(width);
 		}
 	}
 
 	return newRatio;
 }
 
-void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap * pBitmap, const int &width, const int &height)
+void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap* pBitmap, const int& width, const int& height)
 {
-
-
 	float newRatio = CalculRatio(pBitmap, width, height);
-	if(newRatio == 0.0)
+	if (newRatio == 0.0)
 		return;
 
 	int nTailleAffichageWidth = pBitmap->GetBitmapWidth() * newRatio;
 	int nTailleAffichageHeight = pBitmap->GetBitmapHeight() * newRatio;
 
-	
 
 	//RedrawPicture
 	//Création d'un nouveau bitmap à la bonne échelle
-	if(nTailleAffichageWidth != pBitmap->GetBitmapWidth() && nTailleAffichageHeight != pBitmap->GetBitmapHeight())
-	{	
-		CRegardsBitmap * scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);
+	if (nTailleAffichageWidth != pBitmap->GetBitmapWidth() && nTailleAffichageHeight != pBitmap->GetBitmapHeight())
+	{
+		auto scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);
 		CInterpolationBicubic imageScale;
 		imageScale.Execute(pBitmap, scaleBitmap);
 		pBitmap->SetBitmap(scaleBitmap->GetPtBitmap(), nTailleAffichageWidth, nTailleAffichageHeight);
 		delete scaleBitmap;
-
 	}
-
 }

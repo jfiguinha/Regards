@@ -6,7 +6,7 @@
 CInterpolationBilinear::CInterpolationBilinear()
 {
 	wX = nullptr;
-	 wY = nullptr;
+	wY = nullptr;
 }
 
 
@@ -20,8 +20,8 @@ CInterpolationBilinear::~CInterpolationBilinear()
 }
 
 
-
-void CInterpolationBilinear::CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft)
+void CInterpolationBilinear::CalculWeight(const int32_t& width, const int32_t& height, const float& ratioY,
+                                          const float& ratioX, const float& posTop, const float& posLeft)
 {
 	wX = new weightX[width];
 	wY = new weightX[height];
@@ -29,8 +29,8 @@ void CInterpolationBilinear::CalculWeight(const int32_t &width, const int32_t &h
 #pragma omp parallel for
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY + posTop;
-		int32_t valueB = (int32_t)posY;
+		float posY = static_cast<float>(y) * ratioY + posTop;
+		int32_t valueB = static_cast<int32_t>(posY);
 		float realB = posY - valueB;
 		wY[y].tabF[0] = Filter(-(-1.0f - realB));
 		wY[y].tabF[1] = Filter(-(0.0f - realB));
@@ -38,15 +38,15 @@ void CInterpolationBilinear::CalculWeight(const int32_t &width, const int32_t &h
 #pragma omp parallel for
 	for (auto x = 0; x < width; x++)
 	{
-		float posX = (float)x * ratioX + posLeft;
-		int32_t valueA = (int32_t)posX;
+		float posX = static_cast<float>(x) * ratioX + posLeft;
+		int32_t valueA = static_cast<int32_t>(posX);
 		float realA = posX - valueA;
 		wX[x].tabF[0] = Filter((-1.0f - realA));
 		wX[x].tabF[1] = Filter((0.0f - realA));
 	}
 }
 
-void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow)
+void CInterpolationBilinear::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const wxRect& rectToShow)
 {
 	int32_t width = Out->GetBitmapWidth();
 	int32_t height = Out->GetBitmapHeight();
@@ -54,14 +54,14 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 	int32_t widthIn = In->GetBitmapWidth();
 	int32_t heightIn = In->GetBitmapHeight();
 
-	float ratioX = float(widthIn) / float(rectToShow.width);
-	float ratioY = float(heightIn) / float(rectToShow.height);
+	float ratioX = static_cast<float>(widthIn) / static_cast<float>(rectToShow.width);
+	float ratioY = static_cast<float>(heightIn) / static_cast<float>(rectToShow.height);
 
-	weightX * wX = new weightX[width];
-	weightX * wY = new weightX[height];
+	auto wX = new weightX[width];
+	auto wY = new weightX[height];
 
-	float posTop = float(rectToShow.y) * ratioY;
-	float posLeft = float(rectToShow.x) * ratioY;
+	float posTop = static_cast<float>(rectToShow.y) * ratioY;
+	float posLeft = static_cast<float>(rectToShow.x) * ratioY;
 
 	CalculWeight(width, height, ratioY, ratioX, posTop, posLeft);
 
@@ -70,21 +70,21 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 	for (int32_t y = 0; y < height; y++)
 	{
 		//float posY = (float)y * ratioY;
-		float posY = float(y) * ratioY + posTop;
+		float posY = static_cast<float>(y) * ratioY + posTop;
 		//int64_t tailleYOut = y * width;
 
 		for (auto x = 0; x < width; x++)
 		{
-			float posX = float(x) * ratioX + posLeft;
-            CRgbaquad color;
+			float posX = static_cast<float>(x) * ratioX + posLeft;
+			CRgbaquad color;
 			Bilinear(color, Out, posX, posY, wY[y].tabF, wX[x].tabF);
-            Out->SetColorValue(x,y,color);
+			Out->SetColorValue(x, y, color);
 		}
 	}
 }
 
 
-void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
+void CInterpolationBilinear::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 {
 	int width = Out->GetBitmapWidth();
 	int height = Out->GetBitmapHeight();
@@ -92,34 +92,34 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 	int widthIn = In->GetBitmapWidth();
 	int heightIn = In->GetBitmapHeight();
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
+	float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+	float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
 	CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
 #pragma omp parallel for
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY;
+		float posY = static_cast<float>(y) * ratioY;
 		//int tailleYOut = y * width;
 
 		for (auto x = 0; x < width; x++)
 		{
-			float posX = (float)x * ratioX;
-            CRgbaquad color;
+			float posX = static_cast<float>(x) * ratioX;
+			CRgbaquad color;
 			Bilinear(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-            Out->SetColorValue(x,y,color);
+			Out->SetColorValue(x, y, color);
 		}
 	}
 }
 
 
-
-void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationBilinear::Bilinear(CRgbaquad& data, CRegardsBitmap* In, const float& x, const float& y, float* tabF1,
+                                      float* tabF)
 {
 	float nDenom = 0.0;
-	int valueA = (int)x;
-	int valueB = (int)y;
+	int valueA = static_cast<int>(x);
+	int valueB = static_cast<int>(y);
 
 	float r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
@@ -161,11 +161,12 @@ void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, con
 		}
 	}
 
-	data.SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
+	data.SetColor(static_cast<uint8_t>(r / nDenom), static_cast<uint8_t>(g / nDenom), static_cast<uint8_t>(b / nDenom),
+	              static_cast<uint8_t>(a / nDenom));
 }
 
 
-float CInterpolationBilinear::Filter(const float &f)
+float CInterpolationBilinear::Filter(const float& f)
 {
 	double m_dVal = fabs(f);
 	return (m_dVal < 1.0f ? 1.0f - m_dVal : 0.0);

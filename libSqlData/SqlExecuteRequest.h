@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlExecuteRequest(const wxString& databaseName);
-			~CSqlExecuteRequest();
+			virtual ~CSqlExecuteRequest();
 			int ExecuteRequestWithNoResult(const wxString& requestSQL);
 			int ExecuteRequest(const wxString& requestSQL);
 			bool ExecuteInsertBlobData(const wxString& requestSQL, const int& numCol, const void* zBlob,

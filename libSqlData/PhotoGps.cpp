@@ -9,56 +9,56 @@
 
 #include "PhotoGps.h"
 
-void CPhotoGps::SetId(const int &numId)
+void CPhotoGps::SetId(const int& numId)
 {
-    this->numId = numId;
+	this->numId = numId;
 }
 
 int CPhotoGps::GetId()
 {
-    return numId;
+	return numId;
 }
 
-void CPhotoGps::SetPath(const wxString &path)
+void CPhotoGps::SetPath(const wxString& path)
 {
-    this->path = path;
+	this->path = path;
 }
 
 wxString CPhotoGps::GetPath()
 {
-    return path;
+	return path;
 }
 
-void CPhotoGps::SetLatitude(const wxString &latitude)
+void CPhotoGps::SetLatitude(const wxString& latitude)
 {
-    this->latitude = latitude;
+	this->latitude = latitude;
 }
 
 wxString CPhotoGps::GetLatitude()
 {
-    return latitude;
+	return latitude;
 }
 
 double CPhotoGps::GetLatitudeNumber()
 {
-    double dlat = 0.0;
-    latitude.ToDouble(&dlat);
-    return dlat;
+	double dlat = 0.0;
+	latitude.ToDouble(&dlat);
+	return dlat;
 }
 
-void CPhotoGps::SetLongitude(const wxString &longitude)
+void CPhotoGps::SetLongitude(const wxString& longitude)
 {
-    this->longitude = longitude;
+	this->longitude = longitude;
 }
 
 wxString CPhotoGps::GetLongitude()
 {
-    return longitude;
+	return longitude;
 }
 
 double CPhotoGps::GetLongitudeNumber()
 {
-    double dlong = 0.0;
-    longitude.ToDouble(&dlong);
-    return dlong;
+	double dlong = 0.0;
+	longitude.ToDouble(&dlong);
+	return dlong;
 }

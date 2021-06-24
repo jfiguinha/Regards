@@ -341,7 +341,7 @@ void CThumbnail::ZoomOff()
 	if (positionSize < 1)
 		positionSize = 1;
 
-	int sizeIcone = TabSize[positionSize - 1];
+	const int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
 
 	this->Refresh();
@@ -419,7 +419,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	timerAnimation = new wxTimer(this, TIMER_ANIMATION);
 	Connect(TIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnAnimation), nullptr, this);
 
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	const wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
@@ -689,8 +689,7 @@ void CThumbnail::ProcessIdle()
 	}
 
 	int nbProcesseur = 1;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
+	if (CRegardsConfigParam * config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 	//int nbProcesseur = thread::hardware_concurrency();
 	vector<wxString> photoList;
@@ -723,18 +722,14 @@ void CThumbnail::ProcessIdle()
 				if (threadDataProcess == false)
 					return;
 
-				wxString filelocalName = iconeList->GetFilename(i);
-				if (filename == filelocalName)
+				if (wxString filelocalName = iconeList->GetFilename(i); filename == filelocalName)
 				{
-					CIcone* icone = iconeList->GetElement(i);
-					if (icone != nullptr)
+					if (CIcone * icone = iconeList->GetElement(i); icone != nullptr)
 					{
-						CThumbnailData* pThumbnailData = icone->GetData();
-						if (pThumbnailData != nullptr)
+						if (CThumbnailData * pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
 						{
-							bool isLoad = pThumbnailData->IsLoad();
-							bool isProcess = pThumbnailData->IsProcess();
-							if (!isProcess && !isLoad)
+							const bool isLoad = pThumbnailData->IsLoad();
+							if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
 							{
 								ProcessThumbnail(pThumbnailData);
 								nbProcess++;
@@ -752,7 +747,7 @@ void CThumbnail::ProcessIdle()
 		}
 	}
 
-	if (photoList.size() == 0)
+	if (photoList.empty())
 	{
 		processIdle = false;
 	}
@@ -761,13 +756,13 @@ void CThumbnail::ProcessIdle()
 void CThumbnail::UpdateMessage(wxCommandEvent& event)
 {
 	TRACE();
-	int nbPhoto = event.GetExtraLong();
-	auto thumbnailMessage = new CThumbnailMessage();
+	const int nbPhoto = event.GetExtraLong();
+	const auto thumbnailMessage = new CThumbnailMessage();
 	thumbnailMessage->nbPhoto = nbPhoto;
 	thumbnailMessage->thumbnailPos = thumbnailPos;
 	thumbnailMessage->nbElement = nbElementInIconeList;
 	thumbnailMessage->typeMessage = 3;
-	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	wxWindow* mainWnd = FindWindowById(MAINVIEWERWINDOWID);
 	wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
 	eventChange.SetClientData(thumbnailMessage);
 	eventChange.SetInt(3);
@@ -967,11 +962,10 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 		return;
 
 	int nbProcesseur = 1;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
+	if (CRegardsConfigParam * config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 
-	int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
+	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
 
 	if (preprocess_thumbnail)
 	{
@@ -979,13 +973,10 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 		{
 			if (pBitmapIcone != nullptr)
 			{
-				CThumbnailData* pThumbnailData = pBitmapIcone->GetData();
-
-				if (pThumbnailData != nullptr)
+				if (CThumbnailData * pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
 				{
-					bool isLoad = pThumbnailData->IsLoad();
-					bool isProcess = pThumbnailData->IsProcess();
-					if (!isProcess && !isLoad)
+					const bool isLoad = pThumbnailData->IsLoad();
+					if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
 					{
 						ProcessThumbnail(pThumbnailData);
 						nbProcess++;
@@ -1014,15 +1005,13 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 {
 	TRACE();
 
-	CThumbnailData* pThumbnailData = nullptr;
-
 
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	CIcone* pBitmapIcone = FindElement(xPos, yPos);
-	if (pBitmapIcone != nullptr)
+	if (CIcone * pBitmapIcone = FindElement(xPos, yPos); pBitmapIcone != nullptr)
 	{
+		CThumbnailData * pThumbnailData = nullptr;
 		pThumbnailData = pBitmapIcone->GetData();
 		if (pThumbnailData != nullptr)
 		{
@@ -1303,11 +1292,10 @@ void CThumbnail::CalculControlSize()
 	TRACE();
 	controlWidth = GetWidth();
 	controlHeight = GetHeight();
-	wxWindow* parent = this->GetParent();
 
-	if (parent != nullptr)
+	if (wxWindow * parent = this->GetParent(); parent != nullptr)
 	{
-		auto controlSize = new CControlSize();
+		const auto controlSize = new CControlSize();
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 		controlSize->controlWidth = controlWidth;
 		controlSize->controlHeight = controlHeight;
@@ -1323,9 +1311,7 @@ void CThumbnail::TestMaxX()
 {
 	TRACE();
 
-	long xValue = GetWidth() - GetWindowWidth();
-
-	if (posLargeur >= xValue)
+	if (long xValue = GetWidth() - GetWindowWidth(); posLargeur >= xValue)
 		posLargeur = xValue;
 
 	if (posLargeur < 0)
@@ -1351,9 +1337,7 @@ void CThumbnail::TestMaxY()
 {
 	TRACE();
 
-	long yValue = GetHeight() - GetWindowHeight();
-
-	if (posHauteur >= yValue)
+	if (long yValue = GetHeight() - GetWindowHeight(); posHauteur >= yValue)
 		posHauteur = yValue;
 
 	if (posHauteur < 0)
@@ -1367,6 +1351,7 @@ void CThumbnail::OnKeyUp(wxKeyEvent& event)
 	case WXK_CONTROL:
 		controlKeyPush = false;
 		break;
+	default: ;
 	}
 }
 
@@ -1392,13 +1377,14 @@ void CThumbnail::OnKeyDown(wxKeyEvent& event)
 	case WXK_CONTROL:
 		controlKeyPush = true;
 		break;
+	default: ;
 	}
 }
 
 void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
 	TRACE();
-	int move = 0;
+	int move;
 #ifdef __APPLE__
     
     if (event.m_wheelRotation == 1)
@@ -1447,6 +1433,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 			}
 		}
 		break;
+	default: ;
 	}
 }
 
@@ -1476,8 +1463,6 @@ void CThumbnail::InitScrollingPos()
 void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 {
 	TRACE();
-
-
 	auto filename = new wxString();
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(event.GetClientData());
 	if (threadLoadingBitmap == nullptr)
@@ -1553,9 +1538,9 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 	}
 	else
 	{
-		auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
-		event->SetClientData(threadLoadingBitmap);
-		wxQueueEvent(this, event);
+		auto wx_command_event = new wxCommandEvent(EVENT_ICONEUPDATE);
+		wx_command_event->SetClientData(threadLoadingBitmap);
+		wxQueueEvent(this, wx_command_event);
 	}
 	if (!timerAnimation->IsRunning())
 		timerAnimation->Start(50, true);

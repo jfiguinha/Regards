@@ -6,7 +6,7 @@ namespace Regards
 	{
 		class CSqlResult;
 
-		class CSqlCatalog : public CSqlExecuteRequest
+		class CSqlCatalog final : public CSqlExecuteRequest
 		{
 		public:
 			CSqlCatalog();

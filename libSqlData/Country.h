@@ -6,27 +6,26 @@ public:
 	CCountry();
 	~CCountry();
 
-	void SetId(const int &numId);
+	void SetId(const int& numId);
 	int GetId();
 
-	void SetCode(const wxString &code);
+	void SetCode(const wxString& code);
 	wxString GetCode();
 
-	void SetContinent(const wxString &continent);
+	void SetContinent(const wxString& continent);
 	wxString GetContinent();
 
-	void SetLibelle(const wxString &libelle);
+	void SetLibelle(const wxString& libelle);
 	wxString GetLibelle();
 
 	// this works for the last name
 
-	inline bool operator==(const CCountry& right)
+	bool operator==(const CCountry& right)
 	{
 		return (this->code == right.code);
 	}
 
 private:
-
 	int numId;
 	wxString code;
 	wxString continent;
@@ -34,6 +33,4 @@ private:
 };
 
 
-typedef std::vector<CCountry> CountryVector;
-
-
+using CountryVector = std::vector<CCountry>;

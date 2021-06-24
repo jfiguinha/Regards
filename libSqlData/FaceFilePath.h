@@ -6,6 +6,7 @@ public:
 	CFaceFilePath()
 	{
 	};
+
 	~CFaceFilePath()
 	{
 	};

@@ -10,7 +10,7 @@ using namespace Regards::Sqlite;
 #include <wx/filename.h>
 using namespace Regards::Picture;
 
-CThumbnailDataSQL::CThumbnailDataSQL(const wxString & filename, const bool &testValidity)
+CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
 	: CThumbnailData(filename)
 {
 	CLibPicture libPicture;
@@ -26,14 +26,14 @@ CThumbnailDataSQL::~CThumbnailDataSQL(void)
 
 int CThumbnailDataSQL::GetNbFrame()
 {
-    if(isVideo)// && nbFrame < 20)
-    {
-        CSqlThumbnailVideo sqlThumbnailVideo;
-        nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
-    }
-    if(nbFrame > 0)
-        return nbFrame;
-    return 1;
+	if (isVideo) // && nbFrame < 20)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
+	}
+	if (nbFrame > 0)
+		return nbFrame;
+	return 1;
 }
 
 bool CThumbnailDataSQL::TestBitmap()
@@ -46,49 +46,47 @@ bool CThumbnailDataSQL::TestBitmap()
 
 wxImage CThumbnailDataSQL::GetwxImage()
 {
+	if (isVideo) // && nbFrame < 20 )
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
+	}
 
-
-    if(isVideo)// && nbFrame < 20 )
-    {
-        CSqlThumbnailVideo sqlThumbnailVideo;
-        nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);  
-    }
-    
 	wxImage frameOut;
-    if(numFrame == 0 && nbFrame == 0)
-    {
-        CSqlThumbnail sqlThumbnail;
-        //printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
+	if (numFrame == 0 && nbFrame == 0)
+	{
+		CSqlThumbnail sqlThumbnail;
+		//printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename.Clone());
-    }
-    else
-    {
-        if(numFrame >= nbFrame)
-            numFrame = 1;
-        
-        if(numFrame < nbFrame)
-        {
-            if(isVideo)
-            {
-                CSqlThumbnailVideo sqlThumbnailVideo;
-                frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+	}
+	else
+	{
+		if (numFrame >= nbFrame)
+			numFrame = 1;
+
+		if (numFrame < nbFrame)
+		{
+			if (isVideo)
+			{
+				CSqlThumbnailVideo sqlThumbnailVideo;
+				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
 				if (!frameOut.IsOk())
 				{
 					numFrame = 1;
 					frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 	return frameOut;
 }
 
-void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
+void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	if(bitmap == nullptr)
+	if (bitmap == nullptr)
 		return;
 
-	if(bitmap->IsOk())
+	if (bitmap->IsOk())
 	{
 		//Enregistrement en base de données
 		CSqlThumbnail sqlThumbnail;
@@ -98,7 +96,7 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 			int compressMethod = 0;
 			unsigned long outputsize = 0;
 			bitmap->ConvertToRGB24(true);
-			uint8_t * dest = bitmap->GetJpegData(outputsize, compressMethod);
+			uint8_t* dest = bitmap->GetJpegData(outputsize, compressMethod);
 			//wxString hash = wxMD5::GetFileMD5(filename);
 			wxFileName file(filename);
 			wxULongLong sizeFile = file.GetSize();
@@ -109,11 +107,9 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat * bitmap)
 			bitmap->DestroyJpegData(dest, compressMethod);
 
 			dest = nullptr;
-		
+
 			this->filename = filename;
 			//pictureLoad = true;
-
 		}
 	}
 }
-

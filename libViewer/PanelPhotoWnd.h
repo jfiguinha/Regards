@@ -17,7 +17,7 @@ namespace Regards
 		{
 		public:
 			CPanelPhotoWnd(wxWindow* parent, wxWindowID id);
-			~CPanelPhotoWnd();
+			virtual ~CPanelPhotoWnd();
 
 		protected:
         

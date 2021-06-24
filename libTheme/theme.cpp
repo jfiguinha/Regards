@@ -35,7 +35,7 @@ CTheme::~CTheme()
 
 int CThemeXml::CalculElementSizeForScreen(const int& elementSize, const bool& width)
 {
-	float ratio = 1.0;
+	float ratio;
 	if (width)
 		ratio = CalculRatioX();
 	else
@@ -76,7 +76,6 @@ float CThemeXml::CalculRatioX()
 void CTheme::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("Theme");
 	if (node != nullptr)
 	{
@@ -84,7 +83,7 @@ void CTheme::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			wxString nodeName = child_node->name();
 			colorBack.Set(value);
 		}
 	}
@@ -107,15 +106,15 @@ CTheme& CTheme::operator=(const CTheme& other)
 void CThemeBitmapWindow::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("Theme");
 	if (node != nullptr)
 	{
+		wxString node_name;
 		xml_node<>* child_node = node->first_node("colorBack");
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			colorBack.Set(value);
 		}
 
@@ -123,7 +122,7 @@ void CThemeBitmapWindow::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			colorFullscreen.Set(value);
 		}
 
@@ -131,7 +130,7 @@ void CThemeBitmapWindow::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			colorScreen.Set(value);
 		}
 	}
@@ -177,15 +176,15 @@ CThemeFolder::CThemeFolder()
 void CThemeFolder::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeFolder");
 	if (node != nullptr)
 	{
+		wxString node_name;
 		xml_node<>* child_node = node->first_node("colorBack");
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			colorBack.Set(value);
 		}
 
@@ -193,7 +192,7 @@ void CThemeFolder::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			colorFont.Set(value);
 		}
 	}
@@ -242,10 +241,10 @@ CThemeFont& CThemeFont::operator=(const CThemeFont& other)
 void CThemeFont::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeFont");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("colorBack");
 		if (child_node != nullptr)
 		{
@@ -339,10 +338,10 @@ CThemeTreeElement::CThemeTreeElement()
 void CThemeTreeElement::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeElement");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("width");
 		if (child_node != nullptr)
 		{
@@ -398,10 +397,10 @@ CThemeTreeTriangle::CThemeTreeTriangle()
 void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeTriangle");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("width");
 		if (child_node != nullptr)
 		{
@@ -486,10 +485,10 @@ CThemeTreeDelete::CThemeTreeDelete()
 void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeDelete");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("width");
 		if (child_node != nullptr)
 		{
@@ -606,10 +605,10 @@ CThemeTreeSlide::~CThemeTreeSlide()
 void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeSlide");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		font.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("width");
@@ -736,10 +735,10 @@ CThemeTreeTexte& CThemeTreeTexte::operator=(const CThemeTreeTexte& other)
 void CThemeTreeTexte::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeTexte");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		font.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("width");
@@ -781,15 +780,15 @@ void CThemeTreeTexte::SaveXML(xml_document<>& doc, xml_node<>* sectionPosition)
 void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeCheckBox");
 	if (node != nullptr)
 	{
+		wxString node_name;
 		xml_node<>* child_node = node->first_node("width");
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			width = atoi(value.c_str());
 		}
 
@@ -797,7 +796,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			height = atoi(value.c_str());
 		}
 
@@ -805,7 +804,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			elementWidth = atoi(value.c_str());
 		}
 
@@ -813,7 +812,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			elementHeight = atoi(value.c_str());
 		}
 
@@ -821,7 +820,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		if (child_node != nullptr)
 		{
 			value = child_node->value();
-			nodeName = child_node->name();
+			node_name = child_node->name();
 			color.Set(value);
 		}
 	}
@@ -852,10 +851,10 @@ CThemeTreeCheckBox& CThemeTreeCheckBox::operator=(const CThemeTreeCheckBox& othe
 void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTreeListBox");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		font.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("width");
@@ -946,10 +945,10 @@ CThemeTreeListBox& CThemeTreeListBox::operator=(const CThemeTreeListBox& other)
 void CThemeTree::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTree");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		themeTriangle.LoadXML(node);
 		themeDelete.LoadXML(node);
 		themeSlide.LoadXML(node);
@@ -1071,10 +1070,10 @@ CThemeTree& CThemeTree::operator=(const CThemeTree& other)
 void CThemeScrollBar::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeScrollBar");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("rectangleSize");
 		if (child_node != nullptr)
 		{
@@ -1230,10 +1229,10 @@ void CThemeFastDrawBar::SaveXML(xml_document<>& doc, xml_node<>* sectionPosition
 void CThemeSeparationBar::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeSeparationBar");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		xml_node<>* child_node = node->first_node("firstColor");
 		if (child_node != nullptr)
 		{
@@ -1293,7 +1292,6 @@ CThemeSeparationBar& CThemeSeparationBar::operator=(const CThemeSeparationBar& o
 void CThemeSplitter::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeSplitter");
 	if (node != nullptr)
 	{
@@ -1303,6 +1301,7 @@ void CThemeSplitter::LoadXML(xml_node<>* root_node)
 		xml_node<>* child_node = node->first_node("colorBack");
 		if (child_node != nullptr)
 		{
+			wxString nodeName;
 			value = child_node->value();
 			nodeName = child_node->name();
 			colorBack.Set(value);
@@ -1343,10 +1342,10 @@ CThemeTitleBar::CThemeTitleBar()
 void CThemeTitleBar::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeTitleBar");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		font.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("height");
@@ -1430,10 +1429,10 @@ CThemeTitleBar& CThemeTitleBar::operator=(const CThemeTitleBar& other)
 void CThemePane::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemePane");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		themeTitle.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("height");
@@ -1497,10 +1496,10 @@ CThemeSlider::~CThemeSlider()
 void CThemeSlider::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeSlider");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		font.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("width");
@@ -1652,10 +1651,10 @@ CThemeBitmapInfos::CThemeBitmapInfos()
 void CThemeBitmapInfos::LoadXML(xml_node<>* root_node)
 {
 	wxString value;
-	wxString nodeName;
 	xml_node<>* node = root_node->first_node("ThemeBitmapInfos");
 	if (node != nullptr)
 	{
+		wxString nodeName;
 		themeFont.LoadXML(node);
 
 		xml_node<>* child_node = node->first_node("colorBack");

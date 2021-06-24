@@ -4,8 +4,11 @@
 #include "Interpolation.h"
 
 
-struct myFiltreInterpolationBicubicTask {
-	myFiltreInterpolationBicubicTask(CInterpolationBicubic * filtre, const int &x, const int &y, CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
+struct myFiltreInterpolationBicubicTask
+{
+	myFiltreInterpolationBicubicTask(CInterpolationBicubic* filtre, const int& x, const int& y, CRegardsBitmap* In,
+	                                 CRegardsBitmap* & Out, const wxRect& rectToShow, const int& flipH,
+	                                 const int& flipV, const int& angle)
 	{
 		this->x = x;
 		this->y = y;
@@ -30,24 +33,25 @@ struct myFiltreInterpolationBicubicTask {
 		float posY = 0;
 		float posX = 0;
 
-		CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
+		CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX,
+		                               posY);
 		filtre->Bicubic(color, In, posX, posY, filtre->wY[y].tabF, filtre->wX[x].tabF);
 		Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
 	}
 
 	int x;
 	int y;
-	CRegardsBitmap * In;
-	CRegardsBitmap * Out;
+	CRegardsBitmap* In;
+	CRegardsBitmap* Out;
 	wxRect rectToShow;
 	int flipH;
 	int flipV;
 	int angle;
-	CInterpolationBicubic * filtre;
+	CInterpolationBicubic* filtre;
 };
 
 
-CInterpolationBicubic::CInterpolationBicubic(const double & dWidth)
+CInterpolationBicubic::CInterpolationBicubic(const double& dWidth)
 {
 	wX = nullptr;
 	wY = nullptr;
@@ -64,7 +68,8 @@ CInterpolationBicubic::~CInterpolationBicubic()
 		delete[] wY;
 }
 
-void CInterpolationBicubic::CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft)
+void CInterpolationBicubic::CalculWeight(const int32_t& width, const int32_t& height, const float& ratioY,
+                                         const float& ratioX, const float& posTop, const float& posLeft)
 {
 	wX = new weightX[width];
 	wY = new weightX[height];
@@ -72,8 +77,8 @@ void CInterpolationBicubic::CalculWeight(const int32_t &width, const int32_t &he
 #pragma omp parallel for
 	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY + posTop;
-		int valueB = (int)posY;
+		float posY = static_cast<float>(y) * ratioY + posTop;
+		int valueB = static_cast<int>(posY);
 		float realB = posY - valueB;
 		wY[y].tabF[0] = Filter(-(-1.0f - realB));
 		wY[y].tabF[1] = Filter(-(0.0f - realB));
@@ -83,8 +88,8 @@ void CInterpolationBicubic::CalculWeight(const int32_t &width, const int32_t &he
 #pragma omp parallel for
 	for (auto x = 0; x < width; x++)
 	{
-		float posX = (float)x * ratioX + posLeft;
-		int valueA = (int)posX;
+		float posX = static_cast<float>(x) * ratioX + posLeft;
+		int valueA = static_cast<int>(posX);
 		float realA = posX - valueA;
 		wX[x].tabF[0] = Filter((-1.0f - realA));
 		wX[x].tabF[1] = Filter((0.0f - realA));
@@ -93,7 +98,8 @@ void CInterpolationBicubic::CalculWeight(const int32_t &width, const int32_t &he
 	}
 }
 
-void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
+void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const wxRect& rectToShow,
+                                    const int& flipH, const int& flipV, const int& angle)
 {
 	int32_t width = Out->GetBitmapWidth();
 	int32_t height = Out->GetBitmapHeight();
@@ -103,19 +109,18 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 
 	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
-		float ratioX = float(widthIn) / float(rectToShow.width);
-		float ratioY = float(heightIn) / float(rectToShow.height);
+		float ratioX = static_cast<float>(widthIn) / static_cast<float>(rectToShow.width);
+		float ratioY = static_cast<float>(heightIn) / static_cast<float>(rectToShow.height);
 
 		if (angle == 90 || angle == 270)
 		{
-			ratioX = float(heightIn) / float(rectToShow.height);
-			ratioY = float(widthIn) / float(rectToShow.width);
+			ratioX = static_cast<float>(heightIn) / static_cast<float>(rectToShow.height);
+			ratioY = static_cast<float>(widthIn) / static_cast<float>(rectToShow.width);
 		}
 
 		//float posY = 0;
 		//float posX = 0;
 
-		
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
@@ -130,13 +135,13 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 			}
 		}
 
-		tbb::parallel_for(
+		parallel_for(
 			tbb::blocked_range<size_t>(0, tasks.size()),
 			[&tasks](const tbb::blocked_range<size_t>& r)
-		{
-			for (size_t i = r.begin(); i < r.end(); ++i)
-				tasks[i]();
-		}
+			{
+				for (size_t i = r.begin(); i < r.end(); ++i)
+					tasks[i]();
+			}
 		);
 #else
 
@@ -161,7 +166,8 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 	}
 }
 
-void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const int &flipH, const int &flipV, const int &angle)
+void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const int& flipH, const int& flipV,
+                                    const int& angle)
 {
 	int width = Out->GetBitmapWidth();
 	int height = Out->GetBitmapHeight();
@@ -169,16 +175,15 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 	int widthIn = In->GetBitmapWidth();
 	int heightIn = In->GetBitmapHeight();
 
-	if(widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
-
-		float ratioX = (float)widthIn / (float)width;
-		float ratioY = (float)heightIn / (float)height;
+		float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+		float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
 		if (angle == 90 || angle == 270)
 		{
-			ratioX = (float)heightIn / (float)width;
-			ratioY = (float)widthIn / (float)height;
+			ratioX = static_cast<float>(heightIn) / static_cast<float>(width);
+			ratioY = static_cast<float>(widthIn) / static_cast<float>(height);
 		}
 
 		float posY = 0;
@@ -187,7 +192,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
 
-	#pragma omp parallel for
+#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
 			for (auto x = 0; x < width; x++)
@@ -206,7 +211,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 	}
 }
 
-void CInterpolationBicubic::Execute(wxImage * In, CRegardsBitmap * & Out)
+void CInterpolationBicubic::Execute(wxImage* In, CRegardsBitmap* & Out)
 {
 	int width = Out->GetBitmapWidth();
 	int height = Out->GetBitmapHeight();
@@ -214,27 +219,26 @@ void CInterpolationBicubic::Execute(wxImage * In, CRegardsBitmap * & Out)
 	int widthIn = In->GetWidth();
 	int heightIn = In->GetHeight();
 
-	if(widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
+		float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+		float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
-		float ratioX = (float)widthIn / (float)width;
-		float ratioY = (float)heightIn / (float)height;
-
-		uint8_t * data = Out->GetPtBitmap();
+		uint8_t* data = Out->GetPtBitmap();
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-	#pragma omp parallel for
+#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
-	#pragma omp parallel for
+#pragma omp parallel for
 			for (auto x = 0; x < width; x++)
 			{
-				float posY = (float)y * ratioY;
-				float posX = (float)x * ratioX;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 				CRgbaquad color;
 				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				int i =  (x << 2) + (y * (width << 2));// int i = Out->GetPosition(x, y);
+				int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
 				memcpy(data + i, &color, sizeof(CRgbaquad));
 				//Out->SetColorValue(x, y, color);
 			}
@@ -243,7 +247,7 @@ void CInterpolationBicubic::Execute(wxImage * In, CRegardsBitmap * & Out)
 }
 
 
-void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
+void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 {
 	int width = Out->GetBitmapWidth();
 	int height = Out->GetBitmapHeight();
@@ -251,41 +255,39 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 	int widthIn = In->GetBitmapWidth();
 	int heightIn = In->GetBitmapHeight();
 
-	if(widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
+		float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
+		float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
-		float ratioX = (float)widthIn / (float)width;
-		float ratioY = (float)heightIn / (float)height;
-
-		uint8_t * data = Out->GetPtBitmap();
+		uint8_t* data = Out->GetPtBitmap();
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-	#pragma omp parallel for
+#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
-	#pragma omp parallel for
+#pragma omp parallel for
 			for (auto x = 0; x < width; x++)
 			{
-				float posY = (float)y * ratioY;
-				float posX = (float)x * ratioX;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 				CRgbaquad color;
 				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				int i =  (x << 2) + (y * (width << 2));// int i = Out->GetPosition(x, y);
+				int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
 				memcpy(data + i, &color, sizeof(CRgbaquad));
 				//Out->SetColorValue(x, y, color);
 			}
 		}
 	}
-
 }
 
-void CInterpolationBicubic::Bicubic(CRgbaquad & data, wxImage * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationBicubic::Bicubic(CRgbaquad& data, wxImage* In, const float& x, const float& y, float* tabF1,
+                                    float* tabF)
 {
-
 	float nDenom = 0.0;
-	int valueA = (int)x;
-	int valueB = (int)y;
+	int valueA = static_cast<int>(x);
+	int valueB = static_cast<int>(y);
 
 	float r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
@@ -333,7 +335,7 @@ void CInterpolationBicubic::Bicubic(CRgbaquad & data, wxImage * In, const float 
 	if (valueB == 1)
 		posY = valueB;
 
-	uint8_t * datawxImage = In->GetData();
+	uint8_t* datawxImage = In->GetData();
 
 	for (auto n = debutN; n <= finN; n++)
 	{
@@ -342,23 +344,24 @@ void CInterpolationBicubic::Bicubic(CRgbaquad & data, wxImage * In, const float 
 			int position = (posX + m) * 3 + (posY + n) * In->GetWidth() * 3;
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
-			r += datawxImage[position+2] * f;
-			g += datawxImage[position+1] * f;
+			r += datawxImage[position + 2] * f;
+			g += datawxImage[position + 1] * f;
 			b += datawxImage[position] * f;
 			a += 0;
 		}
 	}
 
 
-	data.SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
+	data.SetColor(static_cast<uint8_t>(r / nDenom), static_cast<uint8_t>(g / nDenom), static_cast<uint8_t>(b / nDenom),
+	              static_cast<uint8_t>(a / nDenom));
 }
 
-void CInterpolationBicubic::Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationBicubic::Bicubic(CRgbaquad& data, CRegardsBitmap* In, const float& x, const float& y, float* tabF1,
+                                    float* tabF)
 {
-
 	float nDenom = 0.0;
-	int valueA = (int)x;
-	int valueB = (int)y;
+	int valueA = static_cast<int>(x);
+	int valueB = static_cast<int>(y);
 
 	float r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
@@ -421,15 +424,22 @@ void CInterpolationBicubic::Bicubic(CRgbaquad & data, CRegardsBitmap * In, const
 	}
 
 
-	data.SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
+	data.SetColor(static_cast<uint8_t>(r / nDenom), static_cast<uint8_t>(g / nDenom), static_cast<uint8_t>(b / nDenom),
+	              static_cast<uint8_t>(a / nDenom));
 }
 
-double CInterpolationBicubic::Filter(const double &f)
+double CInterpolationBicubic::Filter(const double& f)
 {
-	
-	return (f < -2.0 || f > 2.0) ? 0.0 : (
-		(f < -1.0) ? (2.0 + f)*(2.0 + f)*(2.0 + f) / 6.0 : (
-		(f < 0.0) ? (4.0 + f*f*(-6.0 - 3.0*f)) / 6.0 : (
-		(f < 1.0) ? (4.0 + f*f*(-6.0 + 3.0*f)) / 6.0 : (2.0 - f)*(2.0 - f)*(2.0 - f) / 6.0)));
-	
+	return (f < -2.0 || f > 2.0)
+		       ? 0.0
+		       : (
+			       (f < -1.0)
+				       ? (2.0 + f) * (2.0 + f) * (2.0 + f) / 6.0
+				       : (
+					       (f < 0.0)
+						       ? (4.0 + f * f * (-6.0 - 3.0 * f)) / 6.0
+						       : (
+							       (f < 1.0)
+								       ? (4.0 + f * f * (-6.0 + 3.0 * f)) / 6.0
+								       : (2.0 - f) * (2.0 - f) * (2.0 - f) / 6.0)));
 }

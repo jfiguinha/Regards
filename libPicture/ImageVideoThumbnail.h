@@ -39,7 +39,6 @@ class CImageLoadingFormat;
 class CImageVideoThumbnail
 {
 public:
-    
 	CImageVideoThumbnail()
 	{
 		image = nullptr;
@@ -48,6 +47,7 @@ public:
 		delay = 50;
 		timePosition = 0;
 	};
+
 	~CImageVideoThumbnail()
 	{
 		if (memoryDelete)
@@ -56,12 +56,12 @@ public:
 				delete image;
 		}
 	};
-    
-    CImageLoadingFormat * image;
-    int rotation;
+
+	CImageLoadingFormat* image;
+	int rotation;
 	uint32_t delay;
-    int percent;
-    int timePosition;
+	int percent;
+	int timePosition;
 	bool memoryDelete = true;
 };
 #endif

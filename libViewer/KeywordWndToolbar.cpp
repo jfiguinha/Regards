@@ -9,11 +9,10 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-
 CKeywordWndToolbar::CKeywordWndToolbar(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CKeywordManagementWindow", parent, id)
 {
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
@@ -37,15 +36,13 @@ CKeywordWndToolbar::CKeywordWndToolbar(wxWindow* parent, wxWindowID id)
 
 CKeywordWndToolbar::~CKeywordWndToolbar()
 {
-
 }
 
-void CKeywordWndToolbar::Init(const wxString & filename)
+void CKeywordWndToolbar::Init(const wxString& filename)
 {
 	this->filename = filename;
 	if (keywordWnd != nullptr)
 		keywordWnd->Init(filename);
-
 }
 
 void CKeywordWndToolbar::UpdateScreenRatio()

@@ -6,7 +6,6 @@
 #endif
 #include <ConvertUtility.h>
 #include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
 using namespace rapidxml;
 
 CThemeParam::CThemeParam()

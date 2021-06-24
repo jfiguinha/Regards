@@ -32,15 +32,15 @@ extern float value[256];
 #define ABS(A) ( (A) > 0 ? (A) : -(A) )
 
 unsigned int Chqdn3d::hqdn3d_lowpass_mul(int prev_mul,
-	int curr_mul,
-	short * coef)
+                                         int curr_mul,
+                                         short* coef)
 {
 	int d = (prev_mul - curr_mul) >> 4;
 	return curr_mul + coef[d];
 }
 
-void Chqdn3d::hqdn3d_precalc_coef(short * ct,
-	double dist25)
+void Chqdn3d::hqdn3d_precalc_coef(short* ct,
+                                  double dist25)
 {
 	int i;
 	double gamma, simil, c;
@@ -59,11 +59,11 @@ void Chqdn3d::hqdn3d_precalc_coef(short * ct,
 	ct[0] = (dist25 != 0);
 }
 
-void Chqdn3d::hqdn3d_denoise_temporal(unsigned char * frame_src,
-	unsigned char * frame_dst,
-	unsigned short * frame_ant,
-	int w, int h,
-	short * temporal)
+void Chqdn3d::hqdn3d_denoise_temporal(unsigned char* frame_src,
+                                      unsigned char* frame_dst,
+                                      unsigned short* frame_ant,
+                                      int w, int h,
+                                      short* temporal)
 {
 	int x, y;
 	unsigned int tmp;
@@ -75,8 +75,8 @@ void Chqdn3d::hqdn3d_denoise_temporal(unsigned char * frame_src,
 		for (x = 0; x < w; x++)
 		{
 			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-				frame_src[x] << 8,
-				temporal);
+			                                        frame_src[x] << 8,
+			                                        temporal);
 			frame_dst[x] = (tmp + 0x7F) >> 8;
 		}
 
@@ -87,14 +87,13 @@ void Chqdn3d::hqdn3d_denoise_temporal(unsigned char * frame_src,
 }
 
 
-
-void Chqdn3d::hqdn3d_denoise_spatial(unsigned char * frame_src,
-	unsigned char * frame_dst,
-	unsigned short * line_ant,
-	unsigned short * frame_ant,
-	int w, int h,
-	short * spatial,
-	short * temporal)
+void Chqdn3d::hqdn3d_denoise_spatial(unsigned char* frame_src,
+                                     unsigned char* frame_dst,
+                                     unsigned short* line_ant,
+                                     unsigned short* frame_ant,
+                                     int w, int h,
+                                     short* spatial,
+                                     short* temporal)
 {
 	int x, y;
 	unsigned int pixel_ant;
@@ -109,11 +108,11 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char * frame_src,
 	for (x = 0; x < w; x++)
 	{
 		line_ant[x] = tmp = pixel_ant = hqdn3d_lowpass_mul(pixel_ant,
-			frame_src[x] << 8,
-			spatial);
+		                                                   frame_src[x] << 8,
+		                                                   spatial);
 		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-			tmp,
-			temporal);
+		                                        tmp,
+		                                        temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 
@@ -127,42 +126,42 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char * frame_src,
 		for (x = 0; x < w - 1; x++)
 		{
 			line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],
-				pixel_ant,
-				spatial);
+			                                       pixel_ant,
+			                                       spatial);
 			pixel_ant = hqdn3d_lowpass_mul(pixel_ant,
-				frame_src[x + 1] << 8,
-				spatial);
+			                               frame_src[x + 1] << 8,
+			                               spatial);
 			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-				tmp,
-				temporal);
+			                                        tmp,
+			                                        temporal);
 			frame_dst[x] = (tmp + 0x7F) >> 8;
 		}
 		line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],
-			pixel_ant,
-			spatial);
+		                                       pixel_ant,
+		                                       spatial);
 		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-			tmp,
-			temporal);
+		                                        tmp,
+		                                        temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 }
 
-void Chqdn3d::hqdn3d_denoise(unsigned char * frame_src,
-	unsigned char * frame_dst,
-	unsigned short * line_ant,
-	unsigned short ** frame_ant_ptr,
-	int w,
-	int h,
-	short * spatial,
-	short * temporal)
+void Chqdn3d::hqdn3d_denoise(unsigned char* frame_src,
+                             unsigned char* frame_dst,
+                             unsigned short* line_ant,
+                             unsigned short** frame_ant_ptr,
+                             int w,
+                             int h,
+                             short* spatial,
+                             short* temporal)
 {
 	int x, y;
 	unsigned short* frame_ant = (*frame_ant_ptr);
 
 	if (!frame_ant)
 	{
-		unsigned char * src = frame_src;
-		(*frame_ant_ptr) = frame_ant = (unsigned short *)malloc(w*h * sizeof(unsigned short));
+		unsigned char* src = frame_src;
+		(*frame_ant_ptr) = frame_ant = static_cast<unsigned short*>(malloc(w * h * sizeof(unsigned short)));
 
 		for (y = 0; y < h; y++, frame_src += w, frame_ant += w)
 		{
@@ -179,25 +178,25 @@ void Chqdn3d::hqdn3d_denoise(unsigned char * frame_src,
 	if (spatial[0])
 	{
 		hqdn3d_denoise_spatial(frame_src,
-			frame_dst,
-			line_ant,
-			frame_ant,
-			w, h,
-			spatial,
-			temporal);
+		                       frame_dst,
+		                       line_ant,
+		                       frame_ant,
+		                       w, h,
+		                       spatial,
+		                       temporal);
 	}
 	else
 	{
 		hqdn3d_denoise_temporal(frame_src,
-			frame_dst,
-			frame_ant,
-			w, h,
-			temporal);
+		                        frame_dst,
+		                        frame_ant,
+		                        w, h,
+		                        temporal);
 	}
 }
 
 
-Chqdn3d::Chqdn3d(const int &w, const int &h, const double & LumSpac, const double & LumTmp)
+Chqdn3d::Chqdn3d(const int& w, const int& h, const double& LumSpac, const double& LumTmp)
 {
 	double spatial_luma = LumSpac;
 	double temporal_luma = HQDN3D_TEMPORAL_LUMA_DEFAULT * spatial_luma / HQDN3D_SPATIAL_LUMA_DEFAULT;
@@ -211,11 +210,11 @@ Chqdn3d::Chqdn3d(const int &w, const int &h, const double & LumSpac, const doubl
 	hqdn3d_precalc_coef(hqdn3d_coef[0], spatial_luma);
 	hqdn3d_precalc_coef(hqdn3d_coef[1], temporal_luma);
 
-	picture_y = new uint8_t[w*h];
-	y_out = new uint8_t[w*h];
+	picture_y = new uint8_t[w * h];
+	y_out = new uint8_t[w * h];
 
-	Frame = new unsigned short[w*h];
-	Line = new  unsigned short[w];
+	Frame = new unsigned short[w * h];
+	Line = new unsigned short[w];
 }
 
 Chqdn3d::~Chqdn3d()
@@ -238,7 +237,7 @@ Chqdn3d::~Chqdn3d()
 	picture_y = nullptr;
 }
 
-uint8_t * Chqdn3d::ApplyDenoise3D(uint8_t * picture_y, const int &w, const int &h)
+uint8_t* Chqdn3d::ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h)
 {
 	hqdn3d_denoise(picture_y, y_out, Line, &Frame, w, h, hqdn3d_coef[0], hqdn3d_coef[1]);
 	/*
@@ -252,7 +251,7 @@ uint8_t * Chqdn3d::ApplyDenoise3D(uint8_t * picture_y, const int &w, const int &
 	return y_out;
 }
 
-int Chqdn3d::ApplyDenoise3D(CRegardsBitmap * bitmapIn)
+int Chqdn3d::ApplyDenoise3D(CRegardsBitmap* bitmapIn)
 {
 	w = bitmapIn->GetBitmapWidth();
 	h = bitmapIn->GetBitmapHeight();

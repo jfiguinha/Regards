@@ -22,7 +22,7 @@
 #endif //MEDIAINFO_LIBRARY
 #include <string>
 #include <vector>
-#include <algorithm> 
+#include <algorithm>
 #include <cctype>
 #include <locale>
 #include <ConvertUtility.h>
@@ -44,97 +44,101 @@ static inline std::wstring &rtrim(std::wstring &s) {
 	return s;
 }
 */
-static inline std::wstring rtrim(std::wstring &s) {
-    auto no_space = [](char ch) -> bool {
-        return !std::isspace<char>(ch, std::locale::classic());
-    };
-    s.erase(std::find_if(s.rbegin(), s.rend(), no_space).base(), s.end());
-    return s;
+static inline std::wstring rtrim(std::wstring& s)
+{
+	auto no_space = [](char ch) -> bool
+	{
+		return !std::isspace<char>(ch, std::locale::classic());
+	};
+	s.erase(std::find_if(s.rbegin(), s.rend(), no_space).base(), s.end());
+	return s;
 }
 
 
-std::wstring CMediaInfo::delUnnecessary(std::wstring &str)
+std::wstring CMediaInfo::delUnnecessary(std::wstring& str)
 {
-    size_t size = str.length();
-    for(int j = 0; j<=size; j++)
-    {
-        for(int i = 0; i <=j; i++)
-        {
-            if(str[i] == ' ' && str[i+1] == ' ')
-            {
-                str.erase(str.begin() + i);
-            }
-            else if(str[0]== ' ')
-            {
-                str.erase(str.begin());
-            }
-            else if(str[i] == '\0' && str[i-1]== ' ')
-            {
-                str.erase(str.end() - 1);
-            }
-        }
-    }
-    return str;
+	size_t size = str.length();
+	for (int j = 0; j <= size; j++)
+	{
+		for (int i = 0; i <= j; i++)
+		{
+			if (str[i] == ' ' && str[i + 1] == ' ')
+			{
+				str.erase(str.begin() + i);
+			}
+			else if (str[0] == ' ')
+			{
+				str.erase(str.begin());
+			}
+			else if (str[i] == '\0' && str[i - 1] == ' ')
+			{
+				str.erase(str.end() - 1);
+			}
+		}
+	}
+	return str;
 }
 
-vector<CMetadata> CMediaInfo::SplitByLine(const wstring &value)
+vector<CMetadata> CMediaInfo::SplitByLine(const wstring& value)
 {
-    wstring categorie;
-    wstring data = value;
-    vector<CMetadata> listOfLine;
-    size_t position = 0;
-    do
-    {
+	wstring categorie;
+	wstring data = value;
+	vector<CMetadata> listOfLine;
+	size_t position = 0;
+	do
+	{
 #ifdef WIN32
 		position = data.find(L"\r\n");
 #else
         position = data.find(L"\n");
 #endif
-        if(position != std::string::npos)
-        {
-            wstring line = data.substr(0,position);
-#ifdef WIN32			
-			position+=2;
+		if (position != std::string::npos)
+		{
+			wstring line = data.substr(0, position);
+#ifdef WIN32
+			position += 2;
 #else
 			position++;
 #endif
-            if(line != L"")
-            {
-                size_t pos = line.find(L":");
-                if(pos != std::string::npos)
-                {
-                    CMetadata metadata;
-                    wstring key = line.substr(0,pos);pos+=2;
+			if (line != L"")
+			{
+				size_t pos = line.find(L":");
+				if (pos != std::string::npos)
+				{
+					CMetadata metadata;
+					wstring key = line.substr(0, pos);
+					pos += 2;
 					key = categorie + L"." + rtrim(key);
-                    metadata.key = key;
-                    metadata.value = line.substr(pos,line.length() - pos);
-                    listOfLine.push_back(metadata);
-                }
-                else
-                    categorie = line;
-            }
-            
-            data = data.substr(position, value.length() - position);
-        }
-    }while(position != std::string::npos);
-    return listOfLine;
+					metadata.key = key;
+					metadata.value = line.substr(pos, line.length() - pos);
+					listOfLine.push_back(metadata);
+				}
+				else
+					categorie = line;
+			}
+
+			data = data.substr(position, value.length() - position);
+		}
+	}
+	while (position != std::string::npos);
+	return listOfLine;
 }
 
 
-vector<CMetadata> CMediaInfo::ReadMetadata(const wxString &filename)
+vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 {
-    vector<CMetadata> metadata;
-    //Information about MediaInfo
-    MediaInfo MI;
-    String To_Display=MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
-    MI.Open(CConvertUtility::ConvertToStdWstring(filename));
-    std:wstring value = MI.Inform();
-    metadata = SplitByLine(value);
-    MI.Close();
-    return metadata;
+	vector<CMetadata> metadata;
+	//Information about MediaInfo
+	MediaInfo MI;
+	String To_Display = MI.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13")).c_str();
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
+std:wstring value = MI.Inform();
+	metadata = SplitByLine(value);
+	MI.Close();
+	return metadata;
 }
 
-int CMediaInfo::GetVideoRotation(const wxString &filename)
+int CMediaInfo::GetVideoRotation(const wxString& filename)
 {
 	MediaInfo MI;
 	wstring To_Display;

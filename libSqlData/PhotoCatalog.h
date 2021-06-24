@@ -6,10 +6,10 @@ public:
 	CPhotoCatalog();
 	~CPhotoCatalog();
 
-	void SetNumCatalog(const int &numCatalog);
+	void SetNumCatalog(const int& numCatalog);
 	int GetNumCatalog();
 
-	void SetLibelle(const wxString &libelle);
+	void SetLibelle(const wxString& libelle);
 	wxString GetLibelle();
 
 
@@ -18,4 +18,4 @@ private:
 	wxString libelle;
 };
 
-typedef std::vector<CPhotoCatalog> CatalogVector;
+using CatalogVector = std::vector<CPhotoCatalog>;

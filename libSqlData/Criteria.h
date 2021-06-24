@@ -6,13 +6,13 @@ public:
 	CCriteria();
 	~CCriteria();
 
-	void SetId(const int &numId);
+	void SetId(const int& numId);
 	int GetId();
 
-	void SetCategorieId(const int &numId);
+	void SetCategorieId(const int& numId);
 	int GetCategorieId();
 
-	void SetLibelle(const wxString &libelle);
+	void SetLibelle(const wxString& libelle);
 	wxString GetLibelle();
 
 private:
@@ -21,7 +21,4 @@ private:
 	wxString libelle;
 };
 
-typedef std::vector<CCriteria> CriteriaVector;
-
-
-
+using CriteriaVector = std::vector<CCriteria>;

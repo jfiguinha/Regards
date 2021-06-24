@@ -1,7 +1,7 @@
 #include <header.h>
 #include "ThumbnailData.h"
 
-CThumbnailData::CThumbnailData(const wxString & filename)
+CThumbnailData::CThumbnailData(const wxString& filename)
 {
 	timePosition = 0;
 	percent = 10;
@@ -45,12 +45,12 @@ CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
 	return *this;
 }
 
-void CThumbnailData::SetFilename(const wxString &filename)
+void CThumbnailData::SetFilename(const wxString& filename)
 {
 	this->filename = filename;
 }
 
-void CThumbnailData::SetNumPhotoId(const int &id)
+void CThumbnailData::SetNumPhotoId(const int& id)
 {
 	numPhotoId = id;
 }
@@ -69,7 +69,7 @@ int CThumbnailData::GetPercent()
 	return percent;
 }
 
-void CThumbnailData::SetTimePosition(const int &timePosition)
+void CThumbnailData::SetTimePosition(const int& timePosition)
 {
 	this->timePosition = timePosition;
 	int hour = timePosition / 3600;
@@ -109,12 +109,12 @@ wxString CThumbnailData::GetTimePositionLibelle()
 	return libelleTimePosition;
 }
 
-void CThumbnailData::SetPercent(const int &percent)
+void CThumbnailData::SetPercent(const int& percent)
 {
 	this->percent = percent;
 }
 
-void CThumbnailData::SetNumElement(const int &iNumElement)
+void CThumbnailData::SetNumElement(const int& iNumElement)
 {
 	numElement = iNumElement;
 }
@@ -141,7 +141,7 @@ bool CThumbnailData::IsProcess()
 	return isProcess;
 }
 
-void CThumbnailData::SetIsProcess(const bool &isProcess)
+void CThumbnailData::SetIsProcess(const bool& isProcess)
 {
 	this->isProcess = isProcess;
 }
@@ -151,12 +151,12 @@ bool CThumbnailData::IsLoading()
 	return pictureLoading;
 };
 
-void CThumbnailData::SetIsLoading(const bool &isLoading)
+void CThumbnailData::SetIsLoading(const bool& isLoading)
 {
 	pictureLoading = isLoading;
 }
 
-void CThumbnailData::SetTypeElement(const int &typeElement)
+void CThumbnailData::SetTypeElement(const int& typeElement)
 {
 	this->typeElement = typeElement;
 }
@@ -166,7 +166,7 @@ int CThumbnailData::GetTypeElement()
 	return this->typeElement;
 }
 
-void CThumbnailData::SetNumCatalog(const int &numCatalog)
+void CThumbnailData::SetNumCatalog(const int& numCatalog)
 {
 	this->numCatalog = numCatalog;
 }
@@ -176,7 +176,7 @@ int CThumbnailData::GetNumCatalog()
 	return this->numCatalog;
 }
 
-void CThumbnailData::SetNumCategorie(const int &numCategorie)
+void CThumbnailData::SetNumCategorie(const int& numCategorie)
 {
 	this->numCategorie = numCategorie;
 }
@@ -186,7 +186,7 @@ int CThumbnailData::GetNumCategorie()
 	return this->numCategorie;
 }
 
-void CThumbnailData::SetNumParent(const int &numParent)
+void CThumbnailData::SetNumParent(const int& numParent)
 {
 	this->numParent = numParent;
 }
@@ -196,7 +196,7 @@ int CThumbnailData::GetNumParent()
 	return this->numParent;
 }
 
-void CThumbnailData::SetKey(const wxString &key)
+void CThumbnailData::SetKey(const wxString& key)
 {
 	this->key = key;
 }
@@ -205,4 +205,3 @@ wxString CThumbnailData::GetKey()
 {
 	return this->key;
 }
-

@@ -48,7 +48,7 @@ namespace Regards
 
 			void OpenFile(const wxString &fileToOpen);
 
-			bool GetProcessEnd();
+			bool GetProcessEnd() override;
 			void OnAddFolder(wxCommandEvent& event);
             void OnOpenFileOrFolder(wxCommandEvent& event);
 			wxString GetFilename();
@@ -99,9 +99,9 @@ namespace Regards
 
 			void OnUpdateFolder(wxCommandEvent& event);
 			
-			void Resize();
+			void Resize() override;
 			void ExportVideo(const wxString& filename, const wxString& filenameOutput = "");
-			void ProcessIdle();
+			void ProcessIdle() override;
 			void OnIdle(wxIdleEvent& evt);
 			void OnEndThumbnail(wxCommandEvent& event);
 			static void CheckMD5(void * param);
