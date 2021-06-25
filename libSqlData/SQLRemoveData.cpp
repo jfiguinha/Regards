@@ -84,7 +84,7 @@ bool CSQLRemoveData::DeleteFaceDatabase()
 bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 {
 	vector<wxString> listPhoto;
-
+	CSqlExecuteRequest::BeginTransaction();
 	
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseFolderThumbnail(numFolder);
@@ -116,6 +116,7 @@ bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 	for(wxString photoPath : listPhoto)
 		photoCategorie.DeletePhotoProcessing(photoPath);
 
+	CSqlExecuteRequest::CommitTransection();
 	return 0;
 }
 

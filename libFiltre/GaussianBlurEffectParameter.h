@@ -1,6 +1,6 @@
-#include "EffectParameter.h"
-#pragma once
 
+#pragma once
+#include "EffectParameter.h"
 class CGaussianBlurEffectParameter : public CEffectParameter
 {
 public:

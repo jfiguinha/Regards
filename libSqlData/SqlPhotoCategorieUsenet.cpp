@@ -9,7 +9,7 @@ using namespace Regards::Sqlite;
 
 
 CSqlPhotoCategorieUsenet::CSqlPhotoCategorieUsenet()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), type(0)
 {
 }
 
@@ -73,6 +73,7 @@ int CSqlPhotoCategorieUsenet::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					filename = sqlResult->ColumnDataText(i);
 					break;
+				default: ;
 				}
 			}
 		}

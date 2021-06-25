@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlPhotoGPS::CSqlPhotoGPS(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), numPhoto(0), numFolderId(0), nbResult(0)
 {
 	this->_sqlLibTransaction = _sqlLibTransaction;
 	this->useTransaction = useTransaction;
@@ -54,7 +54,8 @@ int CSqlPhotoGPS::TraitementResult(CSqlResult * sqlResult)
                 break; 
             case 2:
                 numFolderId = sqlResult->ColumnDataInt(i);
-                break;   
+                break;
+            default: ;
             }
         }
             

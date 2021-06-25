@@ -1,6 +1,5 @@
-#include "EffectParameter.h"
 #pragma once
-
+#include "EffectParameter.h"
 class CBm3dEffectParameter : public CEffectParameter
 {
 public:

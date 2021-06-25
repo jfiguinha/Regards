@@ -10,10 +10,9 @@
 //const double pi = 3.14159265358979323846264338327950288419716939937510;
 using namespace Regards::FiltreEffet;
 
-CLensFlare::CLensFlare(void)
+CLensFlare::CLensFlare(void): pBitmap(nullptr)
 {
 	iColorIntensity = 100;
-
 }
 
 

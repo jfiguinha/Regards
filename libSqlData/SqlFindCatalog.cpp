@@ -36,6 +36,7 @@ int CSqlFindCatalog::TraitementResult(CSqlResult * sqlResult)
 			case 1:
 				_catalog.SetLibelle(sqlResult->ColumnDataText(i));
 				break;
+			default: ;
 			}
 		}
 		m_catalogVector->push_back(_catalog);

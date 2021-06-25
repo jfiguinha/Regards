@@ -65,6 +65,7 @@ int CSqlVersion::TraitementResult(CSqlResult * sqlResult)
                     case 0:
                         result = sqlResult->ColumnDataText(i);
                         break;
+                    default: ;
                 }
             }
         }

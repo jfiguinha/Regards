@@ -1,6 +1,5 @@
-#include "EffectParameter.h"
 #pragma once
-
+#include "EffectParameter.h"
 class CWaveEffectParameter : public CEffectParameter
 {
 public:
@@ -10,7 +9,7 @@ public:
 		radius = 20;
 		scale = 2;
 	};
-	~CWaveEffectParameter(){};
+	~CWaveEffectParameter() override {};
 
 	short height;
 	int radius;

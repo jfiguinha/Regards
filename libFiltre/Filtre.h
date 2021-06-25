@@ -268,16 +268,15 @@ namespace Regards
 		class CPosterize : public CFiltre
 		{
 		public:
-
-			CPosterize(const int &level, const float &gamma = 0.6)
+			explicit CPosterize(const int &level, const float &gamma = 0.6): gammaFactor(0)
 			{
 				long _levels = max(2, min(16, level));
 				_offset = 256 / _levels;
 
 				for (auto i = 0; i < 256; i++)
 					posterize[i] = (uint8_t)(i * _offset);
-
-			};
+			}
+			;
 			~CPosterize(void){};
 
 		protected:

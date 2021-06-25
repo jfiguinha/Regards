@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlPhotoCategorie();
-			~CSqlPhotoCategorie();
+			~CSqlPhotoCategorie() override;
 			bool LoadPhotoCategorie(PhotoCategorieVector * photoCategorieVector, const int &numLangue);
 
 		private:

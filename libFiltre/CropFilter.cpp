@@ -9,6 +9,7 @@
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include <Crop.h>
+#include <effect_id.h>
 using namespace Regards::Filter;
 
 CCropFilter::CCropFilter()

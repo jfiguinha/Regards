@@ -19,19 +19,22 @@
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include "PicturePanel.h"
-
+#include <effect_id.h>
 using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Control;
+/**
+ * \brief 
+ */
 #define WM_UPDATEINFOS 1
 wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
-	: CTabWindow("CPanelInfosWnd", parent, id)
+	: CTabWindow("CPanelInfosWnd", parent, id), id_(id)
 {
 	infosFileWnd = nullptr;
 	firstTime = true;
@@ -145,9 +148,9 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		CMainParam* config = CMainParamInit::getInstance();
-		if (config != nullptr)
-			checkValidity = config->GetCheckThumbnailValidity();
+		CMainParam* main_param = CMainParamInit::getInstance();
+		if (main_param != nullptr)
+			checkValidity = main_param->GetCheckThumbnailValidity();
 
 		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID,
 		                                                   checkValidity);
@@ -512,6 +515,7 @@ void CPanelInfosWnd::LoadInfo()
 		infosToolbar->SetHistogramPush();
 		windowVisible = WM_HISTOGRAM;
 		break;
+	default: ;
 	}
 	//}
 	this->ForceRefresh();
@@ -547,7 +551,7 @@ wxString CPanelInfosWnd::MapsUpdate()
 	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	auto fileGeolocalisation = new CFileGeolocation(urlServer);
 	fileGeolocalisation->SetFile(filename, notGeo);
-	wxString url = L"http://www.openstreetmap.org/?mlat=";
+	wxString url = L"http://www.openstreetmap.org/?mlat=";  // NOLINT(clang-diagnostic-shadow)
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"&mlon=");
 	url.append(fileGeolocalisation->GetLongitude());

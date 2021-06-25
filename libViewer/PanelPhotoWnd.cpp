@@ -54,9 +54,9 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 		CSqlFindFolderCatalog folderCatalog;
 		folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
 
-		for (CFolderCatalog folderCatalog : folderList)
+		for (CFolderCatalog folder_catalog : folderList)
 		{
-			folderWnd->SetPath(folderCatalog.GetFolderPath());
+			folderWnd->SetPath(folder_catalog.GetFolderPath());
 			if (folderWnd->GetTreeCtrl() != nullptr)
 			{
 				wxTreeItemId treeitem;
@@ -176,7 +176,6 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	if (windowMain != nullptr)
 	{
-		wxString firstFile = "";
 		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
 		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
@@ -184,7 +183,7 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 		if (isChecked)
 		{
 			folderWnd->AddPath(getSelectPath);
-			firstFile = AddFolder(getSelectPath);
+			const wxString firstFile = AddFolder(getSelectPath);
 			evt.SetInt(0);
 			wxString* newPath = new wxString(firstFile);
 			evt.SetClientData(newPath);
@@ -226,6 +225,7 @@ void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)
 			}
 		}
 		break;
+	default: ;
 	}
 }
 
@@ -320,9 +320,6 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
 		if (idFolder != -1)
 		{
-			CSqlInsertFile sqlInsertFile;
-			sqlInsertFile.RemovePhotos(idFolder);
-
 			CSQLRemoveData sqlRemoveData;
 			sqlRemoveData.DeleteFolder(idFolder);
 		}

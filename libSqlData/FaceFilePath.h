@@ -3,9 +3,10 @@
 class CFaceFilePath
 {
 public:
-	CFaceFilePath()
+	CFaceFilePath(): numFace(0), numPhoto(0)
 	{
-	};
+	}
+	;
 
 	~CFaceFilePath()
 	{

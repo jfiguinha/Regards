@@ -27,9 +27,8 @@ struct myFiltreTask {
 };
 #endif
 
-CFiltre::CFiltre()
+CFiltre::CFiltre(): bmWidth(0), bmHeight(0), pBitmap(nullptr), bitmapWidthSize(0), pictureSize(0)
 {
-
 }
 
 
@@ -110,10 +109,10 @@ void CFiltre::Compute()
 
 void CSharpenMasking::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
 {
-	int position = GetPosition(x, y);
-	int origin_r = pBitsSrc[position];
-	int origin_g = pBitsSrc[position + 1];
-	int origin_b = pBitsSrc[position + 2];
+	const int position = GetPosition(x, y);
+	const int origin_r = pBitsSrc[position];
+	const int origin_g = pBitsSrc[position + 1];
+	const int origin_b = pBitsSrc[position + 2];
 
 	int _r = 0;
 	int _g = 0;
@@ -166,12 +165,12 @@ void CGrayScale::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 
 void CBlackAndWhite::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
 {
-	uint8_t iValue = 0;
-	int position = GetPosition(x, y);
-	double moyenne = ((pBitsSrc[position] * 0.144f) + (pBitsSrc[position + 1] * 0.587f) + (pBitsSrc[position + 2] * 0.299f));
-	moyenne < 128.0 ? iValue = 0 : iValue = 255;
-	uint8_t alpha = pBitsSrc[position + 3];
-	uint8_t data[4] = { iValue, iValue, iValue, alpha };
+	uint8_t i_value;
+	const int position = GetPosition(x, y);
+	const double moyenne = ((pBitsSrc[position] * 0.144f) + (pBitsSrc[position + 1] * 0.587f) + (pBitsSrc[position + 2] * 0.299f));
+	moyenne < 128.0 ? i_value = 0 : i_value = 255;
+	const uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t data[4] = { i_value, i_value, i_value, alpha };
 	memcpy(pBitsDest + position, data, 4);
 
 
@@ -247,7 +246,6 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 	float sum_y = 0;
 	float sum_z = 0;
 
-	float weight_x = 0;
 	float weight_y = 0;
 	float weight_z = 0;
 	
@@ -310,8 +308,8 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 			dist_x *= 1.f/fSize/fSize;
 			dist_y *= 1.f/(2*fSize+1)/(2*fSize+1);
 			dist_z *= 1.f/(2*fSize+1)/(2*fSize+1);
-			
-			weight_x = exp(-1.f/sigma/sigma*dist_x);
+
+			const float weight_x = exp(-1.f / sigma / sigma * dist_x);
 			weight_y = exp(-1.f/sigma/sigma*dist_y);
 			weight_z = exp(-1.f/sigma/sigma*dist_z);
 			

@@ -20,7 +20,7 @@ using namespace Regards::OpenCL;
 
 bool CFilterWindowParam::supportOpenCL = false;
 
-CFilterWindowParam::CFilterWindowParam()
+CFilterWindowParam::CFilterWindowParam(): source(nullptr), m_pShader(nullptr)
 {
 	supportOpenCL = COpenCLEngine::SupportOpenCL();
 }
@@ -53,7 +53,7 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 		wxBitmap bitmap = wxBitmap(image);
 		wxMemoryDC dc;
 		dc.SelectObject(bitmap);
-		wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
+		
 		wxImage render = filtreEffet->GetwxImage();
 		Drawing(&dc, bitmapViewer, m_cDessin);
 		dc.SelectObject(wxNullBitmap);
@@ -152,6 +152,7 @@ void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filt
 		filtre->Rotate90();
 		filtre->FlipHorizontal();
 		break;
+	default: ;
 	}
 }
 
@@ -185,13 +186,13 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			CImageLoadingFormat image;
 			bitmap->RotateExif(bitmapViewer->GetOrientation());
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-			filtre->RenderEffect(numFiltre, effectParameter);
+			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+			filtre_effet->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
-			imageLoad->SetPicture(filtre->GetBitmap(true));
+			imageLoad->SetPicture(filtre_effet->GetBitmap(true));
 			imageLoad->SetOrientation(0);
 
-			delete filtre;
+			delete filtre_effet;
 		}
 	}
 

@@ -110,6 +110,7 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					photoList->push_back(sqlResult->ColumnDataText(i));
 					break;
+				default: ;
 				}
 			}
 
@@ -124,6 +125,7 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					priority = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 
@@ -138,6 +140,7 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					fullpath = sqlResult->ColumnDataText(i);
 					break;
+				default: ;
 				}
 			}
 

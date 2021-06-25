@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "circle.h"
 #include <RGBAQuad.h>
@@ -19,8 +20,8 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 
 	uint8_t * data = image.GetData();
 
-	int width = image.GetWidth();
-	int height = image.GetHeight();
+	const int width = image.GetWidth();
+	const int height = image.GetHeight();
 
 #pragma omp parallel for
     for (auto y = 0; y < height; y++)
@@ -32,7 +33,7 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
 			{
 				if (alpha != nullptr)
-					alpha[i] = alpha[i] * (1.0f - fAlpha);
+					alpha[i] *= (1.0f - fAlpha);
 			}
 		}
 	}
@@ -76,11 +77,10 @@ wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaill
 					alpha[i] = 0;
 				if (fValue <= rayon)
 				{
-					int valeurAlpha = 255 - (int)((fValue / (float)rayon) * 255.0f);
+					const int valeurAlpha = 255 - (int)((fValue / (float)rayon) * 255.0f);
 					if (image.HasAlpha())
 						alpha[i] = valeurAlpha;
 				}
-				i++;
 			}
 		}
 	}
@@ -100,30 +100,21 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 	float b = 1.0f - a;
 	vector<CRgbaquad> listColor;
 
-	int rayon = iTaille/2;
+	const int rayon = iTaille/2;
 
-	int i = 0;
-
-	for (i = 0; i <= iTaille; i++)
+	for (int i = 0; i <= iTaille; i++)
 	{
-		float fAlpha;
-		//double m_iIntensity;
-
-		//int j = iTaille - i;
-
-		//Test nouvelle version de l'intensité
-
 		float k = (float)i / (float)iTaille;
 
-		fAlpha = a * (k * k) + b * k;
+		float f_alpha = a * (k * k) + b * k;
 
-		if (fAlpha < 0.0f)
-			fAlpha = 0.0f;
+		if (f_alpha < 0.0f)
+			f_alpha = 0.0f;
 
-		HSB m_value = { iColor, static_cast<long>(iColorIntensity * fAlpha), 100 };
+		HSB m_value = { iColor, static_cast<long>(iColorIntensity * f_alpha), 100 };
 		CRgbaquad m_rgbValue;
 		CColor::HSBToRGB(m_value, m_rgbValue);
-		m_rgbValue.SetAlpha(fAlpha * 255.0f);
+		m_rgbValue.SetAlpha(f_alpha * 255.0f);
 		listColor.push_back(m_rgbValue);
 
 	}
@@ -152,7 +143,7 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 			int i = y * width + x;
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
 			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
+				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
 				int distance = (int)fValue;
 				alpha[i] = 0;
 				if (fValue <= rayon)
@@ -188,6 +179,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	for (i = iTaille - iWidth; i <= iTaille; i++)
 	{
 		int j = iTaille - i;
+		/*
 		if (!(j < 0))
 		{
 			double m_iIntensity = (double)i / (double)100;
@@ -200,7 +192,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 
 
 		}
-
+		*/
 		HSB m_value = { iNb * j, 50, 100 };
 		CRgbaquad m_rgbValue;
 		CColor::HSBToRGB(m_value, m_rgbValue);
@@ -229,39 +221,38 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 #pragma omp parallel for
         for (auto x = 0; x < width; x++)
 		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
+			int i1 = y * width + x;
+			if (data[i1 * 3] == 0 && data[i1 * 3 + 1] == 0 && data[i1 * 3 + 2] == 0)
 			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
+				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
 				int distance = (int)fValue;
-				alpha[i] = 0;
+				alpha[i1] = 0;
 			
 				if (distance <= rayon && distance >= (rayon - iWidth))
 				{
 					int position = iWidth - (rayon - distance);
-					data[i * 3] = listColor[position].GetRed();
-					data[i * 3 + 1] = listColor[position].GetGreen();
-					data[i * 3 + 2] = listColor[position].GetBlue();
-					alpha[i] = 255 - (fAlpha2 * 255.0f);
+					data[i1 * 3] = listColor[position].GetRed();
+					data[i1 * 3 + 1] = listColor[position].GetGreen();
+					data[i1 * 3 + 2] = listColor[position].GetBlue();
+					alpha[i1] = 255 - (fAlpha2 * 255.0f);
 				}	
 				else
 				{
 					int position = iWidth - (rayon - distance);
 					if (position > 0)
 					{
-						data[i * 3] = listColor[iWidth].GetRed();
-						data[i * 3 + 1] = listColor[iWidth].GetGreen();
-						data[i * 3 + 2] = listColor[iWidth].GetBlue();
+						data[i1 * 3] = listColor[iWidth].GetRed();
+						data[i1 * 3 + 1] = listColor[iWidth].GetGreen();
+						data[i1 * 3 + 2] = listColor[iWidth].GetBlue();
 					}
 					else
 					{
-						data[i * 3] = listColor[0].GetRed();
-						data[i * 3 + 1] = listColor[0].GetGreen();
-						data[i * 3 + 2] = listColor[0].GetBlue();
+						data[i1 * 3] = listColor[0].GetRed();
+						data[i1 * 3 + 1] = listColor[0].GetGreen();
+						data[i1 * 3 + 2] = listColor[0].GetBlue();
 					}
 				}
 			}
-			i++;
 		}
 	}
 
@@ -311,11 +302,7 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 		else
 		{
 			double m_iIntensity = (double)i / m_dCent;
-
-			m_iIntensity = asin(m_iIntensity);
-
-			double m = (m_iIntensity * 90) / pi;
-
+			double m = (asin(m_iIntensity) * 90) / pi;
 			m_iIntensity = exp(-m*m*0.006)*0.50 + exp(-m*0.03)*(1 - 0.50);
 
 			fAlpha = 1.0f - m_iIntensity;

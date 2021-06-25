@@ -16,11 +16,13 @@ namespace Regards
 			int ExecuteRequest(const wxString& requestSQL);
 			bool ExecuteInsertBlobData(const wxString& requestSQL, const int& numCol, const void* zBlob,
 			                           const int& nBlob);
-			int64_t GetLastId();
+			//virtual int64_t GetLastId();
 
+			static void BeginTransaction();
+			static void CommitTransection();
+		
 		protected:
-			void BeginTransaction();
-			void CommitTransection();
+
 
 			bool useTransaction;
 			CSqlLib* _sqlLibTransaction;

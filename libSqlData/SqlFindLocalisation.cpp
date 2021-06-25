@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFindLocalisation::CSqlFindLocalisation()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), localisationVector(nullptr)
 {
 }
 
@@ -33,6 +33,7 @@ int CSqlFindLocalisation::TraitementResult(CSqlResult * sqlResult)
 			case 0:
 				value = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		localisationVector->push_back(value);

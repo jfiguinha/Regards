@@ -12,7 +12,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <effect_id.h>
 #include "TreeElementValue.h"
 using namespace Regards::Filter;
 

@@ -1,6 +1,5 @@
-#include "EffectParameter.h"
 #pragma once
-
+#include "EffectParameter.h"
 class CNlmeansEffectParameter : public CEffectParameter
 {
 public:
@@ -10,7 +9,7 @@ public:
 		bSize = 1;
 		sigma = 1.0f;
 	};
-	~CNlmeansEffectParameter(){};
+	~CNlmeansEffectParameter() override {};
 
 	int fSize;
 	int bSize;

@@ -36,6 +36,7 @@
 #include <OilPaintingFilter.h>
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
+#include <effect_id.h>
 using namespace Regards::Filter;
 
 map<int, CFilterWindowParam*> CFiltreData::filterList;
@@ -185,7 +186,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
         filterEffect = new  COilPaintingFilter();
         break;
     }
-    break;
 
     case IDM_SHARPENMASKING:
     {
@@ -287,6 +287,7 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 	case IDM_CROP:
 		filterEffect = new CCropFilter();
 		break;
+    default: ;
 	}  
     return filterEffect;
 }

@@ -8,7 +8,6 @@
 
 #pragma once
 #include <FilterWindowParam.h>
-#include <effect_id.h>
 #include <map>
 class CFiltreEffet;
 class CEffectParameter;

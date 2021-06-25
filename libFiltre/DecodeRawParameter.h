@@ -33,8 +33,6 @@ public:
 		medPasses = 0;
 		noautobright = false;
 		autobright = 0.0;
-		//Need to implement
-		use_fuji_rotate = false;
 		exp_correc = false; 
 		adjust_maximum_thr =  0.75;
 		use_fuji_rotate = false;

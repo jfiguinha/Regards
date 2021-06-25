@@ -26,7 +26,7 @@ namespace Regards
 			bool DeleteCriteriaCatalog(const int64_t &numCatalog);
 			bool DeleteCriteriaAlone();
             void RemoveUnusedCriteria();
-			int GetLastId();
+			int GetCriteriaId();
 		private:
 
 			int TraitementResult(CSqlResult * sqlResult);

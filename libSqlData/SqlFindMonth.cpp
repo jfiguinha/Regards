@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFindMonth::CSqlFindMonth()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), monthVector(nullptr)
 {
 }
 
@@ -33,6 +33,7 @@ int CSqlFindMonth::TraitementResult(CSqlResult * sqlResult)
 			case 0:
 				value = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		monthVector->push_back(value);

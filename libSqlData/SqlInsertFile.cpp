@@ -2,7 +2,6 @@
 #include "SqlInsertFile.h"
 #include <libPicture.h>
 #include <wx/dir.h>
-#include <ConvertUtility.h>
 #include "SqlResult.h"
 #include <algorithm>
 using namespace Regards::Picture;
@@ -10,7 +9,7 @@ using namespace Regards::Sqlite;
 
 
 CSqlInsertFile::CSqlInsertFile()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_photosVector(nullptr), listPathFile(nullptr), listPhoto(nullptr)
 {
 	numPhoto = 0;
 	type = 0;
@@ -230,12 +229,6 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 	return i;
 }
 
-bool CSqlInsertFile::RemovePhotos(const int &idFolder)
-{
-	return true;
-	//return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA WHERE NumPhoto in (SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + ")") != -1) ? true : false;
-}
-
 bool CSqlInsertFile::GetPhotos(PhotosVector * photosVector)
 {
     m_photosVector = photosVector;
@@ -283,6 +276,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
                         case 3:
                             photoLocal.SetIsCriteriaInsert(sqlResult->ColumnDataInt(i));
                             break;
+                        default: ;
                         }
                     } 
                     return nbResult;      
@@ -312,6 +306,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 					case 3:
 						_cPhoto.SetIsCriteriaInsert(sqlResult->ColumnDataInt(i));
 						break;
+					default: ;
 					}
 				}
 				m_photosVector->push_back(_cPhoto);
@@ -329,6 +324,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 						case 0:
 							path = sqlResult->ColumnDataText(i);
 							break;
+						default: ;
 						}
 					}
 					listPathFile->push_back(path);
@@ -346,6 +342,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 						case 0:
 							id = sqlResult->ColumnDataInt(i);
 							break;
+						default: ;
 						}
 					}
 					listPhoto->push_back(id);
@@ -362,10 +359,12 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 					case 0:
 						numPhoto = sqlResult->ColumnDataInt(i);
 						break;
+					default: ;
 					}
 				}
 			}
 			break;
+		default: ;
 		}
 		nbResult++;
 	}

@@ -26,9 +26,8 @@ bool CDeepLearning::UnlockOpenCLDnn()
 vector<int> CDeepLearning::FindFace(CRegardsBitmap* pictureData)
 {
 	bool fastDetection = true;
-	bool isLoading = false;
 	muLoading.lock();
-	isLoading = isload;
+	const bool isLoading = isload;
 	muLoading.unlock();
 
 	CRegardsConfigParam* param = CParamInit::getInstance();
@@ -60,9 +59,8 @@ void CDeepLearning::DetectEyes(CRegardsBitmap* pBitmap)
 {
 	bool fastDetection = true;
 	std::vector<wxRect> listEye;
-	bool isLoading = false;
 	muLoading.lock();
-	isLoading = isload;
+	const bool isLoading = isload;
 	muLoading.unlock();
 
 	CRegardsConfigParam* param = CParamInit::getInstance();
@@ -78,9 +76,8 @@ void CDeepLearning::DetectEyes(CRegardsBitmap* pBitmap)
 
 bool CDeepLearning::IsResourceReady()
 {
-	bool isLoading = false;
 	muLoading.lock();
-	isLoading = isload;
+	const bool isLoading = isload;
 	muLoading.unlock();
 	return isLoading;
 }
@@ -88,9 +85,8 @@ bool CDeepLearning::IsResourceReady()
 int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 {
 	bool fastDetection = true;
-	bool isLoading = false;
 	muLoading.lock();
-	isLoading = isload;
+	const bool isLoading = isload;
 	muLoading.unlock();
 
 	CRegardsConfigParam* param = CParamInit::getInstance();
@@ -110,9 +106,8 @@ bool CDeepLearning::FindFaceCompatible(const int& numFace)
 {
 	bool returnValue = false;
 	bool fastDetection = true;
-	bool isLoading = false;
 	muLoading.lock();
-	isLoading = isload;
+	const bool isLoading = isload;
 	muLoading.unlock();
 
 	CRegardsConfigParam* param = CParamInit::getInstance();

@@ -7,7 +7,7 @@ using namespace Regards::FiltreEffet;
 #define PI 3.141592653589793f
 #endif
 
-CWaveFilter::CWaveFilter()
+CWaveFilter::CWaveFilter(): _waveWidth(0), _waveHeight(0), _weHaveWaves(false), _scale(0)
 {
 	_activeBuffer = 0;
 	_waves = nullptr;
@@ -71,9 +71,9 @@ void CWaveFilter::ProcessWaves()
 			//damping
 			if (GetWaveData(x, y, newBuffer) != 0)
 			{
-				short value = GetWaveData(x, y, newBuffer);
-				value -= (short)(GetWaveData(x, y, newBuffer) >> 4);
-				SetWaveData(x, y, newBuffer, value);
+				short data = GetWaveData(x, y, newBuffer);
+				data -= static_cast<short>(GetWaveData(x, y, newBuffer) >> 4);
+				SetWaveData(x, y, newBuffer, data);
 				wavesFound = true;
 			}
 

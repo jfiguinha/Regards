@@ -16,6 +16,7 @@
 #include <OpenCLContext.h>
 #include <wx/mimetype.h>
 #include <GLTexture.h>
+#include <effect_id.h>
 #include <RenderBitmapOpenGL.h>
 #include "PageCurlFilter.h"
 #include "MoveEffectTexture.h"

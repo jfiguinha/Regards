@@ -21,10 +21,9 @@ CLine::~CLine()
 void CLine::MidpointLine(CRegardsBitmap * bitmap, const int &xFrom, const int &yFrom, const int &xTo, const int &yTo, const CRgbaquad &m_color, const float &fAlpha, const bool &m_bAntialiasing)
 {
 	int x, y;
-	float a = 0.0f, b = 0.0f, fValue = 0.0f;
 
-	a = ((float)(yTo - yFrom) / (float)(xTo - xFrom));
-	b = yFrom - (a * xFrom);
+	auto a = ((float)(yTo - yFrom) / (float)(xTo - xFrom));
+	auto b = yFrom - (a * xFrom);
 
 	x = xFrom;
 	y = yFrom;
@@ -36,7 +35,7 @@ void CLine::MidpointLine(CRegardsBitmap * bitmap, const int &xFrom, const int &y
 
 		x++;
 
-		fValue = a * x + b;
+		const float fValue = a * x + b;
 
 		//Définition de l'antialiasing
 

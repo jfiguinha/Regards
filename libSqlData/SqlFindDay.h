@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlFindDay();
-			~CSqlFindDay();
+			~CSqlFindDay() override;
 			bool SearchUniqueCriteria(vector<wxString> * dayVector, const wxString &month, const wxString &year);
 
 		private:

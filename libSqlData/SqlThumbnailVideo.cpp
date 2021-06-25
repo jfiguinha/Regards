@@ -10,7 +10,7 @@ using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), nbElement(0), numPhoto(0)
 {
 	type = 0;
 	find = false;
@@ -185,11 +185,6 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		//int width;
-		//int height;
-       // int numVideo;
-        //int percent;
-      // int timePosition;
 		wxString filename = "";
         
 		switch (type)
@@ -198,7 +193,6 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
             
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
-                // FullPath, numVideo, rotation, percent, timePosition, width, height
 				switch (i)
 				{
                 case 0:
@@ -210,6 +204,7 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
                 case 2:
                     videoThumbnail->timePosition = sqlResult->ColumnDataInt(i);
                     break;
+                default: ;
 				}
 			}
 			break;
@@ -222,6 +217,7 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					find = true;
 					break;
+				default: ;
 				}
 			}
 			break;
@@ -233,6 +229,7 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					nbElement = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 			break;  
@@ -245,6 +242,7 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					numPhoto = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 			break;
@@ -258,9 +256,11 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 						numPhoto = sqlResult->ColumnDataInt(i);
 						listPhoto.push_back(numPhoto);
 						break;
+					default: ;
 					}
 				}
 			break;
+		default: ;
 		}
 
 		nbResult++;

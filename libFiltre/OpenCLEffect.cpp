@@ -103,13 +103,13 @@ int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const 
 		COpenCLFilter openclFilter(context);
 		if (preview && paramOutput != nullptr)
 		{
-			int _width = widthOut;
-			int _height = heightOut;
+			_width = widthOut;
+			_height = heightOut;
 			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
-			int _width = width;
+			_width = width;
 			_height = height;
 			output = openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input->GetValue(), width, height);
 		}
@@ -159,35 +159,12 @@ int COpenCLEffect::OilPaintingEffect(const int& size, const int& dynRatio)
 
 int COpenCLEffect::Bm3d(const int& fSigma)
 {
-	/*
-	int _width = 0;
-	int _height = 0;
-	cl_mem output = nullptr;
-	if (context != nullptr)
-	{
-		COpenCLFilter openclFilter(context);
-		if (preview && paramOutput != nullptr)
-		{
-			_width = widthOut;
-			_height = heightOut;
-			output = openclFilter.Bm3d(paramOutput->GetValue(), widthOut, heightOut, fSigma);
-		}
-		else
-		{
-			_width = width;
-			_height = height;
-			output = openclFilter.Bm3d(input->GetValue(), width, height, fSigma);
-		}
-		SetOutputValue(output, _width, _height);
-	}
-	*/
-	int _width = 256;
-	int _height = 256;
-
 	cl_mem yPicture = nullptr;
 
 	if (context != nullptr)
 	{
+		int _height = 256;
+		int _width = 256;
 		COpenCLFilter openclFilter(context);
 		//int size = 512;
 

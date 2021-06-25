@@ -1,6 +1,5 @@
-#include "EffectParameter.h"
 #pragma once
-
+#include "EffectParameter.h"
 class CBrightAndContrastEffectParameter : public CEffectParameter
 {
 public:

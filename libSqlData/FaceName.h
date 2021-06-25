@@ -3,9 +3,10 @@
 class CFaceName
 {
 public:
-	CFaceName()
+	CFaceName(): numFace(0), isSelectable(0)
 	{
-	};
+	}
+	;
 
 	~CFaceName()
 	{

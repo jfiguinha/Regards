@@ -13,7 +13,8 @@ using namespace std;
 const int dxdy[][2] = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};	// Region Growing
 
 // Constructor
-Point5D::Point5D(){
+Point5D::Point5D(): l(0), a(0), b(0)
+{
 	x = -1;
 	y = -1;
 }
@@ -206,9 +207,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 	}
 //--------------------------------------------------------------------
 
-//----------------------- Segmentation ------------------------------
-	int RegionNumber = 0;			// Reigon number
-	int label = -1;					// Label number
+int label = -1;					// Label number
 	float *Mode = new float [ROWS * COLS * 3];					// Store the Lab color of each region
 	int *MemberModeCount = new int [ROWS * COLS];				// Store the number of each region
 	memset(MemberModeCount, 0, ROWS * COLS * sizeof(int));		// Initialize the MemberModeCount
@@ -276,7 +275,7 @@ void CMeanShift::MSSegmentation(Mat& Img){
 			}
 		}
 	}
-	RegionNumber = label + 1;										// Get region number
+	//int RegionNumber = label + 1;										// Get region number
 	
 	// Get result image from Mode array
 	for(int i = 0; i < ROWS; i++){

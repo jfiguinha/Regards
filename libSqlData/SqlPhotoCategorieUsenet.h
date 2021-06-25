@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CSqlPhotoCategorieUsenet();
-			~CSqlPhotoCategorieUsenet();
+			~CSqlPhotoCategorieUsenet() override;
 			vector<wxString> GetPhotoListTreatment();
 			bool InsertPhotoProcessing(const wxString &path);
 			bool InsertPhotoCategorie(const int &numPhoto, const int &categorie, const wxString &label);

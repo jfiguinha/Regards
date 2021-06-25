@@ -252,9 +252,6 @@
     <ClInclude Include="CropFilter.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="BitmapFusionEffectParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapDisplay.h">
       <Filter>window\main</Filter>
     </ClInclude>

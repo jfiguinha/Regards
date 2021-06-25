@@ -8,7 +8,7 @@ using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
 CSqlFindPhotos::CSqlFindPhotos()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_photosVector(nullptr), m_listPhoto(nullptr)
 {
 	typeResult = 0;
 }
@@ -256,12 +256,14 @@ int CSqlFindPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					table_name = sqlResult->ColumnDataText(i);
 					break;
+				default: ;
 				}
 			}
 			nbResult++;
 		}
 	}
 		break;
+	default: ;
 	}
 
 	return nbResult;
@@ -312,6 +314,7 @@ int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
 				_cPhoto.dayofweek = sqlResult->ColumnDataInt(i);
 				_cPhoto.dayName = DayName[_cPhoto.dayofweek];
 				break;
+			default: ;
 			}
 		}
 		m_photosVector->push_back(_cPhoto);
@@ -343,6 +346,7 @@ int CSqlFindPhotos::TraitementResultPhoto(CSqlResult * sqlResult)
 			case 3:
 				_cPhoto.SetGpsInfos(sqlResult->ColumnDataText(i));
 				break;
+			default: ;
 			}
 		}
 		m_photosVector->push_back(_cPhoto);
@@ -364,6 +368,7 @@ int CSqlFindPhotos::TraitementResultNumPhoto(CSqlResult * sqlResult)
 			case 0:
 				m_listPhoto->push_back(sqlResult->ColumnDataInt(i));
 				break;
+			default: ;
 			}
 		}
 		nbResult++;

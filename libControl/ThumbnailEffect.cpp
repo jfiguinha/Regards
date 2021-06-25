@@ -16,6 +16,7 @@
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
 #include <Tracing.h>
+#include <effect_id.h>
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Control;

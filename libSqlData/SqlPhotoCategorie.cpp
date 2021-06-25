@@ -40,6 +40,7 @@ int CSqlPhotoCategorie::TraitementResult(CSqlResult * sqlResult)
 			case 1:
 				_photoCategorie.SetLibelle(sqlResult->ColumnDataText(i));
 				break;
+			default: ;
 			}
 		}
 		m_PhotoCategorieVector->push_back(_photoCategorie);

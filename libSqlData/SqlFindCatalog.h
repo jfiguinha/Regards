@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CSqlFindCatalog();
-			~CSqlFindCatalog();
+			~CSqlFindCatalog() override;
 
 			bool GetCatalog(CatalogVector * catalogVector);
 

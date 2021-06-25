@@ -5,7 +5,7 @@ using namespace Regards::Sqlite;
 
 
 CSqlFindFolderCatalog::CSqlFindFolderCatalog()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), m_catalogFolderVector(nullptr), nbCatalog(0), typeRequest(0)
 {
 }
 
@@ -43,6 +43,7 @@ int CSqlFindFolderCatalog::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					nbCatalog = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 		}
@@ -62,6 +63,7 @@ int CSqlFindFolderCatalog::TraitementResult(CSqlResult * sqlResult)
 				case 2:
 					_foldercatalog.SetFolderPath(sqlResult->ColumnDataText(i));
 					break;
+				default: ;
 				}
 			}
 			m_catalogFolderVector->push_back(_foldercatalog);

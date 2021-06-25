@@ -115,6 +115,7 @@ int CColor::HSBToRGB(HSB &HSBValue, CRgbaquad &rgb)
 					rgb = CRgbaquad(nL * 255,nP * 255,nQ * 255);
 				}
 				break;
+			default: ;
 		}
 
 	}
@@ -129,40 +130,37 @@ int CColor::HSBToRGB(HSB &HSBValue, CRgbaquad &rgb)
 
 int CColor::RGBToHSB(HSB &HSBValue, CRgbaquad &rgb)
 {
-	float nTemp = 0;
-	float lMin = 0, lMax = 0;
-	float R = 0, G = 0, B = 0, lDelta = 0;
+	float r = rgb.GetFRed();
+	float G = rgb.GetFGreen();
+	float B = rgb.GetFBlue();
 
-	R = rgb.GetFRed();
-	G = rgb.GetFGreen();
-	B = rgb.GetFBlue();
-  
-	lMax = (R > G) ? ((R > B) ? R : B) : ((G > B) ? G : B);
-	lMin = (R < G) ? ((R < B) ? R : B) : ((G < B) ? G : B);
+	const float lMax = (r > G) ? ((r > B) ? r : B) : ((G > B) ? G : B);
+	const float lMin = (r < G) ? ((r < B) ? r : B) : ((G < B) ? G : B);
 
-	lDelta = lMax - lMin;
+	const float lDelta = lMax - lMin;
 
 	HSBValue.Brightness = (lMax * 100) / 255;
 
 	if(lMax > 0)
 	{
+		float n_temp = 0;
 		HSBValue.Saturation = (lDelta / lMax) * 100;
 		if(lDelta > 0)
 		{
-			if(lMax == R)
+			if(lMax == r)
 			{
-				nTemp = (G - B) / lDelta;
+				n_temp = (G - B) / lDelta;
 			}
 			else if(lMax == G)
 			{
-				nTemp = 2 + (B - R) / lDelta;
+				n_temp = 2 + (B - r) / lDelta;
 			}
 			else
 			{
-				nTemp = 4 + (R - G) / lDelta;
+				n_temp = 4 + (r - G) / lDelta;
 			}
 		}	
-		HSBValue.Hue = nTemp * 60;
+		HSBValue.Hue = n_temp * 60;
 		if(HSBValue.Hue < 0)
 		{
 			HSBValue.Hue = HSBValue.Hue + 360;

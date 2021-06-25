@@ -81,6 +81,7 @@ int CSqlGps::TraitementResult(CSqlResult * sqlResult)
                     case 3:
                         photoGps.SetLongitude(sqlResult->ColumnDataText(i));
                         break;
+                    default: ;
                 }
             }
             photogpsVector->push_back(photoGps);

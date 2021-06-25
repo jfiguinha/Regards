@@ -13,7 +13,7 @@ using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 CSqlResource::CSqlResource(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
-	: CSqlExecuteRequest(L"ResourceDB")
+	: CSqlExecuteRequest(L"ResourceDB"), typeResult(0), memFile(nullptr), id(0)
 {
 	this->_sqlLibTransaction = _sqlLibTransaction;
 	this->useTransaction = useTransaction;
@@ -81,9 +81,9 @@ wxString CSqlResource::GetText(const wxString& idName)
 
 void CSqlResource::InsertOpenGLShader(const wstring &idName, const wstring &mimeType, const wstring &filename)
 {
-	wxString data = readFileBytes(filename);
+	const wxString data = readFileBytes(filename);
 	char * out = new char[data.size()];
-	int taille = LZ4_compress(data.c_str(), out, data.size());
+	const int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenglResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
@@ -93,9 +93,9 @@ void CSqlResource::InsertOpenGLShader(const wstring &idName, const wstring &mime
 
 void CSqlResource::InsertOpenCLFloat(const wstring& idName, const wstring& mimeType, const wstring& filename)
 {
-	wxString data = readFileBytes(filename);
+	const wxString data = readFileBytes(filename);
 	char* out = new char[data.size()];
-	int taille = LZ4_compress(data.c_str(), out, data.size());
+	const int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenclFloatResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
@@ -105,9 +105,9 @@ void CSqlResource::InsertOpenCLFloat(const wstring& idName, const wstring& mimeT
 
 void CSqlResource::InsertOpenCLUchar(const wstring& idName, const wstring& mimeType, const wstring& filename)
 {
-	wxString data = readFileBytes(filename);
+	const wxString data = readFileBytes(filename);
 	char* out = new char[data.size()];
-	int taille = LZ4_compress(data.c_str(), out, data.size());
+	const int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenclUcharResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
@@ -117,9 +117,9 @@ void CSqlResource::InsertOpenCLUchar(const wstring& idName, const wstring& mimeT
 
 void CSqlResource::InsertVector(const wstring &idName, const wstring &filename)
 {
-	wxString data = readFileBytes(filename);
+	const wxString data = readFileBytes(filename);
 	char * out = new char[data.size()];
-	int taille = LZ4_compress(data.c_str(), out, data.size());
+	const int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO VectorResource (idName, size, data) VALUES('%s', %d, ?)", idName.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 2, out, taille);
@@ -261,9 +261,9 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 {
     id = 0;
 	int nbResult = 0;
-	wxString idName;
-	wxString mimeType;
-	//int depth;
+	//wxString mimeType;
+	//wxString idName;
+	//id, mimeType, width, height, size, data
 	memFile = new CPictureData();
 
 	while (sqlResult->Next())
@@ -271,15 +271,16 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
         
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-			//id, mimeType, width, height, size, data
+
 			switch (i)
 			{
+
 			case 0:
-                idName = sqlResult->ColumnDataText(i);
+                sqlResult->ColumnDataText(i);
 				break;
 
 			case 1:
-				mimeType = sqlResult->ColumnDataText(i);
+				//mimeType = sqlResult->ColumnDataText(i);
 				break;
 
 			case 2:
@@ -321,6 +322,7 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 					}
 					break;
 				}
+            default: ;
 			}
 		}
 		nbResult++;
@@ -332,20 +334,21 @@ int CSqlResource::TraitementResultText(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
 	int size_file = 0;
-	wxString idName;
-	wxString mimeType;
+	//wxString idName;
+	//wxString mimeType;
 	while (sqlResult->Next())
 	{
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
+
 			switch (i)
 			{
 			case 0:
-				idName = sqlResult->ColumnDataText(i);
+				//idName = sqlResult->ColumnDataText(i);
 				break;
 
 			case 1:
-				mimeType = sqlResult->ColumnDataText(i);
+				//mimeType = sqlResult->ColumnDataText(i);
 				break;
 
 			case 2:
@@ -358,7 +361,7 @@ int CSqlResource::TraitementResultText(CSqlResult * sqlResult)
 				{
 					int k = 0;
 					char * out = new char[size_file+1];
-					const char * data = (const char *)sqlResult->ColumnDataBlob(i);
+					const char * data = static_cast<const char*>(sqlResult->ColumnDataBlob(i));
 					LZ4_decompress_safe(data, out, size, size_file);
 					out[size_file] = '\0';
 					for(k = 0;k < size_file;k++)
@@ -369,6 +372,7 @@ int CSqlResource::TraitementResultText(CSqlResult * sqlResult)
 					delete[] out;
 				}
 				break;
+
 			}
 		}
 		nbResult++;
@@ -381,16 +385,18 @@ int CSqlResource::TraitementResultVector(CSqlResult * sqlResult)
 {
     int nbResult = 0;
     int size_file = 0;
-    wxString idName;
-    wxString mimeType;
+	//wxString idName;
+	//wxString mimeType;
     while (sqlResult->Next())
     {
         for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
         {
+
+        	
             switch (i)
             {
                 case 0:
-                    idName = sqlResult->ColumnDataText(i);
+                   // idName = sqlResult->ColumnDataText(i);
                     break;
                     
                 case 1:
@@ -398,12 +404,12 @@ int CSqlResource::TraitementResultVector(CSqlResult * sqlResult)
                     break;
                     
                 case 2:
-                    int size = sqlResult->ColumnDataBlobSize(i);
+	                const int size = sqlResult->ColumnDataBlobSize(i);
                     if (size > 0)
                     {
 							int k = 0;
 							char * out = new char[size_file+1];
-							const char * data = (const char *)sqlResult->ColumnDataBlob(i);
+							const char * data = static_cast<const char*>(sqlResult->ColumnDataBlob(i));
 							LZ4_decompress_safe(data, out, size, size_file);
 							out[size_file] = '\0';
 							for(k = 0;k < size_file;k++)
@@ -424,8 +430,8 @@ int CSqlResource::TraitementResultVector(CSqlResult * sqlResult)
 int CSqlResource::TraitementResultLibelle(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
-	wxString idName;
-	int langid;
+	//wxString idName;
+	//int langid;
 	while (sqlResult->Next())
 	{
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
@@ -433,14 +439,15 @@ int CSqlResource::TraitementResultLibelle(CSqlResult * sqlResult)
 			switch (i)
 			{
 			case 0:
-				idName = sqlResult->ColumnDataText(i);
+				//idName = sqlResult->ColumnDataText(i);
 				break;
 			case 1:
-				langid = sqlResult->ColumnDataInt(i);
+				//langid = sqlResult->ColumnDataInt(i);
 				break;
 			case 2:
 				libelle = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		nbResult++;
@@ -451,7 +458,7 @@ int CSqlResource::TraitementResultLibelle(CSqlResult * sqlResult)
 int CSqlResource::TraitementResultFilePath(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
-	wxString idName;
+	//wxString idName;
 	//int langid;
 	wxString filePath;
 	text = "";
@@ -468,6 +475,7 @@ int CSqlResource::TraitementResultFilePath(CSqlResult * sqlResult)
 				filePath = defaultPathSearch + "/" + sqlResult->ColumnDataText(i);
 #endif
 				break;
+			default: ;
 			}
 		}
 		nbResult++;
@@ -504,6 +512,7 @@ int CSqlResource::TraitementResultExif(CSqlResult * sqlResult)
 			case 0:
 				libelle = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		nbResult++;
@@ -523,6 +532,7 @@ int CSqlResource::TraitementResultExtension(CSqlResult * sqlResult)
 			case 0:
 				id = sqlResult->ColumnDataInt(i);
 				break;
+			default: ;
 			}
 		}
 		nbResult++;
@@ -561,6 +571,7 @@ int CSqlResource::TraitementResult(CSqlResult * sqlResult)
 	case 7:
 		nbResult = TraitementResultFilePath(sqlResult);
 		break;
+	default: ;
 	}
 
 	return nbResult;

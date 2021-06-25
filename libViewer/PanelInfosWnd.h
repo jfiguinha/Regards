@@ -13,16 +13,6 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::Internet;
-/*
-#define INFOS_WINDOW  1
-#define HISTORY_WINDOW 2
-#define WEB_WINDOW 3
-#define EFFECT_WINDOW 4
-#define SETTINGS_WINDOW 5
-#define AUDIOVIDEO_WINDOW 6
-#define WM_UPDATE_GPSINFOS 10
-#define WM_UPDATE_DATETIMEINFOS 11
-*/
 
 class CImageLoadingFormat;
 namespace Regards
@@ -83,6 +73,7 @@ namespace Regards
 			wxString filename;
             wxString url;
 			bool firstTime;
+			wxWindowID id_;
 		};
 
 	}

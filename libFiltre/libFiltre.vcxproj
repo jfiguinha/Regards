@@ -471,7 +471,6 @@
     <ClInclude Include="bilateralFilter.h" />
     <ClInclude Include="BitmapDisplay.h" />
     <ClInclude Include="BitmapEffectParameter.h" />
-    <ClInclude Include="BitmapFusionEffectParameter.h" />
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="bm3d.h" />

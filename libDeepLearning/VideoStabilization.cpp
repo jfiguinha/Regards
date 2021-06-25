@@ -12,7 +12,7 @@ class COpenCVStabilizationPimpl_
 public:
 	struct TransformParam
 	{
-		TransformParam()
+		TransformParam(): dx(0), dy(0), da(0)
 		{
 		}
 
@@ -42,7 +42,7 @@ public:
 
 	struct Trajectory
 	{
-		Trajectory()
+		Trajectory(): x(0), y(0), a(0)
 		{
 		}
 

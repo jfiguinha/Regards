@@ -76,6 +76,7 @@ int CSqlFindCriteria::TraitementResult(CSqlResult * sqlResult)
 			case 2:
 				_cCriteria.SetLibelle(sqlResult->ColumnDataText(i));
 				break;
+			default: ;
 			}
 		}
 		m_criteriaVector->push_back(_cCriteria);

@@ -101,13 +101,13 @@ bool CSqlLib::OpenConnection(const wxString &databasePath, const bool &readonly,
     */
     //const char16_t * database =u"/Users/jacques/developpement/test.db";
     //const char * fichier = CConvertUtility::ConvertFromwxString(sqLiteDBPath);
-    int rc = 0;
+    int rc;
 	this->readonly = readonly;
 	this->load_inmemory = load_inmemory;
 
 	if(load_inmemory)
 	{
-		rc = sqlite3_open(":memory:", &(pCon));
+		sqlite3_open(":memory:", &(pCon));
 		if (wxFileExists(sqLiteDBPath))
 		{
 			rc = LoadOrSaveDb(pCon, sqLiteDBPath, 0);

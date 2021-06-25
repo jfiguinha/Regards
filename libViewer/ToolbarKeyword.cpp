@@ -66,7 +66,7 @@ void CToolbarKeyword::EventManager(const int &id)
 			// We can be certain that this string contains letters only.
 			wxString value = "New Keyword";// dlg.GetValue();
 			CSqlCriteria sqlCriteria;
-			int lastId = sqlCriteria.GetLastId() + 1;
+			int lastId = sqlCriteria.GetCriteriaId() + 1;
 			value = value + " " + to_string(lastId);
 			sqlCriteria.GetOrInsertCriteriaId(1, 7, value, isNew);
 

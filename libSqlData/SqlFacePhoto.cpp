@@ -14,9 +14,8 @@ using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
 CSqlFacePhoto::CSqlFacePhoto()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), numFace(0), type(0)
 {
-
 }
 
 
@@ -236,9 +235,9 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
 			[&](tbb::blocked_range<int> r)
 			{
-				for (int i = r.begin(); i < r.end(); ++i)
+				for (int i1 = r.begin(); i1 < r.end(); ++i1)
 				{
-					CFaceName facename = listFace[i];
+					CFaceName facename = listFace[i1];
 					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
 					if (wxFileExists(thumbnail))
 					{
@@ -317,9 +316,9 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
 			[&](tbb::blocked_range<int> r)
 			{
-				for (int i = r.begin(); i < r.end(); ++i)
+				for (int i1 = r.begin(); i1 < r.end(); ++i1)
 				{
-					CFaceName facename = listFace[i];
+					CFaceName facename = listFace[i1];
 					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
 					if (wxFileExists(thumbnail))
 					{
@@ -525,6 +524,7 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 					case 0:
 						filename = sqlResult->ColumnDataText(i);
 						break;
+					default: ;
 				}
 				listPhoto.push_back(filename);
 			}
@@ -535,6 +535,7 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 					case 0:
 						numFace = sqlResult->ColumnDataInt(i);
 						break;
+					default: ;
 				}
 			}
 			else if (type == 4)
@@ -545,6 +546,7 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					numFace = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 				listFaceIndex.push_back(numFace);
 			}
@@ -559,18 +561,20 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 1:
 					face.numFaceCompatible = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 				
 			}
 			else if (type == 7)
 			{
-				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+				for (auto clm_num = 0; clm_num < sqlResult->GetColumnCount(); clm_num++)
 				{
-					switch (i)
+					switch (clm_num)
 					{
 					case 0:
-						listFace.push_back(sqlResult->ColumnDataInt(i));
+						listFace.push_back(sqlResult->ColumnDataInt(clm_num));
 						break;
+					default: ;
 					}
 				}
 			}

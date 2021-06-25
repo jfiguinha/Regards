@@ -1,7 +1,7 @@
 #pragma once
 #include "FilterWindowParam.h"
 #include "LibResource.h"
-
+#include <effect_id.h>
 namespace Regards
 {
 	namespace Filter

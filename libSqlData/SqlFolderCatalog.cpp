@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFolderCatalog::CSqlFolderCatalog()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), numCatalogId(0), numFolderCatalogId(0)
 {
 	typeResult = 1;
 }
@@ -79,6 +79,7 @@ int CSqlFolderCatalog::TraitementResult(CSqlResult * sqlResult)
                     case 2:
                         folderPath = sqlResult->ColumnDataText(i);
                         break;
+                    default: ;
                 }
             }
         }

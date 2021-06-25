@@ -60,11 +60,14 @@ CRegardsBitmap* CBm3DFilter::GetResult()
 	return bitmap;
 }
 
-CBm3DFilter::CBm3DFilter(CRegardsBitmap * bitmapSource, const float &sigma)
+CBm3DFilter::CBm3DFilter(CRegardsBitmap * bitmapSource, const float &sigma): patch_size(0), nb_threads(0),
+                                                                             tau_2D_wien(0),
+                                                                             tau_2D_hard(0),
+                                                                             color_space(0)
 {
-    this->bitmap = new CRegardsBitmap(bitmapSource->GetBitmapWidth(), bitmapSource->GetBitmapHeight());
+	this->bitmap = new CRegardsBitmap(bitmapSource->GetBitmapWidth(), bitmapSource->GetBitmapHeight());
 	memcpy(this->bitmap->GetPtBitmap(), bitmapSource->GetPtBitmap(), bitmapSource->GetBitmapSize());
-    this->fSigma = sigma;
+	this->fSigma = sigma;
 }
 
 

@@ -18,6 +18,7 @@
 #include <LibResource.h>
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
+#include <effect_id.h>
 //#include "ExportOdt.h"
 #ifdef __APPLE__
 #undef fract1

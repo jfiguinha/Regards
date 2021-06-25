@@ -83,13 +83,6 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 	if (wxFileExists(thumbnail))
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 	return image;
-	/*
-	type = 1;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-	return bitmap;
-	*/
 }
 
 CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
@@ -108,16 +101,6 @@ CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 		picture->SetFilename(thumbnail);
 	}
 	return picture;
-
-	/*
-	type = 3;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
-    if(regardsBitmap != nullptr)
-        regardsBitmap->SetFilename(path);
-	return regardsBitmap;
-	*/
 }
 
 bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
@@ -157,8 +140,6 @@ bool CSqlThumbnail::EraseThumbnail()
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 
-	//auto values = std::vector<double>(10000);
-
 	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
 		[&](tbb::blocked_range<int> r)
 		{
@@ -169,13 +150,7 @@ bool CSqlThumbnail::EraseThumbnail()
 					wxRemoveFile(filename);
 			}
 		});
-	/*
-	for (wxString filename : files)
-	{
-		wxRemoveFile(filename);
-	}
-	*/
-	//wxRmdir(documentPath);
+
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
 
@@ -198,17 +173,6 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
 				}
 			}
 		});
-
-	/*
-	for (int idPhoto : listPhoto)
-	{
-		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
-		if (wxFileExists(thumbnail))
-		{
-			wxRemoveFile(thumbnail);
-		}
-	}
-	*/
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
 }
 
@@ -217,35 +181,8 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		int width;
-		int height;
-		wxString hash = "";
-		wxString filename = "";
 		switch (type)
 		{
-		case 3:
-		case 1:
-			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
-			{
-
-				switch (i)
-				{
-				case 0:
-					filename = sqlResult->ColumnDataText(i);
-					break;
-				case 1:
-					width = sqlResult->ColumnDataInt(i);
-					break;
-				case 2:
-					height = sqlResult->ColumnDataInt(i);
-					break;
-				case 3:
-					hash = sqlResult->ColumnDataText(i);
-					break;
-				}
-			}
-			break;
-
 		case 2:
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{

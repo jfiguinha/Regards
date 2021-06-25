@@ -4,9 +4,8 @@
 using namespace Regards::Sqlite;
 
 CSqlFindFacePhoto::CSqlFindFacePhoto()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), type(0)
 {
-
 }
 
 
@@ -94,6 +93,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					listPhoto.push_back(sqlResult->ColumnDataText(i));
 					break;
+				default: ;
 				}
 			}
 			else if(type == 2)
@@ -109,6 +109,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 2:
 					faceName.isSelectable = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 			else if(type == 3)
@@ -124,6 +125,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 2:
 					faceFilePath.numPhoto = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 			else if (type == 5)
@@ -133,6 +135,7 @@ int CSqlFindFacePhoto::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					listNumFace.push_back(sqlResult->ColumnDataInt(i));
 					break;
+				default: ;
 				}
 			}
 		}

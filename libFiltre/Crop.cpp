@@ -61,6 +61,7 @@ void CCrop::Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m
 	case 2:
 		DessinerDotDashRectangle(deviceContext, 1, rcTemp, rgbFirst, rgbSecond);
 		break;
+	default: ;
 	}
 
 
@@ -159,10 +160,8 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 
 	if (VerifierValiditerPoint(pt))
 	{
-
-		int x = 0, y = 0;
-		x = XRealPosition(xNewSize - m_rcAffichage.x, m_lVScroll, ratio);
-		y = YRealPosition(yNewSize - m_rcAffichage.y, m_lHScroll, ratio);
+		const int x = XRealPosition(xNewSize - m_rcAffichage.x, m_lVScroll, ratio);
+		const int y = YRealPosition(yNewSize - m_rcAffichage.y, m_lHScroll, ratio);
 
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -190,6 +189,7 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 			case 2:
 				iSelect = 5;
 				break;
+			default: ;
 			}
 		}
 
@@ -207,6 +207,7 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 			case 2:
 				iSelect = 8;
 				break;
+			default: ;
 			}
 		}
 
@@ -246,9 +247,8 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 
 	if (VerifierValiditerPoint(pt))
 	{
-		float x = 0, y = 0;
-		x = XRealPosition(xNewSize - m_rcAffichage.x, m_lHScroll, ratio);
-		y = YRealPosition(yNewSize - m_rcAffichage.y, m_lVScroll, ratio);
+		const float x = XRealPosition(xNewSize - m_rcAffichage.x, m_lHScroll, ratio);
+		const float y = YRealPosition(yNewSize - m_rcAffichage.y, m_lVScroll, ratio);
 
 		switch (iSelect)
 		{
@@ -357,6 +357,7 @@ void CCrop::MouseMove(const long &xNewSize, const long &yNewSize, const long &m_
 				wxSetCursor(wxCursor(wxCURSOR_SIZENWSE));
 			}
 			break;
+		default: ;
 		}
 	}
 	else

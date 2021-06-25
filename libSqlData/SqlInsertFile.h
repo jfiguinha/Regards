@@ -14,9 +14,8 @@ namespace Regards
 
 			CSqlInsertFile();
 			virtual ~CSqlInsertFile();
-			bool RemovePhotos(const int &idFolder);
+
 			void InsertPhotoFolderToRefresh(const wxString &folder);
-            //void UpdateFolder(const vector<wxString> &listFile, const int &idFolder);
 			bool GetPhotoToAdd(vector<wxString> * listFile);
 			bool GetPhotoToRemove(vector<int> * listFile, const int &idFolder);
 			int AddFileFromFolder(wxWindow * parent, wxProgressDialog & dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile);

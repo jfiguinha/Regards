@@ -66,6 +66,7 @@ int CSqlCatalog::TraitementResult(CSqlResult* sqlResult)
 			case 1:
 				libelle = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		nbResult++;

@@ -3,7 +3,6 @@
 #include "SqlLib.h"
 #include "SqlEngine.h"
 #include "SqlResult.h"
-#include <LibResource.h>
 using namespace Regards::Sqlite;
 
 
@@ -98,7 +97,7 @@ void CSqlExecuteRequest::CommitTransection()
 	_sqlLibTransaction->unlock();
 #endif
 }
-
+/*
 int64_t CSqlExecuteRequest::GetLastId()
 {
 	int64_t value;
@@ -125,7 +124,7 @@ int64_t CSqlExecuteRequest::GetLastId()
 	}
 	return value;
 }
-
+*/
 int CSqlExecuteRequest::ExecuteRequest(const wxString& requestSQL)
 {
 	if (useTransaction)

@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlPhotos::CSqlPhotos(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), exif(0)
 {
 	photoId = -1;
 	criteriaVector = nullptr;
@@ -178,6 +178,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					photoId = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 		}
@@ -198,6 +199,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 2:
 					criteria.SetLibelle(sqlResult->ColumnDataText(i));
 					break;
+				default: ;
 				}
 			}
 			criteriaVector->push_back(criteria);
@@ -211,6 +213,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					listPhoto.push_back(sqlResult->ColumnDataText(i));
 					break;
+				default: ;
 				}
 			}
 		}
@@ -223,6 +226,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					photoPath = sqlResult->ColumnDataText(i);
 					break;
+				default: ;
 				}
 			}
 		}
@@ -235,6 +239,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					exif = sqlResult->ColumnDataInt(i);
 					break;
+				default: ;
 				}
 			}
 		}

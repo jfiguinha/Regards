@@ -65,6 +65,7 @@ int CSqlOpenCLKernel::TraitementResult(CSqlResult * sqlResult)
 					}
 				}
 				break;
+			default: ;
 				}
 			}
 			break;
@@ -77,10 +78,11 @@ int CSqlOpenCLKernel::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					find = true;
 					break;
+				default: ;
 				}
 			}
 			break;
-
+		default: ;
 		}
 
 		nbResult++;

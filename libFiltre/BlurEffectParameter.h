@@ -1,6 +1,5 @@
-#include "EffectParameter.h"
 #pragma once
-
+#include "EffectParameter.h"
 class CBlurEffectParameter : public CEffectParameter
 {
 public:
@@ -8,7 +7,7 @@ public:
 	{
 		size = 3;
 	};
-	~CBlurEffectParameter(){};
+	~CBlurEffectParameter() override {};
 
 	int size;
 };

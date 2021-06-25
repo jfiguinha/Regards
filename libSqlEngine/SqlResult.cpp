@@ -4,7 +4,7 @@
 using namespace std;
 using namespace Regards::Sqlite;
 
-CSqlResult::CSqlResult()
+CSqlResult::CSqlResult(): pRes(nullptr), m_iColumnCount(0)
 {
 	//this->pRes = pRes;
 }

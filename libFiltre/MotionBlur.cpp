@@ -20,10 +20,9 @@ CMotionBlur::~CMotionBlur(void)
 vector<wxPoint> CMotionBlur::GetOffsetKernel(int width, const double &angle)
 {
 	vector<wxPoint> offsets;
-	int x = 0, y = 0;
 	//blur_image->storage_class=DirectClass;
-	x = (long)(width*sin(DegreesToRadians(angle)));
-	y = (long)(width*cos(DegreesToRadians(angle)));
+	int x = static_cast<long>(width * sin(DegreesToRadians(angle)));
+	int y = static_cast<long>(width * cos(DegreesToRadians(angle)));
 
 	for (auto i = 0; i < width; i++)
 	{
@@ -78,14 +77,13 @@ int CMotionBlur::GenerateMotionBlurKernel(int width, const double sigma, vector<
 
 vector<double> CMotionBlur::GetMotionBlurKernel(const double &radius,const double sigma)
 {
-	int width = 0;
 	vector<double> kernel;
 	vector<double> last_kernel;
 	if (radius > 0)
-		width = GenerateMotionBlurKernel((int)(2.0*ceil(radius) + 1.0), sigma, kernel);
+		GenerateMotionBlurKernel((int)(2.0*ceil(radius) + 1.0), sigma, kernel);
 	else
 	{
-		width = GenerateMotionBlurKernel(3, sigma, kernel);
+		int width = GenerateMotionBlurKernel(3, sigma, kernel);
 		while ((MaxCRgbaquad*kernel[width - 1]) > 0.0)
 		{
 			if (last_kernel.size() != 0)
@@ -98,7 +96,6 @@ vector<double> CMotionBlur::GetMotionBlurKernel(const double &radius,const doubl
 		if (last_kernel.size() != 0)
 		{
 			kernel.clear();
-			width -= 2;
 			copy(last_kernel.begin(), last_kernel.end(), back_inserter(kernel));
 		}
 	}

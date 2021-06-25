@@ -33,6 +33,7 @@ int CSqlFindDay::TraitementResult(CSqlResult * sqlResult)
 			case 0:
 				value = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		dayVector->push_back(value);

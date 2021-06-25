@@ -102,18 +102,11 @@ float CPerlinNoise::Smooth_Noise(int x, int y)
 
 void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, const CRgbaquad & color2,const float &freq,const float &pers,const int &octaves)
 {
-
 	if (pBitmap->GetPtBitmap() != nullptr)
 	{
-		uint8_t * pBitsSrc = nullptr;
-		int bmWidth, bmHeight;
-		//unsigned long m_lSize;
-		//pBitmap->GetBitmap(&pBitsSrc, bmWidth, bmHeight, m_lSize);
-
-	
-		bmWidth = pBitmap->GetBitmapWidth();
-		bmHeight = pBitmap->GetBitmapHeight();
-		pBitsSrc = pBitmap->GetPtBitmap();
+		int bmWidth = pBitmap->GetBitmapWidth();
+		int bmHeight = pBitmap->GetBitmapHeight();
+		uint8_t* pBitsSrc = pBitmap->GetPtBitmap();
 
 		//long k = 0;
 		//long m;

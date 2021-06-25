@@ -5,6 +5,7 @@
 //  Created by figuinha jacques on 29/09/2015.
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
+#pragma once
 #include "SqlExecuteRequest.h"
 
 namespace Regards

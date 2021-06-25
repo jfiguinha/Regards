@@ -4,7 +4,7 @@
 using namespace Regards::Sqlite;
 
 CSqlFindYear::CSqlFindYear()
-	: CSqlExecuteRequest(L"RegardsDB")
+	: CSqlExecuteRequest(L"RegardsDB"), yearVector(nullptr)
 {
 }
 
@@ -33,6 +33,7 @@ int CSqlFindYear::TraitementResult(CSqlResult * sqlResult)
 			case 0:
 				value = sqlResult->ColumnDataText(i);
 				break;
+			default: ;
 			}
 		}
 		yearVector->push_back(value);

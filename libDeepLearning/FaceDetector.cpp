@@ -92,25 +92,25 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
-	float newRatio = 1;
+	float new_ratio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = static_cast<float>(WIDTH_THUMBNAIL) / static_cast<float>(pictureWidth);
+		new_ratio = static_cast<float>(WIDTH_THUMBNAIL) / static_cast<float>(pictureWidth);
 	else
-		newRatio = static_cast<float>(HEIGHT_THUMBNAIL) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(HEIGHT_THUMBNAIL) / static_cast<float>(pictureHeight);
 
-	if ((pictureHeight * newRatio) > HEIGHT_THUMBNAIL)
+	if ((pictureHeight * new_ratio) > HEIGHT_THUMBNAIL)
 	{
-		newRatio = static_cast<float>(HEIGHT_THUMBNAIL) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(HEIGHT_THUMBNAIL) / static_cast<float>(pictureHeight);
 	}
-	if ((pictureWidth * newRatio) > WIDTH_THUMBNAIL)
+	if ((pictureWidth * new_ratio) > WIDTH_THUMBNAIL)
 	{
-		newRatio = static_cast<float>(WIDTH_THUMBNAIL) / static_cast<float>(pictureWidth);
+		new_ratio = static_cast<float>(WIDTH_THUMBNAIL) / static_cast<float>(pictureWidth);
 	}
 
-	return newRatio;
+	return new_ratio;
 }
 
 int CFaceDetector::DectectOrientationByFaceDetector(const Mat& image)
@@ -348,7 +348,7 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	Mat dst;
 	// Rotate around the center
 	auto center = Point2d(faceLocation.x + faceLocation.width / 2, faceLocation.y + faceLocation.height / 2);
-	Point2f pt(faceLocation.width / 2., faceLocation.height / 2.);
+	
 
 	// determine bounding rectangle
 	Rect bbox = RotatedRect(center, Size(faceLocation.width, faceLocation.height), theta_deg_eye).boundingRect();
@@ -369,7 +369,7 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	// Apply affine transform
 	warpAffine(dst, dst, r, bbox.size());
 
-	Rect rect = faceLocation;
+	Rect rect;
 	rect.x = max((bbox.width - faceLocation.width) / 2, 0);
 	rect.y = max((bbox.height - faceLocation.height) / 2, 0);
 	rect.width = max(faceLocation.width, 0);
@@ -496,15 +496,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 				if (listOfFace[i].confidence > confidenceThreshold)
 				{
 					vector<Rect> faces;
-					int angle_add = 0;
-					//Declaring a variable "image" to store input image given.
 					Mat gray, detected_edges, Laugh_L, Laugh_R;
 
 					Rect rc = listOfFace[i].myROI;
-					//rc.x = 0;
-					//rc.y = 0;
-					//rc.width = listOfFace[i].croppedImage.cols;
-					//rc.height = listOfFace[i].croppedImage.rows;
 
 					faces.push_back(rc);
 
@@ -579,31 +573,31 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						int posMaxLeftEyeX = 0;
 						int posMinRightEyeX = landmarks[i + 42].x;
 						int posMaxRightEyeX = 0;
-						for (int i = 0; i < 6; i++)
+						for (int i1 = 0; i1 < 6; i1++)
 						{
-							if (posMinLeftEyeY > landmarks[i + 36].y)
-								posMinLeftEyeY = landmarks[i + 36].y;
+							if (posMinLeftEyeY > landmarks[i1 + 36].y)
+								posMinLeftEyeY = landmarks[i1 + 36].y;
 
-							if (posMaxLeftEyeY < landmarks[i + 36].y)
-								posMaxLeftEyeY = landmarks[i + 36].y;
+							if (posMaxLeftEyeY < landmarks[i1 + 36].y)
+								posMaxLeftEyeY = landmarks[i1 + 36].y;
 
-							if (posMinRightEyeY > landmarks[i + 42].y)
-								posMinRightEyeY = landmarks[i + 42].y;
+							if (posMinRightEyeY > landmarks[i1 + 42].y)
+								posMinRightEyeY = landmarks[i1 + 42].y;
 
-							if (posMaxRightEyeY < landmarks[i + 42].y)
-								posMaxRightEyeY = landmarks[i + 42].y;
+							if (posMaxRightEyeY < landmarks[i1 + 42].y)
+								posMaxRightEyeY = landmarks[i1 + 42].y;
 
-							if (posMinLeftEyeX > landmarks[i + 36].x)
-								posMinLeftEyeX = landmarks[i + 36].x;
+							if (posMinLeftEyeX > landmarks[i1 + 36].x)
+								posMinLeftEyeX = landmarks[i1 + 36].x;
 
-							if (posMaxLeftEyeX < landmarks[i + 36].x)
-								posMaxLeftEyeX = landmarks[i + 36].x;
+							if (posMaxLeftEyeX < landmarks[i1 + 36].x)
+								posMaxLeftEyeX = landmarks[i1 + 36].x;
 
-							if (posMinRightEyeX > landmarks[i + 42].x)
-								posMinRightEyeX = landmarks[i + 42].x;
+							if (posMinRightEyeX > landmarks[i1 + 42].x)
+								posMinRightEyeX = landmarks[i1 + 42].x;
 
-							if (posMaxRightEyeX < landmarks[i + 42].x)
-								posMaxRightEyeX = landmarks[i + 42].x;
+							if (posMaxRightEyeX < landmarks[i1 + 42].x)
+								posMaxRightEyeX = landmarks[i1 + 42].x;
 						}
 
 						//Left Eye

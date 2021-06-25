@@ -1,6 +1,6 @@
-#include "EffectParameter.h"
-#pragma once
 
+#pragma once
+#include "EffectParameter.h"
 class CSharpenMaskingEffectParameter : public CEffectParameter
 {
 public:
@@ -8,7 +8,7 @@ public:
 	{
 		sharpness = 1.0f;
 	};
-	~CSharpenMaskingEffectParameter(){};
+	~CSharpenMaskingEffectParameter() override {};
 
 	float sharpness;
 };

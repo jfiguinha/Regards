@@ -1,3 +1,5 @@
+// ReSharper disable All
+// ReSharper disable All
 #include <header.h>
 #include "OpenCVEffect.h"
 #include <RegardsBitmap.h>
@@ -31,6 +33,8 @@ void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
 	merge(chans, 4, src);
 }
 
+// ReSharper disable once CppDoxygenUnresolvedReference
+// ReSharper disable once CppDoxygenUnresolvedReference
 /**
  *  \brief Automatic brightness and contrast optimization with optional histogram clipping
  *  \param [in]src Input image GRAY or BGR or BGRA
@@ -38,7 +42,7 @@ void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
  *  \param clipHistPercent cut wings of histogram at given percent tipical=>1, 0=>Disabled
  *  \note In case of BGRA image, we won't touch the transparency
 */
-void COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPercent)
+auto COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPercent) -> void
 {
 	int histSize = 256;
 	float alpha, beta;
@@ -161,6 +165,7 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPer
 }
 
 
+// ReSharper disable once CppDoxygenUnresolvedReference
 /**
  *  \brief Automatic brightness and contrast optimization with optional histogram clipping
  *  \param [in]src Input image GRAY or BGR or BGRA
