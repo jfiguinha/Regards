@@ -1634,7 +1634,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-	std::clock_t start = std::clock();
+	//std::clock_t start = std::clock();
 
 	bool isCPU = true;
 	if (IsSupportOpenCL())

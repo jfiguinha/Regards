@@ -271,7 +271,7 @@ void CFFmfcPimpl::StopStream()
 
 void CFFmfcPimpl::stream_close(VideoState* is)
 {
-	int i;
+	//int i;
 	/* XXX: use a special url_shutdown call to abort parse cleanly */
 	is->abort_request = 1;
 

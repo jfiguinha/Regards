@@ -324,7 +324,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 				for (int k = 0; k < nbFrame; k++)
 				{
 					float alpha = static_cast<float>(k) / static_cast<float>(nbFrame);
-					float beta = 1.0 - alpha;
+					//float beta = 1.0 - alpha;
 
 					int x = 1920 - (alpha * 1920);
 					int x2 = -(alpha * 1920);
@@ -422,7 +422,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 
 	for (int i = 0; i < picturefile.size(); i++)
 	{
-		int position;
+		//int position;
 		if ((i == 0 || effect == IDM_DIAPORAMA_NONE) && effect != IDM_DIAPORAMA_TRANSITION)
 		{
 			CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
@@ -441,7 +441,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 			{
 			case IDM_DIAPORAMA_TRANSITION:
 				{
-					int iStart = i * nbFrameByPicture;
+					//int iStart = i * nbFrameByPicture;
 					ExecuteEffect("", picturefile[i], nbFrameByPicture, width, height, effect);
 					if (endProcess)
 						break;

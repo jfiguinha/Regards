@@ -336,7 +336,7 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElement = (int)infosSeparationBar->listElement.size();
+		//int nbElement = (int)infosSeparationBar->listElement.size();
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);

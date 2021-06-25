@@ -85,7 +85,7 @@ private:
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
-	const CRgbaquad& back_color_;
+	//const CRgbaquad& back_color_;
 	//cv::Mat bitmapOpenCV;
 
 

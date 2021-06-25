@@ -40,7 +40,7 @@ using namespace Regards::Control;
 using namespace Regards::Picture;
 
 COcrWnd::COcrWnd(wxWindow* parent, const wxWindowID id)
-	: CWindowMain("OCR Window", parent, id), id_(id)
+	: CWindowMain("OCR Window", parent, id)
 {
 	pageInfo = nullptr;
 	//bitmapBackground = nullptr;

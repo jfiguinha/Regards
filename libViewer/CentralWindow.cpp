@@ -47,7 +47,7 @@ using namespace Regards::FiltreEffet;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
                                const CThemeSplitter& theme, const bool& horizontal)
-	: CWindowMain("CentralWindow", parent, id), id_(id), parent_(parent), theme_(theme), horizontal_(horizontal)
+	: CWindowMain("CentralWindow", parent, id)
 {
 	oldWindowMode = 1;
 	panelPhotoWnd = nullptr;

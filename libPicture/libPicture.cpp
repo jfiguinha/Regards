@@ -357,13 +357,6 @@ CRegardsBitmap* CLibPicture::ConvertCXImageToScaleRegardsBitmapBGR(CxImage* imag
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-	/*
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-	*/
 #endif
 
 	return bitmapOut;
@@ -2846,13 +2839,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-	/*
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-	*/
 #endif
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -3095,7 +3081,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			uint8_t* data = readfile(fileName, data_size);
 			if (data != nullptr && data_size > 0)
 			{
-				int result = 0;
+				//int result = 0;
 				WebPGetInfo(data, data_size, &width, &height);
 				delete[] data;
 			}

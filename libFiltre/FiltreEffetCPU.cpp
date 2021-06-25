@@ -36,7 +36,7 @@ public:
 };
 
 CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingFormat* bitmap)
-	: IFiltreEffet(back_color), back_color_(back_color)
+	: IFiltreEffet(back_color)
 {
 	this->backColor = back_color;
 	bitmapOut = nullptr;
@@ -786,6 +786,13 @@ void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, c
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 	ApplyInterpolationFilters(pBitmap, bitmapOut, flipH, flipV, angle, method);
+
+/*
+ *
+ * static void ApplyInterpolationFilters(CRegardsBitmap* bitmap, CRegardsBitmap* & bitmapOut, const wxRect& rc,
+                                      const int& flipH, const int& flipV, const int& angle,
+                                      const int& filterInterpolation)
+ */
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,

@@ -178,10 +178,6 @@ namespace Regards
 			//Thumbnail Picture
 			CScrollbarWnd* scrollPictureWindow;
 			CThumbnailViewerPicture* thumbnailPicture;
-			wxWindowID id_;
-			wxWindow* parent_;
-			const CThemeSplitter& theme_;
-			const bool& horizontal_;
 
 			//Window List
 			static void LoadingNewPicture(CThreadPictureData* pictureData);

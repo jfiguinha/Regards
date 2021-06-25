@@ -302,7 +302,7 @@ void CThumbnailFileSelection::ResizeThumbnail()
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
+		//int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);

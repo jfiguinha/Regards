@@ -476,7 +476,6 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 			<< "Please download it from https://github.com/nokiatech/heif_conformance "
 			<< "and place it in same directory with the executable." << endl;
 	}
-END:
 
 	Reader::Destroy(reader);
 

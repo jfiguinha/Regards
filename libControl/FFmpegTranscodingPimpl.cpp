@@ -104,7 +104,7 @@ void hb_limit_rational(int* x, int* y, int num, int den, int limit)
 	*y = den;
 }
 
-
+/*
 static int apply_vpx_preset(AVDictionary** av_opts, const wxString& preset)
 {
 	if (preset == "")

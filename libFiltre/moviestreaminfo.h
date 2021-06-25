@@ -59,8 +59,8 @@ namespace ffmpegthumbnailer
 		int                     m_VideoStream;
 		AVFormatContext*        m_pFormatContext;
 		AVCodecContext*         m_pVideoCodecContext;
-		AVCodec*                m_pVideoCodec;
-		AVStream*               m_pVideoStream;
+		//AVCodec*                m_pVideoCodec;
+		//AVStream*               m_pVideoStream;
 		bool                    m_FormatContextWasGiven;
 		vector<CStreamInfo>		listStream;
 	};

@@ -54,7 +54,7 @@ public:
 
 CThumbnailEffect::CThumbnailEffect(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                    const bool& testValidity)
-	: CThumbnail(parent, id, themeThumbnail, testValidity), theme_thumbnail_(themeThumbnail), test_validity_(testValidity), id_(id)
+	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
 	imageLoading = nullptr;
 	isAllProcess = true;
@@ -598,7 +598,7 @@ void CThumbnailEffect::RenderIcone(wxDC* deviceContext)
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
+		//int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);

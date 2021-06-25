@@ -55,7 +55,7 @@ namespace Regards
 			wxChoice *choice;
 			vector<ChOcrElement *> listRect;
 			CPage * pageInfo;
-			const wxWindowID id_;
+			//const wxWindowID id_;
 			//wxBitmap bmpSelection;
 			//CRegardsBitmap * bitmapBackground;
 		};

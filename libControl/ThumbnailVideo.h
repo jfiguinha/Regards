@@ -25,8 +25,8 @@ namespace Regards
 			int numItemSelected;
 			bool process_end;
 			wxString videoFilename;
-			const CThemeThumbnail& theme_thumbnail_;
-			const bool& test_validity_;
+			//const CThemeThumbnail& theme_thumbnail_;
+			//const bool& test_validity_;
 		};
 	}
 }

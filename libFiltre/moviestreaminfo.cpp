@@ -38,8 +38,6 @@ MovieStreamInfo::MovieStreamInfo(const string& filename, AVFormatContext* pavCon
 : m_VideoStream(-1)
 , m_pFormatContext(pavContext)
 , m_pVideoCodecContext(nullptr)
-, m_pVideoCodec(nullptr)
-, m_pVideoStream(nullptr)
 , m_FormatContextWasGiven(pavContext != nullptr)
 {
     initialize(filename);

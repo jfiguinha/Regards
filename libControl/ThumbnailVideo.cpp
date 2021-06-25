@@ -20,8 +20,7 @@ using namespace Regards::Picture;
 
 CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                  const bool& testValidity)
-	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity), theme_thumbnail_(themeThumbnail),
-	  test_validity_(testValidity)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
 {
 	numItemSelected = -1;
 	process_end = true;

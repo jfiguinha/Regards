@@ -14,7 +14,7 @@ using namespace Regards::Picture;
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                          const bool& testValidity)
-	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity), theme_thumbnail_(themeThumbnail), test_validity_(testValidity), id_(id)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
 {
 
 	this->parent = parent;

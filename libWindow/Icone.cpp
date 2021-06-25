@@ -15,7 +15,6 @@
 #include <RegardsBitmap.h>
 using namespace Regards::Window;
 
-constexpr auto WM_PICTURELOAD = 1;
 
 void CIcone::ReinitPos()
 {

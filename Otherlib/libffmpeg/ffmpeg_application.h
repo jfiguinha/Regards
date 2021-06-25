@@ -23,7 +23,7 @@ private:
 	void ExecuteFFmpeg();
 
 	int ret = 0;
-	int i = 0;
+	//int i = 0;
 	char** arrayOfCstrings;
 	std::vector<std::string> arrayOfStrings;
 };

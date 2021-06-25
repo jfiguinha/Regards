@@ -705,6 +705,7 @@ static void ApplyInterpolationFilters(CRegardsBitmap* bitmap, CRegardsBitmap* & 
 	}
 }
 
+
 static void ApplyInterpolationFilters(CRegardsBitmap* bitmap, CRegardsBitmap* & bitmapOut, const int& flipH,
                                       const int& flipV, const int& angle, const int& filterInterpolation)
 {

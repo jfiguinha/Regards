@@ -50,9 +50,9 @@ namespace Regards
 			wxString hdrEffect;
 			wxString videoLabelEffect;
 			CImageLoadingFormat* imageLoading;
-			const CThemeThumbnail& theme_thumbnail_;
-			const bool& test_validity_;
-			const wxWindowID id_;
+			//const CThemeThumbnail& theme_thumbnail_;
+			//const bool& test_validity_;
+			//const wxWindowID id_;
 		};
 	}
 }
