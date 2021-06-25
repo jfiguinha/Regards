@@ -15,31 +15,26 @@ namespace Regards
 			CTreeDataEffect(void);
 			~CTreeDataEffect(void);
 
-			void SetIndex(const int & value);
+			void SetIndex(const int& value);
 			int GetIndex();
 
-			void SetInitValue(CTreeElementValue * position);
-			CTreeElementValue * GetInitValue();
+			void SetInitValue(CTreeElementValue* position);
+			CTreeElementValue* GetInitValue();
 
-			void SetValue(void * value, const int & typeValue);
-			vector<CTreeElementValue *> * GetVectorValue();
+			void SetValue(void* value, const int& typeValue);
+			vector<CTreeElementValue*>* GetVectorValue();
 			vector<CMetadata> GetMetadataValue();
 			bool GetBoolValue();
 
 			bool HasValue();
 
 		protected:
-
 			int index;
-			vector<CTreeElementValue *> tabValue;
+			vector<CTreeElementValue*> tabValue;
 			vector<CMetadata> tabMetadata;
 			bool boolvalue;
-			CTreeElementValue * position;
+			CTreeElementValue* position;
 			bool hasValue;
-
 		};
 	}
 }
-
-
-

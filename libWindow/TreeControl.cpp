@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include "header.h"
 #include "TreeControl.h"
 #include <wx/dcbuffer.h>
@@ -13,14 +14,17 @@
 using namespace Regards::Window;
 
 
-struct treeElementPos {
-	treeElementPos(int x, int y, CTreeControl * parent) : _x(x), _y(y), treeControl(parent) {}
+struct treeElementPos
+{
+	treeElementPos(int x, int y, CTreeControl* parent) : treeControl(parent), _x(x), _y(y)
+	{
+	}
 
-	bool operator()(CPositionElement * value)
+	bool operator()(CPositionElement* value)
 	{
 		if (value != nullptr && treeControl != nullptr)
 		{
-			CTreeElement * treeElement = value->GetTreeElement();
+			CTreeElement* treeElement = value->GetTreeElement();
 			if (treeElement != nullptr)
 			{
 				if (treeElement->IsVisible())
@@ -43,12 +47,12 @@ struct treeElementPos {
 		return false;
 	}
 
-	CTreeControl * treeControl;
+	CTreeControl* treeControl;
 	int _x;
 	int _y;
 };
 
-CTreeControl::CTreeControl(CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
+CTreeControl::CTreeControl(CThemeTree* theme, CTreeElementControlInterface* interfaceControl): nbRow(0)
 {
 	themeTree = *theme;
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
@@ -59,18 +63,18 @@ CTreeControl::CTreeControl(CThemeTree * theme, CTreeElementControlInterface * in
 	eventControl = interfaceControl;
 }
 
-CTreeControl& CTreeControl::operator=(const CTreeControl &other)
+CTreeControl& CTreeControl::operator=(const CTreeControl& other)
 {
 	return *this;
 }
 
-wxColour CTreeControl::GetBackgroundColour(const int &yPos)
+wxColour CTreeControl::GetBackgroundColour(const int& yPos)
 {
-    int moduloValue = yPos % (themeTree.GetRowHeight() * 2);
-    if(moduloValue < themeTree.GetRowHeight())
-        return themeTree.bgColorOne;
-    
-    return themeTree.bgColorTwo;
+	int moduloValue = yPos % (themeTree.GetRowHeight() * 2);
+	if (moduloValue < themeTree.GetRowHeight())
+		return themeTree.bgColorOne;
+
+	return themeTree.bgColorTwo;
 }
 
 CTreeControl::~CTreeControl()
@@ -84,11 +88,11 @@ int CTreeControl::GetNbRow()
 	return nbRow;
 }
 
-int CTreeControl::GetWidthRow(const int &numRow)
+int CTreeControl::GetWidthRow(const int& numRow)
 {
 	if (numRow < rowWidth.size())
 		return rowWidth[numRow];
-	
+
 
 	return 0;
 }
@@ -96,7 +100,7 @@ int CTreeControl::GetWidthRow(const int &numRow)
 int CTreeControl::GetWidth()
 {
 	int controlWidth = 0;
-	if(rowWidth.size() == 0)
+	if (rowWidth.size() == 0)
 		return controlWidth;
 
 	for (auto size : rowWidth)
@@ -107,18 +111,19 @@ int CTreeControl::GetWidth()
 }
 
 
-void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, const int &height, const int &posLargeur, const int &posHauteur)
+void CTreeControl::GenerateWindowBitmap(wxDC* deviceContext, const int& width, const int& height, const int& posLargeur,
+                                        const int& posHauteur)
 {
 	std::sort(vectorPosElement.begin(), vectorPosElement.end(),
-		[](CPositionElement * i, CPositionElement * j)
-	{
-		return (i->GetY() < j->GetY());
-	});
+	          [](CPositionElement* i, CPositionElement* j)
+	          {
+		          return (i->GetY() < j->GetY());
+	          });
 
 	int diffHauteur = posHauteur % 20;
 	int startHauteur = (diffHauteur != 0) ? posHauteur - (20 - diffHauteur) : posHauteur;
 
-	for (CPositionElement * value : vectorPosElement)
+	for (CPositionElement* value : vectorPosElement)
 	{
 		if (value->GetY() > (posHauteur + height))
 			break;
@@ -131,7 +136,7 @@ void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, 
 			//int x = 0;
 			int y = 0;
 			//CTreeData * data = value->GetTreeData();
-			CTreeElement * treeElement = value->GetTreeElement();
+			CTreeElement* treeElement = value->GetTreeElement();
 
 			if (treeElement->IsVisible())
 			{
@@ -153,21 +158,21 @@ void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, 
 			}
 		}
 	}
-	
 }
 
-CTreeElementCheckBox * CTreeControl::CreateCheckBoxElement(const int &width, const int &height, const bool &check)
+CTreeElementCheckBox* CTreeControl::CreateCheckBoxElement(const int& width, const int& height, const bool& check)
 {
-	CTreeElementCheckBox * treeElementCheckBox = new CTreeElementCheckBox();
+	auto treeElementCheckBox = new CTreeElementCheckBox();
 	treeElementCheckBox->SetZoneSize(width, height);
 	treeElementCheckBox->SetCheckState(check);
 	treeElementCheckBox->SetTheme(&themeTree.themeCheckbox);
 	return treeElementCheckBox;
 }
 
-CTreeElementSlide * CTreeControl::CreateSlideElement(const int &width, const int &height, CTreeElementValue * position, vector<CTreeElementValue *> * value, const wxString &exifKey)
+CTreeElementSlide* CTreeControl::CreateSlideElement(const int& width, const int& height, CTreeElementValue* position,
+                                                    vector<CTreeElementValue*>* value, const wxString& exifKey)
 {
-	CTreeElementSlide * treeElementSlide = new CTreeElementSlide(this);
+	auto treeElementSlide = new CTreeElementSlide(this);
 	treeElementSlide->SetTheme(&themeTree.themeSlide);
 	treeElementSlide->SetZoneSize(themeTree.themeSlide.GetElementWidth(), height);
 	treeElementSlide->SetExifKey(exifKey);
@@ -176,9 +181,11 @@ CTreeElementSlide * CTreeControl::CreateSlideElement(const int &width, const int
 	return treeElementSlide;
 }
 
-CTreeElementListBox * CTreeControl::CreateListBoxElement(const int &width, const int &height, const vector<CMetadata> & value, const int &index, const wxString &exifKey)
+CTreeElementListBox* CTreeControl::CreateListBoxElement(const int& width, const int& height,
+                                                        const vector<CMetadata>& value, const int& index,
+                                                        const wxString& exifKey)
 {
-	CTreeElementListBox * treeElementListBox = new CTreeElementListBox(this);
+	auto treeElementListBox = new CTreeElementListBox(this);
 	treeElementListBox->SetTheme(&themeTree.themeListbox);
 	treeElementListBox->SetZoneSize(themeTree.themeSlide.GetElementWidth(), height);
 	treeElementListBox->SetExifKey(exifKey);
@@ -186,9 +193,9 @@ CTreeElementListBox * CTreeControl::CreateListBoxElement(const int &width, const
 	return treeElementListBox;
 }
 
-CTreeElementTriangle * CTreeControl::CreateTriangleElement(const int &width, const int &height, const bool &open)
+CTreeElementTriangle* CTreeControl::CreateTriangleElement(const int& width, const int& height, const bool& open)
 {
-	CTreeElementTriangle * treeElementTriangle = new CTreeElementTriangle();
+	auto treeElementTriangle = new CTreeElementTriangle();
 	treeElementTriangle->SetTheme(&themeTree.themeTriangle);
 	treeElementTriangle->SetZoneSize(width, height);
 	treeElementTriangle->SetOpen(open);
@@ -196,26 +203,27 @@ CTreeElementTriangle * CTreeControl::CreateTriangleElement(const int &width, con
 	return treeElementTriangle;
 }
 
-CTreeElementDelete * CTreeControl::CreateDeleteElement(const int &width, const int &height)
+CTreeElementDelete* CTreeControl::CreateDeleteElement(const int& width, const int& height)
 {
-	CTreeElementDelete * treeElementDelete = new CTreeElementDelete();
+	auto treeElementDelete = new CTreeElementDelete();
 	treeElementDelete->SetTheme(&themeTree.themeDelete);
 	treeElementDelete->SetZoneSize(width, height);
 	return treeElementDelete;
 }
 
-CTreeElementTexte * CTreeControl::CreateTexteElement(const int &width, const int &height, const wxString &libelle)
+CTreeElementTexte* CTreeControl::CreateTexteElement(const int& width, const int& height, const wxString& libelle)
 {
-	CTreeElementTexte * treeElementTexte = new CTreeElementTexte();
+	auto treeElementTexte = new CTreeElementTexte();
 	treeElementTexte->SetTheme(&themeTree.themeTexte);
 	treeElementTexte->SetZoneSize(width, height);
 	treeElementTexte->SetLibelle(libelle);
 	return treeElementTexte;
 }
 
-CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value, const int &numPhotoId)
+CTreeElementStar* CTreeControl::CreateStarElement(const int& width, const int& height, const wxString& libelle,
+                                                  const wxString& value, const int& numPhotoId)
 {
-	CTreeElementStar * treeElementStar= new CTreeElementStar();
+	auto treeElementStar = new CTreeElementStar();
 	treeElementStar->SetNumPhoto(numPhotoId);
 	treeElementStar->SetTheme(&themeTree.themeTriangle);
 	treeElementStar->SetZoneSize(width * 5, height);
@@ -223,40 +231,40 @@ CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &
 	return treeElementStar;
 }
 
-CTreeElementTexteClick * CTreeControl::CreateTexteLinkElement(const int &width, const int &height, const wxString &libelle, const wxString &link, const int &linkType)
+CTreeElementTexteClick* CTreeControl::CreateTexteLinkElement(const int& width, const int& height,
+                                                             const wxString& libelle, const wxString& link,
+                                                             const int& linkType)
 {
-    CTreeElementTexteClick * treeElementTexte = new CTreeElementTexteClick();
-    treeElementTexte->SetTheme(&themeTree.themeTexte);
-    treeElementTexte->SetZoneSize(width, height);
-    treeElementTexte->SetLibelle(libelle);
-    treeElementTexte->SetTypeLink(linkType);
-    treeElementTexte->SetLinkElement(link);
-    return treeElementTexte;
+	auto treeElementTexte = new CTreeElementTexteClick();
+	treeElementTexte->SetTheme(&themeTree.themeTexte);
+	treeElementTexte->SetZoneSize(width, height);
+	treeElementTexte->SetLibelle(libelle);
+	treeElementTexte->SetTypeLink(linkType);
+	treeElementTexte->SetLinkElement(link);
+	return treeElementTexte;
 }
-
 
 
 void CTreeControl::ClearData()
 {
-
-	for (CPositionElement * posElement : vectorPosElement)
+	for (CPositionElement* posElement : vectorPosElement)
 	{
 		if (posElement != nullptr)
 		{
 			delete posElement;
 			posElement = nullptr;
 		}
-		
 	}
 
 	vectorPosElement.clear();
 	vectorPosElementDynamic.clear();
 
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	auto itend = tr.end();
 
-	while (it != itend) {
-		CTreeData * data = *it;
+	while (it != itend)
+	{
+		CTreeData* data = *it;
 		if (it.number_of_children() > 0)
 			EraseChildTree(it);
 		if (data != nullptr)
@@ -264,20 +272,20 @@ void CTreeControl::ClearData()
 			delete data;
 			data = nullptr;
 		}
-		it++;
+		++it;
 	}
 
 	tr.clear();
 	tr.empty();
 }
 
-void CTreeControl::EraseChildTree(tree<CTreeData *>::sibling_iterator &parent)
+void CTreeControl::EraseChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 
 		if (it.number_of_children() > 0)
 		{
@@ -290,18 +298,17 @@ void CTreeControl::EraseChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			data = nullptr;
 		}
 
-		it++;
+		++it;
 	}
 }
 
-CPositionElement * CTreeControl::GetElement(CTreeData * data, const int &typeElement)
+CPositionElement* CTreeControl::GetElement(CTreeData* data, const int& typeElement)
 {
-
 	auto p = std::find_if(
 		vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(),
 		[&](const auto& val)
 		{
-			CPositionElement* value = (CPositionElement*)val;
+			auto value = static_cast<CPositionElement*>(val);
 			CTreeData* dataElement = value->GetTreeData();
 			return (dataElement == data && value->GetType() == typeElement);
 		}
@@ -330,16 +337,16 @@ CPositionElement * CTreeControl::GetElement(CTreeData * data, const int &typeEle
 }
 
 
-CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
+CPositionElement* CTreeControl::FindElement(const int& x, const int& y)
 {
-	if(vectorPosElementDynamic.size() == 0)
+	if (vectorPosElementDynamic.size() == 0)
 		return nullptr;
 
 	auto p = std::find_if(
 		vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(),
 		[&](const auto& data)
 		{
-			CPositionElement* value = (CPositionElement*)data;
+			auto value = static_cast<CPositionElement*>(data);
 			CTreeElement* treeElement = value->GetTreeElement();
 			if (treeElement != nullptr)
 			{
@@ -406,9 +413,12 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	*/
 }
 
-CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData, const bool &dynamic)
+CPositionElement* CTreeControl::CreatePositionElement(const int& x, const int& y, const int& numColumn,
+                                                      const int& numRow, const int& width, const int& height,
+                                                      const int& type, CTreeElement* treeElement, CTreeData* treeData,
+                                                      const bool& dynamic)
 {
-	CPositionElement * positionElement = new CPositionElement();
+	auto positionElement = new CPositionElement();
 	treeElement->SetColumn(numColumn);
 	treeElement->SetRow(numRow);
 	treeElement->SetElementPos(x, y);
@@ -421,7 +431,7 @@ CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &
 	return positionElement;
 }
 
-tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTreeData *>::iterator &parent)
+tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key, tree<CTreeData*>::iterator& parent)
 {
 	auto p = std::find_if(
 		tr.begin(parent), tr.end(parent),
@@ -432,7 +442,7 @@ tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTr
 		}
 	);
 
-	if(p == tr.end(parent))
+	if (p == tr.end(parent))
 		return nullptr;
 
 	return p;
@@ -454,7 +464,7 @@ tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTr
 	*/
 }
 
-tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key)
+tree<CTreeData*>::iterator CTreeControl::FindKey(const wxString& key)
 {
 	/*
 	tree<CTreeData *>::iterator it = tr.begin();

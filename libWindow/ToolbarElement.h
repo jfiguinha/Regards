@@ -7,29 +7,28 @@ namespace Regards
 {
 	namespace Window
 	{
-
 		class CToolbarElement
 		{
 		public:
 			CToolbarElement();
 			virtual ~CToolbarElement();
 
-			void SetRepeatable(const bool &repeat);
+			void SetRepeatable(const bool& repeat);
 			bool GetRepeatable();
 
-			void SetLibelleTooltip(const wxString &libelle);
+			void SetLibelleTooltip(const wxString& libelle);
 			wxString GetLibelleTooltip();
 
-			void SetCommandId(const int &commandId);
+			void SetCommandId(const int& commandId);
 			int GetCommandId();
 
-			void SetPosition(const int &x, const int &y);
+			void SetPosition(const int& x, const int& y);
 
-			void SetVertical(const bool &isVertical);
+			void SetVertical(const bool& isVertical);
 			bool GetVertical();
 
-			virtual void DrawButton(wxDC * dc, const int &x, const int &y) = 0;
-			virtual void Resize(const int &tailleX, const int &tailleY) = 0;
+			virtual void DrawButton(wxDC* dc, const int& x, const int& y) = 0;
+			virtual void Resize(const int& tailleX, const int& tailleY) = 0;
 			int GetXPos();
 			int GetYPos();
 
@@ -37,33 +36,37 @@ namespace Regards
 			virtual int GetHeight() = 0;
 
 			bool IsVisible();
-			void SetVisible(const bool &value);
+			void SetVisible(const bool& value);
 
-			void IsPushActif(const bool &activePush);
+			void IsPushActif(const bool& activePush);
 			bool SetInactif();
 			bool SetActif();
-			void SetPush(const bool &push);
+			void SetPush(const bool& push);
 
-			bool FindElement(const int &xPos, const int &yPos);
+			bool FindElement(const int& xPos, const int& yPos);
 
-			virtual bool MouseOver(wxDC * context, const int &x, const int &y)
+			virtual bool MouseOver(wxDC* context, const int& x, const int& y)
 			{
-				::wxSetCursor(wxCursor(wxCURSOR_HAND));
+				wxSetCursor(wxCursor(wxCURSOR_HAND));
 				return false;
 			};
-            
-            void SetBackgroundBitmap(wxImage bmBackground);
-            
-            bool IsActif();
 
-			virtual void UnclickElement(wxWindow * window, const int &x, const int &y){};
-			virtual void ClickElement(wxWindow * window, const int &x, const int &y){};
+			void SetBackgroundBitmap(wxImage bmBackground);
+
+			bool IsActif();
+
+			virtual void UnclickElement(wxWindow* window, const int& x, const int& y)
+			{
+			};
+
+			virtual void ClickElement(wxWindow* window, const int& x, const int& y)
+			{
+			};
 
 		protected:
-
 			int commandId;
 			wxString libelleTooltip;
-            wxImage bmBackground;
+			wxImage bmBackground;
 			int x;
 			int y;
 			bool isActif;
@@ -74,8 +77,6 @@ namespace Regards
 			bool activePush;
 		};
 
-		typedef vector<CToolbarElement *> VectorNavigatorElement;
+		using VectorNavigatorElement = vector<CToolbarElement*>;
 	}
 }
-
-

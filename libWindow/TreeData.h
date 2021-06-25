@@ -11,25 +11,25 @@ namespace Regards
 			CTreeData(void);
 			~CTreeData(void);
 
-			void SetKey(const wxString & value);
+			void SetKey(const wxString& value);
 			wxString GetKey();
 
-			void SetValue(const wxString & value);
+			void SetValue(const wxString& value);
 			wxString GetValue();
 
-			void SetExifKey(const wxString & value);
+			void SetExifKey(const wxString& value);
 			wxString GetExifKey();
 
-			void SetActif(const bool & value);
+			void SetActif(const bool& value);
 			bool GetActif();
 
-			void SetType(const int & type);
+			void SetType(const int& type);
 			int GetType();
 
 			bool IsParent() { return parent; };
-			void SetIsParent(const bool &value) { parent = value; };
+			void SetIsParent(const bool& value) { parent = value; };
 
-			tree<CTreeData *>::iterator child;
+			tree<CTreeData*>::iterator child;
 
 		protected:
 			wxString valeur;
@@ -41,4 +41,3 @@ namespace Regards
 		};
 	}
 }
-

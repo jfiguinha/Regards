@@ -8,27 +8,28 @@ using namespace Regards::Window;
 #define WM_PICTURELOAD 1
 
 
-void CInfosSeparationBar::OnClick(const int &x, const int &y)
+void CInfosSeparationBar::OnClick(const int& x, const int& y)
 {
-
 }
 
 int CInfosSeparationBar::GetXPos()
 {
 	return _xPos;
 }
+
 int CInfosSeparationBar::GetYPos()
 {
 	return _yPos;
 }
 
-const int & CInfosSeparationBar::GetWidth()
+const int& CInfosSeparationBar::GetWidth()
 {
 	return width;
 }
-const int & CInfosSeparationBar::GetHeight()
+
+const int& CInfosSeparationBar::GetHeight()
 {
-    return theme.GetHeight();
+	return theme.GetHeight();
 }
 
 void CInfosSeparationBar::Clear()
@@ -37,12 +38,12 @@ void CInfosSeparationBar::Clear()
 	listElement.reserve(0);
 }
 
-void CInfosSeparationBar::SetTitle(const wxString &title)
+void CInfosSeparationBar::SetTitle(const wxString& title)
 {
 	this->title = title;
 }
 
-bool CInfosSeparationBar::operator == (const CInfosSeparationBar &n2)
+bool CInfosSeparationBar::operator ==(const CInfosSeparationBar& n2)
 {
 	int left = _xPos;
 	int right = _xPos + width;
@@ -56,7 +57,7 @@ bool CInfosSeparationBar::operator == (const CInfosSeparationBar &n2)
 	return false;
 }
 
-void CInfosSeparationBar::SetWindowPos(const int &x, const int &y)
+void CInfosSeparationBar::SetWindowPos(const int& x, const int& y)
 {
 	this->_xPos = x;
 	this->_yPos = y;
@@ -72,7 +73,7 @@ wxRect CInfosSeparationBar::GetPos()
 	return rc;
 }
 
-void CInfosSeparationBar::SetWidth(const int &width)
+void CInfosSeparationBar::SetWidth(const int& width)
 {
 	if (width != this->width)
 	{
@@ -81,7 +82,7 @@ void CInfosSeparationBar::SetWidth(const int &width)
 }
 
 
-CInfosSeparationBar::CInfosSeparationBar(const CThemeInfosSeparationBar &theme)
+CInfosSeparationBar::CInfosSeparationBar(const CThemeInfosSeparationBar& theme): _xPos(0), _yPos(0), width(0)
 {
 	this->theme = theme;
 }
@@ -93,11 +94,11 @@ CInfosSeparationBar::~CInfosSeparationBar(void)
 	listElement.reserve(0);
 }
 
-void CInfosSeparationBar::RenderTitle(wxDC * dc)
+void CInfosSeparationBar::RenderTitle(wxDC* dc)
 {
 	wxRect rc;
-    int x = 0;
-    int y = 0;
+	int x = 0;
+	int y = 0;
 	rc.x = 0;
 	rc.y = 0;
 	rc.width = width;
@@ -128,25 +129,23 @@ void CInfosSeparationBar::RenderTitle(wxDC * dc)
 				titleRectPos.height = size.y;
 			}
 		}
-
 	}
 }
 
-void CInfosSeparationBar::Render(wxDC * dc, const int &posLargeur, const int &posHauteur)
+void CInfosSeparationBar::Render(wxDC* dc, const int& posLargeur, const int& posHauteur)
 {
-   // double scale_factor = 1.0f;
-    wxBitmap memBitmap(GetWidth(),GetHeight());
-    wxMemoryDC memDC(memBitmap);
-    RenderIcone(&memDC, posLargeur, posHauteur);
-    memDC.SelectObject(wxNullBitmap);
-    dc->DrawBitmap(memBitmap,  _xPos + posLargeur, _yPos + posHauteur);
+	// double scale_factor = 1.0f;
+	wxBitmap memBitmap(GetWidth(), GetHeight());
+	wxMemoryDC memDC(memBitmap);
+	RenderIcone(&memDC, posLargeur, posHauteur);
+	memDC.SelectObject(wxNullBitmap);
+	dc->DrawBitmap(memBitmap, _xPos + posLargeur, _yPos + posHauteur);
 }
 
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CInfosSeparationBar::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
+void CInfosSeparationBar::RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur)
 {
 	RenderTitle(dc);
 }
-

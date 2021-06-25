@@ -21,7 +21,7 @@ CTreeElementStar::~CTreeElementStar()
 }
 
 
-wxImage CTreeElementStar::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector)
+wxImage CTreeElementStar::CreateFromSVG(const int& buttonWidth, const int& buttonHeight, const wxString& vector)
 {
 	wxImage img;
 	if (vector.size() > 0)
@@ -29,8 +29,7 @@ wxImage CTreeElementStar::CreateFromSVG(const int & buttonWidth, const int & but
 		wxStringInputStream memBuffer(vector);
 		wxSVGDocument svgDoc;
 		svgDoc.Load(memBuffer);
-		img = svgDoc.Render(buttonWidth, buttonHeight, NULL, true, true);
-
+		img = svgDoc.Render(buttonWidth, buttonHeight, nullptr, true, true);
 	}
 	else
 	{
@@ -47,17 +46,17 @@ void CTreeElementStar::CreateStar()
 	starYellow = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
 }
 
-void CTreeElementStar::SetNumPhoto(const int &numPhotoId)
+void CTreeElementStar::SetNumPhoto(const int& numPhotoId)
 {
 	this->numPhotoId = numPhotoId;
 }
 
-void CTreeElementStar::SetTheme(CThemeTreeTriangle * theme)
+void CTreeElementStar::SetTheme(CThemeTreeTriangle* theme)
 {
 	themeTriangle = *theme;
 }
 
-void CTreeElementStar::SetValue(const int &value)
+void CTreeElementStar::SetValue(const int& value)
 {
 	this->value = value;
 }
@@ -67,19 +66,19 @@ int CTreeElementStar::GetValue()
 	return value;
 }
 
-void CTreeElementStar::DrawElement(wxDC * deviceContext, const int &x, const int &y)
+void CTreeElementStar::DrawElement(wxDC* deviceContext, const int& x, const int& y)
 {
 	localx = x;
 	localy = y;
 	DrawStar(deviceContext, x, y);
 }
 
-void CTreeElementStar::DrawStar(wxDC * dc, const int &x, const int &y)
+void CTreeElementStar::DrawStar(wxDC* dc, const int& x, const int& y)
 {
 	int xPos = x;
 	for (int i = 0; i < 5; i++)
 	{
-		if(value > i)
+		if (value > i)
 			dc->DrawBitmap(starYellow, xPos, y);
 		else
 			dc->DrawBitmap(starEmpty, xPos, y);
@@ -87,12 +86,11 @@ void CTreeElementStar::DrawStar(wxDC * dc, const int &x, const int &y)
 	}
 }
 
-void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &y)
+void CTreeElementStar::ClickElement(wxWindow* window, const int& x, const int& y)
 {
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	CSqlCriteria sqlCriteria;
 	bool isNew = false;
-	wxString libelle = "";
 	if (value > 0 && value <= 5)
 	{
 		wxString libelle = to_string(value) + " Star";
@@ -114,9 +112,8 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 
 	if (value >= 0 && value <= 5)
 	{
-		libelle = to_string(value) + " Star";
+		wxString libelle = to_string(value) + " Star";
 		int newCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
 		sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, newCriteria);
 	}
-
 }

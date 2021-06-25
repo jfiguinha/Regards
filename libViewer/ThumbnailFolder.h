@@ -19,29 +19,30 @@ namespace Regards
 		class CThumbnailFolder : public CThumbnailVertical
 		{
 		public:
-			CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail& themeThumbnail, const bool& testValidity);
-			virtual ~CThumbnailFolder(void);
+			CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
+			                 const CThemeThumbnail& themeThumbnail, const bool& testValidity);
+			~CThumbnailFolder(void) override;
 			vector<wxString> GetFileList();
 			void Init(const int& typeAffichage = SHOW_ALL);
-			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector, int& nbElement);
+			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, PhotosVector* photoVector,
+			                     int& nbElement);
 		protected:
-
-			void OnPictureClick(CThumbnailData* data);
-			void ResizeThumbnail();
+			void OnPictureClick(CThumbnailData* data) override;
+			void ResizeThumbnail() override;
 
 		private:
 			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 			static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 			void SetListeFile(PhotosVector* photoVector);
 
-			
-			CIcone* FindElementWithVScroll(const int& xPos, const int& yPos);
-			void FindOtherElement(wxDC* dc, const int& x, const int& y);
-			CIcone* FindElement(const int& xPos, const int& yPos);
-			CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
-			void RenderIconeWithVScroll(wxDC* dc);
 
-			void UpdateScrollWithVScroll();
+			CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
+			void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
+			CIcone* FindElement(const int& xPos, const int& yPos) override;
+			CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
+			void RenderIconeWithVScroll(wxDC* dc) override;
+
+			void UpdateScrollWithVScroll() override;
 			void InitTypeAffichage(PhotosVector* photoVector, const int& typeAffichage);
 
 			InfosSeparationBarVector listSeparator;
@@ -53,4 +54,3 @@ namespace Regards
 		};
 	}
 }
-

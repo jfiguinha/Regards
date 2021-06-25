@@ -8,60 +8,61 @@ using namespace Regards::Window;
 class CItemPos
 {
 public:
+	CItemPos(int x, int y, pItemCompFonct* pf, CWindowMain* parent) : xPos(x), yPos(y), _parent(parent), _pf(pf)
+	{
+	}
 
-	CItemPos(int x, int y, pItemCompFonct * pf, CWindowMain * parent) : xPos(x), yPos(y), _pf(pf), _parent(parent) {}
-
-	bool operator()(CIcone * icone)
+	bool operator()(CIcone* icone)
 	{
 		return (*_pf)(xPos, yPos, icone, _parent);
 	}
 
 	int xPos;
 	int yPos;
-	CWindowMain * _parent;
-	pItemCompFonct * _pf;
+	CWindowMain* _parent;
+	pItemCompFonct* _pf;
 };
 
 int CIconeList::GetNbElement()
 {
-    int nbElement = pIconeList.size();
-    return nbElement;
+	int nbElement = pIconeList.size();
+	return nbElement;
 }
 
- CIconeList::~CIconeList()
- {
-     EraseThumbnailList();
- }
-
- int CIconeList::GetPhotoId(const int& numElement)
- {
-	 CIcone* icone = nullptr;
-	 int photoId = -1;
-	 if (numElement < pIconeList.size())
-		 icone = pIconeList[numElement];
-
-	 if (icone != nullptr)
-	 {
-		 CThumbnailData* data = icone->GetData();
-		 if (data != nullptr)
-			 photoId = data->GetNumPhotoId();
-	 }
-
-	 return photoId;
- }
-
-CIcone * CIconeList::GetElement(const int &numElement)
+CIconeList::~CIconeList()
 {
-    CIcone * icone = nullptr;
-    if(numElement < pIconeList.size())
-        icone = pIconeList[numElement];
-
-    return icone;
+	EraseThumbnailList();
 }
 
-void CIconeList::AddElement(CIcone * icone)
+int CIconeList::GetPhotoId(const int& numElement)
 {
-    pIconeList.push_back(icone);
+	CIcone* icone = nullptr;
+	int photoId = -1;
+	if (numElement < pIconeList.size())
+		icone = pIconeList[numElement];
+
+	if (icone != nullptr)
+	{
+		CThumbnailData* data = icone->GetData();
+		if (data != nullptr)
+			photoId = data->GetNumPhotoId();
+	}
+
+	return photoId;
+}
+
+CIcone* CIconeList::GetElement(const int& numElement)
+{
+	CIcone* icone = nullptr;
+	if (numElement < pIconeList.size())
+		icone = pIconeList[numElement];
+
+	return icone;
+}
+
+void CIconeList::AddElement(CIcone* icone)
+{
+	pIconeList.push_back(icone);
 }
 
 wxString CIconeList::GetFilename(const int& numElement)
@@ -73,7 +74,7 @@ wxString CIconeList::GetFilename(const int& numElement)
 
 	if (icone != nullptr)
 	{
-		CThumbnailData * data =  icone->GetData();
+		CThumbnailData* data = icone->GetData();
 		if (data != nullptr)
 			filename = data->GetFilename();
 	}
@@ -81,11 +82,11 @@ wxString CIconeList::GetFilename(const int& numElement)
 	return filename;
 }
 
-CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent)
+CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct* _pf, CWindowMain* parent)
 {
 	IconeVector::iterator it;
-	CIcone * element = nullptr;
-	it =find_if(pIconeList.begin(), pIconeList.end(), CItemPos(xPos, yPos, _pf, parent));
+	CIcone* element = nullptr;
+	it = find_if(pIconeList.begin(), pIconeList.end(), CItemPos(xPos, yPos, _pf, parent));
 
 	if (it != pIconeList.end())
 		element = *it;
@@ -93,9 +94,9 @@ CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFon
 	return element;
 }
 
- void CIconeList::EraseThumbnailList()
- {
-	for (CIcone * pIcone : pIconeList)
+void CIconeList::EraseThumbnailList()
+{
+	for (CIcone* pIcone : pIconeList)
 	{
 		if (pIcone != nullptr)
 		{
@@ -103,7 +104,5 @@ CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFon
 			pIcone = nullptr;
 		}
 	}
-	pIconeList.clear();  
- 
- }
- 
+	pIconeList.clear();
+}

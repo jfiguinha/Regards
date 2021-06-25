@@ -14,17 +14,20 @@ namespace Regards
 		class CTabWindowData
 		{
 		public:
-			CTabWindowData(): windowName(0)
+			CTabWindowData() : windowName(0)
 			{
-			} ;
-			~CTabWindowData() {};
+			};
 
-			void SetWindow(wxWindow * window)
+			~CTabWindowData()
+			{
+			};
+
+			void SetWindow(wxWindow* window)
 			{
 				this->window = window;
 			}
 
-			void SetWindow(CWindowMain * window)
+			void SetWindow(CWindowMain* window)
 			{
 				this->windowMain = window;
 			}
@@ -44,8 +47,8 @@ namespace Regards
 
 				return false;
 			}
-			
-			void ShowWindow(const bool &show = true) const
+
+			void ShowWindow(const bool& show = true) const
 			{
 				if (window != nullptr)
 					window->Show(show);
@@ -53,7 +56,7 @@ namespace Regards
 					windowMain->Show(show);
 			}
 
-			wxWindow * GetWindow() const
+			wxWindow* GetWindow() const
 			{
 				if (window != nullptr)
 					return window;
@@ -68,39 +71,36 @@ namespace Regards
 				return windowName;
 			}
 
-			void SetId(const int &id)
+			void SetId(const int& id)
 			{
 				windowName = id;
 			}
 
 		private:
-			wxWindow * window = nullptr;
-            CWindowMain * windowMain= nullptr;
+			wxWindow* window = nullptr;
+			CWindowMain* windowMain = nullptr;
 			int windowName;
 		};
 
 		class CTabWindow : public CWindowMain, public CToolbarInterface
 		{
 		public:
-
-			CTabWindow(const wxString & windowName, wxWindow* parent, wxWindowID id);
+			CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID id);
 			~CTabWindow() override;
 			void UpdateScreenRatio() override;
 
-        private:
-            
+		private:
 			void OnSize(wxSizeEvent& event) override;
-            void OnPaint(wxPaintEvent& event);       
+			void on_paint(wxPaintEvent& event);
 
 		protected:
-
-            void Resize() override;
-            void ClickShowButton(const int& id, const int &refresh = 1) override;
-            void HideAllWindow();
+			void Resize() override;
+			void ClickShowButton(const int& id, const int& refresh = 1) override;
+			void HideAllWindow();
 			virtual void LoadInfo() = 0;
-			CModificationManager * modificationManager;
+			CModificationManager* modificationManager;
 			vector<CTabWindowData*> listWindow;
-			CToolbarWindow * toolbarWindow = nullptr;
+			CToolbarWindow* toolbarWindow = nullptr;
 			int windowVisible;
 			int width;
 			int height;

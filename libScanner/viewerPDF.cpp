@@ -19,7 +19,7 @@
 #include "ScannerFrame.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
-
+#include <Tracing.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Scanner;

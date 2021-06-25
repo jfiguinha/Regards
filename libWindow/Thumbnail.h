@@ -19,9 +19,9 @@ namespace Regards
 		class CThumbnail : public CWindowMain
 		{
 		public:
-			CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
-			virtual ~CThumbnail();
-			
+			CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail, const bool& testValidity);
+			~CThumbnail() override;
+
 			wxString GetFilename(const int& numItem);
 			int ImageSuivante();
 			int ImagePrecedente();
@@ -33,81 +33,94 @@ namespace Regards
 
 			void ZoomOn();
 			void ZoomOff();
-			void ZoomPosition(const int &position);
-			void SetCheck(const bool &check);
-			virtual int GetWidth();
-			virtual int GetHeight();
+			void ZoomPosition(const int& position);
+			void SetCheck(const bool& check);
+			int GetWidth() override;
+			int GetHeight() override;
 
-			wxWindow * GetWindow(){
+			wxWindow* GetWindow()
+			{
 				return this;
 			}
 
 			int GetIconeHeight();
 			int GetIconeWidth();
 
-			virtual void SetActifItem(const int& idPhoto, const bool &move);
-			virtual void GetSelectItem(vector<CThumbnailData *> &vectorData);
+			virtual void SetActifItem(const int& idPhoto, const bool& move);
+			virtual void GetSelectItem(vector<CThumbnailData*>& vectorData);
 
-			void SetTheme(CThemeThumbnail * theme);
-           
-            void UpdateScreenRatio();
-			wxString GetWaitingMessage();
-			static void LoadPicture(void * param);
-			void Resize();
-			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
+			void SetTheme(CThemeThumbnail* theme);
+
+			void UpdateScreenRatio() override;
+			wxString GetWaitingMessage() override;
+			static void LoadPicture(void* param);
+			void Resize() override;
+			static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 			static bool ItemCompFonctPhotoId(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
 			void ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize);
 			int GetTabValue();
 		protected:
 			void RefreshIcone(const int& idPhoto);
-			CIcone * GetIconeById(const int& idPhoto);
+			CIcone* GetIconeById(const int& idPhoto);
 			int GetNumItemById(const int& idPhoto);
 			void EraseThumbnailList(CIconeList* iconeListLocal);
 			int GetNbIconSelected();
-			void ProcessThumbnail(CThumbnailData * pThumbnailData);
+			void ProcessThumbnail(CThumbnailData* pThumbnailData);
 			virtual void EraseThumbnail(wxCommandEvent& event);
 			void StartLoadingPicture(wxCommandEvent& event);
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
-            void OnKeyUp(wxKeyEvent& event);
+			void OnKeyUp(wxKeyEvent& event);
 			void TestMaxX();
 			void TestMaxY();
-			virtual void OnMouseRelease(const int &x, const int &y) {};
-			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
 
-			void OpenFileViewer(const wxString &filename);
-			void SetIconeSize(const int &width, const int &height);
-			virtual void CreateOrLoadStorageFile(){};
-			
-			virtual CIcone * FindElement(const int &xPos, const int &yPos);
-			virtual void ResizeThumbnail(){};
-			
-			virtual void ProcessIdle();
+			virtual void OnMouseRelease(const int& x, const int& y)
+			{
+			};
+
+			virtual void FindOtherElement(wxDC* dc, const int& x, const int& y)
+			{
+			};
+
+			void OpenFileViewer(const wxString& filename);
+			void SetIconeSize(const int& width, const int& height);
+
+			virtual void CreateOrLoadStorageFile()
+			{
+			};
+
+			virtual CIcone* FindElement(const int& xPos, const int& yPos);
+
+			virtual void ResizeThumbnail()
+			{
+			};
+
+			void ProcessIdle() override;
 			void OnIdle(wxIdleEvent& evt);
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
 			void OnLDoubleClick(wxMouseEvent& event);
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
-            void OnEnterWindow(wxMouseEvent& event);
-            void OnLeaveWindow(wxMouseEvent& event);
-			bool GetProcessEnd();
+			void OnEnterWindow(wxMouseEvent& event);
+			void OnLeaveWindow(wxMouseEvent& event);
+			bool GetProcessEnd() override;
 			void OnLeftPosition(wxCommandEvent& event);
 			void OnTopPosition(wxCommandEvent& event);
 
 			void CalculControlSize();
-			virtual void OnPictureClick(CThumbnailData * data) = 0;
+			virtual void OnPictureClick(CThumbnailData* data) = 0;
 			void InitScrollingPos();
 			virtual void AfterSetList();
-			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
+			void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 			void OnAnimation(wxTimerEvent& event);
-            void OnRefreshIcone(wxTimerEvent& event);
-			virtual void RenderIcone(wxDC * dc) = 0;
+			void OnRefreshIcone(wxTimerEvent& event);
+			virtual void RenderIcone(wxDC* dc) = 0;
 			virtual void UpdateScroll() = 0;
-			
+
 			void OnRefreshThumbnail(wxCommandEvent& event);
 			void update_render_icone(wxCommandEvent& event);
 
@@ -121,7 +134,7 @@ namespace Regards
 
 			//Variable
 			std::mutex lockIconeList;
-            CIconeList * iconeList;
+			CIconeList* iconeList;
 			//IconeVector pIconeList;
 
 			int xNewSize;
@@ -150,7 +163,7 @@ namespace Regards
 			vector<int> TabSize;
 			int Max;
 
-            wxTimer * refreshTimer;
+			wxTimer* refreshTimer;
 			CThemeThumbnail themeThumbnail;
 
 			int controlWidth;
@@ -158,15 +171,15 @@ namespace Regards
 			int thumbnailPos;
 			int nbProcess;
 			/*
-            std::mutex muActif;
-            std::mutex muSelect;
-            std::mutex muLoadIcone;
+				std::mutex muActif;
+				std::mutex muSelect;
+				std::mutex muLoadIcone;
 
-			CIcone * numActif;
-			CIcone * numSelect;
-			CIcone* loadingIcone;
-			*/
-			wxActivityIndicator * m_waitingAnimation;
+				CIcone * numActif;
+				CIcone * numSelect;
+				CIcone* loadingIcone;
+				*/
+			wxActivityIndicator* m_waitingAnimation;
 			bool animationStart = false;
 			int numActifPhotoId = -1;
 			int numSelectPhotoId = -1;
@@ -174,21 +187,21 @@ namespace Regards
 
 			bool threadDataProcess;
 			bool allThreadEnd;
-            bool showLoadingBitmap;
-            int stepLoading;
+			bool showLoadingBitmap;
+			int stepLoading;
 
-            wxAnimation * m_animation;
+			wxAnimation* m_animation;
 			wxTimer* timerAnimation;
 			bool render;
 			bool check;
 			bool testValidity;
-            wxBitmap bitmapMemory;
+			wxBitmap bitmapMemory;
 			wxBitmap bitmapIconDrag;
 			int xPosDrag;
 			int yPosDrag;
 			int nbElementChecked = 0;
-            int oldPosLargeur;
-            int oldPosHauteur;
+			int oldPosLargeur;
+			int oldPosHauteur;
 
 			int posHauteur;
 			int posLargeur;
@@ -201,8 +214,7 @@ namespace Regards
 			bool moveOnPaint = true;
 			bool enableDragAndDrop = false;
 			int nbElementInIconeList = 0;
-            bool firstRefresh = true;
+			bool firstRefresh = true;
 		};
 	}
 }
-

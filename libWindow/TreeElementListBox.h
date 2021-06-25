@@ -13,49 +13,47 @@ namespace Regards
 {
 	namespace Window
 	{
-
 		class CTreeElementListBox : public CTreeElement
 		{
 		public:
-			CTreeElementListBox(CTreeElementSlideInterface * eventInterface);
-			~CTreeElementListBox();
+			CTreeElementListBox(CTreeElementSlideInterface* eventInterface);
+			~CTreeElementListBox() override;
 
-			void DrawElement(wxDC * deviceContext, const int &x, const int &y);
-			void ClickElement(wxWindow * window, const int &x, const int &y);
-			void SetTheme(CThemeTreeListBox * theme);
+			void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
+			void ClickElement(wxWindow* window, const int& x, const int& y) override;
+			void SetTheme(CThemeTreeListBox* theme);
 
-			CTreeElementListBox& operator=(const CTreeElementListBox &other);
+			CTreeElementListBox& operator=(const CTreeElementListBox& other);
 
-			void SetZoneSize(const int &width, const int &height)
+			void SetZoneSize(const int& width, const int& height) override
 			{
 				themeTreeListBox.SetWidth(width);
 				themeTreeListBox.SetHeight(height);
 			}
 
-			void SetElementPos(const int &x, const int &y);
+			void SetElementPos(const int& x, const int& y) override;
 
-			void SetTabValue(const vector<CMetadata> & value, const int &index);
-			void SetExifKey(const wxString &exifKey);
+			void SetTabValue(const vector<CMetadata>& value, const int& index);
+			void SetExifKey(const wxString& exifKey);
 
-			void SetBackgroundColor(const wxColour &color)
+			void SetBackgroundColor(const wxColour& color) override
 			{
 				themeTreeListBox.color = color;
 			}
 
-			int GetWidth()
+			int GetWidth() override
 			{
 				return themeTreeListBox.GetWidth();
 			}
 
-			int GetHeight()
+			int GetHeight() override
 			{
 				return themeTreeListBox.GetHeight();
 			}
 
 
 		private:
-
-			wxBitmap CreateTriangle(const int &width, const int &height, const wxColor & color, const wxColor & colorBack);
+			wxBitmap CreateTriangle(const int& width, const int& height, const wxColor& color, const wxColor& colorBack);
 			wxString GetPositionValue();
 			void TestMaxMinValue();
 

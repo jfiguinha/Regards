@@ -4,7 +4,8 @@
 using namespace Regards::Window;
 
 
-CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * interfaceToolbar, const int &idMessage, const bool& vertical)
+CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+                             CToolbarInterface* interfaceToolbar, const int& idMessage, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	screen = nullptr;
@@ -13,10 +14,10 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	isVertical = vertical;
 
 	screen = new CToolbarButton(themeToolbar.button);
-    screen->ReplaceColor(wxColor(0,0,0), wxColor(0,0,0), themeToolbar.replaceColor);
+	screen->ReplaceColor(wxColor(0, 0, 0), wxColor(0, 0, 0), themeToolbar.replaceColor);
 	if (vertical)
 	{
-		screen->Resize(themeToolbar.button.GetRealTailleY(), themeToolbar.button.GetRealTailleX()); 
+		screen->Resize(themeToolbar.button.GetRealTailleY(), themeToolbar.button.GetRealTailleX());
 		screen->SetButtonResourceId("IDB_BUTTON_CLICK_VERTICAL");
 	}
 	else
@@ -26,12 +27,12 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	}
 	screen->SetCommandId(wxEVENT_WM_CLICK);
 	screen->SetLibelle("");
-    screen->SetBorder(0);
+	screen->SetBorder(0);
 	screen->IsPushActif(false);
 	navElement.push_back(screen);
 }
 
-void CClickToolbar::SetVertical(const bool &vertical)
+void CClickToolbar::SetVertical(const bool& vertical)
 {
 	isVertical = vertical;
 	if (isVertical)
@@ -47,7 +48,7 @@ void CClickToolbar::SetVertical(const bool &vertical)
 		//height = themeToolbar.GetHeight();
 	}
 
-	
+
 	Refresh();
 }
 
@@ -62,6 +63,7 @@ int CClickToolbar::GetWidth()
 
 	return themeToolbar.button.GetRealTailleX();
 }
+
 int CClickToolbar::GetHeight()
 {
 	if (isVertical)
@@ -70,12 +72,13 @@ int CClickToolbar::GetHeight()
 	return themeToolbar.button.GetRealTailleY();
 }
 
-void CClickToolbar::EventManager(const int &id)
+void CClickToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
 	case wxEVENT_WM_CLICK:
 		interfaceToolbar->ClickShowButton(idObject);
 		break;
+	default: ;
 	}
 }

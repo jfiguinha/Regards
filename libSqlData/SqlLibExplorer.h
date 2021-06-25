@@ -13,8 +13,8 @@ namespace Regards
 			CSqlLibExplorer(const bool &readOnly, const wxString &libelleNotGeo, const bool &load_inmemory);
 			~CSqlLibExplorer() override;
 
-			bool InitDatabase(const wxString &lpFilename);
-            bool CheckVersion(const wxString &lpFilename);
+			auto InitDatabase(const wxString& lpFilename) -> bool override;
+			auto CheckVersion(const wxString& lpFilename) -> bool override;
 		private:
 			wxString libelleNotGeo;
 			bool CreateDatabase(const wxString &databasePath, const bool &load_inmemory);

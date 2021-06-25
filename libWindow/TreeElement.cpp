@@ -16,13 +16,13 @@ CTreeElement::~CTreeElement()
 {
 }
 
-void CTreeElement::SetElementPos(const int &x, const int &y)
+void CTreeElement::SetElementPos(const int& x, const int& y)
 {
 	xPos = x;
 	yPos = y;
 }
 
-void CTreeElement::SetVisible(const bool &visible)
+void CTreeElement::SetVisible(const bool& visible)
 {
 	this->visible = visible;
 }
@@ -33,7 +33,7 @@ bool CTreeElement::IsVisible()
 }
 
 
-void CTreeElement::SetBackgroundColor(const wxColour &color)
+void CTreeElement::SetBackgroundColor(const wxColour& color)
 {
 	backcolor = color;
 }

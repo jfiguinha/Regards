@@ -9,29 +9,26 @@ namespace Regards
 		class CListOfWindow
 		{
 		public:
-
 			CListOfWindow();
 
-			void AddWindow(CWindowMain * windowMain);
-			void SendMessageToWindow(const wxString &filename, const int &typeData);
-				
+			void AddWindow(CWindowMain* windowMain);
+			void SendMessageToWindow(const wxString& filename, const int& typeData);
+
 		private:
 			WindowMainVector listOfWinListener;
 		};
-		
+
 		class CGpsEngine
 		{
 		public:
-
 			CGpsEngine();
 			virtual ~CGpsEngine();
-			static CListOfWindow * getInstance();
+			static CListOfWindow* getInstance();
 			static void Initialize();
 			static void kill();
 
 		private:
-
-			static CListOfWindow * listofWindow;
+			static CListOfWindow* listofWindow;
 		};
 	}
 }

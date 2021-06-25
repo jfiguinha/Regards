@@ -6,9 +6,7 @@ class CEmptyWindow : public CWindowMain
 {
 public:
 	CEmptyWindow(wxWindow* parent, wxWindowID id);
-	~CEmptyWindow();
+	~CEmptyWindow() override;
 
-	void OnPaint(wxPaintEvent& event);
-
+	void on_paint(wxPaintEvent& event);
 };
-

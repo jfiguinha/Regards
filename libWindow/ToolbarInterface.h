@@ -9,12 +9,17 @@ namespace Regards
 	{
 		class CToolbarInterface
 		{
-			public:
-				CToolbarInterface(){};
-				virtual ~CToolbarInterface(){};
-				virtual void ClickShowButton(const int &id, const int &refresh = 1) = 0;
-			protected:
-				void EventManager(const int &id);
+		public:
+			CToolbarInterface()
+			{
+			};
+
+			virtual ~CToolbarInterface()
+			{
+			};
+			virtual void ClickShowButton(const int& id, const int& refresh = 1) = 0;
+		protected:
+			void EventManager(const int& id);
 		};
 	}
 }

@@ -3,7 +3,6 @@
 #include <FileUtility.h>
 #include <LibResource.h>
 #include <wx/dcbuffer.h>
-#include <RegardsConfigParam.h>
 #include <wx/sstream.h>
 #include <wxSVG/SVGDocument.h>
 #include <window_id.h>
@@ -11,27 +10,25 @@
 using namespace Regards::Window;
 //using namespace Regards::Internet;
 
-CBitmapInfosCheckBox::CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme)
-	: CWindowMain("CBitmapInfosCheckBox",parent, id)
+CBitmapInfosCheckBox::CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme)
+	: CWindowMain("CBitmapInfosCheckBox", parent, id)
 {
 	bitmapInfosTheme = theme;
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfosCheckBox::OnPaint));
-    Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapInfosCheckBox::OnLButtonDown));
-    
-    isSelected = false;
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfosCheckBox::on_paint));
+	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapInfosCheckBox::OnLButtonDown));
+
+	isSelected = false;
 	checkboxVisibility = true;
 	xPos = 0;
 	yPos = 0;
-
 }
 
 
-
-void CBitmapInfosCheckBox::SetFilename(const wxString &libelle)
+void CBitmapInfosCheckBox::SetFilename(const wxString& libelle)
 {
 	if (filename != libelle)
 	{
-        filename = libelle;
+		filename = libelle;
 	}
 }
 
@@ -48,103 +45,105 @@ int CBitmapInfosCheckBox::GetHeight()
 
 void CBitmapInfosCheckBox::UpdateScreenRatio()
 {
-    Resize();
+	Resize();
 }
 
 
 void CBitmapInfosCheckBox::Redraw()
 {
 	wxClientDC dc(this);
-    DrawInformations(&dc);
+	DrawInformations(&dc);
 }
 
-void CBitmapInfosCheckBox::SetCheckboxVisible(const bool &checkboxVisibility)
+void CBitmapInfosCheckBox::SetCheckboxVisible(const bool& checkboxVisibility)
 {
-    this->checkboxVisibility = checkboxVisibility;
-    this->Redraw();
+	this->checkboxVisibility = checkboxVisibility;
+	this->Redraw();
 }
 
 void CBitmapInfosCheckBox::OnLButtonDown(wxMouseEvent& event)
 {
-    int x = event.GetX();
-    int y = event.GetY();
-    
-    if((x > xPos && x < xPos + bitmapCheckOn.GetWidth()) && (y > yPos && y < yPos + bitmapCheckOn.GetHeight()))
-    {
-        isSelected = !isSelected;
-        Refresh();
-        
-        wxCommandEvent * event = new wxCommandEvent(wxEVENT_CHANGECHECKBOX);
-        wxQueueEvent(this->GetParent(), event);
-    }
-    
+	int x = event.GetX();
+	int y = event.GetY();
+
+	if ((x > xPos && x < xPos + bitmapCheckOn.GetWidth()) && (y > yPos && y < yPos + bitmapCheckOn.GetHeight()))
+	{
+		isSelected = !isSelected;
+		Refresh();
+
+		auto wx_command_event = new wxCommandEvent(wxEVENT_CHANGECHECKBOX);
+		wxQueueEvent(this->GetParent(), wx_command_event);
+	}
 }
 
 bool CBitmapInfosCheckBox::GetCheckState()
 {
-    return isSelected;
+	return isSelected;
 }
 
-void CBitmapInfosCheckBox::DrawInformations(wxDC * dc)
+void CBitmapInfosCheckBox::DrawInformations(wxDC* dc)
 {
-    
-    wxRect rc = GetWindowRect();
-    FillRect(dc, rc, bitmapInfosTheme.colorBack);
-    wxString message = L"";
-    wxString libelle = CFileUtility::GetFileName(filename);
-    
-    wxSize size = GetSizeTexte(dc, libelle, bitmapInfosTheme.themeFont);
+	wxRect rc = GetWindowRect();
+	FillRect(dc, rc, bitmapInfosTheme.colorBack);
+	wxString message = L"";
+	wxString libelle = CFileUtility::GetFileName(filename);
 
-    if(!checkboxVisibility)
-        DrawTexte(dc, libelle, (GetWindowWidth() - size.x) / 2, (GetWindowHeight() - size.y) / 2, bitmapInfosTheme.themeFont);
-    else
-        DrawTexte(dc, libelle, (GetWindowWidth() - size.x) / 2, 0, bitmapInfosTheme.themeFont);
+	wxSize size = GetSizeTexte(dc, libelle, bitmapInfosTheme.themeFont);
 
-    if(checkboxVisibility)
-    {
-        wxString libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
-        
+	if (!checkboxVisibility)
+		DrawTexte(dc, libelle, (GetWindowWidth() - size.x) / 2, (GetWindowHeight() - size.y) / 2,
+		          bitmapInfosTheme.themeFont);
+	else
+		DrawTexte(dc, libelle, (GetWindowWidth() - size.x) / 2, 0, bitmapInfosTheme.themeFont);
 
-            if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() || bitmapCheckOn.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
-            {
-                bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight());
-                bitmapCheckOn = bitmapCheckOn.ConvertToDisabled();
-            }
-            
-            if (!bitmapCheckOff.IsOk() ||  (bitmapCheckOff.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() || bitmapCheckOff.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
-            {
-                bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight());
-                bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
-            }
+	if (checkboxVisibility)
+	{
+		wxString libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
 
-        
-        xPos = 0;
-        yPos = GetWindowHeight() - bitmapCheckOn.GetHeight();
-        
-        
-        if (isSelected && bitmapCheckOn.IsOk())
-            dc->DrawBitmap(bitmapCheckOn, xPos, yPos);
-        else if(bitmapCheckOff.IsOk())
-            dc->DrawBitmap(bitmapCheckOff, xPos, yPos);
-        
-        size = GetSizeTexte(dc, libelleSelectAll, bitmapInfosTheme.themeFont);
-        
-        int x = xPos + 5 + bitmapCheckOn.GetWidth();
-        int y = (GetWindowHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
-        
-        DrawTexte(dc, libelleSelectAll, x, y, bitmapInfosTheme.themeFont);
-    }
 
+		if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() || bitmapCheckOn
+			.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
+		{
+			bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", bitmapInfosTheme.GetCheckboxWidth(),
+			                                                   bitmapInfosTheme.GetCheckboxHeight());
+			bitmapCheckOn = bitmapCheckOn.ConvertToDisabled();
+		}
+
+		if (!bitmapCheckOff.IsOk() || (bitmapCheckOff.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() ||
+			bitmapCheckOff.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
+		{
+			bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", bitmapInfosTheme.GetCheckboxWidth(),
+			                                                    bitmapInfosTheme.GetCheckboxHeight());
+			bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
+		}
+
+
+		xPos = 0;
+		yPos = GetWindowHeight() - bitmapCheckOn.GetHeight();
+
+
+		if (isSelected && bitmapCheckOn.IsOk())
+			dc->DrawBitmap(bitmapCheckOn, xPos, yPos);
+		else if (bitmapCheckOff.IsOk())
+			dc->DrawBitmap(bitmapCheckOff, xPos, yPos);
+
+		size = GetSizeTexte(dc, libelleSelectAll, bitmapInfosTheme.themeFont);
+
+		int x = xPos + 5 + bitmapCheckOn.GetWidth();
+		int y = (GetWindowHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
+
+		DrawTexte(dc, libelleSelectAll, x, y, bitmapInfosTheme.themeFont);
+	}
 }
 
-void CBitmapInfosCheckBox::OnPaint(wxPaintEvent& event)
+void CBitmapInfosCheckBox::on_paint(wxPaintEvent& event)
 {
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
 
-    
+
 	wxBufferedPaintDC dc(this);
-    DrawInformations(&dc);
+	DrawInformations(&dc);
 }

@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "InfosSeparationBarFace.h"
 #include <WindowMain.h>
@@ -19,8 +20,12 @@ bool CInfosSeparationBarFace::GetSelected()
 	return isSelectIcone;
 }
 
+/**
+ * \brief 
+ * \param theme 
+ */
 CInfosSeparationBarFace::CInfosSeparationBarFace(const CThemeInfosSeparationBar& theme)
-	: CInfosSeparationBar(theme)
+	: CInfosSeparationBar(theme), theme_(theme)
 {
 	parentWindow = nullptr;
 	isSelected = false;

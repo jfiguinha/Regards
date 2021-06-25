@@ -3,7 +3,7 @@
 using namespace Regards::Window;
 
 
-CToolbarElement::CToolbarElement()
+CToolbarElement::CToolbarElement(): commandId(0), x(0), y(0)
 {
 	isVisible = true;
 	isRepeatable = false;
@@ -20,10 +20,10 @@ CToolbarElement::~CToolbarElement()
 
 void CToolbarElement::SetBackgroundBitmap(wxImage bmBackground)
 {
-    this->bmBackground = bmBackground;
+	this->bmBackground = bmBackground;
 }
 
-void CToolbarElement::SetVertical(const bool &isVertical)
+void CToolbarElement::SetVertical(const bool& isVertical)
 {
 	this->isVertical = isVertical;
 }
@@ -33,7 +33,7 @@ bool CToolbarElement::GetVertical()
 	return isVertical;
 }
 
-void CToolbarElement::SetRepeatable(const bool &repeat)
+void CToolbarElement::SetRepeatable(const bool& repeat)
 {
 	this->isRepeatable = repeat;
 }
@@ -48,12 +48,12 @@ bool CToolbarElement::IsVisible()
 	return isVisible;
 }
 
-void CToolbarElement::SetVisible(const bool &value)
+void CToolbarElement::SetVisible(const bool& value)
 {
 	isVisible = value;
 }
 
-void CToolbarElement::SetCommandId(const int &commandId)
+void CToolbarElement::SetCommandId(const int& commandId)
 {
 	this->commandId = commandId;
 }
@@ -63,7 +63,7 @@ int CToolbarElement::GetCommandId()
 	return commandId;
 }
 
-void CToolbarElement::SetLibelleTooltip(const wxString &libelle)
+void CToolbarElement::SetLibelleTooltip(const wxString& libelle)
 {
 	libelleTooltip = libelle;
 }
@@ -73,12 +73,11 @@ wxString CToolbarElement::GetLibelleTooltip()
 	return libelleTooltip;
 }
 
-void CToolbarElement::SetPosition(const int &x, const int &y)
+void CToolbarElement::SetPosition(const int& x, const int& y)
 {
 	this->x = x;
 	this->y = y;
 }
-
 
 
 int CToolbarElement::GetXPos()
@@ -91,14 +90,14 @@ int CToolbarElement::GetYPos()
 	return y;
 }
 
-void CToolbarElement::IsPushActif(const bool &activePush)
+void CToolbarElement::IsPushActif(const bool& activePush)
 {
 	this->activePush = activePush;
 }
 
 bool CToolbarElement::IsActif()
 {
-    return isActif;
+	return isActif;
 }
 
 bool CToolbarElement::SetInactif()
@@ -121,7 +120,7 @@ bool CToolbarElement::SetActif()
 	return false;
 }
 
-bool CToolbarElement::FindElement(const int &xPos, const int &yPos)
+bool CToolbarElement::FindElement(const int& xPos, const int& yPos)
 {
 	int left = x;
 	int right = x + GetWidth();
@@ -140,7 +139,7 @@ bool CToolbarElement::FindElement(const int &xPos, const int &yPos)
 	return test;
 }
 
-void CToolbarElement::SetPush(const bool &push)
+void CToolbarElement::SetPush(const bool& push)
 {
 	isPush = push;
 }

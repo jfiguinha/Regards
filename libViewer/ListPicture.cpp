@@ -579,14 +579,14 @@ void CListPicture::CreateFolder(const wxString& newFolder)
 wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const wxString& folderDestination,
                                           const wxString& dateFile, const wxString& gpsFile)
 {
-	wxString separatorFolder = "\\";
+	wxString separator_folder;
 	wxString libelle = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	wxString folderComplete = folderDestination;
 
 #if __APPLE__
 	separatorFolder = "/";
 #else
-	separatorFolder = "\\";
+	separator_folder = "\\";
 #endif
 
 	if (infoFile.priority == 0)
@@ -599,17 +599,17 @@ wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const 
 				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection ==
 					3)
 				{
-					folderComplete.append(separatorFolder + intValue[0]);
+					folderComplete.append(separator_folder + intValue[0]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[1]);
+					folderComplete.append(separator_folder + intValue[1]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.dateInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[2]);
+					folderComplete.append(separator_folder + intValue[2]);
 					CreateFolder(folderComplete);
 				}
 			}
@@ -622,23 +622,23 @@ wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const 
 			{
 				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[1]);
+					folderComplete.append(separator_folder + intValue[1]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[2]);
+					folderComplete.append(separator_folder + intValue[2]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[3]);
+					folderComplete.append(separator_folder + intValue[3]);
 					CreateFolder(folderComplete);
 				}
 			}
 			else if (gpsFile == libelle)
 			{
-				folderComplete.append(separatorFolder + libelle);
+				folderComplete.append(separator_folder + libelle);
 				CreateFolder(folderComplete);
 			}
 		}
@@ -652,23 +652,23 @@ wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const 
 			{
 				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[1]);
+					folderComplete.append(separator_folder + intValue[1]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[2]);
+					folderComplete.append(separator_folder + intValue[2]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.geoInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[3]);
+					folderComplete.append(separator_folder + intValue[3]);
 					CreateFolder(folderComplete);
 				}
 			}
 			else if (gpsFile == libelle)
 			{
-				folderComplete.append(separatorFolder + libelle);
+				folderComplete.append(separator_folder + libelle);
 				CreateFolder(folderComplete);
 			}
 		}
@@ -681,17 +681,17 @@ wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const 
 				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection ==
 					3)
 				{
-					folderComplete.append(separatorFolder + intValue[0]);
+					folderComplete.append(separator_folder + intValue[0]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[1]);
+					folderComplete.append(separator_folder + intValue[1]);
 					CreateFolder(folderComplete);
 				}
 				if (infoFile.dateInfoSelection == 3)
 				{
-					folderComplete.append(separatorFolder + intValue[2]);
+					folderComplete.append(separator_folder + intValue[2]);
 					CreateFolder(folderComplete);
 				}
 			}
@@ -907,6 +907,7 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 						//PPM
 						infoFile.outputFormat = PPM;
 						break;
+					default: ;
 					}
 				}
 

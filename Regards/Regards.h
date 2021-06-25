@@ -8,6 +8,8 @@
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
+// ReSharper disable All
+#pragma once
 #include <header.h>
 #include "wx/xrc/xmlres.h"
 #include "wx/url.h"
@@ -34,7 +36,7 @@ using namespace Regards::OpenCL;
 
 #ifdef SDL2
 #include <SDL.h>
-#include <SDL_audio.h> 
+#include <SDL_audio.h>
 #endif
 
 #ifdef __WXMSW__
@@ -43,7 +45,7 @@ using namespace Regards::OpenCL;
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
-#endif 
+#endif
 
 #define ISOLATION_AWARE_ENABLED
 #endif
@@ -55,8 +57,7 @@ using namespace Regards::OpenCL;
 #ifdef FFMPEG
 #define CONFIG_AVFILTER 1
 
-extern "C"
-{
+extern "C" {
 #include "libavformat/avformat.h"
 
 #if CONFIG_AVFILTER
@@ -91,17 +92,20 @@ using namespace Regards::Viewer;
 #endif
 
 #include <wx/glcanvas.h>
-int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0 };
+int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
 // c: pointer to original argc
 // v: pointer to original argv
 // o: option name after hyphen
 // d: default value (if NULL, the option takes no argument)
-const char *pick_option(int *c, char **v, const char *o, const char *d) {
+const char* pick_option(int* c, char** v, const char* o, const char* d)
+{
 	int id = d ? 1 : 0;
-	for (int i = 0; i < *c - id; i++) {
-		if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o)) {
-			char *r = v[i + id] + 1 - id;
+	for (int i = 0; i < *c - id; i++)
+	{
+		if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o))
+		{
+			char* r = v[i + id] + 1 - id;
 			for (int j = i; j < *c - id; j++)
 				v[j] = v[j + id + 1];
 			*c -= id + 1;
@@ -114,21 +118,25 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 
 [[noreturn]] void onTerminate() noexcept
 {
-	if (auto exc = std::current_exception()) {
+	if (auto exc = std::current_exception())
+	{
 		// we have an exception
 		try
 		{
 			rethrow_exception(exc); // throw to recognize the type
 		}
-		catch (const std::runtime_error &err) {
+		catch (const std::runtime_error& err)
+		{
 			std::cout << "caught a runtime_error. what(): " <<
 				err.what() << std::endl;
 		}
-		catch (std::exception const& exc) {
+		catch (const std::exception& exception)
+		{
 			std::cout << "caught an exception. what(): " <<
-				exc.what() << std::endl;
+				exception.what() << std::endl;
 		}
-		catch (...) {
+		catch (...)
+		{
 			std::cout << "unknown exception occured." << std::endl;
 		}
 	}
@@ -137,6 +145,7 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 }
 
 float value[256];
+
 float clamp(float val, float minval, float maxval)
 {
 	return std::clamp(val, minval, maxval);
@@ -153,14 +162,13 @@ public:
 	MyApp(
 	)
 	{
-
 		//Init x11
 		regardsParam = nullptr;
 		frameStart = nullptr;
 		//frameViewer = nullptr;
 #ifdef USECURL
 		curl_global_init(CURL_GLOBAL_ALL);
-#endif        
+#endif
 
 
 #ifdef __WXGTK__
@@ -172,14 +180,13 @@ public:
 
 #pragma omp parallel for
 		for (auto i = 0; i < 256; i++)
-			value[i] = (float)i;
+			value[i] = static_cast<float>(i);
 
 #ifdef FFMPEG
 		avformat_network_init();
 		//av_register_all();
 		//avfilter_register_all();
 #endif
-
 
 
 #ifdef SDL2
@@ -191,16 +198,17 @@ public:
 		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------
 		//³õÊ¼»¯
-		if (SDL_Init(flags)) {
+		if (SDL_Init(flags))
+		{
 			std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
 			wxMessageBox(_T("Could not initialize SDL "));
 			exit(1);
 		}
 
 #ifdef WIN32
-		if (!TestAudioDevice("SDL_AUDIODRIVER=DirectSound"))
+		if (!MyApp::TestAudioDevice("SDL_AUDIODRIVER=DirectSound"))
 		{
-			if (!TestAudioDevice("SDL_AUDIODRIVER=winmm"))
+			if (!MyApp::TestAudioDevice("SDL_AUDIODRIVER=winmm"))
 			{
 				wxMessageBox(_T("Could not initialize SDL Audio Driver"));
 				exit(1);
@@ -209,19 +217,14 @@ public:
 #endif
 
 #endif
-
-
 	}
 
 
 #ifdef WIN32
-	virtual bool TestAudioDevice(const wxString &driverAudio)
+	virtual bool TestAudioDevice(const wxString& driverAudio)
 	{
 		SDL_AudioSpec spec;
-		SDL_AudioDeviceID devid_out = 0;
 		SDL_AudioSpec wanted;
-		//int devcount;
-		//int i;
 
 		putenv(driverAudio);
 
@@ -232,7 +235,7 @@ public:
 		wanted.format = AUDIO_F32SYS;
 		wanted.channels = 1;
 		wanted.samples = 4096;
-		wanted.callback = NULL;
+		wanted.callback = nullptr;
 
 		SDL_zero(spec);
 
@@ -243,9 +246,11 @@ public:
 		   circumstances. */
 
 		SDL_Log("Opening default playback device...\n");
-		devid_out = SDL_OpenAudioDevice(NULL, SDL_FALSE, &wanted, &spec, SDL_AUDIO_ALLOW_ANY_CHANGE);
-		if (!devid_out) {
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open an audio device for playback: %s!\n", SDL_GetError());
+		SDL_AudioDeviceID devid_out = SDL_OpenAudioDevice(nullptr, SDL_FALSE, &wanted, &spec, SDL_AUDIO_ALLOW_ANY_CHANGE);
+		if (!devid_out)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't open an audio device for playback: %s!\n",
+			             SDL_GetError());
 			return false;
 		}
 
@@ -255,63 +260,60 @@ public:
 	}
 #endif
 
-	virtual void OnInitCmdLine(wxCmdLineParser& parser);
-	virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+	void OnInitCmdLine(wxCmdLineParser& parser) override;
+	bool OnCmdLineParsed(wxCmdLineParser& parser) override;
 
 	// this one is called on application startup and is a good place for the app
 	// initialization (doing it here and not in the ctor allows to have an error
 	// return: if OnInit() returns false, the application terminates)
-	virtual bool OnInit();
-	virtual int Close();
-#ifdef __APPLE__	
+	bool OnInit() override;
+	int Close() override;
+#ifdef __APPLE__
 	virtual void MacOpenFile(const wxString &fileName);
-#endif    
+#endif
 
 
-	virtual void ShowViewer()
+	void ShowViewer() override
 	{
 #ifdef TEST_WINDOWMANAGER
 		wxFrame* frame = new MyFrame(NULL);
 		SetTopWindow(frame);
 		frame->Show();
 #else
-		
+
 		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxDefaultSize, this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
 #endif
 	}
 
-	virtual void ShowAbout()
+	void ShowAbout() override
 	{
-
 		if (frameStart != nullptr)
 		{
 			frameStart->Show(true);
 			frameStart->Raise();
 		}
-
 	}
 
-	virtual void HideAbout()
+	void HideAbout() override
 	{
-
 		if (frameStart != nullptr)
 			frameStart->Show(false);
-
 	}
 
-	virtual wxString GetAppName()
+	wxString GetAppName() override
 	{
 		return "RegardsViewer";
 	}
+
 	virtual void AddImageHandler(wxImageHandler* poHandler);
-	virtual wxString GetImageFilter();
+	wxString GetImageFilter() override;
 
 private:
-	CRegardsConfigParam * regardsParam;
-	MyFrameIntro * frameStart;
-	CViewerFrame * frameViewer;
+	CRegardsConfigParam* regardsParam;
+	MyFrameIntro* frameStart;
+	CViewerFrame* frameViewer;
 	wxString fileToOpen;
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
@@ -330,8 +332,10 @@ IMPLEMENT_APP(MyApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING,
-	wxCMD_LINE_PARAM_OPTIONAL },
+	{
+		wxCMD_LINE_PARAM, nullptr, nullptr, "input file", wxCMD_LINE_VAL_STRING,
+		wxCMD_LINE_PARAM_OPTIONAL
+	},
 
-	{ wxCMD_LINE_NONE }
+	{wxCMD_LINE_NONE}
 };

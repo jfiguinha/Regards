@@ -12,31 +12,29 @@ class wxGenericDirCtrl;
 namespace Regards
 {
 	namespace Viewer
-	{       
+	{
 		class CPanelPhotoWnd : public CTabWindow
 		{
 		public:
 			CPanelPhotoWnd(wxWindow* parent, wxWindowID id);
-			virtual ~CPanelPhotoWnd();
+			~CPanelPhotoWnd() override;
 
 		protected:
-        
 			void SetFolder(wxCommandEvent& folderEvent);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			void SaveParameter(wxCommandEvent& event);
 			void UpdateCriteria(wxCommandEvent& event);
 			void OnRefreshData(wxCommandEvent& event);
 
-			void LoadInfo();
-			
-			
+			void LoadInfo() override;
+
+
 			void RemoveFolder(const wxString& folder);
 			wxString AddFolder(const wxString& folder);
-			
-			CCategoryFolderWindow * categoryFolderWnd;
-			wxGenericDirCtrl * folderWnd;
-            CToolbarPhoto * photoToolbar;
-		};
 
+			CCategoryFolderWindow* categoryFolderWnd;
+			wxGenericDirCtrl* folderWnd;
+			CToolbarPhoto* photoToolbar;
+		};
 	}
 }

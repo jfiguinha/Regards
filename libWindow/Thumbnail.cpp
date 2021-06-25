@@ -16,6 +16,7 @@
 #include <ThumbnailData.h>
 #include "ThumbnailMessage.h"
 #include <libPicture.h>
+#include <Tracing.h>
 
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -400,7 +401,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 
 	this->themeThumbnail = themeThumbnail;
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CThumbnail::OnIdle));
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnail::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnail::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CThumbnail::OnLButtonUp));
@@ -1165,7 +1166,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 	this->Refresh();
 }
 
-void CThumbnail::OnPaint(wxPaintEvent& event)
+void CThumbnail::on_paint(wxPaintEvent& event)
 {
 	TRACE();
 	int width = GetWindowWidth();

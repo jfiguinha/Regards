@@ -11,11 +11,10 @@ namespace Regards
 		public:
 			CTreeDataStars(void);
 			~CTreeDataStars(void);
-			void SetNumPhotoId(const int & numPhotoId);
+			void SetNumPhotoId(const int& numPhotoId);
 			int GetNumPhotoId();
 		protected:
 			int numPhotoId;
 		};
 	}
 }
-

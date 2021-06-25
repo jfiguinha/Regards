@@ -6,28 +6,25 @@ namespace Regards
 {
 	namespace Window
 	{
-
 		class CToolbarTexte : public CToolbarElement
 		{
 		public:
-			CToolbarTexte(const CThemeToolbarTexte & theme);
-			virtual ~CToolbarTexte();
-			int GetWidth();
-			int GetHeight();
-			void SetLibelle(const wxString &libelle);
-			void DrawButton(wxDC * dc, const int &x, const int &y);
-			void Resize(const int &tailleX, const int &tailleY);
+			CToolbarTexte(const CThemeToolbarTexte& theme);
+			~CToolbarTexte() override;
+			int GetWidth() override;
+			int GetHeight() override;
+			void SetLibelle(const wxString& libelle);
+			void DrawButton(wxDC* dc, const int& x, const int& y) override;
+			void Resize(const int& tailleX, const int& tailleY) override;
 
 		protected:
-
-			virtual void DrawElement(wxDC * dc, const int &x, const int &y, const wxColor &color);
+			virtual void DrawElement(wxDC* dc, const int& x, const int& y, const wxColor& color);
 
 		private:
-
-			void CreateInactifButton(wxDC * dc, const int &x, const int &y);
-			void CreateActifButton(wxDC * dc, const int &x, const int &y);
-			void CreatePushButton(wxDC * dc, const int &x, const int &y);
-			void DrawShapeElement(wxDC * deviceContext, const wxRect &rc);	
+			void CreateInactifButton(wxDC* dc, const int& x, const int& y);
+			void CreateActifButton(wxDC* dc, const int& x, const int& y);
+			void CreatePushButton(wxDC* dc, const int& x, const int& y);
+			void DrawShapeElement(wxDC* deviceContext, const wxRect& rc);
 
 			bool drawShape;
 			int width;
@@ -36,8 +33,5 @@ namespace Regards
 			wxString libelle;
 			CThemeToolbarTexte themeTexte;
 		};
-
-		
 	}
 }
-

@@ -14,7 +14,7 @@ namespace Regards
 
 	namespace Viewer
 	{
-		class CPreviewToolbar : public CToolbarWindow
+		class CPreviewToolbar final : public CToolbarWindow
 		{
 		public:
 			CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,

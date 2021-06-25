@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include "header.h"
 /////////////////////////////////////////////////////////////////////////////
 // Name:        md5.cpp
@@ -343,38 +344,37 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 #else
 
 #include <stdio.h>
-#include <windows.h>
-#include <Wincrypt.h>
+#include <wincrypt.h>
+#include <Windows.h>
 
-#define BUFSIZE 1024
-#define MD5LEN  16
+constexpr auto BUFSIZE = 1024;
+constexpr auto MD5LEN = 16;
 
 wxString wxMD5::GetFileMD5(const wxString& filename)
 {
-	DWORD dwStatus = 0;
-	BOOL bResult = FALSE;
+	BOOL b_result;
 	HCRYPTPROV hProv = 0;
 	HCRYPTHASH hHash = 0;
-	HANDLE hFile = nullptr;
 	BYTE rgbFile[BUFSIZE];
 	DWORD cbRead = 0;
 	BYTE rgbHash[MD5LEN];
-	DWORD cbHash = 0;
+	DWORD cb_hash;
 	CHAR rgbDigits[] = "0123456789abcdef";
 	//LPCWSTR filename = L"filename.txt";
 	// Logic to check usage goes here.
 
-	hFile = CreateFile(filename.c_str(),
-	                   GENERIC_READ,
-	                   FILE_SHARE_READ,
-	                   nullptr,
-	                   OPEN_EXISTING,
-	                   FILE_FLAG_SEQUENTIAL_SCAN,
-	                   nullptr);
+	// ReSharper disable once CppInconsistentNaming
+	const HANDLE hFile = CreateFile(filename.c_str(),
+	                                GENERIC_READ,
+	                                FILE_SHARE_READ,
+	                                nullptr,
+	                                OPEN_EXISTING,
+	                                FILE_FLAG_SEQUENTIAL_SCAN,
+	                                nullptr);
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		dwStatus = GetLastError();
+		GetLastError();
 		//printf("Error opening file %s\nError: %d\n", filename,
 		//	dwStatus);
 		return "";
@@ -387,7 +387,7 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 	                         PROV_RSA_FULL,
 	                         CRYPT_VERIFYCONTEXT))
 	{
-		dwStatus = GetLastError();
+		GetLastError();
 		//printf("CryptAcquireContext failed: %d\n", dwStatus);
 		CloseHandle(hFile);
 		return "";
@@ -395,14 +395,14 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 
 	if (!CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
 	{
-		dwStatus = GetLastError();
+		GetLastError();
 		//printf("CryptAcquireContext failed: %d\n", dwStatus);
 		CloseHandle(hFile);
 		CryptReleaseContext(hProv, 0);
 		return "";
 	}
 
-	while (bResult = ReadFile(hFile, rgbFile, BUFSIZE, &cbRead, nullptr))
+	while ((b_result = ReadFile(hFile, rgbFile, BUFSIZE, &cbRead, nullptr)))
 	{
 		if (0 == cbRead)
 		{
@@ -411,7 +411,7 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 
 		if (!CryptHashData(hHash, rgbFile, cbRead, 0))
 		{
-			dwStatus = GetLastError();
+			GetLastError();
 			//printf("CryptHashData failed: %d\n", dwStatus);
 			CryptReleaseContext(hProv, 0);
 			CryptDestroyHash(hHash);
@@ -420,9 +420,9 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 		}
 	}
 
-	if (!bResult)
+	if (!b_result)
 	{
-		dwStatus = GetLastError();
+		GetLastError();
 		//printf("ReadFile failed: %d\n", dwStatus);
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
@@ -430,11 +430,11 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 		return "";
 	}
 	wxString output = "";
-	cbHash = MD5LEN;
-	if (CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0))
+	cb_hash = MD5LEN;
+	if (CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cb_hash, 0))
 	{
 		//printf("MD5 hash of file %s is: ", filename);
-		for (DWORD i = 0; i < cbHash; i++)
+		for (DWORD i = 0; i < cb_hash; i++)
 		{
 			char message[10];
 			sprintf(message, "%c%c", rgbDigits[rgbHash[i] >> 4],
@@ -444,7 +444,7 @@ wxString wxMD5::GetFileMD5(const wxString& filename)
 	}
 	else
 	{
-		dwStatus = GetLastError();
+		GetLastError();
 		//printf("CryptGetHashParam failed: %d\n", dwStatus);
 	}
 

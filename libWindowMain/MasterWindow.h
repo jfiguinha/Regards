@@ -1,13 +1,11 @@
 #pragma once
 #include <theme.h>
-#include <Tracing.h>
 class CWindowMainPimpl;
 
 namespace Regards
 {
 	namespace Window
 	{
-
 		class CWindowMainPimpl
 		{
 		public:
@@ -29,7 +27,7 @@ namespace Regards
 				}
 			}
 
-			thread * threadIdle;
+			thread* threadIdle;
 			int width;
 			int height;
 			unsigned long sleeptime;
@@ -42,14 +40,15 @@ namespace Regards
 			virtual ~CMasterWindow(void);
 
 			wxRect GetWindowRect();
-			void SetWindowHeight(const int &height);
+			void SetWindowHeight(const int& height);
 			virtual int GetWindowHeight();
-			void SetWindowWidth(const int &width);
+			void SetWindowWidth(const int& width);
 			virtual int GetWindowWidth();
 
 			virtual void UpdateScreenRatio() = 0;
 
-			static void StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry = 10);
+			static void StopAllProcess(const wxString& title, const wxString& message, wxWindow* parentWindow,
+			                           const int& nbTry = 10);
 
 			virtual int GetWidth() { return this->GetWindowWidth(); };
 			virtual int GetHeight() { return this->GetWindowHeight(); };
@@ -57,50 +56,53 @@ namespace Regards
 			void StartThread();
 
 			static void SetEndProgram();
-			static void SetStopProcess(const bool &state);
-			
+			static void SetStopProcess(const bool& state);
+
 			void SetStartProcess();
 
 			virtual bool GetProcessEnd();
 
-			static void FillRect(wxDC * dc, const wxRect &rc, const wxColour &color);
+			static void FillRect(wxDC* dc, const wxRect& rc, const wxColour& color);
 
-			static void DrawTexte(wxDC * dc, const wxString &libelle, const int &xPos, const int &yPos, const CThemeFont &font);
+			static void DrawTexte(wxDC* dc, const wxString& libelle, const int& xPos, const int& yPos,
+			                      const CThemeFont& font);
 
-			static wxSize GetSizeTexte(wxDC * dc, const wxString &libelle, const CThemeFont &font);
+			static wxSize GetSizeTexte(wxDC* dc, const wxString& libelle, const CThemeFont& font);
 
-			virtual wxString GetWaitingMessage(){ return wxString();};
-            
-            virtual void CallRefresh(wxWindow * window);
+			virtual wxString GetWaitingMessage() { return wxString(); };
+
+			virtual void CallRefresh(wxWindow* window);
 
 			virtual void Resize() = 0;
 
 			virtual bool GetProcessStop();
-            
-		protected:
 
-			static void ThreadIdle(void * data);
+		protected:
+			static void ThreadIdle(void* data);
 			virtual void ProcessOnIdleEndEvent(wxCommandEvent& event);
 			virtual void ProcessOnSizeEvent(wxSizeEvent& event);
-			virtual void ProcessIdle(){};
-			
-			virtual void PushThreadIdleEvent(){};
+
+			virtual void ProcessIdle()
+			{
+			};
+
+			virtual void PushThreadIdleEvent()
+			{
+			};
 
 
-			CWindowMainPimpl * windowMainPimpl;
+			CWindowMainPimpl* windowMainPimpl;
 			wxString name;
 			bool processEnd;
 			bool processStop;
 			bool processIdle;
 			int id;
 		public:
-        
-            double scaleFactor;
+			double scaleFactor;
 			static bool endProgram;
 			static bool stopProcess;
-			static vector<CMasterWindow *> listMainWindow;
-			static vector<CMasterWindow *> listProcessWindow;
+			static vector<CMasterWindow*> listMainWindow;
+			static vector<CMasterWindow*> listProcessWindow;
 		};
 	}
 }
-

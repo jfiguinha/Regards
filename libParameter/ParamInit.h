@@ -8,11 +8,9 @@ public:
 	CParamInit();
 	~CParamInit();
 
-	static CRegardsConfigParam * getInstance();
-	static void Initialize(CRegardsConfigParam * param);
+	static CRegardsConfigParam* getInstance();
+	static void Initialize(CRegardsConfigParam* param);
 	static bool IsConfigFileExist();
 private:
-
-	static CRegardsConfigParam *_singleton;
+	static CRegardsConfigParam* _singleton;
 };
-

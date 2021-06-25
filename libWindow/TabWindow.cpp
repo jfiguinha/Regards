@@ -3,34 +3,33 @@
 #include "TabWindow.h"
 using namespace Regards::Window;
 
-CTabWindow::CTabWindow(const wxString & windowName, wxWindow* parent, wxWindowID id)
+CTabWindow::CTabWindow(const wxString& windowName, wxWindow* parent, wxWindowID id)
 	: CWindowMain(windowName, parent, id)
 {
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CTabWindow::OnSize));
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CTabWindow::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CTabWindow::on_paint));
 }
 
-void CTabWindow::OnPaint(wxPaintEvent & event)
+void CTabWindow::on_paint(wxPaintEvent& event)
 {
 	if (width == 0 || height == 0)
 		return;
 
 	wxPaintDC dc(this);
-	wxRect rc = GetRect();
+	const wxRect rc = GetRect();
 	this->FillRect(&dc, rc, themeBitmap.colorScreen);
-
 }
 
 CTabWindow::~CTabWindow()
 {
-    for (CTabWindowData* window : listWindow)
-    {
-        if(window != nullptr)
-        {
-            delete window;
-            window = nullptr;
-        }
-    }
+	for (CTabWindowData* window : listWindow)
+	{
+		if (window != nullptr)
+		{
+			delete window;
+			window = nullptr;
+		}
+	}
 }
 
 void CTabWindow::UpdateScreenRatio()
@@ -41,16 +40,16 @@ void CTabWindow::UpdateScreenRatio()
 			window->UpdateScreenRatio();
 	}
 
-	if(toolbarWindow != nullptr)
+	if (toolbarWindow != nullptr)
 		toolbarWindow->UpdateScreenRatio();
 
 	this->Resize();
 }
 
-void CTabWindow::ClickShowButton(const int& id, const int &refresh)
+void CTabWindow::ClickShowButton(const int& id, const int& refresh)
 {
 	HideAllWindow();
-	for (CTabWindowData * window : listWindow)
+	for (CTabWindowData* window : listWindow)
 	{
 		if (window->GetId() == id)
 		{
@@ -65,13 +64,11 @@ void CTabWindow::ClickShowButton(const int& id, const int &refresh)
 }
 
 
-void CTabWindow::OnSize(wxSizeEvent & event)
+void CTabWindow::OnSize(wxSizeEvent& event)
 {
+	const int pictureWidth = event.GetSize().GetWidth();
 
-	int pictureWidth = event.GetSize().GetWidth();
-	int pictureHeight = event.GetSize().GetHeight();
-
-	if (pictureWidth > 0 && pictureHeight > 0)
+	if (const int pictureHeight = event.GetSize().GetHeight(); pictureWidth > 0 && pictureHeight > 0)
 	{
 		width = pictureWidth;
 		height = pictureHeight;
@@ -92,16 +89,15 @@ void CTabWindow::HideAllWindow()
 
 void CTabWindow::Resize()
 {
-	wxRect rcAffichageBitmap;
+	wxRect rc_affichage_bitmap;
 
-	rcAffichageBitmap.x = 0;
-	rcAffichageBitmap.y = 0;
-	rcAffichageBitmap.width = width;
-	rcAffichageBitmap.height = height - toolbarWindow->GetHeight();
+	rc_affichage_bitmap.x = 0;
+	rc_affichage_bitmap.width = width;
+	rc_affichage_bitmap.height = height - toolbarWindow->GetHeight();
 
 	if (toolbarWindow != nullptr)
 	{
-		toolbarWindow->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbarWindow->GetHeight());
+		toolbarWindow->SetSize(rc_affichage_bitmap.x, 0, rc_affichage_bitmap.width, toolbarWindow->GetHeight());
 		toolbarWindow->Refresh();
 	}
 
@@ -114,13 +110,12 @@ void CTabWindow::Resize()
 			if (window != nullptr && window->IsShown())
 				windowToShow = window->GetWindow();
 		}
-
 	}
 
 	if (windowToShow != nullptr)
 	{
-		windowToShow->SetSize(rcAffichageBitmap.x, toolbarWindow->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+		windowToShow->SetSize(rc_affichage_bitmap.x, toolbarWindow->GetHeight(), rc_affichage_bitmap.width,
+		                      rc_affichage_bitmap.height);
 		windowToShow->Refresh();
 	}
-
 }

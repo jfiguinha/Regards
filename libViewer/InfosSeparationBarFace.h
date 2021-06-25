@@ -10,7 +10,11 @@ namespace Regards
 		class CInfosSeparationBarFace : public CInfosSeparationBar
 		{
 		public:
-			CInfosSeparationBarFace(const CThemeInfosSeparationBar& theme);
+			/**
+			 * \brief 
+			 * \param theme 
+			 */
+			explicit CInfosSeparationBarFace(const CThemeInfosSeparationBar& theme);
 			~CInfosSeparationBarFace(void) override;
 
 			void RenderIcone(wxDC* deviceContext, const int& posLargeur, const int& posHauteur) override;
@@ -29,15 +33,16 @@ namespace Regards
 			wxString libelleSelectAll;
 			bool isSelected;
 			bool isSelectIcone;
-			int numFace;
+			int numFace{};
 			wxRect rcSelect;
 			wxRect rcSelectIcone;
 
-			int xPosEdit;
-			int yPosEdit;
-			int xPosText;
-			int yPosText;
+			int xPosEdit{};
+			int yPosEdit{};
+			int xPosText{};
+			int yPosText{};
 			wxWindow* parentWindow;
+			const CThemeInfosSeparationBar& theme_;
 		};
 	}
 }

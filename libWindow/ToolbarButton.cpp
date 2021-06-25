@@ -7,7 +7,7 @@
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 
-CToolbarButton::CToolbarButton(const CThemeToolbarButton & theme)
+CToolbarButton::CToolbarButton(const CThemeToolbarButton& theme)
 {
 	x = 0;
 	y = 0;
@@ -21,12 +21,12 @@ CToolbarButton::CToolbarButton(const CThemeToolbarButton & theme)
 	buttonWidth = 0;
 	buttonHeight = 0;
 	themeButton = theme;
-    colorToReplace = wxColor(0,0,0);
-    colorActifReplacement = themeButton.colorActifReplacement;
-    colorInactifReplacement = themeButton.replaceColor;
+	colorToReplace = wxColor(0, 0, 0);
+	colorActifReplacement = themeButton.colorActifReplacement;
+	colorInactifReplacement = themeButton.replaceColor;
 }
 
-void CToolbarButton::Resize(const int &tailleX, const int &tailleY)
+void CToolbarButton::Resize(const int& tailleX, const int& tailleY)
 {
 	themeButton.SetTailleX(tailleX);
 	themeButton.SetTailleY(tailleY);
@@ -37,22 +37,23 @@ CToolbarButton::~CToolbarButton()
 {
 }
 
-void CToolbarButton::SetLibelle(const wxString &libelle)
+void CToolbarButton::SetLibelle(const wxString& libelle)
 {
 	libelleTooltip = libelle;
 	this->libelle = libelle;
 }
 
-void CToolbarButton::SetBorder(const int &size)
+void CToolbarButton::SetBorder(const int& size)
 {
-    themeButton.SetRectangleSize(size);
+	themeButton.SetRectangleSize(size);
 }
 
-void CToolbarButton::ReplaceColor(const wxColor & colorToReplace, const wxColor & colorActifReplacement, const wxColor & colorInactifReplacement)
+void CToolbarButton::ReplaceColor(const wxColor& colorToReplace, const wxColor& colorActifReplacement,
+                                  const wxColor& colorInactifReplacement)
 {
-    this->colorToReplace = colorToReplace;
-    this->colorActifReplacement = colorActifReplacement;
-    this->colorInactifReplacement = colorInactifReplacement;
+	this->colorToReplace = colorToReplace;
+	this->colorActifReplacement = colorActifReplacement;
+	this->colorInactifReplacement = colorInactifReplacement;
 }
 
 
@@ -72,10 +73,9 @@ int CToolbarButton::GetBitmapHeight()
 	return height;
 }
 
-void CToolbarButton::SetButtonResourceId(const wxString &resourceId)
+void CToolbarButton::SetButtonResourceId(const wxString& resourceId)
 {
-    this->resourceId = resourceId;
-
+	this->resourceId = resourceId;
 }
 
 int CToolbarButton::GetWidth()
@@ -89,7 +89,7 @@ int CToolbarButton::GetHeight()
 }
 
 
-void CToolbarButton::DrawShapeElement(wxDC * dc, const wxRect &rc)
+void CToolbarButton::DrawShapeElement(wxDC* dc, const wxRect& rc)
 {
 	if (themeButton.GetRectangleSize() > 0)
 	{
@@ -99,7 +99,7 @@ void CToolbarButton::DrawShapeElement(wxDC * dc, const wxRect &rc)
 		dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
 		dc->SetPen(wxNullPen);
 
-		wxPen penBottom(themeButton.lineColorBottom, themeButton.GetRectangleSize(),  wxPENSTYLE_SOLID);
+		wxPen penBottom(themeButton.lineColorBottom, themeButton.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penBottom);
 		dc->DrawLine(rc.x, rc.y, rc.width, rc.y);
 		dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
@@ -108,132 +108,132 @@ void CToolbarButton::DrawShapeElement(wxDC * dc, const wxRect &rc)
 }
 
 
-
-void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bool &inactif)
+void CToolbarButton::DrawElement(wxDC* dc, const int& x, const int& y, const bool& inactif)
 {
-    if(resourceId == L"")
-        return;
-    
-    
-    //Calcul des éléments suivant la présence ou non d'un libelle
-    wxImage imageScale;
-    
-    if (libelle != L"")
-    {
-        int width = themeButton.GetTailleX();
-        int height = themeButton.GetTailleY() - ((float)themeButton.GetTailleY() * 0.25);
-        int diffHeight = themeButton.GetTailleY() -height;
-        
-        if(width == 0)
-            return;
-        
-        if(height == 0)
-            return;
-        
-        int buttonWidth = width - (2*themeButton.GetMarge());
-        int buttonHeight = height - (2*themeButton.GetMarge());
-        
-        //float ratio = 1.0;
-
-            if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
-                button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
-
-            imageScale = button;
+	if (resourceId == L"")
+		return;
 
 
-        int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
-        int yPos = y + (height - imageScale.GetHeight()) / 2;
-        
-        if (!inactif)
-        {
-            imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                               colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-            dc->DrawBitmap(imageScale, xPos, yPos);
-        }
-        else
-        {
-            imageScale = imageScale.ConvertToGreyscale();
-            
-            imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                               colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
-            dc->DrawBitmap(imageScale, xPos, yPos);
-        }
-        
-        if (libelle != L"")
-        {
-            wxSize size = CWindowMain::GetSizeTexte(dc, libelle, themeButton.font);
-            int xPos = x + (width - size.x) / 2;
-            int yPos = y + height + (diffHeight - size.y) / 2;
-            if (!inactif)
-            {
-                CThemeFont font = themeButton.font;
-                font.SetColorFont(wxColor(0,0,0));
-                CWindowMain::DrawTexte(dc, libelle, xPos, yPos, font);
-            }
-            else
-                CWindowMain::DrawTexte(dc, libelle, xPos, yPos, themeButton.font);
-        }
-    }
-    else
-    {
-        int width = themeButton.GetTailleX();
-        int height = themeButton.GetTailleY();
-        
-        if(width == 0)
-            return;
-        
-        if(height == 0)
-            return;
-        
+	//Calcul des éléments suivant la présence ou non d'un libelle
+	wxImage imageScale;
 
-        
-        int buttonWidth = width - (2*themeButton.GetMarge());
-        int buttonHeight = height - (2*themeButton.GetMarge());
-        
-        if(buttonWidth == 0)
-        {
-            buttonWidth = width;
-        }
-        
-        if(buttonHeight == 0)
-        {
-            buttonHeight = height;
-        }
+	if (libelle != L"")
+	{
+		int width = themeButton.GetTailleX();
+		int height = themeButton.GetTailleY() - (static_cast<float>(themeButton.GetTailleY()) * 0.25);
+		int diffHeight = themeButton.GetTailleY() - height;
 
-        
+		if (width == 0)
+			return;
 
-            if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
-                button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
-            
-            imageScale = button;
+		if (height == 0)
+			return;
 
-        
-        int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
-        int yPos = y + (themeButton.GetTailleY() - imageScale.GetHeight()) / 2;
-        
-        if (!inactif)
-        {
-            imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                               colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-            dc->DrawBitmap(imageScale, xPos, yPos);
-        }
-        else
-        {
-            imageScale = imageScale.ConvertToGreyscale();
-            
-            imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-                               colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
-            dc->DrawBitmap(imageScale, xPos, yPos);
-        }
-    }
+		int buttonWidth = width - (2 * themeButton.GetMarge());
+		int buttonHeight = height - (2 * themeButton.GetMarge());
 
+		//float ratio = 1.0;
+
+		if (!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
+			button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
+
+		imageScale = button;
+
+
+		int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
+		int yPos = y + (height - imageScale.GetHeight()) / 2;
+
+		if (!inactif)
+		{
+			imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			                   colorActifReplacement.Red(), colorActifReplacement.Green(),
+			                   colorActifReplacement.Blue());
+			dc->DrawBitmap(imageScale, xPos, yPos);
+		}
+		else
+		{
+			imageScale = imageScale.ConvertToGreyscale();
+
+			imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			                   colorInactifReplacement.Red(), colorInactifReplacement.Green(),
+			                   colorInactifReplacement.Blue());
+			dc->DrawBitmap(imageScale, xPos, yPos);
+		}
+
+		if (libelle != L"")
+		{
+			wxSize size = CWindowMain::GetSizeTexte(dc, libelle, themeButton.font);
+			int x_pos = x + (width - size.x) / 2;
+			int y_pos = y + height + (diffHeight - size.y) / 2;
+			if (!inactif)
+			{
+				CThemeFont font = themeButton.font;
+				font.SetColorFont(wxColor(0, 0, 0));
+				CWindowMain::DrawTexte(dc, libelle, x_pos, y_pos, font);
+			}
+			else
+				CWindowMain::DrawTexte(dc, libelle, x_pos, y_pos, themeButton.font);
+		}
+	}
+	else
+	{
+		int width = themeButton.GetTailleX();
+		int height = themeButton.GetTailleY();
+
+		if (width == 0)
+			return;
+
+		if (height == 0)
+			return;
+
+
+		int buttonWidth = width - (2 * themeButton.GetMarge());
+		int buttonHeight = height - (2 * themeButton.GetMarge());
+
+		if (buttonWidth == 0)
+		{
+			buttonWidth = width;
+		}
+
+		if (buttonHeight == 0)
+		{
+			buttonHeight = height;
+		}
+
+
+		if (!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
+			button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
+
+		imageScale = button;
+
+
+		int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
+		int yPos = y + (themeButton.GetTailleY() - imageScale.GetHeight()) / 2;
+
+		if (!inactif)
+		{
+			imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			                   colorActifReplacement.Red(), colorActifReplacement.Green(),
+			                   colorActifReplacement.Blue());
+			dc->DrawBitmap(imageScale, xPos, yPos);
+		}
+		else
+		{
+			imageScale = imageScale.ConvertToGreyscale();
+
+			imageScale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+			                   colorInactifReplacement.Red(), colorInactifReplacement.Green(),
+			                   colorInactifReplacement.Blue());
+			dc->DrawBitmap(imageScale, xPos, yPos);
+		}
+	}
 }
 
-void CToolbarButton::DrawButton(wxDC * dc, const int &x, const int &y)
+void CToolbarButton::DrawButton(wxDC* dc, const int& x, const int& y)
 {
-    //wxSVGFileDC
-    
-    
+	//wxSVGFileDC
+
+
 	if (this->isVisible)
 	{
 		if (isPush)
@@ -252,25 +252,25 @@ void CToolbarButton::DrawButton(wxDC * dc, const int &x, const int &y)
 }
 
 
-void CToolbarButton::CreatePushButton(wxDC * dc, const int &x, const int &y)
+void CToolbarButton::CreatePushButton(wxDC* dc, const int& x, const int& y)
 {
 	if (!themeButton.showButtonOnly)
 	{
-        wxRect rc;
-        rc.x = 0;
-        rc.y = 0;
-        rc.width = GetWidth();
-        rc.height = GetHeight();
-        
-        wxBitmap imageBackground(GetWidth(), GetHeight());
-        wxMemoryDC memDC(imageBackground);
-        memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-        memDC.SelectObject(wxNullBitmap);
-        
-        wxBackground = imageBackground.ConvertToImage();
-               
-        dc->DrawBitmap(imageBackground, x, y);
-        
+		wxRect rc;
+		rc.x = 0;
+		rc.y = 0;
+		rc.width = GetWidth();
+		rc.height = GetHeight();
+
+		wxBitmap imageBackground(GetWidth(), GetHeight());
+		wxMemoryDC memDC(imageBackground);
+		memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
+		memDC.SelectObject(wxNullBitmap);
+
+		wxBackground = imageBackground.ConvertToImage();
+
+		dc->DrawBitmap(imageBackground, x, y);
+
 		int size = themeButton.GetRectangleSize() / 2;
 
 		rc.x = x + size;
@@ -279,36 +279,34 @@ void CToolbarButton::CreatePushButton(wxDC * dc, const int &x, const int &y)
 		rc.height = y + GetHeight() - size;
 		DrawShapeElement(dc, rc);
 	}
-	DrawElement(dc,x, y);
+	DrawElement(dc, x, y);
 }
 
 
-void CToolbarButton::CreateInactifButton(wxDC * dc, const int &x, const int &y)
+void CToolbarButton::CreateInactifButton(wxDC* dc, const int& x, const int& y)
 {
 	DrawElement(dc, x, y, true);
 }
 
-void CToolbarButton::CreateActifButton(wxDC * dc, const int &x, const int &y)
+void CToolbarButton::CreateActifButton(wxDC* dc, const int& x, const int& y)
 {
 	if (!themeButton.showButtonOnly)
 	{
-        
-        wxRect rc;
-        rc.x = 0;
-        rc.y = 0;
-        rc.width = GetWidth();
-        rc.height = GetHeight();
-        
-        wxBitmap imageBackground(GetWidth(), GetHeight());
-        wxMemoryDC memDC(imageBackground);
-        memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-        memDC.SelectObject(wxNullBitmap);
-        
-        wxBackground = imageBackground.ConvertToImage();
-        
-        
-        dc->DrawBitmap(imageBackground, x, y);
-        
+		wxRect rc;
+		rc.x = 0;
+		rc.y = 0;
+		rc.width = GetWidth();
+		rc.height = GetHeight();
+
+		wxBitmap imageBackground(GetWidth(), GetHeight());
+		wxMemoryDC memDC(imageBackground);
+		memDC.GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
+		memDC.SelectObject(wxNullBitmap);
+
+		wxBackground = imageBackground.ConvertToImage();
+
+
+		dc->DrawBitmap(imageBackground, x, y);
 
 
 		int size = themeButton.GetRectangleSize() / 2;
@@ -320,5 +318,4 @@ void CToolbarButton::CreateActifButton(wxDC * dc, const int &x, const int &y)
 		DrawShapeElement(dc, rc);
 	}
 	DrawElement(dc, x, y);
-
 }

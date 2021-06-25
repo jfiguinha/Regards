@@ -1,4 +1,5 @@
 #include <header.h>
+#include <Tracing.h>
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #include <ParamInit.h>
@@ -97,7 +98,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbnailFace->SetNoVScroll(false);
 		thumbnailFace->SetCheck(true);
 		thumbnailFace->ChangeTabValue(valueZoom, positionTab);
-		thumbnailFace->Init();
+		thumbnailFace->init();
 
 		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
@@ -582,14 +583,14 @@ void CListFace::ProcessIdle()
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 {
-	thumbnailFace->Init();
+	thumbnailFace->init();
 	processIdle = true;
 }
 
 void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 {
 	RefreshPane();
-	thumbnailFace->Init();
+	thumbnailFace->init();
 	processIdle = true;
 	this->Refresh();
 }

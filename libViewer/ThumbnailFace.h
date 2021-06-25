@@ -22,29 +22,30 @@ namespace Regards
 		class CThumbnailFace : public CThumbnailVertical
 		{
 		public:
-			CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
-			virtual ~CThumbnailFace(void);
-			void Init();
-			void MoveFace(const wxString &faceName);
+			CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+			               const bool& testValidity);
+			~CThumbnailFace(void) override;
+			void init();
+			void MoveFace(const wxString& faceName);
 
 		protected:
-
-			void OnMouseRelease(const int &x, const int &y);
-			void ResizeThumbnail();
+			void OnMouseRelease(const int& x, const int& y) override;
+			void ResizeThumbnail() override;
 			void ResizeThumbnailWithVScroll();
-			void MoveIcone(const int &numElement, const int &numFace);
+			void MoveIcone(const int& numElement, const int& numFace);
 		private:
-			int FindSeparatorFace(const int &xPos, const int &yPos);
-			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
-			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
-			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);
-			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
-			void OnPictureClick(CThumbnailData * data);
-			void FindOtherElement(wxDC * dc, const int &x, const int &y);
-			CIcone * FindElement(const int &xPos, const int &yPos);
-			CInfosSeparationBar * FindSeparatorElement(const int &xPos, const int &yPos);
-			void RenderIconeWithVScroll(wxDC * dc);
-			void UpdateScrollWithVScroll();
+			int FindSeparatorFace(const int& xPos, const int& yPos);
+			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+			static bool ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent);
+			void AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, const CFaceName& faceName,
+			                     const std::vector<CFaceFilePath>& listPhotoFace, int& nbElement);
+			CIcone* FindElementWithVScroll(const int& xPos, const int& yPos) override;
+			void OnPictureClick(CThumbnailData* data) override;
+			void FindOtherElement(wxDC* dc, const int& x, const int& y) override;
+			CIcone* FindElement(const int& xPos, const int& yPos) override;
+			CInfosSeparationBar* FindSeparatorElement(const int& xPos, const int& yPos);
+			void RenderIconeWithVScroll(wxDC* dc) override;
+			void UpdateScrollWithVScroll() override;
 			void DeleteEmptyFace();
 
 

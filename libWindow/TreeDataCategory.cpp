@@ -2,7 +2,8 @@
 #include "TreeDataCategory.h"
 using namespace Regards::Window;
 
-CTreeDataCategory::CTreeDataCategory()
+CTreeDataCategory::CTreeDataCategory(): typeElement(0), id(0), iNumParent(0), numCatalog(0), numCategorie(0),
+                                        iNumLevel(0)
 {
 	iNumElement = 0;
 }
@@ -12,7 +13,7 @@ CTreeDataCategory::~CTreeDataCategory()
 {
 }
 
-bool CTreeDataCategory::operator == (const CTreeDataCategory &value) const
+bool CTreeDataCategory::operator ==(const CTreeDataCategory& value) const
 {
 	if (typeElement == value.typeElement &&
 		iNumElement == value.iNumElement &&
@@ -28,16 +29,17 @@ bool CTreeDataCategory::operator == (const CTreeDataCategory &value) const
 	return false;
 }
 
-void CTreeDataCategory::SetNumLevel(const int &iNumLevel)
+void CTreeDataCategory::SetNumLevel(const int& iNumLevel)
 {
 	this->iNumLevel = iNumLevel;
 }
+
 int CTreeDataCategory::GetNumLevel()
 {
 	return iNumLevel;
 }
 
-void CTreeDataCategory::SetTypeElement(const int &typeElement)
+void CTreeDataCategory::SetTypeElement(const int& typeElement)
 {
 	this->typeElement = typeElement;
 }
@@ -47,7 +49,7 @@ int CTreeDataCategory::GetTypeElement()
 	return typeElement;
 }
 
-void CTreeDataCategory::SetIdElement(const int & id)
+void CTreeDataCategory::SetIdElement(const int& id)
 {
 	this->id = id;
 }
@@ -62,7 +64,7 @@ wxString CTreeDataCategory::GetStringIdElement()
 	return to_string(id);
 }
 
-void CTreeDataCategory::SetNumCatalog(const int & value)
+void CTreeDataCategory::SetNumCatalog(const int& value)
 {
 	numCatalog = value;
 }
@@ -72,7 +74,7 @@ int CTreeDataCategory::GetNumCatalog()
 	return numCatalog;
 }
 
-void CTreeDataCategory::SetNumCategorie(const int & value)
+void CTreeDataCategory::SetNumCategorie(const int& value)
 {
 	numCategorie = value;
 }
@@ -83,7 +85,7 @@ int CTreeDataCategory::GetNumCategorie()
 }
 
 
-void CTreeDataCategory::SetNumElement(const int &iNumElement)
+void CTreeDataCategory::SetNumElement(const int& iNumElement)
 {
 	this->iNumElement = iNumElement;
 }
@@ -93,7 +95,7 @@ int CTreeDataCategory::GetNumElement()
 	return iNumElement;
 }
 
-void CTreeDataCategory::SetNumParent(const int &iNumElement)
+void CTreeDataCategory::SetNumParent(const int& iNumElement)
 {
 	this->iNumParent = iNumElement;
 }

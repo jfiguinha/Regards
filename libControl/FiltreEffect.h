@@ -14,7 +14,7 @@ class CRegardsBitmap;
 
 namespace Regards
 {
-	namespace Control
+	namespace Window
 	{
 		class CFiltreEffect : public CTreeControl, public IFiltreEffectInterface
 		{

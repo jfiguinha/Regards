@@ -7,20 +7,20 @@
 #include "SliderInterface.h"
 using namespace Regards::Window;
 
-CToolbarSlide::CToolbarSlide(const CThemeSlider & themeSlider, CSliderInterface * eventInterface)
+CToolbarSlide::CToolbarSlide(const CThemeSlider& themeSlider, CSliderInterface* eventInterface)
 {
 	y = 0;
 	colorBackground = false;
 	position = 0;
 	this->eventInterface = eventInterface;
 	this->themeSlider = themeSlider;
-	positionButton = wxRect( 0, 0, 0, 0 );
+	positionButton = wxRect(0, 0, 0, 0);
 	hCursorHand = CResourceCursor::GetClosedHand();
 	mouseBlock = false;
 	captureBall = false;
 }
 
-void CToolbarSlide::Resize(const int &tailleX, const int &tailleY)
+void CToolbarSlide::Resize(const int& tailleX, const int& tailleY)
 {
 	themeSlider.SetWidth(tailleX);
 	themeSlider.SetHeight(tailleY);
@@ -33,7 +33,6 @@ CToolbarSlide::~CToolbarSlide()
 int CToolbarSlide::GetWidth()
 {
 	return themeSlider.GetWidth();
-
 }
 
 int CToolbarSlide::GetHeight()
@@ -41,12 +40,12 @@ int CToolbarSlide::GetHeight()
 	return themeSlider.GetHeight();
 }
 
-void CToolbarSlide::ZoomPos(const int &position)
+void CToolbarSlide::ZoomPos(const int& position)
 {
 	eventInterface->ZoomPos(position);
 }
 
-void CToolbarSlide::SetPosition(const int &iPos)
+void CToolbarSlide::SetPosition(const int& iPos)
 {
 	this->position = iPos;
 }
@@ -66,19 +65,19 @@ void CToolbarSlide::SetTabValue(vector<int> value)
 	tabValue = value;
 }
 
-void CToolbarSlide::CalculZoomPosition(const int &x)
+void CToolbarSlide::CalculZoomPosition(const int& x)
 {
 	float posX = x - positionSlider.x;
 	float total = positionSlider.width;
 	position = (posX / total) * tabValue.size();
 }
 
-void CToolbarSlide::ClickLeftPage(const int &x)
+void CToolbarSlide::ClickLeftPage(const int& x)
 {
 	//Click Top Triangle
 	CalculZoomPosition(x);
 	if (position >= tabValue.size())
-		position = int(tabValue.size()) - 1;
+		position = static_cast<int>(tabValue.size()) - 1;
 
 	if (position < 0)
 		position = 0;
@@ -86,38 +85,37 @@ void CToolbarSlide::ClickLeftPage(const int &x)
 	eventInterface->SlidePosChange(position, L"");
 }
 
-void CToolbarSlide::ClickRightPage(const int &x)
+void CToolbarSlide::ClickRightPage(const int& x)
 {
-
 	//Click Top Triangle
 	CalculZoomPosition(x);
 
 	if (position >= tabValue.size())
-		position = int(tabValue.size()) - 1;
+		position = static_cast<int>(tabValue.size()) - 1;
 
 	if (position < 0)
 		position = 0;
 
 	eventInterface->SlidePosChange(position, L"");
-
 }
 
-bool CToolbarSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
+bool CToolbarSlide::FindCirclePos(wxWindow* window, const int& y, const int& x)
 {
 	//wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
 
 	int posXButtonBegin = this->x + posRectangle.x + positionButton.x;
 	int posXButtonEnd = this->x + posRectangle.x + positionButton.x + positionButton.width;
-	
-	if ((x >= posXButtonBegin && x <= posXButtonEnd) && (y >= positionButton.y && y <= (positionButton.y + positionButton.height)))
+
+	if ((x >= posXButtonBegin && x <= posXButtonEnd) && (y >= positionButton.y && y <= (positionButton.y +
+		positionButton.height)))
 	{
 		return true;
 	}
 	return false;
 }
 
-void CToolbarSlide::ClickElement(wxWindow * window, const int &x, const int &y)
+void CToolbarSlide::ClickElement(wxWindow* window, const int& x, const int& y)
 {
 	int xSlide = x;
 	//wxClientDC dc(window);
@@ -146,7 +144,7 @@ void CToolbarSlide::ClickElement(wxWindow * window, const int &x, const int &y)
 	}
 }
 
-void CToolbarSlide::UnclickElement(wxWindow * window, const int &x, const int &y)
+void CToolbarSlide::UnclickElement(wxWindow* window, const int& x, const int& y)
 {
 	if (captureBall)
 	{
@@ -156,7 +154,7 @@ void CToolbarSlide::UnclickElement(wxWindow * window, const int &x, const int &y
 	}
 }
 
-bool CToolbarSlide::MouseOver(wxDC * deviceContext, const int &x, const int &y)
+bool CToolbarSlide::MouseOver(wxDC* deviceContext, const int& x, const int& y)
 {
 	if (mouseBlock)
 	{
@@ -164,11 +162,11 @@ bool CToolbarSlide::MouseOver(wxDC * deviceContext, const int &x, const int &y)
 		int xSlide = x - this->x - renderLast.x;
 		if ((xSlide >= positionSlider.x && xSlide <= (positionSlider.x + positionSlider.width)))
 		{
-			::wxSetCursor(hCursorHand);
+			wxSetCursor(hCursorHand);
 			CalculZoomPosition(xSlide);
 
 			if (position >= tabValue.size())
-				position = int(tabValue.size()) - 1;
+				position = static_cast<int>(tabValue.size()) - 1;
 
 			if (position < 0)
 				position = 0;
@@ -206,7 +204,7 @@ int CToolbarSlide::GetFirstValue()
 	return -1;
 }
 
-void CToolbarSlide::SetBackgroundBitmap(const wxBitmap & background)
+void CToolbarSlide::SetBackgroundBitmap(const wxBitmap& background)
 {
 	colorBackground = false;
 	this->background = background;
@@ -217,8 +215,8 @@ void CToolbarSlide::CalculPositionButton()
 {
 	if (position > 0)
 	{
-		float pourcentage = (float)position / (float)tabValue.size();
-		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
+		float pourcentage = static_cast<float>(position) / static_cast<float>(tabValue.size());
+		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
 	}
 	else
 	{
@@ -227,10 +225,9 @@ void CToolbarSlide::CalculPositionButton()
 	}
 }
 
-void CToolbarSlide::CalculPositionButton(const int &x)
+void CToolbarSlide::CalculPositionButton(const int& x)
 {
-
-    int buttonWidth = themeSlider.GetButtonWidth();
+	int buttonWidth = themeSlider.GetButtonWidth();
 	int buttonHeight = themeSlider.GetButtonHeight();
 	int xPos = x - (buttonWidth / 2);
 	int yPos = positionSlider.y + (positionSlider.height - buttonHeight) / 2;
@@ -242,19 +239,16 @@ void CToolbarSlide::CalculPositionButton(const int &x)
 }
 
 
-
-void CToolbarSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
+void CToolbarSlide::DrawShapeElement(wxDC* dc, const wxRect& rc)
 {
 	if (dc != nullptr)
 	{
-		float pourcentage = 0.0;
 		wxRect rcPast;
 		rcPast.x = rc.x;
-		rcPast.y = rc.y;
 
 		if (position > 0)
 		{
-			pourcentage = (float)position / (float)tabValue.size();
+			const float pourcentage = static_cast<float>(position) / static_cast<float>(tabValue.size());
 			rcPast.width = (rc.width * pourcentage);
 			rcPast.y = rc.y;
 			rcPast.height = themeSlider.GetRectangleHeight();
@@ -270,11 +264,11 @@ void CToolbarSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
 	}
 }
 
-void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, const int &x, const int &y)
+void CToolbarSlide::RenderSlide(wxDC* dc, const int& width, const int& height, const int& x, const int& y)
 {
 	if (dc != nullptr)
 	{
-		wxBitmap bitmapBuffer = wxBitmap(width, height);
+		auto bitmapBuffer = wxBitmap(width, height);
 		wxMemoryDC memDC(bitmapBuffer);
 		wxRect rc;
 		rc.x = 0;
@@ -285,12 +279,12 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 
 		if (colorBackground)
 		{
-			wxRect rc;
-			rc.x = 0;
-			rc.width = width;
-			rc.y = 0;
-			rc.height = height;
-			CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+			wxRect wx_rect;
+			wx_rect.x = 0;
+			wx_rect.width = width;
+			wx_rect.y = 0;
+			wx_rect.height = height;
+			CWindowMain::FillRect(&memDC, wx_rect, themeSlider.colorBack);
 		}
 		else
 		{
@@ -309,16 +303,14 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 
 		dc->DrawBitmap(bitmapBuffer, x, y);
 	}
-
-
 }
 
-void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
+void CToolbarSlide::DrawButton(wxDC* dc, const int& x, const int& y)
 {
 	//bool oldRender = true;
 	if (dc != nullptr)
 	{
-		wxBitmap bitmapBuffer = wxBitmap(themeSlider.GetWidth(), themeSlider.GetHeight());
+		auto bitmapBuffer = wxBitmap(themeSlider.GetWidth(), themeSlider.GetHeight());
 		wxMemoryDC memDC(bitmapBuffer);
 
 
@@ -346,17 +338,18 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 		CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);
 
 		yMedium = (themeSlider.GetHeight() - renderLast.y) / 2;
-		CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium, themeSlider.font);
+		CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium,
+		                       themeSlider.font);
 
 		memDC.SelectObject(wxNullBitmap);
 
 		if (!colorBackground)
 		{
-            wxColour colour = themeSlider.colorBack;
+			wxColour colour = themeSlider.colorBack;
 #ifdef __APPLE__
            colour.Set(themeSlider.colorBack.Red(),themeSlider.colorBack.Green(), themeSlider.colorBack.Blue(), 0);
 #endif
-            bitmapBuffer.SetMask(new wxMask(bitmapBuffer, colour));
+			bitmapBuffer.SetMask(new wxMask(bitmapBuffer, colour));
 			dc->DrawBitmap(bitmapBuffer, x, y, true);
 		}
 		else
@@ -367,9 +360,10 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 		CalculPositionButton();
 
 
-		if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
+		if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.
+			GetButtonHeight()))
+			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
+			                                            themeSlider.GetButtonHeight());
 		dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
 	}
 }
-

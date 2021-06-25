@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "PreviewWnd.h"
 #include "MainWindow.h"
@@ -18,11 +19,12 @@ using namespace Regards::Control;
 using namespace Regards::Internet;
 using namespace Regards::Viewer;
 using namespace Regards::Picture;
-#define PANE_INFOS 2
-#define PANE_PREVIEW 3
+
+constexpr auto PANE_INFOS = 2;
+constexpr auto PANE_PREVIEW = 3;
 
 CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal)
-	: CWindowMain("CPreviewWnd", parent, id)
+	: CWindowMain("CPreviewWnd", parent, id), id_(id), horizontal_(horizontal), parent_(parent)
 {
 	showBitmapWindow = nullptr;
 	showVideoWindow = nullptr;
@@ -213,6 +215,7 @@ void CPreviewWnd::ClickShowButton(const int& id, const int& refresh)
 				showBitmapWindow->SavePicture();
 		}
 		break;
+	default: ;
 	}
 }
 
@@ -236,7 +239,6 @@ void CPreviewWnd::Resize()
 			//rcAffichageBitmap = this->GetRect();
 
 			rcAffichageBitmap.x = 0;
-			rcAffichageBitmap.y = 0;
 			//rcAffichageBitmap.width = GetWindowWidth();
 			//rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize;
 			rcAffichageBitmap.width = size.x;
@@ -384,9 +386,7 @@ void CPreviewWnd::HideToolbar(wxCommandEvent& event)
 					animationToolbar->Show(false);
 
 				if (isVideo)
-				{
 					bitmapInfos->Show(false);
-				}
 				else if (isBitmap)
 				{
 					bitmapInfos->Show(false);

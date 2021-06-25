@@ -10,7 +10,6 @@
 #include "FiltreEffect.h"
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
-using namespace Regards::Control;
 class CImageLoadingFormat;
 
 namespace Regards

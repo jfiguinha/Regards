@@ -1,5 +1,6 @@
 #pragma once
 #include "TreeElement.h"
+#include "TreeElementListBox.h"
 
 namespace Regards
 {
@@ -9,42 +10,40 @@ namespace Regards
 		{
 		public:
 			CTreeElementDelete();
-			~CTreeElementDelete();
+			~CTreeElementDelete() override;
 
-			void DrawElement(wxDC * deviceContext, const int &x, const int &y);
-			void ClickElement(wxWindow * window, const int &x, const int &y);
-			void SetTheme(CThemeTreeDelete * theme);
+			void DrawElement(wxDC* deviceContext, const int& x, const int& y) override;
+			void ClickElement(wxWindow* window, const int& x, const int& y) override;
+			void SetTheme(CThemeTreeDelete* theme);
 
-			CTreeElementDelete& operator=(const CTreeElementDelete &other);
+			CTreeElementDelete& operator=(const CTreeElementDelete& other);
 
-			void SetZoneSize(const int &width, const int &height)
+			void SetZoneSize(const int& width, const int& height) override
 			{
 				themeTreeDelete.SetWidth(width);
 				themeTreeDelete.SetHeight(height);
 			}
 
 
-			void SetBackgroundColor(const wxColour &color)
+			void SetBackgroundColor(const wxColour& color) override
 			{
 				themeTreeDelete.color = color;
 			}
 
-			int GetWidth()
+			int GetWidth() override
 			{
 				return themeTreeDelete.GetWidth();
 			}
 
-			int GetHeight()
+			int GetHeight() override
 			{
 				return themeTreeDelete.GetHeight();
 			}
 
 
 		private:
-
-			void DrawBitmap(wxDC * deviceContext, const int &xPos, const int &yPos);
+			void DrawBitmap(wxDC* deviceContext, const int& xPos, const int& yPos);
 			CThemeTreeDelete themeTreeDelete;
 		};
-
 	}
 }

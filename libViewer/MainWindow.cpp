@@ -39,7 +39,7 @@
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
 #include <ParamInit.h>
-
+#include <Tracing.h>
 #include <ThumbnailVideoExport.h>
 #include <OpenCVEffect.h>
 #include <ffplaycore.h>

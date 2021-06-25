@@ -9,35 +9,31 @@ namespace Regards
 		class CBitmapInfosCheckBox : public CWindowMain
 		{
 		public:
-			CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme);
-			~CBitmapInfosCheckBox();
-			void SetFilename(const wxString &filename);
-            void SetCheckboxVisible(const bool &checkboxVisibility);
-			int GetHeight();
+			CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme);
+			~CBitmapInfosCheckBox() override;
+			void SetFilename(const wxString& filename);
+			void SetCheckboxVisible(const bool& checkboxVisibility);
+			int GetHeight() override;
 			void Redraw();
-            void UpdateScreenRatio();
-            bool GetCheckState();
-            
+			void UpdateScreenRatio() override;
+			bool GetCheckState();
+
 		private:
+			void on_paint(wxPaintEvent& event);
+			void OnLButtonDown(wxMouseEvent& event);
+			void DrawInformations(wxDC* dc);
 
-
-			void OnPaint(wxPaintEvent& event);
-            void OnLButtonDown(wxMouseEvent& event);
-            void DrawInformations(wxDC * dc);
-                       
-            wxImage bitmapCheckOn;
+			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
-            
-            bool isSelected;
-            
-            
+
+			bool isSelected;
+
+
 			wxString filename;
 			CThemeBitmapInfos bitmapInfosTheme;
-            bool checkboxVisibility;
-            int xPos;
-            int yPos;
-
+			bool checkboxVisibility;
+			int xPos;
+			int yPos;
 		};
 	}
 }
-

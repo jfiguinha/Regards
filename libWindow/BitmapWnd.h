@@ -1,8 +1,4 @@
 #pragma once
-
-//#define RENDEROPENGL
-
-#include "WindowMain.h"
 #include "WindowOpenGLMain.h"
 #include <RegardsConfigParam.h>
 #include <theme.h>
@@ -26,10 +22,8 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-
 		class COpenCLEngine;
 		class COpenCLContext;
-
 	}
 
 	namespace OpenGL
@@ -39,9 +33,11 @@ namespace Regards
 		class CRenderBitmapOpenGL;
 	}
 }
+
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
+
 namespace Regards
 {
 	namespace Window
@@ -49,30 +45,32 @@ namespace Regards
 		class CBitmapWnd : public CWindowOpenGLMain, public IBitmapDisplay
 		{
 		public:
-			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
-			virtual ~CBitmapWnd(void);
+			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain,
+				const CThemeBitmapWindow& theme);
+			~CBitmapWnd(void) override;
 
 			//Attribut
 			void SetZoom(bool active);
 			bool GetZoom();
 			void SetZoomPosition(const int& position);
-			wxString GetFilename();
+			wxString GetFilename() override;
 			void ReloadResource();
-			int GetWidth();
-			int GetHeight();
-			virtual CFiltreEffet * GetFiltreEffet();
+			int GetWidth() override;
+			int GetHeight() override;
+			CFiltreEffet* GetFiltreEffet() override;
 
-			wxWindow* GetWindow() {
+			wxWindow* GetWindow()
+			{
 				return this;
 			}
 
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
-			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll);
+			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll) override;
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
-			CRegardsBitmap* GetBitmap(const bool& source);
-			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
+			CRegardsBitmap* GetBitmap(const bool& source) override;
+			CRegardsFloatBitmap* GetFloatBitmap(const bool& source) override;
 			void GetInfosBitmap(wxString& filename, int& widthPicture, int& heightPicture);
 
 			int GetPosRatio();
@@ -96,50 +94,72 @@ namespace Regards
 			bool GetShrinkImage();
 			void ShrinkImage(const bool& redraw = true);
 
-			float GetRatio();
+			float GetRatio() override;
 
 			void SetTool(const int& tool);
-			virtual void SetToolOption(const int& tool, const int& iKey) {};
+
+			virtual void SetToolOption(const int& tool, const int& iKey)
+			{
+			};
 			int GetTool();
 
 			void SetKey(const int& iKey);
-			virtual void SetKeyOption(const int& iKey) {};
+
+			virtual void SetKeyOption(const int& iKey)
+			{
+			};
 			int GetKey();
 
 
 			void SetFullscreen(const bool& fullscreen);
 
-			int GetHPos();
-			int GetVPos();
+			int GetHPos() override;
+			int GetVPos() override;
 
-			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight) override;
 
-			COpenCLContext * GetOpenCLContext();
+			COpenCLContext* GetOpenCLContext() override;
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
 			void ReinitPicture();
-			void SetOrientation(const int &exif);
-			virtual void RemoveListener() {};
-			virtual void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) {};
-			virtual void StopTransitionEffect(CImageLoadingFormat* bmpSecond) {};
-			virtual void CalculCenterPositionPicture() {};
-		protected:
+			void SetOrientation(const int& exif);
 
+			virtual void RemoveListener()
+			{
+			};
+
+			void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) override
+			{
+			};
+
+			void StopTransitionEffect(CImageLoadingFormat* bmpSecond) override
+			{
+			};
+
+			void CalculCenterPositionPicture() override
+			{
+			};
+		protected:
 			int GetExifOrientation(const int& angle);
-			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput) { return false; };
-			virtual void AfterRender() {};
+			virtual bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) { return false; };
+
+			virtual void AfterRender()
+			{
+			};
 			int UpdateResized();
 
 			int IsSupportOpenCL();
 			virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
-			
-			virtual void RenderTexture(const bool &invertPos);
+
+			virtual void RenderTexture(const bool& invertPos);
 
 			//void OnLoading(wxTimerEvent& event);
-			void OnMouseCaptureLost(wxMouseEvent& event) {};
-			void OnPaint(wxPaintEvent& event);
+			void OnMouseCaptureLost(wxMouseEvent& event)
+			{
+			};
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnRButtonDown(wxMouseEvent& event);
@@ -148,7 +168,10 @@ namespace Regards
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
-			void OnEraseBackground(wxEraseEvent& event) {};
+
+			void OnEraseBackground(wxEraseEvent& event) override
+			{
+			};
 			void OnUpdateBitmap(wxCommandEvent& event);
 			void OnLeftPosition(wxCommandEvent& event);
 			void OnTopPosition(wxCommandEvent& event);
@@ -158,33 +181,42 @@ namespace Regards
 			void OnMoveBottom(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
 
-			virtual void Resize();
+			void Resize() override;
 
-			virtual CDraw * GetDessinPt()
+			CDraw* GetDessinPt() override
 			{
 				return nullptr;
 			}
-			virtual CRgbaquad GetBackColor() {
+
+			CRgbaquad GetBackColor() override
+			{
 				CRgbaquad color;
 				return color;
 			};
 
 #ifdef KeyPress
 #undef KeyPress
-#endif			
+#endif
 			void RenderToScreenWithOpenCLSupport();
 			void RenderToScreenWithoutOpenCLSupport();
 			void RefreshWindow();
 			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
-            virtual void KeyPress(const int &key){};
-			virtual void MouseClick(const int &xPos, const int &yPos);
-			virtual void MouseRelease(const int &xPos, const int &yPos);
-			virtual void MouseMove(const int &xPos, const int &yPos) {};
+			virtual void KeyPress(const int& key)
+			{
+			};
+			virtual void MouseClick(const int& xPos, const int& yPos);
+			virtual void MouseRelease(const int& xPos, const int& yPos);
 
-			virtual void AfterSetBitmap(){};
+			virtual void MouseMove(const int& xPos, const int& yPos)
+			{
+			};
 
-			void GenerateScreenBitmap(CFiltreEffet * filtre, int &widthOutput, int &heightOutput);
-			void GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical);
+			virtual void AfterSetBitmap()
+			{
+			};
+
+			void GenerateScreenBitmap(CFiltreEffet* filtre, int& widthOutput, int& heightOutput);
+			void GenerateExifPosition(int& localAngle, int& localflipHorizontal, int& localflipVertical);
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
 
 			float GetBitmapWidthWithRatio();
@@ -192,16 +224,20 @@ namespace Regards
 
 			virtual int GetRawBitmapWidth();
 			virtual int GetRawBitmapHeight();
-			virtual int GetOrientation();
-            virtual void DeleteTexture() {};
+			int GetOrientation() override;
 
-			float CalculRatio(const int &pictureWidth, const int &pictureHeight);
+			virtual void DeleteTexture()
+			{
+			};
+
+			float CalculRatio(const int& pictureWidth, const int& pictureHeight);
 
 			void CalculCenterPicture();
-			void CalculPositionPicture(const float &x, const float &y);
-			void CalculRectPictureInterpolation(wxRect &picture, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert = true);
+			void CalculPositionPicture(const float& x, const float& y);
+			void CalculRectPictureInterpolation(wxRect& picture, int& widthInterpolationSize, int& heightInterpolationSize,
+				int& left, int& top, const bool& invert = true);
 
-            int IsOpenGLDecoding();
+			int IsOpenGLDecoding();
 
 			void UpdateScrollBar();
 			void TestMaxY();
@@ -217,13 +253,13 @@ namespace Regards
 			//bool zoomOn;
 			bool mouseBlock;
 			bool shrinkImage;
-				
+
 			float ratio;
 			int posRatio;
 			bool postEffect;
-				
+
 			bool reloadResource = false;
-            bool isThumbnail;
+			bool isThumbnail;
 			bool isInUse;
 			int toolOption;
 
@@ -251,19 +287,19 @@ namespace Regards
 			bool externBitmap;
 
 			wxWindowID idWindowMain;
-			CSliderInterface * sliderInterface;
+			CSliderInterface* sliderInterface;
 			CThemeBitmapWindow themeBitmap;
-			CRegardsConfigParam * config;
+			CRegardsConfigParam* config;
 
 
-			CFiltreEffet * filtreEffet;
+			CFiltreEffet* filtreEffet;
 
-			CRenderBitmapOpenGL * renderOpenGL = nullptr;
+			CRenderBitmapOpenGL* renderOpenGL = nullptr;
 			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
-			GLTexture * glTexture = nullptr;
-			GLTexture * glTextureSrc = nullptr;
-			COpenCLEngine * openCLEngine = nullptr;
-			COpenCLContext * openclContext = nullptr;
+			GLTexture* glTexture = nullptr;
+			GLTexture* glTextureSrc = nullptr;
+			COpenCLEngine* openCLEngine = nullptr;
+			COpenCLContext* openclContext = nullptr;
 
 			//Preview Parameter
 			int preview = 0;
@@ -275,10 +311,10 @@ namespace Regards
 			int bitmapwidth;
 			int bitmapheight;
 			bool bitmapUpdate;
-			CImageLoadingFormat * source;
+			CImageLoadingFormat* source;
 			bool bitmapLoad;
-            mutex muBitmap;
-            bool updateFilter = false;
+			mutex muBitmap;
+			bool updateFilter = false;
 			int xPosImage = 0;
 			int yPosImage = 0;
 			bool controlKeyPush = false;
@@ -290,11 +326,10 @@ namespace Regards
 			int oldHeight = 0;
 			bool loadBitmap = false;
 			int isMoving;
-            bool destroyOpenGLRender = false;
-			IMouseUpdate * mouseUpdate;
-			CEffectParameter * effectParameter;
-            bool openGLRenderBitmap = true;
+			bool destroyOpenGLRender = false;
+			IMouseUpdate* mouseUpdate;
+			CEffectParameter* effectParameter;
+			bool openGLRenderBitmap = true;
 		};
 	}
 }
-

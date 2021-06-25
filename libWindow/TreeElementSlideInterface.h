@@ -13,7 +13,7 @@ namespace Regards
 		{
 		public:
 			CTreeElementSlideInterface(){};
-			~CTreeElementSlideInterface(){};
+			virtual ~CTreeElementSlideInterface(){};
 
 			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key) = 0;
 		};

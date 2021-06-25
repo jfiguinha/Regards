@@ -14,8 +14,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(KeywordDialogBox, wxDialog)
-//(*EventTable(ConfigRegards)
-//*)
+	//(*EventTable(ConfigRegards)
+	//*)
 END_EVENT_TABLE()
 
 
@@ -28,30 +28,31 @@ using namespace Regards::Sqlite;
 KeywordDialogBox::KeywordDialogBox(wxWindow* parent)
 {
 	//(*Initialize(ConfigRegards)
-	SetTitle("Keyword List");
+	wxTopLevelWindowMSW::SetTitle("Keyword List");
 	wxXmlResource::Get()->LoadObject(this, parent, _T("KeywordDialogBox"), _T("wxDialog"));
 
 	CSqlFindCriteria sqlCriteria;
 	CriteriaVector criteriaVector;
 	sqlCriteria.SearchCriteria(&criteriaVector, 7, 1);
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-    this->SetSizer(mainSizer);
+	auto mainSizer = new wxBoxSizer(wxVERTICAL);
+	this->SetSizer(mainSizer);
 	//wxString choices[8] = { "0", "1", "2", "3", "4", "5", "6", "7" };
-	
+
 	for (CCriteria criteria : criteriaVector)
 	{
 		choices.push_back(criteria.GetLibelle());
 	}
 	wxCArrayString helper(choices);
 
-	m_listKeyword = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLIST"));
-	if(criteriaVector.size() > 0)
+	m_listKeyword = static_cast<wxCheckListBox*>(FindWindow(XRCID("ID_CHECKLIST")));
+	if (criteriaVector.size() > 0)
 		m_listKeyword->InsertItems(choices, 0);
-	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
-    // Connect events
+	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
+	btOk = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	// Connect events
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&KeywordDialogBox::OnbtnOkClick);
-	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&KeywordDialogBox::OnBtnCancelClick);
+	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&KeywordDialogBox::OnBtnCancelClick);
 }
 
 void KeywordDialogBox::DeleteItemChecked()
@@ -77,8 +78,6 @@ void KeywordDialogBox::DeleteItemChecked()
 				sqlCriteria.DeleteCriteria(numCriteria, 7);
 			}
 		}
-
-		
 	}
 }
 

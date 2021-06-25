@@ -13,7 +13,8 @@ int CPositionElement::GetRow()
 {
 	return numRow;
 }
-void CPositionElement::SetRow(const int &row)
+
+void CPositionElement::SetRow(const int& row)
 {
 	numRow = row;
 }
@@ -23,7 +24,7 @@ int CPositionElement::GetColumn()
 	return numColumn;
 }
 
-void CPositionElement::SetColumn(const int &column)
+void CPositionElement::SetColumn(const int& column)
 {
 	numColumn = column;
 }
@@ -33,7 +34,7 @@ int CPositionElement::GetType()
 	return type;
 }
 
-void CPositionElement::SetType(const int &type)
+void CPositionElement::SetType(const int& type)
 {
 	this->type = type;
 }
@@ -43,7 +44,7 @@ int CPositionElement::GetX()
 	return x;
 }
 
-void CPositionElement::SetX(const int &x)
+void CPositionElement::SetX(const int& x)
 {
 	this->x = x;
 }
@@ -53,7 +54,7 @@ int CPositionElement::GetY()
 	return y;
 }
 
-void CPositionElement::SetY(const int &y)
+void CPositionElement::SetY(const int& y)
 {
 	this->y = y;
 }
@@ -63,7 +64,7 @@ int CPositionElement::GetWidth()
 	return treeElement->GetWidth();
 }
 
-void CPositionElement::SetWidth(const int &width)
+void CPositionElement::SetWidth(const int& width)
 {
 	this->width = width;
 }
@@ -73,32 +74,32 @@ int CPositionElement::GetHeight()
 	return treeElement->GetHeight();
 }
 
-void CPositionElement::SetHeight(const int &height)
+void CPositionElement::SetHeight(const int& height)
 {
 	this->height = height;
 }
 
-CTreeData * CPositionElement::GetTreeData()
+CTreeData* CPositionElement::GetTreeData()
 {
 	return treeData;
 }
 
-void CPositionElement::SetTreeData(CTreeData * treeData)
+void CPositionElement::SetTreeData(CTreeData* treeData)
 {
 	this->treeData = treeData;
 }
 
-CTreeElement * CPositionElement::GetTreeElement()
+CTreeElement* CPositionElement::GetTreeElement()
 {
 	return treeElement;
 }
 
-void CPositionElement::SetTreeElement(CTreeElement * treeElement)
+void CPositionElement::SetTreeElement(CTreeElement* treeElement)
 {
 	this->treeElement = treeElement;
 }
 
-void CPositionElement::SetColorBackground(const wxColour &colorBackground)
+void CPositionElement::SetColorBackground(const wxColour& colorBackground)
 {
 	this->colorBackground = colorBackground;
 }
@@ -108,19 +109,21 @@ wxColour CPositionElement::GetColorBackground()
 	return colorBackground;
 }
 
-void CPositionElement::DrawElement(wxDC * deviceContext, const int &xStartElement, const int &xposLargeur, const int &posHauteur)
+void CPositionElement::DrawElement(wxDC* deviceContext, const int& xStartElement, const int& xposLargeur,
+                                   const int& posHauteur)
 {
 	if (treeElement != nullptr)
 		treeElement->DrawElement(deviceContext, (x + xStartElement) - xposLargeur, y - posHauteur);
 }
 
-void CPositionElement::DrawElement(wxDC * deviceContext)
+void CPositionElement::DrawElement(wxDC* deviceContext)
 {
 	if (treeElement != nullptr)
 		treeElement->DrawElement(deviceContext, x, y);
 }
 
-void CPositionElement::SetValue(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData)
+void CPositionElement::SetValue(const int& x, const int& y, const int& numColumn, const int& numRow, const int& width,
+                                const int& height, const int& type, CTreeElement* treeElement, CTreeData* treeData)
 {
 	this->x = x;
 	this->y = y;

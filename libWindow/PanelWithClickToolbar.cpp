@@ -5,9 +5,11 @@
 using namespace Regards::Window;
 
 
-
-CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible, const bool& refreshButton, const bool& vertical)
-	: CWindowMain(windowName,parent,id)
+CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id,
+                                               const CThemePane& themePane, const CThemeToolbar& themeToolbar,
+                                               const wxString& paneLibelle, const bool& isPanelVisible,
+                                               const bool& refreshButton, const bool& vertical)
+	: CWindowMain(windowName, parent, id)
 {
 	paneWindow = nullptr;
 	mainWindow = nullptr;
@@ -29,7 +31,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePaneEvent));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelWithClickToolbar::RefreshData));
 
-	if(isPanelVisible)
+	if (isPanelVisible)
 	{
 		clickWindow->Show(false);
 		paneWindow->Show(true);
@@ -41,7 +43,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	}
 }
 
-void CPanelWithClickToolbar::SetTitle(const wxString &title)
+void CPanelWithClickToolbar::SetTitle(const wxString& title)
 {
 	if (paneWindow != nullptr)
 	{
@@ -69,32 +71,35 @@ void CPanelWithClickToolbar::ClosePaneEvent(wxCommandEvent& event)
 	ClosePane(PANE_WITHCLICKTOOLBAR);
 }
 
-wxWindow * CPanelWithClickToolbar::GetPaneWindow()
+wxWindow* CPanelWithClickToolbar::GetPaneWindow()
 {
 	return paneWindow;
 }
 
-wxWindow * CPanelWithClickToolbar::GetWindow()
+wxWindow* CPanelWithClickToolbar::GetWindow()
 {
 	if (isPanelVisible)
 		return paneWindow;
-	else
-		return clickWindow;
+	return clickWindow;
 }
 
 
-CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical, const bool &refreshButton)
+CPanelWithClickToolbar* CPanelWithClickToolbar::CreatePanel(wxWindow* parent, const wxString& panelLabel,
+                                                            const wxString& windowName, const bool& isVisible,
+                                                            const int& idPanel, const bool& isVertical,
+                                                            const bool& refreshButton)
 {
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 	CThemePane theme;
 	viewerTheme->GetPaneTheme(&theme);
 	CThemeToolbar themeClickInfosToolbar;
 	viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
-	CPanelWithClickToolbar * panel = new CPanelWithClickToolbar(parent, windowName, idPanel, theme, themeClickInfosToolbar, panelLabel, isVisible, refreshButton, isVertical);
+	auto panel = new CPanelWithClickToolbar(parent, windowName, idPanel, theme, themeClickInfosToolbar, panelLabel,
+	                                        isVisible, refreshButton, isVertical);
 	return panel;
 }
 
-void CPanelWithClickToolbar::SetWindow(CWindowMain * windowMain)
+void CPanelWithClickToolbar::SetWindow(CWindowMain* windowMain)
 {
 	wxSize oldsize;
 	bool needToResize = false;
@@ -102,9 +107,8 @@ void CPanelWithClickToolbar::SetWindow(CWindowMain * windowMain)
 	{
 		oldsize = mainWindow->GetSize();
 		needToResize = true;
-		
 	}
-	
+
 	mainWindow = windowMain;
 	mainWindow->Reparent(paneWindow);
 	paneWindow->SetOtherWindow(windowMain);
@@ -127,29 +131,30 @@ void CPanelWithClickToolbar::UpdateScreenRatio()
 	clickWindow->UpdateScreenRatio();
 	mainWindow->UpdateScreenRatio();
 	paneWindow->UpdateScreenRatio();
-    this->Resize();
+	this->Resize();
 }
 
-void CPanelWithClickToolbar::ClickShowButton(const int &id, const int &refresh)
+void CPanelWithClickToolbar::ClickShowButton(const int& id, const int& refresh)
 {
 	switch (id)
 	{
 	case PANE_WITHCLICKTOOLBAR:
 		{
-            if(!isPanelVisible)
-            {
-                isPanelVisible = true;
-                clickWindow->Show(false);
-                paneWindow->Show(true);
-                paneWindow->ShowOtherWindow();
-                wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-                event->SetId(this->GetId());
-                event->SetInt(1);
-                event->SetExtraLong(refresh);
-                wxQueueEvent(this->GetParent(), event);
-            }
+			if (!isPanelVisible)
+			{
+				isPanelVisible = true;
+				clickWindow->Show(false);
+				paneWindow->Show(true);
+				paneWindow->ShowOtherWindow();
+				auto event = new wxCommandEvent(wxEVENT_RESIZE);
+				event->SetId(this->GetId());
+				event->SetInt(1);
+				event->SetExtraLong(refresh);
+				wxQueueEvent(this->GetParent(), event);
+			}
 		}
 		break;
+	default: ;
 	}
 	Resize();
 }
@@ -158,37 +163,38 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 {
 	switch (id)
 	{
-		case PANE_WITHCLICKTOOLBAR:
+	case PANE_WITHCLICKTOOLBAR:
 		{
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESHDATA);
+			auto event = new wxCommandEvent(wxEVENT_REFRESHDATA);
 			event->SetId(this->GetId());
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
+	default: ;
 	}
 }
 
 
-void CPanelWithClickToolbar::ClosePane(const int &id, const int &refresh)
+void CPanelWithClickToolbar::ClosePane(const int& id, const int& refresh)
 {
 	switch (id)
 	{
 	case PANE_WITHCLICKTOOLBAR:
 		{
-            if(isPanelVisible)
-            {
-                isPanelVisible = false;
-                paneWindow->Show(false);
-                clickWindow->Show(true);
-                wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-                event->SetId(this->GetId());
-                event->SetInt(0);
-                event->SetExtraLong(refresh);
-                wxQueueEvent(this->GetParent(), event); 
-            }
-
+			if (isPanelVisible)
+			{
+				isPanelVisible = false;
+				paneWindow->Show(false);
+				clickWindow->Show(true);
+				auto event = new wxCommandEvent(wxEVENT_RESIZE);
+				event->SetId(this->GetId());
+				event->SetInt(0);
+				event->SetExtraLong(refresh);
+				wxQueueEvent(this->GetParent(), event);
+			}
 		}
 		break;
+	default: ;
 	}
 
 	Resize();
@@ -200,7 +206,6 @@ void CPanelWithClickToolbar::Resize()
 	{
 		clickWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 		clickWindow->Refresh();
-
 	}
 	else if (paneWindow->IsShown())
 	{
@@ -211,7 +216,7 @@ void CPanelWithClickToolbar::Resize()
 
 int CPanelWithClickToolbar::GetHeight()
 {
-	if(!isPanelVisible)
+	if (!isPanelVisible)
 		return clickWindow->GetHeight();
 	return mainWindow->GetHeight() + paneWindow->GetTitleHeight();
 }
@@ -228,7 +233,7 @@ int CPanelWithClickToolbar::GetWidth()
 	return mainWindow->GetWidth();
 }
 
-void CPanelWithClickToolbar::HidePanel(const bool &refresh)
+void CPanelWithClickToolbar::HidePanel(const bool& refresh)
 {
 	this->Show(false);
 	clickWindow->Show(false);
@@ -246,7 +251,7 @@ void CPanelWithClickToolbar::ShowPanel()
 {
 	this->Show(true);
 
-	if(isPanelVisible)
+	if (isPanelVisible)
 	{
 		clickWindow->Show(false);
 		paneWindow->Show(true);
@@ -259,5 +264,3 @@ void CPanelWithClickToolbar::ShowPanel()
 		clickWindow->ForceRefresh();
 	}
 }
-
-

@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "wxImagePanel.h"
 // some useful events
@@ -13,9 +14,9 @@
  */
 
 wxImagePanel::wxImagePanel(wxWindow* parent) :
-wxPanel(parent)
+	wxPanel(parent)
 {
-    Connect(wxEVT_PAINT, wxPaintEventHandler(wxImagePanel::paintEvent));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(wxImagePanel::paintEvent));
 }
 
 /*
@@ -24,11 +25,11 @@ wxPanel(parent)
  * calling Refresh()/Update().
  */
 
-void wxImagePanel::paintEvent(wxPaintEvent & evt)
+void wxImagePanel::paintEvent(wxPaintEvent& evt)
 {
-    // depending on your system you may need to look at double-buffered dcs
-    wxPaintDC dc(this);
-    render(dc);
+	// depending on your system you may need to look at double-buffered dcs
+	wxPaintDC dc(this);
+	render(dc);
 }
 
 /*
@@ -41,9 +42,9 @@ void wxImagePanel::paintEvent(wxPaintEvent & evt)
  */
 void wxImagePanel::paintNow()
 {
-    // depending on your system you may need to look at double-buffered dcs
-    wxClientDC dc(this);
-    render(dc);
+	// depending on your system you may need to look at double-buffered dcs
+	wxClientDC dc(this);
+	render(dc);
 }
 
 /*
@@ -51,9 +52,8 @@ void wxImagePanel::paintNow()
  * method so that it can work no matter what type of DC
  * (e.g. wxPaintDC or wxClientDC) is used.
  */
-void wxImagePanel::render(wxDC&  dc)
+void wxImagePanel::render(wxDC& dc)
 {
-   
 	//wxPaintDC pdc(this);
 	int w, h;
 
@@ -81,12 +81,12 @@ void wxImagePanel::render(wxDC&  dc)
 		//wxMemoryDC memdc;
 		int bx, by, bw, bh;
 
-        float scale_x = float(GetSize().x) / float(image.GetWidth());
-        float scale_y = float(GetSize().y) / float(image.GetHeight());
-        
-        m_zoomFactor = std::min(scale_x, scale_y);
-		bw = (int)(image.GetWidth() * m_zoomFactor);
-		bh = (int)(image.GetHeight() * m_zoomFactor);
+		float scale_x = static_cast<float>(GetSize().x) / static_cast<float>(image.GetWidth());
+		float scale_y = static_cast<float>(GetSize().y) / static_cast<float>(image.GetHeight());
+
+		m_zoomFactor = std::min(scale_x, scale_y);
+		bw = static_cast<int>(image.GetWidth() * m_zoomFactor);
+		bh = static_cast<int>(image.GetHeight() * m_zoomFactor);
 
 		if (bw < w)
 		{
@@ -97,18 +97,18 @@ void wxImagePanel::render(wxDC&  dc)
 
 		if (bh < h)
 		{
-            by = (h - bh) / 2;
+			by = (h - bh) / 2;
 		}
 		else
 			by = 0;
 		//localdc.SetUserScale(m_zoomFactor, m_zoomFactor);
 		//localdc.Blit(bx, by, zw + 1, zh + 1, &memdc, x, y);
-        wxImage bitmapResize = image.ResampleBicubic(bw, bh);
-        dc.DrawBitmap(wxBitmap(bitmapResize), wxPoint(bx, by));
+		wxImage bitmapResize = image.ResampleBicubic(bw, bh);
+		dc.DrawBitmap(wxBitmap(bitmapResize), wxPoint(bx, by));
 	}
 }
 
-void wxImagePanel::SetImage(const wxImage &image)
+void wxImagePanel::SetImage(const wxImage& image)
 {
-    this->image = image;
+	this->image = image;
 }

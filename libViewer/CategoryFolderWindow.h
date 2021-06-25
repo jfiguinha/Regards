@@ -1,21 +1,7 @@
 #pragma once
-/*
-#include <PaneInterface.h>
-#include <ScrollbarWnd.h>
-#include <Pane.h>
-#include <ClickToolbar.h>
-#include <TreeWindow.h>
-#include "CategoryWnd.h"
-#include "ViewerParam.h"
-#include <TreeWithScrollbar.h>
-#include <Photos.h>
-*/
-
 #include <theme.h>
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
-//using namespace Regards::Viewer;
-//using namespace Regards::Control;
 
 class CFindPhotoCriteria;
 class CFolderCatalog;

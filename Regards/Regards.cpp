@@ -49,7 +49,7 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 	wxArrayString files;
 	for (auto i = 0; i < parser.GetParamCount(); i++)
 	{
-		printf("Files to show : %s \n", CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
+		//printf("Files to show : %s \n", CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
 		files.Add(parser.GetParam(i));
 		break;
 	}

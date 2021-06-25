@@ -3,11 +3,12 @@
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 #include <ConvertUtility.h>
+#include <fstream>
 using namespace rapidxml;
 using namespace Regards::Scanner;
 
 
-#define POSITION_PREVIEW_FACE 300
+constexpr auto POSITION_PREVIEW_FACE = 300;
 
 CMainParam::CMainParam()
 {
@@ -310,38 +311,38 @@ void CMainParam::GetPositionParameter(xml_node<>* position_node)
 
 wxRect CMainParam::GetWindowPositionParameter(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	//wxString value;
+	//wxString node_name;
 	wxRect rc;
 	xml_node<>* child_node = position_node->first_node("Left");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//node_name = child_node->name();
 		rc.x = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("Right");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//node_name = child_node->name();
 		rc.width = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("Bottom");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//node_name = child_node->name();
 		rc.height = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("Top");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//node_name = child_node->name();
 		rc.y = atoi(child_node->value());
 	}
 
@@ -350,85 +351,85 @@ wxRect CMainParam::GetWindowPositionParameter(xml_node<>* position_node)
 
 void CMainParam::GetWindowParameter(xml_node<>* window_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	//wxString value;
+	//wxString nodeName;
 	xml_node<>* child_node = window_node->first_node("Thumbnail");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showThumbnail = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("VideoThumbnail");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showVideoThumbnail = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("Infos");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showInfos = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("Position");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		position = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("LastFolder");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		folder = child_node->value();
 	}
 
 	child_node = window_node->first_node("PositionCriteriaPreview");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		positionCriteriaPreview = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("PositionPreviewFace");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		positionPreviewFace = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("PositionPreviewThumbnail");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		positionPreviewThumbnail = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("PositionCriteriaFolder");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		positionFolderCriteria = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("ThumbnailBottom");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		isThumbnailBottom = atoi(child_node->value());
 	}
 
@@ -436,77 +437,77 @@ void CMainParam::GetWindowParameter(xml_node<>* window_node)
 	child_node = window_node->first_node("Filter");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showFilter = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("Folder");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showFolder = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("Face");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		showFace = atoi(child_node->value());
 	}
 
 	child_node = window_node->first_node("LastRequest");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		sqlRequest = child_node->value();
 	}
 
 	child_node = window_node->first_node("FacePertinence");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		pertinence = atoi(child_node->value());
 	}
 }
 
 void CMainParam::GetDiaporamaParameter(xml_node<>* diaporama_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	//wxString value;
+	//wxString nodeName;
 	xml_node<>* child_node = diaporama_node->first_node("Fullscreen");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+		//value = child_node->value();
+		//nodeName = child_node->name();
 		fullscreen = atoi(child_node->value());
 	}
 
 	child_node = diaporama_node->first_node("Effect");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+	//	value = child_node->value();
+	//	nodeName = child_node->name();
 		numEffect = atoi(child_node->value());
 	}
 
 	child_node = diaporama_node->first_node("Delai");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+	//	value = child_node->value();
+	//	nodeName = child_node->name();
 		delai = atoi(child_node->value());
 	}
 
 	child_node = diaporama_node->first_node("Forward");
 	if (child_node != nullptr)
 	{
-		value = child_node->value();
-		nodeName = child_node->name();
+	//	value = child_node->value();
+	//	nodeName = child_node->name();
 		enAvant = atoi(child_node->value());
 	}
 }

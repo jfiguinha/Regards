@@ -396,11 +396,12 @@ static unsigned LZ4_count(const uint8_t* pIn, const uint8_t* pMatch, const uint8
 		return (unsigned)(pIn - pStart);
 	}
 
-	if (LZ4_64bits()) if ((pIn < (pInLimit - 3)) && (LZ4_read32(pMatch) == LZ4_read32(pIn)))
-	{
-		pIn += 4;
-		pMatch += 4;
-	}
+	if (LZ4_64bits())
+		if ((pIn < (pInLimit - 3)) && (LZ4_read32(pMatch) == LZ4_read32(pIn)))
+		{
+			pIn += 4;
+			pMatch += 4;
+		}
 	if ((pIn < (pInLimit - 1)) && (LZ4_read16(pMatch) == LZ4_read16(pIn)))
 	{
 		pIn += 2;

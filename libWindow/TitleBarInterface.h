@@ -6,11 +6,8 @@
 
 class CTitleBarInterface
 {
-
 public:
-
+	virtual ~CTitleBarInterface() = default;
 	virtual void ClosePane() = 0;
 	virtual void RefreshPane() = 0;
 };
-
-

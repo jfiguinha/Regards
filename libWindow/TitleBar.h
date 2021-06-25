@@ -1,9 +1,6 @@
 #pragma once
 #include "TitleBarInterface.h"
-#include <wx/cursor.h>
-//#include <wx/TipWin.h>
 #include "WindowMain.h"
-
 
 
 namespace Regards
@@ -13,22 +10,21 @@ namespace Regards
 		class CTitleBar : public CWindowMain
 		{
 		public:
-			CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface * titleBarInterface);
-			~CTitleBar();
+			CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleBarInterface);
+			~CTitleBar() override;
 
-			int SetTooltipText(const wxString & tooltip);
-			void SetTitle(const wxString & title);
-			void SetClosable(const bool &value);
+			int SetTooltipText(const wxString& tooltip);
+			void SetTitle(const wxString& title);
+			void SetClosable(const bool& value);
 			void SetRefresh(const bool& value);
-            void UpdateScreenRatio();
-			void SetTheme(CThemeTitleBar * themeTitle);
+			void UpdateScreenRatio() override;
+			void SetTheme(CThemeTitleBar* themeTitle);
 			void Redraw();
 
 		protected:
+			void Resize() override;
 
-			void Resize();
-
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 
@@ -50,9 +46,8 @@ namespace Regards
 			wxString libelle;
 			wxString tooltip;
 			wxString refreshtip;
-			CTitleBarInterface * titleBarInterface;
+			CTitleBarInterface* titleBarInterface;
 			CThemeTitleBar themeTitle;
 		};
 	}
 }
-

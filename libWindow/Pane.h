@@ -4,7 +4,6 @@
 #include "TitleBar.h"
 #include "WindowMain.h"
 
-
 namespace Regards
 {
 	namespace Window
@@ -12,15 +11,15 @@ namespace Regards
 		class CPane : public CTitleBarInterface, public CWindowMain
 		{
 		public:
+			CPane(wxWindow* parent, wxWindowID id, CPaneInterface* paneInterface, const int& idPane,
+				const CThemePane& theme, const bool& refreshButton);
+			~CPane() override;
 
-			CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme, const bool& refreshButton);
-			virtual ~CPane();
+			int SetTooltipText(const wxString& tooltip);
 
-			int SetTooltipText(const wxString & tooltip);
+			void SetTitle(const wxString& title);
 
-			void SetTitle(const wxString & title);
-
-			void SetOtherWindow(CWindowMain * window)
+			void SetOtherWindow(CWindowMain* window)
 			{
 				wxSize oldsize;
 				bool needToResize = false;
@@ -31,7 +30,7 @@ namespace Regards
 				}
 
 				hMainWndOther = window;
-                hWndOther = window;
+				hWndOther = window;
 
 				if (needToResize)
 				{
@@ -40,7 +39,7 @@ namespace Regards
 				}
 			};
 
-			void SetOtherWindow(wxWindow * window)
+			void SetOtherWindow(wxWindow* window)
 			{
 				wxSize oldsize;
 				bool needToResize = false;
@@ -51,7 +50,7 @@ namespace Regards
 				}
 
 				hWndOther = window;
-                hMainWndOther = nullptr;
+				hMainWndOther = nullptr;
 
 				if (needToResize)
 				{
@@ -59,31 +58,29 @@ namespace Regards
 					this->Resize();
 				}
 			};
-            
-            void UpdateScreenRatio();
 
-			void SetClosable(const bool &value);
-			virtual void ClosePane();
-			virtual void RefreshPane();
-			void Resize();
+			void UpdateScreenRatio() override;
+
+			void SetClosable(const bool& value);
+			void ClosePane() override;
+			void RefreshPane() override;
+			void Resize() override;
 			void ShowOtherWindow();
 
-			void SetTitleBarVisibility(const bool &visible);
+			void SetTitleBarVisibility(const bool& visible);
 			int GetTitleHeight();
 
 		protected:
 			void OnMouseMove(wxMouseEvent& event);
 			void RefreshData(wxCommandEvent& event);
 		private:
-
-			CTitleBar * titleBar;
-            wxWindow * hWndOther;
-			CWindowMain * hMainWndOther;
-			CPaneInterface * paneInterface;
+			CTitleBar* titleBar;
+			wxWindow* hWndOther;
+			CWindowMain* hMainWndOther;
+			CPaneInterface* paneInterface;
 			int idPane;
 			bool titleBarVisible;
 			CThemePane themePane;
 		};
 	}
 }
-

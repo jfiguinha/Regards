@@ -1,12 +1,5 @@
 #pragma once
-/*
-#include <ScrollbarWnd.h>
-#include "ThumbnailFolder.h"
-#include "ThumbnailToolBar.h"
-#include "ThumbnailToolBarZoom.h"
-#include <WindowMain.h>
-#include "ImageList.h"
-*/
+
 #include <ExportFile.h>
 #include <WindowMain.h>
 using namespace Regards::Window;

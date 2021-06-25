@@ -553,7 +553,7 @@ wxString CPanelInfosWnd::MapsUpdate()
 	wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	auto fileGeolocalisation = new CFileGeolocation(urlServer);
 	fileGeolocalisation->SetFile(filename, notGeo);
-	wxString url = L"http://www.openstreetmap.org/?mlat=";  // NOLINT(clang-diagnostic-shadow)
+	wxString url = L"http://www.openstreetmap.org/?mlat="; // NOLINT(clang-diagnostic-shadow)
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"&mlon=");
 	url.append(fileGeolocalisation->GetLongitude());

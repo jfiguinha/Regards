@@ -9,21 +9,20 @@ namespace Regards
 		class CSeparationBar : public CWindowMain
 		{
 		public:
-			CSeparationBar(IMoveWindow * moveWindow, wxWindow* parent, wxWindowID id, const CThemeSeparationBar & theme);
-			~CSeparationBar();
-			void SetFastRender(const bool &fast);
-			void SetHorizontal(const bool &horizontal);
-			void UpdateScreenRatio();
+			CSeparationBar(IMoveWindow* moveWindow, wxWindow* parent, wxWindowID id, const CThemeSeparationBar& theme);
+			~CSeparationBar() override;
+			void SetFastRender(const bool& fast);
+			void SetHorizontal(const bool& horizontal);
+			void UpdateScreenRatio() override;
 
 		private:
-
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
-            void OnMouseLeave(wxMouseEvent& event);
-            void OnMouseHover(wxMouseEvent& event);
+			void OnMouseLeave(wxMouseEvent& event);
+			void OnMouseHover(wxMouseEvent& event);
 
 			bool bSplitterMoving;
 			bool horizontal;
@@ -31,9 +30,8 @@ namespace Regards
 			//int oldX;
 			//int oldY;
 			bool fastRender;
-			IMoveWindow * moveWindow;
+			IMoveWindow* moveWindow;
 			CThemeSeparationBar theme;
 		};
 	}
 }
-

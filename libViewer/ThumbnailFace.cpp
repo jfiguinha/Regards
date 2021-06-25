@@ -103,7 +103,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		listSeparator.push_back(infosSeparationBar);
 }
 
-void CThumbnailFace::Init()
+void CThumbnailFace::init()
 {
 	auto iconeListLocal = new CIconeList();
 	CIconeList* oldIconeList = nullptr;

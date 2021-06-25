@@ -1,5 +1,8 @@
 #include <header.h>
 #include "KeywordWndToolbar.h"
+
+#include <Tracing.h>
+
 #include "KeywordManagementWindow.h"
 #include "ToolbarKeyword.h"
 #include "MainTheme.h"

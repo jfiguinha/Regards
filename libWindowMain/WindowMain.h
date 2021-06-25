@@ -17,48 +17,47 @@ namespace Regards
 		public:
 			CWindowMain(wxString name, wxWindow* parent, wxWindowID id)
 				: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
-				//: wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
+			//: wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 			{
 				this->name = name;
-            #ifdef __WXGTK__
-            #if wxCHECK_VERSION(3, 1, 2)
+#ifdef __WXGTK__
+#if wxCHECK_VERSION(3, 1, 2)
                 scaleFactor = 1.0f;
-            #else
+#else
                 scaleFactor = GetContentScaleFactor();
-            #endif
-            #else
-                scaleFactor = 1.0f;
-            #endif
+#endif
+#else
+				scaleFactor = 1.0f;
+#endif
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowMain::OnSize));
-                Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
+				Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
 				Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowMain::OnResize));
 				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
-				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
+				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED,
+				        wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
 			}
 
-			virtual ~CWindowMain()
+			~CWindowMain() override
 			{
-
 			}
 
 
 			virtual void SaveParameter()
 			{
-
 			}
 
 			virtual void OnResize(wxCommandEvent& event)
 			{
 				this->Resize();
 			}
-            
-            virtual void OnRefresh(wxCommandEvent& event)
-             {
-                this->Refresh();
-             }            
-            
-            
-			virtual void PushThreadIdleEvent()
+
+			virtual void OnRefresh(wxCommandEvent& event)
+			{
+				this->Refresh();
+			}
+
+
+			void PushThreadIdleEvent() override
 			{
 				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_IDLETHREADING);
 				GetEventHandler()->AddPendingEvent(evt);
@@ -75,32 +74,33 @@ namespace Regards
 				this->Update();
 			}
 
-			virtual void Resize()
+			void Resize() override
 			{
 				this->Refresh();
 				this->Update();
 			}
 
-			virtual void SetSizeWindow(const int &x, const int &y, const int &width, const int &height)
+			virtual void SetSizeWindow(const int& x, const int& y, const int& width, const int& height)
 			{
-				this->SetSize(x,y,width,height);
+				this->SetSize(x, y, width, height);
 				this->Refresh();
 			}
 
-			virtual void OnEraseBackground(wxEraseEvent& event){};
+			virtual void OnEraseBackground(wxEraseEvent& event)
+			{
+			};
 
 			virtual void OnSize(wxSizeEvent& event)
 			{
 				this->ProcessOnSizeEvent(event);
 			}
 
-			virtual wxString GetWaitingMessage()
-			{ 
+			wxString GetWaitingMessage() override
+			{
 				return "Window waiting : " + to_string(this->GetId());
 			}
-
 		};
 
-		typedef std::vector<CWindowMain *> WindowMainVector;
+		using WindowMainVector = std::vector<CWindowMain*>;
 	}
 }

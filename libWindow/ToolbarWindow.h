@@ -6,29 +6,27 @@ namespace Regards
 {
 	namespace Window
 	{
-		#define NAVIGATOR_LEFT 1
-		#define NAVIGATOR_CENTER 2
-		#define NAVIGATOR_RIGHT 3
+#define NAVIGATOR_LEFT 1
+#define NAVIGATOR_CENTER 2
+#define NAVIGATOR_RIGHT 3
 
 		class CToolbarWindow : public CWindowMain
 		{
 		public:
-
-			CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			virtual ~CToolbarWindow();
-			int GetHeight();
-			int GetWidth();
+			CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+			~CToolbarWindow() override;
+			int GetHeight() override;
+			int GetWidth() override;
 			int GetNavigatorHeight();
 			int GetNavigatorWidth();
 			bool IsMouseOver();
-            void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
-            
+
 		protected:
+			virtual void EventManager(const int& id) = 0;
 
-			virtual void EventManager(const int &id) = 0;
-
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
@@ -36,36 +34,35 @@ namespace Regards
 			void OnMouseHover(wxMouseEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
 			void OnTimerPushButton(wxTimerEvent& event);
-			void OnEraseBackground(wxEraseEvent& event){};
 
-			void DrawBackground(wxDC * deviceContext);
-			void DrawBackground(wxDC * deviceContext, const wxRect &rc);
-			void GenerateNavigatorButton(wxDC * deviceContext);
-			void RedrawElement(wxDC * dc, CToolbarElement * nav);
+			void OnEraseBackground(wxEraseEvent& event) override
+			{
+			};
+
+			void DrawBackground(wxDC* deviceContext);
+			void DrawBackground(wxDC* deviceContext, const wxRect& rc);
+			void GenerateNavigatorButton(wxDC* deviceContext);
+			void RedrawElement(wxDC* dc, CToolbarElement* nav);
 
 			wxBitmap hbmNavigator;
 
 			VectorNavigatorElement navElement;
-			CToolbarElement * navPush;
+			CToolbarElement* navPush;
 			CThemeToolbar themeToolbar;
-            bool saveLastPush;
+			bool saveLastPush;
 			bool isVertical;
 
 		private:
-
-            void DrawButton(wxDC * dc, CToolbarElement * nav);
+			void DrawButton(wxDC* dc, CToolbarElement* nav);
 			void EmptyNavigator();
 			int numButtonActif;
 			bool m_bIconeOn;
 			bool m_bMouseMove;
 			bool m_bMouseOver;
-            
-            wxBitmap background;
-            wxImage backPicture;
-			wxTimer * pushButton;
-			
+
+			wxBitmap background;
+			wxImage backPicture;
+			wxTimer* pushButton;
 		};
 	}
 }
-
-

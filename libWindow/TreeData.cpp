@@ -2,9 +2,8 @@
 #include "TreeData.h"
 using namespace Regards::Window;
 
-CTreeData::CTreeData(void)
+CTreeData::CTreeData(void): parent(false)
 {
-    type = 1;
 	valeur = L"";
 	exifKey = L"";
 	key = L"";
@@ -17,7 +16,7 @@ CTreeData::~CTreeData(void)
 {
 }
 
-void CTreeData::SetActif(const bool & value)
+void CTreeData::SetActif(const bool& value)
 {
 	actif = value;
 }
@@ -28,7 +27,7 @@ bool CTreeData::GetActif()
 }
 
 
-void CTreeData::SetKey(const wxString & value)
+void CTreeData::SetKey(const wxString& value)
 {
 	key = value;
 }
@@ -39,7 +38,7 @@ wxString CTreeData::GetKey()
 }
 
 
-void CTreeData::SetValue(const wxString & value)
+void CTreeData::SetValue(const wxString& value)
 {
 	valeur = value;
 }
@@ -50,7 +49,7 @@ wxString CTreeData::GetValue()
 }
 
 
-void CTreeData::SetExifKey(const wxString & value)
+void CTreeData::SetExifKey(const wxString& value)
 {
 	exifKey = value;
 }
@@ -61,7 +60,7 @@ wxString CTreeData::GetExifKey()
 }
 
 
-void CTreeData::SetType(const int & type)
+void CTreeData::SetType(const int& type)
 {
 	this->type = type;
 }

@@ -12,13 +12,11 @@ namespace Regards
 			CMainThemeInit();
 			virtual ~CMainThemeInit();
 
-			static CMainTheme * getInstance();
-			static void Initialize(CMainTheme * param);
-            static void SaveTheme();
+			static CMainTheme* getInstance();
+			static void Initialize(CMainTheme* param);
+			static void SaveTheme();
 		private:
-
-			static CMainTheme *_singleton;
+			static CMainTheme* _singleton;
 		};
 	}
 }
-

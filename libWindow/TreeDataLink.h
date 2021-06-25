@@ -1,6 +1,5 @@
 #pragma once
 #include "TreeData.h"
-using namespace std;
 
 namespace Regards
 {

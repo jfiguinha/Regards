@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include "header.h"
 #include "BitmapWnd.h"
 #include <RGBAQuad.h>
@@ -22,6 +23,7 @@
 #include <OpenCLEngine.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
+#include <tracing.h>
 using namespace Regards::Sqlite;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
@@ -84,7 +86,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd::OnLButtonDown));
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CBitmapWnd::OnRButtonDown));
@@ -1895,7 +1897,7 @@ void CBitmapWnd::ReloadResource()
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
-void CBitmapWnd::OnPaint(wxPaintEvent& event)
+void CBitmapWnd::on_paint(wxPaintEvent& event)
 {
 #ifndef WIN32
 	double scale_factor = GetContentScaleFactor();

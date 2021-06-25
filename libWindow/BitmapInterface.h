@@ -7,12 +7,25 @@ namespace Regards
 		class CBitmapInterface
 		{
 		public:
-			CBitmapInterface(){};
-			virtual ~CBitmapInterface(){};
+			CBitmapInterface()
+			{
+			};
 
-			virtual void TransitionEnd(){};
-			virtual void ImageSuivante(){};
-			virtual void ImagePrecedente(){};
+			virtual ~CBitmapInterface()
+			{
+			};
+
+			virtual void TransitionEnd()
+			{
+			};
+
+			virtual void ImageSuivante()
+			{
+			};
+
+			virtual void ImagePrecedente()
+			{
+			};
 		};
 	}
 }

@@ -14,9 +14,9 @@ CTreeDataEffect::CTreeDataEffect(void)
 
 CTreeDataEffect::~CTreeDataEffect(void)
 {
-	if(tabValue.size() > 0)
+	if (tabValue.size() > 0)
 	{
-		for (CTreeElementValue * i : tabValue)
+		for (CTreeElementValue* i : tabValue)
 		{
 			delete i;
 			i = nullptr;
@@ -25,12 +25,12 @@ CTreeDataEffect::~CTreeDataEffect(void)
 		tabValue.clear();
 	}
 
-	if(position != nullptr)
+	if (position != nullptr)
 		delete position;
 }
 
 
-void CTreeDataEffect::SetIndex(const int & value)
+void CTreeDataEffect::SetIndex(const int& value)
 {
 	index = value;
 }
@@ -45,59 +45,57 @@ int CTreeDataEffect::GetIndex()
 	return index;
 }
 
-void CTreeDataEffect::SetInitValue(CTreeElementValue * position)
+void CTreeDataEffect::SetInitValue(CTreeElementValue* position)
 {
 	this->position = position;
 }
 
-CTreeElementValue * CTreeDataEffect::GetInitValue()
+CTreeElementValue* CTreeDataEffect::GetInitValue()
 {
 	return position;
 }
 
-void CTreeDataEffect::SetValue(void * value,const int & typeValue)
+void CTreeDataEffect::SetValue(void* value, const int& typeValue)
 {
-	if(typeValue == 1)
+	if (typeValue == 1)
 	{
 		vector<int> vecInt;
-		std::vector<int> * v = (vector<int>*)value;
+		auto v = static_cast<vector<int>*>(value);
 		copy(v->begin(), v->end(), back_inserter(vecInt));
 
-        for (auto i : vecInt)
+		for (auto i : vecInt)
 		{
 			tabValue.push_back(new CTreeElementValueInt(i));
 		}
-        
 	}
-	else if(typeValue == 2)
+	else if (typeValue == 2)
 	{
-		bool * b = (bool *)value;
+		auto b = static_cast<bool*>(value);
 		boolvalue = *b;
 	}
-	else if(typeValue == 3)
+	else if (typeValue == 3)
 	{
-		std::vector<CMetadata> * v = (vector<CMetadata>*)value;
-		copy(v->begin(), v->end(), back_inserter(tabMetadata));	
-		CTreeElementValueInt * indexPos = (CTreeElementValueInt *)this->position;
+		auto v = static_cast<vector<CMetadata>*>(value);
+		copy(v->begin(), v->end(), back_inserter(tabMetadata));
+		auto indexPos = static_cast<CTreeElementValueInt*>(this->position);
 		index = indexPos->GetValue();
 	}
-	if(typeValue == 4)
+	if (typeValue == 4)
 	{
 		vector<float> vecFloat;
-		std::vector<float> * v = (vector<float>*)value;
+		auto v = static_cast<vector<float>*>(value);
 		copy(v->begin(), v->end(), back_inserter(vecFloat));
 
-        for (float i : vecFloat)
+		for (float i : vecFloat)
 		{
 			tabValue.push_back(new CTreeElementValueFloat(i));
 		}
-        
 	}
 
 	hasValue = true;
 }
 
-vector<CTreeElementValue *> * CTreeDataEffect::GetVectorValue()
+vector<CTreeElementValue*>* CTreeDataEffect::GetVectorValue()
 {
 	return &tabValue;
 }
@@ -112,7 +110,3 @@ bool CTreeDataEffect::GetBoolValue()
 {
 	return boolvalue;
 }
-
-
-
-

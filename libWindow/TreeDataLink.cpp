@@ -4,9 +4,9 @@ using namespace Regards::Window;
 
 CTreeDataLink::CTreeDataLink(void)
 {
-    type = 2;
+	type = 2;
 	linktype = 0;
-    id = 0;
+	id = 0;
 }
 
 
@@ -14,32 +14,32 @@ CTreeDataLink::~CTreeDataLink(void)
 {
 }
 
-void CTreeDataLink::SetLinkType(const int & type)
+void CTreeDataLink::SetLinkType(const int& type)
 {
-    linktype = type;
+	linktype = type;
 }
 
 int CTreeDataLink::GetLinkType()
 {
-    return linktype;
+	return linktype;
 }
 
-void CTreeDataLink::SetLinkPath(const wxString & value)
+void CTreeDataLink::SetLinkPath(const wxString& value)
 {
-    linkPath = value;
+	linkPath = value;
 }
 
 wxString CTreeDataLink::GetLinkPath()
 {
-    return linkPath;
+	return linkPath;
 }
 
-void CTreeDataLink::SetId(const int & id)
+void CTreeDataLink::SetId(const int& id)
 {
-    this->id = id;
+	this->id = id;
 }
 
 int CTreeDataLink::GetId()
 {
-    return id;
+	return id;
 }

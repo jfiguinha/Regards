@@ -112,6 +112,11 @@ namespace Regards
 			CWaitingWindow* mainWindowWaiting;
 			wxPreviewFrameModalityKind m_previewModality;
 			bool fullscreen;
+			const wxString& title_;
+			const wxPoint& pos_;
+			const wxSize& size_;
+			IMainInterface* main_interface_;
+			const wxString& file_to_open_;
 			static bool viewerMode;
 			bool onExit;
 			bool m_fsWatcher = true;

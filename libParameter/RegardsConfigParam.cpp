@@ -1,3 +1,4 @@
+// ReSharper disable CppEntityAssignedButNoRead
 #include "header.h"
 #include "RegardsConfigParam.h"
 #include <fstream>
@@ -379,8 +380,8 @@ void CRegardsConfigParam::SetDiaporamaTime(const int& diaporamaTime)
 
 void CRegardsConfigParam::GetVideoLibrary(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("NumLibrary");
 	if (child_node != nullptr)
 	{
@@ -424,8 +425,8 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<>* position_node)
 
 void CRegardsConfigParam::GetEffectLibrary(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("NumLibrary");
 	if (child_node != nullptr)
 	{
@@ -501,8 +502,8 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<>* position_node)
 
 void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("NumLibrary");
 	if (child_node != nullptr)
 	{
@@ -677,14 +678,14 @@ void CRegardsConfigParam::SetIconParameter(xml_node<>* sectionPosition)
 
 void CRegardsConfigParam::GetIconParameter(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("Ratio");
 	if (child_node != nullptr)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
-		iconSizeRatio = atof(child_node->value());
+		iconSizeRatio = static_cast<float>(atof(child_node->value()));
 	}
 }
 
@@ -697,8 +698,8 @@ void CRegardsConfigParam::SetDatabaseParameter(xml_node<>* sectionPosition)
 
 void CRegardsConfigParam::GetDatabaseParameter(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("InMemory");
 	if (child_node != nullptr)
 	{
@@ -726,13 +727,13 @@ void CRegardsConfigParam::SetDiaporamaParameter(xml_node<>* sectionPosition)
 
 void CRegardsConfigParam::GetDiaporamaParameter(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString node_name;
 	xml_node<>* child_node = position_node->first_node("Time");
 	if (child_node != nullptr)
 	{
 		value = child_node->value();
-		nodeName = child_node->name();
+		node_name = child_node->name();
 		diaporamaTime = atoi(child_node->value());
 	}
 
@@ -740,7 +741,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<>* position_node)
 	if (child_node != nullptr)
 	{
 		value = child_node->value();
-		nodeName = child_node->name();
+		node_name = child_node->name();
 		diaporamaEffect = atoi(child_node->value());
 	}
 
@@ -748,7 +749,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<>* position_node)
 	if (child_node != nullptr)
 	{
 		value = child_node->value();
-		nodeName = child_node->name();
+		node_name = child_node->name();
 		diaporamaFullscreen = atoi(child_node->value());
 	}
 
@@ -756,7 +757,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<>* position_node)
 	if (child_node != nullptr)
 	{
 		value = child_node->value();
-		nodeName = child_node->name();
+		node_name = child_node->name();
 		musicDiaporama = child_node->value();
 	}
 }
@@ -798,8 +799,8 @@ void CRegardsConfigParam::SetGeolocalisationServer(xml_node<>* sectionPosition)
 
 void CRegardsConfigParam::GetGeolocalisationServer(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("Url");
 	if (child_node != nullptr)
 	{
@@ -818,8 +819,8 @@ void CRegardsConfigParam::SetThumbnail(xml_node<>* sectionPosition)
 
 void CRegardsConfigParam::GetThumbnail(xml_node<>* position_node)
 {
-	wxString value = "";
-	wxString nodeName = "";
+	wxString value;
+	wxString nodeName;
 	xml_node<>* child_node = position_node->first_node("Quality");
 	if (child_node != nullptr)
 	{

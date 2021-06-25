@@ -1,8 +1,8 @@
 #pragma once
-#include <theme.h>
 #include <WindowMain.h>
 #include <WindowOpenGLMain.h>
 #include "WindowManager.h"
+
 namespace Regards
 {
 	namespace Window
@@ -11,32 +11,34 @@ namespace Regards
 		class CScrollbarVerticalWnd;
 
 
-        class CControlSize
-        {
-        public:
-            int controlWidth;
-            int controlHeight;
-            bool useScaleFactor = false;
-        };
+		class CControlSize
+		{
+		public:
+			int controlWidth;
+			int controlHeight;
+			bool useScaleFactor = false;
+		};
 
 		class CScrollbarWnd : public CWindowMain
 		{
 		public:
-			CScrollbarWnd(wxWindow* parent, CWindowMain * centralWindow, wxWindowID id, const wxString & windowName = "ScrollBar");
-			CScrollbarWnd(wxWindow* parent, CWindowOpenGLMain * centralWindow, wxWindowID id, const wxString & windowName = "ScrollBar");
-			~CScrollbarWnd();
+			CScrollbarWnd(wxWindow* parent, CWindowMain* centralWindow, wxWindowID id,
+				const wxString& windowName = "ScrollBar");
+			CScrollbarWnd(wxWindow* parent, CWindowOpenGLMain* centralWindow, wxWindowID id,
+				const wxString& windowName = "ScrollBar");
+			~CScrollbarWnd() override;
 
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
-			void SetPageSize(const int &pageSize);
-			void SetLineSize(const int &lineSize);
+			void SetPageSize(const int& pageSize);
+			void SetLineSize(const int& lineSize);
 
-			
+
 			void HideVerticalScroll();
 			void HideHorizontalScroll();
 			void ShowVerticalScroll();
 			void ShowHorizontalScroll();
-			
+
 
 			int GetShowingScrollV();
 			int GetShowingScrollH();
@@ -44,10 +46,10 @@ namespace Regards
 			int GetBarWidth();
 			int GetBarHeight();
 
-			void Resize();
+			void Resize() override;
 
-			virtual int GetHeight();
-			virtual int GetWidth();
+			int GetHeight() override;
+			int GetWidth() override;
 
 			int GetPosLargeur();
 			int GetPosHauteur();
@@ -56,8 +58,7 @@ namespace Regards
 			void DefaultConstructor();
 
 		protected:
-
-			void SetPosition(const int &posX, const int &posY);
+			void SetPosition(const int& posX, const int& posY);
 			void RefreshData(wxCommandEvent& event);
 			void OnLeftPosition(wxCommandEvent& event);
 			void OnControlSize(wxCommandEvent& event);
@@ -70,15 +71,15 @@ namespace Regards
 
 			void OnScrollMove(wxCommandEvent& event);
 
-			CScrollbarHorizontalWnd * scrollHorizontal;
-			CScrollbarVerticalWnd * scrollVertical;
+			CScrollbarHorizontalWnd* scrollHorizontal;
+			CScrollbarVerticalWnd* scrollVertical;
 			void OnTopPosition(wxCommandEvent& event);
 
 			bool showV;
 			bool showH;
-            bool _showV = false;
-            bool _showH = false;
-            bool _useScaleFactor = false;
+			bool _showV = false;
+			bool _showH = false;
+			bool _useScaleFactor = false;
 			//int posHauteur;
 			//int posLargeur;
 			int controlHeight;
@@ -87,9 +88,9 @@ namespace Regards
 			int defaultPageSize;
 			int defaultLineSize;
 
-            wxTimer * loadingTimer;
-			CWindowManager * windowManager;
-			CWindowToAdd * centralWindow;
+			wxTimer* loadingTimer;
+			CWindowManager* windowManager;
+			CWindowToAdd* centralWindow;
 		};
 	}
 }

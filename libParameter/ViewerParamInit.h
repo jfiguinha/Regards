@@ -12,13 +12,11 @@ namespace Regards
 			CMainParamInit();
 			~CMainParamInit();
 
-			static CMainParam * getInstance();
-			static void Initialize(CMainParam * param);
+			static CMainParam* getInstance();
+			static void Initialize(CMainParam* param);
 
 		private:
-
-			static CMainParam *_singleton;
+			static CMainParam* _singleton;
 		};
 	}
 }
-

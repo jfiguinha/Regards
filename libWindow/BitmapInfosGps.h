@@ -9,26 +9,22 @@ namespace Regards
 		class CBitmapInfosGps : public CWindowMain
 		{
 		public:
-			CBitmapInfosGps(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme);
-			~CBitmapInfosGps();
-			void SetInfos(const wxString &localisation, const wxString &latitude, const wxString &longitude);
-			int GetHeight();
+			CBitmapInfosGps(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme);
+			~CBitmapInfosGps() override;
+			void SetInfos(const wxString& localisation, const wxString& latitude, const wxString& longitude);
+			int GetHeight() override;
 			void Redraw();
-            void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
-            
+
 		private:
+			void on_paint(wxPaintEvent& event);
+			void DrawInformations(wxDC* dc);
 
-			void OnPaint(wxPaintEvent& event);
-            void DrawInformations(wxDC * dc);
-            
-            wxString localisation;
-            wxString latitude;
-            wxString longitude;
+			wxString localisation;
+			wxString latitude;
+			wxString longitude;
 			CThemeBitmapInfos bitmapInfosTheme;
-
-
 		};
 	}
 }
-

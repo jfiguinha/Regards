@@ -11,25 +11,29 @@ namespace Regards
 		class CThumbnailToolBar : public CToolbarWindow, public CSliderInterface
 		{
 		public:
-			CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			virtual ~CThumbnailToolBar();
+			CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+			~CThumbnailToolBar() override;
 
-			void SetTrackBarPosition(const int &iPos);
+			void SetTrackBarPosition(const int& iPos) override;
 			void SetTabValue(vector<int> value);
 			void ZoomOn();
 			void ZoomOff();
-			void ZoomPos(const int &position);
+			void ZoomPos(const int& position) override;
 
-			void SlidePosChange(const int &position, const wxString &key);
-			void MoveSlider(const int64_t &position){};
-			void ClickButton(const int &id){};
+			void SlidePosChange(const int& position, const wxString& key) override;
+
+			void MoveSlider(const int64_t& position) override
+			{
+			};
+
+			void ClickButton(const int& id) override
+			{
+			};
 
 		private:
+			void EventManager(const int& id) override;
 
-			void EventManager(const int &id);
-
-			CToolbarSlide * slide;
-
+			CToolbarSlide* slide;
 		};
 	}
 }

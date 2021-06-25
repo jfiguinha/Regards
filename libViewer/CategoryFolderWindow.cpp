@@ -20,6 +20,7 @@
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
+#include <Tracing.h>
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;

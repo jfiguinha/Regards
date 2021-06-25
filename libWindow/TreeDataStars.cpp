@@ -2,9 +2,8 @@
 #include "TreeDataStars.h"
 using namespace Regards::Window;
 
-CTreeDataStars::CTreeDataStars(void)
+CTreeDataStars::CTreeDataStars(void): numPhotoId(0)
 {
-    type = 1;
 	valeur = L"";
 	exifKey = L"";
 	key = L"";
@@ -22,7 +21,7 @@ int CTreeDataStars::GetNumPhotoId()
 	return numPhotoId;
 }
 
-void CTreeDataStars::SetNumPhotoId(const int & numPhotoId)
+void CTreeDataStars::SetNumPhotoId(const int& numPhotoId)
 {
 	this->numPhotoId = numPhotoId;
 }

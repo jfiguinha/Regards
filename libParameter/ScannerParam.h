@@ -100,10 +100,10 @@ namespace Regards
 			bool showVideoThumbnail;
 			int position;
 			bool showInfos;
-			bool showFace;
+			bool showFace{};
 			bool fullscreen;
 			int delai;
-			int numEffect;
+			int numEffect{};
 			bool enAvant;
 			wxString criteriaList;
 			wxString criteriaTriangleList;

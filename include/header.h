@@ -73,7 +73,8 @@
 #include <cassert>
 #include <cerrno>
 #include <sys/stat.h>
-#include <wx/version.h> 
+#include <wx/version.h>
+
 using namespace std;
 
 /*  check if the current version is at least major.minor.release */

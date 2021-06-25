@@ -7,27 +7,26 @@
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
-CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface * titleBarInterface) :
-CWindowMain("CTitleBar",parent, id)
+CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleBarInterface) :
+	CWindowMain("CTitleBar", parent, id)
 {
 	mouseCapture = false;
 	isClosable = true;
 	isRefresh = true;
 	this->titleBarInterface = titleBarInterface;
-	tooltip = CLibResource::LoadStringFromResource("LBLClose",1);
+	tooltip = CLibResource::LoadStringFromResource("LBLClose", 1);
 	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESHDATA", 1);
 	CreateBitmapCrossOff();
 	CreateBitmapCrossOn();
-	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_FOLDER_REFRESH", themeTitle.GetCroixWidth() - 2, themeTitle.GetCroixHeight() - 2);
+	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_FOLDER_REFRESH", themeTitle.GetCroixWidth() - 2,
+	                                                     themeTitle.GetCroixHeight() - 2);
 	CreateBitmapRefreshOff();
 	CreateBitmapRefreshOn();
 	SetWindowHeight(this->themeTitle.GetHeight());
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleBar::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleBar::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CTitleBar::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CTitleBar::OnLButtonDown));
-
 }
-
 
 
 void CTitleBar::Redraw()
@@ -45,7 +44,7 @@ void CTitleBar::Redraw()
 	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
 }
 
-void CTitleBar::SetTheme(CThemeTitleBar * themeTitle)
+void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
 {
 	this->themeTitle = *themeTitle;
 	SetWindowHeight(this->themeTitle.GetHeight());
@@ -55,20 +54,19 @@ CTitleBar::~CTitleBar()
 {
 }
 
-int CTitleBar::SetTooltipText(const wxString & tooltip)
+int CTitleBar::SetTooltipText(const wxString& tooltip)
 {
 	this->tooltip = tooltip;
 	return 0;
 }
 
-void CTitleBar::SetTitle(const wxString & title)
+void CTitleBar::SetTitle(const wxString& title)
 {
 	libelle = title;
 }
 
 void CTitleBar::OnMouseMove(wxMouseEvent& event)
 {
-
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 	//int bmpWidth = m_croixOff.GetWidth();
@@ -128,13 +126,13 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 void CTitleBar::UpdateScreenRatio()
 {
-    SetWindowHeight(themeTitle.GetHeight());
-    CreateBitmapCrossOff();
-    CreateBitmapCrossOn();
-    Resize();
+	SetWindowHeight(themeTitle.GetHeight());
+	CreateBitmapCrossOff();
+	CreateBitmapCrossOn();
+	Resize();
 }
 
-void CTitleBar::SetClosable(const bool &value)
+void CTitleBar::SetClosable(const bool& value)
 {
 	isClosable = value;
 }
@@ -160,34 +158,33 @@ void CTitleBar::Resize()
 	this->Refresh();
 }
 
-void CTitleBar::OnPaint(wxPaintEvent& event)
+void CTitleBar::on_paint(wxPaintEvent& event)
 {
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
 
-    
+
 	wxRect rect = GetWindowRect();
-	
+
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
 
 	wxPaintDC dc(this);
-    FillRect(&dc, rect, themeTitle.colorBack);
-    
-    if(isClosable)
-    {
-        dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
-    }
+	FillRect(&dc, rect, themeTitle.colorBack);
+
+	if (isClosable)
+	{
+		dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
+	}
 	if (isRefresh)
 	{
 		dc.DrawBitmap(m_refreshOff, rcRefresh.x, rcRefresh.y, false);
 	}
-	
+
 	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
 	int yPos = (this->GetWindowHeight() - size.y) / 2;
 	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
-
 }
 
 void CTitleBar::OnLButtonDown(wxMouseEvent& event)
@@ -228,10 +225,11 @@ void CTitleBar::CreateBitmapCrossOn()
 
 	wxPen pen(themeTitle.colorCross, 2);
 
-    wxColour colorLight;
-    colorLight.Set(themeTitle.colorBack.Red() + 20, themeTitle.colorBack.Green() + 20, themeTitle.colorBack.Blue() + 20);
-    wxColour colorDark;
-    colorDark.Set(themeTitle.colorBack.Red() - 20, themeTitle.colorBack.Green() - 20, themeTitle.colorBack.Blue() - 20);
+	wxColour colorLight;
+	colorLight.Set(themeTitle.colorBack.Red() + 20, themeTitle.colorBack.Green() + 20,
+	               themeTitle.colorBack.Blue() + 20);
+	wxColour colorDark;
+	colorDark.Set(themeTitle.colorBack.Red() - 20, themeTitle.colorBack.Green() - 20, themeTitle.colorBack.Blue() - 20);
 
 	wxPen penLight(colorLight, 2);
 	wxPen penDark(colorDark, 2);
@@ -239,8 +237,8 @@ void CTitleBar::CreateBitmapCrossOn()
 	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
 
 	memorydc.SetPen(pen);
-    memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
-    memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
+	memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
+	memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
 	memorydc.SetPen(wxNullPen);
 
 	memorydc.SetPen(penLight);
@@ -268,11 +266,11 @@ void CTitleBar::CreateBitmapCrossOff()
 	wxMemoryDC memorydc(m_croixOff);
 	wxPen pen(themeTitle.colorCross, 2);
 	FillRect(&memorydc, rcBitmap, themeTitle.colorBack);
-	
+
 
 	memorydc.SetPen(pen);
-    memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
-    memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
+	memorydc.DrawLine(3, 3, themeTitle.GetCroixWidth() - 4, themeTitle.GetCroixHeight() - 4);
+	memorydc.DrawLine(themeTitle.GetCroixWidth() - 4, 3, 3, themeTitle.GetCroixHeight() - 4);
 	memorydc.SelectObject(wxNullBitmap);
 }
 
@@ -290,7 +288,8 @@ void CTitleBar::CreateBitmapRefreshOn()
 	wxPen pen(themeTitle.colorCross, 2);
 
 	wxColour colorLight;
-	colorLight.Set(themeTitle.colorBack.Red() + 20, themeTitle.colorBack.Green() + 20, themeTitle.colorBack.Blue() + 20);
+	colorLight.Set(themeTitle.colorBack.Red() + 20, themeTitle.colorBack.Green() + 20,
+	               themeTitle.colorBack.Blue() + 20);
 	wxColour colorDark;
 	colorDark.Set(themeTitle.colorBack.Red() - 20, themeTitle.colorBack.Green() - 20, themeTitle.colorBack.Blue() - 20);
 
@@ -312,7 +311,6 @@ void CTitleBar::CreateBitmapRefreshOn()
 	memorydc.SetPen(wxNullPen);
 
 	memorydc.SelectObject(wxNullBitmap);
-
 }
 
 void CTitleBar::CreateBitmapRefreshOff()

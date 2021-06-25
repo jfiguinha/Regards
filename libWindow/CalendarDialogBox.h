@@ -29,26 +29,27 @@
 
 namespace Regards
 {
-    namespace Window
-    {
+	namespace Window
+	{
+		class CCalendarDialogBox : public wxDialog
+		{
+		protected:
+			wxStaticLine* m_staticLine15;
+			wxButton* m_buttonOK;
+			wxButton* m_buttonCancel;
+			wxCalendarCtrlBase* m_calendar;
+		protected:
+			wxCalendarCtrlBase* DoCreateCalendar(const wxDateTime& dt, long style);
 
-        class CCalendarDialogBox : public wxDialog
-        {
-        protected:
-            wxStaticLine* m_staticLine15;
-            wxButton* m_buttonOK;
-            wxButton* m_buttonCancel;
-            wxCalendarCtrlBase *m_calendar;
-        protected:
-            wxCalendarCtrlBase * DoCreateCalendar(const wxDateTime& dt, long style);
-            
-        public:
-            CCalendarDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Select new date"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,200), long style = wxDEFAULT_DIALOG_STYLE);
-            virtual ~CCalendarDialogBox();
-            
-            void OnCalRClick(wxMouseEvent& event);
-            wxDateTime GetDate() const { return m_calendar->GetDate(); }
-            void SetDate(const wxDateTime& dt) { m_calendar->SetDate(dt); }
-        };
-    }
+		public:
+			CCalendarDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Select new date"),
+				const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300, 200),
+				long style = wxDEFAULT_DIALOG_STYLE);
+			~CCalendarDialogBox() override;
+
+			void OnCalRClick(wxMouseEvent& event);
+			wxDateTime GetDate() const { return m_calendar->GetDate(); }
+			void SetDate(const wxDateTime& dt) { m_calendar->SetDate(dt); }
+		};
+	}
 }

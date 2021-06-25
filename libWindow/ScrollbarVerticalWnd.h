@@ -1,6 +1,7 @@
 #pragma once
 #include <theme.h>
 #include <WindowMain.h>
+
 namespace Regards
 {
 	namespace Window
@@ -8,18 +9,19 @@ namespace Regards
 		class CScrollbarVerticalWnd : public CWindowMain
 		{
 		public:
-			CScrollbarVerticalWnd(const wxString &windowName, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme);
-			~CScrollbarVerticalWnd();
+			CScrollbarVerticalWnd(const wxString& windowName, wxWindow* parent, wxWindowID id,
+				const CThemeScrollBar& theme);
+			~CScrollbarVerticalWnd() override;
 
 			int GetWidthSize();
-			void ShowEmptyRectangle(const bool &show, const int &heightSize);
+			void ShowEmptyRectangle(const bool& show, const int& heightSize);
 
-			bool DefineSize(const int &screenHeight, const int &pictureHeight);
+			bool DefineSize(const int& screenHeight, const int& pictureHeight);
 			//bool SetPosition(const int &top);
 
-			void SetPageSize(const int &pageSize);
+			void SetPageSize(const int& pageSize);
 			int GetPageSize();
-			void SetLineSize(const int &lineSize);
+			void SetLineSize(const int& lineSize);
 			int GetLineSize();
 
 
@@ -28,13 +30,13 @@ namespace Regards
 			int GetScreenHeight();
 			int GetPictureHeight();
 
-			bool UpdateScrollBar(const int &posHauteur, const int &screenHeight, const int &pictureHeight);
+			bool UpdateScrollBar(const int& posHauteur, const int& screenHeight, const int& pictureHeight);
 
 			bool IsMoving();
-            
-            void UpdateScreenRatio();
 
-			void SetShowWindow(const bool &showValue);
+			void UpdateScreenRatio() override;
+
+			void SetShowWindow(const bool& showValue);
 
 			void ClickTopTriangle();
 			void ClickBottomTriangle();
@@ -44,9 +46,8 @@ namespace Regards
 			bool SetPosition(const int& top);
 
 		protected:
-
 			void PaintNow();
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
@@ -58,27 +59,29 @@ namespace Regards
 			void OnTimerPageBottom(wxTimerEvent& event);
 			void OnTimerStopMoving(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
-			void OnEraseBackground(wxEraseEvent& event){};
-			void SendTopPosition(const int &value);
-			void DrawElement(wxDC * dc);
 
-			void Resize();
+			void OnEraseBackground(wxEraseEvent& event) override
+			{
+			};
+			void SendTopPosition(const int& value);
+			void DrawElement(wxDC* dc);
+
+			void Resize() override;
 			void CalculBarSize();
 
 
+			bool FindTopTriangle(const int& yPosition, const int& xPosition);
+			bool FindBottomTriangle(const int& yPosition, const int& xPosition);
+			bool FindRectangleBar(const int& yPosition, const int& xPosition);
 
-			bool FindTopTriangle(const int &yPosition, const int &xPosition);
-			bool FindBottomTriangle(const int &yPosition, const int &xPosition);
-			bool FindRectangleBar(const int &yPosition, const int &xPosition);
-
-			void DrawTopTriangleElement(wxDC * dc, const wxRect &rc, const wxColour &colorTriangle);
-			void DrawBottomTriangleElement(wxDC * dc, const wxRect &rc, const wxColour &colorTriangle);
-			void DrawRectangleElement(wxDC * dc, const wxColour &colorBar);
-			void MoveBar(const int &diffY, wxColour color);
+			void DrawTopTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
+			void DrawBottomTriangleElement(wxDC* dc, const wxRect& rc, const wxColour& colorTriangle);
+			void DrawRectangleElement(wxDC* dc, const wxColour& colorBar);
+			void MoveBar(const int& diffY, wxColour color);
 			void SetIsMoving();
 			bool TestMaxY();
 			bool TestMinY();
-			void FillRect(wxDC * dc, const wxRect &rc, const wxColour &color);
+			void FillRect(wxDC* dc, const wxRect& rc, const wxColour& color);
 
 			int barSize;
 			int barPosY;
@@ -109,18 +112,17 @@ namespace Regards
 
 			bool scrollMoving;
 
-			wxTimer * triangleTop;
-			wxTimer * triangleBottom;
-			wxTimer * pageTop;
-			wxTimer * pageBottom;
-			wxTimer * stopMoving;
+			wxTimer* triangleTop;
+			wxTimer* triangleBottom;
+			wxTimer* pageTop;
+			wxTimer* pageBottom;
+			wxTimer* stopMoving;
 
 			CThemeScrollBar themeScroll;
-            
-            bool showTriangle = false;
+
+			bool showTriangle = false;
 
 			bool showWindow = true;
 		};
 	}
 }
-

@@ -7,7 +7,7 @@
 //
 
 
-
+#pragma once
 #ifdef __APPLE__
 #pragma once
 #include <wx/wxprec.h>

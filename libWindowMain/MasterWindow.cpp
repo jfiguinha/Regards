@@ -8,48 +8,49 @@ using namespace Regards::Window;
 
 
 bool CMasterWindow::endProgram = false;
-vector<CMasterWindow *> CMasterWindow::listMainWindow;
-vector<CMasterWindow *> CMasterWindow::listProcessWindow;
+vector<CMasterWindow*> CMasterWindow::listMainWindow;
+vector<CMasterWindow*> CMasterWindow::listProcessWindow;
 bool CMasterWindow::stopProcess = false;
 
-void CMasterWindow::StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry)
+void CMasterWindow::StopAllProcess(const wxString& title, const wxString& message, wxWindow* parentWindow,
+                                   const int& nbTry)
 {
 	SetStopProcess(true);
 	wxMilliSleep(100);
 	wxWindowDisabler disableAll;
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLSTOPWORKINGMSG", 1);
-	
-	
-	wxBusyInfo * wait = new wxBusyInfo(libelle);
+
+
+	auto wait = new wxBusyInfo(libelle);
 
 	int i = 0;
-	bool allStop = true;
+	bool all_stop;
 	do
 	{
-		allStop = true;
+		all_stop = true;
 		//int j = 0;
 		for (CMasterWindow* window : listProcessWindow)
 		{
-			wxString message = window->GetWaitingMessage();
+			wxString message1 = window->GetWaitingMessage();
 			wxTheApp->Yield();
 
 			if (!window->GetProcessEnd())
 			{
-				allStop = false;
+				all_stop = false;
 				wxMilliSleep(500);
 				i++;
 				break;
 			}
 		}
-		
-	} while (!allStop && i < nbTry);
+	}
+	while (!all_stop && i < nbTry);
 
 	delete wait;
 }
 
-void CMasterWindow::ThreadIdle(void * data)
+void CMasterWindow::ThreadIdle(void* data)
 {
-	CMasterWindow * main = (CMasterWindow *)data;
+	auto main = static_cast<CMasterWindow*>(data);
 	if (main != nullptr && !endProgram)
 		main->ProcessIdle();
 	main->PushThreadIdleEvent();
@@ -62,7 +63,7 @@ void CMasterWindow::ProcessOnIdleEndEvent(wxCommandEvent& event)
 }
 
 void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
-{               
+{
 	int _width = event.GetSize().GetX();
 	int _height = event.GetSize().GetY();
 	if (_width <= 20 && _height <= 20)
@@ -76,12 +77,11 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 		windowMainPimpl->height = _height * scaleFactor;
 		Resize();
 	}
-	
+
 #if defined(WIN32) && defined(_DEBUG)
 	wxString toShow = name + " size x : " + to_string(_width) + " y : " + to_string(_height) + "\n";
 	OutputDebugString(toShow.ToStdWstring().c_str());
 #endif
-
 }
 
 CMasterWindow::CMasterWindow(void)
@@ -92,37 +92,37 @@ CMasterWindow::CMasterWindow(void)
 	processIdle = false;
 	id = listMainWindow.size();
 	listMainWindow.push_back(this);
-
 }
 
-void CMasterWindow::CallRefresh(wxWindow * window)
+void CMasterWindow::CallRefresh(wxWindow* window)
 {
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(window, event);  
+	wxCommandEvent event(wxEVENT_REFRESH);
+	wxPostEvent(window, event);
 }
 
 CMasterWindow::~CMasterWindow(void)
 {
-	if(id < listMainWindow.size())
+	if (id < listMainWindow.size())
 		listMainWindow[id] = nullptr;
 
-	if(windowMainPimpl != nullptr)
+	if (windowMainPimpl != nullptr)
 		delete windowMainPimpl;
 }
 
-void CMasterWindow::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)
+void CMasterWindow::FillRect(wxDC* dc, const wxRect& rc, const wxColour& color)
 {
 	CWindowUtility winUtility;
 	winUtility.FillRect(dc, rc, color);
 }
 
-void CMasterWindow::DrawTexte(wxDC * dc, const wxString &libelle, const int &xPos, const int &yPos, const CThemeFont &font)
+void CMasterWindow::DrawTexte(wxDC* dc, const wxString& libelle, const int& xPos, const int& yPos,
+                              const CThemeFont& font)
 {
 	CWindowUtility winUtility;
 	winUtility.DrawTexte(dc, libelle, xPos, yPos, font);
 }
 
-wxSize CMasterWindow::GetSizeTexte(wxDC * dc, const wxString &libelle, const CThemeFont &font)
+wxSize CMasterWindow::GetSizeTexte(wxDC* dc, const wxString& libelle, const CThemeFont& font)
 {
 	CWindowUtility winUtility;
 	return winUtility.GetSizeTexte(dc, libelle, font);
@@ -131,13 +131,12 @@ wxSize CMasterWindow::GetSizeTexte(wxDC * dc, const wxString &libelle, const CTh
 
 wxRect CMasterWindow::GetWindowRect()
 {
-	wxRect rc = wxRect(0,0, windowMainPimpl->width,windowMainPimpl->height);
+	auto rc = wxRect(0, 0, windowMainPimpl->width, windowMainPimpl->height);
 	return rc;
 }
 
-void CMasterWindow::SetWindowHeight(const int &height)
+void CMasterWindow::SetWindowHeight(const int& height)
 {
-
 	windowMainPimpl->height = height;
 }
 
@@ -146,7 +145,7 @@ int CMasterWindow::GetWindowHeight()
 	return windowMainPimpl->height;
 }
 
-void CMasterWindow::SetWindowWidth(const int &width)
+void CMasterWindow::SetWindowWidth(const int& width)
 {
 	windowMainPimpl->width = width;
 }
@@ -170,7 +169,7 @@ void CMasterWindow::SetEndProgram()
 	endProgram = true;
 }
 
-void CMasterWindow::SetStopProcess(const bool &state)
+void CMasterWindow::SetStopProcess(const bool& state)
 {
 	stopProcess = state;
 }

@@ -7,15 +7,12 @@
 
 #include <windows.h>
 
-class CMapi  
+class CMapi
 {
 public:
 	CMapi();
 	virtual ~CMapi();
-	static HRESULT SendEmail(const string &m_szBody,const vector<string> & attachment);
-	
+	static HRESULT SendEmail(const string& m_szBody, const vector<string>& attachment);
 };
 
 #endif
-
-

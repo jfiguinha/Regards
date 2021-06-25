@@ -16,26 +16,23 @@
 class KeywordDialogBox : public wxDialog
 {
 public:
-
 	KeywordDialogBox(wxWindow* parent);
-	virtual ~KeywordDialogBox();
+	~KeywordDialogBox() override;
 
 	//(*Declarations(ConfigRegards)
 	wxButton* btOk;
 	wxButton* btCancel;
-	wxCheckListBox * m_listKeyword;
+	wxCheckListBox* m_listKeyword;
 	//*)
 
 	bool IsOk();
 
 protected:
-
 	//(*Identifiers(ConfigRegards)
 	//*)
 	void DeleteItemChecked();
 
 private:
-
 	//(*Handlers(ConfigRegards)
 	//void Init();
 	void OnbtnOkClick(wxCommandEvent& event);
@@ -43,6 +40,5 @@ private:
 	//*)
 	bool isOk;
 	wxArrayString choices;
-	DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };
-

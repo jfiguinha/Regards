@@ -20,8 +20,8 @@ int CSlider::GetHeight()
 	return themeSlider.GetHeight();
 }
 
-CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider)
-	: CWindowMain("CSlider",parent, id)
+CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent, const CThemeSlider& themeSlider)
+	: CWindowMain("CSlider", parent, id)
 {
 	//CLoadingResource loadingResource;
 	positionButton = wxRect(0, 0, 0, 0);
@@ -34,31 +34,27 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent
 	this->sliderEvent = sliderEvent;
 	this->themeSlider = themeSlider;
 
-    button.Create(0,0);
+	button.Create(0, 0);
 
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CSlider::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CSlider::on_paint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CSlider::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CSlider::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CSlider::OnLButtonUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CSlider::OnMouseCaptureLost));
-
 }
 
 CSlider::~CSlider()
 {
-
 }
 
-void CSlider::DrawShapeElement(wxDC * dc, const wxRect &rc)
+void CSlider::DrawShapeElement(wxDC* dc, const wxRect& rc)
 {
-	float pourcentage = 0.0;
 	wxRect rcPast;
 	rcPast.x = rc.x;
-	rcPast.y = rc.y;
 
 	if (secondTotalTime > 0)
 	{
-		pourcentage = secondTimePast / secondTotalTime;
+		const float pourcentage = secondTimePast / secondTotalTime;
 		rcPast.width = (rc.width * pourcentage);
 		rcPast.y = rc.y;
 		rcPast.height = themeSlider.GetRectangleHeight();
@@ -73,26 +69,26 @@ void CSlider::DrawShapeElement(wxDC * dc, const wxRect &rc)
 	FillRect(dc, rcNext, themeSlider.rectangleNext);
 }
 
-void CSlider::SetTotalSecondTime(const int64_t &secondTime)
+void CSlider::SetTotalSecondTime(const int64_t& secondTime)
 {
 	wxClientDC winDC(this);
 	totalTimeInMilliseconds = secondTime;
-	secondTotalTime = (float)secondTime / (float)1000;
+	secondTotalTime = static_cast<float>(secondTime) / static_cast<float>(1000);
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
 	DrawTexte(&winDC, totalTime, positionTexteTotal.x, positionTexteTotal.y, themeSlider.font);
 }
 
-void CSlider::SetPastTime(const int64_t &secondTime)
+void CSlider::SetPastTime(const int64_t& secondTime)
 {
 	wxClientDC winDC(this);
 	totalPastTimeInMilliseconds = secondTime;
-	secondTimePast = (float)secondTime / (float)1000;
+	secondTimePast = static_cast<float>(secondTime) / static_cast<float>(1000);
 	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 	//Draw(&winDC);
 	DrawTimePast(&winDC, timePast);
 }
 
-void CSlider::SetPastSecondTime(const int64_t &secondTime)
+void CSlider::SetPastSecondTime(const int64_t& secondTime)
 {
 	if (!mouseBlock)
 	{
@@ -100,7 +96,7 @@ void CSlider::SetPastSecondTime(const int64_t &secondTime)
 	}
 }
 
-int CSlider::DrawTotalTime(wxDC * context, const wxString &libelle)
+int CSlider::DrawTotalTime(wxDC* context, const wxString& libelle)
 {
 	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = GetWindowWidth() - filenameSize.x - 5;
@@ -109,7 +105,7 @@ int CSlider::DrawTotalTime(wxDC * context, const wxString &libelle)
 	return x;
 }
 
-int CSlider::DrawTimePast(wxDC * context, const wxString &libelle)
+int CSlider::DrawTimePast(wxDC* context, const wxString& libelle)
 {
 	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = 5;
@@ -118,14 +114,14 @@ int CSlider::DrawTimePast(wxDC * context, const wxString &libelle)
 	return filenameSize.x;
 }
 
-void CSlider::Draw(wxDC * context)
+void CSlider::Draw(wxDC* context)
 {
 	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
 		wxRect rc = GetWindowRect();
-			
-		wxSize filenameSize;
-		wxBitmap memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
+
+		
+		auto memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 
@@ -142,32 +138,31 @@ void CSlider::Draw(wxDC * context)
 		DrawShapeElement(&sourceDCContext, positionSlider);
 		CalculPositionButton();
 
-        if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-            button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
-        sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
-		
+		if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.
+			GetButtonHeight()))
+			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(),
+			                                            themeSlider.GetButtonHeight());
+		sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
+
 		sourceDCContext.SelectObject(wxNullBitmap);
 
 #ifdef __WXGTK__
     double scale_factor = context->GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
-#endif 
+		double scale_factor = 1.0f;
+#endif
 
-        if(scale_factor != 1.0)
-        {
-            wxImage image = memBitmap.ConvertToImage();
-            wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-            context->DrawBitmap(resized, 0, 0);
-        }
-        else
-        {
-            context->DrawBitmap(memBitmap, 0, 0);
-        }
-
-		
+		if (scale_factor != 1.0)
+		{
+			wxImage image = memBitmap.ConvertToImage();
+			wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
+			context->DrawBitmap(resized, 0, 0);
+		}
+		else
+		{
+			context->DrawBitmap(memBitmap, 0, 0);
+		}
 	}
-
 }
 
 void CSlider::CalculPositionButton()
@@ -175,7 +170,7 @@ void CSlider::CalculPositionButton()
 	if (secondTotalTime > 0)
 	{
 		float pourcentage = secondTimePast / secondTotalTime;
-		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
+		CalculPositionButton(positionSlider.x + static_cast<int>((float)(positionSlider.width) * pourcentage));
 	}
 	else
 	{
@@ -184,13 +179,13 @@ void CSlider::CalculPositionButton()
 	}
 }
 
-void CSlider::CalculPositionButton(const int &x)
+void CSlider::CalculPositionButton(const int& x)
 {
 	positionXSlider = x;
 	positionYSlider = (positionSlider.height + positionSlider.y) / 2;
 
-    int buttonWidth = themeSlider.GetButtonWidth();
-    int buttonHeight = themeSlider.GetButtonHeight();
+	int buttonWidth = themeSlider.GetButtonWidth();
+	int buttonHeight = themeSlider.GetButtonHeight();
 	int xPos = positionXSlider - (buttonWidth / 2);
 	int yPos = (GetWindowHeight() - buttonHeight) / 2;
 
@@ -200,29 +195,27 @@ void CSlider::CalculPositionButton(const int &x)
 	positionButton.height = buttonHeight;
 }
 
-void CSlider::CalculTimePosition(const int &x)
+void CSlider::CalculTimePosition(const int& x)
 {
 	float posX = x - positionSlider.x;
 	float total = positionSlider.width;
-	SetPastTime((int)((posX / total) * totalTimeInMilliseconds));
+	SetPastTime(static_cast<int>((posX / total) * totalTimeInMilliseconds));
 }
 
-void CSlider::ClickLeftPage(const int &x)
+void CSlider::ClickLeftPage(const int& x)
 {
 	//Click Top Triangle
 	CalculTimePosition(x);
 	if (sliderEvent != nullptr)
 		sliderEvent->MoveSlider(totalPastTimeInMilliseconds);
-
 }
 
-void CSlider::ClickRightPage(const int &x)
+void CSlider::ClickRightPage(const int& x)
 {
 	//Click Top Triangle
 	CalculTimePosition(x);
 	if (sliderEvent != nullptr)
 		sliderEvent->MoveSlider(totalPastTimeInMilliseconds);
-
 }
 
 
@@ -250,7 +243,8 @@ void CSlider::OnLButtonDown(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	if ((xPos >= positionButton.x && xPos <= (positionButton.x + positionButton.width)) && (yPos >= positionButton.y && yPos <= (positionButton.y + positionButton.height)))
+	if ((xPos >= positionButton.x && xPos <= (positionButton.x + positionButton.width)) && (yPos >= positionButton.y &&
+		yPos <= (positionButton.y + positionButton.height)))
 	{
 		mouseBlock = true;
 		CaptureMouse();
@@ -272,12 +266,11 @@ void CSlider::OnLButtonDown(wxMouseEvent& event)
 void CSlider::OnLButtonUp(wxMouseEvent& event)
 {
 	mouseBlock = false;
-    if(HasCapture())
-        ReleaseMouse();
+	if (HasCapture())
+		ReleaseMouse();
 
 	if (sliderEvent != nullptr)
 		sliderEvent->MoveSlider(totalPastTimeInMilliseconds);
-
 }
 
 /*
@@ -298,14 +291,14 @@ void CSlider::PaintNow()
 	Draw(&dc);
 }
 
-void CSlider::OnPaint(wxPaintEvent& event)
+void CSlider::on_paint(wxPaintEvent& event)
 {
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
 		return;
 
-    
+
 	wxBufferedPaintDC dc(this);
 	Draw(&dc);
 }

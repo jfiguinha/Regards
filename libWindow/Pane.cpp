@@ -6,11 +6,12 @@ using namespace Regards::Window;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme, const bool &refreshButton) :
-CWindowMain("CPane",parent, id)
+CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface* paneInterface, const int& idPane, const CThemePane& theme,
+             const bool& refreshButton) :
+	CWindowMain("CPane", parent, id)
 {
 	titleBar = nullptr;
-    hWndOther = nullptr;
+	hWndOther = nullptr;
 	hMainWndOther = nullptr;
 	titleBarVisible = true;
 	this->paneInterface = paneInterface;
@@ -21,7 +22,6 @@ CWindowMain("CPane",parent, id)
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPane::RefreshData));
-
 }
 
 void CPane::RefreshData(wxCommandEvent& event)
@@ -42,10 +42,10 @@ CPane::~CPane()
 
 void CPane::UpdateScreenRatio()
 {
-    titleBar->UpdateScreenRatio();
-    if(hMainWndOther != nullptr)
-        hMainWndOther->UpdateScreenRatio();
-    this->Resize();
+	titleBar->UpdateScreenRatio();
+	if (hMainWndOther != nullptr)
+		hMainWndOther->UpdateScreenRatio();
+	this->Resize();
 }
 
 void CPane::ShowOtherWindow()
@@ -56,7 +56,7 @@ void CPane::ShowOtherWindow()
 		hWndOther->Show(true);
 }
 
-void CPane::SetClosable(const bool &value)
+void CPane::SetClosable(const bool& value)
 {
 	titleBar->SetClosable(value);
 }
@@ -82,7 +82,7 @@ void CPane::Resize()
 		titleBar->SetSize(0, 0, GetWindowWidth(), titleBar->GetWindowHeight());
 		if (hWndOther != nullptr)
 		{
-            int height =  GetWindowHeight() - titleBar->GetWindowHeight();
+			int height = GetWindowHeight() - titleBar->GetWindowHeight();
 			hWndOther->SetSize(0, titleBar->GetWindowHeight(), GetWindowWidth(), height);
 			if (hMainWndOther != nullptr)
 				hMainWndOther->Refresh();
@@ -94,7 +94,6 @@ void CPane::Resize()
 		if (hMainWndOther != nullptr)
 			hMainWndOther->Refresh();
 	}
-
 }
 
 void CPane::OnMouseMove(wxMouseEvent& event)
@@ -104,7 +103,7 @@ void CPane::OnMouseMove(wxMouseEvent& event)
 }
 
 
-void CPane::SetTitleBarVisibility(const bool &visible)
+void CPane::SetTitleBarVisibility(const bool& visible)
 {
 	titleBarVisible = visible;
 	titleBar->Show(visible);
@@ -121,12 +120,12 @@ void CPane::RefreshPane()
 	paneInterface->RefreshPane(idPane);
 }
 
-void CPane::SetTitle(const wxString & title)
+void CPane::SetTitle(const wxString& title)
 {
 	titleBar->SetTitle(title);
 }
 
-int CPane::SetTooltipText(const wxString & tooltip)
+int CPane::SetTooltipText(const wxString& tooltip)
 {
 	return titleBar->SetTooltipText(tooltip);
 }

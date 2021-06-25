@@ -15,6 +15,7 @@ using namespace Regards::Control;
 using namespace Regards::Internet;
 
 class CImageLoadingFormat;
+
 namespace Regards
 {
 	namespace Control
@@ -25,25 +26,23 @@ namespace Regards
 	}
 
 	namespace Viewer
-	{        
- 
+	{
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
 			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
-			~CPanelInfosWnd();
-			void OnFiltreOk(const int &numFiltre);
+			~CPanelInfosWnd() override;
+			void OnFiltreOk(const int& numFiltre);
 			void OnFiltreCancel();
-			void SetBitmapFile(const wxString &filename, const bool &isThumbnail);
-			void SetVideoFile(const wxString &filename);
-			void SetAnimationFile(const wxString &filename);
-            void ShowFiltre(const wxString &title);
-           
-            CFiltreEffect * GetFilterWindow(int &numFiltre);
+			void SetBitmapFile(const wxString& filename, const bool& isThumbnail);
+			void SetVideoFile(const wxString& filename);
+			void SetAnimationFile(const wxString& filename);
+			void ShowFiltre(const wxString& title);
+
+			CFiltreEffect* GetFilterWindow(int& numFiltre);
 			wxString GetFilename();
 
 		protected:
-
 			void ApplyEffect(wxCommandEvent& event);
 			void ShowFiltreEvent(wxCommandEvent& event);
 
@@ -52,29 +51,28 @@ namespace Regards
 			void HistoryUpdate();
 			void VideoEffectUpdate();
 			void InfosUpdate();
-			void LoadInfo();
+			void LoadInfo() override;
 			void AudioVideoUpdate();
-			void DisplayURL(const wxString &url);
+			void DisplayURL(const wxString& url);
 			void HistogramUpdate();
 
-			CInfosFileWnd * infosFileWnd;
-            CInfoEffectWnd * historyEffectWnd;
-			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
-			CFiltreEffectScrollWnd * filtreEffectWnd;
-            CCriteriaWindow * criteriaTreeWnd;
-			Regards::Window::CPicturePanel * picturePanel;
-			
-			wxWebView * webBrowser = nullptr;
-			CToolbarInfos * infosToolbar;
-			CModificationManager * modificationManager;
+			CInfosFileWnd* infosFileWnd;
+			CInfoEffectWnd* historyEffectWnd;
+			CThumbnailViewerEffectWnd* thumbnailEffectWnd;
+			CFiltreEffectScrollWnd* filtreEffectWnd;
+			CCriteriaWindow* criteriaTreeWnd;
+			CPicturePanel* picturePanel;
 
-            bool isThumbnail;
+			wxWebView* webBrowser = nullptr;
+			CToolbarInfos* infosToolbar;
+			CModificationManager* modificationManager;
+
+			bool isThumbnail;
 			bool isVideo;
 			wxString filename;
-            wxString url;
+			wxString url;
 			bool firstTime;
 			wxWindowID id_;
 		};
-
 	}
 }

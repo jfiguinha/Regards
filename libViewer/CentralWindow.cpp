@@ -30,7 +30,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
-
+#include <Tracing.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;

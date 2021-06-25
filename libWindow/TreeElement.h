@@ -1,5 +1,4 @@
 #pragma once
-#include <theme.h>
 
 namespace Regards
 {
@@ -14,37 +13,49 @@ namespace Regards
 			virtual int GetWidth() = 0;
 			virtual int GetHeight() = 0;
 
-			int GetPosX() {
+			int GetPosX()
+			{
 				return xPos;
 			};
-			int GetPosY() {
+
+			int GetPosY()
+			{
 				return yPos;
 			};
 
-			void SetVisible(const bool &visible);
+			virtual void SetVisible(const bool& visible);
 			bool IsVisible();
 
 
-			virtual void MouseOver(wxDC * context, const int &x, const int &y, bool & update)
+			virtual void MouseOver(wxDC* context, const int& x, const int& y, bool& update)
 			{
-				::wxSetCursor(wxCursor(wxCURSOR_HAND));
+				wxSetCursor(wxCursor(wxCURSOR_HAND));
 			};
 
-			virtual void MouseOut(wxDC * context, const int &x, const int &y, bool & update)
+			virtual void MouseOut(wxDC* context, const int& x, const int& y, bool& update)
 			{
-				::wxSetCursor(wxCursor(wxCURSOR_HAND));
+				wxSetCursor(wxCursor(wxCURSOR_HAND));
 			};
 
-			virtual void SetZoneSize(const int &width, const int &height) = 0;
-			virtual void SetElementPos(const int &x, const int &y);
-			virtual void UnclickElement(wxWindow * window, const int &x, const int &y) {};
-			virtual void ClickElement(wxWindow * window, const int &x, const int &y) {};
-			virtual void DrawElement(wxDC * context, const int &x, const int &y) {};
+			virtual void SetZoneSize(const int& width, const int& height) = 0;
+			virtual void SetElementPos(const int& x, const int& y);
 
-			virtual void SetBackgroundColor(const wxColour &color);
+			virtual void UnclickElement(wxWindow* window, const int& x, const int& y)
+			{
+			};
+
+			virtual void ClickElement(wxWindow* window, const int& x, const int& y)
+			{
+			};
+
+			virtual void DrawElement(wxDC* context, const int& x, const int& y)
+			{
+			};
+
+			virtual void SetBackgroundColor(const wxColour& color);
 
 
-			void SetColumn(const int &numColumn)
+			void SetColumn(const int& numColumn)
 			{
 				this->numColumn = numColumn;
 			}
@@ -54,7 +65,7 @@ namespace Regards
 				return numColumn;
 			}
 
-			void SetRow(const int &numRow)
+			void SetRow(const int& numRow)
 			{
 				this->numRow = numRow;
 			}
@@ -65,7 +76,6 @@ namespace Regards
 			}
 
 		protected:
-
 			bool visible;
 			int xPos;
 			int yPos;
@@ -74,6 +84,6 @@ namespace Regards
 			wxColour backcolor;
 		};
 
-		typedef vector<CTreeElement *> VecTreeElement;
+		using VecTreeElement = vector<CTreeElement*>;
 	}
 }

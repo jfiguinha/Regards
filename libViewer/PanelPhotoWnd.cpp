@@ -15,9 +15,11 @@
 #include "ConvertUtility.h"
 #include "SqlFolderCatalog.h"
 #include "SQLRemoveData.h"
-
-namespace Regards {
-	namespace Viewer {
+#include <Tracing.h>
+namespace Regards
+{
+	namespace Viewer
+	{
 		class CListFace;
 	}
 }
@@ -185,7 +187,7 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 			folderWnd->AddPath(getSelectPath);
 			const wxString firstFile = AddFolder(getSelectPath);
 			evt.SetInt(0);
-			wxString* newPath = new wxString(firstFile);
+			auto newPath = new wxString(firstFile);
 			evt.SetClientData(newPath);
 		}
 		else
@@ -261,7 +263,8 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), windowMain, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), windowMain,
+	                        wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 	int updatesize = 0;
 	dialog.Update(updatesize, msg);
 
@@ -309,8 +312,6 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 	wxBusyInfo wait("Please wait, working...", windowMain);
 	if (!folder.IsEmpty())
 	{
-
-
 		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
 		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
 		StopAllProcess(title, message, this);
@@ -326,7 +327,7 @@ void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 
 		SetStopProcess(false);
 
-		wxWindow * listFace = this->FindWindowById(LISTFACEID);
+		wxWindow* listFace = this->FindWindowById(LISTFACEID);
 		if (listFace != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);

@@ -49,11 +49,7 @@ void CWaitingWindow::Resize()
 	const double scale_factor = 1.0f;
 #endif
 	wxRect rcAffichageBitmap;
-
 	rcAffichageBitmap.x = 0;
-	rcAffichageBitmap.y = 0;
-	rcAffichageBitmap.width = GetWindowWidth() / scale_factor;
-	rcAffichageBitmap.height = GetWindowHeight() / scale_factor;
 
 	if (m_animationCtrl->IsShown())
 	{
@@ -89,7 +85,7 @@ void CWaitingWindow::on_paint(wxPaintEvent& event)
 	//dc.SetBackgroundMode(wxTRANSPARENT);
 	//dc.SetBackground(*wxTRANSPARENT_BRUSH);
 	wxRect rc = GetRect();
-	Regards::Viewer::CWaitingWindow::FillRect(&dc, rc, wxColour("white"));
+	FillRect(&dc, rc, wxColour("white"));
 	font.SetColorFont(wxColour("black"));
 
 	const wxSize size = GetSizeTexte(&dc, textToShow, font);

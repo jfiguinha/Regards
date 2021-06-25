@@ -98,6 +98,9 @@ namespace Regards
 			int isOldState = 0;
 			wxString oldfilename;
 			CThemeBitmapWindow themeBitmap;
+			wxWindowID id_;
+			const bool& horizontal_;
+			wxWindow* parent_;
 		};
 	}
 }

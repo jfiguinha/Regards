@@ -11,9 +11,14 @@ using namespace std;
 
 struct ThreadMsg
 {
-	ThreadMsg(int i, std::shared_ptr<void> m) { id = i; msg = m; }
+	ThreadMsg(int i, std::shared_ptr<void> m)
+	{
+		id = i;
+		msg = m;
+	}
+
 	int id;
-    std::shared_ptr<void> msg;
+	std::shared_ptr<void> msg;
 };
 
 //----------------------------------------------------------------------------
@@ -37,7 +42,7 @@ WorkerThread::~WorkerThread()
 bool WorkerThread::CreateThread()
 {
 	if (!m_thread)
-		m_thread = std::unique_ptr<std::thread>(new thread(&WorkerThread::Process, this));
+		m_thread = std::make_unique<thread>(&WorkerThread::Process, this);
 	return true;
 }
 
@@ -67,7 +72,7 @@ void WorkerThread::ExitThread()
 		return;
 
 	// Create a new ThreadMsg
-	std::shared_ptr<ThreadMsg> threadMsg(new ThreadMsg(MSG_EXIT_THREAD, 0));
+	std::shared_ptr<ThreadMsg> threadMsg(new ThreadMsg(MSG_EXIT_THREAD, nullptr));
 
 	// Put exit thread message into the queue
 	{
@@ -76,8 +81,8 @@ void WorkerThread::ExitThread()
 		m_cv.notify_one();
 	}
 
-    m_thread->join();
-    m_thread = nullptr;
+	m_thread->join();
+	m_thread = nullptr;
 
 	End();
 }
@@ -90,7 +95,7 @@ void WorkerThread::PostMsg(std::shared_ptr<UserData> data)
 	//ASSERT_TRUE(m_thread);
 
 	// Create a new ThreadMsg
-    std::shared_ptr<ThreadMsg> threadMsg(new ThreadMsg(MSG_POST_USER_DATA, data));
+	std::shared_ptr<ThreadMsg> threadMsg(new ThreadMsg(MSG_POST_USER_DATA, data));
 
 	// Add user data msg to queue and notify worker thread
 	std::unique_lock<std::mutex> lk(m_mutex);
@@ -103,18 +108,18 @@ void WorkerThread::PostMsg(std::shared_ptr<UserData> data)
 //----------------------------------------------------------------------------
 void WorkerThread::TimerThread()
 {
-    while (!m_timerExit)
-    {
-        // Sleep for 250mS then put a MSG_TIMER into the message queue
-        std::this_thread::sleep_for(250ms);
+	while (!m_timerExit)
+	{
+		// Sleep for 250mS then put a MSG_TIMER into the message queue
+		std::this_thread::sleep_for(250ms);
 
-        std::shared_ptr<ThreadMsg> threadMsg (new ThreadMsg(MSG_TIMER, 0));
+		std::shared_ptr<ThreadMsg> threadMsg(new ThreadMsg(MSG_TIMER, nullptr));
 
-        // Add timer msg to queue and notify worker thread
-        std::unique_lock<std::mutex> lk(m_mutex);
-        m_queue.push(threadMsg);
-        m_cv.notify_one();
-    }
+		// Add timer msg to queue and notify worker thread
+		std::unique_lock<std::mutex> lk(m_mutex);
+		m_queue.push(threadMsg);
+		m_cv.notify_one();
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -122,13 +127,11 @@ void WorkerThread::TimerThread()
 //----------------------------------------------------------------------------
 void WorkerThread::Process()
 {
-    m_timerExit = false;
-    std::thread timerThread(&WorkerThread::TimerThread, this);
+	m_timerExit = false;
+	std::thread timerThread(&WorkerThread::TimerThread, this);
 
-	while (1)
+	while (true)
 	{
-
-
 		int value = ProcessLoop();
 		if (value == EXIT_PROCESS)
 		{
@@ -152,33 +155,31 @@ void WorkerThread::Process()
 		}
 
 
-
 		switch (msg->id)
 		{
-			case MSG_POST_USER_DATA:
+		case MSG_POST_USER_DATA:
 			{
 				//ASSERT(msg->msg != NULL);
 
-                auto userData = std::static_pointer_cast<UserData>(msg->msg);
-                cout << userData->msg.c_str() << " " << userData->year << " on " << THREAD_NAME << endl;
+				auto userData = std::static_pointer_cast<UserData>(msg->msg);
+				cout << userData->msg.c_str() << " " << userData->year << " on " << THREAD_NAME << endl;
 
 				break;
 			}
 
-            case MSG_TIMER:
-                cout << "Timer expired on " << THREAD_NAME << endl;
-                break;
+		case MSG_TIMER:
+			cout << "Timer expired on " << THREAD_NAME << endl;
+			break;
 
-			case MSG_EXIT_THREAD:
+		case MSG_EXIT_THREAD:
 			{
-                m_timerExit = true;
-                timerThread.join();
-                return;
+				m_timerExit = true;
+				timerThread.join();
+				return;
 			}
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 }
-

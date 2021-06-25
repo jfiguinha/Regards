@@ -21,7 +21,7 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 	byDay = CLibResource::LoadStringFromResource(L"LBLByDay", 1);
 	byLocalisation = CLibResource::LoadStringFromResource(L"LBLByLocalisation", 1);
 
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnailToolBarZoom::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnailToolBarZoom::on_paint));
 	//Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnailToolBarZoom::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnailToolBarZoom::OnLButtonDown));
 }
@@ -248,7 +248,7 @@ void CThumbnailToolBarZoom::Draw(wxDC * dc)
 }
 
 
-void CThumbnailToolBarZoom::OnPaint(wxPaintEvent& event)
+void CThumbnailToolBarZoom::on_paint(wxPaintEvent& event)
 {
     int width = GetWindowWidth();
     int height = GetWindowHeight();

@@ -4,37 +4,40 @@
 #include "PanelWithClickToolbar.h"
 using namespace Regards::Window;
 
-CWindowToAdd::CWindowToAdd()
+CWindowToAdd::CWindowToAdd(): position(), size(0), size_old(0), fixe(false), fixe_old(false), id(0), isTop(false),
+                              isHide(false),
+                              isPanel(false),
+                              separationBar(nullptr)
 {
 	window = nullptr;
 	windowOpengl = nullptr;
 }
 
-wxWindow * CWindowToAdd::GetWindow()
+wxWindow* CWindowToAdd::GetWindow()
 {
 	if (window != nullptr)
 		return window;
 	return windowOpengl;
 }
 
-CMasterWindow * CWindowToAdd::GetMasterWindowPt()
+CMasterWindow* CWindowToAdd::GetMasterWindowPt()
 {
 	if (window != nullptr)
 		return window;
 	return windowOpengl;
 }
 
-CPanelWithClickToolbar * CWindowToAdd::GetPanel()
+CPanelWithClickToolbar* CWindowToAdd::GetPanel()
 {
 	if (isPanel)
 	{
 		if (window != nullptr)
-			return (CPanelWithClickToolbar *)window;
+			return static_cast<CPanelWithClickToolbar*>(window);
 	}
 	return nullptr;
 }
 
-void CWindowToAdd::SetWindow(CWindowMain * window, bool isPanel)
+void CWindowToAdd::SetWindow(CWindowMain* window, bool isPanel)
 {
 	this->window = nullptr;
 	this->windowOpengl = nullptr;
@@ -42,7 +45,7 @@ void CWindowToAdd::SetWindow(CWindowMain * window, bool isPanel)
 	this->isPanel = isPanel;
 }
 
-void CWindowToAdd::SetWindow(CWindowOpenGLMain * window, bool isPanel)
+void CWindowToAdd::SetWindow(CWindowOpenGLMain* window, bool isPanel)
 {
 	this->window = nullptr;
 	this->windowOpengl = nullptr;

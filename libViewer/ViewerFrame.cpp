@@ -8,7 +8,6 @@
 #include <PrintEngine.h>
 #include <LibResource.h>
 #include <OpenCLDialog.h>
-#include <window_id.h>
 #include <wx/filename.h>
 #include <ConfigRegards.h>
 #include "MainThemeInit.h"
@@ -35,8 +34,10 @@ using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::OpenCL;
 using namespace Regards::Picture;
-#define TIMER_LOADPICTURE 2
-#define TIMER_EVENTFILEFS 3
+
+constexpr auto TIMER_LOADPICTURE = 2;
+constexpr auto TIMER_EVENTFILEFS = 3;
+
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -88,7 +89,8 @@ void CViewerFrame::SetViewerMode(const bool& mode)
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
                            const wxString& fileToOpen)
-	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE)
+	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
+	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
 {
 	mainWindow = nullptr;
 	fullscreen = false;
@@ -262,22 +264,22 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	if (folderList.size() == 0)
 	{
-		wxString platformName = "";
+		wxString platform_name = "";
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
 		{
-			platformName = config->GetOpenCLPlatformName();
+			platform_name = config->GetOpenCLPlatformName();
 		}
 
 		if (config->GetIsOpenCLSupport())
 		{
 			bool findPlatform = false;
 			//Verify if opencl old platform exist
-			CRegardsConfigParam* config = CParamInit::getInstance();
-			if (config != nullptr)
+			CRegardsConfigParam* regards_config_param = CParamInit::getInstance();
+			if (regards_config_param != nullptr)
 			{
 				vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-				wxString platformName = config->GetOpenCLPlatformName();
+				wxString platformName = regards_config_param->GetOpenCLPlatformName();
 				//int indexDevice = config->GetOpenCLPlatformIndex();
 				for (OpenCLPlatform* platform : listPlatform)
 				{
@@ -287,7 +289,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			}
 
 			//OpenCL auto selected
-			if (platformName == "" || !findPlatform)
+			if (platform_name == "" || !findPlatform)
 			{
 				if (COpenCLEngine::GetNbPlatform() == 1)
 					COpenCLEngine::GetDefaultGpuDeviceInformation();
@@ -339,12 +341,13 @@ void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)
 		if (configFile.IsOk())
 		{
 			const wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1); //L"&Thumbnail";
-			const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
-			CRegardsConfigParam* config = CParamInit::getInstance();
-			if (config != nullptr)
+			const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);
+			//L"&Help";
+			CRegardsConfigParam* regards_config_param = CParamInit::getInstance();
+			if (regards_config_param != nullptr)
 			{
-				config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
-				config->SetOpenCLPlatformName(configFile.GetPlatformName());
+				regards_config_param->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
+				regards_config_param->SetOpenCLPlatformName(configFile.GetPlatformName());
 			}
 
 			if (showRestart)
@@ -422,9 +425,8 @@ void CViewerFrame::OnPrint(wxCommandEvent& event)
 	const wxString filename = mainWindow->GetFilename();
 	if (filename != "")
 	{
-		CImageLoadingFormat* image = nullptr;
 		CLibPicture libPicture;
-		image = libPicture.LoadPicture(filename);
+		CImageLoadingFormat* image = libPicture.LoadPicture(filename);
 		if (image != nullptr)
 			PrintPreview(image);
 	}
@@ -876,10 +878,9 @@ void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 {
 	CMainParam* viewerParam = CMainParamInit::getInstance();
-	double pertinence = 0.0;
 	if (viewerParam != nullptr)
 	{
-		pertinence = viewerParam->GetPertinenceValue();
+		double pertinence = viewerParam->GetPertinenceValue();
 		PertinenceValue configFile(this);
 		configFile.SetValue(pertinence);
 		configFile.ShowModal();

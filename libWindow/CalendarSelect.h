@@ -10,22 +10,22 @@
 
 namespace Regards
 {
-    namespace Window
-    {
-        class CCalendarSelect
-        {
-        public:
-            CCalendarSelect();
-            ~CCalendarSelect();
-            
-            bool SelectNewDate(wxWindow * window,const wxDateTime & dateSelect);
-            bool SelectNewDate(wxWindow * window, const wxString & dataInfos);
-            wxDateTime GetSelectDate();
-            wxString GetSelectStringDate();
-            
-        private:
-            wxDateTime dt;
-            wxString updateDate;
-        };
-    }
+	namespace Window
+	{
+		class CCalendarSelect
+		{
+		public:
+			CCalendarSelect();
+			~CCalendarSelect();
+
+			bool SelectNewDate(wxWindow* window, const wxDateTime& dateSelect);
+			bool SelectNewDate(wxWindow* window, const wxString& dataInfos);
+			wxDateTime GetSelectDate();
+			wxString GetSelectStringDate();
+
+		private:
+			wxDateTime dt;
+			wxString updateDate;
+		};
+	}
 }
