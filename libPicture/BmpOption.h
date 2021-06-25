@@ -13,36 +13,32 @@
 //(*Headers(TiffOption)
 //*)
 
-class BmpOption: public wxDialog
+class BmpOption : public wxDialog
 {
-	public:
+public:
+	BmpOption(wxWindow* parent);
+	~BmpOption() override;
 
-		BmpOption(wxWindow* parent);
-		virtual ~BmpOption();
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxStaticBitmap* bitmap;
+	wxRadioBox* rbCompression;
+	//*)
+	bool IsOk();
+	int CompressionOption();
+	//int CompressionLevel();
 
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxStaticBitmap * bitmap;
-		wxRadioBox* rbCompression;
-		//*)
-        bool IsOk();
-        int CompressionOption();
-        //int CompressionLevel();
-    
-	protected:
+protected:
+	//(*Identifiers(TiffOption)
+	//*)
 
-		//(*Identifiers(TiffOption)
-		//*)
+private:
+	//(*Handlers(TiffOption)
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(TiffOption)
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-
-        int compressOption;
-        bool isOk;
-		DECLARE_EVENT_TABLE()
+	int compressOption;
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };
-

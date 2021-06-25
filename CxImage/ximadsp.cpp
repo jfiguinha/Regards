@@ -5,7 +5,6 @@
 
 #include "ximage.h"
 
-#include "ximaiter.h"
 
 #if CXIMAGE_SUPPORT_DSP
 
@@ -845,9 +844,9 @@ bool CxImage::Filter(int32_t* kernel, int32_t Ksize, int32_t Kfactor, int32_t Ko
 			info.nProgress = (int32_t)(100*(y-ymin)/(ymax-ymin));
 			if (info.nEscape) break;
 			for(int32_t x=xmin; x<xmax; x++){
-	#if CXIMAGE_SUPPORT_SELECTION
+#if CXIMAGE_SUPPORT_SELECTION
 				if (BlindSelectionIsInside(x,y))
-	#endif //CXIMAGE_SUPPORT_SELECTION
+#endif //CXIMAGE_SUPPORT_SELECTION
 					{
 					r=b=g=ksumcur=0;
 					for(int32_t j=-k2;j<kmax;j++){
@@ -2160,7 +2159,7 @@ int32_t CxImage::gen_convolve_matrix (float radius, float **cmatrix_p)
 	* center point.  Otherwise asymmetric quantization errors will occur.
 	*  The formula to integrate is e^-(x^2/2s^2).
 	*/
-	
+
 	/* first we do the top (right) half of matrix */
 	for (i = matrix_length/2 + 1; i < matrix_length; i++)
     {
@@ -3577,7 +3576,7 @@ bool CxImage::Trace(RGBQUAD color_target, RGBQUAD color_trace)
 	return true;
 }
 
-#ifndef __MINGW32__ 
+#ifndef __MINGW32__
 ////////////////////////////////////////////////////////////////////////////////
 #include <queue>
 ////////////////////////////////////////////////////////////////////////////////

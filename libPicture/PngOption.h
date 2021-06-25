@@ -11,38 +11,35 @@
 //(*Headers(PngOption)
 //*)
 
-class PngOption: public wxDialog
+class PngOption : public wxDialog
 {
-	public:
+public:
+	PngOption(wxWindow* parent);
+	~PngOption() override;
 
-		PngOption(wxWindow* parent);
-		virtual ~PngOption();
+	//(*Declarations(PngOption)
+	wxRadioBox* rbInterlace;
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxRadioBox* rbCompression;
+	//*)
 
-		//(*Declarations(PngOption)
-		wxRadioBox* rbInterlace;
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxRadioBox* rbCompression;
-		//*)
-    
-        bool IsOk();
-        int CompressionOption();
+	bool IsOk();
+	int CompressionOption();
 
-	protected:
+protected:
+	//(*Identifiers(PngOption)
+	//*)
 
-		//(*Identifiers(PngOption)
-		//*)
-
-	private:
-
-		//(*Handlers(PngOption)
-		void OnInit(wxInitDialogEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-        bool isOk;
-        int compressOption;
-		DECLARE_EVENT_TABLE()
+private:
+	//(*Handlers(PngOption)
+	void OnInit(wxInitDialogEvent& event);
+	void OnButton1Click(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
+	bool isOk;
+	int compressOption;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

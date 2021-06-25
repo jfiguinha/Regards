@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include "header.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/opengl.hpp>
@@ -25,10 +26,10 @@
 #include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
-wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
+wxDEFINE_EVENT(TIMER_FPS, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
-AVFrame * copyFrameBuffer = nullptr;
+AVFrame* copyFrameBuffer = nullptr;
 
 
 #ifdef GLUT
@@ -41,18 +42,19 @@ AVFrame * copyFrameBuffer = nullptr;
 #include <CL/cl_gl.h>
 
 
-CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
-: CWindowOpenGLMain("CVideoControl",parent, id)
+CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
+                                     IVideoInterface* eventPlayer)
+	: CWindowOpenGLMain("CVideoControl", parent, id)
 {
 	renderBitmapOpenGL = nullptr;
 #ifdef GLUT
 #ifndef __APPLE__
 	int argc = 1;
-	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
+	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
 	glutInit(&argc, argv);
 #endif
 #endif
-	hq3d = nullptr;// new Chqdn3d(videoEffectParameter.denoisingLevel);
+	hq3d = nullptr; // new Chqdn3d(videoEffectParameter.denoisingLevel);
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
@@ -64,29 +66,29 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	config = nullptr;
 	angle = 0;
 	flipV = false;
-    newVideo = true;
+	newVideo = true;
 	flipH = false;
 	videoEnd = false;
 	exit = false;
 	quitWindow = false;
-    videoStart = false;
-    videoRenderStart = false;
+	videoStart = false;
+	videoRenderStart = false;
 	pictureSubtitle = nullptr;
 	video_aspect_ratio = 0.0;
 	config = CParamInit::getInstance();
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControlSoft::OnPaint));
-    Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControlSoft::OnSize));
-    Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControlSoft::on_paint));
+	Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControlSoft::OnSize));
+	Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
 	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CVideoControlSoft::StopVideoThread));
-    Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
+	Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
-    fpsTimer = new wxTimer(this, TIMER_FPS);
+	fpsTimer = new wxTimer(this, TIMER_FPS);
 	playStartTimer = new wxTimer(this, TIMER_PLAYSTART);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
-    Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
+	Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
 	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
-    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
+	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CVideoControlSoft::OnScrollMove));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CVideoControlSoft::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnLButtonDown));
@@ -96,8 +98,8 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CVideoControlSoft::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CVideoControlSoft::OnTopPosition));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CVideoControlSoft::OnSetPosition));
-    playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
-    Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
+	playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
+	Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
 	pause = false;
 	videoEnd = true;
 	this->windowMain = windowMain;
@@ -107,20 +109,20 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	openclContext = nullptr;
 
 	openclEffectYUV = nullptr;
-	
+
 	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
 	pictureFrame = new CRegardsBitmap();
 }
 
-COpenCLEngine * CVideoControlSoft::GetOpenCLEngine()
+COpenCLEngine* CVideoControlSoft::GetOpenCLEngine()
 {
 	return openCLEngine;
 }
 
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
-    OnStop(filename);
+	OnStop(filename);
 }
 
 bool CVideoControlSoft::IsPause()
@@ -130,16 +132,15 @@ bool CVideoControlSoft::IsPause()
 
 float CVideoControlSoft::GetMovieRatio()
 {
-	float ratioSelect = 0;
 	muVideoEffect.lock();
-	ratioSelect = videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
+	const float ratioSelect = videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
 	muVideoEffect.unlock();
 	return ratioSelect;
 }
 
-CRegardsBitmap * CVideoControlSoft::SavePicture(bool & isFromBuffer)
+CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
 {
-	CRegardsBitmap * bitmap = nullptr;
+	CRegardsBitmap* bitmap;
 	if (thumbnailFromBitmap)
 	{
 		bitmap = new CRegardsBitmap();
@@ -168,12 +169,12 @@ CRegardsBitmap * CVideoControlSoft::SavePicture(bool & isFromBuffer)
 	}
 
 
-    return bitmap;
+	return bitmap;
 }
 
 bool CVideoControlSoft::IsFFmpegDecode()
 {
-    return isffmpegDecode;
+	return isffmpegDecode;
 }
 
 /*
@@ -234,7 +235,7 @@ void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	::wxSetCursor(hCursorHand);
+	wxSetCursor(hCursorHand);
 
 	if (mouseBlock)
 	{
@@ -260,7 +261,7 @@ void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 void CVideoControlSoft::TestMaxX()
 {
 	float bitmapRatioWidth = GetBitmapWidth();
-	float screenWidth = float(GetWidth());
+	float screenWidth = static_cast<float>(GetWidth());
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 
 	TRACE();
@@ -279,7 +280,7 @@ void CVideoControlSoft::TestMaxX()
 void CVideoControlSoft::TestMaxY()
 {
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenHeight = float(GetHeight());
+	float screenHeight = static_cast<float>(GetHeight());
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
 
 	TRACE();
@@ -292,9 +293,9 @@ void CVideoControlSoft::TestMaxY()
 		posHauteur = 0;
 }
 
-void CVideoControlSoft::GenerateThumbnailVideo(void * data)
+void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
-	CVideoControlSoft * videoSoft = (CVideoControlSoft *)data;
+	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
 	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFrame(videoSoft->videoPosition, 0, 0);
 	videoSoft->muBitmap.unlock();
@@ -365,12 +366,13 @@ void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
 	case WXK_CONTROL:
 		controlKeyPush = false;
 		break;
+	default: ;
 	}
 }
 
 void CVideoControlSoft::MoveTop()
 {
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -381,7 +383,7 @@ void CVideoControlSoft::MoveTop()
 
 void CVideoControlSoft::MoveLeft()
 {
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -392,7 +394,7 @@ void CVideoControlSoft::MoveLeft()
 
 void CVideoControlSoft::MoveBottom()
 {
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -405,7 +407,7 @@ vector<int> CVideoControlSoft::GetZoomValue()
 {
 	vector<int> listValue;
 	muVideoEffect.lock();
-	for(int i = 0;i < videoEffectParameter.tabZoom.size();i++)
+	for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
 		listValue.push_back(videoEffectParameter.tabZoom[i] * 100.0f);
 	muVideoEffect.unlock();
 	return listValue;
@@ -413,14 +415,13 @@ vector<int> CVideoControlSoft::GetZoomValue()
 
 int CVideoControlSoft::GetZoomIndex()
 {
-	int zoomIndex = 0;
-    if(shrinkVideo)
-    {
-        CalculRatio(GetBitmapWidth(), GetBitmapHeight());
-    }
-    
+	if (shrinkVideo)
+	{
+		CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+	}
+
 	muVideoEffect.lock();
-	zoomIndex = videoEffectParameter.zoomSelect;
+	const int zoomIndex = videoEffectParameter.zoomSelect;
 	muVideoEffect.unlock();
 	return zoomIndex;
 }
@@ -436,47 +437,45 @@ void CVideoControlSoft::ChangeVideoFormat()
 	muVideoEffect.unlock();
 
 	this->Refresh();
-
 }
 
 
-float CVideoControlSoft::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight)
+float CVideoControlSoft::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
-    TRACE();
+	TRACE();
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
-	float newRatio = 1;
+	float new_ratio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = (float)GetWidth() / (float)(pictureWidth);
+		new_ratio = static_cast<float>(GetWidth()) / static_cast<float>(pictureWidth);
 	else
-		newRatio = (float)GetHeight() / (float)(pictureHeight);
+		new_ratio = static_cast<float>(GetHeight()) / static_cast<float>(pictureHeight);
 
-	if ((pictureHeight * newRatio) > GetHeight())
+	if ((pictureHeight * new_ratio) > GetHeight())
 	{
-		newRatio = (float)GetHeight() / (float)(pictureHeight);
+		new_ratio = static_cast<float>(GetHeight()) / static_cast<float>(pictureHeight);
 	}
-	if ((pictureWidth * newRatio) > GetWidth())
+	if ((pictureWidth * new_ratio) > GetWidth())
 	{
-		newRatio = (float)GetWidth() / (float)(pictureWidth);
+		new_ratio = static_cast<float>(GetWidth()) / static_cast<float>(pictureWidth);
 	}
 
-	return newRatio;
- }
-   
+	return new_ratio;
+}
+
 float CVideoControlSoft::GetZoomRatio()
 {
-	float zoom = 1.0f;
+	float zoom;
 	if (shrinkVideo)
 	{
 		zoom = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	}
 	else
 	{
-		
 		muVideoEffect.lock();
 		zoom = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
 		muVideoEffect.unlock();
@@ -484,22 +483,22 @@ float CVideoControlSoft::GetZoomRatio()
 	return zoom;
 }
 
-float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &pictureHeight)
+float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
-   TRACE();
+	TRACE();
 
 	float newRatio = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
-    int zoomSelect = 0;
+	int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
-	printf("Ratio %f \n",newRatio);
+	printf("Ratio %f \n", newRatio);
 	muVideoEffect.lock();
-	
+
 	//Calcul Zoom Index
 	if (newRatio != 0.0)
 	{
 		for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
 		{
-            printf("Ratio %f \n",videoEffectParameter.tabZoom[i]);
+			printf("Ratio %f \n", videoEffectParameter.tabZoom[i]);
 			if (newRatio < videoEffectParameter.tabZoom[i])
 			{
 				//ratio = videoEffectParameter.tabZoom[i];
@@ -509,33 +508,33 @@ float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &picture
 		}
 	}
 
-    printf("Ratio index %d \n",zoomSelect);
+	printf("Ratio index %d \n", zoomSelect);
 
 	videoEffectParameter.zoomSelect = zoomSelect;
 
 	muVideoEffect.unlock();
-    
+
 	return newRatio;
 }
 
 void CVideoControlSoft::ShrinkVideo()
 {
-    TRACE();
+	TRACE();
 
 	CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
 	//Calcul position largeur et hauteur initial
 	posLargeur = 0;
 	posHauteur = 0;
-	centerX = float(GetBitmapWidth()) / 2.0f;
-	centerY = float(GetBitmapHeight()) / 2.0f;
+	centerX = static_cast<float>(GetBitmapWidth()) / 2.0f;
+	centerY = static_cast<float>(GetBitmapHeight()) / 2.0f;
 
 	UpdateScrollBar();
 
 	shrinkVideo = true;
 }
 
-void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
+void CVideoControlSoft::CalculTextureSize(int& widthOut, int& heightOut)
 {
 	int width_local = GetSrcBitmapWidth();
 	int height_local = GetSrcBitmapHeight();
@@ -555,20 +554,18 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	}
 	*/
 	widthOut = width_local * zoom;
-	heightOut = height_local * zoom; 
+	heightOut = height_local * zoom;
 }
 
 void CVideoControlSoft::UpdateScrollBar()
 {
-
-    
 	int widthOut = 0;
 	int heightOut = 0;
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 	CalculTextureSize(widthOut, heightOut);
 	if (parent != nullptr)
 	{
-		CControlSize * controlSize = new CControlSize();
+		auto controlSize = new CControlSize();
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 		controlSize->controlWidth = widthOut;
 		controlSize->controlHeight = heightOut;
@@ -578,7 +575,7 @@ void CVideoControlSoft::UpdateScrollBar()
 
 	if (parent != nullptr)
 	{
-		wxSize * size = new wxSize();
+		auto size = new wxSize();
 		wxCommandEvent evt(wxEVENT_SETPOSITION);
 		size->x = posLargeur;
 		size->y = posHauteur;
@@ -590,7 +587,7 @@ void CVideoControlSoft::UpdateScrollBar()
 
 void CVideoControlSoft::MoveRight()
 {
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -648,62 +645,60 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 
 	case WXK_NUMPAD_ADD:
 	case WXK_ADD:
-	{
-		this->ZoomOn();
-	}
-	break;
+		{
+			this->ZoomOn();
+		}
+		break;
 
 	case WXK_NUMPAD_SUBTRACT:
 	case WXK_SUBTRACT:
-	{
-		this->ZoomOut();
+		{
+			this->ZoomOut();
+		}
+		break;
+	default: ;
 	}
-	break;
-
-	}
-	
-
 }
 
 
 void CVideoControlSoft::OnRefresh(wxCommandEvent& event)
 {
-    Refresh();
+	Refresh();
 }
 
-void CVideoControlSoft::SetRotation(const int &rotation)
+void CVideoControlSoft::SetRotation(const int& rotation)
 {
-    wxCommandEvent event(EVENT_VIDEOROTATION);
-    event.SetExtraLong(rotation);
-    wxPostEvent(this, event);
+	wxCommandEvent event(EVENT_VIDEOROTATION);
+	event.SetExtraLong(rotation);
+	wxPostEvent(this, event);
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
 	long rotation = event.GetExtraLong();
-	if(rotation < 0)
+	if (rotation < 0)
 		rotation = 360 + rotation;
 	angle = rotation % 360;
-    muVideoEffect.lock();
-    videoEffectParameter.rotation = rotation;
-    muVideoEffect.unlock();
+	muVideoEffect.lock();
+	videoEffectParameter.rotation = rotation;
+	muVideoEffect.unlock();
 }
 
-void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
+void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 {
 	bool updateScroll = false;
-	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
-	if(videoParameter->streamAudioUpdate)
+	auto videoParameter = static_cast<CVideoEffectParameter*>(effectParameter);
+	if (videoParameter->streamAudioUpdate)
 	{
 		ChangeAudioStream(videoParameter->streamAudioIndex);
 		videoParameter->streamAudioUpdate = 0;
 	}
-	else if(videoParameter->streamVideoUpdate)
+	else if (videoParameter->streamVideoUpdate)
 	{
 		//ChangeAudioStream(videoParameter->streamAudioIndex);
 		videoParameter->streamVideoUpdate = 0;
 	}
-	else if(videoParameter->streamSubtitleUpdate)
+	else if (videoParameter->streamSubtitleUpdate)
 	{
 		//ChangeAudioStream(videoParameter->streamAudioIndex);
 		videoParameter->streamSubtitleUpdate = 0;
@@ -737,22 +732,23 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
 	//Refresh();
 }
 
-CVideoControlSoft * CVideoControlSoft::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
+CVideoControlSoft* CVideoControlSoft::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
+                                                   IVideoInterface* eventPlayer)
 {
-   return new CVideoControlSoft(parent, id, windowMain, eventPlayer); 
+	return new CVideoControlSoft(parent, id, windowMain, eventPlayer);
 }
 
-void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter * effectParameter)
+void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
 {
-	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
+	auto videoParameter = static_cast<CVideoEffectParameter*>(effectParameter);
 	muVideoEffect.lock();
 	videoEffectParameter = *videoParameter;
 	muVideoEffect.unlock();
 }
 
-CEffectParameter * CVideoControlSoft::GetParameter()
+CEffectParameter* CVideoControlSoft::GetParameter()
 {
-	CVideoEffectParameter * videoParameter = new CVideoEffectParameter();
+	auto videoParameter = new CVideoEffectParameter();
 	muVideoEffect.lock();
 	*videoParameter = videoEffectParameter;
 	muVideoEffect.unlock();
@@ -762,7 +758,7 @@ CEffectParameter * CVideoControlSoft::GetParameter()
 
 bool CVideoControlSoft::GetProcessEnd()
 {
-	if(!videoEnd)
+	if (!videoEnd)
 	{
 		if (stopVideo && !processVideoEnd)
 		{
@@ -780,15 +776,15 @@ bool CVideoControlSoft::GetProcessEnd()
 
 void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 {
-    //TRACE();
-	if(endProgram && videoRenderStart && !quitWindow)
+	//TRACE();
+	if (endProgram && videoRenderStart && !quitWindow)
 	{
 		fpsTimer->Stop();
 		quitWindow = true;
 		exit = true;
 		if (!videoEnd)
 		{
-			if(ffmfc->Quit())
+			if (ffmfc->Quit())
 			{
 				wxCommandEvent localevent;
 				EndVideoThread(localevent);
@@ -796,11 +792,11 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 			}
 		}
 	}
-    
-    
+
+
 #ifdef __APPLE__
-   //if (!videoRenderStart && !stopVideo)
-   //     this->FastRefresh(this, true);
+	//if (!videoRenderStart && !stopVideo)
+	//     this->FastRefresh(this, true);
 #endif
 }
 
@@ -812,10 +808,11 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
+	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 
-void CVideoControlSoft::SetEncoderHardware(const wxString &encoderHardware, const bool &opengl)
+void CVideoControlSoft::SetEncoderHardware(const wxString& encoderHardware, const bool& opengl)
 {
 	acceleratorHardware = encoderHardware;
 	isOpenGLDecoding = opengl;
@@ -830,17 +827,17 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
 	if (!endProgram)
 	{
-   		videoEnd = true;
+		videoEnd = true;
 		//if (videoRenderStart)
 		//{
-			if (eventPlayer != nullptr)
-			{
-				eventPlayer->OnPositionVideo(0);
-				eventPlayer->OnVideoEnd();
-			}
-			fpsTimer->Stop();
-			videoRenderStart = false;
-			stopVideo = true;
+		if (eventPlayer != nullptr)
+		{
+			eventPlayer->OnPositionVideo(0);
+			eventPlayer->OnVideoEnd();
+		}
+		fpsTimer->Stop();
+		videoRenderStart = false;
+		stopVideo = true;
 		//}
 	}
 	else
@@ -850,7 +847,6 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 		videoEnd = true;
 	}
-
 }
 
 
@@ -869,7 +865,6 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		videoRenderStart = false;
 		stopVideo = true;
 	}
-
 }
 
 
@@ -881,13 +876,13 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete _threadVideo;
 	}
 
-	if(playStartTimer->IsRunning())
+	if (playStartTimer->IsRunning())
 		playStartTimer->Stop();
 
-    if(playStopTimer->IsRunning())
+	if (playStopTimer->IsRunning())
 		playStopTimer->Stop();
 
-	if(hq3d != nullptr)
+	if (hq3d != nullptr)
 		delete hq3d;
 
 	if (openCVStabilization != nullptr)
@@ -907,16 +902,16 @@ CVideoControlSoft::~CVideoControlSoft()
 	openCLEngine = nullptr;
 
 
-	if(openclEffectYUV != nullptr)
+	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
-    
-	if(pictureSubtitle != nullptr)
+
+	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;
 
 	if (ffmfc)
 		delete ffmfc;
 
-	if(pictureFrame != nullptr)
+	if (pictureFrame != nullptr)
 		delete pictureFrame;
 
 	if (thumbnailVideo != nullptr)
@@ -927,11 +922,11 @@ CVideoControlSoft::~CVideoControlSoft()
 	localContext = nullptr;
 }
 
-void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap * picture)
+void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap* picture)
 {
 	muSubtitle.lock();
 
-	if(pictureSubtitle != nullptr)
+	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;
 
 	pictureSubtitle = picture;
@@ -945,7 +940,7 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 {
 	muSubtitle.lock();
 
-	if(pictureSubtitle != nullptr)
+	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;
 
 	pictureSubtitle = nullptr;
@@ -965,12 +960,12 @@ bool CVideoControlSoft::IsHardwareCompatible()
 	return true;
 }
 
-void CVideoControlSoft::PlayFirstMovie(const bool &firstMovie)
+void CVideoControlSoft::PlayFirstMovie(const bool& firstMovie)
 {
 	this->firstMovie = firstMovie;
 }
 
-int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
+int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
 	if (videoEnd || stopVideo)
 	{
@@ -988,35 +983,36 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 
 		openCVStabilization = nullptr;
 
-		if(playStopTimer->IsRunning())
+		if (playStopTimer->IsRunning())
 			playStopTimer->Stop();
 
-		if(playStartTimer->IsRunning())
+		if (playStartTimer->IsRunning())
 			playStartTimer->Stop();
 		startVideo = play;
 		stopVideo = false;
 		angle = 0;
 		flipV = false;
 		flipH = false;
-        videoStart = false;
-        newVideo = true;
+		videoStart = false;
+		newVideo = true;
 		initStart = true;
 		videoRenderStart = false;
-        filename = movie;
+		filename = movie;
 		standByMovie = "";
-        pause = false;
-        ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename), IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, firstMovie ? 0 : GetSoundVolume());
-        muVideoEffect.lock();
+		pause = false;
+		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
+		               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
+		               firstMovie ? 0 : GetSoundVolume());
+		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
-        if(firstMovie)
-            playStopTimer->Start(100,true);
-        firstMovie = false;
+		if (firstMovie)
+			playStopTimer->Start(100, true);
+		firstMovie = false;
 	}
-	else if(movie != filename)
+	else if (movie != filename)
 	{
 		OnStop(movie);
-		
 	}
 	return 0;
 }
@@ -1031,18 +1027,16 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		videoEnd = false;
 		videoStart = true;
 		fpsTimer->Start(1000);
-        ShrinkVideo();
+		ShrinkVideo();
 
 
-		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
-
 }
 
 int CVideoControlSoft::getWidth()
@@ -1050,23 +1044,24 @@ int CVideoControlSoft::getWidth()
 #ifndef WIN32
     double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
+	double scale_factor = 1.0f;
 #endif
-     return GetSize().x * scale_factor;
+	return GetSize().x * scale_factor;
 }
+
 int CVideoControlSoft::getHeight()
 {
 #ifndef WIN32
     double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
+	double scale_factor = 1.0f;
 #endif
-    return GetSize().y * scale_factor;
+	return GetSize().y * scale_factor;
 }
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
-    this->Refresh();
+	this->Refresh();
 }
 
 void CVideoControlSoft::ReloadResource()
@@ -1074,18 +1069,18 @@ void CVideoControlSoft::ReloadResource()
 	reloadResource = true;
 }
 
-void CVideoControlSoft::OnPaint(wxPaintEvent& event)
+void CVideoControlSoft::on_paint(wxPaintEvent& event)
 {
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
-    printf("CVideoControlSoft::OnPaint \n");
+	printf("CVideoControlSoft::OnPaint \n");
 	deleteTexture = false;
 	inverted = true;
 #ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
-    double scale_factor = 1.0f;
+	double scale_factor = 1.0f;
 #endif
 
 	if (reloadResource)
@@ -1111,8 +1106,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 		reloadResource = false;
 	}
 
-    GLTexture * glTexture = nullptr;
-	GLTexture * glTextureOutput = nullptr;
+	GLTexture* glTexture = nullptr;
+	GLTexture* glTextureOutput = nullptr;
 
 	if (renderBitmapOpenGL == nullptr)
 	{
@@ -1123,44 +1118,44 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	}
 
 	renderBitmapOpenGL->SetCurrent(*this);
-    
-    if(IsSupportOpenCL())
-    {
-        if (openCLEngine == nullptr)
-        {
-            openCLEngine = new COpenCLEngine(true);
-            if (openCLEngine != nullptr)
-                openclContext = openCLEngine->GetInstance();
-        }
-    }
 
-    std::clock_t start;
-    start = std::clock();    
-    
+	if (IsSupportOpenCL())
+	{
+		if (openCLEngine == nullptr)
+		{
+			openCLEngine = new COpenCLEngine(true);
+			if (openCLEngine != nullptr)
+				openclContext = openCLEngine->GetInstance();
+		}
+	}
 
-    int width = GetWindowWidth() * scale_factor;
-    int height = GetWindowHeight()* scale_factor;
-    if(width == 0 || height == 0)
-        return;
-	
+	std::clock_t start;
+	start = std::clock();
+
+
+	int width = GetWindowWidth() * scale_factor;
+	int height = GetWindowHeight() * scale_factor;
+	if (width == 0 || height == 0)
+		return;
+
 	if (quitWindow)
-        return;
+		return;
 
-    if(IsSupportOpenCL())
-    {
+	if (IsSupportOpenCL())
+	{
 		if (openclEffectYUV == nullptr)
-        {
-            openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-        }  
-    }
+		{
+			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+		}
+	}
 
-    nbFrame++;
+	nbFrame++;
 
-    if (videoRenderStart && initStart)
-    {
+	if (videoRenderStart && initStart)
+	{
 		//nbFrame = 0;
-        if(!fpsTimer->IsRunning())
-            fpsTimer->Start(1000);
+		if (!fpsTimer->IsRunning())
+			fpsTimer->Start(1000);
 	}
 
 
@@ -1176,65 +1171,65 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 			glTexture = RenderToGLTexture();
 	}
 
-    
-//#ifdef __APPLE__
-/*
-    if(videoRenderStart && glTexture != nullptr)
-    {  
-        renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
-        renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
-    }
-*/
-//#else
-    
-    if(videoRenderStart && glTexture != nullptr)
-    {       
-        renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
-              
+
+	//#ifdef __APPLE__
+	/*
+	    if(videoRenderStart && glTexture != nullptr)
+	    {  
+	        renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
+	        renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
+	    }
+	*/
+	//#else
+
+	if (videoRenderStart && glTexture != nullptr)
+	{
+		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
+
 		glTextureOutput = DisplayTexture(glTexture);
 
-        muVideoEffect.lock();
-        if(videoEffectParameter.showFPS)
-        {
-            renderBitmapOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
-        }
-        muVideoEffect.unlock();
+		muVideoEffect.lock();
+		if (videoEffectParameter.showFPS)
+		{
+			renderBitmapOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
+		}
+		muVideoEffect.unlock();
 
-        muSubtitle.lock();
+		muSubtitle.lock();
 
-        if(subtilteUpdate && pictureSubtitle != nullptr)
-        {
-            renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
+		if (subtilteUpdate && pictureSubtitle != nullptr)
+		{
+			renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
 
-            delete pictureSubtitle;
-            pictureSubtitle = nullptr;
+			delete pictureSubtitle;
+			pictureSubtitle = nullptr;
 
-            subtilteUpdate = false;
-        }
-        else if(subtilteUpdate)
-        {
-            renderBitmapOpenGL->DeleteSubtitle();
-            subtilteUpdate = false;
-        }
+			subtilteUpdate = false;
+		}
+		else if (subtilteUpdate)
+		{
+			renderBitmapOpenGL->DeleteSubtitle();
+			subtilteUpdate = false;
+		}
 
-        muSubtitle.unlock();
+		muSubtitle.unlock();
 
-        if(videoEffectParameter.enableSubtitle)
-        {
-            renderBitmapOpenGL->ShowSubtitle();
-        }    
+		if (videoEffectParameter.enableSubtitle)
+		{
+			renderBitmapOpenGL->ShowSubtitle();
+		}
 	}
 	else
 	{
-        printf("renderBitmapOpenGL->CreateScreenRender \n");
-		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
+		printf("renderBitmapOpenGL->CreateScreenRender \n");
+		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 	}
-//#endif
+	//#endif
 
 	this->SwapBuffers();
 
-    if(deleteTexture && glTexture != nullptr)
-        delete glTexture;
+	if (deleteTexture && glTexture != nullptr)
+		delete glTexture;
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
@@ -1267,14 +1262,14 @@ void CVideoControlSoft::OnPlay()
 	if (videoStart)
 	{
 		bool _videoEnd = videoEnd;
-		if(!_videoEnd)
+		if (!_videoEnd)
 			if (stopVideo)
 				_videoEnd = true;
 
 		if (pause && !_videoEnd)
 		{
 			ffmfc->Pause();
-			wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
@@ -1285,8 +1280,6 @@ void CVideoControlSoft::OnPlay()
 		{
 			PlayMovie(filename, true);
 		}
-		
-
 	}
 	else
 	{
@@ -1294,8 +1287,6 @@ void CVideoControlSoft::OnPlay()
 	}
 
 	pause = false;
-
-
 }
 
 void CVideoControlSoft::OnStop(wxString photoName)
@@ -1309,12 +1300,12 @@ void CVideoControlSoft::OnStop(wxString photoName)
 	{
 		if (!videoEnd)
 		{
-            ffmfc->Quit();
-        }
-    }
+			ffmfc->Quit();
+		}
+	}
 	standByMovie = photoName;
 
-	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+	wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
@@ -1325,25 +1316,25 @@ void CVideoControlSoft::OnStop(wxString photoName)
 float CVideoControlSoft::GetLargeurMax()
 {
 	float bitmapRatioWidth = GetBitmapWidth();
-	float screenWidth = float(GetWidth());
+	float screenWidth = static_cast<float>(GetWidth());
 	return bitmapRatioWidth - screenWidth;
 }
 
 float CVideoControlSoft::GetHauteurMax()
 {
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenHeight = float(GetHeight());
+	float screenHeight = static_cast<float>(GetHeight());
 	return bitmapRatioHeight - screenHeight;
 }
 
-void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
+void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 {
 	TRACE();
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenWidth = float(GetWidth());
-	float screenHeight = float(GetHeight());
+	float screenWidth = static_cast<float>(GetWidth());
+	float screenHeight = static_cast<float>(GetHeight());
 
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
@@ -1377,13 +1368,12 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 
 int CVideoControlSoft::GetBitmapWidth()
 {
-	TRACE();    
+	TRACE();
 	//int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
 	return widthOut;
-
 }
 
 int CVideoControlSoft::GetBitmapHeight()
@@ -1409,8 +1399,7 @@ int CVideoControlSoft::GetSrcBitmapWidth()
 
 	if (localAngle == 90 || localAngle == 270)
 		return _heightVideo;
-	else
-		return _widthVideo;
+	return _widthVideo;
 	return 0;
 }
 
@@ -1427,8 +1416,7 @@ int CVideoControlSoft::GetSrcBitmapHeight()
 	int localAngle = angle;
 	if (localAngle == 90 || localAngle == 270)
 		return _widthVideo;
-	else
-		return _heightVideo;
+	return _heightVideo;
 	return 0;
 }
 
@@ -1436,7 +1424,7 @@ int CVideoControlSoft::GetSrcBitmapHeight()
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap
 //-----------------------------------------------------------------
-void CVideoControlSoft::MouseClick(const int &xPos, const int &yPos)
+void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 {
 	TRACE();
 	mouseScrollX = xPos;
@@ -1449,7 +1437,7 @@ void CVideoControlSoft::MouseClick(const int &xPos, const int &yPos)
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap
 //-----------------------------------------------------------------
-void CVideoControlSoft::MouseRelease(const int &xPos, const int &yPos)
+void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 {
 	TRACE();
 	mouseBlock = false;
@@ -1464,8 +1452,8 @@ void CVideoControlSoft::CalculCenterPicture()
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenWidth = float(GetWidth());
-	float screenHeight = float(GetHeight());
+	float screenWidth = static_cast<float>(GetWidth());
+	float screenHeight = static_cast<float>(GetHeight());
 
 
 	//float middleScreenWidth = screenWidth / 2.0f;
@@ -1491,7 +1479,7 @@ void CVideoControlSoft::CalculCenterPicture()
 		if (centerX == 0)
 			centerX = 0.5f;
 		else
-			centerX = ((float)posLargeur ) / posLargeurMax;
+			centerX = static_cast<float>(posLargeur) / posLargeurMax;
 	}
 
 	if (screenHeight > bitmapRatioHeight)
@@ -1503,7 +1491,7 @@ void CVideoControlSoft::CalculCenterPicture()
 		if (centerY == 0)
 			centerY = 0.5f;
 		else
-			centerY =((float)posHauteur) / posHauteurMax;
+			centerY = static_cast<float>(posHauteur) / posHauteurMax;
 	}
 
 	centerX = min(max(centerX, 0.0f), 1.0f);
@@ -1518,7 +1506,7 @@ void CVideoControlSoft::OnPause()
 		{
 			ffmfc->Pause();
 
-			wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
@@ -1529,7 +1517,7 @@ void CVideoControlSoft::OnPause()
 	}
 }
 
-void CVideoControlSoft::SetVideoDuration(const int64_t & duration, const int64_t & startTime)
+void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t& startTime)
 {
 	startingTime = startTime;
 
@@ -1570,7 +1558,7 @@ void CVideoControlSoft::SetPos(int64_t pos)
 	//Refresh();
 }
 
-void CVideoControlSoft::SetVolume(const int &pos)
+void CVideoControlSoft::SetVolume(const int& pos)
 {
 	ffmfc->SetVolume(pos);
 	SetSoundVolume(pos);
@@ -1602,7 +1590,7 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 }
 
 
-CRegardsBitmap * CVideoControlSoft::GetBitmapRGBA(AVFrame * tmp_frame)
+CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 {
 	if (bitmapData == nullptr)
 		bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
@@ -1632,11 +1620,11 @@ CRegardsBitmap * CVideoControlSoft::GetBitmapRGBA(AVFrame * tmp_frame)
 		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
 	}
 
-	uint8_t * convertedFrameBuffer = bitmapData->GetPtBitmap();
+	uint8_t* convertedFrameBuffer = bitmapData->GetPtBitmap();
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-		&convertedFrameBuffer, &linesize);
+	          &convertedFrameBuffer, &linesize);
 
 	//bitmapData->VertFlipBuf();
 
@@ -1644,54 +1632,54 @@ CRegardsBitmap * CVideoControlSoft::GetBitmapRGBA(AVFrame * tmp_frame)
 }
 
 
-void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, void * dxva2Context)
+void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-    std::clock_t start = std::clock();
-    
-    bool isCPU = 1;
-    if(IsSupportOpenCL())
-       isCPU = IsCPUContext();
-    
-    printf("Set Data Begin \n");
-     
-	videoRenderStart = true; 
+	std::clock_t start = std::clock();
 
-	AVFrame *src_frame = (AVFrame *)data;
+	bool isCPU = true;
+	if (IsSupportOpenCL())
+		isCPU = IsCPUContext();
 
-    video_aspect_ratio = sample_aspect_ratio;
+	printf("Set Data Begin \n");
+
+	videoRenderStart = true;
+
+	auto src_frame = static_cast<AVFrame*>(data);
+
+	video_aspect_ratio = sample_aspect_ratio;
 
 	SetFrameData(src_frame);
-    
-    widthVideo = src_frame->width;
-    heightVideo = src_frame->height;  
-	ratioVideo =(float) src_frame->width / (float)src_frame->height;
 
-  //  double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+	widthVideo = src_frame->width;
+	heightVideo = src_frame->height;
+	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(this, event);  
-    //std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
+	//  double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+	wxCommandEvent event(wxEVENT_REFRESH);
+	wxPostEvent(this, event);
+	//std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
 {
-  	int supportOpenGL = 0;
+	int supportOpenGL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		supportOpenGL = config->GetVideoLibrary();
 
-	return supportOpenGL;  
+	return supportOpenGL;
 }
 
-GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
+GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 {
-	GLTexture * glTextureOutput = nullptr;
+	GLTexture* glTextureOutput = nullptr;
 	if (glTexture != nullptr)
 	{
 		if (!IsSupportOpenCL() && IsOpenGLDecoding())
 		{
-            printf("DisplayTexture openGLDecoding \n");
-            
+			printf("DisplayTexture openGLDecoding \n");
+
 			//float zoomRatio = GetZoomRatio();
 			int filterInterpolation = 0;
 			int widthOutput = 0;
@@ -1701,11 +1689,12 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			CalculPositionVideo(widthOutput, heightOutput, rc);
 			glTextureOutput = new GLTexture(widthOutput, heightOutput);
 
-			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 			if (regardsParam != nullptr)
 				filterInterpolation = regardsParam->GetInterpolationType();
 
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, !flipV, local_angle, filterInterpolation, true);
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter,
+			                                                  flipH, !flipV, local_angle, filterInterpolation, true);
 		}
 		else
 		{
@@ -1726,8 +1715,8 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 
 void CVideoControlSoft::Resize()
 {
-	float screenWidth = float(GetWidth());
-	float screenHeight = float(GetHeight());
+	float screenWidth = static_cast<float>(GetWidth());
+	float screenHeight = static_cast<float>(GetHeight());
 
 	if (!stopVideo)
 	{
@@ -1736,7 +1725,7 @@ void CVideoControlSoft::Resize()
 		if (videoStart)
 			ffmfc->VideoDisplaySize(GetWindowWidth(), GetWindowHeight());
 
-		if (pause && isffmpegDecode  && copyFrameBuffer != nullptr)
+		if (pause && isffmpegDecode && copyFrameBuffer != nullptr)
 		{
 			SetFrameData(copyFrameBuffer);
 		}
@@ -1745,7 +1734,7 @@ void CVideoControlSoft::Resize()
 		{
 			ShrinkVideo();
 		}
-		else if(oldWidth != 0 && oldHeight != 0)
+		else if (oldWidth != 0 && oldHeight != 0)
 		{
 			float bitmapRatioWidth = GetBitmapWidth();
 			float bitmapRatioHeight = GetBitmapHeight();
@@ -1767,17 +1756,15 @@ void CVideoControlSoft::Resize()
 
 			UpdateScrollBar();
 		}
-			
+
 		Refresh();
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
-	
 }
 
-void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height)
+void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height)
 {
-
 	float aspect_ratio = video_aspect_ratio;
 	int width, height, x, y;
 	//float ratio = 1.0f;
@@ -1788,14 +1775,15 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	muVideoEffect.unlock();
 
 	if (aspect_ratio == 1.0)
-		aspect_ratio = (float)GetSrcBitmapWidth() / (float)GetSrcBitmapHeight();
+		aspect_ratio = static_cast<float>(GetSrcBitmapWidth()) / static_cast<float>(GetSrcBitmapHeight());
 
 	/* XXX: we suppose the screen has a 1.0 pixel ratio */
 	height = scr_height * zoom;
-	width = ((int)rint(height * aspect_ratio)) & ~1;
-	if (width > scr_width) {
+	width = static_cast<int>(rint(height * aspect_ratio)) & ~1;
+	if (width > scr_width)
+	{
 		width = scr_width;
-		height = ((int)rint(width / aspect_ratio)) & ~1;
+		height = static_cast<int>(rint(width / aspect_ratio)) & ~1;
 	}
 	x = (scr_width - width) / 2;
 	y = (scr_height - height) / 2;
@@ -1805,14 +1793,14 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	rect->height = FFMAX(height, 1);
 }
 
-GLTexture * CVideoControlSoft::RenderToTexture(CRegardsBitmap * bitmap)
+GLTexture* CVideoControlSoft::RenderToTexture(CRegardsBitmap* bitmap)
 {
-	GLTexture * glTexture = new GLTexture();
+	auto glTexture = new GLTexture();
 	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	return glTexture;
 }
 
-void CVideoControlSoft::SetZoomIndex(const int &pos)
+void CVideoControlSoft::SetZoomIndex(const int& pos)
 {
 	CalculCenterPicture();
 	shrinkVideo = false;
@@ -1830,22 +1818,24 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 }
 
 
-void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
+void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
+                                                       int& heightInterpolationSize, int& left, int& top,
+                                                       const bool& invert)
 {
-   TRACE();
+	TRACE();
 #ifndef WIN32
 	double scale_factor = GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
-#endif 
-   
-	int widthOutput = int(GetBitmapWidth()) * scale_factor;
-	int heightOutput = int(GetBitmapHeight()) * scale_factor;
+#endif
+
+	int widthOutput = static_cast<int>(GetBitmapWidth()) * scale_factor;
+	int heightOutput = static_cast<int>(GetBitmapHeight()) * scale_factor;
 	int xValue = 0;
 	int yValue = 0;
 
 
-	if (widthOutput > GetWidth()* scale_factor)
+	if (widthOutput > GetWidth() * scale_factor)
 	{
 		left = 0;
 		xValue = posLargeur * scale_factor;
@@ -1853,73 +1843,74 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInt
 	else
 	{
 		xValue = 0;
-		left = (GetWidth()* scale_factor - widthOutput) / 2;
+		left = (GetWidth() * scale_factor - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = GetWidth()* scale_factor - (left * 2);
+	widthInterpolationSize = GetWidth() * scale_factor - (left * 2);
 
 
-	if (heightOutput > GetHeight()* scale_factor)
+	if (heightOutput > GetHeight() * scale_factor)
 	{
 		top = 0;
-		yValue = posHauteur* scale_factor;
+		yValue = posHauteur * scale_factor;
 	}
 	else
 	{
 		yValue = 0;
-		top = (GetHeight()* scale_factor - heightOutput) / 2;
+		top = (GetHeight() * scale_factor - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = GetHeight()* scale_factor - (top * 2);
+	heightInterpolationSize = GetHeight() * scale_factor - (top * 2);
 
-	rc.x = max(xValue,0);
+	rc.x = max(xValue, 0);
 	if (invert)
-    {
-        int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
-        rc.y = max(heightmax, 0);
-    }
+	{
+		int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+		rc.y = max(heightmax, 0);
+	}
 	else
-		rc.y = max(yValue,0);
+		rc.y = max(yValue, 0);
 	rc.width = widthOutput;
 	rc.height = heightOutput;
 }
 
-void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc)
+void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc)
 {
 #ifndef WIN32
 	double scale_factor = GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
-#endif 
-    
-	widthOutput = int(GetBitmapWidth());
-	heightOutput = int(GetBitmapHeight());
+#endif
+
+	widthOutput = static_cast<int>(GetBitmapWidth());
+	heightOutput = static_cast<int>(GetBitmapHeight());
 
 	int left = 0, top = 0;
 	int tailleAffichageWidth = widthOutput;
 	int tailleAffichageHeight = heightOutput;
 
-    if (GetWidth() * scale_factor > tailleAffichageWidth)
-        left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
-    else
-        left = 0;
+	if (GetWidth() * scale_factor > tailleAffichageWidth)
+		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+	else
+		left = 0;
 
-    if (GetHeight() * scale_factor > tailleAffichageHeight)
-        top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-    else
-        top = 0;
+	if (GetHeight() * scale_factor > tailleAffichageHeight)
+		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+	else
+		top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 }
 
-void CVideoControlSoft::GetDenoiserPt(const int &width, const int &height)
+void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 {
 	if (hq3d == nullptr)
 	{
 		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
 	}
-	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height != oldheightDenoise)
+	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height !=
+		oldheightDenoise)
 	{
 		delete hq3d;
 		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
@@ -1928,7 +1919,6 @@ void CVideoControlSoft::GetDenoiserPt(const int &width, const int &height)
 	oldLevelDenoise = videoEffectParameter.denoisingLevel;
 	oldwidthDenoise = width;
 	oldheightDenoise = height;
-
 }
 
 /*
@@ -1969,34 +1959,35 @@ void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVi
 }
 */
 
-GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
+GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
-    printf("RenderToTexture 1\n");
-    
+	printf("RenderToTexture 1\n");
+
 #ifndef WIN32
-  // double scale_factor = GetContentScaleFactor();
+	// double scale_factor = GetContentScaleFactor();
 #else
-   // double scale_factor = 1.0f;
+	// double scale_factor = 1.0f;
 #endif
-    
-    if(openclEffect == nullptr)
-        return nullptr;
+
+	if (openclEffect == nullptr)
+		return nullptr;
 
 	//float zoomRatio = GetZoomRatio();
 
-	GLTexture * glTexture = nullptr;
+	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
-    printf("RenderToTexture 2\n");
+	printf("RenderToTexture 2\n");
 
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
-	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
+	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+		effectEnable)
 	{
 		//cl_int err = 0;
 		//cv::ocl::setUseOpenCL(true);
@@ -2020,17 +2011,16 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	}
 
 	bool isOpenGLOpenCL = false;
-    openGLDecoding = false;
+	openGLDecoding = false;
 
 	if (openclContext->IsSharedContextCompatible())
 	{
-        
-        printf("RenderToTexture IsSharedContextCompatible 3\n");
+		printf("RenderToTexture IsSharedContextCompatible 3\n");
 		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
 
 		if (glTexture != nullptr)
 		{
-            printf("RenderToTexture glTexture is not null 3\n");
+			printf("RenderToTexture glTexture is not null 3\n");
 			try
 			{
 				cl_int err;
@@ -2044,20 +2034,18 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 				else if (cl_image != nullptr)
 				{
 				*/
-					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-					Error::CheckError(err);
-					openclEffect->GetRgbaBitmap(cl_image);
-					err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-					Error::CheckError(err);
-					err = clFlush(openclContext->GetCommandQueue());
-					Error::CheckError(err);
-					isOpenGLOpenCL = true;
+				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
+				Error::CheckError(err);
+				openclEffect->GetRgbaBitmap(cl_image);
+				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
+				Error::CheckError(err);
+				err = clFlush(openclContext->GetCommandQueue());
+				Error::CheckError(err);
+				isOpenGLOpenCL = true;
 				//}
-
 			}
 			catch (...)
 			{
-
 			}
 		}
 	}
@@ -2071,7 +2059,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();
-			CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
+			CRegardsBitmap* bitmap = openclEffect->GetRgbaBitmap();
 
 			/*
 			bool frameStabilized = false;
@@ -2084,16 +2072,17 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		else
 			printf("CVideoControl glTexture Error \n");
 	}
-    
-    printf("RenderToTexture End\n");
+
+	printf("RenderToTexture End\n");
 	//inverted = true;
 	return glTexture;
 }
 
-bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
+bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 {
 	bool frameStabilized = false;
-	cv::Mat image(pictureFrame->GetBitmapHeight(), pictureFrame->GetBitmapWidth(), CV_8UC4, pictureFrame->GetPtBitmap());
+	cv::Mat image(pictureFrame->GetBitmapHeight(), pictureFrame->GetBitmapWidth(), CV_8UC4,
+	              pictureFrame->GetPtBitmap());
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
@@ -2118,13 +2107,13 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap * pictureFrame)
 	if (videoEffectParameter.autoConstrast)
 	{
 		frameStabilized = true;
-		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(image);
+		COpenCVEffect::BrightnessAndContrastAuto(image);
 	}
 	pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
 }
 
-GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFrame)
+GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
 #ifndef WIN32
 	//double scale_factor = GetContentScaleFactor();
@@ -2132,10 +2121,10 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 	//double scale_factor = 1.0f;
 #endif
 
-	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 
 	int filterInterpolation = 0;
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
@@ -2144,7 +2133,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 	inverted = false;
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	if (angle == 90 || angle == 270)
 	{
 		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
@@ -2159,7 +2148,8 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 		hq3d->ApplyDenoise3D(bitmapOut);
 	}
 
-	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
+	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+		effectEnable)
 	{
 		ApplyOpenCVEffect(bitmapOut);
 	}
@@ -2172,19 +2162,19 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap * pictureFra
 	return glTexture;
 }
 
-GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
+GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 {
 #ifndef WIN32
-  //  double scale_factor = GetContentScaleFactor();
+	//  double scale_factor = GetContentScaleFactor();
 #else
-   // double scale_factor = 1.0f;
+	// double scale_factor = 1.0f;
 #endif
 
-	GLTexture * glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	if (!IsOpenGLDecoding())
 	{
 		int filterInterpolation = 0;
-		CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 		if (regardsParam != nullptr)
 			filterInterpolation = regardsParam->GetInterpolationType();
 
@@ -2192,14 +2182,14 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
-        inverted = false;
-		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-		if(angle == 90 || angle == 270)
-        {
-            ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
-        }
-        else
-            ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+		inverted = false;
+		auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+		if (angle == 90 || angle == 270)
+		{
+			ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+		}
+		else
+			ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
 
 		//Test if denoising Effect
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2208,7 +2198,8 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 			hq3d->ApplyDenoise3D(bitmapOut);
 		}
 
-		if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable)
+		if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
+			effectEnable)
 		{
 			ApplyOpenCVEffect(bitmapOut);
 		}
@@ -2217,10 +2208,10 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		delete bitmapOut;
 	}
 	else
-    {
+	{
 		glTexture->Create(pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight(), pictureFrame->GetPtBitmap());
-    }
-		
+	}
+
 
 	deleteTexture = true;
 	//delete bitmap;
@@ -2243,6 +2234,7 @@ void CVideoControlSoft::Rotate270()
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
 }
+
 void CVideoControlSoft::FlipVertical()
 {
 	flipV = !flipV;
@@ -2261,10 +2253,9 @@ bool CVideoControlSoft::IsCPUContext()
 {
 	if (isCPU == -1)
 	{
-
-            OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
-            if (device != nullptr)
-                isCPU = (device->deviceType == CL_DEVICE_TYPE_CPU ? 1 : 0);
+		OpenCLDevice* device = COpenCLEngine::GetDefaultDevice();
+		if (device != nullptr)
+			isCPU = (device->deviceType == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);
@@ -2272,7 +2263,7 @@ bool CVideoControlSoft::IsCPUContext()
 	return (isCPU == 1 ? true : false);
 }
 
-void CVideoControlSoft::SetSoundVolume(const int &soundVolume)
+void CVideoControlSoft::SetSoundVolume(const int& soundVolume)
 {
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -2297,33 +2288,31 @@ int CVideoControlSoft::IsSupportOpenCL()
 		supportOpenCL = config->GetIsOpenCLSupport();
 
 	return supportOpenCL;
-
 }
 
-void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
+void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 {
 	int enableopenCL = 0;
-    bool isCPU = true;
-    if(IsSupportOpenCL())
-    {    
+	bool isCPU = true;
+	if (IsSupportOpenCL())
+	{
 		enableopenCL = COpenCLEngine::SupportOpenCL();
-        isCPU = IsCPUContext();
-    }
-    else
-    {
-        isffmpegDecode = true;
-        enableopenCL = 0;
-    }
-        
+		isCPU = IsCPUContext();
+	}
+	else
+	{
+		isffmpegDecode = true;
+		enableopenCL = 0;
+	}
+
 
 	if (!enableopenCL || (src_frame->format != 0 && src_frame->format != 23))
 	{
-        isffmpegDecode = true;
+		isffmpegDecode = true;
 		GetBitmapRGBA(src_frame);
 		muBitmap.lock();
 		*pictureFrame = *bitmapData;
 		muBitmap.unlock();
-        
 	}
 	else
 	{
@@ -2339,7 +2328,8 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				ysize = src_frame->linesize[0] * src_frame->height;
 				uvsize = src_frame->linesize[1] * (src_frame->height / 2);
 				muBitmap.lock();
-				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
+				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize,
+				                                   src_frame->width, src_frame->height, src_frame->linesize[0]);
 				muBitmap.unlock();
 			}
 			else if (src_frame->format == 0)
@@ -2353,10 +2343,10 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 				usize = src_frame->linesize[1] * (src_frame->height / 2);
 				vsize = src_frame->linesize[2] * (src_frame->height / 2);
 				muBitmap.lock();
-				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2], vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
+				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2],
+				                               vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
 				muBitmap.unlock();
 			}
-			
 		}
 	}
 }
@@ -2365,13 +2355,13 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 //
 //-------------------------------------------------------------------------------------------------
 
-GLTexture * CVideoControlSoft::RenderToGLTexture()
+GLTexture* CVideoControlSoft::RenderToGLTexture()
 {
 	// printf("RenderToBitmap  \n"); 
 	std::clock_t start;
 	start = std::clock();
 	double duration;
-	GLTexture * glTexture = nullptr;
+	GLTexture* glTexture = nullptr;
 
 	if (!isffmpegDecode)
 	{
@@ -2392,10 +2382,9 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 		muBitmap.lock();
 		glTexture = RenderFFmpegToTexture();
 		muBitmap.unlock();
-
 	}
 
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-       
+	duration = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
+
 	return glTexture;
 }

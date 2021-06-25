@@ -109,9 +109,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="xfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

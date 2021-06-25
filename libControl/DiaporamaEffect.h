@@ -2,6 +2,7 @@
 #include "BitmapFusionFilter.h"
 #include "BitmapDisplay.h"
 #include <effect_id.h>
+
 namespace Regards
 {
 	namespace Filter
@@ -9,20 +10,28 @@ namespace Regards
 		class CDiaporamaEffect : public CBitmapFusionFilter
 		{
 		public:
-			CDiaporamaEffect() {};
-			~CDiaporamaEffect() {};
+			CDiaporamaEffect()
+			{
+			};
 
-			int GetTypeFilter()
+			~CDiaporamaEffect() override
+			{
+			};
+
+			int GetTypeFilter() override
 			{
 				return IDM_DIAPORAMA_TRANSITION;
 			}
 
-			virtual void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+			void SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
+			                         CImageLoadingFormat* bmpSecond) override
 			{
 				bmpViewer->StartTransitionEffect(bmpSecond, true);
 			}
 
-			virtual void AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
+			void AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL,
+			                 IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext,
+			                 float& ratio) override
 			{
 				if (etape < 110)
 				{

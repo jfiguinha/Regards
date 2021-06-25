@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "ThumbnailVideoExport.h"
 #include "FFmpegDecodeFrame.h"
@@ -18,6 +19,7 @@ using namespace Regards::Picture;
 class CThumbnailDiaporama
 {
 public:
+	virtual ~CThumbnailDiaporama() = default;
 	CRegardsBitmap* GenerateBitmapForVideo(const wxString& filename, int width, int height);
 	int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame, int width, int height,
 	                  int effect);
@@ -37,7 +39,7 @@ public:
 //**********************************************************************
 //
 //**********************************************************************
-class CThumbnailVideoExportImpl : public CThumbnailDiaporama
+class CThumbnailVideoExportImpl final : public CThumbnailDiaporama
 {
 public:
 	int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height) override;
@@ -53,13 +55,13 @@ public:
 private:
 	AVDictionary* opt = nullptr;
 	SwsContext* convertCtx = nullptr;
-	AVOutputFormat* fmt;
+	AVOutputFormat* fmt_ = nullptr;
 	AVFormatContext* oc = nullptr;
 	AVStream* stream = nullptr;
 	AVCodec* codec = nullptr;
 	AVCodecContext* c = nullptr;
-	AVPacket* pkt;
-	AVFrame* yuvpic;
+	AVPacket* pkt = nullptr;
+	AVFrame* yuvpic = nullptr;
 };
 
 #ifdef EXPORT_DIAPORAMA_OPENCV
@@ -109,7 +111,6 @@ int CThumbnailDiaporama::SendMessageProgress()
 //**********************************************************************
 int CThumbnailVideoExportImpl::WritePicture(CRegardsBitmap* bitmapData)
 {
-	int ret = 0;
 	uint8_t* convertedFrameBuffer = bitmapData->GetPtBitmap();
 	int linesize = bitmapData->GetBitmapWidth() * 4;
 
@@ -156,7 +157,6 @@ int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const
 int CThumbnailVideoExportImpl::CopyPicture(const wxString& filename, const int& nbFrame, int width, int height)
 {
 	CRegardsBitmap* src_bitmap = listOfPicture[filename]; //GenerateBitmapForVideo(filename, width, height);
-	int ret = 0;
 	uint8_t* convertedFrameBuffer = src_bitmap->GetPtBitmap();
 	int linesize = src_bitmap->GetBitmapWidth() * 4;
 
@@ -222,7 +222,7 @@ void CThumbnailVideoOpenCVExportImpl::WriteVideoFrame(Mat * dest, CRegardsBitmap
 //**********************************************************************
 //
 //**********************************************************************
-void CThumbnailVideoExportImpl::WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitmap, int width, int height)
+auto CThumbnailVideoExportImpl::WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitmap, int width, int height) -> void
 {
 	if (dest == nullptr)
 	{
@@ -245,7 +245,6 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                                        int width, int height, int effect)
 {
 	CLibPicture libPicture;
-	bool pictureOK = true;
 	CRegardsBitmap* pBitmap1 = nullptr;
 	if (!filename1.empty())
 		pBitmap1 = listOfPicture[filename1]; // GenerateBitmapForVideo(filename1, width, height);
@@ -341,6 +340,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 			}
 			break;
 		}
+	default: ;
 	}
 
 	src2.release();
@@ -355,9 +355,6 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 //**********************************************************************
 int CThumbnailVideoExportImpl::encode(AVCodecContext* enc_ctx, AVFrame* frame, AVPacket* pkt)
 {
-	/* send the frame to the encoder */
-	if (frame)
-		printf("Send frame %d\n", frame->pts);
 
 	int ret = avcodec_send_frame(enc_ctx, frame);
 	if (ret < 0)
@@ -396,7 +393,6 @@ int CThumbnailVideoExportImpl::encode(AVCodecContext* enc_ctx, AVFrame* frame, A
 int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps,
                                         int width, int height, int effect)
 {
-	int movie_duration = 0;
 	CLibPicture libPicture;
 	vector<wxString> picturefile;
 
@@ -410,16 +406,15 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 		}
 	}
 
-	int position = 0;
 	const int nbFrameByPicture = delay * fps;
-	int nbFrameEffect = fps * 2;
-	int j = 0;
+	const int nbFrameEffect = fps * 2;
+
 	countNbFrame = delay * fps * picturefile.size();
 
 	if (effect != IDM_DIAPORAMA_TRANSITION && effect != IDM_DIAPORAMA_NONE)
 		countNbFrame += nbFrameEffect * (picturefile.size() - 1);
 
-	movie_duration = countNbFrame / fps;
+	int movie_duration = countNbFrame / fps;
 
 	wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr,
 	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
@@ -427,13 +422,13 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 
 	for (int i = 0; i < picturefile.size(); i++)
 	{
+		int position;
 		if ((i == 0 || effect == IDM_DIAPORAMA_NONE) && effect != IDM_DIAPORAMA_TRANSITION)
 		{
 			CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 			listOfPicture[listOfFile[i]] = src_bitmap;
 
 			CopyPicture(picturefile[i], nbFrameByPicture, width, height);
-			position = nbFrameByPicture;
 			if (endProcess)
 				break;
 		}
@@ -448,7 +443,6 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 				{
 					int iStart = i * nbFrameByPicture;
 					ExecuteEffect("", picturefile[i], nbFrameByPicture, width, height, effect);
-					position = iStart + nbFrameByPicture;
 					if (endProcess)
 						break;
 				}
@@ -463,7 +457,6 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 						break;
 
 					CopyPicture(picturefile[i], nbFrameByPicture, width, height);
-					position = iStart + nbFrameByPicture;
 					if (endProcess)
 						break;
 				}
@@ -473,12 +466,12 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 
 		if (i > 2)
 		{
-			for (int i = i - 2; i < i - 1; i++)
+			for (int i1 = i1 - 2; i1 < i1 - 1; i1++)
 			{
-				CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i]];
+				CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i1]];
 				if (src_bitmap != nullptr)
 					delete src_bitmap;
-				listOfPicture[listOfFile[i]] = nullptr;
+				listOfPicture[listOfFile[i1]] = nullptr;
 			}
 		}
 
@@ -506,7 +499,6 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfile, vector<wxString>& listOfFile,
                                                            int delay, int fps, int width, int height, int effect)
 {
-	int movie_duration = 0;
 	int ret = 0;
 	convertCtx = sws_getContext(width, height, AV_PIX_FMT_BGRA, width, height, AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR,
 	                            nullptr, nullptr, nullptr);
@@ -570,7 +562,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 	yuvpic->height = height;
 	ret = av_frame_get_buffer(yuvpic, 1);
 
-	movie_duration = ExecuteProcess(outfile, listOfFile, delay, fps, width, height, effect);
+	int movie_duration = ExecuteProcess(outfile, listOfFile, delay, fps, width, height, effect);
 
 	/* flush the encoder */
 	if (!endProcess)

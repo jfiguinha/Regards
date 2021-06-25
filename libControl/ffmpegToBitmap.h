@@ -3,8 +3,8 @@
 using namespace Regards::OpenGL;
 
 extern "C" {
-    #include <libswscale/swscale.h>
-    #include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavcodec/avcodec.h>
 }
 
 class CRegardsBitmap;
@@ -12,24 +12,23 @@ class CRegardsBitmap;
 class CffmpegToBitmap
 {
 public:
-   CffmpegToBitmap(const bool & rgba = false);
-    ~CffmpegToBitmap();
-    int GetVideoWidth();
-    int GetVideoHeight();
-    int GetThumbnailWidth();
-    int GetThumbnailHeight();    
-    void DeleteData();
-    void InitContext(AVFrame * src_frame, const bool & bicubic, const int & thumbnailWidth, const int & thumbnailHeight);
-    //void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+	CffmpegToBitmap(const bool& rgba = false);
+	~CffmpegToBitmap();
+	int GetVideoWidth();
+	int GetVideoHeight();
+	int GetThumbnailWidth();
+	int GetThumbnailHeight();
+	void DeleteData();
+	void InitContext(AVFrame* src_frame, const bool& bicubic, const int& thumbnailWidth, const int& thumbnailHeight);
+	//void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
 	//CRegardsBitmap * ConvertFrameToRgba32();
-	int GetConvert(CRegardsBitmap * bitmap, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
-	CRegardsBitmap * GetConvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+	int GetConvert(CRegardsBitmap* bitmap, AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
+	CRegardsBitmap* GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
 
 private:
-
-    SwsContext* scaleContext = nullptr;
-    int videoFrameWidth;
-    int videoFrameHeight;
-    int videoFrameOutputWidth;
-    int videoFrameOutputHeight;    
+	SwsContext* scaleContext = nullptr;
+	int videoFrameWidth;
+	int videoFrameHeight;
+	int videoFrameOutputWidth;
+	int videoFrameOutputHeight;
 };

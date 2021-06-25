@@ -10,7 +10,7 @@
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
 
-CMetadataExiv2::CMetadataExiv2(const wxString &filename)
+CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 {
 	metaExiv = nullptr;
 	CLibPicture libPicture;
@@ -31,11 +31,9 @@ CMetadataExiv2::CMetadataExiv2(const wxString &filename)
 		{
 			metaExiv = new CPictureMetadataExiv(buffer, size);
 		}
-
 	}
 	else
 		metaExiv = new CPictureMetadataExiv(filename);
-
 }
 
 
@@ -48,7 +46,7 @@ wxString CMetadataExiv2::GetCreationDate()
 
 int CMetadataExiv2::GetOrientation()
 {
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		return metaExiv->GetOrientation();
 	return 0;
 }
@@ -58,7 +56,7 @@ CMetadataExiv2::~CMetadataExiv2()
 	if (buffer != nullptr)
 		delete[] buffer;
 
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		delete metaExiv;
 }
 
@@ -69,29 +67,31 @@ bool CMetadataExiv2::HasExif()
 	return false;
 }
 
-bool CMetadataExiv2::CopyMetadata(const wxString &output)
+bool CMetadataExiv2::CopyMetadata(const wxString& output)
 {
 	return metaExiv->CopyMetadata(output);
 }
 
 bool CMetadataExiv2::HasThumbnail()
 {
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		return metaExiv->HasThumbnail();
 	return false;
 }
 
-void CMetadataExiv2::SetDateTime(const wxString &dateTime)
+void CMetadataExiv2::SetDateTime(const wxString& dateTime)
 {
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		metaExiv->SetDateTime(dateTime);
 }
-		
-void CMetadataExiv2::SetGpsInfos(const wxString &latitudeRef, const wxString & longitudeRef, const wxString &latitude, const wxString &longitude)
+
+void CMetadataExiv2::SetGpsInfos(const wxString& latitudeRef, const wxString& longitudeRef, const wxString& latitude,
+                                 const wxString& longitude)
 {
 	if (metaExiv != nullptr)
 		metaExiv->SetGpsInfos(latitudeRef, longitudeRef, latitude, longitude);
 }
+
 /*
 void CMetadataExiv2::ReadVideo(bool & hasGps, bool & hasDataTime, wxString & dateTimeInfos, wxString & latitude, wxString & longitude)
 {
@@ -100,21 +100,22 @@ void CMetadataExiv2::ReadVideo(bool & hasGps, bool & hasDataTime, wxString & dat
 }
 */
 
-void CMetadataExiv2::ReadPicture(bool & hasGps, bool & hasDataTime, wxString & dateTimeInfos, wxString & latitude, wxString & longitude)
+void CMetadataExiv2::ReadPicture(bool& hasGps, bool& hasDataTime, wxString& dateTimeInfos, wxString& latitude,
+                                 wxString& longitude)
 {
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		metaExiv->ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitude, longitude);
 }
 
 vector<CMetadata> CMetadataExiv2::GetMetadata()
 {
 	CLibPicture libPicture;
-	if(libPicture.TestIsVideo(filename))
+	if (libPicture.TestIsVideo(filename))
 	{
 		return CMediaInfo::ReadMetadata(filename);
 	}
 
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		return metaExiv->GetMetadata();
 
 	vector<CMetadata> meta;
@@ -122,9 +123,9 @@ vector<CMetadata> CMetadataExiv2::GetMetadata()
 }
 
 
-CxMemFile * CMetadataExiv2::DecodeThumbnail(wxString &extension, int &orientation)
+CxMemFile* CMetadataExiv2::DecodeThumbnail(wxString& extension, int& orientation)
 {
-	if(metaExiv != nullptr)
+	if (metaExiv != nullptr)
 		return metaExiv->DecodeThumbnail(extension, orientation);
 	return nullptr;
 }

@@ -3,7 +3,7 @@
  */
 
 #ifdef WIN32
- #include <windows.h>
+#include <windows.h>
 #endif
 
 
@@ -14,40 +14,38 @@
 #if CXIMAGE_SUPPORT_TIF
 
 #include "tiffiop.h"
-#include "tiffvers.h"
-
 #include "xfile.h"
 
-static tsize_t 
+static tsize_t
 _tiffReadProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-	return (tsize_t)((CxFile*)fd)->Read(buf, 1, size);
+	return static_cast<tsize_t>(static_cast<CxFile*>(fd)->Read(buf, 1, size));
 }
 
 static tsize_t
 _tiffWriteProcEx(thandle_t fd, tdata_t buf, tsize_t size)
 {
-	return (tsize_t)((CxFile*)fd)->Write(buf, 1, size);
+	return static_cast<tsize_t>(static_cast<CxFile*>(fd)->Write(buf, 1, size));
 }
 
 static toff_t
 _tiffSeekProcEx(thandle_t fd, toff_t off, int whence)
 {
-	if ( off == 0xFFFFFFFF ) 
+	if (off == 0xFFFFFFFF)
 		return 0xFFFFFFFF;
-	if (!((CxFile*)fd)->Seek(off, whence))
+	if (!static_cast<CxFile*>(fd)->Seek(off, whence))
 		return 0xFFFFFFFF;
 	if (whence == SEEK_SET)
 		return off;
 
-	return (toff_t)((CxFile*)fd)->Tell();
+	return static_cast<toff_t>(static_cast<CxFile*>(fd)->Tell());
 }
 
 // Return nonzero if error
 static int
 _tiffCloseProcEx(thandle_t /*fd*/)
 {
-//	return !((CxFile*)fd)->Close(); // "//" needed for memory files <DP>
+	//	return !((CxFile*)fd)->Close(); // "//" needed for memory files <DP>
 	return 0;
 }
 
@@ -56,7 +54,7 @@ _tiffCloseProcEx(thandle_t /*fd*/)
 static toff_t
 _tiffSizeProcEx(thandle_t fd)
 {
-	return ((CxFile*)fd)->Size();
+	return static_cast<CxFile*>(fd)->Size();
 }
 
 static int
@@ -92,9 +90,9 @@ _TIFFFdOpen(void* fd, const char* name, const char* mode)
 	TIFF* tif;
 
 	tif = TIFFClientOpen(name, mode,
-	    (thandle_t) fd,
-	    _tiffReadProcEx, _tiffWriteProcEx, _tiffSeekProcEx, _tiffCloseProcEx,
-	    _tiffSizeProcEx, _tiffMapProcEx, _tiffUnmapProcEx);
+	                     fd,
+	                     _tiffReadProcEx, _tiffWriteProcEx, _tiffSeekProcEx, _tiffCloseProcEx,
+	                     _tiffSizeProcEx, _tiffMapProcEx, _tiffUnmapProcEx);
 	if (tif)
 	{
 		tif->tif_fd = (long)fd;
@@ -143,13 +141,13 @@ _TIFFmemset(tdata_t p, int v, tsize_t c)
 void
 _TIFFmemcpy(tdata_t d, const tdata_t s, tsize_t c)
 {
-	memcpy(d, s, (size_t) c);
+	memcpy(d, s, static_cast<size_t>(c));
 }
 
 int
 _TIFFmemcmp(const tdata_t p1, const tdata_t p2, tsize_t c)
 {
-	return (memcmp(p1, p2, (size_t) c));
+	return (memcmp(p1, p2, static_cast<size_t>(c)));
 }
 
 
@@ -223,4 +221,3 @@ Win32ErrorHandler(const char* module, const char* fmt, va_list ap)
 //TIFFErrorHandler _TIFFerrorHandler = Win32ErrorHandler;
 
 #endif
-

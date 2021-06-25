@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 // DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
@@ -215,14 +216,13 @@ void CLibPicture::Uninitx265Decoder()
 
 bool CLibPicture::TestIsPicture(const wxString& szFileName)
 {
-	int numExt = 0;
 	wxFileName fichier(szFileName);
 	wxString extension = fichier.GetExt();
 
 	if (ImageFormat(CConvertUtility::ConvertToUTF8(szFileName)) != FIF_UNKNOWN)
 		return true;
 
-	numExt = TestExtension(extension.Lower());
+	const int numExt = TestExtension(extension.Lower());
 	if (numExt < 100 && numExt != ANI && numExt != 0)
 		return true;
 	return false;
@@ -230,11 +230,10 @@ bool CLibPicture::TestIsPicture(const wxString& szFileName)
 
 bool CLibPicture::TestIsPDF(const wxString& szFileName)
 {
-	int numExt = 0;
 	wxFileName fichier(szFileName.c_str());
 	wxString extension = fichier.GetExt();
 
-	numExt = TestExtension(extension.Lower());
+	const int numExt = TestExtension(extension.Lower());
 	if (numExt == PDF)
 		return true;
 	return false;
@@ -242,11 +241,10 @@ bool CLibPicture::TestIsPDF(const wxString& szFileName)
 
 bool CLibPicture::TestIsVideo(const wxString& szFileName)
 {
-	int numExt = 0;
 	wxFileName fichier(szFileName.c_str());
 	wxString extension = fichier.GetExt();
 
-	numExt = TestExtension(extension.Lower());
+	const int numExt = TestExtension(extension.Lower());
 	if (numExt > 100)
 		return true;
 	return false;
@@ -277,14 +275,6 @@ int CLibPicture::TestImageFormat(const wxString& szFileName)
 		wxString extension = fichier.GetExt();
 		if (extension.size() < 3)
 			return 0;
-
-		FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-		numExt = TestExtension(extension.Lower());
-		if (numExt == 0)
-		{
-			//Test if I can found a valid extension
-			fif = ImageFormat(CConvertUtility::ConvertToUTF8(szFileName));
-		}
 
 		numExt = TestExtension(extension.Lower());
 	}
@@ -402,10 +392,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 			BmpOption bmpOption(nullptr);
 			bmpOption.ShowModal();
 			if (bmpOption.IsOk())
-			{
 				quality = bmpOption.CompressionOption();
-				returnValue = 1;
-			}
 
 			returnValue = 1;
 		}
@@ -464,6 +451,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 							quality = tiffOption.CompressionOption();
 					}
 					break;
+				default: ;
 				}
 				returnValue = 1;
 			}
@@ -588,6 +576,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 			returnValue = 1;
 		}
 		break;
+	default: ;
 	}
 
 	return returnValue;
@@ -1107,6 +1096,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			delete image;
 		}
 		break;
+	default: ;
 	}
 
 
@@ -1205,7 +1195,7 @@ bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& fileName, const wx
 
 bool CLibPicture::TestIsExifCompatible(const wxString& filename)
 {
-	int iFormat = TestImageFormat(filename);
+	const int iFormat = TestImageFormat(filename);
 	if ((iFormat == JPEG || iFormat == PNG || iFormat == TIFF || iFormat == WEBP || iFormat == RAWFILE || iFormat ==
 		HEIC || iFormat == AVIF))
 		return true;
@@ -1217,11 +1207,8 @@ bool CLibPicture::TestIsExifCompatible(const wxString& filename)
 //-----------------------------------------------------------------------------
 int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap)
 {
-	wxString wxfileName;
-	int iFormat = 0;
-
-	iFormat = TestImageFormat(fileName);
-	wxfileName = fileName;
+	const int iFormat = TestImageFormat(fileName);
+	const wxString wxfileName = fileName;
 
 	int option = 0;
 	int quality = 0;
@@ -1387,6 +1374,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bitmap->SetFilename(szFileName);
 				break;
 			}
+		default: ;
 		}
 	}
 	catch (...)
@@ -1423,17 +1411,12 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 	int rotation = 0;
 
 
-	//CThumbnailVideo video(szFileName);
-	//int movieDuration = 0;
-	int pourcentage = 0;
-
-	//Test if is animation
-	bool isAnimation = false;
-	isAnimation = TestIsAnimation(szFileName);
+	const bool isAnimation = TestIsAnimation(szFileName);
 
 	for (auto i = 0; i < size; i++)
 	{
-		float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
+		const int pourcentage = 0;
+		const float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 		auto cxVideo = new CImageVideoThumbnail();
 		//CRegardsBitmap * picture = nullptr;
 		//int timePosition = 0;
@@ -1484,7 +1467,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 {
 	wxPoppler poppler;
 	wxImage image;
-	wxBitmapType bitmapTypeWxWidget;
+	wxBitmapType bitmapTypeWxWidget = {};
 
 	//int iFormat = TestImageFormat(szFileName);
 	//bool needresize = true;
@@ -1544,24 +1527,24 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	{
 		for (auto i = 0; i < m_ani_images; i++)
 		{
-			bool returnValue = false;
+			bool return_value;
 			image.Destroy();
 			if (bitmapType == PDF)
 			{
-				returnValue = poppler.SelectPage(i);
-				if (returnValue)
-					returnValue = poppler.RenderPage();
+				return_value = poppler.SelectPage(i);
+				if (return_value)
+					return_value = poppler.RenderPage();
 
-				if (returnValue)
+				if (return_value)
 					image = poppler.GetImage();
 			}
 			else
 			{
-				returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
+				return_value = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
 			}
 
 
-			if (!returnValue)
+			if (!return_value)
 			{
 				wxString tmp = wxT("Can't load image number ");
 				tmp << i;
@@ -1569,7 +1552,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			}
 			else
 			{
-				CRegardsBitmap* bitmap = nullptr;
+				CRegardsBitmap* bitmap;
 				//wxMemoryDC memdc;
 				if (isThumbnail)
 				{
@@ -1684,6 +1667,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 			return 20;
 			break;
 		}
+	default: ;
 	}
 
 	return 1;
@@ -1725,6 +1709,7 @@ uint32_t CLibPicture::GetFrameDelay(const wxString& szFileName)
 			delete _cxImage;
 		}
 		break;
+	default: ;
 	}
 	return delay;
 }
@@ -1738,8 +1723,7 @@ CImageLoadingFormat* CLibPicture::GetCancelPhoto(const wxString& szFileName, con
 	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
 #endif
 
-	auto bitmap = new CImageLoadingFormat();
-	bitmap = LoadPicture(photoCancel);
+	auto bitmap = LoadPicture(photoCancel);
 	if (widthThumbnail > 0 && heightThumbnail > 0)
 		bitmap->Resize(widthThumbnail, heightThumbnail, 0);
 	bitmap->SetFilename(szFileName);
@@ -1910,19 +1894,19 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 
 bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 {
-	bool isValid = true;
+	bool is_valid;
 
 	if (fileValid.find(szFileName) != fileValid.end())
 	{
-		isValid = fileValid[szFileName];
+		is_valid = fileValid[szFileName];
 	}
 	else
 	{
 		CThumbnailVideo video(szFileName);
-		isValid = video.IsOk();
-		fileValid.insert(std::make_pair(szFileName, isValid));
+		is_valid = video.IsOk();
+		fileValid.insert(std::make_pair(szFileName, is_valid));
 	}
-	return isValid;
+	return is_valid;
 }
 
 //--------------------------------------------------------------------------------------------
@@ -2079,9 +2063,9 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			if (bitmap != nullptr)
 			{
 				bitmap->VertFlipBuf();
-				int exif = DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
-				imageLoading->ApplyExifOrientation(exif);
-				sqlPhotos.InsertPhotoExif(fileName, exif);
+				int exif_method = DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
+				imageLoading->ApplyExifOrientation(exif_method);
+				sqlPhotos.InsertPhotoExif(fileName, exif_method);
 				delete bitmap;
 			}
 		}
@@ -2107,40 +2091,38 @@ float CLibPicture::CalculPictureRatio(const int& pictureWidth, const int& pictur
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
-	float newRatio = 1;
+	float new_ratio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = static_cast<float>(widthThumbnail) / static_cast<float>(pictureWidth);
+		new_ratio = static_cast<float>(widthThumbnail) / static_cast<float>(pictureWidth);
 	else
-		newRatio = static_cast<float>(heightThumbnail) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(heightThumbnail) / static_cast<float>(pictureHeight);
 
-	if ((pictureHeight * newRatio) > heightThumbnail)
+	if ((pictureHeight * new_ratio) > heightThumbnail)
 	{
-		newRatio = static_cast<float>(heightThumbnail) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(heightThumbnail) / static_cast<float>(pictureHeight);
 	}
 	else
 	{
-		if ((pictureWidth * newRatio) > widthThumbnail)
+		if ((pictureWidth * new_ratio) > widthThumbnail)
 		{
-			newRatio = static_cast<float>(widthThumbnail) / static_cast<float>(pictureWidth);
+			new_ratio = static_cast<float>(widthThumbnail) / static_cast<float>(pictureWidth);
 		}
 	}
 
-	return newRatio;
+	return new_ratio;
 }
 
 bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, int& height)
 {
 #ifdef __FREEIMAGE__
-	//image format
-	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
 	FIBITMAP* dib(nullptr);
 
 	//check the file signature and deduce its format
-	fif = FreeImage_GetFileType(filename, 0);
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(filename, 0);
 	//if still unknown, try to guess the file format from the file extension
 	if (fif == FIF_UNKNOWN)
 		fif = FreeImage_GetFIFFromFilename(filename);
@@ -2170,8 +2152,6 @@ CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 {
 	CRegardsBitmap* bitmap = nullptr;
 #ifdef __FREEIMAGE__
-	//image format
-	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
 	FIBITMAP* dib(nullptr);
 	FIBITMAP* dibRgba(nullptr);
@@ -2181,7 +2161,7 @@ CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 	unsigned int width(0), height(0);
 
 	//check the file signature and deduce its format
-	fif = FreeImage_GetFileType(filename, 0);
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(filename, 0);
 	//if still unknown, try to guess the file format from the file extension
 	if (fif == FIF_UNKNOWN)
 		fif = FreeImage_GetFIFFromFilename(filename);
@@ -2382,12 +2362,12 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 				if (_compressedImage != nullptr && data_size > 0)
 				{
 #if defined(WIN32)
-					int returnValue = 0;
 					int width = 0, height = 0;
 					//size_t size = 0;
 					uint8_t* data = nullptr;
 					if (BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
 					{
+						int returnValue = 0;
 						data = new uint8_t[width * height * 4];
 						size_t data_len = width * height * 4;
 						returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height,
@@ -3045,7 +3025,7 @@ bool CLibPicture::HasThumbnail(const wxString& filename)
 void CLibPicture::writefile(const wxString& fileName, uint8_t* data, size_t& size)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	FILE* file = nullptr;
+	FILE* file;
 	if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "wb")) == nullptr)
 		cout << "File Failed To Load\n";
 	else
@@ -3060,7 +3040,7 @@ uint8_t* CLibPicture::readfile(const wxString& fileName, size_t& _fileSize)
 	_fileSize = 0;
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	uint8_t* _compressedImage = nullptr;
-	FILE* file = nullptr;
+	FILE* file;
 	if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "rb")) == nullptr)
 		cout << "File Failed To Load\n";
 	else
@@ -3111,12 +3091,12 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case WEBP:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			int result = 0;
 			size_t data_size;
 			uint8_t* data = readfile(fileName, data_size);
 			if (data != nullptr && data_size > 0)
 			{
-				result = WebPGetInfo(data, data_size, &width, &height);
+				int result = 0;
+				WebPGetInfo(data, data_size, &width, &height);
 				delete[] data;
 			}
 			break;
@@ -3351,7 +3331,7 @@ void CLibPicture::UninitFreeImage()
 CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pictureOK, const int& resizeWidth,
                                              const int& resizeHeight)
 {
-	CPictureData* pictureData = nullptr;
+	CPictureData* picture_data = nullptr;
 	CLibPicture libPicture;
 	CImageLoadingFormat* imageLoading = libPicture.LoadPicture(filename);
 
@@ -3363,25 +3343,25 @@ CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pic
 			imageLoading->ApplyExifOrientation(1);
 			imageLoading->ConvertToRGB24(true);
 			//Calcul Resize Size
-			pictureData = new CPictureData();
+			picture_data = new CPictureData();
 			if (resizeWidth != 0 && resizeHeight != 0)
 			{
-				float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth,
-				                                 resizeHeight);
-				pictureData->SetWidth(imageLoading->GetWidth() * ratio);
-				pictureData->SetHeight(imageLoading->GetHeight() * ratio);
-				imageLoading->Resize(pictureData->GetWidth(), pictureData->GetHeight(), 1);
+				const float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth,
+				                                       resizeHeight);
+				picture_data->SetWidth(imageLoading->GetWidth() * ratio);
+				picture_data->SetHeight(imageLoading->GetHeight() * ratio);
+				imageLoading->Resize(picture_data->GetWidth(), picture_data->GetHeight(), 1);
 			}
 			else
 			{
-				pictureData->SetWidth(imageLoading->GetWidth());
-				pictureData->SetHeight(imageLoading->GetHeight());
+				picture_data->SetWidth(imageLoading->GetWidth());
+				picture_data->SetHeight(imageLoading->GetHeight());
 			}
 
 			unsigned long outputsize = 0;
 			int compressMethod = 0;
 			uint8_t* data = imageLoading->GetJpegData(outputsize, compressMethod);
-			pictureData->SetJpegData(data, outputsize);
+			picture_data->SetJpegData(data, outputsize);
 			imageLoading->DestroyJpegData(data, compressMethod);
 		}
 	}
@@ -3391,13 +3371,12 @@ CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pic
 
 	imageLoading = nullptr;
 
-	return pictureData;
+	return picture_data;
 }
 
 CPictureData* CLibPicture::LoadPictureData(const wxString& filename, bool& pictureOK)
 {
-	CPictureData* pictureData = nullptr;
-	pictureData = LoadPictureToJpeg(filename, pictureOK);
+	auto pictureData = LoadPictureToJpeg(filename, pictureOK);
 	return pictureData;
 }
 

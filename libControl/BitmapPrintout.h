@@ -1,3 +1,4 @@
+// ReSharper disable All
 #pragma once
 #include <RegardsBitmap.h>
 
@@ -26,45 +27,43 @@ namespace Regards
 {
 	namespace Control
 	{
-		
 		// Defines a new printout class to print our document
-		class CBitmapPrintout: public wxPrintout
+		class CBitmapPrintout : public wxPrintout
 		{
 		public:
-			CBitmapPrintout(CImageLoadingFormat * image, const wxString &title = wxT("My picture"))
-				: wxPrintout(title) {
+			CBitmapPrintout(CImageLoadingFormat* image, const wxString& title = wxT("My picture"))
+				: wxPrintout(title)
+			{
 				m_picture = image;
 				typeImage = 1;
 				m_bitmap = nullptr;
 			}
 
-			CBitmapPrintout(CRegardsBitmap * image, const wxString &title = wxT("My picture"))
-				: wxPrintout(title) {
+			CBitmapPrintout(CRegardsBitmap* image, const wxString& title = wxT("My picture"))
+				: wxPrintout(title)
+			{
 				m_bitmap = image;
 				typeImage = 2;
 				m_picture = nullptr;
 			}
 
 			CBitmapPrintout();
-			~CBitmapPrintout();
+			~CBitmapPrintout() override;
 
-			virtual bool OnPrintPage(int page);
-			virtual bool HasPage(int page);
-			virtual bool OnBeginDocument(int startPage, int endPage);
-			virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
+			bool OnPrintPage(int page) override;
+			bool HasPage(int page) override;
+			bool OnBeginDocument(int startPage, int endPage) override;
+			void GetPageInfo(int* minPage, int* maxPage, int* selPageFrom, int* selPageTo) override;
 
-			void DrawPicture(const int & pageNum);
+			void DrawPicture(const int& pageNum);
 
 			// Writes a header on a page. Margin units are in millimetres.
-			bool WritePageHeader(wxPrintout *printout, wxDC *dc, const wxString& text, float mmToLogical);
+			bool WritePageHeader(wxPrintout* printout, wxDC* dc, const wxString& text, float mmToLogical);
 
 		private:
-
 			int typeImage;
-			CRegardsBitmap * m_bitmap;
-			CImageLoadingFormat * m_picture;
+			CRegardsBitmap* m_bitmap;
+			CImageLoadingFormat* m_picture;
 		};
-		
 	}
 }
-

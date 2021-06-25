@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "Heic.h"
 #ifdef LIBHEIC
@@ -43,7 +44,7 @@ void CHeic::Uninitx265Decoder()
 static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
                                 int pixelsPerLine, int bit_depth)
 {
-	auto data16 = (const uint16_t*)data;
+	auto data16 = reinterpret_cast<const uint16_t*>(data);
 	auto out = new uint8_t[pixelsPerLine * height];
 
 	for (auto y = 0; y < height; y++)
@@ -254,18 +255,16 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 {
 	CRegardsBitmap* picture = nullptr;
-	de265_error err = DE265_OK;
 	de265_decoder_context* decoderContext = nullptr;
 	if (decoderContext == nullptr)
 		decoderContext = de265_new_decoder();
 	else
 		decoderContext = externDecoder;
 
-	err = de265_push_data(decoderContext, data, length, 0, nullptr);
+	de265_error err = de265_push_data(decoderContext, data, length, 0, nullptr);
 	if (err == DE265_OK)
 	{
 		int check_hash = 1;
-		int stop = 1;
 		int quiet = 0;
 		err = de265_flush_data(decoderContext);
 		if (err == DE265_OK)
@@ -290,7 +289,7 @@ CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 						fprintf(stderr, "ERROR: %s\n", de265_get_error_text(err));
 
 					if (check_hash && err == DE265_ERROR_CHECKSUM_MISMATCH)
-						stop = 1;
+						break;
 					more = 0;
 					break;
 				}
@@ -322,7 +321,7 @@ CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 			}
 		}
 	}
-	err = de265_free_decoder(decoderContext);
+	de265_free_decoder(decoderContext);
 
 	return picture;
 }
@@ -330,12 +329,10 @@ CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 vector<CRegardsBitmap*> DecodePictureList(de265_decoder_context* decoderContext, const string& filename)
 {
 	vector<CRegardsBitmap*> listPicture;
-	de265_error err = DE265_OK;
 
 	int check_hash = 1;
-	int stop = 1;
 	int quiet = 0;
-	err = de265_flush_data(decoderContext);
+	de265_error err = de265_flush_data(decoderContext);
 	if (err == DE265_OK)
 	{
 		int more = 1;
@@ -358,7 +355,7 @@ vector<CRegardsBitmap*> DecodePictureList(de265_decoder_context* decoderContext,
 					fprintf(stderr, "ERROR: %s\n", de265_get_error_text(err));
 
 				if (check_hash && err == DE265_ERROR_CHECKSUM_MISMATCH)
-					stop = 1;
+					break;
 				more = 0;
 				break;
 			}
@@ -399,78 +396,76 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 {
 	vector<CRegardsBitmap*> listPicture;
 	auto* reader = Reader::Create();
-	Array<uint32_t> itemIds;
+	Array<uint32_t> item_ids;
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
 	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
 	{
 		FileInformation info;
-		if (reader->getFileInformation(info) != ErrorCode::OK)
+		if (reader->getFileInformation(info) == ErrorCode::OK)
 		{
-			goto END;
-		}
-
-		if (info.trackInformation.size > 0)
-		{
-			// Print information for every track read
-			for (const auto& trackProperties : info.trackInformation)
+			if (info.trackInformation.size > 0)
 			{
-				const auto sequenceId = trackProperties.trackId;
-				//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
-
-				if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
+				// Print information for every track read
+				for (const auto& trackProperties : info.trackInformation)
 				{
-					isMasterSequence = true;
-					//cout << "This is a master image sequence." << endl;
-				}
+					const auto sequenceId = trackProperties.trackId;
+					//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
 
-				if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
-				{
-					// Assume there is only one type track reference, so check reference type and master track ID(s) from
-					// the first one.
-					isMasterSequence = false;
-					const auto tref = trackProperties.referenceTrackIds[0];
-					//cout << "Track reference type is '" << tref.type.value << "'" << endl;
-					//cout << "This is a thumbnail track for track ID ";
-					/*
-                    for (const auto masterTrackId : tref.trackIds)
-                    {
-                        //cout << masterTrackId << endl;
-                    }*/
-				}
-
-				Array<TimestampIDPair> timestamps;
-				reader->getItemTimestamps(sequenceId, timestamps);
-				//cout << "Sample timestamps:" << endl;
-				for (const auto& timestamp : timestamps)
-				{
-					delay = timestamp.timeStamp;
-					//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-				}
-
-				for (const auto& sampleProperties : trackProperties.sampleProperties)
-				{
-					// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
-					// decode all dependencies.
-					Array<SequenceImageId> itemsToDecode;
-					reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, itemsToDecode);
-					for (auto dependencyId : itemsToDecode)
+					if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
 					{
-						uint64_t size = 1024 * 1024;
-						auto sampleData = new uint8_t[size];
-						reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
-
-						//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
-						CRegardsBitmap* bitmapSrc = DecodeFrame(sampleData, size);
-						if (bitmapSrc != nullptr)
-						{
-							bitmapSrc->SetFilename(filename);
-							listPicture.push_back(bitmapSrc);
-						}
-
-						delete[] sampleData;
+						isMasterSequence = true;
+						//cout << "This is a master image sequence." << endl;
 					}
-					// Store or show the image...
+
+					if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
+					{
+						// Assume there is only one type track reference, so check reference type and master track ID(s) from
+						// the first one.
+						isMasterSequence = false;
+						const auto tref = trackProperties.referenceTrackIds[0];
+						//cout << "Track reference type is '" << tref.type.value << "'" << endl;
+						//cout << "This is a thumbnail track for track ID ";
+						/*
+						for (const auto masterTrackId : tref.trackIds)
+						{
+							//cout << masterTrackId << endl;
+						}*/
+					}
+
+					Array<TimestampIDPair> timestamps;
+					reader->getItemTimestamps(sequenceId, timestamps);
+					//cout << "Sample timestamps:" << endl;
+					for (const auto& timestamp : timestamps)
+					{
+						delay = timestamp.timeStamp;
+						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					}
+
+					for (const auto& sampleProperties : trackProperties.sampleProperties)
+					{
+						// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
+						// decode all dependencies.
+						Array<SequenceImageId> items_to_decode;
+						reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, items_to_decode);
+						for (auto dependencyId : items_to_decode)
+						{
+							uint64_t size = 1024 * 1024;
+							auto sampleData = new uint8_t[size];
+							reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
+
+							//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
+							CRegardsBitmap* bitmapSrc = DecodeFrame(sampleData, size);
+							if (bitmapSrc != nullptr)
+							{
+								bitmapSrc->SetFilename(filename);
+								listPicture.push_back(bitmapSrc);
+							}
+
+							delete[] sampleData;
+						}
+						// Store or show the image...
+					}
 				}
 			}
 		}
@@ -491,7 +486,7 @@ END:
 
 void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, const int& compression)
 {
-	struct heif_error err;
+	struct heif_error err{};
 	if (source)
 	{
 		heif_context* ctx = heif_context_alloc();
@@ -552,25 +547,23 @@ uint32_t CHeic::GetDelay(const string& filename)
 	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
 	{
 		FileInformation info;
-		if (reader->getFileInformation(info) != ErrorCode::OK)
+		if (reader->getFileInformation(info) == ErrorCode::OK)
 		{
-			goto END;
-		}
-
-		if (info.trackInformation.size > 0)
-		{
-			// Print information for every track read
-			for (const auto& trackProperties : info.trackInformation)
+			if (info.trackInformation.size > 0)
 			{
-				const auto sequenceId = trackProperties.trackId;
-				Array<TimestampIDPair> timestamps;
-				reader->getItemTimestamps(sequenceId, timestamps);
-				//cout << "Sample timestamps:" << endl;
-				for (const auto& timestamp : timestamps)
+				// Print information for every track read
+				for (const auto& trackProperties : info.trackInformation)
 				{
-					delay = timestamp.timeStamp;
-					break;
-					//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					const auto sequenceId = trackProperties.trackId;
+					Array<TimestampIDPair> timestamps;
+					reader->getItemTimestamps(sequenceId, timestamps);
+					//cout << "Sample timestamps:" << endl;
+					for (const auto& timestamp : timestamps)
+					{
+						delay = timestamp.timeStamp;
+						break;
+						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					}
 				}
 			}
 		}
@@ -581,7 +574,6 @@ uint32_t CHeic::GetDelay(const string& filename)
 			<< "Please download it from https://github.com/nokiatech/heif_conformance "
 			<< "and place it in same directory with the executable." << endl;
 	}
-END:
 
 	Reader::Destroy(reader);
 
@@ -600,81 +592,79 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename, bool& isMasterSequence
 	{
 		//de265_error err = de265_error::DE265_OK;
 		FileInformation info;
-		if (reader->getFileInformation(info) != ErrorCode::OK)
+		if (reader->getFileInformation(info) == ErrorCode::OK)
 		{
-			goto END;
-		}
-
-		if (info.trackInformation.size > 0)
-		{
-			// Print information for every track read
-			for (const auto& trackProperties : info.trackInformation)
+			if (info.trackInformation.size > 0)
 			{
-				const auto sequenceId = trackProperties.trackId;
-				//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
-
-				if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
+				// Print information for every track read
+				for (const auto& trackProperties : info.trackInformation)
 				{
-					isMasterSequence = true;
-					//cout << "This is a master image sequence." << endl;
-				}
+					const auto sequenceId = trackProperties.trackId;
+					//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
 
-				if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
-				{
-					// Assume there is only one type track reference, so check reference type and master track ID(s) from
-					// the first one.
-					isMasterSequence = false;
-					const auto tref = trackProperties.referenceTrackIds[0];
-					//cout << "Track reference type is '" << tref.type.value << "'" << endl;
-					//cout << "This is a thumbnail track for track ID ";
-					/*
-					for (const auto masterTrackId : tref.trackIds)
+					if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
 					{
-						//cout << masterTrackId << endl;
+						isMasterSequence = true;
+						//cout << "This is a master image sequence." << endl;
 					}
-					*/
-				}
 
-				Array<TimestampIDPair> timestamps;
-				reader->getItemTimestamps(sequenceId, timestamps);
-				//cout << "Sample timestamps:" << endl;
-				for (const auto& timestamp : timestamps)
-				{
-					delay = timestamp.timeStamp;
-					break;
-					//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
-				}
-
-				int i = 0;
-				for (const auto& sampleProperties : trackProperties.sampleProperties)
-				{
-					// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
-					// decode all dependencies.
-					Array<SequenceImageId> itemsToDecode;
-					reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, itemsToDecode);
-					for (auto dependencyId : itemsToDecode)
+					if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
 					{
-						if (i == numPicture)
+						// Assume there is only one type track reference, so check reference type and master track ID(s) from
+						// the first one.
+						isMasterSequence = false;
+						const auto tref = trackProperties.referenceTrackIds[0];
+						//cout << "Track reference type is '" << tref.type.value << "'" << endl;
+						//cout << "This is a thumbnail track for track ID ";
+						/*
+						for (const auto masterTrackId : tref.trackIds)
 						{
-							uint64_t size = 1024 * 1024;
-							auto sampleData = new uint8_t[size];
-							reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
-
-							//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
-							bitmapSrc = DecodeFrame(sampleData, size);
-							if (bitmapSrc != nullptr)
-							{
-								bitmapSrc->SetFilename(filename);
-							}
-
-							delete[] sampleData;
-							break;
+							//cout << masterTrackId << endl;
 						}
-						i++;
+						*/
 					}
-					// Store or show the image...
-					if (i == numPicture)
+
+					Array<TimestampIDPair> timestamps;
+					reader->getItemTimestamps(sequenceId, timestamps);
+					//cout << "Sample timestamps:" << endl;
+					for (const auto& timestamp : timestamps)
+					{
+						delay = timestamp.timeStamp;
 						break;
+						//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+					}
+
+					int i = 0;
+					for (const auto& sampleProperties : trackProperties.sampleProperties)
+					{
+						// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
+						// decode all dependencies.
+						Array<SequenceImageId> itemsToDecode;
+						reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, itemsToDecode);
+						for (auto dependencyId : itemsToDecode)
+						{
+							if (i == numPicture)
+							{
+								uint64_t size = 1024 * 1024;
+								auto sampleData = new uint8_t[size];
+								reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
+
+								//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
+								bitmapSrc = DecodeFrame(sampleData, size);
+								if (bitmapSrc != nullptr)
+								{
+									bitmapSrc->SetFilename(filename);
+								}
+
+								delete[] sampleData;
+								break;
+							}
+							i++;
+						}
+						// Store or show the image...
+						if (i == numPicture)
+							break;
+					}
 				}
 			}
 		}
@@ -685,7 +675,6 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename, bool& isMasterSequence
 			<< "Please download it from https://github.com/nokiatech/heif_conformance "
 			<< "and place it in same directory with the executable." << endl;
 	}
-END:
 
 	Reader::Destroy(reader);
 

@@ -2,8 +2,8 @@
 #include "CompressVideo.h"
 #include <window_id.h>
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(CompressVideo)
-	//*)
+//(*InternalHeadersPCH(CompressVideo)
+//*)
 #endif
 //(*InternalHeaders(CompressVideo)
 #include <wx/xrc/xmlres.h>
@@ -13,31 +13,31 @@
 //(*IdInit(CompressVideo)
 //*)
 
-BEGIN_EVENT_TABLE(CompressVideo,wxDialog)
+BEGIN_EVENT_TABLE(CompressVideo, wxDialog)
 	//(*EventTable(CompressVideo)
 	//*)
 END_EVENT_TABLE()
 
 CompressVideo::CompressVideo(wxWindow* parent)
 {
-    isOk = true;
+	isOk = true;
 	//(*Initialize(CompressVideo)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressVideo"),_T("wxDialog"));
-	ggProgress = (wxGauge*)FindWindow(XRCID("ID_GAUGEPRG"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressVideo"),_T("wxDialog"));
+	ggProgress = static_cast<wxGauge*>(FindWindow(XRCID("ID_GAUGEPRG")));
 	//panel = (wxPanel*)FindWindow(XRCID("ID_PANELVIDEO"));
-	labelProgression = (wxStaticText*)FindWindow(XRCID("ID_STPROGRESS"));
-	labelFrame = (wxStaticText*)FindWindow(XRCID("ID_STFRAME"));
-	labelTime = (wxStaticText*)FindWindow(XRCID("ID_STTIMEELAPSED"));
-	labelTimeMissing = (wxStaticText*)FindWindow(XRCID("ID_STTIMEMISSING"));
-	bitmap = (wxStaticBitmap*)FindWindow(XRCID("ID_BITMAPVIDEO"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
-	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressVideo::OnbtnCancelClick);
+	labelProgression = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STPROGRESS")));
+	labelFrame = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STFRAME")));
+	labelTime = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STTIMEELAPSED")));
+	labelTimeMissing = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STTIMEMISSING")));
+	bitmap = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEO")));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BUTTON1")));
+	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressVideo::OnbtnCancelClick);
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CompressVideo::OnPaint));
-    Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueMaxProgressBar));
-    Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueProgressBar));
-    Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CompressVideo::OnSetText));
+	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueMaxProgressBar));
+	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CompressVideo::OnSetValueProgressBar));
+	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CompressVideo::OnSetText));
 
-    Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CompressVideo::OnSetBitmap));
+	Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CompressVideo::OnSetBitmap));
 #ifndef __APPLE__
 	bitmap->Show(false);
 #endif
@@ -45,16 +45,16 @@ CompressVideo::CompressVideo(wxWindow* parent)
 
 void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 {
-	wxImage * bmp = (wxImage *)event.GetClientData();
+	auto bmp = static_cast<wxImage*>(event.GetClientData());
 	scale = bmp->Scale(344, 200).Mirror(false);
 #ifdef __APPLE__
     bitmap->SetBitmap(scale);
-#else 
+#else
 	wxPoint pt = bitmap->GetPosition();
 	wxClientDC dc(this);
 	dc.DrawBitmap(scale, pt.x, pt.y);
 #endif
-    delete bmp;
+	delete bmp;
 }
 
 
@@ -64,11 +64,11 @@ void CompressVideo::OnSetValueMaxProgressBar(wxCommandEvent& event)
 	//cout << "OnSetValueProgressBar Pos : " << position << endl;
 	if (ggProgress != nullptr)
 	{
-        if (ggProgress->GetRange() != position)
-        {
-       		ggProgress->SetRange(position);
-            ggProgress->Refresh();  
-        }
+		if (ggProgress->GetRange() != position)
+		{
+			ggProgress->SetRange(position);
+			ggProgress->Refresh();
+		}
 	}
 }
 
@@ -92,15 +92,14 @@ void CompressVideo::OnSetValueProgressBar(wxCommandEvent& event)
 
 CompressVideo::~CompressVideo()
 {
-
 }
 
 void CompressVideo::OnSetText(wxCommandEvent& event)
 {
 	int id = event.GetInt();
-    wxString * statusText = (wxString *)event.GetClientData();
-    if(statusText != nullptr)
-    {
+	auto statusText = static_cast<wxString*>(event.GetClientData());
+	if (statusText != nullptr)
+	{
 		switch (id)
 		{
 		case 1:
@@ -116,45 +115,44 @@ void CompressVideo::OnSetText(wxCommandEvent& event)
 			labelProgression->SetLabel(*statusText);
 			break;
 		}
-        
-        delete statusText;      
-    }
 
+		delete statusText;
+	}
 }
 
-void CompressVideo::SetTextProgression(const wxString &texte, const int &type)
+void CompressVideo::SetTextProgression(const wxString& texte, const int& type)
 {
 	//labelProgression->SetLabel(texte);
-	wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
-	wxString * statusText = new wxString(texte);
+	auto event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
+	auto statusText = new wxString(texte);
 	event->SetClientData(statusText);
 	event->SetInt(type);
 	wxQueueEvent(this, event);
 }
 
-void CompressVideo::SetPos(const int &max, const int &pos)
+void CompressVideo::SetPos(const int& max, const int& pos)
 {
-    if (ggProgress->GetRange() != max)
-    {
-        wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETRANGEPROGRESSBAR);
-        event->SetInt(max);
-        wxQueueEvent(this, event);    
-    }
+	if (ggProgress->GetRange() != max)
+	{
+		auto event = new wxCommandEvent(wxEVENT_SETRANGEPROGRESSBAR);
+		event->SetInt(max);
+		wxQueueEvent(this, event);
+	}
 
-    
-    wxCommandEvent* event = new wxCommandEvent(wxEVENT_SETVALUEPROGRESSBAR);
+
+	auto event = new wxCommandEvent(wxEVENT_SETVALUEPROGRESSBAR);
 	event->SetInt(pos);
 	wxQueueEvent(this, event);
-    
+
 	//ggProgress->SetRange(max);
 	//ggProgress->SetValue(pos);
 }
 
-void CompressVideo::SetBitmap(wxImage * bmp)
+void CompressVideo::SetBitmap(wxImage* bmp)
 {
-//#ifdef __APPLE__
+	//#ifdef __APPLE__
 
-    wxCommandEvent* event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
+	auto event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
 	event->SetClientData(bmp);
 	wxQueueEvent(this, event);
 	/*
@@ -167,20 +165,17 @@ void CompressVideo::SetBitmap(wxImage * bmp)
 #endif
 */
 	//bitmap->SetBitmap(scale);
-
-	
 }
 
 
 bool CompressVideo::IsOk()
 {
-    return isOk;
+	return isOk;
 }
 
 
 void CompressVideo::OnbtnCancelClick(wxCommandEvent& event)
 {
-    isOk = false;
-    //this->Close();
+	isOk = false;
+	//this->Close();
 }
-

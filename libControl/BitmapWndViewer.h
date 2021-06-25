@@ -1,8 +1,6 @@
 #pragma once
 #include "BitmapWnd.h"
-//#include <RenderPreviewBitmap.h>
 #include <BitmapInterface.h>
-#include <Draw.h>
 #include "AfterEffect.h"
 #include <FiltreUpdate.h>
 using namespace Regards::OpenCL;
@@ -17,15 +15,12 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-
 		class COpenCLEngine;
 		class COpenCLContext;
-
 	}
 
 	namespace OpenGL
 	{
-
 		class GLTexture;
 	}
 
@@ -34,85 +29,85 @@ namespace Regards
 		class CRenderBitmapInterfaceOpenGL;
 	}
 }
+
 using namespace Regards::OpenGL;
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
+
 namespace Regards
 {
-
-
 	namespace Control
 	{
 		class CBitmapWndViewer : public CBitmapWnd, public IFiltreUpdate
 		{
 		public:
-			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface);
-			~CBitmapWndViewer();
-			CEffectParameter * GetParameter();
-			void SetListener(IMouseUpdate * mouseUpdate);
-			virtual void RemoveListener();
+			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID mainViewerId,
+			                 const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface);
+			~CBitmapWndViewer() override;
+			CEffectParameter* GetParameter() override;
+			void SetListener(IMouseUpdate* mouseUpdate);
+			void RemoveListener() override;
 			void SendEmail();
 			void ExportPicture();
 			void SavePicture();
 			void PrintPicture();
-			void SetTransitionBitmap(CImageLoadingFormat * bmpSecond);
-			void FixArrowNavigation(const bool &fix);
+			void SetTransitionBitmap(CImageLoadingFormat* bmpSecond);
+			void FixArrowNavigation(const bool& fix);
 			void StopTransition();
-			void SetBitmapPreviewEffect(const int &effect);
+			void SetBitmapPreviewEffect(const int& effect);
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void SetNextPictureMove(const bool& value);
-			void UpdateFiltre(CEffectParameter * effectParameter);
+			void UpdateFiltre(CEffectParameter* effectParameter) override;
 			void OnFiltreOk();
 			void OnFiltreCancel();
-			CRgbaquad GetBackColor();
-			int GetOrientation();
-			CDraw * GetDessinPt();
-			void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture);
-			void StopTransitionEffect(CImageLoadingFormat* bmpSecond);
+			CRgbaquad GetBackColor() override;
+			int GetOrientation() override;
+			CDraw* GetDessinPt() override;
+			void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) override;
+			void StopTransitionEffect(CImageLoadingFormat* bmpSecond) override;
 			wxPoint GetMousePosition();
-			void CalculCenterPositionPicture();
+			void CalculCenterPositionPicture() override;
 
 		private:
-
-
 			bool IsOpenCLCompatible();
-			IAfterEffect * AfterEffectPt(const int& numFilter);
-			virtual void RenderTexture(const bool &invertPos);
-			virtual bool ApplyPreviewEffect(int & widthOutput, int & heightOutput);
+			IAfterEffect* AfterEffectPt(const int& numFilter);
+			void RenderTexture(const bool& invertPos) override;
+			bool ApplyPreviewEffect(int& widthOutput, int& heightOutput) override;
 
-			virtual void AfterRender();
-            virtual void DeleteTexture();
+			void AfterRender() override;
+			void DeleteTexture() override;
 
 			void SetDessinRatio();
-			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
-			
-			void Resize();
-			
+			void DeterminePos(wxRect& rc, const int& nTailleAffichageWidth, const int& nTailleAffichageHeight,
+			                  int& left, int& top);
+
+			void Resize() override;
+
 #ifdef KeyPress
 #undef KeyPress
 #endif
 
-			void KeyPress(const int &key);
-			void MouseMove(const int &xPos, const int &yPos);
-			void MouseClick(const int &xPos, const int &yPos);
-			void MouseRelease(const int &xPos, const int &yPos);
-			int GetRawBitmapWidth();
-			int GetRawBitmapHeight();
-			void AfterSetBitmap();
+			void KeyPress(const int& key) override;
+			void MouseMove(const int& xPos, const int& yPos) override;
+			void MouseClick(const int& xPos, const int& yPos) override;
+			void MouseRelease(const int& xPos, const int& yPos) override;
+			int GetRawBitmapWidth() override;
+			int GetRawBitmapHeight() override;
+			void AfterSetBitmap() override;
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
 			void OnClick(wxTimerEvent& event);
 
-            
+
 			wxCursor hCursorCross;
-			CDraw * m_cDessin;
-			CImageLoadingFormat * nextPicture;
+			CDraw* m_cDessin;
+			CImageLoadingFormat* nextPicture;
 			bool startTransition;
 			int etape;
 			bool fixArrow;
-			CBitmapInterface * bitmapInterface;
-			IAfterEffect * afterEffect;
+			CBitmapInterface* bitmapInterface;
+			IAfterEffect* afterEffect;
 			wxPoint oldMouse;
 
 			//Thread Parameter
@@ -120,15 +115,14 @@ namespace Regards
 			bool isDiaporama;
 			bool isInUse;
 			bool invertColor;
-			wxTimer * transitionTimer;
-			wxTimer * selectEffectTimer;
-			wxTimer * clickTimer;
+			wxTimer* transitionTimer;
+			wxTimer* selectEffectTimer;
+			wxTimer* clickTimer;
 			int typeClick = 0;
 			bool isNext = false;
-			int oldTransNumEffect = -1;		
+			int oldTransNumEffect = -1;
 			wxRect arrowPrevious;
 			wxRect arrowNext;
 		};
 	}
 }
-

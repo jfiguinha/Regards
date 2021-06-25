@@ -3,7 +3,8 @@
 #include <window_id.h>
 using namespace Regards::Control;
 
-CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity, int panelInfosId)
+CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                               const bool& testValidity, int panelInfosId)
 	: CThumbnailEffect(parent, id, themeThumbnail, testValidity)
 {
 	this->panelInfosId = panelInfosId;
@@ -12,13 +13,12 @@ CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, 
 
 CThumbnailViewerEffect::~CThumbnailViewerEffect(void)
 {
-
 }
 
 
-void CThumbnailViewerEffect::OnPictureClick(CThumbnailData * data)
+void CThumbnailViewerEffect::OnPictureClick(CThumbnailData* data)
 {
-	wxWindow * panelInfos = this->FindWindowById(panelInfosId);
+	wxWindow* panelInfos = this->FindWindowById(panelInfosId);
 	int numItem = data->GetNumPhotoId();
 	if (panelInfos != nullptr)
 	{

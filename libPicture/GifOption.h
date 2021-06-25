@@ -11,38 +11,35 @@
 //(*Headers(GifOption)
 //*)
 
-class GifOption: public wxDialog
+class GifOption : public wxDialog
 {
-	public:
+public:
+	GifOption(wxWindow* parent);
+	~GifOption() override;
 
-		GifOption(wxWindow* parent);
-		virtual ~GifOption();
+	//(*Declarations(GifOption)
+	wxButton* btnOk;
+	wxButton* btnCancel;
+	wxRadioBox* rbCompression;
+	//*)
+	bool IsOk();
+	int CompressionOption();
 
-		//(*Declarations(GifOption)
-		wxButton* btnOk;
-		wxButton* btnCancel;
-		wxRadioBox* rbCompression;
-		//*)
-        bool IsOk();
-        int CompressionOption();
-    
-	protected:
+protected:
+	//(*Identifiers(GifOption)
+	//*)
 
-		//(*Identifiers(GifOption)
-		//*)
+private:
+	//(*Handlers(GifOption)
+	void OnRadioBox1Select(wxCommandEvent& event);
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnInit(wxInitDialogEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(GifOption)
-		void OnRadioBox1Select(wxCommandEvent& event);
-		void OnbtnOkClick(wxCommandEvent& event);
-		void OnInit(wxInitDialogEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-
-        bool isOk;
-        int compressOption;
-		DECLARE_EVENT_TABLE()
+	bool isOk;
+	int compressOption;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

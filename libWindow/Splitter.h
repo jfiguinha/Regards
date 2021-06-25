@@ -16,7 +16,7 @@ namespace Regards
 			void SetWindow2FixPosition(const bool &fixPosition, const int &windowSize);
 			bool IsAllClose();
 			void SetFixPosition(const bool &value);
-			void SetHorizontal(const bool &horizontal);
+			virtual void SetHorizontal(const bool &horizontal);
 			void SetPosition(const int &pos);
 			int GetPosition();
 			void SetSeparationBarVisible(const bool& visible);

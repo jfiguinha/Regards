@@ -1,9 +1,10 @@
 #pragma once
 
-typedef struct buffer_data {
-	uint8_t *buf = nullptr;
+using buffer_data = struct buffer_data
+{
+	uint8_t* buf = nullptr;
 	int size;
-	uint8_t *ptr = nullptr;
+	uint8_t* ptr = nullptr;
 	size_t room; ///< size left in the buffer
 
 	void FreeData()
@@ -14,4 +15,4 @@ typedef struct buffer_data {
 		buf = nullptr;
 		ptr = nullptr;
 	}
-} buffer_data;
+};

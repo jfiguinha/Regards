@@ -15,10 +15,9 @@ using namespace Regards::Viewer;
 
 #define WM_SETPOSITION SDL_USER+1
 
-CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config)
+CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain* windowMain, CThemeParam* config)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-
 	softRender = true;
 	toolbarOutside = false;
 	height = 0;
@@ -28,12 +27,12 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	//decoder = "";
 	CThemeSlider themeSlider;
 	CTheme themeVideo;
-		
+
 	if (config != nullptr)
 	{
 		config->GetVideoControlTheme(&themeVideo);
 	}
-    
+
 #ifdef OPENGL_DXVA2_DECODING
 #ifdef WIN32
 	wxString decoder = "";
@@ -95,7 +94,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 	videoWindow->SetEncoderHardware(decoder, false);
 
-    scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
+	scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
 
 	if (config != nullptr)
 	{
@@ -112,14 +111,14 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 
 	videoSlider = new CSliderVideo(this, wxID_ANY, this, themeSlider);
 	slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
-	
+
 	for (int i = 0; i < 101; i++)
 		value.push_back(i);
 	slideToolbar->SetTabValue(value);
 	play = false;
 
 
-    Connect(wxEVENT_SAVE, wxCommandEventHandler(CShowVideo::OnSave));
+	Connect(wxEVENT_SAVE, wxCommandEventHandler(CShowVideo::OnSave));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowVideo::OnSize));
 	Connect(wxEVENT_SHRINKPOS, wxCommandEventHandler(CShowVideo::OnValueShrinkChange));
 	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
@@ -127,8 +126,8 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowVideo::OnSetPosition));
 	this->windowMain = windowMain;
-    
-    /*
+
+	/*
 #ifndef WIN32
 	if (softRender && decoder == "")
 	{
@@ -143,8 +142,8 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	videoWindow->PlayFirstMovie(false);
 #endif
  * */
- 
-    videoWindow->PlayFirstMovie(false);
+
+	videoWindow->PlayFirstMovie(false);
 }
 
 void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
@@ -169,9 +168,9 @@ void CShowVideo::OnClose(wxCommandEvent& event)
 	this->Resize();
 }
 
-CRegardsBitmap * CShowVideo::GetVideoBitmap()
+CRegardsBitmap* CShowVideo::GetVideoBitmap()
 {
-	CRegardsBitmap * bitmap = nullptr;
+	CRegardsBitmap* bitmap = nullptr;
 	if (videoWindow != nullptr && IsPause())
 	{
 		bool isFromBuffer = false;
@@ -182,46 +181,43 @@ CRegardsBitmap * CShowVideo::GetVideoBitmap()
 			if (videoWindow->IsFFmpegDecode())
 				bitmap->VertFlipBuf();
 		}
-
 	}
 	return bitmap;
 }
 
 void CShowVideo::OnSave(wxCommandEvent& event)
 {
-    if (videoWindow != nullptr)
-    {
+	if (videoWindow != nullptr)
+	{
 		bool isFromBuffer = false;
-        CRegardsBitmap * bitmap = videoWindow->SavePicture(isFromBuffer);
-        CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
-        bitmap->SetFilename(this->filename);
+		CRegardsBitmap* bitmap = videoWindow->SavePicture(isFromBuffer);
+		auto imageLoading = new CImageLoadingFormat();
+		bitmap->SetFilename(this->filename);
 		if (!isFromBuffer)
 		{
 			if (videoWindow->IsFFmpegDecode())
 				bitmap->VertFlipBuf();
 		}
 
-        imageLoading->SetPicture(bitmap);
-        CSavePicture::SavePicture(nullptr, imageLoading, filename);
-        if (imageLoading != nullptr)
-            delete imageLoading;
-    }
-
-	
+		imageLoading->SetPicture(bitmap);
+		CSavePicture::SavePicture(nullptr, imageLoading, filename);
+		if (imageLoading != nullptr)
+			delete imageLoading;
+	}
 }
 
 void CShowVideo::SavePicture()
 {
-    wxCommandEvent evt(wxEVENT_SAVE);
-    this->GetEventHandler()->AddPendingEvent(evt);
+	wxCommandEvent evt(wxEVENT_SAVE);
+	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CShowVideo::OnShrink(wxCommandEvent& event)
 {
-    videoWindow->ShrinkVideo();
-    slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
-    scrollbar->HideHorizontalScroll();
-    scrollbar->HideVerticalScroll();       
+	videoWindow->ShrinkVideo();
+	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
+	scrollbar->HideHorizontalScroll();
+	scrollbar->HideVerticalScroll();
 }
 
 
@@ -238,40 +234,39 @@ void CShowVideo::OnValueChange(wxCommandEvent& event)
 		scrollbar->ShowHorizontalScroll();
 		scrollbar->ShowVerticalScroll();
 		videoWindow->SetZoomIndex(value);
-
 	}
 }
 
-CVideoControlSoft * CShowVideo::GetVideoControl()
+CVideoControlSoft* CShowVideo::GetVideoControl()
 {
 	return videoWindow;
 }
 
-void CShowVideo::SetVideoPreviewEffect(CEffectParameter * effectParameter)
+void CShowVideo::SetVideoPreviewEffect(CEffectParameter* effectParameter)
 {
-	if(videoWindow != nullptr)
+	if (videoWindow != nullptr)
 		videoWindow->SetVideoPreviewEffect(effectParameter);
 }
 
-CEffectParameter *  CShowVideo::GetParameter()
+CEffectParameter* CShowVideo::GetParameter()
 {
-	if(videoWindow != nullptr)
+	if (videoWindow != nullptr)
 		return videoWindow->GetParameter();
 	return nullptr;
 }
 
-void  CShowVideo::UpdateFiltre(CEffectParameter * effectParameter)
+void CShowVideo::UpdateFiltre(CEffectParameter* effectParameter)
 {
-	if(videoWindow != nullptr)
+	if (videoWindow != nullptr)
 		videoWindow->UpdateFiltre(effectParameter);
 }
 
-void CShowVideo::ChangeAudio(const int &langue)
+void CShowVideo::ChangeAudio(const int& langue)
 {
 	videoWindow->ChangeAudioStream(langue);
 }
 
-void CShowVideo::ClickButton(const int &id)
+void CShowVideo::ClickButton(const int& id)
 {
 	switch (id)
 	{
@@ -303,6 +298,7 @@ void CShowVideo::ClickButton(const int &id)
 		videoWindow->ChangeVideoFormat();
 		this->Resize();
 		break;
+	default: ;
 		/*
 	case VOLUMEUPBUTTONID:
 		videoWindow->VolumeUp();
@@ -314,7 +310,7 @@ void CShowVideo::ClickButton(const int &id)
 		break;
 		*/
 	}
-    
+
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
 #else
@@ -326,7 +322,7 @@ CShowVideo::~CShowVideo()
 {
 	delete(videoWindow);
 	delete(scrollbar);
-	
+
 	delete(videoSlider);
 	delete(slideToolbar);
 }
@@ -343,20 +339,21 @@ void CShowVideo::SetNormalMode()
 	this->Resize();
 }
 
-void CShowVideo::SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle)
+void CShowVideo::SetStreamInfo(vector<CStreamInfo>& listAudio, vector<CStreamInfo>& listVideo,
+                               vector<CStreamInfo>& listSubtitle)
 {
 	listStream.clear();
-	for(int i = 0; i < listAudio.size();i++)
+	for (int i = 0; i < listAudio.size(); i++)
 	{
 		listStream.push_back(listAudio[i]);
 	}
 
-	for(int i = 0; i < listVideo.size();i++)
+	for (int i = 0; i < listVideo.size(); i++)
 	{
 		listStream.push_back(listVideo[i]);
 	}
 
-	for(int i = 0; i < listSubtitle.size();i++)
+	for (int i = 0; i < listSubtitle.size(); i++)
 	{
 		listStream.push_back(listSubtitle[i]);
 	}
@@ -378,13 +375,12 @@ void CShowVideo::OnVideoEnd()
 	videoSlider->SetPause();
 	if (windowMain != nullptr)
 	{
-		wxWindow * centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-		if(centralWindow != nullptr)
+		wxWindow* centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		if (centralWindow != nullptr)
 		{
 			wxCommandEvent evt(VIDEO_END_ID);
 			centralWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
-
 	}
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
@@ -413,7 +409,7 @@ void CShowVideo::OnVideoStop()
 }
 
 
-void CShowVideo::SetVideoDuration(const int64_t &position)
+void CShowVideo::SetVideoDuration(const int64_t& position)
 {
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
@@ -434,17 +430,16 @@ void CShowVideo::OnVideoStart()
 		this->play = true;
 		videoSlider->SetPlay();
 	}
-    
-    if (windowMain != nullptr)
-    {
+
+	if (windowMain != nullptr)
+	{
 		wxWindow* centralWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-    	if(centralWindow != nullptr)
-    	{
+		if (centralWindow != nullptr)
+		{
 			wxCommandEvent evt(VIDEO_START);
 			centralWindow->GetEventHandler()->AddPendingEvent(evt);
-    	}
-
-    }
+		}
+	}
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
 #else
@@ -454,7 +449,6 @@ void CShowVideo::OnVideoStart()
 
 void CShowVideo::OnVideoPause()
 {
-
 }
 
 void CShowVideo::OnAfterOpenVideo()
@@ -473,25 +467,24 @@ void CShowVideo::OnAfterOpenVideo()
 
 void CShowVideo::OnSetPosition(wxCommandEvent& event)
 {
-	long pos = event.GetExtraLong() ;
+	long pos = event.GetExtraLong();
 	//videoWindow->OnPause();
 	SetTimePosition(pos * 1000 * 1000);
 	//SetPosition(pos);
 	//videoWindow->Refresh();
 }
 
-void CShowVideo::OnPositionVideo(const int64_t &position)
+void CShowVideo::OnPositionVideo(const int64_t& position)
 {
 	if (position >= 0 && position <= videoTotalTime)
 	{
-
 		if (videoSlider != nullptr)
 			videoSlider->SetPastSecondTime(position);
 
 		int videoPos = position / 1000;
 		if (videoPos != videoPosOld)
 		{
-			wxWindow * viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxWindow* viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 			if (viewerWindow != nullptr)
 			{
 				wxCommandEvent event(VIDEO_UPDATE_ID);
@@ -511,9 +504,9 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 
 //------------------------------------------------------------
 
-void CShowVideo::SetPosition(const int64_t &timePosition)
+void CShowVideo::SetPosition(const int64_t& timePosition)
 {
-	wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+	wxWindow* window = this->FindWindowById(VIDEOCONTROL);
 	if (window != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_SETPOSITION);
@@ -522,7 +515,7 @@ void CShowVideo::SetPosition(const int64_t &timePosition)
 	}
 }
 
-void CShowVideo::SetTimePosition(const int64_t &timePosition)
+void CShowVideo::SetTimePosition(const int64_t& timePosition)
 {
 	if (videoSlider != nullptr)
 	{
@@ -531,14 +524,14 @@ void CShowVideo::SetTimePosition(const int64_t &timePosition)
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
 #else
-	videoSlider->Refresh();
+		videoSlider->Refresh();
 #endif
 	}
 }
 
-void CShowVideo::MoveSlider(const int64_t &position)
+void CShowVideo::MoveSlider(const int64_t& position)
 {
-	wxWindow * window = this->FindWindowById(VIDEOCONTROL);
+	wxWindow* window = this->FindWindowById(VIDEOCONTROL);
 	if (window != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_SETPOSITION);
@@ -558,15 +551,15 @@ void CShowVideo::InitControl()
 	}
 }
 
-bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const bool &play)
+bool CShowVideo::SetVideo(const wxString& filename, const int& rotation, const bool& play)
 {
 	videoTotalTime = 0;
 	videoPosOld = 0;
 	bool value = false;
-    this->filename = filename;
+	this->filename = filename;
 	if (videoWindow != nullptr && videoSlider != nullptr)
-	{       
-        value = videoWindow->PlayMovie(filename, true);
+	{
+		value = videoWindow->PlayMovie(filename, true);
 	}
 	return value;
 }
@@ -574,9 +567,9 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
 void CShowVideo::UpdateScreenRatio()
 {
 	scrollbar->UpdateScreenRatio();
-    videoSlider->UpdateScreenRatio();
-    videoWindow->UpdateScreenRatio();
-    this->Resize();
+	videoSlider->UpdateScreenRatio();
+	videoWindow->UpdateScreenRatio();
+	this->Resize();
 }
 
 void CShowVideo::StopVideo(wxString photoName)
@@ -592,7 +585,7 @@ void CShowVideo::StopVideo(wxString photoName)
 #endif
 }
 
-void CShowVideo::ShowSliderToolbar(const bool &show)
+void CShowVideo::ShowSliderToolbar(const bool& show)
 {
 	if (show && !videoSlider->IsShown())
 	{
@@ -607,11 +600,10 @@ void CShowVideo::ShowSliderToolbar(const bool &show)
 }
 
 
-void CShowVideo::ShowSlider(const bool &show)
+void CShowVideo::ShowSlider(const bool& show)
 {
 	if (play)
 		ShowSliderToolbar(true);
-
 }
 
 void CShowVideo::Rotate90()
@@ -703,7 +695,7 @@ void CShowVideo::Resize()
 		scrollbar->SetSize(0, 0, width, height);
 		scrollbar->Refresh();
 	}
-	else if(videoSlider != nullptr)
+	else if (videoSlider != nullptr)
 	{
 		//CDeferPos deferpos;
 		int posHeight = 0;
@@ -711,7 +703,7 @@ void CShowVideo::Resize()
 		if (videoSlider->IsShown())
 			posHeight += videoSlider->GetHeight();
 
-		if(showToolbarSup && slideToolbar->IsShown())
+		if (showToolbarSup && slideToolbar->IsShown())
 			posHeightSup = posHeight;
 
 		int positionHeight = height - posHeight - posHeightSup;
@@ -731,13 +723,11 @@ void CShowVideo::Resize()
 			videoSlider->Refresh();
 		}
 	}
-    else
-    {
+	else
+	{
 		scrollbar->SetSize(0, 0, width, height);
 		scrollbar->Refresh();
-    }
-
-	
+	}
 }
 
 void CShowVideo::OnSize(wxSizeEvent& event)
@@ -746,4 +736,3 @@ void CShowVideo::OnSize(wxSizeEvent& event)
 	height = event.GetSize().GetHeight();
 	Resize();
 }
-

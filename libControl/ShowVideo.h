@@ -26,60 +26,68 @@ namespace Regards
 		class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
 		{
 		public:
-			CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
-			~CShowVideo();
-			bool SetVideo(const wxString &filename, const int &rotation, const bool &play);
+			CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain* windowMain, CThemeParam* config);
+			~CShowVideo() override;
+			bool SetVideo(const wxString& filename, const int& rotation, const bool& play);
 
-			void SetPosition(const int64_t &timePosition);
-			void SetVideoDuration(const int64_t &position);
-			void SetTimePosition(const int64_t &timePosition);
+			void SetPosition(const int64_t& timePosition);
+			void SetVideoDuration(const int64_t& position) override;
+			void SetTimePosition(const int64_t& timePosition);
 			void SavePicture();
 			void ShowToolbar();
 			void HideToolbar();
 			bool IsPause();
 			void Resize();
-			CRegardsBitmap * GetVideoBitmap();
-			void SetVideoPreviewEffect(CEffectParameter * effectParameter);
-			CEffectParameter * GetParameter();
-			void UpdateFiltre(CEffectParameter * effectParameter);
+			CRegardsBitmap* GetVideoBitmap();
+			void SetVideoPreviewEffect(CEffectParameter* effectParameter);
+			CEffectParameter* GetParameter() override;
+			void UpdateFiltre(CEffectParameter* effectParameter) override;
 			void ReloadResource();
 
-			void SlidePosChange(const int &position, const wxString &key) {};
-			void ZoomPos(const int &position) {};
-			void MoveSlider(const int64_t &position);
-			void ClickButton(const int &id);
-			void SetTrackBarPosition(const int &iPos) {};
+			void SlidePosChange(const int& position, const wxString& key) override
+			{
+			};
+
+			void ZoomPos(const int& position) override
+			{
+			};
+			void MoveSlider(const int64_t& position) override;
+			void ClickButton(const int& id) override;
+
+			void SetTrackBarPosition(const int& iPos) override
+			{
+			};
 			void Rotate90();
 			void Rotate270();
 			void FlipVertical();
 			void FlipHorizontal();
-			CVideoControlSoft * GetVideoControl();
+			CVideoControlSoft* GetVideoControl();
 
 			void StopVideo(wxString photoName);
 			void PlayVideo();
 			void PauseVideo();
 
-			void ChangeAudio(const int &langue);
+			void ChangeAudio(const int& langue);
 			bool IsToolbarMouseOver();
 
 			void SetDiaporamaMode();
 			void SetNormalMode();
 
 			void UpdateScreenRatio();
-			void SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle);
+			void SetStreamInfo(vector<CStreamInfo>& listAudio, vector<CStreamInfo>& listVideo,
+			                   vector<CStreamInfo>& listSubtitle) override;
 
 		protected:
-
 			//Interface Video
-			void OnVideoEnd();
-			void OnVideoStart();
-			void OnVideoStop();
-			void OnVideoPause();
-			void OnAfterOpenVideo();
-			void OnPositionVideo(const int64_t &position);
+			void OnVideoEnd() override;
+			void OnVideoStart() override;
+			void OnVideoStop() override;
+			void OnVideoPause() override;
+			void OnAfterOpenVideo() override;
+			void OnPositionVideo(const int64_t& position) override;
 
 		private:
-            void OnSave(wxCommandEvent& event);
+			void OnSave(wxCommandEvent& event);
 			void OnClose(wxCommandEvent& event);
 			void OnShrink(wxCommandEvent& event);
 			void OnSetPosition(wxCommandEvent& event);
@@ -87,15 +95,15 @@ namespace Regards
 			void OnValueChange(wxCommandEvent& event);
 			void OnValueShrinkChange(wxCommandEvent& event);
 
-			void ShowSliderToolbar(const bool &show);
-			void ShowSlider(const bool &show);
+			void ShowSliderToolbar(const bool& show);
+			void ShowSlider(const bool& show);
 			void InitControl();
-			CSlideToolbar * slideToolbar;
-			CScrollbarWnd * scrollbar;
-			CSliderVideo * videoSlider;
-			CVideoControlSoft * videoWindow;
+			CSlideToolbar* slideToolbar;
+			CScrollbarWnd* scrollbar;
+			CSliderVideo* videoSlider;
+			CVideoControlSoft* videoWindow;
 			//CVideoEffectParameter * videoEffectParameter;
-			CWindowMain * windowMain;
+			CWindowMain* windowMain;
 			bool showToolbarSup = false;
 			bool play;
 			bool toolbarOutside;
@@ -107,12 +115,11 @@ namespace Regards
 			int64_t videoTotalTime = 0;
 			vector<CStreamInfo> listStream;
 			std::vector<int> value;
-            wxString filename;
-            //bool firstMovie = true;
+			wxString filename;
+			//bool firstMovie = true;
 		};
 	}
 }
-
 
 
 #endif

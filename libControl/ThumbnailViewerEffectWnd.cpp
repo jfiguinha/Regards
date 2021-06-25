@@ -10,53 +10,55 @@
 #include <libPicture.h>
 using namespace Regards::Control;
 using namespace Regards::Picture;
-CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, 
-	const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail, int panelInfosId, bool checkValidity)
-: CWindowMain("CThumbnailViewerEffectWnd",parent, id)
-{
-    thumbnailEffectScroll = nullptr;
-    thumbnailEffect = nullptr;
-    
-	thumbnailEffect = new CThumbnailViewerEffect(this, wxID_ANY,  themeThumbnail, checkValidity, panelInfosId);
-	thumbnailEffectScroll = new CScrollbarWnd(this, thumbnailEffect, wxID_ANY);
 
+CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id,
+                                                     const CThemeScrollBar& themeScroll,
+                                                     const CThemeThumbnail& themeThumbnail, int panelInfosId,
+                                                     bool checkValidity)
+	: CWindowMain("CThumbnailViewerEffectWnd", parent, id)
+{
+	thumbnailEffectScroll = nullptr;
+	thumbnailEffect = nullptr;
+
+	thumbnailEffect = new CThumbnailViewerEffect(this, wxID_ANY, themeThumbnail, checkValidity, panelInfosId);
+	thumbnailEffectScroll = new CScrollbarWnd(this, thumbnailEffect, wxID_ANY);
 }
 
 CThumbnailViewerEffectWnd::~CThumbnailViewerEffectWnd(void)
 {
-    delete(thumbnailEffect);
-    delete(thumbnailEffectScroll);
+	delete(thumbnailEffect);
+	delete(thumbnailEffectScroll);
 }
 
 void CThumbnailViewerEffectWnd::UpdateScreenRatio()
 {
-    if(thumbnailEffectScroll != nullptr)
-        thumbnailEffectScroll->UpdateScreenRatio();
-   
-    if(thumbnailEffect != nullptr)
-        thumbnailEffect->UpdateScreenRatio();
+	if (thumbnailEffectScroll != nullptr)
+		thumbnailEffectScroll->UpdateScreenRatio();
+
+	if (thumbnailEffect != nullptr)
+		thumbnailEffect->UpdateScreenRatio();
 }
 
 void CThumbnailViewerEffectWnd::Resize()
 {
-    if(thumbnailEffectScroll != nullptr)
-        thumbnailEffectScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+	if (thumbnailEffectScroll != nullptr)
+		thumbnailEffectScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	thumbnailEffect->UpdateScroll();
 }
 
 wxString CThumbnailViewerEffectWnd::GetFilename()
 {
-    if(thumbnailEffect != nullptr)
-        return thumbnailEffect->GetFilename();
-    return "";
+	if (thumbnailEffect != nullptr)
+		return thumbnailEffect->GetFilename();
+	return "";
 }
 
-void CThumbnailViewerEffectWnd::SetFile(const wxString & filename)
+void CThumbnailViewerEffectWnd::SetFile(const wxString& filename)
 {
 	if (thumbnailEffect != nullptr)
 	{
 		CLibPicture libPicture;
-		CImageLoadingFormat * load = libPicture.LoadThumbnail(filename);
+		CImageLoadingFormat* load = libPicture.LoadThumbnail(filename);
 		thumbnailEffect->SetFile(filename, load);
 		//thumbnailEffect->UpdateScroll();
 	}

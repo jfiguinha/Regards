@@ -14,28 +14,30 @@
  * And use MFC to build a simple Graphical User Interface. 
  */
 
+#pragma once
 #include "VideoControlInterface.h"
 #include "ffmfcpimpl.h"
 
 class CBitmapToShow
 {
 public:
-	CBitmapToShow()
+	CBitmapToShow(): width(0), height(0), aspect_ratio(0)
 	{
 		data = nullptr;
 	}
-    uint8_t * data;
-    int width;
-    int height;
+
+	uint8_t* data;
+	int width;
+	int height;
 	float aspect_ratio;
-    //SDL_Rect displayRect;
+	//SDL_Rect displayRect;
 };
 
 class CFFmfc : public wxWindow
 {
 public:
 	CFFmfc(wxWindow* parent, wxWindowID id);
-	~CFFmfc();
+	~CFFmfc() override;
 
 	//Send Command "Pause"
 	void Pause();
@@ -56,11 +58,12 @@ public:
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
-	void SetVolume(const int &pos);
+	void SetVolume(const int& pos);
 	void SetTimePosition(int64_t time);
 	int64_t GetTimePosition();
 	//Main function
-	int SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding, const int &volume);
+	int SetFile(CVideoControlInterface* control, string filename, const wxString& acceleratorHardware,
+	            const bool& isOpenGLDecoding, const int& volume);
 	void Play();
 	//Reset
 	int Reset_index();
@@ -72,7 +75,6 @@ public:
 	void SetVideoParameter(int angle, int flipV, int flipH);
 
 private:
-
 	void StopEvent(wxCommandEvent& event);
 	void CloseStreamEvent(wxCommandEvent& event);
 	void ExitEvent(wxCommandEvent& event);
@@ -90,7 +92,6 @@ private:
 	void ChangeAudioEvent(wxCommandEvent& event);
 	void ChangeSubtitleEvent(wxCommandEvent& event);
 
-	CFFmfcPimpl::VideoState * cur_stream;
-	CFFmfcPimpl * _pimpl;
+	CFFmfcPimpl::VideoState* cur_stream;
+	CFFmfcPimpl* _pimpl;
 };
-

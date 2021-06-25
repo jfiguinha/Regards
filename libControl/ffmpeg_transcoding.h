@@ -9,21 +9,21 @@ class CRegardsBitmap;
 class CFFmpegTranscoding
 {
 public:
-	CFFmpegTranscoding(const wxString & acceleratorHardware, COpenCLEngine * openCLEngine);
+	CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLEngine* openCLEngine);
 	~CFFmpegTranscoding();
-	int EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption);
-	int EndDecodeFile(const int & returnValue);
+	int EncodeFile(wxWindow* mainWindow, const wxString& input, const wxString& output,
+	               CVideoOptionCompress* videoCompressOption);
+	int EndDecodeFile(const int& returnValue);
 	vector<wxString> ListOfEncoder();
 protected:
-	
-	static void EncodeFileThread(void * data);
+	static void EncodeFileThread(void* data);
 	wxString input;
 	wxString output;
-	std::thread * encode_thread;
-	CFFmpegTranscodingPimpl * pimpl;
+	std::thread* encode_thread;
+	CFFmpegTranscodingPimpl* pimpl;
 	std::mutex muEnding;
 	bool ending = false;
-	CompressVideo * m_dlgProgress;
-	wxWindow * mainWindow;
-	CVideoOptionCompress * videoCompressOption;
+	CompressVideo* m_dlgProgress;
+	wxWindow* mainWindow;
+	CVideoOptionCompress* videoCompressOption;
 };

@@ -84,7 +84,7 @@ vector<CMetadata> CMediaInfo::SplitByLine(const wstring& value)
 	wstring categorie;
 	wstring data = value;
 	vector<CMetadata> listOfLine;
-	size_t position = 0;
+	size_t position;
 	do
 	{
 #ifdef WIN32

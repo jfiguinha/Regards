@@ -5,7 +5,6 @@
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
 
-
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	filename = fileName;
@@ -36,7 +35,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 		delete decodeFrame;
 		decodeFrame = new CFFmpegDecodeFrame("");
 		decodeFrame->OpenFile(filename);
-		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
+		decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
 	return decodeFrame->GetBitmap(false);
 }
@@ -63,7 +62,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent
 		delete decodeFrame;
 		decodeFrame = new CFFmpegDecodeFrame("");
 		decodeFrame->OpenFile(filename);
-		ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
+		decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
 
 	rotation = decodeFrame->GetRotation();

@@ -14,40 +14,37 @@
 //(*Headers(TiffOption)
 //*)
 
-class TiffOption: public wxDialog
+class TiffOption : public wxDialog
 {
-	public:
+public:
+	TiffOption(wxWindow* parent);
+	~TiffOption() override;
 
-		TiffOption(wxWindow* parent);
-		virtual ~TiffOption();
+	//(*Declarations(TiffOption)
+	wxStaticBox* sbCompressionLevel;
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxRadioBox* rbCompression;
+	wxSlider* slCompressLevel;
+	//*)
+	bool IsOk();
+	int CompressionOption();
+	//int CompressionLevel();
 
-		//(*Declarations(TiffOption)
-		wxStaticBox* sbCompressionLevel;
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxRadioBox* rbCompression;
-		wxSlider* slCompressLevel;
-		//*)
-        bool IsOk();
-        int CompressionOption();
-        //int CompressionLevel();
-    
-	protected:
+protected:
+	//(*Identifiers(TiffOption)
+	//*)
 
-		//(*Identifiers(TiffOption)
-		//*)
+private:
+	//(*Handlers(TiffOption)
+	void OnslCompressLevelCmdScroll(wxScrollEvent& event);
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(TiffOption)
-		void OnslCompressLevelCmdScroll(wxScrollEvent& event);
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-
-        int compressOption;
-        bool isOk;
-		DECLARE_EVENT_TABLE()
+	int compressOption;
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

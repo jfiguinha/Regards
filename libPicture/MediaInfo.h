@@ -13,11 +13,9 @@
 class CMediaInfo
 {
 public:
-    static vector<CMetadata> ReadMetadata(const wxString &filename);
-	static int GetVideoRotation(const wxString &filename);
+	static vector<CMetadata> ReadMetadata(const wxString& filename);
+	static int GetVideoRotation(const wxString& filename);
 private:
-    static vector<CMetadata> SplitByLine(const wstring &value);
-    static std::wstring delUnnecessary(std::wstring &str);
+	static vector<CMetadata> SplitByLine(const wstring& value);
+	static std::wstring delUnnecessary(std::wstring& str);
 };
-
-

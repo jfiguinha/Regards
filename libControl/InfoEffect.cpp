@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "InfoEffect.h"
 #include "TreeElementTexte.h"
@@ -14,7 +15,7 @@ using namespace Regards::Control;
 
 
 CInfoEffect::CInfoEffect(CTreeElementControlInterface* interfaceControl, CModificationManager* modificationManager,
-                         int bitmapWindowId)
+                         int bitmapWindowId): numEvent(0), yPos(0), index(0)
 {
 	this->bitmapWindowId = bitmapWindowId;
 	widthPosition = 0;
@@ -32,7 +33,8 @@ CInfoEffect::CInfoEffect(CTreeElementControlInterface* interfaceControl, CModifi
 	themeTree.SetMargeX(5);
 	this->modificationManager = modificationManager;
 	rowWidth.push_back(0);
-};
+}
+;
 
 
 CInfoEffect::~CInfoEffect()
@@ -191,10 +193,10 @@ void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
-		auto treeData = new CTreeData();
+		auto tree_data = new CTreeData();
 		wxString value = token;
 		value.Replace("@99", ".");
-		treeData->SetKey(value);
+		tree_data->SetKey(value);
 #if defined(WIN32) && _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
@@ -203,7 +205,7 @@ void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 
 		if (token != nullptr)
 		{
-			treeData->SetIsParent(true);
+			tree_data->SetIsParent(true);
 
 			if (index > 0)
 			{
@@ -211,12 +213,12 @@ void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 				{
 					tree<CTreeData*>::iterator it;
 					//Recherche de la clé
-					it = FindKey(treeData->GetKey());
+					it = FindKey(tree_data->GetKey());
 					if (it != nullptr)
 					{
 						child = it;
 						item++;
-						delete(treeData);
+						delete(tree_data);
 						continue;
 					}
 				}
@@ -224,12 +226,12 @@ void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 				{
 					tree<CTreeData*>::iterator it;
 					//Recherche de la clé
-					it = FindKey(treeData->GetKey(), child);
+					it = FindKey(tree_data->GetKey(), child);
 					if (it != nullptr)
 					{
 						child = it;
 						item++;
-						delete(treeData);
+						delete(tree_data);
 						continue;
 					}
 				}
@@ -237,20 +239,20 @@ void CInfoEffect::AddEvent(const wxString& libelle, const wxString& key)
 
 			if (item > 0)
 			{
-				child = tr.append_child(child, treeData);
+				child = tr.append_child(child, tree_data);
 			}
 			else
 			{
-				treeData->SetExifKey("-1");
-				child = tr.insert(top, treeData);
+				tree_data->SetExifKey("-1");
+				child = tr.insert(top, tree_data);
 			}
 		}
 		else
 		{
-			treeData->SetIsParent(false);
-			treeData->SetValue(localLibelle);
-			treeData->SetExifKey(key);
-			tr.append_child(child, treeData);
+			tree_data->SetIsParent(false);
+			tree_data->SetValue(localLibelle);
+			tree_data->SetExifKey(key);
+			tr.append_child(child, tree_data);
 		}
 		item++;
 	}
@@ -276,11 +278,11 @@ void CInfoEffect::CreateElement()
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementTriangle* treeElementTriangle = nullptr;
 			CTreeElementTexte* treeElementTexte = nullptr;
 			CPositionElement* posElement = nullptr;
 
-			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
+			auto treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                 true);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
 			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
 			                                   data);
@@ -330,19 +332,19 @@ void CInfoEffect::UpdateElement()
 			bool isVisible = true;
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CTreeElementTriangle* tree_element_triangle;
 			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
-				treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-				                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
-				                                   treeElementTriangle, data);
+				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_triangle->GetWidth(),
+				                                   tree_element_triangle->GetHeight(), ELEMENT_TRIANGLE,
+				                                   tree_element_triangle, data);
 			}
 			else
 			{
-				treeElementTriangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-				treeElementTriangle->SetVisible(isVisible);
+				tree_element_triangle = dynamic_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+				tree_element_triangle->SetVisible(isVisible);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -353,8 +355,9 @@ void CInfoEffect::UpdateElement()
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte,
 				                                   data);
@@ -374,9 +377,9 @@ void CInfoEffect::UpdateElement()
 				rowWidth[0] = widthElement;
 
 			bool isOpen = false;
-			if(treeElementTriangle != nullptr)
-				isOpen = treeElementTriangle->GetOpen();
-			
+			if (tree_element_triangle != nullptr)
+				isOpen = tree_element_triangle->GetOpen();
+
 			if (isOpen)
 				UpdateChildTree(it);
 		}
@@ -391,7 +394,7 @@ void CInfoEffect::UpdateScreenRatio()
 
 void CInfoEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	tree<CTreeData*>::sibling_iterator it = tree<Regards::Window::CTreeData*>::begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{

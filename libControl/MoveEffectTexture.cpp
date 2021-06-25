@@ -10,8 +10,7 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
                                            IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
                                            const bool& isNext, float& ratio)
 {
-	int xtexture = 0;
-	int pos = 0;
+	int pos;
 
 	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
 	int orientation = nextPicture->GetOrientation();
@@ -40,9 +39,7 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 	}
 	else
 	{
-		//xtexture = (float)(out.width) * scale_factor;
-		//pos = out.x - (bmpViewer->GetWidth() * ((float)(etape) / 100.0f));
-		xtexture = static_cast<float>(out.width) * scale_factor;
+		int xtexture = static_cast<float>(out.width) * scale_factor;
 		pos = (((out.x + xtexture) * scale_factor) * (static_cast<float>(etape) / 100.0f)) - xtexture;
 		if (renderOpenGL != nullptr)
 			renderOpenGL->ShowSecondBitmap(GetTexture(0), out.width * scale_factor, out.height * scale_factor, pos,

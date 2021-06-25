@@ -14,7 +14,8 @@
 //*)
 struct InfoExportFile
 {
-	InfoExportFile(){
+	InfoExportFile()
+	{
 		dateInfoSelection = 0;
 		geoInfoSelection = 0;
 		priority = 0;
@@ -31,46 +32,43 @@ struct InfoExportFile
 };
 
 
-class CExportFile: public wxDialog
+class CExportFile : public wxDialog
 {
-	public:
+public:
+	CExportFile(wxWindow* parent);
+	~CExportFile() override;
 
-		CExportFile(wxWindow* parent);
-		virtual ~CExportFile();
+	//(*Declarations(ExportFile)
+	wxButton* btOK;
+	wxComboBox* cbFileSaveOption;
+	wxStaticBox* sbOutputFormat;
+	wxRadioBox* rbGeographicalInformation;
+	wxRadioBox* rbDateInformation;
+	wxButton* btCancel;
+	wxRadioBox* rbChangeFilename;
+	wxRadioBox* rbPrioriry;
+	//*)
 
-		//(*Declarations(ExportFile)
-		wxButton* btOK;
-		wxComboBox* cbFileSaveOption;
-		wxStaticBox* sbOutputFormat;
-		wxRadioBox* rbGeographicalInformation;
-		wxRadioBox* rbDateInformation;
-		wxButton* btCancel;
-		wxRadioBox* rbChangeFilename;
-		wxRadioBox* rbPrioriry;
-		//*)
+	bool GetIsOK();
+	InfoExportFile GetInfoExportFile();
 
-		bool GetIsOK();
-		InfoExportFile GetInfoExportFile();
+protected:
+	//(*Identifiers(ExportFile)
+	//*)
 
-	protected:
+private:
+	//(*Handlers(ExportFile)
+	void OnRadioBox1Select(wxCommandEvent& event);
+	void OnRadioBox2Select(wxCommandEvent& event);
+	void OnButton1Click(wxCommandEvent& event);
+	void OnbtCancelClick(wxCommandEvent& event);
+	//*)
 
-		//(*Identifiers(ExportFile)
-		//*)
-
-	private:
-
-		//(*Handlers(ExportFile)
-		void OnRadioBox1Select(wxCommandEvent& event);
-		void OnRadioBox2Select(wxCommandEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void OnbtCancelClick(wxCommandEvent& event);
-		//*)
-
-		InfoExportFile infoExportFile;
-		bool isOk;
+	InfoExportFile infoExportFile;
+	bool isOk;
 
 
-		DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };
 
 #endif

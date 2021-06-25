@@ -34,12 +34,13 @@ wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 class CThreadLoadingBitmap
 {
 public:
-	CThreadLoadingBitmap()
+	CThreadLoadingBitmap(): percent(0), typeElement(0), photoId(0), timePosition(0)
 	{
 		bitmapIcone = nullptr;
 		_thread = nullptr;
 		thumbnail = nullptr;
-	};
+	}
+	;
 
 	~CThreadLoadingBitmap()
 	{
@@ -407,7 +408,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CThumbnail::OnMouseWheel));
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CThumbnail::OnKeyUp));
-	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::UpdateRenderIcone));
+	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::update_render_icone));
 	Connect(EVENT_UPDATEMESSAGE, wxCommandEventHandler(CThumbnail::UpdateMessage));
 
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
@@ -689,7 +690,7 @@ void CThumbnail::ProcessIdle()
 	}
 
 	int nbProcesseur = 1;
-	if (CRegardsConfigParam * config = CParamInit::getInstance(); config != nullptr)
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 	//int nbProcesseur = thread::hardware_concurrency();
 	vector<wxString> photoList;
@@ -724,9 +725,9 @@ void CThumbnail::ProcessIdle()
 
 				if (wxString filelocalName = iconeList->GetFilename(i); filename == filelocalName)
 				{
-					if (CIcone * icone = iconeList->GetElement(i); icone != nullptr)
+					if (CIcone* icone = iconeList->GetElement(i); icone != nullptr)
 					{
-						if (CThumbnailData * pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
+						if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
 						{
 							const bool isLoad = pThumbnailData->IsLoad();
 							if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
@@ -962,7 +963,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 		return;
 
 	int nbProcesseur = 1;
-	if (CRegardsConfigParam * config = CParamInit::getInstance(); config != nullptr)
+	if (CRegardsConfigParam* config = CParamInit::getInstance(); config != nullptr)
 		nbProcesseur = config->GetThumbnailProcess();
 
 	const int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur, flipHorizontal, flipVertical);
@@ -973,7 +974,7 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 		{
 			if (pBitmapIcone != nullptr)
 			{
-				if (CThumbnailData * pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
+				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
 				{
 					const bool isLoad = pThumbnailData->IsLoad();
 					if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
@@ -1009,10 +1010,9 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	if (CIcone * pBitmapIcone = FindElement(xPos, yPos); pBitmapIcone != nullptr)
+	if (CIcone* pBitmapIcone = FindElement(xPos, yPos); pBitmapIcone != nullptr)
 	{
-		CThumbnailData * pThumbnailData = nullptr;
-		pThumbnailData = pBitmapIcone->GetData();
+		auto pThumbnailData = pBitmapIcone->GetData();
 		if (pThumbnailData != nullptr)
 		{
 			switch (pThumbnailData->GetTypeElement())
@@ -1022,6 +1022,7 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 					OpenFileViewer(pThumbnailData->GetFilename());
 				}
 				break;
+			default: ;
 			}
 		}
 	}
@@ -1293,7 +1294,7 @@ void CThumbnail::CalculControlSize()
 	controlWidth = GetWidth();
 	controlHeight = GetHeight();
 
-	if (wxWindow * parent = this->GetParent(); parent != nullptr)
+	if (wxWindow* parent = this->GetParent(); parent != nullptr)
 	{
 		const auto controlSize = new CControlSize();
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
@@ -1460,7 +1461,7 @@ void CThumbnail::InitScrollingPos()
 }
 
 
-void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
+void CThumbnail::update_render_icone(wxCommandEvent& event)
 {
 	TRACE();
 	auto filename = new wxString();

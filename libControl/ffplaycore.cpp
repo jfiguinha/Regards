@@ -27,7 +27,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 
 CFFmfc::~CFFmfc()
 {
-	if(_pimpl)
+	if (_pimpl)
 		delete _pimpl;
 }
 
@@ -48,13 +48,15 @@ void CFFmfc::SeekBarEvent(wxCommandEvent& event)
 	{
 		double frac;
 
-		if (_pimpl->seek_by_bytes || _pimpl->g_is->ic->duration <= 0) {
+		if (_pimpl->seek_by_bytes || _pimpl->g_is->ic->duration <= 0)
+		{
 			uint64_t size = avio_size(_pimpl->g_is->ic->pb);
-			_pimpl->stream_seek(cur_stream, size*_pimpl->seek_bar_pos / 1000, 0, 1);
+			_pimpl->stream_seek(cur_stream, size * _pimpl->seek_bar_pos / 1000, 0, 1);
 		}
-		else {
+		else
+		{
 			int64_t ts;
-			frac = (double)_pimpl->seek_bar_pos / 1000;
+			frac = static_cast<double>(_pimpl->seek_bar_pos) / 1000;
 			ts = frac * _pimpl->g_is->ic->duration;
 			if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
 				ts += _pimpl->g_is->ic->start_time;
@@ -95,11 +97,14 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 		break;
 	}
 
-	if (_pimpl->seek_by_bytes) {
-		if (_pimpl->g_is->video_stream >= 0 && _pimpl->g_is->video_current_pos >= 0) {
+	if (_pimpl->seek_by_bytes)
+	{
+		if (_pimpl->g_is->video_stream >= 0 && _pimpl->g_is->video_current_pos >= 0)
+		{
 			pos = _pimpl->g_is->video_current_pos;
 		}
-		else if (_pimpl->g_is->audio_stream >= 0 && _pimpl->g_is->audio_pkt.pos >= 0) {
+		else if (_pimpl->g_is->audio_stream >= 0 && _pimpl->g_is->audio_pkt.pos >= 0)
+		{
 			pos = _pimpl->g_is->audio_pkt.pos;
 		}
 		else
@@ -111,10 +116,12 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 		pos += incr;
 		_pimpl->stream_seek(cur_stream, pos, incr, 1);
 	}
-	else {
+	else
+	{
 		pos = _pimpl->get_master_clock(cur_stream);
 		pos += incr;
-		_pimpl->stream_seek(cur_stream, (int64_t)(pos * AV_TIME_BASE), (int64_t)(incr * AV_TIME_BASE), 0);
+		_pimpl->stream_seek(cur_stream, static_cast<int64_t>(pos * AV_TIME_BASE),
+		                    static_cast<int64_t>(incr * AV_TIME_BASE), 0);
 	}
 }
 
@@ -122,12 +129,12 @@ void CFFmfc::PositionEvent(wxCommandEvent& event)
 {
 	if (_pimpl->exit_remark)
 	{
-		int64_t * ts = (int64_t *)event.GetClientData();
+		auto ts = static_cast<int64_t*>(event.GetClientData());
 		delete ts;
 		return;
 	}
 
-	int64_t * ts = (int64_t *)event.GetClientData();
+	auto ts = static_cast<int64_t*>(event.GetClientData());
 	if (ts != nullptr)
 	{
 		if (*ts > 0)
@@ -152,7 +159,7 @@ void CFFmfc::ChangeVolumeEvent(wxCommandEvent& event)
 	//toggle_pause(cur_stream);
 	int newaudioIndex = event.GetInt();
 	_pimpl->percentVolume = newaudioIndex;
-    printf("ChangeVolumeEvent Volume index : %d \n",_pimpl->percentVolume);
+	printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
 }
 
 
@@ -198,8 +205,8 @@ void CFFmfc::AudioDisplay(wxCommandEvent& event)
 		_pimpl->toggle_audio_display(cur_stream, CFFmfcPimpl::ShowMode::SHOW_MODE_RDFT);
 		_pimpl->g_is->force_refresh = 1;
 		break;
+	default: ;
 	}
-
 }
 
 
@@ -207,13 +214,13 @@ void CFFmfc::AspectEvent(wxCommandEvent& event)
 {
 	if (_pimpl->exit_remark)
 	{
-		wxSize * size = (wxSize *)event.GetClientData();
+		auto size = static_cast<wxSize*>(event.GetClientData());
 		if (size != nullptr)
 			delete size;
 		return;
 	}
 
-	wxSize * size = (wxSize *)event.GetClientData();
+	auto size = static_cast<wxSize*>(event.GetClientData());
 	if (size != nullptr)
 	{
 		_pimpl->screen_width = _pimpl->g_is->width = size->x;
@@ -248,7 +255,6 @@ void CFFmfc::StepEvent(wxCommandEvent& event)
 void CFFmfc::PauseEvent(wxCommandEvent& event)
 {
 	_pimpl->toggle_pause(cur_stream);
-
 }
 
 void CFFmfc::PlayEvent(wxCommandEvent& event)
@@ -263,10 +269,11 @@ void CFFmfc::SetOutputMode(int outputMode)
 
 //¸´Î»
 //Reset
-int CFFmfc::Reset_index(){
-	_pimpl->vframe_index=0;
-	_pimpl->aframe_index=0;
-	_pimpl->packet_index=0;
+int CFFmfc::Reset_index()
+{
+	_pimpl->vframe_index = 0;
+	_pimpl->aframe_index = 0;
+	_pimpl->packet_index = 0;
 	return 0;
 }
 
@@ -329,7 +336,8 @@ void CFFmfc::CloseStreamEvent(wxCommandEvent& event)
 
 //·¢ËÍ¡°ÖðÖ¡¡±ÃüÁî
 //Send Command "Step"
-void CFFmfc::Seek_step() {
+void CFFmfc::Seek_step()
+{
 	wxCommandEvent evt(FF_STEP_EVENT);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
@@ -362,11 +370,12 @@ void CFFmfc::Play()
 
 //·¢ËÍ¡°¿í¸ß±È¡±ÃüÁî
 //Send Command "AspectRatio"
-void CFFmfc::Aspectratio(int num, int den) {
+void CFFmfc::Aspectratio(int num, int den)
+{
 	//int w=g_is->width;
 	int h = _pimpl->g_is->height;
 	int w_re = h * num / den;
-	wxSize * size = new wxSize();
+	auto size = new wxSize();
 	size->x = w_re;
 	size->y = h;
 	wxCommandEvent evt(FF_ASPECT_EVENT);
@@ -376,21 +385,23 @@ void CFFmfc::Aspectratio(int num, int den) {
 
 //·¢ËÍ¡°´óÐ¡¡±ÃüÁî
 //Send Command "WindowSize"
-void CFFmfc::Size(int percentage){
-	int w= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->width;
-	int h= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->height;
-    
-	wxSize * size = new wxSize();
+void CFFmfc::Size(int percentage)
+{
+	int w = _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->width;
+	int h = _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->height;
+
+	auto size = new wxSize();
 	size->x = w;
 	size->y = h;
 	wxCommandEvent evt(FF_ASPECT_EVENT);
 	evt.SetClientData(size);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
+
 //·¢ËÍ¡°´°¿Ú»­ÃæÄÚÈÝ¡±ÃüÁî
 //Send Command "Audio Display Mode"
-void CFFmfc::Audio_display(int mode){
-
+void CFFmfc::Audio_display(int mode)
+{
 	wxCommandEvent evt(FF_AUDIODISPLAY_EVENT);
 	evt.SetInt(mode);
 	this->GetEventHandler()->AddPendingEvent(evt);
@@ -426,7 +437,7 @@ void CFFmfc::VolumeUp()
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
-void CFFmfc::SetVolume(const int &pos)
+void CFFmfc::SetVolume(const int& pos)
 {
 	_pimpl->volume = pos;
 
@@ -454,7 +465,7 @@ int64_t CFFmfc::GetTimePosition()
 
 void CFFmfc::SetTimePosition(int64_t time)
 {
-	int64_t * pos = new int64_t();
+	auto pos = new int64_t();
 	*pos = time;
 	_pimpl->time_position = time;
 	wxCommandEvent evt(SET_POSITION);
@@ -474,26 +485,29 @@ void CFFmfc::VolumeDown()
 
 //·¢ËÍ¡°Ç°½ø/ºóÍË¡±ÃüÁî
 //Send Command "Seek"
-void CFFmfc::Seek(int time){
+void CFFmfc::Seek(int time)
+{
 	wxCommandEvent evt(SET_SEEKPOSITION);
 	evt.SetInt(time);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
+
 //²¥·Å½ø¶È
 //Seek Bar
-void CFFmfc::Seek_bar(int pos){
+void CFFmfc::Seek_bar(int pos)
+{
 	wxCommandEvent evt(SEEK_BAR_EVENT);
 	evt.SetInt(pos);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
-
 /* Called from the main */
 //½âÂëÖ÷º¯Êý
 //Main function
 //#define __MINGW32__
-int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxString &acceleratorHardware, const bool &isOpenGLDecoding, const int &volume)
+int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxString& acceleratorHardware,
+                    const bool& isOpenGLDecoding, const int& volume)
 {
 	//Save volume infos;
 	/*
@@ -512,31 +526,32 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 	_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = isOpenGLDecoding;
 	_pimpl->percentVolume = volume;
-    printf("SetFile Volume index : %d \n",_pimpl->percentVolume);
+	printf("SetFile Volume index : %d \n", _pimpl->percentVolume);
 	CFFmfcPimpl::dlg = control;
 	_pimpl->parent = this;
 	Reset_index();
 	//ÍË³ö·ûºÅÖÃÁã
-	_pimpl->exit_remark=0;
+	_pimpl->exit_remark = 0;
 	//int flags;
 	//ºËÐÄ½á¹¹Ìå
 
 	//char dummy_videodriver[] = "SDL_VIDEODRIVER=dummy";
 	_pimpl->input_filename = filename;
 
-	
+
 	if (_pimpl->display_disable)
 	{
 		_pimpl->video_disable = 1;
 	}
-	
 
-	_pimpl->autoexit=1;
-	
+
+	_pimpl->autoexit = 1;
+
 	av_init_packet(&_pimpl->flush_pkt);
-	_pimpl->flush_pkt.data = (uint8_t *)(intptr_t)"FLUSH";
+	_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(filename.c_str(), _pimpl->file_iformat);
-	if (!_pimpl->g_is) {
+	if (!_pimpl->g_is)
+	{
 		_pimpl->do_exit(nullptr);
 	}
 
@@ -547,9 +562,8 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename, const wxS
 	}
 
 
-    wxCommandEvent event(EVENT_VIDEOSTART);
-    wxPostEvent(_pimpl->parent, event);
+	wxCommandEvent event(EVENT_VIDEOSTART);
+	wxPostEvent(_pimpl->parent, event);
 
 	return 0;
 }
-

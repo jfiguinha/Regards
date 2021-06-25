@@ -13,26 +13,29 @@ using namespace Regards::Picture;
 #define PANE_PREVIEW 3
 
 
-CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress)
+CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenCLEngine* openCLEngine,
+                         CVideoOptionCompress* videoOptionCompress)
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
-	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
-	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-    
-    CThemeBitmapWindow themeBitmap;
+	panel = static_cast<wxPanel*>(FindWindow(XRCID("IDPANEL")));
+	bitmapPreview = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEO")));
+
+	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
+	                                    viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
 	showBitmapWindow->Show(true);
-    showBitmapWindow->Raise();
-	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
+	showBitmapWindow->Raise();
+	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
+	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
 
-	panel->Bind(wxEVT_SIZE, &CPreviewDlg::OnSize, this);
+	panel->Bind(wxEVT_SIZE, &CPreviewDlg::on_size, this);
 
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CPreviewDlg::OnClose));
 }
@@ -43,7 +46,7 @@ void CPreviewDlg::OnClose(wxCloseEvent& event)
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
-void CPreviewDlg::OnSize(wxSizeEvent& event)
+void CPreviewDlg::on_size(wxSizeEvent& event)
 {
 	showBitmapWindow->SetSize(panel->GetPosition().x, panel->GetPosition().y, panel->GetSize().x, panel->GetSize().y);
 }
@@ -51,10 +54,9 @@ void CPreviewDlg::OnSize(wxSizeEvent& event)
 CPreviewDlg::~CPreviewDlg()
 {
 	delete(showBitmapWindow);
-
 }
 
-void CPreviewDlg::UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension)
+void CPreviewDlg::UpdatePreview(CVideoOptionCompress* videoOptionCompress, const wxString& extension)
 {
 	showBitmapWindow->UpdateBitmap(videoOptionCompress, extension);
 }

@@ -16,10 +16,8 @@ CRegardsRaw::~CRegardsRaw()
 }
 
 // no error reporting, only params check
-void write_ppm(libraw_processed_image_t *img, std::vector<uint8_t> *p)
+void write_ppm(libraw_processed_image_t* img, std::vector<uint8_t>* p)
 {
-
-
 	if (!img)
 		return;
 	// type SHOULD be LIBRAW_IMAGE_BITMAP, but we'll check
@@ -49,11 +47,11 @@ void write_ppm(libraw_processed_image_t *img, std::vector<uint8_t> *p)
 	p->insert(p->end(), img->data, img->data + img->data_size);
 }
 
-CxImage * CRegardsRaw::GetPicture(const string & fileName)
+CxImage* CRegardsRaw::GetPicture(const string& fileName)
 {
-	LibRaw* RawProcessor = new LibRaw;
-	int  ret;//, output_thumbs = 0;
-	CxImage * image = nullptr;
+	auto RawProcessor = new LibRaw;
+	int ret; //, output_thumbs = 0;
+	CxImage* image = nullptr;
 
 	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
@@ -68,39 +66,37 @@ CxImage * CRegardsRaw::GetPicture(const string & fileName)
 				int raw_color, raw_bitsize;
 				RawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
 				//int flip = RawProcessor->imgdata.sizes.flip;
-				image->Create(width, height, raw_bitsize*raw_color);
+				image->Create(width, height, raw_bitsize * raw_color);
 				int iTaille = raw_color * (raw_bitsize / 8);
 				int stride = ((iTaille * width + iTaille) & ~iTaille);
 				RawProcessor->copy_mem_image(image->GetBits(), stride, 1);
 				image->Flip();
-
 			}
 		}
 		//RawProcessor->recycle();
 	}
-    delete RawProcessor;
+	delete RawProcessor;
 
 	return image;
 }
 
-CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat)
+CxMemFile* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
 {
 	//int i = 1;
 	//int tempimg, row, col;
-	CxMemFile * memPicture = nullptr;
+	CxMemFile* memPicture = nullptr;
 	// step one: Open file
-	LibRaw* RawProcessor = new LibRaw;
-	int  ret;//, output_thumbs = 0;
+	auto RawProcessor = new LibRaw;
+	int ret; //, output_thumbs = 0;
 	outputFormat = BITMAPOUTPUT;
 	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
-        
 		if (RawProcessor->unpack_thumb() == LIBRAW_SUCCESS)
 		{
-			libraw_processed_image_t *thumb = RawProcessor->dcraw_make_mem_thumb(&ret);
+			libraw_processed_image_t* thumb = RawProcessor->dcraw_make_mem_thumb(&ret);
 			if (thumb)
 			{
-				uint8_t * dataPt = nullptr;
+				uint8_t* dataPt = nullptr;
 				int size = 0;
 				if (thumb->type == LIBRAW_IMAGE_JPEG)
 				{
@@ -127,22 +123,21 @@ CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat
 
 		//RawProcessor->recycle();
 	}
-    delete RawProcessor;
+	delete RawProcessor;
 	return memPicture;
-
 }
 
 #undef SWAP
 
-void CRegardsRaw::GetDimensions(const string & fileName, int & width, int & height)
+void CRegardsRaw::GetDimensions(const string& fileName, int& width, int& height)
 {
 	// step one: Open file
-	LibRaw* RawProcessor = new LibRaw;
+	auto RawProcessor = new LibRaw;
 	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
 		width = RawProcessor->imgdata.sizes.iwidth;
 		height = RawProcessor->imgdata.sizes.iheight;
 		//RawProcessor.recycle();
 	}
-    delete RawProcessor;
+	delete RawProcessor;
 }

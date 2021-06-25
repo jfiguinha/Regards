@@ -14,40 +14,37 @@
 //(*Headers(PDFOption)
 //*)
 
-class PDFOption: public wxDialog
+class PDFOption : public wxDialog
 {
-	public:
+public:
+	PDFOption(wxWindow* parent);
+	~PDFOption() override;
 
-		PDFOption(wxWindow* parent);
-		virtual ~PDFOption();
+	//(*Declarations(PDFOption)
+	wxStaticBox* sbCompressionLevel;
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxRadioBox* rbCompression;
+	wxSlider* slCompressLevel;
+	//*)
+	bool IsOk();
+	int CompressionOption();
+	//int CompressionLevel();
 
-		//(*Declarations(PDFOption)
-		wxStaticBox* sbCompressionLevel;
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxRadioBox* rbCompression;
-		wxSlider* slCompressLevel;
-		//*)
-        bool IsOk();
-        int CompressionOption();
-        //int CompressionLevel();
-    
-	protected:
+protected:
+	//(*Identifiers(PDFOption)
+	//*)
 
-		//(*Identifiers(PDFOption)
-		//*)
+private:
+	//(*Handlers(PDFOption)
+	void OnslCompressLevelCmdScroll(wxScrollEvent& event);
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(PDFOption)
-		void OnslCompressLevelCmdScroll(wxScrollEvent& event);
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-
-        int compressOption;
-        bool isOk;
-		DECLARE_EVENT_TABLE()
+	int compressOption;
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

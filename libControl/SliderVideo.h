@@ -1,6 +1,5 @@
 #pragma once
 #include <theme.h>
-#include <EffectVideoParameter.h>
 #include <SliderInterface.h>
 #include "WindowMain.h"
 using namespace Regards::Window;
@@ -20,57 +19,59 @@ namespace Regards
 		class CSliderVideo : public CWindowMain
 		{
 		public:
-			CSliderVideo(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider);
-			~CSliderVideo();
+			CSliderVideo(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
+			             const CThemeSlider& themeSlider);
+			~CSliderVideo() override;
 
-			int GetWidth();
-			int GetHeight();
+			int GetWidth() override;
+			int GetHeight() override;
 
 			void SetPlay();
 			void SetPause();
 
-			void SetTotalSecondTime(const int64_t &millisecondTime);
-			void SetPastSecondTime(const int64_t &millisecondTime);
+			void SetTotalSecondTime(const int64_t& millisecondTime);
+			void SetPastSecondTime(const int64_t& millisecondTime);
 			void UpdatePositionEvent();
 
 			bool IsMouseOver();
 
-            void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
 
 		protected:
-
 			//Slider Event
-			CSliderInterface * sliderEvent;
+			CSliderInterface* sliderEvent;
 
 
 		private:
-            
 			void OnMouseMove(wxMouseEvent& event);
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
-			void OnMouseCaptureLost(wxMouseEvent& event){};
+
+			void OnMouseCaptureLost(wxMouseEvent& event)
+			{
+			};
 			void OnMouseLeave(wxMouseEvent& event);
 			void OnMouseHover(wxMouseEvent& event);
 
-			void ClickLeftPage(const int &x);
-			void ClickRightPage(const int &x);
+			void ClickLeftPage(const int& x);
+			void ClickRightPage(const int& x);
 
-			void DrawShapeElement(wxDC * context, const wxRect &rc);
-			int DrawTimePast(wxDC * context, const wxString &libelle);
+			void DrawShapeElement(wxDC* context, const wxRect& rc);
+			int DrawTimePast(wxDC* context, const wxString& libelle);
 
 			void CalculPositionButton();
-			void CalculTimePosition(const int &x);
-			void CalculPositionButton(const int &x);
-			void Draw(wxDC * context);
+			void CalculTimePosition(const int& x);
+			void CalculPositionButton(const int& x);
+			void Draw(wxDC* context);
 
-			int DrawVolumeLibelle(wxDC * context, const wxString &libelle);
-			int DrawTotalTimeLibelle(wxDC * context, const wxString &libelle, const int &volumePos);
-			void InsertPlayButton(wxDC * context);
-			void InsertSpeakerButton(const int &xStart, wxDC * context);
-			void InsertZoomButton(const int &xStart, wxDC * context);
-			void InsertScreenFormatButton(const int &xStart, wxDC * context);
+			int DrawVolumeLibelle(wxDC* context, const wxString& libelle);
+			int DrawTotalTimeLibelle(wxDC* context, const wxString& libelle, const int& volumePos);
+			void InsertPlayButton(wxDC* context);
+			void InsertSpeakerButton(const int& xStart, wxDC* context);
+			void InsertZoomButton(const int& xStart, wxDC* context);
+			void InsertScreenFormatButton(const int& xStart, wxDC* context);
 
 			wxImage buttonPlay;
 			wxImage buttonPause;
@@ -78,7 +79,7 @@ namespace Regards
 			wxImage buttonVolumeDown;
 			wxImage buttonSpeaker;
 			wxImage button;
-            
+
 			/*
             wxString buttonPlayVector;
             wxString buttonPauseVector;
@@ -88,9 +89,9 @@ namespace Regards
             wxString buttonVector;
             */
 
-            wxColor colorToReplace;
-            wxColor colorActifReplacement;
-            wxColor colorInactifReplacement;
+			wxColor colorToReplace;
+			wxColor colorActifReplacement;
+			wxColor colorInactifReplacement;
 
 			bool buttonPlayActif;
 			bool buttonPauseActif;
@@ -109,7 +110,7 @@ namespace Regards
 			wxRect positionTextePast;
 			wxRect positionTexteTotal;
 			wxRect positionSlider;
-			
+
 			wxCursor hCursorHand;
 			wxString timePast;
 			wxString totalTime;
@@ -118,9 +119,8 @@ namespace Regards
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-			
+
 			CThemeSliderVideo themeSlider;
 		};
-
 	}
 }

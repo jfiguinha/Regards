@@ -16,11 +16,11 @@
 class CBoxFilter : public CInterpolationBicubic
 {
 public:
-	CBoxFilter(double dWidth = static_cast<double>(0.5)) : CInterpolationBicubic(dWidth)
+	CBoxFilter(double dWidth = 0.5) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBoxFilter()
+	~CBoxFilter() override
 	{
 	}
 
@@ -33,11 +33,11 @@ public:
 class CBilinearFilter : public CInterpolationBicubic
 {
 public:
-	CBilinearFilter(double dWidth = static_cast<double>(1.0)) : CInterpolationBicubic(dWidth)
+	CBilinearFilter(double dWidth = 1.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBilinearFilter()
+	~CBilinearFilter() override
 	{
 	}
 
@@ -54,11 +54,11 @@ public:
 class CGaussianFilter : public CInterpolationBicubic
 {
 public:
-	CGaussianFilter(double dWidth = static_cast<double>(1.25)) : CInterpolationBicubic(dWidth)
+	CGaussianFilter(double dWidth = 1.25) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CGaussianFilter()
+	~CGaussianFilter() override
 	{
 	}
 
@@ -78,11 +78,11 @@ public:
 class CHammingFilter : public CInterpolationBicubic
 {
 public:
-	CHammingFilter(double dWidth = static_cast<double>(1.0)) : CInterpolationBicubic(dWidth)
+	CHammingFilter(double dWidth = 1.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CHammingFilter()
+	~CHammingFilter() override
 	{
 	}
 
@@ -104,11 +104,11 @@ public:
 class CCubicFilter : public CInterpolationBicubic
 {
 public:
-	CCubicFilter(double dWidth = static_cast<double>(2.0)) : CInterpolationBicubic(dWidth)
+	CCubicFilter(double dWidth = 2.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CCubicFilter()
+	~CCubicFilter() override
 	{
 	}
 
@@ -139,11 +139,11 @@ public:
 class CBlackmanFilter : public CInterpolationBicubic
 {
 public:
-	CBlackmanFilter(double dWidth = static_cast<double>(1.0)) : CInterpolationBicubic(dWidth)
+	CBlackmanFilter(double dWidth = 1.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBlackmanFilter()
+	~CBlackmanFilter() override
 	{
 	}
 
@@ -165,11 +165,11 @@ public:
 class CQuadraticFilter : public CInterpolationBicubic
 {
 public:
-	CQuadraticFilter(double dWidth = static_cast<double>(1.5)) : CInterpolationBicubic(dWidth)
+	CQuadraticFilter(double dWidth = 1.5) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CQuadraticFilter()
+	~CQuadraticFilter() override
 	{
 	}
 
@@ -199,11 +199,11 @@ public:
 class CMitchellFilter : public CInterpolationBicubic
 {
 public:
-	CMitchellFilter(double dWidth = static_cast<double>(2.0)) : CInterpolationBicubic(dWidth)
+	CMitchellFilter(double dWidth = 2.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CMitchellFilter()
+	~CMitchellFilter() override
 	{
 	}
 
@@ -244,11 +244,11 @@ public:
 class CTriangleFilter : public CInterpolationBicubic
 {
 public:
-	CTriangleFilter(double dWidth = static_cast<double>(1.0)) : CInterpolationBicubic(dWidth)
+	CTriangleFilter(double dWidth = 1.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CTriangleFilter()
+	~CTriangleFilter() override
 	{
 	}
 
@@ -275,11 +275,11 @@ public:
 class CSincFilter : public CInterpolationBicubic
 {
 public:
-	CSincFilter(double dWidth = static_cast<double>(1.5)) : CInterpolationBicubic(dWidth)
+	CSincFilter(double dWidth = 1.5) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CSincFilter()
+	~CSincFilter() override
 	{
 	}
 
@@ -323,11 +323,11 @@ const double Qone[] =
 class CBesselFilter : public CInterpolationBicubic
 {
 public:
-	CBesselFilter(double dWidth = static_cast<double>(1.5)) : CInterpolationBicubic(dWidth)
+	CBesselFilter(double dWidth = 1.5) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBesselFilter()
+	~CBesselFilter() override
 	{
 	}
 
@@ -443,11 +443,11 @@ private:
 class CBlackmanBesselFilter : public CInterpolationBicubic
 {
 public:
-	CBlackmanBesselFilter(double dWidth = static_cast<double>(3.2383)) : CInterpolationBicubic(dWidth)
+	CBlackmanBesselFilter(double dWidth = 3.2383) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBlackmanBesselFilter()
+	~CBlackmanBesselFilter() override
 	{
 	}
 
@@ -473,11 +473,11 @@ private:
 class CLanczosFilter : public CInterpolationBicubic
 {
 public:
-	CLanczosFilter(double dWidth = static_cast<double>(3.0)) : CInterpolationBicubic(dWidth)
+	CLanczosFilter(double dWidth = 3.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CLanczosFilter()
+	~CLanczosFilter() override
 	{
 	}
 
@@ -506,11 +506,11 @@ public:
 class CBlackmanSincFilter : public CInterpolationBicubic
 {
 public:
-	CBlackmanSincFilter(double dWidth = static_cast<double>(4.0)) : CInterpolationBicubic(dWidth)
+	CBlackmanSincFilter(double dWidth = 4.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CBlackmanSincFilter()
+	~CBlackmanSincFilter() override
 	{
 	}
 
@@ -534,11 +534,11 @@ public:
 class CCatromFilter : public CInterpolationBicubic
 {
 public:
-	CCatromFilter(double dWidth = static_cast<double>(2.0)) : CInterpolationBicubic(dWidth)
+	CCatromFilter(double dWidth = 2.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CCatromFilter()
+	~CCatromFilter() override
 	{
 	}
 
@@ -569,11 +569,11 @@ public:
 class CHanningFilter : public CInterpolationBicubic
 {
 public:
-	CHanningFilter(double dWidth = static_cast<double>(1.0)) : CInterpolationBicubic(dWidth)
+	CHanningFilter(double dWidth = 1.0) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CHanningFilter()
+	~CHanningFilter() override
 	{
 	}
 
@@ -594,11 +594,11 @@ public:
 class CHermiteFilter : public CInterpolationBicubic
 {
 public:
-	CHermiteFilter(double dWidth = static_cast<double>(1.5)) : CInterpolationBicubic(dWidth)
+	CHermiteFilter(double dWidth = 1.5) : CInterpolationBicubic(dWidth)
 	{
 	}
 
-	virtual ~CHermiteFilter()
+	~CHermiteFilter() override
 	{
 	}
 

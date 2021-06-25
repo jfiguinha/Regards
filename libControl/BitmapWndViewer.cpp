@@ -16,7 +16,6 @@
 #include <OpenCLContext.h>
 #include <wx/mimetype.h>
 #include <GLTexture.h>
-#include <effect_id.h>
 #include <RenderBitmapOpenGL.h>
 #include "PageCurlFilter.h"
 #include "MoveEffectTexture.h"
@@ -75,7 +74,6 @@ IAfterEffect* CBitmapWndViewer::AfterEffectPt(const int& numFilter)
 	default:
 		return new CNoneEffectTextureEffect();
 	}
-	return nullptr;
 }
 
 
@@ -674,12 +672,12 @@ void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 		int y = (GetHeight() * scale_factor - glTexture->GetHeight()) / 2;
 
 		//Affichage de la transition
-		int numEffect = 0;
+		int num_effect;
 
 		if (isDiaporama)
-			numEffect = config->GetDiaporamaTransitionEffect();
+			num_effect = config->GetDiaporamaTransitionEffect();
 		else if (config != nullptr)
-			numEffect = config->GetEffect();
+			num_effect = config->GetEffect();
 
 		if (afterEffect != nullptr)
 			afterEffect->RenderMoveTexture(x, y, glTexture, etape, isNext);
@@ -751,22 +749,19 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 	}
 	else
 	{
-		bool isOnArrow = false;
 		if (fixArrow && etape == 0)
 		{
-			int yPosTop = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2;
-			int yPosBottom = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
+			const int yPosTop = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2;
+			const int yPosBottom = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
 			if (xPos < arrowPrevious.GetWidth() * scale_factor && (yPos > yPosTop && yPos < yPosBottom))
 			{
-				isOnArrow = true;
 				wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 			else if ((xPos > (GetWidth() * scale_factor - arrowNext.GetWidth()) && (yPos > yPosTop && yPos <
 				yPosBottom)))
 			{
-				isOnArrow = true;
-				wxSetCursor(wxCursor(wxCURSOR_HAND));
+					wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 			else
 			{

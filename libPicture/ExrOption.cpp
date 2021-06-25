@@ -2,8 +2,8 @@
 #include "ExrOption.h"
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(ExrOption)
-	//*)
+//(*InternalHeadersPCH(ExrOption)
+//*)
 #endif
 //(*InternalHeaders(ExrOption)
 #include <wx/xrc/xmlres.h>
@@ -12,7 +12,7 @@
 //(*IdInit(ExrOption)
 //*)
 
-BEGIN_EVENT_TABLE(ExrOption,wxDialog)
+BEGIN_EVENT_TABLE(ExrOption, wxDialog)
 	//(*EventTable(ExrOption)
 	//*)
 END_EVENT_TABLE()
@@ -20,19 +20,19 @@ END_EVENT_TABLE()
 ExrOption::ExrOption(wxWindow* parent)
 {
 	compressOption = 0;
-    isOk = false;
+	isOk = false;
 	//(*Initialize(ExrOption)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("ExrOption"),_T("wxDialog"));
-	rbCompression = (wxRadioBox*)FindWindow(XRCID("ID_RBCODEC"));
-	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("ExrOption"),_T("wxDialog"));
+	rbCompression = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCODEC")));
+	btnOK = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
 
-	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExrOption::OnbtnOKClick);
-	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExrOption::OnbtnCancelClick);
+	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ExrOption::OnbtnOKClick);
+	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ExrOption::OnbtnCancelClick);
 
 	//*)
-    
-    SetTitle("Exr Saving Option");
+
+	wxTopLevelWindowMSW::SetTitle("Exr Saving Option");
 }
 
 ExrOption::~ExrOption()
@@ -43,22 +43,23 @@ ExrOption::~ExrOption()
 
 bool ExrOption::IsOk()
 {
-    return isOk;
+	return isOk;
 }
+
 int ExrOption::CompressionOption()
 {
-    return compressOption;
+	return compressOption;
 }
 
 void ExrOption::OnbtnOKClick(wxCommandEvent& event)
 {
-    isOk = true;
-    compressOption = rbCompression->GetSelection();
-    this->Close();
+	isOk = true;
+	compressOption = rbCompression->GetSelection();
+	this->Close();
 }
 
 void ExrOption::OnbtnCancelClick(wxCommandEvent& event)
 {
-    isOk = false;
-    this->Close();
+	isOk = false;
+	this->Close();
 }

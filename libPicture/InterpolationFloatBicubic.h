@@ -11,7 +11,7 @@ public:
 	};
 
 	CInterpolationFloat(const double& dWidth = 0.0f);
-	~CInterpolationFloat();
+	virtual ~CInterpolationFloat();
 	void Execute(CRegardsFloatBitmap* In, CRegardsFloatBitmap* & Out);
 
 protected:

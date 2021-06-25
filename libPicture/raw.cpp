@@ -9,12 +9,13 @@
 #include <ConvertUtility.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
-CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &thumbnail)
+
+CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail)
 {
-    //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-    CImageLoadingFormat * picture = nullptr;
-    int type = 0;
-    CxMemFile * memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
+	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
+	CImageLoadingFormat* picture;
+	int type = 0;
+	CxMemFile* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
 	if (memFile != nullptr)
 	{
 		if (type == JPEGOUTPUT)
@@ -24,9 +25,9 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 
 			long unsigned int _jpegSize; //!< _jpegSize from above
 			//unsigned char* _compressedImage; //!< _compressedImage from above
-			CRegardsBitmap * image;
+			CRegardsBitmap* image;
 			int jpegSubsamp, width, height;
-			uint8_t * _compressedImage = memFile->GetBuffer(false);
+			uint8_t* _compressedImage = memFile->GetBuffer(false);
 			_jpegSize = memFile->Size();
 
 			tjhandle _jpegDecompressor = tjInitDecompress();
@@ -38,7 +39,8 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 			//if (thumbnail)
 			//	tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
 			//else
-				tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+			tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height,
+			              TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
 
 			tjDestroy(_jpegDecompressor);
 
@@ -53,7 +55,7 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 		else
 		{
 			picture = new CImageLoadingFormat();
-			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("ppm"));
+			auto image = new CxImage(memFile, CxImage::GetTypeIdFromName("ppm"));
 			picture->SetPicture(image);
 			picture->SetFilename(fileName);
 		}
@@ -63,7 +65,7 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 	else
 	{
 		picture = new CImageLoadingFormat();
-		CxImage * image = CRegardsRaw::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+		CxImage* image = CRegardsRaw::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 		picture->SetPicture(image);
 		picture->SetFilename(fileName);
 		if (thumbnail)
@@ -72,14 +74,13 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 		}
 	}
 
-        
-    return picture;
+
+	return picture;
 }
 
 
-void CRaw::GetDimensions(const wxString & fileName, int & width, int & height)
+void CRaw::GetDimensions(const wxString& fileName, int& width, int& height)
 {
-    //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
+	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	CRegardsRaw::GetDimensions(CConvertUtility::ConvertToStdString(fileName), width, height);
 }
-

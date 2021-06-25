@@ -2,8 +2,8 @@
 #include "ExportFile.h"
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(ExportFile)
-	//*)
+//(*InternalHeadersPCH(ExportFile)
+//*)
 #endif
 //(*InternalHeaders(ExportFile)
 #include <wx/xrc/xmlres.h>
@@ -21,20 +21,22 @@ CExportFile::CExportFile(wxWindow* parent)
 {
 	isOk = false;
 	//(*Initialize(ExportFile)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("ExportFile"),_T("wxDialog"));
-	rbDateInformation = (wxRadioBox*)FindWindow(XRCID("ID_RBDATEINFORMATION"));
-	btOK = (wxButton*)FindWindow(XRCID("ID_BTOK"));
-	rbGeographicalInformation = (wxRadioBox*)FindWindow(XRCID("ID_RBGEOGRAPHICALINFORMATION"));
-	rbPrioriry = (wxRadioBox*)FindWindow(XRCID("ID_RBPRIORITY"));
-	sbOutputFormat = (wxStaticBox*)FindWindow(XRCID("ID_SBOUTPUTFORMAT"));
-	cbFileSaveOption = (wxComboBox*)FindWindow(XRCID("ID_cbfilesaveoption"));
-	btCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
-	rbChangeFilename = (wxRadioBox*)FindWindow(XRCID("ID_RBCHANGEFILENAME"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("ExportFile"),_T("wxDialog"));
+	rbDateInformation = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATEINFORMATION")));
+	btOK = static_cast<wxButton*>(FindWindow(XRCID("ID_BTOK")));
+	rbGeographicalInformation = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBGEOGRAPHICALINFORMATION")));
+	rbPrioriry = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBPRIORITY")));
+	sbOutputFormat = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_SBOUTPUTFORMAT")));
+	cbFileSaveOption = static_cast<wxComboBox*>(FindWindow(XRCID("ID_cbfilesaveoption")));
+	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
+	rbChangeFilename = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCHANGEFILENAME")));
 
-	Connect(XRCID("ID_RBDATEINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&CExportFile::OnRadioBox1Select);
-	Connect(XRCID("ID_BTOK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CExportFile::OnButton1Click);
-	Connect(XRCID("ID_RBGEOGRAPHICALINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&CExportFile::OnRadioBox2Select);
-	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CExportFile::OnbtCancelClick);
+	Connect(XRCID("ID_RBDATEINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,
+	        (wxObjectEventFunction)&CExportFile::OnRadioBox1Select);
+	Connect(XRCID("ID_BTOK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CExportFile::OnButton1Click);
+	Connect(XRCID("ID_RBGEOGRAPHICALINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,
+	        (wxObjectEventFunction)&CExportFile::OnRadioBox2Select);
+	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CExportFile::OnbtCancelClick);
 	//*)
 }
 

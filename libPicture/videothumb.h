@@ -22,7 +22,7 @@ public:
 	int64_t GetMovieDuration();
 	bool IsOk();
 private:
-	void ApplyEffectToBitmap(CRegardsBitmap* & bitmap, CVideoEffectParameter* videoEffectParameter);
+	//void ApplyEffectToBitmap(CRegardsBitmap* & bitmap, CVideoEffectParameter* videoEffectParameter);
 	wxString filename;
 	CFFmpegDecodeFrame* decodeFrame;
 };

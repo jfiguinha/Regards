@@ -8,11 +8,15 @@
 #include <wx/filename.h>
 #include <window_id.h>
 #include <LibResource.h>
-extern "C"
-{
+
+extern "C" {
 }
 
-CFFmpegTranscoding::CFFmpegTranscoding(const wxString & acceleratorHardware, COpenCLEngine * openCLEngine)
+CFFmpegTranscoding::CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLEngine* openCLEngine):
+	encode_thread(nullptr),
+	m_dlgProgress(nullptr),
+	mainWindow(nullptr),
+	videoCompressOption(nullptr)
 {
 	pimpl = new CFFmpegTranscodingPimpl(openCLEngine, acceleratorHardware);
 }
@@ -23,16 +27,16 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 }
 
 
-
-void CFFmpegTranscoding::EncodeFileThread(void * data)
+void CFFmpegTranscoding::EncodeFileThread(void* data)
 {
-	CFFmpegTranscoding * ffmpeg_encoding = (CFFmpegTranscoding *)data;
-	
-	int ret = ffmpeg_encoding->pimpl->EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output, ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
+	auto ffmpeg_encoding = static_cast<CFFmpegTranscoding*>(data);
+
+	int ret = ffmpeg_encoding->pimpl->EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output,
+	                                             ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
 	if (ret < 0)
 	{
 		wxString errorConversion = CLibResource::LoadStringFromResource("LBLERRORCONVERSION", 1);
-		
+
 		char message[255];
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
 		wxMessageBox(message, errorConversion, wxICON_ERROR);
@@ -43,14 +47,13 @@ void CFFmpegTranscoding::EncodeFileThread(void * data)
 	wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
 	event.SetInt(ret);
 	wxPostEvent(ffmpeg_encoding->mainWindow, event);
-	
 }
 
-int CFFmpegTranscoding::EndDecodeFile(const int & returnValue)
+int CFFmpegTranscoding::EndDecodeFile(const int& returnValue)
 {
 	m_dlgProgress->Close();
 	encode_thread->join();
-	
+
 	wxSleep(1);
 
 	delete encode_thread;
@@ -65,11 +68,12 @@ int CFFmpegTranscoding::EndDecodeFile(const int & returnValue)
 		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
 		wxMessageBox(filecompleted, infos);
 	}
-		
+
 	return 0;
 }
 
-int CFFmpegTranscoding::EncodeFile(wxWindow * mainWindow, const wxString & input, const wxString & output, CVideoOptionCompress * videoCompressOption)
+int CFFmpegTranscoding::EncodeFile(wxWindow* mainWindow, const wxString& input, const wxString& output,
+                                   CVideoOptionCompress* videoCompressOption)
 {
 	this->mainWindow = mainWindow;
 	this->input = input;
@@ -86,10 +90,11 @@ vector<wxString> CFFmpegTranscoding::ListOfEncoder()
 {
 	vector<AVCodecID> listCodecId;
 	vector<wxString> listOfEncoder;
-	const AVCodec *current_codec = nullptr;
-	void *i = 0;
-	while ((current_codec = av_codec_iterate(&i))) {
-		if (av_codec_is_encoder(current_codec)) 
+	const AVCodec* current_codec;
+	void* i = nullptr;
+	while ((current_codec = av_codec_iterate(&i)))
+	{
+		if (av_codec_is_encoder(current_codec))
 		{
 			listCodecId.push_back(current_codec->id);
 			listOfEncoder.push_back(current_codec->long_name);

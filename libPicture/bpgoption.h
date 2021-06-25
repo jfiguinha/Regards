@@ -12,41 +12,37 @@
 //(*Headers(JpegOption)
 //*)
 
-class CBpgOption: public wxDialog
+class CBpgOption : public wxDialog
 {
-	public:
+public:
+	CBpgOption(wxWindow* parent);
+	~CBpgOption() override;
 
-		CBpgOption(wxWindow* parent);
-		virtual ~CBpgOption();
+	//(*Declarations(JpegOption)
+	wxRadioBox* rbCompression;
+	wxStaticBox* sbCompression;
+	wxButton* btnCancel;
+	wxSlider* slCompression;
+	wxButton* btnOK;
+	//*)
 
-		//(*Declarations(JpegOption)
-		wxRadioBox* rbCompression;
-		wxStaticBox* sbCompression;
-		wxButton* btnCancel;
-		wxSlider* slCompression;
-		wxButton* btnOK;
-		//*)
-    
-        bool IsOk();
-        int CompressionOption();
-        int CompressionLevel();
+	bool IsOk();
+	int CompressionOption();
+	int CompressionLevel();
 
-	protected:
+protected:
+	//(*Identifiers(JpegOption)
+	//*)
 
-		//(*Identifiers(JpegOption)
-		//*)
+private:
+	//(*Handlers(JpegOption)
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	void OnslCompressionCmdScroll(wxScrollEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(JpegOption)
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		void OnslCompressionCmdScroll(wxScrollEvent& event);
-		//*)
-
-        bool isOk;
-        int compressOption;
-        int compressLevel;
-		DECLARE_EVENT_TABLE()
+	bool isOk;
+	int compressOption;
+	int compressLevel;
+DECLARE_EVENT_TABLE()
 };
-

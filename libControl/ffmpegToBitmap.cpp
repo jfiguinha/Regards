@@ -17,7 +17,8 @@ extern "C" {
 
 AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
 
-CffmpegToBitmap::CffmpegToBitmap(const bool& rgba)
+CffmpegToBitmap::CffmpegToBitmap(const bool& rgba): videoFrameWidth(0), videoFrameHeight(0), videoFrameOutputWidth(0),
+                                                    videoFrameOutputHeight(0)
 {
 	if (rgba)
 		pixelFormat = AV_PIX_FMT_BGRA;

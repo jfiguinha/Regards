@@ -37,8 +37,8 @@ private:
 	void OnbtnCheckClick(wxCommandEvent& event);
 	int AssociateRegards();
 	int AssociateExtension(LPCWSTR szFileExtension);
-	int GetWindowsVersionAvance();
-	void AssociateApplication(HKEY classesDefined);
+	int get_windows_version_avance();
+	void associate_application(HKEY classesDefined);
 	//*)
 	bool isOk;
 DECLARE_EVENT_TABLE()

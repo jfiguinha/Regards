@@ -26,7 +26,7 @@ CPageCurlFilter::CPageCurlFilter()
 
 CPageCurlFilter::~CPageCurlFilter()
 {
-	DeleteTexture();
+	CPageCurlFilter::DeleteTexture();
 }
 
 void CPageCurlFilter::RenderTexture(CRenderBitmapOpenGL* renderOpenGL, const float& time, const float& invert,

@@ -34,8 +34,7 @@ void swapBytes(float* fptr)
 {
 	// if endianness doesn't agree, swap bytes
 	uchar* ptr = (uchar*)fptr;
-	uchar tmp = 0;
-	tmp = ptr[0];
+	uchar tmp = ptr[0];
 	ptr[0] = ptr[3];
 	ptr[3] = tmp;
 	tmp = ptr[1];
@@ -63,7 +62,7 @@ void CPfm::GetDimensions(const wxString& path, int& width, int& height)
 
 CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbnail)
 {
-	CRegardsFloatBitmap* image = nullptr;
+	CRegardsFloatBitmap* image;
 
 	// create fstream object to read in pfm file 
 	// open the file in binary

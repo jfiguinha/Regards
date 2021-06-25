@@ -15,9 +15,8 @@
 class WebpOption : public wxDialog
 {
 public:
-
 	WebpOption(wxWindow* parent);
-	virtual ~WebpOption();
+	~WebpOption() override;
 
 	//(*Declarations(WebpOption)
 	wxStaticBox* sbCompression;
@@ -32,12 +31,10 @@ public:
 	int CompressionLevel();
 
 protected:
-
 	//(*Identifiers(WebpOption)
 	//*)
 
 private:
-
 	//(*Handlers(WebpOption)
 	void OnbtnOKClick(wxCommandEvent& event);
 	void OnbtnCancelClick(wxCommandEvent& event);
@@ -47,5 +44,5 @@ private:
 	bool isOk;
 	int compressOption;
 	int compressLevel;
-	DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };

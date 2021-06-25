@@ -9,38 +9,33 @@
 //*)
 #endif
 
-class ChangeLabel: public wxDialog
+class ChangeLabel : public wxDialog
 {
-	public:
+public:
+	ChangeLabel(wxWindow* parent);
+	~ChangeLabel() override;
 
-		ChangeLabel(wxWindow* parent);
-		virtual ~ChangeLabel();
+	//(*Declarations(ChangeLabel)
+	wxButton* btOK;
+	wxTextCtrl* txtCtrlFaceName;
+	wxButton* btCancel;
+	wxStaticText* stFaceName;
+	//*)
+	bool IsOk();
+	void SetLabel(const wxString& labelFaceName) override;
+	wxString GetNewLabel();
 
-		//(*Declarations(ChangeLabel)
-		wxButton* btOK;
-		wxTextCtrl* txtCtrlFaceName;
-		wxButton* btCancel;
-		wxStaticText* stFaceName;
-		//*)
-		bool IsOk();
-		void SetLabel(const wxString &labelFaceName);
-		wxString GetNewLabel();
+protected:
+	//(*Identifiers(ChangeLabel)
+	//*)
 
-	protected:
+private:
+	//(*Handlers(ChangeLabel)
+	//*)
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnBtnCancelClick(wxCommandEvent& event);
 
-		//(*Identifiers(ChangeLabel)
-		//*)
-
-	private:
-
-		//(*Handlers(ChangeLabel)
-		//*)
-		void OnbtnOkClick(wxCommandEvent& event);
-		void OnBtnCancelClick(wxCommandEvent& event);
-
-		bool isOk;
-		wxString labelFaceName;
-		DECLARE_EVENT_TABLE()
+	bool isOk;
+	wxString labelFaceName;
+DECLARE_EVENT_TABLE()
 };
-
-

@@ -11,7 +11,6 @@
 #include <RegardsBitmap.h>
 #include <ImageLoadingFormat.h>
 #include <InterpolationBicubic.h>
-#include <utility.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
 #include <OpenCLContext.h>
@@ -24,14 +23,14 @@
 using namespace Regards::Filter;
 
 
-CBitmapFusionFilter::CBitmapFusionFilter()
+CBitmapFusionFilter::CBitmapFusionFilter(): _bmpSecond(nullptr), width(0), height(0)
 {
 	pictureNext = new GLTexture();
 }
 
 CBitmapFusionFilter::~CBitmapFusionFilter()
 {
-	DeleteTexture();
+	CBitmapFusionFilter::DeleteTexture();
 }
 
 int CBitmapFusionFilter::GetTypeFilter()
@@ -39,9 +38,10 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
-CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
+CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
+                                                                        IBitmapDisplay* bmpViewer)
 {
-	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
 	const int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
 	//bitmapTemp->SetAlphaValue(0);
@@ -50,7 +50,7 @@ CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLo
 	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
 	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
 
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	CInterpolationBicubic interpolation;
 	interpolation.Execute(bitmapTemp, bitmapOut);
 
@@ -64,10 +64,11 @@ CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLo
 	return bitmapOut;
 }
 
-void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer, CImageLoadingFormat* bmpSecond)
+void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
+                                              CImageLoadingFormat* bmpSecond)
 {
-    DeleteTexture();
-    
+	DeleteTexture();
+
 	if (start)
 		bmpViewer->StartTransitionEffect(bmpSecond, false);
 	else
@@ -82,12 +83,13 @@ void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture
 		GenerateTexture(temp);
 		delete temp;
 	}
-
 }
 
-void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL, IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor, const bool& isNext, float& ratio)
+void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderBitmapOpenGL* renderOpenGL,
+                                      IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
+                                      const bool& isNext, float& ratio)
 {
-	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
 	const int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
 	//bitmapTemp->SetAlphaValue(0);
@@ -95,21 +97,21 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
 	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
 	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
-    
-    delete bitmapTemp;
-    
-    if(pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
-        GenerateEffectTexture(nextPicture, bmpViewer);
+
+	delete bitmapTemp;
+
+	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+		GenerateEffectTexture(nextPicture, bmpViewer);
 
 	if (renderOpenGL != nullptr)
-		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
-
+		renderOpenGL->ShowSecondBitmapWithAlpha(GetTexture(0), etape, out.width * scale_factor,
+		                                        out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 }
 
-void  CBitmapFusionFilter::GenerateTexture(CRegardsBitmap* bitmap)
+void CBitmapFusionFilter::GenerateTexture(CRegardsBitmap* bitmap)
 {
-    if(pictureNext == nullptr)
-        pictureNext = new GLTexture();
+	if (pictureNext == nullptr)
+		pictureNext = new GLTexture();
 	pictureNext->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }
@@ -121,7 +123,7 @@ void CBitmapFusionFilter::DeleteTexture()
 	pictureNext = nullptr;
 }
 
-GLTexture * CBitmapFusionFilter::GetTexture(const int &numTexture)
+GLTexture* CBitmapFusionFilter::GetTexture(const int& numTexture)
 {
 	return pictureNext;
 }

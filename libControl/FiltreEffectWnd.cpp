@@ -120,9 +120,9 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 						if (previewWindow != nullptr)
 						{
-							wxCommandEvent evt(wxEVENT_SHOWTOOLBARFILTRE);
-							evt.SetInt(numItem);
-							previewWindow->GetEventHandler()->AddPendingEvent(evt);
+							wxCommandEvent wx_command_event(wxEVENT_SHOWTOOLBARFILTRE);
+							wx_command_event.SetInt(numItem);
+							previewWindow->GetEventHandler()->AddPendingEvent(wx_command_event);
 						}
 						bitmapViewer->SetTool(numItem);
 						bitmapViewer->SetBitmapPreviewEffect(numItem);
@@ -249,6 +249,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 				filtreEffectOld = filtreEffect;
 				break;
 			}
+		default: ;
 		}
 	}
 }

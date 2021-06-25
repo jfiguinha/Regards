@@ -10,19 +10,19 @@ namespace Regards
 		class CThumbnailVerticalListFile : public CThumbnailVertical
 		{
 		public:
-			CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
-			virtual ~CThumbnailVerticalListFile(void);
+			CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+			                           const bool& testValidity);
+			~CThumbnailVerticalListFile(void) override;
 			int GetTypeAffichage();
 			int GetNumCatalog();
 			int GetNumCategorie();
 			wxString GetKey();
-            wxString GetWaitingMessage();
-            
-		protected:
+			wxString GetWaitingMessage() override;
 
-			void SetListeFile(const vector<wxString> & files);
-			void SetListeFile(const wxArrayString & listFile, const bool &showSelectButton = false);
-			void SetListeFile(const PhotosVector & photoVector);
+		protected:
+			void SetListeFile(const vector<wxString>& files);
+			void SetListeFile(const wxArrayString& listFile, const bool& showSelectButton = false);
+			void SetListeFile(const PhotosVector& photoVector);
 
 			int typeAffichage;
 			int numCatalog;
@@ -33,4 +33,3 @@ namespace Regards
 		};
 	}
 }
-

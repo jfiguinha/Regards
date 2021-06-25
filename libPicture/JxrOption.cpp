@@ -13,8 +13,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(JxrOption, wxDialog)
-//(*EventTable(JxrOption)
-//*)
+	//(*EventTable(JxrOption)
+	//*)
 END_EVENT_TABLE()
 
 JxrOption::JxrOption(wxWindow* parent)
@@ -24,18 +24,22 @@ JxrOption::JxrOption(wxWindow* parent)
 	compressLevel = 0;
 	//(*Initialize(JxrOption)
 	wxXmlResource::Get()->LoadObject(this, parent, _T("JxrOption"), _T("wxDialog"));
-	rbCodec = (wxRadioBox*)FindWindow(XRCID("ID_RBCODEC"));
-	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	sbCompression = (wxStaticBox*)FindWindow(XRCID("ID_SBCOMPRESSION"));
-	slCompression = (wxSlider*)FindWindow(XRCID("ID_SLCOMPRESSION"));
+	rbCodec = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCODEC")));
+	btnOK = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
+	sbCompression = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_SBCOMPRESSION")));
+	slCompression = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLCOMPRESSION")));
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&JxrOption::OnbtnOKClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&JxrOption::OnbtnCancelClick);
-	Connect(XRCID("ID_SLCOMPRESSION"), wxEVT_SCROLL_TOP | wxEVT_SCROLL_BOTTOM | wxEVT_SCROLL_LINEUP | wxEVT_SCROLL_LINEDOWN | wxEVT_SCROLL_PAGEUP | wxEVT_SCROLL_PAGEDOWN | wxEVT_SCROLL_THUMBTRACK | wxEVT_SCROLL_THUMBRELEASE | wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&JxrOption::OnslCompressionCmdScroll);
+	Connect(
+		XRCID("ID_SLCOMPRESSION"),
+		wxEVT_SCROLL_TOP | wxEVT_SCROLL_BOTTOM | wxEVT_SCROLL_LINEUP | wxEVT_SCROLL_LINEDOWN | wxEVT_SCROLL_PAGEUP |
+		wxEVT_SCROLL_PAGEDOWN | wxEVT_SCROLL_THUMBTRACK | wxEVT_SCROLL_THUMBRELEASE | wxEVT_SCROLL_CHANGED,
+		(wxObjectEventFunction)&JxrOption::OnslCompressionCmdScroll);
 	//*)
 
-	SetTitle("Jxr Saving Option");
+	wxTopLevelWindowMSW::SetTitle("Jxr Saving Option");
 }
 
 JxrOption::~JxrOption()
@@ -48,10 +52,12 @@ bool JxrOption::IsOk()
 {
 	return isOk;
 }
+
 int JxrOption::CompressionOption()
 {
 	return compressOption;
 }
+
 int JxrOption::CompressionLevel()
 {
 	return compressLevel;

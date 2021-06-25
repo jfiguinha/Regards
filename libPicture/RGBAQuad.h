@@ -3,13 +3,12 @@
 class CRgbaquad
 {
 public:
+	CRgbaquad(const uint8_t& red, const uint8_t& green, const uint8_t& blue, const uint8_t& alpha = 0);
 
-	CRgbaquad(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha = 0);
-
-	CRgbaquad(const wxString &hexacolor);
+	CRgbaquad(const wxString& hexacolor);
 
 	/****Définition du constructeur de copie***/
-	CRgbaquad(const CRgbaquad &source)  //lobjet source est protégé par const   
+	CRgbaquad(const CRgbaquad& source) //lobjet source est protégé par const   
 	{
 		/*réservation de lespace mémoire dans le tas puis copie des valeurs aux adresses correspondantes*/
 		red = source.red;
@@ -22,10 +21,10 @@ public:
 	CRgbaquad();
 
 	~CRgbaquad();
-	
-	void SetHexaColor(const wxString &hexacolor);
 
-	void SetColor(const uint8_t &color);
+	void SetHexaColor(const wxString& hexacolor);
+
+	void SetColor(const uint8_t& color);
 
 	float GetGreyValue() const;
 
@@ -33,7 +32,7 @@ public:
 
 	bool operator==(const CRgbaquad& other);
 
-	CRgbaquad& operator+(const CRgbaquad &color1)
+	CRgbaquad& operator+(const CRgbaquad& color1)
 	{
 		this->blue += color1.GetBlue();
 		this->green += color1.GetGreen();
@@ -42,25 +41,25 @@ public:
 	}
 
 
-	void Add(const float &value);
+	void Add(const float& value);
 
-	void Add(const CRgbaquad &value);
+	void Add(const CRgbaquad& value);
 
-	void Sub(const uint8_t &value);
+	void Sub(const uint8_t& value);
 
-	void Sub(const CRgbaquad &value);
+	void Sub(const CRgbaquad& value);
 
-	void Mul(const uint8_t &value);
+	void Mul(const uint8_t& value);
 
-	void Mul(const float &value);
+	void Mul(const float& value);
 
-	void Div(const float &value);
+	void Div(const float& value);
 
-	void Min(const uint8_t &value);
+	void Min(const uint8_t& value);
 
 	void Min(CRgbaquad value);
 
-	void Max(const uint8_t &value);
+	void Max(const uint8_t& value);
 
 	void Max(CRgbaquad value);
 
@@ -72,17 +71,17 @@ public:
 
 	float GetFAlpha() const;
 
-	void SetRed(const uint8_t &alpha);
+	void SetRed(const uint8_t& alpha);
 
-	void SetGreen(const uint8_t &alpha);
+	void SetGreen(const uint8_t& alpha);
 
-	void SetBlue(const uint8_t &alpha);
+	void SetBlue(const uint8_t& alpha);
 
-	void SetAlpha(const uint8_t &alpha);
+	void SetAlpha(const uint8_t& alpha);
 
-	void SetColorWithAlpha(CRgbaquad * color);
+	void SetColorWithAlpha(CRgbaquad* color);
 
-	void SetColor(const uint8_t &red, const uint8_t &green, const uint8_t &blue, const uint8_t &alpha = 0);
+	void SetColor(const uint8_t& red, const uint8_t& green, const uint8_t& blue, const uint8_t& alpha = 0);
 
 	uint8_t GetRed() const;
 
@@ -93,7 +92,6 @@ public:
 	uint8_t GetAlpha() const;
 
 private:
-
 	std::vector<wxString> Split(const wxString& s, char seperator);
 	int clamp(const int& val, const int& minval, const int& maxval);
 
@@ -126,6 +124,3 @@ private:
 #define COLOR_RGBA_BLACK CRgbaquad(0,0,0,0)
 #define COLOR_RGBA_GREY200 CRgbaquad(200, 200, 200, 0)
 #define COLOR_RGBA_BLACKBLACKGREY  CRgbaquad(29, 29, 29,0)
-
-
-

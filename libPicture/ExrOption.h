@@ -11,33 +11,30 @@
 //(*Headers(ExrOption)
 //*)
 
-class ExrOption: public wxDialog
+class ExrOption : public wxDialog
 {
-	public:
+public:
+	ExrOption(wxWindow* parent);
+	~ExrOption() override;
+	wxButton* btnCancel;
+	wxButton* btnOK;
+	wxRadioBox* rbCompression;
+	bool IsOk();
+	int CompressionOption();
+	//int CompressionLevel();
 
-		ExrOption(wxWindow* parent);
-		virtual ~ExrOption();
-		wxButton* btnCancel;
-		wxButton* btnOK;
-		wxRadioBox* rbCompression;
-        bool IsOk();
-        int CompressionOption();
-        //int CompressionLevel();
-    
-	protected:
+protected:
+	//(*Identifiers(ExrOption)
+	//*)
 
-		//(*Identifiers(ExrOption)
-		//*)
+private:
+	//(*Handlers(ExrOption)
+	void onsl_compress_level_cmd_scroll(wxScrollEvent& event);
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		//(*Handlers(ExrOption)
-		void OnslCompressLevelCmdScroll(wxScrollEvent& event);
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		//*)
-
-        int compressOption;
-        bool isOk;
-		DECLARE_EVENT_TABLE()
+	int compressOption;
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };

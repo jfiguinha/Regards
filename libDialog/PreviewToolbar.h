@@ -9,32 +9,31 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CPreviewToolbar : public CToolbarWindow,public  CSliderInterface
+		class CPreviewToolbar : public CToolbarWindow, public CSliderInterface
 		{
-
 		public:
-
-			CPreviewToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical);
-			~CPreviewToolbar();
+			CPreviewToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar& theme,
+			                const bool& vertical);
+			~CPreviewToolbar() override;
 			//void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
-			void SetTrackBarPosition(const int &iPos);
+			void SetTrackBarPosition(const int& iPos) override;
 			void SetTabValue(vector<int> value);
 			void ZoomOn();
 			void ZoomOut();
-			void SlidePosChange(const int &position, const wxString &key);
-			void MoveSlider(const int64_t &position){};
-			void ZoomPos(const int &position);
-			void ClickButton(const int &id);
-            void ChangeZoomInPos();
-            void ChangeZoomOutPos();
-            
+			void SlidePosChange(const int& position, const wxString& key) override;
+
+			void MoveSlider(const int64_t& position) override
+			{
+			};
+			void ZoomPos(const int& position) override;
+			void ClickButton(const int& id) override;
+			void ChangeZoomInPos();
+			void ChangeZoomOutPos();
+
 		private:
-		
-			void EventManager(const int &id);
-			CToolbarSlide * slide;
+			void EventManager(const int& id) override;
+			CToolbarSlide* slide;
 			wxWindowID parentId;
-			
 		};
 	}
 }
-

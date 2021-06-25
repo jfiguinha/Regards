@@ -21,59 +21,69 @@ namespace Regards
 		class CShowPreview : public CWindowMain, public CSliderInterface
 		{
 		public:
+			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
+			             CThemeParam* config, const wxString& videoFilename, COpenCLEngine* openCLEngine,
+			             CVideoOptionCompress* videoOptionCompress);
+			~CShowPreview() override;
 
-			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CThemeParam * config, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
-			~CShowPreview();
-			
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			//CRegardsBitmap* GetBitmap(const bool& source);
-			void UpdateScreenRatio();
-			void SlidePosChange(const int &position, const wxString &key);
-			void ZoomPos(const int &position) {};
-			void MoveSlider(const int64_t &position);
-			void ClickButton(const int &id) {};
-			void SetTrackBarPosition(const int &iPos) {};
-			void UpdateBitmap(CVideoOptionCompress * videoOptionCompress, const wxString & extension, const bool &updatePicture = true);
+			void UpdateScreenRatio() override;
+			void SlidePosChange(const int& position, const wxString& key) override;
+
+			void ZoomPos(const int& position) override
+			{
+			};
+			void MoveSlider(const int64_t& position) override;
+
+			void ClickButton(const int& id) override
+			{
+			};
+
+			void SetTrackBarPosition(const int& iPos) override
+			{
+			};
+			void UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const wxString& extension,
+			                  const bool& updatePicture = true);
 
 		private:
-
 			void ShowOriginal();
 			void ShowNew();
 
-			bool SetBitmap(CImageLoadingFormat * bitmap);
+			bool SetBitmap(CImageLoadingFormat* bitmap);
 			void OnViewerZoomIn(wxCommandEvent& event);
 			void OnViewerZoomOut(wxCommandEvent& event);
-			void Resize();
+			void Resize() override;
 			void OnControlSize(wxCommandEvent& event);
 			void OnSetPosition(wxCommandEvent& event);
 			void OnMoveLeft(wxCommandEvent& event);
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-			void ShowPicture(CFFmpegDecodeFrame * decodeFrame, const wxString &label);
+			void ShowPicture(CFFmpegDecodeFrame* decodeFrame, const wxString& label);
 			void OnShowOriginal(wxCommandEvent& event);
 			void OnShowNew(wxCommandEvent& event);
 			void OnUpdatePicture(wxCommandEvent& event);
 
-			static void ThreadLoading(void * data);
+			static void ThreadLoading(void* data);
 
-			CScrollbarWnd * scrollbar;
-			CPreviewToolbar * previewToolbar;
-			CSliderVideoPreview * sliderVideo;
-			CBitmapWnd * bitmapWindow;
-			CRegardsConfigParam * configRegards;
-			CImageLoadingFormat * tempImage;
-			
+			CScrollbarWnd* scrollbar;
+			CPreviewToolbar* previewToolbar;
+			CSliderVideoPreview* sliderVideo;
+			CBitmapWnd* bitmapWindow;
+			CRegardsConfigParam* configRegards;
+			CImageLoadingFormat* tempImage;
+
 
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
 
 			CVideoOptionCompress videoOptionCompress;
-			COpenCLEngine * openCLEngine = nullptr;
-			CFFmpegTranscodingPimpl * transcodeFFmpeg = nullptr;
-			CFFmpegDecodeFrame * decodeFrame = nullptr;
-			CFFmpegDecodeFrame * decodeFrameOriginal = nullptr;
+			COpenCLEngine* openCLEngine = nullptr;
+			CFFmpegTranscodingPimpl* transcodeFFmpeg = nullptr;
+			CFFmpegDecodeFrame* decodeFrame = nullptr;
+			CFFmpegDecodeFrame* decodeFrameOriginal = nullptr;
 			wxString extension;
 			bool transitionEnd;
 			wxString filename;
@@ -82,9 +92,9 @@ namespace Regards
 			int position = 0;
 			bool showOriginal = false;
 			bool isFirstPicture = true;
-			std::thread * threadStart = nullptr;
+			std::thread* threadStart = nullptr;
 			bool moveSlider = false;
-            bool oldShowOriginal = false;
+			bool oldShowOriginal = false;
 			bool firstTime = true;
 			bool compressIsOK = true;
 			wxString key = "";

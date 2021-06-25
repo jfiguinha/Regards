@@ -4,7 +4,6 @@
 #include "BitmapWndViewer.h"
 
 
-
 using namespace Regards::Control;
 
 constexpr auto WM_EMAIL = 4;
@@ -90,7 +89,7 @@ void CBitmapToolbar::ZoomPos(const int& position)
 
 void CBitmapToolbar::ZoomOn()
 {
-	CBitmapWndViewer * bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		bitmapWindow->ZoomOn();
@@ -235,6 +234,7 @@ void CBitmapToolbar::EventManager(const int& id)
 		case WM_ZOOMON:
 			ZoomOn();
 			break;
+		default: ;
 		}
 	}
 }

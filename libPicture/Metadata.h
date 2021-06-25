@@ -12,6 +12,6 @@ class CMetadata
 {
 public:
 	int depth;
-    wxString key;
-    wxString value;
+	wxString key;
+	wxString value;
 };

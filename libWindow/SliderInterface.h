@@ -7,7 +7,7 @@ namespace Regards
 		{
 		public:
 			CSliderInterface(){};
-			~CSliderInterface(){};
+			virtual ~CSliderInterface(){};
 
 			virtual void ZoomPos(const int &position) = 0;
 			virtual void SlidePosChange(const int &position, const wxString &key) = 0;

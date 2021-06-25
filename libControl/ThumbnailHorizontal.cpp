@@ -7,7 +7,8 @@
 using namespace Regards::Control;
 
 
-CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                           const bool& testValidity)
 	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
 }
@@ -18,15 +19,16 @@ CThumbnailHorizontal::~CThumbnailHorizontal(void)
 
 wxString CThumbnailHorizontal::GetWaitingMessage()
 {
-	return "Window CThumbnailHorizontal waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
+	return "Window CThumbnailHorizontal waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " +
+		to_string(nbProcess);
 }
 
 void CThumbnailHorizontal::InitPosition()
 {
-	wxWindow * parent = this->GetParent();
+	wxWindow* parent = this->GetParent();
 	if (parent != nullptr)
 	{
-		wxSize * size = new wxSize();
+		auto size = new wxSize();
 		wxCommandEvent evt(wxEVENT_SETPOSITION);
 		size->x = posLargeur;
 		size->y = posHauteur;
@@ -36,51 +38,46 @@ void CThumbnailHorizontal::InitPosition()
 
 	posHauteur = 0;
 	posLargeur = 0;
-
-
 }
 
-void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
+void CThumbnailHorizontal::SetListeFile(const vector<wxString>& files)
 {
 	this->SetFocus();
-    InitScrollingPos();
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	InitScrollingPos();
+	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
-    int i = 0;
-    int x = 0;
-    int y = 0;
-    thumbnailPos = 0;
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	thumbnailPos = 0;
 
 
-	 for (wxString fileEntry : files)
-    {
-        wxString filename = fileEntry;
-		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename, testValidity);
-        thumbnailData->SetNumPhotoId(i);
-        thumbnailData->SetNumElement(i);
+	for (wxString fileEntry : files)
+	{
+		wxString filename = fileEntry;
+		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		thumbnailData->SetNumPhotoId(i);
+		thumbnailData->SetNumElement(i);
 
 
-		CIcone * pBitmapIcone = new CIcone();
-        pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-        pBitmapIcone->SetData(thumbnailData);
-        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-        pBitmapIcone->SetWindowPos(x, y);
+		auto pBitmapIcone = new CIcone();
+		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetWindowPos(x, y);
 
-        if (i == 0)
-            pBitmapIcone->SetSelected(true);
+		if (i == 0)
+			pBitmapIcone->SetSelected(true);
 
 		iconeListLocal->AddElement(pBitmapIcone);
 
-        x += themeThumbnail.themeIcone.GetWidth();
-        i++;
+		x += themeThumbnail.themeIcone.GetWidth();
+		i++;
+	}
 
-    }
-
-	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
+	auto oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
@@ -94,12 +91,12 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 }
 
 
-void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
+void CThumbnailHorizontal::RenderIcone(wxDC* deviceContext)
 {
 	int x = -posLargeur;
 	int y = 0;
 
-	for (int i = 0;i < nbElementInIconeList;i++)
+	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
@@ -108,7 +105,7 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 			int right = x + themeThumbnail.themeIcone.GetWidth();
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
-            pBitmapIcone->SetWindowPos(x, y);     
+			pBitmapIcone->SetWindowPos(x, y);
 			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			{
 				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -135,11 +132,11 @@ void CThumbnailHorizontal::UpdateScroll()
 		thumbnailSizeX = nbLigneX * themeThumbnail.themeIcone.GetWidth();
 		thumbnailSizeY = themeThumbnail.themeIcone.GetHeight();
 
-		wxWindow * parent = this->GetParent();
+		wxWindow* parent = this->GetParent();
 
 		if (parent != nullptr)
 		{
-			CControlSize * controlSize = new CControlSize();
+			auto controlSize = new CControlSize();
 			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 			controlSize->controlWidth = thumbnailSizeX;
 			controlSize->controlHeight = thumbnailSizeY;
@@ -149,7 +146,7 @@ void CThumbnailHorizontal::UpdateScroll()
 
 		if (parent != nullptr)
 		{
-			wxSize * size = new wxSize();
+			auto size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
 			size->x = posLargeur;
 			size->y = posHauteur;
@@ -157,11 +154,10 @@ void CThumbnailHorizontal::UpdateScroll()
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
 }
 
 
-CIcone * CThumbnailHorizontal::FindElement(const int &xPos, const int &yPos)
+CIcone* CThumbnailHorizontal::FindElement(const int& xPos, const int& yPos)
 {
 	int x = posLargeur + xPos;
 	if (x > thumbnailSizeX)

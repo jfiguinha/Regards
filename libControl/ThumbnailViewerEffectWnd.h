@@ -13,23 +13,23 @@ using namespace Regards::Control;
 
 namespace Regards
 {
-    namespace Control
-    {      
-        class CThumbnailViewerEffectWnd : public CWindowMain
-        {
-        public:
-            CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail, int panelInfosId, bool checkValidity);
-            virtual ~CThumbnailViewerEffectWnd(void);
-            
-            void UpdateScreenRatio();
-            void Resize();
-            wxString GetFilename();
-            void SetFile(const wxString & filename);
-        private:
+	namespace Control
+	{
+		class CThumbnailViewerEffectWnd : public CWindowMain
+		{
+		public:
+			CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
+			                          const CThemeScrollBar& themeScroll, const CThemeThumbnail& themeThumbnail,
+			                          int panelInfosId, bool checkValidity);
+			~CThumbnailViewerEffectWnd(void) override;
 
-            CScrollbarWnd * thumbnailEffectScroll;
-            CThumbnailViewerEffect * thumbnailEffect;
-        };
-    }
+			void UpdateScreenRatio() override;
+			void Resize() override;
+			wxString GetFilename();
+			void SetFile(const wxString& filename);
+		private:
+			CScrollbarWnd* thumbnailEffectScroll;
+			CThumbnailViewerEffect* thumbnailEffect;
+		};
+	}
 }
-

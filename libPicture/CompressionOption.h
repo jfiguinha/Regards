@@ -13,41 +13,38 @@
 //(*Headers(CompressionOption)
 //*)
 
-class CompressionOption: public wxDialog
+class CompressionOption : public wxDialog
 {
-	public:
+public:
+	CompressionOption(wxWindow* parent);
+	~CompressionOption() override;
 
-		CompressionOption(wxWindow* parent);
-		virtual ~CompressionOption();
+	bool IsOk();
+	int CompressionLevel();
 
-		bool IsOk();
-		int CompressionLevel();
+	//(*Declarations(CompressionOption)
+	wxButton* btOK;
+	wxStaticText* StaticText2;
+	wxStaticText* StaticText1;
+	wxSlider* slCompression;
+	wxStaticBox* StaticBox1;
+	wxButton* btCancel;
+	//*)
 
-		//(*Declarations(CompressionOption)
-		wxButton* btOK;
-		wxStaticText* StaticText2;
-		wxStaticText* StaticText1;
-		wxSlider* slCompression;
-		wxStaticBox* StaticBox1;
-		wxButton* btCancel;
-		//*)
+protected:
+	//(*Identifiers(CompressionOption)
+	//*)
 
-	protected:
+private:
+	bool isOk;
+	int compressLevel;
 
-		//(*Identifiers(CompressionOption)
-		//*)
+	//(*Handlers(CompressionOption)
+	void OnButton1Click(wxCommandEvent& event);
+	void OnButton2Click(wxCommandEvent& event);
+	//*)
 
-	private:
-
-		bool isOk;
-		int compressLevel;
-
-		//(*Handlers(CompressionOption)
-		void OnButton1Click(wxCommandEvent& event);
-		void OnButton2Click(wxCommandEvent& event);
-		//*)
-
-		DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };
 
 #endif

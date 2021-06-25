@@ -1,36 +1,13 @@
 #include "header.h"
 #include "FFmpegDecodeFrame.h"
 #include <RegardsBitmap.h>
-#include <ImageLoadingFormat.h>
 #include <wx/progdlg.h>
 #include <wx/filename.h>
 #include <ConvertUtility.h>
-#include <window_id.h>
 #include <chrono>
 #include <LibResource.h>
 #include <RotateByShearRGB.h>
 
-//static const int dst_width = 1920;
-//static const int dst_height = 1080;
-//static const int dst_vbit_rate = 1500000;
-//static const int dst_abit_rate = 128000;
-//static const int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
-//static const int dst_sample_rate = 44100;
-//static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_H265;
-//static const AVCodecID AUDIO_CODEC = AV_CODEC_ID_AAC;
-
-//static const char * hb_h264_profile_names[] = { "auto", "high", "main", "baseline", NULL, };
-//static const char * hb_h264_level_names[] = { "auto", "1.0", "1b", "1.1", "1.2", "1.3", "2.0", "2.1", "2.2", "3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "5.0", "5.1", "5.2",  NULL, };
-//static const int    hb_h264_level_values[] = { -1,    10,    9,    11,    12,    13,    20,    21,    22,    30,    31,    32,    40,    41,    42,    50,    51,    52,     0, };
-//static const int          hb_h265_level_values[] = {
-//	-1,  30,  60,  63,  90,  93, 120, 123,
-//	150, 153, 156, 180, 183, 186,   0, };
-/*
-static const char * hb_h265_level_names[] = {
-	"auto", "1.0", "2.0", "2.1", "3.0", "3.1", "4.0", "4.1",
-	"5.0", "5.1", "5.2", "6.0", "6.1", "6.2",  NULL, };
-
-*/
 
 /**********************************************************************
  * hb_reduce
@@ -149,7 +126,7 @@ void CFFmpegDecodeFrame::OpenFile(const wxString& filename)
 	}
 }
 
-CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString& acceleratorHardware)
+CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString& acceleratorHardware): stream_ctx(nullptr)
 {
 	isOk = true;
 	dst = av_frame_alloc();
@@ -163,7 +140,8 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString& acceleratorHardware)
 	first = true;
 	this->acceleratorHardware = acceleratorHardware;
 	image = new CRegardsBitmap();
-};
+}
+;
 
 void CFFmpegDecodeFrame::EndTreatment()
 {
@@ -219,7 +197,7 @@ bool CFFmpegDecodeFrame::IsOk()
 
 int CFFmpegDecodeFrame::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType type)
 {
-	int err = 0;
+	int err;
 
 	if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
 	                                  nullptr, nullptr, 0)) < 0)
@@ -271,7 +249,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString& filename)
 
 	if (isBuffer)
 	{
-		if (!(ifmt_ctx = avformat_alloc_context()))
+		if (!((ifmt_ctx = avformat_alloc_context())))
 		{
 			ret = AVERROR(ENOMEM);
 			return ret;
@@ -530,15 +508,13 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 
 		while (ret >= 0)
 		{
-			AVFrame* sw_frame = nullptr;
-
 			ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
 			if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 				break;
 			if (ret < 0)
 				return ret;
 
-			sw_frame = stream->dec_frame;
+			AVFrame* sw_frame = stream->dec_frame;
 
 			videoFrameOutputWidth = sw_frame->width;
 			videoFrameOutputHeight = sw_frame->height;
@@ -714,9 +690,9 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 				//Calcul Ratio
 				if (widthThumbnail >= heightThumbnail)
-					videoFrameOutputHeight = static_cast<int>((float)widthThumbnail / ratio);
+					videoFrameOutputHeight = static_cast<int>(static_cast<float>(widthThumbnail) / ratio);
 				else
-					videoFrameOutputWidth = static_cast<int>((float)videoFrameOutputHeight * ratio);
+					videoFrameOutputWidth = static_cast<int>(static_cast<float>(videoFrameOutputHeight) * ratio);
 			}
 
 			if (first)

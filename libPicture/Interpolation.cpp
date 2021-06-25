@@ -80,27 +80,27 @@ inline CRgbaquad GetColorFromYUV(CBitmapYUV* bmpYUV, const int& x, const int& y)
 		int cgu = 25675;
 		int cgv = 53279;
 		int positionSrc = x + y * bmpYUV->width;
-		int positionUV = 0; //width * height;
+		int position_uv; //width * height;
 
 		int yModulo = y % 2;
 		int xModulo = x % 2;
 		if (xModulo == 1)
 		{
 			if (yModulo == 1)
-				positionUV = ((x - 1) / 2) + ((y - 1) / 2) * bmpYUV->uvlinewidth;
+				position_uv = ((x - 1) / 2) + ((y - 1) / 2) * bmpYUV->uvlinewidth;
 			else
-				positionUV = ((x - 1) / 2) + (y / 2) * bmpYUV->uvlinewidth;
+				position_uv = ((x - 1) / 2) + (y / 2) * bmpYUV->uvlinewidth;
 		}
 		else
 		{
 			if (yModulo == 1)
-				positionUV = (x / 2) + ((y - 1) / 2) * bmpYUV->uvlinewidth;
+				position_uv = (x / 2) + ((y - 1) / 2) * bmpYUV->uvlinewidth;
 			else
-				positionUV = (x / 2) + (y / 2) * bmpYUV->uvlinewidth;
+				position_uv = (x / 2) + (y / 2) * bmpYUV->uvlinewidth;
 		}
 
-		int v = bmpYUV->dataV[positionUV];
-		int u = bmpYUV->dataU[positionUV];
+		int v = bmpYUV->dataV[position_uv];
+		int u = bmpYUV->dataU[position_uv];
 
 		int c1 = (v - 128) * crv;
 		int c2 = (u - 128) * cgu;
@@ -512,12 +512,10 @@ wxImage* CInterpolation::ExecuteNV12(uint8_t* dataY, uint8_t* dataUV, const int&
                                      const int& widthOut, const int& heightOut, const int& flipH, const int& flipV,
                                      const int& angle)
 {
-	wxImage* imageout = nullptr;
-
 	int width = widthOut;
 	int height = heightOut;
 
-	imageout = new wxImage(width, height);
+	wxImage* imageout = new wxImage(width, height);
 
 
 	float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);

@@ -4,7 +4,6 @@
 #include "BitmapToolbar.h"
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
-#include <wx/gauge.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
@@ -17,9 +16,10 @@ namespace Regards
 		class CShowBitmap : public CWindowMain
 		{
 		public:
-
-			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config, const bool &exportPicture);
-			~CShowBitmap();
+			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
+			            CBitmapInterface* bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam* config,
+			            const bool& exportPicture);
+			~CShowBitmap() override;
 			void IsNextPicture(const bool& value);
 			void HideToolbar();
 			void ShowToolbar();
@@ -35,34 +35,33 @@ namespace Regards
 			void TransitionEnd();
 			CRegardsBitmap* GetBitmap(const bool& source);
 			void ReloadResource();
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void SavePicture();
 
 		private:
-
 			void OnIdle(wxIdleEvent& evt);
-            void OnViewerDblClick(wxCommandEvent& event);
-            void OnViewerZoomIn(wxCommandEvent& event);
-            void OnViewerZoomOut(wxCommandEvent& event);
-			void Resize();
+			void OnViewerDblClick(wxCommandEvent& event);
+			void OnViewerZoomIn(wxCommandEvent& event);
+			void OnViewerZoomOut(wxCommandEvent& event);
+			void Resize() override;
 			void OnRotateDetect(wxCommandEvent& event);
 			void OnControlSize(wxCommandEvent& event);
 			void OnSetPosition(wxCommandEvent& event);
 
-			static void RotateRecognition(void * param);
+			static void RotateRecognition(void* param);
 
 			void OnMoveLeft(wxCommandEvent& event);
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-			CScrollbarWnd * scrollbar;
-			CBitmapToolbar * pictureToolbar;
-			CBitmapWndViewer * bitmapWindow;
-			CBitmapInterface * bitmapInterface;
-			CRegardsConfigParam * configRegards;
-			CImageLoadingFormat * tempImage;
+			CScrollbarWnd* scrollbar;
+			CBitmapToolbar* pictureToolbar;
+			CBitmapWndViewer* bitmapWindow;
+			CBitmapInterface* bitmapInterface;
+			CRegardsConfigParam* configRegards;
+			CImageLoadingFormat* tempImage;
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
@@ -70,7 +69,7 @@ namespace Regards
 
 			bool transitionEnd;
 			wxString filename;
-            int progressValue;
+			int progressValue;
 			bool fullscreen;
 			bool showToolbar;
 		};

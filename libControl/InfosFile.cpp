@@ -29,7 +29,9 @@ using namespace Regards::Picture;
 using namespace Regards::exiv2;
 #define TAILLEMAX 4096
 
-CInfosFile::CInfosFile(CThemeTree* theme, CTreeElementControlInterface* interfaceControl)
+CInfosFile::CInfosFile(CThemeTree* theme, CTreeElementControlInterface* interfaceControl): yPos(0), cxMax(0),
+	xMaxPos(0),
+	xMaxPosValue(0)
 {
 	rotation = 0;
 	filename = L"";
@@ -43,7 +45,8 @@ CInfosFile::CInfosFile(CThemeTree* theme, CTreeElementControlInterface* interfac
 	themeTree.themeSlide.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeTexte.SetHeight(themeTree.GetRowHeight());
 	eventControl = interfaceControl;
-};
+}
+;
 
 
 const wxString CInfosFile::GetFilename()
@@ -207,7 +210,7 @@ void CInfosFile::SetFile(const wxString& picture)
 	{
 		showOtherInformation = false;
 		tree<CTreeData*>::iterator top;
-		tree<CTreeData*>::iterator child;
+		
 		int index = 0;
 
 		top = tr.begin();
@@ -229,8 +232,8 @@ void CInfosFile::SetFile(const wxString& picture)
 #endif
 	if (showOtherInformation)
 	{
-		CLibPicture libPicture;
-		libPicture.GetPictureDimensions(picture, width, height, rotation);
+		CLibPicture lib_picture;
+		lib_picture.GetPictureDimensions(picture, width, height, rotation);
 		tree<CTreeData*>::iterator top;
 		wxString exifinfos;
 		//int item = 0;
@@ -286,7 +289,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 	//TRACE();
 
 	CPositionElement* posElement;
-	tree<CTreeData*>::sibling_iterator it = tree<Regards::Window::CTreeData*>::begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
 
 	//int i = 
 
@@ -299,7 +302,6 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		if (!data->GetValue().empty() || it.number_of_children() == 0)
 		{
 			int x_pos = widthPosition * (profondeur + 1);
-			int widthElementColumn1 = 0;
 			int widthElementColumn2 = 0;
 
 			CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
@@ -309,7 +311,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
 			                                   false);
 
-			widthElementColumn1 = x_pos + posElement->GetWidth() + themeTree.GetMargeX();
+			int widthElementColumn1 = x_pos + posElement->GetWidth() + themeTree.GetMargeX();
 
 			if (!data->GetValue().empty())
 			{
@@ -335,9 +337,9 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		else
 		{
 			int x_pos = widthPosition * profondeur;
-			int widthElement = 0;
-			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                                                  true);
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+				themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				true);
 			treeElementTriangle->SetVisible(isVisible);
 			posElement = CreatePositionElement(x_pos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
 			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
@@ -352,7 +354,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
 			                                   false);
 
-			widthElement = x_pos + posElement->GetWidth() + themeTree.GetMargeX();
+			int widthElement = x_pos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 
 			nbRow++;
@@ -387,8 +389,9 @@ void CInfosFile::CreateElement()
 			int x_pos = themeTree.GetMargeX();
 			int width_element = 0;
 
-			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-			                                                                  true);
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(
+				themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				true);
 			treeElementTriangle->SetVisible(isVisible);
 			CPositionElement* posElement = CreatePositionElement(x_pos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
 			                                                     treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
@@ -421,7 +424,7 @@ void CInfosFile::CreateElement()
 
 void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	tree<CTreeData*>::sibling_iterator it = tree<Regards::Window::CTreeData*>::begin(parent);
+	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
 	//int i = 
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
@@ -433,9 +436,8 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		if (!data->GetValue().empty() || it.number_of_children() == 0)
 		{
 			int xPos = widthPosition * (profondeur + 1);
-			int widthElementColumn1 = 0;
 			int widthElementColumn2 = 0;
-			CTreeElementTexte* treeElementTexte = nullptr;
+			CTreeElementTexte* tree_element_texte;
 			CPositionElement* posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement != nullptr)
 			{
@@ -446,15 +448,15 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			}
 			else
 			{
-				treeElementTexte =
+				tree_element_texte =
 					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-				treeElementTexte->SetVisible(is_visible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+				tree_element_texte->SetVisible(is_visible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
 				                                   false);
 			}
 
-			widthElementColumn1 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			int widthElementColumn1 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 
 			if (!data->GetValue().empty())
 			{
@@ -462,19 +464,19 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 				posElement = GetElement(data, ELEMENT_TEXTEVALUE);
 				if (posElement != nullptr)
 				{
-					auto treeElementTexte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
-					treeElementTexte->SetVisible(is_visible);
+					auto element_texte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
+					element_texte->SetVisible(is_visible);
 					posElement->SetX(xPos);
 					posElement->SetY(yPos);
 				}
 				else
 				{
-					treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
 					                                      data->GetValue());
-					treeElementTexte->SetVisible(is_visible);
-					posElement = CreatePositionElement(xPos, yPos, nbRow, 1, treeElementTexte->GetWidth(),
-					                                   treeElementTexte->GetHeight(), ELEMENT_TEXTEVALUE,
-					                                   treeElementTexte, data, false);
+					tree_element_texte->SetVisible(is_visible);
+					posElement = CreatePositionElement(xPos, yPos, nbRow, 1, tree_element_texte->GetWidth(),
+					                                   tree_element_texte->GetHeight(), ELEMENT_TEXTEVALUE,
+					                                   tree_element_texte, data, false);
 				}
 				widthElementColumn2 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			}
@@ -494,7 +496,6 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		else
 		{
 			int xPos = widthPosition * profondeur;
-			int widthElement = 0;
 			CTreeElementTriangle* treeElementTriangle;
 			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement != nullptr)
@@ -525,14 +526,15 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 			}
 			else
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(is_visible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
 				                                   false);
 			}
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			int widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 
 			nbRow++;
@@ -607,8 +609,9 @@ void CInfosFile::UpdateElement()
 			}
 			else
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,

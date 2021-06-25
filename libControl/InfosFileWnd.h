@@ -1,7 +1,7 @@
 #pragma once
 #include "InfosFile.h"
 #include <TreeWithScrollbar.h>
-#include <WindowMain.h>
+
 using namespace Regards::Control;
 using namespace std;
 class CTreeElementTriangle;
@@ -11,11 +11,11 @@ namespace Regards
 {
 	namespace Control
 	{
-        class CInfosFileWnd;
-        
-        class CThreadLoadInfos
-        {
-        public:
+		class CInfosFileWnd;
+
+		class CThreadLoadInfos
+		{
+		public:
 			CThreadLoadInfos()
 			{
 				panelInfos = nullptr;
@@ -23,29 +23,26 @@ namespace Regards
 				threadLoadInfos = nullptr;
 			}
 
-            CInfosFileWnd * panelInfos;
-            CInfosFile * infosFileWnd;
-            wxString filename;
-            thread * threadLoadInfos;
-        };
-        
+			CInfosFileWnd* panelInfos;
+			CInfosFile* infosFileWnd;
+			wxString filename;
+			thread* threadLoadInfos;
+		};
+
 		class CInfosFileWnd : public CTreeWithScrollbar
 		{
 		public:
+			CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll, const CThemeTree& theme);
+			~CInfosFileWnd(void) override;
+			void InfosUpdate(const wxString& filename);
 
-			CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & theme);
-            ~CInfosFileWnd(void);
-            void InfosUpdate(const wxString & filename);
-            
 		private:
+			void UpdateTreeInfosEvent(wxCommandEvent& event);
+			static void GenerateTreeInfos(CThreadLoadInfos* threadInfos);
 
-            void UpdateTreeInfosEvent(wxCommandEvent &event);
-            static void GenerateTreeInfos(CThreadLoadInfos * threadInfos);
-            
-            CInfosFile * infosFile;
-            CInfosFile * oldInfosFileControl;
-            wxString filename;
+			CInfosFile* infosFile;
+			CInfosFile* oldInfosFileControl;
+			wxString filename;
 		};
-
 	}
 }

@@ -15,9 +15,8 @@
 class J2kOption : public wxDialog
 {
 public:
-
 	J2kOption(wxWindow* parent);
-	virtual ~J2kOption();
+	~J2kOption() override;
 
 	//(*Declarations(J2kOption)
 	wxStaticBox* sbCompression;
@@ -32,12 +31,10 @@ public:
 	int CompressionLevel();
 
 protected:
-
 	//(*Identifiers(J2kOption)
 	//*)
 
 private:
-
 	//(*Handlers(J2kOption)
 	void OnbtnOKClick(wxCommandEvent& event);
 	void OnbtnCancelClick(wxCommandEvent& event);
@@ -47,5 +44,5 @@ private:
 	bool isOk;
 	int compressOption;
 	int compressLevel;
-	DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };

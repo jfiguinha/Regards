@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "ThumbnailVideo.h"
 #include <Thumbnail.h>
@@ -14,10 +15,12 @@
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
-#define wxTIMER_PROCESS 1001
+#define WX_TIMER_PROCESS 1001
 
-CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
+CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                 const bool& testValidity)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity), theme_thumbnail_(themeThumbnail),
+	  test_validity_(testValidity)
 {
 	numItemSelected = -1;
 	process_end = true;
@@ -33,11 +36,11 @@ CThumbnailVideo::~CThumbnailVideo(void)
 {
 }
 
-bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone* icone, CWindowMain* parent) /* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
-		CThumbnailData * data = icone->GetData();
+		CThumbnailData* data = icone->GetData();
 		if (data != nullptr)
 		{
 			if (data->GetTimePosition() > videoPos)
@@ -49,11 +52,11 @@ bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone * icone, CWindow
 	return false;
 }
 
-int CThumbnailVideo::FindNumItem(const int &videoPos)
+int CThumbnailVideo::FindNumItem(const int& videoPos)
 {
 	int numItem = 0;
 	pItemCompFonct _pf = &ItemCompFonct;
-	CIcone * icone = iconeList->FindElement(videoPos, 0, &_pf, this);
+	CIcone* icone = iconeList->FindElement(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
 	{
 		numItem = icone->GetNumElement() - 1;
@@ -61,32 +64,30 @@ int CThumbnailVideo::FindNumItem(const int &videoPos)
 	return numItem;
 }
 
-void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
+void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 {
-	int numItem = 0;
-	CIcone * pIcone = nullptr;
-    int nbIconeElement = nbElementInIconeList;
+	const int nbIconeElement = nbElementInIconeList;
 	//wxClientDC dc(this);
 
 	if (nbIconeElement == 0)
 		return;
 
-	numItem = FindNumItem(videoPos);
+	const int numItem = FindNumItem(videoPos);
 	if (numItem == numItemSelected)
 		return;
-	
+
 	if (numSelectPhotoId != -1)
 	{
 		CIcone* numSelect = GetIconeById(numSelectPhotoId);
-		if(numSelect != nullptr)
+		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 	}
 
-	pIcone = iconeList->GetElement(numItem);
-    if(pIcone != nullptr)
-    {
-        pIcone->SetSelected(true);
-    }
+	CIcone* pIcone = iconeList->GetElement(numItem);
+	if (pIcone != nullptr)
+	{
+		pIcone->SetSelected(true);
+	}
 
 	//Calcul NbElement By View
 	int nbElement = (GetWindowWidth() / themeThumbnail.themeIcone.GetWidth());
@@ -98,7 +99,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 
 	//nbElementToShow = pThumbnailDataList.size();
 
-	if (numLastElement > (nbIconeElement- 1))
+	if (numLastElement > (nbIconeElement - 1))
 		numLastElement = nbIconeElement - 1;
 
 	if (numFirstElement < 0)
@@ -112,12 +113,12 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 		wxRect rect = pIcone->GetPos();
 		rect.x = posLargeur + rect.x;
 		rect.y = posHauteur + rect.y;
-        
-		wxWindow * parent = this->GetParent();
+
+		wxWindow* parent = this->GetParent();
 
 		if (parent != nullptr)
 		{
-			wxSize * size = new wxSize();
+			auto size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
 
 			posHauteur = max((rect.y - this->GetWindowHeight() / 2), 0);
@@ -138,14 +139,13 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	Refresh();
 }
 
-void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const int &size)
+void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
 {
 	int x = 0;
 	int y = 0;
 	int typeElement = TYPEVIDEO;
 	threadDataProcess = false;
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	auto iconeListLocal = new CIconeList();
 
 	CLibPicture libPicture;
 	int iFormat = libPicture.TestImageFormat(szFileName);
@@ -158,24 +158,24 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	{
 		for (int i = 0; i < nbResult; i++)
 		{
-			CImageVideoThumbnail * thumbnail = new CImageVideoThumbnail(); 
+			auto thumbnail = new CImageVideoThumbnail();
 			sqlThumbnailVideo.GetPictureThumbnail(szFileName, i, thumbnail);
 			if (thumbnail->image == nullptr)
 			{
-				thumbnail->percent = ((float)i / (float)nbResult) * 100.0f;
+				thumbnail->percent = (static_cast<float>(i) / static_cast<float>(nbResult)) * 100.0f;
 				thumbnail->timePosition = i;
 				thumbnail->image = libPicture.LoadPicture(szFileName, true, i);
 			}
 
-			float percent = ((float)i / (float)size) * 100.0f;
-			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(szFileName);
+			float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
+			auto thumbnailData = new CThumbnailDataStorage(szFileName);
 			//thumbnailData->SetStorage(nullptr);
 			thumbnailData->SetNumPhotoId(i);
 			thumbnailData->SetNumElement(i);
 			thumbnailData->SetTypeElement(typeElement);
 			thumbnailData->SetPercent(percent);
 			if (typeElement == TYPEMULTIPAGE)
-				thumbnailData->SetLibelle("Page : " + to_string(i+1) + "/" + to_string(nbResult));
+				thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(nbResult));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
 			try
@@ -189,7 +189,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			}
 
 
-			CIcone * pBitmapIcone = new CIcone();
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(i);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -214,15 +214,15 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 	{
 		CLibPicture libPicture;
 
-		vector<CImageVideoThumbnail *> listThumbnail = libPicture.LoadDefaultVideoThumbnail(szFileName, size);
+		vector<CImageVideoThumbnail*> listThumbnail = libPicture.LoadDefaultVideoThumbnail(szFileName, size);
 		//Création de la liste des icones
 
 		//int i = 0;
 		for (auto j = 0; j < size; j++)
 		{
-			float percent = ((float)j / (float)size) * 100.0f;
-			CImageVideoThumbnail * thumbnail = listThumbnail[j];
-			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(szFileName);
+			float percent = (static_cast<float>(j) / static_cast<float>(size)) * 100.0f;
+			CImageVideoThumbnail* thumbnail = listThumbnail[j];
+			auto thumbnailData = new CThumbnailDataStorage(szFileName);
 			//thumbnailData->SetStorage(nullptr);
 			thumbnailData->SetNumPhotoId(j);
 			thumbnailData->SetNumElement(j);
@@ -235,8 +235,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)
-				thumbnailData->SetLibelle("Page : " + to_string(j+1) + "/" + to_string(size));
-			CIcone * pBitmapIcone = new CIcone();
+				thumbnailData->SetLibelle("Page : " + to_string(j + 1) + "/" + to_string(size));
+			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(j);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -251,14 +251,12 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			iconeListLocal->AddElement(pBitmapIcone);
 
 			x += themeThumbnail.themeIcone.GetWidth();
-
 		}
-
 
 
 		for (auto j = 0; j < listThumbnail.size(); j++)
 		{
-			CImageVideoThumbnail * thumbnail = listThumbnail[j];
+			CImageVideoThumbnail* thumbnail = listThumbnail[j];
 			if (thumbnail != nullptr)
 				delete thumbnail;
 		}
@@ -266,22 +264,21 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 		processIdle = true;
 	}
 
-	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
+	auto oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
 	nbElementInIconeList = iconeList->GetNbElement();
 
 	EraseThumbnailList(oldIconeList);
-	
+
 	threadDataProcess = true;
 
 	UpdateScroll();
-    
-    Refresh();
+
+	Refresh();
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -301,25 +298,25 @@ void CThumbnailVideo::ProcessThumbnail()
 		{
 			for (int i = 0; i < nbResult; i++)
 			{
-				CImageVideoThumbnail * thumbnail = new CImageVideoThumbnail();
+				auto thumbnail = new CImageVideoThumbnail();
 				sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
 				if (thumbnail->image == nullptr)
 				{
 					thumbnail = new CImageVideoThumbnail();
-					thumbnail->percent = ((float)i / (float)nbResult) * 100.0f;
+					thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
 					thumbnail->timePosition = i;
 					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
 				}
 				//if (thumbnail->image == nullptr)
 				//	thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
 
-				CIcone * pBitmapIcone = iconeList->GetElement(i);
+				CIcone* pBitmapIcone = iconeList->GetElement(i);
 				if (pBitmapIcone != nullptr)
 				{
-					CThumbnailDataStorage * thumbnailData = (CThumbnailDataStorage *)pBitmapIcone->GetData();
+					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
 					if (thumbnailData != nullptr)
 					{
-						if(thumbnail->image != nullptr)
+						if (thumbnail->image != nullptr)
 							thumbnailData->SetBitmap(thumbnail->image);
 						thumbnailData->SetTimePosition(thumbnail->timePosition);
 					}
@@ -335,55 +332,54 @@ void CThumbnailVideo::ProcessThumbnail()
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 {
-    TRACE();
-    long value = event.GetExtraLong();
-    if(value == 1)
-    {
-        CSqlThumbnailVideo sqlThumbnailvideo;
-        sqlThumbnailvideo.DeleteThumbnail(videoFilename);
-        
-        CSqlThumbnail sqlThumbnail;
-        sqlThumbnail.DeleteThumbnail(videoFilename);
+	TRACE();
+	long value = event.GetExtraLong();
+	if (value == 1)
+	{
+		CSqlThumbnailVideo sqlThumbnailvideo;
+		sqlThumbnailvideo.DeleteThumbnail(videoFilename);
 
-        for (int i = 0;i < nbElementInIconeList;i++)
-        {
-            CIcone * pIcone = iconeList->GetElement(i);
-            if(pIcone != nullptr)
-            {
-                CThumbnailData * pThumbnailData = pIcone->GetData();
-                if (pThumbnailData != nullptr)
-                {
-                    pThumbnailData->InitLoadState();
-                    wxString filename = pThumbnailData->GetFilename();
-                    pThumbnailData->SetIsProcess(false);
-                    pThumbnailData->SetIsLoading(false);
-                }
-            }
-        }
-        
-        CSqlPhotosWithoutThumbnail sqlPhoto;
-        sqlPhoto.GeneratePhotoList();
-        
-        processIdle = true;
-    }
+		CSqlThumbnail sqlThumbnail;
+		sqlThumbnail.DeleteThumbnail(videoFilename);
+
+		for (int i = 0; i < nbElementInIconeList; i++)
+		{
+			CIcone* pIcone = iconeList->GetElement(i);
+			if (pIcone != nullptr)
+			{
+				CThumbnailData* pThumbnailData = pIcone->GetData();
+				if (pThumbnailData != nullptr)
+				{
+					pThumbnailData->InitLoadState();
+					wxString filename = pThumbnailData->GetFilename();
+					pThumbnailData->SetIsProcess(false);
+					pThumbnailData->SetIsLoading(false);
+				}
+			}
+		}
+
+		CSqlPhotosWithoutThumbnail sqlPhoto;
+		sqlPhoto.GeneratePhotoList();
+
+		processIdle = true;
+	}
 	thumbnailPos = 0;
 
-    process_end = false;
-    InitScrollingPos();
-    InitWithDefaultPicture(videoFilename, 20);
-    //processTimer->Start(500);
-    Refresh();
-    
+	process_end = false;
+	InitScrollingPos();
+	InitWithDefaultPicture(videoFilename, 20);
+	//processTimer->Start(500);
+	Refresh();
 }
-    
 
-void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
+
+void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 {
-    process_end = false;
-    InitScrollingPos();
-    InitWithDefaultPicture(videoFile, size);
-    videoFilename = videoFile;	
-   // processTimer->Start(500);
-    Refresh();
+	process_end = false;
+	InitScrollingPos();
+	InitWithDefaultPicture(videoFile, size);
+	videoFilename = videoFile;
+	// processTimer->Start(500);
+	Refresh();
 	processIdle = true;
 }

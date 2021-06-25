@@ -1,9 +1,5 @@
 #pragma once
 #include "Thumbnail.h"
-#include <Photos.h>
-#include <PhotoCatalog.h>
-#include <Criteria.h>
-#include <PhotoCategorie.h>
 using namespace Regards::Window;
 
 namespace Regards
@@ -13,27 +9,28 @@ namespace Regards
 		class CThumbnailVertical : public CThumbnail
 		{
 		public:
-			CThumbnailVertical(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
-			virtual ~CThumbnailVertical(void);
-			void SetNoVScroll(const bool &noVscroll);
-            wxString GetWaitingMessage();
-             
-		protected:
+			CThumbnailVertical(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
+			                   const bool& testValidity);
+			~CThumbnailVertical(void) override;
+			void SetNoVScroll(const bool& noVscroll);
+			wxString GetWaitingMessage() override;
 
-			virtual void RenderIcone(wxDC * dc);
-			virtual void RenderIconeWithVScroll(wxDC * dc);
-			virtual void RenderIconeWithoutVScroll(wxDC * dc);
-			void UpdateScroll();
+		protected:
+			void RenderIcone(wxDC* dc) override;
+			virtual void RenderIconeWithVScroll(wxDC* dc);
+			virtual void RenderIconeWithoutVScroll(wxDC* dc);
+			void UpdateScroll() override;
 			virtual void UpdateScrollWithoutVScroll();
 			virtual void UpdateScrollWithVScroll();
 
-			CIcone * FindElement(const int &xPos, const int &yPos);
-			virtual CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
-			virtual CIcone * FindElementWithoutVScroll(const int &xPos, const int &yPos);
+			CIcone* FindElement(const int& xPos, const int& yPos) override;
+			virtual CIcone* FindElementWithVScroll(const int& xPos, const int& yPos);
+			virtual CIcone* FindElementWithoutVScroll(const int& xPos, const int& yPos);
 
 			bool noVscroll;
-
+			const bool& test_validity_;
+			const CThemeThumbnail& theme_thumbnail_;
+			const wxWindowID id_;
 		};
 	}
 }
-

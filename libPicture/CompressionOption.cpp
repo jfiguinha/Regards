@@ -2,8 +2,8 @@
 #include "CompressionOption.h"
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(CompressionOption)
-	//*)
+//(*InternalHeadersPCH(CompressionOption)
+//*)
 #endif
 //(*InternalHeaders(CompressionOption)
 #include <wx/xrc/xmlres.h>
@@ -12,7 +12,7 @@
 //(*IdInit(CompressionOption)
 //*)
 
-BEGIN_EVENT_TABLE(CompressionOption,wxDialog)
+BEGIN_EVENT_TABLE(CompressionOption, wxDialog)
 	//(*EventTable(CompressionOption)
 	//*)
 END_EVENT_TABLE()
@@ -22,16 +22,17 @@ CompressionOption::CompressionOption(wxWindow* parent)
 	isOk = false;
 	compressLevel = 0;
 	//(*Initialize(CompressionOption)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionOption"),_T("wxDialog"));
-	StaticBox1 = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX1"));
-	btOK = (wxButton*)FindWindow(XRCID("ID_BTOK"));
-	btCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
-	slCompression = (wxSlider*)FindWindow(XRCID("ID_SLCOMPRESSION"));
-	StaticText1 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
-	StaticText2 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT2"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressionOption"),_T("wxDialog"));
+	StaticBox1 = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_STATICBOX1")));
+	btOK = static_cast<wxButton*>(FindWindow(XRCID("ID_BTOK")));
+	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
+	slCompression = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLCOMPRESSION")));
+	StaticText1 = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STATICTEXT1")));
+	StaticText2 = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STATICTEXT2")));
 
-	Connect(XRCID("ID_BTOK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionOption::OnButton1Click);
-	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionOption::OnButton2Click);
+	Connect(XRCID("ID_BTOK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressionOption::OnButton1Click);
+	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&CompressionOption::OnButton2Click);
 	//*)
 	slCompression->SetValue(70);
 }

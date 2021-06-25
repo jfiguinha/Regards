@@ -14,15 +14,14 @@
  * ==========================================================
  */
 
-#if !defined(__ximaBMP_h)
-#define __ximaBMP_h
+#pragma once
 
 #include "ximage.h"
 
-const int32_t RLE_COMMAND     = 0;
-const int32_t RLE_ENDOFLINE   = 0;
+const int32_t RLE_COMMAND = 0;
+const int32_t RLE_ENDOFLINE = 0;
 const int32_t RLE_ENDOFBITMAP = 1;
-const int32_t RLE_DELTA       = 2;
+const int32_t RLE_DELTA = 2;
 
 #if !defined(BI_RLE8)
  #define BI_RLE8  1L
@@ -33,21 +32,33 @@ const int32_t RLE_DELTA       = 2;
 
 #if CXIMAGE_SUPPORT_BMP
 
-class CxImageBMP: public CxImage
+class CxImageBMP : public CxImage
 {
 public:
-	CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP) {};
+	CxImageBMP(): CxImage(CXIMAGE_FORMAT_BMP)
+	{
+	};
 
-	bool Decode(CxFile * hFile);
-	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
+	bool Decode(CxFile* hFile);
+
+	bool Decode(FILE* hFile)
+	{
+		CxIOFile file(hFile);
+		return Decode(&file);
+	}
 
 #if CXIMAGE_SUPPORT_ENCODE
-	bool Encode(CxFile * hFile);
-	bool Encode(FILE *hFile) { CxIOFile file(hFile); return Encode(&file); }
+	bool Encode(CxFile* hFile);
+
+	bool Encode(FILE* hFile)
+	{
+		CxIOFile file(hFile);
+		return Encode(&file);
+	}
 #endif // CXIMAGE_SUPPORT_ENCODE
 
 protected:
-	bool DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER *pdib);
+	bool DibReadBitmapInfo(CxFile* fh, BITMAPINFOHEADER* pdib);
 };
 
 #define BFT_ICON   0x4349   /* 'IC' */
@@ -74,6 +85,5 @@ protected:
 #define FixBitmapInfo(lpbi)     if ((lpbi)->biSizeImage == 0)                 \
 												(lpbi)->biSizeImage = DibSizeImage(lpbi); \
                                 if ((lpbi)->biClrUsed == 0)                   \
-                                    (lpbi)->biClrUsed = DibNumColors(lpbi);   \
+                                    (lpbi)->biClrUsed = DibNumColors(lpbi);
 
-#endif

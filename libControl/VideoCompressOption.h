@@ -4,15 +4,18 @@
 class CVideoOptionCompress
 {
 public:
-
-	CVideoOptionCompress()
+	CVideoOptionCompress(): audioBitRate(0), audioQuality(0), audioQualityOrBitRate(false), videoBitRate(0),
+	                        videoHardware(false),
+	                        constantOrVbrOption(0),
+	                        videoCompressionValue(0),
+	                        videoQualityOrBitRate(false)
 	{
 	}
 
 	~CVideoOptionCompress()
 	{
 	}
-	
+
 	//Audio
 	int audioBitRate;
 	int audioQuality;

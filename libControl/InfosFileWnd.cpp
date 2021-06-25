@@ -39,9 +39,9 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 	{
 		threadInfos->infosFileWnd->CreateElement();
 		//StopLoadingPicture(InfosFileScroll);
-		auto event = new wxCommandEvent(wxEVT_STOPANIMATION);
-		event->SetClientData(this);
-		wxQueueEvent(this->GetParent(), event);
+		auto wx_command_event = new wxCommandEvent(wxEVT_STOPANIMATION);
+		wx_command_event->SetClientData(this);
+		wxQueueEvent(this->GetParent(), wx_command_event);
 
 		treeWindow->SetTreeControl(threadInfos->infosFileWnd);
 

@@ -5,21 +5,18 @@ class CImageLoadingFormat;
 class CThumbnailDataStorage : public CThumbnailData
 {
 public:
-	CThumbnailDataStorage(const wxString & filename);
-	virtual ~CThumbnailDataStorage(void);
+	CThumbnailDataStorage(const wxString& filename);
+	~CThumbnailDataStorage(void) override;
 
-	int GetType()
+	int GetType() override
 	{
 		return 1;
 	}
 
-	void SetBitmap(CImageLoadingFormat * bitmap);
-	wxImage GetwxImage();
+	void SetBitmap(CImageLoadingFormat* bitmap) override;
+	wxImage GetwxImage() override;
 
 private:
-
-	bool TestBitmap();
-	wxImage * localbitmap;
-
+	bool TestBitmap() override;
+	wxImage* localbitmap;
 };
-

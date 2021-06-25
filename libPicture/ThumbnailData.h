@@ -17,53 +17,57 @@ class CImageLoadingFormat;
 class CThumbnailData
 {
 public:
-
-	CThumbnailData(const wxString & filename);
+	CThumbnailData(const wxString& filename);
 	virtual ~CThumbnailData(void);
 	CThumbnailData& operator=(const CThumbnailData& other);
+
 	virtual int GetType()
 	{
 		return 0;
 	};
 
-	void SetNumPhotoId(const int &id);
+	void SetNumPhotoId(const int& id);
 	int GetNumPhotoId();
 
-	void SetNumElement(const int &iNumElement);
+	void SetNumElement(const int& iNumElement);
 	int GetNumElement();
 
 	wxString GetFilename();
-	void SetFilename(const wxString &filename);
+	void SetFilename(const wxString& filename);
 
-	virtual void SetBitmap(CImageLoadingFormat * bitmap) {};
+	virtual void SetBitmap(CImageLoadingFormat* bitmap)
+	{
+	};
+
 	virtual wxImage GetwxImage()
 	{
 		wxImage image;
 		return image;
 	};
 
-	void SetTypeElement(const int &typeElement);
+	void SetTypeElement(const int& typeElement);
 	int GetTypeElement();
 
-	void SetNumCatalog(const int &numCatalog);
+	void SetNumCatalog(const int& numCatalog);
 	int GetNumCatalog();
 
-	void SetNumCategorie(const int &numCategorie);
+	void SetNumCategorie(const int& numCategorie);
 	int GetNumCategorie();
 
-	void SetNumParent(const int &numParent);
+	void SetNumParent(const int& numParent);
 	int GetNumParent();
 
-	void SetKey(const wxString &key);
+	void SetKey(const wxString& key);
 	wxString GetKey();
 
 	bool IsLoading();
-	void SetIsLoading(const bool &isLoading);
+	void SetIsLoading(const bool& isLoading);
 
 	bool IsProcess();
-	void SetIsProcess(const bool &isProcess);
+	void SetIsProcess(const bool& isProcess);
 
 	bool IsLoad();
+
 	void InitLoadState()
 	{
 		pictureLoad = false;
@@ -71,39 +75,38 @@ public:
 	}
 
 	int GetPercent();
-	void SetPercent(const int &percent);
+	void SetPercent(const int& percent);
 
-	void SetTimePosition(const int &timePosition);
+	void SetTimePosition(const int& timePosition);
 	int GetTimePosition();
 	wxString GetTimePositionLibelle();
-    
-    virtual int GetNbFrame()
-    {
-        return 1;
-    }
-    
-    virtual int GetNumFrame()
-    {
-        return numFrame;
-    }
-    
-    virtual void SetNumFrame(const int &numFrame)
-    {
-        this->numFrame = numFrame;
-    }
+
+	virtual int GetNbFrame()
+	{
+		return 1;
+	}
+
+	virtual int GetNumFrame()
+	{
+		return numFrame;
+	}
+
+	virtual void SetNumFrame(const int& numFrame)
+	{
+		this->numFrame = numFrame;
+	}
 
 	virtual wxString GetLibelle()
 	{
 		return libelle;
 	}
 
-	virtual void SetLibelle(const wxString &libelle)
+	virtual void SetLibelle(const wxString& libelle)
 	{
 		this->libelle = libelle;
 	}
 
 protected:
-
 	virtual bool TestBitmap()
 	{
 		return false;
@@ -123,7 +126,7 @@ protected:
 	int timePosition;
 	int percent;
 	bool isProcess;
-    int numFrame = 0;
+	int numFrame = 0;
 	wxString libelle;
 };
 

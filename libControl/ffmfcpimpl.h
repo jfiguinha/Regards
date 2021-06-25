@@ -364,9 +364,9 @@ public:
 	/* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
 	int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block);
 
-	void free_subpicture(SubPicture *sp);
+	static void free_subpicture(SubPicture *sp);
 	
-	void video_audio_display(VideoState *s);
+	void video_audio_display(VideoState *s) const;
 
 	void stream_close(VideoState *is);
 

@@ -14,9 +14,8 @@
 class JxrOption : public wxDialog
 {
 public:
-
 	JxrOption(wxWindow* parent);
-	virtual ~JxrOption();
+	~JxrOption() override;
 
 	//(*Declarations(JpegOption)
 	wxStaticBox* sbCompression;
@@ -31,12 +30,10 @@ public:
 	int CompressionLevel();
 
 protected:
-
 	//(*Identifiers(JpegOption)
 	//*)
 
 private:
-
 	//(*Handlers(JpegOption)
 	void OnbtnOKClick(wxCommandEvent& event);
 	void OnbtnCancelClick(wxCommandEvent& event);
@@ -46,5 +43,5 @@ private:
 	bool isOk;
 	int compressOption;
 	int compressLevel;
-	DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };

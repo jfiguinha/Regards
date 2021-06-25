@@ -10,7 +10,10 @@ public:
 		streamLibelle = "";
 		selected = false;
 	};
-	~CStreamInfo(){};
+
+	~CStreamInfo()
+	{
+	};
 
 	int indexStream;
 	string streamLibelle;
@@ -18,4 +21,4 @@ public:
 	bool selected;
 };
 
-typedef vector<CStreamInfo> listStream;
+using listStream = vector<CStreamInfo>;

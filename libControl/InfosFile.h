@@ -15,30 +15,37 @@ namespace Regards
 		class CTreeElementControlInterface;
 	}
 
-	using namespace Regards::Window;
+	using namespace Window;
 
 	namespace Control
 	{
-		class CInfosFile : public Regards::Window::CTreeControl
+		class CInfosFile : public CTreeControl
 		{
 		public:
+			CInfosFile(CThemeTree* theme, CTreeElementControlInterface* interfaceControl);
 
-			CInfosFile(CThemeTree * theme, Regards::Window::CTreeElementControlInterface * interfaceControl);
-			~CInfosFile(void){};
-			void SetFile(const wxString & filename);
+			~CInfosFile(void) override
+			{
+			};
+			void SetFile(const wxString& filename);
 			const wxString GetFilename();
-            void UpdateScreenRatio();
-            void CreateElement();
-            void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
-		private:
+			void UpdateScreenRatio() override;
+			void CreateElement();
 
-			void MouseOver(wxDC * dc, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool & update);
-			void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);	
-			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
+			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
+			                    const wxString& key) override
+			{
+			};
+		private:
+			void MouseOver(wxDC* dc, CPositionElement* element, const int& x, const int& y, const int& posLargeur,
+			               const int& posHauteur, bool& update) override;
+			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+			                    const int& posLargeur, const int& posHauteur) override;
+			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 			void UpdateElement();
-			void UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent);    
-			void AddTreeInfos(const wxString &exifKey, const wxString &exifValue, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child);
-			
+			void UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent);
+			void AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
+			                  tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child);
 
 
 			int yPos;
@@ -51,8 +58,6 @@ namespace Regards
 			int rotation;
 			wxString filename;
 			int widthPosition;
-			
 		};
-
 	}
 }

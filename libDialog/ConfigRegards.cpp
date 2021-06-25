@@ -9,8 +9,8 @@
 using namespace Regards::Viewer;
 using namespace Regards::OpenCL;
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(ConfigRegards)
-	//*)
+//(*InternalHeadersPCH(ConfigRegards)
+//*)
 #endif
 //(*InternalHeaders(ConfigRegards)
 #include <wx/xrc/xmlres.h>
@@ -19,7 +19,7 @@ using namespace Regards::OpenCL;
 //(*IdInit(ConfigRegards)
 //*)
 
-BEGIN_EVENT_TABLE(ConfigRegards,wxDialog)
+BEGIN_EVENT_TABLE(ConfigRegards, wxDialog)
 	//(*EventTable(ConfigRegards)
 	//*)
 END_EVENT_TABLE()
@@ -28,58 +28,62 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 {
 	isOk = false;
 	//(*Initialize(ConfigRegards)
-	SetTitle("Regards Configuration");
-	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
-	rbTransitionEffect = (wxComboBox*)FindWindow(XRCID("ID_RBTRANSITIONEFFECT"));
-	rbTransitionDiaporamaEffect = (wxComboBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
-	sbDiaporama = (wxStaticBox*)FindWindow(XRCID("ID_SBDIAPORAMA"));
-	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
-	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
-	stTime = (wxStaticText*)FindWindow(XRCID("ID_STTIME"));
-    scProcessExif = (wxSpinCtrl*)FindWindow(XRCID("ID_SCEXIF"));
-	scProcessFace = (wxSpinCtrl*)FindWindow(XRCID("ID_SCFACE"));
-    scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
-	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
+	wxTopLevelWindowMSW::SetTitle("Regards Configuration");
+	wxXmlResource::Get()->LoadObject(this, parent,_T("ConfigRegards"),_T("wxDialog"));
+	rbTransitionEffect = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBTRANSITIONEFFECT")));
+	rbTransitionDiaporamaEffect = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT")));
+	sbDiaporama = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_SBDIAPORAMA")));
+	btOk = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	scTime = static_cast<wxSpinCtrl*>(FindWindow(XRCID("ID_SCTIME")));
+	stTime = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STTIME")));
+	scProcessExif = static_cast<wxSpinCtrl*>(FindWindow(XRCID("ID_SCEXIF")));
+	scProcessFace = static_cast<wxSpinCtrl*>(FindWindow(XRCID("ID_SCFACE")));
+	scProcessThumbnail = static_cast<wxSpinCtrl*>(FindWindow(XRCID("ID_SCTHUMBNAIL")));
+	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
+	sbThumbnail = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_STATICBOX2")));
 	//ID_RBVIDEOFACEDETECTION
-	rbVideoFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOFACEDETECTION"));
-	rbFaceDetection = (wxRadioBox*)FindWindow(XRCID("ID_RBFACEDETECTION"));
-	txtPicturePath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTPICTUREPATH"));
-	btPicturePath = (wxButton*)FindWindow(XRCID("ID_PICTUREPATH"));
-	txtVideoPath = (wxTextCtrl *)FindWindow(XRCID("ID_TXTVIDEOPATH"));
-	btVideoPath = (wxButton*)FindWindow(XRCID("ID_VIDEOPATH"));
-	cbOpenCLDevice = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLDEVICE"));
-	cbOpenCLPlatform = (wxComboBox*)FindWindow(XRCID("ID_CBOPENCLPLATFORM"));
-	rbKernelInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBKERNELINMEMORY"));
+	rbVideoFaceDetection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBVIDEOFACEDETECTION")));
+	rbFaceDetection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBFACEDETECTION")));
+	txtPicturePath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTPICTUREPATH")));
+	btPicturePath = static_cast<wxButton*>(FindWindow(XRCID("ID_PICTUREPATH")));
+	txtVideoPath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTVIDEOPATH")));
+	btVideoPath = static_cast<wxButton*>(FindWindow(XRCID("ID_VIDEOPATH")));
+	cbOpenCLDevice = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBOPENCLDEVICE")));
+	cbOpenCLPlatform = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBOPENCLPLATFORM")));
+	rbKernelInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBKERNELINMEMORY")));
 
-	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
-	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
-	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
-	rbContrastCorrection = (wxRadioBox*)FindWindow(XRCID("ID_RBAUTOCONTRAST"));
+	rbDatabaseInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATAINMEMORY")));
+	rbAutoRotate = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBROTATEAUTO")));
+	rbInterpolation = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBINTERPOLATIONFILTER")));
+	rbContrastCorrection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUTOCONTRAST")));
 
-	txtMusicDiaporamaPath = (wxTextCtrl*)FindWindow(XRCID("ID_TXTMUSICDIAPORAMAPATH"));
-	btMusicDiaporamaPath = (wxButton*)FindWindow(XRCID("ID_MUSICDIAPORAMAPATH"));
+	txtMusicDiaporamaPath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTMUSICDIAPORAMAPATH")));
+	btMusicDiaporamaPath = static_cast<wxButton*>(FindWindow(XRCID("ID_MUSICDIAPORAMAPATH")));
 
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
-	Connect(XRCID("ID_CBOPENCLPLATFORM"), wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&ConfigRegards::OnPlatformSelected);
+	Connect(XRCID("ID_CBOPENCLPLATFORM"), wxEVT_COMMAND_COMBOBOX_SELECTED,
+	        (wxObjectEventFunction)&ConfigRegards::OnPlatformSelected);
 	//Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&ConfigRegards::OnInit);
-	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
-	Connect(XRCID("ID_PICTUREPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnPathPictureClick);
-	Connect(XRCID("ID_MUSICDIAPORAMAPATH"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnMusicDiaporamaClick);
+	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
+	Connect(XRCID("ID_PICTUREPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&ConfigRegards::OnBtnPathPictureClick);
+	Connect(XRCID("ID_MUSICDIAPORAMAPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&ConfigRegards::OnBtnMusicDiaporamaClick);
 
 
-    Init();
+	init();
 
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		txtVideoPath->SetValue(config->GetPathForVideoEdit());
 	if (config != nullptr)
 		txtPicturePath->SetValue(config->GetPathForPictureEdit());
-    
-    SetAutoLayout( TRUE );
+
+	SetAutoLayout(TRUE);
 }
 
 void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
@@ -88,7 +92,7 @@ void ConfigRegards::OnbtnPathVideoClick(wxCommandEvent& event)
 	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 
 	wxFileDialog openFileDialog(nullptr, label, "", "",
-		allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtVideoPath->SetValue(openFileDialog.GetPath());
 }
@@ -99,7 +103,7 @@ void ConfigRegards::OnBtnPathPictureClick(wxCommandEvent& event)
 	wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 
 	wxFileDialog openFileDialog(nullptr, label, "", "",
-		allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtPicturePath->SetValue(openFileDialog.GetPath());
 }
@@ -111,7 +115,8 @@ void ConfigRegards::OnBtnMusicDiaporamaClick(wxCommandEvent& event)
 	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 	wxFileDialog openFileDialog(nullptr, label, "", filename,
-		"mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	                            "mp3 " + filename + " (*.mp3)|*.mp3|aac " + filename + " (*.aac)|*.aac|wav " + filename
+	                            + " (*.wav)|*.wav", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (openFileDialog.ShowModal() == wxID_OK)
 		txtMusicDiaporamaPath->SetValue(openFileDialog.GetPath());
@@ -126,7 +131,7 @@ ConfigRegards::~ConfigRegards()
 int ConfigRegards::GetDeviceIndex()
 {
 	wxString selectItem = cbOpenCLDevice->GetStringSelection();
-	OpenCLDevice * openCLDevice = COpenCLDeviceList::SelectDevice(selectItem);
+	OpenCLDevice* openCLDevice = COpenCLDeviceList::SelectDevice(selectItem);
 	if (openCLDevice != nullptr)
 		return openCLDevice->deviceIndex;
 	return 0;
@@ -141,11 +146,11 @@ wxString ConfigRegards::GetPlatformName()
 void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
 {
 	wxString device = "";
-	OpenCLPlatform * openCLPlatformSelected = nullptr;
+	OpenCLPlatform* openCLPlatformSelected = nullptr;
 	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
-	vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 
-	for (OpenCLPlatform * openCLPlatform : listPlatform)
+	for (OpenCLPlatform* openCLPlatform : listPlatform)
 	{
 		if (selectItem == openCLPlatform->platformName)
 		{
@@ -157,9 +162,9 @@ void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
 	int i = 0;
 	cbOpenCLDevice->Clear();
 
-	vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+	vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
 
-	for (OpenCLDevice * openCLDevice : listDevice)
+	for (OpenCLDevice* openCLDevice : listDevice)
 	{
 		cbOpenCLDevice->Append(openCLDevice->deviceName);
 		if (i == 0)
@@ -172,12 +177,12 @@ void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
 	cbOpenCLDevice->SetStringSelection(device);
 }
 
-void ConfigRegards::Init()
+void ConfigRegards::init()
 {
 	this->SetTitle("Configuration");
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
-	int transition = max((regardsParam->GetEffect() - 300),0);
+	int transition = max((regardsParam->GetEffect() - 300), 0);
 	if (transition == 0)
 		rbTransitionEffect->SetSelection(0);
 	else
@@ -217,12 +222,12 @@ void ConfigRegards::Init()
 
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
-    
-    int thumbnailProcess = regardsParam->GetThumbnailProcess();
-    scProcessThumbnail->SetValue(thumbnailProcess);
-       
-    int exifProcess = regardsParam->GetExifProcess();
-    scProcessExif->SetValue(exifProcess);
+
+	int thumbnailProcess = regardsParam->GetThumbnailProcess();
+	scProcessThumbnail->SetValue(thumbnailProcess);
+
+	int exifProcess = regardsParam->GetExifProcess();
+	scProcessExif->SetValue(exifProcess);
 
 	int faceProcess = regardsParam->GetFaceProcess();
 	scProcessFace->SetValue(faceProcess);
@@ -237,29 +242,26 @@ void ConfigRegards::Init()
 	rbInterpolation->SetSelection(interpolation);
 
 	bool kernelInMemory = false;
-	int supportOpenCL = 0;
 	wxString platformName = "";
 	wxString deviceName = "";
 	int indexDevice = -1;
-	CRegardsConfigParam * config = CParamInit::getInstance();
+	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
 		platformName = config->GetOpenCLPlatformName();
 		indexDevice = config->GetOpenCLPlatformIndex();
 		kernelInMemory = config->GetOpenCLLoadFromBinaries();
-		supportOpenCL = config->GetIsOpenCLSupport();
+		//int supportOpenCL = config->GetIsOpenCLSupport();
 	}
 
 	rbKernelInMemory->SetSelection(kernelInMemory);
 
-	OpenCLPlatform * openCLPlatformSelected = nullptr;
+	OpenCLPlatform* openCLPlatformSelected = nullptr;
 	this->SetTitle("OpenCL Device Selection");
-	vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 
-	;
-	for (OpenCLPlatform * openCLPlatform : listPlatform)
+	for (OpenCLPlatform* openCLPlatform : listPlatform)
 	{
-
 		cbOpenCLPlatform->Append(openCLPlatform->platformName);
 		if (platformName == openCLPlatform->platformName)
 		{
@@ -271,10 +273,10 @@ void ConfigRegards::Init()
 
 	if (openCLPlatformSelected != nullptr)
 	{
-		vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+		vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
 
 		printf("Select Device Index : %d \n", indexDevice);
-		for (OpenCLDevice * openCLDevice : listDevice)
+		for (OpenCLDevice* openCLDevice : listDevice)
 		{
 			cbOpenCLDevice->Append(openCLDevice->deviceName);
 			if (openCLDevice->deviceIndex == indexDevice)
@@ -285,15 +287,13 @@ void ConfigRegards::Init()
 
 		cbOpenCLDevice->SetStringSelection(deviceName);
 	}
-
-
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
 	bool showInfosRestart = false;
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	CMainParam* mainparam = CMainParamInit::getInstance();
 
 	//Get old value to compare with new value
@@ -309,20 +309,20 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	//int _dataInMemory = regardsParam->GetDatabaseInMemory();
 	//int _interpolation = regardsParam->GetInterpolationType();
 
-	int _supportOpenCL = 0;
 	wxString _platformName = "";
 	wxString _deviceName = "";
 	int _indexDevice = -1;
-	
+
 	if (regardsParam != nullptr)
 	{
+		//int _supportOpenCL = 0;
 		_platformName = regardsParam->GetOpenCLPlatformName();
 		_indexDevice = regardsParam->GetOpenCLPlatformIndex();
-		_supportOpenCL = regardsParam->GetIsOpenCLSupport();
+		//_supportOpenCL = regardsParam->GetIsOpenCLSupport();
 	}
 
-    
-    int nbProcesseur = thread::hardware_concurrency();
+
+	int nbProcesseur = thread::hardware_concurrency();
 
 	int kernelInMemory = rbKernelInMemory->GetSelection();
 
@@ -340,7 +340,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 		if (regardsParam->GetOpenCLLoadFromBinaries() != kernelInMemory)
 			showInfosRestart = true;
-
 	}
 
 
@@ -382,7 +381,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetFaceDetection(0);
 
-	if(_faceDetection == faceDetection)
+	if (_faceDetection == faceDetection)
 		showInfosRestart = true;
 
 	int autoContrast = rbContrastCorrection->GetSelection();
@@ -396,34 +395,35 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
- 
-    int thumbnailProcess = scProcessThumbnail->GetValue();
-    int faceProcess = scProcessFace->GetValue();
-    int exifProcess = scProcessExif->GetValue();
-    
-    if(thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
-    {
-        wxString errorProcessNumberMin = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMin",1);
-        wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);
-        wxMessageBox(errorProcessNumberMin, errorInfo);
-    }
-    else if((thumbnailProcess + exifProcess) > nbProcesseur && faceProcess > nbProcesseur && (thumbnailProcess > 1 || faceProcess > 1 || exifProcess > 1))
-    {
-        wxString errorProcessNumberMax = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMax",1);
-        wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);
-        wxMessageBox(errorProcessNumberMax, errorInfo);
-    }
-    else
-    {
-        regardsParam->SetFaceProcess(faceProcess);
-        regardsParam->SetExifProcess(exifProcess);
-        regardsParam->SetThumbnailProcess(thumbnailProcess);
 
-        int dataInMemory = rbDatabaseInMemory->GetSelection();
-        if (dataInMemory == 0)
-            regardsParam->SetDatabaseInMemory(1);
-        else
-            regardsParam->SetDatabaseInMemory(0);
+	int thumbnailProcess = scProcessThumbnail->GetValue();
+	int faceProcess = scProcessFace->GetValue();
+	int exifProcess = scProcessExif->GetValue();
+
+	if (thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
+	{
+		wxString errorProcessNumberMin = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMin", 1);
+		wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror", 1);
+		wxMessageBox(errorProcessNumberMin, errorInfo);
+	}
+	else if ((thumbnailProcess + exifProcess) > nbProcesseur && faceProcess > nbProcesseur && (thumbnailProcess > 1 ||
+		faceProcess > 1 || exifProcess > 1))
+	{
+		wxString errorProcessNumberMax = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMax", 1);
+		wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror", 1);
+		wxMessageBox(errorProcessNumberMax, errorInfo);
+	}
+	else
+	{
+		regardsParam->SetFaceProcess(faceProcess);
+		regardsParam->SetExifProcess(exifProcess);
+		regardsParam->SetThumbnailProcess(thumbnailProcess);
+
+		int dataInMemory = rbDatabaseInMemory->GetSelection();
+		if (dataInMemory == 0)
+			regardsParam->SetDatabaseInMemory(1);
+		else
+			regardsParam->SetDatabaseInMemory(0);
 
 		if (showInfosRestart)
 		{
@@ -433,9 +433,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		}
 
 
-        this->Close();        
-    }
-
+		this->Close();
+	}
 }
 
 void ConfigRegards::OnBtnCancelClick(wxCommandEvent& event)

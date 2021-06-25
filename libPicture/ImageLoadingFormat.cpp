@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "ImageLoadingFormat.h"
 #include <libPicture.h>
@@ -26,7 +27,7 @@ void CImageLoadingFormat::SetMemoryDelete(const bool& memoryDelete)
 	this->memoryDelete = memoryDelete;
 }
 
-CImageLoadingFormat::CImageLoadingFormat(const bool& memoryDelete)
+CImageLoadingFormat::CImageLoadingFormat(const bool& memoryDelete): format(0), orientation(0)
 {
 	_image = nullptr;
 	_cxImage = nullptr;
@@ -109,6 +110,7 @@ int CImageLoadingFormat::GetWidth()
 			return _jpegImage->GetWidth();
 		}
 		break;
+	default: ;
 	}
 	return 0;
 }
@@ -148,6 +150,7 @@ int CImageLoadingFormat::GetHeight()
 			return _jpegImage->GetHeight();
 		}
 		break;
+	default: ;
 	}
 	return 0;
 }
@@ -182,6 +185,7 @@ void CImageLoadingFormat::Mirror()
 			_floatImage->HorzFlipBuf();
 		}
 		break;
+	default: ;
 	}
 }
 
@@ -215,6 +219,7 @@ void CImageLoadingFormat::Rotate90()
 			_floatImage->Rotate90();
 		}
 		break;
+	default: ;
 	}
 }
 

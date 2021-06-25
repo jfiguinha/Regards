@@ -20,7 +20,7 @@ CBitmapPrintout::~CBitmapPrintout()
 	m_picture = nullptr;
 }
 
-CBitmapPrintout::CBitmapPrintout()
+CBitmapPrintout::CBitmapPrintout(): typeImage(0)
 {
 	m_bitmap = nullptr;
 	m_picture = nullptr;

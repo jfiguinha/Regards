@@ -20,11 +20,12 @@ namespace Regards
 		class CSliderVideoPreview : public CWindowMain
 		{
 		public:
-			CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider);
-			~CSliderVideoPreview();
+			CSliderVideoPreview(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
+			                    const CThemeSlider& themeSlider);
+			~CSliderVideoPreview() override;
 
-			int GetWidth();
-			int GetHeight();
+			int GetWidth() override;
+			int GetHeight() override;
 
 			void SetPlay();
 			void SetPause();
@@ -34,54 +35,55 @@ namespace Regards
 
 			float GetTimePos();
 
-			void SetTotalSecondTime(const int64_t &millisecondTime);
-			void SetPastSecondTime(const int64_t &millisecondTime);
+			void SetTotalSecondTime(const int64_t& millisecondTime);
+			void SetPastSecondTime(const int64_t& millisecondTime);
 			void UpdatePositionEvent();
 
 			bool IsMouseOver();
 
-            void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
 
 		protected:
-
 			//Slider Event
-			CSliderInterface * sliderEvent;
+			CSliderInterface* sliderEvent;
 
 
 		private:
-            
-			void InsertPreviousButton(const int &xStart, wxDC * context);
-			void InsertNextButton(const int &xStart, wxDC * context);
+			void InsertPreviousButton(const int& xStart, wxDC* context);
+			void InsertNextButton(const int& xStart, wxDC* context);
 
 			void OnMouseMove(wxMouseEvent& event);
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
-			void OnMouseCaptureLost(wxMouseEvent& event){};
+
+			void OnMouseCaptureLost(wxMouseEvent& event)
+			{
+			};
 			void OnMouseLeave(wxMouseEvent& event);
 			void OnMouseHover(wxMouseEvent& event);
 
-			void ClickLeftPage(const int &x);
-			void ClickRightPage(const int &x);
+			void ClickLeftPage(const int& x);
+			void ClickRightPage(const int& x);
 
-			void DrawShapeElement(wxDC * context, const wxRect &rc);
-			int DrawTimePast(wxDC * context, const wxString &libelle);
+			void DrawShapeElement(wxDC* context, const wxRect& rc);
+			int DrawTimePast(wxDC* context, const wxString& libelle);
 
 			void CalculPositionButton();
-			void CalculTimePosition(const int &x);
-			void CalculPositionButton(const int &x);
-			void Draw(wxDC * context);
+			void CalculTimePosition(const int& x);
+			void CalculPositionButton(const int& x);
+			void Draw(wxDC* context);
 
-			int DrawVolumeLibelle(wxDC * context, const wxString &libelle);
-			int DrawTotalTimeLibelle(wxDC * context, const wxString &libelle, const int &volumePos);
+			int DrawVolumeLibelle(wxDC* context, const wxString& libelle);
+			int DrawTotalTimeLibelle(wxDC* context, const wxString& libelle, const int& volumePos);
 			void OnMouseClickTimer(wxTimerEvent& event);
 
 			wxImage button;
-            
-            wxColor colorToReplace;
-            wxColor colorActifReplacement;
-            wxColor colorInactifReplacement;
+
+			wxColor colorToReplace;
+			wxColor colorActifReplacement;
+			wxColor colorInactifReplacement;
 
 			bool isPlay;
 			bool m_bMouseOver;
@@ -91,7 +93,7 @@ namespace Regards
 			wxRect positionTextePast;
 			wxRect positionTexteTotal;
 			wxRect positionSlider;
-			
+
 			wxCursor hCursorHand;
 			wxString timePast;
 			wxString totalTime;
@@ -100,10 +102,10 @@ namespace Regards
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-			wxTimer * mouseTimer;
+			wxTimer* mouseTimer;
 			bool isNextButton = false;
 			CThemeSliderVideo themeSlider;
-			wxActivityIndicator * m_animation;
+			wxActivityIndicator* m_animation;
 
 			wxImage buttonImageNext;
 			wxImage buttonImagePrevious;
@@ -114,6 +116,5 @@ namespace Regards
 			bool buttonPreviousActif = false;
 			wxRect positionPreviousButton;
 		};
-
 	}
 }

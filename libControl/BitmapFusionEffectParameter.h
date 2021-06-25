@@ -9,9 +9,11 @@ public:
 		bmpSecond = nullptr;
 		etape = 0;
 	};
-	~CBitmapFusionEffectParameter() {};
 
-	CRegardsBitmap * bmpSecond;
+	~CBitmapFusionEffectParameter() override
+	{
+	};
+
+	CRegardsBitmap* bmpSecond;
 	int etape;
 };
-

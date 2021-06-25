@@ -12,14 +12,13 @@
 #include "ShowPreview.h"
 #include <LibResource.h>
 
-extern "C"
-{
+extern "C" {
 #include <libavutil/error.h>
 }
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(CompressionAudioVideoOption)
-	//*)
+//(*InternalHeadersPCH(CompressionAudioVideoOption)
+//*)
 #endif
 //(*InternalHeaders(CompressionAudioVideoOption)
 #include <wx/xrc/xmlres.h>
@@ -31,13 +30,13 @@ extern "C"
 //*)
 
 BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
-//(*EventTable(CompressionAudioVideoOption)
-//*)
+	//(*EventTable(CompressionAudioVideoOption)
+	//*)
 END_EVENT_TABLE()
 
 using namespace Regards::Picture;
 
-static void GetTimeToHourMinuteSecond(const long &timeToSplit, int &hour, int &minute, int &second)
+static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& minute, int& second)
 {
 	long timeToSplitlocal = timeToSplit;
 	hour = timeToSplit / 3600;
@@ -47,100 +46,126 @@ static void GetTimeToHourMinuteSecond(const long &timeToSplit, int &hour, int &m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString &videoFilename, const wxString &videoOutputFilename, COpenCLEngine * openCLEngine)
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename,
+                                                         const wxString& videoOutputFilename,
+                                                         COpenCLEngine* openCLEngine)
 {
-    isOk = false;
+	isOk = false;
 	this->videoFilename = videoFilename;
 	videoEffectParameter = new CVideoEffectParameter();
-	
 
 
 	//(*Initialize(CompressionAudioVideoOption)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_BTCANCEL"));
-	btnOk = (wxButton*)FindWindow(XRCID("ID_BTOK"));
-	btnPreview = (wxButton*)FindWindow(XRCID("ID_BTPREVIEW"));
-	ckVideoHardware = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOHARDWARE"));
-	ckAudioBitRate = (wxCheckBox*)FindWindow(XRCID("ID_CKAUDIOBITRATE"));
-	cbAudioBitRate = (wxComboBox*)FindWindow(XRCID("ID_CBAUDIOBITRATE"));
-	ckAudioQuality = (wxCheckBox*)FindWindow(XRCID("ID_CKAUDIOQUALITY"));
-	cbAudioQuality = (wxComboBox*)FindWindow(XRCID("ID_CBAUDIOQUALITY"));
-	cbAudioCodec = (wxComboBox*)FindWindow(XRCID("ID_CBAUDIOCODEC"));
-	cbVideoCodec = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOCODEC"));
-	cbVideoPreset = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOPRESET"));
-	cbVideoProfile = (wxComboBox*)FindWindow(XRCID("ID_CBVIDEOPROFILE"));
-	rbQuality = (wxRadioBox*)FindWindow(XRCID("ID_RBQUALITY"));
-	ckVideoQuality = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOQUALITY"));
-	slCompression = (wxSlider*)FindWindow(XRCID("ID_SLCOMPRESSIONQUALITY"));
-	ckVideoBitRate = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOBITRATE"));
-	txtBitRate = (wxTextCtrl*)FindWindow(XRCID("ID_TXTBITRATE"));
-	bitmap = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEO"));
-	ckVideoAutocontrast = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOAUTOCONTRAST"));
-	ckVideoStabilization = (wxCheckBox*)FindWindow(XRCID("ID_CKVIDEOSTABILIZATION"));
-#ifdef USE_PREVIEW_INTEGRATE 
+	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
+	btnOk = static_cast<wxButton*>(FindWindow(XRCID("ID_BTOK")));
+	btnPreview = static_cast<wxButton*>(FindWindow(XRCID("ID_BTPREVIEW")));
+	ckVideoHardware = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOHARDWARE")));
+	ckAudioBitRate = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKAUDIOBITRATE")));
+	cbAudioBitRate = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBAUDIOBITRATE")));
+	ckAudioQuality = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKAUDIOQUALITY")));
+	cbAudioQuality = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBAUDIOQUALITY")));
+	cbAudioCodec = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBAUDIOCODEC")));
+	cbVideoCodec = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOCODEC")));
+	cbVideoPreset = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOPRESET")));
+	cbVideoProfile = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOPROFILE")));
+	rbQuality = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBQUALITY")));
+	ckVideoQuality = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOQUALITY")));
+	slCompression = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLCOMPRESSIONQUALITY")));
+	ckVideoBitRate = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOBITRATE")));
+	txtBitRate = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTBITRATE")));
+	bitmap = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEO")));
+	ckVideoAutocontrast = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOAUTOCONTRAST")));
+	ckVideoStabilization = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKVIDEOSTABILIZATION")));
+#ifdef USE_PREVIEW_INTEGRATE
 #ifndef __APPLE__
-	bitmapPreview = (wxStaticBitmap *)FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW"));
+	bitmapPreview = static_cast<wxStaticBitmap*>(FindWindow(XRCID("ID_BITMAPVIDEOPREVIEW")));
 #endif
 #endif
 
-	stPreviewPicture = (wxStaticBox *)FindWindow(XRCID("ID_STPREVIEWPICTURE"));
-	labelTimeStart = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STSTARTMOVIE"));
-	labelTimeEnd = (wxTimePickerCtrl  *)FindWindow(XRCID("ID_STENDMOVIE"));
-	slVideo = (wxSlider*)FindWindow(XRCID("ID_SLVIDEO"));
-	rbAudioDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBAUDIOCOMPRESSION"));
-	rbVideoDirectCopy = (wxRadioBox*)FindWindow(XRCID("ID_RBVIDEOCOMPRESSION"));
+	stPreviewPicture = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_STPREVIEWPICTURE")));
+	labelTimeStart = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STSTARTMOVIE")));
+	labelTimeEnd = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STENDMOVIE")));
+	slVideo = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLVIDEO")));
+	rbAudioDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUDIOCOMPRESSION")));
+	rbVideoDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBVIDEOCOMPRESSION")));
 	//Filter
-	ckdenoiseFilter = (wxCheckBox*)FindWindow(XRCID("ID_CKDENOISEFILTER"));
-	denoiseFilter = (wxSlider*)FindWindow(XRCID("ID_SLDENOISEFILTER"));
-	cksharpenFilter = (wxCheckBox*)FindWindow(XRCID("ID_CKSHARPENFILTER"));
-	sharpenFilter = (wxSlider*)FindWindow(XRCID("ID_SLSHARPENFILTER"));
-	cklightandcontrast = (wxCheckBox*)FindWindow(XRCID("ID_CKCONTRASTANDLIGHTFILTER"));
-	contrastFilter = (wxSlider*)FindWindow(XRCID("ID_SLCONTRASTFILTER"));
-	lightFilter = (wxSlider*)FindWindow(XRCID("ID_SLLIGHTFILTER"));
-	ckcolorBoost = (wxCheckBox*)FindWindow(XRCID("ID_CKDCOLORBOOSTFILTER"));
-	redFilter = (wxSlider*)FindWindow(XRCID("ID_SLREDBOOSTFILTER"));
-	greenFilter = (wxSlider*)FindWindow(XRCID("ID_SLGREENBOOSTFILTER"));
-	blueFilter = (wxSlider*)FindWindow(XRCID("ID_SLBLUEBOOSTFILTER"));
-	ckgrey = (wxCheckBox*)FindWindow(XRCID("ID_CKGRAYFILTER"));
-	cksepia = (wxCheckBox*)FindWindow(XRCID("ID_CKSEPIAFILTER"));
-	cknoise = (wxCheckBox*)FindWindow(XRCID("ID_CKNOISEFILTER"));
-	ckenablefilter = (wxCheckBox*)FindWindow(XRCID("ID_CKENABLEFILTER"));
+	ckdenoiseFilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKDENOISEFILTER")));
+	denoiseFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLDENOISEFILTER")));
+	cksharpenFilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKSHARPENFILTER")));
+	sharpenFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLSHARPENFILTER")));
+	cklightandcontrast = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKCONTRASTANDLIGHTFILTER")));
+	contrastFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLCONTRASTFILTER")));
+	lightFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLLIGHTFILTER")));
+	ckcolorBoost = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKDCOLORBOOSTFILTER")));
+	redFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLREDBOOSTFILTER")));
+	greenFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLGREENBOOSTFILTER")));
+	blueFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLBLUEBOOSTFILTER")));
+	ckgrey = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKGRAYFILTER")));
+	cksepia = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKSEPIAFILTER")));
+	cknoise = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKNOISEFILTER")));
+	ckenablefilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKENABLEFILTER")));
 	//bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
-#ifdef USE_PREVIEW_INTEGRATE 
-	panel = (wxPanel*)FindWindow(XRCID("IDPANEL"));
+#ifdef USE_PREVIEW_INTEGRATE
+	panel = static_cast<wxPanel*>(FindWindow(XRCID("IDPANEL")));
 #endif
-	Connect(XRCID("ID_SLDENOISEFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLSHARPENFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLCONTRASTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLLIGHTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLREDBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLGREENBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
-	
-	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKSHARPENFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKCONTRASTANDLIGHTFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKDCOLORBOOSTFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKGRAYFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKSEPIAFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKNOISEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
-	Connect(XRCID("ID_CKENABLEFILTER"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_SLDENOISEFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLSHARPENFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLCONTRASTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLLIGHTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLREDBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLGREENBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
+	Connect(XRCID("ID_SLBLUEBOOSTFILTER"), wxEVT_SCROLL_THUMBTRACK,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnSliderFilterClick);
 
-	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
-	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
-	Connect(XRCID("ID_CKVIDEOQUALITY"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoQualityClick);
-	Connect(XRCID("ID_CKVIDEOBITRATE"), wxEVT_CHECKBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoBitrateClick);
-	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCancelClick);
-	Connect(XRCID("ID_BTOK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnOkClick);
-	Connect(XRCID("ID_BTPREVIEW"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnPreviewClick);
+	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKDENOISEFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKSHARPENFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKCONTRASTANDLIGHTFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKDCOLORBOOSTFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKGRAYFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKSEPIAFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKNOISEFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+	Connect(XRCID("ID_CKENABLEFILTER"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckFilterClick);
+
+	Connect(XRCID("ID_CKAUDIOBITRATE"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioBitrateClick);
+	Connect(XRCID("ID_CKAUDIOQUALITY"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckAudioQualityClick);
+	Connect(XRCID("ID_CKVIDEOQUALITY"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoQualityClick);
+	Connect(XRCID("ID_CKVIDEOBITRATE"), wxEVT_CHECKBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCheckVideoBitrateClick);
+	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnCancelClick);
+	Connect(XRCID("ID_BTOK"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnOkClick);
+	Connect(XRCID("ID_BTPREVIEW"), wxEVT_COMMAND_BUTTON_CLICKED,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnbtnPreviewClick);
 	//Connect(XRCID("ID_SLVIDEO"), wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoSliderChange);
 	Connect(wxEVENT_SETVIDEODURATION, wxCommandEventHandler(CompressionAudioVideoOption::OnSetVideoDuration));
 	Connect(wxEvent_SLIDERMOVE, wxCommandEventHandler(CompressionAudioVideoOption::OnVideoSliderChange));
 	Connect(wxEVENT_CLOSEPREVIEW, wxCommandEventHandler(CompressionAudioVideoOption::OnClosePreview));
 	Connect(wxEVENT_ERRORCOMPRESSION, wxCommandEventHandler(CompressionAudioVideoOption::OnErrorCompression));
-	Connect(XRCID("ID_CBVIDEOCODEC"), wxEVT_COMBOBOX, (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
+	Connect(XRCID("ID_CBVIDEOCODEC"), wxEVT_COMBOBOX,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
 
 	wxString decoder = "";
 	/*
@@ -155,10 +180,10 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
-	
+
 
 	CThemeSlider theme;
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
@@ -169,7 +194,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 	//labelTimeStart->SetRange(0, timeTotal);
 	//labelTimeEnd->SetRange(0, timeTotal);
-	labelTimeStart->SetTime(0,0,0);
+	labelTimeStart->SetTime(0, 0, 0);
 
 	int hour = 0;
 	int minute = 0;
@@ -181,14 +206,16 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	wxColour bgColor = labelTimeStart->GetParent()->GetBackgroundColour();
 	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
 	sliderVideoPosition->SetPosition(slVideo->GetPosition());
-	wxSize size = wxSize(slVideo->GetSize().x, theme.GetHeight());
+	auto size = wxSize(slVideo->GetSize().x, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 	sliderVideoPosition->SetBackgroundColour(bgColor);
 	slVideo->Show(false);
 
-	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
-	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED, (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
+	Connect(XRCID("ID_STSTARTMOVIE"), wxEVT_TIME_CHANGED,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
+	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED,
+	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
 
 	wxFileName filepath(videoOutputFilename);
 	extension = filepath.GetExt();
@@ -232,13 +259,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		cbVideoCodec->AppendString("VP9");
 		cbVideoCodec->SetStringSelection("VP9");
 		cbVideoProfile->SetStringSelection("Auto");
-		
+
 		cbAudioCodec->Clear();
 		cbAudioCodec->AppendString("VORBIS");
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-#ifdef USE_PREVIEW_INTEGRATE 
+#ifdef USE_PREVIEW_INTEGRATE
 
 	CThemeBitmapWindow themeBitmap;
 	showBitmapWindow = nullptr;
@@ -249,18 +276,20 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
-    
+
 #ifdef __APPLE__
 	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #else
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
+	                                    viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
 	showBitmapWindow->Show(true);
-	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y, bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
+	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
+	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
 	bitmapPreview->Show(false);
-    panel->Show(true);
+	panel->Show(true);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #endif
 #else
@@ -268,7 +297,6 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	GetCompressionOption(&videoOptionCompress);
 	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
 #endif
-
 }
 
 
@@ -284,7 +312,7 @@ void CompressionAudioVideoOption::OnErrorCompression(wxCommandEvent& event)
 
 void CompressionAudioVideoOption::OnClosePreview(wxCommandEvent& event)
 {
-#ifndef USE_PREVIEW_INTEGRATE 
+#ifndef USE_PREVIEW_INTEGRATE
 	btnPreview->SetLabelText("Preview");
 	previewDlg->Hide();
 #endif
@@ -365,8 +393,6 @@ void CompressionAudioVideoOption::OnVideoCodecSelect(wxCommandEvent& event)
 		cbVideoPreset->SetLabel("Medium");
 		cbVideoProfile->SetLabel("Auto");
 	}
-	
-	
 }
 
 void CompressionAudioVideoOption::OnbtnSliderFilterClick(wxScrollEvent& event)
@@ -411,8 +437,7 @@ void CompressionAudioVideoOption::OnbtnCheckFilterClick(wxCommandEvent& event)
 
 void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 {
-
-#ifdef USE_PREVIEW_INTEGRATE 
+#ifdef USE_PREVIEW_INTEGRATE
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
@@ -438,29 +463,26 @@ void CompressionAudioVideoOption::OnbtnPreviewClick(wxCommandEvent& event)
 		btnPreview->SetLabelText("Refresh");
 	}
 #endif
-	
 }
 
-void CompressionAudioVideoOption::ChangeLabelPicture(const wxString &label)
+void CompressionAudioVideoOption::ChangeLabelPicture(const wxString& label)
 {
 	stPreviewPicture->SetLabel(label);
 }
 
-void CompressionAudioVideoOption::SetBitmap(const long &pos)
+void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
-
-	CRegardsBitmap * bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
-	wxImage picture  = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
+	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
+	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
 	bitmap->SetBitmap(picture);
-	
 }
 
 void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 {
 	wxDateTime pos = event.GetDate();
-	int hour = pos.GetHour();
-	int minute = pos.GetMinute();
-	int second = pos.GetSecond();
+	const int hour = pos.GetHour();
+	const int minute = pos.GetMinute();
+	const int second = pos.GetSecond();
 	long _timeTotal = hour * 3600 + minute * 60 + second;
 	if (_timeTotal >= 0 && _timeTotal < sliderVideoPosition->GetTimeEnd())
 	{
@@ -469,11 +491,11 @@ void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 	else
 	{
 		_timeTotal = sliderVideoPosition->GetTimeEnd() - 1;
-		int hour = 0;
-		int minute = 0;
-		int second = 0;
-		GetTimeToHourMinuteSecond(_timeTotal, hour, minute, second);
-		labelTimeStart->SetTime(hour, minute, second);
+		int hour1 = 0;
+		int min = 0;
+		int sec = 0;
+		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
+		labelTimeStart->SetTime(hour1, min, sec);
 	}
 	SetBitmap(_timeTotal);
 }
@@ -492,11 +514,11 @@ void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 	else
 	{
 		_timeTotal = sliderVideoPosition->GetTimeStart() + 1;
-		int hour = 0;
-		int minute = 0;
-		int second = 0;
-		GetTimeToHourMinuteSecond(_timeTotal, hour, minute, second);
-		labelTimeEnd->SetTime(hour, minute, second);
+		int hour1 = 0;
+		int min = 0;
+		int sec = 0;
+		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
+		labelTimeEnd->SetTime(hour1, min, sec);
 	}
 	SetBitmap(_timeTotal);
 }
@@ -519,7 +541,7 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 		GetTimeToHourMinuteSecond(value, hour, minute, second);
 		labelTimeStart->SetTime(hour, minute, second);
 	}
-		
+
 	if (type == 2)
 	{
 		int hour = 0;
@@ -529,9 +551,6 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 		labelTimeEnd->SetTime(hour, minute, second);
 		//timeEnd->SetLabel(ConvertSecondToTime(value));
 	}
-		
-	
-	
 }
 
 CompressionAudioVideoOption::~CompressionAudioVideoOption()
@@ -558,7 +577,6 @@ CompressionAudioVideoOption::~CompressionAudioVideoOption()
 
 wxString CompressionAudioVideoOption::ConvertSecondToTime(int64_t sec)
 {
-
 	int h = (sec / 3600);
 	int m = (sec - (3600 * h)) / 60;
 	int s = (sec - (3600 * h) - (m * 60));
@@ -601,12 +619,11 @@ void CompressionAudioVideoOption::OnbtnCheckVideoBitrateClick(wxCommandEvent& ev
 
 bool CompressionAudioVideoOption::IsOk()
 {
-    return isOk;
+	return isOk;
 }
 
-void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * videoOptionCompress)
+void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress* videoOptionCompress)
 {
-	
 	if (videoOptionCompress != nullptr)
 	{
 		//bufferStabilization
@@ -653,9 +670,9 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 		//Video
 		videoOptionCompress->videoCodec = cbVideoCodec->GetStringSelection();
 
-            
-        if(cbVideoProfile != nullptr)
-            videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
+
+		if (cbVideoProfile != nullptr)
+			videoOptionCompress->encoder_profile = cbVideoProfile->GetStringSelection();
 
 		if (videoOptionCompress->encoder_profile == "")
 			videoOptionCompress->encoder_profile = "main";
@@ -679,10 +696,11 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress * vi
 			videoOptionCompress->videoEffectParameter.effectEnable = false;
 
 		int endTime = timeTotal;
-		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->GetTimeStart() != 0) ? sliderVideoPosition->GetTimeEnd() : 0;
+		videoOptionCompress->endTime = (sliderVideoPosition->GetTimeEnd() != endTime || sliderVideoPosition->
+			                               GetTimeStart() != 0)
+			                               ? sliderVideoPosition->GetTimeEnd()
+			                               : 0;
 	}
-
-
 }
 
 void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
@@ -698,12 +716,10 @@ void CompressionAudioVideoOption::OnbtnOkClick(wxCommandEvent& event)
 		isOk = true;
 		this->Close();
 	}
-
 }
 
 void CompressionAudioVideoOption::OnbtnCancelClick(wxCommandEvent& event)
 {
-    isOk = false;
+	isOk = false;
 	this->Close();
 }
-

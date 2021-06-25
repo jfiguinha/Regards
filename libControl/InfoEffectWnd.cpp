@@ -11,11 +11,11 @@
 using namespace Regards::Control;
 using namespace Regards::Window;
 
-CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
-                               const CThemeTree& themeTree, int bitmapWindowId)
-	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree)
+CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, const wxWindowID id, const CThemeScrollBar& themeScroll,
+                               const CThemeTree& themeTree, int bitmap_window_id)
+	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree), id_(id), theme_scroll_(themeScroll)
 {
-	this->bitmapWindowId = bitmapWindowId;
+	this->bitmapWindowId = bitmap_window_id;
 	historyEffectOld = nullptr;
 }
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <ConfigParam.h>
 #include <ThumbnailData.h>
 #include <SqlThumbnail.h>
 #include "IconeList.h"
@@ -110,7 +109,7 @@ namespace Regards
 			virtual void UpdateScroll() = 0;
 			
 			void OnRefreshThumbnail(wxCommandEvent& event);
-			void UpdateRenderIcone(wxCommandEvent& event);
+			void update_render_icone(wxCommandEvent& event);
 
 			//------------------------------------------------------------
 			//Variable

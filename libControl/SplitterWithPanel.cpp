@@ -318,6 +318,7 @@ void CSplitterWithPanel::ShowWindow(const int& id, const bool& show)
 				}
 			}
 			break;
+		default: ;
 		}
 	}
 }

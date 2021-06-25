@@ -2,8 +2,8 @@
 #include "PDFOption.h"
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(PDFOption)
-	//*)
+//(*InternalHeadersPCH(PDFOption)
+//*)
 #endif
 //(*InternalHeaders(PDFOption)
 #include <wx/xrc/xmlres.h>
@@ -12,7 +12,7 @@
 //(*IdInit(PDFOption)
 //*)
 
-BEGIN_EVENT_TABLE(PDFOption,wxDialog)
+BEGIN_EVENT_TABLE(PDFOption, wxDialog)
 	//(*EventTable(PDFOption)
 	//*)
 END_EVENT_TABLE()
@@ -20,19 +20,19 @@ END_EVENT_TABLE()
 PDFOption::PDFOption(wxWindow* parent)
 {
 	compressOption = 0;
-    isOk = false;
+	isOk = false;
 	//(*Initialize(PDFOption)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("PDFOption"),_T("wxDialog"));
-	rbCompression = (wxRadioBox*)FindWindow(XRCID("ID_RBCOMPRESSION"));
-	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
-	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("PDFOption"),_T("wxDialog"));
+	rbCompression = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCOMPRESSION")));
+	btnOK = static_cast<wxButton*>(FindWindow(XRCID("ID_OK")));
+	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
 
-	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&PDFOption::OnbtnOKClick);
-	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&PDFOption::OnbtnCancelClick);
+	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PDFOption::OnbtnOKClick);
+	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PDFOption::OnbtnCancelClick);
 
 	//*)
-    
-    SetTitle("Tiff Saving Option");
+
+	wxTopLevelWindowMSW::SetTitle("Tiff Saving Option");
 }
 
 PDFOption::~PDFOption()
@@ -43,11 +43,12 @@ PDFOption::~PDFOption()
 
 bool PDFOption::IsOk()
 {
-    return isOk;
+	return isOk;
 }
+
 int PDFOption::CompressionOption()
 {
-    return compressOption;
+	return compressOption;
 }
 
 
@@ -57,14 +58,14 @@ void PDFOption::OnslCompressLevelCmdScroll(wxScrollEvent& event)
 
 void PDFOption::OnbtnOKClick(wxCommandEvent& event)
 {
-    isOk = true;
-    compressOption = rbCompression->GetSelection();   
-    //compressLevel = slCompressLevel->GetValue();
-    this->Close();
+	isOk = true;
+	compressOption = rbCompression->GetSelection();
+	//compressLevel = slCompressLevel->GetValue();
+	this->Close();
 }
 
 void PDFOption::OnbtnCancelClick(wxCommandEvent& event)
 {
-    isOk = false;
-    this->Close();
+	isOk = false;
+	this->Close();
 }

@@ -10,7 +10,7 @@ using namespace Regards::Control;
 using namespace Regards::Scanner;
 using namespace Regards::Window;
 using namespace Regards::Picture;
-#define wxTIMER_PROCESS 1001
+#define WX_TIMER_PROCESS 1001
 
 CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)

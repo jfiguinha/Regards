@@ -9,15 +9,13 @@ namespace Regards
 		class CThumbnailViewerEffect : public CThumbnailEffect
 		{
 		public:
-			CThumbnailViewerEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity, int panelInfosId);
-			virtual ~CThumbnailViewerEffect(void);
+			CThumbnailViewerEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface,
+			                       const CThemeThumbnail& themeThumbnail, const bool& testValidity, int panelInfosId);
+			~CThumbnailViewerEffect(void) override;
 
 		private:
-
-			void OnPictureClick(CThumbnailData * data);
+			void OnPictureClick(CThumbnailData* data) override;
 			int panelInfosId;
 		};
 	}
 }
-
-

@@ -6,8 +6,9 @@
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 
-CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
+CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindowID id,
+                                                       const CThemeThumbnail& themeThumbnail, const bool& testValidity)
+	: CThumbnailVertical(parent, id, themeThumbnail, testValidity), numParent(0)
 {
 	noVscroll = false;
 	typeAffichage = TYPEPHOTO;
@@ -18,30 +19,30 @@ CThumbnailVerticalListFile::CThumbnailVerticalListFile(wxWindow* parent, wxWindo
 
 wxString CThumbnailVerticalListFile::GetWaitingMessage()
 {
-	return "Window CThumbnailVerticalListFile waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
+	return "Window CThumbnailVerticalListFile waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " +
+		to_string(nbProcess);
 }
 
-void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
+void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 {
-    CIconeList* iconeListLocal = new CIconeList();
-    CIconeList* oldIconeList = nullptr;
+	auto iconeListLocal = new CIconeList();
 	InitScrollingPos();
-    threadDataProcess = false;
+	threadDataProcess = false;
 	int i = 0;
 	int x = 0;
 	int y = 0;
 	thumbnailPos = 0;
 
 
-	 for (wxString fileEntry : files)
+	for (wxString fileEntry : files)
 	{
 		wxString filename = fileEntry;
-		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename, testValidity);
+		auto thumbnailData = new CThumbnailDataSQL(filename, testValidity);
 		thumbnailData->SetNumPhotoId(i);
 		thumbnailData->SetNumElement(i);
 
 
-		CIcone * pBitmapIcone = new CIcone();
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -50,31 +51,28 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
 		if (i == 0)
 			pBitmapIcone->SetSelected(true);
 
-        iconeListLocal->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
 		x += themeThumbnail.themeIcone.GetWidth();
 		i++;
-
 	}
 
-   
 
-    lockIconeList.lock();
-    oldIconeList = iconeList;
-    iconeList = iconeListLocal;
-    lockIconeList.unlock();
-    nbElementInIconeList = iconeList->GetNbElement();
+	lockIconeList.lock();
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
+	nbElementInIconeList = iconeList->GetNbElement();
 
-    EraseThumbnailList(oldIconeList);
+	EraseThumbnailList(oldIconeList);
 
-    AfterSetList();
-    threadDataProcess = true;
-    Refresh();
+	AfterSetList();
+	threadDataProcess = true;
+	Refresh();
 }
 
 CThumbnailVerticalListFile::~CThumbnailVerticalListFile(void)
 {
-
 }
 
 int CThumbnailVerticalListFile::GetTypeAffichage()
@@ -97,141 +95,127 @@ wxString CThumbnailVerticalListFile::GetKey()
 	return key;
 }
 
-void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, const bool &showSelectButton)
+void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, const bool& showSelectButton)
 {
-    CIconeList* iconeListLocal = new CIconeList();
-    CIconeList* oldIconeList = nullptr;
-    InitScrollingPos();
-    CreateOrLoadStorageFile();
-    threadDataProcess = false;
+	auto iconeListLocal = new CIconeList();
+	InitScrollingPos();
+	CreateOrLoadStorageFile();
+	threadDataProcess = false;
 
-    int i = 0;
-    int x = 0;
-    int y = 0;
+	int i = 0;
+	int x = 0;
+	int y = 0;
 
-    int nbElementX = 0;
-    int nbElementY = 0;
+	int nbElementX = 0;
+	int nbElementY = 0;
 
-    int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
-        nbElementByRow++;
+	int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+		nbElementByRow++;
 
-    int nbElementEnY = (int)listFile.size() / nbElementByRow;
-    if (nbElementEnY * nbElementByRow < listFile.size())
-        nbElementEnY++;
+	for (wxString fileEntry : listFile)
+	{
+		auto thumbnailData = new CThumbnailDataSQL(fileEntry, testValidity);
+		//thumbnailData->SetStorage(pStorage->GetStoragePt());
+		thumbnailData->SetNumElement(i);
+		thumbnailData->SetNumPhotoId(i);
+
+		auto pBitmapIcone = new CIcone();
+		pBitmapIcone->SetNumElement(i);
+		pBitmapIcone->ShowSelectButton(showSelectButton);
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetWindowPos(x, y);
+
+		iconeListLocal->AddElement(pBitmapIcone);
+
+		x += themeThumbnail.themeIcone.GetWidth();
+		nbElementX++;
+		if (nbElementX == nbElementByRow)
+		{
+			nbElementX = 0;
+			x = -posLargeur;
+			nbElementY++;
+			y += themeThumbnail.themeIcone.GetHeight();
+		}
+
+		i++;
+	}
 
 
-	 for (wxString fileEntry : listFile)
-    {
-		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(fileEntry, testValidity);
-        //thumbnailData->SetStorage(pStorage->GetStoragePt());
-        thumbnailData->SetNumElement(i);
-        thumbnailData->SetNumPhotoId(i);
+	lockIconeList.lock();
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
 
-		CIcone * pBitmapIcone = new CIcone();
-        pBitmapIcone->SetNumElement(i);
-        pBitmapIcone->ShowSelectButton(showSelectButton);
-        pBitmapIcone->SetData(thumbnailData);
-        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-        pBitmapIcone->SetWindowPos(x, y);
+	nbElementInIconeList = iconeList->GetNbElement();
 
-        iconeListLocal->AddElement(pBitmapIcone);
+	EraseThumbnailList(oldIconeList);
 
-        x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
-        if (nbElementX == nbElementByRow)
-        {
-            nbElementX = 0;
-            x = -posLargeur;
-            nbElementY++;
-            y += themeThumbnail.themeIcone.GetHeight();
-        }
-        
-        i++;
-
-    }
-
-    
-
-    lockIconeList.lock();
-    oldIconeList = iconeList;
-    iconeList = iconeListLocal;
-    lockIconeList.unlock();
-
-    nbElementInIconeList = iconeList->GetNbElement();
-
-    EraseThumbnailList(oldIconeList);
-
-    thumbnailPos = 0;
-    threadDataProcess = true;
-    Refresh();
+	thumbnailPos = 0;
+	threadDataProcess = true;
+	Refresh();
 }
 
 
-void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector)
-{ 
-    InitScrollingPos();
-    CIconeList* iconeListLocal = new CIconeList();
-    CIconeList* oldIconeList = nullptr;
-    threadDataProcess = false;
-    int i = 0;
-    int x = 0;
-    int y = 0;
+void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
+{
+	InitScrollingPos();
+	auto iconeListLocal = new CIconeList();
+	threadDataProcess = false;
+	int i = 0;
+	int x = 0;
+	int y = 0;
 
-    int nbElementX = 0;
-    int nbElementY = 0;
-    
-    thumbnailPos = 0;
+	int nbElementX = 0;
+	int nbElementY = 0;
 
-    int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
-        nbElementByRow++;
+	thumbnailPos = 0;
 
-    int nbElementEnY = (int)photoVector.size() / nbElementByRow;
-    if (nbElementEnY * nbElementByRow < photoVector.size())
-        nbElementEnY++;
+	int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
+	if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
+		nbElementByRow++;
 
-    for (CPhotos photo : photoVector)
-    {
-		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
-        thumbnailData->SetNumPhotoId(photo.GetId());
-        thumbnailData->SetNumElement(i);
+	for (CPhotos photo : photoVector)
+	{
+		auto thumbnailData = new CThumbnailDataSQL(photo.GetPath(), testValidity);
+		thumbnailData->SetNumPhotoId(photo.GetId());
+		thumbnailData->SetNumElement(i);
 
-		CIcone * pBitmapIcone = new CIcone();
-        pBitmapIcone->SetNumElement(i);
-        pBitmapIcone->SetData(thumbnailData);
-        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-        pBitmapIcone->SetWindowPos(x, y);
+		auto pBitmapIcone = new CIcone();
+		pBitmapIcone->SetNumElement(i);
+		pBitmapIcone->SetData(thumbnailData);
+		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetWindowPos(x, y);
 
-        iconeListLocal->AddElement(pBitmapIcone);
+		iconeListLocal->AddElement(pBitmapIcone);
 
-        x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
-        if (nbElementX == nbElementByRow)
-        {
-            nbElementX = 0;
-            x = -posLargeur;
-            nbElementY++;
-            y += themeThumbnail.themeIcone.GetHeight();
-        }
-        
-        i++;
-    }
+		x += themeThumbnail.themeIcone.GetWidth();
+		nbElementX++;
+		if (nbElementX == nbElementByRow)
+		{
+			nbElementX = 0;
+			x = -posLargeur;
+			nbElementY++;
+			y += themeThumbnail.themeIcone.GetHeight();
+		}
 
-   
+		i++;
+	}
 
-    lockIconeList.lock();
-    oldIconeList = iconeList;
-    iconeList = iconeListLocal;
-    lockIconeList.unlock();
 
-    nbElementInIconeList = iconeList->GetNbElement();
+	lockIconeList.lock();
+	CIconeList* oldIconeList = iconeList;
+	iconeList = iconeListLocal;
+	lockIconeList.unlock();
 
-    EraseThumbnailList(oldIconeList);
+	nbElementInIconeList = iconeList->GetNbElement();
 
-    threadDataProcess = true;
+	EraseThumbnailList(oldIconeList);
+
+	threadDataProcess = true;
 
 	AfterSetList();
 
 	Refresh();
 }
-
-

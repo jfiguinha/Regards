@@ -13,25 +13,24 @@ namespace Regards
 		class CShowPreview;
 	}
 }
+
 using namespace Regards::Control;
 
 class CPreviewDlg : public wxDialog
 {
 public:
+	CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenCLEngine* openCLEngine,
+	            CVideoOptionCompress* videoOptionCompress);
+	~CPreviewDlg() override;
 
-	CPreviewDlg(wxWindow* parent, const wxString &videoFilename, COpenCLEngine * openCLEngine, CVideoOptionCompress * videoOptionCompress);
-	~CPreviewDlg();
-
-	void UpdatePreview(CVideoOptionCompress * videoOptionCompress, const wxString &extension);
-	wxPanel * panel;
-    wxStaticBitmap * bitmapPreview;
+	void UpdatePreview(CVideoOptionCompress* videoOptionCompress, const wxString& extension);
+	wxPanel* panel;
+	wxStaticBitmap* bitmapPreview;
 protected:
 	void OnClose(wxCloseEvent& event);
-	void OnSize(wxSizeEvent& event);
-	CShowPreview * showBitmapWindow;
-	
+	void on_size(wxSizeEvent& event);
+	CShowPreview* showBitmapWindow;
+
 	//void OnbtnOKClick(wxCommandEvent& event);
 	//void OnbtnCancelClick(wxCommandEvent& event);
-
 };
-

@@ -12,7 +12,7 @@ using namespace Regards::Video;
 #define WM_CLOSE 10
 
 
-CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
+CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme)
 	: CToolbarWindow(parent, id, theme, false)
 {
 	themeToolbar = theme;
@@ -20,9 +20,9 @@ CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	wxString shrinkLibelle = CLibResource::LoadStringFromResource("LBLSHRINK", 1);
 	wxString speakerLibelle = CLibResource::LoadStringFromResource("LBLSPEAKER", 1);
 	wxString zoomLibelle = CLibResource::LoadStringFromResource("LBLZOOMON", 1);
-	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON",1);// "Zoom On";
-	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF",1);// "Zoom Off";
-	wxString close = CLibResource::LoadStringFromResource("LBLClose", 1);// "Zoom Off";
+	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
+	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
+	wxString close = CLibResource::LoadStringFromResource("LBLClose", 1); // "Zoom Off";
 
 	speaker = new CToolbarButton(themeToolbar.button);
 	speaker->SetButtonResourceId("IDB_VOLUME_UP_VIDEO");
@@ -45,7 +45,7 @@ CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	shrink->SetVisible(false);
 	navElement.push_back(shrink);
 
-	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
+	auto moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId("IDB_MINUS");
 	moins->SetCommandId(WM_ZOOMOUT);
 	moins->SetLibelleTooltip(zoomOff);
@@ -54,13 +54,13 @@ CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 
-	CToolbarButton * plus = new CToolbarButton(themeToolbar.button);
+	auto plus = new CToolbarButton(themeToolbar.button);
 	plus->SetButtonResourceId("IDB_PLUS");
 	plus->SetCommandId(WM_ZOOMON);
 	plus->SetLibelleTooltip(zoomOn);
 	navElement.push_back(plus);
 
-	CToolbarButton * cross = new CToolbarButton(themeToolbar.button);
+	auto cross = new CToolbarButton(themeToolbar.button);
 	cross->SetButtonResourceId("IDB_CANCEL");
 	cross->SetCommandId(WM_CLOSE);
 	cross->SetLibelleTooltip(close);
@@ -92,14 +92,14 @@ int CSlideToolbar::GetMode()
 	return id;
 }
 
-void CSlideToolbar::ZoomPos(const int &position)
+void CSlideToolbar::ZoomPos(const int& position)
 {
 	wxCommandEvent evt(wxEVENT_ZOOMPOS);
 	evt.SetInt(position);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
-void CSlideToolbar::ChangeZoomInPos(const int &position)
+void CSlideToolbar::ChangeZoomInPos(const int& position)
 {
 	positionTrackBar++;
 	if (positionTrackBar >= slide->GetNbValue())
@@ -108,7 +108,7 @@ void CSlideToolbar::ChangeZoomInPos(const int &position)
 	ZoomPos(positionTrackBar);
 }
 
-void CSlideToolbar::ChangeZoomOutPos(const int &position)
+void CSlideToolbar::ChangeZoomOutPos(const int& position)
 {
 	positionTrackBar--;
 	if (positionTrackBar < 0)
@@ -120,14 +120,13 @@ void CSlideToolbar::ChangeZoomOutPos(const int &position)
 
 void CSlideToolbar::ZoomOn()
 {
-    ChangeZoomInPos(slide->GetPositionValue());
-
+	ChangeZoomInPos(slide->GetPositionValue());
 }
 
 
 void CSlideToolbar::ZoomOut()
 {
-    ChangeZoomOutPos(slide->GetPositionValue());
+	ChangeZoomOutPos(slide->GetPositionValue());
 }
 
 void CSlideToolbar::SetTabValue(vector<int> value)
@@ -137,7 +136,7 @@ void CSlideToolbar::SetTabValue(vector<int> value)
 }
 
 
-void CSlideToolbar::SetTrackBarPosition(const int &iPos)
+void CSlideToolbar::SetTrackBarPosition(const int& iPos)
 {
 	positionTrackBar = iPos;
 	if (slide != nullptr)
@@ -148,12 +147,12 @@ void CSlideToolbar::SetTrackBarPosition(const int &iPos)
 	}
 }
 
-void CSlideToolbar::SetComposantId(const int &id)
+void CSlideToolbar::SetComposantId(const int& id)
 {
 	this->id = id;
 }
 
-void CSlideToolbar::SlidePosChange(const int &position, const wxString &key)
+void CSlideToolbar::SlidePosChange(const int& position, const wxString& key)
 {
 	positionTrackBar = position;
 	wxCommandEvent event(wxEVENT_ZOOMPOS);
@@ -161,12 +160,11 @@ void CSlideToolbar::SlidePosChange(const int &position, const wxString &key)
 	this->GetParent()->GetEventHandler()->AddPendingEvent(event);
 }
 
-void CSlideToolbar::ClickButton(const int &id)
+void CSlideToolbar::ClickButton(const int& id)
 {
-
 }
 
-void CSlideToolbar::EventManager(const int &id)
+void CSlideToolbar::EventManager(const int& id)
 {
 	switch (id)
 	{
@@ -177,23 +175,19 @@ void CSlideToolbar::EventManager(const int &id)
 		ZoomOn();
 		break;
 	case IDM_SETSHRINK:
-	{
-		wxCommandEvent evt(wxEVENT_SHRINK);
-		evt.SetInt(0);
-		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		break;
-	}
-		
-	case WM_CLOSE:
-	{
-		wxCommandEvent evt(wxEVENT_CLOSE);
-		this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
-		break;
-	}
+		{
+			wxCommandEvent evt(wxEVENT_SHRINK);
+			evt.SetInt(0);
+			this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			break;
+		}
 
+	case WM_CLOSE:
+		{
+			wxCommandEvent evt(wxEVENT_CLOSE);
+			this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			break;
+		}
+	default: ;
 	}
 }
-
-
-
-
