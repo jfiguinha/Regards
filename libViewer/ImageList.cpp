@@ -4,126 +4,122 @@ using namespace Regards::Viewer;
 
 int CImageList::GetNbElement()
 {
-    muList.lock();    
-    int nbElement = photolist.size();
-    muList.unlock();
-    return nbElement;
+	muList.lock();
+	int nbElement = photolist.size();
+	muList.unlock();
+	return nbElement;
 }
 
- CImageList::~CImageList()
- {
-     photolist.clear();
- }
+CImageList::~CImageList()
+{
+	photolist.clear();
+}
 
- PhotosVector * CImageList::GetPointer()
- {
-     return &photolist;
- }
+PhotosVector* CImageList::GetPointer()
+{
+	return &photolist;
+}
 
- PhotosVector CImageList::GetCopy()
- {
-	 muList.lock();
-	 PhotosVector listCopy;
-	 if (photolist.size() > 0)
-	 {
-		 listCopy.reserve(photolist.size());
-		 copy(photolist.begin(), photolist.end(), back_inserter(listCopy));
-	 }
-	 muList.unlock();
-	 return listCopy;
- }
-
- void CImageList::Lock()
- {
-     muList.lock();
- }
-
- void CImageList::Unlock()
- {
-     muList.unlock();
- }
- 
- void CImageList::SetImageList(const PhotosVector & pictures)
- {
-    muList.lock();
- 	if (pictures.size() > 0)
+PhotosVector CImageList::GetCopy()
+{
+	muList.lock();
+	PhotosVector listCopy;
+	if (photolist.size() > 0)
 	{
-        photolist.clear();
+		listCopy.reserve(photolist.size());
+		copy(photolist.begin(), photolist.end(), back_inserter(listCopy));
+	}
+	muList.unlock();
+	return listCopy;
+}
+
+void CImageList::Lock()
+{
+	muList.lock();
+}
+
+void CImageList::Unlock()
+{
+	muList.unlock();
+}
+
+void CImageList::SetImageList(const PhotosVector& pictures)
+{
+	muList.lock();
+	if (pictures.size() > 0)
+	{
+		photolist.clear();
 		photolist.reserve(pictures.size());
 		copy(pictures.begin(), pictures.end(), back_inserter(photolist));
-	}    
+	}
 	else
 	{
 		photolist.clear();
 	}
-    muList.unlock();
- }
- 
-CPhotos CImageList::GetElement(const int &numElement, bool &isValid)
+	muList.unlock();
+}
+
+CPhotos CImageList::GetElement(const int& numElement, bool& isValid)
 {
-    CPhotos photo;
-    isValid = false;
-    muList.lock();
- 	if (numElement < photolist.size())
+	CPhotos photo;
+	isValid = false;
+	muList.lock();
+	if (numElement < photolist.size())
 	{
-        photo = photolist.at(numElement);
-        isValid = true;
-	}    
-    muList.unlock();
-    return photo;
+		photo = photolist.at(numElement);
+		isValid = true;
+	}
+	muList.unlock();
+	return photo;
 }
 
-wxString CImageList::GetFilePath(const int &numElement, bool &isValid)
+wxString CImageList::GetFilePath(const int& numElement, bool& isValid)
 {
-    CPhotos photo;
-    wxString path = "";
-    isValid = false;
-    muList.lock();
- 	if (numElement < photolist.size())
+	CPhotos photo;
+	wxString path = "";
+	isValid = false;
+	muList.lock();
+	if (numElement < photolist.size())
 	{
-        photo = photolist.at(numElement);
-        path = photo.GetPath();
-        if (wxFileExists(path))
-            isValid = true;
-	}    
-    muList.unlock();
-    return path;
+		photo = photolist.at(numElement);
+		path = photo.GetPath();
+		if (wxFileExists(path))
+			isValid = true;
+	}
+	muList.unlock();
+	return path;
 }
 
-int CImageList::FindFileIndex(const wxString & filename)
+int CImageList::FindFileIndex(const wxString& filename)
 {
-    int numElement = 0;
-    muList.lock();
+	int numElement = 0;
+	muList.lock();
 
-    for (CPhotos file : photolist)
-    {
-        if (file.GetPath() == filename)
-        {
-            break;
-        }
-        else
-            numElement++;
-    }
-    muList.unlock();
-    return numElement;    
+	for (CPhotos file : photolist)
+	{
+		if (file.GetPath() == filename)
+		{
+			break;
+		}
+		numElement++;
+	}
+	muList.unlock();
+	return numElement;
 }
 
-int CImageList::FindFileIndex(const int & id)
+int CImageList::FindFileIndex(const int& id)
 {
-    int numElement = 0;
-    muList.lock();
+	int numElement = 0;
+	muList.lock();
 
-    for (CPhotos file : photolist)
-    {
-        if (file.GetId() == id)
-        {
-            break;
-        }
-        else
-            numElement++;
-    }
-    muList.unlock();
-    return numElement;     
+	for (CPhotos file : photolist)
+	{
+		if (file.GetId() == id)
+		{
+			break;
+		}
+		numElement++;
+	}
+	muList.unlock();
+	return numElement;
 }
-
-

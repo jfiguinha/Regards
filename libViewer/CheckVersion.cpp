@@ -12,7 +12,7 @@
 #include <wx/sstream.h>
 using namespace Regards::Internet;
 
-CCheckVersion::CCheckVersion(const wxString &server)
+CCheckVersion::CCheckVersion(const wxString& server)
 {
 	serverHttp = server;
 }
@@ -20,12 +20,12 @@ CCheckVersion::CCheckVersion(const wxString &server)
 
 CCheckVersion::~CCheckVersion()
 {
-
 }
 
 #ifdef USECURL
 
-size_t CCheckVersion::write_data(void *ptr, size_t size, size_t nmemb, struct url_data *data) {
+size_t CCheckVersion::write_data(void* ptr, size_t size, size_t nmemb, struct url_data* data)
+{
 	size_t index = data->size;
 	size_t n = (size * nmemb);
 	char* tmp;
@@ -35,13 +35,16 @@ size_t CCheckVersion::write_data(void *ptr, size_t size, size_t nmemb, struct ur
 #ifdef DEBUG
 	fprintf(stderr, "data at %p size=%ld nmemb=%ld\n", ptr, size, nmemb);
 #endif
-	tmp = (char *)realloc(data->data, data->size + 1); /* +1 for '\0' */
+	tmp = static_cast<char*>(realloc(data->data, data->size + 1)); /* +1 for '\0' */
 
-	if (tmp != NULL) {
+	if (tmp != nullptr)
+	{
 		data->data = tmp;
 	}
-	else {
-		if (data->data) {
+	else
+	{
+		if (data->data)
+		{
 			free(data->data);
 		}
 		fprintf(stderr, "Failed to allocate memory.\n");
@@ -57,7 +60,7 @@ size_t CCheckVersion::write_data(void *ptr, size_t size, size_t nmemb, struct ur
 
 wxString CCheckVersion::GetLastVersion()
 {
-	CURL *curl;
+	CURL* curl;
 
 	//int error = 0;
 	//bool returnValue = true;
@@ -66,9 +69,10 @@ wxString CCheckVersion::GetLastVersion()
 	CURLcode res;
 	struct url_data data;
 	data.size = 0;
-	data.data = (char *)malloc(4096); /* reasonable size initial buffer */
-	if (NULL == data.data) {
-        printf("CCheckVersion Failed to allocate memory \n");
+	data.data = static_cast<char*>(malloc(4096)); /* reasonable size initial buffer */
+	if (nullptr == data.data)
+	{
+		printf("CCheckVersion Failed to allocate memory \n");
 		fprintf(stderr, "Failed to allocate memory.\n");
 		return "error";
 	}
@@ -107,7 +111,7 @@ wxString CCheckVersion::GetLastVersion()
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
 		res = curl_easy_perform(curl); /* ignores error */
 
-	/* Check for errors */
+		/* Check for errors */
 		if (res != CURLE_OK)
 		{
 			wxString error = curl_easy_strerror(res);

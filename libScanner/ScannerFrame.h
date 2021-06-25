@@ -10,9 +10,7 @@
 #endif
 #include <MainInterface.h>
 #include <MainTheme.h>
-#include <MainThemeInit.h>
 #include <MainParam.h>
-#include <MainParamInit.h>
 
 using namespace Regards::Scanner;
 
@@ -50,53 +48,52 @@ class CScannerFrame : public wxFrame
 {
 public:
 	// ctor(s)
-	CScannerFrame(const wxString &title, IMainInterface * mainInterface, const wxPoint &pos, const wxSize &size,
-		long style = wxDEFAULT_FRAME_STYLE);
+	CScannerFrame(const wxString& title, IMainInterface* mainInterface, const wxPoint& pos, const wxSize& size,
+	              long style = wxDEFAULT_FRAME_STYLE);
 
-    ~CScannerFrame();
+	~CScannerFrame() override;
 
-	void PrintPreview(CImageLoadingFormat * imageToPrint);
+	void PrintPreview(CImageLoadingFormat* imageToPrint);
 
 	wxString ScanPage();
 	int OnOpen();
 	void OnClose();
 
 private:
-
 	void Exit();
 	// event handlers (these functions should _not_ be virtual)
 	void OnQuit(wxCommandEvent& event);
 	void OnPrint(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
-    void OnAcquireImage(wxCommandEvent& event);
-	void OnCloseWindow(wxCloseEvent &event);
+	void OnAcquireImage(wxCommandEvent& event);
+	void on_close_window(wxCloseEvent& event);
 	//void OnExportText(wxCommandEvent& event);
 	//void OnExportHTML(wxCommandEvent& event);
 #ifdef __WXMSW__
-	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
+	wxImage GdiplusImageTowxImage(Gdiplus::Image* img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
-   
+
 #ifdef __SCANNER_PROGRAM__
 	Regards::Scanner::CMainParam * viewerParam;
 	Regards::Scanner::CMainTheme * viewerTheme;
 #else
-	Regards::Viewer::CMainParam * viewerParam;
-	Regards::Viewer::CMainTheme * viewerTheme;
+	Regards::Viewer::CMainParam* viewerParam;
+	Regards::Viewer::CMainTheme* viewerTheme;
 #endif
 
 #ifndef __APPLE__
-#ifdef __WXSCANSANE__  
+#ifdef __WXSCANSANE__
     wxScanSane * scanSane;
 #endif
 #endif
 
 	//Toolbar
-	Regards::Scanner::CCentralWindow * centralWindow;
+	Regards::Scanner::CCentralWindow* centralWindow;
 	//int m_imageCount;
-	IMainInterface * mainInterface;
+	IMainInterface* mainInterface;
 
-	DECLARE_EVENT_TABLE()
+DECLARE_EVENT_TABLE()
 };

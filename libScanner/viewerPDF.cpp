@@ -19,7 +19,7 @@
 #include "ScannerFrame.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
-#include <libPicture.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -28,7 +28,7 @@ using namespace Regards::Scanner;
 #define DELAY_ANIMATION 20
 #define DEMO
 
-CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
+CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame* frame, wxWindowID id)
 	: CWindowMain("PDFWindow", parent, id)
 {
 	this->frame = frame;
@@ -39,8 +39,8 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	showToolbar = true;
 	checkValidity = false;
 
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
-	CMainParam * config = CMainParamInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
@@ -81,8 +81,9 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
 
-		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailImageList", true, THUMBNAILPDFPANEL, true);
-
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true,
+		                        themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle,
+		                        "ThumbnailImageList", true, THUMBNAILPDFPANEL, true);
 	}
 
 
@@ -94,8 +95,8 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDSCANNERID);
-		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false, true);
-
+		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true,
+		                        PANELCLICKINFOSWNDID, false, true);
 	}
 
 	if (viewerTheme != nullptr)
@@ -111,11 +112,11 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	//----------------------------------------------------------------------------------------
 	if (viewerTheme != nullptr)
 	{
-		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme, false);
+		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF,
+		                                   SCANNER_MAINVIEWERWINDOWID, this, viewerTheme, false);
 		windowManager->AddWindow(showBitmapWindow, Pos::wxCENTRAL, false, 0, rect, SCANNER_MAINVIEWERWINDOWID, false);
 	}
 
-	
 
 	Connect(wxEVT_ANIMATIONPOSITION, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CViewerPDF::OnFiltreOK));
@@ -143,7 +144,7 @@ void CViewerPDF::OnShowToolbar(wxCommandEvent& event)
 
 void CViewerPDF::OnFiltreOK(wxCommandEvent& event)
 {
-	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
+	auto panelInfos = static_cast<CPanelInfosWnd*>(this->FindWindowById(PANELINFOSWNDSCANNERID));
 	int numFiltre = event.GetInt();
 	if (panelInfos != nullptr)
 		panelInfos->OnFiltreOk(numFiltre);
@@ -152,7 +153,7 @@ void CViewerPDF::OnFiltreOK(wxCommandEvent& event)
 
 void CViewerPDF::OnFiltreCancel(wxCommandEvent& event)
 {
-	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
+	auto panelInfos = static_cast<CPanelInfosWnd*>(this->FindWindowById(PANELINFOSWNDSCANNERID));
 	//int numFiltre = event.GetInt();
 	if (panelInfos != nullptr)
 		panelInfos->OnFiltreCancel();
@@ -177,7 +178,7 @@ void CViewerPDF::AnimationPicturePrevious()
 }
 
 
-void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
+void CViewerPDF::ShowValidationToolbar(const bool& visible, const int& filtre)
 {
 	isEffect = visible;
 	showValidationToolbar = true;
@@ -200,10 +201,10 @@ wxString CViewerPDF::GetFilename()
 	return filename;
 }
 
-CImageLoadingFormat * CViewerPDF::GetImage()
+CImageLoadingFormat* CViewerPDF::GetImage()
 {
 	CLibPicture libPicture;
-	CImageLoadingFormat * image = libPicture.LoadPicture(filename, 0);
+	CImageLoadingFormat* image = libPicture.LoadPicture(filename, false);
 	return image;
 }
 
@@ -212,7 +213,6 @@ CViewerPDF::~CViewerPDF()
 	pageThumbnail.clear();
 	delete(windowManager);
 }
-
 
 
 void CViewerPDF::HidePanel()
@@ -226,7 +226,7 @@ void CViewerPDF::ShowPanelVideoThumbnail()
 }
 
 
-void CViewerPDF::SetPosition(const long &timePosition)
+void CViewerPDF::SetPosition(const long& timePosition)
 {
 	animationPosition = timePosition;
 	LoadAnimationBitmap(filename, timePosition);
@@ -246,7 +246,7 @@ void CViewerPDF::AnimationSetPosition(wxCommandEvent& event)
 }
 
 
-void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
+void CViewerPDF::LoadAnimationBitmap(const wxString& filename, const int& numFrame)
 {
 	if (numFrame == oldAnimationPosition && filename == oldFilename)
 		return;
@@ -257,11 +257,10 @@ void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFra
 	printf("CViewerPDF::LoadAnimationBitmap %d \n", numFrame);
 	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
-		CImageLoadingFormat * image = nullptr;
 		CLibPicture libPicture;
-		image = libPicture.LoadPicture(filename, false, numFrame);
+		auto image = libPicture.LoadPicture(filename, false, numFrame);
 
-		COcrWnd * ocrWnd = (COcrWnd *)wxWindow::FindWindowById(SCANNER_OCRPAGE);
+		auto ocrWnd = static_cast<COcrWnd*>(wxWindow::FindWindowById(SCANNER_OCRPAGE));
 		if (ocrWnd != nullptr)
 		{
 			ocrWnd->Init();
@@ -298,7 +297,8 @@ wxString CViewerPDF::SetImage(wxImage imageFile)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
+	if (!wxMkDir(tempFolder))
+	{
 #else
 	wxString tempFolder = documentPath + "/temp";
     if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
@@ -313,7 +313,7 @@ wxString CViewerPDF::SetImage(wxImage imageFile)
 		file = tempFolder + "/temp.pdf";
 #endif
 
-		if(wxFileExists(file))
+		if (wxFileExists(file))
 			wxRemoveFile(file);
 
 		//wxImage * imageTemp = new wxImage(imageFile);
@@ -322,11 +322,10 @@ wxString CViewerPDF::SetImage(wxImage imageFile)
 	return file;
 }
 
-void CViewerPDF::LoadFile(const wxString &filename)
+void CViewerPDF::LoadFile(const wxString& filename)
 {
-
 	CLibPicture libPicture;
-//	bool result = false;
+	//	bool result = false;
 	oldAnimationPosition = -1;
 	oldFilename = L"";
 
@@ -345,12 +344,11 @@ void CViewerPDF::LoadFile(const wxString &filename)
 		if (showBitmapWindow != nullptr)
 		{
 			animationPosition = 0;
-
 		}
 
 		//thumbnailVideo->SetVideoPosition(0);
 	}
-	
+
 	//nbThumbnail = page.size();
 	LoadAnimationBitmap(this->filename, 0);
 }

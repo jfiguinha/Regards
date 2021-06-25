@@ -30,13 +30,14 @@ namespace Regards
 		class CCategoryFolderWindow : public CTreeWithScrollbar
 		{
 		public:
-			CCategoryFolderWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer, const CThemeScrollBar & themeScroll, const CThemeTree & theme);
-			~CCategoryFolderWindow();
+			CCategoryFolderWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer,
+			                      const CThemeScrollBar& themeScroll, const CThemeTree& theme);
+			~CCategoryFolderWindow() override;
 
-            void InitSaveParameter();
-			void Init();
-			void UpdateCriteria(const bool &needToSendMessage);
-			wxString GetWaitingMessage();
+			void InitSaveParameter();
+			void init();
+			void UpdateCriteria(const bool& needToSendMessage);
+			wxString GetWaitingMessage() override;
 			void RefreshCriteriaSearch();
 			wxString GetSqlRequest();
 
@@ -45,18 +46,18 @@ namespace Regards
 			void CriteriaPhotoUpdate(wxCommandEvent& event);
 			void RefreshCriteriaSearch(wxCommandEvent& event);
 			void OnIdle(wxIdleEvent& evt);
-			bool GetProcessEnd();
+			bool GetProcessEnd() override;
 
-			static void FindPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria);
-            static void FindGPSPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria);
-			void RefreshThreadFolder(CFolderCatalog * folder);
+			static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
+			static void FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);
+			void RefreshThreadFolder(CFolderCatalog* folder);
 			void OnTimerRefresh(wxTimerEvent& event);
-			void ProcessIdle();
+			void ProcessIdle() override;
 
-			CCategoryWnd * catalogWndOld;
-			CMainParam * explorerconfig ;
+			CCategoryWnd* catalogWndOld;
+			CMainParam* explorerconfig;
 			int oldPos;
-			bool update ;
+			bool update;
 			//int numImageFace;
 			bool traitementEnd;
 			int numProcess;
@@ -67,13 +68,12 @@ namespace Regards
 			bool threadDataProcess;
 			bool noCategoryMessage;
 			bool categoryMessage;
-            //int nbPhotos;
+			//int nbPhotos;
 
-            wxString urlServer;
+			wxString urlServer;
 			bool gpsLocalisationFinish;
-            int nbGpsFile;
-            wxTimer * refreshTimer;
+			int nbGpsFile;
+			wxTimer* refreshTimer;
 		};
 	}
 }
-

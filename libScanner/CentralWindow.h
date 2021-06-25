@@ -1,5 +1,4 @@
 #pragma once
-#include <Splitter.h>
 #include <PanelWithClickToolbar.h>
 #include "ScannerFrame.h"
 using namespace std;
@@ -18,19 +17,21 @@ namespace Regards
 		class CCentralWindow : public CWindowMain
 		{
 		public:
-			CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame);
-			~CCentralWindow();
+			CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame* frame);
+			~CCentralWindow() override;
 
 			wxString LoadFile();
-			wxString LoadFile(const wxString &filename);
-			CImageLoadingFormat * GetImage();
+			wxString LoadFile(const wxString& filename);
+			CImageLoadingFormat* GetImage();
 			wxString GetFilename();
-			int OnOpen(const int &type);
-			void UpdateScreenRatio();
-			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
+			int OnOpen(const int& type);
+			void UpdateScreenRatio() override;
+			static void ProcessAddFile(const wxString& fileToAdd, const wxString& filename, const vector<int>& listPage,
+			                           int oldAnimationPosition);
 
 		private:
-			void AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality, int numpage);
+			void AddPdfPage(wxPdfDocument& oPdfDocument, CImageLoadingFormat* imageFormat, int option, int quality,
+			                int numpage);
 			void OnSave(wxCommandEvent& event);
 			void OnAddPage(wxCommandEvent& event);
 			void OnDeletePage(wxCommandEvent& event);
@@ -38,20 +39,20 @@ namespace Regards
 			void OnPrint(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnExtractPage(wxCommandEvent& event);
-            void OnScan(wxCommandEvent& event);
-			wxString ProcessExtractFile(const vector<int> & listPage);
-			void ProcessFile(const vector<int> & listPage);
-			wxString ProcessLoadFiles(wxArrayString & listFile);
-			int LoadPictureFile(wxArrayString & listFile, wxString filenameOutput);
+			void OnScan(wxCommandEvent& event);
+			wxString ProcessExtractFile(const vector<int>& listPage);
+			void ProcessFile(const vector<int>& listPage);
+			wxString ProcessLoadFiles(wxArrayString& listFile);
+			int LoadPictureFile(wxArrayString& listFile, wxString filenameOutput);
 
 			void RedrawBarPos();
-			void OnSize(wxSizeEvent& event);
-			CToolbarPDF * toolbarPDF;
-			CViewerPDF * previewWindow;
+			void OnSize(wxSizeEvent& event) override;
+			CToolbarPDF* toolbarPDF;
+			CViewerPDF* previewWindow;
 			int width;
 			int height;
 			wxString filename;
-			CScannerFrame * frame;
+			CScannerFrame* frame;
 		};
 	}
 }

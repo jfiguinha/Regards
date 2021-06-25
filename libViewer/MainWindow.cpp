@@ -231,7 +231,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
-			"mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		                            "mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...
 
@@ -556,6 +556,7 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 				SetDataToStatusBar(event.GetClientData(), picture);
 			}
 			break;
+		default: ;
 		}
 	}
 }
@@ -599,7 +600,7 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 {
 	TRACE();
 	//Refresh Criteria
-	wxWindow* window = Regards::Viewer::CMainWindow::FindWindowById(CRITERIAFOLDERWINDOWID);
+	wxWindow* window = FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
@@ -1133,7 +1134,6 @@ void CMainWindow::OnPictureClick(wxCommandEvent& event)
 
 void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 {
-	
 	int typeId = event.GetInt();
 
 	if (typeId == 0)
@@ -1144,7 +1144,6 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 			localFilename = *newPath;
 			delete newPath;
 		}
-
 	}
 
 

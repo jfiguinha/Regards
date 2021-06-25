@@ -142,8 +142,8 @@ CRotateByShear<CPxl>::HorizSkew(
 	}
 
 	CRgbaquad pxlOldLeft = clrBack;
-
-	for (int i = 0; i < sSrc.x; i++)
+	int i = 0;
+	for (i = 0; i < sSrc.x; i++)
 	{
 		// Loop through row pixels
 		CRgbaquad pxlSrc = GetRGB(pSrc, sSrc, i, uRow);

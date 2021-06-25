@@ -27,6 +27,9 @@ namespace Regards
 			//wxTimer * processTimer;
 			wxString videoFilename;
 			wxWindow * parent;
+			const CThemeThumbnail& theme_thumbnail_;
+			const bool& test_validity_;
+			const wxWindowID id_;
 		};
 	}
 }

@@ -14,26 +14,24 @@ namespace Regards
 
 	namespace Viewer
 	{
-		
-		class CAnimationToolbar : public Regards::Window::CToolbarWindow
+		class CAnimationToolbar : public CToolbarWindow
 		{
 		public:
-			CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, Regards::Window::CToolbarInterface * toolbarInterface, const bool& vertical);
-			~CAnimationToolbar();
+			CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+			                  CToolbarInterface* toolbarInterface, const bool& vertical);
+			~CAnimationToolbar() override;
 			void AnimationStart();
 			void AnimationStop();
 
 		private:
-
 			void NextPicture();
 			void PreviousPicture();
-			void EventManager(const int &id);
-            
-			Regards::Window::CToolbarInterface * toolbarInterface;
-			Regards::Window::CToolbarButton * imagePlayDiaporama;
-			Regards::Window::CToolbarButton * imageStopDiaporama;
-           // CToolbarButton * fullscreen;
+			void EventManager(const int& id) override;
+
+			CToolbarInterface* toolbarInterface;
+			CToolbarButton* imagePlayDiaporama;
+			CToolbarButton* imageStopDiaporama;
+			// CToolbarButton * fullscreen;
 		};
 	}
 }
-

@@ -22,14 +22,14 @@ namespace Regards
 	{
 		class CFileGeolocation;
 	}
-	using namespace Regards::Internet;
-	
+
+	using namespace Internet;
+
 	namespace Viewer
 	{
 		class CThreadPictureData
 		{
 		public:
-
 			CThreadPictureData()
 			{
 				mainWindow = nullptr;
@@ -42,11 +42,11 @@ namespace Regards
 			{
 			}
 
-			wxWindow * mainWindow;
+			wxWindow* mainWindow;
 			wxString picture;
 			bool isVisible;
 			bool isThumbnail;
-			thread * myThread;
+			thread* myThread;
 		};
 
 		class CBitmapReturn
@@ -59,9 +59,9 @@ namespace Regards
 				myThread = nullptr;
 			};
 
-			CImageLoadingFormat * bitmap;
+			CImageLoadingFormat* bitmap;
 			bool isThumbnail;
-			thread * myThread;
+			thread* myThread;
 		};
 
 		class CPanelPhotoWnd;
@@ -77,8 +77,8 @@ namespace Regards
 		class CCentralWindow : public CWindowMain
 		{
 		public:
-			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal = true);
-			~CCentralWindow();
+			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter& theme, const bool& horizontal = true);
+			~CCentralWindow() override;
 
 
 			wxString ImageSuivante(const bool& loadPicture = true);
@@ -86,11 +86,11 @@ namespace Regards
 			wxString ImageFin(const bool& loadPicture = true);
 			wxString ImageDebut(const bool& loadPicture = true);
 
-			
+
 			wxString GetFilename();
 			int GetNbElement();
 
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 			bool FullscreenMode();
 			bool ScreenMode();
 			void HideToolbar();
@@ -100,10 +100,10 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 			void SetListeFile(const wxString& filename);
 			int RefreshPicture(const wxString& filename);
-			int LoadPicture(const wxString &filename);
+			int LoadPicture(const wxString& filename);
 			void OnEndThumbnail();
-            bool IsVideo();
-			void SaveParameter();
+			bool IsVideo();
+			void SaveParameter() override;
 			bool IsCompatibleFullscreen();
 
 			vector<wxString> GetFileList();
@@ -112,18 +112,16 @@ namespace Regards
 			bool IsDiaporamaStart();
 
 		private:
-
-			
 			int GetPhotoId(const wxString& filename);
 			void OnLoadPicture(wxCommandEvent& event);
-			bool GetProcessEnd();
-            //void OnShowWindow(wxShowEvent& event);
-			void LoadPictureInThread(CPictureElement * pictureElement);
-			void LoadingPicture(const wxString &filenameToShow);
+			bool GetProcessEnd() override;
+			//void OnShowWindow(wxShowEvent& event);
+			void LoadPictureInThread(CPictureElement* pictureElement);
+			void LoadingPicture(const wxString& filenameToShow);
 			void EndPictureThread(wxCommandEvent& event);
 			void StartLoadingPicture();
 			void OnVideoEnd(wxCommandEvent& event);
-			virtual void Resize();
+			void Resize() override;
 			void OnVideoStart(wxCommandEvent& event);
 			void OnAnimationStart(wxCommandEvent& event);
 			void OnAnimationStop(wxCommandEvent& event);
@@ -139,66 +137,70 @@ namespace Regards
 
 			void StopDiaporama(wxCommandEvent& event);
 			void StartDiaporama(wxCommandEvent& event);
-			
+
 			void OnVideoStop(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
 			void OnShowPicture(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
-			
+
 			void OnTimerAnimation(wxTimerEvent& event);
-			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
+			void SetPicture(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			void StopLoadingPicture();
 			void StopAnimation();
 			void StartAnimation();
-			bool SetAnimation(const wxString &filename);
+			bool SetAnimation(const wxString& filename);
 
 
-			CPanelPhotoWnd * panelPhotoWnd;
-			CMainParam * viewerconfig;
-			CListPicture * listPicture;
-			CPanelWithClickToolbar * panelInfosClick;
+			CPanelPhotoWnd* panelPhotoWnd;
+			CMainParam* viewerconfig;
+			CListPicture* listPicture;
+			CPanelWithClickToolbar* panelInfosClick;
 			bool isNext = false;
 			//Face List
 #ifndef __NOFACE_DETECTION__
-			CListFace * listFace;
+			CListFace* listFace;
 #endif
 
-            bool loadPicture = false;
-            wxString filename;
-            //int numElement;
+			bool loadPicture = false;
+			wxString filename;
+			//int numElement;
 			int faceDetection = 0;
-			CScrollbarWnd * scrollVideoWindow;
-			CThumbnailViewerVideo * thumbnailVideo;
+			CScrollbarWnd* scrollVideoWindow;
+			CThumbnailViewerVideo* thumbnailVideo;
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
-			CPanelInfosWnd * panelInfosWindow;
+			CPanelInfosWnd* panelInfosWindow;
 
 			//Preview
-			CPreviewWnd * previewWindow;
+			CPreviewWnd* previewWindow;
 
 			//Thumbnail Picture
-			CScrollbarWnd * scrollPictureWindow;
-			CThumbnailViewerPicture * thumbnailPicture;
+			CScrollbarWnd* scrollPictureWindow;
+			CThumbnailViewerPicture* thumbnailPicture;
+			wxWindowID id_;
+			wxWindow* parent_;
+			const CThemeSplitter& theme_;
+			const bool& horizontal_;
 
 			//Window List
-			static void LoadingNewPicture(CThreadPictureData * pictureData);
+			static void LoadingNewPicture(CThreadPictureData* pictureData);
 			void AnimationSetPosition(wxCommandEvent& event);
-			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
-			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail);
-			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
-			void SetPanelInfos(const bool &isThumbnail);
-			void SetVideo(const wxString &path);
+			void LoadAnimationBitmap(const wxString& filename, const int& numFrame);
+			bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
+			bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail, const bool& isAnimation);
+			void SetPanelInfos(const bool& isThumbnail);
+			void SetVideo(const wxString& path);
 			//void SetModeViewer();
 
 			//PhotosVector photoVector;
 
-			CWindowManager * windowManager;
+			CWindowManager* windowManager;
 			int windowMode;
 			int oldWindowMode;
-			wxTimer * animationTimer;
+			wxTimer* animationTimer;
 			int animationPosition;
-			vector<CImageVideoThumbnail *> videoThumbnail;
+			vector<CImageVideoThumbnail*> videoThumbnail;
 			bool processLoadPicture;
 			int nbThumbnail;
 
@@ -212,8 +214,8 @@ namespace Regards
 			bool isDiaporama;
 			bool isThumbnail;
 			bool videoStart;
-            bool stopVideo;
-            bool init = false;
+			bool stopVideo;
+			bool init = false;
 			bool windowInit = true;
 
 
@@ -230,7 +232,6 @@ namespace Regards
 
 
 			wxTimer* diaporamaTimer;
-
 		};
 	}
 }

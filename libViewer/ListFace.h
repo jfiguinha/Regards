@@ -32,20 +32,19 @@ namespace Regards
 		{
 		public:
 			CListFace(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
-			~CListFace();
-            void UpdateScreenRatio();
-			void SetActifItem(const int &numItem, const bool &move);	
+			~CListFace() override;
+			void UpdateScreenRatio() override;
+			void SetActifItem(const int& numItem, const bool& move);
 			int GetThumbnailHeight();
-			void Resize();
-			void ForceRefresh();
-			void ClosePane();
-			void RefreshPane();
+			void Resize() override;
+			void ForceRefresh() override;
+			void ClosePane() override;
+			void RefreshPane() override;
 			void FacialRecognitionReload();
 
 		private:
-			
-			static void FacialDetectionRecognition(void * param);
-			
+			static void FacialDetectionRecognition(void* param);
+
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailDatabaseRefresh(wxCommandEvent& event);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
@@ -56,20 +55,20 @@ namespace Regards
 			void ThumbnailMove(wxCommandEvent& event);
 			void OnFacePhotoAdd(wxCommandEvent& event);
 			void OnResourceLoad(wxCommandEvent& event);
-			void ProcessIdle();
-			bool GetProcessEnd();
-			static void FindFaceCompatible(const vector<int> & listFace);
-			static void FacialRecognition(void * param);
+			void ProcessIdle() override;
+			bool GetProcessEnd() override;
+			static void FindFaceCompatible(const vector<int>& listFace);
+			static void FacialRecognition(void* param);
 #ifndef __APPLE
-			static void LoadResource(void * param);
+			static void LoadResource(void* param);
 #endif
 			void OnFaceVideoAdd(wxCommandEvent& event);
 
-			CWindowManager * windowManager = nullptr;
-			CScrollbarWnd * thumbscrollbar = nullptr;
-			CThumbnailFaceToolBar * thumbFaceToolbar = nullptr;
-			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar = nullptr;
-			CThumbnailFace * thumbnailFace = nullptr;
+			CWindowManager* windowManager = nullptr;
+			CScrollbarWnd* thumbscrollbar = nullptr;
+			CThumbnailFaceToolBar* thumbFaceToolbar = nullptr;
+			CThumbnailFacePertinenceToolBar* thumbFacePertinenceToolbar = nullptr;
+			CThumbnailFace* thumbnailFace = nullptr;
 
 			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;

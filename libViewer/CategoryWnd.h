@@ -20,28 +20,31 @@ namespace Regards
 	{
 		class CMainParam;
 
-		class CCategoryWnd :public Regards::Window::CTreeControl
+		class CCategoryWnd : public CTreeControl
 		{
 		public:
 			CCategoryWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl);
-			~CCategoryWnd();
+			~CCategoryWnd() override;
 			void Init();
 			void RefreshCriteriaSearch();
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 			void RefreshListPhoto();
 			wxString GetSqlRequest();
-			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value, const wxString& key) {};
+
+			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
+			                    const wxString& key) override
+			{
+			};
 		protected:
-
-
 			void SaveState();
 			void LoadState();
 			void SaveStateTriangle();
-			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y, const int& posLargeur, const int& posHauteur);
+			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+			                    const int& posLargeur, const int& posHauteur) override;
 
 		private:
-
-			void AddCategorie(const int& numCatalog, const int& numCategorie, tree<CTreeData*>::iterator parent, const int& numParent, const wxString& catlibelle, const int& id);
+			void AddCategorie(const int& numCatalog, const int& numCategorie, tree<CTreeData*>::iterator parent,
+			                  const int& numParent, const wxString& catlibelle, const int& id);
 
 			tree<CTreeData*>::iterator FindChild(tree<CTreeData*>::iterator parent, const wxString& catlibelle);
 			tree<CTreeData*>::iterator FindExifKey(const wxString& exifkey);
@@ -80,9 +83,6 @@ namespace Regards
 			vector<int> listPhoto;
 			CMainParam* config;
 			CWindowMain* windowMain;
-
 		};
-
-
 	}
 }

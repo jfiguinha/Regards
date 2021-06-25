@@ -12,19 +12,18 @@ namespace Regards
 		public:
 			CWaitingWindow(wxWindow* parent, wxWindowID id);
 
-			~CWaitingWindow();
+			~CWaitingWindow() override;
 
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 
-			void Resize();
+			void Resize() override;
 
-			void SetTexte(const wxString &libelle);
+			void SetTexte(const wxString& libelle);
 
 		private:
+			void on_paint(wxPaintEvent& event);
 
-			void OnPaint(wxPaintEvent& event);
-
-			wxAnimationCtrl * m_animationCtrl;
+			wxAnimationCtrl* m_animationCtrl;
 			wxString textToShow;
 		};
 	}

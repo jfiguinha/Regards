@@ -3,7 +3,6 @@
 class CStatusText
 {
 public:
-
 	CStatusText()
 	{
 		position = 0;

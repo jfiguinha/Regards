@@ -20,6 +20,8 @@
 #include <ImageLoadingFormat.h>
 #include "PicturePanel.h"
 #include <effect_id.h>
+
+#include "ParamInit.h"
 using namespace Regards::Picture;
 using namespace Regards::Internet;
 using namespace Regards::Window;

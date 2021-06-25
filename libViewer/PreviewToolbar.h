@@ -17,11 +17,12 @@ namespace Regards
 		class CPreviewToolbar : public CToolbarWindow
 		{
 		public:
-			CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
-			~CPreviewToolbar();
+			CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
+			                CToolbarInterface* toolbarInterface, const bool& vertical);
+			~CPreviewToolbar() override;
 
-            void SetFullscreen();
-            void SetScreen();
+			void SetFullscreen();
+			void SetScreen();
 			void DisableNavigationButton();
 			void EnableNavigationButton();
 			void EnableSaveButton();
@@ -29,7 +30,6 @@ namespace Regards
 			void EnableScreenButton();
 			void DisableScreenButton();
 		private:
-
 			void DiaporamaStart();
 			void DiaporamaStop();
 			void Rotate90();
@@ -42,20 +42,19 @@ namespace Regards
 			void FirstPicture();
 			void LastPicture();
 			void Save();
-			void EventManager(const int &id);
-            
-			CToolbarInterface * toolbarInterface;
-			CToolbarButton * imagePlayDiaporama;
-			CToolbarButton * imageStopDiaporama;
-            CToolbarButton * fullscreen;
-			CToolbarButton * imageEnd;
-			CToolbarButton * imageSuiv;
-			CToolbarButton * imageFirst;
-			CToolbarButton * imagePrec;
-			CToolbarButton * save;
-            
-            bool navigationButtonEnable = true;
+			void EventManager(const int& id) override;
+
+			CToolbarInterface* toolbarInterface;
+			CToolbarButton* imagePlayDiaporama;
+			CToolbarButton* imageStopDiaporama;
+			CToolbarButton* fullscreen;
+			CToolbarButton* imageEnd;
+			CToolbarButton* imageSuiv;
+			CToolbarButton* imageFirst;
+			CToolbarButton* imagePrec;
+			CToolbarButton* save;
+
+			bool navigationButtonEnable = true;
 		};
 	}
 }
-

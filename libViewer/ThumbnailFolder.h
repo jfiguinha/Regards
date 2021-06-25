@@ -1,6 +1,7 @@
 #pragma once
 #include <ThumbnailVertical.h>
 #include "InfosSeparationBarExplorer.h"
+#include "Photos.h"
 using namespace Regards::Control;
 
 #define SHOW_ALL 0

@@ -25,7 +25,9 @@ using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::Window;
 
-CCategoryWnd::CCategoryWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl)
+CCategoryWnd::CCategoryWnd(CWindowMain* windowMain, CThemeTree* theme, CTreeElementControlInterface* interfaceControl):
+	numCatalog(0),
+	idElement(0)
 {
 	sqlRequest = "";
 	treeDataModify = nullptr;
@@ -342,11 +344,11 @@ void CCategoryWnd::AddCategorie(const int& numCatalog, const int& numCategorie, 
 		{
 			numParentElement = idElement;
 			treeData->SetExifKey(exifKey);
-			auto it = FindChild(child, treeData->GetExifKey());
-			if (it == nullptr)
+			auto tree_datas = FindChild(child, treeData->GetExifKey());
+			if (tree_datas == nullptr)
 				child = tr.append_child(child, treeData);
 			else
-				child = tr.insert(it, treeData);
+				child = tr.insert(tree_datas, treeData);
 			treeData->child = child;
 		}
 #if defined(WIN32) && _MSC_VER < 1900
@@ -438,11 +440,11 @@ void CCategoryWnd::LoadCategorie(const int& numCategorie, tree<CTreeData*>::iter
 
 					//Ordonnancement par Alphabet
 					//child = tr.append_child(child, treeData);
-					auto it = FindChild(child, treeData->GetExifKey());
-					if (it == nullptr)
+					auto tree_datas = FindChild(child, treeData->GetExifKey());
+					if (tree_datas == nullptr)
 						child = tr.append_child(child, treeData);
 					else
-						child = tr.insert(it, treeData);
+						child = tr.insert(tree_datas, treeData);
 
 					treeData->child = child;
 				}
@@ -512,12 +514,12 @@ wxString CCategoryWnd::GetSqlRequest()
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
 
-	for (CFolderCatalog folderCatalog : folderList)
+	for (CFolderCatalog folder_catalog : folderList)
 	{
 		std::vector<int>::iterator it;
-		it = find(listFolderNotSelected.begin(), listFolderNotSelected.end(), folderCatalog.GetNumFolder());
+		it = find(listFolderNotSelected.begin(), listFolderNotSelected.end(), folder_catalog.GetNumFolder());
 		if (it == listFolderNotSelected.end())
-			listFolder.push_back(folderCatalog.GetNumFolder());
+			listFolder.push_back(folder_catalog.GetNumFolder());
 	}
 
 	if (viewerParam != nullptr)
@@ -692,22 +694,22 @@ void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory* treeData, const bool& 
 {
 	bool isAllUnchecked = false;
 	int numParent = treeData->GetNumParent();
-	CPositionElement* parent = nullptr;
+	CPositionElement* parent;
 	do
 	{
 		parent = VerifChildParentCheckBox(numParent, isAllUnchecked, checkOn);
 		if (isAllUnchecked && parent != nullptr)
 		{
-			auto treeData = static_cast<CTreeDataCategory*>(parent->GetTreeData());
-			if (treeData != nullptr)
+			auto tree_data_category = static_cast<CTreeDataCategory*>(parent->GetTreeData());
+			if (tree_data_category != nullptr)
 			{
-				if (treeData->GetIdElement() != -1)
+				if (tree_data_category->GetIdElement() != -1)
 				{
-					if (treeData->GetNumElement() == numParent)
+					if (tree_data_category->GetNumElement() == numParent)
 					{
 						auto checkBox = static_cast<CTreeElementCheckBox*>(parent->GetTreeElement());
 						checkBox->SetCheckState(checkOn);
-						numParent = treeData->GetNumParent();
+						numParent = tree_data_category->GetNumParent();
 					}
 				}
 				else
@@ -718,14 +720,14 @@ void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory* treeData, const bool& 
 						{
 							if (value->GetType() == ELEMENT_CHECKBOX)
 							{
-								auto treeData = static_cast<CTreeDataCategory*>(value->GetTreeData());
-								if (treeData->GetNumElement() == numParent)
+								auto data_category = static_cast<CTreeDataCategory*>(value->GetTreeData());
+								if (data_category->GetNumElement() == numParent)
 								{
 									auto checkBox = dynamic_cast<CTreeElementCheckBox*>(value->GetTreeElement());
 									if (checkBox != nullptr)
 									{
 										checkBox->SetCheckState(checkOn);
-										numParent = treeData->GetNumParent();
+										numParent = data_category->GetNumParent();
 									}
 									break;
 								}
@@ -907,77 +909,77 @@ bool CCategoryWnd::GetCheckState(const wxString& exifKey, const wxString& key)
 void CCategoryWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
 	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
-	CPositionElement* posElement = nullptr;
-	CTreeElementTexte* treeElementTexte = nullptr;
-	CTreeElementCheckBox* treeElementCheck = nullptr;
-	CTreeElementTriangle* treeElementTriangle = nullptr;
+	CPositionElement* pos_element;
+	CTreeElementTexte* tree_element_texte;
+	CTreeElementCheckBox* tree_element_check;
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
-		int widthElement = 0;
+		int width_element;
 		const int profondeur = tr.depth(it);
 		auto data = static_cast<CTreeDataCategory*>(*it);
 		if (profondeur == 1 && (!data->GetValue().empty() || it.number_of_children() == 0))
 		{
 			int xPos = widthPosition * (profondeur + 1);
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+			tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
 			                                   false);
 
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 		}
 		else if (!data->GetValue().empty() || it.number_of_children() == 0)
 		{
 			int xPos = widthPosition * (profondeur + 1);
 			bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
-			                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+			tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+			CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+			                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
+			tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
 			                                   false);
 
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 		}
 		else
 		{
 			int xPos = widthPosition * profondeur;
 			bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
-			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
-			                                   data);
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                                  isOpen);
+			CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                      treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
+			                      data);
 			xPos += treeElementTriangle->GetWidth() + themeTree.GetMargeX();
 			bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
-			                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
+			tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+			CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+			                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
 
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
 
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
-			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
+			tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+			pos_element = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
 			                                   false);
 
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + pos_element->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 
 			CreateChildTree(it);
 		}
@@ -1004,26 +1006,26 @@ void CCategoryWnd::CreateElement()
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementCheckBox* treeElementCheck = nullptr;
-			CTreeElementTexte* treeElementTexte = nullptr;
-			CTreeElementTriangle* treeElementTriangle = nullptr;
-			CPositionElement* posElement = nullptr;
 			bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
-			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-			                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle,
-			                                   data);
+			CTreeElementTriangle* treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                                  isOpen);
+			CPositionElement* posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                                                     treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
+			                                                     treeElementTriangle,
+			                                                     data);
 
 			widthPosition = xPos + posElement->GetWidth();
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 			bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+			CTreeElementCheckBox* treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                               check);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
 			                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+			CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                         data->GetKey());
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
 			                                   false);
@@ -1067,23 +1069,23 @@ void CCategoryWnd::UpdateElement(const bool& init)
 			bool isVisible = true;
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementCheckBox* treeElementCheck = nullptr;
-			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CTreeElementCheckBox* tree_element_check;
+			CTreeElementTriangle* tree_element_triangle;
 			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
 				bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
-				treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
-				treeElementTriangle->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-				                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
-				                                   treeElementTriangle, data);
+				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
+				tree_element_triangle->SetVisible(isVisible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_triangle->GetWidth(),
+				                                   tree_element_triangle->GetHeight(), ELEMENT_TRIANGLE,
+				                                   tree_element_triangle, data);
 			}
 			else
 			{
-				treeElementTriangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-				treeElementTriangle->SetVisible(isVisible);
-				treeElementTriangle->SetElementPos(xPos, yPos);
+				tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+				tree_element_triangle->SetVisible(isVisible);
+				tree_element_triangle->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1096,17 +1098,17 @@ void CCategoryWnd::UpdateElement(const bool& init)
 			if (posElement == nullptr)
 			{
 				bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-				treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-				treeElementCheck->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
-				                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck,
+				tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+				tree_element_check->SetVisible(isVisible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+				                                   tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check,
 				                                   data);
 			}
 			else
 			{
-				treeElementCheck = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
-				treeElementCheck->SetVisible(isVisible);
-				treeElementCheck->SetElementPos(xPos, yPos);
+				tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+				tree_element_check->SetVisible(isVisible);
+				tree_element_check->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1139,7 +1141,7 @@ void CCategoryWnd::UpdateElement(const bool& init)
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
 
-			const bool isOpen = treeElementTriangle->GetOpen();
+			const bool isOpen = tree_element_triangle->GetOpen();
 			if (isOpen)
 				UpdateChildTree(it, init);
 		}
@@ -1154,7 +1156,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		bool isVisible = true;
-		int widthElement = 0;
+		int width_element;
 		const int profondeur = tr.depth(it);
 		auto data = static_cast<CTreeDataCategory*>(*it);
 		if (profondeur == 1 && (!data->GetValue().empty() || it.number_of_children() == 0))
@@ -1164,8 +1166,9 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 
 			if (posElement == nullptr)
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
@@ -1179,44 +1182,45 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 		}
 		else if (!data->GetValue().empty() || it.number_of_children() == 0)
 		{
 			//CTreeElementDelete * treeElementDelete = nullptr;
-			CTreeElementCheckBox* treeElementCheck = nullptr;
+			CTreeElementCheckBox* tree_element_check;
 			int xPos = widthPosition * (profondeur + 1);
 
 			CPositionElement* posElement = GetElement(data, ELEMENT_CHECKBOX);
 			if (posElement == nullptr)
 			{
 				bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-				treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-				treeElementCheck->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
-				                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck,
-				                                   data);
+				tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+				tree_element_check->SetVisible(isVisible);
+				CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+				                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check,
+				                      data);
 			}
 			else
 			{
-				treeElementCheck = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
-				treeElementCheck->SetVisible(isVisible);
-				treeElementCheck->SetElementPos(xPos, yPos);
+				tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+				tree_element_check->SetVisible(isVisible);
+				tree_element_check->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
 
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
-				                                                         data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(
+					themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+					data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
@@ -1231,16 +1235,16 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				posElement->SetY(yPos);
 			}
 
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 		}
 		else
 		{
-			CTreeElementCheckBox* treeElementCheck = nullptr;
-			CTreeElementTriangle* treeElementTriangle = nullptr;
+			CTreeElementCheckBox* tree_element_check;
+			CTreeElementTriangle* tree_element_triangle;
 
 			int xPos = widthPosition * profondeur;
 
@@ -1248,50 +1252,49 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 			if (posElement == nullptr)
 			{
 				bool isOpen = GetTriangleState(data->GetExifKey(), data->GetKey());
-				treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
-				treeElementTriangle->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
-				                                   treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
-				                                   treeElementTriangle, data);
+				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), isOpen);
+				tree_element_triangle->SetVisible(isVisible);
+				CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_triangle->GetWidth(),
+				                      tree_element_triangle->GetHeight(), ELEMENT_TRIANGLE,
+				                      tree_element_triangle, data);
 			}
 			else
 			{
-				treeElementTriangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
-				treeElementTriangle->SetVisible(isVisible);
-				treeElementTriangle->SetElementPos(xPos, yPos);
+				tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+				tree_element_triangle->SetVisible(isVisible);
+				tree_element_triangle->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
-			xPos += treeElementTriangle->GetWidth() + themeTree.GetMargeX();
+			xPos += tree_element_triangle->GetWidth() + themeTree.GetMargeX();
 
 			posElement = GetElement(data, ELEMENT_CHECKBOX);
 			if (posElement == nullptr)
 			{
 				bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-				treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-				treeElementCheck->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(),
-				                                   treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck,
-				                                   data);
+				tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+				tree_element_check->SetVisible(isVisible);
+				CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+				                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check,
+				                      data);
 			}
 			else
 			{
-				treeElementCheck = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
-				treeElementCheck->SetVisible(isVisible);
-				treeElementCheck->SetElementPos(xPos, yPos);
+				tree_element_check = dynamic_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+				tree_element_check->SetVisible(isVisible);
+				tree_element_check->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
 
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				CTreeElementTexte * treeElementTexte = nullptr;
-				treeElementTexte =
-					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+				CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				                                                         data->GetKey());
 				treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
 				                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data,
@@ -1306,14 +1309,14 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent, c
 				posElement->SetY(yPos);
 			}
 
-			widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+			width_element = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 
 			nbRow++;
-			if (rowWidth[0] < widthElement)
-				rowWidth[0] = widthElement;
+			if (rowWidth[0] < width_element)
+				rowWidth[0] = width_element;
 
-			const bool isShow = treeElementTriangle->GetOpen();
+			const bool isShow = tree_element_triangle->GetOpen();
 			if (isShow)
 				UpdateChildTree(it, init);
 		}

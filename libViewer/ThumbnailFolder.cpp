@@ -1,4 +1,5 @@
-﻿#include <header.h>
+﻿// ReSharper disable All
+#include <header.h>
 #include "ThumbnailFolder.h"
 #include "MainWindow.h"
 #include <LibResource.h>
@@ -190,7 +191,6 @@ void CThumbnailFolder::Init(const int& typeAffichage)
 void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 {
 	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
 	threadDataProcess = false;
 	int i = 0;
 	int x = 0;
@@ -221,7 +221,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
+	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
@@ -336,14 +336,7 @@ void CThumbnailFolder::ResizeThumbnail()
 
 	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElementEnY = 0;
 		int nbElement = (int)infosSeparationBar->listElement.size();
-		if (nbElementByRow > 0)
-		{
-			nbElementEnY = nbElement / nbElementByRow;
-			if (nbElementEnY * nbElementByRow < nbElement)
-				nbElementEnY++;
-		}
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);
@@ -390,7 +383,7 @@ bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowM
 {
 	if (icone != nullptr && parent != nullptr)
 	{
-		CThumbnailFolder* folder = (CThumbnailFolder*)parent;
+		auto folder = (CThumbnailFolder*)parent;
 		wxRect rc = icone->GetPos();
 		int left = rc.x - folder->posLargeur;
 		int right = rc.x + rc.width - folder->posLargeur;
@@ -529,8 +522,8 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 		{
 			wxSize* size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
-			size->x = posX;
-			size->y = posY;
+			size->x = static_cast<int>(posX);
+			size->y = static_cast<int>(posY);
 			evt.SetClientData(size);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}

@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "CentralWindow.h"
 #include "ViewerParamInit.h"
@@ -30,7 +31,6 @@
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
 
-#include "MainWindow.h"
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
@@ -47,7 +47,7 @@ using namespace Regards::FiltreEffet;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
                                const CThemeSplitter& theme, const bool& horizontal)
-	: CWindowMain("CentralWindow", parent, id)
+	: CWindowMain("CentralWindow", parent, id), id_(id), parent_(parent), theme_(theme), horizontal_(horizontal)
 {
 	oldWindowMode = 1;
 	panelPhotoWnd = nullptr;
@@ -99,8 +99,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 			viewerconfig->GetShowFilter(isPanelVisible);
 
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFOLDERCATEGORY", 1);
-		CThemePane theme;
-		viewerTheme->GetPaneTheme(&theme);
+		CThemePane theme_pane;
+		viewerTheme->GetPaneTheme(&theme_pane);
 
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
@@ -118,8 +118,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		bool checkValidity = true;
 		bool isPanelVisible = true;
-		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
-		CMainParam* config = CMainParamInit::getInstance();
+
 		if (config != nullptr)
 		{
 			config->GetShowVideoThumbnail(isPanelVisible);
@@ -127,11 +126,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		}
 
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
-		CThemePane theme;
+		CThemePane theme_pane;
 		CThemeToolbar themetoolbar;
 		CThemeScrollBar themeScroll;
 		CThemeThumbnail themeVideo;
-		viewerTheme->GetPaneTheme(&theme);
+		viewerTheme->GetPaneTheme(&theme_pane);
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
@@ -143,7 +142,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		scrollVideoWindow->SetLineSize(200);
 
 		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true,
-		                        themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle,
+		                        themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
 		                        "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, false, true);
 	}
 
@@ -154,8 +153,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		bool checkValidity = false;
 		bool isPanelVisible = true;
-		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
-		CMainParam* config = CMainParamInit::getInstance();
+		CMainTheme* viewer_theme = CMainThemeInit::getInstance();
+
 		if (config != nullptr)
 		{
 			config->GetShowThumbnail(isPanelVisible);
@@ -163,14 +162,14 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		}
 
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);
-		CThemePane theme;
+		CThemePane theme_pane;
 		CThemeToolbar themetoolbar;
 		CThemeScrollBar themeScroll;
 		CThemeThumbnail themeThumbnail;
-		viewerTheme->GetPaneTheme(&theme);
-		viewerTheme->GetScrollTheme(&themeScroll);
-		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		viewer_theme->GetPaneTheme(&theme_pane);
+		viewer_theme->GetScrollTheme(&themeScroll);
+		viewer_theme->GetThumbnailTheme(&themeThumbnail);
+		viewer_theme->GetClickToolbarTheme(&themetoolbar);
 
 		thumbnailPicture = new CThumbnailViewerPicture(windowManager, THUMBNAILVIEWERPICTURE, themeThumbnail,
 		                                               checkValidity);
@@ -186,23 +185,15 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		}
 
 		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true,
-		                        themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle,
+		                        themeThumbnail.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
 		                        "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
 	}
-
-	wxString urlServer;
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-	{
-		urlServer = param->GetUrlServer();
-	}
-
 
 	if (viewerTheme != nullptr)
 	{
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
-		CThemePane theme;
-		viewerTheme->GetPaneTheme(&theme);
+		CThemePane theme_pane;
+		viewerTheme->GetPaneTheme(&theme_pane);
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
@@ -523,9 +514,9 @@ int CCentralWindow::RefreshPicture(const wxString& filename)
 wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 {
 	wxString localFilename = "";
-	int numItem = 0;
 	if (windowMode)
 	{
+		int numItem = 0;
 		if (windowMode == WINDOW_EXPLORER)
 		{
 			if (listPicture != nullptr)
@@ -555,9 +546,9 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 wxString CCentralWindow::ImageFin(const bool& loadPicture)
 {
 	wxString localFilename = "";
-	int numItem = 0;
 	if (windowMode)
 	{
+		int numItem = 0;
 		if (windowMode == WINDOW_EXPLORER)
 		{
 			if (listPicture != nullptr)
@@ -594,9 +585,9 @@ int CCentralWindow::GetNbElement()
 wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 {
 	wxString localFilename = "";
-	int numItem = 0;
 	if (windowMode)
 	{
+		int numItem = 0;
 		if (windowMode == WINDOW_EXPLORER)
 		{
 			if (listPicture != nullptr)
@@ -625,9 +616,9 @@ wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 {
 	wxString localFilename = "";
-	int numItem = 0;
 	if (windowMode)
 	{
+		int numItem = 0;
 		if (windowMode == WINDOW_EXPLORER)
 		{
 			if (listPicture != nullptr)
@@ -768,12 +759,12 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 	if (redraw)
 	{
-		auto pictureData = new CThreadPictureData();
-		pictureData->mainWindow = this;
-		pictureData->picture = this->filename;
-		pictureData->isVisible = true;
-		auto threadloadPicture = new thread(LoadingNewPicture, pictureData);
-		pictureData->myThread = threadloadPicture;
+		auto thread_picture_data = new CThreadPictureData();
+		thread_picture_data->mainWindow = this;
+		thread_picture_data->picture = this->filename;
+		thread_picture_data->isVisible = true;
+		const auto threadloadPicture = new thread(LoadingNewPicture, thread_picture_data);
+		thread_picture_data->myThread = threadloadPicture;
 		processLoadPicture = true;
 	}
 
@@ -825,8 +816,8 @@ void CCentralWindow::SetPicture(CImageLoadingFormat* bitmap, const bool& isThumb
 		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
-			wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
-			window->GetEventHandler()->AddPendingEvent(evt);
+			wxCommandEvent wx_command_event(wxEVENT_SHOWSAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(wx_command_event);
 		}
 	}
 }
@@ -964,7 +955,7 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 	animationPosition++;
 	if (animationPosition < nbThumbnail)
 	{
-		uint32_t delay = 0;
+		uint32_t delay;
 		CLibPicture libPicture;
 		const int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
@@ -1081,23 +1072,23 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 			CImageVideoThumbnail* thumbnail = videoThumbnail.at(numFrame);
 			if (thumbnail != nullptr)
 			{
-				CImageLoadingFormat* image = thumbnail->image;
-				if (image != nullptr)
+				CImageLoadingFormat* image_loading_format = thumbnail->image;
+				if (image_loading_format != nullptr)
 				{
 					auto bitmap = new CImageLoadingFormat();
 					switch (thumbnail->image->GetFormat())
 					{
 					case TYPE_IMAGE_CXIMAGE:
-						bitmap->SetPicture(image->GetCxImage());
+						bitmap->SetPicture(image_loading_format->GetCxImage());
 						break;
 					case TYPE_IMAGE_WXIMAGE:
-						bitmap->SetPicture(image->GetwxImage());
+						bitmap->SetPicture(image_loading_format->GetwxImage());
 						break;
 					case TYPE_IMAGE_REGARDSIMAGE:
-						bitmap->SetPicture(image->GetRegardsBitmap());
+						bitmap->SetPicture(image_loading_format->GetRegardsBitmap());
 						break;
 					case TYPE_IMAGE_REGARDSJPEGIMAGE:
-						bitmap->SetPicture(image->GetwxImage());
+						bitmap->SetPicture(image_loading_format->GetwxImage());
 						break;
 					default: ;
 					}
@@ -1230,9 +1221,9 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	if (!windowInit && oldWindowMode == WINDOW_VIEWER)
 	{
 		showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
-		CMainParam* config = CMainParamInit::getInstance();
-		if (config != nullptr)
-			config->SetShowVideoThumbnail(showVideoThumbnail);
+		CMainParam* main_param = CMainParamInit::getInstance();
+		if (main_param != nullptr)
+			main_param->SetShowVideoThumbnail(showVideoThumbnail);
 	}
 
 	if (windowInit)
@@ -1800,7 +1791,7 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 	printf("CCentralWindow::EndPictureThread \n");
 	TRACE();
 	processLoadPicture = false;
-	wxString localPicture = "";
+	wxString local_picture;
 	auto pictureData = static_cast<CThreadPictureData*>(event.GetClientData());
 	if (pictureData != nullptr)
 	{
@@ -1816,7 +1807,7 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 			pictureData->myThread->join();
 			delete pictureData->myThread;
 		}
-		localPicture = pictureData->picture;
+		local_picture = pictureData->picture;
 
 
 		delete pictureData;

@@ -12,8 +12,9 @@ using namespace Regards::Window;
 using namespace Regards::Picture;
 #define WX_TIMER_PROCESS 1001
 
-CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
+CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
+                                         const bool& testValidity)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity), theme_thumbnail_(themeThumbnail), test_validity_(testValidity), id_(id)
 {
 
 	this->parent = parent;
@@ -24,8 +25,7 @@ CThumbnailMultiPage::CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const 
 }
 
 CThumbnailMultiPage::~CThumbnailMultiPage(void)
-{
-}
+= default;
 
 void CThumbnailMultiPage::OnPictureClick(CThumbnailData * data)
 {
@@ -70,15 +70,13 @@ int CThumbnailMultiPage::FindNumItem(const int &videoPos)
 
 void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 {
-	int numItem = 0;
-	CIcone * pIcone = nullptr;
-	int nbIconeElement = nbElementInIconeList;
+	const int nbIconeElement = nbElementInIconeList;
 	//wxClientDC dc(this);
 
 	if (nbIconeElement == 0)
 		return;
 
-	numItem = FindNumItem(videoPos);
+	int numItem = FindNumItem(videoPos);
 	if (numItem == numItemSelected)
 		return;
 
@@ -89,30 +87,11 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 			numSelect->SetSelected(false);
 	}
 
-	pIcone = iconeList->GetElement(numItem);
+	CIcone* pIcone = iconeList->GetElement(numItem);
 	if (pIcone != nullptr)
 	{
 		pIcone->SetSelected(true);
 	}
-
-	//Calcul NbElement By View
-	int nbElement = (GetWindowWidth() / themeThumbnail.themeIcone.GetWidth());
-	if ((nbElement * themeThumbnail.themeIcone.GetWidth()) < GetWindowWidth())
-		nbElement++;
-
-	int numFirstElement = posLargeur / themeThumbnail.themeIcone.GetWidth();
-	int numLastElement = nbElement + numFirstElement;
-
-	//nbElementToShow = pThumbnailDataList.size();
-
-	if (numLastElement > (nbIconeElement - 1))
-		numLastElement = nbIconeElement - 1;
-
-	if (numFirstElement < 0)
-		numFirstElement = 0;
-
-	if (numFirstElement > (nbIconeElement - 1))
-		numFirstElement = nbIconeElement - 1;
 
 	if (!isMoving && pIcone != nullptr)
 	{
@@ -142,8 +121,6 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 	}
 
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
-	//numSelect = pIcone;
-	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
 	Refresh();
 }
@@ -155,11 +132,11 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	int typeElement = TYPEMULTIPAGE;
 	threadDataProcess = false;
 	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
 
 	if (videoThumbnail.size() > 0)
 	{
-		int size = videoThumbnail.size();
+		int size;
+		size = videoThumbnail.size();
 		for (int i = 0; i < videoThumbnail.size(); i++)
 		{
 			CImageVideoThumbnail * thumbnail = videoThumbnail.at(i);
@@ -209,7 +186,6 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 

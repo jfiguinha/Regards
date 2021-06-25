@@ -8,6 +8,8 @@ using namespace Regards::Viewer;
 class CTreatmentData
 {
 public:
+	virtual ~CTreatmentData() = default;
+
 	void MainTreatment(CIconeList* iconeListLocal, const PhotosVector* photoVector, CThumbnailFolder* folder,
 	                   int& numElement)
 	{
@@ -45,8 +47,8 @@ public:
 protected:
 	PhotosVector listPhoto;
 	bool first = true;
-	int numElement;
-	CIconeList* iconeListLocal;
+	int numElement = 0;
+	CIconeList* iconeListLocal = nullptr;
 };
 
 class CTreatmentDataYear : public CTreatmentData

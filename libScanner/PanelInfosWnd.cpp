@@ -14,7 +14,6 @@
 #include <InfoEffectWnd.h>
 #include "ThumbnailViewerEffectWnd.h"
 #include <ShowBitmap.h>
-#include <effect_id.h>
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 using namespace Regards::Internet;
@@ -312,6 +311,7 @@ void CPanelInfosWnd::LoadInfo()
 			infosToolbar->SetEditorPush();
 		}
 		break;
+		default: ;
 		}
 	}
 }

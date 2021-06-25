@@ -18,7 +18,7 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 	colorBack = theme.colorBack;
 	CThemeFont themeFont = theme.themeIcone.font;
 	colorFont = themeFont.GetColorFont();
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CPicturePanel::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CPicturePanel::on_paint));
 	image = nullptr;
 	choice_control = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(100, -1));
 	choice_control->AppendString("All channel");
@@ -101,7 +101,7 @@ void CPicturePanel::UpdateScreenRatio()
 	this->Refresh();
 }
 
-void CPicturePanel::OnPaint(wxPaintEvent& event)
+void CPicturePanel::on_paint(wxPaintEvent& event)
 {
 	wxPaintDC dc(this);
 	const wxRect rc = GetWindowRect();

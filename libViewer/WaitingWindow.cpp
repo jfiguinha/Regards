@@ -10,7 +10,7 @@ CWaitingWindow::CWaitingWindow(wxWindow* parent, wxWindowID id) : CWindowMain("C
 	//m_animation = new wxAnimation(resourcePath + "/loading.gif");
 	m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
 	m_animationCtrl->Show(true);
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CWaitingWindow::OnPaint));
+	Connect(wxEVT_PAINT, wxPaintEventHandler(CWaitingWindow::on_paint));
 
 #ifdef WIN32
 	m_animationCtrl->LoadFile(resourcePath + "\\loading.gif");
@@ -73,7 +73,7 @@ void CWaitingWindow::SetTexte(const wxString& libelle)
 	Refresh();
 }
 
-void CWaitingWindow::OnPaint(wxPaintEvent& event)
+void CWaitingWindow::on_paint(wxPaintEvent& event)
 {
 #ifdef __WXGTK__
 #if wxCHECK_VERSION(3, 1, 2)

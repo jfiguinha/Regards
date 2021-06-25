@@ -152,7 +152,7 @@ void CCategoryFolderWindow::InitSaveParameter()
 	}
 }
 
-void CCategoryFolderWindow::Init()
+void CCategoryFolderWindow::init()
 {
 	UpdateCriteria(false);
 	update = true;
@@ -202,9 +202,9 @@ void CCategoryFolderWindow::ProcessIdle()
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
 		//Put in a thread
-		CSqlInsertFile sqlInsertFile;
+		CSqlInsertFile sql_insert_file;
 		auto findPhotoCriteria = new CFindPhotoCriteria();
-		CPhotos photo = sqlInsertFile.GetPhotoToProcess();
+		CPhotos photo = sql_insert_file.GetPhotoToProcess();
 
 		printf("CCategoryFolderWindow::ProcessIdle : Nb Photo : %d Path : %s \n", nbPhotos,
 		       CConvertUtility::ConvertToUTF8(photo.GetPath()));
@@ -220,7 +220,7 @@ void CCategoryFolderWindow::ProcessIdle()
 
 			findPhotoCriteria->phthread = new thread(FindPhotoCriteria, findPhotoCriteria);
 			numProcess++;
-			sqlInsertFile.UpdatePhotoProcess(photo.GetId());
+			sql_insert_file.UpdatePhotoProcess(photo.GetId());
 			traitementEnd = false;
 		}
 	}
@@ -248,7 +248,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			eventChange.SetClientData(thumbnailMessage);
 		}
 
-		for (CFolderCatalog folder : catalogfolderVector)
+		for (CFolderCatalog folder_catalog : catalogfolderVector)
 		{
 			counter++;
 			auto thumbnailMessage = new CThumbnailMessage();
@@ -265,7 +265,7 @@ void CCategoryFolderWindow::ProcessIdle()
 			else
 				delete thumbnailMessage;
 
-			RefreshThreadFolder(&folder);
+			RefreshThreadFolder(&folder_catalog);
 		}
 
 		update = true;
@@ -462,9 +462,9 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 			insertCriteria->type = CATEGORIE_DATE;
 			insertCriteria->value = datetime;
 			listCriteriaPhoto.listCriteria.push_back(insertCriteria);
-			CListOfWindow* geoloc = CGpsEngine::getInstance();
-			if (geoloc != nullptr)
-				geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 2);
+			CListOfWindow* list_of_window = CGpsEngine::getInstance();
+			if (list_of_window != nullptr)
+				list_of_window->SendMessageToWindow(listCriteriaPhoto.photoPath, 2);
 		}
 	}
 

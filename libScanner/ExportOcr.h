@@ -1,5 +1,6 @@
 #pragma once
 #include <tesseract/baseapi.h>
+
 namespace Regards
 {
 	namespace Scanner
@@ -9,12 +10,11 @@ namespace Regards
 		public:
 			static int ExportOcr(
 				int argc, char** argv,
-				wxString &errorMessage);
+				wxString& errorMessage);
 
 
-			static void monitorProgress(ETEXT_DESC *monitor, int page);
-			static void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor);
-
+			static void monitorProgress(ETEXT_DESC* monitor, int page);
+			static void ocrProcess(tesseract::TessBaseAPI* api, ETEXT_DESC* monitor);
 
 
 			static tesseract::TessBaseAPI api;

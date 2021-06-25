@@ -10,27 +10,26 @@ namespace Regards
 		class CInfosSeparationBarFace : public CInfosSeparationBar
 		{
 		public:
-			CInfosSeparationBarFace(const CThemeInfosSeparationBar &theme);
-			virtual ~CInfosSeparationBarFace(void);
+			CInfosSeparationBarFace(const CThemeInfosSeparationBar& theme);
+			~CInfosSeparationBarFace(void) override;
 
-			void RenderIcone(wxDC * deviceContext, const int &posLargeur, const int &posHauteur);
-			void OnClick(const int &x, const int &y);
+			void RenderIcone(wxDC* deviceContext, const int& posLargeur, const int& posHauteur) override;
+			void OnClick(const int& x, const int& y) override;
 			bool GetSelected();
-			void SetNumFace(const CFaceName &faceName);
-			void SetParentWindow(wxWindow * parentWindow);
+			void SetNumFace(const CFaceName& faceName);
+			void SetParentWindow(wxWindow* parentWindow);
 			int GetNumFace();
 
 		protected:
-
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
 			wxImage bitmapEdit;
-            
+
 			wxString libelleSelectIcone;
 			wxString libelleSelectAll;
 			bool isSelected;
 			bool isSelectIcone;
-            int numFace;
+			int numFace;
 			wxRect rcSelect;
 			wxRect rcSelectIcone;
 
@@ -38,8 +37,7 @@ namespace Regards
 			int yPosEdit;
 			int xPosText;
 			int yPosText;
-			wxWindow * parentWindow;
+			wxWindow* parentWindow;
 		};
 	}
 }
-

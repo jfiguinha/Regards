@@ -9,8 +9,6 @@
 #include <window_id.h>
 #include <LibResource.h>
 
-extern "C" {
-}
 
 CFFmpegTranscoding::CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLEngine* openCLEngine):
 	encode_thread(nullptr),

@@ -11,19 +11,18 @@ namespace Regards
 		{
 		public:
 			CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme);
-			~CPicturePanel();
+			~CPicturePanel() override;
 			void SetPictureToDisplay(CRegardsBitmap* picture);
-			void OnPaint(wxPaintEvent& event);
-			void UpdateScreenRatio();
+			void on_paint(wxPaintEvent& event);
+			void UpdateScreenRatio() override;
 		private:
-
 			void CreateHistogram();
 			void OnChannelSelect(wxCommandEvent& event);
 			//void OnRangeSelect(wxSpinEvent& evt);
 			bool refreshPicture = true;
-			wxImage * image;
+			wxImage* image;
 			CRegardsBitmap* histogram = nullptr;
-			CRegardsBitmap * pictureOriginal;
+			CRegardsBitmap* pictureOriginal;
 			//CRegardsBitmap * pictureBackup;
 
 			int w, h;

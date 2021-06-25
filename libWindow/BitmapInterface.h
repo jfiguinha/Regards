@@ -8,7 +8,7 @@ namespace Regards
 		{
 		public:
 			CBitmapInterface(){};
-			~CBitmapInterface(){};
+			virtual ~CBitmapInterface(){};
 
 			virtual void TransitionEnd(){};
 			virtual void ImageSuivante(){};

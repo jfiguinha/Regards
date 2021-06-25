@@ -12,11 +12,11 @@ using namespace Regards::Window;
 using namespace Regards::Scanner;
 
 
-COcrLabel::COcrLabel(CTreeElementControlInterface * interfaceControl, int idWindow)
+COcrLabel::COcrLabel(CTreeElementControlInterface* interfaceControl, int idWindow): yPos(0)
 {
 	this->idWindow = idWindow;
 	widthPosition = 0;
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 		viewerTheme->GetTreeTheme(&themeTree);
@@ -29,25 +29,25 @@ COcrLabel::COcrLabel(CTreeElementControlInterface * interfaceControl, int idWind
 	eventControl = interfaceControl;
 	themeTree.SetMargeX(5);
 	rowWidth.push_back(0);
-};
-
+}
+;
 
 
 COcrLabel::~COcrLabel()
 {
-	
 }
 
 
-void COcrLabel::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+void COcrLabel::ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+                               const int& posLargeur, const int& posHauteur)
 {
-	CTreeElement * treeElement = element->GetTreeElement();
-	CTreeData * treeData = (CTreeData *)element->GetTreeData();
+	CTreeElement* treeElement = element->GetTreeElement();
+	auto treeData = element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
 		wxWindow* central = wxWindow::FindWindowById(idWindow);
 		{
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_CHECKTREE_READ);
+			auto event = new wxCommandEvent(wxEVENT_CHECKTREE_READ);
 			wxString id = treeData->GetKey();
 			event->SetInt(atoi(id));
 			wxQueueEvent(central, event);
@@ -56,14 +56,14 @@ void COcrLabel::ClickOnElement(CPositionElement * element, wxWindow * window, co
 	}
 	if (element->GetType() == ELEMENT_CHECKBOX)
 	{
-		CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)element->GetTreeElement();
+		auto checkBox = static_cast<CTreeElementCheckBox*>(element->GetTreeElement());
 		bool check = !checkBox->GetCheckState();
 		checkBox->SetCheckState(check);
 		SaveState();
 
 		wxWindow* central = wxWindow::FindWindowById(idWindow);
 		{
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_CHECKTREE_CHOICE);
+			auto event = new wxCommandEvent(wxEVENT_CHECKTREE_CHOICE);
 			wxString id = treeData->GetKey();
 			event->SetInt(atoi(id));
 			event->SetExtraLong(check);
@@ -73,14 +73,16 @@ void COcrLabel::ClickOnElement(CPositionElement * element, wxWindow * window, co
 	}
 	else if (element->GetType() == ELEMENT_TRIANGLE)
 	{
-		CTreeElementTriangle * treeElementTriangle = (CTreeElementTriangle *)treeElement;
-		treeElementTriangle->ClickElement(window, (x + posLargeur) - element->GetX(), (y + posHauteur) - element->GetY());
+		auto treeElementTriangle = static_cast<CTreeElementTriangle*>(treeElement);
+		treeElementTriangle->ClickElement(window, (x + posLargeur) - element->GetX(),
+		                                  (y + posHauteur) - element->GetY());
 		UpdateElement();
 		eventControl->UpdateTreeControl();
 	}
 }
 
-void COcrLabel::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur, bool & update)
+void COcrLabel::MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
+                          const int& posLargeur, const int& posHauteur, bool& update)
 {
 	int xPos = 0;
 	if (element->GetRow() > 0)
@@ -94,35 +96,31 @@ void COcrLabel::Init()
 	item = 0;
 	top = tr.begin();
 
-	tree<CTreeData *>::iterator child = top;
-
-	CTreeData * treeDataPicture = new CTreeData();
+	auto treeDataPicture = new CTreeData();
 	treeDataPicture->SetKey("Ocr");
-	child = tr.insert(top, treeDataPicture);
+	tr.insert(top, treeDataPicture);
 
 	CreateElement();
 
 	SaveState();
 }
 
-void COcrLabel::Init(vector<ChOcrElement *> &labelList)
+void COcrLabel::Init(vector<ChOcrElement*>& labelList)
 {
 	item = 0;
 
 	top = tr.begin();
 
-	tree<CTreeData *>::iterator child = top;
-
-	CTreeData * treeDataPicture = new CTreeData();
+	auto treeDataPicture = new CTreeData();
 	treeDataPicture->SetKey("Ocr");
-	child = tr.insert(top, treeDataPicture);
+	const auto child = tr.insert(top, treeDataPicture);
 
-	for (ChOcrElement * text : labelList)
+	for (ChOcrElement* text : labelList)
 	{
 		if (text->itemClass == "ocr_line")
 		{
-			ChOcrElementLine * bbox = (ChOcrElementLine *)text;
-			CTreeData * data = new CTreeData();
+			auto bbox = static_cast<ChOcrElementLine*>(text);
+			auto data = new CTreeData();
 			data->SetIsParent(false);
 			data->SetKey(to_string(bbox->id));
 			data->SetValue(bbox->label);
@@ -135,14 +133,14 @@ void COcrLabel::Init(vector<ChOcrElement *> &labelList)
 	SaveState();
 }
 
-void COcrLabel::SetActifElement(const wxString &key)
+void COcrLabel::SetActifElement(const wxString& key)
 {
-	for (PositionElementVector::iterator fit = vectorPosElement.begin(); fit != vectorPosElement.end(); fit++)
+	for (auto fit = vectorPosElement.begin(); fit != vectorPosElement.end(); ++fit)
 	{
-		CPositionElement * posElement = *fit;
+		CPositionElement* posElement = *fit;
 		if (posElement != nullptr)
 		{
-			CTreeData * data = posElement->GetTreeData();
+			CTreeData* data = posElement->GetTreeData();
 			if (data->GetExifKey() == key)
 				data->SetActif(true);
 			else
@@ -154,41 +152,43 @@ void COcrLabel::SetActifElement(const wxString &key)
 
 void COcrLabel::CreateElement()
 {
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	auto itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 	vectorPosElement.clear();
 	vectorPosElementDynamic.clear();
-	while (it != itend) {
-		CTreeData * data = *it;
+	while (it != itend)
+	{
+		CTreeData* data = *it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CPositionElement * posElement = nullptr;
 
-			treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
+			auto treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                 true);
+			auto posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(),
+			                                        treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE,
+			                                        treeElementTriangle,
+			                                        data);
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 			widthPosition = posElement->GetWidth() + themeTree.GetMargeX();
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
+			CTreeElementTexte* treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+			                                                         data->GetKey());
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(),
+			                                   treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
 
 			widthElement += xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			yPos += themeTree.GetRowHeight();
 			nbRow++;
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
-
 		}
-		it++;
-
+		++it;
 	}
 
 	UpdateElement();
@@ -197,58 +197,63 @@ void COcrLabel::CreateElement()
 
 void COcrLabel::UpdateElement()
 {
-	for (CPositionElement * value : vectorPosElement)
+	for (CPositionElement* value : vectorPosElement)
 
 
 	{
 		if (value != nullptr)
 		{
-			CTreeElement * treeElement = value->GetTreeElement();
+			CTreeElement* treeElement = value->GetTreeElement();
 			if (treeElement != nullptr)
 				treeElement->SetVisible(false);
 		}
 	}
 	bool isVisible = true;
-	tree<CTreeData *>::sibling_iterator it = tr.begin();
-	tree<CTreeData *>::iterator itend = tr.end();
+	tree<CTreeData*>::sibling_iterator it = tr.begin();
+	auto itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
 
-	while (it != itend) {
-		CTreeData * data = *it;
+	while (it != itend)
+	{
+		CTreeData* data = *it;
 		int profondeur = tr.depth(it);
 		if (profondeur == 0)
 		{
 			int xPos = themeTree.GetMargeX();
 			int widthElement = 0;
-			CTreeElementTriangle * treeElementTriangle = nullptr;
-			CTreeElementTexte * treeElementTexte = nullptr;
-			CPositionElement * posElement = GetElement(data, ELEMENT_TRIANGLE);
+			CTreeElementTriangle* tree_element_triangle;
+			CPositionElement* posElement = GetElement(data, ELEMENT_TRIANGLE);
 			if (posElement == nullptr)
 			{
-				treeElementTriangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTriangle->GetWidth(), treeElementTriangle->GetHeight(), ELEMENT_TRIANGLE, treeElementTriangle, data);
+				tree_element_triangle = CreateTriangleElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), true);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_triangle->GetWidth(),
+				                                   tree_element_triangle->GetHeight(), ELEMENT_TRIANGLE,
+				                                   tree_element_triangle, data);
 			}
 			else
 			{
-				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
-				treeElementTriangle->SetVisible(isVisible);
+				tree_element_triangle = static_cast<CTreeElementTriangle*>(posElement->GetTreeElement());
+				tree_element_triangle->SetVisible(isVisible);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 			widthPosition = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
-			
+
 
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
+				CTreeElementTexte* tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(),
+				                                                         data->GetKey());
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte,
+				                                   data);
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				auto treeElementTexte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
 				treeElementTexte->SetVisible(isVisible);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
@@ -260,18 +265,17 @@ void COcrLabel::UpdateElement()
 			if (rowWidth[0] < widthElement)
 				rowWidth[0] = widthElement;
 
-			bool isOpen = treeElementTriangle->GetOpen();
+			bool isOpen = tree_element_triangle->GetOpen();
 			if (isOpen)
 				UpdateChildTree(it);
 		}
-		it++;
-
+		++it;
 	}
 }
 
 void COcrLabel::UpdateScreenRatio()
 {
-    UpdateElement();
+	UpdateElement();
 }
 
 
@@ -283,15 +287,15 @@ void COcrLabel::SaveState()
 	int nbElement = 0;
 	stateValue = L"";
 
-	for (CPositionElement * value : vectorPosElementDynamic)
+	for (CPositionElement* value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
 		{
 			if (value->GetType() == ELEMENT_CHECKBOX)
 			{
 				//bool checkState = false;
-				CTreeData * treeData = value->GetTreeData();
-				CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
+				CTreeData* treeData = value->GetTreeData();
+				auto checkBox = static_cast<CTreeElementCheckBox*>(value->GetTreeElement());
 				if (checkBox != nullptr && treeData != nullptr)
 				{
 					bool checkState = checkBox->GetCheckState();
@@ -305,7 +309,8 @@ void COcrLabel::SaveState()
 					else
 						stateValue.append(L":0");
 
-					stateValue.append(L";"); nbElement++;
+					stateValue.append(L";");
+					nbElement++;
 				}
 			}
 		}
@@ -315,7 +320,7 @@ void COcrLabel::SaveState()
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-bool COcrLabel::GetCheckState(const wxString &exifKey, const wxString &key)
+bool COcrLabel::GetCheckState(const wxString& exifKey, const wxString& key)
 {
 	wxString localkey = exifKey + L":" + key + L":";
 	size_t pos = stateValue.find(localkey);
@@ -330,10 +335,10 @@ bool COcrLabel::GetCheckState(const wxString &exifKey, const wxString &key)
 	return true;
 }
 
-void COcrLabel::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
+void COcrLabel::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	CTreeElementCheckBox * treeElementCheck = nullptr;
-	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
+	CTreeElementCheckBox* tree_element_check;
+	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 	//int i = 
@@ -341,22 +346,23 @@ void COcrLabel::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int profondeur = tr.depth(it);
-		CTreeData * data = *it;
+		CTreeData* data = *it;
 
 		int xPos = widthPosition * (profondeur);
-		int widthElement = 0;
-		CTreeElementTexte * treeElementTexte = nullptr;
-		CPositionElement * posElement = GetElement(data, ELEMENT_TEXTE);
+		CTreeElementTexte* tree_element_texte;
+		CPositionElement* posElement = GetElement(data, ELEMENT_TEXTE);
 		if (posElement == nullptr)
 		{
-			bool check =true;
-			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
+			bool check = true;
+			tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+			CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+			                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check, data);
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());
-			treeElementTexte->SetVisible(isVisible);
-			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data);
+			tree_element_texte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());
+			tree_element_texte->SetVisible(isVisible);
+			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+			                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data);
 		}
 		else
 		{
@@ -364,31 +370,36 @@ void COcrLabel::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			if (posElement == nullptr)
 			{
 				bool check = GetCheckState(data->GetExifKey(), data->GetKey());
-				treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
-				treeElementCheck->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
+				tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
+				tree_element_check->SetVisible(isVisible);
+				CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),
+				                      tree_element_check->GetHeight(), ELEMENT_CHECKBOX, tree_element_check,
+				                      data);
 			}
 			else
 			{
-				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
-				treeElementCheck->SetVisible(isVisible);
-				treeElementCheck->SetElementPos(xPos, yPos);
+				tree_element_check = static_cast<CTreeElementCheckBox*>(posElement->GetTreeElement());
+				tree_element_check->SetVisible(isVisible);
+				tree_element_check->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
-			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
-			
+			xPos += tree_element_check->GetWidth() + themeTree.GetMargeX();
+
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
-				treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-				treeElementTexte->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
+				tree_element_texte =
+					CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+				tree_element_texte->SetVisible(isVisible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_texte->GetWidth(),
+				                                   tree_element_texte->GetHeight(), ELEMENT_TEXTE, tree_element_texte, data,
+				                                   false);
 			}
 			else
 			{
-				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
+				auto treeElementTexte = static_cast<CTreeElementTexte*>(posElement->GetTreeElement());
 				treeElementTexte->SetVisible(isVisible);
 				treeElementTexte->SetElementPos(xPos, yPos);
 				posElement->SetX(xPos);
@@ -396,14 +407,13 @@ void COcrLabel::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			}
 		}
 
-		widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
+		const int widthElement = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 		yPos += themeTree.GetRowHeight();
 
 		nbRow++;
 		if (rowWidth[0] < widthElement)
 			rowWidth[0] = widthElement;
 
-		it++;
-
+		++it;
 	}
 }

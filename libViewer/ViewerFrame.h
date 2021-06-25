@@ -52,32 +52,36 @@ namespace Regards
 		class CViewerFrame : public wxFrame, public IStatusBarInterface
 		{
 		public:
-			CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen = "");
-			~CViewerFrame();
-			void SetText(const int &numPos, const wxString &libelle);
-			void SetRangeProgressBar(const int &range);
-			void SetPosProgressBar(const int &position);
-			void SetWindowTitle(const wxString &libelle);
-			void SetFullscreen();
-			void SetScreen();
-			void PrintPreview(CImageLoadingFormat * imageToPrint);
-			void PrintImagePreview(CRegardsBitmap * imageToPrint);
-			void Exit();
-			void ShowViewer(){};
-            static bool GetViewerMode();
-            static void SetViewerMode(const bool &viewerMode);
-            bool AddFSEntry(const wxString& dirPath);
-            bool RemoveFSEntry(const wxString& dirPath);
-			int ShowScanner();
+			CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
+			             const wxString& fileToOpen = "");
+			~CViewerFrame() override;
+			void SetText(const int& numPos, const wxString& libelle) override;
+			void SetRangeProgressBar(const int& range) override;
+			void SetPosProgressBar(const int& position) override;
+			void SetWindowTitle(const wxString& libelle) override;
+			void SetFullscreen() override;
+			void SetScreen() override;
+			void PrintPreview(CImageLoadingFormat* imageToPrint) override;
+			void PrintImagePreview(CRegardsBitmap* imageToPrint) override;
+			void Exit() override;
+
+			void ShowViewer() override
+			{
+			};
+			static bool GetViewerMode();
+			static void SetViewerMode(const bool& viewerMode);
+			bool AddFSEntry(const wxString& dirPath) override;
+			bool RemoveFSEntry(const wxString& dirPath) override;
+			int ShowScanner() override;
 		private:
 			void OnExport(wxCommandEvent& event);
 #ifdef WIN32
 			void OnAssociate(wxCommandEvent& event);
 #endif
 			void OnPrint(wxCommandEvent& event);
-            void OnHelp(wxCommandEvent& event);
-            void OnIconSizeLess(wxCommandEvent& event);
-            void OnIconSizeMore(wxCommandEvent& event);
+			void OnHelp(wxCommandEvent& event);
+			void OnIconSizeLess(wxCommandEvent& event);
+			void OnIconSizeMore(wxCommandEvent& event);
 			void OnFacePertinence(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
@@ -89,36 +93,36 @@ namespace Regards
 			void OnScanner(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
-            void OnFileSystemModified(wxFileSystemWatcherEvent& event);
+			void OnFileSystemModified(wxFileSystemWatcherEvent& event);
 			void HideScanner(wxCommandEvent& event);
-			void ShowOpenCLConfiguration(const bool &showRestart);
+			void ShowOpenCLConfiguration(const bool& showRestart);
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif
 			void OnTimereventFileSysTimer(wxTimerEvent& event);
 			void OnTimerLoadPicture(wxTimerEvent& event);
-			wxDECLARE_EVENT_TABLE();
+		wxDECLARE_EVENT_TABLE();
 
 
-			IMainInterface * mainInterface;
-			CMainParam * viewerParam;
-			CMainTheme * viewerTheme;
-			CMainWindow * mainWindow;
-			wxTimer * exitTimer;
-			CWaitingWindow * mainWindowWaiting;
+			IMainInterface* mainInterface;
+			CMainParam* viewerParam;
+			CMainTheme* viewerTheme;
+			CMainWindow* mainWindow;
+			wxTimer* exitTimer;
+			CWaitingWindow* mainWindowWaiting;
 			wxPreviewFrameModalityKind m_previewModality;
 			bool fullscreen;
-            static bool viewerMode;
-            bool onExit;
-            bool m_fsWatcher = true;
-			
-			wxTimer * loadPictureTimer;
-			wxTimer * eventFileSysTimer;
+			static bool viewerMode;
+			bool onExit;
+			bool m_fsWatcher = true;
+
+			wxTimer* loadPictureTimer;
+			wxTimer* eventFileSysTimer;
 			wxString filenameTimer;
 			int nbTime;
-			CScannerFrame * frameScanner;
+			CScannerFrame* frameScanner;
 			//CImageLoadingFormat * picture;
-            wxFileSystemWatcher * m_watcher;
+			wxFileSystemWatcher* m_watcher;
 		};
 	}
 }

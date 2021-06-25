@@ -10,12 +10,13 @@ public:
 class ChOcrElementGraphic : public ChOcrElement
 {
 public:
-	ChOcrElementGraphic()
+	ChOcrElementGraphic(): numImage(0), picture(nullptr)
 	{
 		itemClass = "ocr_graphic";
 	}
+
 	int numImage;
-	CImageLoadingFormat * picture;
+	CImageLoadingFormat* picture;
 	wxRect rect;
 };
 
@@ -33,12 +34,12 @@ public:
 class ChOcrElementLine : public ChOcrElement
 {
 public:
-	ChOcrElementLine()
+	ChOcrElementLine(): id(0), confidence(0), numLigne(0), selected(false)
 	{
 		itemClass = "ocr_line";
 		fontBold = false;
 		fontItalic = false;
-		fontSize = 10; 
+		fontSize = 10;
 		fontFamily = "Times";
 	}
 
