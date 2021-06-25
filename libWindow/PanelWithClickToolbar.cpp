@@ -14,7 +14,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString&
 	paneWindow = nullptr;
 	mainWindow = nullptr;
 	clickWindow = nullptr;
-	this->isVertical = isVertical;
+	this->isVertical = vertical;
 	this->isPanelVisible = isPanelVisible;
 
 	//----------------------------------------------------------------------------------------

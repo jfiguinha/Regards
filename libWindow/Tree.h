@@ -3312,28 +3312,7 @@ typename tree<T, tree_node_allocator>::fixed_depth_iterator& tree<
 		}
 	}
 	return *this;
-
-	//
-	//
-	//	assert(this->node!=0);
-	//	if(this->node->prev_sibling!=0) {
-	//		this->node=this->node->prev_sibling;
-	//		assert(this->node!=0);
-	//		if(this->node->parent==0 && this->node->prev_sibling==0) // head element
-	//			this->node=0;
-	//		}
-	//	else {
-	//		tree_node *par=this->node->parent;
-	//		do {
-	//			par=par->prev_sibling;
-	//			if(par==0) { // FIXME: need to keep track of this!
-	//				this->node=0;
-	//				return *this;
-	//				}
-	//			} while(par->last_child==0);
-	//		this->node=par->last_child;
-	//		}
-	//	return *this;
+	
 }
 
 template <class T, class tree_node_allocator>

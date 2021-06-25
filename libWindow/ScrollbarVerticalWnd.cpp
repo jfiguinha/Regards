@@ -525,7 +525,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 
 void CScrollbarVerticalWnd::SetShowWindow(const bool& showValue)
 {
-	this->showWindow = showWindow;
+	this->showWindow = showValue;
 }
 
 void CScrollbarVerticalWnd::SendTopPosition(const int& value)

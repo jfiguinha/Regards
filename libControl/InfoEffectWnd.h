@@ -29,8 +29,8 @@ namespace Regards
 		private:
 			CInfoEffect* historyEffectOld;
 			int bitmapWindowId;
-			const wxWindowID id_;
-			const CThemeScrollBar& theme_scroll_;
+			//const wxWindowID id_;
+			//const CThemeScrollBar& theme_scroll_;
 		};
 	}
 }

@@ -242,7 +242,7 @@ void CShowPreview::ThreadLoading(void* data)
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
 		//fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
 
-		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(&dataOutput, showPreview->filename, fileTemp,
+		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, &dataOutput, showPreview->filename, fileTemp,
 		                                                   showPreview->position, &showPreview->videoOptionCompress);
 		//showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
 		showPreview->transcodeFFmpeg->EndTreatment();

@@ -109,7 +109,7 @@ FreeImage_ConvertToRGBAF(FIBITMAP *dib) {
 			BYTE *dst_bits = FreeImage_GetBits(dst);
 
 			for(unsigned y = 0; y < height; y++) {
-				const BYTE *src_pixel = (BYTE*)src_bits;
+				const BYTE *src_pixel = const_cast<BYTE*>(src_bits);
 				FIRGBAF *dst_pixel = (FIRGBAF*)dst_bits;
 				for(unsigned x = 0; x < width; x++) {
 					// convert and scale to the range [0..1]

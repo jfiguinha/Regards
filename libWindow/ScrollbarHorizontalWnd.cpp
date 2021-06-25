@@ -577,7 +577,7 @@ void CScrollbarHorizontalWnd::OnTimerStopMoving(wxTimerEvent& event)
 
 void CScrollbarHorizontalWnd::SetShowWindow(const bool& showValue)
 {
-	this->showWindow = showWindow;
+	this->showWindow = showValue;
 }
 
 void CScrollbarHorizontalWnd::SendLeftPosition(const int& value)

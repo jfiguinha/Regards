@@ -159,7 +159,7 @@ public:
 		processEnd = true;
 	}
 
-	int EncodeOneFrame(wxMemoryOutputStream* dataOutput, const wxString& input, const wxString& output,
+	int EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemoryOutputStream* dataOutput, const wxString& input, const wxString& output,
 	                   const long& time, CVideoOptionCompress* videoCompressOption);
 	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress,
 	               CVideoOptionCompress* videoCompressOption);

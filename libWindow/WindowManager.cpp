@@ -1488,7 +1488,7 @@ void CWindowManager::Resize()
 			{
 #ifdef _DEBUG
 #ifdef WIN32
-				TCHAR temp[255];
+				//TCHAR temp[255];
 #endif
 #endif
 				if (_wnd->IsShown())
@@ -1519,7 +1519,7 @@ void CWindowManager::Resize()
 					{
 #ifdef _DEBUG
 #ifdef WIN32
-						TCHAR temp[255];
+						//TCHAR temp[255];
 #endif
 #endif
 						if (windowToAdd->separationBar->separationBar->IsShown())

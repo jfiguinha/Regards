@@ -159,6 +159,7 @@ static int apply_vpx_preset(AVDictionary** av_opts, const wxString& preset)
 }
 
 // VP8 and VP9 have some options in common and some different
+/*
 static int apply_vp8_preset(AVDictionary** av_opts, const wxString& preset)
 {
 	return apply_vpx_preset(av_opts, preset);
@@ -169,6 +170,7 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 	av_dict_set(av_opts, "row-mt", "1", 0);
 	return apply_vpx_preset(av_opts, preset);
 }
+*/
 
 
 static enum AVPixelFormat hw_pix_fmt;
@@ -2636,7 +2638,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 	return ret;
 }
 
-int CFFmpegTranscodingPimpl::EncodeOneFrame(wxMemoryOutputStream* dataOutput, const wxString& input,
+int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemoryOutputStream* dataOutput, const wxString& input,
                                             const wxString& output, const long& time,
                                             CVideoOptionCompress* videoCompressOption)
 {

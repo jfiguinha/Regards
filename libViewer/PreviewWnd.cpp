@@ -20,8 +20,8 @@ using namespace Regards::Internet;
 using namespace Regards::Viewer;
 using namespace Regards::Picture;
 
-constexpr auto PANE_INFOS = 2;
-constexpr auto PANE_PREVIEW = 3;
+//constexpr auto PANE_INFOS = 2;
+//constexpr auto PANE_PREVIEW = 3;
 
 CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool& horizontal)
 	: CWindowMain("CPreviewWnd", parent, id), id_(id), horizontal_(horizontal), parent_(parent)

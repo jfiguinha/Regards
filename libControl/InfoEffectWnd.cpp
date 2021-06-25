@@ -13,7 +13,7 @@ using namespace Regards::Window;
 
 CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, const wxWindowID id, const CThemeScrollBar& themeScroll,
                                const CThemeTree& themeTree, int bitmap_window_id)
-	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree), id_(id), theme_scroll_(themeScroll)
+	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree)
 {
 	this->bitmapWindowId = bitmap_window_id;
 	historyEffectOld = nullptr;

@@ -314,19 +314,6 @@ void CTreeWindow::CalculControlSize()
 		controlWidth = treeControl->GetWidth();
 		controlHeight = treeControl->GetNbRow() * themeTree.GetRowHeight();
 
-		/*
-		wxWindow * parent = this->GetParent();
-
-		if (parent != nullptr)
-		{
-			CControlSize * controlSize = new CControlSize();
-			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
-			controlSize->controlWidth = controlWidth;
-			controlSize->controlHeight = controlHeight;
-			evt.SetClientData(controlSize);
-			parent->GetEventHandler()->AddPendingEvent(evt);
-		}
-		*/
 	}
 }
 

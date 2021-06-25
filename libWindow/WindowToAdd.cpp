@@ -39,7 +39,6 @@ CPanelWithClickToolbar* CWindowToAdd::GetPanel()
 
 void CWindowToAdd::SetWindow(CWindowMain* window, bool isPanel)
 {
-	this->window = nullptr;
 	this->windowOpengl = nullptr;
 	this->window = window;
 	this->isPanel = isPanel;
@@ -48,7 +47,6 @@ void CWindowToAdd::SetWindow(CWindowMain* window, bool isPanel)
 void CWindowToAdd::SetWindow(CWindowOpenGLMain* window, bool isPanel)
 {
 	this->window = nullptr;
-	this->windowOpengl = nullptr;
 	this->windowOpengl = window;
 	this->isPanel = isPanel;
 }

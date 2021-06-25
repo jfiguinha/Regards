@@ -55,7 +55,7 @@ public:
 private:
 	AVDictionary* opt = nullptr;
 	SwsContext* convertCtx = nullptr;
-	AVOutputFormat* fmt_ = nullptr;
+	//AVOutputFormat* fmt_ = nullptr;
 	AVFormatContext* oc = nullptr;
 	AVStream* stream = nullptr;
 	AVCodec* codec = nullptr;
