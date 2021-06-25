@@ -1,23 +1,27 @@
 #pragma once
 #include <ThemeParam.h>
-using namespace rapidxml;
-using namespace std;
 
 namespace Regards
 {
 	namespace Introduction
 	{
-		class CIntroTheme : public CThemeParam
+		class CIntroTheme final : public CThemeParam
 		{
 		public:
 			CIntroTheme();
-			~CIntroTheme(){};
-			void GetAboutTexteTheme(CThemeIntroLogo * theme);
+
+			~CIntroTheme() override;
+
+			auto GetAboutTexteTheme(CThemeIntroLogo* theme) const -> void;
 
 		private:
+			void LoadTheme() override
+			{
+			}
 
-			void LoadTheme(){};
-			void SaveTheme(){};
+			void SaveTheme() override
+			{
+			}
 
 			CThemeIntroLogo themeIntroLogo;
 		};

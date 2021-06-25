@@ -12,23 +12,24 @@ CThumbnailSelection::CThumbnailSelection(wxWindow* parent, wxWindowID id, wxStri
 	: CWindowMain("ThumbnailSelection", parent, id)
 {
 	bool checkValidity = false;
-	CMainParam * config = CMainParamInit::getInstance();
+	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainTheme* viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
 		viewerTheme->GetScrollTheme(&theme);
-		
+
 
 		//widthSize = theme.GetRectangleSize();
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFileSelection = new CThumbnailFileSelection(this, THUMBNAILFILESELECTION, themeThumbnail, checkValidity);
+		thumbnailFileSelection = new CThumbnailFileSelection(this, THUMBNAILFILESELECTION, themeThumbnail,
+		                                                     checkValidity);
 		thumbscrollbar = new CScrollbarWnd(this, thumbnailFileSelection, wxID_ANY);
 	}
 
@@ -75,14 +76,14 @@ void CThumbnailSelection::RedrawBarPos()
 	int toolbarHeightSize = validationToolbar->GetHeight();
 	wxRect rcAffichageBitmap;
 	rcAffichageBitmap.x = 0;
-	rcAffichageBitmap.y = 0;
 	rcAffichageBitmap.width = width;
-	rcAffichageBitmap.height =height - toolbarHeightSize;
+	rcAffichageBitmap.height = height - toolbarHeightSize;
 
 	thumbscrollbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, rcAffichageBitmap.height);
 
 	if (validationToolbar->IsShown())
-		validationToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+		validationToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width,
+		                           toolbarHeightSize);
 }
 
 void CThumbnailSelection::OnSize(wxSizeEvent& event)

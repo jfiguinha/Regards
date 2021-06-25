@@ -14,45 +14,41 @@
 //(*Headers(OpenCLDialog)
 //*)
 
-class OpenCLDialog: public wxDialog
+class OpenCLDialog : public wxDialog
 {
-	public:
+public:
+	OpenCLDialog(wxWindow* parent);
+	~OpenCLDialog() override;
 
-		OpenCLDialog(wxWindow* parent);
-		virtual ~OpenCLDialog();
+	//(*Declarations(OpenCLDialog)
+	wxButton* BtnCancel;
+	wxButton* btnOk;
+	wxStaticText* deviceLabel;
+	wxComboBox* cbOpenCLDevice;
+	wxComboBox* cbOpenCLPlatform;
+	wxRadioBox* rbKernelInMemory;
+	//*)
 
-		//(*Declarations(OpenCLDialog)
-		wxButton* BtnCancel;
-		wxButton* btnOk;
-		wxStaticText* deviceLabel;
-		wxComboBox* cbOpenCLDevice;
-		wxComboBox* cbOpenCLPlatform;
-        wxRadioBox* rbKernelInMemory;
-		//*)
+	bool IsOk();
+	int GetDeviceIndex();
+	wxString GetPlatformName();
 
-		bool IsOk();
-		int GetDeviceIndex();
-		wxString GetPlatformName();
+protected:
+	//(*Identifiers(OpenCLDialog)
+	//*)
 
-	protected:
-
-		//(*Identifiers(OpenCLDialog)
-		//*)
-
-	private:
-
-		//(*Handlers(OpenCLDialog)
-		void OnInit(wxInitDialogEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void OnbtnOkClick(wxCommandEvent& event);
-		void OnBtnCancelClick(wxCommandEvent& event);
-		void OnPlatformSelected(wxCommandEvent& event);
-		//*)
+private:
+	//(*Handlers(OpenCLDialog)
+	void OnInit(wxInitDialogEvent& event);
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnBtnCancelClick(wxCommandEvent& event);
+	void OnPlatformSelected(wxCommandEvent& event);
+	//*)
 
 
-		bool isOk;
-		wxString selectItem;
-		DECLARE_EVENT_TABLE()
+	bool isOk;
+	wxString selectItem;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

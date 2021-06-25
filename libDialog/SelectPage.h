@@ -23,6 +23,9 @@ protected:
 	void OnCancel(wxCommandEvent& event);
 
 	CThumbnailSelection * thumbnailFileSelection;
-
-
+	const wxString& filename_;
+	const wxString& title_;
+	const wxPoint& pos_;
+	const wxSize& size_;
+	const long style_;
 };

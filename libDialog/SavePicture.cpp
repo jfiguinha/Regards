@@ -14,6 +14,7 @@
 #include <LibResource.h>
 #include <wx/busyinfo.h>
 using namespace Regards::Picture;
+
 CSavePicture::CSavePicture()
 {
 }
@@ -23,7 +24,7 @@ CSavePicture::~CSavePicture()
 {
 }
 
-wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &filename)
+wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
 {
 	wxString file = "";
 	if (filename != "")
@@ -35,37 +36,37 @@ wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &f
 		wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
 
-		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		wxString _filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
-		std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm",".avif",".heic" };
-		szFilter = filename + " PDF(*.PDF)|*.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + "  BMP(*.BMP)|*.bmp|" + filename + "  BPG(*.BPG)|*.bpg|" + filename + "  PCX(*.PCX)|*.pcx|" + filename + "  JPEG(*.JPG)|*.jpg|" + filename + "  TIFF(*.TIF)|*.tif|" + filename + "  GIF(*.GIF)|*.gif|" + filename + "  PNG(*.PNG)|*.png|" + filename + "  TGA(*.TGA)|*.tga|" + filename + "  JPEG2000(*.JP2)|*.jp2|" + filename + "  JPC(*.JPC)|*.jpc|" + filename + "  PPM(*.PPM)|*.ppm|" + filename + "  MNG(*.MNG)|*.mng|" + filename + "  WEBP (*.WEBP)|*.webp|" + filename + "  IFF (*.IFF)|*.iff|" + filename + "  XPM (*.XPM)|*.xpm|" + filename + "  JXR (*.JXR)|*.jxr|" + filename + "  EXR (*.EXR)|*.exr|" + filename + "  J2K (*.J2K)|*.j2k|" + filename + "  PFM (*.PFM)|*.pfm|" + filename + "  AVIF (*.avif)|*.avif|" + filename + "  HEIC (*.heic)|*.heic";
+		std::vector<wxString> v = {
+			".pdf", ".pnm", ".bmp", ".bpg", ".pcx", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".jpc", ".ppm",
+			".mng", ".webp", ".iff", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic"
+		};
+		szFilter = filename + " PDF(*.PDF)|*.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + "  BMP(*.BMP)|*.bmp|"
+			+ filename + "  BPG(*.BPG)|*.bpg|" + filename + "  PCX(*.PCX)|*.pcx|" + filename + "  JPEG(*.JPG)|*.jpg|" +
+			filename + "  TIFF(*.TIF)|*.tif|" + filename + "  GIF(*.GIF)|*.gif|" + filename + "  PNG(*.PNG)|*.png|" +
+			filename + "  TGA(*.TGA)|*.tga|" + filename + "  JPEG2000(*.JP2)|*.jp2|" + filename + "  JPC(*.JPC)|*.jpc|"
+			+ filename + "  PPM(*.PPM)|*.ppm|" + filename + "  MNG(*.MNG)|*.mng|" + filename + "  WEBP (*.WEBP)|*.webp|"
+			+ filename + "  IFF (*.IFF)|*.iff|" + filename + "  XPM (*.XPM)|*.xpm|" + filename + "  JXR (*.JXR)|*.jxr|"
+			+ filename + "  EXR (*.EXR)|*.exr|" + filename + "  J2K (*.J2K)|*.j2k|" + filename + "  PFM (*.PFM)|*.pfm|"
+			+ filename + "  AVIF (*.avif)|*.avif|" + filename + "  HEIC (*.heic)|*.heic";
 
 		wxFileName bmpFilename(filename);
 		wxFileDialog saveFileDialog(nullptr, filename, "", bmpFilename.GetName(),
-			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		                            szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return "";
 
-		int filterIndex = saveFileDialog.GetFilterIndex();
+		//int filterIndex = saveFileDialog.GetFilterIndex();
 		file = saveFileDialog.GetPath();
-		/*
-        wxString ext = v.at(filterIndex);
 
-		wxFileName fileName(file);
-		wxString extension = ".";
-		extension.append(fileName.GetExt());
-		wxString selectedExtension = v[filterIndex];
-		if (extension != selectedExtension)
-			file.append(selectedExtension);
-        */
 	}
 	return file;
-
 }
 
 
-vector<int> CSavePicture::SelectPage(wxWindow * window, const wxString &filename)
+vector<int> CSavePicture::SelectPage(wxWindow* window, const wxString& filename)
 {
 	vector<int> listPage;
 	if (filename != "")
@@ -80,7 +81,7 @@ vector<int> CSavePicture::SelectPage(wxWindow * window, const wxString &filename
 }
 
 
-void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
+void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename)
 {
 	bool multipage = false;
 	CLibPicture libPicture;
@@ -104,7 +105,7 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 			int quality = 0;
 
 			iFormat = libPicture.TestImageFormat(file);
-					   
+
 			if (libPicture.SavePictureOption(iFormat, option, quality) == 1)
 			{
 				vector<int> listPage = SelectPage(window, filename);
@@ -115,14 +116,15 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 					for (int i = 0; i < listPage.size(); i++)
 					{
 						int numPage = listPage[i];
-						CImageLoadingFormat * imageFormat = libPicture.LoadPicture(filename, false, numPage);
+						CImageLoadingFormat* imageFormat = libPicture.LoadPicture(filename, false, numPage);
 						if (imageFormat != nullptr)
 						{
 							wxFileName fileName(file);
 							wxString extension = ".";
 							extension.append(fileName.GetExt());
 
-							wxString fileoutput = fileName.GetPath() + "\\" + fileName.GetName() + "_" + to_string(numPage) + extension;
+							wxString fileoutput = fileName.GetPath() + "\\" + fileName.GetName() + "_" +
+								to_string(numPage) + extension;
 
 
 							if (!libPicture.TestIsExifCompatible(filename))
@@ -130,7 +132,6 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 
 							libPicture.SavePicture(fileoutput, imageFormat, option, quality);
 						}
-
 					}
 				}
 			}
@@ -144,7 +145,7 @@ void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
 	}
 }
 
-void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, const wxString &filename)
+void CSavePicture::SavePicture(wxWindow* window, CImageLoadingFormat* bitmap, const wxString& filename)
 {
 	CLibPicture libPicture;
 	wxString file = "";
@@ -167,6 +168,4 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
 		wxMessageBox(savecompleted, infos);
 	}
-
-	
 }

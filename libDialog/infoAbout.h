@@ -10,28 +10,29 @@ namespace Regards
 		class CInfoAbout : public CTreeControl
 		{
 		public:
-
-			CInfoAbout(const CThemeTree & theme);
-			~CInfoAbout();
+			CInfoAbout(const CThemeTree& theme);
+			~CInfoAbout() override;
 
 			void Init();
-			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
-            void UpdateScreenRatio();
-            
-            
-		private:
 
-            void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
+			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
+			                    const wxString& key) override
+			{
+			};
+			void UpdateScreenRatio() override;
+
+
+		private:
+			void ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
+			                    const int& posLargeur, const int& posHauteur) override;
 			void CreateElement();
-			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
+			void CreateChildTree(tree<CTreeData*>::sibling_iterator& parent);
 
 			int index;
 			int yPos;
 			int widthPosition;
-			tree<CTreeData *>::iterator top;
-			tree<CTreeData *>::iterator child;
-
+			tree<CTreeData*>::iterator top;
+			tree<CTreeData*>::iterator child;
 		};
 	}
 }
-

@@ -9,20 +9,18 @@ namespace Regards
 		class CTitleIntro : public CWindowMain
 		{
 		public:
-			CTitleIntro(wxWindow* parent, wxWindowID id, const CThemeIntroLogo & theme);
-			~CTitleIntro();
+			CTitleIntro(wxWindow* parent, wxWindowID id, const CThemeIntroLogo& theme);
+			~CTitleIntro() override;
 
-			void SetTitle(const wxString &title);
-			int GetHeight();
-			void UpdateScreenRatio();
+			void SetTitle(const wxString& title);
+			int GetHeight() override;
+			void UpdateScreenRatio() override;
 
 		private:
-
-			void OnPaint(wxPaintEvent& event);
+			void on_paint(wxPaintEvent& event);
 
 			wxString title;
 			CThemeIntroLogo themeFont;
 		};
 	}
 }
-

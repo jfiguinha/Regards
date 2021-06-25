@@ -9,13 +9,12 @@ namespace Regards
 		class CValidationToolbar : public CToolbarWindow
 		{
 		public:
-			CValidationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
-			~CValidationToolbar();
+			CValidationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme, const bool& vertical);
+			~CValidationToolbar() override;
 
 		private:
-
-			void EventManager(const int &id);
-			wxWindow * parent;
+			void EventManager(const int& id) override;
+			wxWindow* parent;
 		};
 	}
 }

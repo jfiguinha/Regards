@@ -12,22 +12,20 @@ namespace Regards
 {
 	namespace Scanner
 	{
-
 		class CThumbnailSelection : public CWindowMain
 		{
 		public:
 			CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename);
-			~CThumbnailSelection();
+			~CThumbnailSelection() override;
 			vector<int> GetSelectItem();
-			void UpdateScreenRatio();
+			void UpdateScreenRatio() override;
 		private:
-
 			void RedrawBarPos();
-			void OnSize(wxSizeEvent& event);
+			void OnSize(wxSizeEvent& event) override;
 
-			CScrollbarWnd * thumbscrollbar;
-			CThumbnailFileSelection * thumbnailFileSelection;
-			CValidationToolbar * validationToolbar;
+			CScrollbarWnd* thumbscrollbar;
+			CThumbnailFileSelection* thumbnailFileSelection;
+			CValidationToolbar* validationToolbar;
 			int width;
 			int height;
 		};

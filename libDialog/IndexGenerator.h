@@ -10,52 +10,49 @@
 //*)
 
 
-class IndexGenerator: public wxDialog
+class IndexGenerator : public wxDialog
 {
-	public:
+public:
+	IndexGenerator(wxWindow* parent);
+	~IndexGenerator() override;
 
-		IndexGenerator(wxWindow* parent);
-		virtual ~IndexGenerator();
+	//(*Declarations(IndexGenerator)
+	wxButton* btOK;
+	wxStaticText* StaticText2;
+	wxStaticBitmap* StaticBitmap1;
+	wxSpinCtrl* spPictureLine;
+	wxStaticText* StaticText1;
+	wxStaticText* StaticText3;
+	wxStaticBox* StaticBox1;
+	wxTextCtrl* txtWidth;
+	wxButton* btCancel;
+	wxButton* btColor;
+	wxTextCtrl* txtHeight;
+	wxStaticText* StaticText4;
+	wxTextCtrl* txtTitle;
 
-		//(*Declarations(IndexGenerator)
-		wxButton* btOK;
-		wxStaticText* StaticText2;
-		wxStaticBitmap* StaticBitmap1;
-		wxSpinCtrl* spPictureLine;
-		wxStaticText* StaticText1;
-		wxStaticText* StaticText3;
-		wxStaticBox* StaticBox1;
-		wxTextCtrl* txtWidth;
-		wxButton* btCancel;
-		wxButton* btColor;
-		wxTextCtrl* txtHeight;
-		wxStaticText* StaticText4;
-		wxTextCtrl* txtTitle;
+	void SetThumbnailSize(const int& width, const int& height);
+	bool IsOk();
+	wxColour GetColor();
+	int GetThumbnailSize(int& width, int& height);
+	int GetNbPictureByLine();
+	wxString GetIndexTitle();
+	//*)
 
-		void SetThumbnailSize(const int &width, const int &height);
-		bool IsOk();
-		wxColour GetColor();
-		int GetThumbnailSize(int &width, int &height);
-		int GetNbPictureByLine();
-		wxString GetIndexTitle();
-		//*)
+protected:
+	//(*Identifiers(IndexGenerator)
+	//*)
 
-	protected:
+private:
+	//(*Handlers(IndexGenerator)
+	//*)
+	bool isOk;
+	void OnbtOkClick(wxCommandEvent& event);
+	void OnbtCancelClick(wxCommandEvent& event);
+	void OnbtColorClick(wxCommandEvent& event);
+DECLARE_EVENT_TABLE()
 
-		//(*Identifiers(IndexGenerator)
-		//*)
-
-	private:
-
-		//(*Handlers(IndexGenerator)
-		//*)
-		bool isOk;
-		void OnbtOkClick(wxCommandEvent& event);
-		void OnbtCancelClick(wxCommandEvent& event);
-		void OnbtColorClick(wxCommandEvent& event);
-		DECLARE_EVENT_TABLE()
-
-		wxColour colour;
+	wxColour colour;
 };
 
 #endif

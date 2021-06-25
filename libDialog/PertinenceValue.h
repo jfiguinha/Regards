@@ -7,36 +7,33 @@
 #include <wx/dialog.h>
 //*)
 
-class PertinenceValue: public wxDialog
+class PertinenceValue : public wxDialog
 {
-	public:
+public:
+	PertinenceValue(wxWindow* parent);
+	~PertinenceValue() override;
 
-		PertinenceValue(wxWindow* parent);
-		virtual ~PertinenceValue();
+	//(*Declarations(PertinenceValue)
+	wxButton* btOK;
+	wxSpinCtrl* spValue;
+	wxButton* btCancel;
+	wxStaticBox* stBox;
+	//*)
+	bool IsOk();
+	void SetValue(const double& pertinence);
+	double GetValue();
 
-		//(*Declarations(PertinenceValue)
-		wxButton* btOK;
-		wxSpinCtrl* spValue;
-		wxButton* btCancel;
-		wxStaticBox* stBox;
-		//*)
-		bool IsOk();
-		void SetValue(const double &pertinence);
-		double GetValue();
+protected:
+	//(*Identifiers(PertinenceValue)
+	//*)
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnBtnCancelClick(wxCommandEvent& event);
 
-	protected:
-
-		//(*Identifiers(PertinenceValue)
-		//*)
-		void OnbtnOkClick(wxCommandEvent& event);
-		void OnBtnCancelClick(wxCommandEvent& event);
-
-	private:
-
-		//(*Handlers(PertinenceValue)
-		//*)
-		bool isOk;
-		DECLARE_EVENT_TABLE()
+private:
+	//(*Handlers(PertinenceValue)
+	//*)
+	bool isOk;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

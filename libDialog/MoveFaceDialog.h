@@ -13,42 +13,38 @@
 //(*Headers(OpenCLDialog)
 //*)
 
-class MoveFaceDialog: public wxDialog
+class MoveFaceDialog : public wxDialog
 {
-	public:
+public:
+	MoveFaceDialog(wxWindow* parent);
+	~MoveFaceDialog() override;
 
-		MoveFaceDialog(wxWindow* parent);
-		virtual ~MoveFaceDialog();
+	//(*Declarations(OpenCLDialog)
+	wxButton* BtnCancel;
+	wxButton* btnOk;
+	wxStaticText* deviceLabel;
+	wxComboBox* cbFaceLabel;
+	//*)
 
-		//(*Declarations(OpenCLDialog)
-		wxButton* BtnCancel;
-		wxButton* btnOk;
-		wxStaticText* deviceLabel;
-		wxComboBox* cbFaceLabel;
-		//*)
+	bool IsOk();
+	wxString GetFaceNameSelected();
 
-		bool IsOk();
-		wxString GetFaceNameSelected();
+protected:
+	//(*Identifiers(OpenCLDialog)
+	//*)
 
-	protected:
+private:
+	//(*Handlers(OpenCLDialog)
+	void OnInit(wxInitDialogEvent& event);
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnBtnCancelClick(wxCommandEvent& event);
 
-		//(*Identifiers(OpenCLDialog)
-		//*)
-
-	private:
-
-		//(*Handlers(OpenCLDialog)
-		void OnInit(wxInitDialogEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void OnbtnOkClick(wxCommandEvent& event);
-		void OnBtnCancelClick(wxCommandEvent& event);
-		void OnPlatformSelected(wxCommandEvent& event);
-		//*)
+	//*)
 
 
-		bool isOk;
-		wxString selectItem;
-		DECLARE_EVENT_TABLE()
+	bool isOk;
+	wxString selectItem;
+DECLARE_EVENT_TABLE()
 };
 
 #endif

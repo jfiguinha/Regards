@@ -1,4 +1,5 @@
-﻿#include <header.h>
+﻿// ReSharper disable All
+#include <header.h>
 #include "ThumbnailFileSelection.h"
 #include <LibResource.h>
 #include <ThumbnailDataStorage.h>
@@ -9,10 +10,12 @@
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
-CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
+
+CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, const wxWindowID idCTreeWithScrollbarInterface,
+                                                 const CThemeThumbnail& themeThumbnail,
+                                                 const bool& testValidity)
+	: CThumbnailVertical(parent, idCTreeWithScrollbarInterface, themeThumbnail, testValidity)
 {
-	
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
@@ -22,27 +25,25 @@ CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id
 
 CThumbnailFileSelection::~CThumbnailFileSelection(void)
 {
-
 }
 
-void CThumbnailFileSelection::OnPictureClick(CThumbnailData * data)
+void CThumbnailFileSelection::OnPictureClick(CThumbnailData* data)
 {
-
 }
 
-void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const wxString &libelle, int &nbElement)
+void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const wxString& libelle, int& nbElement)
 {
-	CInfosSeparationBarExplorer * infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
+	auto infosSeparationBar = new CInfosSeparationBarExplorer(themeThumbnail.themeSeparation);
 	infosSeparationBar->SetTitle(libelle);
 	infosSeparationBar->SetWidth(GetWindowWidth());
 	int typeElement = TYPEMULTIPAGE;
 
-	for (auto i = 0; i < photoVector.size();i++)
+	for (auto i = 0; i < photoVector.size(); i++)
 	{
-		CImageVideoThumbnail * thumbnail = photoVector.at(i);
+		CImageVideoThumbnail* thumbnail = photoVector.at(i);
 		infosSeparationBar->listElement.push_back(i);
 
-		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
+		auto thumbnailData = new CThumbnailDataStorage(filename);
 		//thumbnailData->SetStorage(nullptr);
 		thumbnailData->SetNumPhotoId(i);
 		thumbnailData->SetNumElement(i);
@@ -55,10 +56,10 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 			CLibPicture libPicture;
 			thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
 		}
-			
+
 		thumbnailData->SetBitmap(thumbnail->image);
 
-		CIcone * pBitmapIcone = new CIcone();
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetData(thumbnailData);
@@ -69,18 +70,17 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 	if (photoVector.size() > 0)
 		listSeparator.push_back(infosSeparationBar);
 
-	nbElement = photoVector.size();
+	nbElement = photoVector.size();  // NOLINT(clang-diagnostic-shorten-64-to-32)
 }
 
-void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
+void CThumbnailFileSelection::InitTypeAffichage(const int& typeAffichage)
 {
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
-	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
+	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
 	}
@@ -91,17 +91,15 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	int typeLocal = typeAffichage;
 
 
-
 	if (typeLocal == THUMB_SHOW_ALL)
 	{
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLSELECTPAGE", 1);
 		AddSeparatorBar(iconeListLocal, libellePhoto, i);
 	}
 
-	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
+	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
@@ -121,7 +119,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	this->Refresh();
 }
 
-void CThumbnailFileSelection::Init(const wxString &filename, const int &typeAffichage)
+void CThumbnailFileSelection::Init(const wxString& filename, const int& typeAffichage)
 {
 	photoVector.clear();
 
@@ -135,13 +133,12 @@ void CThumbnailFileSelection::Init(const wxString &filename, const int &typeAffi
 		else
 			InitTypeAffichage(typeAffichage);
 	}
-	processIdle = true;	
+	processIdle = true;
 }
 
 void CThumbnailFileSelection::SetListeFile()
 {
-	CIconeList* iconeListLocal = new CIconeList();
-	CIconeList* oldIconeList = nullptr;
+	auto iconeListLocal = new CIconeList();
 	threadDataProcess = false;
 	int x = 0;
 	int y = 0;
@@ -151,9 +148,9 @@ void CThumbnailFileSelection::SetListeFile()
 
 	for (auto i = 0; i < photoVector.size(); i++)
 	{
-		CImageVideoThumbnail * thumbnail = photoVector.at(i);
+		CImageVideoThumbnail* thumbnail = photoVector.at(i);
 
-		CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(filename);
+		auto thumbnailData = new CThumbnailDataStorage(filename);
 		//thumbnailData->SetStorage(nullptr);
 		thumbnailData->SetNumPhotoId(i);
 		thumbnailData->SetNumElement(i);
@@ -168,7 +165,7 @@ void CThumbnailFileSelection::SetListeFile()
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
-		CIcone * pBitmapIcone = new CIcone();
+		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -177,10 +174,9 @@ void CThumbnailFileSelection::SetListeFile()
 		x += themeThumbnail.themeIcone.GetWidth();
 	}
 
-	
 
 	lockIconeList.lock();
-	oldIconeList = iconeList;
+	CIconeList* oldIconeList = iconeList;
 	iconeList = iconeListLocal;
 	lockIconeList.unlock();
 
@@ -195,7 +191,7 @@ void CThumbnailFileSelection::SetListeFile()
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    processIdle = true;	
+	processIdle = true;
 	this->Refresh();
 }
 
@@ -204,7 +200,7 @@ vector<int> CThumbnailFileSelection::GetSelectItem()
 	vector<int> listElement;
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
-		CIcone * pIcone = iconeList->GetElement(i);
+		CIcone* pIcone = iconeList->GetElement(i);
 		if (pIcone != nullptr)
 		{
 			if (pIcone->IsChecked())
@@ -214,7 +210,8 @@ vector<int> CThumbnailFileSelection::GetSelectItem()
 	return listElement;
 }
 
-bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone* icone, CWindowMain* parent)
+/* Définit une fonction. */
 {
 	wxRect rc = icone->GetPos();
 	if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
@@ -224,18 +221,18 @@ bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone * ic
 	return false;
 }
 
-CIcone * CThumbnailFileSelection::FindElementWithVScroll(const int &xPos, const int &yPos)
+CIcone* CThumbnailFileSelection::FindElementWithVScroll(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompWithVScrollFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
 
-CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &xPos, const int &yPos)
+CInfosSeparationBar* CThumbnailFileSelection::FindSeparatorElement(const int& xPos, const int& yPos)
 {
- 	int x = xPos + posLargeur;
+	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
-	for (CInfosSeparationBar * separatorBar : listSeparator)
+	for (CInfosSeparationBar* separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
 		{
@@ -247,31 +244,30 @@ CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &x
 		}
 	}
 	return nullptr;
-	
 }
 
 
-void CThumbnailFileSelection::FindOtherElement(wxDC * dc, const int &x, const int &y)
+void CThumbnailFileSelection::FindOtherElement(wxDC* dc, const int& x, const int& y)
 {
-	CInfosSeparationBar * separator = FindSeparatorElement(x, y);
+	CInfosSeparationBar* separator = FindSeparatorElement(x, y);
 	if (separator != nullptr)
 	{
-		CInfosSeparationBarExplorer * explorer = (CInfosSeparationBarExplorer *)separator;
+		auto explorer = static_cast<CInfosSeparationBarExplorer*>(separator);
 		if (explorer != nullptr)
 		{
 			explorer->OnClick(x, y);
 			//explorer->RenderIcone(dc);
 
-            for (auto numElement : separator->listElement)		
+			for (auto numElement : separator->listElement)
 			{
-				CIcone * icone = iconeList->GetElement(numElement);
-                if(icone != nullptr)
-                {
-                    if (explorer->GetSelected())
-                        icone->SetChecked(true);
-                    else
-                        icone->SetChecked(false); 
-                }
+				CIcone* icone = iconeList->GetElement(numElement);
+				if (icone != nullptr)
+				{
+					if (explorer->GetSelected())
+						icone->SetChecked(true);
+					else
+						icone->SetChecked(false);
+				}
 
 				//icone->RenderIcone(dc);
 			}
@@ -295,7 +291,7 @@ void CThumbnailFileSelection::ResizeThumbnail()
 		//int nbElement = infosSeparationBar->listElement.size();
 
 		int elementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
-		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) <  (GetWindowWidth()))
+		if ((elementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 			elementByRow++;
 
 		if (nbElementByRow < elementByRow)
@@ -304,40 +300,33 @@ void CThumbnailFileSelection::ResizeThumbnail()
 
 	int controlWidth = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 
-	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
+	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElementEnY = 0;
-		int nbElement = (int)infosSeparationBar->listElement.size();
-		if (nbElementByRow > 0)
-		{
-			nbElementEnY = nbElement / nbElementByRow;
-			if (nbElementEnY * nbElementByRow < nbElement)
-				nbElementEnY++;
-		}
+		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 
 		infosSeparationBar->SetWidth(controlWidth);
 		infosSeparationBar->SetWindowPos(x, y);
 
 		y += infosSeparationBar->GetHeight();
 
-        for (auto numElement : infosSeparationBar->listElement)
+		for (auto numElement : infosSeparationBar->listElement)
 		{
-			CIcone * pBitmapIcone = iconeList->GetElement(numElement);
-            if(pBitmapIcone != nullptr)
-            {
-                pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-                pBitmapIcone->SetWindowPos(x, y);
+			CIcone* pBitmapIcone = iconeList->GetElement(numElement);
+			if (pBitmapIcone != nullptr)
+			{
+				pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				pBitmapIcone->SetWindowPos(x, y);
 
-                x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
-                if (nbElementX == nbElementByRow)
-                {
-                    nbElementX = 0;
-                    x = 0;
-                    nbElementY++;
-                    y += themeThumbnail.themeIcone.GetHeight();
-                }
-            }
-
+				x += themeThumbnail.themeIcone.GetWidth();
+				nbElementX++;
+				if (nbElementX == nbElementByRow)
+				{
+					nbElementX = 0;
+					x = 0;
+					nbElementY++;
+					y += themeThumbnail.themeIcone.GetHeight();
+				}
+			}
 		}
 
 		if (nbElementX != 0)
@@ -347,7 +336,6 @@ void CThumbnailFileSelection::ResizeThumbnail()
 			nbElementY++;
 			y += themeThumbnail.themeIcone.GetHeight();
 		}
-
 	}
 
 	widthThumbnail = GetWindowWidth();
@@ -356,11 +344,12 @@ void CThumbnailFileSelection::ResizeThumbnail()
 	UpdateScroll();
 }
 
-bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* parent)
+/* Définit une fonction. */
 {
 	if (icone != nullptr && parent != nullptr)
 	{
-		CThumbnailFileSelection * thumbnail = (CThumbnailFileSelection *)parent;
+		auto thumbnail = static_cast<CThumbnailFileSelection*>(parent);
 		wxRect rc = icone->GetPos();
 		int left = rc.x - thumbnail->posLargeur;
 		int right = rc.x + rc.width - thumbnail->posLargeur;
@@ -374,19 +363,19 @@ bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone * icone, 
 	return false;
 }
 
-CIcone * CThumbnailFileSelection::FindElement(const int &xPos, const int &yPos)
+CIcone* CThumbnailFileSelection::FindElement(const int& xPos, const int& yPos)
 {
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
 
 
-void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC * deviceContext)
+void CThumbnailFileSelection::RenderIconeWithVScroll(wxDC* deviceContext)
 {
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
-		CInfosSeparationBar * infosSeparationBar = listSeparator.at(i);
-		infosSeparationBar->Render(deviceContext, -posLargeur,-posHauteur);
+		CInfosSeparationBar* infosSeparationBar = listSeparator.at(i);
+		infosSeparationBar->Render(deviceContext, -posLargeur, -posHauteur);
 
 		for (auto j = 0; j < infosSeparationBar->listElement.size(); j++)
 		{
@@ -416,15 +405,16 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 	thumbnailSizeX = 0;
 	thumbnailSizeY = 0;
 
-	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
+	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
-		int nbElement = (int)infosSeparationBar->listElement.size();
+		int nbElement = static_cast<int>(infosSeparationBar->listElement.size());
 
 		int nbElementByRow = (GetWindowWidth()) / themeThumbnail.themeIcone.GetWidth();
 
 		if (nbElement > 0 && nbElementByRow == 0)
 		{
-			float value = (float)(GetWindowWidth()) / (float)themeThumbnail.themeIcone.GetWidth();
+			float value = static_cast<float>(GetWindowWidth()) / static_cast<float>(themeThumbnail.themeIcone.
+				GetWidth());
 			if (value > 0)
 				nbElementByRow = 1;
 		}
@@ -437,7 +427,7 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 			if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (GetWindowWidth()))
 				nbElementByRow++;
 
-			int nbElementEnY = (int)infosSeparationBar->listElement.size() / nbElementByRow;
+			int nbElementEnY = static_cast<int>(infosSeparationBar->listElement.size()) / nbElementByRow;
 			if (nbElementEnY * nbElementByRow < infosSeparationBar->listElement.size())
 				nbElementEnY++;
 
@@ -448,14 +438,13 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 			if (sizeX > thumbnailSizeX)
 				thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 			thumbnailSizeY += nbElementEnY * themeThumbnail.themeIcone.GetHeight() + infosSeparationBar->GetHeight();
-
 		}
 		else
 			break;
 	}
 
-    printf("CThumbnailFileSelection::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
-    printf("CThumbnailFileSelection::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
+	printf("CThumbnailFileSelection::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
+	printf("CThumbnailFileSelection::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
 	if (nbElementInIconeList >= 0)
@@ -473,20 +462,20 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 		float yRatio = 1.0;
 
 		if (oldthumbnailSizeX != 0)
-			xRatio = (float)thumbnailSizeX / (float)oldthumbnailSizeX;
+			xRatio = static_cast<float>(thumbnailSizeX) / static_cast<float>(oldthumbnailSizeX);
 
 		if (oldthumbnailSizeY != 0)
-			yRatio = (float)thumbnailSizeY / (float)oldthumbnailSizeY;
+			yRatio = static_cast<float>(thumbnailSizeY) / static_cast<float>(oldthumbnailSizeY);
 
-		float posX = (float)posLargeur * xRatio;
-		float posY = (float)posHauteur * yRatio;
+		float posX = static_cast<float>(posLargeur) * xRatio;
+		float posY = static_cast<float>(posHauteur) * yRatio;
 
 
-		wxWindow * parent = this->GetParent();
+		wxWindow* parent = this->GetParent();
 
 		if (parent != nullptr)
 		{
-			CControlSize * controlSize = new CControlSize();
+			auto controlSize = new CControlSize();
 			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 			controlSize->controlWidth = thumbnailSizeX;
 			controlSize->controlHeight = thumbnailSizeY;
@@ -496,7 +485,7 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 
 		if (parent != nullptr)
 		{
-			wxSize * size = new wxSize();
+			auto size = new wxSize();
 			wxCommandEvent evt(wxEVENT_SETPOSITION);
 			size->x = posX;
 			size->y = posY;

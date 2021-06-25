@@ -4,8 +4,8 @@
 using namespace Regards::Sqlite;
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(MoveFaceDialog)
-	//*)
+//(*InternalHeadersPCH(MoveFaceDialog)
+//*)
 #endif
 //(*InternalHeaders(MoveFaceDialog)
 #include <wx/xrc/xmlres.h>
@@ -14,7 +14,7 @@ using namespace Regards::Sqlite;
 //(*IdInit(MoveFaceDialog)
 //*)
 
-BEGIN_EVENT_TABLE(MoveFaceDialog,wxDialog)
+BEGIN_EVENT_TABLE(MoveFaceDialog, wxDialog)
 	//(*EventTable(MoveFaceDialog)
 	//*)
 END_EVENT_TABLE()
@@ -23,15 +23,15 @@ MoveFaceDialog::MoveFaceDialog(wxWindow* parent)
 {
 	isOk = false;
 	//(*Initialize(MoveFaceDialog)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("MoveFaceDialog"),_T("wxDialog"));
-	cbFaceLabel = (wxComboBox*)FindWindow(XRCID("ID_COMBOBOX2"));
-	deviceLabel = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
-	btnOk = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
-	BtnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
+	wxXmlResource::Get()->LoadObject(this, parent,_T("MoveFaceDialog"),_T("wxDialog"));
+	cbFaceLabel = static_cast<wxComboBox*>(FindWindow(XRCID("ID_COMBOBOX2")));
+	deviceLabel = static_cast<wxStaticText*>(FindWindow(XRCID("ID_STATICTEXT1")));
+	btnOk = static_cast<wxButton*>(FindWindow(XRCID("ID_BUTTON1")));
+	BtnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BUTTON2")));
 
-	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MoveFaceDialog::OnbtnOkClick);
-	Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MoveFaceDialog::OnBtnCancelClick);
-	Connect(wxID_ANY,wxEVT_INIT_DIALOG,(wxObjectEventFunction)&MoveFaceDialog::OnInit);
+	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&MoveFaceDialog::OnbtnOkClick);
+	Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&MoveFaceDialog::OnBtnCancelClick);
+	Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&MoveFaceDialog::OnInit);
 	//*)
 }
 
@@ -55,12 +55,13 @@ void MoveFaceDialog::OnInit(wxInitDialogEvent& event)
 		cbFaceLabel->Append(faceName.faceName);
 	}
 
-	if(listFaceName.size() > 0)
+	if (listFaceName.size() > 0)
 	{
 		CFaceName faceName = listFaceName[0];
 		cbFaceLabel->SetStringSelection(faceName.faceName);
 	}
 }
+
 
 wxString MoveFaceDialog::GetFaceNameSelected()
 {
@@ -84,3 +85,4 @@ void MoveFaceDialog::OnBtnCancelClick(wxCommandEvent& event)
 	isOk = false;
 	this->Close();
 }
+

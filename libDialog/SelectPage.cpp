@@ -1,22 +1,14 @@
 #include <header.h>
 #include "SelectPage.h"
 #include "ScannerParam.h"
-#include "ScannerParamInit.h"
 
-CSelectFileDlg::CSelectFileDlg(wxWindow *parent, wxWindowID id,
-	const wxString &filename,
-	const wxString &title, const wxPoint &pos,
-	const wxSize &size, const long style) :
-	wxDialog(parent, id, title, pos, size, style)
+CSelectFileDlg::CSelectFileDlg(wxWindow* parent, const wxWindowID id,
+                               const wxString& filename,
+                               const wxString& title, const wxPoint& pos,
+                               const wxSize& size, const long style) :
+	wxDialog(parent, id, title, pos, size, style), filename_(filename), title_(title), pos_(pos), size_(size), style_(style)
 {
-	bool checkValidity = false;
-	CMainParam * config = CMainParamInit::getInstance();
-	if (config != nullptr)
-		checkValidity = config->GetCheckThumbnailValidity();
-
-
-
-	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	auto sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(thumbnailFileSelection = new CThumbnailSelection(this, THUMBNAILSELECTION, filename), 1, wxEXPAND);
 	SetSizer(sizer);
 
