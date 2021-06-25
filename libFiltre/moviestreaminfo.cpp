@@ -87,9 +87,10 @@ AVDictionary * MovieStreamInfo::filter_codec_opts(AVDictionary *opts, enum AVCod
         prefix  = 's';
         flags  |= AV_OPT_FLAG_SUBTITLE_PARAM;
         break;
+    default: ;
     }
 
-    while (t = av_dict_get(opts, "", t, AV_DICT_IGNORE_SUFFIX)) {
+    while ((t = av_dict_get(opts, "", t, AV_DICT_IGNORE_SUFFIX))) {
         char *p = strchr(t->key, ':');
 
         /* check stream specification in opt name */

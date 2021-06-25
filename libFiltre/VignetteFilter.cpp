@@ -17,7 +17,7 @@
 #include <BitmapDisplay.h>
 using namespace Regards::Filter;
 
-CVignetteFilter::CVignetteFilter()
+CVignetteFilter::CVignetteFilter(): source(nullptr)
 {
 	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS", 1);
 	libelleEffectPower = CLibResource::LoadStringFromResource(L"LBLEFFECTPOWER", 1);

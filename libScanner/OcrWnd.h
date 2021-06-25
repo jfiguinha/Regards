@@ -6,6 +6,7 @@
 using namespace Regards::Window;
 
 class CRegardsBitmap;
+class CEffectParameter;
 
 namespace Regards
 {

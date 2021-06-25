@@ -44,7 +44,7 @@ unsigned next_multiple(const unsigned x, const unsigned n) {
 	return (x + n - 1) & ~(n - 1);
 }
 
-COpenCLBm3D::COpenCLBm3D(COpenCLContext * context)
+COpenCLBm3D::COpenCLBm3D(COpenCLContext * context): width(0), height(0), sizeoutput(0), opencl_type(0)
 {
 	openCLProgram = nullptr;
 	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;

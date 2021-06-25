@@ -10,7 +10,6 @@ using namespace Regards::Filter;
 CDecodeRawPicture::CDecodeRawPicture(const string & fileName)
 {
 	rawProcessor = new LibRaw();
-	result = 0;
 	result = rawProcessor->open_file(fileName.c_str());
 	if(result == LIBRAW_SUCCESS)
 	{

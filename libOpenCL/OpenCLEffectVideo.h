@@ -49,7 +49,7 @@ namespace Regards
 			};
 
 			virtual ~COpenCLEffectVideo();
-			bool IsOk();
+			virtual bool IsOk();
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);

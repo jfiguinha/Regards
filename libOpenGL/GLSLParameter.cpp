@@ -2,7 +2,7 @@
 #include "GLSLParameter.h"
 using namespace Regards::OpenGL;
 
-void CGLSLParameter::SetLibelle(const string &libelle)
+void CGLSLParameter::SetLibelle(const string& libelle)
 {
 	this->libelle = libelle;
 }

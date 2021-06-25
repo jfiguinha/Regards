@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "OpenCLEffectVideo.h"
 #include <opencv2/opencv.hpp>
@@ -17,7 +18,7 @@
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
-COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
+COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context): widthOut(0), heightOut(0), srcwidth(0), srcheight(0)
 {
 	openCLProgram = nullptr;
 	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
@@ -244,7 +245,6 @@ void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
 cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 {
 	cv::UMat dst;
-	cl_int err = 0;
 	cl_mem clImage;
 	if (src)
 		clImage = paramSrc->GetValue();
@@ -315,6 +315,7 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 	}
 	else
 	{
+		cl_int err = 0;
 		dst.create((int)h, (int)w, type);
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
 		cl_command_queue q = context->GetCommandQueue();
@@ -330,8 +331,6 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 
 void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 {
-	cl_int err = 0;
-
 	cl_mem clImage;
 	if (src)
 		clImage = paramSrc->GetValue();
@@ -388,12 +387,13 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 	}
 	else
 	{
+		cl_int err = 0;
 		size_t w = src ? srcwidth : widthOut;
 		size_t h = src ? srcheight : heightOut;
 
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
+		cl_mem cl_buffer = (cl_mem)dst.handle(cv::ACCESS_RW);
 		cl_command_queue q = context->GetCommandQueue();
-		err = clEnqueueCopyBuffer(q, clBuffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
+		err = clEnqueueCopyBuffer(q, cl_buffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
 	}
@@ -451,10 +451,10 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 	{
 		widthOut = widthOutput;
 		heightOut = heightOutput;
-		cl_mem memvalue = nullptr;
 		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
 		if (programCL != nullptr)
 		{
+			cl_mem memvalue = nullptr;
 			vector<COpenCLParameter*> vecParam;
 			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
 
@@ -542,10 +542,10 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 	{
 		widthOut = widthOutput;
 		heightOut = heightOutput;
-		cl_mem memvalue = nullptr;
 		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
 		if (programCL != nullptr)
 		{
+			cl_mem memvalue = nullptr;
 			vector<COpenCLParameter*> vecParam;
 			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
 
@@ -575,7 +575,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 
 			COpenCLParameterFloat * left = new COpenCLParameterFloat();
 			left->SetLibelle("left");
-			left->SetValue(rc.x);
+			left->SetValue(rc.x);  // NOLINT(clang-diagnostic-implicit-int-float-conversion)
 			vecParam.push_back(left);
 
 			COpenCLParameterFloat * top = new COpenCLParameterFloat();

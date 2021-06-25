@@ -1,3 +1,4 @@
+#pragma once
 #include <GL/glew.h>
 #if defined(WIN32)
 #include <GL/wglew.h>

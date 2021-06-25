@@ -15,6 +15,7 @@
 #include <OpenCLEngine.h>
 #include <Metadata.h>
 #include "videostream.h"
+#include <effect_id.h>
 using namespace Regards::Filter;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
@@ -206,6 +207,7 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 				value = intValue->GetValue();
 			}
 			break;
+		default: ;
 	}
 
 	//Video Parameter

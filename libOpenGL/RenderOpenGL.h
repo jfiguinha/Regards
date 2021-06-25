@@ -18,65 +18,66 @@ namespace Regards
 {
 	namespace OpenGL
 	{
-        class COpenGLShader
-        {
-        public:
-            virtual ~COpenGLShader()
-            {
-                if(m_pShader != nullptr)
-                    delete m_pShader;
-            }
+		class COpenGLShader
+		{
+		public:
+			virtual ~COpenGLShader()
+			{
+				if (m_pShader != nullptr)
+					delete m_pShader;
+			}
 
 
-
-            wxString shaderName;
-            GLSLShader * m_pShader = nullptr;
-        };
+			wxString shaderName;
+			GLSLShader* m_pShader = nullptr;
+		};
 
 		class CRenderOpenGL : public wxGLContext
 		{
 		public:
-
-			CRenderOpenGL(wxGLCanvas *canvas);
-			virtual ~CRenderOpenGL();
-			wxGLContext * GetGLContext();
-            GLTexture * GetDisplayTexture();
-			GLTexture * GetGLTexture();
-            GLTexture * GetDisplayTexture(const int &width, const int &height);
-			void CreateScreenRender(const int &width, const int &height, const CRgbaquad &color);
-			GLTexture * GetDisplayTexture(const int &width, const int &height, cl_context context);
-			void RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter * effectParameter, const int &left, const int &top,const bool & inverted = false);
+			CRenderOpenGL(wxGLCanvas* canvas);
+			~CRenderOpenGL() override;
+			wxGLContext* GetGLContext();
+			GLTexture* GetDisplayTexture();
+			GLTexture* GetGLTexture();
+			GLTexture* GetDisplayTexture(const int& width, const int& height);
+			void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
+			GLTexture* GetDisplayTexture(const int& width, const int& height, cl_context context);
+			void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
+			                    const int& top, const bool& inverted = false);
 			cl_mem GetOpenCLTexturePt();
 			//GLTexture * GetCopyTextureBitmap(const int &width, const int &height, cl_context context);
-			void Print(int x, int y, const char *string);
-            void DeleteTexture();
-            void Init(wxGLCanvas *canvas);
-            bool IsInit();
+			void Print(int x, int y, const char* string);
+			void DeleteTexture();
+			void Init(wxGLCanvas* canvas);
+			bool IsInit();
 			int GetWidth();
 			int GetHeight();
-			GLSLShader * CreateShader(const wxString &shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
-			GLSLShader * FindShader(const wxString &shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
-			void RenderInterpolation(GLTexture * glTextureSrc, GLTexture * glTexture, const wxRect & rect, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation);
+			GLSLShader* CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
+			GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
+			void RenderInterpolation(GLTexture* glTextureSrc, GLTexture* glTexture, const wxRect& rect,
+			                         const int& flipH, const int& flipV, const int& angle,
+			                         const int& filterInterpolation);
 			void RenderToTexture();
 
 
 		protected:
-			
-
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
-			void RenderQuad(GLTexture * texture, int left = 0, int top = 0, bool inverted = false);
-			void RenderQuad(GLTexture * texture, const int &width, const int &height, const bool & flipH, const bool & flipV, int left = 0, int top = 0, bool inverted = false);
-            void RenderQuad(GLTexture * texture, const bool & flipH,const bool & flipV, int left = 0, int top = 0, bool inverted = false);
-			GLTexture * textureDisplay;
+			void RenderQuad(GLTexture* texture, int left = 0, int top = 0, bool inverted = false);
+			void RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH,
+			                const bool& flipV, int left = 0, int top = 0, bool inverted = false);
+			void RenderQuad(GLTexture* texture, const bool& flipH, const bool& flipV, int left = 0, int top = 0,
+			                bool inverted = false);
+			GLTexture* textureDisplay;
 			int width;
 			int height;
 			cl_mem cl_textureDisplay;
-            GLuint	base;
-            wxString version;
-            float myGLVersion;
-            vector<COpenGLShader *> listShader;
-            bool isInit = false;
-			IMouseUpdate * mouseUpdate;
+			GLuint base;
+			wxString version;
+			float myGLVersion;
+			vector<COpenGLShader*> listShader;
+			bool isInit = false;
+			IMouseUpdate* mouseUpdate;
 		};
 	}
 }

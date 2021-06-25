@@ -91,6 +91,7 @@ void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
 				value = intValue->GetValue();
 			}
 			break;
+		default: ;
 	}
 
     if (key == libelleEffectFSize)

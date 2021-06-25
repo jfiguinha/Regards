@@ -9,18 +9,24 @@ namespace Regards
 		class CGLSLParameter
 		{
 		public:
-			CGLSLParameter(){ dataType = 0; };
-			virtual ~CGLSLParameter(){};
+			CGLSLParameter() { dataType = 0; };
 
-			void SetLibelle(const string &libelle);
-			virtual void Add(GLint progHandle){};
+			virtual ~CGLSLParameter()
+			{
+			};
 
-			unsigned int GetType(){
-				return  dataType;
+			void SetLibelle(const string& libelle);
+
+			virtual void Add(GLint progHandle)
+			{
+			};
+
+			unsigned int GetType()
+			{
+				return dataType;
 			};
 
 		protected:
-
 			unsigned int dataType;
 			string libelle;
 		};
@@ -28,129 +34,145 @@ namespace Regards
 		class CGLSLParameterInt : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterInt(){
+			CGLSLParameterInt(): value(0)
+			{
 				dataType = 1;
-			 };
-			~CGLSLParameterInt(){};
+			}
+			;
 
-			void SetValue(const GLint &value)
+			~CGLSLParameterInt() override
+			{
+			};
+
+			void SetValue(const GLint& value)
 			{
 				this->value = value;
 			};
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		private:
-
 			GLint value;
 		};
 
 		class CGLSLParameterUInt : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterUInt(){
+			CGLSLParameterUInt(): value(0)
+			{
 				dataType = 2;
-			};
-			~CGLSLParameterUInt(){};
+			}
+			;
 
-			void SetValue(const GLuint &value)
+			~CGLSLParameterUInt() override
+			{
+			};
+
+			void SetValue(const GLuint& value)
 			{
 				this->value = value;
 			};
 
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		private:
-
 			GLuint value;
 		};
 
 		class CGLSLParameterFloat : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterFloat(){
+			CGLSLParameterFloat(): value(0)
+			{
 				dataType = 3;
-			};
-			~CGLSLParameterFloat(){};
+			}
+			;
 
-			void SetValue(const GLfloat &value)
+			~CGLSLParameterFloat() override
+			{
+			};
+
+			void SetValue(const GLfloat& value)
 			{
 				this->value = value;
 			};
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		private:
-
 			GLfloat value;
 		};
 
 		class CGLSLParameterTabFloat : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterTabFloat(){
+			CGLSLParameterTabFloat(): size(0)
+			{
 				dataType = 4;
-				value = NULL;
-			};
-			~CGLSLParameterTabFloat()
+				value = nullptr;
+			}
+			;
+
+			~CGLSLParameterTabFloat() override
 			{
 				Safe_Delete();
 			};
 
-			void SetValue(GLfloat * value, int size)
+			void SetValue(GLfloat* value, int size)
 			{
 				Safe_Delete();
-				this->value = new  GLfloat[size];
+				this->value = new GLfloat[size];
 				std::memcpy(this->value, value, size * sizeof(GLfloat));
 
 				this->size = size;
 			};
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		private:
-
 			void Safe_Delete()
 			{
-				if (value != NULL)
+				if (value != nullptr)
 					delete[] value;
 
-				value = NULL;
+				value = nullptr;
 			}
 
-			GLfloat * value;
+			GLfloat* value;
 			int size;
 		};
 
 		class CGLSLParameterTabInt : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterTabInt(){
+			CGLSLParameterTabInt(): size(0)
+			{
 				dataType = 5;
-				value = NULL;
-			};
-			~CGLSLParameterTabInt()
+				value = nullptr;
+			}
+			;
+
+			~CGLSLParameterTabInt() override
 			{
 				Safe_Delete();
 			};
 
-			void SetValue(GLint * value, int size)
+			void SetValue(GLint* value, int size)
 			{
 				Safe_Delete();
-				this->value = new  GLint[size];
-				memcpy(this->value,value,size * sizeof(GLint));
+				this->value = new GLint[size];
+				memcpy(this->value, value, size * sizeof(GLint));
 				this->size = size;
 			};
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		private:
-
 			void Safe_Delete()
 			{
-				if (value != NULL)
+				if (value != nullptr)
 					delete[] value;
 
-				value = NULL;
+				value = nullptr;
 			}
 
-			GLint * value;
+			GLint* value;
 			int size;
 		};
 
@@ -158,20 +180,21 @@ namespace Regards
 		class CGLSLParameterTexture : public CGLSLParameter
 		{
 		public:
-			CGLSLParameterTexture(){ dataType = 6; };
-			~CGLSLParameterTexture(){};
+			CGLSLParameterTexture(): nTextureID_i(0) { dataType = 6; } ;
 
-			void SetValue(const GLint &value)
+			~CGLSLParameterTexture() override
+			{
+			};
+
+			void SetValue(const GLint& value)
 			{
 				this->nTextureID_i = value;
 			};
 
-			void Add(GLint progHandle);
+			void Add(GLint progHandle) override;
 
 		protected:
-
 			GLint nTextureID_i;
 		};
-
 	}
 }

@@ -5,14 +5,18 @@
 #include "OpenCLContext.h"
 using namespace Regards::OpenCL;
 
+/**
+ * \brief 
+ * \param context 
+ */
 COpenCLEffectVideoNV12::COpenCLEffectVideoNV12(COpenCLContext * context)
-	:  COpenCLEffectVideo(context)
+	: COpenCLEffectVideo(context), formatData(0)
 {
 	inputY = nullptr;
 	inputUV = nullptr;
-	input= nullptr;
-	paramwidthPitch= nullptr;
-	paramsurfaceHeight= nullptr;
+	input = nullptr;
+	paramwidthPitch = nullptr;
+	paramsurfaceHeight = nullptr;
 	typeData = 2;
 }
 

@@ -220,7 +220,6 @@ wxString CGps::FindElement(const wxString &xml, const wxString &baliseBegin, con
 
 bool CGps::ImportationGeoPlugin(const wxString &xml)
 {
-	int i = 0;
 	//int j = 0;
 	wxString data = L"";
 	wxString value = L"";
@@ -242,7 +241,7 @@ bool CGps::ImportationGeoPlugin(const wxString &xml)
 
 			geoPluginVector.push_back(geoValue);
 
-			i = (int)xmlData.find(baliseEnd);
+			int i = (int)xmlData.find(baliseEnd);
 			if (i != -1)
 			{
 				i += baliseEnd.length();

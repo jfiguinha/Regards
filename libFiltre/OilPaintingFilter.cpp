@@ -84,6 +84,7 @@ void COilPaintingFilter::FilterChangeParam(CEffectParameter * effectParameter,  
 		value = intValue->GetValue();
 	}
 	break;
+default: ;
 	}
 
     if (key == libelleSize)

@@ -1,5 +1,6 @@
 #pragma once
 #include <RGBAQuad.h>
+#include <effect_id.h>
 namespace Regards
 {
 	namespace OpenCL

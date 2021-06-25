@@ -4,8 +4,6 @@
 //
 #pragma once
 #include <RenderOpenGL.h>
-#include <RGBAQuad.h>
-#include <EffectParameter.h>
 using namespace Regards::OpenGL;
 
 //#define RENDEROPENGL WM_USER+1
@@ -16,25 +14,24 @@ namespace Regards
 {
 	namespace OpenGL
 	{
-
 		class CRenderBitmapOpenGL : public CRenderOpenGL
 		{
 		public:
-
-			CRenderBitmapOpenGL(wxGLCanvas *canvas);
-			virtual ~CRenderBitmapOpenGL();
-            void LoadingResource(const double & scale_factor);
+			CRenderBitmapOpenGL(wxGLCanvas* canvas);
+			~CRenderBitmapOpenGL() override;
+			void LoadingResource(const double& scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
-			void ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const bool &blend = true);
-			void RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top, const bool & flipH, const bool & flipV, const bool & inverted);
-			void ShowSecondBitmapWithAlpha(GLTexture * textureTransition, const int &alpha, const int &width, const int &height, const int &left, const int &top);
+			void ShowSecondBitmap(GLTexture* textureTransition, const int& width, const int& height, const int& left,
+			                      const int& top, const bool& blend = true);
+			void RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left, const int& top,
+			                            const bool& flipH, const bool& flipV, const bool& inverted);
+			void ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
+			                               const int& height, const int& left, const int& top);
 
 		private:
-
-			GLTexture * textureArrowRight;
-			GLTexture * textureArrowLeft;
-
+			GLTexture* textureArrowRight;
+			GLTexture* textureArrowLeft;
 		};
 	}
 }

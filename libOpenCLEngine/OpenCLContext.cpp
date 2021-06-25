@@ -1,3 +1,4 @@
+// ReSharper disable All
 #include <header.h>
 #include "OpenCLContext.h"
 #include "utility.h"
@@ -24,9 +25,10 @@ int COpenCLContext::GetDefaultType()
 	return OPENCL_UCHAR;
 }
 
-COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString & platformName, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl)
+COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString& platformName, cl_device_id deviceId,
+                               cl_device_type deviceType, const bool& opengl): context(nullptr)
 {
-    this->isOpenGL = opengl;
+	this->isOpenGL = opengl;
 	platform = platformId;
 	device = deviceId;
 	this->platform_name = platformName;
@@ -34,22 +36,24 @@ COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString & platf
 	queue = nullptr;
 }
 
-void COpenCLContext::SetPlatformName(const wxString & platform_name)
+void COpenCLContext::SetPlatformName(const wxString& platform_name)
 {
 	this->platform_name = platform_name;
 }
 
-void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag)
+void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void* dataOut, const int& sizeOutput, const int& flag)
 {
 	cl_int err = 0;
 	try
 	{
 		if (flag == CL_MEM_USE_HOST_PTR)
 		{
-			void* tmp_ptr = clEnqueueMapBuffer(GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
+			void* tmp_ptr = clEnqueueMapBuffer(GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0,
+			                                   nullptr, nullptr, &err);
 			Error::CheckError(err);
 			if (tmp_ptr != dataOut)
-			{// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
+			{
+				// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
 				throw Error("clEnqueueMapBuffer failed to return original pointer");
 			}
 
@@ -61,7 +65,8 @@ void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, cons
 		}
 		else
 		{
-			err = clEnqueueReadBuffer(GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
+			err = clEnqueueReadBuffer(GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr,
+			                          nullptr);
 			Error::CheckError(err);
 			err = clFinish(GetCommandQueue());
 			Error::CheckError(err);
@@ -72,11 +77,10 @@ void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, cons
 		wxString copyvideoData = CLibResource::LoadStringFromResource("LBLERRORCOPYVIDEODATA", 1);
 		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
 		wxMessageBox(copyvideoData, infos);
-
 	}
 }
 
-COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId, const int &type)
+COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId, const int& type)
 {
 	bool findPreloadShader = false;
 	COpenCLProgram* program = nullptr;
@@ -101,7 +105,7 @@ COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId, const i
 	return program;
 }
 
-COpenCLProgram * COpenCLContext::GetProgram(const wxString &numProgramId)
+COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId)
 {
 	return GetProgram(numProgramId, GetDefaultType());
 }
@@ -115,15 +119,15 @@ COpenCLContext::~COpenCLContext()
 		if (queue)
 		{
 			cl_int err = clReleaseCommandQueue(queue);
-            
-            Error::CheckError(err);
+
+			Error::CheckError(err);
 		}
 
 		if (context)
 		{
 			cl_int err = clReleaseContext(context);
-            
-            Error::CheckError(err);
+
+			Error::CheckError(err);
 		}
 	}
 	catch (...)
@@ -132,7 +136,7 @@ COpenCLContext::~COpenCLContext()
 	}
 
 
-	for (COpenCLProgram * program : listProgram)
+	for (COpenCLProgram* program : listProgram)
 	{
 		delete program;
 		program = nullptr;
@@ -146,7 +150,7 @@ int COpenCLContext::GenerateContext()
 	try
 	{
 		CreateContext();
-		CreateQueue(); 
+		CreateQueue();
 		return 0;
 	}
 	catch (...)
@@ -165,7 +169,7 @@ void COpenCLContext::CreateQueue(cl_command_queue_properties queue_properties)
 
 	cl_int err = 0;
 	queue = clCreateCommandQueue(context, device, queue_properties, &err);
-	 Error::CheckError(err);
+	Error::CheckError(err);
 }
 
 void COpenCLContext::CreateContext()
@@ -180,15 +184,15 @@ void COpenCLContext::CreateContext()
 		throw Error("Device is not selected");
 	}
 
-	if(isOpenGL)
+	if (isOpenGL)
 	{
 #ifdef WIN32
 		// Create CL context properties, add WGL context & handle to DC
-		 cl_context_properties properties[] = {
-		 CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
-		 CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
-		 CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
-		 0
+		cl_context_properties properties[] = {
+			CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
+			CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
+			CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
+			0
 		};
 #elif defined(__WXGTK__)
 
@@ -217,27 +221,27 @@ void COpenCLContext::CreateContext()
 		//clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);
 
 		cl_int err = 0;
-		context = clCreateContext(properties, 1, &device, 0, 0, &err);
+		context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
 		//Error::CheckError(err);
-        if ( err == CL_SUCCESS )
-        {
-            sharedContextCompatible = true;
-            return;
-        }
-        std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
-        std::cerr << "Create a compatible OpenCL context." << std::endl;
+		if (err == CL_SUCCESS)
+		{
+			sharedContextCompatible = true;
+			return;
+		}
+		std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
+		std::cerr << "Create a compatible OpenCL context." << std::endl;
 	}
-    
-    sharedContextCompatible = false;
-    
-    //Generate context without shared compatibility
-    cl_context_properties context_props[] = {
-        CL_CONTEXT_PLATFORM,
-        cl_context_properties(platform),
-        0
-    };
 
-    cl_int err = 0;
-    context = clCreateContext(context_props, 1, &device, 0, 0, &err);
-    Error::CheckError(err);
+	sharedContextCompatible = false;
+
+	//Generate context without shared compatibility
+	cl_context_properties context_props[] = {
+		CL_CONTEXT_PLATFORM,
+		cl_context_properties(platform),
+		0
+	};
+
+	cl_int err = 0;
+	context = clCreateContext(context_props, 1, &device, nullptr, nullptr, &err);
+	Error::CheckError(err);
 }

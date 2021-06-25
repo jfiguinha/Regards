@@ -160,11 +160,10 @@ cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 	}
 	else
 	{
-		cl_int err = 0;
 		dst.create((int)h, (int)w, type);
 		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
 		cl_command_queue q = context->GetCommandQueue();
-		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
+		cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
 		Error::CheckError(err);
 		clFinish(q);
 	}

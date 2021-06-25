@@ -5,7 +5,7 @@
 #include "utility.h"
 using namespace Regards::OpenCL;
 
-COpenCLRawDev::COpenCLRawDev(COpenCLContext * context)
+COpenCLRawDev::COpenCLRawDev(COpenCLContext * context): width(0), height(0), sizeoutput(0)
 {
 	openCLProgram = nullptr;
 	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
@@ -53,7 +53,6 @@ void * COpenCLRawDev::GetOutputData(void * dataOutput, int sizeOutput, int lpass
 
 	if(cloutput != nullptr)
 	{
-		cl_int err;
 		err = clReleaseMemObject(cloutput);
 		Error::CheckError(err);
 	}
@@ -70,7 +69,6 @@ void * COpenCLRawDev::GetAlphaChannel(void * dataOutput, int sizeOutput)
 
 	if(cloutput != nullptr)
 	{
-		cl_int err;
 		err = clReleaseMemObject(cloutput);
 		Error::CheckError(err);
 	}

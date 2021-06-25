@@ -16,35 +16,49 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		typedef struct
+		using COLORData = struct
 		{
 			int red;
 			int green;
 			int blue;
 			int alpha;
-		}COLORData;
+		};
 
 		class COpenCLParameter
 		{
 		public:
-			COpenCLParameter(){ dataType = 0; noDelete = false; cl_buffer = nullptr;noDeleteClMem=false;};
+			COpenCLParameter(): queue(nullptr)
+			{
+				dataType = 0;
+				noDelete = false;
+				cl_buffer = nullptr;
+				noDeleteClMem = false;
+			}
+
 			virtual ~COpenCLParameter()
 			{
-				if(!noDeleteClMem)
-					Release();
-			};
+				if (!noDeleteClMem)
+					COpenCLParameter::Release();
+			}
 
-			void SetCommandQueue(const cl_command_queue &queue)
+			void SetCommandQueue(const cl_command_queue& queue)
 			{
 				this->queue = queue;
+			}
+
+			void SetLibelle(const wxString& libelle);
+
+			virtual void Add(cl_kernel kernelHandle, int numArg)
+			{
 			};
-			void SetLibelle(const wxString &libelle);
-			virtual void Add(cl_kernel kernelHandle, int numArg){};
 			virtual void Release();
-			int GetType(){
-				return  dataType;
+
+			int GetType()
+			{
+				return dataType;
 			};
-			void SetNoDelete(const bool &value)
+
+			void SetNoDelete(const bool& value)
 			{
 				noDelete = value;
 			}
@@ -54,7 +68,7 @@ namespace Regards
 				return noDelete;
 			}
 
-			cl_mem GetValue()
+			virtual cl_mem GetValue()
 			{
 				return cl_buffer;
 			}
@@ -72,41 +86,47 @@ namespace Regards
 		class COpenCLParameterInt : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterInt(const bool &noDeleteMem = false){
+			explicit COpenCLParameterInt(const bool& noDeleteMem = false): value(0)
+			{
 				dataType = 1;
-                noDeleteClMem = noDeleteMem;
-			 };
-			~COpenCLParameterInt(){};
+				noDeleteClMem = noDeleteMem;
+			};
 
-			void SetValue(const cl_int &value)
+			~COpenCLParameterInt() override
+			{
+			};
+
+			void SetValue(const cl_int& value)
 			{
 				this->value = value;
 			};
-			void Add(cl_kernel kernelHandle, int numArg);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 
 		private:
-
 			cl_int value;
 		};
 
 		class COpenCLParameterUInt : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUInt(const bool &noDeleteMem = false){
+			explicit COpenCLParameterUInt(const bool& noDeleteMem = false): value(0)
+			{
 				dataType = 2;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 			};
-			~COpenCLParameterUInt(){};
 
-			void SetValue(const cl_uint &value)
+			~COpenCLParameterUInt() override
+			{
+			};
+
+			void SetValue(const cl_uint& value)
 			{
 				this->value = value;
 			};
 
-			void Add(cl_kernel kernelHandle, int numArg);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 
 		private:
-
 			cl_uint value;
 		};
 
@@ -114,177 +134,212 @@ namespace Regards
 		class COpenCLParameterFloat : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterFloat(const bool &noDeleteMem = false){
+			explicit COpenCLParameterFloat(const bool& noDeleteMem = false): value(0)
+			{
 				dataType = 3;
-                noDeleteClMem = noDeleteMem;
-			};
-			~COpenCLParameterFloat(){};
+				noDeleteClMem = noDeleteMem;
+			}
 
-			void SetValue(const cl_float &value)
+			~COpenCLParameterFloat() override
+			{
+			};
+
+			void SetValue(const cl_float& value)
 			{
 				this->value = value;
 			};
-			
-			void Add(cl_kernel kernelHandle, int numArg);
+
+			void Add(cl_kernel kernelHandle, int numArg) override;
 
 		private:
-
 			cl_float value;
 		};
-		
+
 		class COpenCLParameterByteArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterByteArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
+			COpenCLParameterByteArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 4;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterByteArray(){};
 
-			void SetValue(cl_context context, uint8_t * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterByteArray() override
+			{
+			};
+
+			void SetValue(cl_context context, uint8_t* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterIntArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterIntArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
+			COpenCLParameterIntArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 5;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterIntArray(){};
 
-			void SetValue(cl_context context, int * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterIntArray() override
+			{
+			};
 
-
+			void SetValue(cl_context context, int* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterFloatArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterFloatArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
+			COpenCLParameterFloatArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 6;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterFloatArray(){};
 
-			void SetValue(cl_context context, float * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterFloatArray() override
+			{
+			};
+
+			void SetValue(cl_context context, float* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterColorData : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterColorData(const bool &noDeleteMem = false){
+			COpenCLParameterColorData(const bool& noDeleteMem = false)
+			{
 				dataType = 7;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 			};
-			~COpenCLParameterColorData(){};
+
+			~COpenCLParameterColorData() override
+			{
+			};
 
 
-			void SetValue(cl_context context, COLORData * value, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
-
+			void SetValue(cl_context context, COLORData* value, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterUShortArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUShortArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
+			COpenCLParameterUShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 9;
-                noDeleteClMem = noDeleteMem;
+				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterUShortArray(){};
 
-			void SetValue(cl_context context, unsigned short * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterUShortArray() override
+			{
+			};
+
+			void SetValue(cl_context context, unsigned short* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterClMem : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterClMem(const bool &noDeleteMem = false){
+			COpenCLParameterClMem(const bool& noDeleteMem = false)
+			{
 				dataType = 8;
 				noDeleteClMem = noDeleteMem;
 			};
-			~COpenCLParameterClMem()
-			{
 
+			~COpenCLParameterClMem() override
+			{
 			};
 
 			void SetValue(cl_mem memValue);
-			void Add(cl_kernel kernelHandle, int numArg);
-			cl_mem GetValue(){return cl_buffer;};
+			void Add(cl_kernel kernelHandle, int numArg) override;
+			cl_mem GetValue() override { return cl_buffer; };
 		};
 
 
 		class COpenCLParameterUShort : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUShort(const bool &noDeleteMem = false)
+			explicit COpenCLParameterUShort(const bool& noDeleteMem = false): value(0)
 			{
 				dataType = 10;
-                noDeleteClMem = noDeleteMem;
-			 };
-			~COpenCLParameterUShort(){};
+				noDeleteClMem = noDeleteMem;
+			}
+			;
 
-			void SetValue(const cl_ushort &value)
+			~COpenCLParameterUShort() override
+			{
+			};
+
+			void SetValue(const cl_ushort& value)
 			{
 				this->value = value;
 			};
-			void Add(cl_kernel kernelHandle, int numArg);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 
 		private:
-
 			cl_ushort value;
 		};
 
 		class COpenCLParameterUCharArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUCharArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+			COpenCLParameterUCharArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 11;
 				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterUCharArray() {};
 
-			void SetValue(cl_context context, unsigned char * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterUCharArray() override
+			{
+			};
+
+			void SetValue(cl_context context, unsigned char* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterShortArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterShortArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+			COpenCLParameterShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 12;
 				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterShortArray() {};
 
-			void SetValue(cl_context context, short * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterShortArray() override
+			{
+			};
+
+			void SetValue(cl_context context, short* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterUintArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUintArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+			COpenCLParameterUintArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			{
 				dataType = 13;
 				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
-			~COpenCLParameterUintArray() {};
 
-			void SetValue(cl_context context, unsigned int * value, int size, cl_mem_flags flag);
-			void Add(cl_kernel kernelHandle, int numArg);
+			~COpenCLParameterUintArray() override
+			{
+			};
+
+			void SetValue(cl_context context, unsigned int* value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
-
 	}
 }

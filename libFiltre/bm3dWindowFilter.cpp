@@ -84,6 +84,7 @@ void CBm3dWindowFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 				value = intValue->GetValue();
 			}
 			break;
+		default: ;
 	}
 
     if (key == libelleEffectSigma)

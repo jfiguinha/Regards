@@ -3,7 +3,7 @@
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
-#include "utility.h"
+
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)
@@ -156,12 +156,12 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 	if (context != nullptr)
 	{
-		COpenCLProgram * programCL = nullptr;
+		COpenCLProgram * program_cl;
 		if (formatData == 1)
 		{
-			programCL = GetProgram("IDR_OPENCL_FFMPEGNV12");
+			program_cl = GetProgram("IDR_OPENCL_FFMPEGNV12");
 
-			if (programCL != nullptr)
+			if (program_cl != nullptr)
 			{
 				vector<COpenCLParameter *> vecParam;
 				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
@@ -193,7 +193,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 				program->SetKeepOutput(true);
-				program->ExecuteProgram(programCL->GetProgram(), "Convert");
+				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
 
 				if (paramSrc == nullptr)
 					paramSrc = new COpenCLParameterClMem();
@@ -213,9 +213,9 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 		}
 		else
 		{
-			programCL = GetProgram("IDR_OPENCL_FFMPEGYUV420");
+			program_cl = GetProgram("IDR_OPENCL_FFMPEGYUV420");
 
-			if (programCL != nullptr)
+			if (program_cl != nullptr)
 			{
 				vector<COpenCLParameter *> vecParam;
 				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
@@ -248,7 +248,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 				program->SetKeepOutput(true);
-				program->ExecuteProgram(programCL->GetProgram(), "Convert");
+				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
 
 				if (paramSrc == nullptr)
 					paramSrc = new COpenCLParameterClMem();

@@ -87,6 +87,7 @@ void CAudioVideoFilter::Filter(CEffectParameter * effectParameter, const wxStrin
 				indexSubtitle = elementSubtitle.size();
 			AddMetadataElement(elementSubtitle, streamInfo.streamLibelle, streamInfo.indexStream);
 			break;
+		default: ;
 		}
 	}
 	
@@ -132,6 +133,7 @@ void CAudioVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 				value = intValue->GetValue();
 			}
 			break;
+		default: ;
 	}
 
 	if (key == libelleAudio)
