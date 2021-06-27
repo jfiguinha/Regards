@@ -105,7 +105,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), nullptr, this);
 	Connect(wxEVENT_SETFOLDER, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
 	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
-	Connect(wxEVENT_SELCHANGED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
+	Connect(wxEVENT_SELCHANGED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 
@@ -169,6 +169,7 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 			treeitem = folderWnd->GetTreeCtrl()->GetSelection();
 			folderWnd->GetTreeCtrl()->Check(treeitem);
 		}
+		
 		delete folder;
 	}
 }
@@ -180,12 +181,13 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 	{
 		wxString getSelectPath = folderWnd->GetPath();
 		int isChecked = aEvent.GetExtraLong();
+		int isShowDialog = aEvent.GetInt();
 		wxCommandEvent evt(wxEVENT_UPDATEFOLDER);
 
 		if (isChecked)
 		{
 			folderWnd->AddPath(getSelectPath);
-			const wxString firstFile = AddFolder(getSelectPath);
+			const wxString firstFile = AddFolder(getSelectPath, !isShowDialog);
 			evt.SetInt(0);
 			auto newPath = new wxString(firstFile);
 			evt.SetClientData(newPath);
@@ -251,7 +253,7 @@ void CPanelPhotoWnd::LoadInfo()
 
 //Add and Remove Folder Management
 
-wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
+wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialog)
 {
 	TRACE();
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
@@ -263,25 +265,24 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 	if (files.size() > 0)
 		sort(files.begin(), files.end());
 
-	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), windowMain,
-	                        wxPD_APP_MODAL | wxPD_AUTO_HIDE);
-	int updatesize = 0;
-	dialog.Update(updatesize, msg);
-
-	//Indication d'imporation des critères 
-	CSqlFolderCatalog sqlFolderCatalog;
-	int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
-
-	printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
-
-	if (idFolder == -1)
+	wxBusyInfo wait("Please wait, working...", windowMain);
 	{
-		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
-		//Insert la liste des photos dans la base de données.
-		CSqlInsertFile sqlInsertFile;
-		sqlInsertFile.AddFileFromFolder(this, dialog, files, folder, idFolder, localFilename);
-		//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
+		//Indication d'imporation des critères 
+		CSqlFolderCatalog sqlFolderCatalog;
+		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
+
+		printf("AddFolder : %s \n", CConvertUtility::ConvertToUTF8(folder));
+
+		if (idFolder == -1)
+		{
+			idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
+			//Insert la liste des photos dans la base de données.
+			CSqlInsertFile sqlInsertFile;
+			sqlInsertFile.AddFileFromFolder(this, nullptr, files, folder, idFolder, localFilename);
+			//printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(localFilename));
+		}
 	}
+
 
 	wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
@@ -299,7 +300,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder)
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	dialog.Destroy();
+	
 
 	return localFilename;
 }

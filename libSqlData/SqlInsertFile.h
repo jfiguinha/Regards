@@ -18,7 +18,7 @@ namespace Regards
 			void InsertPhotoFolderToRefresh(const wxString &folder);
 			bool GetPhotoToAdd(vector<wxString> * listFile);
 			bool GetPhotoToRemove(vector<int> * listFile, const int &idFolder);
-			int AddFileFromFolder(wxWindow * parent, wxProgressDialog & dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile);
+			int AddFileFromFolder(wxWindow * parent, wxProgressDialog * dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile);
 			int ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile);
             bool GetPhotos(PhotosVector * photosVector);
             bool GetAllPhotos(PhotosVector * photosVector);

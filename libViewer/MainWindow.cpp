@@ -894,7 +894,7 @@ void CMainWindow::UpdateFolder()
 			isFound = FindPreviousValidFile();
 	}
 
-	if (!isFound)
+	if (!isFound && !pictures.empty())
 		localFilename = pictures[0].GetPath();
 
 	centralWnd->SetListeFile(localFilename);
@@ -1249,6 +1249,15 @@ void CMainWindow::OnOpenFileOrFolder(wxCommandEvent& event)
 		else
 			OpenFolder(*file);
 
+		wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SELCHANGED);
+			evt.SetExtraLong(1);
+			evt.SetInt(1);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 		delete file;
 	}
 }
@@ -1273,14 +1282,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 
 	if (!find)
 	{
-		wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
-		if (window != nullptr)
-		{
-			auto newFolder = new wxString(folder);
-			wxCommandEvent evt(wxEVENT_SETFOLDER);
-			evt.SetClientData(newFolder);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
+		OpenFolder(folder);
 	}
 
 	updateCriteria = true;
@@ -1310,11 +1312,6 @@ bool CMainWindow::OpenFolder(const wxString& path)
 			evt.SetClientData(newFolder);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
-
-		updateCriteria = true;
-		updateFolder = true;
-
-		processIdle = true;
 	}
 
 	return true;

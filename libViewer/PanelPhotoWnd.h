@@ -30,7 +30,7 @@ namespace Regards
 
 
 			void RemoveFolder(const wxString& folder);
-			wxString AddFolder(const wxString& folder);
+			wxString AddFolder(const wxString& folder, const bool& showDialog = true);
 
 			CCategoryFolderWindow* categoryFolderWnd;
 			wxGenericDirCtrl* folderWnd;

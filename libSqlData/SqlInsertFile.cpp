@@ -147,7 +147,7 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 	return (ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and FullPath not in(Select FullPath From PHOTOFOLDER)") != -1) ? true : false;
 }
 
-int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile)
+int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog * dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 
 	if (files.size() > 0)
@@ -169,9 +169,12 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dial
 						ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 					}
 
+					if(dialog != nullptr)
+					{
+						wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+						dialog->Update(i, message);
+					}
 
-					wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
-					dialog.Update(i, message);
 				}
 			});
 		
