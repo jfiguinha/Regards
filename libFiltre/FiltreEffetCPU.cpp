@@ -741,18 +741,20 @@ wxImage CFiltreEffetCPU::GetwxImage()
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
-		for (int i = 0; i < size; ++i)
-		{
-			const int y = i / width;
-			const int x = i - (y * width);
-			const int calcul = (height - y - 1) * width + x;
-			dataOut[i * 3] = data[(calcul << 2) + 2]; // R
-			dataOut[i * 3 + 1] = data[(calcul << 2) + 1]; // G
-			dataOut[i * 3 + 2] = data[(calcul << 2)]; // B
-		}
+		tbb::parallel_for(tbb::blocked_range<int>(0, size),
+			[&](tbb::blocked_range<int> r)
+			{
+				for (int i = 0; i < size; ++i)
+				{
+					const int y = i / width;
+					const int x = i - (y * width);
+					const int calcul = (height - y - 1) * width + x;
+					dataOut[i * 3] = data[(calcul << 2) + 2]; // R
+					dataOut[i * 3 + 1] = data[(calcul << 2) + 1]; // G
+					dataOut[i * 3 + 2] = data[(calcul << 2)]; // B
+				}
+			});
 	}
-
 	return anImage;
 }
 
@@ -768,18 +770,21 @@ wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
-		for (int i = 0; i < size; ++i)
-		{
-			const int y = i / width;
-			const int x = i - (y * width);
-			const int pos = i * 3;
-			const int calcul = ((height - y - 1) * width + x) << 2;
-			//int calcul = y * width + x;
-			dataOut[pos] = data[calcul + 2]; // R
-			dataOut[pos + 1] = data[calcul + 1]; // G
-			dataOut[pos + 2] = data[calcul]; // B
-		}
+		tbb::parallel_for(tbb::blocked_range<int>(0, size),
+			[&](tbb::blocked_range<int> r)
+			{
+				for (int i = 0; i < size; ++i)
+				{
+					const int y = i / width;
+					const int x = i - (y * width);
+					const int pos = i * 3;
+					const int calcul = ((height - y - 1) * width + x) << 2;
+					//int calcul = y * width + x;
+					dataOut[pos] = data[calcul + 2]; // R
+					dataOut[pos + 1] = data[calcul + 1]; // G
+					dataOut[pos + 2] = data[calcul]; // B
+				}
+			});
 	}
 
 	return anImage;

@@ -26,24 +26,30 @@ void CInterpolationBilinear::CalculWeight(const int32_t& width, const int32_t& h
 	wX = new weightX[width];
 	wY = new weightX[height];
 
-#pragma omp parallel for
-	for (auto y = 0; y < height; y++)
-	{
-		float posY = static_cast<float>(y) * ratioY + posTop;
-		int32_t valueB = static_cast<int32_t>(posY);
-		float realB = posY - valueB;
-		wY[y].tabF[0] = Filter(-(-1.0f - realB));
-		wY[y].tabF[1] = Filter(-(0.0f - realB));
-	}
-#pragma omp parallel for
-	for (auto x = 0; x < width; x++)
-	{
-		float posX = static_cast<float>(x) * ratioX + posLeft;
-		int32_t valueA = static_cast<int32_t>(posX);
-		float realA = posX - valueA;
-		wX[x].tabF[0] = Filter((-1.0f - realA));
-		wX[x].tabF[1] = Filter((0.0f - realA));
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, height),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto y = 0; y < height; y++)
+			{
+				float posY = static_cast<float>(y) * ratioY + posTop;
+				int32_t valueB = static_cast<int32_t>(posY);
+				float realB = posY - valueB;
+				wY[y].tabF[0] = Filter(-(-1.0f - realB));
+				wY[y].tabF[1] = Filter(-(0.0f - realB));
+			}
+		});
+	tbb::parallel_for(tbb::blocked_range<int>(0, width),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto x = 0; x < width; x++)
+			{
+				float posX = static_cast<float>(x) * ratioX + posLeft;
+				int32_t valueA = static_cast<int32_t>(posX);
+				float realA = posX - valueA;
+				wX[x].tabF[0] = Filter((-1.0f - realA));
+				wX[x].tabF[1] = Filter((0.0f - realA));
+			}
+		});
 }
 
 void CInterpolationBilinear::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const wxRect& rectToShow)

@@ -25,28 +25,35 @@ void CInterpolationFloat::CalculWeight(const int32_t& width, const int32_t& heig
 	wX = new weightX[width];
 	wY = new weightX[height];
 
-#pragma omp parallel for
-	for (auto y = 0; y < height; y++)
-	{
-		float posY = static_cast<float>(y) * ratioY + posTop;
-		int valueB = static_cast<int>(posY);
-		float realB = posY - valueB;
-		wY[y].tabF[0] = Filter(-(-1.0f - realB));
-		wY[y].tabF[1] = Filter(-(0.0f - realB));
-		wY[y].tabF[2] = Filter(-(1.0f - realB));
-		wY[y].tabF[3] = Filter(-(2.0f - realB));
-	}
-#pragma omp parallel for
-	for (auto x = 0; x < width; x++)
-	{
-		float posX = static_cast<float>(x) * ratioX + posLeft;
-		int valueA = static_cast<int>(posX);
-		float realA = posX - valueA;
-		wX[x].tabF[0] = Filter((-1.0f - realA));
-		wX[x].tabF[1] = Filter((0.0f - realA));
-		wX[x].tabF[2] = Filter((1.0f - realA));
-		wX[x].tabF[3] = Filter((2.0f - realA));
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, height),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto y = 0; y < height; y++)
+			{
+				float posY = static_cast<float>(y) * ratioY + posTop;
+				int valueB = static_cast<int>(posY);
+				float realB = posY - valueB;
+				wY[y].tabF[0] = Filter(-(-1.0f - realB));
+				wY[y].tabF[1] = Filter(-(0.0f - realB));
+				wY[y].tabF[2] = Filter(-(1.0f - realB));
+				wY[y].tabF[3] = Filter(-(2.0f - realB));
+			}
+		});
+	
+	tbb::parallel_for(tbb::blocked_range<int>(0, width),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto x = 0; x < width; x++)
+			{
+				float posX = static_cast<float>(x) * ratioX + posLeft;
+				int valueA = static_cast<int>(posX);
+				float realA = posX - valueA;
+				wX[x].tabF[0] = Filter((-1.0f - realA));
+				wX[x].tabF[1] = Filter((0.0f - realA));
+				wX[x].tabF[2] = Filter((1.0f - realA));
+				wX[x].tabF[3] = Filter((2.0f - realA));
+			}
+		});
 }
 
 void CInterpolationFloat::Execute(CRegardsFloatBitmap* In, CRegardsFloatBitmap* & Out)

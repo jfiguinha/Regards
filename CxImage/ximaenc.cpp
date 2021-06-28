@@ -4,6 +4,7 @@
  */
 
 #include "ximage.h"
+#include <tbb/parallel_for.h>
 //#if defined(__x86_64__) || defined(_M_AMD64)	
 //#include <tmmintrin.h>
 //#endif 
@@ -556,29 +557,35 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	weightX * wY = new weightX[height];
 
 
-#pragma omp parallel for
-	for (auto y = 0; y < height; y++)
-	{
-		float posY = (float)y * ratioY;
-		int valueB = (int)posY;
-		float realB = posY - valueB;
-		wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
-		wY[y].tabF[1] = ::Filter(-(0.0f - realB));
-		wY[y].tabF[2] = ::Filter(-(1.0f - realB));
-		wY[y].tabF[3] = ::Filter(-(2.0f - realB));
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, height),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto y = 0; y < height; y++)
+			{
+				float posY = (float)y * ratioY;
+				int valueB = (int)posY;
+				float realB = posY - valueB;
+				wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
+				wY[y].tabF[1] = ::Filter(-(0.0f - realB));
+				wY[y].tabF[2] = ::Filter(-(1.0f - realB));
+				wY[y].tabF[3] = ::Filter(-(2.0f - realB));
+			}
+		});
 
-#pragma omp parallel for
-	for (auto x = 0; x < width; x++)
-	{
-		float posX = (float)x * ratioX;
-		int valueA = (int)posX;
-		float realA = posX - valueA;
-		wX[x].tabF[0] = ::Filter((-1.0f - realA));
-		wX[x].tabF[1] = ::Filter((0.0f - realA));
-		wX[x].tabF[2] = ::Filter((1.0f - realA));
-		wX[x].tabF[3] = ::Filter((2.0f - realA));
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, width),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (auto x = 0; x < width; x++)
+			{
+				float posX = (float)x * ratioX;
+				int valueA = (int)posX;
+				float realA = posX - valueA;
+				wX[x].tabF[0] = ::Filter((-1.0f - realA));
+				wX[x].tabF[1] = ::Filter((0.0f - realA));
+				wX[x].tabF[2] = ::Filter((1.0f - realA));
+				wX[x].tabF[3] = ::Filter((2.0f - realA));
+			}
+		});
 
 #pragma omp parallel for
 	for (auto y = 0; y < height; y++)
@@ -675,10 +682,6 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 
 void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, const int &height)
 {
-#pragma omp parallel for
-	for (auto i = 0; i < 256; i++)
-		value[i] = (float)i;
-
 	int widthIn = head.biWidth;
 	int heightIn = head.biHeight;
 
@@ -1087,18 +1090,21 @@ bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
 	if (EncodeSafeCheck(hFile)) return false;
 
 
-#pragma omp parallel for
-	for (int32_t y1 = 0; y1 < head.biHeight; y1++)
- 	{
-		int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
-		for(int32_t x = 0; x < head.biWidth; x++) {
-			RGBQUAD color = BlindGetPixelColor(x,y);
-			hFile->PutC(color.rgbRed);
-			hFile->PutC(color.rgbGreen);
-			hFile->PutC(color.rgbBlue);
-			hFile->PutC(color.rgbReserved);
-		}
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int32_t y1 = 0; y1 < head.biHeight; y1++)
+			{
+				int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
+				for (int32_t x = 0; x < head.biWidth; x++) {
+					RGBQUAD color = BlindGetPixelColor(x, y);
+					hFile->PutC(color.rgbRed);
+					hFile->PutC(color.rgbGreen);
+					hFile->PutC(color.rgbBlue);
+					hFile->PutC(color.rgbReserved);
+				}
+			}
+		});
 	return true;
 }
 

@@ -310,53 +310,56 @@ wxImage CInterpolation::ExecuteNV12(uint8_t* data, const int& widthIn, const int
 
 	uint8_t* dataOut = imageout.GetData();
 
-#pragma omp parallel for
-	for (auto i = 0; i < size; ++i)
-	{
-		int y = i / width;
-		int x = i - (y * width);
-
-		float posY = static_cast<float>(y) * ratioY;
-		float posX = static_cast<float>(x) * ratioX;
-
-		if (angle == 90)
+	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+		[&](tbb::blocked_range<int> r)
 		{
-			int srcx = posY;
-			int srcy = posX;
+			for (auto i = 0; i < size; ++i)
+			{
+				int y = i / width;
+				int x = i - (y * width);
 
-			posX = srcx;
-			posY = srcy;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 
-			posX = widthIn - posX - 1;
-		}
-		else if (angle == 180)
-		{
-			posX = widthIn - posX - 1;
-			posY = heightIn - posY - 1;
-		}
-		else if (angle == 270)
-		{
-			int srcx = posY;
-			int srcy = posX;
+				if (angle == 90)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-			posX = srcx;
-			posY = srcy;
+					posX = srcx;
+					posY = srcy;
 
-			posY = heightIn - posY - 1;
-		}
+					posX = widthIn - posX - 1;
+				}
+				else if (angle == 180)
+				{
+					posX = widthIn - posX - 1;
+					posY = heightIn - posY - 1;
+				}
+				else if (angle == 270)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-		if (flipH == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
+					posX = srcx;
+					posY = srcy;
 
-		if (flipV == 1)
-		{
-			posY = heightIn - posY - 1;
-		}
-		CRgbaquad color = GetColorValueFromNV12(data, widthIn, heightIn, posX, posY, pitch, surfaceHeight);
-		memcpy(dataOut + (i * 3), &color, 3);
-	}
+					posY = heightIn - posY - 1;
+				}
+
+				if (flipH == 1)
+				{
+					posX = widthIn - posX - 1;
+				}
+
+				if (flipV == 1)
+				{
+					posY = heightIn - posY - 1;
+				}
+				CRgbaquad color = GetColorValueFromNV12(data, widthIn, heightIn, posX, posY, pitch, surfaceHeight);
+				memcpy(dataOut + (i * 3), &color, 3);
+			}
+		});
 	return imageout;
 }
 
@@ -384,53 +387,56 @@ const wxImage CInterpolation::Execute(uint8_t* data, const int& widthIn, const i
 
 	uint8_t* dataOut = imageout.GetData();
 
-#pragma omp parallel for
-	for (auto i = 0; i < size; ++i)
-	{
-		int y = i / width;
-		int x = i - (y * width);
-
-		float posY = static_cast<float>(y) * ratioY;
-		float posX = static_cast<float>(x) * ratioX;
-
-		if (angle == 90)
+	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+		[&](tbb::blocked_range<int> r)
 		{
-			int srcx = posY;
-			int srcy = posX;
+			for (auto i = 0; i < size; ++i)
+			{
+				int y = i / width;
+				int x = i - (y * width);
 
-			posX = srcx;
-			posY = srcy;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 
-			posX = widthIn - posX - 1;
-		}
-		else if (angle == 180)
-		{
-			posX = widthIn - posX - 1;
-			posY = heightIn - posY - 1;
-		}
-		else if (angle == 270)
-		{
-			int srcx = posY;
-			int srcy = posX;
+				if (angle == 90)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-			posX = srcx;
-			posY = srcy;
+					posX = srcx;
+					posY = srcy;
 
-			posY = heightIn - posY - 1;
-		}
+					posX = widthIn - posX - 1;
+				}
+				else if (angle == 180)
+				{
+					posX = widthIn - posX - 1;
+					posY = heightIn - posY - 1;
+				}
+				else if (angle == 270)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-		if (flipH == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
+					posX = srcx;
+					posY = srcy;
 
-		if (flipV == 1)
-		{
-			posY = heightIn - posY - 1;
-		}
-		CRgbaquad color = GetColorValue(data, widthIn, heightIn, posX, posY);
-		memcpy(dataOut + (i * 3), &color, 3);
-	}
+					posY = heightIn - posY - 1;
+				}
+
+				if (flipH == 1)
+				{
+					posX = widthIn - posX - 1;
+				}
+
+				if (flipV == 1)
+				{
+					posY = heightIn - posY - 1;
+				}
+				CRgbaquad color = GetColorValue(data, widthIn, heightIn, posX, posY);
+				memcpy(dataOut + (i * 3), &color, 3);
+			}
+		});
 	return imageout;
 }
 
@@ -457,53 +463,56 @@ wxImage CInterpolation::ExecuteYUV(CBitmapYUV* bmpYUV, const int& widthOut, cons
 
 	uint8_t* dataOut = imageout.GetData();
 
-#pragma omp parallel for
-	for (auto i = 0; i < size; ++i)
-	{
-		int y = i / width;
-		int x = i - (y * width);
-
-		float posY = static_cast<float>(y) * ratioY;
-		float posX = static_cast<float>(x) * ratioX;
-
-		if (angle == 90)
+	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+		[&](tbb::blocked_range<int> r)
 		{
-			int srcx = posY;
-			int srcy = posX;
+			for (auto i = 0; i < size; ++i)
+			{
+				int y = i / width;
+				int x = i - (y * width);
 
-			posX = srcx;
-			posY = srcy;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 
-			posX = bmpYUV->width - posX - 1;
-		}
-		else if (angle == 180)
-		{
-			posX = bmpYUV->width - posX - 1;
-			posY = bmpYUV->height - posY - 1;
-		}
-		else if (angle == 270)
-		{
-			int srcx = posY;
-			int srcy = posX;
+				if (angle == 90)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-			posX = srcx;
-			posY = srcy;
+					posX = srcx;
+					posY = srcy;
 
-			posY = bmpYUV->height - posY - 1;
-		}
+					posX = bmpYUV->width - posX - 1;
+				}
+				else if (angle == 180)
+				{
+					posX = bmpYUV->width - posX - 1;
+					posY = bmpYUV->height - posY - 1;
+				}
+				else if (angle == 270)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-		if (flipH == 1)
-		{
-			posX = bmpYUV->width - posX - 1;
-		}
+					posX = srcx;
+					posY = srcy;
 
-		if (flipV == 1)
-		{
-			posY = bmpYUV->height - posY - 1;
-		}
-		CRgbaquad color = GetColorFromYUV(bmpYUV, posX, posY);
-		memcpy(dataOut + (i * 3), &color, 3);
-	}
+					posY = bmpYUV->height - posY - 1;
+				}
+
+				if (flipH == 1)
+				{
+					posX = bmpYUV->width - posX - 1;
+				}
+
+				if (flipV == 1)
+				{
+					posY = bmpYUV->height - posY - 1;
+				}
+				CRgbaquad color = GetColorFromYUV(bmpYUV, posX, posY);
+				memcpy(dataOut + (i * 3), &color, 3);
+			}
+		});
 	return imageout;
 }
 
@@ -531,53 +540,56 @@ wxImage* CInterpolation::ExecuteNV12(uint8_t* dataY, uint8_t* dataUV, const int&
 
 	uint8_t* dataOut = imageout->GetData();
 
-#pragma omp parallel for
-	for (auto i = 0; i < size; ++i)
-	{
-		int y = i / width;
-		int x = i - (y * width);
-
-		float posY = static_cast<float>(y) * ratioY;
-		float posX = static_cast<float>(x) * ratioX;
-
-		if (angle == 90)
+	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+		[&](tbb::blocked_range<int> r)
 		{
-			int srcx = posY;
-			int srcy = posX;
+			for (auto i = 0; i < size; ++i)
+			{
+				int y = i / width;
+				int x = i - (y * width);
 
-			posX = srcx;
-			posY = srcy;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 
-			posX = widthIn - posX - 1;
-		}
-		else if (angle == 180)
-		{
-			posX = widthIn - posX - 1;
-			posY = heightIn - posY - 1;
-		}
-		else if (angle == 270)
-		{
-			int srcx = posY;
-			int srcy = posX;
+				if (angle == 90)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-			posX = srcx;
-			posY = srcy;
+					posX = srcx;
+					posY = srcy;
 
-			posY = heightIn - posY - 1;
-		}
+					posX = widthIn - posX - 1;
+				}
+				else if (angle == 180)
+				{
+					posX = widthIn - posX - 1;
+					posY = heightIn - posY - 1;
+				}
+				else if (angle == 270)
+				{
+					int srcx = posY;
+					int srcy = posX;
 
-		if (flipH == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
+					posX = srcx;
+					posY = srcy;
 
-		if (flipV == 1)
-		{
-			posY = heightIn - posY - 1;
-		}
-		CRgbaquad color = GetColorFromNV12(dataY, dataUV, widthIn, heightIn, posX, posY);
-		memcpy(dataOut + (i * 3), &color, 3);
-	}
+					posY = heightIn - posY - 1;
+				}
+
+				if (flipH == 1)
+				{
+					posX = widthIn - posX - 1;
+				}
+
+				if (flipV == 1)
+				{
+					posY = heightIn - posY - 1;
+				}
+				CRgbaquad color = GetColorFromNV12(dataY, dataUV, widthIn, heightIn, posX, posY);
+				memcpy(dataOut + (i * 3), &color, 3);
+			}
+		});
 	return imageout;
 }
 
@@ -601,54 +613,57 @@ wxImage CInterpolation::Execute(CRegardsBitmap* In, const int& widthOut, const i
 
 	uint8_t* dataOut = imageout.GetData();
 
-#pragma omp parallel for
-	for (auto i = 0; i < size; ++i)
-	{
-		int y = i / widthOut;
-		int x = i - (y * widthOut);
-
-		float posY = static_cast<float>(y) * ratioY;
-		float posX = static_cast<float>(x) * ratioX;
-
-		if (angle == 90)
+	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+		[&](tbb::blocked_range<int> r)
 		{
-			int srcx = posY;
-			int srcy = heightIn - posX - 1;
+			for (auto i = 0; i < size; ++i)
+			{
+				int y = i / widthOut;
+				int x = i - (y * widthOut);
 
-			posX = srcx;
-			posY = srcy;
-		}
-		else if (angle == 180)
-		{
-			posX = widthIn - posX - 1;
-			posY = heightIn - posY - 1;
-		}
-		else if (angle == 270)
-		{
-			int srcx = widthIn - posY - 1;
-			int srcy = posX;
+				float posY = static_cast<float>(y) * ratioY;
+				float posX = static_cast<float>(x) * ratioX;
 
-			posX = srcx;
-			posY = srcy;
-		}
+				if (angle == 90)
+				{
+					int srcx = posY;
+					int srcy = heightIn - posX - 1;
 
-		if (flipH == 1)
-		{
-			posX = widthIn - posX - 1;
-		}
+					posX = srcx;
+					posY = srcy;
+				}
+				else if (angle == 180)
+				{
+					posX = widthIn - posX - 1;
+					posY = heightIn - posY - 1;
+				}
+				else if (angle == 270)
+				{
+					int srcx = widthIn - posY - 1;
+					int srcy = posX;
 
-		if (flipV == 0)
-		{
-			posY = heightIn - posY - 1;
-		}
+					posX = srcx;
+					posY = srcy;
+				}
 
-		CRgbaquad color = In->GetColorValue(posX, posY);
+				if (flipH == 1)
+				{
+					posX = widthIn - posX - 1;
+				}
 
-		//int calcul = (height - y - 1) * width + x;
-		dataOut[i * 3] = color.GetRed(); // R
-		dataOut[i * 3 + 1] = color.GetGreen(); // G
-		dataOut[i * 3 + 2] = color.GetBlue(); // B
-	}
+				if (flipV == 0)
+				{
+					posY = heightIn - posY - 1;
+				}
+
+				CRgbaquad color = In->GetColorValue(posX, posY);
+
+				//int calcul = (height - y - 1) * width + x;
+				dataOut[i * 3] = color.GetRed(); // R
+				dataOut[i * 3 + 1] = color.GetGreen(); // G
+				dataOut[i * 3 + 2] = color.GetBlue(); // B
+			}
+		});
 	return imageout;
 }
 

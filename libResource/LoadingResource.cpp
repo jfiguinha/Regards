@@ -38,18 +38,21 @@ wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap* bitmap)
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
-		for (auto i = 0; i < size; ++i)
-		{
-			int y = i / width;
-			int x = i - (y * width);
-			int positionInput = ((height - y - 1) * width + x) << 2;
-			int position = i * 3;
+		tbb::parallel_for(tbb::blocked_range<int>(0, size),
+			[&](tbb::blocked_range<int> r)
+			{
+				for (auto i = 0; i < size; ++i)
+				{
+					int y = i / width;
+					int x = i - (y * width);
+					int positionInput = ((height - y - 1) * width + x) << 2;
+					int position = i * 3;
 
-			dataOut[position] = data[positionInput + 2];
-			dataOut[position + 1] = data[positionInput + 1];
-			dataOut[position + 2] = data[positionInput];
-		}
+					dataOut[position] = data[positionInput + 2];
+					dataOut[position + 1] = data[positionInput + 1];
+					dataOut[position + 2] = data[positionInput];
+				}
+			});
 	}
 
 	return anImage;

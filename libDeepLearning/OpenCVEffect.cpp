@@ -4,7 +4,7 @@
 #include "OpenCVEffect.h"
 #include <RegardsBitmap.h>
 #include <CvPlot/cvplot.h>
-
+#include <tbb/parallel_for.h>
 using namespace Regards::OpenCV;
 using namespace cv;
 
@@ -23,12 +23,15 @@ void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
 	Mat chans[4];
 	split(src, chans);
 
-#pragma omp parallel for
-	for (int i = 0; i < 4; i++)
-	{
-		chans[i] = Mat::zeros(src.rows, src.cols, CV_8UC1);
-		equalizeHist(chans[i], chans[i]);
-	}
+	tbb::parallel_for(tbb::blocked_range<int>(0, 4),
+		[&](tbb::blocked_range<int> r)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				chans[i] = Mat::zeros(src.rows, src.cols, CV_8UC1);
+				equalizeHist(chans[i], chans[i]);
+			}
+		});
 
 	merge(chans, 4, src);
 }
