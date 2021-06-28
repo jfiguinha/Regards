@@ -1583,6 +1583,7 @@ void CCentralWindow::LoadPictureInThread(CPictureElement* pictureElement)
 
 	if (libPicture.TestIsVideo(localFile) && isVideoValid)
 	{
+		StopMusic();
 		SetVideo(localFile);
 	}
 	else if (libPicture.TestIsVideo(localFile) && !isVideoValid)
@@ -1890,7 +1891,7 @@ void CCentralWindow::StartMusic()
 
 	if (!musicDiaporama.empty() && wxFileExists(musicDiaporama))
 	{
-		if (!musicDiaporama.empty())
+		if (!musicDiaporama.empty() && musicStop)
 		{
 			ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
 			musicStop = false;
@@ -1905,7 +1906,7 @@ void CCentralWindow::StopMusic()
 	{
 		musicPosition = ffmfc->GetTimePosition();
 		if (ffmfc != nullptr)
-			ffmfc->Pause();
+			ffmfc->Quit();
 		ffmfcQuit = true;
 		musicStop = true;
 	}

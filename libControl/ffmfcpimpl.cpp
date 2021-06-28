@@ -333,6 +333,11 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	abortMutex.lock();
 	exit_video = false;
 	abortMutex.unlock();
+
+	// Shut down SDL audio.
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+
 }
 
 //ÍË³ö
@@ -1621,11 +1626,11 @@ int CFFmfcPimpl::audio_open(void* opaque, int64_t wanted_channel_layout, int wan
 
 	// Shut down SDL audio.
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
-
+	
 	// Attempt to initialize SDL audio.
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 		return -1;
-
+		
 
 	/*
 #ifdef _MSC_VER > 1900

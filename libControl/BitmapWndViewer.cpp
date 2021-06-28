@@ -632,13 +632,10 @@ void CBitmapWndViewer::AfterRender()
 		else if (config != nullptr)
 			numEffect = config->GetEffect();
 
-		if (isDiaporama)
+		if (isDiaporama && numEffect == 0)
 		{
-			if (isDiaporama && numEffect == 0)
-			{
-				startTransition = false;
-				bitmapInterface->TransitionEnd();
-			}
+			startTransition = false;
+				//bitmapInterface->TransitionEnd();
 		}
 
 		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)

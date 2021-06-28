@@ -237,6 +237,8 @@ void CFFmfc::ExitEvent(wxCommandEvent& event)
 
 void CFFmfc::QuitEvent(wxCommandEvent& event)
 {
+
+	
 	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
