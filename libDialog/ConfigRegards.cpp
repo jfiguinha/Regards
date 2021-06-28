@@ -358,10 +358,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetEffect(transition + 300);
 
 	int transitionDiaporama = rbTransitionDiaporamaEffect->GetSelection();
-	if (transitionDiaporama == 0)
-		regardsParam->SetDiaporamaTransitionEffect(0);
-	else
-		regardsParam->SetDiaporamaTransitionEffect(transitionDiaporama + 400);
+	regardsParam->SetDiaporamaTransitionEffect(transitionDiaporama + 400);
 
 	int autoRotate = rbAutoRotate->GetSelection();
 	if (autoRotate == 0)
