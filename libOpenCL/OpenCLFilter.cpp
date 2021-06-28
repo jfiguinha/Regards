@@ -26,55 +26,133 @@ COpenCLFilter::~COpenCLFilter()
 		delete hq3d;
 }
 
+cl_mem COpenCLFilter::BilateralEffect(cl_mem inputData, int width, int height, const int& fSize, const int& sigmaX, const int& sigmaP)
+{
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		cv::UMat cvDest;
+		cv::UMat cvSrc;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
+		cv::bilateralFilter(cvSrc, cvDest, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
+		value = CopyOpenCVTexture(cvImage, width, height);
+		cvDest.release();
+		cvSrc.release();
+		cvImage.release();
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	
+	return value;
+
+}
+
+cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int& h, const int& templateWindowSize, const int& searchWindowSize)
+{
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		cv::UMat cvDest;
+		cv::UMat cvSrc;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
+		cv::fastNlMeansDenoisingColored(cvSrc, cvDest, h, h, templateWindowSize, searchWindowSize);
+		cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
+		value = CopyOpenCVTexture(cvImage, width, height);
+		cvDest.release();
+		cvSrc.release();
+		cvImage.release();
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+	return value;
+
+}
+
 cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height, const int &size, const int &dynRatio)
 {
-	context->GetContextForOpenCV().bind();
-	cv::Mat cvDest;
-	cv::Mat cvSrc;
-	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
-	cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
-	cv::xphoto::oilPainting(cvSrc, cvDest, size, dynRatio, cv::COLOR_BGR2Lab);
-	cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
-	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
-	cvDest.release();
-	cvSrc.release();
-	cvImage.release();
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		cv::Mat cvDest;
+		cv::Mat cvSrc;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
+		cv::xphoto::oilPainting(cvSrc, cvDest, size, dynRatio, cv::COLOR_BGR2Lab);
+		cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
+		value = CopyOpenCVTexture(cvImage, width, height);
+		cvDest.release();
+		cvSrc.release();
+		cvImage.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 	return value;
 
 }
 
 cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
 {
-	context->GetContextForOpenCV().bind();
-	//bool frameStabilized = false;
-	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		//bool frameStabilized = false;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
-	cv::UMat ycbcr;
-	cv::UMat yChannel;
-	cv::UMat yChannelOut;
+		cv::UMat ycbcr;
+		cv::UMat yChannel;
+		cv::UMat yChannelOut;
 
-	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
-	cvtColor(cvImage, ycbcr, cv::COLOR_BGR2YCrCb);
+		cv::cvtColor(cvImage, cvImage, cv::COLOR_BGRA2BGR);
+		cvtColor(cvImage, ycbcr, cv::COLOR_BGR2YCrCb);
 
-	// Extract the Y channel
-	cv::extractChannel(ycbcr, yChannel, 0);
+		// Extract the Y channel
+		cv::extractChannel(ycbcr, yChannel, 0);
 
-	cv::xphoto::bm3dDenoising(yChannel, yChannelOut, fSigma);
+		cv::xphoto::bm3dDenoising(yChannel, yChannelOut, fSigma);
 
-	// Merge the the color planes back into an Lab image
-	cv::insertChannel(yChannelOut, ycbcr, 0);
+		// Merge the the color planes back into an Lab image
+		cv::insertChannel(yChannelOut, ycbcr, 0);
 
-	// convert back to RGB
-	cv::cvtColor(ycbcr, cvImage, cv::COLOR_Lab2BGR);
-	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
-	// Temporary Mat not reused, so release from memory.
-	yChannel.release();
+		// convert back to RGB
+		cv::cvtColor(ycbcr, cvImage, cv::COLOR_Lab2BGR);
+		cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+		// Temporary Mat not reused, so release from memory.
+		yChannel.release();
 
-	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
+		value = CopyOpenCVTexture(cvImage, width, height);
 
-	cvImage.release();
-	ycbcr.release();
-	yChannelOut.release();
+		cvImage.release();
+		ycbcr.release();
+		yChannelOut.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 	return value;
 }
 
@@ -82,16 +160,25 @@ cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float 
 
 cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent)
 {
-	context->GetContextForOpenCV().bind();
-	//bool frameStabilized = false;
-	cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		//bool frameStabilized = false;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
-	Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
+		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(cvImage);
 
-	cl_mem value = CopyOpenCVTexture(cvImage, width, height);
+		value = CopyOpenCVTexture(cvImage, width, height);
 
-	cvImage.release();
-
+		cvImage.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 	return value;
 }
 
@@ -528,203 +615,6 @@ cl_mem COpenCLFilter::Fusion(cl_mem inputData, cl_mem secondPictureData, const f
 			delete program;
 
 			for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-	return outputValue;
-}
-
-//-----------------------------------------------------------------------------------------------
-//Execute OPENCL Effect
-//-----------------------------------------------------------------------------------------------
-cl_mem COpenCLFilter::bilateral_filter(const int & radius, const int & preserve, cl_mem inputData, int width, int height)
-{
-	cl_mem outputValue = nullptr;
-	if(context != nullptr)
-	{
-		COpenCLProgram * programCL = GetProgram("IDR_BILATERALFILTER_RAW");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-			input->SetValue(inputData);
-			input->SetLibelle("input");
-			input->SetNoDelete(true);
-			vecParam.push_back(input);	
-
-			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-			paramWidth->SetValue(width);
-			paramWidth->SetLibelle("width");
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-			paramHeight->SetValue(height);
-			paramHeight->SetLibelle("height");
-			vecParam.push_back(paramHeight);
-
-			COpenCLParameterFloat * paramRadius = new COpenCLParameterFloat();
-			paramRadius->SetValue(radius);
-			paramRadius->SetLibelle("radius");
-			vecParam.push_back(paramRadius);
-
-			COpenCLParameterFloat * paramPreserve = new COpenCLParameterFloat();
-			paramPreserve->SetValue(preserve);
-			paramPreserve->SetLibelle("preserve");
-			vecParam.push_back(paramPreserve);
-
-			program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "bilateral_filter");
-			outputValue = program->GetOutput();
-			delete program;
-
-
-
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-	return outputValue;
-}
-
-//NlmeansFilter
-cl_mem COpenCLFilter::run2d(const int & FSIZE, const int & BSIZE,const float & SIGMA, cl_mem inputData, int width, int height)
-{
-	cl_mem outputValue = nullptr;
-	if(context != nullptr)
-	{
-		COpenCLProgram * programCL = GetProgram("IDR_BILATERALFILTER_RAW");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-			input->SetValue(inputData);
-			input->SetLibelle("input");
-			input->SetNoDelete(true);
-			vecParam.push_back(input);	
-
-			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-			paramWidth->SetValue(width);
-			paramWidth->SetLibelle("width");
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-			paramHeight->SetValue(height);
-			paramHeight->SetLibelle("height");
-			vecParam.push_back(paramHeight);
-
-			COpenCLParameterInt * paramfSize = new COpenCLParameterInt();
-			paramfSize->SetValue(FSIZE);
-			paramfSize->SetLibelle("FSIZE");
-			vecParam.push_back(paramfSize);
-
-			COpenCLParameterInt * paramBSize = new COpenCLParameterInt();
-			paramBSize->SetValue(BSIZE);
-			paramBSize->SetLibelle("BSIZE");
-			vecParam.push_back(paramBSize);
-
-			COpenCLParameterFloat * paramsigmaP = new COpenCLParameterFloat();
-			paramsigmaP->SetValue(SIGMA);
-			paramsigmaP->SetLibelle("SIGMA");
-			vecParam.push_back(paramsigmaP);
-
-			program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "run2d");
-			outputValue = program->GetOutput();
-			delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-	return outputValue;
-}
-
-//BilateralFilter
-cl_mem COpenCLFilter::bilat2(int fSize,  float sigmaX, float sigmaP, cl_mem inputData, int width, int height)
-{
-	cl_mem outputValue = nullptr;
-	if(context != nullptr)
-	{
-		COpenCLProgram * programCL = GetProgram("IDR_BILATERALFILTER_RAW");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-			input->SetValue(inputData);
-			input->SetLibelle("input");
-			input->SetNoDelete(true);
-			vecParam.push_back(input);	
-
-			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-			paramWidth->SetValue(width);
-			paramWidth->SetLibelle("width");
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-			paramHeight->SetValue(height);
-			paramHeight->SetLibelle("height");
-			vecParam.push_back(paramHeight);
-
-			COpenCLParameterInt * paramfSize = new COpenCLParameterInt();
-			paramfSize->SetValue(fSize);
-			paramfSize->SetLibelle("fSize");
-			vecParam.push_back(paramfSize);
-
-
-			COpenCLParameterFloat * paramsigmaX = new COpenCLParameterFloat();
-			paramsigmaX->SetValue(sigmaX);
-			paramsigmaX->SetLibelle("sigmaX");
-			vecParam.push_back(paramsigmaX);
-
-
-			COpenCLParameterFloat * paramsigmaP = new COpenCLParameterFloat();
-			paramsigmaP->SetValue(sigmaP);
-			paramsigmaP->SetLibelle("sigmaP");
-			vecParam.push_back(paramsigmaP);
-
-			try
-			{
-				program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
-				program->SetKeepOutput(true);
-				program->ExecuteProgram(programCL->GetProgram(), "bilat2");
-				outputValue = program->GetOutput();
-			}
-			catch(...)
-			{
-				outputValue = nullptr;
-			}
-			delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
 			{
 				if(!parameter->GetNoDelete())
 				{

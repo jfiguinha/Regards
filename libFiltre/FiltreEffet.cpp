@@ -77,15 +77,15 @@ int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
 	return 0;
 }
 
-int CFiltreEffet::BilateralFilter(int fSize, float sigmaX, float sigmaP)
+int CFiltreEffet::BilateralFilter(const int & fSize, const int& sigmaX, const int& sigmaP)
 {
 	return filtreEffet->BilateralFilter(fSize, sigmaX, sigmaP);
 }
 
 
-int CFiltreEffet::NlmeansFilter(int fsize, int bsize, float sigma)
+int CFiltreEffet::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
 {
-	return filtreEffet->NlmeansFilter(fsize, bsize, sigma);
+	return filtreEffet->NlmeansFilter(h, templateWindowSize, searchWindowSize);
 }
 
 int CFiltreEffet::MeanShift(const float& fSpatialRadius, const float& fColorRadius)

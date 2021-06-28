@@ -634,7 +634,7 @@ int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorR
 	return 0;
 }
 
-int CFiltreEffetCPU::BilateralFilter(int fSize, float sigmaX, float sigmaP)
+int CFiltreEffetCPU::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	CRegardsBitmap* bitmap;
 	if (preview)
@@ -656,7 +656,7 @@ int CFiltreEffetCPU::BilateralFilter(int fSize, float sigmaX, float sigmaP)
 	return -1;
 }
 
-int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
+int CFiltreEffetCPU::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
 {
 	CRegardsBitmap* bitmap;
 	if (preview)
@@ -666,10 +666,18 @@ int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
 
 	if (bitmap != nullptr)
 	{
-		auto nlmeans = new CNlmeans(fsize, bsize, sigma);
-		nlmeans->SetParameter(bitmap, backColor);
-		nlmeans->Compute();
-		delete nlmeans;
+		//auto nlmeans = new CNlmeans(fsize, bsize, sigma);
+		//nlmeans->SetParameter(bitmap, backColor);
+		//nlmeans->Compute();
+		//delete nlmeans;
+		Mat dst;
+		Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(src, dst, COLOR_BGRA2BGR);
+		fastNlMeansDenoisingColored(dst, src, h, h, templateWindowSize, searchWindowSize);
+		cvtColor(src, dst, COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		dst.release();
+		src.release();
 		return 0;
 	}
 	return -1;

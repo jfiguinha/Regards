@@ -24,9 +24,9 @@ namespace Regards
             CEffectParameter* GetDefaultEffectParameter();
 
         private:
-			wxString libelleEffectsigma;
-			wxString libelleEffectBSize;
-            wxString libelleEffectFSize;
+			wxString libelleEffectH;
+			wxString libelleEffectTemplateWindowSize;
+            wxString libelleEffectSearchWindowSize;
         };
     }
 }

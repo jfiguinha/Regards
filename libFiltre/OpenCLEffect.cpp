@@ -1316,7 +1316,7 @@ void COpenCLEffect::SetOutputValue(cl_mem output, int widthOutput, int heightOut
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 
-int COpenCLEffect::BilateralFilter(int fSize, float sigmaX, float sigmaP)
+int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	cl_mem output = nullptr;
 	int _width = 0;
@@ -1328,13 +1328,13 @@ int COpenCLEffect::BilateralFilter(int fSize, float sigmaX, float sigmaP)
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.bilat2(fSize, sigmaX, sigmaP, paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.BilateralEffect(paramOutput->GetValue(), widthOut, heightOut, fSize, sigmaX, sigmaP);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.bilat2(fSize, sigmaX, sigmaP, input->GetValue(), width, height);
+			output = openclFilter.BilateralEffect(input->GetValue(), width, height, fSize, sigmaX, sigmaP);
 		}
 
 		SetOutputValue(output, _width, _height);
@@ -1394,7 +1394,7 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 	return 0;
 }
 
-int COpenCLEffect::NlmeansFilter(int fsize, int bsize, float sigma)
+int COpenCLEffect::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
 {
 	int _width = 0;
 	int _height = 0;
@@ -1406,13 +1406,13 @@ int COpenCLEffect::NlmeansFilter(int fsize, int bsize, float sigma)
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.run2d(fsize, bsize, sigma, paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.NlMeans(paramOutput->GetValue(), widthOut, heightOut, h, templateWindowSize, searchWindowSize);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.run2d(fsize, bsize, sigma, input->GetValue(), width, height);
+			output = openclFilter.NlMeans(input->GetValue(), width, height, h, templateWindowSize, searchWindowSize);
 		}
 		SetOutputValue(output, _width, _height);
 	}

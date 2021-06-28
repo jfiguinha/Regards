@@ -10,9 +10,6 @@
 #endif
 #include <hqdn3d.h>
 
-
-using namespace std;
-using namespace Regards::OpenCL;
 class CRegardsBitmap;
 
 namespace Regards
@@ -29,7 +26,7 @@ namespace Regards
 			void SetFlag(const bool &useMemory)
 			{
 				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-			};
+			}
 
 			virtual ~COpenCLFilter();
 
@@ -38,9 +35,6 @@ namespace Regards
 			cl_mem Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cl_mem inputData, int width, int height);
 			cl_mem FiltreConvolution(const wxString &programName, const wxString &functionName, cl_mem inputData, int width, int height);
 			cl_mem MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cl_mem inputData, int width, int height);
-			cl_mem bilat2(int fSize,  float sigmaX, float sigmaP, cl_mem inputData, int width, int height);
-			cl_mem run2d(const int & FSIZE, const int & BSIZE,const float & SIGMA, cl_mem inputData, int width, int height);
-			cl_mem bilateral_filter(const int & radius, const int & preserve, cl_mem inputData, int width, int height);
 			cl_mem SharpenMasking(const float &sharpness, cl_mem inputData, int width, int height);
 			cl_mem PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cl_mem inputData, int width, int height);
 			cl_mem RGBFilter(const int &red, const int &green, const int &blue, cl_mem inputData, int width, int height);
@@ -65,8 +59,10 @@ namespace Regards
 			cl_mem ExtractBlocSize(cl_mem sourceData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 			cl_mem BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent);
+			cl_mem BilateralEffect(cl_mem inputData, int width, int height, const int& fSize, const int& sigmaX, const int& sigmaP);
 			cl_mem OilPaintingEffect(cl_mem inputData, int width, int height, const int &size, const int &dynRatio);
 			cl_mem Bm3d(cl_mem inputData, int width, int height, const float & fSigma);
+			cl_mem NlMeans(cl_mem inputData, int width, int height, const int& h, const int& templateWindowSize, const int& searchWindowSize);
 		protected:
 
 			cv::UMat GetOpenCVStruct(cl_mem inputData, int width, int height);

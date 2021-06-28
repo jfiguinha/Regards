@@ -19,8 +19,8 @@ public:
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
-	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
-	int NlmeansFilter(int fsize, int bsize, float sigma);
+	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
+	int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize);
 	int GetRgbaBitmap(void * cl_image){return -1;};
     void SetBitmap(CImageLoadingFormat * bitmap);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);

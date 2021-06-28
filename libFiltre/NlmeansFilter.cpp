@@ -17,9 +17,9 @@ using namespace Regards::Filter;
 
 CNlmeansFilter::CNlmeansFilter()
 {
-    libelleEffectFSize = CLibResource::LoadStringFromResource(L"LBLEFFECTFSIZE",1);//"Effect.FSize";
-	libelleEffectBSize= CLibResource::LoadStringFromResource(L"LBLEFFECTBSIZE",1);//"Effect.BSize";
-	libelleEffectsigma= CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);//LBLEFFECTSIGMA;//"Effect.Sigma";
+	libelleEffectH = "Effect.Filter Strengh";//CLibResource::LoadStringFromResource(L"LBLEFFECTFSIZE",1);//
+	libelleEffectTemplateWindowSize = "Effect.Template Size";//CLibResource::LoadStringFromResource(L"LBLEFFECTBSIZE",1);//"Effect.BSize";
+	libelleEffectSearchWindowSize = "Effect.Search Size";//CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);//LBLEFFECTSIGMA;//"Effect.Sigma";
 }
 
 int CNlmeansFilter::TypeApplyFilter()
@@ -56,14 +56,10 @@ void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap *
     vector<int> elementColor;
     for (auto i = 1; i < 100; i++)
         elementColor.push_back(i);
-
-	vector<float> elementSigma;
-	for (float i = 0; i < 100; i+=0.1)
-		elementSigma.push_back(i);
     
-    filtreInterface->AddTreeInfos(libelleEffectFSize,new CTreeElementValueInt(nlmeansEffectParameter->fSize), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectBSize,new CTreeElementValueInt(nlmeansEffectParameter->bSize), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectsigma,new CTreeElementValueFloat(nlmeansEffectParameter->sigma, 1), &elementSigma,4);
+    filtreInterface->AddTreeInfos(libelleEffectH,new CTreeElementValueInt(nlmeansEffectParameter->h), &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectTemplateWindowSize,new CTreeElementValueInt(nlmeansEffectParameter->templateWindowSize), &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectSearchWindowSize,new CTreeElementValueInt(nlmeansEffectParameter->searchWindowSize), &elementColor);
 }
 
 void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
@@ -94,17 +90,17 @@ void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
 		default: ;
 	}
 
-    if (key == libelleEffectFSize)
+    if (key == libelleEffectH)
     {
-        nlmeansEffectParameter->fSize = value;
+        nlmeansEffectParameter->h = value;
     }
-	else if (key == libelleEffectBSize)
+	else if (key == libelleEffectTemplateWindowSize)
     {
-        nlmeansEffectParameter->bSize = value;
+        nlmeansEffectParameter->templateWindowSize = value;
     }
-	else if (key == libelleEffectsigma)
+	else if (key == libelleEffectSearchWindowSize)
     {
-        nlmeansEffectParameter->sigma = value;
+        nlmeansEffectParameter->searchWindowSize = value;
     }
 }
 
@@ -113,7 +109,7 @@ void CNlmeansFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* e
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
-		filtreEffet->NlmeansFilter(nlmeansEffectParameter->fSize, nlmeansEffectParameter->bSize, nlmeansEffectParameter->sigma);
+		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
 	}
 }
 

@@ -5,15 +5,15 @@ class CNlmeansEffectParameter : public CEffectParameter
 public:
 	CNlmeansEffectParameter()
 	{
-		fSize = 1;
-		bSize = 1;
-		sigma = 1.0f;
+		h = 3;
+		templateWindowSize = 7;
+		searchWindowSize = 21;
 	};
 	~CNlmeansEffectParameter() override {};
 
-	int fSize;
-	int bSize;
-	float sigma;
+	int h;
+	int templateWindowSize;
+	int searchWindowSize;
 
 };
 

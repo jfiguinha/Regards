@@ -58,13 +58,10 @@ void CBilateralFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap
     for (auto i = 1; i < 100; i++)
         elementColor.push_back(i);
 
-	vector<float> elementSigma;
-	for (float i = 0; i < 100; i+=0.1)
-		elementSigma.push_back(i);
     
     filtreInterface->AddTreeInfos(libelleEffectSize,new CTreeElementValueInt(bilateralEffectParameter->fSize), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectsigmaX,new CTreeElementValueFloat(bilateralEffectParameter->sigmaX,1), &elementSigma,4);
-	filtreInterface->AddTreeInfos(libelleEffectsigmaP,new CTreeElementValueFloat(bilateralEffectParameter->sigmaP,1), &elementSigma,4);
+	filtreInterface->AddTreeInfos(libelleEffectsigmaX,new CTreeElementValueInt(bilateralEffectParameter->sigmaX), &elementColor);
+	filtreInterface->AddTreeInfos(libelleEffectsigmaP,new CTreeElementValueInt(bilateralEffectParameter->sigmaP), &elementColor);
 }
 
 void CBilateralFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
