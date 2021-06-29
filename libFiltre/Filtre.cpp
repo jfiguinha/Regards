@@ -246,9 +246,6 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 	float sum_y = 0;
 	float sum_z = 0;
 
-	float weight_y = 0;
-	float weight_z = 0;
-	
 	int maxPosition = pBitmap->GetBitmapSize();
 				
 	for(int i1 = -bSize;i1<=bSize;i1++)
@@ -310,8 +307,8 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 			dist_z *= 1.f/(2*fSize+1)/(2*fSize+1);
 
 			const float weight_x = exp(-1.f / sigma / sigma * dist_x);
-			weight_y = exp(-1.f/sigma/sigma*dist_y);
-			weight_z = exp(-1.f/sigma/sigma*dist_z);
+			const float weight_y = exp(-1.f / sigma / sigma * dist_y);
+			const float weight_z = exp(-1.f / sigma / sigma * dist_z);
 			
 			res_x += 1.f*r*weight_x;
 			res_y += 1.f*g*weight_y;
@@ -693,11 +690,11 @@ wxPoint CSwirl::PostFX(int x, int y, int width, int height, float radius, float 
 		pt2.x = s;
 		pt2.y = c;
 
-		FLOATPOINT ptOut;
-		ptOut.x = DotProduct(pt, pt1);
-		ptOut.y = DotProduct(pt, pt2);
+		FLOATPOINT pt_out;
+		pt_out.x = DotProduct(pt, pt1);
+		pt_out.y = DotProduct(pt, pt2);
 
-		pt = ptOut;
+		pt = pt_out;
 
 		//tc = vec2(dot(tc, vec2(c, -s)), dot(tc, vec2(s, c)));
 	}

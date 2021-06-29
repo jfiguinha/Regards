@@ -122,7 +122,7 @@ namespace Regards
 
 		protected:
 
-			int GetSizeData();
+			int GetSizeData() const;
 
 			cl_mem_flags  flag;
 			wxString filename;
