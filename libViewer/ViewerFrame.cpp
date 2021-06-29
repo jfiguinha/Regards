@@ -100,7 +100,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	frameScanner = nullptr;
 	viewerParam = new CMainParam();
 	CMainParamInit::Initialize(viewerParam);
-	this->wxTopLevelWindowMSW::Maximize();
+	Maximize();
 	viewerTheme = new CMainTheme();
 	CMainThemeInit::Initialize(viewerTheme);
 

@@ -39,7 +39,7 @@ J2kOption::J2kOption(wxWindow* parent)
 		(wxObjectEventFunction)&J2kOption::OnslCompressionCmdScroll);
 	//*)
 	slCompression->SetValue(70);
-	wxTopLevelWindowMSW::SetTitle("JPEG2000 Saving Option");
+	SetTitle("JPEG2000 Saving Option");
 }
 
 J2kOption::~J2kOption()

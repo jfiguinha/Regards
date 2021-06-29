@@ -21,7 +21,7 @@
 
 #include "FreeImage.h"
 #include "Utilities.h"
-
+#include <cstring>
 // ----------------------------------------------------------
 //  internal conversions X to 4 bits
 // ----------------------------------------------------------

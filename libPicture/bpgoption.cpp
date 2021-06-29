@@ -41,7 +41,7 @@ CBpgOption::CBpgOption(wxWindow* parent)
 	slCompression->SetRange(0, 10);
 	slCompression->SetTick(1);
 	slCompression->SetValue(8);
-	wxTopLevelWindowMSW::SetTitle("bpg Saving Option");
+	SetTitle("bpg Saving Option");
 }
 
 CBpgOption::~CBpgOption()

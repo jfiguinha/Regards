@@ -32,7 +32,7 @@ ExrOption::ExrOption(wxWindow* parent)
 
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Exr Saving Option");
+	SetTitle("Exr Saving Option");
 }
 
 ExrOption::~ExrOption()

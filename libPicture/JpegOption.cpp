@@ -39,7 +39,7 @@ JpegOption::JpegOption(wxWindow* parent)
 		(wxObjectEventFunction)&JpegOption::OnslCompressionCmdScroll);
 	//*)
 	slCompression->SetValue(70);
-	wxTopLevelWindowMSW::SetTitle("Jpeg Saving Option");
+	SetTitle("Jpeg Saving Option");
 }
 
 JpegOption::~JpegOption()

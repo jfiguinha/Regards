@@ -38,7 +38,7 @@ private:
 	HWND    m_hWndParent;
 	LONG    m_bCancelled;
 	HANDLE  m_hInitDlg;
-	//HINSTANCE g_hInstance;
+	HINSTANCE g_hInstance;
 
 };
 

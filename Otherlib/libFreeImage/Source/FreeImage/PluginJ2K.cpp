@@ -2,7 +2,7 @@
 // JPEG2000 J2K codestream Loader and Writer
 //
 // Design and implementation by
-// - Hervé Drolon (drolon@infonie.fr)
+// - HervÃ© Drolon (drolon@infonie.fr)
 //
 // This file is part of FreeImage 3
 //
@@ -23,7 +23,7 @@
 #include "Utilities.h"
 #include "openjpeg.h"
 #include "J2KHelper.h"
-
+#include <cstring>
 // ==========================================================
 // Plugin Interface
 // ==========================================================

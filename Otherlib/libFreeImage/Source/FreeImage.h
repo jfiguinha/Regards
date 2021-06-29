@@ -3,7 +3,7 @@
 //
 // Design and implementation by
 // - Floris van den Berg (flvdberg@wxs.nl)
-// - Hervé Drolon (drolon@infonie.fr)
+// - HervÃ© Drolon (drolon@infonie.fr)
 //
 // Contributors:
 // - see changes log named 'Whatsnew.txt', see header of each .h and .cpp file
@@ -26,7 +26,10 @@
 #ifndef FREEIMAGE_H
 #define FREEIMAGE_H
 
-// Version information ------------------------------------------------------
+
+// Compiler options ---------------------------------------------------------
+
+#include <wchar.h>	// needed for UNICODE functions
 
 #define FREEIMAGE_MAJOR_VERSION   3
 #define FREEIMAGE_MINOR_VERSION   18

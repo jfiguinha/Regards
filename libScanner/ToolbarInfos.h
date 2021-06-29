@@ -2,6 +2,7 @@
 #include <ToolbarWindow.h>
 #include <ToolbarInterface.h>
 #include <ToolbarTexte.h>
+#include <ConfigParam.h>
 using namespace Regards::Window;
 
 
@@ -9,21 +10,21 @@ namespace Regards
 {
 	namespace Scanner
 	{
+
 		class CToolbarInfos : public CToolbarWindow
 		{
 		public:
-			CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
-			              CToolbarInterface* toolbarInterface, const bool& vertical);
-			~CToolbarInfos() override;
+			CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
+			~CToolbarInfos();
 			void SetInfosActif();
-			void SetInfosPush();
+            void SetInfosPush();
 			void SetOcrPush();
 			void SetOcrActif();
 
 			void SetEffectParameterInactif();
-			void SetEffectParameterActif(const wxString& libelle);
+			void SetEffectParameterActif(const wxString &libelle);
 
-			void set_effect_actif();
+			void SetEffectActif();
 			void SetEffectInactif();
 
 			void SetEffectPush();
@@ -33,16 +34,19 @@ namespace Regards
 			void SetEditorPush();
 
 		private:
-			void Resize() override;
-			void EventManager(const int& id) override;
 
-			CToolbarInterface* toolbarInterface;
-			CToolbarTexte* infos;
-			CToolbarTexte* ocrText;
-			CToolbarTexte* history;
-			CToolbarTexte* effect;
-			CToolbarTexte* editorParam;
-			CToolbarTexte* effectParameter;
+			virtual void Resize();
+			void EventManager(const int &id);
+
+			CToolbarInterface * toolbarInterface;
+			CToolbarTexte * infos;
+			CToolbarTexte * ocrText;
+			CToolbarTexte * history;
+			CToolbarTexte * effect;
+			CToolbarTexte * editorParam;
+			CToolbarTexte * effectParameter;
 		};
+
+
 	}
 }

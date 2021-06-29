@@ -1,6 +1,9 @@
 #pragma once
+#include <ToolbarInterface.h>
+#include <Photos.h>
 #include <WindowMain.h>
 #include <PanelWithClickToolbar.h>
+#include "ToolbarPDF.h"
 #include "FiltreToolbar.h"
 #include <BitmapInterface.h>
 using namespace std;
@@ -11,6 +14,7 @@ namespace Regards
 	namespace Control
 	{
 		class CShowBitmap;
+		
 	}
 }
 
@@ -23,56 +27,58 @@ namespace Regards
 {
 	namespace Scanner
 	{
+		
 		class CThumbnailMultiPage;
 		class CPanelInfosWnd;
 
 		class CViewerPDF : public CWindowMain, public CBitmapInterface
 		{
 		public:
-			CViewerPDF(wxWindow* parent, CScannerFrame* frame, wxWindowID idCTreeWithScrollbarInterface);
-			~CViewerPDF() override;
+			CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID idCTreeWithScrollbarInterface);
+			~CViewerPDF();
 
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 
-			void UpdateScreenRatio() override;
+			void UpdateScreenRatio();
 			void SetPosition(const long& timePosition);
 
 			wxString SetImage(wxImage imageFile);
-			void LoadFile(const wxString& filename);
-			CImageLoadingFormat* GetImage();
+			void LoadFile(const wxString &filename);
+			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
 			int GetAnimationPosition();
 
 			void HideValidationToolbar();
-			void ShowValidationToolbar(const bool& visible, const int& filtre);
+			void ShowValidationToolbar(const bool &visible, const int &filtre);
 
 		private:
-			bool GetProcessEnd() override;
+			
+			bool GetProcessEnd();
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
+					   
 
-
-			void LoadAnimationBitmap(const wxString& filename, const int& numFrame);
+			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 
 			void AnimationSetPosition(wxCommandEvent& event);
 			void OnFiltreOK(wxCommandEvent& event);
 			void OnFiltreCancel(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
-			void Resize() override;
-			void ImageSuivante() override;
-			void ImagePrecedente() override;
+			void Resize();
+			void ImageSuivante();
+			void ImagePrecedente();
 			int nbThumbnail;
 			bool showValidationToolbar = false;
 			//Thumbnail Video
-			CScrollbarWnd* scrollVideoWindow;
-			CThumbnailMultiPage* thumbnailVideo;
-			CFiltreToolbar* filtreToolbar;
-			CWindowManager* windowManager;
-			CPanelInfosWnd* panelInfosWindow;
+			CScrollbarWnd * scrollVideoWindow;
+			CThumbnailMultiPage * thumbnailVideo;
+			CFiltreToolbar * filtreToolbar;
+			CWindowManager * windowManager;
+			CPanelInfosWnd * panelInfosWindow;
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
-			CShowBitmap* showBitmapWindow;
+			CShowBitmap * showBitmapWindow;
 			bool checkValidity;
 			bool isFullscreen;
 			wxString filename;
@@ -81,11 +87,13 @@ namespace Regards
 
 			bool showToolbar;
 			int animationPosition;
-			vector<CImageVideoThumbnail*> pageThumbnail;
+			vector<CImageVideoThumbnail *> pageThumbnail;
 
-			CScannerFrame* frame = nullptr;
+			CScannerFrame * frame = nullptr;
 
 			bool isEffect;
 		};
+
+
 	}
 }

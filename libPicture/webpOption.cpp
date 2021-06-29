@@ -39,7 +39,7 @@ WebpOption::WebpOption(wxWindow* parent)
 		(wxObjectEventFunction)&WebpOption::OnslCompressionCmdScroll);
 	//*)
 	slCompression->SetValue(70);
-	wxTopLevelWindowMSW::SetTitle("Webp Saving Option");
+	SetTitle("Webp Saving Option");
 }
 
 WebpOption::~WebpOption()

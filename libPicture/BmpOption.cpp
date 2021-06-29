@@ -32,7 +32,7 @@ BmpOption::BmpOption(wxWindow* parent)
 
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Bmp Saving Option");
+	SetTitle("Bmp Saving Option");
 }
 
 BmpOption::~BmpOption()

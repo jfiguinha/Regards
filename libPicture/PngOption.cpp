@@ -32,7 +32,7 @@ PngOption::PngOption(wxWindow* parent)
 	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&PngOption::OnbtnCancelClick);
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Png Saving Option");
+	SetTitle("Png Saving Option");
 }
 
 PngOption::~PngOption()

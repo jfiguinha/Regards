@@ -39,7 +39,7 @@ JxrOption::JxrOption(wxWindow* parent)
 		(wxObjectEventFunction)&JxrOption::OnslCompressionCmdScroll);
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Jxr Saving Option");
+	SetTitle("Jxr Saving Option");
 }
 
 JxrOption::~JxrOption()

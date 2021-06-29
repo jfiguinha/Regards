@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libPicture" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="VideoDiaporama">
-    <File Name="ThumbnailVideoExport.h"/>
-    <File Name="ThumbnailVideoExport.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -30,6 +26,10 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="VideoDiaporama">
+    <File Name="ThumbnailVideoExport.h"/>
+    <File Name="ThumbnailVideoExport.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="hqdn3d">
     <File Name="hqdn3d.h"/>
     <File Name="hqdn3d.cpp"/>
@@ -118,6 +118,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="regards_webp.cpp"/>
+    <File Name="picture_utility.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="PictureData.cpp"/>
     <File Name="pfm.cpp"/>
@@ -126,6 +128,8 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="regards_webp.h"/>
+    <File Name="picture_utility.h"/>
     <File Name="avif.h"/>
     <File Name="PictureData.h"/>
     <File Name="pfm.h"/>

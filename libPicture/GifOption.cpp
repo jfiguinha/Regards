@@ -33,7 +33,7 @@ GifOption::GifOption(wxWindow* parent)
 	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&GifOption::OnbtnCancelClick);
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Gif Saving Option");
+	SetTitle("Gif Saving Option");
 }
 
 GifOption::~GifOption()

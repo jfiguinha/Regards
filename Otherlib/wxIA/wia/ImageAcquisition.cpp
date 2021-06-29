@@ -69,7 +69,7 @@ HRESULT ReadPropertyLong(
 
 		case VT_I4:
 		{
-			*plResult = PropVariant.lVal;
+			*plResult = (LONG)PropVariant.lVal;
 
 			hr = S_OK;
 

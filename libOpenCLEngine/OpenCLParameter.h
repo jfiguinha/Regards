@@ -16,7 +16,7 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		using COLORData = struct
+		struct COLORData
 		{
 			int red;
 			int green;

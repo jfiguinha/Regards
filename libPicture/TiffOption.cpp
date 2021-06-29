@@ -32,7 +32,7 @@ TiffOption::TiffOption(wxWindow* parent)
 
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Tiff Saving Option");
+	SetTitle("Tiff Saving Option");
 }
 
 TiffOption::~TiffOption()

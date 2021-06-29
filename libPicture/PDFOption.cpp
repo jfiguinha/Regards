@@ -32,7 +32,7 @@ PDFOption::PDFOption(wxWindow* parent)
 
 	//*)
 
-	wxTopLevelWindowMSW::SetTitle("Tiff Saving Option");
+	SetTitle("Tiff Saving Option");
 }
 
 PDFOption::~PDFOption()

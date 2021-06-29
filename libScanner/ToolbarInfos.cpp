@@ -5,22 +5,20 @@ using namespace Regards::Window;
 using namespace Regards::Scanner;
 
 
-CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme,
-                             CToolbarInterface* toolbarInterface, const bool& vertical)
-	: CToolbarWindow(parent, id, theme, vertical), editorParam(nullptr)
+CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	infos = nullptr;
 	history = nullptr;
 	effect = nullptr;
 	effectParameter = nullptr;
 	this->toolbarInterface = toolbarInterface;
-	saveLastPush = true;
-	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS", 1); // L"Infos";
+    saveLastPush = true;
+	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS",1);// L"Infos";
 	wxString ocr_label = "OCR";
-	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1); //L"History";
-	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1); //L"Effect";
-	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);
-	//L"Effect Parameter";
+	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);//L"History";
+	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1);//L"Effect";
+	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);//L"Effect Parameter";
 	wxString editor_label = "EDITOR";
 
 	infos = new CToolbarTexte(themeToolbar.texte);
@@ -62,7 +60,7 @@ CToolbarInfos::~CToolbarInfos()
 
 void CToolbarInfos::SetInfosPush()
 {
-	infos->SetPush(true);
+    infos->SetPush(true);
 }
 
 void CToolbarInfos::SetOcrPush()
@@ -102,7 +100,7 @@ void CToolbarInfos::SetEffectParameterInactif()
 	Refresh();
 }
 
-void CToolbarInfos::SetEffectParameterActif(const wxString& libelle)
+void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
 {
 	if (libelle != "")
 	{
@@ -125,26 +123,30 @@ void CToolbarInfos::SetOcrActif()
 void CToolbarInfos::SetInfosActif()
 {
 	//infos->SetActif();
-	infos->SetVisible(true);
+    infos->SetVisible(true);
 	toolbarInterface->ClickShowButton(WM_INFOS);
 }
 
 void CToolbarInfos::Resize()
 {
-	int nbElement = static_cast<int>(navElement.size());
+	int nbElement = (int)navElement.size();
 	themeToolbar.texte.SetTailleX(GetWindowWidth() / nbElement);
 
-	for (CToolbarElement* nav : navElement)
+	for (CToolbarElement * nav : navElement)
 	{
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
 	Refresh();
 }
 
-void CToolbarInfos::EventManager(const int& id)
+void CToolbarInfos::EventManager(const int &id)
 {
 	if (toolbarInterface != nullptr)
 	{
 		toolbarInterface->ClickShowButton(id);
 	}
 }
+
+
+
+

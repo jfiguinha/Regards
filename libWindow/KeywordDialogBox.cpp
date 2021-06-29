@@ -28,7 +28,7 @@ using namespace Regards::Sqlite;
 KeywordDialogBox::KeywordDialogBox(wxWindow* parent)
 {
 	//(*Initialize(ConfigRegards)
-	wxTopLevelWindowMSW::SetTitle("Keyword List");
+	SetTitle("Keyword List");
 	wxXmlResource::Get()->LoadObject(this, parent, _T("KeywordDialogBox"), _T("wxDialog"));
 
 	CSqlFindCriteria sqlCriteria;

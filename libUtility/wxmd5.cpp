@@ -48,7 +48,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <wx/wfstream.h>
 #define MD5_HASHBYTES 16
 
 

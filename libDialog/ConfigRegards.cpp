@@ -28,7 +28,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 {
 	isOk = false;
 	//(*Initialize(ConfigRegards)
-	wxTopLevelWindowMSW::SetTitle("Regards Configuration");
+	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this, parent,_T("ConfigRegards"),_T("wxDialog"));
 	rbTransitionEffect = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBTRANSITIONEFFECT")));
 	rbTransitionDiaporamaEffect = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT")));

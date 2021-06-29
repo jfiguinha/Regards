@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <Wia.h>
+#include <Sti.h>
 #include "comptr.h"
 
 
