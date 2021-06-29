@@ -9,8 +9,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core.hpp>
-#include <webp/decode.h>
-#include <webp/encode.h>
+#include "regards_webp.h"
+#include "picture_utility.h"
 #include <ximage.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
@@ -794,18 +794,10 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				break;
 			}
 
-			//float quality_factor = 100 - quality;
-			uint8_t* output = nullptr;
-
 			regards->VertFlipBuf();
-
-			size_t size = WebPEncodeBGRA(regards->GetPtBitmap(),
-			                             regards->GetBitmapWidth(), regards->GetBitmapHeight(), regards->GetWidthSize(),
-			                             _option, &output);
-			writefile(fileName, output, size);
-
+			CRegardsWebp::SavePicture(fileName, regards, _option);
 			delete regards;
-			free(output);
+
 			break;
 		}
 
@@ -1629,6 +1621,11 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 			break;
 		}
 
+	case WEBP:
+		{
+			return CRegardsWebp::GetNbFrame(szFileName);
+		}
+
 	case PNG:
 	case GIF:
 		{
@@ -1750,6 +1747,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		switch (iFormat)
 		{
 #ifdef LIBHEIC
+		case WEBP:
 		case AVIF:
 		case HEIC:
 			{
@@ -1761,6 +1759,8 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 						CHeic::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), isMaster, delay);
 				else if (iFormat == AVIF)
 					listPicture = CAvif::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), delay);
+				else if(iFormat == WEBP)
+					listPicture = CRegardsWebp::GetAllPicture(szFileName, delay);
 				for (auto i = 0; i < listPicture.size(); i++)
 				{
 					auto imageVideoThumbnail = new CImageVideoThumbnail();
@@ -1785,7 +1785,6 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 			}
 			break;
 #endif
-
 
 		case TIFF:
 		case PDF:
@@ -2351,7 +2350,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		case BPG:
 			{
 				size_t data_size;
-				uint8_t* _compressedImage = readfile(fileName, data_size);
+				uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
 				if (_compressedImage != nullptr && data_size > 0)
 				{
 #if defined(WIN32)
@@ -2414,120 +2413,24 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 			break;
 #endif
 
-			/*
-		case EXR:
-		{
-			if (isThumbnail)
-			{
-				CRegardsBitmap * picture = nullptr;
-				Array2D<Rgba> pixels;
-				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Imath::Box2i dw = file.dataWindow();
-				int width = dw.max.x - dw.min.x + 1;
-				int height = dw.max.y - dw.min.y + 1;
-				pixels.resizeErase(height, width);
-				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-				file.readPixels(dw.min.y, dw.max.y);
-
-				if (width > 0 && height > 0)
-				{
-					picture = new CRegardsBitmap(width, height);
-					int k = 0;
-					uint8_t * data = picture->GetPtBitmap();
-					for (int i = 0; i < height; i++)
-					{
-						for (int j = 0; j < width; j++, k += 4)
-						{
-							float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-
-							data[k] = (int)(bvalue * 255.0);
-							data[k + 1] = (int)(gvalue * 255.0);
-							data[k + 2] = (int)(rvalue * 255.0);
-							data[k + 3] = (int)(avalue * 255.0);
-						}
-					}
-					picture->VertFlipBuf();
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
-			}
-			else
-			{
-				CRegardsFloatBitmap * picture = nullptr;
-				Array2D<Rgba> pixels;
-				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Imath::Box2i dw = file.dataWindow();
-				int width = dw.max.x - dw.min.x + 1;
-				int height = dw.max.y - dw.min.y + 1;
-				pixels.resizeErase(height, width);
-				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-				file.readPixels(dw.min.y, dw.max.y);
-
-				if (width > 0 && height > 0)
-				{
-					picture = new CRegardsFloatBitmap(width, height);
-					int k = 0;
-					float * data = picture->GetData();
-					for (int i = height - 1; i >= 0; i--)
-					{
-						for (int j = 0; j < width; j++, k += 4)
-						{
-							data[k] = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							data[k + 1] = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							data[k + 2] = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							data[k + 3] = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-						}
-					}
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
-			}
-		}
-		break;*/
-
 		case WEBP:
 			{
-				size_t data_size;
-				uint8_t* _compressedImage = readfile(fileName, data_size);
-				if (_compressedImage != nullptr && data_size > 0)
-				{
-					auto picture = new CRegardsBitmap();
-					int width = 0, height = 0;
-					uint8_t* data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
-					picture->SetBitmap(data, width, height, true, false);
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-					delete[] _compressedImage;
-				}
+				CRegardsBitmap* webp_bmp = CRegardsWebp::GetPicture(fileName);
+				bitmap->SetPicture(webp_bmp);
+				bitmap->SetFilename(fileName);
 			}
 			break;
 
 		case JPEG:
 			{
-				/*
-				
-				wxImage * image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_JPEG);
-				bitmap->SetPicture(image);
-				break;
-
-				*/
-
 				printf("CLibPicture LoadPicture JPEG \n");
-
-				//CxImage * _cxImage = nullptr;
-
-
 				if (isThumbnail)
 				{
 #ifdef TURBOJPEG
 					tjscalingfactor *scalingfactors = nullptr, sf = {1, 1};
 					int nsf = 0;
 					size_t _jpegSize;
-					uint8_t* _compressedImage = readfile(fileName, _jpegSize);
+					uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
 
 					//unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
 					//Getting the size
@@ -3008,42 +2911,6 @@ bool CLibPicture::HasThumbnail(const wxString& filename)
 	return false;
 }
 
-void CLibPicture::writefile(const wxString& fileName, uint8_t* data, size_t& size)
-{
-	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	FILE* file;
-	if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "wb")) == nullptr)
-		cout << "File Failed To Load\n";
-	else
-	{
-		fwrite(data, size, 1, file);
-		fclose(file);
-	}
-}
-
-uint8_t* CLibPicture::readfile(const wxString& fileName, size_t& _fileSize)
-{
-	_fileSize = 0;
-	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	uint8_t* _compressedImage = nullptr;
-	FILE* file;
-	if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "rb")) == nullptr)
-		cout << "File Failed To Load\n";
-	else
-	{
-		long prev = ftell(file);
-		fseek(file, 0L, SEEK_END);
-		_fileSize = ftell(file);
-		fseek(file, prev,SEEK_SET);
-
-		//Creating a buffer and saving it back
-		_compressedImage = new uint8_t[_fileSize];
-		//cout << "fileSize" << fileSize;
-		fread(_compressedImage, _fileSize, 1, file);
-		fclose(file);
-	}
-	return _compressedImage;
-}
 
 //--------------------------------------------------------------------------------------------------
 //Fonction d'appel pour l'obtention des dimensions d'une image
@@ -3077,14 +2944,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case WEBP:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			size_t data_size;
-			uint8_t* data = readfile(fileName, data_size);
-			if (data != nullptr && data_size > 0)
-			{
-				//int result = 0;
-				WebPGetInfo(data, data_size, &width, &height);
-				delete[] data;
-			}
+			CRegardsWebp::GetPictureDimension(fileName, width, height);
 			break;
 		}
 
@@ -3094,7 +2954,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			size_t _jpegSize;
-			uint8_t* _compressedImage = readfile(fileName, _jpegSize);
+			uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
 			if (_compressedImage != nullptr && _jpegSize > 0)
 			{
 				int jpegSubsamp = 0;
@@ -3213,7 +3073,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			size_t data_size;
-			uint8_t* _compressedImage = readfile(fileName, data_size);
+			uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
 			if (_compressedImage != nullptr && data_size > 0)
 			{
 #if defined(WIN32)

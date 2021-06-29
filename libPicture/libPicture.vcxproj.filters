@@ -121,6 +121,12 @@
     <ClCompile Include="ThumbnailVideoExport.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="regards_webp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="picture_utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -269,6 +275,12 @@
     </ClInclude>
     <ClInclude Include="ThumbnailVideoExport.h">
       <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="regards_webp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="picture_utility.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -357,26 +357,6 @@ void CShowBitmap::TransitionEnd()
 
 void CShowBitmap::OnIdle(wxIdleEvent& evt)
 {
-	//TRACE();
-	/*
-	int numEffect = 0;
-		
-	if (configRegards != nullptr)
-		numEffect = configRegards->GetEffect();
-
-	if (numEffect != 0 && transitionEnd)
-	{
-		if(tempImage != nullptr)
-		{
-			bitmapWindow->SetBitmap(tempImage);
-			tempImage = nullptr;
-			transitionEnd = false;
-			if (pictureToolbar != nullptr)
-				pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
-			bitmapWindow->Refresh();
-		}
-	}
-	*/
 }
 
 //---------------------------------------------------------------------------------------

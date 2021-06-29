@@ -18,7 +18,7 @@ namespace Regards
 
 		private:
 
-			int TraitementResult(CSqlResult * sqlResult);
+			int TraitementResult(CSqlResult * sqlResult) override;
 			CatalogVector * m_catalogVector;
 		};
 	}
