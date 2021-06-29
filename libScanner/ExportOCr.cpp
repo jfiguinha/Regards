@@ -47,7 +47,6 @@ tesseract::TessBaseAPI CExportOcr::api;
 #endif
 
 #if defined(_WIN32)
-#include <fcntl.h>
 #include <io.h>
 #if defined(HAVE_TIFFIO_H)
 

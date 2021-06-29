@@ -4,7 +4,6 @@
 #undef fract1
 #include <leptonica/allheaders.h>
 #define fract1
-#include <ImageLoadingFormat.h>
 #include "PanelInfosWnd.h"
 #include <LibResource.h>
 #include "MainTheme.h"
@@ -19,7 +18,7 @@
 #include "ScannerFrame.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
-#include <libPicture.h>
+
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -257,9 +256,8 @@ void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFra
 	printf("CViewerPDF::LoadAnimationBitmap %d \n", numFrame);
 	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
-		CImageLoadingFormat * image = nullptr;
 		CLibPicture libPicture;
-		image = libPicture.LoadPicture(filename, false, numFrame);
+		CImageLoadingFormat* image = libPicture.LoadPicture(filename, false, numFrame);
 
 		COcrWnd * ocrWnd = (COcrWnd *)wxWindow::FindWindowById(SCANNER_OCRPAGE);
 		if (ocrWnd != nullptr)

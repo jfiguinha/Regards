@@ -1,9 +1,6 @@
 #pragma once
-#include <ToolbarInterface.h>
-#include <Photos.h>
 #include <WindowMain.h>
 #include <PanelWithClickToolbar.h>
-#include "ToolbarPDF.h"
 #include "FiltreToolbar.h"
 #include <BitmapInterface.h>
 using namespace std;

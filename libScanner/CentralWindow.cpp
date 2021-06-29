@@ -39,9 +39,9 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 
 	if (viewerTheme != nullptr)
 	{
-		CThemeToolbar theme;
-		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbarPDF = new CToolbarPDF(this, wxID_ANY, theme, false);
+		CThemeToolbar theme_toolbar;
+		viewerTheme->GetMainToolbarTheme(&theme_toolbar);
+		toolbarPDF = new CToolbarPDF(this, wxID_ANY, theme_toolbar, false);
 		toolbarPDF->Show(true);
 	}
 
@@ -175,6 +175,7 @@ int CCentralWindow::OnOpen(const int &type)
 
 				break;
 			}
+		default: ;
 		}
 
 		int position = 0;
@@ -287,7 +288,7 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality, int numpage)
 {
 	CLibPicture libPicture;
-	wxString file = "";
+	wxString file;
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 
 #ifdef WIN32
@@ -366,11 +367,6 @@ void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingForma
 			wxPrintOrientation orientation = (image.GetHeight() > image.GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
 			oPdfDocument.AddPage(orientation);
 
-			float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
-			//float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
-			//double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
-			//double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
-
 			if (option == 0)
 				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
 			else
@@ -417,11 +413,11 @@ int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameO
 					if (selectFile.ShowModal() == wxID_OK)
 					{
 						vector<int> listPage = selectFile.GetSelectItem();
-						for (int i = 0; i < listPage.size(); i++)
+						for (int numpage = 0; numpage < listPage.size(); numpage++)
 						{
 
-							CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, listPage[i]);
-							AddPdfPage(oPdfDocument, imageLoadingFormat, option, quality, i);
+							CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, listPage[numpage]);
+							AddPdfPage(oPdfDocument, imageLoadingFormat, option, quality, numpage);
 							nbPage++;
 							delete imageLoadingFormat;
 						}
@@ -526,9 +522,15 @@ void CCentralWindow::OnExit(wxCommandEvent& event)
 wxString CCentralWindow::LoadFile()
 {
 	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-	wxString szFilter = "";
 	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
-	szFilter = filename + " PDF(*.PDF) | *.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + " BMP(*.BMP)|*.bmp|" + filename + " BPG(*.BPG)|*.bpg|" + filename + " PCX(*.PCX)|*.pcx|" + filename + " JPEG(*.JPG)|*.jpg|" + filename + " TIFF(*.TIF)|*.tif|" + filename + " GIF(*.GIF)|*.gif|" + filename + " PNG(*.PNG)|*.png|" + filename + " TGA(*.TGA)|*.tga|" + filename + " JPEG2000(*.JP2)|*.jp2|" + filename + " JPC(*.JPC)|*.jpc|" + filename + " PPM(*.PPM)|*.ppm|" + filename + " MNG(*.MNG)|*.mng|" + filename + " WEBP (*.WEBP)|*.webp|" + filename + " IFF (*.IFF)|*.iff|" + filename + " XPM (*.XPM)|*.xpm|" + filename + " JXR (*.JXR)|*.jxr|" + filename + " EXR (*.EXR)|*.exr|" + filename + " J2K (*.J2K)|*.j2k|" + filename + " PFM (*.PFM)|*.pfm";
+	const wxString szFilter = filename + " PDF(*.PDF) | *.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename +
+		" BMP(*.BMP)|*.bmp|" + filename + " BPG(*.BPG)|*.bpg|" + filename + " PCX(*.PCX)|*.pcx|" + filename +
+		" JPEG(*.JPG)|*.jpg|" + filename + " TIFF(*.TIF)|*.tif|" + filename + " GIF(*.GIF)|*.gif|" + filename +
+		" PNG(*.PNG)|*.png|" + filename + " TGA(*.TGA)|*.tga|" + filename + " JPEG2000(*.JP2)|*.jp2|" + filename +
+		" JPC(*.JPC)|*.jpc|" + filename + " PPM(*.PPM)|*.ppm|" + filename + " MNG(*.MNG)|*.mng|" + filename +
+		" WEBP (*.WEBP)|*.webp|" + filename + " IFF (*.IFF)|*.iff|" + filename + " XPM (*.XPM)|*.xpm|" + filename +
+		" JXR (*.JXR)|*.jxr|" + filename + " EXR (*.EXR)|*.exr|" + filename + " J2K (*.J2K)|*.j2k|" + filename +
+		" PFM (*.PFM)|*.pfm";
 
 	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
 
@@ -678,9 +680,9 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 		for (std::vector<QPDFPageObjectHelper>::iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
 		{
 			bool find = false;
-			for (int i : listPage)
+			for (int i1 : listPage)
 			{
-				if (i == pageno)
+				if (i1 == pageno)
 				{
 					find = true;
 					break;

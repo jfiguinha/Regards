@@ -159,5 +159,6 @@ void CToolbarPDF::EventManager(const int &id)
 		wxQueueEvent(central, event);
 	}
 	break;
+default: ;
 	}
 }

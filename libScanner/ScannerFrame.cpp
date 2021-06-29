@@ -10,8 +10,6 @@
 #include <wx/graphics.h>
 #define USE_WIA_INTERFACE
 #endif
-#include <picture_id.h>
-#include <wx/filedlg.h>
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>
@@ -25,7 +23,8 @@
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
 #include <ImageLoadingFormat.h>
-#include <wx/choicdlg.h> 
+#include <MainThemeInit.h>
+#include <MainParamInit.h>
 using namespace Regards::Picture;
 using namespace Regards::Print;
 using namespace Regards::Introduction;
@@ -58,7 +57,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 {
 
 	SetIcon(wxICON(sample));
-	this->Maximize();
+	Maximize();
 	this->mainInterface = mainInterface;
 
 	viewerParam = new CMainParam();
@@ -194,10 +193,8 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 {
-	//centralWindow->LoadFile();
-	int value = -1;
 	if (centralWindow != nullptr)
-		value = centralWindow->OnOpen(0);
+		centralWindow->OnOpen(0);
 }
 
 // event handlers
@@ -452,5 +449,6 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 			event.Enable(false);
 		break;
 	}
+	default: ;
 	}
 }

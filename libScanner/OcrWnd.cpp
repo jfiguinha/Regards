@@ -103,7 +103,6 @@ void COcrWnd::OnExport(wxCommandEvent& event)
 void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 {
 	int id = aEvent.GetInt();
-	wxString label = "";
 
 	for (ChOcrElement * text : listRect)
 	{
@@ -113,7 +112,7 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 			if (id == bboxText->id)
 			{
 				if (bboxText != nullptr)
-					label = bboxText->label;
+					wxString label = bboxText->label;
 				break;
 			}
 		}
@@ -208,7 +207,7 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	wxBitmap bitmap = wxBitmap(*image);
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
-	wxRect rc(0, 0, image->GetWidth(), image->GetHeight());
+	
 	//wxImage render = filtreEffet->GetwxImage();
 	
 	Drawing(&dc, bitmapViewer, dessin);
@@ -317,8 +316,8 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 		wxString error = "";
 		CExportOcr::ExportOcr(8, args, error);
 
-		for (int i = 0; i < 8; i++)
-			delete[] args[i];
+		for (int i1 = 0; i1 < 8; i1++)
+			delete[] args[i1];
 
 
 		wxRename(outputFile + "." + extension, outputFile);
@@ -439,10 +438,10 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 						xml_node<> * p_node = divchild_node->first_node("p");
 						if (p_node != 0)
 						{
-							xml_attribute<char> * libelle = p_node->first_attribute("class");
-							if (libelle != 0)
+							xml_attribute<char> * attribute = p_node->first_attribute("class");
+							if (attribute != 0)
 							{
-								string ocr_libelle = libelle->value();
+								string ocr_libelle = attribute->value();
 								if (ocr_libelle == "ocr_par")
 								{
 									ChOcrElementPar * elementPar = new ChOcrElementPar();
@@ -463,10 +462,10 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 								{
 									do
 									{
-										xml_attribute<char> * libelle = spanligne_node->first_attribute("class");
-										if (libelle != 0)
+										xml_attribute<char> * attribute = spanligne_node->first_attribute("class");
+										if (attribute != 0)
 										{
-											string ocr_libelle = libelle->value();
+											string ocr_libelle = attribute->value();
 											if (ocr_libelle == "ocr_line" || ocr_libelle == "ocr_header")
 											{
 												//BBoxText * bboxText = new BBoxText();
@@ -480,7 +479,7 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 												}
 
 												elementTitle->selected = true;
-												wxString libelle;
+												wxString wx_uni_char_refs;
 												xml_node<> * spanword_node = spanligne_node->first_node("span");
 												if (spanword_node != 0)
 												{
@@ -490,18 +489,18 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 														string class_libelle = lblClass->value();
 														wxString span_value = wxString::FromUTF8(spanword_node->value());
 														if (spanword_node != 0)
-															libelle.append(span_value);
+															wx_uni_char_refs.append(span_value);
 
 														spanword_node = spanword_node->next_sibling();
 														if (spanword_node != 0)
-															libelle.append(" ");
+															wx_uni_char_refs.append(" ");
 													} while (spanword_node != 0);
 												}
 
 												elementTitle->numLigne = numLigne;
-												elementTitle->label = libelle;
+												elementTitle->label = wx_uni_char_refs;
 
-												if (libelle != "")
+												if (wx_uni_char_refs != "")
 												{
 													elementTitle->id = id++;
 													listRect.push_back(elementTitle);
@@ -651,11 +650,9 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 	wxPanel *panel = new wxPanel(parent);
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-	wxGridBagSizer *gsizer = NULL;
-
 	wxStaticBox *sbox = new wxStaticBox(panel, wxID_ANY, wxString("Language : "));
 	wxStaticBoxSizer *sbsizer = new wxStaticBoxSizer(sbox, wxVERTICAL);
-	gsizer = new wxGridBagSizer(5, 5);
+	wxGridBagSizer* gsizer = new wxGridBagSizer(5, 5);
 	sbsizer->Add(gsizer, 0, wxEXPAND | wxALL, 5);
 	sizer->Add(sbsizer, 0, wxEXPAND | wxALL, 5);
 
@@ -730,8 +727,7 @@ void COcrWnd::tesseract_preprocess(wxString source_file, wxString out_file) {
 	l_float32 otsu_scorefract = 0.0f;
 
 
-	l_int32 status = 1;
-	l_float32 border_avg = 0.0f;
+	l_int32 status;
 	PIX *pixs = NULL;
 	//char *ext = NULL;
 
@@ -753,7 +749,7 @@ void COcrWnd::tesseract_preprocess(wxString source_file, wxString out_file) {
 
 		// Get the average intensity of the border pixels,
 		//with average of 0.0 being completely white and 1.0 being completely black. 
-		border_avg = pixAverageOnLine(otsu_pixs, 0, 0, otsu_pixs->w - 1, 0, 1);                               // Top 
+		l_float32 border_avg = pixAverageOnLine(otsu_pixs, 0, 0, otsu_pixs->w - 1, 0, 1);                               // Top 
 		border_avg += pixAverageOnLine(otsu_pixs, 0, otsu_pixs->h - 1, otsu_pixs->w - 1, otsu_pixs->h - 1, 1); // Bottom 
 		border_avg += pixAverageOnLine(otsu_pixs, 0, 0, 0, otsu_pixs->h - 1, 1);                               // Left 
 		border_avg += pixAverageOnLine(otsu_pixs, otsu_pixs->w - 1, 0, otsu_pixs->w - 1, otsu_pixs->h - 1, 1); // Right 

@@ -10,9 +10,8 @@
 #endif
 #include <MainInterface.h>
 #include <MainTheme.h>
-#include <MainThemeInit.h>
 #include <MainParam.h>
-#include <MainParamInit.h>
+
 
 using namespace Regards::Scanner;
 

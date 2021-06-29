@@ -1,5 +1,4 @@
 #pragma once
-#include <Splitter.h>
 #include <PanelWithClickToolbar.h>
 #include "ScannerFrame.h"
 using namespace std;

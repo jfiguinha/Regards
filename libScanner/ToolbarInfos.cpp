@@ -6,19 +6,20 @@ using namespace Regards::Scanner;
 
 
 CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
-	: CToolbarWindow(parent, id, theme, vertical)
+	: CToolbarWindow(parent, id, theme, vertical), editorParam(nullptr)
 {
 	infos = nullptr;
 	history = nullptr;
 	effect = nullptr;
 	effectParameter = nullptr;
 	this->toolbarInterface = toolbarInterface;
-    saveLastPush = true;
-	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS",1);// L"Infos";
+	saveLastPush = true;
+	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS", 1); // L"Infos";
 	wxString ocr_label = "OCR";
-	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);//L"History";
-	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1);//L"Effect";
-	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);//L"Effect Parameter";
+	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1); //L"History";
+	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1); //L"Effect";
+	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);
+	//L"Effect Parameter";
 	wxString editor_label = "EDITOR";
 
 	infos = new CToolbarTexte(themeToolbar.texte);

@@ -311,6 +311,7 @@ void CPanelInfosWnd::LoadInfo()
 			infosToolbar->SetEditorPush();
 		}
 		break;
+		default: ;
 		}
 	}
 }
