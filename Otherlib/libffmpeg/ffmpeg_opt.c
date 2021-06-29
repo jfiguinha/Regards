@@ -20,6 +20,7 @@
  */
 
 #include <stdint.h>
+#include <libswresample/swresample.h>
 
 #include "ffmpeg.h"
 #include "cmdutils.h"
