@@ -1,4 +1,3 @@
-#pragma once
 #include <header.h>
 #ifdef __WXMSW__
 #include "DataClasses.h"
