@@ -286,6 +286,7 @@
         <Library Value="tbb"/>
         <Library Value="aom"/>
         <Library Value="webp"/>
+        <Library Value="webpdemux"/>
         <Library Value="png"/>
         <Library Value="IlmImf"/>
         <Library Value="opencv_calib3d"/>
