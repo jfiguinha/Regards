@@ -584,7 +584,7 @@ wxString CListPicture::CreateExportFolder(const InfoExportFile& infoFile, const 
 	wxString folderComplete = folderDestination;
 
 #if __APPLE__
-	separatorFolder = "/";
+	separator_folder = "/";
 #else
 	separator_folder = "\\";
 #endif

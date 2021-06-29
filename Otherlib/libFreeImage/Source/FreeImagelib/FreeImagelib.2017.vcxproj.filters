@@ -325,6 +325,9 @@
     <ClInclude Include="..\MapIntrospector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\FreeImageToolkit\Filters.h">
+      <Filter>Toolkit Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Whatsnew.txt" />
