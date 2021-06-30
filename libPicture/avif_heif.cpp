@@ -36,8 +36,7 @@ int CHeifAvif::GetNbFrame(const string& filename)
 CRegardsBitmap* CHeifAvif::GetThumbnailPicture(const string& filename)
 {
 	CRegardsBitmap* outputBitmap = nullptr;
-	struct heif_error err;
-	bool thumbnail_from_primary_image_only = true;
+	
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
@@ -48,31 +47,8 @@ CRegardsBitmap* CHeifAvif::GetThumbnailPicture(const string& filename)
 		heif_context_get_primary_image_handle(ctx, &handle);
 		if (handle)
 		{
-			// --- if image has a thumbnail, use that instead
-
-			if (!thumbnail_from_primary_image_only)
-			{
-				heif_item_id thumbnail_ID;
-				int nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, &thumbnail_ID, 1);
-				if (nThumbnails > 0)
-				{
-					struct heif_image_handle* thumbnail_handle;
-					err = heif_image_handle_get_thumbnail(handle, thumbnail_ID, &thumbnail_handle);
-					if (err.code)
-					{
-						std::cerr << "Could not read HEIF image : " << err.message << "\n";
-						return outputBitmap;
-					}
-
-					// replace image handle with thumbnail handle
-
-					heif_image_handle_release(handle);
-					handle = thumbnail_handle;
-				}
-			}
-
 			// --- decode the image (or its thumbnail)
-			struct heif_decoding_options* decode_options = heif_decoding_options_alloc();
+			heif_decoding_options* decode_options = heif_decoding_options_alloc();
 			decode_options->convert_hdr_to_8bit = true;
 
 			//int bit_depth = 8;
@@ -186,7 +162,6 @@ CRegardsBitmap* CHeifAvif::GetPicture(const string& filename)
 
 void CHeifAvif::SavePicture(const string& filenameOut, const int& type, CRegardsBitmap* source, const int& compression)
 {
-	struct heif_error err;
 	if (source)
 	{
 		heif_context* ctx = heif_context_alloc();
@@ -198,16 +173,21 @@ void CHeifAvif::SavePicture(const string& filenameOut, const int& type, CRegards
 				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
 			else if (type == HEIC)
 				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
+			else
+			{
+				heif_context_free(ctx);
+				return;
+			}
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);
 
 			// encode the image
 			heif_image* image; // code to fill in the image omitted in this example
 
-			err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
-			                        heif_colorspace_RGB,
-			                        heif_chroma_interleaved_RGBA,
-			                        &image);
+			heif_error err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
+			                                   heif_colorspace_RGB,
+			                                   heif_chroma_interleaved_RGBA,
+			                                   &image);
 			(void)err;
 
 			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
@@ -220,7 +200,7 @@ void CHeifAvif::SavePicture(const string& filenameOut, const int& type, CRegards
 			//source->HorzFlipBuf();
 			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
 			{
-				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
+				const int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
 				memcpy(p + y * stride, data + position, source->GetBitmapWidth() * 4);
 			}
 
@@ -283,7 +263,7 @@ void CHeifAvif::GetMetadata(const string& filename, uint8_t* & data, long& size)
 
 			if (count > 0)
 			{
-				size_t datasize = heif_image_handle_get_metadata_size(handle, metadata_id);
+				const size_t datasize = heif_image_handle_get_metadata_size(handle, metadata_id);
 				if (size > 0)
 				{
 					if (data)

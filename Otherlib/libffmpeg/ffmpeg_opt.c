@@ -19,18 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <stdint.h>
-#include <libswresample/swresample.h>
+
 
 #include "ffmpeg.h"
 #include "cmdutils.h"
-
 #include "libavformat/avformat.h"
-
 #include "libavcodec/avcodec.h"
-
 #include "libavfilter/avfilter.h"
-
 #include "libavutil/avassert.h"
 #include "libavutil/avstring.h"
 #include "libavutil/avutil.h"
@@ -42,6 +37,8 @@
 #include "libavutil/parseutils.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/pixfmt.h"
+#include <stdint.h>
+#include <libswresample/swresample.h>
 
 #define DEFAULT_PASS_LOGFILENAME_PREFIX "ffmpeg2pass"
 

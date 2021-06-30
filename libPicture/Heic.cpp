@@ -1314,7 +1314,6 @@ void CHeic::GetMetadata(const string& filename, uint8_t* & data, long& size)
 			pos += itemSize - 4;
 			memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
 			delete[] memoryBuffer;
-			itemSize = itemSize;
 		}
 		else
 			size = itemSize + 512;
