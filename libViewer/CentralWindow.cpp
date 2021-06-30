@@ -1330,7 +1330,11 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 					windowManager->ShowWindow(Pos::wxLEFT);
 				if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				{
+					windowManager->HidePaneWindow(Pos::wxRIGHT);
+					windowManager->ShowPaneWindow(Pos::wxRIGHT);
 					windowManager->ShowWindow(Pos::wxRIGHT);
+				}
 				if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
 					windowManager->HideWindow(Pos::wxBOTTOM);
 				if (windowManager->GetWindowIsShow(Pos::wxTOP))
@@ -1360,7 +1364,12 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 				windowManager->ShowWindow(Pos::wxLEFT);
 			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			{
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+				windowManager->ShowPaneWindow(Pos::wxRIGHT);
 				windowManager->ShowWindow(Pos::wxRIGHT);
+			}
+				
 
 			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
 				windowManager->HideWindow(Pos::wxBOTTOM);
