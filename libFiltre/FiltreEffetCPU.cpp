@@ -78,6 +78,91 @@ CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 	return pBitmap;
 }
 
+int CFiltreEffetCPU::BokehEffect(const int & blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int & dilation_size, const int & dilation_size2)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+	Mat dst;
+	Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	cvtColor(image, dst, COLOR_BGRA2BGR);
+
+	//double B_PARAM = 1.0 / 50.0;
+	//double T_PARAM = 1.0 / 200.0;
+	//double Zeta = 10.0;
+
+	// int blurvalue = 19;
+	// int bokehthresholdint = 253;
+	//int bokehthresholdint2 = 248;
+	// int dilation_size = 10;
+	//int dilation_size2 = 7;
+	
+	Mat result, baseblur, highlights, bokeh, mediums;
+	Mat avg_img, sqm_img;
+	Mat lower_img, upper_img, tmp_img;
+	Mat dst_img, msk_img;
+	Size s = dst.size();
+
+	medianBlur(dst, baseblur, (blurvalue / 2) * 2 + 1);
+	//brightness range
+	baseblur.copyTo(result);
+
+	Mat temp;
+	//convert to grayscale for thresholding
+	cvtColor(dst, temp, COLOR_BGR2YCrCb);
+	vector<Mat> planes;
+	split(temp, planes);
+	Mat bnw = planes[0];
+
+	threshold(bnw, highlights, bokehthreshold, 0.5, THRESH_TOZERO);//take only highlights
+	threshold(bnw, mediums, bokehthreshold2, 0.5, THRESH_TOZERO);
+	threshold(mediums, mediums, bokehthreshold, 0.5, THRESH_TOZERO_INV);//also shave off too bright ones
+	equalizeHist(highlights, highlights);
+	equalizeHist(mediums, mediums);
+
+	Mat dilationelement = getStructuringElement(MORPH_ELLIPSE,
+			  Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+					  Point(dilation_size, dilation_size));
+
+	dilate(highlights, temp, dilationelement);
+
+	dilationelement = getStructuringElement(MORPH_ELLIPSE,
+			  Size(2 * dilation_size2 + 1, 2 * dilation_size2 + 1),
+			   Point(dilation_size2, dilation_size2));
+	dilate(mediums, mediums, dilationelement);
+
+	temp.convertTo(bokeh, dst.type());
+
+	//convert grayscale bokeh image to RGB:
+	vector<Mat> channels;
+	channels.push_back(temp);
+	channels.push_back(temp);
+	channels.push_back(temp);
+	merge(channels, bokeh);
+	vector<Mat> channels2;
+	channels2.push_back(mediums);
+	channels2.push_back(mediums);
+	channels2.push_back(mediums);
+	Mat mediumbokeh;
+	merge(channels2, mediumbokeh);
+	//RGB conversion over
+
+	//blur bokeh a little bit:
+	cv::GaussianBlur(mediumbokeh, mediumbokeh, Size(0,0), 3, 3, 0);
+	blur(bokeh, bokeh, Size(2,2));
+
+	addWeighted(mediumbokeh, 0.3, baseblur, 1.0, 0.0, temp, -1);
+	addWeighted(bokeh, 0.5, temp, 0.9, 0.0, result, -1);
+
+	cvtColor(result, dst, COLOR_BGR2BGRA);
+	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+	dst.release();
+	image.release();
+	return 0;
+}
+
 int CFiltreEffetCPU::OilPaintingEffect(const int& size, const int& dynRatio)
 {
 	CRegardsBitmap* bitmap;

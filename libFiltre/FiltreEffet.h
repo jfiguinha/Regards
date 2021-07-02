@@ -40,6 +40,7 @@ public:
 	int RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter);
 	wxImage RenderEffectPreviewwxImage(const int &numEffect, CEffectParameter * effectParameter);
 	int SharpenMasking(const float &sharpness);
+	int BokehEffect(const int& blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int& dilation_size, const int& dilation_size2);
 	int HistogramNormalize();
 	int HistogramEqualize();
     bool OpenCLHasEnoughMemory();

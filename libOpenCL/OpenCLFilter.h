@@ -31,6 +31,7 @@ namespace Regards
 			virtual ~COpenCLFilter();
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
+			cl_mem BokehEffect(cl_mem inputData, int width, int height, const int& blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int& dilation_size, const int& dilation_size2);
 			cl_mem HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cl_mem inputData, int width, int height);
 			cl_mem Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cl_mem inputData, int width, int height);
 			cl_mem FiltreConvolution(const wxString &programName, const wxString &functionName, cl_mem inputData, int width, int height);

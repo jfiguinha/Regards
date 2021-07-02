@@ -477,6 +477,8 @@
     <ClInclude Include="bm3dEffectParameter.h" />
     <ClInclude Include="bm3dfilter.h" />
     <ClInclude Include="bm3dWindowFilter.h" />
+    <ClInclude Include="BokehEffectParameter.h" />
+    <ClInclude Include="BokehFilter.h" />
     <ClInclude Include="BrightAndContrastEffectParameter.h" />
     <ClInclude Include="BrightAndContrastFilter.h" />
     <ClInclude Include="CartoonEffectParameter.h" />
@@ -559,6 +561,7 @@
     <ClCompile Include="bm3d.cpp" />
     <ClCompile Include="bm3dfilter.cpp" />
     <ClCompile Include="bm3dWindowFilter.cpp" />
+    <ClCompile Include="BokehFilter.cpp" />
     <ClCompile Include="BrightAndContrastFilter.cpp" />
     <ClCompile Include="CartoonFilter.cpp" />
     <ClCompile Include="circle.cpp" />

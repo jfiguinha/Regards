@@ -26,6 +26,92 @@ COpenCLFilter::~COpenCLFilter()
 		delete hq3d;
 }
 
+cl_mem COpenCLFilter::BokehEffect(cl_mem inputData, int width, int height, const int& blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int& dilation_size, const int& dilation_size2)
+{
+	cl_mem value;
+	try
+	{
+		context->GetContextForOpenCV().bind();
+		cv::UMat cvDest;
+		cv::UMat cvSrc;
+		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
+		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
+
+		cv::UMat result, baseblur, highlights, bokeh, mediums;
+		cv::UMat avg_img, sqm_img;
+		cv::UMat lower_img, upper_img, tmp_img;
+		cv::UMat dst_img, msk_img;
+		cv::Size s = cvImage.size();
+
+		medianBlur(cvImage, baseblur, (blurvalue / 2) * 2 + 1);
+		//brightness range
+		baseblur.copyTo(result);
+
+		cv::UMat temp;
+		//convert to grayscale for thresholding
+		cv::cvtColor(cvImage, temp, cv::COLOR_BGR2YCrCb);
+		vector<cv::UMat> planes;
+		split(temp, planes);
+		cv::UMat bnw = planes[0];
+
+		threshold(bnw, highlights, bokehthreshold, 0.5, cv::THRESH_TOZERO);//take only highlights
+		threshold(bnw, mediums, bokehthreshold2, 0.5, cv::THRESH_TOZERO);
+		threshold(mediums, mediums, bokehthreshold, 0.5, cv::THRESH_TOZERO_INV);//also shave off too bright ones
+		equalizeHist(highlights, highlights);
+		equalizeHist(mediums, mediums);
+
+		cv::Mat dilationelement = cv::getStructuringElement(cv::MORPH_ELLIPSE,
+			cv::Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+			cv::Point(dilation_size, dilation_size));
+
+		dilate(highlights, temp, dilationelement);
+
+		dilationelement = cv::getStructuringElement(cv::MORPH_ELLIPSE,
+			cv::Size(2 * dilation_size2 + 1, 2 * dilation_size2 + 1),
+			cv::Point(dilation_size2, dilation_size2));
+		dilate(mediums, mediums, dilationelement);
+
+		temp.convertTo(bokeh, cvImage.type());
+
+		//convert grayscale bokeh image to RGB:
+		vector<cv::UMat> channels;
+		channels.push_back(temp);
+		channels.push_back(temp);
+		channels.push_back(temp);
+		merge(channels, bokeh);
+		vector<cv::UMat> channels2;
+		channels2.push_back(mediums);
+		channels2.push_back(mediums);
+		channels2.push_back(mediums);
+		cv::UMat mediumbokeh;
+		merge(channels2, mediumbokeh);
+		//RGB conversion over
+
+		//blur bokeh a little bit:
+		cv::GaussianBlur(mediumbokeh, mediumbokeh, cv::Size(0, 0), 3, 3, 0);
+		blur(bokeh, bokeh, cv::Size(2, 2));
+
+		addWeighted(mediumbokeh, 0.3, baseblur, 1.0, 0.0, temp, -1);
+		addWeighted(bokeh, 0.5, temp, 0.9, 0.0, result, -1);
+		
+		cv::cvtColor(result, cvImage, cv::COLOR_BGR2BGRA);
+		value = CopyOpenCVTexture(cvImage, width, height);
+		cvDest.release();
+		cvSrc.release();
+		cvImage.release();
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+
+	return value;
+}
+
 cl_mem COpenCLFilter::BilateralEffect(cl_mem inputData, int width, int height, const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	cl_mem value;

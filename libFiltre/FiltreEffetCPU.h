@@ -18,6 +18,7 @@ public:
 	int HistogramEqualize();
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
+	int BokehEffect(const int& blurvalue, const double& bokehthreshold, const double & bokehthreshold2, const int& dilation_size, const int& dilation_size2);
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 	int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize);
