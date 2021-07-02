@@ -34,6 +34,7 @@
 #include "CropFilter.h"
 #include <hqdn3dFilter.h>
 #include <OilPaintingFilter.h>
+#include <BokehFilter.h>
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
 #include <effect_id.h>
@@ -190,6 +191,12 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
     case IDM_SHARPENMASKING:
     {
         filterEffect = new  CSharpenMaskingFilter();
+        break;
+    }
+
+    case IDM_FILTRE_BOKEH:
+    {
+        filterEffect = new  CBokehFilter();
         break;
     }
 

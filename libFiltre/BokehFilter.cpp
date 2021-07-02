@@ -39,7 +39,7 @@ CBokehFilter::~CBokehFilter()
 
 wxString CBokehFilter::GetFilterLabel()
 {
-	return CLibResource::LoadStringFromResource("LBLBokehDENOISING", 1);
+	return "Bokeh Effect";//CLibResource::LoadStringFromResource("LBLBokehDENOISING", 1);
 }
 
 
@@ -65,7 +65,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 
 	vector<int> elementThreshold;
 	for (auto i = 1; i < 255; i++)
-		elementColor.push_back(i);
+		elementThreshold.push_back(i);
 
 	filtreInterface->AddTreeInfos(libelleEffectBlur, new CTreeElementValueInt(BokehEffectParameter->blurvalue), &elementColor);
 	filtreInterface->AddTreeInfos(libelleEffectBokehThreshold, new CTreeElementValueInt(BokehEffectParameter->bokehthreshold), &elementThreshold);
