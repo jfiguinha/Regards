@@ -216,6 +216,13 @@ void show_help_options(const OptionDef *options, const char *msg, int req_flags,
     printf("\n");
 }
 
+const AVClass* av_opt_child_class_iterate(const AVClass* parent, void** iter)
+{
+    if (parent->child_class_iterate)
+        return parent->child_class_iterate(iter);
+    return NULL;
+}
+
 void show_help_children(const AVClass *class, int flags)
 {
     void *iter = NULL;
@@ -226,7 +233,7 @@ void show_help_children(const AVClass *class, int flags)
     }
 
     while (child = av_opt_child_class_iterate(class, &iter))
-        show_help_children(child, flags);
+       show_help_children(child, flags);
 }
 
 static const OptionDef *find_option(const OptionDef *po, const char *name)
