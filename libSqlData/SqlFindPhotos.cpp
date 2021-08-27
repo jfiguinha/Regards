@@ -161,7 +161,7 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 
 		if(listFaceNotIn.size() > 0)
 		{
-			wxString value = wxString::Format(wxT("%f"), pertinence);
+			wxString value = wxString::Format(wxT("%f"), pertinence / 100.0f);
             reqSQIn.append(" and PH.NumPhoto in (");
             reqSQIn.append("select NumPhoto From Photos where FullPath in (Select distinct FullPath From FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace WHERE FACEPHOTO.Pertinence > " + value + " and NumFaceCompatible in (");
             reqSQIn.append(GetSearchSQL(listFaceSelected));
