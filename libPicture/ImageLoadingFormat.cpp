@@ -586,13 +586,14 @@ uint8_t* CImageLoadingFormat::GetJpegData(unsigned long& outputsize, int& compre
 		{
 			data = nullptr;
 			int32_t size = 0;
-			if (_cxImage->IsIndexed() || _cxImage->IsGrayScale())
-			{
+			//if (_cxImage->IsIndexed() || _cxImage->IsGrayScale())
+			//{
 				CRegardsBitmap* bitmap = GetRegardsBitmap();
 				data = CompressRegardsBitmapToJpeg(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(),
 				                                   bitmap->GetBitmapHeight(), outputsize);
 				compressMethod = 1;
 				delete bitmap;
+			/*
 			}
 			else
 			{
@@ -600,6 +601,7 @@ uint8_t* CImageLoadingFormat::GetJpegData(unsigned long& outputsize, int& compre
 				_cxImage->Encode(data, size, CxImage::GetTypeIdFromName("jpg"));
 				outputsize = size;
 			}
+			*/
 		}
 		break;
 
