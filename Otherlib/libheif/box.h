@@ -27,7 +27,7 @@
 
 #include <cinttypes>
 #include <cstddef>
-
+#include <limits>
 #include <vector>
 #include <string>
 #include <memory>
