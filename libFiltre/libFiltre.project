@@ -125,6 +125,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="BokehFilter.h"/>
+      <File Name="BokehFilter.cpp"/>
       <File Name="VignetteFilter.h"/>
       <File Name="VignetteFilter.cpp"/>
       <File Name="CartoonFilter.h"/>
