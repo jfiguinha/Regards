@@ -903,7 +903,8 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 					if (numActifPhotoId != -1)
 					{
 						CIcone* numActif = GetIconeById(numActifPhotoId);
-						numActif->SetActive(false);
+						if(numActif != nullptr)
+							numActif->SetActive(false);
 					}
 					needtoRedraw = true;
 					refreshTimer->Stop();

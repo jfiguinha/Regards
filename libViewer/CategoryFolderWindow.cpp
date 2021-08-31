@@ -495,12 +495,12 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 wxString CCategoryFolderWindow::GetSqlRequest()
 {
 	wxString sqlRequest = "";
-	auto viewerParam = CMainParamInit::getInstance();
-	if(viewerParam != nullptr)
-		sqlRequest = viewerParam->GetLastSqlRequest();
+	//auto viewerParam = CMainParamInit::getInstance();
+	//if(viewerParam != nullptr)
+	//	sqlRequest = viewerParam->GetLastSqlRequest();
 
-	//if (catalogWndOld != nullptr)
-	//	return catalogWndOld->GetSqlRequest();
+	if (catalogWndOld != nullptr)
+		return catalogWndOld->GetSqlRequest();
 	return sqlRequest;
 }
 
