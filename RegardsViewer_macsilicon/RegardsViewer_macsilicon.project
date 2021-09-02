@@ -389,6 +389,7 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libssl3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/opencore-amr/lib/libopencore-amrnb.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/opt/opencore-amr/lib/libopencore-amrwb.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openjpeg/lib/libopenjp2.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/opus/lib/libopus.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/pcre/lib/libpcre.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1046,8 +1047,6 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/openexr/lib/libIlmThread-3_0.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/imath/lib/libImath-3_0.28.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openexr/lib/libOpenEXR-3_0.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/opencore-amr/lib/libopencore-amrwb.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/opencore-amr/lib/libopencore-amrnb.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/jpeg-turbo/lib/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libxau/lib/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
