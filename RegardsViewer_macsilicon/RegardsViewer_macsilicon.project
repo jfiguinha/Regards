@@ -987,8 +987,6 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libsmime3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libssl3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libssl3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp /opt/homebrew/opt/nss/lib/libssl3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/webp/lib/libwebpdecoder.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/webp/lib/libwebpdemux.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
