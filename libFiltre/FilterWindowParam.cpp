@@ -139,18 +139,19 @@ void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filt
 	case 5://left side top
 		filtre->Rotate90();
 		filtre->FlipVertical();
-		filtre->FlipHorizontal();
 		break;
 	case 6:// right side top
 		filtre->Rotate90();
 		filtre->FlipVertical();
+        filtre->FlipHorizontal();
 		break;
 	case 7:// right side bottom
 		filtre->Rotate90();
+        filtre->FlipHorizontal();
 		break;
 	case 8:// left side bottom
 		filtre->Rotate90();
-		filtre->FlipHorizontal();
+		
 		break;
 	default: ;
 	}
