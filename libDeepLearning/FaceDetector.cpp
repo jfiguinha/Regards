@@ -873,6 +873,27 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox)
 	}
 }
 
+Mat Zscore(const Mat& fc) {
+	Mat mean, std;
+	meanStdDev(fc, mean, std);
+	//    cout << mean << std << endl;
+	Mat fc_norm = (fc - mean) / std;
+	return fc_norm;
+
+}
+
+/**
+ * This module is using to computing the cosine distance between input feature and ground truth feature
+ */
+inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2) {
+	double dot = v1.dot(v2);
+	double denom_v1 = norm(v1);
+	double denom_v2 = norm(v2);
+
+	return dot / (denom_v1 * denom_v2);
+
+}
+
 
 Mat eval(Mat face)
 {
@@ -909,6 +930,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
 	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
 	Mat face1Vec = eval(face1);
+	Mat fc1 = Zscore(face1Vec);
 
 	if (faceRecognitonVec.size() > 0)
 	{
@@ -916,9 +938,12 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		{
 			Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
 			Mat face2Vec = eval(face2);
+			Mat fc2 = Zscore(face2Vec);
+			double confidence = CosineDistance(fc1, fc2);
 			//cout << "Face2Vec" << face2Vec << endl;
-			double confidence = face1Vec.dot(face2Vec);
+			//double confidence = face1Vec.dot(face2Vec);
 			//confidence = GetSimilarity(imageSrc, image);
+			//double confidence = fc1.dot(fc2);
 			if (maxConfidence < confidence)
 			{
 				predictedLabel = picture.numFaceCompatible;
