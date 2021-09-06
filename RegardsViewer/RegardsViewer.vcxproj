@@ -368,6 +368,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\tesserac
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\leptonica-1.80.0d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\iconv-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\iconv.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\freeglutd.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\gif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\glew32d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\Imath-2_5_d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\IlmThread-2_5_d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -624,6 +625,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libde265.dll" 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\gif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
