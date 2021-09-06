@@ -18,6 +18,14 @@ using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 using namespace std;
 
+struct FaceValueIntegration
+{
+	double pertinence;
+	int nbValue;
+};
+
+
+
 //#define CAFFE
 //#define WRITE_OUTPUT_SAMPLE
 
@@ -931,6 +939,8 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
 	Mat face1Vec = eval(face1);
 	Mat fc1 = Zscore(face1Vec);
+	std::map<int, FaceValueIntegration>::iterator it;
+	std::map<int, FaceValueIntegration> faceConfidence;
 
 	if (faceRecognitonVec.size() > 0)
 	{
@@ -947,17 +957,49 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			//double confidence = face1Vec.dot(face2Vec);
 			//confidence = GetSimilarity(imageSrc, image);
 			//double confidence = fc1.dot(fc2);
+			/*
+			it = faceConfidence.find(picture.numFaceCompatible);
+			if (it != faceConfidence.end())
+			{
+				FaceValueIntegration value = faceConfidence[picture.numFaceCompatible];
+				value.nbValue = value.nbValue + 1;
+				value.pertinence += confidence;
+			}
+			else
+			{
+				FaceValueIntegration value = {confidence, 1};
+				faceConfidence[picture.numFaceCompatible] = value;
+			}
+			*/
+
+			
 			if (maxConfidence < confidence)
 			{
 				predictedLabel = picture.numFaceCompatible;
 				maxConfidence = confidence;
 			}
+			
 
 			face2.release();
 			face2Vec.release();
 		}
 
+		/*
+		for (it = faceConfidence.begin(); it != faceConfidence.end(); it++)
+		{
+			int numFaceCompatible = it->first;
+			FaceValueIntegration value = faceConfidence[numFaceCompatible];
 
+			double confidence = value.pertinence / value.nbValue;
+
+			if (maxConfidence < confidence)
+			{
+				predictedLabel = numFaceCompatible;
+				maxConfidence = confidence;
+			}
+			
+		}
+		*/
 		if (maxConfidence > 0.6)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
