@@ -286,6 +286,8 @@ void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 	//	pushButton->Stop();
 
 	m_bMouseOver = false;
+	if (HasCapture())
+		ReleaseMouse();
 
 	for (CToolbarElement* nav : navElement)
 

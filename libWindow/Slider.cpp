@@ -6,6 +6,8 @@
 #include <ClosedHandCursor.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
+
+#include "ScrollbarHorizontalWnd.h"
 #include "SliderInterface.h"
 using namespace Regards::Window;
 
@@ -41,6 +43,7 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface* sliderEvent,
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CSlider::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CSlider::OnLButtonUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CSlider::OnMouseCaptureLost));
+	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CSlider::OnMouseLeave));
 }
 
 CSlider::~CSlider()
@@ -271,6 +274,19 @@ void CSlider::OnLButtonUp(wxMouseEvent& event)
 
 	if (sliderEvent != nullptr)
 		sliderEvent->MoveSlider(totalPastTimeInMilliseconds);
+}
+
+
+void CSlider::OnMouseLeave(wxMouseEvent& event)
+{
+	mouseBlock = false;
+	if (HasCapture())
+		ReleaseMouse();
+
+
+	if (sliderEvent != nullptr)
+		sliderEvent->MoveSlider(totalPastTimeInMilliseconds);
+
 }
 
 /*

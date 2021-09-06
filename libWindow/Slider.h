@@ -37,7 +37,8 @@ namespace Regards
 			void OnMouseCaptureLost(wxMouseEvent& event)
 			{
 			};
-
+			void OnMouseLeave(wxMouseEvent& event);
+			
 			void ClickLeftPage(const int& x);
 			void ClickRightPage(const int& x);
 			void DrawShapeElement(wxDC* deviceContext, const wxRect& rc);

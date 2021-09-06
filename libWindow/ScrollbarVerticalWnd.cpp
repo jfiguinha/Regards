@@ -58,7 +58,7 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString& windowName, wxWindo
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CScrollbarVerticalWnd::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CScrollbarVerticalWnd::OnLButtonUp));
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseHover));
-	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseLeave));
+	//Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseLeave));
 	Connect(TIMER_TRIANGLETOP, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerTriangleTop), nullptr,
 	        this);
 	Connect(TIMER_TRIANGLEBOTTOM, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerTriangleBottom),
@@ -364,6 +364,7 @@ bool CScrollbarVerticalWnd::IsMoving()
 {
 	return scrollMoving;
 }
+
 
 void CScrollbarVerticalWnd::OnMouseLeave(wxMouseEvent& event)
 {
