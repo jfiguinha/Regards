@@ -75,6 +75,8 @@ namespace Regards
 			void TestMaxX();
 			void TestMaxY();
 
+			virtual void DeleteIcone(CIcone* numSelect) {};
+
 			virtual void OnMouseRelease(const int& x, const int& y)
 			{
 			};

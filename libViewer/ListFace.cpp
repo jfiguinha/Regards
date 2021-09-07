@@ -159,6 +159,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
 
+	
+
 	isLoadingResource = true;
 	auto path = new CThreadFace();
 	path->mainWindow = this;
@@ -170,6 +172,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	listProcessWindow.push_back(this);
 }
+
+
 
 void CListFace::ClosePane()
 {

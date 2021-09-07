@@ -9,6 +9,7 @@
 #include <ParamInit.h>
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
+#include "OpenCVEffect.h"
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -936,6 +937,12 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	CSqlFacePhoto facePhoto;
 	CSqlFaceRecognition sqlfaceRecognition;
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
+
+	if(!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString()))
+	{
+		return 0;
+	}
+	
 	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
 	Mat face1Vec = eval(face1);
 	Mat fc1 = Zscore(face1Vec);
@@ -946,42 +953,31 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	{
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
-			Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
-			Mat face2Vec = eval(face2);
-			Mat fc2 = Zscore(face2Vec);
-			//double confidence = norm(face2Vec, face1Vec, NORM_L2);
-
-			
-			double confidence = CosineDistance(fc1, fc2);
-			//cout << "Face2Vec" << face2Vec << endl;
-			//double confidence = face1Vec.dot(face2Vec);
-			//confidence = GetSimilarity(imageSrc, image);
-			//double confidence = fc1.dot(fc2);
-			/*
-			it = faceConfidence.find(picture.numFaceCompatible);
-			if (it != faceConfidence.end())
+			try
 			{
-				FaceValueIntegration value = faceConfidence[picture.numFaceCompatible];
-				value.nbValue = value.nbValue + 1;
-				value.pertinence += confidence;
-			}
-			else
-			{
-				FaceValueIntegration value = {confidence, 1};
-				faceConfidence[picture.numFaceCompatible] = value;
-			}
-			*/
+				if (wxFileExists(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString()))
+				{
+					Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
+					Mat face2Vec = eval(face2);
+					Mat fc2 = Zscore(face2Vec);
+					double confidence = CosineDistance(fc1, fc2);
 
-			
-			if (maxConfidence < confidence)
-			{
-				predictedLabel = picture.numFaceCompatible;
-				maxConfidence = confidence;
-			}
-			
+					if (maxConfidence < confidence)
+					{
+						predictedLabel = picture.numFaceCompatible;
+						maxConfidence = confidence;
+					}
 
-			face2.release();
-			face2Vec.release();
+					face2.release();
+					face2Vec.release();
+				}
+
+
+			}
+			catch(...)
+			{
+				
+			}
 		}
 
 		/*

@@ -96,6 +96,7 @@ void CThumbnailFace::AddSeparatorBar(CIconeList* iconeListLocal, const wxString&
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+		pBitmapIcone->SetShowDelete(true);
 		iconeListLocal->AddElement(pBitmapIcone);
 	}
 
@@ -267,6 +268,9 @@ void CThumbnailFace::DeleteEmptyFace()
 			}
 		}
 	}
+
+	CSqlFacePhoto facePhoto;
+	facePhoto.RebuildLink();
 }
 
 
@@ -400,6 +404,26 @@ void CThumbnailFace::FindOtherElement(wxDC* dc, const int& x, const int& y)
 			}
 		}
 	}
+}
+
+void CThumbnailFace::DeleteIcone(CIcone* numSelect)
+{
+	CSqlFaceThumbnail * face_thumbnail = (CSqlFaceThumbnail *)numSelect->GetData();
+	if(face_thumbnail != nullptr)
+	{
+		CSqlFacePhoto facePhoto;
+		facePhoto.DeleteNumFace(face_thumbnail->GetNumFace());
+
+		DeleteEmptyFace();
+
+		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(mainWnd, eventChange);
+
+		init();
+	}
+
+
 }
 
 void CThumbnailFace::ResizeThumbnail()

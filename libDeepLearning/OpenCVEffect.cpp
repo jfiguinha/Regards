@@ -9,13 +9,6 @@ using namespace Regards::OpenCV;
 using namespace cv;
 
 
-class COpenCVEffectPimpl
-{
-public:
-	static void BrightnessAndContrastAuto(Mat& image, float clipHistPercent = 0);
-	static void EqualizeHistogram(Mat& src);
-	static void BrightnessAndContrastAuto(UMat& image, float clipHistPercent);
-};
 
 
 void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
@@ -45,13 +38,13 @@ void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
  *  \param clipHistPercent cut wings of histogram at given percent tipical=>1, 0=>Disabled
  *  \note In case of BGRA image, we won't touch the transparency
 */
-auto COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPercent) -> void
+auto COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPercent, bool opencl) -> void
 {
 	int histSize = 256;
 	float alpha, beta;
 	double minGray = 0, maxGray = 0;
 
-	bool opencl = true;
+	
 	if (opencl)
 	{
 		UMat gray;

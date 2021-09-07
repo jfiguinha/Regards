@@ -27,8 +27,10 @@ namespace Regards
 		protected:
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
+			wxImage bitmapDelete;
 			wxImage bitmapEdit;
-
+			
+			wxString libelleDelete;
 			wxString libelleSelectIcone;
 			wxString libelleSelectAll;
 			bool isSelected;
@@ -36,6 +38,7 @@ namespace Regards
 			int numFace{};
 			wxRect rcSelect;
 			wxRect rcSelectIcone;
+			wxRect rcDeleteIcone;
 
 			int xPosEdit{};
 			int yPosEdit{};

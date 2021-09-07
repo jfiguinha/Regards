@@ -31,11 +31,11 @@ namespace Regards
 			vector<CImageLoadingFormat * > GetAllFace();
 			vector<CImageLoadingFormat *> GetAllFace(const int &numFace);
 			CImageLoadingFormat * GetFacePicture(const int &numFace);
-
+			void DeleteNumFace(const int& numFace);
 			int GetFaceCompatibleRecognition(const int& numFace);
 			vector<CFaceRecognitionData> GetAllNumFaceRecognition();
 			//vector<int> GetAllNumFaceRecognition(const int& numFace);
-
+			bool DeleteNumFaceMaster(const int& idFaceMaster);
 			vector<int> GetAllNumFace();
 			vector<int> GetAllNumFace(const int &numFace);
 			wxImage GetFace(const int &numFace);
@@ -44,9 +44,11 @@ namespace Regards
 			bool DeleteListOfPhoto(const vector<wxString> & listPhoto);
 			bool DeleteListOfPhoto(const vector<int> & listNumPhoto);
 			bool DeleteFaceTreatmentDatabase();
+			void RebuildLink();
+
 		private:
             void DeleteFaceNameAlone();
-			void RebuildLink();
+			
 			int TraitementResult(CSqlResult * sqlResult);
 			int64_t numFace;
 			int type;

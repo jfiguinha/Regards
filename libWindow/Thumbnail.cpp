@@ -1094,16 +1094,26 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	if (pBitmapIcone != nullptr)
 	{
 		numSelectPhotoId = iconePhotoId;
-		bool value = pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
+		int value = pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
 		//
-		if (!value)
+		if (value == 1)
 		{
 			CThumbnailData* data = pBitmapIcone->GetCopyData();
 			OnPictureClick(data);
 			delete data;
 		}
-
-		pBitmapIcone->SetSelected(true);
+		else if(value == 2)
+		{
+			DeleteIcone(pBitmapIcone);
+		}
+		else
+		{
+			CThumbnailData* data = pBitmapIcone->GetCopyData();
+			OnPictureClick(data);
+			delete data;
+			pBitmapIcone->SetSelected(true);
+		}
+			
 	}
 	else
 	{

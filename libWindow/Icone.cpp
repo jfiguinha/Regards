@@ -98,6 +98,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	showSelected = other.showSelected;
 	isChecked = other.isChecked;
 	isSelected = other.isSelected;
+	showDeleted = other.showDeleted;
 	photoDefault = other.photoDefault;
 	posXThumbnail = other.posXThumbnail;
 	posYThumbnail = other.posYThumbnail;
@@ -204,6 +205,7 @@ CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 	pictureLoad = false;
 	posXThumbnail = 0;
 	posYThumbnail = 0;
+	showDeleted = false;
 	state = INACTIFICONE;
 	isChecked = false;
 	numLib = LIBCPU;
@@ -213,6 +215,7 @@ CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 		numLib = config->GetEffectLibrary();
 
 	photoVector = CLibResource::GetVector(L"IDB_PHOTOTEMP");
+	deleteVector = CLibResource::GetVector(L"IDB_DELETE");
 	checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
 	checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
 	useBackgroundColor = false;
@@ -265,7 +268,7 @@ wxImage CIcone::GenerateVideoIcone()
 	return image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
 }
 
-bool CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur)
+int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur)
 {
 	wxRect checkPos;
 	int xPos = (x + posLargeur) - this->x;
@@ -278,9 +281,23 @@ bool CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const in
 	{
 		isChecked = !isChecked;
 		SetChecked(isChecked);
-		return true;
+		return 1;
 	}
-	return false;
+
+	if(showDeleted)
+	{
+		checkPos.x = themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge());
+		checkPos.width = checkPos.x + bitmapDelete.GetWidth();
+		checkPos.y = themeIcone.GetHeight() - themeIcone.GetCheckboxHeight();
+		checkPos.height = checkPos.y + themeIcone.GetCheckboxHeight();
+		if ((checkPos.x < xPos && xPos < checkPos.width) && (checkPos.y < yPos && yPos < checkPos.height))
+		{
+			return 2;
+		}
+	}
+
+	
+	return 0;
 }
 
 void CIcone::RenderPictureBitmap(wxDC* memDC, const wxImage& bitmapScale, const int& type)
@@ -387,6 +404,21 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, const wxImage& bitmapScale, const 
 				break;
 			}
 		}
+
+		if (showDeleted)
+		{
+			if (!bitmapDelete.IsOk() || (bitmapDelete.GetHeight() != themeIcone.GetCheckboxHeight() || bitmapDelete.
+				GetWidth() != themeIcone.GetCheckboxWidth()))
+			{
+				bitmapDelete = CLibResource::CreatePictureFromSVG("IDB_DELETE", themeIcone.GetCheckboxWidth(),
+					themeIcone.GetCheckboxHeight());
+				bitmapDelete = bitmapDelete.ConvertToDisabled();
+			}
+
+			memDC->DrawBitmap(bitmapDelete, themeIcone.GetWidth() - (bitmapDelete.GetWidth() + themeIcone.GetMarge()),
+					themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapDelete.GetHeight());
+
+		}
 	}
 
 	if (showLoading && pictureLoading.IsOk())
@@ -421,6 +453,10 @@ void CIcone::RenderPictureBitmap(wxDC* memDC, const wxImage& bitmapScale, const 
 	}
 }
 
+void CIcone::SetShowDelete(const bool& value)
+{
+	showDeleted = value;
+}
 
 void CIcone::RenderVideoBitmap(wxDC* memDC, const wxImage& bitmapScale, const int& type)
 {

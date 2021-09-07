@@ -36,6 +36,43 @@ int CSqlFacePhoto::GetVideoFacePosition(const int & numFaceid)
 	return numFace;
 }
 
+bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("Select distinct NumFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(numFace));
+	
+	if (listFaceIndex.size() > 0)
+	{
+		for(int faceId : listFaceIndex)
+		{
+			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(faceId);
+			if (wxFileExists(thumbnail))
+			{
+				wxRemoveFile(thumbnail);
+			}
+			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(faceId));
+		}
+	}
+	ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(numFace));
+	ExecuteRequestWithNoResult("DELETE FROM FACE_NAME WHERE NumFace = " + to_string(numFace));
+	DeleteFaceNameAlone();
+}
+
+void CSqlFacePhoto::DeleteNumFace(const int& numFace)
+{
+
+	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
+	if (wxFileExists(thumbnail))
+	{
+		wxRemoveFile(thumbnail);
+	}
+	
+	ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
+	ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
+	DeleteFaceNameAlone();
+
+}
 
 int CSqlFacePhoto::GetFaceCompatibleRecognition(const int& numFace)
 {

@@ -4,7 +4,18 @@ namespace cv
 {
 	class UMat;
 	class Mat;
+
+	class COpenCVEffectPimpl
+	{
+	public:
+		static void BrightnessAndContrastAuto(Mat& image, float clipHistPercent = 0, bool opencl = true);
+		static void EqualizeHistogram(Mat& src);
+		static void BrightnessAndContrastAuto(UMat& image, float clipHistPercent);
+	};
 }
+
+
+
 
 namespace Regards
 {

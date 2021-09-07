@@ -57,7 +57,7 @@ namespace Regards
 			int GetNumElement() { return numElement; };
 
 			void SetWindowPos(const int& x, const int& y);
-			bool OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur);
+			int OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur);
 
 			int GetXPos();
 			int GetYPos();
@@ -75,6 +75,8 @@ namespace Regards
 			void SetActive(const bool& value);
 			void SetSelected(const bool& value);
 			void SetChecked(const bool& value);
+
+			void SetShowDelete(const bool& value);
 
 			bool GetSelected();
 
@@ -123,16 +125,18 @@ namespace Regards
 
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
+			wxImage bitmapDelete;
 			bool useBackgroundColor;
 			wxString photoVector;
 			wxString checkOnVector;
 			wxString checkOffVector;
 			wxColour backgroundColor;
-
+			wxString deleteVector;
 
 			wxString tempImageVector;
 			bool pictureLoad;
 			bool showSelected;
+			bool showDeleted;
 			bool isChecked;
 			bool isSelected;
 			bool photoDefault;

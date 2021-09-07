@@ -73,7 +73,7 @@ namespace Regards
 
 			void UpdateStatusBarMessage(wxCommandEvent& event);
 
-
+			void OnDeleteFace(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);

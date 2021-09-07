@@ -44,6 +44,8 @@
 #include <OpenCVEffect.h>
 #include <ffplaycore.h>
 
+#include "SqlFacePhoto.h"
+
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -170,6 +172,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVENT_ENDCOMPRESSION, wxCommandEventHandler(CMainWindow::OnEndDecompressFile));
 	Connect(wxEVENT_UPDATETHUMBNAILEXIF, wxCommandEventHandler(CMainWindow::OnUpdateExifThumbnail));
 	Connect(wxEVENT_EXPORTDIAPORAMA, wxCommandEventHandler(CMainWindow::OnExportDiaporama));
+	Connect(wxEVENT_DELETEFACE, wxCommandEventHandler(CMainWindow::OnDeleteFace));
 
 	/*----------------------------------------------------------------------
 	 *
@@ -205,6 +208,32 @@ bool CMainWindow::IsVideo()
 	return false;
 }
 
+
+void CMainWindow::OnDeleteFace(wxCommandEvent& event)
+{
+	wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+	wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE", 1);
+
+	int answer = wxMessageBox("Do you want to delete this Person ?", information, wxYES_NO | wxCANCEL, nullptr);
+	if (answer == wxYES)
+	{
+		int faceId = event.GetInt();
+		CSqlFacePhoto sqlFacePhoto;
+		sqlFacePhoto.DeleteNumFaceMaster(faceId);
+		wxWindow* window = this->FindWindowById(LISTFACEID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(this, eventChange);
+	}
+	
+
+	
+}
 
 void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 {

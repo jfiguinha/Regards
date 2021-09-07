@@ -32,6 +32,7 @@ CInfosSeparationBarFace::CInfosSeparationBarFace(const CThemeInfosSeparationBar&
 	isSelectIcone = false;
 	libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSELECTABLE", 1);
 	libelleSelectIcone = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
+	libelleDelete = "Delete Face";
 }
 
 int CInfosSeparationBarFace::GetNumFace()
@@ -69,6 +70,17 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 		rcSelectIcone.y + rcSelectIcone.height)))
 	{
 		isSelectIcone = !isSelectIcone;
+	}
+	else if ((rcDeleteIcone.x < x && x < (rcDeleteIcone.x + rcDeleteIcone.width)) && ((rcDeleteIcone.y) < y && y < (
+		rcDeleteIcone.y + rcDeleteIcone.height)))
+	{
+		auto windowMain = static_cast<CWindowMain*>(parentWindow->FindWindowById(MAINVIEWERWINDOWID));
+		if (windowMain != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_DELETEFACE);
+			evt.SetInt(numFace);
+			windowMain->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 	else if ((xPosEdit < x && x < (xPosEdit + bitmapEdit.GetWidth())) && (yPosEdit < y && y < (yPosEdit + bitmapEdit.
 		GetHeight())))
@@ -120,6 +132,14 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 		bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", theme.GetCheckboxWidth(),
 		                                                    theme.GetCheckboxHeight());
 		bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
+	}
+
+	if (!bitmapDelete.IsOk() || (bitmapDelete.GetHeight() != theme.GetCheckboxHeight() || bitmapDelete.
+		GetWidth() != theme.GetCheckboxWidth()))
+	{
+		bitmapDelete = CLibResource::CreatePictureFromSVG("IDB_DELETE", theme.GetCheckboxWidth(),
+			theme.GetCheckboxHeight());
+		bitmapDelete = bitmapDelete.ConvertToDisabled();
 	}
 
 	if (!bitmapEdit.IsOk())
@@ -174,4 +194,22 @@ void CInfosSeparationBarFace::RenderIcone(wxDC* deviceContext, const int& posLar
 	yPos = y + (theme.GetHeight() - size.y) - (bitmapCheckOn.GetHeight() - size.y) / 2;
 
 	CWindowMain::DrawTexte(deviceContext, libelleSelectIcone, xPos, yPos, theme.themeFont);
+
+	xPos += size.x + 5;
+	yPos = y + (theme.GetHeight() - bitmapDelete.GetHeight());
+
+	if (bitmapDelete.IsOk())
+		deviceContext->DrawBitmap(bitmapDelete, xPos, yPos);
+
+	rcDeleteIcone.x = _xPos + xPos + posLargeur;
+	rcDeleteIcone.y = _yPos + yPos + posHauteur;
+	rcDeleteIcone.width = bitmapDelete.GetWidth();
+	rcDeleteIcone.height = bitmapDelete.GetHeight();
+
+	size = CWindowMain::GetSizeTexte(deviceContext, libelleDelete, theme.themeFont);
+
+	xPos = xPos + 5 + bitmapDelete.GetWidth();
+	yPos = y + (theme.GetHeight() - size.y) - (bitmapDelete.GetHeight() - size.y) / 2;
+
+	CWindowMain::DrawTexte(deviceContext, libelleDelete, xPos, yPos, theme.themeFont);
 }
