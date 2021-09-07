@@ -376,6 +376,10 @@ void CThumbnailFace::OnMouseRelease(const int& x, const int& y)
 		widthThumbnail = 0;
 		heightThumbnail = 0;
 		ResizeThumbnail();
+
+		wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(mainWnd, eventChange);
 	}
 }
 

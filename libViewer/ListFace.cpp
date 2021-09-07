@@ -612,6 +612,8 @@ void CListFace::ThumbnailMove(wxCommandEvent& event)
 		{
 			thumbnailFace->MoveFace(moveFaceDialog.GetFaceNameSelected());
 		}
+
+		//Cleanup Name
 	}
 }
 
