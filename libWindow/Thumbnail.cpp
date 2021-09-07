@@ -27,6 +27,7 @@ class CImageLoadingFormat;
 #define TIMER_LOADING 4
 #define TIMER_REFRESH 5
 #define TIMER_ANIMATION 6
+#define TIMER_CLICK 7
 
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
@@ -415,6 +416,10 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CThumbnail::OnLeaveWindow));
 
+
+	timeClick = new wxTimer(this, TIMER_CLICK);
+	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerClick), nullptr, this);
+
 	refreshTimer = new wxTimer(this, TIMER_REFRESH);
 	Connect(TIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIcone), nullptr, this);
 
@@ -444,6 +449,12 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	m_waitingAnimation->Hide();
 	//m_animation->SetSize(wxSize(this->GetHeight(), this->GetHeight()));
 	//m_animation->SetBackgroundColour(themeSlider.colorBack);
+}
+
+void CThumbnail::OnTimerClick(wxTimerEvent& event)
+{
+	moveOnPaint = true;
+	this->Refresh();
 }
 
 int CThumbnail::GetTabValue()
@@ -564,6 +575,8 @@ CThumbnail::~CThumbnail()
 
 	refreshTimer->Stop();
 
+	timeClick->Stop();
+
 	timerAnimation->Stop();
 
 	while (refreshTimer->IsRunning())
@@ -572,6 +585,7 @@ CThumbnail::~CThumbnail()
 	}
 
 	delete refreshTimer;
+	delete timeClick;
 
 	if (m_animation != nullptr)
 		delete m_animation;
@@ -856,8 +870,15 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 	bool needtoRedraw = false;
 	isMovingScroll = true;
+	bool isChecked = false;
+	if (numActifPhotoId != -1)
+	{
+		CIcone* numActif = GetIconeById(numActifPhotoId);
+		if (numActif != nullptr)
+			isChecked = numActif->IsChecked();
+	}
 
-	if (mouseClickBlock && enableDragAndDrop)
+	if (mouseClickBlock && enableDragAndDrop && isChecked)
 	{
 		int xPos = event.GetX();
 		int yPos = event.GetY();
@@ -869,11 +890,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			xPosDrag = xPos;
 			yPosDrag = yPos;
 
-			if (numActifPhotoId != -1)
-			{
-				CIcone* numActif = GetIconeById(numActifPhotoId);
-				numActif->SetChecked(true);
-			}
+
 		}
 
 		if (yPos < 100)
@@ -1034,7 +1051,7 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-
+	timeClick->Stop();
 	mouseClickBlock = false;
 	if (mouseClickMove && enableDragAndDrop)
 	{
@@ -1054,6 +1071,17 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	int yPos = event.GetY();
 
 	mouseClickBlock = true;
+	bool isIconeSelected = false;
+	int iconePhotoId = -1;
+	CIcone* pBitmapIcone = FindElement(xPos, yPos);
+	if (pBitmapIcone != nullptr)
+		if (pBitmapIcone->GetData() != nullptr)
+		{
+			iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
+			isIconeSelected = pBitmapIcone->IsChecked();
+		}
+			
+	
 
 	if (numSelectPhotoId != -1)
 	{
@@ -1061,13 +1089,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
 	}
-
-	int iconePhotoId = -1;
-	CIcone* pBitmapIcone = FindElement(xPos, yPos);
-	if (pBitmapIcone != nullptr)
-		if (pBitmapIcone->GetData() != nullptr)
-			iconePhotoId = pBitmapIcone->GetData()->GetNumPhotoId();
-
+	
 
 	if (pBitmapIcone != nullptr)
 	{
@@ -1088,13 +1110,18 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		FindOtherElement(&winDC, xPos, yPos);
 	}
 
-	if (numActifPhotoId != -1 && enableDragAndDrop)
+	if (numActifPhotoId != -1 && enableDragAndDrop && isIconeSelected)
 	{
+		if (timeClick->IsRunning())
+			timeClick->Stop();
+		
+		timeClick->Start(1000);
+		
 		if (numActifPhotoId != -1)
 		{
 			int returnValue = 0;
 			CIcone* numActif = GetIconeById(numActifPhotoId);
-			bitmapIconDrag = numActif->GetBitmapIcone(returnValue);
+			bitmapIconDrag = numActif->GetBitmapIcone(returnValue, false, true);
 		}
 		wxImage image = bitmapIconDrag.ConvertToImage();
 		auto alphaData = new unsigned char[image.GetWidth() * image.GetHeight()];
@@ -1102,7 +1129,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		image.SetAlpha(alphaData);
 		bitmapIconDrag = image;
 	}
-	moveOnPaint = true;
+	//moveOnPaint = true;
 	this->Refresh();
 }
 
@@ -1379,6 +1406,18 @@ void CThumbnail::OnKeyDown(wxKeyEvent& event)
 		break;
 	case WXK_CONTROL:
 		controlKeyPush = true;
+		break;
+	case WXK_ESCAPE:
+		if (moveOnPaint)
+		{
+			timeClick->Stop();
+			mouseClickBlock = false;
+			if (mouseClickMove && enableDragAndDrop)
+			{
+				mouseClickMove = false;
+				this->Refresh();
+			}
+		}
 		break;
 	default: ;
 	}

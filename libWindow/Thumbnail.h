@@ -118,6 +118,7 @@ namespace Regards
 			void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 			void OnAnimation(wxTimerEvent& event);
 			void OnRefreshIcone(wxTimerEvent& event);
+			void OnTimerClick(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC* dc) = 0;
 			virtual void UpdateScroll() = 0;
 
@@ -164,6 +165,7 @@ namespace Regards
 			int Max;
 
 			wxTimer* refreshTimer;
+			wxTimer* timeClick;
 			CThemeThumbnail themeThumbnail;
 
 			int controlWidth;

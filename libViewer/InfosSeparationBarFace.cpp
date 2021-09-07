@@ -93,7 +93,7 @@ void CInfosSeparationBarFace::OnClick(const int& x, const int& y)
 		auto windowMain = static_cast<CWindowMain*>(parentWindow->FindWindowById(MAINVIEWERWINDOWID));
 		if (windowMain != nullptr)
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_FACEINFOSUPDATE);
+			wxCommandEvent evt(wxEVENT_FACEINFOSUPDATE);
 			windowMain->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
