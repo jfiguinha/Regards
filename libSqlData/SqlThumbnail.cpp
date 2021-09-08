@@ -71,6 +71,14 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 	return returnValue;
 }
 
+vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
+{
+	type = 7;
+	listPhoto.clear();
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL");
+	return listPhoto;
+}
+
 wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 {
 	type = 6;
@@ -126,6 +134,13 @@ bool CSqlThumbnail::DeleteThumbnail(const int & numPhoto)
 	}
 
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")") != -1) ? true : false;
+}
+
+void CSqlThumbnail::EraseThumbnail(const int& numPhoto)
+{
+	ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) (SELECT FullPath, 1, 0 FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
+	ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")");
+	
 }
 
 bool CSqlThumbnail::EraseThumbnail()

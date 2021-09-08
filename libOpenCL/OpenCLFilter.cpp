@@ -32,27 +32,27 @@ cl_mem COpenCLFilter::BokehEffect(cl_mem inputData, int width, int height, const
 	try
 	{
 		context->GetContextForOpenCV().bind();
-		cv::UMat cvDest;
-		cv::UMat cvSrc;
+		cv::Mat cvDest;
+		cv::Mat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
 
-		cv::UMat result, baseblur, highlights, bokeh, mediums;
-		cv::UMat avg_img, sqm_img;
-		cv::UMat lower_img, upper_img, tmp_img;
-		cv::UMat dst_img, msk_img;
-		cv::Size s = cvImage.size();
+		cv::Mat result, baseblur, highlights, bokeh, mediums;
+		cv::Mat avg_img, sqm_img;
+		cv::Mat lower_img, upper_img, tmp_img;
+		cv::Mat dst_img, msk_img;
+		cv::Size s = cvSrc.size();
 
-		medianBlur(cvImage, baseblur, (blurvalue / 2) * 2 + 1);
+		medianBlur(cvSrc, baseblur, (blurvalue / 2) * 2 + 1);
 		//brightness range
 		baseblur.copyTo(result);
 
-		cv::UMat temp;
+		cv::Mat temp;
 		//convert to grayscale for thresholding
-		cv::cvtColor(cvImage, temp, cv::COLOR_BGR2YCrCb);
-		vector<cv::UMat> planes;
+		cv::cvtColor(cvSrc, temp, cv::COLOR_BGR2YCrCb);
+		vector<cv::Mat> planes;
 		split(temp, planes);
-		cv::UMat bnw = planes[0];
+		cv::Mat bnw = planes[0];
 
 		threshold(bnw, highlights, bokehthreshold, 0.5, cv::THRESH_TOZERO);//take only highlights
 		threshold(bnw, mediums, bokehthreshold2, 0.5, cv::THRESH_TOZERO);
@@ -71,19 +71,19 @@ cl_mem COpenCLFilter::BokehEffect(cl_mem inputData, int width, int height, const
 			cv::Point(dilation_size2, dilation_size2));
 		dilate(mediums, mediums, dilationelement);
 
-		temp.convertTo(bokeh, cvImage.type());
+		temp.convertTo(bokeh, cvSrc.type());
 
 		//convert grayscale bokeh image to RGB:
-		vector<cv::UMat> channels;
+		vector<cv::Mat> channels;
 		channels.push_back(temp);
 		channels.push_back(temp);
 		channels.push_back(temp);
 		merge(channels, bokeh);
-		vector<cv::UMat> channels2;
+		vector<cv::Mat> channels2;
 		channels2.push_back(mediums);
 		channels2.push_back(mediums);
 		channels2.push_back(mediums);
-		cv::UMat mediumbokeh;
+		cv::Mat mediumbokeh;
 		merge(channels2, mediumbokeh);
 		//RGB conversion over
 

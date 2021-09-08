@@ -4,6 +4,7 @@
 #include <wx/fswatcher.h>
 #include <MyFrameIntro.h>
 #include <MainInterface.h>
+#include <FolderCatalog.h>
 
 using namespace Regards::Introduction;
 
@@ -101,6 +102,7 @@ namespace Regards
 #endif
 			void OnTimereventFileSysTimer(wxTimerEvent& event);
 			void OnTimerLoadPicture(wxTimerEvent& event);
+			void CheckDatabase(FolderCatalogVector & folderList);
 		wxDECLARE_EVENT_TABLE();
 
 

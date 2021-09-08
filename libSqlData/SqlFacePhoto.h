@@ -32,11 +32,13 @@ namespace Regards
 			vector<CImageLoadingFormat *> GetAllFace(const int &numFace);
 			CImageLoadingFormat * GetFacePicture(const int &numFace);
 			void DeleteNumFace(const int& numFace);
+			void EraseFace(const int& numFace);
 			int GetFaceCompatibleRecognition(const int& numFace);
 			vector<CFaceRecognitionData> GetAllNumFaceRecognition();
 			//vector<int> GetAllNumFaceRecognition(const int& numFace);
 			bool DeleteNumFaceMaster(const int& idFaceMaster);
 			vector<int> GetAllNumFace();
+			vector<int> GetAllThumbnailFace();
 			vector<int> GetAllNumFace(const int &numFace);
 			wxImage GetFace(const int &numFace);
 			bool DeleteFaceDatabase();

@@ -26,7 +26,8 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <OpenCLEngine.h>
-
+#include <SqlThumbnail.h>
+#include <SqlFacePhoto.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -111,52 +112,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
 
+	CheckDatabase(folderList);
+
 	exitTimer = new wxTimer(this, wxTIMER_EXIT);
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
 
-	bool folderChange = false;
-
-	m_watcher = new wxFileSystemWatcher();
-	m_watcher->SetOwner(this);
-	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
-
-	//Test de la validité des répertoires
-	for (CFolderCatalog folderlocal : folderList)
-	{
-		if (!wxDirExists(folderlocal.GetFolderPath()))
-		{
-			//Remove Folder
-			CSQLRemoveData::DeleteFolder(folderlocal.GetNumFolder());
-			folderChange = true;
-		}
-		else
-		{
-			CViewerFrame::AddFSEntry(folderlocal.GetFolderPath());
-		}
-	}
-
-	//Test de la validité des fichiers
-	PhotosVector photoList;
-	CSqlFindPhotos findphotos;
-	findphotos.GetAllPhotos(&photoList);
-	for (CPhotos photo : photoList)
-	{
-		if (!wxFileExists(photo.GetPath()))
-		{
-			//Remove Folder
-			CSQLRemoveData::DeletePhoto(photo.GetId());
-			folderChange = true;
-		}
-	}
-
-	if (folderChange)
-	{
-		auto viewerParam = CMainParamInit::getInstance();
-		wxString sqlRequest = viewerParam->GetLastSqlRequest();
-
-		CSqlFindPhotos sqlFindPhotos;
-		sqlFindPhotos.SearchPhotos(sqlRequest);
-	}
 
 	bool openFirstFile = true;
 	//SetIcon(wxIcon(wxT("regards.xpm")));
@@ -325,6 +285,80 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	mainInterface->HideAbout();
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
+}
+
+void CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
+{
+
+	bool folderChange = false;
+
+	//Test de la validité des répertoires
+	for (CFolderCatalog folderlocal : folderList)
+	{
+		if (!wxDirExists(folderlocal.GetFolderPath()))
+		{
+			//Remove Folder
+			CSQLRemoveData::DeleteFolder(folderlocal.GetNumFolder());
+			folderChange = true;
+		}
+		else
+		{
+			CViewerFrame::AddFSEntry(folderlocal.GetFolderPath());
+		}
+	}
+
+	m_watcher = new wxFileSystemWatcher();
+	m_watcher->SetOwner(this);
+	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
+
+
+
+	//Test de la validité des fichiers
+	PhotosVector photoList;
+	CSqlThumbnail sqlThumbnail;
+	CSqlFindPhotos findphotos;
+	findphotos.GetAllPhotos(&photoList);
+	for (CPhotos photo : photoList)
+	{
+		if (!wxFileExists(photo.GetPath()))
+		{
+			//Remove Folder
+			CSQLRemoveData::DeletePhoto(photo.GetId());
+			folderChange = true;
+		}
+	}
+
+	//Thumbnail Photo Verification
+	
+	vector<int> listPhoto = sqlThumbnail.GetAllPhotoThumbnail();
+	for (int numPhoto : listPhoto)
+	{
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
+		if (!wxFileExists(thumbnail))
+		{
+			sqlThumbnail.EraseThumbnail(numPhoto);
+		}
+	}
+
+	CSqlFacePhoto sqlFacePhoto;
+	vector<int> listFacePhoto = sqlFacePhoto.GetAllThumbnailFace();
+	for (int numPhoto : listFacePhoto)
+	{
+		wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numPhoto);
+		if (!wxFileExists(thumbnail))
+		{
+			sqlFacePhoto.EraseFace(numPhoto);
+		}
+	}
+	
+	if (folderChange)
+	{
+		auto viewerParam = CMainParamInit::getInstance();
+		wxString sqlRequest = viewerParam->GetLastSqlRequest();
+
+		CSqlFindPhotos sqlFindPhotos;
+		sqlFindPhotos.SearchPhotos(sqlRequest);
+	}
 }
 
 void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)

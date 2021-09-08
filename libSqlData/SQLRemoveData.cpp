@@ -170,6 +170,7 @@ bool CSQLRemoveData::DeletePhoto(const int & idPhoto)
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	CSqlPhotos sqlPhoto;
 	CSqlCriteria sqlCriteria;
+	CSqlThumbnail sqlThumbnail;
 
 	vector<int> listPhoto;
 	listPhoto.push_back(idPhoto);
@@ -183,5 +184,8 @@ bool CSQLRemoveData::DeletePhoto(const int & idPhoto)
 	sqlPhoto.DeletePhoto(idPhoto);
 	//Suppression des critères orphelins
 	sqlCriteria.DeleteCriteriaAlone();
+
+	sqlThumbnail.DeleteThumbnail(idPhoto);
+	
 	return 0;
 }
