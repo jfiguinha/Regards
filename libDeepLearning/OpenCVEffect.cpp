@@ -270,7 +270,15 @@ void COpenCVEffect::EqualizeHistogram(CRegardsBitmap* pBitmap)
 
 void COpenCVEffect::LoadAndRotate(const wxString& filePath, const int& rotate)
 {
+	if (!wxFileExists(filePath.ToStdString()))
+	{
+		return;
+	}
+	
 	Mat src = imread(filePath.ToStdString());
+	if (src.empty())
+		return;
+	
 	if (rotate == 90)
 	{
 		// Rotate clockwise 270 degrees

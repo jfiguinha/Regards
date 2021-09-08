@@ -62,10 +62,15 @@ bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
 void CSqlFacePhoto::EraseFace(const int& numFace)
 {
 	type = 1;
+	filename = "";
 	ExecuteRequest("Select FullPath FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
-	DeletePhotoFaceDatabase(filename);
-	InsertFaceTreatment(filename);
-	RebuildLink();
+	if(filename != "")
+	{
+		DeletePhotoFaceDatabase(filename);
+		InsertFaceTreatment(filename);
+		RebuildLink();
+	}
+
 }
 
 void CSqlFacePhoto::DeleteNumFace(const int& numFace)

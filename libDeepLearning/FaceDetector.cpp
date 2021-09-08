@@ -944,6 +944,9 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	}
 	
 	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+	if(face1.empty())
+		return 0;
+	
 	Mat face1Vec = eval(face1);
 	Mat fc1 = Zscore(face1Vec);
 	std::map<int, FaceValueIntegration>::iterator it;
@@ -958,6 +961,9 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 				if (wxFileExists(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString()))
 				{
 					Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
+					if (face2.empty())
+						continue;
+
 					Mat face2Vec = eval(face2);
 					Mat fc2 = Zscore(face2Vec);
 					double confidence = CosineDistance(fc1, fc2);
