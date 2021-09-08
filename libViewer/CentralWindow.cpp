@@ -1308,6 +1308,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Informations");
 
+			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			{
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+				windowManager->ShowPaneWindow(Pos::wxRIGHT);
+				windowManager->ShowWindow(Pos::wxRIGHT);
+			}
+
 			if (windowInit)
 				if (!showInfos)
 					windowManager->HidePaneWindow(Pos::wxRIGHT);
@@ -1329,12 +1336,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				panelInfosClick->Show(true);
 				if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
 					windowManager->ShowWindow(Pos::wxLEFT);
-				if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
-				{
-					windowManager->HidePaneWindow(Pos::wxRIGHT);
-					windowManager->ShowPaneWindow(Pos::wxRIGHT);
-					windowManager->ShowWindow(Pos::wxRIGHT);
-				}
+
 				if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
 					windowManager->HideWindow(Pos::wxBOTTOM);
 				if (windowManager->GetWindowIsShow(Pos::wxTOP))
@@ -1344,6 +1346,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 				panelInfosClick->SetWindow(listFace);
 				panelInfosClick->Show(true);
 				panelInfosClick->SetTitle("Face List");
+
+				if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+				{
+					windowManager->HidePaneWindow(Pos::wxRIGHT);
+					windowManager->ShowPaneWindow(Pos::wxRIGHT);
+					windowManager->ShowWindow(Pos::wxRIGHT);
+				}
 
 				if (windowInit)
 					if (!showInfos)
@@ -1362,14 +1371,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 			panelInfosClick->Show(true);
 			if (!windowManager->GetWindowIsShow(Pos::wxLEFT))
-				windowManager->ShowWindow(Pos::wxLEFT);
-			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
-			{
-				windowManager->HidePaneWindow(Pos::wxRIGHT);
-				windowManager->ShowPaneWindow(Pos::wxRIGHT);
-				windowManager->ShowWindow(Pos::wxRIGHT);
-			}
-				
+				windowManager->ShowWindow(Pos::wxLEFT);			
 
 			if (windowManager->GetWindowIsShow(Pos::wxBOTTOM))
 				windowManager->HideWindow(Pos::wxBOTTOM);
@@ -1380,6 +1382,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			panelInfosClick->SetWindow(listPicture);
 			panelInfosClick->Show(true);
 			panelInfosClick->SetTitle("Picture List");
+
+			if (!windowManager->GetWindowIsShow(Pos::wxRIGHT))
+			{
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+				windowManager->ShowPaneWindow(Pos::wxRIGHT);
+				windowManager->ShowWindow(Pos::wxRIGHT);
+			}
 
 			if (windowInit)
 				if (!showInfos)

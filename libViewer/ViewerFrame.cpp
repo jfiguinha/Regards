@@ -287,7 +287,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 }
 
-void CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
+bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
 
 	bool folderChange = false;
@@ -359,6 +359,8 @@ void CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 		CSqlFindPhotos sqlFindPhotos;
 		sqlFindPhotos.SearchPhotos(sqlRequest);
 	}
+
+	return folderChange;
 }
 
 void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)

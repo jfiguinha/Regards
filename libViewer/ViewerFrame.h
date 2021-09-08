@@ -102,7 +102,7 @@ namespace Regards
 #endif
 			void OnTimereventFileSysTimer(wxTimerEvent& event);
 			void OnTimerLoadPicture(wxTimerEvent& event);
-			void CheckDatabase(FolderCatalogVector & folderList);
+			bool CheckDatabase(FolderCatalogVector & folderList);
 		wxDECLARE_EVENT_TABLE();
 
 
