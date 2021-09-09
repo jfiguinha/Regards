@@ -29,7 +29,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
   </PropertyGroup>
@@ -39,7 +39,7 @@
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -95,16 +95,18 @@
     <NuGetPackageImportStamp>81cba43b</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncludePath);$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\libjbig;$(IncludePath);$(SolutionDir)\libExtern\libjpeg;$(SolutionDir)\libExtern\libpng;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <LibraryPath>$(oneMKLLibDir);$(oneTBBLibDir)\vc_mt;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Debug;$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Debug;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Debug;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\x265_2.5\build\vc15-x86_64\Debug;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\lib;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <IncludePath>$(IncludePath);$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(WindowsSDK_IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\libjbig;$(IncludePath);$(SolutionDir)\libExtern\libjpeg;$(SolutionDir)\libExtern\libpng;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(oneTBBLibDir)\vc_mt;$(oneMKLLibDir);$(ICInstallDir)compiler\lib\intel64_win;$(SolutionDir)libextern\ffmpeg-master\lib;$(SolutionDir)\libextern\poppler_windows-master\lib;$(SolutionDir)libextern\qpdf-master\lib;$(SolutionDir)\libExtern\aom\build\Release;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\lib\Release;$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\lib\Release;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <IncludePath>$(IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
@@ -121,7 +123,7 @@
     <ClCompile>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WX_PRECOMP;WIN32;NDEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WX_PRECOMP;WIN32;NDEBUG;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -171,6 +173,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Bscmake>
+    <Link>
+      <AdditionalDependencies>jasper.lib;tiff.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <Midl>
@@ -294,7 +299,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_USRDLL;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -329,6 +334,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Bscmake>
+    <Link>
+      <AdditionalDependencies>jasperd.lib;tiff.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <Midl>
@@ -427,6 +435,17 @@
     <ClInclude Include="ximawmf.h" />
     <ClInclude Include="xiofile.h" />
     <ClInclude Include="xmemfile.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libextern\libjpeg\libjpeg.vcxproj">
+      <Project>{60691709-37b1-4f01-9564-db3039a69c0c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
+      <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libJbig\jbig.vcxproj">
+      <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

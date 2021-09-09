@@ -28,6 +28,7 @@
 #include <OpenCLEngine.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
+#include <wx/busyinfo.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -111,6 +112,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	FolderCatalogVector folderList;
 	CSqlFindFolderCatalog folderCatalog;
 	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+
+
+	m_watcher = new wxFileSystemWatcher();
+	m_watcher->SetOwner(this);
+	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
 
 	CheckDatabase(folderList);
 
@@ -289,7 +295,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 {
-
+	wxBusyInfo wait("Please wait, Database is checking ...");
+	
 	bool folderChange = false;
 
 	//Test de la validité des répertoires
@@ -307,9 +314,6 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 		}
 	}
 
-	m_watcher = new wxFileSystemWatcher();
-	m_watcher->SetOwner(this);
-	Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));
 
 
 

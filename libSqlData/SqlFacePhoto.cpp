@@ -52,6 +52,7 @@ bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
 				wxRemoveFile(thumbnail);
 			}
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(faceId));
+			ExecuteRequestWithNoResult("DELETE FROM FACEVIDEO WHERE NumFace = " + to_string(faceId));
 		}
 	}
 	ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(numFace));
@@ -83,6 +84,7 @@ void CSqlFacePhoto::DeleteNumFace(const int& numFace)
 	}
 	
 	ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(numFace));
+	ExecuteRequestWithNoResult("DELETE FROM FACEVIDEO WHERE NumFace = " + to_string(numFace));
 	ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(numFace));
 	DeleteFaceNameAlone();
 
@@ -289,27 +291,17 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 		wxString path = sqlPhoto.GetPhotoPath(numPhoto);
 
 		CSqlFindFacePhoto findFacePhoto;
-		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);
-
+		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);		
+		
 		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
 			[&](tbb::blocked_range<int> r)
 			{
 				for (int i1 = r.begin(); i1 < r.end(); ++i1)
 				{
 					CFaceName facename = listFace[i1];
-					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
-					if (wxFileExists(thumbnail))
-					{
-						wxRemoveFile(thumbnail);
-					}
+					DeleteNumFace(facename.numFace);
 				}
 			});
-
-		for (CFaceName facename : listFace)
-		{
-			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
-			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
-		}
 		
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
 	}
@@ -371,40 +363,16 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 
 		CSqlFindFacePhoto findFacePhoto;
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
-
 		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
 			[&](tbb::blocked_range<int> r)
 			{
 				for (int i1 = r.begin(); i1 < r.end(); ++i1)
 				{
 					CFaceName facename = listFace[i1];
-					wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
-					if (wxFileExists(thumbnail))
-					{
-						wxRemoveFile(thumbnail);
-					}
-
+					DeleteNumFace(facename.numFace);
 				}
 			});
 
-		for (CFaceName facename : listFace)
-		{
-			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
-			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
-		}
-		/*
-		for (CFaceName facename : listFace)
-		{
-			wxString thumbnail = CFileUtility::GetFaceThumbnailPath(facename.numFace);
-			if (wxFileExists(thumbnail))
-			{
-				wxRemoveFile(thumbnail);
-			}
-
-			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(facename.numFace));
-			ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFace = " + to_string(facename.numFace));
-		}
-		*/
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
 	RebuildLink();

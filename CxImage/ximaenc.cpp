@@ -79,7 +79,6 @@ public:
 	float tabF[4];
 };
 
-extern float value[256];
 
 float Filter(const float &f)
 {
@@ -666,10 +665,10 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 			RGBQUAD color = BlindGetPixelColor(posX + m, posY + n);
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
-			r += value[color.rgbRed] * f;
-			g += value[color.rgbGreen] * f;
-			b += value[color.rgbBlue] * f;
-			a += value[color.rgbReserved] * f;
+			r += static_cast<float>(color.rgbRed) * f;
+			g += static_cast<float>(color.rgbGreen) * f;
+			b += static_cast<float>(color.rgbBlue) * f;
+			a += static_cast<float>(color.rgbReserved) * f;
 		}
 	}
 
@@ -806,10 +805,10 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 			g += value[*color++] * f;
 			r += value[*color++] * f;
 			*/
-			r += value[color.rgbRed] * f;
-			g += value[color.rgbGreen] * f;
-			b += value[color.rgbBlue] * f;
-			a += value[color.rgbReserved] * f;
+			r += static_cast<float>(color.rgbRed) * f;
+			g += static_cast<float>(color.rgbGreen) * f;
+			b += static_cast<float>(color.rgbBlue) * f;
+			a += static_cast<float>(color.rgbReserved) * f;
 			
 		}
 	}
@@ -865,10 +864,10 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 						RGBQUAD color;
 						long ldx = idx*sizeof(RGBQUAD);
 						memcpy(&color, iDst + ldx, sizeof(RGBQUAD));
-						*buffer++ = value[color.rgbRed];
-						*buffer++ = value[color.rgbGreen];
-						*buffer++ = value[color.rgbBlue];
-						*buffer++ = value[color.rgbReserved];
+						*buffer++ = static_cast<int>(color.rgbRed);
+						*buffer++ = static_cast<int>(color.rgbGreen);
+						*buffer++ = static_cast<int>(color.rgbBlue);
+						*buffer++ = static_cast<int>(color.rgbReserved);
 
 					}
 				}
@@ -891,10 +890,10 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 				{
 					int position = (y * head.biWidth << 2) + (x << 2);
 					RGBQUAD color = BlindGetPixelColor(x, y);
-					buffer[position] = value[color.rgbRed];
-					buffer[position + 1] = value[color.rgbGreen];
-					buffer[position + 2] = value[color.rgbBlue];
-					buffer[position + 3] = value[color.rgbReserved];
+					buffer[position] = static_cast<float>(color.rgbRed);
+					buffer[position + 1] = static_cast<float>(color.rgbGreen);
+					buffer[position + 2] = static_cast<float>(color.rgbBlue);
+					buffer[position + 3] = static_cast<float>(color.rgbReserved);
 				}
 			}
 		}
@@ -909,9 +908,9 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 					int position = (y1 * head.biWidth * 4) + (x * 4);
 					int imagePos = (y1 * info.dwEffWidth) + (x * 3);
 
-					buffer[position] = value[*(info.pImage + imagePos)];
-					buffer[position + 1] = value[*(info.pImage + imagePos + 1)];
-					buffer[position + 2] = value[*(info.pImage + imagePos + 2)];
+					buffer[position] = static_cast<float>(*(info.pImage + imagePos));
+					buffer[position + 1] = static_cast<float>(*(info.pImage + imagePos + 1));
+					buffer[position + 2] = static_cast<float>(*(info.pImage + imagePos + 2));
 					buffer[position + 3] = 0.0f;
 				}
 			}
@@ -929,10 +928,10 @@ bool CxImage::Encode2BGRAFloat(float * buffer, long size, bool bFlipY)
 		for (long x = 0; x < head.biWidth; x++)
 		{
 			RGBQUAD color = BlindGetPixelColor(x, y);
-			*buffer++ = value[color.rgbRed] / 255.0f;
-			*buffer++ = value[color.rgbGreen] / 255.0f;
-			*buffer++ = value[color.rgbBlue] / 255.0f;
-			*buffer++ = value[color.rgbReserved] / 255.0f;
+			*buffer++ = static_cast<float>(color.rgbRed) / 255.0f;
+			*buffer++ = static_cast<float>(color.rgbGreen)/ 255.0f;
+			*buffer++ = static_cast<float>(color.rgbBlue) / 255.0f;
+			*buffer++ = static_cast<float>(color.rgbReserved) / 255.0f;
 		}
 	}
 	return true;

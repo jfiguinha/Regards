@@ -42,14 +42,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 			".pdf", ".pnm", ".bmp", ".bpg", ".pcx", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".jpc", ".ppm",
 			".mng", ".webp", ".iff", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic"
 		};
-		szFilter = filename + " PDF(*.PDF)|*.pdf|" + filename + " PNM (*.PNM)|*.pnm|" + filename + "  BMP(*.BMP)|*.bmp|"
-			+ filename + "  BPG(*.BPG)|*.bpg|" + filename + "  PCX(*.PCX)|*.pcx|" + filename + "  JPEG(*.JPG)|*.jpg|" +
-			filename + "  TIFF(*.TIF)|*.tif|" + filename + "  GIF(*.GIF)|*.gif|" + filename + "  PNG(*.PNG)|*.png|" +
-			filename + "  TGA(*.TGA)|*.tga|" + filename + "  JPEG2000(*.JP2)|*.jp2|" + filename + "  JPC(*.JPC)|*.jpc|"
-			+ filename + "  PPM(*.PPM)|*.ppm|" + filename + "  MNG(*.MNG)|*.mng|" + filename + "  WEBP (*.WEBP)|*.webp|"
-			+ filename + "  IFF (*.IFF)|*.iff|" + filename + "  XPM (*.XPM)|*.xpm|" + filename + "  JXR (*.JXR)|*.jxr|"
-			+ filename + "  EXR (*.EXR)|*.exr|" + filename + "  J2K (*.J2K)|*.j2k|" + filename + "  PFM (*.PFM)|*.pfm|"
-			+ filename + "  AVIF (*.avif)|*.avif|" + filename + "  HEIC (*.heic)|*.heic";
+		szFilter = "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic";
 
 		wxFileName bmpFilename(filename);
 		wxFileDialog saveFileDialog(nullptr, filename, "", bmpFilename.GetName(),

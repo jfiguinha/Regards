@@ -22,16 +22,10 @@
 #if CXIMAGE_SUPPORT_PNG
 
 extern "C" {
-#if defined(_LINUX) || defined(__APPLE__) || defined(__MINGW32__)
- #undef _DLL
- #include <png.h>
- #include <pngstruct.h>
- #include <pnginfo.h>
-#else
- #include "../png/png.h"
- #include "../png/pngstruct.h"
- #include "../png/pnginfo.h"
-#endif
+#undef _DLL
+#include <png.h>
+#include <pngstruct.h>
+#include <pnginfo.h>
 }
 
 class CxImagePNG: public CxImage

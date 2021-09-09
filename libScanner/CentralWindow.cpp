@@ -261,20 +261,31 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 	*/
 	if (filename != "")
 	{
-		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
-		if (selectFile.ShowModal() == wxID_OK)
-		{
-			vector<int> listPage = selectFile.GetSelectItem();
-			wxString fileExtract = ProcessExtractFile(listPage);
+		wxString tempFolder = CFileUtility::GetDocumentFolderPath();
 
-			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
-				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-			if (saveFileDialog.ShowModal() == wxID_CANCEL)
-				return;     // the user changed idea...
+#ifdef WIN32
+		tempFolder.append("\\temp");
+#else
+		tempFolder.append("/temp");
+#endif
 
-			wxString newfilename = saveFileDialog.GetPath();
-			wxCopyFile(fileExtract, newfilename);
-		}
+
+#ifdef WIN32
+		filename = tempFolder + "\\local_pdf_file.pdf";
+#else
+		filename = tempFolder + "/local_pdf_file.pdf";
+#endif
+
+		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
+
+		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
+			"PDF " + filename + " (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;     // the user changed idea...
+
+		wxString newfilename = saveFileDialog.GetPath();
+		wxCopyFile(filename, newfilename);
 
 	}
 	else
