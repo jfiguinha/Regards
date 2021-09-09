@@ -77,7 +77,31 @@ void CCentralWindow::OnScan(wxCommandEvent& event)
 
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
-	CSavePicture::ExportPicture(this, filename);
+	if (filename != "")
+	{
+		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			vector<int> listPage = selectFile.GetSelectItem();
+			wxString fileExtract = ProcessExtractFile(listPage);
+
+			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
+				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			if (saveFileDialog.ShowModal() == wxID_CANCEL)
+				return;     // the user changed idea...
+
+			wxString newfilename = saveFileDialog.GetPath();
+			wxCopyFile(fileExtract, newfilename);
+		}
+
+	}
+	else
+	{
+		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
+		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
+		wxMessageBox(openfile, infos, wxICON_INFORMATION);
+	}
+	//CSavePicture::ExportPicture(this, filename);
 }
 
 void CCentralWindow::OnDeletePage(wxCommandEvent& event)
@@ -110,30 +134,27 @@ int CCentralWindow::OnOpen(const int &type)
 	list.push_back("Multifile");
 	//bool isOk = false;
 
+	//Check Temp Folder
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+	if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+	}
+
 	if (type != ADDFILE)
 	{
-		wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
-		wxString tempFolder = documentPath + "\\temp";
-		if (!wxMkDir(tempFolder)) {
+		filename = tempFolder + "\\local_pdf_file.pdf";
 #else
-		wxString tempFolder = documentPath + "/temp";
-		if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-			// handle the error here
-		}
-		else
-		{
-#ifdef WIN32
-			filename = tempFolder + "\\local_pdf_file.pdf";
-#else
-			filename = tempFolder + "/local_pdf_file.pdf";
+		filename = tempFolder + "/local_pdf_file.pdf";
 #endif
 
-			if (wxFileExists(filename))
-				wxRemoveFile(filename);
-
-		}
+		if (wxFileExists(filename))
+			wxRemoveFile(filename);
 
 	}
 
@@ -276,16 +297,20 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 		filename = tempFolder + "/local_pdf_file.pdf";
 #endif
 
-		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
+		//wxString filenameTitle = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
-			"PDF " + filename + " (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			"PDF Files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
 
 		wxString newfilename = saveFileDialog.GetPath();
 		wxCopyFile(filename, newfilename);
+
+		wxString savecompleted = CLibResource::LoadStringFromResource("LBLSAVEFILECOMPLETED", 1);
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox(savecompleted, infos);
 
 	}
 	else
@@ -661,6 +686,7 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 		QPDF inpdf;
 		inpdf.processFile(fileToAdd.ToStdString().c_str());
+		
 
 		std::string outfile = file.ToStdString();
 		QPDF outpdf;
@@ -721,6 +747,8 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 		}
 
 		QPDFWriter outpdfw(outpdf, outfile.c_str());
+		outpdfw.setCompressStreams(true);
+		outpdfw.setRecompressFlate(true);
 		outpdfw.write();
 	}
 #ifndef DEMO
