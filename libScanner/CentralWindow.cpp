@@ -176,24 +176,8 @@ int CCentralWindow::OnOpen(const int &type)
 			}
 			case 2:
 			{
-				wxString szFilter = "";
-				std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
-				szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
-
-				wxFileDialog openFileDialog(nullptr, _("Open Picture file"), "", "",
-					szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
-
-				if (openFileDialog.ShowModal() == wxID_CANCEL)
-					return -1;     // the user changed idea..
-
-				wxArrayString listFile;
-				//int filterIndex = openFileDialog.GetFilterIndex();
-				openFileDialog.GetPaths(listFile);
-
+				wxArrayString listFile = CSavePicture::LoadMultiplePicture();
 				file = ProcessLoadFiles(listFile);
-
-
-
 				break;
 			}
 		default: ;
@@ -555,22 +539,11 @@ void CCentralWindow::OnExit(wxCommandEvent& event)
 }
 
 
+
+
 wxString CCentralWindow::LoadFile()
 {
-	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
-	const wxString szFilter = "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm";
-
-	wxString openPicture = CLibResource::LoadStringFromResource(L"LBLOPENPICTUREFILE", 1);
-
-	wxFileDialog openFileDialog(nullptr, openPicture, "", "",
-		szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return "";     // the user changed idea..
-
-
-	//int filterIndex = openFileDialog.GetFilterIndex();
-	wxString file = openFileDialog.GetPath();
+	wxString file = CSavePicture::LoadPicture();
 	wxArrayString listFile;
 	listFile.push_back(file);
 
