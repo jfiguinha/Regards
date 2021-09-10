@@ -26,10 +26,7 @@ CSavePicture::~CSavePicture()
 
 const wxString GetPictureFilter()
 {
-  	wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
-	return "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm";
-   
+	return "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic";
 }
 
 wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
@@ -50,7 +47,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 			".pdf", ".pnm", ".bmp", ".bpg", ".pcx", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".jpc", ".ppm",
 			".mng", ".webp", ".iff", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic"
 		};
-		szFilter = "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic";
+		
 
 		wxFileName bmpFilename(filename);
 		wxFileDialog saveFileDialog(nullptr, bmpFilename.GetName(), "", bmpFilename.GetName(),

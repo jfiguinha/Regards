@@ -20,7 +20,8 @@ namespace Regards
 			static void GetMetadata(const string &filename, uint8_t * & data, long & size);
 			static int GetDelay(const string &filename);
 			static CRegardsBitmap * GetThumbnailPicture(const string &filename);
-			static void SavePicture(const string &filename, CRegardsBitmap * source, const int &compression = 0);
+			static void SavePicture(const string &filename, CRegardsBitmap * source, uint8_t* data,const long& size, const int &compression = 0, const bool& hasExif = false);
+			static void SetMetadata(const string& filename, uint8_t*& data, long& size);
 		};
 	}
 }

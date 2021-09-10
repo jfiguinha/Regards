@@ -239,7 +239,7 @@ CRegardsBitmap* CAvif::GetPicture(const string& filename, int& delay, const int&
 }
 
 
-void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, const int& compression)
+void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t* data, const long& size, const int& compression, const bool& hasExif)
 {
 	if (source != nullptr)
 	{
@@ -250,6 +250,9 @@ void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, const in
 		avifImage* image = avifImageCreate(width, height, depth, format);
 		if (image != nullptr)
 		{
+			if(hasExif)
+				avifImageSetMetadataExif(image, data, size);
+			
 			// (Semi-)optional: Describe the color profile, YUV<->RGB conversion, and range.
 			// These default to "unspecified" and full range. You should at least set the
 			// matrixCoefficients to indicate how you would like YUV<->RGB conversion to be done.
@@ -439,3 +442,4 @@ void CAvif::GetMetadata(const string& filename, uint8_t* & data, long& size)
 	avifImageDestroy(decoded);
 	avifRWDataFree(&raw);
 }
+

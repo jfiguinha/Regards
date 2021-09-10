@@ -16,7 +16,7 @@ namespace Regards
 			CPictureMetadataExiv(const wxString& filename);
 			CPictureMetadataExiv(uint8_t* data, const long& size);
 			~CPictureMetadataExiv();
-
+			void GetMetadataBuffer(uint8_t*& data, long& size);
 			wxString GetCreationDate();
 			bool HasExif();
 			bool HasThumbnail();

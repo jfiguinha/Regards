@@ -5,8 +5,12 @@
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>
+#include <libexif/exif-data.h>
+
 #include "Heic.h"
 #include "ConvertUtility.h"
+
+
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
 
@@ -16,6 +20,7 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	CLibPicture libPicture;
 	this->filename = filename;
 	int type = libPicture.TestImageFormat(filename);
+
 	if (type == HEIC || type == AVIF)
 	{
 		buffer = nullptr;
@@ -67,9 +72,53 @@ bool CMetadataExiv2::HasExif()
 	return false;
 }
 
+void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, long& size)
+{
+	if (metaExiv != nullptr)
+		metaExiv->GetMetadataBuffer(data, size);
+}
+
 bool CMetadataExiv2::CopyMetadata(const wxString& output)
 {
-	return metaExiv->CopyMetadata(output);
+	if (metaExiv != nullptr)
+		return metaExiv->CopyMetadata(output);
+	/*
+	CLibPicture libPicture;
+	int type = libPicture.TestImageFormat(filename);
+	if (type == HEIC || type == AVIF)
+	{
+		buffer = nullptr;
+		long size = 0;
+		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+		if (size > 0)
+		{
+			buffer = new uint8_t[size + 1];
+			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+		}
+
+		Exiv2::Image::AutoPtr exif;
+		//Read exif info from source file
+		try
+		{
+			exif = Exiv2::ImageFactory::open(buffer, size);
+			assert(exif.get() != 0);
+			exif->readMetadata();
+
+			Exiv2::Image::AutoPtr writeImg = Exiv2::ImageFactory::open(output.ToStdString());
+			assert(writeImg.get() != 0);
+			writeImg->setExifData(writeImg->exifData());
+			writeImg->writeMetadata();
+
+			return true;
+		}
+		catch (...)q
+		{
+
+		}
+		
+	}
+	*/
+	return false;
 }
 
 bool CMetadataExiv2::HasThumbnail()

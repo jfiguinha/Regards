@@ -194,6 +194,26 @@ bool CPictureMetadataExiv::HasExif()
 	return isExif;
 }
 
+void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, long& size)
+{
+	const char* file_data = nullptr;
+
+	Exiv2::ExifData& exifData = exif->exifData();
+	if (!exifData.empty())
+	{
+	}
+
+	if(size == 0)
+		size = exif->io().size();
+	else
+	{
+		exif->io().seek(0, Exiv2::BasicIo::beg);
+		Exiv2::DataBuf buff = exif->io().read(size);
+		memcpy(data, buff.pData_, size);
+	}
+
+}
+
 bool CPictureMetadataExiv::CopyMetadata(const wxString& output)
 {
 	if (isExif)

@@ -14,7 +14,7 @@ namespace Regards
 		public:
 			CMetadataExiv2(const wxString& filename);
 			~CMetadataExiv2();
-
+			void GetMetadataBuffer(uint8_t * & data, long & size);
 			bool HasExif();
 			bool HasThumbnail();
 			int GetOrientation();
