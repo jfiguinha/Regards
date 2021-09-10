@@ -53,15 +53,22 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 		szFilter = "PDF(*.PDF)|*.pdf|PNM (*.PNM)|*.pnm|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|PCX(*.PCX)|*.pcx|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|JPC(*.JPC)|*.jpc|PPM(*.PPM)|*.ppm|MNG(*.MNG)|*.mng|WEBP (*.WEBP)|*.webp|IFF (*.IFF)|*.iff|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic";
 
 		wxFileName bmpFilename(filename);
-		wxFileDialog saveFileDialog(nullptr, filename, "", bmpFilename.GetName(),
+		wxFileDialog saveFileDialog(nullptr, bmpFilename.GetName(), "", bmpFilename.GetName(),
 		                            GetPictureFilter(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return "";
 
-		//int filterIndex = saveFileDialog.GetFilterIndex();
+		int filterIndex = saveFileDialog.GetFilterIndex();
 		file = saveFileDialog.GetPath();
-
+        wxFileName outputName(file);
+        wxString extension = v[filterIndex];
+#ifdef WIN32
+        file = outputName.GetPath() + "\\" + outputName.GetName() + extension;
+#else
+        file = outputName.GetPath() + "/" + outputName.GetName() + extension;
+#endif
+        
 	}
 	return file;
 }
