@@ -39,7 +39,7 @@ int CBlurFilter::GetNameFilter()
 
 int CBlurFilter::GetTypeFilter()
 {
-    return CONVOLUTION_EFFECT; //
+    return CONVOLUTION_EFFECT;
 }
 
 void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -83,6 +83,11 @@ bool CBlurFilter::NeedPreview()
 CEffectParameter* CBlurFilter::GetEffectPointer()
 {
     return new CBlurEffectParameter();
+}
+
+int CBlurFilter::TypeApplyFilter()
+{
+    return 2;
 }
 
 CEffectParameter* CBlurFilter::GetDefaultEffectParameter()
