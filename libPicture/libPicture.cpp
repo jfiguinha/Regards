@@ -487,8 +487,9 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 			}
 		}
 		break;
-
+		/*
 	case JPEG:
+
 		{
 			JpegOption jpegOption(nullptr);
 			jpegOption.ShowModal();
@@ -500,8 +501,8 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 			}
 		}
 		break;
-
-
+		*/
+	case JPEG:
 	case HEIC:
 	case AVIF:
 	case JPEG2000:
@@ -956,6 +957,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case JPEG:
 		{
+			
 			CxImage* image = bitmap->GetCxImage();
 			image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
 			image->SetJpegQualityF(static_cast<float>(quality));
@@ -966,6 +968,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				wxMessageBox(error,
 				             informations_error, wxOK | wxICON_ERROR);
 			delete image;
+
 		}
 		break;
 
