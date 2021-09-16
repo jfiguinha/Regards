@@ -767,14 +767,18 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 
 void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 {
-	eventFileSysTimer->Stop();
-	if (mainWindow != nullptr)
+	if(eventFileSysTimer != nullptr)
 	{
-		if (!mainWindow->IsVideo())
+		eventFileSysTimer->Stop();
+		if (mainWindow != nullptr)
 		{
-			eventFileSysTimer->Start(1000);
+			if (!mainWindow->IsVideo())
+			{
+				eventFileSysTimer->Start(1000);
+			}
 		}
 	}
+
 }
 
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)

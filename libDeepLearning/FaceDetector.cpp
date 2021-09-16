@@ -33,6 +33,7 @@ struct FaceValueIntegration
 
 static Net net; // And finally we load the DNN responsible for face recognition.
 static Net netRecognition;
+static Net netPosition;
 
 const float confidenceThreshold = 0.59;
 const Scalar meanVal(104.0, 177.0, 123.0);
@@ -148,7 +149,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const Mat& image)
 
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
 void CFaceDetector::LoadModel(const string& config_file, const string& weight_file, const string& recognition,
-                              const string& face_landmark)
+                              const string& face_landmark, const string &protoPosition, const string& weightPosition)
 {
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
@@ -195,6 +196,12 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 			if (config->GetIsOpenCLSupport())
 				openCLCompatible = true;
 		}
+
+
+
+		// Read the network into Memory
+		//netPosition = readNetFromCaffe(protoPosition, weightPosition);
+
 
 #ifdef CAFFE
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
@@ -388,6 +395,76 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	r.release();
 
 	return dst;
+}
+
+std::vector<cv::Rect> CFaceDetector::GetRectFace(cv::Mat &picture)
+{
+	std::vector<cv::Rect> listFace;
+	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	if (isLoading)
+	{
+		std::vector<CFace> listOfFace;
+		detectFaceOpenCVDNN(picture, listOfFace, listFace);
+
+
+		/*
+		try
+		{
+			// Specify the input image dimensions
+			int inWidth = 368;
+			int inHeight = 368;
+
+			// Prepare the frame to be fed to the network
+			Mat inpBlob = blobFromImage(picture, 1.0 / 255, Size(inWidth, inHeight), Scalar(0, 0, 0), false, false);
+
+			// Set the prepared object as the input blob of the network
+			netPosition.setInput(inpBlob);
+
+			Mat output = netPosition.forward();
+
+			int H = output.size[2];
+			int W = output.size[3];
+
+			// find the position of the body parts
+			vector<Point> points(nPoints);
+			for (int n = 0; n < nPoints; n++)
+			{
+				// Probability map of corresponding body's part.
+				Mat probMap(H, W, CV_32F, output.ptr(0, n));
+
+				Point2f p(-1, -1);
+				Point maxLoc;
+				double prob;
+				minMaxLoc(probMap, 0, &prob, 0, &maxLoc);
+				if (prob > thresh)
+				{
+					p = maxLoc;
+					p.x *= (float)frameWidth / W;
+					p.y *= (float)frameHeight / H;
+
+					circle(frameCopy, cv::Point((int)p.x, (int)p.y), 8, Scalar(0, 255, 255), -1);
+					cv::putText(frameCopy, cv::format("%d", n), cv::Point((int)p.x, (int)p.y), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255), 2);
+
+				}
+				points[n] = p;
+			}
+		}
+		catch (Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
+		*/
+
+	}
+
+	return listFace;
 }
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)

@@ -70,9 +70,9 @@ int CFiltreEffet::Bm3d(const int& fSigma)
 	return 0;
 }
 
-int CFiltreEffet::BokehEffect(const int& blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int& dilation_size, const int& dilation_size2)
+int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace)
 {
-	filtreEffet->BokehEffect(blurvalue, bokehthreshold, bokehthreshold2, dilation_size, dilation_size2);
+	filtreEffet->BokehEffect(radius, boxsize, nbFace, listFace);
 	return 0;
 }
 

@@ -124,7 +124,7 @@ namespace Regards
 			bool m_fsWatcher = true;
 
 			wxTimer* loadPictureTimer;
-			wxTimer* eventFileSysTimer;
+			wxTimer* eventFileSysTimer = nullptr;
 			wxString filenameTimer;
 			int nbTime;
 			CScannerFrame* frameScanner;

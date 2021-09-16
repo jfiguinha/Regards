@@ -23,13 +23,15 @@ namespace Regards
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
-
+            void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput);
+            CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer);
         private:
-            wxString libelleEffectBlur;
-            wxString libelleEffectBokehThreshold;
-            wxString libelleEffectBokehThreshold2;
-            wxString libelleEffectBokehDilatation;
-            wxString libelleEffectBokehDilatation2;
+            wxString libelleEffectRadius;
+            wxString libelleEffectBoxSize;
+            wxRect faceRect;
+            int nbFace = 0;
+            int oldWidth = 0;
+            int oldHeight = 0;
         };
     }
 }

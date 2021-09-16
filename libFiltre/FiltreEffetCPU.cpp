@@ -1,6 +1,8 @@
+
 #include <header.h>
 #include "FiltreEffetCPU.h"
-#include <opencv2/core/ocl.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
@@ -12,14 +14,16 @@
 #include "Filtre.h"
 #include "RedEye.h"
 #include "Wave.h"
-#include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <OpenCVEffect.h>
 #include <hqdn3d.h>
 #include "MeanShift.h"
 #include <RegardsBitmap.h>
-//BM3D
+#include <fstream>
 #include "bm3dfilter.h"
+#include <FileUtility.h>
+#include <FaceDetector.h>
+
 
 using namespace Regards::OpenCV;
 
@@ -34,6 +38,7 @@ public:
 	static double getMaxDisFromCorners(const Size& imgSize, const Point& center);
 	static double dist(Point a, Point b);
 };
+
 
 CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(back_color)
@@ -78,7 +83,8 @@ CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 	return pBitmap;
 }
 
-int CFiltreEffetCPU::BokehEffect(const int & blurvalue, const double& bokehthreshold, const double& bokehthreshold2, const int & dilation_size, const int & dilation_size2)
+
+int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const int & nbFace, const wxRect & listFace)
 {
 	CRegardsBitmap* bitmap;
 	if (preview)
@@ -86,80 +92,177 @@ int CFiltreEffetCPU::BokehEffect(const int & blurvalue, const double& bokehthres
 	else
 		bitmap = pBitmap;
 	Mat dst;
+
+	pBitmap->VertFlipBuf();
+	
 	Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	cvtColor(image, dst, COLOR_BGRA2BGR);
 
-	//double B_PARAM = 1.0 / 50.0;
-	//double T_PARAM = 1.0 / 200.0;
-	//double Zeta = 10.0;
+	if(nbFace > 0)
+	{
+		//Resize the rectangle
+		wxRect rectCopy = listFace;
+		cv::Rect rect;
+		int width = listFace.width;
+		rect.width = listFace.width * 2;
+		rect.x = listFace.x - (width / 2);
+		rect.y = 0;
+		rect.height = dst.rows;
+		
+		Mat blur;
+		cv::GaussianBlur(dst, blur, cv::Size(radius, boxsize), 0);
+		
+		cv::Mat croppedImage = dst(rect);
+		Mat src_gray;
+		Mat detected_edges;
+		Mat output;
 
-	// int blurvalue = 19;
-	// int bokehthresholdint = 253;
-	//int bokehthresholdint2 = 248;
-	// int dilation_size = 10;
-	//int dilation_size2 = 7;
+		Mat blur_crop;
+		cv::GaussianBlur(croppedImage, blur_crop, cv::Size(3, 3), 0);
+		//medianBlur(croppedImage, blur_crop, 3);
+		
+		cvtColor(blur_crop, src_gray, COLOR_BGR2GRAY);
+
+		// apply your filter
+		Canny(src_gray, src_gray, 200, 100);
+
+		// find the contours
+		vector< vector<Point> > contours;
+		findContours(src_gray, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+
+		// you could also reuse img1 here
+		Mat mask = Mat::zeros(src_gray.rows, src_gray.cols, CV_8UC1);
+		//threshold(mask, mask, 0, 255, THRESH_BINARY_INV);
+		// CV_FILLED fills the connected components found
+		drawContours(mask, contours, -1, Scalar(255), FILLED);
+
+
+
+		/*
+		 Before drawing all contours you could also decide
+		 to only draw the contour of the largest connected component
+		 found. Here's some commented out code how to do that:
+		*/
+
+		//    vector<double> areas(contours.size());
+		//    for(int i = 0; i < contours.size(); i++)
+		//        areas[i] = contourArea(Mat(contours[i]));
+		//    double max;
+		//    Point maxPosition;
+		//    minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
+		//    drawContours(mask, contours, maxPosition.y, Scalar(1), CV_FILLED);
+
+			// let's create a new image now
+		//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
+
+
+		cv::GaussianBlur(croppedImage, blur_crop, cv::Size(radius, boxsize), 0);
+
+
+		// normalize so imwrite(...)/imshow(...) shows the mask correctly!
+		normalize(mask.clone(), mask, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
+
+
+		int oldx = 0;
+		//bitwise_not(mask, mask);
+		//std::map<int, int> listOfPoint;
+		
+		for (int y =  0; y < rect.height; y++)
+		{
+			for (int x = 0; x < rect.width; x++)
+			{
+				uchar color = mask.at<uchar>(y, x);
+				if (color == 255)
+				{
+					if(oldx != 0)
+					{
+						if (x < (oldx * 0.98))
+							x = oldx *0.98;
+					}
+
+					if (x > (rectCopy.width * 0.8))
+						x = (rectCopy.width * 0.8);
+					//stop searching
+					for (int _x = 0; _x < x; _x++)
+					{
+						mask.at<uchar>(y, _x) = 0;
+					}
+
+					for (int _x = x; _x < rect.width - x; _x++)
+					{
+						mask.at<uchar>(y, _x) = 255;
+					}
+
+					for (int _x = rect.width - x; _x < rect.width; _x++)
+					{
+						mask.at<uchar>(y, _x) = 0;
+					}
+					oldx = x;
+
+					break;
+				}
+			}
+		}
+
+
+		for (int y = rect.height - 1; y >= 0; y--)
+		{
+			for (int x = 0; x < rect.width; x++)
+			{
+				uchar color = mask.at<uchar>(y, x);
+				if (color == 255)
+				{
+					if (oldx != 0)
+					{
+						if (x < (oldx * 0.98))
+							x = oldx * 0.98;
+					}
+					//stop searching
+					for (int _x = 0; _x < x; _x++)
+					{
+						mask.at<uchar>(y, _x) = 0;
+					}
+
+					for (int _x = x; _x < rect.width - x; _x++)
+					{
+						mask.at<uchar>(y, _x) = 255;
+					}
+
+					for (int _x = rect.width - x; _x < rect.width; _x++)
+					{
+						mask.at<uchar>(y, _x) = 0;
+					}
+					oldx = x;
+
+					break;
+				}
+			}
+		}
+		
+		// show the images
+		//imshow("original", croppedImage);
+		//imshow("mask", mask);
+		//imshow("canny", src_gray);
+		//imshow("cropped", blur_crop);
+
+		//waitKey();
+		//destroyAllWindows();
+		
+		// and copy the magic apple
+		croppedImage.copyTo(blur_crop, mask);
+		
+		Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
+
+		blur_crop.copyTo(blur(copy));
+
+		cvtColor(blur, dst, COLOR_BGR2BGRA);
+		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+
+	}
 	
-	Mat result, baseblur, highlights, bokeh, mediums;
-	Mat avg_img, sqm_img;
-	Mat lower_img, upper_img, tmp_img;
-	Mat dst_img, msk_img;
-	Size s = dst.size();
-
-	medianBlur(dst, baseblur, (blurvalue / 2) * 2 + 1);
-	//brightness range
-	baseblur.copyTo(result);
-
-	Mat temp;
-	//convert to grayscale for thresholding
-	cvtColor(dst, temp, COLOR_BGR2YCrCb);
-	vector<Mat> planes;
-	split(temp, planes);
-	Mat bnw = planes[0];
-
-	threshold(bnw, highlights, bokehthreshold, 0.5, THRESH_TOZERO);//take only highlights
-	threshold(bnw, mediums, bokehthreshold2, 0.5, THRESH_TOZERO);
-	threshold(mediums, mediums, bokehthreshold, 0.5, THRESH_TOZERO_INV);//also shave off too bright ones
-	equalizeHist(highlights, highlights);
-	equalizeHist(mediums, mediums);
-
-	Mat dilationelement = getStructuringElement(MORPH_ELLIPSE,
-			  Size(2 * dilation_size + 1, 2 * dilation_size + 1),
-					  Point(dilation_size, dilation_size));
-
-	dilate(highlights, temp, dilationelement);
-
-	dilationelement = getStructuringElement(MORPH_ELLIPSE,
-			  Size(2 * dilation_size2 + 1, 2 * dilation_size2 + 1),
-			   Point(dilation_size2, dilation_size2));
-	dilate(mediums, mediums, dilationelement);
-
-	temp.convertTo(bokeh, dst.type());
-
-	//convert grayscale bokeh image to RGB:
-	vector<Mat> channels;
-	channels.push_back(temp);
-	channels.push_back(temp);
-	channels.push_back(temp);
-	merge(channels, bokeh);
-	vector<Mat> channels2;
-	channels2.push_back(mediums);
-	channels2.push_back(mediums);
-	channels2.push_back(mediums);
-	Mat mediumbokeh;
-	merge(channels2, mediumbokeh);
-	//RGB conversion over
-
-	//blur bokeh a little bit:
-	cv::GaussianBlur(mediumbokeh, mediumbokeh, Size(0,0), 3, 3, 0);
-	blur(bokeh, bokeh, Size(2,2));
-
-	addWeighted(mediumbokeh, 0.3, baseblur, 1.0, 0.0, temp, -1);
-	addWeighted(bokeh, 0.5, temp, 0.9, 0.0, result, -1);
-
-	cvtColor(result, dst, COLOR_BGR2BGRA);
-	bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 	dst.release();
 	image.release();
+	bitmap->VertFlipBuf();
 	return 0;
 }
 

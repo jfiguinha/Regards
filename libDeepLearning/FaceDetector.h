@@ -25,10 +25,10 @@ namespace Regards
 			static bool LockOpenCLDnn();
 			static bool UnlockOpenCLDnn();
 			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition,
-			                      const string& face_landmark);
+			                      const string& face_landmark, const string& protoPosition, const string& weightPosition);
 			std::vector<int> FindFace(CRegardsBitmap* pBitmap);
 			void DetectEyes(CRegardsBitmap* pBitmap);
-
+			std::vector<cv::Rect> GetRectFace(cv::Mat& picture);
 			int FindNbFace(cv::Mat& image, float& bestConfidence, const float& confidence = 0.5);
 			int DetectAngleOrientation(const cv::Mat& image);
 			int DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap);
