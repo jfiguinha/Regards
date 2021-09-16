@@ -147,7 +147,18 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			// CV_FILLED fills the connected components found
 			drawContours(mask, contours, -1, Scalar(255), FILLED);
 
+		
+			Point center(rect.width / 2, (rectCopy.y + rectCopy.height) / 2);//Declaring the center point
+			Size xy((rectCopy.width / 2) * 1.5, (rectCopy.height / 2) * 1.5);//Declaring the major and minor axis of the ellipse//
+			int angle = 0;//angle of rotation//
+			int starting_point = 0;//Starting point of the ellipse//
+			int ending_point = 360;//Ending point of the ellipse//
+			Scalar line_Color(255, 255, 255);//Color of the Ellipse//
+			int thickness =0;//thickens of the line//
+			//namedWindow("whiteMatrix");//Declaring a window to show the ellipse//
+			ellipse(mask, center, xy, angle, starting_point, ending_point, line_Color, -1, LINE_AA);//Drawing the ellipse
 
+			//waitKey(0);//Waiting for Keystroke
 
 			/*
 			 Before drawing all contours you could also decide
@@ -173,11 +184,10 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			// normalize so imwrite(...)/imshow(...) shows the mask correctly!
 			normalize(mask.clone(), mask, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
 
-
+			/*
 			int oldx = 0;
-			//bitwise_not(mask, mask);
-			//std::map<int, int> listOfPoint;
-
+			int yPos = 0;
+			bool exit = false;
 			for (int y = 0; y < rect.height; y++)
 			{
 				for (int x = 0; x < rect.width; x++)
@@ -185,10 +195,55 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 					uchar color = mask.at<uchar>(y, x);
 					if (color == 255)
 					{
+						int _x = x;
+
+						if (y > rect.height / 2)
+						{
+							if (x > _x)
+								x = _x;
+
+							yPos = y;
+							oldx = _x;
+							exit = true;
+							break;
+						}
+					}
+					if (exit)
+						break;
+				}
+			}
+
+			//imshow("mask", mask);
+
+			//cv::Rect _rect(0, rect.height / 2, maxWidth, rect.height / 2);
+			//cv::rectangle(mask, _rect, cv::Scalar(255, 255, 255), -1);
+
+			//imshow("mask", mask);
+			
+			
+			*/
+			//bitwise_not(mask, mask);
+			//std::map<int, int> listOfPoint;
+
+			int oldx = 0;
+			for (int y = 0; y < rect.height; y++)
+			{
+				for (int x = 0; x < rect.width; x++)
+				{
+					uchar color = mask.at<uchar>(y, x);
+					if (color == 255)
+					{
+						int _x = x;
 						if (oldx != 0)
 						{
 							if (x < (oldx * 0.98))
 								x = oldx * 0.98;
+						}
+
+						if (y > rect.height / 2)
+						{
+							if (x > _x)
+								x = _x;
 						}
 
 						if (x > (rectCopy.width * 0.8))
@@ -243,13 +298,26 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 						{
 							mask.at<uchar>(y, _x) = 0;
 						}
+
+						if (y > rect.height / 2)
+						{
+							if (x < oldx)
+								x = oldx;
+						}
+						
 						oldx = x;
 
 						break;
 					}
+
+					
 				}
 			}
 
+
+			cv::Rect _rect(0, rect.height / 2, rect.width, rect.height / 2);
+			cv::rectangle(mask, _rect, cv::Scalar(255, 255, 255), -1);
+			
 			// show the images
 			//imshow("original", croppedImage);
 			//imshow("mask", mask);
