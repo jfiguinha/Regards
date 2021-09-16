@@ -100,163 +100,180 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 
 	if(nbFace > 0)
 	{
-		//Resize the rectangle
-		wxRect rectCopy = listFace;
-		cv::Rect rect;
-		int width = listFace.width;
-		rect.width = listFace.width * 2;
-		rect.x = listFace.x - (width / 2);
-		rect.y = 0;
-		rect.height = dst.rows;
-		
-		Mat blur;
-		cv::GaussianBlur(dst, blur, cv::Size(radius, boxsize), 0);
-		
-		cv::Mat croppedImage = dst(rect);
-		Mat src_gray;
-		Mat detected_edges;
-		Mat output;
-
-		Mat blur_crop;
-		cv::GaussianBlur(croppedImage, blur_crop, cv::Size(3, 3), 0);
-		//medianBlur(croppedImage, blur_crop, 3);
-		
-		cvtColor(blur_crop, src_gray, COLOR_BGR2GRAY);
-
-		// apply your filter
-		Canny(src_gray, src_gray, 200, 100);
-
-		// find the contours
-		vector< vector<Point> > contours;
-		findContours(src_gray, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-
-		// you could also reuse img1 here
-		Mat mask = Mat::zeros(src_gray.rows, src_gray.cols, CV_8UC1);
-		//threshold(mask, mask, 0, 255, THRESH_BINARY_INV);
-		// CV_FILLED fills the connected components found
-		drawContours(mask, contours, -1, Scalar(255), FILLED);
-
-
-
-		/*
-		 Before drawing all contours you could also decide
-		 to only draw the contour of the largest connected component
-		 found. Here's some commented out code how to do that:
-		*/
-
-		//    vector<double> areas(contours.size());
-		//    for(int i = 0; i < contours.size(); i++)
-		//        areas[i] = contourArea(Mat(contours[i]));
-		//    double max;
-		//    Point maxPosition;
-		//    minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
-		//    drawContours(mask, contours, maxPosition.y, Scalar(1), CV_FILLED);
-
-			// let's create a new image now
-		//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
-
-
-		cv::GaussianBlur(croppedImage, blur_crop, cv::Size(radius, boxsize), 0);
-
-
-		// normalize so imwrite(...)/imshow(...) shows the mask correctly!
-		normalize(mask.clone(), mask, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
-
-
-		int oldx = 0;
-		//bitwise_not(mask, mask);
-		//std::map<int, int> listOfPoint;
-		
-		for (int y =  0; y < rect.height; y++)
+		try
 		{
-			for (int x = 0; x < rect.width; x++)
+			//Resize the rectangle
+			wxRect rectCopy = listFace;
+			cv::Rect rect;
+			int width = listFace.width;
+			rect.width = listFace.width * 2;
+			rect.x = listFace.x - (width / 2);
+			rect.y = 0;
+			rect.height = dst.rows;
+
+			Mat blur;
+			cv::GaussianBlur(dst, blur, cv::Size(radius, boxsize), 0);
+
+
+			int maxWidth = dst.cols;
+			int maxHeight = dst.rows;
+			if ((rect.width + rect.x) > maxWidth)
+				rect.width = maxWidth - rect.x;
+
+			if ((rect.height + rect.y) > maxHeight)
+				rect.height = maxHeight - rect.y;
+			
+			cv::Mat croppedImage = dst(rect);
+			Mat src_gray;
+			Mat detected_edges;
+			Mat output;
+
+			Mat blur_crop;
+			cv::GaussianBlur(croppedImage, blur_crop, cv::Size(3, 3), 0);
+			//medianBlur(croppedImage, blur_crop, 3);
+
+			cvtColor(blur_crop, src_gray, COLOR_BGR2GRAY);
+
+			// apply your filter
+			Canny(src_gray, src_gray, 200, 100);
+
+			// find the contours
+			vector< vector<Point> > contours;
+			findContours(src_gray, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+
+			// you could also reuse img1 here
+			Mat mask = Mat::zeros(src_gray.rows, src_gray.cols, CV_8UC1);
+			//threshold(mask, mask, 0, 255, THRESH_BINARY_INV);
+			// CV_FILLED fills the connected components found
+			drawContours(mask, contours, -1, Scalar(255), FILLED);
+
+
+
+			/*
+			 Before drawing all contours you could also decide
+			 to only draw the contour of the largest connected component
+			 found. Here's some commented out code how to do that:
+			*/
+
+			//    vector<double> areas(contours.size());
+			//    for(int i = 0; i < contours.size(); i++)
+			//        areas[i] = contourArea(Mat(contours[i]));
+			//    double max;
+			//    Point maxPosition;
+			//    minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
+			//    drawContours(mask, contours, maxPosition.y, Scalar(1), CV_FILLED);
+
+				// let's create a new image now
+			//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
+
+
+			cv::GaussianBlur(croppedImage, blur_crop, cv::Size(radius, boxsize), 0);
+
+
+			// normalize so imwrite(...)/imshow(...) shows the mask correctly!
+			normalize(mask.clone(), mask, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
+
+
+			int oldx = 0;
+			//bitwise_not(mask, mask);
+			//std::map<int, int> listOfPoint;
+
+			for (int y = 0; y < rect.height; y++)
 			{
-				uchar color = mask.at<uchar>(y, x);
-				if (color == 255)
+				for (int x = 0; x < rect.width; x++)
 				{
-					if(oldx != 0)
+					uchar color = mask.at<uchar>(y, x);
+					if (color == 255)
 					{
-						if (x < (oldx * 0.98))
-							x = oldx *0.98;
-					}
+						if (oldx != 0)
+						{
+							if (x < (oldx * 0.98))
+								x = oldx * 0.98;
+						}
 
-					if (x > (rectCopy.width * 0.8))
-						x = (rectCopy.width * 0.8);
-					//stop searching
-					for (int _x = 0; _x < x; _x++)
-					{
-						mask.at<uchar>(y, _x) = 0;
-					}
+						if (x > (rectCopy.width * 0.8))
+							x = (rectCopy.width * 0.8);
+						//stop searching
+						for (int _x = 0; _x < x; _x++)
+						{
+							mask.at<uchar>(y, _x) = 0;
+						}
 
-					for (int _x = x; _x < rect.width - x; _x++)
-					{
-						mask.at<uchar>(y, _x) = 255;
-					}
+						for (int _x = x; _x < rect.width - x; _x++)
+						{
+							mask.at<uchar>(y, _x) = 255;
+						}
 
-					for (int _x = rect.width - x; _x < rect.width; _x++)
-					{
-						mask.at<uchar>(y, _x) = 0;
-					}
-					oldx = x;
+						for (int _x = rect.width - x; _x < rect.width; _x++)
+						{
+							mask.at<uchar>(y, _x) = 0;
+						}
+						oldx = x;
 
-					break;
+						break;
+					}
 				}
 			}
-		}
 
 
-		for (int y = rect.height - 1; y >= 0; y--)
-		{
-			for (int x = 0; x < rect.width; x++)
+			for (int y = rect.height - 1; y >= 0; y--)
 			{
-				uchar color = mask.at<uchar>(y, x);
-				if (color == 255)
+				for (int x = 0; x < rect.width; x++)
 				{
-					if (oldx != 0)
+					uchar color = mask.at<uchar>(y, x);
+					if (color == 255)
 					{
-						if (x < (oldx * 0.98))
-							x = oldx * 0.98;
-					}
-					//stop searching
-					for (int _x = 0; _x < x; _x++)
-					{
-						mask.at<uchar>(y, _x) = 0;
-					}
+						if (oldx != 0)
+						{
+							if (x < (oldx * 0.98))
+								x = oldx * 0.98;
+						}
+						//stop searching
+						for (int _x = 0; _x < x; _x++)
+						{
+							mask.at<uchar>(y, _x) = 0;
+						}
 
-					for (int _x = x; _x < rect.width - x; _x++)
-					{
-						mask.at<uchar>(y, _x) = 255;
-					}
+						for (int _x = x; _x < rect.width - x; _x++)
+						{
+							mask.at<uchar>(y, _x) = 255;
+						}
 
-					for (int _x = rect.width - x; _x < rect.width; _x++)
-					{
-						mask.at<uchar>(y, _x) = 0;
-					}
-					oldx = x;
+						for (int _x = rect.width - x; _x < rect.width; _x++)
+						{
+							mask.at<uchar>(y, _x) = 0;
+						}
+						oldx = x;
 
-					break;
+						break;
+					}
 				}
 			}
+
+			// show the images
+			//imshow("original", croppedImage);
+			//imshow("mask", mask);
+			//imshow("canny", src_gray);
+			//imshow("cropped", blur_crop);
+
+			//waitKey();
+			//destroyAllWindows();
+
+			// and copy the magic apple
+			croppedImage.copyTo(blur_crop, mask);
+
+			Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
+
+			blur_crop.copyTo(blur(copy));
+
+			cvtColor(blur, dst, COLOR_BGR2BGRA);
+			bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		}
-		
-		// show the images
-		//imshow("original", croppedImage);
-		//imshow("mask", mask);
-		//imshow("canny", src_gray);
-		//imshow("cropped", blur_crop);
+		catch(...)
+		{
+			
+		}
 
-		//waitKey();
-		//destroyAllWindows();
-		
-		// and copy the magic apple
-		croppedImage.copyTo(blur_crop, mask);
-		
-		Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
-
-		blur_crop.copyTo(blur(copy));
-
-		cvtColor(blur, dst, COLOR_BGR2BGRA);
-		bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 
 	}
 	
