@@ -50,7 +50,11 @@ void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * so
 
     vector<int> elementColor;
     for (int i = 1; i < 100; i++)
-        elementColor.push_back(i);
+    {
+        if (i % 2 == 1)
+            elementColor.push_back(i);
+    }
+
     
     filtreInterface->AddTreeInfos(libelleEffectSize,new CTreeElementValueInt(blurEffectParameter->size), &elementColor);
 }

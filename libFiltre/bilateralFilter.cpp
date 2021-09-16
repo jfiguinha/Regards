@@ -56,7 +56,10 @@ void CBilateralFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap
 
     vector<int> elementColor;
     for (auto i = 1; i < 100; i++)
-        elementColor.push_back(i);
+	{
+		if (i % 2 == 1)
+			elementColor.push_back(i);
+	}
 
     
     filtreInterface->AddTreeInfos(libelleEffectSize,new CTreeElementValueInt(bilateralEffectParameter->fSize), &elementColor);
