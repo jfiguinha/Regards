@@ -61,7 +61,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 	vector<int> elementColor;
 	for (auto i = 0; i < 25; i++)
 	{
-		if(i%2 != 1)
+		if(i%2 != 0)
 			elementColor.push_back(i);
 	}
 	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(BokehEffectParameter->radius), &elementColor);
