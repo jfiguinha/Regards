@@ -535,6 +535,20 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
+	int faceDetection = 0;
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		faceDetection = regardsParam->GetFaceDetection();
+	}
+
+	if (!faceDetection)
+	{
+		processIdle = false;
+		return;
+	}
+		
+	
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam* config = CParamInit::getInstance();

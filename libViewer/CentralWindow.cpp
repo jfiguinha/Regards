@@ -214,13 +214,10 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		listPicture->SetListeFile();
 	}
 
-	if (faceDetection)
+	if (viewerTheme != nullptr)
 	{
-		if (viewerTheme != nullptr)
-		{
-			listFace = new CListFace(windowManager, LISTFACEID);
-			listFace->Show(false);
-		}
+		listFace = new CListFace(windowManager, LISTFACEID);
+		listFace->Show(false);
 	}
 
 	Connect(wxEVT_ANIMATIONTIMERSTOP, wxCommandEventHandler(CCentralWindow::StopAnimationEvent));
