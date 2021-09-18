@@ -112,7 +112,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			rect.height = dst.rows;
 
 			Mat blur;
-			cv::GaussianBlur(dst, blur, cv::Size(radius, boxsize), 0);
+			cv::GaussianBlur(dst, blur, Size(boxsize, boxsize), radius);
 
 
 			int maxWidth = dst.cols;
@@ -178,7 +178,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
 
 
-			cv::GaussianBlur(croppedImage, blur_crop, cv::Size(radius, boxsize), 0);
+			cv::GaussianBlur(croppedImage, blur_crop, Size(boxsize, boxsize), radius);
 
 
 			// normalize so imwrite(...)/imshow(...) shows the mask correctly!
@@ -331,8 +331,10 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			croppedImage.copyTo(blur_crop, mask);
 
 			Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
-
+			//imshow("mask", blur);
 			blur_crop.copyTo(blur(copy));
+			imwrite("d:\\test.jpg",blur);
+			//imshow("mask", blur);
 
 			cvtColor(blur, dst, COLOR_BGR2BGRA);
 			bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
@@ -1479,17 +1481,6 @@ int CFiltreEffetCPU::Blur(const int& radius)
 
 	if (bitmap != nullptr)
 	{
-		/*
-		int sizeKernel = radius * 3;
-		short * kernel = new short[sizeKernel];
-		for(int i = 0;i < sizeKernel;i++)
-			kernel[i] = 1;
-		//{ 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, radius, sizeKernel, 0);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
-		*/
 		Mat dest;
 		Mat image(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 		blur(image, dest, Size(radius, radius));
@@ -1912,6 +1903,8 @@ int CFiltreEffetCPU::FlipHorizontal()
 
 	return 0;
 }
+
+
 
 //----------------------------------------------------------------------------
 //

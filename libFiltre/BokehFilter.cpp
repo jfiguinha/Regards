@@ -59,7 +59,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 	this->source = source;
 
 	vector<int> elementColor;
-	for (auto i = 0; i < 25; i++)
+	for (auto i = 0; i < 100; i++)
 	{
 		if(i%2 != 0)
 			elementColor.push_back(i);
@@ -133,7 +133,7 @@ CEffectParameter* CBokehFilter::GetDefaultEffectParameter()
 
 void CBokehFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(false);
+	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
 	CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 	if(bitmapOut != nullptr && BokehEffectParameter != nullptr)
 	{
@@ -173,10 +173,11 @@ void CBokehFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmap
 
 		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
 
-		filtreEffet->SetPreview(true);
+		//filtreEffet->SetPreview(true);
 
 		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
+		imageLoad->Resize(widthOutput, heightOutput, 0);
 		filtreEffet->SetBitmap(imageLoad);
 
 		delete filtre;

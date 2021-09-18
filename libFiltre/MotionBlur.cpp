@@ -135,10 +135,8 @@ void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel
 	long lWidthSize = bitmap->GetWidthSize();
 	uint8_t * lData = new uint8_t[m_lSize * sizeof(uint8_t)];
 
-#pragma omp parallel for
 	for (auto y = 0; y < bmHeight; y++)
 	{
-#pragma omp parallel for
 		for (auto x = 0; x < bmWidth; x++)
 		{
 			int position = y * bmWidth * 4 + x * 4;

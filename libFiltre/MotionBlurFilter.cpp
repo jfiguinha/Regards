@@ -14,6 +14,10 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CMotionBlurFilter::CMotionBlurFilter()
@@ -61,7 +65,7 @@ void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitma
     
     
     vector<int> elementSample;
-    for (auto i = 0; i < 11; i++)
+    for (auto i = 0; i < 100; i++)
         elementSample.push_back(i);
     
     vector<int> velocity;
@@ -99,76 +103,11 @@ void CMotionBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
 	}
 }
 
-bool CMotionBlurFilter::IsOpenCLCompatible()
-{
-	return true;
-}
-
-bool CMotionBlurFilter::IsOpenGLCompatible()
-{
-	return false;
-}
-
 bool CMotionBlurFilter::NeedPreview()
 {
 	return true;
 }
 
-void CMotionBlurFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-	if (motionBlurParameter != nullptr)
-	{
-/*
-uniform float nSamples;
-uniform float velocityScale;
-uniform float angleDegree;
-uniform float widthScreen;
-uniform float heightScreen;
-uniform float left;
-uniform float top;
-
-*/
-        printf("GLSLShader IDR_GLSL_SHADER_MOTIONBLUR \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_MOTIONBLUR");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("nSamples", motionBlurParameter->radius))
-			{
-				printf("SetParam red failed \n ");
-			}
-			if (!m_pShader->SetParam("velocityScale", motionBlurParameter->sigma))
-			{
-				printf("SetParam green failed \n ");
-			}
-			if (!m_pShader->SetParam("angleDegree", motionBlurParameter->angle))
-			{
-				printf("SetParam green failed \n ");
-			}
-			if (!m_pShader->SetParam("widthScreen", renderOpenGL->GetWidth()))
-			{
-				printf("SetParam widthBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("heightScreen", renderOpenGL->GetHeight()))
-			{
-				printf("SetParam heightBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("left", 0))
-			{
-				printf("SetParam widthBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("top", 0))
-			{
-				printf("SetParam heightBitmap failed \n ");
-			}
-		}
-	}
-}
 
 void CMotionBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
@@ -191,4 +130,49 @@ CEffectParameter* CMotionBlurFilter::GetDefaultEffectParameter()
 	motionBlur->sigma = 5;
 	motionBlur->angle = 40;
 	return motionBlur;
+}
+
+
+void CMotionBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
+	CMotionBlurEffectParameter* motionblurEffectParameter = new CMotionBlurEffectParameter();
+	if (bitmapOut != nullptr && motionblurEffectParameter != nullptr)
+	{
+		CImageLoadingFormat image;
+		image.SetPicture(bitmapOut);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+
+		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
+
+		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		imageLoad->Resize(widthOutput, heightOutput, 0);
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete filtre;
+	}
+
+
+}
+
+CImageLoadingFormat* CMotionBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	CMotionBlurEffectParameter* motionblurEffectParameter = new CMotionBlurEffectParameter();
+
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

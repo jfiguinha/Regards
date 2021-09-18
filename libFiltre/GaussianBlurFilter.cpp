@@ -5,6 +5,10 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CGaussianBlurFilter::CGaussianBlurFilter()
@@ -101,4 +105,52 @@ CEffectParameter* CGaussianBlurFilter::GetDefaultEffectParameter()
 	gaussianBlur->radius = 5;
 	gaussianBlur->boxSize = 3;
 	return gaussianBlur;
+}
+
+
+
+void CGaussianBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
+	CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+	if (bitmapOut != nullptr && gaussianBlur != nullptr)
+	{
+		CImageLoadingFormat image;
+		image.SetPicture(bitmapOut);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+
+		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
+
+		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		imageLoad->Resize(widthOutput, heightOutput, 0);
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete filtre;
+	}
+
+
+}
+
+CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

@@ -22,16 +22,15 @@ namespace Regards
             wxString GetFilterLabel();
             int GetTypeFilter();
             int TypeApplyFilter();
-            bool IsOpenCLCompatible();
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-			void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
             void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
-            bool IsOpenGLCompatible();
+            void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput);
+            CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer);
         private:
             wxString libelleEffectRadius;
             wxString libelleEffectSigma;

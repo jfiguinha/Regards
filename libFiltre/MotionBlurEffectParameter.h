@@ -5,9 +5,9 @@ class CMotionBlurEffectParameter : public CEffectParameter
 public:
 	CMotionBlurEffectParameter()
 	{
-		radius = 0;
-		sigma = 0;
-		angle = 0;
+		radius = 20;
+		sigma = 5;
+		angle = 40;
 		bitmapWidth = 0;
 	};
 	~CMotionBlurEffectParameter() override {};

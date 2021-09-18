@@ -613,7 +613,7 @@ int CFiltreEffet::MotionBlur(const double& radius, const double& sigma, const do
 {
 	//return filtreEffet->MotionBlur(radius, sigma, angle);
 	int puissance = static_cast<int>((float)(width / 2) * ((float)sigma / 100.0f));
-	int value = filtreEffet->MotionBlur(radius, puissance, angle);
+	int value = filtreEffet->MotionBlur(radius, sigma, angle);
 	return value;
 }
 

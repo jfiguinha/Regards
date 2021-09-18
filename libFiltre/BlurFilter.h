@@ -29,7 +29,8 @@ namespace Regards
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
-
+            void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput);
+            CImageLoadingFormat* CBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer);
         private:
             wxString libelleEffectSize;
         };

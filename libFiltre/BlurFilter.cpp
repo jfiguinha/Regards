@@ -13,7 +13,11 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <effect_id.h>
+#include <ImageLoadingFormat.h>
 #include "TreeElementValue.h"
+#include <BitmapDisplay.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()
@@ -99,4 +103,50 @@ CEffectParameter* CBlurFilter::GetDefaultEffectParameter()
     CBlurEffectParameter* blurEffect = new CBlurEffectParameter();
     blurEffect->size = 3;
     return blurEffect;
+}
+
+void CBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
+	CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
+	if (bitmapOut != nullptr && blurEffect != nullptr)
+	{
+		CImageLoadingFormat image;
+		image.SetPicture(bitmapOut);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->Blur(blurEffect->size);
+
+		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
+
+		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		imageLoad->Resize(widthOutput, heightOutput, 0);
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete filtre;
+	}
+
+
+}
+
+CImageLoadingFormat* CBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
+	
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->Blur(blurEffect->size);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }
