@@ -141,6 +141,11 @@ void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
 {
 	this->effectParameter = effectParameter;
 	updateFilter = true;
+
+	if(mouseUpdate->IsSourcePreview())
+	{
+		copyBitmap = true;
+	}
 	RefreshWindow();
 }
 
@@ -158,6 +163,14 @@ void CBitmapWndViewer::SetNormalMode()
 	this->ShrinkImage();
 }
 
+void CBitmapWndViewer::BeforeInterpolationBitmap()
+{
+	if (preview > 1 && mouseUpdate != nullptr)
+	{
+		mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+	}
+
+}
 
 void CBitmapWndViewer::PrintPicture()
 {

@@ -107,38 +107,48 @@ CEffectParameter* CGaussianBlurFilter::GetDefaultEffectParameter()
 	return gaussianBlur;
 }
 
+bool CGaussianBlurFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CGaussianBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	/*
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+		filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+	}
+	*/
+
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+		filtreEffet->SetBitmap(imageLoad);
+	}
+}
 
 
 void CGaussianBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
-	CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
-	if (bitmapOut != nullptr && gaussianBlur != nullptr)
-	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
-
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		imageLoad->Resize(widthOutput, heightOutput, 0);
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete filtre;
-	}
-
 
 }
 
 CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
-
 	if (effectParameter != nullptr && source != nullptr)
 	{
 		source->RotateExif(source->GetOrientation());
@@ -146,6 +156,7 @@ CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectPa
 		image.SetPicture(source);
 
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
 		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));

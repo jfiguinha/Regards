@@ -215,6 +215,10 @@ namespace Regards
 			{
 			};
 
+			virtual void BeforeInterpolationBitmap()
+			{
+			};
+
 			void GenerateScreenBitmap(CFiltreEffet* filtre, int& widthOutput, int& heightOutput);
 			void GenerateExifPosition(int& localAngle, int& localflipHorizontal, int& localflipVertical);
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
@@ -291,8 +295,9 @@ namespace Regards
 			CThemeBitmapWindow themeBitmap;
 			CRegardsConfigParam* config;
 
-
+			bool copyBitmap = false;
 			CFiltreEffet* filtreEffet;
+			CImageLoadingFormat* copyBmpSrc = nullptr;
 
 			CRenderBitmapOpenGL* renderOpenGL = nullptr;
 			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;

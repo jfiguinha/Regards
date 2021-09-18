@@ -1448,6 +1448,49 @@ int COpenCLEffect::Posterize(const float& level, const float& gamma)
 	return 0;
 }
 
+int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const double& angle)
+{
+	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
+	if (context != nullptr)
+	{
+		vector<double> kernel;
+		vector<wxPoint> offsets;
+
+		if (sigma == 0.0)
+			return 0;
+
+		kernel = CMotionBlur::GetMotionBlurKernel(radius, sigma);
+
+		if (kernel.size() < 3)
+			return false;
+
+		if (context != nullptr)
+		{
+			int _width;
+			int _height;
+			cl_mem output;
+			offsets = CMotionBlur::GetOffsetKernel(kernel.size(), angle);
+			COpenCLFilter openclFilter(context);
+			if (preview && paramOutput != nullptr)
+			{
+				_width = widthOut;
+				_height = heightOut;
+				output = openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(), paramOutput->GetValue(), widthOut, heightOut);
+			}
+			else
+			{
+				_width = width;
+				_height = height;
+				output = openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(), input->GetValue(), width, height);
+			}
+			SetOutputValue(output, _width, _height);
+		}
+	}
+	//delete bitmapOut;
+	return 0;
+}
+
+
 int COpenCLEffect::Median()
 {
 	if (context != nullptr)

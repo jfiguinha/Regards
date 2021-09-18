@@ -67,9 +67,12 @@ void CFiltreEffectScrollWnd::OnFiltreOk(const int& numFiltre, CInfoEffectWnd* hi
 	if (filtreEffectOld != nullptr && bitmapViewer != nullptr)
 	{
 		CImageLoadingFormat* imageLoad = filtreEffectOld->ApplyEffect();
-		CRegardsBitmap* bitmapOut = imageLoad->GetRegardsBitmap(true);
-		historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numFiltre));
-		delete bitmapOut;
+		if (imageLoad != nullptr)
+		{
+			CRegardsBitmap* bitmapOut = imageLoad->GetRegardsBitmap(true);
+			historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numFiltre));
+			delete bitmapOut;
+		}
 
 		if (imageLoad != nullptr)
 			bitmapViewer->SetBitmap(imageLoad, true);

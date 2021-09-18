@@ -12,6 +12,8 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 using namespace Regards::Filter;
 
@@ -130,4 +132,52 @@ CEffectParameter* CBilateralFilter::GetEffectPointer()
 CEffectParameter* CBilateralFilter::GetDefaultEffectParameter()
 {
 	return new CBilateralEffectParameter();
+}
+
+
+bool CBilateralFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CBilateralFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
+		filtreEffet->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+	}
+
+}
+
+
+void CBilateralFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CBilateralFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
+			CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
+			filter->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
+
+	return imageLoad;
 }

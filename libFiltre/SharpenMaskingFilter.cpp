@@ -6,6 +6,10 @@
 #include <LibResource.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
+#include <BitmapDisplay.h>
+
+#include "MotionBlurFilter.h"
 using namespace Regards::Filter;
 
 CSharpenMaskingFilter::CSharpenMaskingFilter()
@@ -20,7 +24,7 @@ int CSharpenMaskingFilter::TypeApplyFilter()
 
 bool CSharpenMaskingFilter::IsOpenGLCompatible()
 {
-	return true;
+	return false;
 }
 
 CSharpenMaskingFilter::~CSharpenMaskingFilter()
@@ -123,4 +127,50 @@ CEffectParameter* CSharpenMaskingFilter::GetDefaultEffectParameter()
 	CSharpenMaskingEffectParameter* sharpen = new CSharpenMaskingEffectParameter();
 	sharpen->sharpness = 1.0f;
 	return sharpen;
+}
+
+
+bool CSharpenMaskingFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CSharpenMaskingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+		filtreEffet->SharpenMasking(sharpenParameter->sharpness);
+	}
+
+}
+
+
+void CSharpenMaskingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CSharpenMaskingFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
+			filter->SharpenMasking(sharpenParameter->sharpness);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
+
+	return imageLoad;
 }

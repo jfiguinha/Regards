@@ -25,6 +25,14 @@ namespace Regards
 			virtual bool IsOpenGLCompatible() {
 				return false;
 			};
+			bool IsSourcePreview()
+			{
+				return false;
+			}
+			void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+			{
+				
+			}
 
 		private:
 			void OnOcr(wxCommandEvent& event);

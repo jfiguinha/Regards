@@ -1663,7 +1663,12 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			delete filtreEffet;
 		filtreEffet = new CFiltreEffet(color, openclContext, source);
 		loadBitmap = false;
+
+		BeforeInterpolationBitmap();
 	}
+
+
+
 
 	//if (filtreEffet == nullptr)
 	//	filtreEffet = new CFiltreEffet(color, openclContext, source);
@@ -1761,15 +1766,14 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
-
 	if (loadBitmap)
 	{
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
-		//if (filtreEffet == nullptr)
-		//	filtreEffet = new CFiltreEffet(color, nullptr, source);
 
+		BeforeInterpolationBitmap();
+		
 		if (IsOpenGLDecoding())
 		{
 			if (glTextureSrc != nullptr)

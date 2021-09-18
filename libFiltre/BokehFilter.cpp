@@ -58,6 +58,28 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 
 	this->source = source;
 
+	source->VertFlipBuf();
+
+	//Find Face on source
+	cv::Mat dst;
+	cv::Mat image_local(source->GetBitmapHeight(), source->GetBitmapWidth(), CV_8UC4, source->GetPtBitmap());
+	cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
+
+	//Extract Face and Get Rectangle
+	CFaceDetector face_detector(true);
+	vector<cv::Rect> listFace = face_detector.GetRectFace(dst);
+	if (listFace.size() > 0)
+	{
+		faceRect.SetX(listFace[0].x);
+		faceRect.SetY(listFace[0].y);
+		faceRect.SetWidth(listFace[0].width);
+		faceRect.SetHeight(listFace[0].height);
+	}
+
+	nbFace = listFace.size();
+
+	source->VertFlipBuf();
+
 	vector<int> elementColor;
 	for (auto i = 0; i < 100; i++)
 	{
@@ -130,59 +152,34 @@ CEffectParameter* CBokehFilter::GetDefaultEffectParameter()
 	return new CBokehEffectParameter();
 }
 
-
 void CBokehFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
-	CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
-	if(bitmapOut != nullptr && BokehEffectParameter != nullptr)
+}
+
+
+bool CBokehFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
 	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
 
-		if(oldWidth != bitmapOut->GetBitmapWidth() || oldHeight != bitmapOut->GetBitmapHeight())
-		{
-			bitmapOut->VertFlipBuf();
-
-			//Find Face on source
-			cv::Mat dst;
-			cv::Mat image_local(bitmapOut->GetBitmapHeight(), bitmapOut->GetBitmapWidth(), CV_8UC4, bitmapOut->GetPtBitmap());
-			cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
-
-			//Extract Face and Get Rectangle
-			CFaceDetector face_detector(true);
-			vector<cv::Rect> listFace = face_detector.GetRectFace(dst);
-			if (listFace.size() > 0)
-			{
-				faceRect.SetX(listFace[0].x);
-				faceRect.SetY(listFace[0].y);
-				faceRect.SetWidth(listFace[0].width);
-				faceRect.SetHeight(listFace[0].height);
-			}
-
-			nbFace = listFace.size();
-
-			bitmapOut->VertFlipBuf();
-
-			oldWidth = bitmapOut->GetBitmapWidth();
-			oldHeight = bitmapOut->GetBitmapHeight();
-		}
-				
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		//filtreEffet->SetPreview(true);
-
-		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
+		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
-		imageLoad->Resize(widthOutput, heightOutput, 0);
-		filtreEffet->SetBitmap(imageLoad);
-
 		delete filtre;
-	}
 
+		filtreEffet->SetBitmap(imageLoad);
+	}
 
 }
 
@@ -194,32 +191,7 @@ CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
-
-		wxRect faceRect;
-		int nbFace = 0;
-
-		source->VertFlipBuf();
-
-		//Find Face on source
-		cv::Mat dst;
-		cv::Mat image_local(source->GetBitmapHeight(), source->GetBitmapWidth(), CV_8UC4, source->GetPtBitmap());
-		cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
-
-		//Extract Face and Get Rectangle
-		CFaceDetector face_detector(true);
-		vector<cv::Rect> listFace = face_detector.GetRectFace(dst);
-		if (listFace.size() > 0)
-		{
-			faceRect.SetX(listFace[0].x);
-			faceRect.SetY(listFace[0].y);
-			faceRect.SetWidth(listFace[0].width);
-			faceRect.SetHeight(listFace[0].height);
-		}
-
-		nbFace = listFace.size();
-
-		source->VertFlipBuf();
-		
+				
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);

@@ -18,6 +18,8 @@
 #include <BitmapDisplay.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
+
+#include "bilateralFilter.h"
 using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()
@@ -79,8 +81,8 @@ void CBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
 void CBlurFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
     CBlurEffectParameter* blurEffectParameter = (CBlurEffectParameter*)effectParameter;
-    if(blurEffectParameter != nullptr && filtreEffet != nullptr)
-        filtreEffet->Blur(blurEffectParameter->size);
+    if (blurEffectParameter != nullptr && filtreEffet != nullptr)
+        filtreEffet->Blur(blurEffectParameter->size);   
 }
 
 bool CBlurFilter::NeedPreview()
@@ -105,48 +107,50 @@ CEffectParameter* CBlurFilter::GetDefaultEffectParameter()
     return blurEffect;
 }
 
-void CBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+
+bool CBlurFilter::IsSourcePreview()
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
-	CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
-	if (bitmapOut != nullptr && blurEffect != nullptr)
+	return true;
+}
+
+
+void CBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
 	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
-
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->Blur(blurEffect->size);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		imageLoad->Resize(widthOutput, heightOutput, 0);
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete filtre;
+		CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
+		filtreEffet->Blur(blurEffect->size);
 	}
 
+}
+
+
+void CBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
 
 }
 
 CImageLoadingFormat* CBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
-	CImageLoadingFormat* imageLoad = nullptr;
-	CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
-	
-	if (effectParameter != nullptr && source != nullptr)
-	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
+    CImageLoadingFormat* imageLoad = nullptr;
+    if (effectParameter != nullptr && source != nullptr)
+    {  	
+        CFiltreEffet * filter = bitmapViewer->GetFiltreEffet();
+    	if(filter != nullptr)
+    	{
+            source->RotateExif(source->GetOrientation());
+            CImageLoadingFormat image(false);
+            image.SetPicture(source);
+            filter->SetBitmap(&image);
+    		
+            CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
+            filter->Blur(blurEffect->size);
+            imageLoad = new CImageLoadingFormat();
+            CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+            bitmapOut->RotateExif(source->GetOrientation());
+            imageLoad->SetPicture(bitmapOut);
+    	}
+    }
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->Blur(blurEffect->size);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
-	}
-
-	return imageLoad;
+    return imageLoad;
 }

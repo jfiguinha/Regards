@@ -132,46 +132,48 @@ CEffectParameter* CMotionBlurFilter::GetDefaultEffectParameter()
 	return motionBlur;
 }
 
+bool CMotionBlurFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CMotionBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
+		filtreEffet->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+	}
+
+}
+
 
 void CMotionBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(true);
-	CMotionBlurEffectParameter* motionblurEffectParameter = new CMotionBlurEffectParameter();
-	if (bitmapOut != nullptr && motionblurEffectParameter != nullptr)
-	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		imageLoad->Resize(widthOutput, heightOutput, 0);
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete filtre;
-	}
-
 
 }
 
 CImageLoadingFormat* CMotionBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	CMotionBlurEffectParameter* motionblurEffectParameter = new CMotionBlurEffectParameter();
-
 	if (effectParameter != nullptr && source != nullptr)
 	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
+			CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
+			filter->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;

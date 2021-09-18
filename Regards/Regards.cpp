@@ -20,7 +20,6 @@
 #include <FilterWindowParam.h>
 #include <ConvertUtility.h>
 #include <FileUtility.h>
-
 #include "ParamInit.h"
 using namespace Regards::Picture;
 

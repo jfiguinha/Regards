@@ -21,8 +21,6 @@
 #include <RegardsBitmap.h>
 #include <fstream>
 #include "bm3dfilter.h"
-#include <FileUtility.h>
-#include <FaceDetector.h>
 
 
 using namespace Regards::OpenCV;
@@ -46,6 +44,10 @@ CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingForma
 	this->backColor = back_color;
 	bitmapOut = nullptr;
 	pBitmap = bitmap->GetRegardsBitmap();
+	if(pBitmap == nullptr)
+	{
+		printf("toto");
+	}
 }
 
 int CFiltreEffetCPU::GetWidth()

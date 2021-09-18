@@ -120,6 +120,11 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 
 }
 
+void CFilterWindowParam::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin)
+{
+
+}
+
 void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filtre)
 {
 	switch (orientation)

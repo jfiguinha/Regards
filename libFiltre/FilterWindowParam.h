@@ -40,7 +40,10 @@ public:
 	{
 		return new CEffectParameter();
 	}
-
+	virtual bool IsSourcePreview()
+	{
+		return false;
+	}
 	virtual int GetNameFilter() = 0;
     virtual int GetTypeFilter() = 0;
 	virtual bool NeedPreview() { return false; };
@@ -51,6 +54,7 @@ public:
 	virtual CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
 	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
+	virtual void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin);
 	static CImageLoadingFormat * RenderEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, int numFiltre);
 	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
 	virtual void DisableOpenGLShader();

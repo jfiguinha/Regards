@@ -25,15 +25,6 @@
     <Filter Include="Filter\source">
       <UniqueIdentifier>{c85f9b29-f254-4e19-8d11-1e46dcc112c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="interface">
-      <UniqueIdentifier>{2dff8aa1-ace6-453b-9175-ba751f357121}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="interface\include">
-      <UniqueIdentifier>{55f44865-d5f8-423e-9d3e-3001d45152e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="interface\source">
-      <UniqueIdentifier>{da7dea52-797c-46e1-9da6-2c647f02b1e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="window">
       <UniqueIdentifier>{c6ff931b-ae35-4b98-9749-29b2165c8848}</UniqueIdentifier>
     </Filter>
@@ -63,6 +54,15 @@
     </Filter>
     <Filter Include="Filter\MeanShift">
       <UniqueIdentifier>{a6f92a84-e7dc-4780-a4c7-85caa8bce14b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filter\source\interface">
+      <UniqueIdentifier>{2dff8aa1-ace6-453b-9175-ba751f357121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filter\source\interface\include">
+      <UniqueIdentifier>{55f44865-d5f8-423e-9d3e-3001d45152e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filter\source\interface\source">
+      <UniqueIdentifier>{da7dea52-797c-46e1-9da6-2c647f02b1e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,10 +115,10 @@
       <Filter>Filter\include</Filter>
     </ClInclude>
     <ClInclude Include="FilterData.h">
-      <Filter>interface\include</Filter>
+      <Filter>Filter\source\interface\include</Filter>
     </ClInclude>
     <ClInclude Include="Filtre.h">
-      <Filter>interface\include</Filter>
+      <Filter>Filter\source\interface\include</Filter>
     </ClInclude>
     <ClInclude Include="BilateralEffectParameter.h">
       <Filter>window\datastructure</Filter>
@@ -360,10 +360,10 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="FilterData.cpp">
-      <Filter>interface\source</Filter>
+      <Filter>Filter\source\interface\source</Filter>
     </ClCompile>
     <ClCompile Include="Filtre.cpp">
-      <Filter>interface\source</Filter>
+      <Filter>Filter\source\interface\source</Filter>
     </ClCompile>
     <ClCompile Include="FilterWindowParam.cpp">
       <Filter>window\main</Filter>
