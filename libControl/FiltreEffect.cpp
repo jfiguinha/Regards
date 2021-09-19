@@ -104,8 +104,7 @@ void CFiltreEffect::UpdateMousePosition()
 	auto bitmapWindow = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		CImageLoadingFormat* imageLoad = filterEffect
-		(effectParameter, bitmapWindow);
+		CImageLoadingFormat* imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
 		bitmapWindow->UpdateBitmap(imageLoad, false);
 	}
 }
