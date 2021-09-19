@@ -64,8 +64,11 @@ void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * 
 	this->source = source;
 
     vector<int> elementIntensity;
-    for (auto i = 0; i < 255; i++)
-        elementIntensity.push_back(i);
+    for (auto i = 0; i < 26; i++)
+    {
+    	if(i%2 == 1)
+			elementIntensity.push_back(i);
+    }
     
     filtreInterface->AddTreeInfos(libelleLumSpac, new CTreeElementValueInt(hqdn3dParameter->LumSpac), &elementIntensity);
 

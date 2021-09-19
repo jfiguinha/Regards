@@ -51,7 +51,7 @@ void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBit
 	this->source = source;
 
 	vector<int> elementColor;
-	for (auto i = 0; i < 255; i++)
+	for (auto i = 0; i < 26; i++)
 	{
 		if(i % 2 == 1)
 			elementColor.push_back(i);
@@ -59,7 +59,7 @@ void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBit
 		
 
 	filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(gaussianBlurEffectParameter->radius), &elementColor);
-	filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(gaussianBlurEffectParameter->boxSize), &elementColor);
+	//filtreInterface->AddTreeInfos(libelleEffectBoxSize, new CTreeElementValueInt(gaussianBlurEffectParameter->boxSize), &elementColor);
 }
 
 void CGaussianBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)

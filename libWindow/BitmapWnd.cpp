@@ -1785,6 +1785,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 			glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 		}
 		loadBitmap = false;
+
 	}
 
 

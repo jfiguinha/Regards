@@ -22,6 +22,7 @@
 #include "NoneEffectTextureEffect.h"
 #include "DiaporamaEffect.h"
 #include <wx/busyinfo.h>
+#include <wx/activityindicator.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -145,6 +146,7 @@ void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
 
 	if(mouseUpdate->IsSourcePreview())
 	{
+		needUpdate = true;
 		copyBitmap = true;
 	}
 	RefreshWindow();
@@ -168,8 +170,25 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 {
 	if (preview > 1 && mouseUpdate != nullptr)
 	{
-		wxBusyInfo wait("Please wait, working...");
-		mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+		
+		if (copyBmpSrc == nullptr || updateFilter)
+		{
+			wxBeginBusyCursor();
+			mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+			if (copyBmpSrc != nullptr)
+				delete copyBmpSrc;
+			copyBmpSrc = filtreEffet->GetBitmap(true);
+			updateFilter = false;
+			wxEndBusyCursor();
+		}
+		else if(mouseUpdate->IsSourcePreview())
+		{
+			CImageLoadingFormat image(false);
+			image.SetPicture(copyBmpSrc);
+			filtreEffet->SetBitmap(&image);
+		}
+		
+
 	}
 
 }
@@ -190,6 +209,7 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
                                    const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface)
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
+	
 	mouseUpdate = nullptr;
 	etape = 0;
 	preview = 0;
@@ -265,6 +285,8 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 
 CBitmapWndViewer::~CBitmapWndViewer()
 {
+	
+	
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
 
@@ -739,6 +761,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
+		
 		int hpos = CBitmapWnd::GetHPos();
 		int vpos = CBitmapWnd::GetVPos();
 
@@ -750,6 +773,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 		{
 			m_cDessin->MouseMove(x, y, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
+			needUpdate = true;
 			this->Refresh();
 		}
 		else if (CFiltreData::SupportMouseSelection(toolOption))
