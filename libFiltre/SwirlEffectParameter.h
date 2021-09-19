@@ -5,10 +5,10 @@ class CSwirlEffectParameter : public CEffectParameter
 public:
 	CSwirlEffectParameter()
 	{
-		radius = 0;
+		radius = 20;
 		bitmapWidth = 0;
 		bitmapHeight = 0;
-		angle = 0;
+		angle = 20;
 	};
 	~CSwirlEffectParameter() override {};
 

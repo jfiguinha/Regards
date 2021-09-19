@@ -120,39 +120,6 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
 }
 
 
-void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
-{
-	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
-	wxPoint pt;
-	m_cDessin->GetScreenPoint(pt);
-	if (pt.x == 0 && pt.y == 0)
-	{
-		pt.x = widthOutput / 4;
-		pt.y = bitmapOut->GetBitmapHeight() / 4;
-	}
-
-	CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-	if (pt.x != 0 && pt.y != 0)
-	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		int puissance = (float)lensFlareParameter->size;
-		int brightness = (float)lensFlareParameter->brightness;
-		int radius = (float)lensFlareParameter->colorIntensity;
-		LensFlare(filtre, pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, 0, 0);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		filtreEffet->SetPreview(true);
-
-		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete filtre;
-	}
-}
 
 CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
@@ -216,3 +183,43 @@ CEffectParameter* CLensFlareFilter::GetDefaultEffectParameter()
 	return new CLensFlareEffectParameter();
 }
 
+
+bool CLensFlareFilter::IsSourcePreview()
+{
+    return true;
+}
+
+
+void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+
+		wxPoint pt;
+		bitmapViewer->GetDessinPt()->GetPoint(pt);
+		CLensFlareEffectParameter* lensFlareParameter = (CLensFlareEffectParameter*)effectParameter;
+		float puissance = (float)lensFlareParameter->size;
+		float brightness = (float)lensFlareParameter->brightness;
+		float colorIntensity = (float)lensFlareParameter->colorIntensity;
+		puissance = ((float)(source->GetBitmapWidth() / 4) * (puissance / 100.0f));
+		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+
+		filtreEffet->SetBitmap(imageLoad);
+	}
+}
+
+
+void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}

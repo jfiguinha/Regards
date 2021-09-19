@@ -6,7 +6,7 @@ class CGaussianBlurEffectParameter : public CEffectParameter
 public:
 	CGaussianBlurEffectParameter()
 	{
-		radius = 0;
+		radius = 5;
 		boxSize = 3;
 	};
 	~CGaussianBlurEffectParameter(){};

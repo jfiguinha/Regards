@@ -6,9 +6,10 @@
 #include <FilterData.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
-#include <ImageLoadingFormat.h>
+
 using namespace Regards::Filter;
 
 CGaussianBlurFilter::CGaussianBlurFilter()
@@ -115,28 +116,11 @@ bool CGaussianBlurFilter::IsSourcePreview()
 
 void CGaussianBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	/*
+	
 	if (effectParameter != nullptr && source != nullptr)
 	{
 		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
 		filtreEffet->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
-	}
-	*/
-
-	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
-	{
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
-		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
-
-		filtreEffet->SetBitmap(imageLoad);
 	}
 }
 

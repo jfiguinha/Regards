@@ -5,7 +5,7 @@ class CSolarisationEffectParameter : public CEffectParameter
 public:
 	CSolarisationEffectParameter()
 	{
-		threshold = 127;
+		threshold = 50;
 	};
 	~CSolarisationEffectParameter() override {};
 

@@ -31,6 +31,11 @@ namespace Regards
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
+            bool IsSourcePreview();
+            void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing);
+            void ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput);
+            CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer);
+
         private:
             wxString libelleEffectColorRed;
             wxString libelleEffectColorGreen;

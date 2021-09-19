@@ -2272,14 +2272,14 @@ int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 			else
 				output = input->GetValue();
 
-			output = opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", output, widthOut, heightOut, noDeleteData);
+			output = opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", output, _width, _height, noDeleteData);
 			noDeleteData = false;
-			output = opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurV", output, widthOut, heightOut, noDeleteData);
+			output = opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurV", output, _width, _height, noDeleteData);
 
 			for (auto i = 1; i < boxSize; i++)
 			{
-				output = opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurH", output, widthOut, heightOut, noDeleteData);
-				output = opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurV", output, widthOut, heightOut, noDeleteData);
+				output = opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurH", output, _width, _height, noDeleteData);
+				output = opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurV", output, _width, _height, noDeleteData);
 			}
 
 			SetOutputValue(output, _width, _height);

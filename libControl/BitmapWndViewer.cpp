@@ -21,6 +21,7 @@
 #include "MoveEffectTexture.h"
 #include "NoneEffectTextureEffect.h"
 #include "DiaporamaEffect.h"
+#include <wx/busyinfo.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -167,6 +168,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 {
 	if (preview > 1 && mouseUpdate != nullptr)
 	{
+		wxBusyInfo wait("Please wait, working...");
 		mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
 	}
 

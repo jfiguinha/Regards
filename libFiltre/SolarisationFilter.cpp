@@ -14,6 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CSolarisationFilter::CSolarisationFilter()
@@ -33,7 +35,7 @@ int CSolarisationFilter::TypeApplyFilter()
 
 bool CSolarisationFilter::IsOpenGLCompatible()
 {
-	return true;
+	return false;
 }
 
 wxString CSolarisationFilter::GetFilterLabel()
@@ -129,4 +131,45 @@ CEffectParameter* CSolarisationFilter::GetDefaultEffectParameter()
 	return solarisation;
 }
 
+bool CSolarisationFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CSolarisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
+		filtreEffet->Solarize(solarisationEffectParameter->threshold);
+	}
+}
+
+
+void CSolarisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CSolarisationFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
+		filtre->Solarize(solarisationEffectParameter->threshold);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
+}
 

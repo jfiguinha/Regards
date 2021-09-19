@@ -14,7 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
-
+#include <ImageLoadingFormat.h>
+#include <BitmapDisplay.h>
 #include "TreeElementValue.h"
 using namespace Regards::OpenGL;
 using namespace Regards::Filter;
@@ -38,7 +39,7 @@ CColorBalanceFilter::~CColorBalanceFilter()
 
 bool CColorBalanceFilter::IsOpenGLCompatible()
 {
-	return true;
+	return false;
 }
 
 wxString CColorBalanceFilter::GetFilterLabel()
@@ -163,4 +164,46 @@ CEffectParameter* CColorBalanceFilter::GetDefaultEffectParameter()
 	rgbFilter->green = 120;
 	rgbFilter->blue = 120;
 	return rgbFilter;
+}
+
+bool CColorBalanceFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CColorBalanceFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+		filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
+	}
+
+}
+
+
+void CColorBalanceFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+
+CImageLoadingFormat* CColorBalanceFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

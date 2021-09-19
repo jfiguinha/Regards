@@ -14,6 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CSwirlFilter::CSwirlFilter()
@@ -34,7 +36,7 @@ int CSwirlFilter::TypeApplyFilter()
 
 bool CSwirlFilter::IsOpenGLCompatible()
 {
-	return true;
+	return false;
 }
 
 wxString CSwirlFilter::GetFilterLabel()
@@ -56,7 +58,7 @@ int CSwirlFilter::GetTypeFilter()
 void CSwirlFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {   
    	CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
-    
+	this->source = source;
     swirlEffectParameter->bitmapWidth = source->GetBitmapWidth();
     swirlEffectParameter->bitmapHeight = source->GetBitmapHeight();
     
@@ -186,4 +188,51 @@ CEffectParameter* CSwirlFilter::GetDefaultEffectParameter()
 	swirl->angle = 20;
 	swirl->radius = 20;
 	return swirl;
+}
+
+bool CSwirlFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CSwirlFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+		filtreEffet->Swirl(swirlParameter->radius, swirlParameter->angle);
+	}
+
+}
+
+
+void CSwirlFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CSwirlFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+
+			CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
+			filter->Swirl(swirlParameter->radius, swirlParameter->angle);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
+
+	return imageLoad;
 }

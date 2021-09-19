@@ -5,6 +5,8 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Filter;
 
 COilPaintingFilter::COilPaintingFilter()
@@ -122,4 +124,47 @@ CEffectParameter* COilPaintingFilter::GetDefaultEffectParameter()
 	oilpainteffect->size = 10;
 	oilpainteffect->dynRatio = 1;
 	return oilpainteffect;
+}
+
+
+bool COilPaintingFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+	}
+
+}
+
+
+void COilPaintingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+
+CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

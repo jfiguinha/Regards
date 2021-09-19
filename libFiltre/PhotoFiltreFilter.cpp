@@ -14,6 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CPhotoFiltreFilter::CPhotoFiltreFilter()
@@ -31,7 +33,7 @@ CPhotoFiltreFilter::~CPhotoFiltreFilter()
 
 bool CPhotoFiltreFilter::IsOpenGLCompatible()
 {
-    return true;
+    return false;
 }
 
 int CPhotoFiltreFilter::TypeApplyFilter()
@@ -170,3 +172,47 @@ CEffectParameter* CPhotoFiltreFilter::GetDefaultEffectParameter()
     photoFiltre->intensity = 30;
     return photoFiltre;
 }
+
+
+bool CPhotoFiltreFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CPhotoFiltreFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+
+	if (effectParameter != nullptr && source != nullptr)
+	{
+        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
+        filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+	}
+}
+
+
+void CPhotoFiltreFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
+		filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
+}
+

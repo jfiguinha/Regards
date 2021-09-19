@@ -14,6 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CBrightAndContrastFilter::CBrightAndContrastFilter()
@@ -29,7 +31,7 @@ CBrightAndContrastFilter::~CBrightAndContrastFilter()
 
 bool CBrightAndContrastFilter::IsOpenGLCompatible()
 {
-    return true;
+    return false;
 }
 
 int CBrightAndContrastFilter::TypeApplyFilter()
@@ -134,4 +136,52 @@ CEffectParameter* CBrightAndContrastFilter::GetDefaultEffectParameter()
     brightness->brightness = 20;
     brightness->contrast = 20;
     return brightness;
+}
+
+
+bool CBrightAndContrastFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CBrightAndContrastFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
+		filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
+	}
+
+}
+
+
+void CBrightAndContrastFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+
+			CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
+			filter->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
+
+	return imageLoad;
 }

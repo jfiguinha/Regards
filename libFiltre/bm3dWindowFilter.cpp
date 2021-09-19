@@ -13,6 +13,8 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CBm3dWindowFilter::CBm3dWindowFilter()
@@ -118,4 +120,52 @@ CEffectParameter* CBm3dWindowFilter::GetDefaultEffectParameter()
 	CBm3dEffectParameter* bm3dParameter = new CBm3dEffectParameter();
 	bm3dParameter->fSize = 25;
 	return bm3dParameter;
+}
+
+
+bool CBm3dWindowFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CBm3dWindowFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CBm3dEffectParameter* bm3dParameter = (CBm3dEffectParameter*)effectParameter;
+		filtreEffet->Bm3d(bm3dParameter->fSize);
+	}
+
+}
+
+
+void CBm3dWindowFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CBm3dWindowFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+
+			CBm3dEffectParameter* bm3dParameter = (CBm3dEffectParameter*)effectParameter;
+			filter->Bm3d(bm3dParameter->fSize);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
+	}
+
+	return imageLoad;
 }

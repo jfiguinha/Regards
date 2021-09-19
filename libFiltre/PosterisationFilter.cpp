@@ -14,6 +14,8 @@
 #include <FilterData.h>
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
+#include <BitmapDisplay.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 int CPosterisationFilter::TypeApplyFilter()
@@ -142,4 +144,47 @@ CEffectParameter* CPosterisationFilter::GetDefaultEffectParameter()
 	posterization->gamma = 20;
 	posterization->level = 20;
 	return posterization;
+}
+
+
+bool CPosterisationFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CPosterisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+		filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+	}
+}
+
+
+void CPosterisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+		filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

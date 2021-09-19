@@ -76,44 +76,6 @@ void CCartoonFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
 }
 
 
-void CCartoonFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
-{
-	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
-	CCartoonEffectParameter * cartoonEffectParameter = (CCartoonEffectParameter *)effectParameter;
-	CImageLoadingFormat image;
-	image.SetPicture(bitmapOut);
-	CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-	filtre->CartoonifyImage(cartoonEffectParameter->mode);
-
-	filtreEffet->SetPreview(true);
-
-	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-	imageLoad->SetPicture(filtre->GetBitmap(true));
-	filtreEffet->SetBitmap(imageLoad);
-
-	delete filtre;
-
-}
-
-CImageLoadingFormat * CCartoonFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
-{
-	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
-	{
-		CCartoonEffectParameter * cartoonEffectParameter = (CCartoonEffectParameter *)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->CartoonifyImage(cartoonEffectParameter->mode);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
-	}
-
-	return imageLoad;
-}
-
 void CCartoonFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
 	if (effectParameter != nullptr && filtreEffet != nullptr)
@@ -138,4 +100,57 @@ CEffectParameter* CCartoonFilter::GetDefaultEffectParameter()
 	CCartoonEffectParameter* cartoonEffectParameter = new CCartoonEffectParameter();
 	cartoonEffectParameter->mode = 0;
 	return cartoonEffectParameter;
+}
+
+
+bool CCartoonFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->CartoonifyImage(cartoonEffectParameter->mode);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+		filtreEffet->SetBitmap(imageLoad);
+	}
+
+}
+
+
+void CCartoonFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+
+}
+
+CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->CartoonifyImage(cartoonEffectParameter->mode);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

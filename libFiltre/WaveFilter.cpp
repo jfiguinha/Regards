@@ -113,37 +113,7 @@ void CWaveFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
 }
 void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
-	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
 
-	wxPoint pt;
-	m_cDessin->GetScreenPoint(pt);
-	if (pt.x == 0 && pt.y == 0)
-	{
-		pt.x = widthOutput / 4;
-		pt.y = bitmapOut->GetBitmapHeight() / 4;
-	}
-
-	CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
-	if (pt.x != 0 && pt.y != 0)
-	{
-		CImageLoadingFormat image;
-		image.SetPicture(bitmapOut);
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		short height = waveEffectParameter->height;
-		int radius = waveEffectParameter->radius;
-		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x, bitmapOut->GetBitmapHeight() - pt.y, height, radius, scale);
-
-		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
-
-		filtreEffet->SetPreview(true);
-
-		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		filtreEffet->SetBitmap(imageLoad);
-
-		delete filtre;
-	}
 }
 
 
@@ -200,3 +170,37 @@ CEffectParameter* CWaveFilter::GetDefaultEffectParameter()
 	return new CWaveEffectParameter();
 }
 
+bool CWaveFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CImageLoadingFormat image(false);
+		source->RotateExif(source->GetOrientation());
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+
+		wxPoint pt;
+		bitmapViewer->GetDessinPt()->GetPoint(pt);
+
+		CWaveEffectParameter* waveEffectParameter = (CWaveEffectParameter*)effectParameter;
+		short height = waveEffectParameter->height;
+		int radius = waveEffectParameter->radius;
+		int scale = waveEffectParameter->scale;
+		filtre->WaveFilter(pt.x, pt.y, height, radius, scale);
+
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+		filtreEffet->SetBitmap(imageLoad);
+	}
+
+
+}

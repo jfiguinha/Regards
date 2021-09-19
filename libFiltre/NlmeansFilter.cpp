@@ -13,6 +13,8 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Filter;
 
 CNlmeansFilter::CNlmeansFilter()
@@ -126,4 +128,47 @@ CEffectParameter* CNlmeansFilter::GetEffectPointer()
 CEffectParameter* CNlmeansFilter::GetDefaultEffectParameter()
 {
 	return new CNlmeansEffectParameter();
+}
+
+
+bool CNlmeansFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void CNlmeansFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
+		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+	}
+
+}
+
+
+void CNlmeansFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
+{
+
+}
+
+
+CImageLoadingFormat* CNlmeansFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }

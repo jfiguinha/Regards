@@ -5,9 +5,9 @@ class CRgbEffectParameter : public CEffectParameter
 public:
 	CRgbEffectParameter()
 	{
-		red = 0;
-		green = 0;
-		blue = 0;
+		red = 120;
+		green = 120;
+		blue = 120;
 	};
 	~CRgbEffectParameter(){};
 

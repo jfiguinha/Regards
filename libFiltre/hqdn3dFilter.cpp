@@ -68,9 +68,7 @@ void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * 
         elementIntensity.push_back(i);
     
     filtreInterface->AddTreeInfos(libelleLumSpac, new CTreeElementValueInt(hqdn3dParameter->LumSpac), &elementIntensity);
-    //filtreInterface->AddTreeInfos(libelleChromSpac, new CTreeElementValueInt(hqdn3dParameter->ChromSpac), &elementIntensity);
-   // filtreInterface->AddTreeInfos(libelleLumTmp, new CTreeElementValueInt(hqdn3dParameter->LumTmp), &elementIntensity);
-    //filtreInterface->AddTreeInfos(libelleChromTmp, new CTreeElementValueInt(hqdn3dParameter->ChromTmp), &elementIntensity);
+
 }
 
 void Chqdn3dFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
@@ -101,21 +99,6 @@ void Chqdn3dFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTree
 
 void Chqdn3dFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
-	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
-	Chqdn3dEffectParameter * hqdn3dParameter = (Chqdn3dEffectParameter *)effectParameter;
-	CImageLoadingFormat image;
-	image.SetPicture(bitmapOut);
-	CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-	filtre->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp, hqdn3dParameter->ChromTmp);
-
-	filtreEffet->SetPreview(true);
-
-	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-	imageLoad->SetPicture(filtre->GetBitmap(true));
-	filtreEffet->SetBitmap(imageLoad);
-
-	delete filtre;
-
 }
 
 CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
@@ -165,3 +148,22 @@ CEffectParameter* Chqdn3dFilter::GetDefaultEffectParameter()
     hq3deffect->ChromTmp = 3;
     return hq3deffect;
 }
+
+
+bool Chqdn3dFilter::IsSourcePreview()
+{
+	return true;
+}
+
+
+void Chqdn3dFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	if (effectParameter != nullptr && source != nullptr)
+	{
+        Chqdn3dEffectParameter* hq3dn = (Chqdn3dEffectParameter*)effectParameter;
+        filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);
+	}
+
+}
+
+
