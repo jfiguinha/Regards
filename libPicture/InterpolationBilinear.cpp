@@ -1,7 +1,7 @@
 #include <header.h>
 #include "InterpolationBilinear.h"
 #include "RegardsBitmap.h"
-
+extern float clamp(float val, float minval, float maxval);
 
 CInterpolationBilinear::CInterpolationBilinear()
 {
@@ -167,8 +167,8 @@ void CInterpolationBilinear::Bilinear(CRgbaquad& data, CRegardsBitmap* In, const
 		}
 	}
 
-	data.SetColor(static_cast<uint8_t>(r / nDenom), static_cast<uint8_t>(g / nDenom), static_cast<uint8_t>(b / nDenom),
-	              static_cast<uint8_t>(a / nDenom));
+	data.SetColor(clamp(static_cast<uint8_t>(r / nDenom), 0, 255), clamp(static_cast<uint8_t>(g / nDenom), 0, 255), clamp(static_cast<uint8_t>(b / nDenom), 0, 255),
+		clamp(static_cast<uint8_t>(a / nDenom), 0, 255));
 }
 
 

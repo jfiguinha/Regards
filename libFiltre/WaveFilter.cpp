@@ -79,15 +79,15 @@ void CWaveFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * so
         elementIntensity.push_back(i);
     
     vector<int> elementColor;
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 255; i++)
         elementColor.push_back(i);
     
     vector<int> elementBitmapHeight;
     for (int i = 0; i < source->GetBitmapHeight() / 2; i++)
         elementBitmapHeight.push_back(i);
     
-    filtreInterface->AddTreeInfos(libelleEffectHeight, new CTreeElementValueInt(waveParameter->height), &elementBitmapHeight);
-    filtreInterface->AddTreeInfos(libelleEffectScale, new CTreeElementValueInt(waveParameter->scale), &elementIntensity);
+   // filtreInterface->AddTreeInfos(libelleEffectHeight, new CTreeElementValueInt(waveParameter->height), &elementBitmapHeight);
+    filtreInterface->AddTreeInfos(libelleEffectScale, new CTreeElementValueInt(waveParameter->scale), &elementColor);
     filtreInterface->AddTreeInfos(libelleEffectRadius, new CTreeElementValueInt(waveParameter->radius), &elementColor);
 }
 
@@ -134,7 +134,7 @@ CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParamete
 		short height = waveEffectParameter->height;
 		int radius = waveEffectParameter->radius;
 		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x, pt.y, height, radius, scale);
+		filtre->WaveFilter(pt.x, image.GetHeight() - pt.y, image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -193,7 +193,7 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 		short height = waveEffectParameter->height;
 		int radius = waveEffectParameter->radius;
 		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x, pt.y, height, radius, scale);
+		filtre->WaveFilter(pt.x, image.GetHeight() - pt.y, image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
