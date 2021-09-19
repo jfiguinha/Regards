@@ -109,17 +109,18 @@ void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBit
 CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			filter->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;
@@ -130,13 +131,7 @@ void CVignetteFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* 
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-		if (preview)
-		{
-			//float ratio = (float)filtreEffet->GetWidth() / (float)vignetteEffectParameter->bitmapWidth;
-			filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
-		}
-		else
-			filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+		filtreEffet->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 	}
 }
 

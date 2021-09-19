@@ -139,7 +139,7 @@ void CCartoonFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitm
 CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
 		source->RotateExif(source->GetOrientation());

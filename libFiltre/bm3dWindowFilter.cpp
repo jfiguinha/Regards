@@ -55,9 +55,11 @@ void CBm3dWindowFilter::Filter(CEffectParameter * effectParameter, CRegardsBitma
     
 	this->source = source;
     vector<int> elementSigma;
-    for (auto i = 1; i < 100; i++)
-        elementSigma.push_back(i);
-    
+	for (auto i = 1; i < 26; i++)
+	{
+		if(i%2 == 1)
+			elementSigma.push_back(i);
+	}
     filtreInterface->AddTreeInfos(libelleEffectSigma,new CTreeElementValueInt(bm3dEffectParameter->fSize), &elementSigma);
 }
 
@@ -148,16 +150,11 @@ void CBm3dWindowFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IB
 CImageLoadingFormat* CBm3dWindowFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
-			image.SetPicture(source);
-			filter->SetBitmap(&image);
-
 			CBm3dEffectParameter* bm3dParameter = (CBm3dEffectParameter*)effectParameter;
 			filter->Bm3d(bm3dParameter->fSize);
 			imageLoad = new CImageLoadingFormat();

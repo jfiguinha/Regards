@@ -172,18 +172,18 @@ void CPosterisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter,
 CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
+		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
-		filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		if (source != nullptr && filtre != nullptr)
+		{
+			CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
+			filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;

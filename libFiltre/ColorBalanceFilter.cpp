@@ -192,17 +192,18 @@ void CColorBalanceFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, 
 CImageLoadingFormat* CColorBalanceFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
-		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
+		if (filtre != nullptr)
+		{
+			CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
+			filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;

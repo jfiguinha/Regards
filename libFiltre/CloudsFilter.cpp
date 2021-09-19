@@ -194,7 +194,7 @@ void CCloudsFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitma
 CImageLoadingFormat* CCloudsFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
     CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr)
+    if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
     {
         CCloudsEffectParameter* cloudsParameter = (CCloudsEffectParameter*)effectParameter;
         source->RotateExif(source->GetOrientation());

@@ -124,7 +124,7 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
 CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);
@@ -204,42 +204,21 @@ void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParamete
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
 
-		/*
-		if(puissance == oldpuissance && brightness == oldbrightness && colorIntensity == oldcolorIntensity && copyBitmap != nullptr && pt.x == oldx && pt.y == oldy)
-		{
-			imageLoad = new CImageLoadingFormat(false);
-			imageLoad->SetPicture(copyBitmap);
-			filtreEffet->SetBitmap(imageLoad);
-		}
-		else
-		{*/
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
-			image.SetPicture(source);
-			CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
-			filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
+		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
-			if (copyBitmap != nullptr)
-				delete copyBitmap;
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
 
-			copyBitmap = filtre->GetBitmap(true);
+		filtreEffet->SetBitmap(imageLoad);
 
-			imageLoad = new CImageLoadingFormat();
-			imageLoad->SetPicture(filtre->GetBitmap(true));
-			delete filtre;
-
-
-			oldpuissance = puissance;
-			oldbrightness = brightness;
-			oldcolorIntensity = colorIntensity;
-			filtreEffet->SetBitmap(imageLoad);
-			oldy = pt.y;
-			oldx = pt.x;
-		//}
-
-		
+	
 
 	}
 }

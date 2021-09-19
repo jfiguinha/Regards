@@ -56,8 +56,11 @@ void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap *
 	this->source = source;
 
     vector<int> elementColor;
-    for (auto i = 1; i < 100; i++)
-        elementColor.push_back(i);
+	for (auto i = 1; i < 26; i++)
+	{
+		if(i%2 == 1)
+			elementColor.push_back(i);
+	}
     
     filtreInterface->AddTreeInfos(libelleEffectH,new CTreeElementValueInt(nlmeansEffectParameter->h), &elementColor);
 	filtreInterface->AddTreeInfos(libelleEffectTemplateWindowSize,new CTreeElementValueInt(nlmeansEffectParameter->templateWindowSize), &elementColor);
@@ -157,17 +160,17 @@ void CNlmeansFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitm
 CImageLoadingFormat* CNlmeansFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+		if (filter != nullptr)
+		{
+			filter->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;

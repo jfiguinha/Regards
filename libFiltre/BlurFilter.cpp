@@ -133,16 +133,11 @@ void CBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapD
 CImageLoadingFormat* CBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
     CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr)
+    if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
     {  	
         CFiltreEffet * filter = bitmapViewer->GetFiltreEffet();
     	if(filter != nullptr)
     	{
-            source->RotateExif(source->GetOrientation());
-            CImageLoadingFormat image(false);
-            image.SetPicture(source);
-            filter->SetBitmap(&image);
-    		
             CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
             filter->Blur(blurEffect->size);
             imageLoad = new CImageLoadingFormat();

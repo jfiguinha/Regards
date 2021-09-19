@@ -107,17 +107,18 @@ void Chqdn3dFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitm
 CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
-		Chqdn3dEffectParameter * hqdn3dParameter = (Chqdn3dEffectParameter *)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp, hqdn3dParameter->ChromTmp);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+        CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
+        if (filter != nullptr)
+        {
+            Chqdn3dEffectParameter* hqdn3dParameter = (Chqdn3dEffectParameter*)effectParameter;
+            filter->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp, hqdn3dParameter->ChromTmp);
+            imageLoad = new CImageLoadingFormat();
+            CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+            bitmapOut->RotateExif(source->GetOrientation());
+            imageLoad->SetPicture(bitmapOut);
+        }
 	}
 
 	return imageLoad;

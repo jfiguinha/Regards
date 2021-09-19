@@ -40,7 +40,6 @@ namespace Regards
 
         private:
 
-            CRegardsBitmap* copyBitmap = nullptr;
 			void LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop);
 			void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);
 
@@ -49,11 +48,6 @@ namespace Regards
             wxString libelleEffectRadius;
             wxString libelleColor;
 
-            float oldpuissance = 0.0;
-            float oldbrightness = 0.0;
-            float oldcolorIntensity = 0.0;
-            int oldx = 0;
-            int oldy = 0;
         };
     }
 }

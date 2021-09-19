@@ -133,18 +133,19 @@ void CGaussianBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, 
 CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
+		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
+		if (filtre != nullptr)
+		{
+			CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
+			filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			bitmapOut->RotateExif(source->GetOrientation());
+			imageLoad->SetPicture(bitmapOut);
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
-		filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		}
 	}
 
 	return imageLoad;

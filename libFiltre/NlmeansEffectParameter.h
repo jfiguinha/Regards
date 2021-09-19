@@ -7,7 +7,7 @@ public:
 	{
 		h = 3;
 		templateWindowSize = 7;
-		searchWindowSize = 21;
+		searchWindowSize = 15;
 	};
 	~CNlmeansEffectParameter() override {};
 

@@ -186,7 +186,7 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);

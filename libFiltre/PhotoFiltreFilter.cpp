@@ -198,20 +198,23 @@ void CPhotoFiltreFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, I
 
 CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
-	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
-	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
+    CImageLoadingFormat* imageLoad = nullptr;
+	
+    if (effectParameter != nullptr && bitmapViewer != nullptr)
+    {
+        CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-        CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
-		filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
-	}
+        if (source != nullptr && filtre != nullptr)
+        {
+            CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
+            filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+            CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+            bitmapOut->RotateExif(source->GetOrientation());
+            imageLoad->SetPicture(bitmapOut);
+
+        }
+    }
+
 
 	return imageLoad;
 }

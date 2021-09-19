@@ -5,7 +5,7 @@ class CBm3dEffectParameter : public CEffectParameter
 public:
 	CBm3dEffectParameter()
 	{
-		fSize = 25;
+		fSize = 5;
 	};
 	~CBm3dEffectParameter(){};
 

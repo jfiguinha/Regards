@@ -120,7 +120,7 @@ void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmap
 CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer)
 	{
 		CImageLoadingFormat image(false);
 		source->RotateExif(source->GetOrientation());

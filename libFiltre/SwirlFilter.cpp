@@ -215,16 +215,11 @@ void CSwirlFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmap
 CImageLoadingFormat* CSwirlFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
-			image.SetPicture(source);
-			filter->SetBitmap(&image);
-
 			CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
 			filter->Swirl(swirlParameter->radius, swirlParameter->angle);
 			imageLoad = new CImageLoadingFormat();
