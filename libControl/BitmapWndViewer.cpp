@@ -179,6 +179,9 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 				delete copyBmpSrc;
 			copyBmpSrc = filtreEffet->GetBitmap(true);
 			updateFilter = false;
+			bitmapwidth = copyBmpSrc->GetBitmapWidth();
+			bitmapheight = copyBmpSrc->GetBitmapHeight();
+			
 			wxEndBusyCursor();
 		}
 		else if(mouseUpdate->IsSourcePreview())

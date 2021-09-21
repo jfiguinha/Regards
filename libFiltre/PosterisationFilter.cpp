@@ -180,6 +180,7 @@ CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectP
 		{
 			CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
 			filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
 			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);

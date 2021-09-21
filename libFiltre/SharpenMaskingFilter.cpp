@@ -160,6 +160,7 @@ CImageLoadingFormat* CSharpenMaskingFilter::ApplyEffect(CEffectParameter* effect
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			imageLoad = new CImageLoadingFormat();
 			CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
 			filter->SharpenMasking(sharpenParameter->sharpness);
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);

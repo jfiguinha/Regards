@@ -167,6 +167,7 @@ CImageLoadingFormat* CNlmeansFilter::ApplyEffect(CEffectParameter* effectParamet
 		if (filter != nullptr)
 		{
 			filter->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
 			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);

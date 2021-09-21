@@ -206,6 +206,7 @@ CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectPar
 
         if (source != nullptr && filtre != nullptr)
         {
+            imageLoad = new CImageLoadingFormat();
             CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
             filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
             CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);

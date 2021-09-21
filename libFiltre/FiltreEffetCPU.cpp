@@ -320,23 +320,12 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			cv::Rect _rect(0, rect.height / 2, rect.width, rect.height / 2);
 			cv::rectangle(mask, _rect, cv::Scalar(255, 255, 255), -1);
 			
-			// show the images
-			//imshow("original", croppedImage);
-			//imshow("mask", mask);
-			//imshow("canny", src_gray);
-			//imshow("cropped", blur_crop);
-
-			//waitKey();
-			//destroyAllWindows();
-
 			// and copy the magic apple
 			croppedImage.copyTo(blur_crop, mask);
 
 			Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
-			//imshow("mask", blur);
 			blur_crop.copyTo(blur(copy));
-			imwrite("d:\\test.jpg",blur);
-			//imshow("mask", blur);
+
 
 			cvtColor(blur, dst, COLOR_BGR2BGRA);
 			bitmap->SetBitmap(dst.data, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());

@@ -159,6 +159,7 @@ CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectPar
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			imageLoad = new CImageLoadingFormat();
 			filter->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
 			bitmapOut->RotateExif(source->GetOrientation());

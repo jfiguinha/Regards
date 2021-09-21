@@ -162,6 +162,7 @@ CImageLoadingFormat* CSolarisationFilter::ApplyEffect(CEffectParameter* effectPa
 
 		if (source != nullptr && filtre != nullptr)
 		{
+			imageLoad = new CImageLoadingFormat();
 			CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
 			filtre->Solarize(solarisationEffectParameter->threshold);
 			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);

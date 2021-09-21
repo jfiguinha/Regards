@@ -1706,6 +1706,11 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			filtreEffet->SetBitmap(source);
 			BeforeInterpolationBitmap();
 			updateFilter = false;
+
+
+			int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+			int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
+
 		}
 
 		
