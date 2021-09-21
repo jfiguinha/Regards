@@ -5,8 +5,6 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
-#include <BitmapDisplay.h>
-#include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
 CRotateFreeFilter::CRotateFreeFilter()
@@ -89,46 +87,4 @@ CEffectParameter* CRotateFreeFilter::GetDefaultEffectParameter()
     CFreeRotateEffectParameter* rotate = new CFreeRotateEffectParameter();
     rotate->angle = 50;
     return rotate;
-}
-
-bool CRotateFreeFilter::IsSourcePreview()
-{
-    return true;
-}
-
-void CRotateFreeFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
-{
-    CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr)
-    {
-        CFreeRotateEffectParameter* freeRotate = (CFreeRotateEffectParameter*)effectParameter;
-        filtreEffet->RotateFree(freeRotate->angle);
-    }
-}
-
-
-void CRotateFreeFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
-{
-
-}
-
-CImageLoadingFormat* CRotateFreeFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
-{
-    CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
-    {
-        CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
-
-        if (source != nullptr && filtre != nullptr)
-        {
-            CFreeRotateEffectParameter* freeRotate = (CFreeRotateEffectParameter*)effectParameter;
-            filtre->RotateFree(freeRotate->angle);
-            imageLoad = new CImageLoadingFormat();
-            CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
-            bitmapOut->RotateExif(source->GetOrientation());
-            imageLoad->SetPicture(bitmapOut);
-        }
-    }
-
-    return imageLoad;
 }
