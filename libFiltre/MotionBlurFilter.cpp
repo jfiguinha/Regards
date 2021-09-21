@@ -15,8 +15,6 @@
 #include <RenderOpenGL.h>
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Filter;
 
