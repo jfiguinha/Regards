@@ -131,6 +131,7 @@ void CBitmapWndViewer::RemoveListener()
 		}
 	}
 
+	loadBitmap = true;
 	this->Refresh();
 }
 
