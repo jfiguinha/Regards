@@ -405,7 +405,7 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int& effect)
 
 void CBitmapWndViewer::Resize()
 {
-	updateFilter = true;
+	//updateFilter = true;
 	UpdateResized();
 
 	if (CFiltreData::SupportMouseClick(toolOption))
@@ -779,7 +779,7 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 		else if (CFiltreData::SupportMouseSelection(toolOption))
 		{
 			m_cDessin->Selection(x, y, hpos, vpos, CBitmapWnd::GetRatio());
-			updateFilter = true;
+			//updateFilter = true;
 			this->Refresh();
 		}
 	}

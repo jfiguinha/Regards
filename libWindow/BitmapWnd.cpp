@@ -442,7 +442,7 @@ void CBitmapWnd::ZoomOn()
 
 	CalculPositionPicture(centerX, centerY);
 
-	updateFilter = true;
+	//updateFilter = true;
 
 	UpdateScrollBar();
 }
@@ -524,7 +524,7 @@ void CBitmapWnd::ZoomOut()
 
 	CalculPositionPicture(centerX, centerY);
 
-	updateFilter = true;
+	//updateFilter = true;
 
 	UpdateScrollBar();
 }
@@ -544,7 +544,7 @@ void CBitmapWnd::ShrinkImage(const bool& redraw)
 	centerX = static_cast<float>(GetBitmapWidth()) / 2.0f;
 	centerY = static_cast<float>(GetBitmapHeight()) / 2.0f;
 
-	updateFilter = true;
+	//updateFilter = true;
 
 	UpdateScrollBar();
 
@@ -898,7 +898,7 @@ void CBitmapWnd::FlipVertical()
 		flipVertical = 0;
 	else
 		flipVertical = 1;
-	updateFilter = true;
+	//updateFilter = true;
 	RefreshWindow();
 }
 
@@ -907,7 +907,7 @@ void CBitmapWnd::Rotate90()
 	//TRACE();
 	angle += 90;
 	angle = angle % 360;
-	updateFilter = true;
+	//updateFilter = true;
 	CSqlPhotos sqlPhotos;
 	int exif = sqlPhotos.GetPhotoExif(filename);
 	if (exif != -1)
@@ -956,7 +956,7 @@ void CBitmapWnd::Rotate270()
 
 	angle += 270;
 	angle = angle % 360;
-	updateFilter = true;
+	//updateFilter = true;
 
 	CSqlPhotos sqlPhotos;
 	int exif = sqlPhotos.GetPhotoExif(filename);
@@ -986,7 +986,7 @@ void CBitmapWnd::FlipHorizontal()
 		flipHorizontal = 0;
 	else
 		flipHorizontal = 1;
-	updateFilter = true;
+	//updateFilter = true;
 	RefreshWindow();
 }
 
@@ -1159,19 +1159,19 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 	switch (event.GetKeyCode())
 	{
 	case WXK_UP:
-		updateFilter = true;
+		//updateFilter = true;
 		this->MoveTop();
 		break;
 	case WXK_LEFT:
-		updateFilter = true;
+		//updateFilter = true;
 		this->MoveLeft();
 		break;
 	case WXK_DOWN:
-		updateFilter = true;
+		//updateFilter = true;
 		this->MoveBottom();
 		break;
 	case WXK_RIGHT:
-		updateFilter = true;
+		//updateFilter = true;
 		this->MoveRight();
 		break;
 
@@ -1257,7 +1257,7 @@ void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 
 void CBitmapWnd::Resize()
 {
-	updateFilter = true;
+	//updateFilter = true;
 	UpdateResized();
 	this->Refresh();
 }
@@ -1657,6 +1657,23 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 	muBitmap.lock();
 
+
+	if (loadBitmap)
+	{
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+		filtreEffet = new CFiltreEffet(color, openclContext, source);
+
+		
+
+		loadBitmap = false;
+
+	}
+
+
+	
+	
+	/*
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		if (filtreEffet != nullptr)
@@ -1666,7 +1683,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 		BeforeInterpolationBitmap();
 	}
-
+	*/
 
 
 
@@ -1683,6 +1700,15 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 	{
 		if (widthOutput < 0 || heightOutput < 0)
 			return;
+
+		if(updateFilter)
+		{
+			filtreEffet->SetBitmap(source);
+			BeforeInterpolationBitmap();
+			updateFilter = false;
+		}
+
+		
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
@@ -1771,9 +1797,17 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
+	}
 
+	if(updateFilter)
+	{
 		BeforeInterpolationBitmap();
-		
+		updateFilter = false;
+	}
+	
+
+	if (loadBitmap || updateFilter)
+	{
 		if (IsOpenGLDecoding())
 		{
 			if (glTextureSrc != nullptr)
