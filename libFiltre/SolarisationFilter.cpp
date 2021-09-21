@@ -162,11 +162,15 @@ CImageLoadingFormat* CSolarisationFilter::ApplyEffect(CEffectParameter* effectPa
 
 		if (source != nullptr && filtre != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filtre->SetBitmap(&image);
+			
 			imageLoad = new CImageLoadingFormat();
 			CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
 			filtre->Solarize(solarisationEffectParameter->threshold);
 			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

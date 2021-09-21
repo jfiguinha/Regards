@@ -169,11 +169,15 @@ CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* eff
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
 			filter->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

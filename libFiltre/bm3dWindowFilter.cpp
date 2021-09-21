@@ -155,11 +155,15 @@ CImageLoadingFormat* CBm3dWindowFilter::ApplyEffect(CEffectParameter* effectPara
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			CBm3dEffectParameter* bm3dParameter = (CBm3dEffectParameter*)effectParameter;
 			filter->Bm3d(bm3dParameter->fSize);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

@@ -48,6 +48,11 @@ void CFiltreData::CreateFilterList()
     {
         filterList.insert(std::make_pair(numEffect, CreateEffectPointer(numEffect)));
     }
+
+    //Add Raw Filter
+    filterList.insert(std::make_pair(IDM_DECODE_RAW, CreateEffectPointer(IDM_DECODE_RAW)));
+    filterList.insert(std::make_pair(IDM_FILTRE_VIDEO, CreateEffectPointer(IDM_FILTRE_VIDEO)));
+    filterList.insert(std::make_pair(IDM_FILTRE_AUDIOVIDEO, CreateEffectPointer(IDM_FILTRE_AUDIOVIDEO)));
 }
 
 CFiltreData::CFiltreData(){}

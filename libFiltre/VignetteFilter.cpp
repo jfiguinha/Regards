@@ -115,10 +115,14 @@ CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParame
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			filter->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

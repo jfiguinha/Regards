@@ -206,11 +206,15 @@ CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectPar
 
         if (source != nullptr && filtre != nullptr)
         {
+            source->RotateExif(source->GetOrientation());
+            CImageLoadingFormat image(false);
+            image.SetPicture(source);
+            filtre->SetBitmap(&image);
+        	
             imageLoad = new CImageLoadingFormat();
             CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
             filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
             CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
-            bitmapOut->RotateExif(source->GetOrientation());
             imageLoad->SetPicture(bitmapOut);
 
         }

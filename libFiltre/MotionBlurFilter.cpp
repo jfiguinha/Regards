@@ -159,12 +159,16 @@ CImageLoadingFormat* CMotionBlurFilter::ApplyEffect(CEffectParameter* effectPara
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
-		{	
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			CMotionBlurEffectParameter* motionblurEffectParameter = (CMotionBlurEffectParameter*)effectParameter;
 			filter->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

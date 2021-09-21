@@ -144,12 +144,15 @@ void CBitmapWndViewer::UpdateFiltre(CEffectParameter* effectParameter)
 {
 	this->effectParameter = effectParameter;
 	updateFilter = true;
-
-	if(mouseUpdate->IsSourcePreview())
+	if(mouseUpdate != nullptr)
 	{
-		needUpdate = true;
-		copyBitmap = true;
+		if (mouseUpdate->IsSourcePreview())
+		{
+			needUpdate = true;
+			copyBitmap = true;
+		}
 	}
+
 	RefreshWindow();
 }
 

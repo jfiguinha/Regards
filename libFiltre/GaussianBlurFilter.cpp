@@ -138,11 +138,15 @@ CImageLoadingFormat* CGaussianBlurFilter::ApplyEffect(CEffectParameter* effectPa
 		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 		if (filtre != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filtre->SetBitmap(&image);
+			
 			CGaussianBlurEffectParameter* gaussianBlur = (CGaussianBlurEffectParameter*)effectParameter;
 			filtre->GaussianBlur(gaussianBlur->radius, gaussianBlur->boxSize);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 
 		}

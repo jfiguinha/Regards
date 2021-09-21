@@ -159,10 +159,14 @@ CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectPar
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			imageLoad = new CImageLoadingFormat();
 			filter->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

@@ -220,11 +220,15 @@ CImageLoadingFormat* CSwirlFilter::ApplyEffect(CEffectParameter* effectParameter
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			CSwirlEffectParameter* swirlParameter = (CSwirlEffectParameter*)effectParameter;
 			filter->Swirl(swirlParameter->radius, swirlParameter->angle);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

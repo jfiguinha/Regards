@@ -178,11 +178,15 @@ CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectP
 
 		if (source != nullptr && filtre != nullptr)
 		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filtre->SetBitmap(&image);
+			
 			CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
 			filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

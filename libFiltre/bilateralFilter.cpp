@@ -164,12 +164,16 @@ CImageLoadingFormat* CBilateralFilter::ApplyEffect(CEffectParameter* effectParam
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
-		{	
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filter->SetBitmap(&image);
+			
 			CBilateralEffectParameter* bilateralEffectParameter = (CBilateralEffectParameter*)effectParameter;
 			filter->BilateralFilter(bilateralEffectParameter->fSize, bilateralEffectParameter->sigmaX, bilateralEffectParameter->sigmaP);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			bitmapOut->RotateExif(source->GetOrientation());
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}
