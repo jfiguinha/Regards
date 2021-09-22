@@ -116,6 +116,8 @@ void CBitmapWndViewer::SetListener(IMouseUpdate* mouseUpdate)
 
 void CBitmapWndViewer::RemoveListener()
 {
+	if (mouseUpdate != nullptr)
+		mouseUpdate->CancelPreview(this);
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 

@@ -34,6 +34,8 @@ namespace Regards
 				
 			}
 
+			void CancelPreview(IBitmapDisplay* bitmapViewer){};
+
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);

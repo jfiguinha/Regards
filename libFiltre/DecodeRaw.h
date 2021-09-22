@@ -25,6 +25,7 @@ namespace Regards
 			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
 			bool NeedPreview();
 			CEffectParameter* GetEffectPointer();
+			void CancelPreview(IBitmapDisplay* bitmapViewer);
         private:
 
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
@@ -84,6 +85,7 @@ namespace Regards
 			wxString libellewf_deband_tresholdOther;
 			bool firstUpdate;
 			CDecodeRawPicture * rawDecoder;
+			CRegardsBitmap* source;
 		};
 	}
 }

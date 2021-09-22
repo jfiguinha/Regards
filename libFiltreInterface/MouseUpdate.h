@@ -38,4 +38,5 @@ public:
 	virtual void DisableOpenGLShader() = 0;
 	virtual bool IsOpenGLCompatible() = 0;
 	virtual bool IsSourcePreview() = 0;
+	virtual void CancelPreview(IBitmapDisplay* bitmapViewer) = 0;
 };

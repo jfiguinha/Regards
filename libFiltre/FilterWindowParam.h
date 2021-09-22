@@ -69,6 +69,8 @@ public:
 	{
 		return nullptr;
 	}
+
+	void CancelPreview(IBitmapDisplay* bitmapViewer) {};
 protected:
 
 	static void RotateExif(const int & orientation, CFiltreEffet * filtre);
