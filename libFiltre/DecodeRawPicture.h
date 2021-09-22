@@ -11,7 +11,7 @@ namespace Regards
 		class CDecodeRawPicture
 		{
 		public:
-			CDecodeRawPicture(const string & fileName, CDecodeRawParameter* & decodeRawParameter);
+			CDecodeRawPicture(const string & fileName);
 			~CDecodeRawPicture();
 			CImageLoadingFormat * DecodePicture(CDecodeRawParameter * decodeRawParameter);
 

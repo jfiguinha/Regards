@@ -327,6 +327,29 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			iconeListLocal->AddElement(pBitmapIcone);
 		}
+
+
+		if(format == 4)
+		{
+			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
+			int numElement = iconeListLocal->GetNbElement();
+			auto thumbnailData = new CThumbnailDataStorage(filename);
+			CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
+			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
+			blackRoom->AddPhotoToList(numElement);
+
+			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
+
+			CImageLoadingFormat image;
+			image.SetPicture(pBitmap, true);
+			thumbnailData->SetBitmap(&image);
+
+			auto pBitmapIcone = new CIcone();
+			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+			pBitmapIcone->SetData(thumbnailData);
+			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+			iconeListLocal->AddElement(pBitmapIcone);
+		}
 	}
 
 

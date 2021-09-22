@@ -61,6 +61,9 @@
     <Filter Include="Filter\source\interface\source">
       <UniqueIdentifier>{da7dea52-797c-46e1-9da6-2c647f02b1e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="window\Raw">
+      <UniqueIdentifier>{04bec73b-3a49-4743-9e1c-9bde39eb0a64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -303,6 +306,12 @@
     <ClInclude Include="hqdn3dEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="DecodeRaw.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="DecodeRawPicture.h">
+      <Filter>window\Raw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -454,6 +463,12 @@
     </ClCompile>
     <ClCompile Include="BokehFilter.cpp">
       <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeRaw.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeRawPicture.cpp">
+      <Filter>window\Raw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 #include <ximage.h>
 using namespace Regards::Filter;
 
-CDecodeRawPicture::CDecodeRawPicture(const string& fileName, CDecodeRawParameter  * & decodeRawParameter)
+CDecodeRawPicture::CDecodeRawPicture(const string& fileName)
 {
 	rawProcessor = new LibRaw();
 	result = rawProcessor->open_file(fileName.c_str());
@@ -15,15 +15,6 @@ CDecodeRawPicture::CDecodeRawPicture(const string& fileName, CDecodeRawParameter
 	{
 		// step two: positioning libraw_internal_data.unpacker_data.data_offset
 		result = rawProcessor->unpack();
-	}
-
-	if(decodeRawParameter != nullptr)
-	{
-		decodeRawParameter->bright = rawProcessor->imgdata.params.bright;
-		decodeRawParameter->highlight = rawProcessor->imgdata.params.highlight;
-		decodeRawParameter->threshold = rawProcessor->imgdata.params.threshold;
-		decodeRawParameter->use_auto_wb = rawProcessor->imgdata.params.use_auto_wb;
-		decodeRawParameter->use_camera_wb = rawProcessor->imgdata.params.use_camera_wb;
 	}
 
 }
@@ -75,7 +66,7 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 		int stride = ((iTaille * width + iTaille) & ~iTaille);
 		//rawProcessor->copy_mem_image(image->GetBits(), width * raw_color * (raw_bitsize/8), 1);
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		//image->Flip();
+		image->Flip();
 		imageLoadingFormat->SetPicture(image);
 	}
 

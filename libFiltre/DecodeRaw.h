@@ -24,7 +24,7 @@ namespace Regards
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
 			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
 			bool NeedPreview();
-
+			CEffectParameter* GetEffectPointer();
         private:
 
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
