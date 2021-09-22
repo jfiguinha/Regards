@@ -578,7 +578,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
-      <AdditionalDependencies>libde265.lib;poppler.lib;poppler-cpp.lib;qpdf.lib;raw.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d451.lib;opencv_objdetect451.lib;opencv_core451.lib;opencv_dnn451.lib;opencv_features2d451.lib;opencv_xfeatures2d451.lib;opencv_imgproc451.lib;opencv_imgcodecs451.lib;opencv_highgui451.lib;opencv_face451.lib;opencv_video451.lib;opencv_xphoto451.lib;opencv_photo451.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.80.0.lib;tesseract41.lib;freetype.lib;cairo.lib;jasper.lib;iconv.lib;fontconfig.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;fftw3f.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;libpng16.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;SDL2.lib;glew32.lib;libcurl.lib;IlmImf.lib;libopenjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libde265.lib;poppler.lib;raw.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d451.lib;opencv_objdetect451.lib;opencv_core451.lib;opencv_dnn451.lib;opencv_features2d451.lib;opencv_xfeatures2d451.lib;opencv_imgproc451.lib;opencv_imgcodecs451.lib;opencv_highgui451.lib;opencv_face451.lib;opencv_video451.lib;opencv_xphoto451.lib;opencv_photo451.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.80.0.lib;tesseract41.lib;freetype.lib;cairo.lib;jasper.lib;iconv.lib;fontconfig.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;fftw3f.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;libpng16.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;SDL2.lib;glew32.lib;libcurl.lib;IlmImf.lib;libopenjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <EnableUAC>false</EnableUAC>
     </Link>
@@ -622,13 +622,13 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexpat.dll" 
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\cairo-2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libde265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libx265.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5_.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\gif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\turbojpeg.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libxml2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\jasper.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libexif.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Iex-2_5.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -653,6 +653,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\fontconfig-1.d
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\intl-8.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\bz2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw_r.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lzma.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\

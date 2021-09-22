@@ -33,8 +33,6 @@ namespace Regards
             wxString libelleEffectBoxSize;
             wxRect faceRect;
             int nbFace = 0;
-            int oldWidth = 0;
-            int oldHeight = 0;
         };
     }
 }

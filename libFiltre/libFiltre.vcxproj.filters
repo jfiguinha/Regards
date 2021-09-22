@@ -40,9 +40,6 @@
     <Filter Include="window\video">
       <UniqueIdentifier>{490cb10e-01a3-46da-aab7-d4a358c9691b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="window\raw">
-      <UniqueIdentifier>{20cdafc4-6ef1-4561-9730-ec161dd3a160}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Drawing">
       <UniqueIdentifier>{4a61ca38-8a3f-447a-92fe-31482df8721d}</UniqueIdentifier>
     </Filter>
@@ -228,9 +225,6 @@
     <ClInclude Include="SwirlFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
-    <ClInclude Include="DecodeRaw.h">
-      <Filter>window\raw</Filter>
-    </ClInclude>
     <ClInclude Include="AudioVideoFilter.h">
       <Filter>window\video</Filter>
     </ClInclude>
@@ -254,9 +248,6 @@
     </ClInclude>
     <ClInclude Include="BitmapDisplay.h">
       <Filter>window\main</Filter>
-    </ClInclude>
-    <ClInclude Include="DecodeRawPicture.h">
-      <Filter>window\raw</Filter>
     </ClInclude>
     <ClInclude Include="FiltreEffet.h">
       <Filter>Main</Filter>
@@ -410,9 +401,6 @@
     <ClCompile Include="SwirlFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
-    <ClCompile Include="DecodeRaw.cpp">
-      <Filter>window\raw</Filter>
-    </ClCompile>
     <ClCompile Include="AudioVideoFilter.cpp">
       <Filter>window\video</Filter>
     </ClCompile>
@@ -433,9 +421,6 @@
     </ClCompile>
     <ClCompile Include="CropFilter.cpp">
       <Filter>window\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="DecodeRawPicture.cpp">
-      <Filter>window\raw</Filter>
     </ClCompile>
     <ClCompile Include="FiltreEffet.cpp">
       <Filter>Main</Filter>

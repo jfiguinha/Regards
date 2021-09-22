@@ -190,40 +190,13 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 	CLibPicture picture;
 	int format = picture.TestImageFormat(filename);
-	if (format == RAWFILE)
-	{
-		CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
-		int numElement = iconeListLocal->GetNbElement();
-		auto thumbnailData = new CThumbnailDataStorage(filename);
-		thumbnailData->SetNumElement(0);
-		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
-		CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
-		thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
-		blackRoom->AddPhotoToList(numElement);
-
-		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
-
-		CImageLoadingFormat image;
-		image.SetPicture(pBitmap, true);
-		thumbnailData->SetBitmap(&image);
-
-		auto pBitmapIcone = new CIcone();
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		iconeListLocal->AddElement(pBitmapIcone);
-
-		isAllProcess = true;
-	}
-	else if (picture.TestIsVideo(filename))
+	if (picture.TestIsVideo(filename))
 	{
 		CInfosSeparationBarEffect* videoEffect = CreateNewSeparatorBar(videoLabelEffect);
 		int numElement = iconeListLocal->GetNbElement();
-		auto thumbnailData = new CThumbnailDataStorage(filename);
-		thumbnailData->SetNumElement(0);
-		thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
+
 		CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
-		thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_FILTRE_VIDEO));
+		auto thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_FILTRE_VIDEO));
 		videoEffect->AddPhotoToList(numElement);
 
 		thumbnailData->SetNumPhotoId(IDM_FILTRE_VIDEO);

@@ -101,9 +101,7 @@ namespace Regards
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
 			int TestExtension(const wxString & ext);
-#ifdef LIBRAW
-			CImageLoadingFormat * LoadThumbnailFromRawPicture(const wxString & szFilename, const int &width, const int &height, int &returnValue);
-#endif
+
 
 			int svgWidth;
 			int svgHeight;

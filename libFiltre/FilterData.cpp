@@ -50,7 +50,6 @@ void CFiltreData::CreateFilterList()
     }
 
     //Add Raw Filter
-    filterList.insert(std::make_pair(IDM_DECODE_RAW, CreateEffectPointer(IDM_DECODE_RAW)));
     filterList.insert(std::make_pair(IDM_FILTRE_VIDEO, CreateEffectPointer(IDM_FILTRE_VIDEO)));
     filterList.insert(std::make_pair(IDM_FILTRE_AUDIOVIDEO, CreateEffectPointer(IDM_FILTRE_AUDIOVIDEO)));
 }
@@ -273,10 +272,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
     case IDM_REDEYE:
         filterEffect = new CRedEyeFilter();
         break;
-
-	case IDM_DECODE_RAW:
-        filterEffect = new CDecodeRaw();
-		break;     
 
 	case IDM_WAVE_EFFECT:
 		filterEffect = new CWaveFilter();

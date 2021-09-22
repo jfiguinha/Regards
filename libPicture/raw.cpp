@@ -3,6 +3,7 @@
 #include "RegardsRaw.h"
 #include <ximage.h>
 #include <ImageLoadingFormat.h>
+#include <libraw/libraw.h>
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
 #endif
@@ -10,7 +11,7 @@
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
-CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail)
+CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	CImageLoadingFormat* picture;
@@ -20,6 +21,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	{
 		if (type == JPEGOUTPUT)
 		{
+			isFromExif = true;
 			picture = new CImageLoadingFormat();
 #ifdef TURBOJPEG
 
@@ -64,9 +66,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	}
 	else
 	{
-		picture = new CImageLoadingFormat();
-		CxImage* image = CRegardsRaw::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-		picture->SetPicture(image);
+		picture = LoadPicture(fileName);
 		picture->SetFilename(fileName);
 		if (thumbnail)
 		{
@@ -76,6 +76,57 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 
 
 	return picture;
+}
+
+CImageLoadingFormat* CRaw::LoadPicture(const wxString& fileName)
+{
+	int result;
+	LibRaw* rawProcessor = new LibRaw();
+	result = rawProcessor->open_file(fileName.mb_str());
+	if (result == LIBRAW_SUCCESS)
+	{
+		// step two: positioning libraw_internal_data.unpacker_data.data_offset
+		result = rawProcessor->unpack();
+	}
+
+	rawProcessor->imgdata.params.use_rawspeed = 1;
+	rawProcessor->imgdata.params.use_camera_wb = 1;
+
+	try
+	{
+		result = rawProcessor->dcraw_process();
+	}
+	catch (...)
+	{
+
+	}
+
+	int width = 0;
+	int height = 0;
+
+
+	CImageLoadingFormat* imageLoadingFormat = nullptr;
+	CxImage* image = new CxImage();
+	if (result == 0)
+	{
+		imageLoadingFormat = new CImageLoadingFormat();
+		int raw_color, raw_bitsize;
+		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
+		image->Create(width, height, raw_bitsize * raw_color);
+
+		int iTaille = raw_color * (raw_bitsize / 8);
+		int stride = ((iTaille * width + iTaille) & ~iTaille);
+		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
+		image->Flip();
+		imageLoadingFormat->SetPicture(image);
+	}
+
+	if (rawProcessor != nullptr)
+	{
+		rawProcessor->recycle();
+		delete rawProcessor;
+	}
+	return imageLoadingFormat;
 }
 
 

@@ -1680,18 +1680,6 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	return 1;
 }
 
-CImageLoadingFormat* CLibPicture::LoadThumbnailFromRawPicture(const wxString& szFilename, const int& width,
-                                                              const int& height, int& returnValue)
-{
-	CImageLoadingFormat* image = CRaw::GetThumbnail(szFilename, true);
-	if (image == nullptr)
-	{
-		return nullptr;
-	}
-
-	return image;
-}
-
 uint32_t CLibPicture::GetFrameDelay(const wxString& szFileName)
 {
 	uint32_t delay = 10;
@@ -1953,13 +1941,14 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 #ifdef LIBRAW
 	if (iFormat == RAWFILE)
 	{
+		bool isFromExif = false;
 		CMetadataExiv2 pictureMetadata(fileName);
-		//int orientation = pictureMetadata.GetOrientation();
-		imageLoading = CRaw::GetThumbnail(fileName, true);
+		imageLoading = CRaw::GetThumbnail(fileName, true, isFromExif);
 		if (imageLoading != nullptr && imageLoading->IsOk())
 		{
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
-			imageLoading->ApplyExifOrientation();
+			if(isFromExif)
+				imageLoading->ApplyExifOrientation();
 		}
 	}
 	else if (TestIsVideo(fileName))
@@ -2235,198 +2224,202 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 #ifdef LIBHEIC
 
 		case HEIC:
+		{
+			CRegardsBitmap* picture = nullptr;
+
+			if (numPicture == 0)
 			{
-				CRegardsBitmap* picture = nullptr;
+				if (isThumbnail)
+					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 
-				if (numPicture == 0)
-				{
-					if (isThumbnail)
-						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-
-					if (picture == nullptr)
-						picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-				}
-				else
-				{
-					int delay = 4;
-					bool isMaster;
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay,
-					                            numPicture);
-				}
-
-				if (picture != nullptr)
-				{
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
-				break;
+				if (picture == nullptr)
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
-		case AVIF:
+			else
 			{
-				CRegardsBitmap* picture = nullptr;
+				int delay = 4;
+				bool isMaster;
+				picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay,
+					numPicture);
+			}
 
-				if (numPicture == 0)
-				{
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-				}
-				else
-				{
-					int delay = 4;
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName), delay, numPicture);
-				}
-
-				if (picture != nullptr)
-				{
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
+			if (picture != nullptr)
+			{
+				bitmap->SetPicture(picture);
+				bitmap->SetFilename(fileName);
 			}
 			break;
+		}
+		case AVIF:
+		{
+			CRegardsBitmap* picture = nullptr;
+
+			if (numPicture == 0)
+			{
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+			}
+			else
+			{
+				int delay = 4;
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName), delay, numPicture);
+			}
+
+			if (picture != nullptr)
+			{
+				bitmap->SetPicture(picture);
+				bitmap->SetFilename(fileName);
+			}
+		}
+		break;
 #endif
 
 		case PFM:
-			{
-				CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
-				bitmap->SetPicture(test);
-				break;
-			}
+		{
+			CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
+			bitmap->SetPicture(test);
+			break;
+		}
 
-			/*/
-			cout << "Width : " << src.cols << endl;
-			cout << "Height: " << src.rows << endl;
-			*/
+		/*/
+		cout << "Width : " << src.cols << endl;
+		cout << "Height: " << src.rows << endl;
+		*/
 		case EXR:
 		case HDR:
-			{
-				CRegardsBitmap* picture = nullptr;
-				cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
-				//cv::Mat ldr;
-				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
-				tonemap->process(hdr, hdr);
-				hdr.convertTo(hdr, CV_8UC3, 255);
-				cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
-				picture = new CRegardsBitmap();
-				picture->SetBitmap(hdr.data, hdr.cols, hdr.rows);
-				picture->VertFlipBuf();
-				picture->SetFilename(fileName);
-				bitmap->SetPicture(picture);
-			}
-			break;
+		{
+			CRegardsBitmap* picture = nullptr;
+			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
+			//cv::Mat ldr;
+			cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
+			tonemap->process(hdr, hdr);
+			hdr.convertTo(hdr, CV_8UC3, 255);
+			cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
+			picture = new CRegardsBitmap();
+			picture->SetBitmap(hdr.data, hdr.cols, hdr.rows);
+			picture->VertFlipBuf();
+			picture->SetFilename(fileName);
+			bitmap->SetPicture(picture);
+		}
+		break;
 
 		case PPM:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("ppm"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
+		{
+			auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
+				CxImage::GetTypeIdFromName("ppm"));
+			bitmap->SetPicture(_cxImage);
+		}
+		break;
 
 		case IFF:
-			{
-				auto image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_IFF);
-				bitmap->SetPicture(image);
-			}
-			break;
+		{
+			auto image = new wxImage();
+			image->LoadFile(fileName, wxBITMAP_TYPE_IFF);
+			bitmap->SetPicture(image);
+		}
+		break;
 
 		case ICO:
-			{
-				auto image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_ICON);
-				bitmap->SetPicture(image);
-			}
-			break;
+		{
+			auto image = new wxImage();
+			image->LoadFile(fileName, wxBITMAP_TYPE_ICON);
+			bitmap->SetPicture(image);
+		}
+		break;
 
 		case CUR:
-			{
-				auto image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_CUR);
-				bitmap->SetPicture(image);
-			}
-			break;
+		{
+			auto image = new wxImage();
+			image->LoadFile(fileName, wxBITMAP_TYPE_CUR);
+			bitmap->SetPicture(image);
+		}
+		break;
 
 		case XPM:
-			{
-				auto image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_XPM);
-				bitmap->SetPicture(image);
-			}
-			break;
+		{
+			auto image = new wxImage();
+			image->LoadFile(fileName, wxBITMAP_TYPE_XPM);
+			bitmap->SetPicture(image);
+		}
+		break;
 
 		case SVG:
-			{
-				auto image = new wxImage();
-				auto svgDoc = new wxSVGDocument;
-				svgDoc->Load(fileName);
-				*image = svgDoc->Render(svgWidth, svgHeight);
-				bitmap->SetPicture(image);
-				delete svgDoc;
-			}
-			break;
+		{
+			auto image = new wxImage();
+			auto svgDoc = new wxSVGDocument;
+			svgDoc->Load(fileName);
+			*image = svgDoc->Render(svgWidth, svgHeight);
+			bitmap->SetPicture(image);
+			delete svgDoc;
+		}
+		break;
 #ifdef LIBBPG
 		case BPG:
+		{
+			size_t data_size;
+			uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
+			if (_compressedImage != nullptr && data_size > 0)
 			{
-				size_t data_size;
-				uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
-				if (_compressedImage != nullptr && data_size > 0)
-				{
 #if defined(WIN32)
-					int width = 0, height = 0;
-					//size_t size = 0;
-					uint8_t* data = nullptr;
-					if (BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
-					{
-						int returnValue = 0;
-						data = new uint8_t[width * height * 4];
-						size_t data_len = width * height * 4;
-						returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height,
-						                                 true);
-					}
+				int width = 0, height = 0;
+				//size_t size = 0;
+				uint8_t* data = nullptr;
+				if (BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
+				{
+					int returnValue = 0;
+					data = new uint8_t[width * height * 4];
+					size_t data_len = width * height * 4;
+					returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height,
+						true);
+				}
 #else
-                int returnValue = 0;
-                int width = 0, height = 0;
-                size_t size = 0;
-                
-                void(*BPG_GetDimensions)(uint8_t * , uint64_t , int & , int & ) = (void(*)(uint8_t * , uint64_t , int & , int & ))dlsym(lib_handle, "BPG_GetDimensions");
-                if (BPG_GetDimensions) {
-                    printf("[%s] dlsym(lib_handle, \"BPG_GetDimensions\"): Successful\n", __FILE__);
-                    BPG_GetDimensions(_compressedImage, data_size, width, height);
-                }
-                else {
-                    printf("[%s] Unable to get symbol: %s\n",
-                           __FILE__, dlerror());
-                }
+				int returnValue = 0;
+				int width = 0, height = 0;
+				size_t size = 0;
 
-                uint8_t * data = new uint8_t[width * height * 4];
-                size_t data_len = width * height * 4;
-                
-                int(*BPG_GetPictureBGRA)(uint8_t * , uint64_t , uint8_t * , uint64_t , int & , int & , bool  ) = (int(*)(uint8_t * , uint64_t , uint8_t * , uint64_t , int & , int & , bool ))dlsym(lib_handle, "BPG_GetPictureBGRA");
-                if (BPG_GetPictureBGRA) {
-                    printf("[%s] dlsym(lib_handle, \"BPG_GetPictureBGRA\"): Successful\n", __FILE__);
-                    returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height, true);
-                }
-                else {
-                    printf("[%s] Unable to get symbol: %s\n",
-                           __FILE__, dlerror());
-                }
+				void(*BPG_GetDimensions)(uint8_t*, uint64_t, int&, int&) = (void(*)(uint8_t*, uint64_t, int&, int&))dlsym(lib_handle, "BPG_GetDimensions");
+				if (BPG_GetDimensions) {
+					printf("[%s] dlsym(lib_handle, \"BPG_GetDimensions\"): Successful\n", __FILE__);
+					BPG_GetDimensions(_compressedImage, data_size, width, height);
+				}
+				else {
+					printf("[%s] Unable to get symbol: %s\n",
+						__FILE__, dlerror());
+				}
+
+				uint8_t* data = new uint8_t[width * height * 4];
+				size_t data_len = width * height * 4;
+
+				int(*BPG_GetPictureBGRA)(uint8_t*, uint64_t, uint8_t*, uint64_t, int&, int&, bool) = (int(*)(uint8_t*, uint64_t, uint8_t*, uint64_t, int&, int&, bool))dlsym(lib_handle, "BPG_GetPictureBGRA");
+				if (BPG_GetPictureBGRA) {
+					printf("[%s] dlsym(lib_handle, \"BPG_GetPictureBGRA\"): Successful\n", __FILE__);
+					returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height, true);
+				}
+				else {
+					printf("[%s] Unable to get symbol: %s\n",
+						__FILE__, dlerror());
+				}
 
 #endif
-					if (data != nullptr)
-					{
-						auto picture = new CRegardsBitmap();
-						picture->SetBitmap(data, width, height, false, false);
-						bitmap->SetPicture(picture);
-						bitmap->SetFilename(fileName);
-					}
-					delete[] _compressedImage;
+				if (data != nullptr)
+				{
+					auto picture = new CRegardsBitmap();
+					picture->SetBitmap(data, width, height, false, false);
+					bitmap->SetPicture(picture);
+					bitmap->SetFilename(fileName);
 				}
+				delete[] _compressedImage;
 			}
-			break;
+		}
+		break;
 #endif
 
 #if defined(LIBRAW)
 		case RAWFILE:
-			bitmap = CRaw::GetThumbnail(fileName, false);
+			bitmap = CRaw::LoadPicture(fileName);
+			if(bitmap != nullptr)
+				bitmap->SetFilename(fileName);
+
+			applyExif = false;		
 			break;
 #endif
 
