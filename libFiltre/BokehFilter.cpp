@@ -179,6 +179,8 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);
+
+		delete imageLoad;
 	}
 
 }

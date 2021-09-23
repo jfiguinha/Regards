@@ -61,6 +61,7 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 		wxImage * local_image = new wxImage(bitmap.ConvertToImage());
 		imageLoad->SetPicture(local_image);
 		filtreEffet->SetBitmap(imageLoad);
+		delete imageLoad;
 	}
 }
 
@@ -112,6 +113,7 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 			imageLoad->SetPicture(filtre->GetBitmap(true));
 			filtreEffet->SetBitmap(imageLoad);
 			delete filtre;
+			delete imageLoad;
 		}
 	}
 

@@ -180,6 +180,8 @@ void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, 
 
         filtreEffet->SetBitmap(imageLoad);
 
+        delete imageLoad;
+
     }
 
 }

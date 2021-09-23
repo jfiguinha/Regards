@@ -125,6 +125,8 @@ void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter,
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);
+
+		delete imageLoad;
 	}
 
 }

@@ -202,6 +202,8 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);
+
+		delete imageLoad;
 	}
 
 

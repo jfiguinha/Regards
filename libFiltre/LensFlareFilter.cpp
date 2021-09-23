@@ -220,7 +220,7 @@ void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParamete
 		filtreEffet->SetBitmap(imageLoad);
 
 	
-
+		delete imageLoad;
 	}
 }
 
