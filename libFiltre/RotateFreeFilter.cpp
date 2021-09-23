@@ -153,12 +153,14 @@ void CRotateFreeFilter::CancelPreview(IBitmapDisplay* bitmapViewer)
     if (source != nullptr)
     {
         //Regards::Picture::CLibPicture libPicture;
+    	/*
         CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
         imageLoad->SetPicture(source);
         if (imageLoad != nullptr)
         {
             bitmapViewer->UpdateBitmap(imageLoad, true);
         }
+        */
        
     }
 }

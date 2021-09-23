@@ -173,7 +173,7 @@ void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, 
 
         CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
         CCloudsEffectParameter* cloudsParameter = (CCloudsEffectParameter*)effectParameter;
-        filtreEffet->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
+        filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
         imageLoad = new CImageLoadingFormat();
         imageLoad->SetPicture(filtre->GetBitmap(true));
         delete filtre;

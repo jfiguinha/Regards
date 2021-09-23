@@ -119,6 +119,14 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 	if (mouseUpdate != nullptr && applyCancel)
 	{
 		mouseUpdate->CancelPreview(this);
+		updateFilter = true;
+		if(source != nullptr)
+		{
+			bitmapwidth = source->GetWidth();
+			bitmapheight = source->GetHeight();
+			ShrinkImage();
+		}
+
 	}
 	
 	mouseUpdate = nullptr;
