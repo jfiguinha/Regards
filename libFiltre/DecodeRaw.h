@@ -29,7 +29,7 @@ namespace Regards
         private:
 
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
-			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput);
+			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int& widthOutput, int& heightOutput);
 			int orientation = 0;
 			wxString libellebright;
 			wxString libellehighlight;

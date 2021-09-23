@@ -8,5 +8,6 @@ public:
 	 };
 	virtual ~CEffectParameter(){};
 
+	bool updateEffect = false;
 };
 

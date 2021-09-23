@@ -1663,32 +1663,9 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 		filtreEffet = new CFiltreEffet(color, openclContext, source);
-
-		
-
 		loadBitmap = false;
 
 	}
-
-
-	
-	
-	/*
-	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
-	{
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-		filtreEffet = new CFiltreEffet(color, openclContext, source);
-		loadBitmap = false;
-
-		BeforeInterpolationBitmap();
-	}
-	*/
-
-
-
-	//if (filtreEffet == nullptr)
-	//	filtreEffet = new CFiltreEffet(color, openclContext, source);
 
 	muBitmap.unlock();
 
@@ -1706,14 +1683,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			filtreEffet->SetBitmap(source);
 			BeforeInterpolationBitmap();
 			updateFilter = false;
-
-
-			int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-			int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
-
 		}
-
-		
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
@@ -1742,11 +1712,11 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 				if (cl_image != nullptr)
 				{
 					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr,
-					                                nullptr);
+						nullptr);
 					Error::CheckError(err);
 					filtreEffet->GetRgbaBitmap(cl_image);
 					err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr,
-					                                nullptr);
+						nullptr);
 					Error::CheckError(err);
 					err = clFlush(openclContext->GetCommandQueue());
 					Error::CheckError(err);
@@ -1775,9 +1745,9 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		}
 	}
 
-	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-	                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-	                                           themeBitmap.colorBack.Blue()));
+	renderOpenGL->CreateScreenRender(GetWidth()* scale_factor, GetHeight()* scale_factor,
+		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+			themeBitmap.colorBack.Blue()));
 
 	RenderTexture(openclContext->IsSharedContextCompatible());
 }
@@ -1809,7 +1779,6 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		BeforeInterpolationBitmap();
 		updateFilter = false;
 	}
-	
 
 	if (loadBitmap || updateFilter)
 	{
@@ -1831,8 +1800,8 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
-		                                 CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
-		                                           themeBitmap.colorBack.Blue()));
+			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
+				themeBitmap.colorBack.Blue()));
 
 		if (IsOpenGLDecoding())
 		{
@@ -1861,7 +1830,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 				filterInterpolation = regardsParam->GetInterpolationType();
 
 			renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle,
-			                                  filterInterpolation);
+				filterInterpolation);
 
 			renderOpenGL->RenderToTexture();
 

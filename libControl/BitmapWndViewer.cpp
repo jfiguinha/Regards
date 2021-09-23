@@ -187,6 +187,9 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 			updateFilter = false;
 			bitmapwidth = copyBmpSrc->GetBitmapWidth();
 			bitmapheight = copyBmpSrc->GetBitmapHeight();
+
+			if (mouseUpdate->NeedToShrink())
+				ShrinkImage();
 			
 			wxEndBusyCursor();
 		}

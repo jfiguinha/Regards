@@ -91,12 +91,12 @@ bool CFilterWindowParam::IsOpenGLCompatible()
 	return false;
 }
 
-void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
+void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int& widthOutput, int& heightOutput)
 {
 	if (CFiltreData::IsOpenGLCompatible(GetNameFilter()))
 		return;
 
-	filtreEffet->SetPreview(true);
+	//filtreEffet->SetPreview(true);
 	if (CFiltreData::IsOpenCLCompatible(GetNameFilter()) && supportOpenCL)
 		filtreEffet->RenderEffect(GetNameFilter(), effectParameter);
 	else
@@ -115,8 +115,6 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 		}
 	}
 
-	widthOutput = filtreEffet->GetWidth();
-	heightOutput = filtreEffet->GetHeight();
 
 }
 

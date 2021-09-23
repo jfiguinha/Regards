@@ -9,7 +9,6 @@
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 
-#include "MotionBlurFilter.h"
 using namespace Regards::Filter;
 
 CSharpenMaskingFilter::CSharpenMaskingFilter()

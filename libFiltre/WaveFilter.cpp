@@ -111,7 +111,7 @@ void CWaveFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
 		waveParameter->scale = value;
     }
 }
-void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int& widthOutput, int& heightOutput)
 {
 
 }
