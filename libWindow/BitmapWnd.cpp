@@ -62,7 +62,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
 	config = nullptr;
-
+	copyBmpSrc = nullptr;
 	filtreEffet = nullptr;
 	flipVertical = 0;
 	flipHorizontal = 0;
@@ -717,8 +717,9 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
 {
 	//TRACE();
 	printf("CBitmapWnd::SetBitmap \n");
-
-
+	if (copyBmpSrc != nullptr)
+		delete copyBmpSrc;
+	copyBmpSrc = nullptr;
 	//this->SetFocus();
 	if (bitmapIn != nullptr)
 	{

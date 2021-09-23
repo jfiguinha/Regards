@@ -1953,8 +1953,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	}
 	else if (TestIsVideo(fileName))
 	{
-		imageLoading = new CImageLoadingFormat();
-		imageLoading->SetFilename(fileName);
 		imageLoading = LoadPicture(fileName, true);
 		if (imageLoading != nullptr && imageLoading->IsOk())
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
@@ -1964,7 +1962,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		CRegardsBitmap* bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
 		if (bitmap != nullptr)
 		{
-			imageLoading = new CImageLoadingFormat();
 			bitmap->SetFilename(fileName);
 			imageLoading->SetPicture(bitmap);
 			if (imageLoading != nullptr && imageLoading->IsOk())
@@ -2415,7 +2412,9 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 
 #if defined(LIBRAW)
 		case RAWFILE:
+
 			bitmap = CRaw::LoadPicture(fileName);
+				
 			if(bitmap != nullptr)
 				bitmap->SetFilename(fileName);
 
