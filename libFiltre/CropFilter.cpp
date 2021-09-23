@@ -125,6 +125,11 @@ void CCropFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effe
 
 }
 
+bool CCropFilter::NeedToUpdateSource()
+{
+	return true;
+}
+
 bool CCropFilter::NeedPreview()
 {
 	return true;

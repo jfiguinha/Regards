@@ -86,23 +86,35 @@ void CVignetteFilter::FilterChangeParam(CEffectParameter* effectParameter, CTree
 
 void CVignetteFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin, int& widthOutput, int& heightOutput)
 {
-	CRegardsBitmap* bitmapOut = filtreEffet->GetBitmap(false);
-	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-	CImageLoadingFormat image;
-	image.SetPicture(bitmapOut);
-	CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
 
-	//float ratio = (float)bitmapOut->GetBitmapWidth() / (float)vignetteEffectParameter->bitmapWidth;
-	filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+}
 
-	filtreEffet->SetPreview(true);
+bool CVignetteFilter::IsSourcePreview()
+{
+	return true;
+}
 
-	CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
-	imageLoad->SetPicture(filtre->GetBitmap(true));
-	filtreEffet->SetBitmap(imageLoad);
 
-	delete filtre;
+void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
+{
+	CImageLoadingFormat* imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+
+
+		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
+		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
+
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+		filtreEffet->SetBitmap(imageLoad);
+	}
 
 }
 

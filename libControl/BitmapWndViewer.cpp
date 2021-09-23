@@ -114,10 +114,13 @@ void CBitmapWndViewer::SetListener(IMouseUpdate* mouseUpdate)
 	this->mouseUpdate = mouseUpdate;
 }
 
-void CBitmapWndViewer::RemoveListener()
+void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 {
-	if (mouseUpdate != nullptr)
+	if (mouseUpdate != nullptr && applyCancel)
+	{
 		mouseUpdate->CancelPreview(this);
+	}
+	
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 
@@ -440,6 +443,9 @@ bool CBitmapWndViewer::ApplyPreviewEffect(int& widthOutput, int& heightOutput)
 		}
 
 		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet, m_cDessin, widthOutput, heightOutput);
+
+		if (mouseUpdate->NeedToUpdateSource())
+			updateFilter = true;
 
 		if (IsOpenGLDecoding())
 			if (!mouseUpdate->IsOpenGLCompatible())

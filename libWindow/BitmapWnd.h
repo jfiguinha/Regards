@@ -124,7 +124,7 @@ namespace Regards
 			void ReinitPicture();
 			void SetOrientation(const int& exif);
 
-			virtual void RemoveListener()
+			virtual void RemoveListener(const bool &applyCancel)
 			{
 			};
 

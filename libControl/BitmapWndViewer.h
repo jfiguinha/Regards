@@ -46,7 +46,7 @@ namespace Regards
 			~CBitmapWndViewer() override;
 			CEffectParameter* GetParameter() override;
 			void SetListener(IMouseUpdate* mouseUpdate);
-			void RemoveListener() override;
+			void RemoveListener(const bool& applyCancel = true) override;
 			void SendEmail();
 			void ExportPicture();
 			void SavePicture();

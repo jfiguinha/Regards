@@ -123,6 +123,66 @@ void CFilterWindowParam::ApplyPreviewEffectSource(CEffectParameter* effectParame
 
 }
 
+void CFilterWindowParam::ApplyExifToPoint(wxPoint& pt, int numExif, const int &width, const int &height)
+{
+	int y = width - pt.y;
+	int x = pt.x;
+
+	int width90 = height;
+	int height90 = width;
+	
+	switch (numExif)
+	{
+	case 1:// top left side
+		break;
+	case 2:// top right side
+		pt.x = width - pt.x;
+		//filtre->FlipHorizontal();
+		break;
+	case 3:// bottom right side
+		pt.x = width - pt.x;
+		pt.y = height - pt.y;
+		//filtre->FlipHorizontal();
+		//filtre->FlipVertical();
+		break;
+	case 4:// bottom left side
+		pt.y = height - pt.y;
+		//filtre->FlipVertical();
+		break;
+	case 5://left side top
+		//filtre->Rotate90();
+		pt.y = x;
+		pt.x = y;
+		//pt.y = height - pt.y;
+		pt.x = width - pt.x;
+		//filtre->FlipVertical();
+		break;
+	case 6:// right side top
+		//filtre->Rotate90();
+		pt.y = x;
+		pt.x = y;
+		pt.x = width - pt.x;
+		pt.y = height - pt.y;
+		//filtre->FlipVertical();
+		//filtre->FlipHorizontal();
+		break;
+	case 7:// right side bottom
+		//filtre->Rotate90();
+		pt.y = x;
+		pt.x = y;
+		//pt.x = width - pt.x;
+		pt.y = height - pt.y;
+		//filtre->FlipHorizontal();
+		break;
+	case 8:// left side bottom
+		//filtre->Rotate90();
+		pt.y = x;
+		pt.x = y;
+		break;
+	default:;
+	}
+}
+
 void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filtre)
 {
 	switch (orientation)

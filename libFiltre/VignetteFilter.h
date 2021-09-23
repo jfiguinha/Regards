@@ -32,7 +32,8 @@ namespace Regards
             bool NeedPreview();
             CEffectParameter* GetEffectPointer();
             CEffectParameter* GetDefaultEffectParameter();
-
+            bool IsSourcePreview();
+            void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing);
         private:
             wxString libelleEffectRadius;
             wxString libelleEffectPower;

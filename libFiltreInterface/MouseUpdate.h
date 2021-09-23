@@ -40,4 +40,5 @@ public:
 	virtual bool IsSourcePreview() = 0;
 	virtual void CancelPreview(IBitmapDisplay* bitmapViewer) = 0;
 	virtual bool NeedToShrink() { return false; };
+	virtual bool NeedToUpdateSource() { return false; };
 };

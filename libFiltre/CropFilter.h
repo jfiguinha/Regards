@@ -34,6 +34,8 @@ namespace Regards
 			void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview);
 			bool NeedPreview();
 			bool SupportMouseClick();
+			bool NeedToUpdateSource();
+		
 		private:
 
 			void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);

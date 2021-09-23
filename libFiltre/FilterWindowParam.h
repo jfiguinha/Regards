@@ -72,7 +72,7 @@ public:
 
 	void CancelPreview(IBitmapDisplay* bitmapViewer) {};
 protected:
-
+	void ApplyExifToPoint(wxPoint & pt, int numExif, const int& width, const int& height);
 	static void RotateExif(const int & orientation, CFiltreEffet * filtre);
 	virtual void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);
 	virtual void DrawingToPicture(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin);
