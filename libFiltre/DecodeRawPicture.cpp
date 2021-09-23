@@ -7,8 +7,15 @@
 #include <ximage.h>
 using namespace Regards::Filter;
 
+class CLocalData
+{
+public:
+	libraw_output_params_t params;
+};
+
 CDecodeRawPicture::CDecodeRawPicture(const string& fileName)
 {
+	localData = new CLocalData();
 	rawProcessor = new LibRaw();
 	result = rawProcessor->open_file(fileName.c_str());
 	if(result == LIBRAW_SUCCESS)
@@ -16,7 +23,8 @@ CDecodeRawPicture::CDecodeRawPicture(const string& fileName)
 		// step two: positioning libraw_internal_data.unpacker_data.data_offset
 		result = rawProcessor->unpack();
 	}
-
+	
+	memcpy(&localData->params, &rawProcessor->imgdata.params, sizeof(rawProcessor->imgdata.params));
 }
 
 
@@ -27,6 +35,9 @@ CDecodeRawPicture::~CDecodeRawPicture()
 		//rawProcessor->recycle();
 		delete rawProcessor;
 	}
+
+	if (localData != nullptr)
+		delete localData;
 }
 
 
@@ -94,7 +105,11 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 		rawProcessor->imgdata.params.wf_deband_treshold[3]  = decodeRawParameter->wf_deband_tresholdOther;
 		 * */
 	}
-
+	else
+	{
+		memcpy(&rawProcessor->imgdata.params, &localData->params,  sizeof(rawProcessor->imgdata.params));
+	}
+	rawProcessor->imgdata.params.user_flip = 2;
 	rawProcessor->imgdata.params.use_rawspeed = 1;
 	
 	try
@@ -123,7 +138,7 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 		int stride = ((iTaille * width + iTaille) & ~iTaille);
 		//rawProcessor->copy_mem_image(image->GetBits(), width * raw_color * (raw_bitsize/8), 1);
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		image->Flip();
+		//image->Flip();
 		imageLoadingFormat->SetPicture(image);
 	}
 

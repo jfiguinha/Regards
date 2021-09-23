@@ -76,9 +76,7 @@ CDecodeRaw::CDecodeRaw()
 
 CDecodeRaw::~CDecodeRaw()
 {
-	if (rawDecoder != nullptr)
-		delete rawDecoder;
-	rawDecoder = nullptr;
+
 }
 
 
@@ -134,6 +132,10 @@ void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sourc
 	if (source != nullptr)
 		orientation = source->GetOrientation();
 
+	if (rawDecoder != nullptr)
+		delete rawDecoder;
+	rawDecoder = nullptr;
+	
 	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(source->GetFilename()));
 
 	this->source = source;
@@ -191,6 +193,7 @@ void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sourc
 	AddMetadataElement(elementNoiseReduction, "light FBDD reduction", 1);
 	AddMetadataElement(elementNoiseReduction, "full FBDD reduction", 2);
 
+	/*
 	vector<CMetadata> elementFlip;
 	AddMetadataElement(elementFlip, "none", 0);
 	AddMetadataElement(elementFlip, "Flip Horizontal", 1);
@@ -199,7 +202,7 @@ void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sourc
 	AddMetadataElement(elementFlip, "270", 4);
 	AddMetadataElement(elementFlip, "90 CCW", 5);
 	AddMetadataElement(elementFlip, "90 CW", 6);
-
+	*/
 
 	vector<CMetadata> elementInterpolation;
 	AddMetadataElement(elementInterpolation, "linear interpolation", 0);
@@ -229,7 +232,7 @@ void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sourc
 	filtreInterface->AddTreeInfos(libelleuse_UserMultiGreen, new CTreeElementValueInt(decodeParameter->multiGreen), &elementValue);
 	filtreInterface->AddTreeInfos(libelleuse_UserMultiBlue, new CTreeElementValueInt(decodeParameter->multiBlue), &elementValue);
 	filtreInterface->AddTreeInfos(libelleuse_UserMultiOther, new CTreeElementValueInt(decodeParameter->multiOther), &elementValue);
-	filtreInterface->AddTreeInfos(libelleuse_UserFlip, new CTreeElementValueInt(decodeParameter->flip), &elementFlip, 3, 3);
+	//filtreInterface->AddTreeInfos(libelleuse_UserFlip, new CTreeElementValueInt(decodeParameter->flip), &elementFlip, 3, 3);
 	filtreInterface->AddTreeInfos(libelleuse_UserInterpolation, new CTreeElementValueInt(decodeParameter->interpolation), &elementInterpolation, 3, 3);
 	filtreInterface->AddTreeInfos(libelleuse_UserBlack, new CTreeElementValueInt(decodeParameter->black), &elementValue);
 	filtreInterface->AddTreeInfos(libelleuse_UserBlackChannelRed, new CTreeElementValueInt(decodeParameter->blackchannelRed), &elementValue);
@@ -482,40 +485,45 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapDi
 {
 	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
 		return;
-
-	wxString filename = bitmapViewer->GetFilename();
-
 	CDecodeRawParameter* rawParameter = (CDecodeRawParameter*)effectParameter;
-
-	CImageLoadingFormat* imageLoad = rawDecoder->DecodePicture(rawParameter);
-	if (imageLoad != nullptr)
+	if(rawParameter != nullptr)
 	{
-		//imageLoad->SetOrientation(4);
-		if (firstUpdate)
+		if (rawParameter->update)
 		{
-			bitmapViewer->UpdateBitmap(imageLoad, true);
-			firstUpdate = false;
-		}
-		else
-		{
-			bitmapViewer->UpdateBitmap(imageLoad, false);
+			wxString filename = bitmapViewer->GetFilename();
+
+
+
+			CImageLoadingFormat* imageLoad = rawDecoder->DecodePicture(rawParameter);
+			if (imageLoad != nullptr)
+			{
+				
+				//imageLoad->SetOrientation(4);
+				if (firstUpdate)
+				{
+					bitmapViewer->UpdateBitmap(imageLoad, true);
+					firstUpdate = false;
+				}
+				else
+				{
+					bitmapViewer->UpdateBitmap(imageLoad, false);
+				}
+			}
+
+			rawParameter->update = false;
 		}
 	}
+
+
 
 }
 
 void CDecodeRaw::CancelPreview(IBitmapDisplay* bitmapViewer)
 {
-	
-	if (rawDecoder != nullptr)
-		delete rawDecoder;
-	rawDecoder = nullptr;
-
-	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(source->GetFilename()));
-	
 	CImageLoadingFormat* imageLoad = rawDecoder->DecodePicture(nullptr);
 	if (imageLoad != nullptr)
 	{
+		imageLoad->SetFilename(source->GetFilename());
 		bitmapViewer->UpdateBitmap(imageLoad, true);
 	}
 }

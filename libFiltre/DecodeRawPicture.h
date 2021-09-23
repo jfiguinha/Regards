@@ -4,6 +4,9 @@ using namespace std;
 class LibRaw;
 class CDecodeRawParameter;
 class CImageLoadingFormat;
+
+class CLocalData;
+
 namespace Regards
 {
 	namespace Filter
@@ -18,7 +21,7 @@ namespace Regards
 		private:
 			LibRaw * rawProcessor;
 			int result;
-			//unsigned char *buffer;
+			CLocalData* localData = nullptr;
 
 		};
 	}
