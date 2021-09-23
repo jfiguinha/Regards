@@ -364,6 +364,8 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 	threadDataProcess = true;
 	processIdle = true;
+
+	UpdateScroll();
 	Refresh();
 }
 

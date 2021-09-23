@@ -76,7 +76,9 @@ CDecodeRaw::CDecodeRaw()
 
 CDecodeRaw::~CDecodeRaw()
 {
-
+	if (rawDecoder != nullptr)
+		delete rawDecoder;
+	rawDecoder = nullptr;
 }
 
 
@@ -132,9 +134,7 @@ void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sourc
 	if (source != nullptr)
 		orientation = source->GetOrientation();
 
-	if (rawDecoder != nullptr)
-		delete rawDecoder;
-	rawDecoder = nullptr;
+
 	
 	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(source->GetFilename()));
 

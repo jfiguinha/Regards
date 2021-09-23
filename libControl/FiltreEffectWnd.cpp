@@ -58,6 +58,10 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 	}
 	if (bitmapViewer != nullptr && CFiltreData::NeedPreview(numFiltre))
 		bitmapViewer->RemoveListener();
+
+	if (filtreEffectOld != nullptr)
+		delete(filtreEffectOld);
+	filtreEffectOld = nullptr;
 }
 
 void CFiltreEffectScrollWnd::OnFiltreOk(const int& numFiltre, CInfoEffectWnd* historyEffectWnd)
@@ -101,6 +105,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	auto panelInfos = this->FindWindowById(panelId);
 	auto previewWindow = this->FindWindowById(previewId);
 
+	if (filtreEffectOld != nullptr)
+		delete(filtreEffectOld);
+	filtreEffectOld = nullptr;
+	
 	numFiltre = numItem;
 	if (!isVideo)
 	{
@@ -141,13 +149,15 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 							delete bitmap;
 						bitmap = nullptr;
 
+
+
 						effectParameter = CFiltreData::GetEffectParameter(numItem);
 
 
 						bitmapViewer->SetBitmapPreviewEffect(numItem);
 
 						bitmap = bitmapViewer->GetBitmap(true);
-
+						
 						filtreEffect->Init(effectParameter, bitmap, filename, numItem);
 
 						if (previewWindow != nullptr)
@@ -168,8 +178,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						}
 						//panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
 						treeWindow->SetTreeControl(filtreEffect);
-						if (filtreEffectOld != nullptr)
-							delete(filtreEffectOld);
+
 						filtreEffectOld = filtreEffect;
 
 

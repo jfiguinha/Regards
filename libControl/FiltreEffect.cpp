@@ -76,7 +76,10 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* sour
 	if (filterEffect != nullptr)
 	{
 		if (source != nullptr)
+		{
+			source->SetFilename(filename);
 			filterEffect->Filter(effectParameter, source, this);
+		}
 		else
 			filterEffect->Filter(effectParameter, filename, this);
 	}
