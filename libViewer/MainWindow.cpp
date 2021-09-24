@@ -1372,7 +1372,7 @@ void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
 	localFilename = centralWnd->GetFilename();
-	centralWnd->RefreshPicture(localFilename);
+	centralWnd->LoadPicture(localFilename, true);
 }
 
 
