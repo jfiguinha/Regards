@@ -307,8 +307,9 @@ void CThumbnailVideo::ProcessThumbnail()
 					thumbnail->timePosition = i;
 					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
 				}
-				//if (thumbnail->image == nullptr)
-				//	thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+				if (thumbnail->image == nullptr)
+					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+				
 
 				CIcone* pBitmapIcone = iconeList->GetElement(i);
 				if (pBitmapIcone != nullptr)
@@ -321,6 +322,7 @@ void CThumbnailVideo::ProcessThumbnail()
 						thumbnailData->SetTimePosition(thumbnail->timePosition);
 					}
 				}
+				
 				if (thumbnail != nullptr)
 					delete thumbnail;
 			}

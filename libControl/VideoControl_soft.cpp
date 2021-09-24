@@ -983,6 +983,8 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		openCVStabilization = nullptr;
 
+		//reloadResource = true;
+
 		if (playStopTimer->IsRunning())
 			playStopTimer->Stop();
 
@@ -1071,6 +1073,7 @@ void CVideoControlSoft::ReloadResource()
 
 void CVideoControlSoft::on_paint(wxPaintEvent& event)
 {
+	
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
@@ -1082,7 +1085,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 #else
 	double scale_factor = 1.0f;
 #endif
-
+	
 	if (reloadResource)
 	{
 		if (renderBitmapOpenGL != nullptr)
@@ -1717,7 +1720,7 @@ void CVideoControlSoft::Resize()
 {
 	float screenWidth = static_cast<float>(GetWidth());
 	float screenHeight = static_cast<float>(GetHeight());
-
+	
 	if (!stopVideo)
 	{
 		updateContext = true;
@@ -2292,6 +2295,9 @@ int CVideoControlSoft::IsSupportOpenCL()
 
 void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 {
+	if (reloadResource)
+		return;
+	
 	int enableopenCL = 0;
 	bool isCPU = true;
 	if (IsSupportOpenCL())

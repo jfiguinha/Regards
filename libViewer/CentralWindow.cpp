@@ -318,12 +318,13 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 
 	if (loadPicture)
 	{
-		auto pictureElement = new CPictureElement();
-		pictureElement->filename = filename;
-		pictureElement->reloadResource = true;
-		wxCommandEvent evt(wxEVENT_LOADPICTURE);
-		evt.SetClientData(pictureElement);
-		this->GetEventHandler()->AddPendingEvent(evt);
+		//auto pictureElement = new CPictureElement();
+		//pictureElement->filename = filename;
+		//pictureElement->reloadResource = true;
+		//wxCommandEvent evt(wxEVENT_LOADPICTURE);
+		//evt.SetClientData(pictureElement);
+		//this->GetEventHandler()->AddPendingEvent(evt);
+		LoadPicture(filename, true);
 	}
 	else if (isDiaporama)
 	{
@@ -600,7 +601,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 			}
 			return 1;
 		}
-		previewWindow->StopVideo();
+		//previewWindow->StopVideo();
 		loadPicture = false;
 
 		bool errorPhoto = false;
@@ -659,6 +660,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 
 		if(needToLoadPicture)
 		{
+			isPicture = true;
 			//--------------------------------------------------------------------------------
 			//Load Thumbnail
 			//--------------------------------------------------------------------------------
@@ -901,8 +903,14 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	if (pictureData != nullptr)
 	{
 		int redraw = event.GetInt();
-		ShowPicture(pictureData, redraw);
-
+		if(isPicture)
+			ShowPicture(pictureData, redraw);
+		else
+		{
+			delete pictureData->bitmap;
+			pictureData->bitmap = nullptr;
+		}
+		
 		if (pictureData->myThread != nullptr)
 		{
 			delete pictureData->myThread;

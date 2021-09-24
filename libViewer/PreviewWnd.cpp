@@ -645,7 +645,7 @@ bool CPreviewWnd::SetVideo(const wxString& filename, const bool& play)
 			}
 			isOldState = 2;
 
-			wxMicroSleep(100);
+			//wxMicroSleep(500);
 		}
 		else
 		{

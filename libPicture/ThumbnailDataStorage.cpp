@@ -36,6 +36,9 @@ wxImage CThumbnailDataStorage::GetwxImage()
 
 void CThumbnailDataStorage::SetBitmap(CImageLoadingFormat* bitmap)
 {
+	if (localbitmap != nullptr)
+		delete localbitmap;
+	
 	if (bitmap->IsOk())
 	{
 		localbitmap = bitmap->GetwxImage();
