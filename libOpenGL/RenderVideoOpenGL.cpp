@@ -235,6 +235,10 @@ void CRenderVideoOpenGL::DeleteVideoTexture()
 		delete(textureVideoCopy);
 	textureVideoCopy = nullptr;
 
+	if (textureSubtitle != nullptr)
+		delete(textureSubtitle);
+	textureSubtitle = nullptr;
+
 	if (cl_textureVideoCopy != nullptr)
 	{
 		cl_int err = clReleaseMemObject(cl_textureVideoCopy);

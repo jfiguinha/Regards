@@ -1781,7 +1781,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		updateFilter = false;
 	}
 
-	if (loadBitmap || updateFilter)
+	if (loadBitmap || updateFilter || glTextureSrc == nullptr)
 	{
 		if (IsOpenGLDecoding())
 		{
@@ -1924,7 +1924,6 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-	//bool isPageCurl = false;
 
 	wxPaintDC(this);
 
@@ -1950,6 +1949,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		reloadResource = false;
 	}
 
+
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD tickCount = GetTickCount();
 	OutputDebugString(L"OnPaint\n");
@@ -1963,8 +1963,10 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		renderOpenGL->Init(this);
 
 		renderOpenGL->LoadingResource(scale_factor);
-	}
 
+		
+	}
+	renderOpenGL->SetCurrent(*this);
 
 	if (IsSupportOpenCL())
 	{
@@ -1980,7 +1982,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 	if (renderOpenGL != nullptr)
 	{
-		renderOpenGL->SetCurrent(*this);
+		
 
 		if (!IsSupportOpenCL())
 		{
@@ -1998,6 +2000,8 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	}
 
 	this->SwapBuffers();
+
+
 
 	printf("CBitmapWnd End OnPaint \n");
 

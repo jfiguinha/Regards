@@ -539,20 +539,6 @@ void CVideoControlSoft::CalculTextureSize(int& widthOut, int& heightOut)
 	int width_local = GetSrcBitmapWidth();
 	int height_local = GetSrcBitmapHeight();
 	float zoom = GetZoomRatio();
-	//float ratio = 1.0f;
-
-	/*
-	muVideoEffect.lock();
-	ratio = (float)videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
-	muVideoEffect.unlock();
-
-	if (ratio == 1.0f)	
-		ratio = (float)GetSrcBitmapWidth() / (float)GetSrcBitmapHeight();
-	else
-	{
-		width_local = (int)((float)height_local * ratio);
-	}
-	*/
 	widthOut = width_local * zoom;
 	heightOut = height_local * zoom;
 }
@@ -1078,14 +1064,16 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
 	printf("CVideoControlSoft::OnPaint \n");
-	deleteTexture = false;
+	
+	deleteTexture = true;
 	inverted = true;
 #ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
-	
+
+
 	if (reloadResource)
 	{
 		if (renderBitmapOpenGL != nullptr)
@@ -1109,6 +1097,8 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 		reloadResource = false;
 	}
 
+	reloadResource = false;
+	
 	GLTexture* glTexture = nullptr;
 	GLTexture* glTextureOutput = nullptr;
 
@@ -1118,6 +1108,8 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 
 		//Now we have a context, retrieve pointers to OGL functions
 		renderBitmapOpenGL->Init(this);
+
+		
 	}
 
 	renderBitmapOpenGL->SetCurrent(*this);
