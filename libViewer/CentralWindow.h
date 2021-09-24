@@ -46,6 +46,8 @@ namespace Regards
 			wxString picture;
 			bool isVisible;
 			bool isThumbnail;
+			bool isDiaporama;
+			int processLoadPicture;
 			thread* myThread;
 		};
 

@@ -666,22 +666,21 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 			{
 				CSqlThumbnail sqlThumbnail;
 				CImageLoadingFormat* _loadingPicture = sqlThumbnail.GetPictureThumbnail(pictureToLoad);
-				
 				if (_loadingPicture != nullptr && _loadingPicture->IsOk())
 				{
+
+					_loadingPicture->SetFilename(pictureToLoad);
 					CBitmapReturn * bitmapReturn = new CBitmapReturn();
 					bitmapReturn->myThread = nullptr;
 					bitmapReturn->isThumbnail = true;
 					bitmapReturn->bitmap = _loadingPicture;
-					//ShowPicture(bitmapReturn, processLoadPicture ? 1 : 0);
-					//delete bitmapReturn;
 					auto event = new wxCommandEvent(EVENT_SHOWPICTURE);
 					event->SetClientData(bitmapReturn);
 					event->SetInt(processLoadPicture ? 1 : 0);
 					wxQueueEvent(this, event);
 				}
-				
 			}
+
 
 			if (!processLoadPicture)
 			{
@@ -689,19 +688,13 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 				pictureData->mainWindow = this;
 				pictureData->picture = pictureToLoad;
 				pictureData->isVisible = true;
+				pictureData->isDiaporama = isDiaporama;
 				const auto threadloadPicture = new thread(LoadingNewPicture, pictureData);
 				pictureData->myThread = threadloadPicture;
 				processLoadPicture = true;
 			}
+			
 		}
-
-		if (listPicture != nullptr)
-			listPicture->SetActifItem(GetPhotoId(filename), true);
-
-
-		if (thumbnailPicture != nullptr)
-			thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
-
 	}
 
 
@@ -798,7 +791,7 @@ void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw
 
 	if (pictureData->bitmap != nullptr)
 	{
-		if (filename == pictureData->bitmap->GetFilename() || pictureData->isThumbnail)
+		if (filename == pictureData->bitmap->GetFilename())
 			isPictureToShow = true;
 	}
 
@@ -909,6 +902,12 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	{
 		int redraw = event.GetInt();
 		ShowPicture(pictureData, redraw);
+
+		if (pictureData->myThread != nullptr)
+		{
+			delete pictureData->myThread;
+			pictureData->myThread = nullptr;
+		}
 		delete pictureData;
 	}
 }
@@ -1713,7 +1712,6 @@ void CCentralWindow::SetVideo(const wxString& path)
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////
 //Picture Loading Function
 //////////////////////////////////////////////////////////////////////////
@@ -1721,7 +1719,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 {
 	CLibPicture libPicture;
 	CImageLoadingFormat* bitmap = libPicture.LoadPicture(pictureData->picture);
-
+	
 	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
 	{
 		if (bitmap != nullptr)
