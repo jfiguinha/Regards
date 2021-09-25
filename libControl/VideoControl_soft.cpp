@@ -114,14 +114,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	ffmfc = new CFFmfc(this, wxID_ANY);
 	pictureFrame = new CRegardsBitmap();
 
-	if (IsSupportOpenCL())
-	{
-		if (openclEngine != nullptr)
-		{
-			openclContext = openclEngine->GetInstance();
-			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-		}
-	}
+
 }
 
 
@@ -888,6 +881,9 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete renderBitmapOpenGL;
 	}
 
+	if (openclContext != nullptr)
+		delete openclContext;
+
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
@@ -1073,7 +1069,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	double scale_factor = 1.0f;
 #endif
 
-
+	/*
 	if (reloadResource)
 	{
 		if (renderBitmapOpenGL != nullptr)
@@ -1085,6 +1081,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	}
 
 	reloadResource = false;
+	*/
 	
 	GLTexture* glTexture = nullptr;
 	GLTexture* glTextureOutput = nullptr;
@@ -1096,11 +1093,26 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 		//Now we have a context, retrieve pointers to OGL functions
 		renderBitmapOpenGL->Init(this);
 
+		
+
+		/*
+		if (openclEffectYUV != nullptr)
+			delete openclEffectYUV;
+		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+		*/
+
 	}
 
 	renderBitmapOpenGL->SetCurrent(*this);
 
-
+	if (IsSupportOpenCL())
+	{
+		if (openclEngine != nullptr && openclContext == nullptr)
+		{
+			openclContext = openclEngine->CreateInstance(true);
+			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+		}
+	}
 
 	std::clock_t start;
 	start = std::clock();
@@ -2257,9 +2269,6 @@ int CVideoControlSoft::IsSupportOpenCL()
 
 void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 {
-	if (reloadResource)
-		return;
-	
 	int enableopenCL = 0;
 	bool isCPU = true;
 	if (IsSupportOpenCL())

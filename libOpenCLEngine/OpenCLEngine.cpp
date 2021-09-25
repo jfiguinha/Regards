@@ -428,7 +428,12 @@ OpenCLDevice* COpenCLEngine::GetDefaultDevice()
 
 COpenCLEngine::COpenCLEngine(const bool& attachOpenCV)
 {
-	_singleton = nullptr;
+	_singleton = CreateInstance(attachOpenCV);
+}
+
+COpenCLContext * COpenCLEngine::CreateInstance(const bool& attachOpenCV)
+{
+	COpenCLContext* contextLocal = nullptr;
 	OpenCLPlatform* platform = nullptr;
 	OpenCLDevice* device = GetDefaultDevice();
 
@@ -440,13 +445,13 @@ COpenCLEngine::COpenCLEngine(const bool& attachOpenCV)
 
 	if (device != nullptr)
 	{
-		_singleton = new COpenCLContext(device->platformId, "", device->deviceId, device->deviceType,
-		                                device->openGlSharing);
-		int rtnValue = _singleton->GenerateContext();
+		contextLocal = new COpenCLContext(device->platformId, "", device->deviceId, device->deviceType,
+			device->openGlSharing);
+		int rtnValue = contextLocal->GenerateContext();
 		if (rtnValue == -1)
 		{
-			delete _singleton;
-			_singleton = nullptr;
+			delete contextLocal;
+			contextLocal = nullptr;
 		}
 
 		if (platform == nullptr)
@@ -454,28 +459,30 @@ COpenCLEngine::COpenCLEngine(const bool& attachOpenCV)
 			vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 
 			auto i = std::find_if(listPlatform.begin(),
-			                      listPlatform.end(),
-			                      [&](const auto& val) { return val->platformId == device->platformId; });
+				listPlatform.end(),
+				[&](const auto& val) { return val->platformId == device->platformId; });
 
 			if (i != listPlatform.end())
 				platform = *i;
 
-			_singleton->SetPlatformName(platform->platformName);
+			contextLocal->SetPlatformName(platform->platformName);
 		}
 	}
 
 #ifdef OPENCV_OPENCL
-	if (platform != nullptr && _singleton != nullptr && device != nullptr && attachOpenCV)
+	if (platform != nullptr && contextLocal != nullptr && device != nullptr && attachOpenCV)
 	{
 		cv::ocl::setUseOpenCL(true);
-		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
-			platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
+		contextLocal->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
+			platform->platformName.ToStdString(), platform->platformId, contextLocal->GetContext(), device->deviceId));
 
 		//Set OpenCV to use OpenCL context
 		//
 		//cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 	}
 #endif
+
+	return contextLocal;
 }
 
 /*

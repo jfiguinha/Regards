@@ -105,18 +105,8 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider
 	bitmapUpdate = false;
 	source = nullptr;
 	bitmapLoad = false;
-
 	themeBitmap.colorBack = themeBitmap.colorScreen;
-	//filterInterpolation = CUBICFILTER;
-
-
-	if (IsSupportOpenCL())
-	{
-		if (openclEngine != nullptr)
-			openclContext = openclEngine->GetInstance();
-	}
-	else
-		openclContext = nullptr;
+	openclContext = nullptr;
 
 }
 
@@ -255,6 +245,9 @@ CBitmapWnd::~CBitmapWnd(void)
 
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
+
+	if (openclContext != nullptr)
+		delete openclContext;
 
 }
 
@@ -1942,26 +1935,6 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	if (reloadResource)
-	{
-		DeleteTexture();
-
-		if (renderOpenGL != nullptr)
-		{
-			delete renderOpenGL;
-			renderOpenGL = nullptr;
-		}
-		reloadResource = false;
-
-		/*
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-		filtreEffet = nullptr;
-		*/
-
-	}
-
-
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD tickCount = GetTickCount();
 	OutputDebugString(L"OnPaint\n");
@@ -1976,13 +1949,13 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 		renderOpenGL->LoadingResource(scale_factor);
 
-		//if (openclContext != nullptr)
-		//	openclContext->RegenerateContext(true);
+
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+		filtreEffet = nullptr;
 		
 	}
 	renderOpenGL->SetCurrent(*this);
-
-
 
 
 	if (renderOpenGL != nullptr)
@@ -1994,6 +1967,11 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		}
 		else
 		{
+			if (openclEngine != nullptr && openclContext == nullptr)
+			{
+				openclContext = openclEngine->CreateInstance(true);
+			}
+
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}

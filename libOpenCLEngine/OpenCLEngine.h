@@ -128,7 +128,7 @@ namespace Regards
 			~COpenCLEngine();
            static OpenCLDevice * GetDefaultDevice();
 			COpenCLContext * GetInstance();
-			
+			static COpenCLContext * CreateInstance(const bool& attachOpenCV);
 			static int GetNbPlatform();
 			static int GetDefaultGpuDeviceInformation();
 			static int SupportOpenCL();
