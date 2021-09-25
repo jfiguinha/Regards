@@ -494,13 +494,11 @@ COpenCLContext* COpenCLEngine::GetInstance()
 
 COpenCLEngine::~COpenCLEngine()
 {
-	/*
 	if (nullptr != _singleton)
 	{
 		delete _singleton;
 		_singleton = nullptr;
 	}
-	*/
 }
 
 OpenCLDevice* COpenCLDeviceList::SelectDevice(const wxString& deviceName)

@@ -40,10 +40,7 @@ extern bool processrecognitionison;
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
 
-#ifndef RENDEROPENGL
-extern COpenCLEngine* openCLEngine;
-extern COpenCLContext* openclContext;
-#endif
+extern Regards::OpenCL::COpenCLEngine* openclEngine;
 
 extern float clamp(float val, float minval, float maxval);
 
@@ -56,7 +53,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider
 	: CWindowOpenGLMain("CBitmapWnd", parent, id)
 {
 	glTexture = nullptr;
-	openCLEngine = nullptr;
 	renderOpenGL = nullptr;
 	idWindowMain = idMain;
 	//bitmap = nullptr;
@@ -112,6 +108,16 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider
 
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	//filterInterpolation = CUBICFILTER;
+
+
+	if (IsSupportOpenCL())
+	{
+		if (openclEngine != nullptr)
+			openclContext = openclEngine->GetInstance();
+	}
+	else
+		openclContext = nullptr;
+
 }
 
 void CBitmapWnd::OnScrollMove(wxCommandEvent& event)
@@ -250,9 +256,6 @@ CBitmapWnd::~CBitmapWnd(void)
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
 
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-	openCLEngine = nullptr;
 }
 
 void CBitmapWnd::SetKey(const int& iKey)
@@ -1656,18 +1659,24 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
+	
+	
 	muBitmap.lock();
-
+	bool bitmapIsLoad = false;
 
 	if (loadBitmap)
 	{
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-		filtreEffet = new CFiltreEffet(color, openclContext, source);
+		if (filtreEffet == nullptr)
+			filtreEffet = new CFiltreEffet(color, openclContext, source);
+		else
+		{
+			filtreEffet->SetBitmap(source);
+		}
+
 		loadBitmap = false;
+		bitmapIsLoad = true;
 
 	}
-
 	muBitmap.unlock();
 
 	printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
@@ -1681,7 +1690,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 		if(updateFilter)
 		{
-			filtreEffet->SetBitmap(source);
+			if(!bitmapIsLoad)
+				filtreEffet->SetBitmap(source);
 			BeforeInterpolationBitmap();
 			updateFilter = false;
 		}
@@ -1751,6 +1761,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			themeBitmap.colorBack.Blue()));
 
 	RenderTexture(openclContext->IsSharedContextCompatible());
+
 }
 
 void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
@@ -1770,9 +1781,10 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 	if (loadBitmap)
 	{
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-		filtreEffet = new CFiltreEffet(color, nullptr, source);
+		if (filtreEffet == nullptr)
+			filtreEffet = new CFiltreEffet(color, nullptr, source);
+		else
+			filtreEffet->SetBitmap(source);
 	}
 
 	if(updateFilter)
@@ -1939,14 +1951,14 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 			delete renderOpenGL;
 			renderOpenGL = nullptr;
 		}
-
-		if (openCLEngine != nullptr)
-		{
-			delete openCLEngine;
-			openCLEngine = nullptr;
-		}
-
 		reloadResource = false;
+
+		/*
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+		filtreEffet = nullptr;
+		*/
+
 	}
 
 
@@ -1964,26 +1976,17 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 		renderOpenGL->LoadingResource(scale_factor);
 
+		//if (openclContext != nullptr)
+		//	openclContext->RegenerateContext(true);
 		
 	}
 	renderOpenGL->SetCurrent(*this);
 
-	if (IsSupportOpenCL())
-	{
-		if (openCLEngine == nullptr)
-		{
-			openCLEngine = new COpenCLEngine(true);
-			if (openCLEngine != nullptr)
-				openclContext = openCLEngine->GetInstance();
-		}
-	}
-	else
-		openclContext = nullptr;
+
+
 
 	if (renderOpenGL != nullptr)
 	{
-		
-
 		if (!IsSupportOpenCL())
 		{
 			printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
@@ -1994,11 +1997,11 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}
-
+		
 
 		AfterRender();
 	}
-
+	
 	this->SwapBuffers();
 
 

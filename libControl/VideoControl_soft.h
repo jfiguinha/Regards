@@ -37,7 +37,6 @@ public:
 
 	void ReloadResource();
 
-	COpenCLEngine* GetOpenCLEngine();
 	bool IsPause();
 	void SetVideoDuration(const int64_t& duration, const int64_t& startTime) override;
 	void SetCurrentclock(wxString message);
@@ -205,7 +204,6 @@ protected:
 	GLTexture* glTextureSrc = nullptr;
 	CRegardsBitmap* bitmap = nullptr;
 	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
-	COpenCLEngine* openCLEngine = nullptr;
 	COpenCLContext* openclContext = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CVideoEffectParameter videoEffectParameter;

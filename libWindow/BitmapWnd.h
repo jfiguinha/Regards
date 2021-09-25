@@ -22,7 +22,6 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		class COpenCLEngine;
 		class COpenCLContext;
 	}
 
@@ -303,7 +302,6 @@ namespace Regards
 			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
 			GLTexture* glTexture = nullptr;
 			GLTexture* glTextureSrc = nullptr;
-			COpenCLEngine* openCLEngine = nullptr;
 			COpenCLContext* openclContext = nullptr;
 
 			//Preview Parameter

@@ -21,6 +21,7 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::exiv2;
+extern Regards::OpenCL::COpenCLEngine* openclEngine;
 
 
 void CShowPreview::UpdateScreenRatio()
@@ -33,7 +34,7 @@ void CShowPreview::UpdateScreenRatio()
 
 CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
                            wxWindowID mainViewerId, CThemeParam* config,
-                           const wxString& videoFilename, COpenCLEngine* openCLEngine,
+                           const wxString& videoFilename,
                            CVideoOptionCompress* videoOptionCompress)
 	: CWindowMain("ShowBitmap", parent, id)
 {
@@ -46,7 +47,6 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	defaultToolbar = true;
 	defaultViewer = true;
 	this->videoOptionCompress = *videoOptionCompress;
-	this->openCLEngine = openCLEngine;
 
 
 	CThemeBitmapWindow themeBitmap;
@@ -310,7 +310,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 	}
 
 	if (transcodeFFmpeg == nullptr)
-		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openCLEngine, decoder);
+		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openclEngine, decoder);
 
 	if (decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame(decoder);

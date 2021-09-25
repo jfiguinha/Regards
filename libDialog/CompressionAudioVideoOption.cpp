@@ -16,6 +16,8 @@ extern "C" {
 #include <libavutil/error.h>
 }
 
+
+
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(CompressionAudioVideoOption)
 //*)
@@ -47,8 +49,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 }
 
 CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename,
-                                                         const wxString& videoOutputFilename,
-                                                         COpenCLEngine* openCLEngine)
+                                                         const wxString& videoOutputFilename)
 {
 	isOk = false;
 	this->videoFilename = videoFilename;
@@ -284,7 +285,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #else
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, openCLEngine, &videoOptionCompress);
+	                                    viewerTheme, videoFilename, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);

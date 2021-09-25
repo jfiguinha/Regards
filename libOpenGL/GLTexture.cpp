@@ -165,6 +165,7 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
+	checkErrors("GLTexture::Delete()");
 	//glDisable(GL_TEXTURE_2D);
 	printf("Delete Texture id : %d \n", m_nTextureID);
 	glEnable(GL_TEXTURE_2D);

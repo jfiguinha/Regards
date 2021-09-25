@@ -28,6 +28,8 @@ namespace Regards
 			{
 				return context;
 			}
+
+			bool RegenerateContext(const bool& opengl);
             
             const cl_device_type GetDeviceType()
             {

@@ -28,12 +28,13 @@ int COpenCLContext::GetDefaultType()
 COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString& platformName, cl_device_id deviceId,
                                cl_device_type deviceType, const bool& opengl): context(nullptr)
 {
-	this->isOpenGL = opengl;
+	this->isOpenGL = false;
 	platform = platformId;
 	device = deviceId;
 	this->platform_name = platformName;
 	this->deviceType = deviceType;
 	queue = nullptr;
+	context = nullptr;
 }
 
 void COpenCLContext::SetPlatformName(const wxString& platform_name)
@@ -143,6 +144,26 @@ COpenCLContext::~COpenCLContext()
 	}
 
 	listProgram.clear();
+}
+
+bool COpenCLContext::RegenerateContext(const bool& opengl)
+{
+	this->isOpenGL = opengl;
+
+	if (context)
+	{
+		cl_int err = clReleaseContext(context);
+		Error::CheckError(err);
+	}
+	try
+	{
+		CreateContext();
+		return 0;
+	}
+	catch (...)
+	{
+		return -1;
+	}
 }
 
 int COpenCLContext::GenerateContext()

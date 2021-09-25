@@ -46,7 +46,7 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context
 	widthOut = 0;
 	heightOut = 0;
 
-	COpenCLEffect::SetBitmap(bitmap);
+	SetBitmap(bitmap);
 }
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context, COpenCLParameterClMem* data_mem, const int& width, const int& height)

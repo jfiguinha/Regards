@@ -142,6 +142,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLCon
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
+	//filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 
 	if (openCLContext != nullptr)
 	{
@@ -153,6 +154,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLCon
 	{
 		filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 	}
+
 }
 
 

@@ -31,6 +31,7 @@ wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame* copyFrameBuffer = nullptr;
 
+extern Regards::OpenCL::COpenCLEngine* openclEngine;
 
 #ifdef GLUT
 #ifdef __APPLE__
@@ -105,7 +106,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
 
-	openCLEngine = nullptr;
 	openclContext = nullptr;
 
 	openclEffectYUV = nullptr;
@@ -113,12 +113,17 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
 	pictureFrame = new CRegardsBitmap();
+
+	if (IsSupportOpenCL())
+	{
+		if (openclEngine != nullptr)
+		{
+			openclContext = openclEngine->GetInstance();
+			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+		}
+	}
 }
 
-COpenCLEngine* CVideoControlSoft::GetOpenCLEngine()
-{
-	return openCLEngine;
-}
 
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
@@ -883,11 +888,6 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete renderBitmapOpenGL;
 	}
 
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-	openCLEngine = nullptr;
-
-
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
@@ -1062,7 +1062,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
-	wxPaintDC dc(this);
+	//wxPaintDC dc(this);
 	printf("CVideoControlSoft::OnPaint \n");
 	
 	deleteTexture = true;
@@ -1081,19 +1081,6 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 			delete renderBitmapOpenGL;
 			renderBitmapOpenGL = nullptr;
 		}
-
-		if (openCLEngine != nullptr)
-		{
-			delete openCLEngine;
-			openCLEngine = nullptr;
-		}
-
-		if (openclEffectYUV != nullptr)
-		{
-			delete openclEffectYUV;
-			openclEffectYUV = nullptr;
-		}
-
 		reloadResource = false;
 	}
 
@@ -1109,20 +1096,11 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 		//Now we have a context, retrieve pointers to OGL functions
 		renderBitmapOpenGL->Init(this);
 
-		
 	}
 
 	renderBitmapOpenGL->SetCurrent(*this);
 
-	if (IsSupportOpenCL())
-	{
-		if (openCLEngine == nullptr)
-		{
-			openCLEngine = new COpenCLEngine(true);
-			if (openCLEngine != nullptr)
-				openclContext = openCLEngine->GetInstance();
-		}
-	}
+
 
 	std::clock_t start;
 	start = std::clock();
@@ -1135,14 +1113,6 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 
 	if (quitWindow)
 		return;
-
-	if (IsSupportOpenCL())
-	{
-		if (openclEffectYUV == nullptr)
-		{
-			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-		}
-	}
 
 	nbFrame++;
 

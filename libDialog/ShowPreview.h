@@ -22,7 +22,7 @@ namespace Regards
 		{
 		public:
 			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
-			             CThemeParam* config, const wxString& videoFilename, COpenCLEngine* openCLEngine,
+			             CThemeParam* config, const wxString& videoFilename,
 			             CVideoOptionCompress* videoOptionCompress);
 			~CShowPreview() override;
 
@@ -80,7 +80,6 @@ namespace Regards
 			//bool bitmapWndLocal;
 
 			CVideoOptionCompress videoOptionCompress;
-			COpenCLEngine* openCLEngine = nullptr;
 			CFFmpegTranscodingPimpl* transcodeFFmpeg = nullptr;
 			CFFmpegDecodeFrame* decodeFrame = nullptr;
 			CFFmpegDecodeFrame* decodeFrameOriginal = nullptr;

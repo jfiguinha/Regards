@@ -274,7 +274,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, int left, int top, bool inver
 
 	glFlush();
 
-	glEnd();
 }
 
 
@@ -362,7 +361,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const int& width, const int& 
 
 	glFlush();
 
-	glEnd();
 }
 
 
@@ -450,7 +448,6 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 
 	glFlush();
 
-	glEnd();
 }
 
 void CRenderOpenGL::RenderToTexture()

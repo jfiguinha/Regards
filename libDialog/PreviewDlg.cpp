@@ -28,7 +28,7 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenC
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, openCLEngine, videoOptionCompress);
+	                                    viewerTheme, videoFilename, videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->Raise();
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,

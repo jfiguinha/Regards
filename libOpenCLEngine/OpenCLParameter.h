@@ -165,10 +165,6 @@ namespace Regards
 				this->memory_flags = memory_flags;
 			};
 
-			~COpenCLParameterByteArray() override
-			{
-			};
-
 			void SetValue(cl_context context, uint8_t* value, int size, cl_mem_flags flag);
 			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
@@ -183,9 +179,6 @@ namespace Regards
 				this->memory_flags = memory_flags;
 			};
 
-			~COpenCLParameterIntArray() override
-			{
-			};
 
 			void SetValue(cl_context context, int* value, int size, cl_mem_flags flag);
 			void Add(cl_kernel kernelHandle, int numArg) override;
@@ -201,10 +194,6 @@ namespace Regards
 				this->memory_flags = memory_flags;
 			};
 
-			~COpenCLParameterFloatArray() override
-			{
-			};
-
 			void SetValue(cl_context context, float* value, int size, cl_mem_flags flag);
 			void Add(cl_kernel kernelHandle, int numArg) override;
 		};
@@ -216,10 +205,6 @@ namespace Regards
 			{
 				dataType = 7;
 				noDeleteClMem = noDeleteMem;
-			};
-
-			~COpenCLParameterColorData() override
-			{
 			};
 
 
@@ -237,9 +222,6 @@ namespace Regards
 				this->memory_flags = memory_flags;
 			};
 
-			~COpenCLParameterUShortArray() override
-			{
-			};
 
 			void SetValue(cl_context context, unsigned short* value, int size, cl_mem_flags flag);
 			void Add(cl_kernel kernelHandle, int numArg) override;
@@ -254,9 +236,6 @@ namespace Regards
 				noDeleteClMem = noDeleteMem;
 			};
 
-			~COpenCLParameterClMem() override
-			{
-			};
 
 			void SetValue(cl_mem memValue);
 			void Add(cl_kernel kernelHandle, int numArg) override;

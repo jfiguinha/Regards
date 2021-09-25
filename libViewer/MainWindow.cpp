@@ -51,6 +51,7 @@ using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace std;
 using namespace Regards::Sqlite;
+extern Regards::OpenCL::COpenCLEngine* openclEngine;
 
 bool firstTime = true;
 
@@ -398,9 +399,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	}
 
 	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
-	COpenCLEngine* openCLEngine = videoWindow->GetOpenCLEngine();
-
-	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath, openCLEngine);
+	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath);
 	compressAudioVideoOption.ShowModal();
 	if (compressAudioVideoOption.IsOk())
 	{
@@ -410,7 +409,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 			compressAudioVideoOption.GetCompressionOption(videoCompressOption);
 			//Decoder available
 			wxString decoder = "";
-			ffmpegEncoder = new CFFmpegTranscoding(decoder, openCLEngine);
+			ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
 			ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
 		}
 	}
