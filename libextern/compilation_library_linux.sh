@@ -30,7 +30,7 @@ mv exiv2-0.27.4-Source exiv2-0.27.4
 cd exiv2-0.27.4
 mkdir build
 cd build
-cmake ../
+cmake ../ -DEXIV2_ENABLE_BMFF=ON -DEXIV2_ENABLE_VIDEO=ON
 make -j$NBPROC
 cd ..
 cd ..
