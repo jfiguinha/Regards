@@ -20,7 +20,6 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	CLibPicture libPicture;
 	this->filename = filename;
 	int type = libPicture.TestImageFormat(filename);
-#ifdef WIN32
 
 	if (type == HEIC || type == AVIF)
 	{
@@ -39,7 +38,6 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 		}
 	}
 	else
-#endif
 		metaExiv = new CPictureMetadataExiv(filename);
 }
 
