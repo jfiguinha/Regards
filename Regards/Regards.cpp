@@ -8,6 +8,7 @@
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
+
 #include "header.h"
 #include <Regards.h>
 #include <FilterData.h>
@@ -20,6 +21,7 @@
 #include <FilterWindowParam.h>
 #include <ConvertUtility.h>
 #include <FileUtility.h>
+
 #include "ParamInit.h"
 using namespace Regards::Picture;
 

@@ -1962,6 +1962,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		CRegardsBitmap* bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
 		if (bitmap != nullptr)
 		{
+			imageLoading = new CImageLoadingFormat();
 			bitmap->SetFilename(fileName);
 			imageLoading->SetPicture(bitmap);
 			if (imageLoading != nullptr && imageLoading->IsOk())

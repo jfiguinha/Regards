@@ -94,6 +94,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
 	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
 {
+
 	mainWindow = nullptr;
 	fullscreen = false;
 	onExit = false;
