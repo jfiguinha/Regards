@@ -261,7 +261,7 @@ namespace Regards
 			int posRatio;
 			bool postEffect;
 
-			bool reloadResource = false;
+			//bool reloadResource = false;
 			bool isThumbnail;
 			bool isInUse;
 			int toolOption;

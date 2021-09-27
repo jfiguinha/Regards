@@ -256,5 +256,5 @@ protected:
 	CRegardsBitmap* bitmapData = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;
 	SwsContext* localContext = nullptr;
-	bool reloadResource = false;
+	//bool reloadResource = false;
 };

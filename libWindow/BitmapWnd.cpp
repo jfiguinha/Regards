@@ -1910,7 +1910,7 @@ int CBitmapWnd::IsOpenGLDecoding()
 
 void CBitmapWnd::ReloadResource()
 {
-	reloadResource = true;
+	//reloadResource = true;
 }
 
 //-----------------------------------------------------------------

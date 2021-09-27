@@ -965,8 +965,6 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		openCVStabilization = nullptr;
 
-		//reloadResource = true;
-
 		if (playStopTimer->IsRunning())
 			playStopTimer->Stop();
 
@@ -1050,7 +1048,7 @@ void CVideoControlSoft::UpdateScreenRatio()
 
 void CVideoControlSoft::ReloadResource()
 {
-	reloadResource = true;
+	//reloadResource = true;
 }
 
 void CVideoControlSoft::on_paint(wxPaintEvent& event)
@@ -1089,18 +1087,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	if (renderBitmapOpenGL == nullptr)
 	{
 		renderBitmapOpenGL = new CRenderVideoOpenGL(this);
-
-		//Now we have a context, retrieve pointers to OGL functions
 		renderBitmapOpenGL->Init(this);
-
-		
-
-		/*
-		if (openclEffectYUV != nullptr)
-			delete openclEffectYUV;
-		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-		*/
-
 	}
 
 	renderBitmapOpenGL->SetCurrent(*this);
