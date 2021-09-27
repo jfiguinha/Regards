@@ -173,7 +173,7 @@
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="$(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT;-framework ImageCaptureCore;-framework CoreML;-framework Vision;">
-        <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
+        <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
@@ -276,7 +276,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="LLDB Debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
@@ -324,7 +324,6 @@
       </Debugger>
       <PreBuild>
         <Command Enabled="yes">if [ -f Debug/header.h ]; then echo « Exists »; else if [ -d Debug ]; then echo « Exists »; else mkdir Debug;fi;cp ../include/header.h Debug/header.h;fi</Command>
-        <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild>
         <Command Enabled="yes">SetFile -t APPL ./Debug/RegardsViewer</Command>
@@ -340,7 +339,7 @@
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavcodec.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavfilter.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavformat.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -922,8 +921,6 @@
       </Debugger>
       <PreBuild>
         <Command Enabled="yes">if [ -f Release/header.h ]; then echo « Exists »; else if [ -d Release ]; then echo « Exists »; else mkdir Release;fi;cp ../include/header.h Release/header.h;fi</Command>
-        <Command Enabled="yes"/>
-        <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild>
         <Command Enabled="yes">SetFile -t APPL ./Release/RegardsViewer</Command>
@@ -940,7 +937,7 @@
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
         <Command Enabled="no">#chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavcodec.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavfilter.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>

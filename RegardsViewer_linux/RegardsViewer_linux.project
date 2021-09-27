@@ -178,7 +178,7 @@
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
-        <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
+        <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-master/libavcodec"/>
@@ -528,7 +528,7 @@
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Release</Command>

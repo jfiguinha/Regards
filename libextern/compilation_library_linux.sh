@@ -13,6 +13,8 @@ tar xf v2.4.0.tar.gz
 #decompression
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
+tar xf  exiv2-0.27.4.tar.gz
+
 #compile jasper
 cd jasper-2.0.14
 mkdir build
@@ -23,8 +25,9 @@ sudo make install
 cd ..
 cd ..
 
-#Compile exiv2-0.27.3 :
-cd exiv2-0.27.3
+#Compile exiv2-0.27.4
+mv exiv2-0.27.4-Source exiv2-0.27.4
+cd exiv2-0.27.4
 mkdir build
 cd build
 cmake ../
