@@ -361,10 +361,17 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	wxString filepath = filenameOutput;
 	if (filenameOutput == "")
 	{
+		wxFileName videoFilename(filename);
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
 		wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
-		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
+		
+		wxString filenameToSave = videoFilename.GetName();
+		/*
+		wxString extension = videoFilename.GetExt();
+		filenameToSave = filenameToSave.Remove(filenameToSave.size() - filenameToSave.size(), filenameToSave.size());
+		*/
+		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filenameToSave,
 		                            "mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label +
 		                            " (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label +
 		                            " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);

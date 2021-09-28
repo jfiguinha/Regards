@@ -12,9 +12,7 @@
 #include "header.h"
 #include <Regards.h>
 #include <FilterData.h>
-#ifdef wxUSE_PDF
-#include <wx/wxpoppler.h>
-#endif
+
 #include <wx/window.h>
 #include "SqlInit.h"
 #include <libPicture.h>
@@ -155,10 +153,6 @@ bool MyApp::OnInit()
 	wxInitAllImageHandlers();
 
 	CLibPicture::InitFreeImage();
-
-#ifdef wxUSE_PDF
-	AddImageHandler(new wxPDFHandler);
-#endif
 
 	wxSocketBase::Initialize();
 

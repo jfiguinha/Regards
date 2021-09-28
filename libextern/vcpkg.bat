@@ -14,3 +14,5 @@ vcpkg install fftw3:x64-windows --recurse
 vcpkg install jasper:x64-windows --recurse
 vcpkg install curl:x64-windows --recurse
 vcpkg install exiv2:x64-windows --recurse
+vcpkg install libmediainfo:x64-windows --recurse
+vcpkg install poppler:x64-windows --recurse
