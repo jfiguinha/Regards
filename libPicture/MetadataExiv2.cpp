@@ -24,7 +24,7 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	if (type == HEIC || type == AVIF)
 	{
 		buffer = nullptr;
-		long size = 0;
+		unsigned int size = 0;
 		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
 		if (size > 0)
 		{
@@ -72,9 +72,22 @@ bool CMetadataExiv2::HasExif()
 	return false;
 }
 
-void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, long& size)
+void CMetadataExiv2::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 {
-	if (metaExiv != nullptr)
+	CLibPicture libPicture;
+	int type = libPicture.TestImageFormat(filename);
+	if (type == HEIC || type == AVIF)
+	{
+		if (size > 0)
+		{
+			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		}
+		else if (size == 0)
+		{
+			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		}
+	}
+	else if (metaExiv != nullptr)
 		metaExiv->GetMetadataBuffer(data, size);
 }
 

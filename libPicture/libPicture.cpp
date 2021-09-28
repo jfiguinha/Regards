@@ -913,24 +913,71 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case HEIC:
 		{
+			uint8_t* data = nullptr;
+			unsigned int size = 0;
+			bool hasExif = false;
+
+			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
+			if (pictureMetadata.HasExif())
+			{
+				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
+				CxImage* image = bitmap->GetCxImage();
+				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
+				image->SetJpegQualityF(static_cast<float>(quality));
+				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
+				delete image;
+
+				pictureMetadata.CopyMetadata(fileTemp);
+
+				CMetadataExiv2 metadata(fileTemp);
+				metadata.GetMetadataBuffer(data, size);
+				if (size > 0)
+				{
+					data = new uint8_t[size + 1];
+					metadata.GetMetadataBuffer(data, size);
+					hasExif = true;
+				}
+			}
+
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
 			CHeic::SavePicture(fileName.ToStdString(), image, 100 - quality);
+
+			if (hasExif)
+				CHeic::SetMetadata(fileName.ToStdString(), data, size);
+
+			if (data != nullptr)
+				delete[] data;
 			break;
 		}
 	case AVIF:
 		{
 			uint8_t* data = nullptr;
-			long size = 0;
+			unsigned int size = 0;
 			bool hasExif = false;
-			
-			CMetadataExiv2 metadata(bitmap->GetFilename());
-			metadata.GetMetadataBuffer(data, size);
-			if(size > 0)
+
+			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
+			if (pictureMetadata.HasExif())
 			{
-				data = new uint8_t[size + 1];
+				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
+				CxImage* image = bitmap->GetCxImage();
+				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
+				image->SetJpegQualityF(static_cast<float>(quality));
+				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
+				delete image;
+
+				pictureMetadata.CopyMetadata(fileTemp);
+
+				CMetadataExiv2 metadata(fileTemp);
 				metadata.GetMetadataBuffer(data, size);
-				hasExif = true;
+				if (size > 0)
+				{
+					data = new uint8_t[size + 1];
+					metadata.GetMetadataBuffer(data, size);
+					hasExif = true;
+				}
 			}
+
+
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
 			CAvif::SavePicture(fileName.ToStdString(), image, data, size, 100 - quality, hasExif);
 			image->DeleteMemory(false);
@@ -1105,16 +1152,13 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	wxString openfile_error = CLibResource::LoadStringFromResource(L"ImpossibleOpenFile", 1);
 	if (TestIsExifCompatible(fileName))
 	{
-		if (wxFileName::FileExists(fileName) && (iFormat != AVIF))
+		if (wxFileName::FileExists(fileName) && (iFormat != AVIF) && (iFormat != HEIC))
 		{
 #ifdef EXIV2
 			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
 			pictureMetadata.CopyMetadata(fileName);
 #endif
 		}
-		else
-			wxMessageBox(openfile_error,
-			             informations_error, wxOK | wxICON_ERROR);
 	}
 
 	if (!wxFileName::FileExists(fileName))

@@ -29,6 +29,7 @@
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
 #include <wx/busyinfo.h>
+#include <exiv2/exiv2.hpp>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -94,6 +95,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
 	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
 {
+
+	Exiv2::enableBMFF();
 
 	mainWindow = nullptr;
 	fullscreen = false;

@@ -239,6 +239,8 @@ CRegardsBitmap* CAvif::GetPicture(const string& filename, int& delay, const int&
 }
 
 
+
+
 void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t* data, const long& size, const int& compression, const bool& hasExif)
 {
 	if (source != nullptr)

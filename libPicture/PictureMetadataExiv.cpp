@@ -4,7 +4,7 @@
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
 #include "PictureMetadataExiv.h"
-
+#include <libexif/exif-data.h>
 using namespace Regards::exiv2;
 
 
@@ -16,6 +16,7 @@ CPictureMetadataExiv::CPictureMetadataExiv(const wxString& filename)
 	//Read exif info from source file
 	try
 	{
+		this->filename = filename;
 		exif = Exiv2::ImageFactory::open(filename.ToStdString());
 		assert(exif.get() != 0);
 		exif->readMetadata();
@@ -194,22 +195,44 @@ bool CPictureMetadataExiv::HasExif()
 	return isExif;
 }
 
-void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, long& size)
+static const unsigned char header[4] = { '\xff', '\xd8', '\xff', '\xe1' };
+
+void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 {
-	const char* file_data = nullptr;
-
-	Exiv2::ExifData& exifData = exif->exifData();
-	if (!exifData.empty())
+	if (size == 0)
 	{
-	}
+		unsigned int local = 0;
+		unsigned char* buf;
+		ExifData* d = exif_data_new_from_file(filename);
+		if (!d) {
+			//fprintf(stderr, "Could not load data from '%s'!\n", filename);
+			size = 0;
+			return;
+		}
 
-	if(size == 0)
-		size = exif->io().size();
+		exif_data_save_data(d, &buf, &local);
+		exif_data_unref(d);
+		free(buf);
+		size = local + sizeof(header);
+	}
 	else
 	{
-		exif->io().seek(0, Exiv2::BasicIo::beg);
-		Exiv2::DataBuf buff = exif->io().read(size);
-		memcpy(data, buff.pData_, size);
+		unsigned int local = 0;
+		unsigned char* buf;
+		ExifData* d = exif_data_new_from_file(filename);
+		if (!d) {
+			//fprintf(stderr, "Could not load data from '%s'!\n", filename);
+			size = 0;
+			return;
+		}
+
+		exif_data_save_data(d, &buf, &local);
+		exif_data_unref(d);
+		memcpy(data, header, sizeof(header));
+		memcpy(data + sizeof(header), buf, local);
+
+		free(buf);
+
 	}
 
 }

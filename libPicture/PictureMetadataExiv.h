@@ -16,7 +16,7 @@ namespace Regards
 			CPictureMetadataExiv(const wxString& filename);
 			CPictureMetadataExiv(uint8_t* data, const long& size);
 			~CPictureMetadataExiv();
-			void GetMetadataBuffer(uint8_t*& data, long& size);
+			void GetMetadataBuffer(uint8_t*& data, unsigned int& size);
 			wxString GetCreationDate();
 			bool HasExif();
 			bool HasThumbnail();
@@ -45,6 +45,7 @@ namespace Regards
 			vector<CMetadata> ReadXmp(Exiv2::XmpData& xmpData);
 			Exiv2::Image::AutoPtr exif;
 			bool isExif;
+			wxString filename;
 		};
 	}
 }
