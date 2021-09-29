@@ -5,6 +5,7 @@
 #include <RegardsBitmap.h>
 #include <cstdint>
 #include <heifreader.h>
+#include <heifwriter.h>
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
@@ -550,6 +551,7 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8
 		}
 	}
 }
+
 
 uint32_t CHeic::GetDelay(const string& filename)
 {

@@ -6,7 +6,7 @@
 #include <MediaInfo.h>
 #include <picture_id.h>
 #include <libexif/exif-data.h>
-
+#include "avif.h"
 #include "Heic.h"
 #include "ConvertUtility.h"
 
@@ -25,11 +25,24 @@ CMetadataExiv2::CMetadataExiv2(const wxString& filename)
 	{
 		buffer = nullptr;
 		unsigned int size = 0;
-		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
-		if (size > 0)
+		if (type == HEIC)
 		{
-			buffer = new uint8_t[size + 1];
+
 			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+			if (size > 0)
+			{
+				buffer = new uint8_t[size + 1];
+				CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+			}
+		}
+		else if (type == AVIF)
+		{
+			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+			if (size > 0)
+			{
+				buffer = new uint8_t[size + 1];
+				CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), buffer, size);
+			}
 		}
 
 		if (size > 0)

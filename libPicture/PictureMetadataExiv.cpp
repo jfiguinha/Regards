@@ -195,10 +195,14 @@ bool CPictureMetadataExiv::HasExif()
 	return isExif;
 }
 
-static const unsigned char header[4] = { '\xff', '\xd8', '\xff', '\xe1' };
 
 void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 {
+	/* raw EXIF header data */
+	static const unsigned char exif_header[] = {
+		0xff, 0xd8, 0xff, 0xe1
+	};
+
 	if (size == 0)
 	{
 		unsigned int local = 0;
@@ -213,7 +217,7 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		exif_data_save_data(d, &buf, &local);
 		exif_data_unref(d);
 		free(buf);
-		size = local + sizeof(header);
+		size = local + sizeof(exif_header);
 	}
 	else
 	{
@@ -225,11 +229,13 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 			size = 0;
 			return;
 		}
-
+		int pos = 0;
+		unsigned char lenbuf[2];
 		exif_data_save_data(d, &buf, &local);
 		exif_data_unref(d);
-		memcpy(data, header, sizeof(header));
-		memcpy(data + sizeof(header), buf, local);
+		memcpy(data, exif_header, sizeof(exif_header));
+		pos += sizeof(exif_header);
+		memcpy(data + pos, buf, local);
 
 		free(buf);
 

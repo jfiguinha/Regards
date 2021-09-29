@@ -422,7 +422,7 @@ bool CAvif::HasExifMetaData(const string& filename)
 }
 
 // static
-void CAvif::GetMetadata(const string& filename, uint8_t* & data, long& size)
+void CAvif::GetMetadata(const string& filename, uint8_t* & data, unsigned int& size)
 {
 	//bool exifData = false;
 	avifRWData raw = AVIF_DATA_EMPTY;

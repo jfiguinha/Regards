@@ -17,7 +17,7 @@ namespace Regards
 			static void GetPictureDimension(const string &filename, int &width, int &height);
 			static int GetNbFrame(const string &filename);
 			static bool HasExifMetaData(const string &filename);
-			static void GetMetadata(const string &filename, uint8_t * & data, long & size);
+			static void GetMetadata(const string &filename, uint8_t * & data, unsigned int& size);
 			static int GetDelay(const string &filename);
 			static CRegardsBitmap * GetThumbnailPicture(const string &filename);
 			static void SavePicture(const string &filename, CRegardsBitmap * source, uint8_t* data,const long& size, const int &compression = 0, const bool& hasExif = false);
