@@ -23,7 +23,7 @@ namespace Regards
 			static CRegardsBitmap * GetThumbnailPicture(const string &filename);
 			static void GetPictureDimension(const string &filename, int &width, int &height);
 			static void GetMetadata(const string &filename, uint8_t * & data, unsigned int& size);
-			static void SavePicture(const string &filenameOut, CRegardsBitmap * source, uint8_t*& data, unsigned int& size, const int &compression = 50, const bool& hasExif = false);
+			static void SavePicture(const string &filenameOut, CRegardsBitmap * source, uint8_t*& data_exif, unsigned int& size, const int &compression = 50, const bool& hasExif = false);
 		private:
 
 			static void DecodePictureMultiThread(void * parameter);
