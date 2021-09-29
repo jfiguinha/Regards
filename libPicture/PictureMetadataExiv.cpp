@@ -217,7 +217,7 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		exif_data_save_data(d, &buf, &local);
 		exif_data_unref(d);
 		free(buf);
-		size = local + sizeof(exif_header);
+		size = local;// +sizeof(exif_header);
 	}
 	else
 	{
@@ -233,9 +233,9 @@ void CPictureMetadataExiv::GetMetadataBuffer(uint8_t*& data, unsigned int& size)
 		unsigned char lenbuf[2];
 		exif_data_save_data(d, &buf, &local);
 		exif_data_unref(d);
-		memcpy(data, exif_header, sizeof(exif_header));
-		pos += sizeof(exif_header);
-		memcpy(data + pos, buf, local);
+		//memcpy(data, exif_header, sizeof(exif_header));
+		//pos += sizeof(exif_header);
+		memcpy(data, buf, local);
 
 		free(buf);
 

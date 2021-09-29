@@ -541,40 +541,7 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8
 			heif_context_get_primary_image_handle(ctx, &image_handle);
 			if (hasExif)
 			{
-
-				/*
-				
-							/* raw EXIF header data */
-				static const unsigned char exif_header[] = {
-					0xff, 0xd8, 0xff, 0xe1
-				};
-				/* length of data in exif_header */
-				static const unsigned int exif_header_len = sizeof(exif_header);
-				/*
-				auto memoryBuffer = new uint8_t[itemSize];
-				reader->getItemData(metadataIds[0], memoryBuffer, itemSize);
-
-				char value = 0;
-				int pos = 0;
-				memcpy(data, exif_header, exif_header_len);
-				pos += exif_header_len;
-				value = ((itemSize + 2) >> 8);
-				memcpy(data + pos, &value, 1);
-				pos++;
-				value = (itemSize + 2) & 0xff;
-				memcpy(data + pos, &value, 1);
-				pos++;
-				memcpy(data + pos, memoryBuffer + 4, itemSize - 4);
-				pos += itemSize - 4;
-				memcpy(data + pos, image_jpg + image_data_offset, image_data_len);
-				delete[] memoryBuffer;
-				*/
-
-				unsigned int size_local = size - (exif_header_len);
-				uint8_t* data_local = new uint8_t[size_local];
-				memcpy(data_local, data_exif + exif_header_len, size_local);
-				heif_context_add_exif_metadata(ctx, image_handle, data_local, size_local);
-				delete[] data_local;
+				heif_context_add_exif_metadata(ctx, image_handle, data_exif, size);
 			}
 			heif_image_handle_release(image_handle);
 
