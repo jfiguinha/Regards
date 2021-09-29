@@ -5,14 +5,12 @@
 #include <RegardsBitmap.h>
 #include <cstdint>
 #include <heifreader.h>
-#include <heifwriter.h>
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
 #include <libheif/heif.h>
 #include <FileUtility.h>
 #include <map>
-#include <heif_api_structs.h>
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
