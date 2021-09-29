@@ -20,6 +20,8 @@
 
 #include <assert.h>
 
+#include <sstream>
+
 #include "bitstream.h"
 #include "heif_colorconversion.h"
 #include "heif_image.h"

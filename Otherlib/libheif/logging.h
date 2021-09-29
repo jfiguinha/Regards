@@ -25,7 +25,13 @@
 #include "config.h"
 #endif
 
+#include <cinttypes>
+#include <cstddef>
+
+#include <vector>
 #include <string>
+#include <memory>
+#include <limits>
 #include <istream>
 
 

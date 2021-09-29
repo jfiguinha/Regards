@@ -940,10 +940,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
-			CHeic::SavePicture(fileName.ToStdString(), image, 100 - quality);
-
-			if (hasExif)
-				CHeic::SetMetadata(fileName.ToStdString(), data, size);
+			CHeic::SavePicture(fileName.ToStdString(), image, data, size, 100 - quality, hasExif);
 
 			if (data != nullptr)
 				delete[] data;
@@ -1957,7 +1954,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	CImageLoadingFormat* imageLoading = nullptr;
-
+	bool notThumbnail = false;
 #ifdef WIN32
 
 	HDC screen = GetDC(nullptr);
@@ -1991,9 +1988,11 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		if (imageLoading != nullptr && imageLoading->IsOk())
 		{
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
-			if(isFromExif)
+			if (isFromExif)
 				imageLoading->ApplyExifOrientation();
 		}
+		else
+			notThumbnail = true;
 	}
 	else if (TestIsVideo(fileName))
 	{
@@ -2014,6 +2013,10 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
 				imageLoading->ApplyExifOrientation();
 			}
+		}
+		else
+		{
+			notThumbnail = true;
 		}
 	}
 	else
@@ -2065,12 +2068,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			}
 			else
 			{
-				imageLoading = LoadPicture(fileName, true);
-				if (imageLoading != nullptr && imageLoading->IsOk())
-				{
-					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-					imageLoading->ApplyExifOrientation();
-				}
+				notThumbnail = true;
 			}
 			delete memFile;
 		}
@@ -2081,6 +2079,16 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 #endif
 
 #endif
+
+	if (notThumbnail)
+	{
+		imageLoading = LoadPicture(fileName, true);
+		if (imageLoading != nullptr && imageLoading->IsOk())
+		{
+			imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
+			imageLoading->ApplyExifOrientation();
+		}
+	}
 
 
 	if (imageLoading == nullptr || !imageLoading->IsOk())

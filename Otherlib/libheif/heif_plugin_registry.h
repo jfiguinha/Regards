@@ -21,8 +21,13 @@
 #ifndef LIBHEIF_HEIF_PLUGIN_REGISTRY_H
 #define LIBHEIF_HEIF_PLUGIN_REGISTRY_H
 
+#include <map>
+#include <memory>
 #include <set>
+#include <string>
 #include <vector>
+
+#include "error.h"
 
 #include "heif.h"
 #include "heif_plugin.h"

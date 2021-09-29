@@ -128,7 +128,7 @@ Error heif::decode_hevc_aux_sei_messages(const std::vector<uint8_t>& data,
   // TODO: we probably do not need a full BitReader just for the array size.
   // Read this and the NAL size directly on the array data.
 
-  BitReader reader(data.data(), (data.size()));
+  BitReader reader(data.data(), (int) data.size());
   uint32_t len = (uint32_t) reader.get_bits(32);
 
   if (len > data.size() - 4) {
@@ -205,7 +205,7 @@ Error heif::parse_sps_for_hvcC_configuration(const uint8_t* sps, size_t size,
   size = sps_no_emul.size();
 
 
-  BitReader reader(sps, (size));
+  BitReader reader(sps, (int) size);
 
   // skip NAL header
   reader.skip_bits(2 * 8);

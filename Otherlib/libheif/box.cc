@@ -24,9 +24,10 @@
 #include "box.h"
 #include "heif_limits.h"
 #include "nclx.h"
-#include <sstream>
+
 #include <iomanip>
 #include <utility>
+#include <iostream>
 #include <algorithm>
 #include <cstring>
 #include <cassert>
@@ -56,6 +57,14 @@ Fraction::Fraction(int32_t num, int32_t den)
     numerator /= 2;
     denominator /= 2;
   }
+}
+
+Fraction::Fraction(uint32_t num, uint32_t den)
+{
+  assert(num <= std::numeric_limits<int32_t>::max());
+  assert(den <= std::numeric_limits<int32_t>::max());
+
+  *this = Fraction(int32_t(num), int32_t(den));
 }
 
 Fraction Fraction::operator+(const Fraction& b) const
@@ -231,7 +240,7 @@ heif::Error heif::BoxHeader::parse(BitstreamRange& range)
 
     if (range.prepare_read(16)) {
       m_uuid_type.resize(16);
-      range.get_istream()->read(m_uuid_type.data(), 16);
+      range.get_istream()->read((char*) m_uuid_type.data(), 16);
     }
 
     m_header_size += 16;
@@ -1116,8 +1125,8 @@ Error Box_iloc::read_data(const Item& item,
 
       // --- read data
 
-      dest->resize(old_size + extent.length);
-      success = istr->read((char*) dest->data() + old_size, extent.length);
+      dest->resize(static_cast<size_t>(old_size + extent.length));
+      success = istr->read((char*) dest->data() + old_size, static_cast<size_t>(extent.length));
       assert(success);
     }
     else if (item.construction_method == 1) {
@@ -1391,7 +1400,7 @@ void Box_iloc::patch_iloc_header(StreamWriter& writer) const
       writer.write16((uint16_t) item.item_ID);
     }
     else {
-      writer.write32(item.item_ID);
+      writer.write32((uint32_t) item.item_ID);
     }
 
     if (get_version() >= 1) {
@@ -2264,10 +2273,10 @@ Error Box_imir::parse(BitstreamRange& range)
 
   uint16_t axis = range.read8();
   if (axis & 1) {
-    m_axis = MirrorAxis::Horizontal;
+    m_axis = MirrorDirection::Horizontal;
   }
   else {
-    m_axis = MirrorAxis::Vertical;
+    m_axis = MirrorDirection::Vertical;
   }
 
   return range.get_error();
@@ -2279,12 +2288,12 @@ std::string Box_imir::dump(Indent& indent) const
   std::ostringstream sstr;
   sstr << Box::dump(indent);
 
-  sstr << indent << "mirror axis: ";
+  sstr << indent << "mirror direction: ";
   switch (m_axis) {
-    case MirrorAxis::Vertical:
+    case MirrorDirection::Vertical:
       sstr << "vertical\n";
       break;
-    case MirrorAxis::Horizontal:
+    case MirrorDirection::Horizontal:
       sstr << "horizontal\n";
       break;
   }
@@ -2297,14 +2306,28 @@ Error Box_clap::parse(BitstreamRange& range)
 {
   //parse_full_box_header(range);
 
-  int32_t clean_aperture_width_num = range.read32();
-  int32_t clean_aperture_width_den = range.read32();
-  int32_t clean_aperture_height_num = range.read32();
-  int32_t clean_aperture_height_den = range.read32();
-  int32_t horizontal_offset_num = range.read32();
-  int32_t horizontal_offset_den = range.read32();
-  int32_t vertical_offset_num = range.read32();
-  int32_t vertical_offset_den = range.read32();
+  uint32_t clean_aperture_width_num = range.read32();
+  uint32_t clean_aperture_width_den = range.read32();
+  uint32_t clean_aperture_height_num = range.read32();
+  uint32_t clean_aperture_height_den = range.read32();
+  uint32_t horizontal_offset_num = range.read32();
+  uint32_t horizontal_offset_den = range.read32();
+  uint32_t vertical_offset_num = range.read32();
+  uint32_t vertical_offset_den = range.read32();
+
+  if (clean_aperture_width_num > std::numeric_limits<int32_t>::max() ||
+      clean_aperture_width_den > std::numeric_limits<int32_t>::max() ||
+      clean_aperture_height_num > std::numeric_limits<int32_t>::max() ||
+      clean_aperture_height_den > std::numeric_limits<int32_t>::max() ||
+      horizontal_offset_num > std::numeric_limits<int32_t>::max() ||
+      horizontal_offset_den > std::numeric_limits<int32_t>::max() ||
+      vertical_offset_num > std::numeric_limits<int32_t>::max() ||
+      vertical_offset_den > std::numeric_limits<int32_t>::max()) {
+    return Error(heif_error_Invalid_input,
+                 heif_suberror_Invalid_fractional_number,
+                 "Exceeded supported value range.");
+  }
+
   m_clean_aperture_width = Fraction(clean_aperture_width_num,
                                     clean_aperture_width_den);
   m_clean_aperture_height = Fraction(clean_aperture_height_num,
@@ -2415,8 +2438,8 @@ void Box_clap::set(uint32_t clap_width, uint32_t clap_height,
   assert(image_width >= clap_width);
   assert(image_height >= clap_height);
 
-  m_clean_aperture_width = Fraction(clap_width, 1);
-  m_clean_aperture_height = Fraction(clap_height, 1);
+  m_clean_aperture_width = Fraction(clap_width, 1U);
+  m_clean_aperture_height = Fraction(clap_height, 1U);
 
   m_horizontal_offset = Fraction(-(int32_t) (image_width - clap_width), 2);
   m_vertical_offset = Fraction(-(int32_t) (image_height - clap_height), 2);
@@ -2643,7 +2666,7 @@ Error Box_hvcC::parse(BitstreamRange& range)
 
       if (range.prepare_read(size)) {
         nal_unit.resize(size);
-        range.get_istream()->read(nal_unit.data(), size);
+        range.get_istream()->read((char*) nal_unit.data(), size);
       }
 
       array.m_nal_units.push_back(std::move(nal_unit));
@@ -3032,10 +3055,10 @@ Error Box_idat::read_data(std::shared_ptr<StreamReader> istr,
 
   if (length > 0) {
     // reserve space for the data in the output array
-    out_data.resize(curr_size + length);
+    out_data.resize(static_cast<size_t>(curr_size + length));
     uint8_t* data = &out_data[curr_size];
 
-    success = istr->read(data, length);
+    success = istr->read((char*) data, static_cast<size_t>(length));
     assert(success);
   }
 

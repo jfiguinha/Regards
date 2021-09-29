@@ -25,11 +25,9 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <stdint.h>
-#ifndef WIN32
 
-#include <cstdlib>
-#endif
 #include <libheif/heif_version.h>
 
 

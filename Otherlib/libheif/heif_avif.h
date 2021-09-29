@@ -21,8 +21,11 @@
 #ifndef HEIF_AVIF_H
 #define HEIF_AVIF_H
 
+#include <cassert>
+#include <cmath>
 #include <memory>
 
+#include "heif.h"
 #include "box.h"
 #include "error.h"
 

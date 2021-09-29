@@ -27,10 +27,12 @@
 
 #include <cinttypes>
 #include <cstddef>
-#include <limits>
+
 #include <vector>
 #include <string>
 #include <memory>
+#include <limits>
+#include <istream>
 #include <bitset>
 #include <utility>
 
@@ -66,6 +68,9 @@ namespace heif {
     {}
 
     Fraction(int32_t num, int32_t den);
+
+    // may only use values up to int32_t maximum
+    Fraction(uint32_t num, uint32_t den);
 
     Fraction operator+(const Fraction&) const;
 
@@ -712,13 +717,13 @@ namespace heif {
     Box_imir(const BoxHeader& hdr) : Box(hdr)
     {}
 
-    enum class MirrorAxis : uint8_t
+    enum class MirrorDirection : uint8_t
     {
       Vertical = 0,
       Horizontal = 1
     };
 
-    MirrorAxis get_mirror_axis() const
+    MirrorDirection get_mirror_direction() const
     { return m_axis; }
 
     std::string dump(Indent&) const override;
@@ -727,7 +732,7 @@ namespace heif {
     Error parse(BitstreamRange& range) override;
 
   private:
-    MirrorAxis m_axis = MirrorAxis::Vertical;
+    MirrorDirection m_axis = MirrorDirection::Vertical;
   };
 
 

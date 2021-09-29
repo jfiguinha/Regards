@@ -27,8 +27,6 @@
 
 #include "heif_plugin_registry.h"
 
-#include <memory>
-
 #if HAVE_LIBDE265
 #include "heif_decoder_libde265.h"
 #endif

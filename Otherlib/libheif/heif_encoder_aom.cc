@@ -47,6 +47,7 @@ struct encoder_struct_aom
   int min_q;
   int max_q;
   int threads;
+  bool lossless;
 
   aom_tune_metric tune;
 
@@ -288,6 +289,8 @@ struct heif_error aom_set_parameter_lossless(void* encoder_raw, int enable)
     encoder->max_q = 0;
   }
 
+  encoder->lossless = enable;
+
   return heif_error_ok;
 }
 
@@ -295,7 +298,7 @@ struct heif_error aom_get_parameter_lossless(void* encoder_raw, int* enable)
 {
   struct encoder_struct_aom* encoder = (struct encoder_struct_aom*) encoder_raw;
 
-  *enable = (encoder->min_q == 0 && encoder->max_q == 0);
+  *enable = encoder->lossless;
 
   return heif_error_ok;
 }
@@ -530,8 +533,8 @@ void aom_query_input_colorspace2(void* encoder_raw, heif_colorspace* colorspace,
 void aom_query_encoded_size(void* encoder, uint32_t input_width, uint32_t input_height,
                             uint32_t* encoded_width, uint32_t* encoded_height)
 {
-  *encoded_width = std::max(input_width, 16U);
-  *encoded_height = std::max(input_height, 16U);
+  *encoded_width = input_width;
+  *encoded_height = input_height;
 }
 
 
@@ -563,16 +566,8 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
   struct heif_error err;
 
-  // --- round image size to minimum size
-
-  uint32_t rounded_width, rounded_height;
-  aom_query_encoded_size(encoder,
-                         image->image->get_width(),
-                         image->image->get_height(),
-                         &rounded_width,
-                         &rounded_height);
-
-  bool success = image->image->extend_padding_to_size(rounded_width, rounded_height);
+  bool success = image->image->extend_padding_to_size(image->image->get_width(),
+                                                      image->image->get_height());
   if (!success) {
     err = {heif_error_Memory_allocation_error,
            heif_suberror_Unspecified,
@@ -595,23 +590,28 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
   aom_img_fmt_t img_format = AOM_IMG_FMT_NONE;
 
   int chroma_height = 0;
+  int chroma_sample_position = AOM_CSP_UNKNOWN;
 
   switch (chroma) {
     case heif_chroma_420:
     case heif_chroma_monochrome:
       img_format = AOM_IMG_FMT_I420;
       chroma_height = (source_height+1)/2;
+      chroma_sample_position = AOM_CSP_UNKNOWN; // TODO: change this to CSP_CENTER in the future (https://github.com/AOMediaCodec/av1-avif/issues/88)
       break;
     case heif_chroma_422:
       img_format = AOM_IMG_FMT_I422;
       chroma_height = (source_height+1)/2;
+      chroma_sample_position = AOM_CSP_COLOCATED;
       break;
     case heif_chroma_444:
       img_format = AOM_IMG_FMT_I444;
       chroma_height = source_height;
+      chroma_sample_position = AOM_CSP_COLOCATED;
       break;
     default:
       img_format = AOM_IMG_FMT_NONE;
+      chroma_sample_position = AOM_CSP_UNKNOWN;
       assert(false);
       break;
   }
@@ -696,7 +696,10 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
 
   unsigned int aomUsage = 0;
-#if defined(AOM_USAGE_REALTIME)
+#if defined(AOM_USAGE_ALL_INTRA)
+  // aom 3.1.0
+  aomUsage = (encoder->realtime_mode ? AOM_USAGE_REALTIME : AOM_USAGE_ALL_INTRA);
+#elif defined(AOM_USAGE_REALTIME)
   // aom 2.0
   aomUsage = (encoder->realtime_mode ? AOM_USAGE_REALTIME : AOM_USAGE_GOOD_QUALITY);
 #endif
@@ -738,7 +741,7 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
   aom_codec_flags_t encoder_flags = 0;
   if (bpp_y > 8) {
-    encoder_flags = encoder_flags | AOM_CODEC_USE_HIGHBITDEPTH;
+    encoder_flags = (aom_codec_flags_t) (encoder_flags | AOM_CODEC_USE_HIGHBITDEPTH);
   }
 
   if (aom_codec_enc_init(&codec, iface, &cfg, encoder_flags)) {
@@ -765,6 +768,7 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
   // In aom, color_range defaults to limited range (0). Set it to full range (1).
   aom_codec_control(&codec, AV1E_SET_COLOR_RANGE, nclx ? nclx->get_full_range_flag() : 1);
+  aom_codec_control(&codec, AV1E_SET_CHROMA_SAMPLE_POSITION, chroma_sample_position);
 
   if (nclx &&
       (input_class == heif_image_input_class_normal ||
@@ -776,6 +780,9 @@ struct heif_error aom_encode_image(void* encoder_raw, const struct heif_image* i
 
   aom_codec_control(&codec, AOME_SET_TUNING, encoder->tune);
 
+  if (encoder->lossless) {
+    aom_codec_control(&codec, AV1E_SET_LOSSLESS, 1);
+  }
 
   // --- encode frame
 

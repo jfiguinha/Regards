@@ -26,7 +26,10 @@
 #include <cstring>
 #include <algorithm>
 #include <iostream>
-#include <sstream>
+#include <limits>
+#include <cmath>
+#include <deque>
+
 #if ENABLE_PARALLEL_TILE_DECODING
 #include <future>
 #endif
@@ -1008,7 +1011,7 @@ Error HeifContext::decode_image_user(heif_item_id ID,
                                      heif_chroma out_chroma,
                                      const struct heif_decoding_options* options) const
 {
-  Error err = decode_image_planar(ID, img, out_colorspace);
+  Error err = decode_image_planar(ID, img, out_colorspace, options, false);
   if (err) {
     return err;
   }
@@ -1041,7 +1044,7 @@ Error HeifContext::decode_image_user(heif_item_id ID,
 Error HeifContext::decode_image_planar(heif_item_id ID,
                                        std::shared_ptr<HeifPixelImage>& img,
                                        heif_colorspace out_colorspace,
-                                       const struct heif_decoding_options* options) const
+                                       const struct heif_decoding_options* options, bool alphaImage) const
 {
   std::string image_type = m_heif_file->get_item_type(ID);
 
@@ -1129,24 +1132,29 @@ Error HeifContext::decode_image_planar(heif_item_id ID,
       img->set_color_profile_icc(icc);
     }
 
-    heif_colorspace target_colorspace = (out_colorspace == heif_colorspace_undefined ?
-                                         img->get_colorspace() :
-                                         out_colorspace);
-
-    if (target_colorspace == heif_colorspace_YCbCr) {
-      target_colorspace = heif_colorspace_RGB;
+    if (alphaImage) {
+      // no color conversion required
     }
+    else {
+      heif_colorspace target_colorspace = (out_colorspace == heif_colorspace_undefined ?
+                                           img->get_colorspace() :
+                                           out_colorspace);
 
-    heif_chroma target_chroma = (target_colorspace == heif_colorspace_monochrome ?
-                                 heif_chroma_monochrome : heif_chroma_444);
+      if (!alphaImage && target_colorspace == heif_colorspace_YCbCr) {
+        target_colorspace = heif_colorspace_RGB;
+      }
 
-    bool different_chroma = (target_chroma != img->get_chroma_format());
-    bool different_colorspace = (target_colorspace != img->get_colorspace());
+      heif_chroma target_chroma = (target_colorspace == heif_colorspace_monochrome ?
+                                   heif_chroma_monochrome : heif_chroma_444);
 
-    if (different_chroma || different_colorspace) {
-      img = convert_colorspace(img, target_colorspace, target_chroma, nullptr);
-      if (!img) {
-        return Error(heif_error_Unsupported_feature, heif_suberror_Unsupported_color_conversion);
+      bool different_chroma = (target_chroma != img->get_chroma_format());
+      bool different_colorspace = (target_colorspace != img->get_colorspace());
+
+      if (different_chroma || different_colorspace) {
+        img = convert_colorspace(img, target_colorspace, target_chroma, nullptr);
+        if (!img) {
+          return Error(heif_error_Unsupported_feature, heif_suberror_Unsupported_color_conversion);
+        }
       }
     }
   }
@@ -1211,7 +1219,7 @@ Error HeifContext::decode_image_planar(heif_item_id ID,
 
       auto mirror = std::dynamic_pointer_cast<Box_imir>(property.property);
       if (mirror) {
-        error = img->mirror_inplace(mirror->get_mirror_axis() == Box_imir::MirrorAxis::Horizontal);
+        error = img->mirror_inplace(mirror->get_mirror_direction() == Box_imir::MirrorDirection::Horizontal);
         if (error) {
           return error;
         }
@@ -1269,7 +1277,7 @@ Error HeifContext::decode_image_planar(heif_item_id ID,
     if (alpha_image) {
       std::shared_ptr<HeifPixelImage> alpha;
       Error err = decode_image_planar(alpha_image->get_id(), alpha,
-                                      heif_colorspace_undefined);
+                                      heif_colorspace_undefined, nullptr, true);
       if (err) {
         return err;
       }
@@ -1551,7 +1559,7 @@ Error HeifContext::decode_and_paste_tile_image(heif_item_id tileID,
 {
   std::shared_ptr<HeifPixelImage> tile_img;
 
-  Error err = decode_image_planar(tileID, tile_img, img->get_colorspace());
+  Error err = decode_image_planar(tileID, tile_img, img->get_colorspace(), nullptr, false);
   if (err != Error::Ok) {
     return err;
   }
@@ -1639,7 +1647,7 @@ Error HeifContext::decode_derived_image(heif_item_id ID,
 
 
   Error error = decode_image_planar(reference_image_id, img,
-                                    heif_colorspace_RGB); // TODO: always RGB ?
+                                    heif_colorspace_RGB, nullptr, false); // TODO: always RGB ?
   return error;
 }
 
@@ -1716,7 +1724,7 @@ Error HeifContext::decode_overlay_image(heif_item_id ID,
   for (size_t i = 0; i < image_references.size(); i++) {
     std::shared_ptr<HeifPixelImage> overlay_img;
     err = decode_image_planar(image_references[i], overlay_img,
-                              heif_colorspace_RGB); // TODO: always RGB? Probably yes, because of RGB background color.
+                              heif_colorspace_RGB, nullptr, false); // TODO: always RGB? Probably yes, because of RGB background color.
     if (err != Error::Ok) {
       return err;
     }

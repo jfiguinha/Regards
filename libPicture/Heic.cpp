@@ -12,6 +12,7 @@
 #include <libheif/heif.h>
 #include <FileUtility.h>
 #include <map>
+#include <heif_api_structs.h>
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
@@ -486,7 +487,7 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 	return listPicture;
 }
 
-void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, const int& compression)
+void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8_t*& data, unsigned int& size, const int& compression, const bool& hasExif)
 {
 	struct heif_error err{};
 	if (source)
@@ -497,8 +498,13 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, const
 			// get the default encoder
 			heif_encoder* encoder;
 			heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
+
+
+
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);
+
+
 
 			// encode the image
 			heif_image* image; // code to fill in the image omitted in this example
@@ -507,7 +513,9 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, const
 			                        heif_colorspace_RGB,
 			                        heif_chroma_interleaved_RGBA,
 			                        &image);
-			(void)err;
+
+
+
 
 			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
 			                     32);
@@ -525,14 +533,20 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, const
 
 			heif_context_encode_image(ctx, image, encoder, nullptr, nullptr);
 
-			heif_encoder_release(encoder);
+			if (encoder != nullptr)
+				heif_encoder_release(encoder);
+			if (image != nullptr)
+				heif_image_release(image);
+
+			heif_image_handle* image_handle;
+			heif_context_get_primary_image_handle(ctx, &image_handle);
+			if (hasExif)
+			{
+				heif_context_add_exif_metadata(ctx, image_handle, data, size);
+			}
+			heif_image_handle_release(image_handle);
 
 			heif_context_write_to_file(ctx, filenameOut.c_str());
-
-			if (image)
-			{
-				heif_image_release(image);
-			}
 
 			heif_context_free(ctx);
 		}
@@ -1324,137 +1338,5 @@ void CHeic::GetMetadata(const string& filename, uint8_t* & data, unsigned int & 
 
 	Reader::Destroy(reader);
 }
-
-
-// Example about reading file and writing it to output. Note most error checking omitted.
-void CHeic::SetMetadata(const string& filename, uint8_t*& data, unsigned int & size)
-{
-	// create reader and writer instances
-	auto* reader = Reader::Create();
-	auto* writer = Writer::Create();
-
-	//Create temp file
-	wxString tempfile = CFileUtility::GetTempFile("temp.heic");
-	
-
-	// partially configure writer output
-	OutputConfig writerOutputConf{};
-	writerOutputConf.fileName = tempfile.c_str();
-	writerOutputConf.progressiveFile = true;
-
-	// Input file available from https://github.com/nokiatech/heif_conformance
-	//const char* filename = "C014.heic";
-	if (reader->initialize(filename.c_str()) != ErrorCode::OK)
-	{
-		//printInfo(filename);
-		Reader::Destroy(reader);
-		Writer::Destroy(writer);
-		return;
-	}
-	// read major brand of file and store it to writer config.
-	FourCC inputMajorBrand{};
-	reader->getMajorBrand(inputMajorBrand);
-
-	// add major brand to writer config
-	writerOutputConf.majorBrand = inputMajorBrand;
-
-	// read compatible brands of file and store it to writer config.
-	Array<FourCC> inputCompatibleBrands{};
-	reader->getCompatibleBrands(inputCompatibleBrands);
-
-	// add compatible brands to writer config
-	writerOutputConf.compatibleBrands = inputCompatibleBrands;
-
-	// initialize writer now that we have all the needed information from reader
-	if (writer->initialize(writerOutputConf) != ErrorCode::OK)
-	{
-		return;
-	}
-	// get information about all input file content
-	FileInformation fileInfo{};
-	reader->getFileInformation(fileInfo);
-
-	// map which input decoder config id matches the writer output decoder config ids
-	map<DecoderConfigId, DecoderConfigId> inputToOutputDecoderConfigIds;
-
-	// map which input image property match the writer output property.
-	map<PropertyId, PropertyId> inputToOutputImageProperties;
-
-
-
-
-	// go through all items in input file and store master image decoder configs
-	for (const auto& image : fileInfo.rootMetaBoxInformation.itemInformations)
-	{
-		if (image.features & ItemFeatureEnum::IsMasterImage)
-		{
-			MediaDataId outputMediaId;
-
-			// read image decoder config and store its id if not seen before
-			DecoderConfiguration inputdecoderConfig{};
-			reader->getDecoderParameterSets(image.itemId, inputdecoderConfig);
-			if (!inputToOutputDecoderConfigIds.count(inputdecoderConfig.decoderConfigId))
-			{
-				// feed new decoder config to writer and store input to output id pairing information
-				DecoderConfigId outputDecoderConfigId;
-				writer->feedDecoderConfig(inputdecoderConfig.decoderSpecificInfo, outputDecoderConfigId);
-				inputToOutputDecoderConfigIds[inputdecoderConfig.decoderConfigId] = outputDecoderConfigId;
-			}
-
-			{
-				HEIF::Data fr;
-				fr.mediaFormat = HEIF::MediaFormat::EXIF;
-				fr.size = size;
-				fr.data = data;
-				fr.decoderConfigId = 0;
-
-				HEIF::ErrorCode error = writer->feedMediaData(fr, outputMediaId);
-				if (HEIF::ErrorCode::OK != error)
-				{
-					return;
-				}
-
-				HEIF::MetadataItemId metadataItemId;
-				error = writer->addMetadata(outputMediaId, metadataItemId);
-				
-			}
-			// read image data
-			{
-				Data imageData{};
-				imageData.size = image.size;
-				imageData.data = new uint8_t[imageData.size];
-				reader->getItemData(image.itemId, imageData.data, imageData.size, false);
-
-				// feed image data to writer
-				imageData.mediaFormat = MediaFormat::HEVC;
-				imageData.decoderConfigId = inputToOutputDecoderConfigIds.at(inputdecoderConfig.decoderConfigId);
-
-				writer->feedMediaData(imageData, outputMediaId);
-				delete[] imageData.data;
-			}
-
-			// create new image based on that data:
-			ImageId outputImageId;
-			writer->addImage(outputMediaId, outputImageId);
-
-			// if this input image was the primary image -> also mark output image as primary image
-			if (image.features & ItemFeatureEnum::IsPrimaryImage)
-			{
-				writer->setPrimaryItem(outputImageId);
-			}
-		}
-	}
-
-
-	
-
-	writer->finalize();
-
-	Reader::Destroy(reader);
-	Writer::Destroy(writer);
-
-	wxRenameFile(tempfile, filename, true);
-}
-
 
 #endif

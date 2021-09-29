@@ -18,6 +18,8 @@
  * along with libheif.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sstream>
+
 #include "box.h"
 #include "bitstream.h"
 #include "logging.h"

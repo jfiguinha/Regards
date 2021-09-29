@@ -533,7 +533,7 @@ int heif_context_get_list_of_top_level_image_IDs(struct heif_context* ctx,
   // fill in ID values into output array
 
   const std::vector<std::shared_ptr<HeifContext::Image>> imgs = ctx->context->get_top_level_images();
-  int n = std::min(count, (int) imgs.size());
+  int n = (int) std::min(count, (int) imgs.size());
   for (int i = 0; i < n; i++) {
     ID_array[i] = imgs[i]->get_id();
   }
@@ -595,7 +595,7 @@ int heif_image_handle_get_list_of_thumbnail_IDs(const struct heif_image_handle* 
   }
 
   auto thumbnails = handle->image->get_thumbnails();
-  int n = std::min(count, (int) thumbnails.size());
+  int n = (int) std::min(count, (int) thumbnails.size());
 
   for (int i = 0; i < n; i++) {
     ids[i] = thumbnails[i]->get_id();
@@ -646,7 +646,7 @@ int heif_image_handle_get_list_of_auxiliary_image_IDs(const struct heif_image_ha
   }
 
   auto auxImages = handle->image->get_aux_images(include_alpha_image);
-  int n = std::min(count, (int) auxImages.size());
+  int n = (int) std::min(count, (int) auxImages.size());
 
   for (int i = 0; i < n; i++) {
     ids[i] = auxImages[i]->get_id();
