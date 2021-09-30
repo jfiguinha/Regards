@@ -128,10 +128,12 @@ void CThemeParam::GetSplitterTheme(CThemeSplitter* theme)
 
 void CThemeParam::InitSplitterTheme()
 {
+	/*
 	themeSplitter.themeFast.firstColor.Set(29, 29, 29);
 	themeSplitter.themeFast.secondColor.Set(128, 128, 128);
 	themeSplitter.themeSeparation.firstColor.Set(29, 29, 29);
 	themeSplitter.themeSeparation.secondColor.Set(128, 128, 128);
+	*/
 }
 
 void CThemeParam::InitClickToolbarTheme()

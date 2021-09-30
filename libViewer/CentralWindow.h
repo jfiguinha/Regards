@@ -214,7 +214,7 @@ namespace Regards
 			bool ffmfcQuit = false;
 			bool musicPause = false;
 			int64_t musicPosition = 0;
-
+			bool updateRightPanel = false;
 
 			wxTimer* diaporamaTimer;
 

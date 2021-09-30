@@ -1226,6 +1226,21 @@ void CThemeFastDrawBar::SaveXML(xml_document<>& doc, xml_node<>* sectionPosition
 	sectionPosition->append_node(section);
 }
 
+
+CThemeFastDrawBar::CThemeFastDrawBar()
+{
+	firstColor = wxColour(64, 64, 64);
+	secondColor = wxColour(64, 64, 64);
+	size = 2;
+}
+
+CThemeSeparationBar::CThemeSeparationBar()
+{
+	firstColor = wxColour(64, 64, 64);
+	secondColor = wxColour(64, 64, 64);
+	size = 4;
+}
+
 void CThemeSeparationBar::LoadXML(xml_node<>* root_node)
 {
 	wxString value;

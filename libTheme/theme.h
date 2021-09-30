@@ -682,12 +682,8 @@ private:
 class CThemeFastDrawBar : public CTheme
 {
 public:
-	CThemeFastDrawBar()
-	{
-		firstColor = wxColour(200, 200, 200);
-		secondColor = wxColour(255, 255, 255);
-		size = 4;
-	};
+    CThemeFastDrawBar();
+
 	~CThemeFastDrawBar(){};
 
 	CThemeFastDrawBar& operator=(const CThemeFastDrawBar& other);
@@ -704,12 +700,8 @@ public:
 class CThemeSeparationBar : public CTheme
 {
 public:
-	CThemeSeparationBar()
-	{
-		firstColor = wxColour(200, 200, 200);
-		secondColor = wxColour(255, 255, 255);
-		size = 10;
-	};
+    CThemeSeparationBar();
+
 	~CThemeSeparationBar(){};
 
 	void LoadXML(xml_node<> * root_node);
