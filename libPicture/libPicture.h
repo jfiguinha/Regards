@@ -90,7 +90,6 @@ namespace Regards
 
 		private:
 
-			void CreateJpegExifFile(const uint8_t* memoryBuffer, const int& itemSize, uint8_t*& data);
 			CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
 			CRegardsBitmap * LoadFromFreeImage(const char* filename);
