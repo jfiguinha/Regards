@@ -144,7 +144,6 @@ namespace Regards
 			void SetVideoPos(wxCommandEvent& event);
 
 			void OnTimerAnimation(wxTimerEvent& event);
-			void OnTimerResize(wxTimerEvent& event);
 			void StopLoadingPicture();
 			void StopAnimation();
 			void StartAnimation();
@@ -182,9 +181,8 @@ namespace Regards
 
 			CWindowManager* windowManager;
 			int windowMode;
-			int oldWindowMode;
+			int oldWindowMode = -1;
 			wxTimer* animationTimer;
-			wxTimer* resizeTimer;
 			int animationPosition;
 			vector<CImageVideoThumbnail*> videoThumbnail;
 			bool processLoadPicture;
@@ -214,8 +212,6 @@ namespace Regards
 			bool ffmfcQuit = false;
 			bool musicPause = false;
 			int64_t musicPosition = 0;
-			bool updateRightPanel = false;
-
 			wxTimer* diaporamaTimer;
 
 		};
