@@ -15,6 +15,8 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 tar xf  exiv2-0.27.4.tar.gz
 
+unzip heif-master.zip
+
 #compile jasper
 cd jasper-2.0.14
 mkdir build
@@ -36,6 +38,7 @@ cd ..
 cd ..
 
 #Compile heif-master
+mv heif-3.6.2 heif-master
 cd heif-master/srcs 
 cmake ../srcs 
 make -j$NBPROC

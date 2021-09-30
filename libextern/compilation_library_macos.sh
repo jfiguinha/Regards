@@ -5,6 +5,7 @@ echo $NBPROC
 #decompression
 tar xf  fftw-3.3.8.tar.gz
 tar xf  exiv2-0.27.4.tar.gz
+unzip heif-master.zip
 
 #Compile exiv2-0.27.3 :
 mv exiv2-0.27.4-Source exiv2-0.27.4
@@ -18,6 +19,7 @@ cd ..
 
 
 #Compile heif-master
+mv heif-3.6.2 heif-master
 cd heif-master/srcs 
 cmake ../srcs 
 make -j$NBPROC
