@@ -22,7 +22,7 @@
 #include <wx/cmdline.h>
 #include <libPicture.h>
 #include <wx/textfile.h>
-
+#include <wx/display.h>
 //#define TEST_WINDOWMANAGER
 
 #ifdef TEST_WINDOWMANAGER
@@ -283,7 +283,10 @@ public:
 		frame->Show();
 #else
 
-		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxDefaultSize, this, fileToOpen);
+		wxDisplay display;
+		wxRect screen = display.GetClientArea();
+
+		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxSize(screen.GetWidth(), screen.GetHeight()), this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
 #endif

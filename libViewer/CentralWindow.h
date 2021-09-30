@@ -144,7 +144,7 @@ namespace Regards
 			void SetVideoPos(wxCommandEvent& event);
 
 			void OnTimerAnimation(wxTimerEvent& event);
-
+			void OnTimerResize(wxTimerEvent& event);
 			void StopLoadingPicture();
 			void StopAnimation();
 			void StartAnimation();
@@ -184,6 +184,7 @@ namespace Regards
 			int windowMode;
 			int oldWindowMode;
 			wxTimer* animationTimer;
+			wxTimer* resizeTimer;
 			int animationPosition;
 			vector<CImageVideoThumbnail*> videoThumbnail;
 			bool processLoadPicture;

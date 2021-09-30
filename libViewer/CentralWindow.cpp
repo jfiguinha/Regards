@@ -247,6 +247,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_STOPDIAPORAMA, wxCommandEventHandler(CCentralWindow::StopDiaporama));
 	Connect(wxEVENT_STARTDIAPORAMA, wxCommandEventHandler(CCentralWindow::StartDiaporama));
 
+	resizeTimer = new wxTimer(this, wxTIMER_RESIZE);
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
 	windowManager->HideWindow(Pos::wxTOP, false);
@@ -273,6 +274,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	//refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
+	Connect(wxTIMER_RESIZE, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerResize), nullptr, this);
 }
 
 void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
@@ -302,6 +304,15 @@ void CCentralWindow::OnTimerDiaporama(wxTimerEvent& event)
 	ImageSuivante();
 }
 
+
+void CCentralWindow::OnTimerResize(wxTimerEvent& event)
+{
+	if (windowManager->GetWindowIsShow(Pos::wxRIGHT))
+	{
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+	}
+}
 
 wxString CCentralWindow::GetFilename()
 {
@@ -1073,6 +1084,15 @@ void CCentralWindow::Resize()
 
 	if (windowManager != nullptr)
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+	
+	if (windowManager->GetWindowIsShow(Pos::wxRIGHT))
+	{
+		if (resizeTimer->IsRunning())
+			resizeTimer->Stop();
+
+		resizeTimer->Start(500, true);
+	}
+
 }
 
 void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& numFrame)
@@ -1223,12 +1243,14 @@ CCentralWindow::~CCentralWindow()
 	if (windowManager != nullptr)
 		delete windowManager;
 
+	if (resizeTimer->IsRunning())
+		resizeTimer->Stop();
 
 	if (diaporamaTimer->IsRunning())
 		diaporamaTimer->Stop();
 
 	delete(diaporamaTimer);
-
+	delete(resizeTimer);
 
 	if (ffmfc != nullptr)
 		delete ffmfc;
