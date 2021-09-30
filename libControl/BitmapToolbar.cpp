@@ -27,12 +27,13 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	const wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON", 1); // "Zoom On";
 	const wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF", 1); // "Zoom Off";
 
+	/*
 	export_button = new CToolbarButton(themeToolbar.button);
 	export_button->SetButtonResourceId("IDB_SAVE");
 	export_button->SetCommandId(WM_EXPORT);
 	export_button->SetLibelleTooltip(exportLibelle);
 	navElement.push_back(export_button);
-
+	*/
 	email = new CToolbarButton(themeToolbar.button);
 	email->SetButtonResourceId("IDB_EMAIL");
 	email->SetCommandId(WM_EMAIL);
@@ -156,7 +157,7 @@ void CBitmapToolbar::SetTrackBarPosition(const int& iPos)
 		//this->Update();
 	}
 }
-
+/*
 void CBitmapToolbar::ShowExportButton()
 {
 	if (export_button != nullptr)
@@ -180,7 +181,7 @@ void CBitmapToolbar::HideExportButton()
 		}
 	}
 }
-
+*/
 void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 {
 	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));

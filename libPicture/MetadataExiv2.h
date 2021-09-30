@@ -18,6 +18,7 @@ namespace Regards
 			bool HasExif();
 			bool HasThumbnail();
 			int GetOrientation();
+			void SetOrientation(const int& orientation);
 			vector<CMetadata> GetMetadata();
 			bool CopyMetadata(const wxString& output);
 			CxMemFile* DecodeThumbnail(wxString& extension, int& orientation);

@@ -419,6 +419,25 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail
 		tempImage = nullptr;
 	}
 
+	if (isThumbnail)
+	{
+		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+	else
+	{
+		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
@@ -489,6 +508,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 
+		/*
 		if (libPicture.GetNbImage(filename) > 1)
 		{
 			if (pictureToolbar != nullptr)
@@ -502,20 +522,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail
 				}
 			}
 		}
-		else
-		{
-			if (pictureToolbar != nullptr)
-			{
-				wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
-				if (window != nullptr)
-				{
-					wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
-					window->GetEventHandler()->AddPendingEvent(evt);
-				}
-				pictureToolbar->HideExportButton();
-			}
-		}
-
+		*/
 		return true;
 	}
 	return false;

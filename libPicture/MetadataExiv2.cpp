@@ -139,6 +139,12 @@ void CMetadataExiv2::SetDateTime(const wxString& dateTime)
 		metaExiv->SetDateTime(dateTime);
 }
 
+void CMetadataExiv2::SetOrientation(const int& orientation)
+{
+	if (metaExiv != nullptr)
+		metaExiv->SetOrientation(orientation);
+}
+
 void CMetadataExiv2::SetGpsInfos(const wxString& latitudeRef, const wxString& longitudeRef, const wxString& latitude,
                                  const wxString& longitude)
 {

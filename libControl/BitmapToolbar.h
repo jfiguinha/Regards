@@ -20,8 +20,8 @@ namespace Regards
 			void SetTabValue(vector<int> value);
 			void ZoomOn();
 			void ZoomOut();
-			void ShowExportButton();
-			void HideExportButton();
+			//void ShowExportButton();
+			//void HideExportButton();
 			void SlidePosChange(const int& position, const wxString& key) override;
 
 			void MoveSlider(const int64_t& position) override

@@ -853,15 +853,6 @@ void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw
 					}
 				}
 
-
-
-				wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
-				if (window != nullptr)
-				{
-					wxCommandEvent wx_command_event(wxEVENT_SHOWSAVEBUTTON);
-					window->GetEventHandler()->AddPendingEvent(wx_command_event);
-				}
-
 				if (!isSetImage)
 				{
 					if (pictureData->bitmap != nullptr)
