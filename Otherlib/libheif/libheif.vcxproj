@@ -370,10 +370,8 @@
     <ClInclude Include="heif_colorconversion.h" />
     <ClInclude Include="heif_context.h" />
     <ClInclude Include="heif_cxx.h" />
-    <ClInclude Include="heif_decoder_aom.h" />
     <ClInclude Include="heif_decoder_libde265.h" />
     <ClInclude Include="heif_emscripten.h" />
-    <ClInclude Include="heif_encoder_aom.h" />
     <ClInclude Include="heif_encoder_x265.h" />
     <ClInclude Include="heif_file.h" />
     <ClInclude Include="heif_hevc.h" />
@@ -397,9 +395,7 @@
     <ClCompile Include="heif_avif.cc" />
     <ClCompile Include="heif_colorconversion.cc" />
     <ClCompile Include="heif_context.cc" />
-    <ClCompile Include="heif_decoder_aom.cc" />
     <ClCompile Include="heif_decoder_libde265.cc" />
-    <ClCompile Include="heif_encoder_aom.cc" />
     <ClCompile Include="heif_encoder_x265.cc" />
     <ClCompile Include="heif_file.cc" />
     <ClCompile Include="heif_hevc.cc" />

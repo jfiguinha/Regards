@@ -42,16 +42,10 @@
     <ClInclude Include="heif_cxx.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="heif_decoder_aom.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="heif_decoder_libde265.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="heif_emscripten.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="heif_encoder_aom.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="heif_encoder_x265.h">
@@ -107,13 +101,7 @@
     <ClCompile Include="heif_encoder_x265.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="heif_encoder_aom.cc">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="heif_decoder_libde265.cc">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="heif_decoder_aom.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="heif_context.cc">
