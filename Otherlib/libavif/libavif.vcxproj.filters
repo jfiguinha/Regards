@@ -21,9 +21,6 @@
     <ClCompile Include="src\avif.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\codec_aom.c">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\colr.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -49,6 +46,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\write.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\codec_dav1d.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\codec_rav1e.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

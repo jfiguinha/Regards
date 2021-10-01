@@ -184,6 +184,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(oneTBBdpstdDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
@@ -295,8 +296,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>AVIF_CODEC_AOM;WIN32;_WINDOWS;NDEBUG;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;$(SolutionDir)libextern\aom</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>AVIF_CODEC_DAV1D;AVIF_CODEC_RAV1E;WIN32;_WINDOWS;NDEBUG;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>include;$(SolutionDir)libextern\rav1e\include</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -363,7 +364,8 @@
   <ItemGroup>
     <ClCompile Include="src\alpha.c" />
     <ClCompile Include="src\avif.c" />
-    <ClCompile Include="src\codec_aom.c" />
+    <ClCompile Include="src\codec_dav1d.c" />
+    <ClCompile Include="src\codec_rav1e.c" />
     <ClCompile Include="src\colr.c" />
     <ClCompile Include="src\mem.c" />
     <ClCompile Include="src\obu.c" />
