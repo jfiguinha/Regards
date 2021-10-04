@@ -499,8 +499,13 @@ void wxGenericDirCtrl::SetupSections()
     m_homeId = AddSection( home, m_rootId, _("Home directory"), 1);
    // ExpandDir(m_homeId);
 
-  //  home += wxT("/Desktop");
-  //  m_DesktopId = AddSection( home, m_rootId, _("Desktop"), 1);
+    //m_DesktopId = m_treeCtrl->AppendItem(m_rootId, "Desktop");
+   // m_treeCtrl->SetItemHasChildren(m_DesktopId);
+   //home += wxT("/Desktop");
+  // m_DesktopId = AddSection( home, m_rootId, _("Desktop"), 1);
+   
+
+
 //#endif
 
     for (n = 0; n < count; n++)
