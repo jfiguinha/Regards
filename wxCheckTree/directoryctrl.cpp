@@ -361,7 +361,7 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
 
     long treeStyle = wxTR_HAS_BUTTONS;
 
-    treeStyle |= wxTR_HIDE_ROOT;
+   // treeStyle |= wxTR_HIDE_ROOT;
 
 #ifdef __WXGTK20__
     treeStyle |= wxTR_NO_LINES;
