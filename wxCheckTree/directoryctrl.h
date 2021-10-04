@@ -183,7 +183,7 @@ protected:
     virtual void ExpandRoot();
     virtual void ExpandDir(wxTreeItemId parentId);
     virtual void CollapseDir(wxTreeItemId parentId);
-    virtual const wxTreeItemId AddSection(const wxString& path, const wxString& name, int imageId = 0);
+    virtual const wxTreeItemId AddSection(const wxString& path, const wxTreeItemId& parent, const wxString& name, int imageId = 0);
     virtual wxTreeItemId AppendItem (const wxTreeItemId & parent,
                 const wxString & text,
                 int image = -1, int selectedImage = -1,
@@ -200,6 +200,8 @@ private:
 
     bool            m_showHidden;
     wxTreeItemId    m_rootId;
+    wxTreeItemId    m_homeId;
+    wxTreeItemId    m_DesktopId;
     wxString        m_defaultPath; // Starting path
     long            m_styleEx; // Extended style
     wxString        m_filter;  // Wildcards in same format as per wxFileDialog

@@ -476,11 +476,11 @@ void wxGenericDirCtrl::ShowHidden( bool show )
 }
 
 const wxTreeItemId
-wxGenericDirCtrl::AddSection(const wxString& path, const wxString& name, int imageId)
+wxGenericDirCtrl::AddSection(const wxString& path, const wxTreeItemId& parent, const wxString& name, int imageId)
 {
     wxDirItemData *dir_item = new wxDirItemData(path,name,true);
 
-    wxTreeItemId treeid = AppendItem( m_rootId, name, imageId, -1, dir_item);
+    wxTreeItemId treeid = AppendItem(parent, name, imageId, -1, dir_item);
 
     m_treeCtrl->SetItemHasChildren(treeid);
 
@@ -494,15 +494,17 @@ void wxGenericDirCtrl::SetupSections()
 
     size_t n, count = wxGetAvailableDrives(paths, names, icons);
 
-#ifdef __WXGTK20__
+//#ifdef __WXGTK20__
     wxString home = wxGetHomeDir();
-    AddSection( home, _("Home directory"), 1);
-    home += wxT("/Desktop");
-    AddSection( home, _("Desktop"), 1);
-#endif
+    m_homeId = AddSection( home, m_rootId, _("Home directory"), 1);
+   // ExpandDir(m_homeId);
+
+  //  home += wxT("/Desktop");
+  //  m_DesktopId = AddSection( home, m_rootId, _("Desktop"), 1);
+//#endif
 
     for (n = 0; n < count; n++)
-        AddSection(paths[n], names[n], icons[n]);
+        AddSection(paths[n], m_rootId, names[n], icons[n]);
 }
 
 void wxGenericDirCtrl::SetFocus()
