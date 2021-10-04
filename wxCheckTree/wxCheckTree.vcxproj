@@ -229,7 +229,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../libUtility;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libUtility;../include;../libResource</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <StringPooling>true</StringPooling>
@@ -371,7 +371,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions3</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>../libUtility;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libUtility;../include;../libResource</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp14</LanguageStandard>

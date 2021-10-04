@@ -18,6 +18,14 @@
 #if wxUSE_DIRDLG || wxUSE_FILEDLG
 
 #include "directoryctrl.h"
+#include "FileUtility.h"
+#include <wx/dcscreen.h>
+#include <LibResource.h>
+
+#ifdef WIN32
+#include <shellscalingapi.h>
+#pragma comment(lib, "Shcore.lib")
+#endif
 
 #ifndef WX_PRECOMP
     #include "wx/hash.h"
@@ -421,7 +429,7 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     rootName = _("Sections");
 #endif
 
-    m_rootId = m_treeCtrl->AddRoot( rootName, 3, -1, rootData);
+    m_rootId = m_treeCtrl->AddRoot( rootName, 2, 2, rootData);
     m_treeCtrl->SetItemHasChildren(m_rootId);
 
     ExpandRoot();
@@ -1468,7 +1476,29 @@ wxFileIconsTable::wxFileIconsTable()
 {
     m_HashTable = NULL;
     m_smallImageList = NULL;
-    m_size = wxSize(16, 16);
+    wxScreenDC dc;
+    double scale_factor = dc.GetContentScaleFactor();
+    /*
+#ifdef WIN32
+
+    //SetProcessDPIAware();
+    SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
+
+    UINT xdpi = GetDpiForSystem();
+    //std::cout << "GetDpiForWindow DPI: " << dpi << std::endl;
+
+    double scale_factor = (float)xdpi / (float)96;
+
+    SetProcessDpiAwareness(PROCESS_DPI_UNAWARE);
+
+#else
+
+
+
+#endif
+    //return (hPixelsPerInch + vPixelsPerInch) * 0.5;
+    */
+    m_size = wxSize(16 * scale_factor, 16 * scale_factor);
 }
 
 wxFileIconsTable::~wxFileIconsTable()
@@ -1503,9 +1533,21 @@ void wxFileIconsTable::Create(const wxSize& sz)
                                                    wxART_CMN_DIALOG,
                                                    sz));
 #else
-    m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_HARDDISK,
-                                                   wxART_CMN_DIALOG,
-                                                   sz));
+
+    wxImage image = CLibResource::CreatePictureFromSVG("IDB_COMPUTER", sz.GetWidth(), sz.GetHeight());  
+    wxBitmap bitmap(image.ConvertToDisabled());
+    m_smallImageList->Add(bitmap);
+
+    /*
+    wxString icon = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+    wxImage image(icon + "\\computer_16.png");
+#else
+    wxImage image(icon + "/computer_16.png");
+#endif
+    wxBitmap bitmap(image);
+    m_smallImageList->Add(bitmap);
+        */
     // TODO: add computer icon if really necessary
     //m_smallImageList->Add(wxIcon(file_icons_tbl_computer_xpm));
 #endif
