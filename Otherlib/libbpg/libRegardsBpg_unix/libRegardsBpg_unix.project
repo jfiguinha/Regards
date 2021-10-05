@@ -30,7 +30,7 @@
   </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fPIC;-pthread" C_Options="-std=c99;-Wall;-fPIC;-pthread;-fopenmp;" Assembler="">
+      <Compiler Options="-std=gnu++11;-Wall;-fPIC;-pthread" C_Options="-std=c99;-Wall;-fPIC;-pthread;-fopenmp;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>

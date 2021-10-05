@@ -128,7 +128,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
