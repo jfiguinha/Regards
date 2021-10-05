@@ -272,6 +272,8 @@
         <Library Value="webpdecoder"/>
         <Library Value="webpdemux"/>
         <Library Value="ffmpeg"/>
+        <Library Value="dav1d"/>
+        <Library Value="rav1e"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -495,7 +497,7 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/qpdf/lib/libqpdf.28.dylib @executable_path/../Frameworks/libqpdf.28.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tesseract/lib/libtesseract.4.dylib @executable_path/../Frameworks/libtesseract.4.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/aom/lib/libaom.3.dylib @executable_path/../Frameworks/libaom.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_calib3d.4.5.dylib @executable_path/../Frameworks/libopencv_calib3d.4.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -543,7 +545,7 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gmp/lib/libgmp.10.dylib @executable_path/../Frameworks/libgmp.10.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libgnutls.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libgnutls.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib @executable_path/../Frameworks/libopenblas.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_features2d.4.5.dylib @executable_path/../Frameworks/libopencv_features2d.4.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_calib3d.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib @executable_path/../Frameworks/libopenblas.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libopencv_calib3d.4.5.dylib</Command>
@@ -1101,6 +1103,8 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/aom/lib/libaom.3.dylib @executable_path/../Frameworks/libaom.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/dav1d/lib/libdav1d.5.dylib @executable_path/../Frameworks/libdav1d.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/rav1e/lib/librav1e.0.4.1.dylib @executable_path/../Frameworks/librav1e.0.4.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_calib3d.4.5.dylib @executable_path/../Frameworks/libopencv_calib3d.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/opencv/lib/libopencv_dnn.4.5.dylib @executable_path/../Frameworks/libopencv_dnn.4.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1147,7 +1151,7 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gmp/lib/libgmp.10.dylib @executable_path/../Frameworks/libgmp.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgnutls.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgnutls.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib @executable_path/../Frameworks/libopenblas.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_core.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_features2d.4.5.dylib @executable_path/../Frameworks/libopencv_features2d.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_calib3d.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openblas/lib/libopenblas.0.dylib @executable_path/../Frameworks/libopenblas.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_calib3d.4.5.dylib</Command>
@@ -1430,11 +1434,11 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
-		<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libOpenEXR-3_1.30.dylib @executable_path/../Frameworks/libOpenEXR-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
- 	   <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/imath/lib/libImath-3_1.29.dylib @executable_path/../Frameworks/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
- 	  <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libIlmThread-3_1.30.dylib @executable_path/../Frameworks/libIlmThread-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
- 	 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
-	 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libOpenEXR-3_1.30.dylib @executable_path/../Frameworks/libOpenEXR-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/imath/lib/libImath-3_1.29.dylib @executable_path/../Frameworks/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libIlmThread-3_1.30.dylib @executable_path/../Frameworks/libIlmThread-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openexr/lib/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.5.dylib @executable_path/../Frameworks/libopencv_core.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_imgcodecs.4.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtesseract.4.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gcc/lib/gcc/11/libgfortran.5.dylib @executable_path/../Frameworks/libgfortran.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopenblas.0.dylib</Command>
