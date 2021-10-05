@@ -43,6 +43,8 @@ sudo pacman -S libtool
 sudo pacman -S libunistring
 sudo pacman -S libass
 sudo pacman -S lapack
+sudo pacman -S dav1d
+sudo pacman -S rav1e
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
