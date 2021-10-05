@@ -34,8 +34,6 @@
       <Compiler Options=";-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="include"/>
-        <IncludePath Value="../../libextern/dav1d-0.9.2/build/include/dav1d"/>
-        <IncludePath Value="../../libextern/dav1d-0.9.2/include"/>
         <IncludePath Value="../../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release/include"/>
         <Preprocessor Value="AVIF_CODEC_DAV1D"/>
         <Preprocessor Value="AVIF_CODEC_RAV1E"/>

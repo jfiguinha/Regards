@@ -74,6 +74,18 @@ cd wxWidgets-master
 make -j$NBPROC
 cd ..
 
+sudo apt-get install python3-pip && pip3 install --user meson
+
+#Compile dav1d-0.9.2.zip
+unzip dav1d-0.9.2.zip
+cd dav1d-0.9.2
+mkdir build
+cd build
+meson setup -Denable_tools=false -Denable_tests=false --default-library=static .. --prefix "$HOME/ffmpeg_build" --libdir="$HOME/ffmpeg_build/lib"
+ninja
+sudo ninja install
+cd ..
+cd ..
 
 # libaom
 git clone https://aomedia.googlesource.com/aom
@@ -168,6 +180,7 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
   --enable-libx264 \
   --enable-libx265 \
   --disable-indevs \
+  --enable-libdav1d \
   --enable-nonfree
 
 make -j$NBPROC

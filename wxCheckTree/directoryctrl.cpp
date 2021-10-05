@@ -331,6 +331,7 @@ void wxGenericDirCtrl::ExpandRoot()
 {
     ExpandDir(m_rootId); // automatically expand first level
 
+/*
     // Expand and select the default path
     if (!m_defaultPath.empty())
     {
@@ -345,6 +346,7 @@ void wxGenericDirCtrl::ExpandRoot()
         ExpandPath( wxT("/") );
     }
 #endif
+ * */
 }
 
 bool wxGenericDirCtrl::Create(wxWindow *parent,
@@ -1531,31 +1533,12 @@ void wxFileIconsTable::Create(const wxSize& sz)
     m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_FOLDER_OPEN,
                                                    wxART_CMN_DIALOG,
                                                    sz));
-    // computer
-#ifdef __WXGTK20__
-    // GTK24 uses this icon in the file open dialog
-    m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_HARDDISK,
-                                                   wxART_CMN_DIALOG,
-                                                   sz));
-#else
+
 
     wxImage image = CLibResource::CreatePictureFromSVG("IDB_COMPUTER", sz.GetWidth(), sz.GetHeight());  
     wxBitmap bitmap(image.ConvertToDisabled());
     m_smallImageList->Add(bitmap);
 
-    /*
-    wxString icon = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-    wxImage image(icon + "\\computer_16.png");
-#else
-    wxImage image(icon + "/computer_16.png");
-#endif
-    wxBitmap bitmap(image);
-    m_smallImageList->Add(bitmap);
-        */
-    // TODO: add computer icon if really necessary
-    //m_smallImageList->Add(wxIcon(file_icons_tbl_computer_xpm));
-#endif
     // drive
     m_smallImageList->Add(wxArtProvider::GetBitmap(wxART_HARDDISK,
                                                    wxART_CMN_DIALOG,
