@@ -506,6 +506,11 @@ void wxGenericDirCtrl::SetupSections()
     home = "/";
     m_homeId = AddSection( home, m_rootId, _("OS"), 1);
 #endif
+
+#ifdef __APPLE__
+    home = "/Volumes/";
+    m_homeId = AddSection( home, m_rootId, _("Media"), 1);
+#endif
     //m_DesktopId = m_treeCtrl->AppendItem(m_rootId, "Desktop");
    // m_treeCtrl->SetItemHasChildren(m_DesktopId);
    //home += wxT("/Desktop");
