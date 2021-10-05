@@ -195,6 +195,8 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/openjpeg-v2.4.0-linux-x86_64/lib"/>
+        <LibraryPath Value="../libextern/dav1d-0.9.2/build/src"/>
+        <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
         <Library Value="Viewer"/>
         <Library Value="ffmpeg"/>
         <Library Value="Scanner"/>
@@ -317,6 +319,8 @@
         <Library Value="mp3lame"/>
         <Library Value="opus"/>
         <Library Value="vpx"/>
+        <Library Value="dav1d"/>
+        <Library Value="rav1e"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -376,6 +380,8 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Debug/libRegardsBpg.so ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release/librav1e.so ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/dav1d-0.9.2/build/src/libdav1d.so.5.1.1 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.28 ./Debug</Command>
@@ -530,6 +536,10 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release/librav1e.so.0 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release/librav1e.so ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/dav1d-0.9.2/build/src/libdav1d.so.5.1.1 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/dav1d-0.9.2/build/src/libdav1d.so.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.28 ./Release</Command>

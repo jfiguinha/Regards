@@ -239,3 +239,5 @@ tar xf openjpeg-v2.4.0-linux-x86_64.tar.gz
 #cd .. 
 #cd .. 
 
+#create symbolic link
+#ln -s librav1e.so librav1e.so.0
