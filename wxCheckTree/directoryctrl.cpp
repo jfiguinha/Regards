@@ -22,10 +22,6 @@
 #include <wx/dcscreen.h>
 #include <LibResource.h>
 
-#ifdef WIN32
-#include <shellscalingapi.h>
-#pragma comment(lib, "Shcore.lib")
-#endif
 
 #ifndef WX_PRECOMP
     #include "wx/hash.h"
