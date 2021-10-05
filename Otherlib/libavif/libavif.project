@@ -8,6 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/codec_aom.c"/>
     <File Name="src/write.c"/>
     <File Name="src/utils.c"/>
     <File Name="src/stream.c"/>
@@ -17,7 +18,6 @@
     <File Name="src/obu.c"/>
     <File Name="src/mem.c"/>
     <File Name="src/colr.c"/>
-    <File Name="src/codec_aom.c"/>
     <File Name="src/avif.c"/>
     <File Name="src/alpha.c"/>
   </VirtualDirectory>
@@ -25,6 +25,8 @@
     <File Name="include/avif/internal.h"/>
     <File Name="include/avif/avif.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
@@ -116,6 +118,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

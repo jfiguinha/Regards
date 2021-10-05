@@ -419,11 +419,7 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
 
     wxString rootName;
 
-#if defined(__WINDOWS__)
     rootName = _("Computer");
-#else
-    rootName = _("Sections");
-#endif
 
     m_rootId = m_treeCtrl->AddRoot( rootName, 2, 2, rootData);
     m_treeCtrl->SetItemHasChildren(m_rootId);
@@ -502,7 +498,14 @@ void wxGenericDirCtrl::SetupSections()
     wxString home = wxGetHomeDir();
     m_homeId = AddSection( home, m_rootId, _("Home directory"), 1);
    // ExpandDir(m_homeId);
-
+#ifdef __WXGTK__
+    home = "/media/";
+    home += wxGetUserId();
+    m_homeId = AddSection( home, m_rootId, _("Media"), 1);
+    
+    home = "/";
+    m_homeId = AddSection( home, m_rootId, _("OS"), 1);
+#endif
     //m_DesktopId = m_treeCtrl->AppendItem(m_rootId, "Desktop");
    // m_treeCtrl->SetItemHasChildren(m_DesktopId);
    //home += wxT("/Desktop");
@@ -511,9 +514,10 @@ void wxGenericDirCtrl::SetupSections()
 
 
 //#endif
-
+#ifdef WIN32
     for (n = 0; n < count; n++)
         AddSection(paths[n], m_rootId, names[n], icons[n]);
+#endif
 }
 
 void wxGenericDirCtrl::SetFocus()

@@ -15,11 +15,14 @@
     <File Name="checktree.h"/>
     <File Name="directoryctrl.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libResource"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -103,6 +106,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
