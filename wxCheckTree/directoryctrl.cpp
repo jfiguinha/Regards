@@ -1483,29 +1483,9 @@ wxFileIconsTable::wxFileIconsTable()
 {
     m_HashTable = NULL;
     m_smallImageList = NULL;
-    wxScreenDC dc;
-    double scale_factor = dc.GetContentScaleFactor();
-    /*
-#ifdef WIN32
-
-    //SetProcessDPIAware();
-    SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
-
-    UINT xdpi = GetDpiForSystem();
-    //std::cout << "GetDpiForWindow DPI: " << dpi << std::endl;
-
-    double scale_factor = (float)xdpi / (float)96;
-
-    SetProcessDpiAwareness(PROCESS_DPI_UNAWARE);
-
-#else
-
-
-
-#endif
-    //return (hPixelsPerInch + vPixelsPerInch) * 0.5;
-    */
-    m_size = wxSize(16 * scale_factor, 16 * scale_factor);
+    //wxScreenDC dc;
+    //double scale_factor = dc.GetContentScaleFactor();
+    m_size = wxSize(16, 16);
 }
 
 wxFileIconsTable::~wxFileIconsTable()
