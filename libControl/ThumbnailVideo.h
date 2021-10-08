@@ -19,7 +19,7 @@ namespace Regards
 			static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 			void EraseThumbnail(wxCommandEvent& event) override;
 			void EndVideoThumbnail(wxCommandEvent& event);
-			void ProcessThumbnail();
+			void ProcessVideoThumbnail();
 			int FindNumItem(const int& videoPos);
 			void InitWithDefaultPicture(const wxString& szFileName, const int& size = 20);
 			int numItemSelected;

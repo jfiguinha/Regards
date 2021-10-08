@@ -49,8 +49,7 @@ public:
 	void Aspectratio(int num, int den);
 	//Send Command "WindowSize"
 	void Size(int percentage);
-	//Send Command "Audio Display Mode"
-	void Audio_display(int mode);
+
 	void Change_audio_stream(int newStreamIndex);
 	void Change_subtitle_stream(int newStreamIndex);
 	//Send Command "Quit"
@@ -83,7 +82,6 @@ private:
 	void PositionSeekEvent(wxCommandEvent& event);
 	void PositionEvent(wxCommandEvent& event);
 	void ChangeVolumeEvent(wxCommandEvent& event);
-	void AudioDisplay(wxCommandEvent& event);
 	void AspectEvent(wxCommandEvent& event);
 	void PauseEvent(wxCommandEvent& event);
 	void PlayEvent(wxCommandEvent& event);

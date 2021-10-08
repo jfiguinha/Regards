@@ -777,7 +777,6 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 		}
 	}
 
-
 #ifdef __APPLE__
 	//if (!videoRenderStart && !stopVideo)
 	//     this->FastRefresh(this, true);

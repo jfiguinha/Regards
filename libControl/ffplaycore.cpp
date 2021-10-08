@@ -14,7 +14,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
 	Connect(FF_PLAY_EVENT, wxCommandEventHandler(CFFmfc::PlayEvent));
 	Connect(FF_ASPECT_EVENT, wxCommandEventHandler(CFFmfc::AspectEvent));
-	Connect(FF_AUDIODISPLAY_EVENT, wxCommandEventHandler(CFFmfc::AudioDisplay));
+
 	Connect(CHANGE_AUDIO, wxCommandEventHandler(CFFmfc::ChangeAudioEvent));
 	Connect(CHANGE_SUBTITLE, wxCommandEventHandler(CFFmfc::ChangeSubtitleEvent));
 	Connect(VOLUME_EVENT, wxCommandEventHandler(CFFmfc::ChangeVolumeEvent));
@@ -36,9 +36,10 @@ void CFFmfc::RefreshEvent(wxCommandEvent& event)
 {
 	if (_pimpl->exit_remark == 0)
 	{
-		_pimpl->video_refresh(cur_stream);
+		double remaining_time = 0;
+		_pimpl->video_refresh(cur_stream, &remaining_time);
 		//video_refresh_timer(event.user.data1);
-		_pimpl->g_is->refresh = 0;
+		//_pimpl->g_is->refresh = 0;
 	}
 }
 
@@ -96,21 +97,17 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 		incr = 10.0;
 		break;
 	}
-
 	if (_pimpl->seek_by_bytes)
 	{
-		if (_pimpl->g_is->video_stream >= 0 && _pimpl->g_is->video_current_pos >= 0)
-		{
-			pos = _pimpl->g_is->video_current_pos;
-		}
-		else if (_pimpl->g_is->audio_stream >= 0 && _pimpl->g_is->audio_pkt.pos >= 0)
-		{
-			pos = _pimpl->g_is->audio_pkt.pos;
-		}
-		else
-			pos = avio_tell(_pimpl->g_is->ic->pb);
-		if (_pimpl->g_is->ic->bit_rate)
-			incr *= _pimpl->g_is->ic->bit_rate / 8.0;
+		pos = -1;
+		if (pos < 0 && cur_stream->video_stream >= 0)
+			pos = _pimpl->frame_queue_last_pos(&cur_stream->pictq);
+		if (pos < 0 && cur_stream->audio_stream >= 0)
+			pos = _pimpl->frame_queue_last_pos(&cur_stream->sampq);
+		if (pos < 0)
+			pos = avio_tell(cur_stream->ic->pb);
+		if (cur_stream->ic->bit_rate)
+			incr *= cur_stream->ic->bit_rate / 8.0;
 		else
 			incr *= 180000.0;
 		pos += incr;
@@ -119,9 +116,12 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 	else
 	{
 		pos = _pimpl->get_master_clock(cur_stream);
+		if (isnan(pos))
+			pos = (double)cur_stream->seek_pos / AV_TIME_BASE;
 		pos += incr;
-		_pimpl->stream_seek(cur_stream, static_cast<int64_t>(pos * AV_TIME_BASE),
-		                    static_cast<int64_t>(incr * AV_TIME_BASE), 0);
+		if (cur_stream->ic->start_time != AV_NOPTS_VALUE && pos < cur_stream->ic->start_time / (double)AV_TIME_BASE)
+			pos = cur_stream->ic->start_time / (double)AV_TIME_BASE;
+		_pimpl->stream_seek(cur_stream, (int64_t)(pos * AV_TIME_BASE), (int64_t)(incr * AV_TIME_BASE), 0);
 	}
 }
 
@@ -183,30 +183,6 @@ void CFFmfc::ChangeSubtitleEvent(wxCommandEvent& event)
 	int newSubtitleIndex = event.GetInt();
 	_pimpl->stream_change_stream(cur_stream, AVMEDIA_TYPE_SUBTITLE, newSubtitleIndex);
 	//toggle_play(cur_stream);
-}
-
-void CFFmfc::AudioDisplay(wxCommandEvent& event)
-{
-	if (_pimpl->exit_remark)
-		return;
-
-	int value = event.GetInt();
-	switch (value)
-	{
-	case 0:
-		_pimpl->toggle_audio_display(cur_stream, CFFmfcPimpl::ShowMode::SHOW_MODE_VIDEO);
-		_pimpl->g_is->force_refresh = 1;
-		break;
-	case 1:
-		_pimpl->toggle_audio_display(cur_stream, CFFmfcPimpl::ShowMode::SHOW_MODE_WAVES);
-		_pimpl->g_is->force_refresh = 1;
-		break;
-	case 2:
-		_pimpl->toggle_audio_display(cur_stream, CFFmfcPimpl::ShowMode::SHOW_MODE_RDFT);
-		_pimpl->g_is->force_refresh = 1;
-		break;
-	default: ;
-	}
 }
 
 
@@ -400,14 +376,6 @@ void CFFmfc::Size(int percentage)
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
-//·¢ËÍ¡°´°¿Ú»­ÃæÄÚÈÝ¡±ÃüÁî
-//Send Command "Audio Display Mode"
-void CFFmfc::Audio_display(int mode)
-{
-	wxCommandEvent evt(FF_AUDIODISPLAY_EVENT);
-	evt.SetInt(mode);
-	this->GetEventHandler()->AddPendingEvent(evt);
-}
 
 //--------------------------------------------------------------
 //

@@ -738,7 +738,8 @@ void CThumbnail::ProcessIdle()
 				if (threadDataProcess == false)
 					return;
 
-				if (wxString filelocalName = iconeList->GetFilename(i); filename == filelocalName)
+				wxString filelocalName = iconeList->GetFilename(i);
+				if (filename == filelocalName)
 				{
 					if (CIcone* icone = iconeList->GetElement(i); icone != nullptr)
 					{

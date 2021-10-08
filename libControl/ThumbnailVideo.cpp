@@ -29,7 +29,7 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 
 void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
 {
-	ProcessThumbnail();
+	ProcessVideoThumbnail();
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -284,10 +284,10 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 void CThumbnailVideo::ResizeThumbnail()
 {
 	UpdateScroll();
-	ProcessThumbnail();
+	ProcessVideoThumbnail();
 }
 
-void CThumbnailVideo::ProcessThumbnail()
+void CThumbnailVideo::ProcessVideoThumbnail()
 {
 	if (videoFilename != "")
 	{
@@ -362,16 +362,27 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 
 		CSqlPhotosWithoutThumbnail sqlPhoto;
 		sqlPhoto.GeneratePhotoList();
-
-		processIdle = true;
 	}
 	thumbnailPos = 0;
-
 	process_end = false;
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFilename, 20);
-	//processTimer->Start(500);
-	Refresh();
+
+	for (int i = 0; i < nbElementInIconeList; i++)
+	{
+		CIcone* icone = iconeList->GetElement(i);
+		if (icone != nullptr)
+		{
+			CThumbnailData* pThumbnailData = icone->GetData();
+			wxString filelocalName = iconeList->GetFilename(i);
+			if (videoFilename == filelocalName)
+			{
+				ProcessThumbnail(pThumbnailData);
+				nbProcess++;
+			}
+
+		}
+	}
 }
 
 
