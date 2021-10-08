@@ -141,40 +141,6 @@ class CFFmfcPimpl
 {
 public:
 
-
-
-	//¶ÁÈ¡ÊäÈëÎÄ¼þÐ­ÒéµÄÊ±ºòÊ¹ÓÃ£»À´×ÔffmpegÔ´Âë
-	typedef struct URLContext {
-		const AVClass *av_class; ///< information for av_log(). Set by url_open().
-		struct URLProtocol *prot;
-		int flags;
-		int is_streamed;  /**< true if streamed (no seek possible), default = false */
-		int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
-		void *priv_data;
-		char *filename; /**< specified URL */
-		int is_connected;
-		AVIOInterruptCB interrupt_callback;
-	} URLContext;
-	typedef struct URLProtocol {
-		const char *name;
-		int(*url_open)(URLContext *h, const char *url, int flags);
-		int(*url_read)(URLContext *h, unsigned char *buf, int size);
-		int(*url_write)(URLContext *h, const unsigned char *buf, int size);
-		int64_t(*url_seek)(URLContext *h, int64_t pos, int whence);
-		int(*url_close)(URLContext *h);
-		struct URLProtocol *next;
-		int(*url_read_pause)(URLContext *h, int pause);
-		int64_t(*url_read_seek)(URLContext *h, int stream_index,
-			int64_t timestamp, int flags);
-		int(*url_get_file_handle)(URLContext *h);
-		int priv_data_size;
-		const AVClass *priv_data_class;
-		int flags;
-		int(*url_check)(URLContext *h, int mask);
-	} URLProtocol;
-	//---------------------
-
-
 	typedef struct PacketQueue {
 		AVFifoBuffer* pkt_list;
 		int nb_packets;
@@ -329,7 +295,9 @@ public:
 		int audio_volume;
 		int muted;
 		struct AudioParams audio_src;
-
+#if CONFIG_AVFILTER
+		struct AudioParams audio_filter_src;
+#endif
 		struct AudioParams audio_tgt;
 		struct SwrContext* swr_ctx;
 		int frame_drops_early;
@@ -338,6 +306,7 @@ public:
 		enum ShowMode {
 			SHOW_MODE_NONE = -1, SHOW_MODE_VIDEO = 0, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB
 		} show_mode;
+
 		int16_t sample_array[SAMPLE_ARRAY_SIZE];
 		int sample_array_index;
 		int last_i_start;
@@ -346,9 +315,6 @@ public:
 		FFTSample* rdft_data;
 		int xpos;
 		double last_vis_time;
-		SDL_Texture* vis_texture;
-		SDL_Texture* sub_texture;
-		SDL_Texture* vid_texture;
 
 		int subtitle_stream;
 		AVStream* subtitle_st;
@@ -368,8 +334,6 @@ public:
 		char* filename;
 		int width, height, xleft, ytop;
 		int step;
-
-
 		int last_video_stream, last_audio_stream, last_subtitle_stream;
 
 		SDL_cond* continue_read_thread;

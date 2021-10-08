@@ -23,6 +23,7 @@ AVPixelFormat CFFmfcPimpl::hw_pix_fmt;
 //#include <DShow.h>
 //const char program_name[] = "ffplaymfc";
 //const int program_birth_year = 2013;
+/*
 AVRational GetAvRational(int den, int num)
 {
 	AVRational value;
@@ -30,7 +31,7 @@ AVRational GetAvRational(int den, int num)
 	value.den = den;
 	return value;
 }
-
+*/
 inline int compute_mod(int a, int b)
 {
 	return a < 0 ? a % b + b : a % b;
@@ -249,12 +250,7 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	sws_freeContext(is->img_convert_ctx);
 	sws_freeContext(is->sub_convert_ctx);
 	av_free(is->filename);
-	if (is->vis_texture)
-		SDL_DestroyTexture(is->vis_texture);
-	if (is->vid_texture)
-		SDL_DestroyTexture(is->vid_texture);
-	if (is->sub_texture)
-		SDL_DestroyTexture(is->sub_texture);
+
 	av_free(is);
 
 
@@ -407,8 +403,8 @@ double CFFmfcPimpl::compute_target_delay(double delay, VideoState* is)
 	if (get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER) {
 		/* if video is slave, we try to correct big delays by
 		   duplicating or deleting a frame */
-		if(disable_framedelay)
-			diff = get_clock(&is->vidclk) - get_master_clock(is);
+		//if(disable_framedelay)
+		diff = get_clock(&is->vidclk) - get_master_clock(is);
 
 		/* skip or repeat frame. We take into account the
 		   delay to compute the threshold. I still don't know
@@ -801,79 +797,17 @@ int CFFmfcPimpl::video_thread(void* arg)
 		if (!ret)
 			continue;
 
-#if CONFIG_AVFILTER
-		if (last_w != frame->width
-			|| last_h != frame->height
-			|| last_format != frame->format
-			|| last_serial != is->viddec.pkt_serial
-			|| last_vfilter_idx != is->vfilter_idx) {
-			av_log(NULL, AV_LOG_DEBUG,
-				"Video frame changed from size:%dx%d format:%s serial:%d to size:%dx%d format:%s serial:%d\n",
-				last_w, last_h,
-				(const char*)av_x_if_null(av_get_pix_fmt_name(last_format), "none"), last_serial,
-				frame->width, frame->height,
-				(const char*)av_x_if_null(av_get_pix_fmt_name(frame->format), "none"), is->viddec.pkt_serial);
-			avfilter_graph_free(&graph);
-			graph = avfilter_graph_alloc();
-			if (!graph) {
-				ret = AVERROR(ENOMEM);
-				goto the_end;
-			}
-			graph->nb_threads = filter_nbthreads;
-			if ((ret = configure_video_filters(graph, is, vfilters_list ? vfilters_list[is->vfilter_idx] : NULL, frame)) < 0) {
-				SDL_Event event;
-				event.type = FF_QUIT_EVENT;
-				event.user.data1 = is;
-				SDL_PushEvent(&event);
-				goto the_end;
-			}
-			filt_in = is->in_video_filter;
-			filt_out = is->out_video_filter;
-			last_w = frame->width;
-			last_h = frame->height;
-			last_format = frame->format;
-			last_serial = is->viddec.pkt_serial;
-			last_vfilter_idx = is->vfilter_idx;
-			frame_rate = av_buffersink_get_frame_rate(filt_out);
-		}
-
-		ret = av_buffersrc_add_frame(filt_in, frame);
-		if (ret < 0)
-			goto the_end;
-
-		while (ret >= 0) {
-			is->frame_last_returned_time = av_gettime_relative() / 1000000.0;
-
-			ret = av_buffersink_get_frame_flags(filt_out, frame, 0);
-			if (ret < 0) {
-				if (ret == AVERROR_EOF)
-					is->viddec.finished = is->viddec.pkt_serial;
-				ret = 0;
-				break;
-			}
-
-			is->frame_last_filter_delay = av_gettime_relative() / 1000000.0 - is->frame_last_returned_time;
-			if (fabs(is->frame_last_filter_delay) > AV_NOSYNC_THRESHOLD / 10.0)
-				is->frame_last_filter_delay = 0;
-			tb = av_buffersink_get_time_base(filt_out);
-#endif
-			duration = (frame_rate.num && frame_rate.den ? av_q2d((AVRational) { frame_rate.den, frame_rate.num }) : 0);
+			AVRational tb_frame = { frame_rate.den, frame_rate.num };
+			duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
 			pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
 			ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
 			av_frame_unref(frame);
-#if CONFIG_AVFILTER
-			if (is->videoq.serial != is->viddec.pkt_serial)
-				break;
-		}
-#endif
+
 
 		if (ret < 0)
 			goto the_end;
 	}
 the_end:
-#if CONFIG_AVFILTER
-	avfilter_graph_free(&graph);
-#endif
 	av_frame_free(&frame);
 
 
@@ -1547,7 +1481,7 @@ int CFFmfcPimpl::decoder_decode_frame(Decoder* d, AVFrame* frame, AVSubtitle* su
 				case AVMEDIA_TYPE_AUDIO:
 					ret = avcodec_receive_frame(d->avctx, frame);
 					if (ret >= 0) {
-						AVRational tb = GetAvRational(1, frame->sample_rate );
+						AVRational tb = { 1, frame->sample_rate };
 						if (frame->pts != AV_NOPTS_VALUE)
 							frame->pts = av_rescale_q(frame->pts, d->avctx->pkt_timebase, tb);
 						else if (d->next_pts != AV_NOPTS_VALUE)
@@ -1642,7 +1576,7 @@ int CFFmfcPimpl::audio_thread(void* arg)
 	Frame* af;
 
 	int got_frame = 0;
-	AVRational tb;
+	
 	int ret = 0;
 
 	if (!frame)
@@ -1652,8 +1586,10 @@ int CFFmfcPimpl::audio_thread(void* arg)
 		if ((got_frame = is->_pimpl->decoder_decode_frame(&is->auddec, frame, NULL)) < 0)
 			goto the_end;
 
-		if (got_frame) {
-			tb = GetAvRational( 1, frame->sample_rate );
+		if (got_frame)
+		{
+				AVRational tb = { 1, frame->sample_rate };
+				AVRational tb_duration = { frame->nb_samples, frame->sample_rate };
 
 				if (!(af = is->_pimpl->frame_queue_peek_writable(&is->sampq)))
 					goto the_end;
@@ -1661,7 +1597,7 @@ int CFFmfcPimpl::audio_thread(void* arg)
 				af->pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
 				af->pos = frame->pkt_pos;
 				af->serial = is->auddec.pkt_serial;
-				af->duration = av_q2d(GetAvRational(frame->nb_samples, frame->sample_rate));
+				af->duration = av_q2d(tb_duration);
 
 				av_frame_move_ref(af->frame, frame);
 				is->_pimpl->frame_queue_push(&is->sampq);
