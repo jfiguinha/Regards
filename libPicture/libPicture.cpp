@@ -1759,7 +1759,8 @@ CImageLoadingFormat* CLibPicture::GetCancelPhoto(const wxString& szFileName, con
 	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
 #endif
 
-	auto bitmap = LoadPicture(photoCancel);
+	CLibPicture libPicture;
+	auto bitmap = libPicture.LoadPicture(photoCancel);
 	if (widthThumbnail > 0 && heightThumbnail > 0)
 		bitmap->Resize(widthThumbnail, heightThumbnail, 0);
 	bitmap->SetFilename(szFileName);

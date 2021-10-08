@@ -3,7 +3,9 @@
 #include "FFmpegDecodeFrame.h"
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
+#include "libPicture.h"
 #include <RegardsBitmap.h>
+using namespace Regards::Picture;
 
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
@@ -26,8 +28,7 @@ CThumbnailVideo::~CThumbnailVideo()
 	decodeFrame = nullptr;
 }
 
-CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth,
-                                               const int& thumbnailHeight)
+CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	if (ret != 0)
@@ -51,6 +52,20 @@ bool CThumbnailVideo::IsHardwareDecoderCompatible()
 	return (ret != 0 ? false : true);
 }
 
+CRegardsBitmap* CThumbnailVideo::TestIsValidBitmap(CRegardsBitmap* in)
+{
+	CImageLoadingFormat* imageFormat = nullptr;
+	if (in == nullptr)
+		imageFormat = CLibPicture::GetCancelPhoto(filename);
+	else
+		return in;
+
+	CRegardsBitmap* out = imageFormat->GetRegardsBitmap();
+	delete imageFormat;
+	return out;
+
+}
+
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent, int& timePosition,
                                                const int& thumbnailWidth, const int& thumbnailHeight)
 {
@@ -68,7 +83,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent
 	rotation = decodeFrame->GetRotation();
 
 
-	return decodeFrame->GetBitmap();
+	return TestIsValidBitmap(decodeFrame->GetBitmap());
 }
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation,
@@ -76,16 +91,9 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const 
 {
 	int timePosition = 0;
 	CRegardsBitmap* image = GetVideoFrame(rotation, percent, timePosition, thumbnailWidth, thumbnailHeight);
-	return image;
+	return TestIsValidBitmap(image);
 }
 
-CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation)
-{
-	int timePosition = 0;
-	CRegardsBitmap* image = GetVideoFrame(rotation, 10, timePosition, thumbnailWidth, thumbnailHeight);
-
-	return image;
-}
 
 int64_t CThumbnailVideo::GetMovieDuration()
 {
@@ -105,7 +113,8 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->percent = i;
 		cxVideo->image = new CImageLoadingFormat();
 		int timePosition = 0;
-		CRegardsBitmap* picture = GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail);
+		CRegardsBitmap* picture = TestIsValidBitmap(GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail));
+
 		cxVideo->timePosition = timePosition;
 		if (compressJpeg)
 		{

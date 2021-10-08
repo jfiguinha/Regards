@@ -85,7 +85,7 @@ namespace Regards
 			static void UnloadBpgDll();
 #endif
 #endif
-			CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
+			static CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 			CRegardsBitmap * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 
 		private:
