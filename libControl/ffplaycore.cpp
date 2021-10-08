@@ -36,9 +36,10 @@ void CFFmfc::RefreshEvent(wxCommandEvent& event)
 {
 	if (_pimpl->exit_remark == 0)
 	{
-		_pimpl->video_refresh(cur_stream);
+		double remaining_time = 0;
+		_pimpl->video_refresh(cur_stream, &remaining_time);
 		//video_refresh_timer(event.user.data1);
-		_pimpl->g_is->refresh = 0;
+		//_pimpl->g_is->refresh = 0;
 	}
 }
 
@@ -99,18 +100,15 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 
 	if (_pimpl->seek_by_bytes)
 	{
-		if (_pimpl->g_is->video_stream >= 0 && _pimpl->g_is->video_current_pos >= 0)
-		{
-			pos = _pimpl->g_is->video_current_pos;
-		}
-		else if (_pimpl->g_is->audio_stream >= 0 && _pimpl->g_is->audio_pkt.pos >= 0)
-		{
-			pos = _pimpl->g_is->audio_pkt.pos;
-		}
-		else
-			pos = avio_tell(_pimpl->g_is->ic->pb);
-		if (_pimpl->g_is->ic->bit_rate)
-			incr *= _pimpl->g_is->ic->bit_rate / 8.0;
+		pos = -1;
+		if (pos < 0 && cur_stream->video_stream >= 0)
+			pos = _pimpl->frame_queue_last_pos(&cur_stream->pictq);
+		if (pos < 0 && cur_stream->audio_stream >= 0)
+			pos = _pimpl->frame_queue_last_pos(&cur_stream->sampq);
+		if (pos < 0)
+			pos = avio_tell(cur_stream->ic->pb);
+		if (cur_stream->ic->bit_rate)
+			incr *= cur_stream->ic->bit_rate / 8.0;
 		else
 			incr *= 180000.0;
 		pos += incr;
@@ -119,9 +117,12 @@ void CFFmfc::PositionSeekEvent(wxCommandEvent& event)
 	else
 	{
 		pos = _pimpl->get_master_clock(cur_stream);
+		if (isnan(pos))
+			pos = (double)cur_stream->seek_pos / AV_TIME_BASE;
 		pos += incr;
-		_pimpl->stream_seek(cur_stream, static_cast<int64_t>(pos * AV_TIME_BASE),
-		                    static_cast<int64_t>(incr * AV_TIME_BASE), 0);
+		if (cur_stream->ic->start_time != AV_NOPTS_VALUE && pos < cur_stream->ic->start_time / (double)AV_TIME_BASE)
+			pos = cur_stream->ic->start_time / (double)AV_TIME_BASE;
+		_pimpl->stream_seek(cur_stream, (int64_t)(pos * AV_TIME_BASE), (int64_t)(incr * AV_TIME_BASE), 0);
 	}
 }
 
@@ -161,6 +162,7 @@ void CFFmfc::ChangeVolumeEvent(wxCommandEvent& event)
 	_pimpl->percentVolume = newaudioIndex;
 	printf("ChangeVolumeEvent Volume index : %d \n", _pimpl->percentVolume);
 }
+
 
 
 void CFFmfc::ChangeAudioEvent(wxCommandEvent& event)

@@ -47,6 +47,19 @@ void CFFmpegDecodeFrame::hb_reduce(int* x, int* y, int num, int den)
 	}
 }
 
+//#include "ColorSpaceConverter.h"
+//#include <DShow.h>
+//const char program_name[] = "ffplaymfc";
+//const int program_birth_year = 2013;
+AVRational CFFmpegDecodeFrame::GetAvRational(int den, int num)
+{
+	AVRational value;
+	value.num = num;
+	value.den = den;
+	return value;
+}
+
+
 void CFFmpegDecodeFrame::hb_limit_rational(int* x, int* y, int num, int den, int limit)
 {
 	hb_reduce(&num, &den, num, den);
@@ -403,8 +416,13 @@ int CFFmpegDecodeFrame::open_input_file(const wxString& filename)
 			else
 				rotation = 0;
 
-			duration_movie = static_cast<double>(stream->duration) * static_cast<double>(stream->time_base.num) /
-				static_cast<double>(stream->time_base.den);
+			//AVRational frame_rate = av_guess_frame_rate(ifmt_ctx, ifmt_ctx->streams[videoStreamIndex], NULL);
+			//stream->avg_frame_rate
+			duration_movie_new = ifmt_ctx->duration / 1000000;// (frame_rate.num && frame_rate.den ? av_q2d(GetAvRational(frame_rate.den, frame_rate.num)) : 0);
+
+
+			//duration_movie = static_cast<double>(stream->duration) * static_cast<double>(stream->time_base.num) /
+			//	static_cast<double>(stream->time_base.den);
 		}
 	}
 	stream_ctx[videoStreamIndex].dec_ctx = codec_ctx;

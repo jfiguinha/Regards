@@ -776,7 +776,11 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 			}
 		}
 	}
-
+	else if(videoStart)
+	{
+		wxCommandEvent evt(FF_REFRESH_EVENT);
+		ffmfc->GetEventHandler()->AddPendingEvent(evt);
+	}
 
 #ifdef __APPLE__
 	//if (!videoRenderStart && !stopVideo)

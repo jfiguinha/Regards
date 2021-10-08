@@ -143,7 +143,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true,
 		                        themeVideo.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
-		                        "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, false, true);
+		                        "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true, true);
 	}
 
 	//----------------------------------------------------------------------------------------

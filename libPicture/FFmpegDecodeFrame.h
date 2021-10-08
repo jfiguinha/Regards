@@ -56,6 +56,7 @@ private:
 
 	void hb_limit_rational(int* x, int* y, int num, int den, int limit);
 	void hb_reduce(int* x, int* y, int num, int den);
+	AVRational GetAvRational(int den, int num);
 
 	AVFormatContext* ifmt_ctx = nullptr;
 	StreamContext* stream_ctx;
@@ -83,6 +84,7 @@ private:
 	AVFrame* copyFrameBuffer = nullptr;
 
 	double duration_movie = 0.0;
+	double duration_movie_new = 0.0;
 	//char timebase[255];
 	//char duration[255];
 	double pos = 0;
