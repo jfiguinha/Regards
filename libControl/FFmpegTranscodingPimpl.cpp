@@ -410,8 +410,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
 				startTime = ifmt_ctx->start_time;
-				duration_movie = static_cast<double>(stream->duration) * static_cast<double>(stream->time_base.num) /
-					static_cast<double>(stream->time_base.den);
+				duration_movie = ifmt_ctx->duration / 1000000;
 			}
 		}
 		stream_ctx[i].dec_ctx = codec_ctx;
