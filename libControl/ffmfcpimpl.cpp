@@ -1425,6 +1425,22 @@ const char* CFFmfcPimpl::getExt(const char* fspec)
 	return e;
 }
 
+int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType type)
+{
+	int err = 0;
+
+	if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
+		nullptr, nullptr, 0)) < 0)
+	{
+		fprintf(stderr, "Failed to create specified HW device.\n");
+		return err;
+	}
+	ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
+
+	return err;
+}
+
+
 
 enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
                                               const enum AVPixelFormat* pix_fmts)
@@ -1468,6 +1484,24 @@ int CFFmfcPimpl::decoder_decode_frame(Decoder* d, AVFrame* frame, AVSubtitle* su
 				switch (d->avctx->codec_type) {
 				case AVMEDIA_TYPE_VIDEO:
 					ret = avcodec_receive_frame(d->avctx, frame);
+
+					if (acceleratorHardware != "" && (acceleratorHardware == "dxva2" && !isOpenGLDecoding))
+					{
+						if (frame->format == hw_pix_fmt)
+						{
+							/* retrieve data from GPU to CPU */
+							if ((ret = av_hwframe_transfer_data(dst, frame, 0)) < 0)
+							{
+								fprintf(stderr, "Error transferring the data to system memory\n");
+								av_frame_free(&dst);
+								return ret;
+							}
+
+							av_frame_copy_props(dst, frame);
+						}
+					}
+
+
 					if (ret >= 0)
 					{
 						if (decoder_reorder_pts == -1) {
@@ -1656,6 +1690,51 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			"No decoder could be found for codec %s\n", avcodec_get_name(avctx->codec_id));
 		ret = AVERROR(EINVAL);
 		goto fail;
+	}
+
+	if (avctx->codec_type == AVMEDIA_TYPE_VIDEO && acceleratorHardware != "")
+	{
+		bool success = true;
+		enum AVHWDeviceType type;
+
+		type = av_hwdevice_find_type_by_name(acceleratorHardware);
+		if (type == AV_HWDEVICE_TYPE_NONE)
+		{
+			fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+			fprintf(stderr, "Available device types:");
+			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+			fprintf(stderr, "\n");
+			success = false;
+		}
+
+		if (success)
+		{
+			for (int i = 0;; i++)
+			{
+				const AVCodecHWConfig* config = avcodec_get_hw_config(codec, stream_index);
+				if (!config)
+				{
+					fprintf(stderr, "Decoder %s does not support device type %s.\n",
+						codec->name, av_hwdevice_get_type_name(type));
+					success = false;
+					break;
+				}
+				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+					config->device_type == type)
+				{
+					hw_pix_fmt = config->pix_fmt;
+					break;
+				}
+			}
+		}
+
+		if (success)
+		{
+			avctx->get_format = get_hw_format;
+			if (hw_decoder_init(avctx, type) < 0)
+				success = false;
+		}
 	}
 
 	avctx->codec_id = codec->id;

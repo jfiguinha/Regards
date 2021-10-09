@@ -402,10 +402,9 @@ public:
 	int decoder_start(Decoder* d, int (*fn)(void*), const char* thread_name, void* arg);
 
 	int get_master_sync_type(VideoState* is);
-	//int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
-	//static AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
-	static enum AVPixelFormat get_hw_format(AVCodecContext *ctx, const enum AVPixelFormat *pix_fmts);
-	static enum AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
+	
+	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
+	static enum AVPixelFormat get_hw_format(AVCodecContext *s, const AVPixelFormat *pix_fmts);
 	//Calcul du pourcentage
 	void StopStream();
 	int percentageToDb(int p, int maxValue);
@@ -556,6 +555,9 @@ public:
 
 	AVFrame * CopyFrame(AVFrame * frame);
 
+	AVBufferRef* hw_device_ctx = NULL;
+	static enum AVPixelFormat hw_pix_fmt;
+
 	//SOUND Volume
 	int muted = 0;
 	int percentVolume = 100;
@@ -602,8 +604,6 @@ public:
 	const char *video_codec_name = 0;
 	int rdftspeed = 20;
 
-	AVBufferRef *hw_device_ctx = NULL;
-	static enum AVPixelFormat hw_pix_fmt;
 	wxWindow * parent = nullptr;
 	/* current context */
 	int64_t audio_callback_time = 0;
