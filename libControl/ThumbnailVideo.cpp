@@ -365,9 +365,32 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 	}
 	thumbnailPos = 0;
 	process_end = false;
+	threadDataProcess = true;
+
+	for (int i = 0; i < nbElementInIconeList; i++)
+	{
+		wxString filelocalName = iconeList->GetFilename(i);
+		if (videoFilename == filelocalName)
+		{
+			CIcone* icone = iconeList->GetElement(i);
+			if (icone != nullptr)
+			{
+				CThumbnailData* pThumbnailData = icone->GetData();
+				if (pThumbnailData != nullptr)
+				{
+					pThumbnailData->SetIsLoading(false);
+					pThumbnailData->SetIsProcess(false);
+					pThumbnailData->RemoveBitmap();
+					break;
+				}
+			}
+		}
+	}
+
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFilename, 20);
 
+	/*
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* icone = iconeList->GetElement(i);
@@ -379,10 +402,12 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 			{
 				ProcessThumbnail(pThumbnailData);
 				nbProcess++;
+				break;
 			}
 
 		}
 	}
+	*/
 }
 
 

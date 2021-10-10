@@ -21,6 +21,8 @@ public:
 	virtual ~CThumbnailData(void);
 	CThumbnailData& operator=(const CThumbnailData& other);
 
+	virtual void RemoveBitmap() {};
+
 	virtual int GetType()
 	{
 		return 0;

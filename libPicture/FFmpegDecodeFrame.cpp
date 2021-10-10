@@ -428,7 +428,7 @@ int CFFmpegDecodeFrame::SetVideoPosition(const int& timeInSeconds)
 	int ret = 0;
 	if (timeInSeconds > 0)
 	{
-		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
+		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 - startTime;
 
 		if (timestamp < 0)
 		{
@@ -592,24 +592,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 	if (timeInSeconds > 0)
 	{
-		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
-
-		if (timestamp < 0)
-		{
-			timestamp = 0;
-		}
-
-		//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
-		int64_t seek_target = timestamp;
-		int64_t seek_rel = 0;
-		int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
-		int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
-		int seek_flags = 0;
-		seek_flags &= ~AVSEEK_FLAG_BYTE;
-		// FIXME the +-2 is due to rounding being not done in the correct direction in generation
-		//      of the seek_pos/seek_rel variables
-
-		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
+		ret = SetVideoPosition(timeInSeconds);
 	}
 
 

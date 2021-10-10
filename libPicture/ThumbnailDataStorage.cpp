@@ -24,6 +24,14 @@ bool CThumbnailDataStorage::TestBitmap()
 	return false;
 }
 
+void CThumbnailDataStorage::RemoveBitmap() {
+	if (localbitmap != nullptr)
+	{
+		delete localbitmap;
+		localbitmap = nullptr;
+	}
+}
+
 wxImage CThumbnailDataStorage::GetwxImage()
 {
 	if (TestBitmap())

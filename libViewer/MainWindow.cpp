@@ -1255,6 +1255,7 @@ bool CMainWindow::GetProcessEnd()
 
 void CMainWindow::OnEndThumbnail(wxCommandEvent& event)
 {
+	localFilename = centralWnd->GetFilename();
 	auto thumbName = static_cast<wxString*>(event.GetClientData());
 	if (*thumbName == localFilename)
 		centralWnd->OnEndThumbnail();

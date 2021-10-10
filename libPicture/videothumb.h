@@ -12,7 +12,7 @@ public:
 	~CThumbnailVideo();
 	bool IsHardwareDecoderCompatible();
 	CRegardsBitmap* GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation, int percent = 10);
-	CRegardsBitmap* GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight);
+	CRegardsBitmap* GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight, const bool& copy = false);
 	void GetVideoDimensions(int& width, int& height, int& rotation);
 	CRegardsBitmap* GetVideoFrame(int& rotation, const int& percent, int& timePosition, const int& thumbnailWidth,
 	                              const int& thumbnailHeight);

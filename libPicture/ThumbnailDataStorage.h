@@ -13,6 +13,7 @@ public:
 		return 1;
 	}
 
+	void RemoveBitmap();
 	void SetBitmap(CImageLoadingFormat* bitmap) override;
 	wxImage GetwxImage() override;
 

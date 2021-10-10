@@ -745,10 +745,12 @@ void CThumbnail::ProcessIdle()
 					{
 						if (CThumbnailData* pThumbnailData = icone->GetData(); pThumbnailData != nullptr)
 						{
-							const bool isLoad = pThumbnailData->IsLoad();
-							if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
+							const bool isProcess = pThumbnailData->IsProcess();
+							//const bool isLoad = pThumbnailData->IsLoad();
+							if ( !isProcess)// && !isLoad)
 							{
 								ProcessThumbnail(pThumbnailData);
+								pThumbnailData->SetIsProcess(true);
 								nbProcess++;
 							}
 							sqlPhoto.InsertProcessStart(filelocalName);
@@ -996,10 +998,12 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 			{
 				if (CThumbnailData* pThumbnailData = pBitmapIcone->GetData(); pThumbnailData != nullptr)
 				{
-					const bool isLoad = pThumbnailData->IsLoad();
-					if (const bool isProcess = pThumbnailData->IsProcess(); !isProcess && !isLoad)
+					const bool isProcess = pThumbnailData->IsProcess();
+					//const bool isLoad = pThumbnailData->IsLoad();
+					if ( !isProcess)// && !isLoad)
 					{
 						ProcessThumbnail(pThumbnailData);
+						pThumbnailData->SetIsProcess(true);
 						nbProcess++;
 					}
 				}

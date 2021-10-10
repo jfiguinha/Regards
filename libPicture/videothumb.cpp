@@ -28,7 +28,7 @@ CThumbnailVideo::~CThumbnailVideo()
 	decodeFrame = nullptr;
 }
 
-CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
+CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight, const bool &copy)
 {
 	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	if (ret != 0)
@@ -38,7 +38,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 		decodeFrame->OpenFile(filename);
 		decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}
-	return decodeFrame->GetBitmap(false);
+	return decodeFrame->GetBitmap(copy);
 }
 
 void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
@@ -70,7 +70,10 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent
                                                const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	double totalTime = decodeFrame->GetTotalTime();
-	timePosition = (totalTime * percent) / 100.0f;
+	int _timePosition = (totalTime * percent) / 100.0f;
+	CRegardsBitmap* bitmap = GetVideoFrame(_timePosition, thumbnailWidth, thumbnailHeight, true);
+	timePosition = _timePosition;
+	/*
 	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	if (ret != 0)
 	{
@@ -81,9 +84,9 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent
 	}
 
 	rotation = decodeFrame->GetRotation();
+	*/
 
-
-	return TestIsValidBitmap(decodeFrame->GetBitmap());
+	return TestIsValidBitmap(bitmap);
 }
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation,
