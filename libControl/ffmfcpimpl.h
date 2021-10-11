@@ -486,8 +486,6 @@ public:
 	/* display the current picture, if any */
 	void video_display(VideoState *is);
 
-	void CloseStream(VideoState *is);
-
 	void CopyFrameToDest(AVFrame * frame);
 
 	/* get the current audio clock value */

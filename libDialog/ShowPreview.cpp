@@ -114,7 +114,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	progressValue = 0;
 	filename = videoFilename;
 
-	decodeFrameOriginal = new CFFmpegDecodeFrame(decoder);
+	decodeFrameOriginal = new CFFmpegDecodeFrame();
 	decodeFrameOriginal->OpenFile(filename);
 	timeTotal = decodeFrameOriginal->GetTotalTime();
 
@@ -313,7 +313,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openclEngine, decoder);
 
 	if (decodeFrame == nullptr)
-		decodeFrame = new CFFmpegDecodeFrame(decoder);
+		decodeFrame = new CFFmpegDecodeFrame();
 
 	sliderVideo->Start();
 

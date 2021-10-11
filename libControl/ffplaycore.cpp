@@ -22,7 +22,6 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	Connect(SET_SEEKPOSITION, wxCommandEventHandler(CFFmfc::PositionSeekEvent));
 	Connect(SEEK_BAR_EVENT, wxCommandEventHandler(CFFmfc::SeekBarEvent));
 	Connect(FF_REFRESH_EVENT, wxCommandEventHandler(CFFmfc::RefreshEvent));
-	Connect(CLOSESTREAM_EVENT, wxCommandEventHandler(CFFmfc::CloseStreamEvent));
 }
 
 CFFmfc::~CFFmfc()
@@ -302,14 +301,6 @@ bool CFFmfc::Quit()
 		isExitNow = true;
 	}
 	return isExitNow;
-}
-
-void CFFmfc::CloseStreamEvent(wxCommandEvent& event)
-{
-	if (_pimpl->g_is)
-	{
-		_pimpl->CloseStream(_pimpl->g_is);
-	}
 }
 
 //·¢ËÍ¡°ÖðÖ¡¡±ÃüÁî

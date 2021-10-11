@@ -797,7 +797,7 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 
 void CVideoControlSoft::SetEncoderHardware(const wxString& encoderHardware, const bool& opengl)
 {
-	acceleratorHardware = "dxva2";
+	acceleratorHardware = encoderHardware;
 	isOpenGLDecoding = opengl;
 }
 
@@ -1600,7 +1600,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-	int ret = 0;
+	//int ret = 0;
 	bool isCPU = true;
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();

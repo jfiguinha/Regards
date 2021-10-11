@@ -35,7 +35,11 @@ CRegardsConfigParam::CRegardsConfigParam()
 	useDxva2 = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
+#ifdef WIN32
+	videoDecoderHardware = "dxva2";
+#else
 	videoDecoderHardware = "";
+#endif
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
 	faceDetection = 0;

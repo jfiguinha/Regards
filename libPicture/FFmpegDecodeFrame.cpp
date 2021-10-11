@@ -133,7 +133,7 @@ void CFFmpegDecodeFrame::OpenFile(const wxString& filename)
 	}
 }
 
-CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString& acceleratorHardware): stream_ctx(nullptr)
+CFFmpegDecodeFrame::CFFmpegDecodeFrame(): stream_ctx(nullptr)
 {
 	isOk = true;
 	dst = av_frame_alloc();
@@ -145,7 +145,6 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(const wxString& acceleratorHardware): str
 	heightVideo = 0;
 	rotation = 0;
 	first = true;
-	this->acceleratorHardware = acceleratorHardware;
 	image = new CRegardsBitmap();
 }
 ;
@@ -338,51 +337,6 @@ int CFFmpegDecodeFrame::open_input_file(const wxString& filename)
 		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
 
-		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-		{
-			/* Open decoder */
-			//videoStreamIndex = i;
-			if (acceleratorHardware != "")
-			{
-				enum AVHWDeviceType type;
-
-				type = av_hwdevice_find_type_by_name(acceleratorHardware);
-				if (type == AV_HWDEVICE_TYPE_NONE)
-				{
-					fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
-					fprintf(stderr, "Available device types:");
-					while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-						fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-					fprintf(stderr, "\n");
-					return -1;
-				}
-
-				for (int i = 0;; i++)
-				{
-					const AVCodecHWConfig* config = avcodec_get_hw_config(dec, i);
-					if (!config)
-					{
-						fprintf(stderr, "Decoder %s does not support device type %s.\n",
-						        dec->name, av_hwdevice_get_type_name(type));
-						return -1;
-					}
-					if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-						config->device_type == type)
-					{
-						hw_pix_fmt = config->pix_fmt;
-						break;
-					}
-				}
-
-
-				codec_ctx->get_format = get_hw_format;
-
-				if (hw_decoder_init(codec_ctx, type) < 0)
-					return -1;
-			}
-		}
-
-
 		ret = avcodec_open2(codec_ctx, dec, nullptr);
 		if (ret < 0)
 		{
@@ -425,7 +379,6 @@ double CFFmpegDecodeFrame::GetTotalTime()
 
 void CFFmpegDecodeFrame::FrameToBitmap(AVFrame* sw_frame, const int & widthThumbnail, const int& heightThumbnail)
 {
-	CRegardsBitmap* bitmap = nullptr;
 	int videoFrameOutputWidth = sw_frame->width;
 	int videoFrameOutputHeight = sw_frame->height;
 	//float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
@@ -608,13 +561,6 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 		av_log(nullptr, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-		/*
-		av_packet_rescale_ts(&packet,
-		                     ifmt_ctx->streams[videoStreamIndex]->time_base,
-		                     stream->dec_ctx->time_base);
-
-		*/
-
 		ret = avcodec_send_packet(stream->dec_ctx, &packet);
 		if (ret < 0)
 		{
@@ -628,8 +574,6 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 			continue;
 		}
 
-		//pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-
 		while (ret >= 0)
 		{
 			AVFrame* sw_frame = nullptr;
@@ -639,32 +583,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 				break;
 			if (ret < 0)
 				return ret;
-
-
-
-			if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
-			{
-				sw_frame = av_frame_alloc();
-				deleteMemory = true;
-				if (sw_frame == nullptr)
-				{
-					fprintf(stderr, "Can not alloc frame\n");
-					ret = AVERROR(ENOMEM);
-					av_frame_free(&sw_frame);
-					return ret;
-				}
-				/* retrieve data from GPU to CPU */
-				if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0)
-				{
-					fprintf(stderr, "Error transferring the data to system memory\n");
-					av_frame_free(&sw_frame);
-					return ret;
-				}
-			}
-			else
-			{
-				sw_frame = stream->dec_frame;
-			}
+			sw_frame = stream->dec_frame;
 
 			int64_t videoPosition = sw_frame->pts * 1000;
 			videoPosition = videoPosition - startTime;

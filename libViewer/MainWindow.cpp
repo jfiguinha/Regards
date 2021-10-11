@@ -405,7 +405,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		}
 	}
 
-	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
+	//auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
 	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath);
 	compressAudioVideoOption.ShowModal();
 	if (compressAudioVideoOption.IsOk())

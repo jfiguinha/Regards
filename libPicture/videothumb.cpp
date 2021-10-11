@@ -7,10 +7,10 @@
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
-CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const wxString & decoder)
+CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	filename = fileName;
-	decodeFrame = new CFFmpegDecodeFrame(decoder);
+	decodeFrame = new CFFmpegDecodeFrame();
 	decodeFrame->OpenFile(fileName);
 }
 
@@ -33,7 +33,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 	if (ret != 0)
 	{
 		delete decodeFrame;
-		decodeFrame = new CFFmpegDecodeFrame("");
+		decodeFrame = new CFFmpegDecodeFrame();
 		decodeFrame->OpenFile(filename);
 		decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
 	}

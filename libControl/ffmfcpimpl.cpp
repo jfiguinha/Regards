@@ -272,8 +272,6 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 		stream_close(is);
 	}
 
-
-	av_lockmgr_register(nullptr);
 	uninit_opts();
 	//avformat_network_deinit();
 	if (show_status)
@@ -1714,7 +1712,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 	if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
 	{
-		is->hwaccel_device = "dxva2";
+		//is->hwaccel_device = "dxva2";
 		is->avctx = avctx;
 		is->avctx->opaque = is;
 		is->codec = codec;
@@ -1900,6 +1898,8 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 	case AVMEDIA_TYPE_VIDEO:
 		decoder_abort(&is->viddec, &is->pictq);
 		decoder_destroy(&is->viddec);
+		if (is->hwaccel_uninit)
+			is->hwaccel_uninit(is->viddec.avctx);
 		break;
 	case AVMEDIA_TYPE_SUBTITLE:
 		decoder_abort(&is->subdec, &is->subpq);
@@ -2353,33 +2353,6 @@ fail:
 	return 0;
 }
 
-void CFFmfcPimpl::CloseStream(VideoState* is)
-{
-	/* close each stream */
-	if (is->audio_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->audio_stream);
-	if (is->video_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->video_stream);
-	if (is->subtitle_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->subtitle_stream);
-	if (is->ic)
-	{
-		avformat_close_input(&is->ic);
-	}
-
-	//av_freep(&is->_pimpl->dst->data[0]);
-	av_frame_free(&is->_pimpl->dst);
-	if (is->_pimpl->scaleContext != nullptr)
-		sws_freeContext(is->_pimpl->scaleContext);
-	is->_pimpl->scaleContext = nullptr;
-	is->_pimpl->dst = nullptr;
-	is->_pimpl->first = true;
-
-	if (is->hwaccel_uninit)
-		is->hwaccel_uninit(is->viddec.avctx);
-
-	hw_device_free_all();
-}
 
 //ÉèÖÃ¸÷ÖÖSDLÐÅºÅ£¬¿ªÊ¼½âÂëÏß³Ì
 CFFmfcPimpl::VideoState* CFFmfcPimpl::stream_open(const char* filename, AVInputFormat* iformat)

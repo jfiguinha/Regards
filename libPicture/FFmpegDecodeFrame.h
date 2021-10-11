@@ -34,7 +34,7 @@ public:
 	};
 
 	void OpenFile(wxMemoryOutputStream* dataOutput, const wxString& filename);
-	CFFmpegDecodeFrame(const wxString& acceleratorHardware);
+	CFFmpegDecodeFrame();
 	~CFFmpegDecodeFrame();
 	void EndTreatment();
 	void OpenFile(const wxString& filename);
@@ -70,27 +70,21 @@ private:
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
-	wxString acceleratorHardware = "dxva2";
+
 	bool first;
 	AVFrame* dst = nullptr;
 	SwsContext* scaleContext = nullptr;
 	bool m_allowSeek = true;
 	AVCodecContext* codec_ctx;
 	int videoStreamIndex = 0;
-	int numFrame = 0;
-	int64_t timestamp = 0;
+
 	mutex muFrame;
 	mutex muWriteData;
 	mutex muEnding;
 	AVFrame* copyFrameBuffer = nullptr;
 
 	double duration_movie = 0.0;
-	double duration_movie_new = 0.0;
-	//char timebase[255];
-	//char duration[255];
-	double pos = 0;
-	//int nbframe = 0;
-	//bool isend = false;
+
 	int widthVideo;
 	int heightVideo;
 	int rotation;
