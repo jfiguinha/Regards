@@ -53,8 +53,10 @@ private:
 	int open_input_file(const wxString& filename);
 	void hb_limit_rational(int* x, int* y, int num, int den, int limit);
 	void hb_reduce(int* x, int* y, int num, int den);
+	void FrameToBitmap(AVFrame* sw_frame, const int& widthThumbnail, const int& heightThumbnail);
 
-
+	int videoFrameOutputWidth = 0;
+	int videoFrameOutputHeight = 0;
 	AVFormatContext* ifmt_ctx = nullptr;
 	StreamContext* stream_ctx;
 	AVPacket packet;

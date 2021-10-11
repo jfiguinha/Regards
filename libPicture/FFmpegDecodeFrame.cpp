@@ -201,6 +201,7 @@ bool CFFmpegDecodeFrame::IsOk()
 }
 
 
+
 int CFFmpegDecodeFrame::read_packet(void* opaque, uint8_t* buf, int buf_size)
 {
 	auto bd = static_cast<buffer_data*>(opaque);
@@ -347,13 +348,61 @@ double CFFmpegDecodeFrame::GetTotalTime()
 	return duration_movie;
 }
 
+void CFFmpegDecodeFrame::FrameToBitmap(AVFrame* sw_frame, const int & widthThumbnail, const int& heightThumbnail)
+{
+	videoFrameOutputWidth = sw_frame->width;
+	videoFrameOutputHeight = sw_frame->height;
+	float ratio = static_cast<float>(videoFrameOutputWidth) / static_cast<float>(videoFrameOutputHeight);
+	if (widthThumbnail != 0 && heightThumbnail != 0)
+	{
+		videoFrameOutputWidth = widthThumbnail;
+		videoFrameOutputHeight = heightThumbnail;
+
+		//Calcul Ratio
+		if (widthThumbnail >= heightThumbnail)
+			videoFrameOutputHeight = static_cast<int>(static_cast<float>(widthThumbnail) / ratio);
+		else
+			videoFrameOutputWidth = static_cast<int>(static_cast<float>(videoFrameOutputHeight) * ratio);
+	}
+
+	if (first)
+	{
+		av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+		av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+		av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+		av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
+		av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
+		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(scaleContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+
+		first = false;
+	}
+
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
+	if (numBytes != image->GetBitmapSize())
+	{
+		image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
+	}
+
+	uint8_t* convertedFrameBuffer = image->GetPtBitmap();
+	int linesize = videoFrameOutputWidth * 4;
+
+	sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
+		&convertedFrameBuffer, &linesize);
+}
+
 int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* opencvStabilization, const int& nbFrame,
                                                        const bool& isBuffer)
 {
 	if (!isOk)
 		return -1;
-	int videoFrameOutputWidth = 0;
-	int videoFrameOutputHeight = 0;
+
 	int ret = 0;
 	int numFrame = 0;
 	bool toTheEnd = false;
@@ -401,8 +450,6 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 			continue;
 		}
 
-		//pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-
 		while (ret >= 0)
 		{
 			ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
@@ -418,41 +465,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 				return ret;
 
 			AVFrame* sw_frame = stream->dec_frame;
-
-			videoFrameOutputWidth = sw_frame->width;
-			videoFrameOutputHeight = sw_frame->height;
-			//float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
-
-			if (first)
-			{
-				av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-				av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-				av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-				av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
-				av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
-				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-				{
-					sws_freeContext(scaleContext);
-					throw std::logic_error("Failed to initialise scale context");
-				}
-
-				first = false;
-			}
-
-			int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
-			if (numBytes != image->GetBitmapSize())
-			{
-				image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-			}
-
-			uint8_t* convertedFrameBuffer = image->GetPtBitmap();
-			int linesize = videoFrameOutputWidth * 4;
-
-			sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
-				&convertedFrameBuffer, &linesize);
+			FrameToBitmap(sw_frame, 0, 0);
 
 			if (isBuffer)
 				opencvStabilization->BufferFrame(image);
@@ -475,8 +488,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 {
 	if (!isOk)
 		return -1;
-	int videoFrameOutputWidth = 0;
-	int videoFrameOutputHeight = 0;
+
 	int ret = -22;
 	bool pictureFind = false;
 
@@ -553,51 +565,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 			if (videoPosition >= timeInSeconds || try_seek > 2)
 			{
-				videoFrameOutputWidth = sw_frame->width;
-				videoFrameOutputHeight = sw_frame->height;
-				float ratio = static_cast<float>(videoFrameOutputWidth) / static_cast<float>(videoFrameOutputHeight);
-				if (widthThumbnail != 0 && heightThumbnail != 0)
-				{
-					videoFrameOutputWidth = widthThumbnail;
-					videoFrameOutputHeight = heightThumbnail;
-
-					//Calcul Ratio
-					if (widthThumbnail >= heightThumbnail)
-						videoFrameOutputHeight = static_cast<int>(static_cast<float>(widthThumbnail) / ratio);
-					else
-						videoFrameOutputWidth = static_cast<int>(static_cast<float>(videoFrameOutputHeight) * ratio);
-				}
-
-				if (first)
-				{
-					av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-					av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-					av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-					av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
-					av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
-					av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-					av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-					if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-					{
-						sws_freeContext(scaleContext);
-						throw std::logic_error("Failed to initialise scale context");
-					}
-
-					first = false;
-				}
-
-				int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
-				if (numBytes != image->GetBitmapSize())
-				{
-					image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-				}
-
-				uint8_t* convertedFrameBuffer = image->GetPtBitmap();
-				int linesize = videoFrameOutputWidth * 4;
-
-				sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
-					&convertedFrameBuffer, &linesize);
+				FrameToBitmap(sw_frame, widthThumbnail, heightThumbnail);
 
 				pictureFind = true;
 			}
