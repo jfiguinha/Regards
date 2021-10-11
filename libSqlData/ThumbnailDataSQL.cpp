@@ -8,6 +8,7 @@ using namespace Regards::Sqlite;
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <FileUtility.h>
 using namespace Regards::Picture;
 
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
@@ -73,7 +74,13 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				if (!frameOut.IsOk())
 				{
 					numFrame = 1;
-					frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+#ifdef WIN32
+					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+					frameOut.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
+
 				}
 			}
 		}

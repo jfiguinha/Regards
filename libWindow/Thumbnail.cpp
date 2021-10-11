@@ -94,6 +94,9 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseThumbnail();
 
+	CSqlThumbnail sqlThumbnailVideo;
+	sqlThumbnailVideo.EraseThumbnail();
+
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pIcone = iconeList->GetElement(i);
@@ -817,6 +820,7 @@ void CThumbnail::LoadPicture(void* param)
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
 	if (threadLoadingBitmap == nullptr)
 		return;
+
 
 	if (libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsPDF(threadLoadingBitmap->filename) ||
 		libPicture.TestIsAnimation(threadLoadingBitmap->filename))

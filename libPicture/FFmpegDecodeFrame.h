@@ -51,12 +51,9 @@ public:
 private:
 	void Release();
 	int open_input_file(const wxString& filename);
-	int hw_decoder_init(AVCodecContext* ctx, enum AVHWDeviceType type);
-	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
-
 	void hb_limit_rational(int* x, int* y, int num, int den, int limit);
 	void hb_reduce(int* x, int* y, int num, int den);
-	void FrameToBitmap(AVFrame* sw_frame, const int& widthThumbnail = 0, const int& heightThumbnail = 0);
+
 
 	AVFormatContext* ifmt_ctx = nullptr;
 	StreamContext* stream_ctx;
