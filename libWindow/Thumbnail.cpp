@@ -94,7 +94,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseThumbnail();
 
-	CSqlThumbnail sqlThumbnailVideo;
+	CSqlThumbnailVideo sqlThumbnailVideo;
 	sqlThumbnailVideo.EraseThumbnail();
 
 	for (int i = 0; i < nbElementInIconeList; i++)
