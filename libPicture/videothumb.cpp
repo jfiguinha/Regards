@@ -7,10 +7,9 @@
 #include <RegardsBitmap.h>
 using namespace Regards::Picture;
 
-CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
+CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const wxString & decoder)
 {
 	filename = fileName;
-	wxString decoder = "";
 	decodeFrame = new CFFmpegDecodeFrame(decoder);
 	decodeFrame->OpenFile(fileName);
 }

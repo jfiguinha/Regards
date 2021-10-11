@@ -312,7 +312,7 @@ int CFFmpegDecodeFrame::open_input_file(const wxString& filename)
 	//    if(stream->codecpar->codec_id == AV_CODEC_ID_NONE)
 	//	   continue;
 	AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
-	AVCodecContext* codec_ctx;
+	
 	if (!dec)
 	{
 		av_log(nullptr, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", videoStreamIndex);
@@ -423,33 +423,55 @@ double CFFmpegDecodeFrame::GetTotalTime()
 	return duration_movie;
 }
 
-int CFFmpegDecodeFrame::SetVideoPosition(const int& timeInSeconds)
+void CFFmpegDecodeFrame::FrameToBitmap(AVFrame* sw_frame, const int & widthThumbnail, const int& heightThumbnail)
 {
-	int ret = 0;
-	if (timeInSeconds > 0)
+	CRegardsBitmap* bitmap = nullptr;
+	int videoFrameOutputWidth = sw_frame->width;
+	int videoFrameOutputHeight = sw_frame->height;
+	//float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
+	float ratio = static_cast<float>(videoFrameOutputWidth) / static_cast<float>(videoFrameOutputHeight);
+	if (widthThumbnail != 0 && heightThumbnail != 0)
 	{
-		int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 - startTime;
+		videoFrameOutputWidth = widthThumbnail;
+		videoFrameOutputHeight = heightThumbnail;
 
-		if (timestamp < 0)
-		{
-			timestamp = 0;
-		}
-
-		//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
-		int64_t seek_target = timestamp;
-		int64_t seek_rel = 0;
-		int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
-		int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
-		int seek_flags = 0;
-		seek_flags &= ~AVSEEK_FLAG_BYTE;
-		// FIXME the +-2 is due to rounding being not done in the correct direction in generation
-		//      of the seek_pos/seek_rel variables
-
-		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
+		//Calcul Ratio
+		if (widthThumbnail >= heightThumbnail)
+			videoFrameOutputHeight = static_cast<int>(static_cast<float>(widthThumbnail) / ratio);
+		else
+			videoFrameOutputWidth = static_cast<int>(static_cast<float>(videoFrameOutputHeight) * ratio);
 	}
 
-	numFrame = 0;
-	return ret;
+	if (first)
+	{
+		av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+		av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+		av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+		av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
+		av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
+		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(scaleContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+
+		first = false;
+	}
+
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
+	if (numBytes != image->GetBitmapSize())
+	{
+		image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
+	}
+
+	uint8_t* convertedFrameBuffer = image->GetPtBitmap();
+	int linesize = videoFrameOutputWidth * 4;
+
+	sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
+		&convertedFrameBuffer, &linesize);
 }
 
 int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* opencvStabilization, const int& nbFrame,
@@ -457,8 +479,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 {
 	if (!isOk)
 		return -1;
-	int videoFrameOutputWidth = 0;
-	int videoFrameOutputHeight = 0;
+
 	int ret = 0;
 	int numFrame = 0;
 	bool toTheEnd = false;
@@ -473,7 +494,6 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 			if (!(numFrame < nbFrame))
 				break;
 		}
-
 
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			return ret;
@@ -494,10 +514,6 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 
 		av_log(nullptr, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
-		av_packet_rescale_ts(&packet,
-		                     ifmt_ctx->streams[videoStreamIndex]->time_base,
-		                     stream->dec_ctx->time_base);
-
 		ret = avcodec_send_packet(stream->dec_ctx, &packet);
 		if (ret < 0)
 		{
@@ -511,7 +527,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 			continue;
 		}
 
-		pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+		//pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 
 		while (ret >= 0)
 		{
@@ -523,40 +539,7 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 
 			AVFrame* sw_frame = stream->dec_frame;
 
-			videoFrameOutputWidth = sw_frame->width;
-			videoFrameOutputHeight = sw_frame->height;
-			//float ratio = (float)videoFrameOutputWidth / (float)videoFrameOutputHeight;
-
-			if (first)
-			{
-				av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-				av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-				av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-				av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
-				av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
-				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-				{
-					sws_freeContext(scaleContext);
-					throw std::logic_error("Failed to initialise scale context");
-				}
-
-				first = false;
-			}
-
-			int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
-			if (numBytes != image->GetBitmapSize())
-			{
-				image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-			}
-
-			uint8_t* convertedFrameBuffer = image->GetPtBitmap();
-			int linesize = videoFrameOutputWidth * 4;
-
-			sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
-			          &convertedFrameBuffer, &linesize);
+			FrameToBitmap(sw_frame);
 
 			if (isBuffer)
 				opencvStabilization->BufferFrame(image);
@@ -564,6 +547,8 @@ int CFFmpegDecodeFrame::CalculVideoSecondStabilization(COpenCVStabilization* ope
 				opencvStabilization->AddFrame(image);
 
 			numFrame++;
+
+			av_frame_unref(sw_frame);
 		}
 
 		av_packet_unref(&packet);
@@ -592,12 +577,16 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 	if (timeInSeconds > 0)
 	{
-		ret = SetVideoPosition(timeInSeconds);
+		//ret = SetVideoPosition(timeInSeconds);
+		ret = av_seek_frame(ifmt_ctx, -1, timeInSeconds * AV_TIME_BASE + startTime, 0);
 	}
-
+	
+	if(ret >= 0)
+		avcodec_flush_buffers(codec_ctx);
 
 	while (!pictureFind)
 	{
+
 		if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
 			return ret;
 
@@ -608,6 +597,8 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 			continue;
 		}
 
+		//checkPosition(ifmt_ctx);
+
 		StreamContext* stream = &stream_ctx[videoStreamIndex];
 
 		if (stream->dec_ctx == nullptr)
@@ -617,9 +608,12 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 		av_log(nullptr, AV_LOG_DEBUG, "Going to reencode&filter the frame\n");
 
+		/*
 		av_packet_rescale_ts(&packet,
 		                     ifmt_ctx->streams[videoStreamIndex]->time_base,
 		                     stream->dec_ctx->time_base);
+
+		*/
 
 		ret = avcodec_send_packet(stream->dec_ctx, &packet);
 		if (ret < 0)
@@ -634,7 +628,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 			continue;
 		}
 
-		pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+		//pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 
 		while (ret >= 0)
 		{
@@ -645,6 +639,8 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 				break;
 			if (ret < 0)
 				return ret;
+
+
 
 			if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
 			{
@@ -670,53 +666,22 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 				sw_frame = stream->dec_frame;
 			}
 
-			videoFrameOutputWidth = sw_frame->width;
-			videoFrameOutputHeight = sw_frame->height;
-			float ratio = static_cast<float>(videoFrameOutputWidth) / static_cast<float>(videoFrameOutputHeight);
-			if (widthThumbnail != 0 && heightThumbnail != 0)
+			int64_t videoPosition = sw_frame->pts * 1000;
+			videoPosition = videoPosition - startTime;
+			videoPosition = videoPosition / AV_TIME_BASE;
+
+			if (videoPosition >= timeInSeconds)
 			{
-				videoFrameOutputWidth = widthThumbnail;
-				videoFrameOutputHeight = heightThumbnail;
-
-				//Calcul Ratio
-				if (widthThumbnail >= heightThumbnail)
-					videoFrameOutputHeight = static_cast<int>(static_cast<float>(widthThumbnail) / ratio);
-				else
-					videoFrameOutputWidth = static_cast<int>(static_cast<float>(videoFrameOutputHeight) * ratio);
+				FrameToBitmap(sw_frame, widthThumbnail, widthThumbnail);
+				pictureFind = true;
 			}
-
-			if (first)
+			else
 			{
-				av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
-				av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
-				av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
-				av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
-				av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
-				av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
-				av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+				ret = av_seek_frame(ifmt_ctx, -1, timeInSeconds * AV_TIME_BASE + startTime, 0);
 
-				if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-				{
-					sws_freeContext(scaleContext);
-					throw std::logic_error("Failed to initialise scale context");
-				}
-
-				first = false;
+				if (ret >= 0)
+					avcodec_flush_buffers(codec_ctx);
 			}
-
-			int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
-			if (numBytes != image->GetBitmapSize())
-			{
-				image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
-			}
-
-			uint8_t* convertedFrameBuffer = image->GetPtBitmap();
-			int linesize = videoFrameOutputWidth * 4;
-
-			sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
-			          &convertedFrameBuffer, &linesize);
-
-			pictureFind = true;
 
 
 			if (deleteMemory)
@@ -724,6 +689,8 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 				//av_freep(&sw_frame->data[0]);
 				av_frame_free(&sw_frame);
 			}
+			else
+				av_frame_unref(sw_frame);
 		}
 
 		av_packet_unref(&packet);
@@ -768,6 +735,9 @@ CRegardsBitmap* CFFmpegDecodeFrame::GetBitmap(const bool& copy)
 
 void CFFmpegDecodeFrame::Release()
 {
+	if (NULL != codec_ctx)
+		avcodec_close(codec_ctx);
+
 	if (ifmt_ctx != nullptr)
 	{
 		for (int i = 0; i < ifmt_ctx->nb_streams; i++)

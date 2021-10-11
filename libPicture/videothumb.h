@@ -8,7 +8,7 @@ class CVideoEffectParameter;
 class CThumbnailVideo
 {
 public:
-	CThumbnailVideo(const wxString& fileName);
+	CThumbnailVideo(const wxString& fileName, const wxString& decoder = "");
 	~CThumbnailVideo();
 	bool IsHardwareDecoderCompatible();
 	CRegardsBitmap* GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation, int percent = 10);

@@ -42,7 +42,7 @@ public:
 	void GetVideoInfos(int& width, int& height, int& rotation);
 	int GetFrameBitmapPosition(const long& time, const int& widthThumbnail = 0, const int& heightThumbnail = 0);
 	CRegardsBitmap* GetBitmap(const bool& copy = true);
-	int SetVideoPosition(const int& timePos);
+
 	int CalculVideoSecondStabilization(COpenCVStabilization* opencvStabilization, const int& nbFrame,
 	                                   const bool& isBuffer);
 
@@ -56,7 +56,7 @@ private:
 
 	void hb_limit_rational(int* x, int* y, int num, int den, int limit);
 	void hb_reduce(int* x, int* y, int num, int den);
-	AVRational GetAvRational(int den, int num);
+	void FrameToBitmap(AVFrame* sw_frame, const int& widthThumbnail = 0, const int& heightThumbnail = 0);
 
 	AVFormatContext* ifmt_ctx = nullptr;
 	StreamContext* stream_ctx;
@@ -75,9 +75,10 @@ private:
 	AVFrame* dst = nullptr;
 	SwsContext* scaleContext = nullptr;
 	bool m_allowSeek = true;
+	AVCodecContext* codec_ctx;
 	int videoStreamIndex = 0;
 	int numFrame = 0;
-
+	int64_t timestamp = 0;
 	mutex muFrame;
 	mutex muWriteData;
 	mutex muEnding;

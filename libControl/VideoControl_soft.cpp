@@ -935,7 +935,7 @@ bool CVideoControlSoft::IsHardwareCompatible()
 {
 	if (acceleratorHardware != "")
 	{
-		CThumbnailVideo video(filename);
+		CThumbnailVideo video(filename, acceleratorHardware);
 		return video.IsHardwareDecoderCompatible();
 	}
 	return true;
@@ -957,7 +957,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideo(movie);
+		thumbnailVideo = new CThumbnailVideo(movie, acceleratorHardware);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;
@@ -1597,8 +1597,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-	//std::clock_t start = std::clock();
-
+	int ret = 0;
 	bool isCPU = true;
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();
@@ -1616,8 +1615,6 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	widthVideo = src_frame->width;
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-
-	//  double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
 	wxCommandEvent event(wxEVENT_REFRESH);
 	wxPostEvent(this, event);

@@ -32,6 +32,7 @@ AVRational GetAvRational(int den, int num)
 	return value;
 }
 */
+
 inline int compute_mod(int a, int b)
 {
 	return a < 0 ? a % b + b : a % b;
@@ -284,26 +285,27 @@ void CFFmfcPimpl::do_exit(VideoState* is)
 /* display the current picture, if any */
 void CFFmfcPimpl::video_display(VideoState* is)
 {
+	int ret = 0;
 	Frame* vp;
 	Frame* sp = NULL;
 	vp = frame_queue_peek_last(&is->pictq);
 
 	if (!CMasterWindow::endProgram)
 	{
-		//if (is->video_st)
-		//{
-			float video_aspect_ratio = 0;
-			if (vp->sample_aspect_ratio.num == 0)
-				video_aspect_ratio = 0;
-			else
-				video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
+		float video_aspect_ratio = 0;
+		if (vp->sample_aspect_ratio.num == 0)
+			video_aspect_ratio = 0;
+		else
+			video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
 
-			if (dlg != nullptr)
-				if (!is->paused)
-					dlg->SetPos(vp->pts * 1000);
+		if (dlg != nullptr)
+			if (!is->paused)
+				dlg->SetPos(vp->pts * 1000);
 
-			if (dlg != nullptr)
-				dlg->SetData(vp->frame, video_aspect_ratio, nullptr);
+
+
+		if (dlg != nullptr)
+			dlg->SetData(vp->frame, video_aspect_ratio, nullptr);
 		//}
 
 		if (is->subtitle_st)
@@ -657,6 +659,7 @@ int CFFmfcPimpl::GetPosition(VideoState* is)
 int CFFmfcPimpl::queue_picture(VideoState* is, AVFrame* src_frame, double pts, double duration, int64_t pos, int serial)
 {
 	Frame* vp;
+	int ret = 0;
 
 #if defined(DEBUG_SYNC)
 	printf("frame_type=%c pts=%0.3f\n",
@@ -679,6 +682,7 @@ int CFFmfcPimpl::queue_picture(VideoState* is, AVFrame* src_frame, double pts, d
 	vp->serial = serial;
 
 	vp->sample_aspect_ratio = av_guess_sample_aspect_ratio(is->ic, is->video_st, src_frame);
+
 
 
 	av_frame_move_ref(vp->frame, src_frame);
