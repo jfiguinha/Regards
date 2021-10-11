@@ -1713,32 +1713,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 
         bool isSuccess = false;
-#ifdef __APPLE__
-        if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
-                        is->avctx = avctx;
-            is->avctx->opaque = is;
-            is->codec = codec;
-            is->avctx->get_format = get_format;
-            is->avctx->get_buffer2 = get_buffer;
-            is->hwaccel_id = HWACCEL_AUTO;
-            //ret = hw_device_setup_for_decode(is);
-            bool error = false;
-            enum AVHWDeviceType type;
-            
-            if (videotoolbox_init(avctx) < 0)
-                    error = true;
 
-            if (!error)
-            {
-                if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-                    error = true;
-                }
-
-                isSuccess = true;
-            }       
-        }
-#else
         if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
             
@@ -1799,7 +1774,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
                 isSuccess = true;
             }
         }
-#endif
+
         if(!isSuccess)
         {
             ret = avcodec_open2(avctx, codec, &opts);
