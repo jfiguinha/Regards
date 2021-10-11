@@ -1673,193 +1673,201 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 	codec = avcodec_find_decoder(avctx->codec_id);
 
-	switch (avctx->codec_type) {
-	case AVMEDIA_TYPE_AUDIO: is->last_audio_stream = stream_index; forced_codec_name = audio_codec_name; break;
-	case AVMEDIA_TYPE_SUBTITLE: is->last_subtitle_stream = stream_index; forced_codec_name = subtitle_codec_name; break;
-	case AVMEDIA_TYPE_VIDEO: is->last_video_stream = stream_index; forced_codec_name = video_codec_name; break;
+	switch (avctx->codec_type)
+    {
+        case AVMEDIA_TYPE_AUDIO: is->last_audio_stream = stream_index; forced_codec_name = audio_codec_name; break;
+        case AVMEDIA_TYPE_SUBTITLE: is->last_subtitle_stream = stream_index; forced_codec_name = subtitle_codec_name; break;
+        case AVMEDIA_TYPE_VIDEO: is->last_video_stream = stream_index; forced_codec_name = video_codec_name; break;
 	}
+    
 	if (forced_codec_name)
 		codec = avcodec_find_decoder_by_name(forced_codec_name);
-	if (!codec) {
+        
+	if (!codec) 
+    {
 		if (forced_codec_name) av_log(NULL, AV_LOG_WARNING,
 			"No codec could be found with name '%s'\n", forced_codec_name);
 		else                   av_log(NULL, AV_LOG_WARNING,
 			"No decoder could be found for codec %s\n", avcodec_get_name(avctx->codec_id));
 		ret = AVERROR(EINVAL);
-		goto fail;
 	}
-
-
-	avctx->codec_id = codec->id;
-	if (stream_lowres > codec->max_lowres) {
-		av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
-			codec->max_lowres);
-		stream_lowres = codec->max_lowres;
-	}
-	avctx->lowres = stream_lowres;
-
-	if (fast)
-		avctx->flags2 |= AV_CODEC_FLAG2_FAST;
-
-	opts = filter_codec_opts(codec_opts, avctx->codec_id, ic, ic->streams[stream_index], codec);
-	if (!av_dict_get(opts, "threads", NULL, 0))
-		av_dict_set(&opts, "threads", "auto", 0);
-	if (stream_lowres)
-		av_dict_set_int(&opts, "lowres", stream_lowres, 0);
-
-
-	bool isSuccess = false;
-
-	if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+    
+	if (ret >= 0)
 	{
-		//is->hwaccel_device = "dxva2";
-		is->avctx = avctx;
-		is->avctx->opaque = is;
-		is->codec = codec;
-		is->avctx->get_format = get_format;
-		is->avctx->get_buffer2 = get_buffer;
-		is->hwaccel_id = HWACCEL_AUTO;
-		//ret = hw_device_setup_for_decode(is);
-		bool error = false;
-		enum AVHWDeviceType type;
+        avctx->codec_id = codec->id;
+        if (stream_lowres > codec->max_lowres) {
+            av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
+                codec->max_lowres);
+            stream_lowres = codec->max_lowres;
+        }
+        avctx->lowres = stream_lowres;
 
-		type = av_hwdevice_find_type_by_name(acceleratorHardware);
-		if (type == AV_HWDEVICE_TYPE_NONE)
-		{
-			fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
-			fprintf(stderr, "Available device types:");
-			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-			fprintf(stderr, "\n");
+        if (fast)
+            avctx->flags2 |= AV_CODEC_FLAG2_FAST;
 
-			error = true;
-		}
-		else
-		{
-			for (int i = 0;; i++)
-			{
-				const AVCodecHWConfig* config = avcodec_get_hw_config(codec, i);
-				if (!config)
-				{
-					fprintf(stderr, "Decoder %s does not support device type %s.\n",
-						codec->name, av_hwdevice_get_type_name(type));
-					error = true;
-					break;
-				}
-				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-					config->device_type == type)
-				{
-					hw_pix_fmt = config->pix_fmt;
-					break;
-				}
-			}
-		}
-		if(!error)
-		{
-			if (hw_decoder_init(avctx, type) < 0)
-				error = true;
-		}
-		if (!error)
-		{
-			if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-				error = true;
-			}
-
-			isSuccess = true;
-		}
-	}
-
-	if(!isSuccess)
-	{
-		if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-			goto fail;
-		}
-	}
+        opts = filter_codec_opts(codec_opts, avctx->codec_id, ic, ic->streams[stream_index], codec);
+        if (!av_dict_get(opts, "threads", NULL, 0))
+            av_dict_set(&opts, "threads", "auto", 0);
+        if (stream_lowres)
+            av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
 
-	if ((t = av_dict_get(opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
-		av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
-		ret = AVERROR_OPTION_NOT_FOUND;
-		goto fail;
-	}
+        bool isSuccess = false;
 
-	is->eof = 0;
-	ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;
-	switch (avctx->codec_type)
-	{
-	case AVMEDIA_TYPE_AUDIO:
-		sample_rate = avctx->sample_rate;
-		nb_channels = avctx->channels;
-		channel_layout = avctx->channel_layout;
+        if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+        {
+            //is->hwaccel_device = "dxva2";
+            is->avctx = avctx;
+            is->avctx->opaque = is;
+            is->codec = codec;
+            is->avctx->get_format = get_format;
+            is->avctx->get_buffer2 = get_buffer;
+            is->hwaccel_id = HWACCEL_AUTO;
+            //ret = hw_device_setup_for_decode(is);
+            bool error = false;
+            enum AVHWDeviceType type;
 
-		/* prepare audio output */
-		if ((ret = audio_open(is, channel_layout, nb_channels, sample_rate, &is->audio_tgt)) < 0)
-			goto fail;
-		is->audio_hw_buf_size = ret;
-		is->audio_src = is->audio_tgt;
-		is->audio_buf_size = 0;
-		is->audio_buf_index = 0;
+            type = av_hwdevice_find_type_by_name(acceleratorHardware);
+            if (type == AV_HWDEVICE_TYPE_NONE)
+            {
+                fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
+                fprintf(stderr, "Available device types:");
+                while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+                    fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+                fprintf(stderr, "\n");
 
-		/* init averaging filter */
-		is->audio_diff_avg_coef = exp(log(0.01) / AUDIO_DIFF_AVG_NB);
-		is->audio_diff_avg_count = 0;
-		/* since we do not have a precise anough audio FIFO fullness,
-		   we correct audio sync only if larger than this threshold */
-		is->audio_diff_threshold = (double)(is->audio_hw_buf_size) / is->audio_tgt.bytes_per_sec;
+                error = true;
+            }
+            else
+            {
+                for (int i = 0;; i++)
+                {
+                    const AVCodecHWConfig* config = avcodec_get_hw_config(codec, i);
+                    if (!config)
+                    {
+                        fprintf(stderr, "Decoder %s does not support device type %s.\n",
+                            codec->name, av_hwdevice_get_type_name(type));
+                        error = true;
+                        break;
+                    }
+                    if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+                        config->device_type == type)
+                    {
+                        hw_pix_fmt = config->pix_fmt;
+                        break;
+                    }
+                }
+            }
+            if(!error)
+            {
+                if (hw_decoder_init(avctx, type) < 0)
+                    error = true;
+            }
+            if (!error)
+            {
+                if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+                    error = true;
+                }
 
-		is->audio_stream = stream_index;
-		is->audio_st = ic->streams[stream_index];
+                isSuccess = true;
+            }
+        }
 
-		if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, is->continue_read_thread)) < 0)
-			goto fail;
-		if ((is->ic->iformat->flags & (AVFMT_NOBINSEARCH | AVFMT_NOGENSEARCH | AVFMT_NO_BYTE_SEEK)) && !is->ic->iformat->read_seek) {
-			is->auddec.start_pts = is->audio_st->start_time;
-			is->auddec.start_pts_tb = is->audio_st->time_base;
-		}
-		if ((ret = decoder_start(&is->auddec, audio_thread, "audio_decoder", is)) < 0)
-			goto out;
-		SDL_PauseAudioDevice(audio_dev, 0);
-		break;
+        if(!isSuccess)
+        {
+            ret = avcodec_open2(avctx, codec, &opts);
+        }
+        
+        if(ret < 0)
+        {
+            goto fail;
+        }
 
-	case AVMEDIA_TYPE_VIDEO:
-	{
-		is->video_stream = stream_index;
-		is->video_st = ic->streams[stream_index];
+        if ((t = av_dict_get(opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
+            av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
+            ret = AVERROR_OPTION_NOT_FOUND;
+            goto fail;
+        }
 
-		auto matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(
-			is->video_st, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+        is->eof = 0;
+        ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;
+        switch (avctx->codec_type)
+        {
+        case AVMEDIA_TYPE_AUDIO:
+            sample_rate = avctx->sample_rate;
+            nb_channels = avctx->channels;
+            channel_layout = avctx->channel_layout;
 
-		if (matrix)
-		{
-			long rotation = lround(av_display_rotation_get(matrix));
-			if (dlg != nullptr)
-				dlg->SetRotation(rotation);
-		}
+            /* prepare audio output */
+            if ((ret = audio_open(is, channel_layout, nb_channels, sample_rate, &is->audio_tgt)) < 0)
+                goto fail;
+            is->audio_hw_buf_size = ret;
+            is->audio_src = is->audio_tgt;
+            is->audio_buf_size = 0;
+            is->audio_buf_index = 0;
+
+            /* init averaging filter */
+            is->audio_diff_avg_coef = exp(log(0.01) / AUDIO_DIFF_AVG_NB);
+            is->audio_diff_avg_count = 0;
+            /* since we do not have a precise anough audio FIFO fullness,
+               we correct audio sync only if larger than this threshold */
+            is->audio_diff_threshold = (double)(is->audio_hw_buf_size) / is->audio_tgt.bytes_per_sec;
+
+            is->audio_stream = stream_index;
+            is->audio_st = ic->streams[stream_index];
+
+            if ((ret = decoder_init(&is->auddec, avctx, &is->audioq, is->continue_read_thread)) < 0)
+                goto fail;
+            if ((is->ic->iformat->flags & (AVFMT_NOBINSEARCH | AVFMT_NOGENSEARCH | AVFMT_NO_BYTE_SEEK)) && !is->ic->iformat->read_seek) {
+                is->auddec.start_pts = is->audio_st->start_time;
+                is->auddec.start_pts_tb = is->audio_st->time_base;
+            }
+            if ((ret = decoder_start(&is->auddec, audio_thread, "audio_decoder", is)) < 0)
+                goto out;
+            SDL_PauseAudioDevice(audio_dev, 0);
+            break;
+
+        case AVMEDIA_TYPE_VIDEO:
+        {
+            is->video_stream = stream_index;
+            is->video_st = ic->streams[stream_index];
+
+            auto matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(
+                is->video_st, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+
+            if (matrix)
+            {
+                long rotation = lround(av_display_rotation_get(matrix));
+                if (dlg != nullptr)
+                    dlg->SetRotation(rotation);
+            }
 
 
-		if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
-			goto fail;
+            if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
+                goto fail;
 
-		if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
-			goto out;
-		is->queue_attachments_req = 1;
-		break;
-	}
+            if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
+                goto out;
+            is->queue_attachments_req = 1;
+            break;
+        }
 
 
-	case AVMEDIA_TYPE_SUBTITLE:
-		is->subtitle_stream = stream_index;
-		is->subtitle_st = ic->streams[stream_index];
+        case AVMEDIA_TYPE_SUBTITLE:
+            is->subtitle_stream = stream_index;
+            is->subtitle_st = ic->streams[stream_index];
 
-		if ((ret = decoder_init(&is->subdec, avctx, &is->subtitleq, is->continue_read_thread)) < 0)
-			goto fail;
-		if ((ret = decoder_start(&is->subdec, subtitle_thread, "subtitle_decoder", is)) < 0)
-			goto out;
-		break;
-	default:
-		break;
-	}
-	goto out;
+            if ((ret = decoder_init(&is->subdec, avctx, &is->subtitleq, is->continue_read_thread)) < 0)
+                goto fail;
+            if ((ret = decoder_start(&is->subdec, subtitle_thread, "subtitle_decoder", is)) < 0)
+                goto out;
+            break;
+        default:
+            break;
+        }
+        goto out;
+    }
+
 
 fail:
 	avcodec_free_context(&avctx);

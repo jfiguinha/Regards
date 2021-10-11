@@ -321,12 +321,12 @@ public:
 		int audio_write_buf_size;
 		int audio_volume;
 		int muted;
-		struct AudioParams audio_src;
+        AudioParams audio_src;
 #if CONFIG_AVFILTER
-		struct AudioParams audio_filter_src;
+        AudioParams audio_filter_src;
 #endif
-		struct AudioParams audio_tgt;
-		struct SwrContext* swr_ctx;
+        AudioParams audio_tgt;
+        SwrContext* swr_ctx;
 		int frame_drops_early;
 		int frame_drops_late;
 
