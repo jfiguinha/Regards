@@ -49,7 +49,11 @@ extern "C"
 #include "libavutil/avstring.h"
 #include "libavutil/pixdesc.h"
 #include "libavfilter/buffersink.h"
-
+#ifdef __APPLE__
+#include "libavcodec/avcodec.h"
+#include "libavcodec/videotoolbox.h"
+#include "libavutil/imgutils.h"
+#endif
 }
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
@@ -708,4 +712,16 @@ public:
 	int hw_device_init_from_type(enum AVHWDeviceType type,
 		const char* device,
 		HWDevice** dev_out);
+        
+#ifdef __APPLE__
+    static int videotoolbox_retrieve_data(AVCodecContext *s, AVFrame *frame);
+    static void videotoolbox_uninit(AVCodecContext *s);
+    int videotoolbox_init(AVCodecContext *s);
+
+    typedef struct VTContext {
+        AVFrame *tmp_frame;
+    } VTContext;
+
+    char *videotoolbox_pixfmt = nullptr;
+#endif
 };
