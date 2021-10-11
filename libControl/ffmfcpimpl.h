@@ -36,6 +36,7 @@ extern "C"
 #include "libavutil/samplefmt.h"
 #include "libavutil/avassert.h"
 #include "libavutil/time.h"
+#include "libavutil/hwcontext.h"
 #include "libavformat/avformat.h"
 #include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
@@ -45,6 +46,10 @@ extern "C"
 #include "libavutil/display.h"
 #include "libavutil/common.h"
 #include "libavutil/fifo.h"
+#include "libavutil/avstring.h"
+#include "libavutil/pixdesc.h"
+#include "libavfilter/buffersink.h"
+
 }
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
@@ -139,6 +144,29 @@ extern "C"
 class CFFmfcPimpl
 {
 public:
+
+
+
+	enum HWAccelID {
+		HWACCEL_NONE = 0,
+		HWACCEL_AUTO,
+		HWACCEL_GENERIC,
+		HWACCEL_VIDEOTOOLBOX,
+		HWACCEL_QSV,
+	};
+
+	typedef struct HWAccel {
+		const char* name;
+		int (*init)(AVCodecContext* s);
+		enum HWAccelID id;
+		enum AVPixelFormat pix_fmt;
+	} HWAccel;
+
+	typedef struct HWDevice {
+		const char* name;
+		enum AVHWDeviceType type;
+		AVBufferRef* device_ref;
+	} HWDevice;
 
 	typedef struct PacketQueue {
 		AVFifoBuffer* pkt_list;
@@ -338,6 +366,24 @@ public:
 		SDL_cond* continue_read_thread;
 
 		CFFmfcPimpl * _pimpl;
+
+
+		/* hwaccel options */
+		HWAccelID hwaccel_id = HWACCEL_AUTO;
+		AVHWDeviceType hwaccel_device_type;
+		char* hwaccel_device;
+		AVPixelFormat hwaccel_output_format;
+
+		/* hwaccel context */
+		void* hwaccel_ctx;
+		void (*hwaccel_uninit)(AVCodecContext* s);
+		int  (*hwaccel_get_buffer)(AVCodecContext* s, AVFrame* frame, int flags);
+		int  (*hwaccel_retrieve_data)(AVCodecContext* s, AVFrame* frame);
+		AVPixelFormat hwaccel_pix_fmt;
+		AVPixelFormat hwaccel_retrieved_pix_fmt;
+		AVBufferRef* hw_frames_ctx;
+		AVCodecContext* avctx;
+		AVCodec* codec;
 	} VideoState;
 
 
@@ -403,7 +449,9 @@ public:
 	int get_master_sync_type(VideoState* is);
 	
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
-	static enum AVPixelFormat get_hw_format(AVCodecContext *s, const AVPixelFormat *pix_fmts);
+	static enum AVPixelFormat get_format(AVCodecContext* s, const enum AVPixelFormat* pix_fmts);
+	//static enum AVPixelFormat get_hw_format(AVCodecContext *s, const AVPixelFormat *pix_fmts);
+	static int get_buffer(AVCodecContext* s, AVFrame* frame, int flags);
 	//Calcul du pourcentage
 	void StopStream();
 	int percentageToDb(int p, int maxValue);
@@ -542,7 +590,7 @@ public:
 	//ÒÔÏÂ¼¸¸öº¯Êý¶¼ÊÇ´¦Àíevent_loop()ÖÐµÄ¸÷ÖÖ²Ù×÷µÄ
 	void stream_cycle_channel(VideoState *is, int codec_type);
 
-	int decoder_decode_frame(Decoder* d, AVFrame* frame, AVSubtitle* sub);
+	int decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame, AVSubtitle* sub);
 	int decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond);
 	void decoder_destroy(Decoder* d);
 	//-------------------------------------------------------------------------------
@@ -639,4 +687,27 @@ public:
 	AVDictionary *format_opts = nullptr, *codec_opts = nullptr;
 #endif
 	const char* wanted_stream_spec[AVMEDIA_TYPE_NB] = { 0 };
+
+
+//------------------------------------------------------------------------
+//Hardware Accelerator
+//------------------------------------------------------------------------
+
+
+	int nb_hw_devices = 0;
+	HWDevice ** hw_devices = nullptr;
+
+	HWDevice* hw_device_get_by_type(enum AVHWDeviceType type);
+	HWDevice* hw_device_get_by_name(const char* name);
+	HWDevice* hw_device_add(void);
+	static int hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input);
+	CFFmfcPimpl::HWDevice* hw_device_match_by_codec(const AVCodec* codec);
+	void hw_device_free_all(void);
+	int hwaccel_decode_init(AVCodecContext* avctx);
+	int hw_device_setup_for_decode(VideoState* ist);
+	char* hw_device_default_name(enum AVHWDeviceType type);
+	int hw_device_init_from_string(const char* arg, CFFmfcPimpl::HWDevice** dev_out);
+	int hw_device_init_from_type(enum AVHWDeviceType type,
+		const char* device,
+		HWDevice** dev_out);
 };

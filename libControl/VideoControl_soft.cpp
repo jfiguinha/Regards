@@ -797,7 +797,7 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 
 void CVideoControlSoft::SetEncoderHardware(const wxString& encoderHardware, const bool& opengl)
 {
-	acceleratorHardware = encoderHardware;
+	acceleratorHardware = "dxva2";
 	isOpenGLDecoding = opengl;
 }
 
@@ -933,11 +933,14 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 
 bool CVideoControlSoft::IsHardwareCompatible()
 {
+	/*
 	if (acceleratorHardware != "")
 	{
 		CThumbnailVideo video(filename, acceleratorHardware);
 		return video.IsHardwareDecoderCompatible();
 	}
+	*/
+	acceleratorHardware = "dxva2";
 	return true;
 }
 
@@ -957,7 +960,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideo(movie, acceleratorHardware);
+		thumbnailVideo = new CThumbnailVideo(movie);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;

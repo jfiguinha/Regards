@@ -741,7 +741,7 @@ int CFFmfcPimpl::get_video_frame(VideoState* is, AVFrame* frame)
 {
 	int got_picture;
 
-	if ((got_picture = decoder_decode_frame(&is->viddec, frame, NULL)) < 0)
+	if ((got_picture = decoder_decode_frame(is, &is->viddec, frame, NULL)) < 0)
 		return -1;
 
 	if (got_picture) {
@@ -981,7 +981,7 @@ int CFFmfcPimpl::subtitle_thread(void* arg)
 		if (!(sp = is->_pimpl->frame_queue_peek_writable(&is->subpq)))
 			return 0;
 
-		if ((got_subtitle = is->_pimpl->decoder_decode_frame(&is->subdec, NULL, &sp->sub)) < 0)
+		if ((got_subtitle = is->_pimpl->decoder_decode_frame(is, &is->subdec, NULL, &sp->sub)) < 0)
 			break;
 
 		pts = 0;
@@ -1445,7 +1445,7 @@ int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType 
 }
 
 
-
+/*
 enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
                                               const enum AVPixelFormat* pix_fmts)
 {
@@ -1460,7 +1460,7 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 	fprintf(stderr, "Failed to get HW surface format.\n");
 	return AV_PIX_FMT_NONE;
 }
-
+*/
 
 
 int CFFmfcPimpl::decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* queue, SDL_cond* empty_queue_cond) {
@@ -1476,7 +1476,7 @@ int CFFmfcPimpl::decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* qu
 	return 0;
 }
 
-int CFFmfcPimpl::decoder_decode_frame(Decoder* d, AVFrame* frame, AVSubtitle* sub) {
+int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame, AVSubtitle* sub) {
 	int ret = AVERROR(EAGAIN);
 
 	for (;;) {
@@ -1485,24 +1485,19 @@ int CFFmfcPimpl::decoder_decode_frame(Decoder* d, AVFrame* frame, AVSubtitle* su
 				if (d->queue->abort_request)
 					return -1;
 
-				switch (d->avctx->codec_type) {
+				switch (d->avctx->codec_type)
+				{
 				case AVMEDIA_TYPE_VIDEO:
 					ret = avcodec_receive_frame(d->avctx, frame);
 
-					if (acceleratorHardware != "" && (acceleratorHardware == "dxva2" && !isOpenGLDecoding))
+					if (acceleratorHardware != "")
 					{
-						if (frame->format == hw_pix_fmt)
-						{
-							/* retrieve data from GPU to CPU */
-							if ((ret = av_hwframe_transfer_data(dst, frame, 0)) < 0)
-							{
-								fprintf(stderr, "Error transferring the data to system memory\n");
-								av_frame_free(&dst);
-								return ret;
-							}
-
-							av_frame_copy_props(dst, frame);
+						if (is->hwaccel_retrieve_data && frame->format == is->hwaccel_pix_fmt) {
+							ret = is->hwaccel_retrieve_data(d->avctx, frame);
 						}
+
+						if (ret >= 0)
+							is->hwaccel_retrieved_pix_fmt = (AVPixelFormat)frame->format;
 					}
 
 
@@ -1621,7 +1616,7 @@ int CFFmfcPimpl::audio_thread(void* arg)
 		return AVERROR(ENOMEM);
 
 	do {
-		if ((got_frame = is->_pimpl->decoder_decode_frame(&is->auddec, frame, NULL)) < 0)
+		if ((got_frame = is->_pimpl->decoder_decode_frame(is, &is->auddec, frame, NULL)) < 0)
 			goto the_end;
 
 		if (got_frame)
@@ -1696,50 +1691,6 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		goto fail;
 	}
 
-	if (avctx->codec_type == AVMEDIA_TYPE_VIDEO && acceleratorHardware != "")
-	{
-		bool success = true;
-		enum AVHWDeviceType type;
-
-		type = av_hwdevice_find_type_by_name(acceleratorHardware);
-		if (type == AV_HWDEVICE_TYPE_NONE)
-		{
-			fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
-			fprintf(stderr, "Available device types:");
-			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-			fprintf(stderr, "\n");
-			success = false;
-		}
-
-		if (success)
-		{
-			for (int i = 0;; i++)
-			{
-				const AVCodecHWConfig* config = avcodec_get_hw_config(codec, stream_index);
-				if (!config)
-				{
-					fprintf(stderr, "Decoder %s does not support device type %s.\n",
-						codec->name, av_hwdevice_get_type_name(type));
-					success = false;
-					break;
-				}
-				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-					config->device_type == type)
-				{
-					hw_pix_fmt = config->pix_fmt;
-					break;
-				}
-			}
-		}
-
-		if (success)
-		{
-			avctx->get_format = get_hw_format;
-			if (hw_decoder_init(avctx, type) < 0)
-				success = false;
-		}
-	}
 
 	avctx->codec_id = codec->id;
 	if (stream_lowres > codec->max_lowres) {
@@ -1757,9 +1708,77 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		av_dict_set(&opts, "threads", "auto", 0);
 	if (stream_lowres)
 		av_dict_set_int(&opts, "lowres", stream_lowres, 0);
-	if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-		goto fail;
+
+
+	bool isSuccess = false;
+
+	if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+	{
+		is->hwaccel_device = "dxva2";
+		is->avctx = avctx;
+		is->avctx->opaque = is;
+		is->codec = codec;
+		is->avctx->get_format = get_format;
+		is->avctx->get_buffer2 = get_buffer;
+		is->hwaccel_id = HWACCEL_AUTO;
+		//ret = hw_device_setup_for_decode(is);
+		bool error = false;
+		enum AVHWDeviceType type;
+
+		type = av_hwdevice_find_type_by_name(acceleratorHardware);
+		if (type == AV_HWDEVICE_TYPE_NONE)
+		{
+			fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
+			fprintf(stderr, "Available device types:");
+			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+			fprintf(stderr, "\n");
+
+			error = true;
+		}
+		else
+		{
+			for (int i = 0;; i++)
+			{
+				const AVCodecHWConfig* config = avcodec_get_hw_config(codec, i);
+				if (!config)
+				{
+					fprintf(stderr, "Decoder %s does not support device type %s.\n",
+						codec->name, av_hwdevice_get_type_name(type));
+					error = true;
+					break;
+				}
+				if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+					config->device_type == type)
+				{
+					hw_pix_fmt = config->pix_fmt;
+					break;
+				}
+			}
+		}
+		if(!error)
+		{
+			if (hw_decoder_init(avctx, type) < 0)
+				error = true;
+		}
+		if (!error)
+		{
+			if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+				error = true;
+			}
+
+			isSuccess = true;
+		}
 	}
+
+	if(!isSuccess)
+	{
+		if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+			goto fail;
+		}
+	}
+
+
 	if ((t = av_dict_get(opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
 		av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
 		ret = AVERROR_OPTION_NOT_FOUND;
@@ -1819,8 +1838,10 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 				dlg->SetRotation(rotation);
 		}
 
+
 		if ((ret = decoder_init(&is->viddec, avctx, &is->videoq, is->continue_read_thread)) < 0)
 			goto fail;
+
 		if ((ret = decoder_start(&is->viddec, video_thread, "video_decoder", is)) < 0)
 			goto out;
 		is->queue_attachments_req = 1;
@@ -2353,6 +2374,11 @@ void CFFmfcPimpl::CloseStream(VideoState* is)
 	is->_pimpl->scaleContext = nullptr;
 	is->_pimpl->dst = nullptr;
 	is->_pimpl->first = true;
+
+	if (is->hwaccel_uninit)
+		is->hwaccel_uninit(is->viddec.avctx);
+
+	hw_device_free_all();
 }
 
 //ÉèÖÃ¸÷ÖÖSDLÐÅºÅ£¬¿ªÊ¼½âÂëÏß³Ì
@@ -2550,4 +2576,559 @@ int CFFmfcPimpl::refresh_thread(void* opaque)
 			return 0;
 	}
 	return 0;
+}
+
+//------------------------------------------------------------------------
+//Hardware Accelerator
+//------------------------------------------------------------------------
+
+CFFmfcPimpl::HWDevice* CFFmfcPimpl::hw_device_get_by_type(enum AVHWDeviceType type)
+{
+	HWDevice* found = NULL;
+	int i;
+	for (i = 0; i < nb_hw_devices; i++) {
+		if (hw_devices[i]->type == type) {
+			if (found)
+				return NULL;
+			found = hw_devices[i];
+		}
+	}
+	return found;
+}
+
+CFFmfcPimpl::HWDevice* CFFmfcPimpl::hw_device_get_by_name(const char* name)
+{
+	int i;
+	for (i = 0; i < nb_hw_devices; i++) {
+		if (!strcmp(hw_devices[i]->name, name))
+			return hw_devices[i];
+	}
+	return NULL;
+}
+
+CFFmfcPimpl::HWDevice* CFFmfcPimpl::hw_device_add(void)
+{
+	int err;
+	err = av_reallocp_array(&hw_devices, nb_hw_devices + 1,
+		sizeof(*hw_devices));
+	if (err) {
+		nb_hw_devices = 0;
+		return NULL;
+	}
+	hw_devices[nb_hw_devices] = (HWDevice *)av_mallocz(sizeof(HWDevice));
+	if (!hw_devices[nb_hw_devices])
+		return NULL;
+	return hw_devices[nb_hw_devices++];
+}
+
+char* CFFmfcPimpl::hw_device_default_name(enum AVHWDeviceType type)
+{
+	// Make an automatic name of the form "type%d".  We arbitrarily
+	// limit at 1000 anonymous devices of the same type - there is
+	// probably something else very wrong if you get to this limit.
+	const char* type_name = av_hwdevice_get_type_name(type);
+	char* name;
+	size_t index_pos;
+	int index, index_limit = 1000;
+	index_pos = strlen(type_name);
+	name = (char* )av_malloc(index_pos + 4);
+	if (!name)
+		return NULL;
+	for (index = 0; index < index_limit; index++) {
+		snprintf(name, index_pos + 4, "%s%d", type_name, index);
+		if (!hw_device_get_by_name(name))
+			break;
+	}
+	if (index >= index_limit) {
+		av_freep(&name);
+		return NULL;
+	}
+	return name;
+}
+
+int CFFmfcPimpl::hw_device_init_from_string(const char* arg, CFFmfcPimpl::HWDevice** dev_out)
+{
+	// "type=name:device,key=value,key2=value2"
+	// "type:device,key=value,key2=value2"
+	// -> av_hwdevice_ctx_create()
+	// "type=name@name"
+	// "type@name"
+	// -> av_hwdevice_ctx_create_derived()
+
+	AVDictionary* options = NULL;
+	const char* type_name = NULL, * name = NULL, * device = NULL;
+	enum AVHWDeviceType type;
+	HWDevice* dev, * src;
+	AVBufferRef* device_ref = NULL;
+	int err;
+	const char* errmsg, * p, * q;
+	size_t k;
+
+	k = strcspn(arg, ":=@");
+	p = arg + k;
+
+	type_name = av_strndup(arg, k);
+	if (!type_name) {
+		err = AVERROR(ENOMEM);
+		goto fail;
+	}
+	type = av_hwdevice_find_type_by_name(type_name);
+	if (type == AV_HWDEVICE_TYPE_NONE) {
+		errmsg = "unknown device type";
+		goto invalid;
+	}
+
+	if (*p == '=') {
+		k = strcspn(p + 1, ":@");
+
+		name = av_strndup(p + 1, k);
+		if (!name) {
+			err = AVERROR(ENOMEM);
+			goto fail;
+		}
+		if (hw_device_get_by_name(name)) {
+			errmsg = "named device already exists";
+			goto invalid;
+		}
+
+		p += 1 + k;
+	}
+	else {
+		name = hw_device_default_name(type);
+		if (!name) {
+			err = AVERROR(ENOMEM);
+			goto fail;
+		}
+	}
+
+	if (!*p) {
+		// New device with no parameters.
+		err = av_hwdevice_ctx_create(&device_ref, type,
+			NULL, NULL, 0);
+		if (err < 0)
+			goto fail;
+
+	}
+	else if (*p == ':') {
+		// New device with some parameters.
+		++p;
+		q = strchr(p, ',');
+		if (q) {
+			if (q - p > 0) {
+				device = av_strndup(p, q - p);
+				if (!device) {
+					err = AVERROR(ENOMEM);
+					goto fail;
+				}
+			}
+			err = av_dict_parse_string(&options, q + 1, "=", ",", 0);
+			if (err < 0) {
+				errmsg = "failed to parse options";
+				goto invalid;
+			}
+		}
+
+		err = av_hwdevice_ctx_create(&device_ref, type,
+			q ? device : p[0] ? p : NULL,
+			options, 0);
+		if (err < 0)
+			goto fail;
+
+	}
+	else if (*p == '@') {
+		// Derive from existing device.
+
+		src = hw_device_get_by_name(p + 1);
+		if (!src) {
+			errmsg = "invalid source device name";
+			goto invalid;
+		}
+
+		err = av_hwdevice_ctx_create_derived(&device_ref, type,
+			src->device_ref, 0);
+		if (err < 0)
+			goto fail;
+	}
+	else {
+		errmsg = "parse error";
+		goto invalid;
+	}
+
+	dev = hw_device_add();
+	if (!dev) {
+		err = AVERROR(ENOMEM);
+		goto fail;
+	}
+
+	dev->name = name;
+	dev->type = type;
+	dev->device_ref = device_ref;
+
+	if (dev_out)
+		*dev_out = dev;
+
+	name = NULL;
+	err = 0;
+done:
+	av_freep(&type_name);
+	av_freep(&name);
+	av_freep(&device);
+	av_dict_free(&options);
+	return err;
+invalid:
+	av_log(NULL, AV_LOG_ERROR,
+		"Invalid device specification \"%s\": %s\n", arg, errmsg);
+	err = AVERROR(EINVAL);
+	goto done;
+fail:
+	av_log(NULL, AV_LOG_ERROR,
+		"Device creation failed: %d.\n", err);
+	av_buffer_unref(&device_ref);
+	goto done;
+}
+
+int CFFmfcPimpl::hw_device_init_from_type(enum AVHWDeviceType type,
+	const char* device,
+	HWDevice** dev_out)
+{
+	AVBufferRef* device_ref = NULL;
+	HWDevice* dev;
+	char* name;
+	int err;
+
+	name = hw_device_default_name(type);
+	if (!name) {
+		err = AVERROR(ENOMEM);
+		goto fail;
+	}
+
+	err = av_hwdevice_ctx_create(&device_ref, type, device, NULL, 0);
+	if (err < 0) {
+		av_log(NULL, AV_LOG_ERROR,
+			"Device creation failed: %d.\n", err);
+		goto fail;
+	}
+
+	dev = hw_device_add();
+	if (!dev) {
+		err = AVERROR(ENOMEM);
+		goto fail;
+	}
+
+	dev->name = name;
+	dev->type = type;
+	dev->device_ref = device_ref;
+
+	if (dev_out)
+		*dev_out = dev;
+
+	return 0;
+
+fail:
+	av_freep(&name);
+	av_buffer_unref(&device_ref);
+	return err;
+}
+
+void CFFmfcPimpl::hw_device_free_all(void)
+{
+	int i;
+	for (i = 0; i < nb_hw_devices; i++) {
+		av_freep(&hw_devices[i]->name);
+		av_buffer_unref(&hw_devices[i]->device_ref);
+		av_freep(&hw_devices[i]);
+	}
+	av_freep(&hw_devices);
+	nb_hw_devices = 0;
+}
+
+CFFmfcPimpl::HWDevice* CFFmfcPimpl::hw_device_match_by_codec(const AVCodec* codec)
+{
+	const AVCodecHWConfig* config;
+	HWDevice* dev;
+	int i;
+	for (i = 0;; i++) {
+		config = avcodec_get_hw_config(codec, i);
+		if (!config)
+			return NULL;
+		if (!(config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
+			continue;
+		dev = hw_device_get_by_type(config->device_type);
+		if (dev)
+			return dev;
+	}
+}
+
+int CFFmfcPimpl::hw_device_setup_for_decode(VideoState* ist)
+{
+	const AVCodecHWConfig* config;
+	enum AVHWDeviceType type;
+	HWDevice* dev = NULL;
+	int err, auto_device = 0;
+
+	if (ist->hwaccel_device) {
+		dev = hw_device_get_by_name(ist->hwaccel_device);
+		if (!dev) {
+			if (ist->hwaccel_id == HWACCEL_AUTO) {
+				auto_device = 1;
+			}
+			else if (ist->hwaccel_id == HWACCEL_GENERIC) {
+				type = ist->hwaccel_device_type;
+				err = hw_device_init_from_type(type, ist->hwaccel_device,
+					&dev);
+			}
+			else {
+				// This will be dealt with by API-specific initialisation
+				// (using hwaccel_device), so nothing further needed here.
+				return 0;
+			}
+		}
+		else {
+			if (ist->hwaccel_id == HWACCEL_AUTO) {
+				ist->hwaccel_device_type = dev->type;
+			}
+			else if (ist->hwaccel_device_type != dev->type) 
+			{
+				/*
+				av_log(ist->dec_ctx, AV_LOG_ERROR, "Invalid hwaccel device "
+					"specified for decoder: device %s of type %s is not "
+					"usable with hwaccel %s.\n", dev->name,
+					av_hwdevice_get_type_name(dev->type),
+					av_hwdevice_get_type_name(ist->hwaccel_device_type));
+					*/
+				return AVERROR(EINVAL);
+			}
+		}
+	}
+	else {
+		if (ist->hwaccel_id == HWACCEL_AUTO) {
+			auto_device = 1;
+		}
+		else if (ist->hwaccel_id == HWACCEL_GENERIC) {
+			type = ist->hwaccel_device_type;
+			dev = hw_device_get_by_type(type);
+			if (!dev)
+				err = hw_device_init_from_type(type, NULL, &dev);
+		}
+		else {
+			dev = hw_device_match_by_codec(ist->viddec.avctx->codec);
+			if (!dev) {
+				// No device for this codec, but not using generic hwaccel
+				// and therefore may well not need one - ignore.
+				return 0;
+			}
+		}
+	}
+
+	if (auto_device) {
+		int i;
+		if (!avcodec_get_hw_config(ist->codec, 0)) {
+			// Decoder does not support any hardware devices.
+			return 0;
+		}
+		for (i = 0; !dev; i++) {
+			config = avcodec_get_hw_config(ist->codec, i);
+			if (!config)
+				break;
+			type = config->device_type;
+			dev = hw_device_get_by_type(type);
+			if (dev) 
+			{
+				av_log(ist->avctx, AV_LOG_INFO, "Using auto "
+					"hwaccel type %s with existing device %s.\n",
+					av_hwdevice_get_type_name(type), dev->name);
+			}
+		}
+		for (i = 0; !dev; i++) {
+			config = avcodec_get_hw_config(ist->codec, i);
+			if (!config)
+				break;
+			type = config->device_type;
+			// Try to make a new device of this type.
+			err = hw_device_init_from_type(type, ist->hwaccel_device,
+				&dev);
+			if (err < 0) {
+				// Can't make a device of this type.
+				continue;
+			}
+			if (ist->hwaccel_device) {
+				av_log(ist->avctx, AV_LOG_INFO, "Using auto "
+					"hwaccel type %s with new device created "
+					"from %s.\n", av_hwdevice_get_type_name(type),
+					ist->hwaccel_device);
+			}
+			else {
+				av_log(ist->avctx, AV_LOG_INFO, "Using auto "
+					"hwaccel type %s with new default device.\n",
+					av_hwdevice_get_type_name(type));
+			}
+		}
+		if (dev) {
+			ist->hwaccel_device_type = type;
+		}
+		else {
+			av_log(ist->avctx, AV_LOG_INFO, "Auto hwaccel "
+				"disabled: no device found.\n");
+			ist->hwaccel_id = (HWAccelID)HWACCEL_NONE;
+			return 0;
+		}
+	}
+
+	if (!dev) {
+		av_log(ist->avctx, AV_LOG_ERROR, "No device available "
+			"for decoder: device type %s needed for codec %s.\n",
+			av_hwdevice_get_type_name(type), ist->avctx->codec->name);
+		return err;
+	}
+
+	ist->avctx->hw_device_ctx = av_buffer_ref(dev->device_ref);
+	if (!ist->avctx->hw_device_ctx)
+		return AVERROR(ENOMEM);
+
+	return 0;
+}
+
+int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
+{
+	VideoState* ist = (VideoState*)avctx->opaque;
+	AVFrame* output = NULL;
+	enum AVPixelFormat output_format = ist->hwaccel_output_format;
+	int err;
+
+	if (input->format == output_format) {
+		// Nothing to do.
+		return 0;
+	}
+
+	output = av_frame_alloc();
+	if (!output)
+		return AVERROR(ENOMEM);
+
+	output->format = output_format;
+
+	err = av_hwframe_transfer_data(output, input, 0);
+	if (err < 0) {
+		av_log(avctx, AV_LOG_ERROR, "Failed to transfer data to "
+			"output frame: %d.\n", err);
+		goto fail;
+	}
+
+	err = av_frame_copy_props(output, input);
+	if (err < 0) {
+		av_frame_unref(output);
+		goto fail;
+	}
+
+	av_frame_unref(input);
+	av_frame_move_ref(input, output);
+	av_frame_free(&output);
+
+	return 0;
+
+fail:
+	av_frame_free(&output);
+	return err;
+}
+
+int CFFmfcPimpl::hwaccel_decode_init(AVCodecContext* avctx)
+{
+	VideoState * ist = (VideoState*)avctx->opaque;
+
+	ist->hwaccel_retrieve_data = &hwaccel_retrieve_data;
+
+	return 0;
+}
+
+AVPixelFormat CFFmfcPimpl::get_format(AVCodecContext* s, const enum AVPixelFormat* pix_fmts)
+{
+	VideoState* ist = (VideoState*)s->opaque;
+	const enum AVPixelFormat* p;
+	int ret;
+
+	for (p = pix_fmts; *p != AV_PIX_FMT_NONE; p++) {
+		const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(*p);
+		const AVCodecHWConfig* config = NULL;
+		int i;
+
+		if (!(desc->flags & AV_PIX_FMT_FLAG_HWACCEL))
+			break;
+
+		if (ist->hwaccel_id == HWACCEL_GENERIC ||
+			ist->hwaccel_id == HWACCEL_AUTO) {
+			for (i = 0;; i++) {
+				config = avcodec_get_hw_config(s->codec, i);
+				if (!config)
+					break;
+				if (!(config->methods &
+					AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
+					continue;
+				if (config->pix_fmt == *p)
+					break;
+			}
+		}
+		if (config) {
+			if (config->device_type != ist->hwaccel_device_type) {
+				// Different hwaccel offered, ignore.
+				continue;
+			}
+
+			ret = ist->_pimpl->hwaccel_decode_init(s);
+			if (ret < 0) {
+				if (ist->hwaccel_id == HWACCEL_GENERIC) {
+					return AV_PIX_FMT_NONE;
+				}
+				continue;
+			}
+		}
+		else 
+		{
+			/*
+			const HWAccel* hwaccel = NULL;
+			int i;
+			for (i = 0; hwaccels[i].name; i++) {
+				if (hwaccels[i].pix_fmt == *p) {
+					hwaccel = &hwaccels[i];
+					break;
+				}
+			}
+			if (!hwaccel) {
+				// No hwaccel supporting this pixfmt.
+				continue;
+			}
+			if (hwaccel->id != ist->hwaccel_id) {
+				// Does not match requested hwaccel.
+				continue;
+			}
+
+			ret = hwaccel->init(s);
+			if (ret < 0) {
+				av_log(NULL, AV_LOG_FATAL,
+					"%s hwaccel requested for input stream #%d:%d, "
+					"but cannot be initialized.\n", hwaccel->name,
+					ist->file_index, ist->st->index);
+				return AV_PIX_FMT_NONE;
+			}*/
+		}
+
+		if (ist->hw_frames_ctx) {
+			s->hw_frames_ctx = av_buffer_ref(ist->hw_frames_ctx);
+			if (!s->hw_frames_ctx)
+				return AV_PIX_FMT_NONE;
+		}
+
+		ist->hwaccel_pix_fmt = *p;
+		break;
+	}
+
+	return *p;
+}
+
+int CFFmfcPimpl::get_buffer(AVCodecContext* s, AVFrame* frame, int flags)
+{
+	VideoState* ist = (VideoState*)s->opaque;
+
+	if (ist->hwaccel_get_buffer && frame->format == ist->hwaccel_pix_fmt)
+		return ist->hwaccel_get_buffer(s, frame, flags);
+
+	return avcodec_default_get_buffer2(s, frame, flags);
 }
