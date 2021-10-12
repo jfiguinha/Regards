@@ -2590,6 +2590,44 @@ static int decode_video(InputStream* ist, AVPacket* pkt, int* got_output, int64_
 	if (ist->st->sample_aspect_ratio.num)
 		decoded_frame->sample_aspect_ratio = ist->st->sample_aspect_ratio;
 
+#ifdef SHOWOUTPUTBITMAP
+
+	int videoFrameOutputWidth = decoded_frame->width;
+	int videoFrameOutputHeight = decoded_frame->height;
+
+	if (first)
+	{
+		av_opt_set_int(scaleContext, "srcw", sw_frame->width, 0);
+		av_opt_set_int(scaleContext, "srch", sw_frame->height, 0);
+		av_opt_set_int(scaleContext, "src_format", sw_frame->format, 0);
+		av_opt_set_int(scaleContext, "dstw", videoFrameOutputWidth, 0);
+		av_opt_set_int(scaleContext, "dsth", videoFrameOutputHeight, 0);
+		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_BGRA, 0);
+		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+		{
+			sws_freeContext(scaleContext);
+			throw std::logic_error("Failed to initialise scale context");
+		}
+
+		first = false;
+	}
+
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, videoFrameOutputWidth, videoFrameOutputHeight, 1);
+	if (numBytes != image->GetBitmapSize())
+	{
+		image->SetBitmap(videoFrameOutputWidth, videoFrameOutputHeight);
+	}
+
+	uint8_t* convertedFrameBuffer = image->GetPtBitmap();
+	int linesize = videoFrameOutputWidth * 4;
+
+	sws_scale(scaleContext, sw_frame->data, sw_frame->linesize, 0, sw_frame->height,
+		&convertedFrameBuffer, &linesize);
+
+#endif
+
 	err = send_frame_to_filters(ist, decoded_frame);
 
 fail:

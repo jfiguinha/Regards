@@ -387,8 +387,14 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		}
 
 		//Cleanup
-		wxRemoveFile(fileOutVideo);
-		wxRemoveFile(fileOutAudio);
+		if (wxFileExists(fileOutVideo))
+			wxRemoveFile(fileOutVideo);
+
+		if (wxFileExists(fileOutAudio))
+			wxRemoveFile(fileOutAudio);
+
+		if (wxFileExists(fileOut))
+			wxRemoveFile(fileOut);
 	}
 	else
 	{
