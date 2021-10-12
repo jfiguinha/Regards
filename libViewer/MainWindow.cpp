@@ -496,9 +496,6 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							wxFileName file_temp(filepath);
 							fileOut = CFileUtility::GetTempFile("temp." + file_temp.GetExt(), file_temp.GetPath(), true);
 
-							if (wxFileExists(fileOut))
-								wxRemoveFile(fileOut);
-
 							wxString timeInput = ElapsedTime(videoCompressOption->startTime);
 							wxString timeOutput = ElapsedTime(videoCompressOption->endTime);
 							fmpegApp.ExecuteFFmpegCutVideo(filename, timeInput, timeOutput, fileOut);
@@ -526,19 +523,15 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							if (wxFileExists(filepath))
 								wxRemoveFile(filepath);
 							wxCopyFile(filename_in, filepath);
-
-							if (wxFileExists(fileOut))
-								wxRemoveFile(fileOut);
 						}
-					}
-					else if (!videoCompressOption->audioDirectCopy && !videoCompressOption->videoDirectCopy)
-					{
-
-						if (wxFileExists(filepath))
-							wxRemoveFile(filepath);
-						wxString decoder = "";
-						ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
-						ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
+						else if (!videoCompressOption->audioDirectCopy && !videoCompressOption->videoDirectCopy)
+						{
+							if (wxFileExists(filepath))
+								wxRemoveFile(filepath);
+							wxString decoder = "";
+							ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
+							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
+						}
 					}
 					else
 						ret = -1;
@@ -569,10 +562,6 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxFileName file_temp(filepath);
 							fileOutAudio = CFileUtility::GetTempFile("temp_audio." + file_temp.GetExt(), file_temp.GetPath(), true);
-
-							if (wxFileExists(fileOutAudio))
-								wxRemoveFile(fileOutAudio);
-
 							fmpegApp.ExecuteFFmpegExtractAudio(filename_in, timeInput, timeOutput, fileOutAudio);
 
 						}
@@ -588,10 +577,6 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxFileName file_temp(filepath);
 							fileOutVideo = CFileUtility::GetTempFile("temp_video." + file_temp.GetExt(), file_temp.GetPath(), true);
-
-							if (wxFileExists(fileOutVideo))
-								wxRemoveFile(fileOutVideo);
-
 							fmpegApp.ExecuteFFmpegExtractVideo(filename_in, timeInput, timeOutput, fileOutVideo);
 
 						}
@@ -606,9 +591,6 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 
 				if (ret == 0)
 				{
-					if (wxFileExists(fileOut))
-						wxRemoveFile(fileOut);
-
 					if (videoCompressOption->audioDirectCopy)
 					{
 						if (wxFileExists(fileOutVideo))
@@ -623,7 +605,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 					}
 					else
 					{
-						if (wxFileExists(fileOutVideo))
+						if (wxFileExists(fileOutAudio))
 						{
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
