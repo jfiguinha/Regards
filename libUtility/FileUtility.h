@@ -17,4 +17,5 @@ public:
 	static wxString GetVideoThumbnailPath(const wxString & path, const int &numFrame);
 	static wxString GetFaceThumbnailPath(const int &numFace);
     static wxString GetTempFile(wxString filename, const bool &removeFile = true);
+	static wxString GetTempFile(wxString filename, wxString folder, const bool& removeFile = true);
 };

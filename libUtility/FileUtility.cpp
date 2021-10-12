@@ -13,6 +13,24 @@ CFileUtility::~CFileUtility(void)
 {
 }
 
+wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const bool& removeFile)
+{
+	wxString file;
+
+#ifdef WIN32
+	file = folder + "\\" + filename;
+#else
+	file = folder + "/" + filename;
+#endif
+
+	if (removeFile)
+	{
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+	}
+
+	return file;
+}
 
 wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 {
