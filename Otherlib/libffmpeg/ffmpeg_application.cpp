@@ -152,3 +152,77 @@ int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString&
 
 	return 0;
 }
+
+int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxString& timeVideoIn, const wxString& timeVideoOut, const wxString& outputFile)
+{
+	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
+
+	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back("-ss");
+	arrayOfStrings.push_back(timeVideoIn.ToStdString());
+	arrayOfStrings.push_back("-to");
+	arrayOfStrings.push_back(timeVideoOut.ToStdString());
+	arrayOfStrings.push_back("-c:v");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back("-c:a");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back(outputFile.ToStdString());
+	ExecuteFFmpeg();
+
+	return 0;
+}
+
+
+int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const wxString& outputFile)
+{
+	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
+
+	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back("-c:v");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back("-an");
+	arrayOfStrings.push_back(outputFile.ToStdString());
+	ExecuteFFmpeg();
+
+	return 0;
+}
+
+
+int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const wxString& outputFile)
+{
+	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
+
+	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back("-c:a");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back("-vn");
+	arrayOfStrings.push_back(outputFile.ToStdString());
+	ExecuteFFmpeg();
+
+	return 0;
+}
+
+
+
+int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const wxString& inputAudioFile, const wxString& outputFile)
+{
+	//ffmpeg -i movie.mp4 -ss 00:00:03 -t 00:00:08 -async 1 -c copy cut.mp4 
+
+	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputAudioFile.ToStdString());
+	arrayOfStrings.push_back("-c");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back(outputFile.ToStdString());
+	ExecuteFFmpeg();
+
+	return 0;
+}

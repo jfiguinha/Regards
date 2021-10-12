@@ -138,6 +138,13 @@ namespace Regards
 			bool setViewerMode = false;
 
 			CFFmpegTranscoding* ffmpegEncoder = nullptr;
+			wxString fileOut = "";
+			wxString fileOutAudio = "";
+			wxString fileOutVideo = "";
+			wxString filepathVideo = "";
+			bool needToRemux = false;
+			bool isAudio = false;
+
 		};
 	}
 }

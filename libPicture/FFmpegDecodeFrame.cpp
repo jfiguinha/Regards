@@ -275,7 +275,12 @@ int CFFmpegDecodeFrame::open_input_file(const wxString& filename)
 		return AVERROR(ENOMEM);
 
 	videoStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
-	//int audioStreamIndex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+	if (videoStreamIndex < 0)
+	{
+		av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
+			"for stream #%u\n", videoStreamIndex);
+		return videoStreamIndex;
+	}
 
 	//for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
 	AVStream* stream = ifmt_ctx->streams[videoStreamIndex];

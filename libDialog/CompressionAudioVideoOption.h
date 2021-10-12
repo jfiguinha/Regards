@@ -76,9 +76,6 @@ public:
 	wxTimePickerCtrl* labelTimeEnd;
 	wxSlider* slVideo;
 
-	wxRadioBox* rbAudioDirectCopy;
-	wxRadioBox* rbVideoDirectCopy;
-
 	//Filter event
 	wxCheckBox* ckdenoiseFilter;
 	wxSlider* denoiseFilter;
@@ -95,6 +92,10 @@ public:
 	wxCheckBox* cksepia;
 	wxCheckBox* cknoise;
 	wxCheckBox* ckenablefilter;
+
+
+	wxRadioBox* rbAudioDirectCopy;
+	wxRadioBox* rbVideoDirectCopy;
 
 	wxCheckBox* ckVideoAutocontrast;
 	wxCheckBox* ckVideoStabilization;

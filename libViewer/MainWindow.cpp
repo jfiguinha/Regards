@@ -354,6 +354,53 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 
 	if (wxFileExists(tempVideoFile))
 		wxRemoveFile(tempVideoFile);
+
+
+	if (needToRemux)
+	{
+		wxRemoveFile(filepathVideo);
+		if (isAudio)
+		{
+			CFFmpegApp fmpegApp;
+			try
+			{
+				fmpegApp.ExecuteFFmpegMuxVideoAudio(fileOut, fileOutAudio, filepathVideo);
+
+			}
+			catch (int e)
+			{
+				fmpegApp.Cleanup(e);
+			}
+		}
+		else
+		{
+			CFFmpegApp fmpegApp;
+			try
+			{
+				fmpegApp.ExecuteFFmpegMuxVideoAudio(fileOutVideo, fileOut, filepathVideo);
+
+			}
+			catch (int e)
+			{
+				fmpegApp.Cleanup(e);
+			}
+		}
+	}
+
+	//Cleanup
+	wxRemoveFile(fileOutVideo);
+	wxRemoveFile(fileOutAudio);
+	wxRemoveFile(fileOut);
+
+}
+
+string ElapsedTime(long secs) {
+	uint32_t hh = secs / 3600;
+	uint32_t mm = (secs % 3600) / 60;
+	uint32_t ss = (secs % 3600) % 60;
+	char timestring[9];
+	sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
+	return string(timestring);
 }
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
@@ -408,16 +455,148 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	//auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
 	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath);
 	compressAudioVideoOption.ShowModal();
+	wxString filename_in = filename;
 	if (compressAudioVideoOption.IsOk())
 	{
 		if (ffmpegEncoder == nullptr)
 		{
+			
+
 			auto videoCompressOption = new CVideoOptionCompress();
 			compressAudioVideoOption.GetCompressionOption(videoCompressOption);
-			//Decoder available
-			wxString decoder = "";
-			ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
-			ffmpegEncoder->EncodeFile(this, filename, filepath, videoCompressOption);
+
+			if (videoCompressOption->startTime != 0 || videoCompressOption->endTime != 0)
+			{
+				CFFmpegApp fmpegApp;
+				try
+				{
+					wxFileName file_temp(filepath);
+#ifdef WIN32
+					fileOut = file_temp.GetPath() + "\\";
+#else
+					fileOut = file_temp.GetPath() + "/";
+#endif
+					fileOut += "temp.";
+					fileOut += file_temp.GetExt();
+
+					wxRemoveFile(fileOut);
+
+					wxString timeInput = ElapsedTime(videoCompressOption->startTime);
+					wxString timeOutput = ElapsedTime(videoCompressOption->endTime);
+					fmpegApp.ExecuteFFmpegCutVideo(filename, timeInput, timeOutput, fileOut);
+
+					filename_in = fileOut;
+
+				}
+				catch (int e)
+				{
+					fmpegApp.Cleanup(e);
+					filename_in = fileOut;
+				}
+			}
+
+			needToRemux = false;
+
+			wxRemoveFile(filepath);
+
+			if (videoCompressOption->audioDirectCopy && videoCompressOption->videoDirectCopy)
+			{
+				wxCopyFile(filename_in, filepath);
+			}
+			else if (!videoCompressOption->audioDirectCopy && !videoCompressOption->videoDirectCopy)
+			{
+				
+				wxString decoder = "";
+				ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
+				ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
+			}
+			else
+			{
+				needToRemux = true;
+
+				wxFileName file_temp(filepath);
+
+				filepathVideo = filepath;
+
+#ifdef WIN32
+				fileOut = file_temp.GetPath() + "\\";
+#else
+				fileOut = file_temp.GetPath() + "/";
+#endif
+				fileOut += "temp.";
+				fileOut += file_temp.GetExt();
+
+				fileOutVideo = "";
+				fileOutAudio = "";
+
+				{
+					CFFmpegApp fmpegApp;
+					try
+					{
+						wxFileName file_temp(filepath);
+#ifdef WIN32
+						fileOutAudio = file_temp.GetPath() + "\\";
+#else
+						fileOutAudio = file_temp.GetPath() + "/";
+#endif
+						fileOutAudio += "temp_audio.";
+						fileOutAudio += file_temp.GetExt();
+
+						wxRemoveFile(fileOutAudio);
+
+						fmpegApp.ExecuteFFmpegExtractAudio(filename_in, fileOutAudio);
+
+					}
+					catch (int e)
+					{
+						fmpegApp.Cleanup(e);
+					}
+				}
+
+				{
+					CFFmpegApp fmpegApp;
+					try
+					{
+						wxFileName file_temp(filepath);
+#ifdef WIN32
+						fileOutVideo = file_temp.GetPath() + "\\";
+#else
+						fileOut = file_temp.GetPath() + "/";
+#endif
+						fileOutVideo += "temp_video.";
+						fileOutVideo += file_temp.GetExt();
+
+						wxRemoveFile(fileOutVideo);
+
+						fmpegApp.ExecuteFFmpegExtractVideo(filename_in, fileOutVideo);
+
+					}
+					catch (int e)
+					{
+						fmpegApp.Cleanup(e);
+					}
+				}
+
+				wxRemoveFile(fileOut);
+
+				if (videoCompressOption->audioDirectCopy)
+				{
+					wxRemoveFile(fileOut);
+					wxString decoder = "";
+					ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
+					ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption);
+					isAudio = true;
+				}
+				else
+				{
+					wxString decoder = "";
+					ffmpegEncoder = new CFFmpegTranscoding(decoder, openclEngine);
+					ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption);
+					isAudio = false;
+				}
+
+			}
+
 		}
 	}
 	else if (!filenameOutput.empty())

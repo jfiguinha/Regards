@@ -21,8 +21,9 @@ public:
 	int audioQuality;
 	wxString audioCodec;
 	bool audioQualityOrBitRate;
-	long startTime = 0;
-	long endTime = 0;
+	int64_t startTime = 0;
+	int64_t endTime = 0;
+	int64_t videoTime = 0;
 	//Video
 	int videoBitRate;
 	bool videoHardware;

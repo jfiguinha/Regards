@@ -88,8 +88,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	labelTimeStart = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STSTARTMOVIE")));
 	labelTimeEnd = static_cast<wxTimePickerCtrl*>(FindWindow(XRCID("ID_STENDMOVIE")));
 	slVideo = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLVIDEO")));
-	rbAudioDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUDIOCOMPRESSION")));
-	rbVideoDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBVIDEOCOMPRESSION")));
+
 	//Filter
 	ckdenoiseFilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKDENOISEFILTER")));
 	denoiseFilter = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLDENOISEFILTER")));
@@ -106,6 +105,9 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	cksepia = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKSEPIAFILTER")));
 	cknoise = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKNOISEFILTER")));
 	ckenablefilter = static_cast<wxCheckBox*>(FindWindow(XRCID("ID_CKENABLEFILTER")));
+	rbAudioDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUDIOCOMPRESSION")));
+	rbVideoDirectCopy = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBVIDEOCOMPRESSION")));
+
 	//bufferStabilization = (wxSpinCtrl*)FindWindow(XRCID("ID_SPINCONTROLBUFFER"));
 #ifdef USE_PREVIEW_INTEGRATE
 	panel = static_cast<wxPanel*>(FindWindow(XRCID("IDPANEL")));
@@ -648,7 +650,7 @@ void CompressionAudioVideoOption::GetCompressionOption(CVideoOptionCompress* vid
 		videoOptionCompress->videoEffectParameter.bandcEnable = cklightandcontrast->GetValue();
 
 		videoOptionCompress->videoEffectParameter.sharpness = sharpenFilter->GetValue() / 10.0f;
-
+		videoOptionCompress->videoTime = timeTotal;
 		//Audio
 		videoOptionCompress->audioQualityOrBitRate = ckAudioQuality->IsChecked();
 		if (cbAudioQuality->GetStringSelection() != "")

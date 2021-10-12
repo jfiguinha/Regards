@@ -233,10 +233,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 
 		double duration_total = ffmpeg_trans->duration_movie;
 
-		int posVideo = static_cast<int>(ffmpeg_trans->pos) - ffmpeg_trans->videoCompressOption->startTime;
-
-		if (ffmpeg_trans->videoCompressOption->endTime != 0 || ffmpeg_trans->videoCompressOption->startTime != 0)
-			duration_total = ffmpeg_trans->videoCompressOption->endTime - ffmpeg_trans->videoCompressOption->startTime;
+		int posVideo = static_cast<int>(ffmpeg_trans->pos);
 
 		ffmpeg_trans->m_dlgProgress->SetPos(duration_total, posVideo);
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(ffmpeg_trans->duration);
@@ -2001,20 +1998,13 @@ void CFFmpegTranscodingPimpl::VideoInfos(StreamContext* stream)
 
 	if (first_frame)
 	{
-		long startTime = videoCompressOption->startTime;
-		videoCompressOption->startTime = pos;
-		long diff = startTime - pos;
-		videoCompressOption->endTime = videoCompressOption->endTime + diff;
 		first_frame = false;
 	}
 
 	muWriteData.lock();
 	double duration_total = duration_movie;
 
-	if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
-		duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
-
-	int posVideo = static_cast<int>(pos) - videoCompressOption->startTime;
+	int posVideo = static_cast<int>(pos);
 	pourcentage = (posVideo / duration_total) * 100.0f;
 	this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
 	sprintf(duration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(pourcentage), posVideo,
@@ -2285,30 +2275,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 	//bool startEncoding = true;
 	bool first_frame = true;
 
-
-	if (videoCompressOption->startTime != 0)
-	{
-		int64_t timestamp = static_cast<int64_t>(videoCompressOption->startTime) * 1000 * 1000 + startTime;
-
-		if (timestamp < 0)
-		{
-			timestamp = 0;
-		}
-
-		//	int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
-		int64_t seek_target = timestamp;
-		int64_t seek_rel = 0;
-		int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
-		int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
-		int seek_flags = 0;
-		seek_flags &= ~AVSEEK_FLAG_BYTE;
-		// FIXME the +-2 is due to rounding being not done in the correct direction in generation
-		//      of the seek_pos/seek_rel variables
-
-		ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
-	}
-
-
 	/* read all packets */
 	while (m_dlgProgress->IsOk())
 	{
@@ -2440,22 +2406,11 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 					tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
-					if (first_frame)
-					{
-						long startTime = videoCompressOption->startTime;
-						videoCompressOption->startTime = pos;
-						long diff = startTime - pos;
-						videoCompressOption->endTime = videoCompressOption->endTime + diff;
-						first_frame = false;
-					}
-
 					muWriteData.lock();
 					double duration_total = duration_movie;
 
-					if (videoCompressOption->endTime != 0 || videoCompressOption->startTime != 0)
-						duration_total = videoCompressOption->endTime - videoCompressOption->startTime;
 
-					int posVideo = static_cast<int>(pos) - videoCompressOption->startTime;
+					int posVideo = static_cast<int>(pos);
 					pourcentage = (posVideo / duration_total) * 100.0f;
 					this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
 					sprintf(duration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(pourcentage),
@@ -2595,13 +2550,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 		}
 
 		av_packet_unref(&packet);
-
-		if (videoCompressOption->endTime != 0)
-		{
-			int posVideo = static_cast<int>(pos);
-			if (videoCompressOption->endTime == posVideo)
-				break;
-		}
 	}
 
 	/* flush filters and encoders */
