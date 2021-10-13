@@ -91,7 +91,6 @@
 							<object class="wxCheckBox" name="ID_CKVIDEOQUALITY">
 								<pos>15,260</pos>
 								<checked>1</checked>
-								<label>Preset Option</label>
 							</object>
 							<object class="wxComboBox" name="ID_CBVIDEOPRESET">
 								<pos>200,200</pos>
