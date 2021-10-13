@@ -12,6 +12,7 @@ extern "C" {
 #include "ffmpeg.h"
 }
 
+/*
 std::string convertSecondsToHHMMSS(int value)
 {
 	std::string result;
@@ -34,7 +35,7 @@ std::string convertSecondsToHHMMSS(int value)
 	}
 	return result;
 }
-
+*/
 void CFFmpegApp::ExitFunction(int x)
 {
 	throw x;
@@ -42,9 +43,13 @@ void CFFmpegApp::ExitFunction(int x)
 
 int CFFmpegApp::ProgressBarFunction(int x, void* progressWnd)
 {
-	auto dialog = static_cast<wxProgressDialog*>(progressWnd);
-	if (false == dialog->Update(x, "Video Progress ..."))
-		return 1;
+	if (progressWnd != nullptr)
+	{
+		auto dialog = static_cast<wxProgressDialog*>(progressWnd);
+		if (false == dialog->Update(x, "Video Progress ..."))
+			return 1;
+	}
+
 	return 0;
 }
 
@@ -55,8 +60,14 @@ void CFFmpegApp::ExecuteFFmpeg()
 	for (int i = 0; i < arrayOfStrings.size(); ++i)
 		arrayOfCstrings[i] = (char*)arrayOfStrings[i].c_str();
 
-	wxProgressDialog dialog("FFmpeg Process", "Checking...", 100, nullptr,
-	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+	wxProgressDialog* dialog = nullptr;
+
+	if (showProgressWindow)
+	{
+		dialog = new wxProgressDialog("FFmpeg Process", "Checking...", 100, nullptr,
+			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	}
 
 	try
 	{
@@ -66,7 +77,7 @@ void CFFmpegApp::ExecuteFFmpeg()
 		int (*progress)(int, void*);
 		progress = &ProgressBarFunction;
 
-		ret = ExecuteFFMpegProgram(arrayOfStrings.size(), arrayOfCstrings, foo, progress, &dialog);
+		ret = ExecuteFFMpegProgram(arrayOfStrings.size(), arrayOfCstrings, foo, progress, dialog);
 	}
 	catch (int e)
 	{
@@ -75,6 +86,9 @@ void CFFmpegApp::ExecuteFFmpeg()
 	catch (...)
 	{
 	}
+
+	if (dialog != nullptr)
+		delete dialog;
 
 	Cleanup(ret);
 }
@@ -113,7 +127,7 @@ int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVi
 	arrayOfStrings.push_back("-c:a");
 	arrayOfStrings.push_back(extension.ToStdString());
 	arrayOfStrings.push_back("-t");
-	arrayOfStrings.push_back(convertSecondsToHHMMSS(atoi(timeVideo)).c_str());
+	arrayOfStrings.push_back(timeVideo.ToStdString());
 	arrayOfStrings.push_back("-vn");
 	arrayOfStrings.push_back("-y");
 	arrayOfStrings.push_back(outputFile.ToStdString());

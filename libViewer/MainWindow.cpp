@@ -43,7 +43,7 @@
 #include <ThumbnailVideoExport.h>
 #include <OpenCVEffect.h>
 #include <ffplaycore.h>
-
+#include <ConvertUtility.h>
 #include "SqlFacePhoto.h"
 
 using namespace Regards::Picture;
@@ -290,12 +290,13 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 		{
 			wxFileName file_path(musicDiaporama);
 			wxString extension = file_path.GetExt();
+			wxString movieTimeString = CConvertUtility::GetTimeLibelle(time_movie);
 			wxString tempAudio = CFileUtility::GetTempFile("audio." + extension);
 			{
 				CFFmpegApp fmpegApp;
 				try
 				{
-					fmpegApp.CropAudio(musicDiaporama, to_string(time_movie), extension, tempAudio);
+					fmpegApp.CropAudio(musicDiaporama, movieTimeString, extension, tempAudio);
 				}
 				catch (int e)
 				{
@@ -306,7 +307,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 				CFFmpegApp fmpegApp;
 				try
 				{
-					fmpegApp.ExecuteFFmpegApp(tempVideoFile, tempAudio, to_string(time_movie), tempAudioVideoFile);
+					fmpegApp.ExecuteFFmpegApp(tempVideoFile, tempAudio, movieTimeString, tempAudioVideoFile);
 				}
 				catch (int e)
 				{
@@ -365,7 +366,7 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		{
 			if (wxFileExists(fileOut) && wxFileExists(fileOutAudio))
 			{
-				CFFmpegApp fmpegApp;
+				CFFmpegApp fmpegApp(false);
 				try
 				{
 					fmpegApp.ExecuteFFmpegMuxVideoAudio(fileOut, fileOutAudio, filepathVideo);
@@ -381,7 +382,7 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 		{
 			if (wxFileExists(fileOut) && wxFileExists(fileOutVideo))
 			{
-				CFFmpegApp fmpegApp;
+				CFFmpegApp fmpegApp(false);
 				try
 				{
 					fmpegApp.ExecuteFFmpegMuxVideoAudio(fileOutVideo, fileOut, filepathVideo);
@@ -410,15 +411,6 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 			wxRemoveFile(fileOut);
 	}
 
-}
-
-string ElapsedTime(long secs) {
-	uint32_t hh = secs / 3600;
-	uint32_t mm = (secs % 3600) / 60;
-	uint32_t ss = (secs % 3600) % 60;
-	char timestring[9];
-	sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
-	return string(timestring);
 }
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
@@ -490,14 +482,14 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 				{
 					if (wxFileExists(filename))
 					{
-						CFFmpegApp fmpegApp;
+						CFFmpegApp fmpegApp(false);
 						try
 						{
 							wxFileName file_temp(filepath);
 							fileOut = CFileUtility::GetTempFile("temp." + file_temp.GetExt(), file_temp.GetPath(), true);
 
-							wxString timeInput = ElapsedTime(videoCompressOption->startTime);
-							wxString timeOutput = ElapsedTime(videoCompressOption->endTime);
+							wxString timeInput = CConvertUtility::GetTimeLibelle(videoCompressOption->startTime);
+							wxString timeOutput = CConvertUtility::GetTimeLibelle(videoCompressOption->endTime);
 							fmpegApp.ExecuteFFmpegCutVideo(filename, timeInput, timeOutput, fileOut);
 
 							filename_in = fileOut;
@@ -551,13 +543,13 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 				fileOutVideo = "";
 				fileOutAudio = "";
 
-				wxString timeInput = ElapsedTime(videoCompressOption->startTime);
-				wxString timeOutput = ElapsedTime(videoCompressOption->endTime);
+				wxString timeInput = CConvertUtility::GetTimeLibelle(videoCompressOption->startTime);
+				wxString timeOutput = CConvertUtility::GetTimeLibelle(videoCompressOption->endTime);
 
 				if (wxFileExists(filename_in))
 				{
 					{
-						CFFmpegApp fmpegApp;
+						CFFmpegApp fmpegApp(false);
 						try
 						{
 							wxFileName file_temp(filepath);
@@ -572,7 +564,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 					}
 
 					{
-						CFFmpegApp fmpegApp;
+						CFFmpegApp fmpegApp(false);
 						try
 						{
 							wxFileName file_temp(filepath);

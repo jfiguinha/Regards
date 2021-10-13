@@ -280,22 +280,6 @@ bool CFFmfc::Quit()
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
-		if (_pimpl->dlg != nullptr && _pimpl->dlg->GetDXVA2Compatible())
-		{
-			_pimpl->StopStream();
-			wxSleep(1);
-			wxCommandEvent evt(FF_EXIT_EVENT);
-			evt.SetClientData(cur_stream);
-			this->GetEventHandler()->AddPendingEvent(evt);
-		}
-		else
-		{
-			_pimpl->StopStream();
-			_pimpl->do_exit(cur_stream);
-		}
-	}
-	else
-	{
 		_pimpl->StopStream();
 		_pimpl->do_exit(nullptr);
 		isExitNow = true;

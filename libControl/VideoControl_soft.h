@@ -120,10 +120,8 @@ protected:
 	void OnTopPosition(wxCommandEvent& event);
 	void CalculPositionPicture(const float& x, const float& y);
 	static void GenerateThumbnailVideo(void* data);
-	bool GetDXVA2Compatible() override;
-
 	int IsSupportOpenCL();
-	void OnRefresh(wxCommandEvent& event);
+	void OnRefresh(wxCommandEvent& event) ;
 	bool GetProcessEnd() override;
 	void EndVideoThread(wxCommandEvent& event);
 	virtual void on_paint(wxPaintEvent& event);
@@ -237,7 +235,6 @@ protected:
 	bool startVideo = false;
 	bool processVideoEnd = false;
 	bool openGLDecoding = true;
-	bool isDXVA2Compatible = false;
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;

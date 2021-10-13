@@ -45,34 +45,16 @@ const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 	return s.ToUTF8();
 }
 
-wxString CConvertUtility::GetTimeLibelle(const int& timePosition)
+
+
+wxString CConvertUtility::GetTimeLibelle(const int& secs)
 {
-	wxString libelle = L"";
-	//wchar_t buf[255];
-	int hour = timePosition / 3600;
-	int minute = (timePosition % 3600) / 60;
-	int seconds = timePosition % 60;
-
-	wxString shour;
-	shour << hour;
-	wxString sminute;
-	sminute << minute;
-	wxString sseconds;
-	sseconds << seconds;
-
-	if (shour.size() < 2)
-		libelle.append(L"0");
-	libelle.append(shour);
-	libelle.append(L":");
-	if (sminute.size() < 2)
-		libelle.append(L"0");
-	libelle.append(sminute);
-	libelle.append(L":");
-	if (sseconds.size() < 2)
-		libelle.append(L"0");
-	libelle.append(sseconds);
-
-	return libelle;
+	uint32_t hh = secs / 3600;
+	uint32_t mm = (secs % 3600) / 60;
+	uint32_t ss = (secs % 3600) % 60;
+	char timestring[9];
+	sprintf(timestring, "%02d:%02d:%02d", hh, mm, ss);
+	return wxString(timestring);
 }
 
 std::vector<wxString> CConvertUtility::split(const wxString& s, char seperator)

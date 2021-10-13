@@ -6,7 +6,8 @@ using namespace std;
 class CFFmpegApp
 {
 public:
-	CFFmpegApp() {
+	CFFmpegApp(const bool showProgressWindow = true) {
+		this->showProgressWindow = showProgressWindow;
 	};
 	~CFFmpegApp() {};
 	
@@ -25,7 +26,7 @@ public:
 private:
 
 	void ExecuteFFmpeg();
-
+	bool showProgressWindow = true;
 	int ret = 0;
 	//int i = 0;
 	char** arrayOfCstrings;

@@ -25,7 +25,6 @@ public:
 
 	virtual void SetSubtitulePicture(CRegardsBitmap* picture) = 0;
 	virtual void DeleteSubtitulePicture() = 0;
-	virtual bool GetDXVA2Compatible() = 0;
 
 	virtual int ChangeAudioStream(int newStreamAudio) = 0;
 	virtual void VolumeUp() = 0;

@@ -42,7 +42,7 @@ namespace Regards
 			{
 			}
 
-			virtual void OnRefresh(wxCommandEvent& event)
+			virtual void OnRefresh(wxCommandEvent& event)  
 			{
 				this->Refresh();
 				this->Update();

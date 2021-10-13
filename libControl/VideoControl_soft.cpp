@@ -801,11 +801,6 @@ void CVideoControlSoft::SetEncoderHardware(const wxString& encoderHardware, cons
 	isOpenGLDecoding = opengl;
 }
 
-bool CVideoControlSoft::GetDXVA2Compatible()
-{
-	return isDXVA2Compatible;
-}
-
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
 	if (!endProgram)

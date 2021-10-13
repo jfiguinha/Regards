@@ -98,7 +98,7 @@ namespace Regards
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
 			void OnClick(wxTimerEvent& event);
-			virtual void BeforeInterpolationBitmap();
+			virtual void BeforeInterpolationBitmap() override;
 
 			wxCursor hCursorCross;
 			CDraw* m_cDessin;
