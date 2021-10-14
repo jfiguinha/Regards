@@ -31,6 +31,8 @@ wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame* copyFrameBuffer = nullptr;
 
+extern Regards::OpenCL::COpenCLEngine* openclEngine;
+
 #ifdef GLUT
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -2205,13 +2207,17 @@ void CVideoControlSoft::FlipHorizontal()
 		this->Refresh();
 }
 
+COpenCLContext* CVideoControlSoft::GetOpenclContext()
+{
+	return openclContext;
+}
+
 bool CVideoControlSoft::IsCPUContext()
 {
 	if (isCPU == -1)
 	{
-		OpenCLDevice* device = COpenCLEngine::GetDefaultDevice();
-		if (device != nullptr)
-			isCPU = (device->deviceType == CL_DEVICE_TYPE_CPU ? 1 : 0);
+		if (openclContext != nullptr)
+			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);

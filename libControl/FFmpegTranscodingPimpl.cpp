@@ -1781,47 +1781,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 	//int modFrame = 0;
 	bool ffmpegToRGBA = false;
-	//int localPos = pos;
-	//bool frameStabilized = false;
 
-	/*
-	if (openCLEngine == nullptr || stabilizeFrame || correctedContrast)
-	{
-		GetBitmapRGBA(tmp_frame);
-		ffmpegToRGBA = true;
-	}
-
-	if (stabilizeFrame)
-	{
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
-
-		if ((encodeOneFrame && oldPos != localPos) || (encodeOneFrame && openCVStabilization->GetNbFrameBuffer() == 0))
-		{
-			openCVStabilization->Init();
-			ffmpegDecodeFrame->SetVideoPosition(pos);
-			oldPos = pos;
-			ffmpegDecodeFrame->CalculVideoSecondStabilization(openCVStabilization, videoCompressOption->videoEffectParameter.stabilizeImageBuffere, true);
-			frameStabilized = true;
-			openCVStabilization->AddFrame(bitmapData);
-		}
-		else if (openCVStabilization->GetNbFrameBuffer() == 0)
-		{
-			openCVStabilization->BufferFrame(bitmapData);
-		}
-		else
-		{
-			frameStabilized = true;
-			openCVStabilization->AddFrame(bitmapData);
-		}
-
-		if (frameStabilized)
-			openCVStabilization->CorrectFrame(bitmapData);
-	}
-
-	if (correctedContrast)
-		COpenCVEffect::BrightnessAndContrastAuto(bitmapData);
-	*/
 	if (!ffmpegToRGBA)
 	{
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)

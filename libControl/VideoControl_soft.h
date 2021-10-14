@@ -36,7 +36,7 @@ public:
 	~CVideoControlSoft() override;
 
 	void ReloadResource();
-
+	COpenCLContext* GetOpenclContext();
 	bool IsPause();
 	void SetVideoDuration(const int64_t& duration, const int64_t& startTime) override;
 	void SetCurrentclock(wxString message);

@@ -19,7 +19,7 @@ using namespace Regards::Control;
 class CPreviewDlg : public wxDialog
 {
 public:
-	CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenCLEngine* openCLEngine,
+	CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenCLContext* openclContext,
 	            CVideoOptionCompress* videoOptionCompress);
 	~CPreviewDlg() override;
 

@@ -124,17 +124,17 @@ namespace Regards
 		class  COpenCLEngine
 		{
 		public:
-			COpenCLEngine(const bool &attachOpenCV);
+			COpenCLEngine();
 			~COpenCLEngine();
-           static OpenCLDevice * GetDefaultDevice();
-			COpenCLContext * GetInstance();
+            
 			static COpenCLContext * CreateInstance(const bool& attachOpenCV);
 			static int GetNbPlatform();
 			static int GetDefaultGpuDeviceInformation();
 			static int SupportOpenCL();
 
 		private:
-			COpenCLContext * _singleton;
+
+			static OpenCLDevice* GetDefaultDevice();
 		};
 
 	}

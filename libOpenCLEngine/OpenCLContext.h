@@ -28,10 +28,6 @@ namespace Regards
 			{
 				return context;
 			}
-            
-#if !(defined(__APPLE__) || defined(__MACOSX))
-            cl_device_id getValidGLCLInteropDevice(cl_context_properties* properties);
-#endif
 
 			bool RegenerateContext(const bool& opengl);
             

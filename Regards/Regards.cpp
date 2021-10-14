@@ -214,9 +214,18 @@ bool MyApp::OnInit()
 		vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 		if (listPlatform.size() == 0)
 			regardsParam->SetIsOpenCLSupport(false);
+		else
+		{
+			regardsParam->SetIsOpenCLSupport(true);
+			openclEngine = new COpenCLEngine();
+		}
 			
 	}
-
+	else
+	{
+		if(regardsParam->GetIsOpenCLSupport())
+			openclEngine = new COpenCLEngine();
+	}
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

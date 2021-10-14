@@ -350,18 +350,6 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
 		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
 
-#ifdef __TEST_WITHOUTSHARINGOPENGL__
-
-		OpenCLDevice* device = new OpenCLDevice();
-		device->deviceIndex = i;
-		device->deviceName = deviceName;
-		device->platformId = platform;
-		device->deviceId = devices[i];
-		device->deviceType = type;
-		device->openGlSharing = 0;
-		listOfDevice.push_back(device);
-
-#else
 		if (type == CL_DEVICE_TYPE_GPU)
 		{
 			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
@@ -381,7 +369,8 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 		device->openGlSharing = supported;
 		listOfDevice.push_back(device);
 
-#endif
+		if (supported)
+			break;
 
 		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 	}
@@ -426,9 +415,9 @@ OpenCLDevice* COpenCLEngine::GetDefaultDevice()
 	return device;
 }
 
-COpenCLEngine::COpenCLEngine(const bool& attachOpenCV)
+COpenCLEngine::COpenCLEngine()
 {
-	_singleton = CreateInstance(attachOpenCV);
+	//_singleton = CreateInstance(attachOpenCV);
 }
 
 COpenCLContext * COpenCLEngine::CreateInstance(const bool& attachOpenCV)
@@ -482,6 +471,8 @@ COpenCLContext * COpenCLEngine::CreateInstance(const bool& attachOpenCV)
 	}
 #endif
 
+	//_singleton = contextLocal;
+
 	return contextLocal;
 }
 
@@ -493,19 +484,9 @@ OpenCLExecutionContext cv::ocl::OpenCLExecutionContext::create(const std::string
 )
 */
 
-COpenCLContext* COpenCLEngine::GetInstance()
-{
-	return _singleton;
-}
-
-
 COpenCLEngine::~COpenCLEngine()
 {
-	if (nullptr != _singleton)
-	{
-		delete _singleton;
-		_singleton = nullptr;
-	}
+
 }
 
 OpenCLDevice* COpenCLDeviceList::SelectDevice(const wxString& deviceName)
@@ -513,24 +494,13 @@ OpenCLDevice* COpenCLDeviceList::SelectDevice(const wxString& deviceName)
 	if (listOfDevice.size() == 0)
 		GetAllDevice();
 
-	// OpenCLDevice * openCLDeviceSelect = nullptr;
-	//int i = 0;
-
 	auto i = std::find_if(listOfDevice.begin(),
 	                      listOfDevice.end(),
 	                      [&](const auto& val) { return val->deviceName == deviceName; });
 
 	if (i != listOfDevice.end())
 		return *i;
-	/*
-    for (OpenCLDevice * openCL : listOfDevice)
-    {
-        if(deviceName == openCL->deviceName)
-        {
-            return openCL;
-        }
-    }
-	*/
+
 	return nullptr;
 }
 
@@ -552,8 +522,6 @@ void COpenCLDeviceList::GetAllDevice()
 			{
 				printf("Platform Error Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
 			}
-			//deviceType = ParseDeviceType("CPU");
-			//GetListOfDevice(listOfDevice, platform->platformId, deviceType);
 		}
 	}
 }
@@ -576,21 +544,7 @@ OpenCLDevice* COpenCLDeviceList::SelectDevice(OpenCLPlatform* platform, const in
 		return *i;
 
 	return nullptr;
-	/*
-    for (OpenCLDevice * openCL : listOfDevice)
-    {
-        if(openCL->deviceIndex == index && platform->platformId == openCL->platformId)
-        {
-            deviceSelected = openCL;
-            break;
-        }
-    }
-	
-
-    return deviceSelected;
-	*/
 }
-
 
 vector<OpenCLDevice*> COpenCLDeviceList::GetPlatformDevice(OpenCLPlatform* platform)
 {

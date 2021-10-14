@@ -1956,11 +1956,6 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		
 	}
 	renderOpenGL->SetCurrent(*this);
-    
-#ifndef __WXGTK__
-    if(regardsParam->GetIsOpenCLSupport() && openclEngine == nullptr)
-        openclEngine = new COpenCLEngine(true);
-#endif
 
 
 	if (renderOpenGL != nullptr)

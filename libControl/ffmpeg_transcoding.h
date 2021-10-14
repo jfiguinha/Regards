@@ -9,7 +9,7 @@ class CRegardsBitmap;
 class CFFmpegTranscoding
 {
 public:
-	CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLEngine* openCLEngine);
+	CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLContext* openclContext);
 	~CFFmpegTranscoding();
 	int EncodeFile(wxWindow* mainWindow, const wxString& input, const wxString& output,
 	               CVideoOptionCompress* videoCompressOption);

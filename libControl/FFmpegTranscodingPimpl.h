@@ -57,7 +57,7 @@ public:
 	};
 
 
-	CFFmpegTranscodingPimpl(COpenCLEngine* openCLEngine, const wxString& acceleratorHardware): stream_ctx(nullptr),
+	CFFmpegTranscodingPimpl(COpenCLContext* openclContext, const wxString& acceleratorHardware): stream_ctx(nullptr),
 		m_dlgProgress(nullptr),
 		videoCompressOption(nullptr), duration{}
 	{
@@ -67,7 +67,7 @@ public:
 		packet.size = 0;
 		this->acceleratorHardware = acceleratorHardware;
 		bitmapCopy = new CRegardsBitmap();
-		//bitmap = nullptr;// new CRegardsBitmap();
+		this->openclContext = openclContext;
 		int supportOpenCL = 0;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -75,14 +75,8 @@ public:
 
 		if (supportOpenCL)
 		{
-			this->openCLEngine = openCLEngine;
-			if (openCLEngine != nullptr)
-			{
-				openclContext = openCLEngine->GetInstance();
-
-				if (openclContext != nullptr)
-					openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-			}
+			if (openclContext != nullptr)
+				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
 	;
@@ -208,7 +202,6 @@ private:
 	AVPacket packet;
 	bool cleanPacket = false;
 
-	COpenCLEngine* openCLEngine = nullptr;
 	COpenCLContext* openclContext = nullptr;
 	CRegardsBitmap* bitmapVideo = nullptr;
 	std::thread* bitmapShow = nullptr;

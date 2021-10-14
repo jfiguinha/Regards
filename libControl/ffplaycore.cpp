@@ -276,7 +276,6 @@ void CFFmfc::SetVideoParameter(int angle, int flipV, int flipH)
 //Send Command "Quit"
 bool CFFmfc::Quit()
 {
-	//do_exit(g_is);
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
@@ -291,7 +290,7 @@ bool CFFmfc::Quit()
 		_pimpl->do_exit(nullptr);
 		isExitNow = true;
 	}
-	
+
 	return isExitNow;
 }
 

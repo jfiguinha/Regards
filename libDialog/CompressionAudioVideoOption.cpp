@@ -48,7 +48,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename,
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename, COpenCLContext* openclContext,
                                                          const wxString& videoOutputFilename)
 {
 	isOk = false;
@@ -287,7 +287,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #else
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, &videoOptionCompress);
+	                                    viewerTheme, videoFilename, openclContext, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
