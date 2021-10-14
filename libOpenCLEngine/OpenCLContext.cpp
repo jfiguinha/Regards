@@ -201,6 +201,38 @@ void COpenCLContext::CreateQueue(cl_command_queue_properties queue_properties)
 	Error::CheckError(err);
 }
 
+
+#if !(defined(__APPLE__) || defined(__MACOSX))
+cl_device_id COpenCLContext::getValidGLCLInteropDevice(cl_context_properties* properties) {
+
+	cl_device_id interopDeviceId;
+
+	int status;
+	size_t deviceSize = 0;
+
+	// Load extension function call
+	clGetGLContextInfoKHR_fn glGetGLContextInfo_func = (clGetGLContextInfoKHR_fn)clGetExtensionFunctionAddress("clGetGLContextInfoKHR");
+
+	// Ask for the CL device associated with the GL context
+	status = glGetGLContextInfo_func( properties, 
+                                    CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR,
+                                    sizeof(cl_device_id), 
+                                    &interopDeviceId, 
+                                    &deviceSize);
+	
+	if(deviceSize == 0) 
+    {
+        throw Error("No GLGL devices found for current platform");
+	}
+
+	if(status != CL_SUCCESS) {
+		throw Error("Could not get CLGL interop device for the current platform. Failure occured during call to clGetGLContextInfoKHR.");
+	}
+
+	return interopDeviceId;
+}
+#endif
+
 void COpenCLContext::CreateContext()
 {
 	if (!platform)
@@ -227,9 +259,9 @@ void COpenCLContext::CreateContext()
 
 		// Create CL context properties, add GLX context & handle to DC
 		cl_context_properties properties[] = {
-		CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
 		 CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
+        CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 0
 		};
 #elif defined(__APPLE__)
@@ -249,6 +281,9 @@ void COpenCLContext::CreateContext()
 		//cl_device_id devices[32]; size_t size;
 		//clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);
 
+#ifdef __WXGTK__
+        device = getValidGLCLInteropDevice(properties);
+#endif
 		cl_int err = 0;
 		context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
 		//Error::CheckError(err);

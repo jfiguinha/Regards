@@ -591,6 +591,7 @@ OpenCLDevice* COpenCLDeviceList::SelectDevice(OpenCLPlatform* platform, const in
 	*/
 }
 
+
 vector<OpenCLDevice*> COpenCLDeviceList::GetPlatformDevice(OpenCLPlatform* platform)
 {
 	vector<OpenCLDevice*> listSelectDevice;

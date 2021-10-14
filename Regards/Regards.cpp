@@ -217,14 +217,18 @@ bool MyApp::OnInit()
 		else
 		{
 			regardsParam->SetIsOpenCLSupport(true);
+#ifndef __WXGTK__
 			openclEngine = new COpenCLEngine(true);
+#endif
 		}
 			
 	}
 	else
 	{
+#ifndef __WXGTK__
 		if(regardsParam->GetIsOpenCLSupport())
 			openclEngine = new COpenCLEngine(true);
+#endif
 	}
 
 #ifdef WIN32
