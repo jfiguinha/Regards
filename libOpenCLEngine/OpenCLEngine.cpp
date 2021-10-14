@@ -342,6 +342,27 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 		nullptr
 	);
 	Error::CheckError(err);
+	bool findOpenGLSharing = false;
+	for (cl_uint i = 0; i < num_of_devices; ++i)
+	{
+		int supported = 0;
+		cl_device_type type;
+		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
+		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
+
+		if (type == CL_DEVICE_TYPE_GPU)
+		{
+			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
+			supported = supportExt.find(CL_GL_SHARING_EXT);
+			if (supported > 0)
+				findOpenGLSharing = true;
+		}
+
+		if (findOpenGLSharing)
+			break;
+
+		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+	}
 
 	for (cl_uint i = 0; i < num_of_devices; ++i)
 	{
@@ -360,18 +381,31 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 				supported = 0;
 		}
 
-		auto device = new OpenCLDevice();
-		device->deviceIndex = i;
-		device->deviceName = deviceName;
-		device->platformId = platform;
-		device->deviceId = devices[i];
-		device->deviceType = type;
-		device->openGlSharing = supported;
-		listOfDevice.push_back(device);
 
-		if (supported)
+		if (findOpenGLSharing && supported)
+		{
+			auto device = new OpenCLDevice();
+			device->deviceIndex = i;
+			device->deviceName = deviceName;
+			device->platformId = platform;
+			device->deviceId = devices[i];
+			device->deviceType = type;
+			device->openGlSharing = supported;
+			listOfDevice.push_back(device);
+
 			break;
-
+		}
+		else
+		{
+			auto device = new OpenCLDevice();
+			device->deviceIndex = i;
+			device->deviceName = deviceName;
+			device->platformId = platform;
+			device->deviceId = devices[i];
+			device->deviceType = type;
+			device->openGlSharing = supported;
+			listOfDevice.push_back(device);
+		}
 		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 	}
 }
