@@ -31,8 +31,6 @@ wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame* copyFrameBuffer = nullptr;
 
-extern Regards::OpenCL::COpenCLEngine* openclEngine;
-
 #ifdef GLUT
 #ifdef __APPLE__
 #include <GLUT/glut.h>
