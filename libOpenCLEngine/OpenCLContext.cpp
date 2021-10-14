@@ -227,9 +227,9 @@ void COpenCLContext::CreateContext()
 
 		// Create CL context properties, add GLX context & handle to DC
 		cl_context_properties properties[] = {
+		CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
 		 CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
-		 CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 0
 		};
 #elif defined(__APPLE__)
