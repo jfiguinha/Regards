@@ -117,6 +117,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 
 }
 
+void CVideoControlSoft::DiaporamaMode(const bool& value)
+{
+	isDiaporama = value;
+}
+
 void CVideoControlSoft::RepeatVideo()
 {
 	if (repeatVideo)
@@ -852,7 +857,7 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 
 
-		if (repeatVideo && filename == ffmfc->Getfilename())
+		if (repeatVideo && !endProgram && !isDiaporama && filename == ffmfc->Getfilename())
 		{
 			PlayMovie(filename, true);
 		}

@@ -246,22 +246,15 @@ void COpenCLContext::CreateContext()
 
     #endif
 
-        // Find CL capable devices in the current GL context
-		cl_device_id devices[32]; size_t size;
-		clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);
-        if(size > 0)
-        {
+		cl_int err = 0;
+		context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
+		//Error::CheckError(err);
+		if (err == CL_SUCCESS)
+		{
+			sharedContextCompatible = true;
+			return;
+		}
 
-            cl_int err = 0;
-            context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
-            //Error::CheckError(err);
-            if (err == CL_SUCCESS)
-            {
-                sharedContextCompatible = true;
-                return;
-            }
-        
-        }
 		std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
 		std::cerr << "Create a compatible OpenCL context." << std::endl;
 	}

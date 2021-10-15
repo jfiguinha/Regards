@@ -268,12 +268,14 @@ CShowVideo::~CShowVideo()
 void CShowVideo::SetDiaporamaMode()
 {
 	isDiaporama = true;
+	videoWindow->DiaporamaMode(true);
 	this->Resize();
 }
 
 void CShowVideo::SetNormalMode()
 {
 	isDiaporama = false;
+	videoWindow->DiaporamaMode(false);
 	this->Resize();
 }
 

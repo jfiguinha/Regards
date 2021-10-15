@@ -51,6 +51,7 @@ public:
 	void SetZoomIndex(const int& pos);
 	void ShrinkVideo();
 	void RepeatVideo();
+	void DiaporamaMode(const bool & value);
 	vector<int> GetZoomValue();
 	virtual CRegardsBitmap* SavePicture(bool& isFromBuffer);
 	bool IsFFmpegDecode();
@@ -183,6 +184,7 @@ protected:
 	bool newVideo;
 	bool videoEnd;
 	bool stopVideo;
+	bool isDiaporama = false;
 	bool exit;
 	bool quitWindow;
 	bool videoStart;
