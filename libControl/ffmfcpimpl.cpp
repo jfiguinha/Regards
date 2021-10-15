@@ -2352,13 +2352,8 @@ fail:
 		avformat_close_input(&ic);
 
 	av_packet_free(&pkt);
-	if (ret != 0) {
-		SDL_Event event;
-
-		event.type = FF_QUIT_EVENT;
-		event.user.data1 = is;
-		SDL_PushEvent(&event);
-	}
+	wxCommandEvent evt(FF_STOP_EVENT);
+	is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
 	SDL_DestroyMutex(wait_mutex);
 	return 0;
 }

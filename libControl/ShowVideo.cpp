@@ -78,22 +78,6 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowVideo::OnSetPosition));
 	this->windowMain = windowMain;
 
-	/*
-#ifndef WIN32
-	if (softRender && decoder == "")
-	{
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-		wxString videoPathTemp = "";
-		videoPathTemp = resourcePath + "/video.mp4";
-		videoWindow->PlayMovie(videoPathTemp, true);
-	}
-	else
-		videoWindow->PlayFirstMovie(false);
-#else
-	videoWindow->PlayFirstMovie(false);
-#endif
- * */
-
 	videoWindow->PlayFirstMovie(false);
 }
 
@@ -226,6 +210,9 @@ void CShowVideo::ClickButton(const int& id)
 		break;
 	case PAUSEBUTTONID:
 		PauseVideo();
+		break;
+	case REPEATID:
+		RepeatVideo();
 		break;
 	case SPEAKERBUTTONID:
 		slideToolbar->Show(true);
@@ -585,6 +572,11 @@ void CShowVideo::PlayVideo()
 {
 	videoWindow->OnPlay();
 	videoSlider->SetPlay();
+}
+
+void CShowVideo::RepeatVideo()
+{
+	videoWindow->RepeatVideo();
 }
 
 void CShowVideo::PauseVideo()

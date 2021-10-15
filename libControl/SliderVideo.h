@@ -9,7 +9,7 @@ using namespace Regards::Window;
 #define SPEAKERBUTTONID 3
 #define ZOOMBUTTONID 4
 #define SCREENFORMATID 5
-
+#define REPEATID 6
 class CRegardsBitmap;
 
 namespace Regards
@@ -69,10 +69,15 @@ namespace Regards
 			int DrawVolumeLibelle(wxDC* context, const wxString& libelle);
 			int DrawTotalTimeLibelle(wxDC* context, const wxString& libelle, const int& volumePos);
 			void InsertPlayButton(wxDC* context);
+
 			void InsertSpeakerButton(const int& xStart, wxDC* context);
 			void InsertZoomButton(const int& xStart, wxDC* context);
 			void InsertScreenFormatButton(const int& xStart, wxDC* context);
+			void InsertRepeatButton(const int& xStart, wxDC* context);
 
+			void InsertButton(const int& xStart, wxDC* context, wxRect& position, wxImage& button, const bool& isActif, const wxString& pictureName);
+
+			wxImage buttonRepeat;
 			wxImage buttonPlay;
 			wxImage buttonPause;
 			wxImage buttonVolumeUp;
@@ -98,6 +103,7 @@ namespace Regards
 			bool buttonScreenActif;
 			bool buttonZoomActif;
 			bool buttonSpeakerActif;
+			bool buttonRepeatActif = false;
 			bool isPlay;
 			bool m_bMouseOver;
 			bool m_bTracking;
@@ -105,6 +111,7 @@ namespace Regards
 			wxRect positionButton;
 			wxRect positionPlayOrPauseButton;
 			wxRect positionZoomButton;
+			wxRect positionRepeatButton;
 			wxRect positionSpeakerButton;
 			wxRect positionScreenFormatButton;
 			wxRect positionTextePast;

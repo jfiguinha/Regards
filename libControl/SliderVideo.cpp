@@ -152,8 +152,7 @@ int CSliderVideo::DrawTotalTimeLibelle(wxDC* context, const wxString& libelle, c
 
 	int y = (GetWindowHeight() - totalTimeSize.y) / 2;
 	int x = GetWindowWidth() - (volumePos + themeSlider.GetMarge()) - (totalTimeSize.x + themeSlider.GetMarge() / 2) -
-		themeSlider.GetButtonSpeakerWidth() - themeSlider.GetButtonVolumeUpWidth() - themeSlider.
-		GetButtonVolumeDownWidth();
+		((themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge()) * 4);
 
 	DrawTexte(context, libelle, x, y, themeSlider.font);
 
@@ -224,29 +223,30 @@ void CSliderVideo::InsertPlayButton(wxDC* context)
 	}
 }
 
-void CSliderVideo::InsertSpeakerButton(const int& xStart, wxDC* context)
+
+void CSliderVideo::InsertButton(const int& xStart, wxDC* context, wxRect & position, wxImage & button, const bool &isActif, const wxString & pictureName)
 {
 	int yPos = themeSlider.GetButtonVolumeUpHeight(); //buttonVolumeUp.GetHeight();
 	wxImage bmp;
 
-	if (!buttonSpeaker.IsOk() || (buttonSpeaker.GetWidth() != themeSlider.GetButtonVolumeUpWidth() || buttonSpeaker.
+	if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonVolumeUpWidth() || button.
 		GetHeight() != themeSlider.GetButtonVolumeUpHeight()))
 	{
-		buttonSpeaker = CLibResource::CreatePictureFromSVG("IDB_VOLUME_UP_VIDEO", themeSlider.GetButtonVolumeUpWidth(),
-		                                                   themeSlider.GetButtonVolumeUpHeight());
+		button = CLibResource::CreatePictureFromSVG(pictureName, themeSlider.GetButtonVolumeUpWidth(),
+			themeSlider.GetButtonVolumeUpHeight());
 	}
-	bmp = buttonSpeaker;
+	bmp = button;
 
 
-	if (!buttonSpeakerActif)
+	if (!isActif)
 	{
 		bmp = bmp.ConvertToGreyscale();
 		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
+			colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
 	}
 	else
 		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+			colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
 	if (bmp.IsOk())
 	{
@@ -255,49 +255,32 @@ void CSliderVideo::InsertSpeakerButton(const int& xStart, wxDC* context)
 
 		context->DrawBitmap(bmp, xStart, yPosBitmap);
 
-		positionSpeakerButton.x = xStart;
-		positionSpeakerButton.width = bmp.GetWidth();
-		positionSpeakerButton.y = yPosBitmap;
-		positionSpeakerButton.height = bmp.GetHeight();
+		position.x = xStart;
+		position.width = bmp.GetWidth();
+		position.y = yPosBitmap;
+		position.height = bmp.GetHeight();
 	}
 }
 
+void CSliderVideo::InsertRepeatButton(const int& xStart, wxDC* context)
+{
+	InsertButton(xStart, context, positionRepeatButton, buttonRepeat, buttonRepeatActif, "IDB_REFRESH");
+}
+
+void CSliderVideo::InsertSpeakerButton(const int& xStart, wxDC* context)
+{
+	InsertButton(xStart, context, positionSpeakerButton, buttonSpeaker, buttonSpeakerActif, "IDB_VOLUME_UP_VIDEO");
+}
+
+void CSliderVideo::InsertZoomButton(const int& xStart, wxDC* context)
+{
+	InsertButton(xStart, context, positionZoomButton, buttonVolumeDown, buttonZoomActif, "IDB_ZOOMPLUS");
+}
+
+
 void CSliderVideo::InsertScreenFormatButton(const int& xStart, wxDC* context)
 {
-	int yPos = themeSlider.GetButtonVolumeUpHeight(); //buttonVolumeUp.GetHeight();
-	wxImage bmp;
-
-	if (!buttonVolumeUp.IsOk() || (buttonVolumeUp.GetWidth() != themeSlider.GetButtonVolumeUpWidth() || buttonVolumeUp.
-		GetHeight() != themeSlider.GetButtonVolumeUpHeight()))
-	{
-		buttonVolumeUp = CLibResource::CreatePictureFromSVG("IDB_SCREENPNG", themeSlider.GetButtonVolumeUpWidth(),
-		                                                    themeSlider.GetButtonVolumeUpHeight());
-	}
-	bmp = buttonVolumeUp;
-
-
-	if (!buttonScreenActif)
-	{
-		bmp = bmp.ConvertToGreyscale();
-		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
-	}
-	else
-		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-
-	if (bmp.IsOk())
-	{
-		int yPosBitmap = (GetWindowHeight() - yPos) / 2;
-
-
-		context->DrawBitmap(bmp, xStart, yPosBitmap);
-
-		positionScreenFormatButton.x = xStart;
-		positionScreenFormatButton.width = bmp.GetWidth();
-		positionScreenFormatButton.y = yPosBitmap;
-		positionScreenFormatButton.height = bmp.GetHeight();
-	}
+	InsertButton(xStart, context, positionScreenFormatButton, buttonVolumeUp, buttonScreenActif, "IDB_SCREENPNG");
 }
 
 void CSliderVideo::UpdateScreenRatio()
@@ -305,39 +288,6 @@ void CSliderVideo::UpdateScreenRatio()
 	this->Resize();
 }
 
-void CSliderVideo::InsertZoomButton(const int& xStart, wxDC* context)
-{
-	wxImage bmp;
-
-
-	if (!buttonVolumeDown.IsOk() || (buttonVolumeDown.GetWidth() != themeSlider.GetButtonVolumeDownWidth() ||
-		buttonVolumeDown.GetHeight() != themeSlider.GetButtonVolumeDownHeight()))
-	{
-		buttonVolumeDown = CLibResource::CreatePictureFromSVG("IDB_ZOOMPLUS", themeSlider.GetButtonVolumeDownWidth(),
-		                                                      themeSlider.GetButtonVolumeDownHeight());
-	}
-	bmp = buttonVolumeDown;
-
-
-	int yPos = themeSlider.GetButtonVolumeDownHeight(); //buttonVolumeDown.GetHeight();
-	if (!buttonZoomActif)
-	{
-		bmp = bmp.ConvertToGreyscale();
-		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorInactifReplacement.Red(), colorInactifReplacement.Green(), colorInactifReplacement.Blue());
-	}
-	else
-		bmp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-		            colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-
-	int yPosBitmap = (GetWindowHeight() - yPos) / 2;
-	context->DrawBitmap(bmp, xStart, yPosBitmap);
-
-	positionZoomButton.x = xStart;
-	positionZoomButton.width = bmp.GetWidth();
-	positionZoomButton.y = yPosBitmap;
-	positionZoomButton.height = bmp.GetHeight();
-}
 
 void CSliderVideo::Draw(wxDC* context)
 {
@@ -359,8 +309,7 @@ void CSliderVideo::Draw(wxDC* context)
 		positionSlider.x = themeSlider.GetMarge() + timePastSize + themeSlider.GetMarge() + themeSlider.
 			GetButtonPlayWidth();
 		positionSlider.width = (GetWindowWidth() - (volumeSize + themeSlider.GetMarge()) - (totalTimeSize + themeSlider.
-				GetMarge()) - themeSlider.GetButtonSpeakerWidth() - themeSlider.GetButtonVolumeUpWidth() - themeSlider.
-			GetButtonVolumeDownWidth()) - positionSlider.x;
+				GetMarge())) - ((themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge()) * 4) - positionSlider.x;
 		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
 		DrawShapeElement(&sourceDCContext, positionSlider);
@@ -378,12 +327,15 @@ void CSliderVideo::Draw(wxDC* context)
 		sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
 		int xButtonPos = positionSlider.x + positionSlider.width + (totalTimeSize + themeSlider.GetMarge());
+		InsertRepeatButton(xButtonPos, &sourceDCContext);
+
+		xButtonPos += themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge();
 		InsertSpeakerButton(xButtonPos, &sourceDCContext);
 
-		xButtonPos += themeSlider.GetButtonSpeakerWidth() + 5;
+		xButtonPos += themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge();
 		InsertZoomButton(xButtonPos, &sourceDCContext);
 
-		xButtonPos = GetWindowWidth() - themeSlider.GetButtonSpeakerWidth();
+		xButtonPos += themeSlider.GetButtonSpeakerWidth() + themeSlider.GetMarge();
 		InsertScreenFormatButton(xButtonPos, &sourceDCContext);
 
 		context->Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &sourceDCContext, 0, 0);
@@ -559,6 +511,15 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 		{
 			wxSetCursor(hCursorHand);
 			sliderEvent->ClickButton(SPEAKERBUTTONID);
+		}
+		else if (xPos >= positionRepeatButton.x && xPos <= (positionRepeatButton.x + positionRepeatButton.width))
+		{
+			wxSetCursor(hCursorHand);
+			sliderEvent->ClickButton(REPEATID);
+			if (buttonRepeatActif)
+				buttonRepeatActif = false;
+			else
+				buttonRepeatActif = true;
 		}
 		else if (xPos >= positionZoomButton.x && xPos <= (positionZoomButton.x + positionZoomButton.width))
 		{

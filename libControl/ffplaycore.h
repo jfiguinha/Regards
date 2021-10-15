@@ -72,6 +72,7 @@ public:
 	void VideoDisplaySize(int width, int height);
 	void SetOutputMode(int outputMode);
 	void SetVideoParameter(int angle, int flipV, int flipH);
+	wxString Getfilename();
 
 private:
 	void StopEvent(wxCommandEvent& event);
@@ -89,6 +90,7 @@ private:
 	void ChangeAudioEvent(wxCommandEvent& event);
 	void ChangeSubtitleEvent(wxCommandEvent& event);
 
+	wxString filename;
 	CFFmfcPimpl::VideoState* cur_stream;
 	CFFmfcPimpl* _pimpl;
 };

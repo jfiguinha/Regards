@@ -85,6 +85,7 @@ namespace Regards
 			void OnVideoPause() override;
 			void OnAfterOpenVideo() override;
 			void OnPositionVideo(const int64_t& position) override;
+			void RepeatVideo();
 
 		private:
 			void OnSave(wxCommandEvent& event);

@@ -453,6 +453,10 @@ void CFFmfc::Seek_bar(int pos)
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
+wxString CFFmfc::Getfilename()
+{
+	return this->filename;
+}
 
 /* Called from the main */
 //½âÂëÖ÷º¯Êý
@@ -474,6 +478,8 @@ int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxSt
 
 	if (_pimpl == nullptr)
 		_pimpl = new CFFmfcPimpl();
+
+	this->filename = filename;
 
 	_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = isOpenGLDecoding;

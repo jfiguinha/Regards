@@ -117,6 +117,13 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 
 }
 
+void CVideoControlSoft::RepeatVideo()
+{
+	if (repeatVideo)
+		repeatVideo = false;
+	else
+		repeatVideo = true;
+}
 
 void CVideoControlSoft::OnPlayStop(wxTimerEvent& event)
 {
@@ -825,6 +832,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 		stopVideo = true;
 		videoEnd = true;
 	}
+
 }
 
 
@@ -842,6 +850,12 @@ void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
 		fpsTimer->Stop();
 		videoRenderStart = false;
 		stopVideo = true;
+
+
+		if (repeatVideo && filename == ffmfc->Getfilename())
+		{
+			PlayMovie(filename, true);
+		}
 	}
 }
 
@@ -928,14 +942,6 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 
 bool CVideoControlSoft::IsHardwareCompatible()
 {
-	/*
-	if (acceleratorHardware != "")
-	{
-		CThumbnailVideo video(filename, acceleratorHardware);
-		return video.IsHardwareDecoderCompatible();
-	}
-	*/
-	acceleratorHardware = "dxva2";
 	return true;
 }
 

@@ -50,6 +50,7 @@ public:
 	int GetZoomIndex();
 	void SetZoomIndex(const int& pos);
 	void ShrinkVideo();
+	void RepeatVideo();
 	vector<int> GetZoomValue();
 	virtual CRegardsBitmap* SavePicture(bool& isFromBuffer);
 	bool IsFFmpegDecode();
@@ -212,7 +213,7 @@ protected:
 	bool flipV;
 	bool flipH;
 	bool oldBicubic = false;
-
+	bool repeatVideo = false;
 	int isCPU = -1;
 	bool isffmpegDecode = false;
 	bool deleteTexture = false;
