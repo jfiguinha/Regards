@@ -42,6 +42,7 @@ sudo apt install libunistring-dev
 sudo apt install libass-dev
 sudo apt install libvorbis-dev
 sudo apt install libatlas-base-dev
+sudo apt install opencl-headers
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
