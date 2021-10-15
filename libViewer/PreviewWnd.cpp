@@ -327,6 +327,7 @@ void CPreviewWnd::SetDiaporamaMode()
 	previewToolbar->EnableNavigationButton();
 	isDiaporama = true;
 	showBitmapWindow->SetDiaporamaMode();
+	showVideoWindow->SetDiaporamaMode();
 	this->Resize();
 }
 
@@ -335,6 +336,7 @@ void CPreviewWnd::StopDiaporamaMode()
 	previewToolbar->EnableNavigationButton();
 	isDiaporama = false;
 	showBitmapWindow->SetNormalMode();
+	showVideoWindow->SetNormalMode();
 	this->Resize();
 }
 
