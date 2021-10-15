@@ -392,7 +392,7 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 			device->deviceType = type;
 			device->openGlSharing = supported;
 			listOfDevice.push_back(device);
-
+            printf("Device found OpenGL shared : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 			break;
 		}
 		else
@@ -406,7 +406,7 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 			device->openGlSharing = supported;
 			listOfDevice.push_back(device);
 		}
-		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+		
 	}
 }
 

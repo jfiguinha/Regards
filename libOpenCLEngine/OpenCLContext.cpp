@@ -215,48 +215,53 @@ void COpenCLContext::CreateContext()
 
 	if (isOpenGL)
 	{
-#ifdef WIN32
-		// Create CL context properties, add WGL context & handle to DC
-		cl_context_properties properties[] = {
-			CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
-			CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
-			CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
-			0
-		};
-#elif defined(__WXGTK__)
 
-		// Create CL context properties, add GLX context & handle to DC
-		cl_context_properties properties[] = {
-		 CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
-		 CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
-		 CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
-		 0
-		};
-#elif defined(__APPLE__)
+    #ifdef WIN32
+            // Create CL context properties, add WGL context & handle to DC
+            cl_context_properties properties[] = {
+                CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
+                CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
+                CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
+                0
+            };
+    #elif defined(__WXGTK__)
 
-		// Get current CGL Context and CGL Share group
-		CGLContextObj kCGLContext = CGLGetCurrentContext();
-		CGLShareGroupObj kCGLShareGroup = CGLGetShareGroup(kCGLContext);
-		// Create CL context properties, add handle & share-group enum
-		cl_context_properties properties[] = {
-			CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
-		(cl_context_properties)kCGLShareGroup, 0
-		};
+            // Create CL context properties, add GLX context & handle to DC
+            cl_context_properties properties[] = {
+             CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
+             CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
+             CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
+             0
+            };
+    #elif defined(__APPLE__)
 
-#endif
+            // Get current CGL Context and CGL Share group
+            CGLContextObj kCGLContext = CGLGetCurrentContext();
+            CGLShareGroupObj kCGLShareGroup = CGLGetShareGroup(kCGLContext);
+            // Create CL context properties, add handle & share-group enum
+            cl_context_properties properties[] = {
+                CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+            (cl_context_properties)kCGLShareGroup, 0
+            };
 
-		// Find CL capable devices in the current GL context
-		//cl_device_id devices[32]; size_t size;
-		//clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);
+    #endif
 
-		cl_int err = 0;
-		context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
-		//Error::CheckError(err);
-		if (err == CL_SUCCESS)
-		{
-			sharedContextCompatible = true;
-			return;
-		}
+        // Find CL capable devices in the current GL context
+		cl_device_id devices[32]; size_t size;
+		clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);
+        if(size > 0)
+        {
+
+            cl_int err = 0;
+            context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
+            //Error::CheckError(err);
+            if (err == CL_SUCCESS)
+            {
+                sharedContextCompatible = true;
+                return;
+            }
+        
+        }
 		std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
 		std::cerr << "Create a compatible OpenCL context." << std::endl;
 	}
