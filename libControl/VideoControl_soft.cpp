@@ -40,7 +40,7 @@ extern Regards::OpenCL::COpenCLEngine* openclEngine;
 #include <GL/glut.h>
 #endif
 #endif
-#include <CL/cl_gl.h>
+//#include <CL/cl_gl.h>
 
 
 CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,

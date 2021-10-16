@@ -281,7 +281,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	GetCompressionOption(&videoOptionCompress);
 
 #ifdef __APPLE__
-	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, &videoOptionCompress);
+	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openclContext, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
