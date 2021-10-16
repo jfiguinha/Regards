@@ -40,6 +40,11 @@ extern "C" {
 #include "jerror.h"
 }
 
+#ifndef boolean
+#define boolean int
+#define UINT16 uint16_t
+#endif
+
 #include "FreeImage.h"
 #include "Utilities.h"
 

@@ -1,7 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include "../libextern/wxWidgets-master/include/wx/msw/wx.rc"
+//#include "../libextern/wxWidgets-master/include/wx/msw/wx.rc"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.

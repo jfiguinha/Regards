@@ -29,7 +29,7 @@
 #pragma warning (disable : 4786) // identifier was truncated to 'number' characters
 #endif
 
-#include "libtiff/tiffiop.h"
+#include "tiffiop.h"
 
 #include "FreeImage.h"
 #include "Utilities.h"
@@ -39,6 +39,44 @@
 // ----------------------------------------------------------
 //   Extended TIFF Directory GEO Tag Support
 // ----------------------------------------------------------
+
+/*
+ * Return size of TIFFDataType in bytes.
+ *
+ * XXX: We need a separate function to determine the space needed
+ * to store the value. For TIFF_RATIONAL values TIFFDataWidth() returns 8,
+ * but we use 4-byte float to represent rationals.
+ */
+int
+_TIFFDataSize(TIFFDataType type)
+{
+	switch (type)
+	{
+	case TIFF_BYTE:
+	case TIFF_SBYTE:
+	case TIFF_ASCII:
+	case TIFF_UNDEFINED:
+		return 1;
+	case TIFF_SHORT:
+	case TIFF_SSHORT:
+		return 2;
+	case TIFF_LONG:
+	case TIFF_SLONG:
+	case TIFF_FLOAT:
+	case TIFF_IFD:
+	case TIFF_RATIONAL:
+	case TIFF_SRATIONAL:
+		return 4;
+	case TIFF_DOUBLE:
+	case TIFF_LONG8:
+	case TIFF_SLONG8:
+	case TIFF_IFD8:
+		return 8;
+	default:
+		return 0;
+	}
+}
+
 
 /**
   Tiff info structure.

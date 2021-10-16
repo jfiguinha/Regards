@@ -172,7 +172,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\libtiff;$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\libjpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
@@ -196,7 +196,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\libtiff;$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(IncludePath)</IncludePath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">
@@ -480,7 +480,7 @@ copy ..\FreeImage.h ..\..\Dist\x32
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\3rdparty\openexr;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Iex;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Half;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\IlmImf;$(SolutionDir)libextern\opencv\opencv-4.5.1\3rdparty\OpenEXR\Imath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>OPJ_EXPORTS;IMF_EXPORT;FREEIMAGE_LIB;WIN32;NDEBUG;OPJ_STATIC;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>

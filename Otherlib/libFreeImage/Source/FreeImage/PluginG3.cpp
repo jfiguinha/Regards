@@ -20,7 +20,7 @@
 // Use at your own risk!
 // ==========================================================
 
-#include "libtiff/tiffiop.h"
+#include "tiffiop.h"
 
 #include "FreeImage.h"
 #include "Utilities.h"
