@@ -128,7 +128,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cxxflags);-fpermissive;-Wall;-pthread;;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
+      <Compiler Options="-fpermissive;-Wall;-pthread;;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="Source"/>
         <IncludePath Value="../../libextern/zlib"/>

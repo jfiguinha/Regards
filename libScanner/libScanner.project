@@ -48,7 +48,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cxxflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
+      <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libAppleFunction"/>

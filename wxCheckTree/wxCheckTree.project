@@ -19,7 +19,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-std=gnu++14;$(shell wx-config --cxxflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-std=gnu++14;-Wall;-pthread" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libResource"/>

@@ -120,7 +120,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cxxflags);-fopenmp;-std=gnu++17;-Wall;-flto" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-fopenmp;-std=gnu++17;-Wall;-flto" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlite"/>
