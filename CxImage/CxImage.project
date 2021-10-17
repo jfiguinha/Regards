@@ -97,6 +97,7 @@
         <IncludePath Value="../libextern/jasper-2.0.14/build/src/libjasper/include"/>
         <IncludePath Value="../libextern/jasper-2.0.14/src/libjasper/include"/>
         <IncludePath Value="../libextern/libtiff"/>
+        <IncludePath Value="../libextern/libjpeg"/>
         <IncludePath Value="../libextern/libpng"/>
         <IncludePath Value="../Otherlib/libJbig"/>
       </Compiler>

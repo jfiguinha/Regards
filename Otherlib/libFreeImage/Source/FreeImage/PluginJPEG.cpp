@@ -40,7 +40,7 @@ extern "C" {
 #include "jerror.h"
 }
 
-#ifdef WIN32
+#ifndef __APPLE__
 #ifndef boolean
 #define boolean int
 #define UINT16 uint16_t
