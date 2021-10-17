@@ -155,7 +155,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell wx-config --cppflags);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-Wall;$(shell wx-config --cxxflags);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libTheme"/>

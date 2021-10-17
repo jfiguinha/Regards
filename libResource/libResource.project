@@ -42,7 +42,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell wx-config --cxxflags);-Wall;-pthread;-std=gnu++14;-Wall;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>

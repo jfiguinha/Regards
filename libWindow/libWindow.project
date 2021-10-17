@@ -153,7 +153,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell wx-config --cxxflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>

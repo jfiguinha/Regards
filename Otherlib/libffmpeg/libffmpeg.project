@@ -26,7 +26,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cppflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
+      <Compiler Options="$(shell wx-config --cxxflags);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../../libextern/ffmpeg-master/"/>
         <IncludePath Value="../../include"/>

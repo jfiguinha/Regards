@@ -60,7 +60,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-std=gnu++14;$(shell wx-config --cppflags);-pthread;-Wno-narrowing;-fpermissive" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-Wall;-std=gnu++14;$(shell wx-config --cxxflags);-pthread;-Wno-narrowing;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="include"/>
         <IncludePath Value="include/wx"/>
         <IncludePath Value="../../include"/>

@@ -16,7 +16,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell wx-config --cppflags);-Wall;-pthread;" C_Options="$(shell wx-config --cflags);-pthread" Assembler="">
+      <Compiler Options="$(shell wx-config --cxxflags);-Wall;-pthread;" C_Options="$(shell wx-config --cflags);-pthread" Assembler="">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="">
