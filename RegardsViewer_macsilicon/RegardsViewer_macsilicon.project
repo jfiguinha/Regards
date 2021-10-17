@@ -173,10 +173,7 @@
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="$(shell wx-config   --libs --unicode=yes);-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT;-framework ImageCaptureCore;-framework CoreML;-framework Vision;">
-        <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
-        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
-        <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="wxCheckTree"/>
@@ -340,7 +337,7 @@
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavcodec.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavfilter.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavformat.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -451,7 +448,6 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/libxau/lib/libXau.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/p11-kit/lib/libp11-kit.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /opt/homebrew/opt/libffi/lib/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libidn2/lib/libidn2.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/gcc/lib/gcc/11/libgfortran.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -524,7 +520,6 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libtheoraenc.1.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libffi/lib/libffi.7.dylib @executable_path/../Frameworks/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libxau/lib/libXau.6.dylib @executable_path/../Frameworks/libXau.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib @executable_path/../Frameworks/libXdmcp.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/ffmpeg/4.4_2/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libpostproc.55.dylib</Command>
@@ -938,7 +933,7 @@
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
         <Command Enabled="no">#chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /opt/homebrew/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavcodec.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavfilter.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/lib/libavformat.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1043,6 +1038,8 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/opencv/lib/libopencv_xphoto.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/opencv/lib/libopencv_photo.4.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libraw/lib/libraw_r.20.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /opt/homebrew/opt/media-info/lib/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /opt/homebrew/opt/fftw/lib/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openexr/lib/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/openexr/lib/libIlmThread-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/imath/lib/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1051,7 +1048,6 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/libxau/lib/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/p11-kit/lib/libp11-kit.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /opt/homebrew/opt/libffi/lib/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libidn2/lib/libidn2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/gcc/lib/gcc/11/libgfortran.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1071,6 +1067,9 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/webp/lib/libwebpdecoder.3.dylib @executable_path/../Frameworks/libwebpdecoder.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/media-info/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/exiv2/lib/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/fftw/lib/libfftw3f.3.dylib @executable_path/../Frameworks/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/webp/lib/libwebpdemux.2.dylib @executable_path/../Frameworks/libwebpdemux.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/openexr/lib/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /opt/homebrew/opt/imath/lib/libImath-3_1.29.dylib @executable_path/../Frameworks/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1130,7 +1129,6 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtheoraenc.1.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libffi/lib/libffi.7.dylib @executable_path/../Frameworks/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libxau/lib/libXau.6.dylib @executable_path/../Frameworks/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib @executable_path/../Frameworks/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/ffmpeg/4.4_2/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpostproc.55.dylib</Command>
@@ -1459,6 +1457,20 @@
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/imath/lib/libImath-3_1.29.dylib @executable_path/../Frameworks/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libOpenEXR-3_1.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libOpenEXR-3_1.30.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-3_1.30.dylib</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/libffi/lib/libffi.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/libssh/lib/libssh.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/gettext/lib/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/Cellar/media-info/21.09/lib/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/gcc/lib/gcc/11/libgcc_s.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/libvmaf/lib/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libffi/lib/libffi.8.dylib @executable_path/../Frameworks/libffi.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libssh/lib/libssh.4.dylib @executable_path/../Frameworks/libssh.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexiv2.27.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexiv2.27.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/media-info/21.09/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gcc/lib/gcc/11/libgcc_s.1.1.dylib @executable_path/../Frameworks/libgcc_s.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfftw3f.3.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.dylib @executable_path/../Frameworks/libjxl.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libvmaf/lib/libvmaf.1.dylib @executable_path/../Frameworks/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
         <Command Enabled="yes">codesign -fs - ./Release/RegardsViewer.app --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">

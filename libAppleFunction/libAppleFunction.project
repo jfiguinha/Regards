@@ -13,7 +13,7 @@
     <File Name="DetectFace.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Directory">
-    <File Name="../libextern/wxWidgets-master/src/osx/cocoa/dirdlg.mm"/>
+    <File Name="../libextern/wxWidgets-master/src/osx/cocoa/dirdlg.mm" ExcludeProjConfig="Release;"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -31,9 +31,11 @@
     <File Name="SendEmail.cpp"/>
     <File Name="SendEmail.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-fpermissive" C_Options="$(shell wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
+      <Compiler Options="-Wall;-pthread;-fpermissive" C_Options="-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libWindow"/>
@@ -124,6 +126,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
