@@ -1471,6 +1471,14 @@
 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/gcc/lib/gcc/11/libgcc_s.1.1.dylib @executable_path/../Frameworks/libgcc_s.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfftw3f.3.dylib</Command>
 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.dylib @executable_path/../Frameworks/libjxl.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libvmaf/lib/libvmaf.1.dylib @executable_path/../Frameworks/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">cp /opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib @executable_path/../Frameworks/libbrotlidec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib @executable_path/../Frameworks/libbrotlicommon.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib @executable_path/../Frameworks/libbrotlienc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/openssl@1.1/lib/libcrypto.1.1.dylib @executable_path/../Frameworks/libcrypto.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libssh.4.dylib</Command>
+<Command Enabled="yes">install_name_tool -change @loader_path/libbrotlicommon.1.dylib @executable_path/../Frameworks/libbrotlicommon.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libbrotlienc.1.dylib</Command>
         <Command Enabled="yes">codesign -fs - ./Release/RegardsViewer.app --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
