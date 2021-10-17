@@ -128,7 +128,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
+      <Compiler Options="-Wall;$(shell wx-config --cppflags --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell wx-config --cppflags --libs)" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
@@ -176,7 +176,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>

@@ -120,7 +120,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++17;-Wall;-flto" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell wx-config --cppflags);-fopenmp;-std=gnu++17;-Wall;-flto" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlite"/>
@@ -171,7 +171,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="$(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;regards.rc.o">
+      <Linker Options="$(shell wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;regards.rc.o">
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>

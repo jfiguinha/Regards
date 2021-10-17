@@ -12,10 +12,10 @@
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options="" Assembler="">
+      <Compiler Options=";-std=gnu++14;$(shell wx-config --cppflags);-Wall;-pthread" C_Options="" Assembler="">
         <IncludePath Value="."/>
       </Compiler>
-      <Linker Options="$(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-headerpad_max_install_names;">
+      <Linker Options="$(shell wx-config   --libs --unicode=yes);-headerpad_max_install_names;">
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
       </Linker>
       <ResourceCompiler Options=""/>

@@ -33,7 +33,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
+      <Compiler Options="$(shell wx-config --cppflags);-Wall;-pthread;-fpermissive" C_Options="$(shell wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libWindow"/>
