@@ -242,6 +242,16 @@ cd ..
 #extract openjpeg lib
 tar xf openjpeg-v2.4.0-linux-x86_64.tar.gz
 
+wget https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.tar.bz2
+tar xf wxWidgets-3.1.5.tar.bz2
+mv wxWidgets-3.1.5 wxWidgets-master
+
+cd wxWidgets-master
+./configure
+make -j4
+cd ..
+
+
 #compile OpenEXR
 #unzip openexr-2.5.2.zip
 #cd openexr-2.5.2
