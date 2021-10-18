@@ -58,9 +58,9 @@
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
     <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -151,6 +151,7 @@
       <Project Name="libSqlite" ConfigName="Debug"/>
       <Project Name="libffmpeg" ConfigName="Debug"/>
       <Project Name="libffmpeg" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -226,6 +227,7 @@
       <Project Name="libSqlite" ConfigName="Release"/>
       <Project Name="libffmpeg" ConfigName="Release"/>
       <Project Name="libffmpeg" ConfigName="Release"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
