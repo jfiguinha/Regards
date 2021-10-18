@@ -30,6 +30,8 @@ bool CRenderOpenGL::IsInit()
 	return isInit;
 }
 
+
+
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
 	if (!isInit)
@@ -39,9 +41,7 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		version = glGetString(GL_VERSION);
 		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
 
-
-		GLuint err;
-		err = glewInit();
+		GLuint err = glewInit();
 
 		if (GLEW_OK != err)
 		{

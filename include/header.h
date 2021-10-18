@@ -58,6 +58,10 @@
 #define _OPENMP
 #endif
 
+#ifdef __WXGTK__
+#define GLEW_EGL
+#endif
+
 #include <omp.h>
 #endif
 #include <thread>

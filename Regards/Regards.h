@@ -23,7 +23,9 @@
 #include <libPicture.h>
 #include <wx/textfile.h>
 #include <wx/display.h>
-//#define TEST_WINDOWMANAGER
+#ifdef __WXGTK__
+#include <X11/Xlib.h>  
+#endif
 
 #ifdef TEST_WINDOWMANAGER
 #include <myFrame.h>
@@ -83,15 +85,7 @@ using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Viewer;
 
-#include <GL/glew.h>
-#if defined(_WIN32)
-#elif defined(_WIN64)
-#include <GL/wglew.h>
-#elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
-#include <AGL/agl.h>
-#else
-#include <GL/glxew.h>
-#endif
+
 
 #include <wx/glcanvas.h>
 int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
@@ -175,9 +169,6 @@ public:
 
 #ifdef __WXGTK__
 		int result = XInitThreads();
-
-
-
 #endif
 
 #pragma omp parallel for
