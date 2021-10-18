@@ -174,11 +174,8 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="$(shell wx-config   --libs --unicode=yes);-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT;-framework ImageCaptureCore;-framework CoreML;-framework Vision;">
-        <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
-        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
+      <Linker Options="-headerpad_max_install_names;-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT;-framework ImageCaptureCore;-framework CoreML;-framework Vision;-framework QuartzCore;-lwx_osx_cocoau_xrc-3.1;-lwx_osx_cocoau_html-3.1;-lwx_osx_cocoau_qa-3.1;-lwx_osx_cocoau_core-3.1;-lwx_baseu_xml-3.1;-lwx_baseu_net-3.1;-lwx_baseu-3.1;-lwx_osx_cocoau_webview-3.1">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
-        <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="wxCheckTree"/>
@@ -216,6 +213,7 @@
         <Library Value="expat"/>
         <Library Value="jasper"/>
         <Library Value="Jbig"/>
+        <Library Value="ffmpeg"/>
         <Library Value="avformat"/>
         <Library Value="avcodec"/>
         <Library Value="avdevice"/>
@@ -273,9 +271,9 @@
         <Library Value="webp"/>
         <Library Value="webpdecoder"/>
         <Library Value="webpdemux"/>
-        <Library Value="ffmpeg"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
+        <Library Value="fftw3"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -343,7 +341,7 @@
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/exiv2/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavcodec.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavdevice.58.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavfilter.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -447,7 +445,7 @@
         <Command Enabled="yes">cp /usr/local/opt/libxau/lib/libXau.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/p11-kit/lib/libp11-kit.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libidn2/lib/libidn2.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/fribidi/lib/libfribidi.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/gmp/lib/libgmp.10.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -519,7 +517,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libtheoraenc.1.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libffi/lib/libffi.7.dylib @executable_path/../Frameworks/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libffi/lib/libffi.8.dylib @executable_path/../Frameworks/libffi.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxau/lib/libXau.6.dylib @executable_path/../Frameworks/libXau.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib @executable_path/../Frameworks/libXdmcp.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ffmpeg/4.4_2/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libpostproc.55.dylib</Command>
@@ -945,7 +943,18 @@
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Release/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
         <Command Enabled="no">#chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/exiv2/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_gl-3.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+		<Command Enabled="yes">cp /usr/local/opt/fftw/lib/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/fftw/lib/libfftw3.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_xrc-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_html-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_qa-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_core-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu_xml-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu_net-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_webview-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavcodec.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebpdemux.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/ffmpeg/lib/libavdevice.58.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1051,7 +1060,7 @@
         <Command Enabled="yes">cp /usr/local/opt/libxau/lib/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/p11-kit/lib/libp11-kit.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libidn2/lib/libidn2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/fribidi/lib/libfribidi.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/gmp/lib/libgmp.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1070,10 +1079,10 @@
         <Command Enabled="no">#cp /usr/local/lib/gcc/11/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebpdecoder.3.dylib @executable_path/../Frameworks/libwebpdecoder.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/opt/dav1d/lib/libdav1d.5.dylib @executable_path/../Frameworks/libdav1d.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/opt/rav1e/lib/librav1e.0.4.1.dylib @executable_path/../Frameworks/librav1e.0.4.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebpdecoder.3.dylib @executable_path/../Frameworks/libwebpdecoder.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/dav1d/lib/libdav1d.5.dylib @executable_path/../Frameworks/libdav1d.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/rav1e/lib/librav1e.0.4.1.dylib @executable_path/../Frameworks/librav1e.0.4.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebpdemux.2.dylib @executable_path/../Frameworks/libwebpdemux.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/openexr/lib/libIex-3_1.30.dylib @executable_path/../Frameworks/libIex-3_1.30.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/imath/lib/libImath-3_1.29.dylib @executable_path/../Frameworks/libImath-3_1.29.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1129,7 +1138,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libogg/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtheoraenc.1.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libffi/lib/libffi.7.dylib @executable_path/../Frameworks/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libffi/lib/libffi.8.dylib @executable_path/../Frameworks/libffi.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libp11-kit.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxau/lib/libXau.6.dylib @executable_path/../Frameworks/libXau.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libxdmcp/lib/libXdmcp.6.dylib @executable_path/../Frameworks/libXdmcp.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libxcb.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ffmpeg/4.4_2/lib/libavutil.56.dylib @executable_path/../Frameworks/libavutil.56.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpostproc.55.dylib</Command>

@@ -29,8 +29,8 @@
    Studio) will not omit unused inline functions and create undefined
    references to libraries that are not being built. */
 
-#include "config.h"
-#include "compat/va_copy.h"
+//#include "config.h"
+//#include "compat/va_copy.h"
 #include "libavformat/avformat.h"
 #include "libavfilter/avfilter.h"
 #include "libavdevice/avdevice.h"
@@ -45,7 +45,7 @@
 #include "libavutil/display.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/imgutils.h"
-#include "libavutil/libm.h"
+//#include "libavutil/libm.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/eval.h"
@@ -1156,6 +1156,7 @@ static int warned_cfg = 0;
 
 static void print_all_libs_info(int flags, int level)
 {
+    /*
     PRINT_LIB_INFO(avutil,     AVUTIL,     flags, level);
     PRINT_LIB_INFO(avcodec,    AVCODEC,    flags, level);
     PRINT_LIB_INFO(avformat,   AVFORMAT,   flags, level);
@@ -1165,10 +1166,12 @@ static void print_all_libs_info(int flags, int level)
     PRINT_LIB_INFO(swscale,    SWSCALE,    flags, level);
     PRINT_LIB_INFO(swresample, SWRESAMPLE, flags, level);
     PRINT_LIB_INFO(postproc,   POSTPROC,   flags, level);
+     * */
 }
 
 static void print_program_info(int flags, int level)
 {
+    /*
     const char *indent = flags & INDENT? "  " : "";
 
     av_log(NULL, level, "%s version 4.4", program_name);
@@ -1179,12 +1182,13 @@ static void print_program_info(int flags, int level)
     av_log(NULL, level, "%sbuilt with %s\n", indent, CC_IDENT);
 
     av_log(NULL, level, "%sconfiguration: " FFMPEG_CONFIGURATION "\n", indent);
+     * */
 }
 
 static void print_buildconf(int flags, int level)
 {
     const char *indent = flags & INDENT ? "  " : "";
-    char str[] = { FFMPEG_CONFIGURATION };
+    char str[] = { "" };
     char *conflist, *remove_tilde, *splitconf;
 
     // Change all the ' --' strings to '~--' so that
@@ -2077,7 +2081,7 @@ FILE *get_preset_file(char *filename, size_t filename_size,
     int i;
     const char *base[3] = { getenv("FFMPEG_DATADIR"),
                             getenv("HOME"),
-                            FFMPEG_DATADIR, };
+                            "/usr/local/share/ffmpeg", };
 
     if (is_path) {
         av_strlcpy(filename, preset_name, filename_size);

@@ -23,7 +23,7 @@
  * multimedia converter based on the FFmpeg libraries
  */
 
-#include "config.h"
+//#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
@@ -49,21 +49,21 @@
 #include "libavutil/samplefmt.h"
 #include "libavutil/fifo.h"
 #include "libavutil/hwcontext.h"
-#include "libavutil/internal.h"
+//#include "libavutil/internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/dict.h"
 #include "libavutil/display.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/avstring.h"
-#include "libavutil/libm.h"
+//#include "libavutil/libm.h"
 #include "libavutil/timestamp.h"
 #include "libavutil/bprint.h"
 #include "libavutil/time.h"
-#include "libavutil/thread.h"
+//#include "libavutil/thread.h"
 #include "libavutil/threadmessage.h"
-#include "libavcodec/mathops.h"
-#include "libavformat/os_support.h"
+//#include "libavcodec/mathops.h"
+//#include "libavformat/os_support.h"
 
 #include "libavfilter/avfilter.h"
 #include "libavfilter/buffersrc.h"
@@ -99,6 +99,29 @@
 #include "ffmpeg.h"
 
 #include "libavutil/avassert.h"
+
+#ifdef DEBUG
+#define ff_dlog(ctx, ...) av_log(ctx, AV_LOG_DEBUG, __VA_ARGS__)
+#else
+#define ff_dlog(ctx, ...) do { if (0) av_log(ctx, AV_LOG_DEBUG, __VA_ARGS__); } while (0)
+#endif
+  
+static inline av_const int mid_pred(int a, int b, int c)
+{
+    if(a>b){
+        if(c>b){
+            if(c>a) b=a;
+            else    b=c;
+        }
+    }else{
+        if(b>c){
+            if(c>a) b=c;
+            else    b=a;
+        }
+    }
+    return b;
+}
+
 
 const char program_name[] = "ffmpeg";
 const int program_birth_year = 2000;
@@ -435,7 +458,6 @@ void ffmpeg_cleanup(int ret)
 		av_frame_free(&ost->last_frame);
 		av_packet_free(&ost->pkt);
 		av_dict_free(&ost->encoder_opts);
-
 		av_freep(&ost->forced_keyframes);
 		av_expr_free(ost->forced_keyframes_pexpr);
 		av_freep(&ost->avfilter);

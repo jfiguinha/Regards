@@ -1,5 +1,5 @@
 #pragma once
-#include "config.h"
+//#include "config.h"
 #include "libavcodec/avcodec.h"
 #include "libavfilter/avfilter.h"
 #include "libavformat/avformat.h"

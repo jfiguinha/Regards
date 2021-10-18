@@ -13,7 +13,7 @@
     <File Name="DetectFace.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Directory">
-    <File Name="../libextern/wxWidgets-master/src/osx/cocoa/dirdlg.mm" ExcludeProjConfig="Release;"/>
+    <File Name="dirdlg.mm"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

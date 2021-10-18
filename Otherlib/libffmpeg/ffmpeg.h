@@ -19,7 +19,7 @@
 #ifndef FFTOOLS_FFMPEG_H
 #define FFTOOLS_FFMPEG_H
 
-#include "config.h"
+//#include "config.h"
 #include "cmd_struct.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -36,7 +36,7 @@
 #include "libavutil/hwcontext.h"
 #include "libavutil/pixfmt.h"
 #include "libavutil/rational.h"
-#include "libavutil/thread.h"
+//#include "libavutil/thread.h"
 #include "libavutil/threadmessage.h"
 
 void show_usage(void);

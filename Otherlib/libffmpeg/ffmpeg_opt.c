@@ -1363,7 +1363,7 @@ static int get_preset_file_2(const char *preset_name, const char *codec_name, AV
     char filename[1000];
     const char *base[3] = { getenv("AVCONV_DATADIR"),
                             getenv("HOME"),
-                            AVCONV_DATADIR,
+                            "/usr/local/share/ffmpeg",
                             };
 
     for (i = 0; i < FF_ARRAY_ELEMS(base) && ret < 0; i++) {
