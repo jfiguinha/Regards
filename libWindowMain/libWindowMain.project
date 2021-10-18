@@ -56,7 +56,6 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libResource"/>
       </Compiler>
       <Linker Options="">

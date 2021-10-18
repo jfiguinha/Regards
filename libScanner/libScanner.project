@@ -55,16 +55,8 @@
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../libDialog"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libextern/libpng"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/utils"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libGeolocalisation"/>

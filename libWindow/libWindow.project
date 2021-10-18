@@ -156,7 +156,6 @@
       <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libFiltre"/>

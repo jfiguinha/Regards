@@ -247,8 +247,9 @@ tar xf wxWidgets-3.1.5.tar.bz2
 mv wxWidgets-3.1.5 wxWidgets-master
 
 cd wxWidgets-master
-./configure
-make -j4
+./configure --prefix="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
 cd ..
 
 

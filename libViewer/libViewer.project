@@ -158,7 +158,6 @@
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../wxCheckTree"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libAppleFunction"/>

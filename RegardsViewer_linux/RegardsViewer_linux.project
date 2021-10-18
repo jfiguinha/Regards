@@ -130,9 +130,6 @@
     <GlobalSettings>
       <Compiler Options="-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
@@ -179,7 +176,6 @@
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0">
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
-        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-master/libavcodec"/>
         <LibraryPath Value="../libextern/ffmpeg-master/libavformat"/>
@@ -196,7 +192,6 @@
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/openjpeg-v2.4.0-linux-x86_64/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
-        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="$$HOME/ffmpeg_build/lib"/>
         <Library Value="Viewer"/>
         <Library Value="ffmpeg"/>
