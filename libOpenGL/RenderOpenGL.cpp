@@ -5,12 +5,6 @@
 // et sont rarement modifiés
 //
 #include "RenderOpenGL.h"
-#ifdef __APPLE__
-#include <OpenCL/OpenCL.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 #include <utility.h>
 
 using namespace Regards::OpenGL;
