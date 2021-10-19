@@ -38,7 +38,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14;-fpermissive" C_Options="-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libCompress"/>
       </Compiler>

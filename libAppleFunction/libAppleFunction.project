@@ -31,11 +31,9 @@
     <File Name="SendEmail.cpp"/>
     <File Name="SendEmail.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-fpermissive" C_Options="-Wall;-pthread;-fpermissive" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libWindow"/>
@@ -126,4 +124,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

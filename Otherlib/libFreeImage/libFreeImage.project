@@ -128,12 +128,13 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-fpermissive;-Wall;-pthread;;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
+      <Compiler Options="$(shell ../../libextern/wxconfig_cpp.sh);-fpermissive;-Wall;-pthread;;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="Source"/>
         <IncludePath Value="../../libextern/zlib"/>
-        <IncludePath Value="../../libextern/libtiff"/>
         <IncludePath Value="../../libextern/libjpeg"/>
+        <IncludePath Value="../../libextern/tiff/libtiff"/>
+        <IncludePath Value="../../libextern/tiff"/>
         <IncludePath Value="../../libextern/openjpeg-v2.4.0-linux-x86_64/include/openjpeg-2.4"/>
         <Preprocessor Value="OPJ_EXPORTS"/>
         <Preprocessor Value="FREEIMAGE_LIB"/>

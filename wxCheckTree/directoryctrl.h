@@ -22,13 +22,12 @@ using namespace std;
 #include "wx/dirdlg.h"
 #include "wx/choice.h"
 
-
 //-----------------------------------------------------------------------------
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CHECKTREE wxTextCtrl;
-class WXDLLIMPEXP_CHECKTREE wxHashTable;
+class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
+class WXDLLIMPEXP_FWD_BASE wxHashTable;
 
 //-----------------------------------------------------------------------------
 // Extra styles for wxGenericDirCtrl
@@ -56,7 +55,7 @@ enum
 // wxDirItemData
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CHECKTREE wxDirItemData : public wxTreeItemData
+class WXDLLIMPEXP_CORE wxDirItemData : public wxTreeItemData
 {
 public:
     wxDirItemData(const wxString& path, const wxString& name, bool isDir);
@@ -76,9 +75,9 @@ public:
 // wxDirCtrl
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CHECKTREE wxDirFilterListCtrl;
+class WXDLLIMPEXP_FWD_CORE wxDirFilterListCtrl;
 
-class WXDLLIMPEXP_CHECKTREE wxGenericDirCtrl: public wxControl
+class WXDLLIMPEXP_CORE wxGenericDirCtrl: public wxControl
 {
 public:
     wxGenericDirCtrl();
@@ -217,8 +216,8 @@ private:
     wxDECLARE_NO_COPY_CLASS(wxGenericDirCtrl);
 };
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CHECKTREE, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent );
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CHECKTREE, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeEvent );
 
 #define wx__DECLARE_DIRCTRL_EVT(evt, id, fn) \
     wx__DECLARE_EVT1(wxEVT_DIRCTRL_ ## evt, id, wxTreeEventHandler(fn))
@@ -230,7 +229,7 @@ wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_CHECKTREE, wxEVT_DIRCTRL_FILEACTIVATED, wxT
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CHECKTREE wxDirFilterListCtrl: public wxChoice
+class WXDLLIMPEXP_CORE wxDirFilterListCtrl: public wxChoice
 {
 public:
     wxDirFilterListCtrl() { Init(); }
@@ -282,9 +281,9 @@ protected:
 
 #ifdef wxUSE_DIRDLG
 
-class WXDLLIMPEXP_CHECKTREE wxImageList;
+class WXDLLIMPEXP_FWD_CORE wxImageList;
 
-class WXDLLIMPEXP_CHECKTREE wxFileIconsTable
+class WXDLLIMPEXP_CORE wxFileIconsTable
 {
 public:
     wxFileIconsTable();

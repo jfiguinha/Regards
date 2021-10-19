@@ -50,12 +50,13 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libResource"/>
       </Compiler>
       <Linker Options="">

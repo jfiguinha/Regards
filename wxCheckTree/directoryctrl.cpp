@@ -1296,7 +1296,7 @@ wxTreeItemId wxGenericDirCtrl::AppendItem (const wxTreeItemId & parent,
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-//wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
+wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
 
 wxBEGIN_EVENT_TABLE(wxDirFilterListCtrl, wxChoice)
     EVT_CHOICE(wxID_ANY, wxDirFilterListCtrl::OnSelFilter)
@@ -1453,7 +1453,7 @@ static const char* const file_icons_tbl_computer_xpm[] = {
 // ----------------------------------------------------------------------------
 
 // global instance of a wxFileIconsTable
-//wxFileIconsTable* wxTheFileIconsTable = NULL;
+wxFileIconsTable* wxTheFileIconsTable = NULL;
 
 // A module to allow icons table cleanup
 
@@ -1469,7 +1469,7 @@ public:
     }
 };
 
-//wxIMPLEMENT_DYNAMIC_CLASS(wxFileIconsTableModule, wxModule);
+wxIMPLEMENT_DYNAMIC_CLASS(wxFileIconsTableModule, wxModule);
 
 class wxFileIconEntry : public wxObject
 {

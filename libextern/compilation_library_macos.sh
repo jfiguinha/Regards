@@ -12,3 +12,12 @@ cmake ../srcs
 make -j$NBPROC
 cd ..
 cd ..
+
+
+#Compile wxWidgets-master
+#unzip wxWidgets-master.zip
+#cd wxWidgets-master
+#./configure --enable-unicode --enable-monolithic --disable-log --disable-debug --disable-shared --with-cxx=14
+#make -j$NBPROC
+#cd ..
+

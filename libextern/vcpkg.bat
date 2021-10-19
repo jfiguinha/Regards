@@ -16,4 +16,3 @@ vcpkg install curl:x64-windows --recurse
 vcpkg install exiv2:x64-windows --recurse
 vcpkg install dav1d:x64-windows --recurse
 vcpkg install opencl:x64-windows --recurse
-vcpkg install wxWidgets:x64-windows --recurse

@@ -153,9 +153,10 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libFiltre"/>

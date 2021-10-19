@@ -40,13 +40,6 @@ extern "C" {
 #include "jerror.h"
 }
 
-#ifndef __APPLE__
-#ifndef boolean
-#define boolean int
-#define UINT16 uint16_t
-#endif
-#endif
-
 #include "FreeImage.h"
 #include "Utilities.h"
 

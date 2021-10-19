@@ -40,7 +40,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
       </Compiler>

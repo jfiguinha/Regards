@@ -5,6 +5,12 @@
 // et sont rarement modifiés
 //
 #include "RenderOpenGL.h"
+#ifdef __APPLE__
+#include <OpenCL/OpenCL.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include <utility.h>
 
 using namespace Regards::OpenGL;
@@ -24,8 +30,6 @@ bool CRenderOpenGL::IsInit()
 	return isInit;
 }
 
-
-
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
 	if (!isInit)
@@ -35,7 +39,9 @@ void CRenderOpenGL::Init(wxGLCanvas* canvas)
 		version = glGetString(GL_VERSION);
 		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
 
-		GLuint err = glewInit();
+
+		GLuint err;
+		err = glewInit();
 
 		if (GLEW_OK != err)
 		{

@@ -37,7 +37,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread" C_Options="$(shell wx-config --cflags)" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags)" Assembler="">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="">

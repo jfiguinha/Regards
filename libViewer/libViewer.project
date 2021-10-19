@@ -130,7 +130,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libControl"/>
@@ -158,6 +158,7 @@
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../wxCheckTree"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libAppleFunction"/>

@@ -3,7 +3,6 @@
 // DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
 #include "libPicture.h"
-#include <wx/wxpoppler.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
 #include <wx/pdfdocument.h>
@@ -15,20 +14,22 @@
 #include <opencv2/core.hpp>
 #include "regards_webp.h"
 #include "picture_utility.h"
-
+#include <ximage.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
+#include <DeepLearning.h>
 
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
 #include <RegardsBitmap.h>
-
+#include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <LibResource.h>
-
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -52,10 +53,7 @@
 #if defined(LIBRAW)
 #include "raw.h"
 #endif
-#include <ximage.h>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
-#include <DeepLearning.h>
+
 #include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)

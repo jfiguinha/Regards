@@ -34,7 +34,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;-std=gnu++14" C_Options="" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libSqlite"/>

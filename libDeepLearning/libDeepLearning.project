@@ -31,7 +31,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>

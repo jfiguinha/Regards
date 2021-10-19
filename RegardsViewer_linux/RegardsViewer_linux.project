@@ -128,8 +128,11 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxconfig_cpp.sh --libs)" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
+        <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
+        <IncludePath Value="../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
@@ -173,9 +176,10 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
+        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-master/libavcodec"/>
         <LibraryPath Value="../libextern/ffmpeg-master/libavformat"/>
@@ -192,7 +196,6 @@
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/openjpeg-v2.4.0-linux-x86_64/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
-        <LibraryPath Value="$$HOME/ffmpeg_build/lib"/>
         <Library Value="Viewer"/>
         <Library Value="ffmpeg"/>
         <Library Value="Scanner"/>
@@ -304,31 +307,19 @@
         <Library Value="x264"/>
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
+        <Library Value="EGL"/>
         <Library Value="libopenjp2.a"/>
         <Library Value="exif"/>
         <Library Value="gnutls"/>
         <Library Value="vorbis"/>
         <Library Value="vorbisenc"/>
         <Library Value="ass"/>
-        <Library Value="jpeg"/>
         <Library Value="fdk-aac"/>
         <Library Value="mp3lame"/>
         <Library Value="opus"/>
         <Library Value="vpx"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
-        <Library Value="pthread"/>
-        <Library Value="wx_gtk3u_xrc-3.1"/>
-        <Library Value="wx_gtk3u_html-3.1"/>
-        <Library Value="wx_gtk3u_qa-3.1"/>
-        <Library Value="wx_gtk3u_core-3.1"/>
-        <Library Value="wx_baseu_xml-3.1"/>
-        <Library Value="wx_baseu_net-3.1"/>
-        <Library Value="wx_baseu-3.1"/>
-        <Library Value="wx_gtk3u_webview-3.1"/>
-        <Library Value="freetype"/>
-        <Library Value="tiff"/>
-        <Library Value="EGL"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -388,15 +379,6 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Debug/libRegardsBpg.so ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.so.* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_xrc-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_html-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_qa-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_core-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu_xml-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu_net-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_webview-3.1.so.5 ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_gl-3.1.so.5 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.28 ./Debug</Command>
@@ -444,15 +426,6 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_features2d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libopencv_flann.so.4.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_xrc-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_html-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_qa-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_core-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_baseu_xml-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_baseu_net-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_baseu-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_webview-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Debug/libwx_gtk3u_gl-3.1.so.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libraw_r.so.20</Command>
@@ -477,15 +450,6 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/liblibde265.so</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_xrc-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_html-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_qa-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_core-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_baseu_xml-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_baseu_net-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_baseu-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_webview-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/libwx_gtk3u_gl-3.1.so.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Debug/RegardsViewer</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
@@ -569,15 +533,6 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.4/build/lib/libexiv2.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_xrc-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_html-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_qa-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_core-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu_xml-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu_net-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_baseu-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_webview-3.1.so.5 ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/wxWidgets-master/lib/libwx_gtk3u_gl-3.1.so.5 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper.so.4 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler-cpp.so.0 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.28 ./Release</Command>
@@ -625,15 +580,6 @@
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_calib3d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_features2d.so.4.5</Command>
         <Command Enabled="yes">patchelf --remove-rpath  ./Release/libopencv_flann.so.4.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_xrc-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_html-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_qa-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_core-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_baseu_xml-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_baseu_net-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_baseu-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_webview-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --remove-rpath  ./Release/libwx_gtk3u_gl-3.1.so.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libexiv2.so.27</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libjasper.so.4</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libraw_r.so.20</Command>
@@ -658,15 +604,6 @@
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_xphoto.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libopencv_photo.so.4.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/liblibde265.so</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_xrc-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_html-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_qa-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_core-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_baseu_xml-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_baseu_net-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_baseu-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_webview-3.1.so.5</Command>
-        <Command Enabled="yes">patchelf --set-rpath "./" ./Release/libwx_gtk3u_gl-3.1.so.5</Command>
         <Command Enabled="yes">patchelf --set-rpath "./" ./Release/RegardsViewer</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
