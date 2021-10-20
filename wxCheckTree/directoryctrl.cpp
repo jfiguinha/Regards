@@ -414,6 +414,10 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     // wxTheFileIconsTable->SetSize(calculatedIconSizeForDPI);
     //
     // Obviously this can't take into account monitors with different DPI.
+    if (wxTheFileIconsTable == nullptr)
+        wxTheFileIconsTable = new wxFileIconsTable();
+
+
     m_treeCtrl->SetImageList(wxTheFileIconsTable->GetSmallImageList());
 
     m_showHidden = false;
@@ -1296,7 +1300,7 @@ wxTreeItemId wxGenericDirCtrl::AppendItem (const wxTreeItemId & parent,
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
+//wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
 
 wxBEGIN_EVENT_TABLE(wxDirFilterListCtrl, wxChoice)
     EVT_CHOICE(wxID_ANY, wxDirFilterListCtrl::OnSelFilter)
@@ -1469,7 +1473,7 @@ public:
     }
 };
 
-wxIMPLEMENT_DYNAMIC_CLASS(wxFileIconsTableModule, wxModule);
+//IMPLEMENT_CLASS(wxFileIconsTableModule, wxModule);
 
 class wxFileIconEntry : public wxObject
 {

@@ -22,7 +22,7 @@
 wxDEFINE_EVENT(wxEVT_CHECKTREE_FOCUS, wxTreeEvent);
 wxDEFINE_EVENT(wxEVT_CHECKTREE_CHOICE, wxTreeEvent);
 
-IMPLEMENT_DYNAMIC_CLASS(wxCheckTree, wxTreeCtrl)
+IMPLEMENT_CLASS(wxCheckTree, wxTreeCtrl)
 
 bool on_check_or_label(int flags)
 {

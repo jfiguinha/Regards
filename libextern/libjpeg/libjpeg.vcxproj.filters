@@ -15,16 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jchuff.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="jconfig.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="jdct.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="jdhuff.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="jerror.h">
@@ -33,13 +24,7 @@
     <ClInclude Include="jinclude.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="jmemsys.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="jmorecfg.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="jpegint.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="jpeglib.h">
@@ -48,138 +33,153 @@
     <ClInclude Include="jversion.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="jdct.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="jmemsys.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="jpegint.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="jcapimin.cpp">
+    <ClCompile Include="jaricom.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcapistd.cpp">
+    <ClCompile Include="jcapimin.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jccoefct.cpp">
+    <ClCompile Include="jcapistd.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jccolor.cpp">
+    <ClCompile Include="jcarith.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcdctmgr.cpp">
+    <ClCompile Include="jccoefct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jchuff.cpp">
+    <ClCompile Include="jccolor.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcinit.cpp">
+    <ClCompile Include="jcdctmgr.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcmainct.cpp">
+    <ClCompile Include="jchuff.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcmarker.cpp">
+    <ClCompile Include="jcinit.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcmaster.cpp">
+    <ClCompile Include="jcmainct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcomapi.cpp">
+    <ClCompile Include="jcmarker.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcparam.cpp">
+    <ClCompile Include="jcmaster.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcphuff.cpp">
+    <ClCompile Include="jcomapi.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcprepct.cpp">
+    <ClCompile Include="jcparam.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jcsample.cpp">
+    <ClCompile Include="jcprepct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdapimin.cpp">
+    <ClCompile Include="jcsample.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdapistd.cpp">
+    <ClCompile Include="jctrans.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdatadst.cpp">
+    <ClCompile Include="jdapimin.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdatasrc.cpp">
+    <ClCompile Include="jdapistd.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdcoefct.cpp">
+    <ClCompile Include="jdarith.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdcolor.cpp">
+    <ClCompile Include="jdatadst.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jddctmgr.cpp">
+    <ClCompile Include="jdatasrc.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdhuff.cpp">
+    <ClCompile Include="jdcoefct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdinput.cpp">
+    <ClCompile Include="jdcolor.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdmainct.cpp">
+    <ClCompile Include="jddctmgr.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdmarker.cpp">
+    <ClCompile Include="jdhuff.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdmaster.cpp">
+    <ClCompile Include="jdinput.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdmerge.cpp">
+    <ClCompile Include="jdmainct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdphuff.cpp">
+    <ClCompile Include="jdmarker.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdpostct.cpp">
+    <ClCompile Include="jdmaster.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jdsample.cpp">
+    <ClCompile Include="jdmerge.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jerror.cpp">
+    <ClCompile Include="jdpostct.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jfdctflt.cpp">
+    <ClCompile Include="jdsample.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jfdctfst.cpp">
+    <ClCompile Include="jdtrans.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jfdctint.cpp">
+    <ClCompile Include="jerror.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jidctflt.cpp">
+    <ClCompile Include="jfdctflt.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jidctfst.cpp">
+    <ClCompile Include="jfdctfst.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jidctint.cpp">
+    <ClCompile Include="jfdctint.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jidctred.cpp">
+    <ClCompile Include="jidctflt.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jmemmgr.cpp">
+    <ClCompile Include="jidctfst.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jmemnobs.cpp">
+    <ClCompile Include="jidctint.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jquant1.cpp">
+    <ClCompile Include="jmemmgr.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jquant2.cpp">
+    <ClCompile Include="jmemnobs.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="jutils.cpp">
+    <ClCompile Include="jquant1.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="jquant2.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="jutils.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

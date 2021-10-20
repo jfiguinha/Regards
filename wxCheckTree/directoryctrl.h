@@ -22,12 +22,23 @@ using namespace std;
 #include "wx/dirdlg.h"
 #include "wx/choice.h"
 
+// dll export macros
+#ifdef WXMAKINGDLL_DIRECTORYCTRL
+#define WXDLLIMPEXP_DIRECTORYCTRL WXEXPORT
+#elif defined(WXUSING_DIRECTORYCTRL_SOURCE)
+#define WXDLLIMPEXP_CHECKTREE
+#elif defined(WXUSINGDLL)
+#define WXDLLIMPEXP_DIRECTORYCTRL WXIMPORT
+#else // not making nor using DLL
+#define WXDLLIMPEXP_DIRECTORYCTRL
+#endif
+
 //-----------------------------------------------------------------------------
 // classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
-class WXDLLIMPEXP_FWD_BASE wxHashTable;
+class WXDLLIMPEXP_DIRECTORYCTRL wxTextCtrl;
+class WXDLLIMPEXP_DIRECTORYCTRL wxHashTable;
 
 //-----------------------------------------------------------------------------
 // Extra styles for wxGenericDirCtrl
@@ -55,7 +66,7 @@ enum
 // wxDirItemData
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDirItemData : public wxTreeItemData
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirItemData : public wxTreeItemData
 {
 public:
     wxDirItemData(const wxString& path, const wxString& name, bool isDir);
@@ -75,9 +86,9 @@ public:
 // wxDirCtrl
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxDirFilterListCtrl;
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl;
 
-class WXDLLIMPEXP_CORE wxGenericDirCtrl: public wxControl
+class WXDLLIMPEXP_DIRECTORYCTRL wxGenericDirCtrl: public wxControl
 {
 public:
     wxGenericDirCtrl();
@@ -216,8 +227,8 @@ private:
     wxDECLARE_NO_COPY_CLASS(wxGenericDirCtrl);
 };
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_DIRECTORYCTRL, wxEVT_DIRCTRL_SELECTIONCHANGED, wxTreeEvent );
+wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_DIRECTORYCTRL, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeEvent );
 
 #define wx__DECLARE_DIRCTRL_EVT(evt, id, fn) \
     wx__DECLARE_EVT1(wxEVT_DIRCTRL_ ## evt, id, wxTreeEventHandler(fn))
@@ -229,7 +240,7 @@ wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_CORE, wxEVT_DIRCTRL_FILEACTIVATED, wxTreeE
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxDirFilterListCtrl: public wxChoice
+class WXDLLIMPEXP_DIRECTORYCTRL wxDirFilterListCtrl: public wxChoice
 {
 public:
     wxDirFilterListCtrl() { Init(); }
@@ -281,9 +292,9 @@ protected:
 
 #ifdef wxUSE_DIRDLG
 
-class WXDLLIMPEXP_FWD_CORE wxImageList;
+class WXDLLIMPEXP_DIRECTORYCTRL wxImageList;
 
-class WXDLLIMPEXP_CORE wxFileIconsTable
+class WXDLLIMPEXP_DIRECTORYCTRL wxFileIconsTable
 {
 public:
     wxFileIconsTable();
@@ -319,7 +330,7 @@ protected:
 };
 
 // The global fileicons table
-extern WXDLLIMPEXP_DATA_CORE(wxFileIconsTable *) wxTheFileIconsTable;
+extern wxFileIconsTable * wxTheFileIconsTable;
 
 #endif // wxUSE_DIRDLG || wxUSE_FILEDLG || wxUSE_FILECTRL
 
