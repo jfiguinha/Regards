@@ -377,7 +377,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ximabmp.cpp" />
     <ClCompile Include="ximadsp.cpp" />
     <ClCompile Include="ximaenc.cpp" />
     <ClCompile Include="xImage.cpp" />
@@ -392,13 +391,9 @@
     <ClCompile Include="ximalyr.cpp" />
     <ClCompile Include="ximamng.cpp" />
     <ClCompile Include="ximapal.cpp" />
-    <ClCompile Include="ximapcx.cpp" />
     <ClCompile Include="ximapng.cpp" />
-    <ClCompile Include="ximapsd.cpp" />
-    <ClCompile Include="ximaraw.cpp" />
     <ClCompile Include="ximasel.cpp" />
     <ClCompile Include="ximaska.cpp" />
-    <ClCompile Include="ximatga.cpp" />
     <ClCompile Include="ximath.cpp" />
     <ClCompile Include="ximatran.cpp" />
     <ClCompile Include="ximawbmp.cpp" />
@@ -408,7 +403,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xfile.h" />
-    <ClInclude Include="ximabmp.h" />
     <ClInclude Include="ximacfg.h" />
     <ClInclude Include="ximadef.h" />
     <ClInclude Include="ximage.h" />
@@ -418,12 +412,8 @@
     <ClInclude Include="ximajas.h" />
     <ClInclude Include="ximajbg.h" />
     <ClInclude Include="ximamng.h" />
-    <ClInclude Include="ximapcx.h" />
     <ClInclude Include="ximapng.h" />
-    <ClInclude Include="ximapsd.h" />
-    <ClInclude Include="ximaraw.h" />
     <ClInclude Include="ximaska.h" />
-    <ClInclude Include="ximatga.h" />
     <ClInclude Include="ximath.h" />
     <ClInclude Include="ximawbmp.h" />
     <ClInclude Include="ximawmf.h" />

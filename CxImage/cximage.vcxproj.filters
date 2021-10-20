@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ximabmp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximadsp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -56,25 +53,13 @@
     <ClCompile Include="ximapal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ximapcx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximapng.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximapsd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximaraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximasel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximaska.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximatga.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximath.cpp">
@@ -98,9 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="xfile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximabmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximacfg.h">
@@ -130,22 +112,10 @@
     <ClInclude Include="ximamng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ximapcx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ximapng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ximapsd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximaraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ximaska.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximatga.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximath.h">

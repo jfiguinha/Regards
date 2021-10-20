@@ -804,25 +804,47 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case TGA:
 		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tga"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
+			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+			regards->ConvertToBgr();
+			int pitch = regards->GetBitmapWidth() * 4;
+			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
+				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
+				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
+			if (!FreeImage_Save(FIF_TARGA, floatImage, fileName, 0))
+			{
+				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
+				//L"&Help";
+				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
+			}
+			FreeImage_Unload(floatImage);
+			FreeImage_Unload(Image);
+
+			delete regards;
 		}
 		break;
 
 	case PCX:
 		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pcx"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
+			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+			regards->ConvertToBgr();
+			int pitch = regards->GetBitmapWidth() * 4;
+			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
+				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
+				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
+			if (!FreeImage_Save(FIF_PCX, floatImage, fileName, 0))
+			{
+				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
+				//L"&Help";
+				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
+			}
+			FreeImage_Unload(floatImage);
+			FreeImage_Unload(Image);
+
+			delete regards;
 		}
 		break;
 
@@ -2715,14 +2737,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 			}
 			break;
 
-		case BMP:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("bmp"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-
 		case PDF:
 			{
 				try
@@ -2778,27 +2792,10 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 			}
 			break;
 
-		case TGA:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("tga"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-
-
 		case PNM:
 			{
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
 				                            CxImage::GetTypeIdFromName("ppm"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-
-		case PCX:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("pcx"));
 				bitmap->SetPicture(_cxImage);
 			}
 			break;
@@ -3091,10 +3088,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 		break;
 
-	case BMP:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("bmp"), true);
-		break;
-
 	case JBIG:
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jbg"), true);
 		break;
@@ -3152,16 +3145,8 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
 		break;
 
-	case PCX:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pcx"), true);
-		break;
-
 	case PNG:
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("png"), true);
-		break;
-
-	case TGA:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tga"), true);
 		break;
 
 	case JPEG2000:
