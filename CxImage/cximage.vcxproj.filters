@@ -11,9 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tif_xfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximabmp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -21,9 +18,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximaenc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximaexif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xImage.cpp">
@@ -48,9 +42,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximajbg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximajpg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximalpha.cpp">
@@ -87,9 +78,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximatif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ximatran.cpp">
@@ -139,9 +127,6 @@
     <ClInclude Include="ximajbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ximajpg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ximamng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -164,9 +149,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximatif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximawbmp.h">

@@ -29,7 +29,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
   </PropertyGroup>
@@ -39,7 +39,7 @@
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <PlatformToolset>Intel C++ Compiler 2021</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -377,11 +377,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="tif_xfile.cpp" />
     <ClCompile Include="ximabmp.cpp" />
     <ClCompile Include="ximadsp.cpp" />
     <ClCompile Include="ximaenc.cpp" />
-    <ClCompile Include="ximaexif.cpp" />
     <ClCompile Include="xImage.cpp" />
     <ClCompile Include="ximagif.cpp" />
     <ClCompile Include="ximahist.cpp" />
@@ -390,7 +388,6 @@
     <ClCompile Include="ximaint.cpp" />
     <ClCompile Include="ximajas.cpp" />
     <ClCompile Include="ximajbg.cpp" />
-    <ClCompile Include="ximajpg.cpp" />
     <ClCompile Include="ximalpha.cpp" />
     <ClCompile Include="ximalyr.cpp" />
     <ClCompile Include="ximamng.cpp" />
@@ -403,7 +400,6 @@
     <ClCompile Include="ximaska.cpp" />
     <ClCompile Include="ximatga.cpp" />
     <ClCompile Include="ximath.cpp" />
-    <ClCompile Include="ximatif.cpp" />
     <ClCompile Include="ximatran.cpp" />
     <ClCompile Include="ximawbmp.cpp" />
     <ClCompile Include="ximawmf.cpp" />
@@ -421,7 +417,6 @@
     <ClInclude Include="ximaiter.h" />
     <ClInclude Include="ximajas.h" />
     <ClInclude Include="ximajbg.h" />
-    <ClInclude Include="ximajpg.h" />
     <ClInclude Include="ximamng.h" />
     <ClInclude Include="ximapcx.h" />
     <ClInclude Include="ximapng.h" />
@@ -430,16 +425,12 @@
     <ClInclude Include="ximaska.h" />
     <ClInclude Include="ximatga.h" />
     <ClInclude Include="ximath.h" />
-    <ClInclude Include="ximatif.h" />
     <ClInclude Include="ximawbmp.h" />
     <ClInclude Include="ximawmf.h" />
     <ClInclude Include="xiofile.h" />
     <ClInclude Include="xmemfile.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libextern\libjpeg6b\libjpeg.vcxproj">
-      <Project>{60691709-37b1-4f01-9564-db3039a69c0c}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
       <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
     </ProjectReference>
