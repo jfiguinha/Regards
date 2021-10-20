@@ -862,17 +862,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case TIFF:
 		{
-            /*
-			CxImage* image = bitmap->GetCxImage();
-			image->SetCodecOption(option, CXIMAGE_FORMAT_TIF);
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tif"));
-
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
-            */
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
 			regards->ConvertToBgr();
 			int _option = TIFF_DEFAULT;
@@ -993,14 +982,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
                 image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
                 delete image;
                 
-                /*
-				CxImage* image = bitmap->GetCxImage();
-				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
-				image->SetJpegQualityF(2);
-				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
-				delete image;
-                 */
-
 				pictureMetadata.CopyMetadata(fileTemp);
 
 				CMetadataExiv2 metadata(fileTemp);
@@ -1031,13 +1012,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			if (pictureMetadata.HasExif())
 			{
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
-                /*
-				CxImage* image = bitmap->GetCxImage();
-				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
-				image->SetJpegQualityF(2);
-				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
-				delete image;
-                */
+
                 wxImage * image = bitmap->GetwxImage(true);
                 image->SetOption("wxIMAGE_OPTION_QUALITY",2);
                 image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
@@ -1072,18 +1047,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
             image->SetOption("wxIMAGE_OPTION_QUALITY",quality);
             image->SaveFile(fileName,wxBITMAP_TYPE_JPEG);
             delete image;
-			/*
-			CxImage* image = bitmap->GetCxImage();
-			image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
-			image->SetJpegQualityF(static_cast<float>(quality));
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
-
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
-            */
 
 		}
 		break;
@@ -1167,10 +1130,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				if (wxFileExists(file))
 					wxRemoveFile(file);
 
-				//JPEG
-				CxImage* image = bitmap->GetCxImage();
-				image->SetJpegQualityF(static_cast<float>(quality));
-				image->Save(CConvertUtility::ConvertToUTF8(file), CxImage::GetTypeIdFromName("jpg"));
+				wxImage* image = bitmap->GetwxImage(true);
+				image->SetOption("wxIMAGE_OPTION_QUALITY", quality);
+				image->SaveFile(file, wxBITMAP_TYPE_JPEG);
 				delete image;
 			}
 			else
@@ -1184,10 +1146,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				if (wxFileExists(file))
 					wxRemoveFile(file);
 
-				//JPEG
-				CxImage* image = bitmap->GetCxImage();
-				image->SetCodecOption(quality, CXIMAGE_SUPPORT_TIF);
-				image->Save(CConvertUtility::ConvertToUTF8(file), CxImage::GetTypeIdFromName("tif"));
+				wxImage* image = bitmap->GetwxImage(true);
+				image->SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
+				image->SaveFile(file, wxBITMAP_TYPE_TIFF);
 				delete image;
 			}
 
@@ -1766,6 +1727,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	case PNG:
 	case GIF:
 		{
+
 			wxFileName fichier(szFileName);
 			wxString extension = fichier.GetExt();
 

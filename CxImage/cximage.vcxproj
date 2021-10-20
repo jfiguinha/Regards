@@ -389,16 +389,13 @@
     <ClCompile Include="ximajbg.cpp" />
     <ClCompile Include="ximalpha.cpp" />
     <ClCompile Include="ximalyr.cpp" />
-    <ClCompile Include="ximamng.cpp" />
     <ClCompile Include="ximapal.cpp" />
     <ClCompile Include="ximapng.cpp" />
     <ClCompile Include="ximasel.cpp" />
     <ClCompile Include="ximaska.cpp" />
     <ClCompile Include="ximath.cpp" />
     <ClCompile Include="ximatran.cpp" />
-    <ClCompile Include="ximawbmp.cpp" />
     <ClCompile Include="ximawmf.cpp" />
-    <ClCompile Include="ximawnd.cpp" />
     <ClCompile Include="xmemfile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -411,11 +408,9 @@
     <ClInclude Include="ximaiter.h" />
     <ClInclude Include="ximajas.h" />
     <ClInclude Include="ximajbg.h" />
-    <ClInclude Include="ximamng.h" />
     <ClInclude Include="ximapng.h" />
     <ClInclude Include="ximaska.h" />
     <ClInclude Include="ximath.h" />
-    <ClInclude Include="ximawbmp.h" />
     <ClInclude Include="ximawmf.h" />
     <ClInclude Include="xiofile.h" />
     <ClInclude Include="xmemfile.h" />

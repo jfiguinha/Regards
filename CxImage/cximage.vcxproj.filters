@@ -47,9 +47,6 @@
     <ClCompile Include="ximalyr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ximamng.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximapal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -68,13 +65,7 @@
     <ClCompile Include="ximatran.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ximawbmp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximawmf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ximawnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="xmemfile.cpp">
@@ -109,9 +100,6 @@
     <ClInclude Include="ximajbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ximamng.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ximapng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -119,9 +107,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximawbmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximawmf.h">

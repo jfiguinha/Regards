@@ -610,7 +610,6 @@ copy ..\FreeImage.h ..\..\Dist\x64
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\libextern\tiff\libtiff\tif_dirinfo.c" />
     <ClCompile Include="..\FreeImage\BitmapAccess.cpp" />
     <ClCompile Include="..\FreeImage\ColorLookup.cpp" />
     <ClCompile Include="..\FreeImage\ConversionRGBA16.cpp" />
