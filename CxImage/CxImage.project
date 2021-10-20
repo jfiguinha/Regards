@@ -33,7 +33,6 @@
     <File Name="ximabmp.cpp"/>
     <File Name="ximadsp.cpp"/>
     <File Name="ximaenc.cpp"/>
-    <File Name="ximaexif.cpp"/>
     <File Name="ximage.cpp"/>
     <File Name="ximagif.cpp"/>
     <File Name="ximahist.cpp"/>
@@ -42,7 +41,6 @@
     <File Name="ximaint.cpp"/>
     <File Name="ximajas.cpp"/>
     <File Name="ximajbg.cpp"/>
-    <File Name="ximajpg.cpp"/>
     <File Name="ximalpha.cpp"/>
     <File Name="ximalyr.cpp"/>
     <File Name="ximamng.cpp"/>
@@ -55,7 +53,6 @@
     <File Name="ximaska.cpp"/>
     <File Name="ximatga.cpp"/>
     <File Name="ximath.cpp"/>
-    <File Name="ximatif.cpp"/>
     <File Name="ximatran.cpp"/>
     <File Name="ximawbmp.cpp"/>
     <File Name="ximawmf.cpp"/>
@@ -73,7 +70,6 @@
     <File Name="ximaiter.h"/>
     <File Name="ximajas.h"/>
     <File Name="ximajbg.h"/>
-    <File Name="ximajpg.h"/>
     <File Name="ximamng.h"/>
     <File Name="ximapcx.h"/>
     <File Name="ximapng.h"/>
@@ -82,7 +78,6 @@
     <File Name="ximaska.h"/>
     <File Name="ximatga.h"/>
     <File Name="ximath.h"/>
-    <File Name="ximatif.h"/>
     <File Name="ximawbmp.h"/>
     <File Name="ximawmf.h"/>
     <File Name="xiofile.h"/>

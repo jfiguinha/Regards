@@ -840,6 +840,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case TIFF:
 		{
+            /*
 			CxImage* image = bitmap->GetCxImage();
 			image->SetCodecOption(option, CXIMAGE_FORMAT_TIF);
 			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tif"));
@@ -849,6 +850,43 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				wxMessageBox(error,
 				             informations_error, wxOK | wxICON_ERROR);
 			delete image;
+            */
+			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+			regards->ConvertToBgr();
+			int _option = TIFF_DEFAULT;
+			switch (option)
+			{
+			case 1:
+				_option = TIFF_DEFLATE;
+				break;
+			case 2:
+				_option = TIFF_LZW;
+				break;
+			case 3:
+				_option = TIFF_JPEG;
+				break;
+			case 4:
+				_option = TIFF_NONE;
+				break;
+			}
+
+
+			int pitch = regards->GetBitmapWidth() * 4;
+			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
+			                                               regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
+			                                               FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
+			if (!FreeImage_Save(FIF_TIFF, floatImage, fileName, _option))
+			{
+				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
+				//L"&Help";
+				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
+			}
+			FreeImage_Unload(floatImage);
+			FreeImage_Unload(Image);
+
+			delete regards;            
 		}
 		break;
 
@@ -927,11 +965,19 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				}
 
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
+                
+                wxImage * image = bitmap->GetwxImage(true);
+                image->SetOption("wxIMAGE_OPTION_QUALITY",2);
+                image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
+                delete image;
+                
+                /*
 				CxImage* image = bitmap->GetCxImage();
 				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
 				image->SetJpegQualityF(2);
 				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
 				delete image;
+                 */
 
 				pictureMetadata.CopyMetadata(fileTemp);
 
@@ -963,12 +1009,17 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			if (pictureMetadata.HasExif())
 			{
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
+                /*
 				CxImage* image = bitmap->GetCxImage();
 				image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
 				image->SetJpegQualityF(2);
 				image->Save(CConvertUtility::ConvertToUTF8(fileTemp), CxImage::GetTypeIdFromName("jpg"));
 				delete image;
-
+                */
+                wxImage * image = bitmap->GetwxImage(true);
+                image->SetOption("wxIMAGE_OPTION_QUALITY",2);
+                image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
+                delete image;
 				pictureMetadata.CopyMetadata(fileTemp);
 
 				CMetadataExiv2 metadata(fileTemp);
@@ -994,7 +1045,12 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case JPEG:
 		{
-			
+            
+            wxImage * image = bitmap->GetwxImage(true);
+            image->SetOption("wxIMAGE_OPTION_QUALITY",quality);
+            image->SaveFile(fileName,wxBITMAP_TYPE_JPEG);
+            delete image;
+			/*
 			CxImage* image = bitmap->GetCxImage();
 			image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
 			image->SetJpegQualityF(static_cast<float>(quality));
@@ -1005,6 +1061,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				wxMessageBox(error,
 				             informations_error, wxOK | wxICON_ERROR);
 			delete image;
+            */
 
 		}
 		break;

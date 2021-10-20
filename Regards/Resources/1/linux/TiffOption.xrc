@@ -8,9 +8,11 @@
 			<label>Tiff Compression Option</label>
 			<style>wxRA_SPECIFY_COLS</style>
 			<content>
-				<item>None</item>
-				<item>CCITTRLE</item>
+				<item>DEFAULT</item>
+				<item>ZIP</item>
 				<item>LZW</item>
+                <item>JPEG</item>
+                <item>NONE</item>
 			</content>
 			<default>-1</default>
 			<pos>0,0</pos>

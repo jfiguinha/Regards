@@ -36,51 +36,6 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libOpenCLEngine"/>
-    <Project Name="libResource"/>
-    <Project Name="libffmpeg"/>
-  </Dependencies>
   <Dependencies Name="Debug">
     <Project Name="include"/>
     <Project Name="libWindowMain"/>
@@ -126,9 +81,54 @@
     <Project Name="libResource"/>
     <Project Name="libffmpeg"/>
   </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh --libs);-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxconfig_cpp.sh --libs)" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
@@ -176,7 +176,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
+      <Linker Options=";$(shell ../libextern/wxconfig_lib.sh);-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread">
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/exiv2-0.27.4/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
@@ -227,6 +227,7 @@
         <Library Value="Parameter"/>
         <Library Value="OpenCL"/>
         <Library Value="CxImage"/>
+        <Library Value="jpeg6b"/>
         <Library Value="wxSVG"/>
         <Library Value="wx_gtk3u_gl-3.1"/>
         <Library Value="GL"/>
@@ -320,6 +321,17 @@
         <Library Value="vpx"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
+        <Library Value="wx_gtk3u_xrc-3.1"/>
+        <Library Value="wx_gtk3u_html-3.1"/>
+        <Library Value="wx_gtk3u_qa-3.1"/>
+        <Library Value="wx_gtk3u_core-3.1"/>
+        <Library Value="wx_baseu_xml-3.1"/>
+        <Library Value="wx_baseu_net-3.1"/>
+        <Library Value="wx_baseu-3.1"/>
+        <Library Value="wx_gtk3u_webview-3.1"/>
+        <Library Value="freetype"/>
+        <Library Value="tiff"/>
+        <Library Value="jpeg"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -500,6 +512,7 @@
         <LibraryPath Value="../libParameter/Release"/>
         <LibraryPath Value="../libOpenCL/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
+        <LibraryPath Value="../libextern/libjpeg6b/Release"/>
         <LibraryPath Value="../libWindowMain/Release"/>
         <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libPsd/Release"/>
