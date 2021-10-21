@@ -16,11 +16,9 @@ sudo apt install libgtk-3-dev
 sudo apt install libwebkit2gtk-4.0-dev
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
-sudo apt install git
 sudo apt install unzip
 sudo apt install libturbojpeg-dev
 sudo apt install libsdl2-dev
-sudo apt install libglew-dev
 sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
 sudo apt install libexpat-dev
@@ -28,9 +26,7 @@ sudo apt install liblzma-dev
 #sudo apt install libfreeimage-dev
 sudo apt install libva-dev
 sudo apt install libsane-dev
-sudo apt install libleptonica-dev
 sudo apt install ocl-icd-opencl-dev
-sudo apt install libfftw3-dev
 sudo apt install libwebp-dev
 sudo apt install libtbb-dev
 sudo apt install libvdpau-dev
