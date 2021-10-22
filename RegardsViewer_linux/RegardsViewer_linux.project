@@ -80,51 +80,6 @@
     <Project Name="libResource"/>
     <Project Name="libffmpeg"/>
   </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libOpenCLEngine"/>
-    <Project Name="libResource"/>
-    <Project Name="libffmpeg"/>
-  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
@@ -613,4 +568,50 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libSqlite"/>
+  </Dependencies>
 </CodeLite_Project>
