@@ -68,6 +68,7 @@ make -j$NBPROC
 sudo make install
 cd ..
 
+unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
