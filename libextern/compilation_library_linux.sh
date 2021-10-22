@@ -59,3 +59,5 @@ cd vcpkg-master
 ./vcpkg install fftw3
 ./vcpkg install poppler
 ./vcpkg install x265
+./vcpkg install libexif
+./vcpkg install tbb
