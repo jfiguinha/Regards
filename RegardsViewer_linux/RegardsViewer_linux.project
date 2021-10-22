@@ -176,7 +176,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread;$(shell ../libextern/wxconfig_lib.sh)">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread;">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
         <Library Value="Viewer"/>
@@ -285,7 +285,6 @@
         <Library Value="gnutls"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
-        <Library Value="jpeg"/>
         <Library Value="png"/>
         <Library Value="z"/>
         <Library Value="tiff"/>
