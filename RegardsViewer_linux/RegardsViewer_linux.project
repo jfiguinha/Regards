@@ -253,7 +253,7 @@
         <Library Value="avif"/>
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
-        <Library Value="lept"/>
+        <Library Value="leptonica"/>
         <Library Value="tbb"/>
         <Library Value="aom"/>
         <Library Value="webp"/>
@@ -316,7 +316,6 @@
         <Library Value="Xext"/>
         <Library Value="Xtst"/>
         <Library Value="expat"/>
-        <Library Value="secret-1"/>
         <Library Value="c"/>
         <Library Value="freetype"/>
         <Library Value="Xi"/>
@@ -327,6 +326,7 @@
         <Library Value="brotlidec"/>
         <Library Value="lcms2"/>
         <Library Value="bz2"/>
+        <Library Value="gif"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

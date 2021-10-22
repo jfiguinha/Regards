@@ -61,3 +61,4 @@ cd vcpkg-master
 ./vcpkg install x265
 ./vcpkg install libexif
 ./vcpkg install tbb
+./vcpkg install glew

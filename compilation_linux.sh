@@ -24,6 +24,7 @@ sudo apt install libva-dev
 sudo apt install libsane-dev
 sudo apt install libvdpau-dev
 sudo apt install libbz2-dev
+sudo apt install libjpeg-dev
 sudo apt install patchelf
 sudo apt install libgnutls28-dev
 sudo apt install libtool
