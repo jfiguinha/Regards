@@ -278,11 +278,8 @@
         <Library Value="wayland-client"/>
         <Library Value="EGL"/>
         <Library Value="openjp2"/>
-        <Library Value="exif"/>
+        <Library Value="liblibexif"/>
         <Library Value="gnutls"/>
-        <Library Value="vorbis"/>
-        <Library Value="vorbisenc"/>
-        <Library Value="ass"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
         <Library Value="wx_gtk3u_xrc-3.1"/>
@@ -300,7 +297,6 @@
         <Library Value="z"/>
         <Library Value="tiff"/>
         <Library Value="lzma"/>
-        <Library Value="SDL2main"/>
         <Library Value="SDL2"/>
         <Library Value="gtk-3"/>
         <Library Value="gdk-3"/>
