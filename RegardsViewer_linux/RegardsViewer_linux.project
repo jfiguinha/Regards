@@ -212,7 +212,6 @@
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
         <Library Value="wx_gtk3u_gl-3.1"/>
-        <Library Value="wx_gtk3u-3.1"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
@@ -279,6 +278,9 @@
         <Library Value="x265"/>
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
+        <Library Value="wx_gtk3u-3.1"/>
+        <Library Value="wxregexu-3.1"/>
+        <Library Value="wxscintilla-3.1"/>
         <Library Value="EGL"/>
         <Library Value="openjp2"/>
         <Library Value="liblibexif"/>
@@ -292,6 +294,7 @@
         <Library Value="SDL2"/>
         <Library Value="gtk-3"/>
         <Library Value="gdk-3"/>
+        <Library Value="pangoft2-1.0"/>
         <Library Value="pangocairo-1.0"/>
         <Library Value="pango-1.0"/>
         <Library Value="harfbuzz"/>
@@ -323,6 +326,7 @@
         <Library Value="mp3lame"/>
         <Library Value="fdk-aac"/>
         <Library Value="x264"/>
+        <Library Value="z"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
