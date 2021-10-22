@@ -47,18 +47,28 @@ tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
 ./vcpkg install exiv2
-./vcpkg install wxWidgets
-./vcpkg install ffmpeg
 ./vcpkg install libmediainfo
 ./vcpkg install opencl
 ./vcpkg install libde265
 ./vcpkg install tesseract
 ./vcpkg install libraw
-./vcpkg install dav1d
-./vcpkg install aom
 ./vcpkg install fftw3
 ./vcpkg install poppler
-./vcpkg install x265
 ./vcpkg install libexif
 ./vcpkg install tbb
 ./vcpkg install glew
+./vcpkg install x265
+cd ..
+
+#Compile wxWidgets-master
+unzip wxWidgets-master.zip
+cd wxWidgets-master
+./configure --prefix="$HOME/ffmpeg_build" --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-gtk=3 --with-libtiff=no
+make -j$NBPROC
+sudo make install
+cd ..
+
+
+chmod +x ffmpeg_linux.sh
+./ffmpeg_linux.sh
+

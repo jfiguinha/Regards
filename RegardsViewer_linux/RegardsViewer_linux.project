@@ -80,6 +80,52 @@
     <Project Name="libResource"/>
     <Project Name="libffmpeg"/>
   </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
+    <Project Name="libffmpeg"/>
+    <Project Name="libSqlite"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
@@ -130,7 +176,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat;-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-pthread;$(shell ../libextern/wxconfig_lib.sh)">
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/rav1e-0.5.0-beta.2/target/x86_64-unknown-linux-gnu/release"/>
         <Library Value="Viewer"/>
@@ -166,6 +212,7 @@
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
         <Library Value="wx_gtk3u_gl-3.1"/>
+        <Library Value="wx_gtk3u-3.1"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
@@ -184,6 +231,7 @@
         <Library Value="avutil"/>
         <Library Value="swresample"/>
         <Library Value="swscale"/>
+        <Library Value="postproc"/>
         <Library Value="xcb"/>
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
@@ -237,16 +285,6 @@
         <Library Value="gnutls"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
-        <Library Value="wx_gtk3u_xrc-3.1"/>
-        <Library Value="wx_gtk3u_qa-3.1"/>
-        <Library Value="wx_baseu_net-3.1"/>
-        <Library Value="wx_gtk3u_html-3.1"/>
-        <Library Value="wx_gtk3u_core-3.1"/>
-        <Library Value="wx_baseu_xml-3.1"/>
-        <Library Value="wx_baseu-3.1"/>
-        <Library Value="wx_gtk3u_core-3.1"/>
-        <Library Value="wx_gtk3u_webview-3.1"/>
-        <Library Value="wxregexu-3.1"/>
         <Library Value="jpeg"/>
         <Library Value="png"/>
         <Library Value="z"/>
@@ -282,6 +320,10 @@
         <Library Value="lcms2"/>
         <Library Value="bz2"/>
         <Library Value="gif"/>
+        <Library Value="vpx"/>
+        <Library Value="mp3lame"/>
+        <Library Value="fdk-aac"/>
+        <Library Value="x264"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -568,50 +610,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libOpenCLEngine"/>
-    <Project Name="libResource"/>
-    <Project Name="libffmpeg"/>
-    <Project Name="libSqlite"/>
-  </Dependencies>
 </CodeLite_Project>
