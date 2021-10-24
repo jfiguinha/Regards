@@ -3,7 +3,7 @@ NBPROC=$(nproc)
 echo $NBPROC
 
 unzip openjpeg-2.4.0.zip
-cd openjpeg-v2.4.0
+cd openjpeg-2.4.0
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
