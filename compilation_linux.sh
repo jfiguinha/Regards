@@ -30,6 +30,7 @@ sudo apt install libgnutls28-dev
 sudo apt install libtool
 sudo apt install libunistring-dev
 sudo apt install opencl-headers
+sudo apt install libturbojpeg-dev
 sudo apt install uuid
 sudo apt install meson
 sudo apt install gperf

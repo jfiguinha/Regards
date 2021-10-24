@@ -50,14 +50,58 @@ cd vcpkg-master
 ./vcpkg install libmediainfo
 ./vcpkg install opencl
 ./vcpkg install libde265
-./vcpkg install tesseract
-./vcpkg install libraw
 ./vcpkg install fftw3
-./vcpkg install poppler
 ./vcpkg install libexif
 ./vcpkg install tbb
 ./vcpkg install glew
 ./vcpkg install x265
+./vcpkg install openjpeg
+./vcpkg install libwebp
+cd ..
+
+#Compile LibRaw
+unzip LibRaw-0.20.0.zip
+cd LibRaw-0.20.0
+./configure --prefix="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+
+#Get libjasper
+wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+tar xf jasper-2.0.14.tar.gz
+
+#compile jasper
+cd jasper-2.0.14
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+
+#compile tesseract
+unzip tesseract-4.1.1.zip
+
+cd tesseract-4.1.1
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+#Compile libpoppler
+tar xf poppler-20.11.0.tar.xz
+cd poppler-20.11.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC CXXFLAGS="-I/home/figuinha/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"
+sudo make install
+cd ..
 cd ..
 
 #Compile wxWidgets-master
@@ -72,4 +116,3 @@ unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
-
