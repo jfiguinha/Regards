@@ -2,13 +2,14 @@
 NBPROC=$(nproc)
 echo $NBPROC
 
-tar xf openjpeg-v2.4.0-linux-x86_64.tar.gz
-cd openjpeg-v2.4.0-linux-x86_64
-sudo mkdir ~/ffmpeg_build
-sudo mkdir ~/ffmpeg_build/bin
-sudo mv -f bin $HOME/ffmpeg_build
-sudo mv -f include $HOME/ffmpeg_build
-sudo mv -f lib $HOME/ffmpeg_build
+unzip openjpeg-2.4.0.zip
+cd openjpeg-v2.4.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
 cd ..
 
 
@@ -111,8 +112,8 @@ tar xf poppler-20.11.0.tar.xz
 cd poppler-20.11.0
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DCXXFLAGS="-I/home/figuinha/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"
-make -j$NBPROC CXXFLAGS="-I/home/figuinha/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC 
 sudo make install
 cd ..
 cd ..
