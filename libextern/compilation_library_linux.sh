@@ -45,16 +45,6 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-#tiff
-unzip tiff-4.3.0.zip
-mv tiff-4.3.0 tiff
-cd tiff
-./autogen.sh
-./configure --prefix="$HOME/ffmpeg_build" --disable-shared
-make -j$NBPROC
-sudo make install
-cd ..
-
 wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.zip
 unzip v2.4.0.zip
 cd openjpeg-2.4.0
@@ -96,6 +86,16 @@ make -j$NBPROC
 sudo make install
 cd ..
 cd ..
+cd ..
+
+#tiff
+unzip tiff-4.3.0.zip
+mv tiff-4.3.0 tiff
+cd tiff
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+make -j$NBPROC
+sudo make install
 cd ..
 
 #Compile qpdf
