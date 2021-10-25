@@ -27,6 +27,17 @@ sudo make install
 cd ..
 cd ..
 
+#tiff
+unzip tiff-4.3.0.zip
+mv tiff-4.3.0 tiff
+cd tiff-4.3.0
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
 
 wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.zip
 unzip v2.4.0.zip
