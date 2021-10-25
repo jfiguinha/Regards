@@ -12,7 +12,7 @@ tar xf jasper-2.0.14.tar.gz
 #compile jasper
 cd jasper-2.0.14
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC
 sudo make install
 cd ..
@@ -21,7 +21,7 @@ cd ..
 #Compile LibRaw
 unzip LibRaw-0.20.0.zip
 cd LibRaw-0.20.0
-./configure --prefix="$HOME/ffmpeg_build"
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
 make -j$NBPROC
 sudo make install
 cd ..
@@ -60,7 +60,7 @@ unzip v2.4.0.zip
 cd openjpeg-2.4.0
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC
 sudo make install
 cd ..
@@ -70,7 +70,7 @@ cd ..
 unzip heif-master.zip
 mv heif-3.6.2 heif-master
 cd heif-master/srcs 
-cmake ../srcs 
+cmake ../srcs -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC
 cd ..
 cd ..
@@ -124,17 +124,12 @@ cd vcpkg-master
 ./vcpkg install libwebp
 cd ..
 
-
-
-
-
-
 #Compile libpoppler
 tar xf poppler-20.11.0.tar.xz
 cd poppler-20.11.0
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
 make -j$NBPROC 
 sudo make install
 cd ..
