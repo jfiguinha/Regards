@@ -70,8 +70,8 @@ sudo make install
 cd ..
 
 wget https://ffmpeg.org/releases/ffmpeg-4.4.1.tar.xz
-tar xf ffmpeg-4.4.tar.xz
-mv ffmpeg-4.4 ffmpeg-master
+tar xf ffmpeg-4.4.1.tar.xz
+mv ffmpeg-4.4.1 ffmpeg-master
 cd ffmpeg-master
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 ./configure \

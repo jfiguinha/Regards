@@ -120,9 +120,8 @@ cd ..
 
 
 #Compile libpoppler
-wget https://gitlab.freedesktop.org/poppler/poppler/-/archive/master/poppler-master.zip
-unzip poppler-master.zip
-cd poppler-master
+tar xf poppler-20.11.0.tar.xz
+cd poppler-20.11.0
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
