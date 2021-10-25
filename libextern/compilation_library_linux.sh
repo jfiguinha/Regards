@@ -60,7 +60,7 @@ unzip v2.4.0.zip
 cd openjpeg-2.4.0
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
 cd ..
@@ -147,3 +147,5 @@ unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
+
+sudo cp tesscallback.h ~/ffmpeg_build/include/tesseract

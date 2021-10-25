@@ -3,32 +3,28 @@ NBPROC=$(nproc)
 echo $NBPROC
 
 #Install Depedency
-sudo apt install gcc
 sudo apt install g++
 sudo apt install build-essential
 sudo apt install cmake
-sudo apt install binutils-gold
 sudo apt install yasm
 sudo apt install nasm
+sudo apt install meson
 sudo apt install autoconf
-sudo apt install libgtk-3-dev
+sudo apt install libtool
+sudo apt install patchelf
+sudo apt install opencl-headers
 sudo apt install libwebkit2gtk-4.0-dev
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 sudo apt install libsdl2-dev
 sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
-sudo apt install libexpat-dev
 sudo apt install liblzma-dev
 sudo apt install libva-dev
 sudo apt install libsane-dev
 sudo apt install libvdpau-dev
-sudo apt install libbz2-dev
-sudo apt install patchelf
 sudo apt install libgnutls28-dev
-sudo apt install libtool
 sudo apt install libunistring-dev
-sudo apt install opencl-headers
 sudo apt install libturbojpeg-dev
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
