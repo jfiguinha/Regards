@@ -98,9 +98,8 @@ cd vcpkg-master
 cd ..
 
 #Compile LibRaw
-wget https://www.libraw.org/data/LibRaw-0.20.2.zip
-unzip LibRaw-0.20.2.zip
-cd LibRaw-0.20.2
+unzip LibRaw-0.20.0.zip
+cd LibRaw-0.20.0
 ./configure --prefix="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
