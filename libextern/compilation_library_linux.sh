@@ -7,14 +7,11 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 wget https://github.com/DanBloomberg/leptonica/releases/download/1.82.0/leptonica-1.82.0.tar.gz
 tar xf leptonica-1.82.0.tar.gz
 cd leptonica-1.82.0
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
 make -j$NBPROC
 sudo make install
 cd ..
-cd ..
-
 
 #compile tesseract
 wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/4.1.1.zip
@@ -24,7 +21,6 @@ cd tesseract-4.1.1
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared
 make -j$NBPROC
 sudo make install
-cd ..
 cd ..
 
 #tiff
