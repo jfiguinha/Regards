@@ -8,7 +8,7 @@ Source: https://github.com/jfiguinha/Regards.git
 Homepage: https://jfiguinha.pagesperso-orange.fr/
 Architecture: amd64
 Priority: standard
-Depends: libexif-dev, libgtk-3-dev, freeglut3-dev, mesa-common-dev, libturbojpeg-dev, libsdl2-dev, libglew-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev, libva-dev, libsane-dev, ocl-icd-opencl-dev, libopenjp2-7-dev, libfftw3-dev, libleptonica-dev, libwebp-dev, libtbb-dev, libwebkit2gtk-4.0-dev, libvdpau-dev, libgnutls28-dev, libunistring-dev, libass-dev, libvorbis-dev
+Depends: libwebkit2gtk-4.0-dev, freeglut3-dev, mesa-common-dev, libsdl2-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev, libva-dev, libsane-dev, libvdpau-dev, libgnutls28-dev, libunistring-dev, libturbojpeg-dev
 Description: RegardsViewer is a picture viewer and video player
  Regards is a modern photo viewer.
  Support highDPI definition screen.
@@ -17,7 +17,6 @@ Description: RegardsViewer is a picture viewer and video player
  Support GPS informations from Photo and Apple Iphone Video.
  Hi Quality display interpolation.
  OpenGL Picture display and OpenCL post Effect.
-
 <</CTRL>>
 <<FILES>>
 1
