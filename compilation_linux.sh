@@ -20,9 +20,9 @@ sudo apt install libsdl2-dev
 sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
 sudo apt install liblzma-dev
-sudo apt install libva-dev
+#sudo apt install libva-dev
 sudo apt install libsane-dev
-sudo apt install libvdpau-dev
+#sudo apt install libvdpau-dev
 sudo apt install libgnutls28-dev
 sudo apt install libunistring-dev
 sudo apt install libturbojpeg-dev
