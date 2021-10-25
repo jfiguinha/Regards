@@ -4,6 +4,28 @@ echo $NBPROC
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
+
+#Get libjasper
+wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+tar xf jasper-2.0.14.tar.gz
+
+#compile jasper
+cd jasper-2.0.14
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+#Compile LibRaw
+unzip LibRaw-0.20.0.zip
+cd LibRaw-0.20.0
+./configure --prefix="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+
 wget https://github.com/DanBloomberg/leptonica/releases/download/1.82.0/leptonica-1.82.0.tar.gz
 tar xf leptonica-1.82.0.tar.gz
 cd leptonica-1.82.0
@@ -102,26 +124,9 @@ cd vcpkg-master
 ./vcpkg install libwebp
 cd ..
 
-#Compile LibRaw
-unzip LibRaw-0.20.0.zip
-cd LibRaw-0.20.0
-./configure --prefix="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
 
-#Get libjasper
-wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
-tar xf jasper-2.0.14.tar.gz
 
-#compile jasper
-cd jasper-2.0.14
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
+
 
 
 #Compile libpoppler
