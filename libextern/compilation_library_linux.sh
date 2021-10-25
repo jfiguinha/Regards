@@ -2,7 +2,32 @@
 NBPROC=$(nproc)
 echo $NBPROC
 
-unzip openjpeg-2.4.0.zip
+wget https://github.com/DanBloomberg/leptonica/releases/download/1.82.0/leptonica-1.82.0.tar.gz
+tar xf leptonica-1.82.0.tar.gz
+cd leptonica-1.82.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+#compile tesseract
+wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/4.1.1.zip
+unzip 4.1.1.zip
+cd tesseract-4.1.1
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+
+wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.zip
+unzip v2.4.0.zip
 cd openjpeg-2.4.0
 mkdir build
 cd build
@@ -47,8 +72,9 @@ cd ..
 cd ..
 
 #Compile qpdf
-tar xf qpdf-10.0.3.tar.gz
-cd qpdf-10.0.3
+wget https://github.com/qpdf/qpdf/archive/refs/tags/release-qpdf-10.3.2.zip
+unzip release-qpdf-10.3.2.zip
+cd qpdf-release-qpdf-10.3.2
 ./configure --prefix="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
@@ -72,8 +98,9 @@ cd vcpkg-master
 cd ..
 
 #Compile LibRaw
-unzip LibRaw-0.20.0.zip
-cd LibRaw-0.20.0
+wget https://www.libraw.org/data/LibRaw-0.20.2.zip
+unzip LibRaw-0.20.2.zip
+cd LibRaw-0.20.2
 ./configure --prefix="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
@@ -93,23 +120,10 @@ cd ..
 cd ..
 
 
-#compile tesseract
-unzip tesseract-4.1.1.zip
-
-cd tesseract-4.1.1
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
-
-
 #Compile libpoppler
-tar xf poppler-20.11.0.tar.xz
-cd poppler-20.11.0
+wget https://gitlab.freedesktop.org/poppler/poppler/-/archive/master/poppler-master.zip
+unzip poppler-master.zip
+cd poppler-master
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
@@ -127,8 +141,6 @@ sudo make install
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
-
-
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
