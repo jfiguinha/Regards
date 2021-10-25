@@ -21,7 +21,7 @@ cd ..
 #Compile LibRaw
 unzip LibRaw-0.20.0.zip
 cd LibRaw-0.20.0
-./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+./configure --prefix="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
 cd ..
