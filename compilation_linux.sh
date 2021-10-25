@@ -24,16 +24,12 @@ sudo apt install libva-dev
 sudo apt install libsane-dev
 sudo apt install libvdpau-dev
 sudo apt install libbz2-dev
-sudo apt install libjpeg-dev
 sudo apt install patchelf
 sudo apt install libgnutls28-dev
 sudo apt install libtool
 sudo apt install libunistring-dev
 sudo apt install opencl-headers
 sudo apt install libturbojpeg-dev
-sudo apt install uuid
-sudo apt install meson
-sudo apt install gperf
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev

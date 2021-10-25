@@ -1,3 +1,5 @@
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+
 #Compile dav1d-0.9.2.zip
 wget https://code.videolan.org/videolan/dav1d/-/archive/0.9.2/dav1d-0.9.2.zip
 unzip dav1d-0.9.2.zip
@@ -73,7 +75,6 @@ wget https://ffmpeg.org/releases/ffmpeg-4.4.1.tar.xz
 tar xf ffmpeg-4.4.1.tar.xz
 mv ffmpeg-4.4.1 ffmpeg-master
 cd ffmpeg-master
-export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 ./configure \
   --prefix="$HOME/ffmpeg_build" \
   --pkg-config-flags="--static" \
@@ -82,7 +83,6 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
   --extra-libs="-lpthread -lm" \
   --bindir="$HOME/ffmpeg_build/bin" \
   --enable-gpl \
-  --enable-gnutls \
   --enable-libaom \
   --enable-libfdk-aac \
   --enable-libfreetype \
