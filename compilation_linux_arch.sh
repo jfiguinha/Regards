@@ -11,6 +11,7 @@ sudo pacman -S meson
 sudo pacman -S make
 sudo pacman -S wget
 sudo pacman -S autoconf
+sudo pacman -S automake
 sudo pacman -S gtk3
 sudo pacman -S webkit2gtk
 sudo pacman -S freeglut
