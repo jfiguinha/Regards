@@ -16,6 +16,7 @@ sudo pacman -S gtk3
 sudo pacman -S webkit2gtk
 sudo pacman -S freeglut
 sudo pacman -S mesa
+sudo pacman -S sdl2
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sane
 sudo pacman -S pkg-config
