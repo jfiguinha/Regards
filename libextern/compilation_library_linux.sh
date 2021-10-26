@@ -115,11 +115,12 @@ cd vcpkg-master
 cd ..
 
 #Compile libpoppler
-tar xf poppler-20.11.0.tar.xz
-cd poppler-20.11.0
+wget https://poppler.freedesktop.org/poppler-21.10.0.tar.xz
+tar xf poppler-21.10.0.tar.xz
+cd poppler-21.10.0 
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DENABLE_QT5=OFF -DENABLE_BOOST=OFF
 make -j$NBPROC 
 sudo make install
 cd ..
