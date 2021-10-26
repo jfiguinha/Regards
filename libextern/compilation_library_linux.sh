@@ -88,16 +88,6 @@ cd ..
 cd ..
 cd ..
 
-#tiff
-unzip tiff-4.3.0.zip
-mv tiff-4.3.0 tiff
-cd tiff
-./autogen.sh
-./configure --prefix="$HOME/ffmpeg_build" --disable-shared
-make -j$NBPROC
-sudo make install
-cd ..
-
 #Compile qpdf
 wget https://github.com/qpdf/qpdf/archive/refs/tags/release-qpdf-10.3.2.zip
 unzip release-qpdf-10.3.2.zip
@@ -144,6 +134,16 @@ sudo make install
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
+
+#tiff
+unzip tiff-4.3.0.zip
+mv tiff-4.3.0 tiff
+cd tiff
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+make -j$NBPROC
+sudo make install
+cd ..
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
