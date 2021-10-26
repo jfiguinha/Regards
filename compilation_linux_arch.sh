@@ -15,7 +15,6 @@ sudo pacman -S gtk3
 sudo pacman -S webkit2gtk
 sudo pacman -S freeglut
 sudo pacman -S mesa
-sudo pacman -S git
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sane
 sudo pacman -S pkg-config
@@ -38,8 +37,6 @@ sudo pacman -S opencl-headers
 #chmod +x AMD-APP-SDK-v3.0.130.136-GA-linux64.sh
 #sudo bash AMD-APP-SDK-v3.0.130.136-GA-linux64.sh
 
-#install clinfo
-sudo pacman -S clinfo
 
 #Install External Library
 cd libextern
