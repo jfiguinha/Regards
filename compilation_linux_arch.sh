@@ -7,6 +7,7 @@ sudo pacman -S gcc
 sudo pacman -S cmake
 sudo pacman -S yasm
 sudo pacman -S nasm
+sudo pacman -S meson
 sudo pacman -S make
 sudo pacman -S wget
 sudo pacman -S autoconf
@@ -17,34 +18,12 @@ sudo pacman -S freeglut
 sudo pacman -S mesa
 sudo pacman -S git
 sudo pacman -S libjpeg-turbo
-#sudo pacman -S freeimage
-sudo pacman -S tiff
-sudo pacman -S sdl2
-sudo pacman -S glew
-sudo pacman -S curl
-sudo pacman -S expat
-sudo pacman -S libva
 sudo pacman -S sane
-sudo pacman -S ocl-icd
-sudo pacman -S openjpeg2
-sudo pacman -S fftw
-sudo pacman -S leptonica
-sudo pacman -S libwebp
-sudo pacman -S intel-tbb
-sudo pacman -S bzip2
-sudo pacman -S mesa-vdpau
-sudo pacman -S unzip
-sudo pacman -S sndio
-#sudo pacman -S openexr
 sudo pacman -S pkg-config
 sudo pacman -S patchelf
 sudo pacman -S libgnutls28
 sudo pacman -S libtool
 sudo pacman -S libunistring
-sudo pacman -S libass
-sudo pacman -S lapack
-sudo pacman -S dav1d
-sudo pacman -S rav1e
 sudo pacman -S opencl-headers
 #sudo pacman -S x265
 #sudo pacman -S tesseract
@@ -68,12 +47,3 @@ cd libextern
 chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
-
-unzip project_linux.zip
-
-export PROJECTPATH=$PWD
-make -j$NBPROC
-
-mkdir build
-
-cp -R ./RegardsViewer_linux/Release ./build
