@@ -12,6 +12,13 @@ sudo pacman -S make
 sudo pacman -S wget
 sudo pacman -S autoconf
 sudo pacman -S automake
+sudo pacman -S pkg-config
+sudo pacman -S patchelf
+sudo pacman -S libgnutls28
+sudo pacman -S libtool
+sudo pacman -S sndio
+sudo pacman -S libunistring
+sudo pacman -S opencl-headers
 sudo pacman -S gtk3
 sudo pacman -S webkit2gtk
 sudo pacman -S freeglut
@@ -19,12 +26,6 @@ sudo pacman -S mesa
 sudo pacman -S sdl2
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sane
-sudo pacman -S pkg-config
-sudo pacman -S patchelf
-sudo pacman -S libgnutls28
-sudo pacman -S libtool
-sudo pacman -S libunistring
-sudo pacman -S opencl-headers
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
