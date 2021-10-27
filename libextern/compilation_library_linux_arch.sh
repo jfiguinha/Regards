@@ -6,8 +6,11 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
 
 #Get libjasper
-wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
-tar xf jasper-2.0.14.tar.gz
+FILE=jasper-2.0.14.tar.gz
+if [ ! -f FILE ]; then
+    wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+    tar xf jasper-2.0.14.tar.gz
+fi
 
 #compile jasper
 cd jasper-2.0.14
@@ -26,8 +29,12 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-wget https://github.com/DanBloomberg/leptonica/releases/download/1.82.0/leptonica-1.82.0.tar.gz
-tar xf leptonica-1.82.0.tar.gz
+FILE=leptonica-1.82.0.tar.gz
+if [ ! -f FILE ]; then
+    wget https://github.com/DanBloomberg/leptonica/releases/download/1.82.0/leptonica-1.82.0.tar.gz
+    tar xf leptonica-1.82.0.tar.gz
+fi
+
 cd leptonica-1.82.0
 ./autogen.sh
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared
@@ -36,8 +43,12 @@ sudo make install
 cd ..
 
 #compile tesseract
-wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/4.1.1.zip
-unzip 4.1.1.zip
+FILE=4.1.1.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/4.1.1.zip
+    unzip 4.1.1.zip
+fi
+
 cd tesseract-4.1.1
 ./autogen.sh
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared
@@ -45,8 +56,12 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.zip
-unzip v2.4.0.zip
+FILE=v2.4.0.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.4.0.zip
+    unzip v2.4.0.zip
+fi
+
 cd openjpeg-2.4.0
 mkdir build
 cd build
@@ -66,13 +81,16 @@ cd ..
 cd ..
 
 
-mkdir opencv
+FILE=opencv/opencv_contrib-4.5.1.zip
+if [ ! -f FILE ]; then
+    mkdir opencv
 
-wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
+    wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
+    mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
 
-wget https://github.com/opencv/opencv/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv-4.5.1.zip
+    wget https://github.com/opencv/opencv/archive/4.5.1.zip
+    mv 4.5.1.zip opencv/opencv-4.5.1.zip
+fi
 
 #compile opencv
 cd opencv
@@ -89,8 +107,12 @@ cd ..
 cd ..
 
 #Compile qpdf
-wget https://github.com/qpdf/qpdf/archive/refs/tags/release-qpdf-10.3.2.zip
-unzip release-qpdf-10.3.2.zip
+FILE=4.5.1.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/qpdf/qpdf/archive/refs/tags/release-qpdf-10.3.2.zip
+    unzip release-qpdf-10.3.2.zip
+fi
+
 cd qpdf-release-qpdf-10.3.2
 ./autogen.sh
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared
