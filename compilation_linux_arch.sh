@@ -26,9 +26,7 @@ sudo pacman -S mesa
 sudo pacman -S sdl2
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sane
-sudo pacman -S curl4-openssl
-sudo pacman -S ssh
-sudo pacman -S lzma
+sudo pacman -S poppler
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
@@ -46,6 +44,6 @@ sudo pacman -S lzma
 
 #Install External Library
 cd libextern
-chmod +x compilation_library_linux.sh
-./compilation_library_linux.sh
+chmod +x compilation_library_linux_arch.sh
+./compilation_library_linux_arch.sh
 cd ..
