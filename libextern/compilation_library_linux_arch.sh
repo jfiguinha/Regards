@@ -144,8 +144,6 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-unzip rav1e-0.5.0-beta.2-ubuntu.zip
-
 #tiff
 unzip tiff-4.3.0.zip
 mv tiff-4.3.0 tiff
