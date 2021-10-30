@@ -2762,14 +2762,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 			}
 			break;
 
-		case JPEG2000:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("jp2"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-
 		case PGX:
 			{
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
@@ -3109,10 +3101,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 	case PNG:
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("png"), true);
-		break;
-
-	case JPEG2000:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jp2"));
 		break;
 
 	case PPM:
