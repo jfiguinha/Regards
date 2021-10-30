@@ -550,6 +550,49 @@ tiff_read_exif_tag(TIFF *tif, uint32 tag_id, FIBITMAP *dib, TagLib::MDMODEL md_m
 	return TRUE;
 }
 
+
+#ifdef _DEBUG
+#include "libtiff/tiff.h"
+
+/*
+ * Return size of TIFFDataType in bytes.
+ *
+ * XXX: We need a separate function to determine the space needed
+ * to store the value. For TIFF_RATIONAL values TIFFDataWidth() returns 8,
+ * but we use 4-byte float to represent rationals.
+ */
+int _TIFFDataSize(TIFFDataType type)
+{
+	switch (type)
+	{
+	case TIFF_BYTE:
+	case TIFF_SBYTE:
+	case TIFF_ASCII:
+	case TIFF_UNDEFINED:
+		return 1;
+	case TIFF_SHORT:
+	case TIFF_SSHORT:
+		return 2;
+	case TIFF_LONG:
+	case TIFF_SLONG:
+	case TIFF_FLOAT:
+	case TIFF_IFD:
+	case TIFF_RATIONAL:
+	case TIFF_SRATIONAL:
+		return 4;
+	case TIFF_DOUBLE:
+	case TIFF_LONG8:
+	case TIFF_SLONG8:
+	case TIFF_IFD8:
+		return 8;
+	default:
+		return 0;
+	}
+}
+
+
+#endif
+
 /**
 Read all known exif tags
 
