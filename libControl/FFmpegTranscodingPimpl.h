@@ -159,8 +159,11 @@ public:
 	               CVideoOptionCompress* videoCompressOption);
 	int OpenFile(const wxString& input, const wxString& output);
 
+	int IsSupportOpenCL();
 
 private:
+
+
 	static int write_packet(void* opaque, uint8_t* buf, int buf_size);
 
 	void VideoTreatment(AVFrame* & tmp_frame, StreamContext* stream);

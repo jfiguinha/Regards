@@ -1735,6 +1735,18 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 	return ret;
 }
 
+
+int CFFmpegTranscodingPimpl::IsSupportOpenCL()
+{
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	return supportOpenCL;
+}
+
+
 CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 {
 	if (bitmapData == nullptr)
@@ -1769,7 +1781,9 @@ CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-	          &convertedFrameBuffer, &linesize);
+		&convertedFrameBuffer, &linesize);
+
+	//bitmapData->VertFlipBuf();
 
 	return bitmapData;
 }
@@ -1780,9 +1794,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 	//int modFrame = 0;
-	bool ffmpegToRGBA = false;
+	bool ffmpegToRGBA = !IsSupportOpenCL();
 
-	if (!ffmpegToRGBA)
+	if (openclEffectYUV != nullptr)
 	{
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
 		{
@@ -1855,7 +1869,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 	{
 		CRgbaquad color;
 		CImageLoadingFormat imageFormat(false);
-		imageFormat.SetPicture(bitmapData);
+		imageFormat.SetPicture(GetBitmapRGBA(tmp_frame));
 
 		CFiltreEffet filtre(color, openclContext, &imageFormat);
 
