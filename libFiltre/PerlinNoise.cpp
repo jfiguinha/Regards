@@ -127,10 +127,10 @@ void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, con
 			tabAmplitude[k] = tabAmplitude[k - 1] * pers;
 		}
 
-#pragma omp parallel for
+
 		for(int i=0; i< bmHeight; i++) 
 		{
-#pragma omp parallel for
+
 			for (auto  j = 0; j< bmWidth; j++)
 			{
 				int l = ((i * bmWidth) << 2) + (j << 2);

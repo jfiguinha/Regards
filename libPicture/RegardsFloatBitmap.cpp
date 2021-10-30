@@ -126,10 +126,10 @@ bool CRegardsFloatBitmap::HorzFlipBuf()
 
 	int MiddleX = (m_iWidth >> 1);
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < m_iHeight; y++)
 	{
-#pragma omp parallel for
+
 		for (auto x = 0; x < MiddleX; x++)
 		{
 			float m_bDataBuffer;

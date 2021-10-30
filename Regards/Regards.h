@@ -180,7 +180,7 @@ public:
 
 #endif
 
-#pragma omp parallel for
+
 		for (auto i = 0; i < 256; i++)
 			value[i] = static_cast<float>(i);
 

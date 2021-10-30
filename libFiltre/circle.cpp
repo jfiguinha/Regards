@@ -23,10 +23,10 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 	const int width = image.GetWidth();
 	const int height = image.GetHeight();
 
-#pragma omp parallel for
+
     for (auto y = 0; y < height; y++)
     {
-#pragma omp parallel for
+
         for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
@@ -63,10 +63,10 @@ wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaill
 	int width = image.GetWidth();
 	int height = image.GetHeight();
 
-#pragma omp parallel for
+
     for (auto y = 0; y < height; y++)
     {
-#pragma omp parallel for
+
         for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
@@ -134,10 +134,10 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 	int width = image.GetWidth();
 	int height = image.GetHeight();
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < height; y++)
     {
-#pragma omp parallel for
+
         for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
@@ -215,10 +215,10 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	int width = image.GetWidth();
 	int height = image.GetHeight();
 
-#pragma omp parallel for
+
     for (auto y = 0; y < height; y++)
     {
-#pragma omp parallel for
+
         for (auto x = 0; x < width; x++)
 		{
 			int i1 = y * width + x;
@@ -331,10 +331,10 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 
 	int width = image.GetWidth();
 	int height = image.GetHeight();
-#pragma omp parallel for
+
     for (auto y = 0; y < height; y++)
 	{
-#pragma omp parallel for
+
 		for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;

@@ -72,7 +72,7 @@ void CInterpolationBilinear::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, 
 	CalculWeight(width, height, ratioY, ratioX, posTop, posLeft);
 
 
-#pragma omp parallel for
+
 	for (int32_t y = 0; y < height; y++)
 	{
 		//float posY = (float)y * ratioY;
@@ -103,7 +103,7 @@ void CInterpolationBilinear::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 
 	CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < height; y++)
 	{
 		float posY = static_cast<float>(y) * ratioY;

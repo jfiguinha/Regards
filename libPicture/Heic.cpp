@@ -900,7 +900,7 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 
 #ifdef USE_TBB
 			std::vector<mytask> tasks;
-			//#pragma omp parallel for
+			//
 
 			for (const auto masterId : itemIds)
 			{

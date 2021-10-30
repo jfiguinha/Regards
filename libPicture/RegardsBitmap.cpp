@@ -181,10 +181,10 @@ void CRegardsBitmap::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr)
 {
 	int width_middle = m_iWidth / 2;
 	int height_middle = m_iHeight / 2;
-#pragma omp parallel for
+
 	for (int y = 0; y < height_middle; y++)
 	{
-#pragma omp parallel for
+
 		for (int x = 0; x < width_middle; x++)
 		{
 			float r1 = 0;
@@ -226,10 +226,10 @@ void CRegardsBitmap::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr)
 
 void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 {
-#pragma omp parallel for
+
 	for (int y = 0; y < m_iHeight; y++)
 	{
-#pragma omp parallel for
+
 		for (int x = 0; x < m_iWidth; x++)
 		{
 			const int positionSrc = x + y * m_iWidth;
@@ -432,10 +432,10 @@ bool CRegardsBitmap::Rotation90()
 
 	auto out = new CRegardsBitmap(m_iHeight, m_iWidth);
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < m_iHeight; y++)
 	{
-#pragma omp parallel for
+
 		for (auto x = 0; x < m_iWidth; x++)
 		{
 			memcpy(out->GetPtBitmap() + out->GetPosition(y, x), data + GetPosition(x, y), 4);
@@ -808,10 +808,10 @@ void CRegardsBitmap::SetAlphaValue(const int& value)
 	uint8_t alphaValue = (static_cast<float>(value) / 100.0f) * 255;
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < GetBitmapHeight(); y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 			{
 				CRgbaquad* colorSrc = GetPtColorValue(x, y);
@@ -828,10 +828,10 @@ int CRegardsBitmap::SetValueToTranspColor(const CRgbaquad& backgroundValue)
 {
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < GetBitmapHeight(); y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 			{
 				/*
@@ -857,10 +857,10 @@ void CRegardsBitmap::ConvertToBgr()
 {
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < GetBitmapHeight(); y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 			{
 				CRgbaquad* colorSrc = GetPtColorValue(x, y);
@@ -888,10 +888,10 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap* bitmap, int xPos, int yPos, con
 		if (xEnd > m_iWidth)
 			xEnd = m_iWidth;
 
-#pragma omp parallel for
+
 		for (auto y = yPos; y < yEnd; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = xPos; x < xEnd; x++)
 			{
 				CRgbaquad* colorSrc = GetPtColorValue(x, y);
@@ -941,10 +941,10 @@ int CRegardsBitmap::InsertwxImage(const wxImage& bitmap, int xPos, int yPos)
 		uint8_t* data = bitmap.GetData();
 		uint8_t* alpha = bitmap.GetAlpha();
 
-#pragma omp parallel for
+
 		for (auto y = yPos; y < yEnd; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = xPos; x < xEnd; x++)
 			{
 				int i = (y - yPos) * withwxImage + (x - xPos);
@@ -992,10 +992,10 @@ CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, con
 		if (xEnd > this->GetBitmapWidth())
 			xEnd = this->GetBitmapWidth();
 
-#pragma omp parallel for
+
 		for (auto y = yPos; y < yEnd; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = xPos; x < xEnd; x++)
 			{
 				//CRgbaquad * color = bitmap->GetPtColorValue(x - xPos, y - yPos);
@@ -1015,10 +1015,10 @@ int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad& Transp)
 {
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < m_iHeight; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 
 			{
@@ -1047,7 +1047,7 @@ void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 	int size = m_iWidth << 2;
 	auto buffer = new uint8_t[size];
 
-#pragma omp parallel for
+
 	for (auto x = 0; x < m_iWidth; x++)
 	{
 		int position = x << 2;
@@ -1056,7 +1056,7 @@ void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < m_iHeight; y++)
 		{
 			int position = GetPosition(0, y);
@@ -1087,7 +1087,7 @@ int CRegardsBitmap::InsertBitmapWithoutAlpha(CRegardsBitmap* picture, int xPos, 
 		if (xPos < 0)
 			xPos = 0;
 
-#pragma omp parallel for
+
 		for (auto y = yPos; y < y_end; y++)
 		{
 			memcpy(data + GetPosition(xPos, y), pictureData + picture->GetPosition(0, y - yPos), copySize);
@@ -1105,10 +1105,10 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourc
 	if (data != nullptr)
 	{
 		float diff = 1.0f - pourcentage;
-#pragma omp parallel for
+
 		for (auto y = 0; y < m_iHeight; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 			{
 				/*
@@ -1137,10 +1137,10 @@ void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap* background, const int& 
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < m_iHeight; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < m_iWidth; x++)
 			{
 				/*

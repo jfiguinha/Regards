@@ -69,10 +69,10 @@ void CFiltre::Compute()
 		//tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
 		std::vector<myFiltreTask> tasks;
-		//#pragma omp parallel for
+		//
 		for (auto y = 0; y < bmHeight; y++)
 		{
-			//#pragma omp parallel for
+			//
 			for (auto x = 0; x < bmWidth; x++)
 			{
 				tasks.push_back(myFiltreTask(x, y, pBitsSrc, pBitsDest, this));
@@ -89,10 +89,10 @@ void CFiltre::Compute()
 		);
 #else
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < bmHeight; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < bmWidth; x++)
 			{
 				PixelCompute(x, y, pBitsSrc, pBitsDest);

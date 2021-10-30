@@ -50,10 +50,10 @@ void CWaveFilter::ProcessWaves()
 	int newBuffer = (_activeBuffer == 0) ? 1 : 0;
 	bool wavesFound = false;
 
-#pragma omp parallel for
+
 	for (int x = 1; x<_waveWidth - 1; x++)
 	{
-#pragma omp parallel for
+
 		for (int y = 1; y<_waveHeight - 1; y++)
 		{
 			short value = (short)(
@@ -157,10 +157,10 @@ void CWaveFilter::PutDrop(int x, int y, short height, int radius)
 	_weHaveWaves = true;
 	//int radius = 20;
 	double dist;
-#pragma omp parallel for
+
 	for (int i = -radius; i <= radius; i++)
 	{
-#pragma omp parallel for
+
 		for (int j = -radius; j <= radius; j++)
 		{
 			if (((x + i >= 0) && (x + i<_waveWidth - 1)) && ((y + j >= 0) && (y + j<_waveHeight - 1)))

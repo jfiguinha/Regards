@@ -700,12 +700,12 @@ void CInterpolation::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const wx
 		);
 #else
 		
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
 
 
-#pragma omp parallel for
+
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = 0;
@@ -732,10 +732,10 @@ void CInterpolation::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 		float ratioX = static_cast<float>(widthIn) / static_cast<float>(width);
 		float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = static_cast<float>(y) * ratioY;
@@ -904,10 +904,10 @@ void CInterpolation::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const in
 
 	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = 0;

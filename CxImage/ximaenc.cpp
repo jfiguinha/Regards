@@ -586,13 +586,13 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 			}
 		});
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)(height - y - 1) * ratioY;
 		int tailleYOut = y * width;
 
-#pragma omp parallel for
+
 	for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
@@ -690,7 +690,7 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 	weightX * wX = new weightX[width];
 	weightX * wY = new weightX[height];
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
@@ -703,7 +703,7 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 	}
 
 
-#pragma omp parallel for
+
 	for (auto x = 0; x < width; x++)
 	{
 		float posX = (float)x * ratioX;
@@ -716,13 +716,13 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 	}
 
 
-#pragma omp parallel for
+
 	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
 		int tailleYOut = y * width;
 
-#pragma omp parallel for
+
 	for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
@@ -882,10 +882,10 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 	{
 		if (pAlpha)
 		{
-#pragma omp parallel for
+
 			for (auto y = 0; y < head.biHeight; y++)
 			{
-#pragma omp parallel for
+
 				for (auto x = 0; x < head.biWidth; x++)
 				{
 					int position = (y * head.biWidth << 2) + (x << 2);
@@ -899,10 +899,10 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 		}
 		else
 		{
-#pragma omp parallel for
+
 			for (long y1 = 0; y1 < head.biHeight; y1++)
 			{
-#pragma omp parallel for
+
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					int position = (y1 * head.biWidth * 4) + (x * 4);
@@ -995,10 +995,10 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 	{
 		if (pAlpha)
 		{
-#pragma omp parallel for
+
 			for (long y = 0; y < head.biHeight; y++)
 			{
-#pragma omp parallel for
+
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);
@@ -1015,7 +1015,7 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 			int sizeofCopy = sizeof(uint8_t) * 3;
 			__m128i mask = _mm_setr_epi8(0, 1, 2, -1, 3, 4, 5, -1, 6, 7, 8, -1, 9, 10, 11, -1);
 
-#pragma omp parallel for
+
 			for (long y = 0; y < head.biHeight; y++)
 			{
 				int ySrcWidth = y * info.dwEffWidth;
@@ -1049,10 +1049,10 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 			}
 #else
 
-#pragma omp parallel for
+
 			for (long y = 0; y < head.biHeight; y++)
 			{
-#pragma omp parallel for
+
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);
@@ -1061,10 +1061,10 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 			}
 #endif
 */
-#pragma omp parallel for
+
 			for (long y = 0; y < head.biHeight; y++)
 			{
-#pragma omp parallel for
+
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);

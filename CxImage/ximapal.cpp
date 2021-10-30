@@ -401,7 +401,7 @@ void CxImage::RGBtoBGR(uint8_t *buffer, int32_t length)
 		length = min(length,(int32_t)info.dwEffWidth);
 		length = min(length,(int32_t)(3*head.biWidth));
 
-#pragma omp parallel for
+
 	for (int32_t i=0;i<length;i+=3)
 		{
 			temp = buffer[i]; 

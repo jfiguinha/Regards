@@ -153,7 +153,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 		);
 #else
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
 			for (auto x = 0; x < width; x++)
@@ -200,7 +200,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
 			for (auto x = 0; x < width; x++)
@@ -236,10 +236,10 @@ void CInterpolationBicubic::Execute(wxImage* In, CRegardsBitmap* & Out)
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = static_cast<float>(y) * ratioY;
@@ -272,10 +272,10 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-#pragma omp parallel for
+
 		for (auto y = 0; y < height; y++)
 		{
-#pragma omp parallel for
+
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = static_cast<float>(y) * ratioY;
