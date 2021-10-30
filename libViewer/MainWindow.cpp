@@ -414,6 +414,9 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
 {
+	if (!wxFileExists(filename))
+		return;
+
 	int ret = 0;
 	CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
 	COpenCLContext* openclContext = nullptr;

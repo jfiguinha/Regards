@@ -23,10 +23,17 @@ wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const boo
 	file = folder + "/" + filename;
 #endif
 
-	if (removeFile)
+	try
 	{
-		if (wxFileExists(file))
-			wxRemoveFile(file);
+		if (removeFile)
+		{
+			if (wxFileExists(file))
+				wxRemoveFile(file);
+		}
+	}
+	catch (...)
+	{
+
 	}
 
 	return file;
@@ -38,15 +45,10 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 	wxString documentPath = GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder))
-	{
 #else
 	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
 #endif
-
-		throw("Error folder doesn't exist.");
-	}
+	wxMkDir(tempFolder);
 
 #ifdef WIN32
 	file = tempFolder + "\\" + filename;
@@ -54,11 +56,19 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
     file = tempFolder + "/" + filename;
 #endif
 
-	if (removeFile)
+	try
 	{
-		if (wxFileExists(file))
-			wxRemoveFile(file);
+		if (removeFile)
+		{
+			if (wxFileExists(file))
+				wxRemoveFile(file);
+		}
 	}
+	catch (...)
+	{
+
+	}
+
 
 	return file;
 }
