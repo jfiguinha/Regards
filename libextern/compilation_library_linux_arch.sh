@@ -146,12 +146,12 @@ cd ..
 
 #tiff
 unzip tiff-4.3.0.zip
-mv tiff-4.3.0 tiff
-cd tiff
+cd tiff-4.3.0
 ./autogen.sh
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared
 make -j$NBPROC
 sudo make install
 cd ..
+sudo rm -r tiff-4.3.0
 
 sudo cp tesscallback.h ~/ffmpeg_build/include/tesseract
