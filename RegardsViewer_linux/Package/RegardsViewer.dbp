@@ -1,7 +1,7 @@
 [DEBREATE-0.7.13]
 <<CTRL>>
 Package: RegardsViewer
-Version: 2.67.8
+Version: 2.67.7
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
 Section: graphics
 Source: https://github.com/jfiguinha/Regards.git
@@ -20,8 +20,8 @@ Description: RegardsViewer is a picture viewer and video player
 <</CTRL>>
 <<FILES>>
 1
-/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/debian/RegardsViewer/usr/bin/RegardsViewer* -> RegardsViewer -> /usr/bin
-/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /opt
+/home/toto/developpement/git/Regards/RegardsViewer_linux/Package/debian/RegardsViewer/usr/bin/RegardsViewer* -> RegardsViewer -> /usr/bin
+/home/toto/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /opt
 <</FILES>>
 <<SCRIPTS>>
 <<PREINST>>

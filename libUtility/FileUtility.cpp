@@ -48,7 +48,10 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 #else
 	wxString tempFolder = documentPath + "/temp";
 #endif
-	wxMkDir(tempFolder);
+	if (!wxDir::Exists(tempFolder))
+	{
+		wxDir::Make(tempFolder);
+	}
 
 #ifdef WIN32
 	file = tempFolder + "\\" + filename;

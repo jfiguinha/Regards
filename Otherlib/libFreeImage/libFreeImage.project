@@ -133,6 +133,8 @@
         <IncludePath Value="Source"/>
         <IncludePath Value="../../libextern/libjpeg"/>
         <IncludePath Value="../../libextern/zlib"/>
+        <IncludePath Value="../../libextern/tiff-4.3.0/libtiff"/>
+        <IncludePath Value="../../libextern/tiff-4.3.0"/>
         <IncludePath Value="../../libextern/tiff/libtiff"/>
         <IncludePath Value="../../libextern/tiff"/>
         <Preprocessor Value="OPJ_EXPORTS"/>

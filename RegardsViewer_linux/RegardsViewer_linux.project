@@ -235,10 +235,6 @@
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
         <Library Value="SDL2"/>
-        <Library Value="va"/>
-        <Library Value="va-x11"/>
-        <Library Value="va-drm"/>
-        <Library Value="vdpau"/>
         <Library Value="asound"/>
         <Library Value="sndio"/>
         <Library Value="Xv"/>
@@ -319,7 +315,6 @@
         <Library Value="ssl"/>
         <Library Value="crypto"/>
         <Library Value="brotlidec"/>
-        <Library Value="bz2"/>
         <Library Value="vpx"/>
         <Library Value="mp3lame"/>
         <Library Value="fdk-aac"/>
