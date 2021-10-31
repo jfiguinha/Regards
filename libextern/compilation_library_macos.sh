@@ -21,7 +21,6 @@ rm VERSION
 make -j$NBPROC
 sudo make install
 cd ..
-sudo rm -r tiff-4.3.0
 
 #Compile wxWidgets-master
 #unzip wxWidgets-master.zip

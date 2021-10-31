@@ -152,6 +152,5 @@ cd tiff-4.3.0
 make -j$NBPROC
 sudo make install
 cd ..
-sudo rm -r tiff-4.3.0
 
 sudo cp tesscallback.h ~/ffmpeg_build/include/tesseract

@@ -170,7 +170,6 @@ cd tiff-4.3.0
 make -j$NBPROC
 sudo make install
 cd ..
-sudo rm -r tiff-4.3.0
 
 chmod +x ffmpeg_linux.sh
 ./ffmpeg_linux.sh
