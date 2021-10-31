@@ -13,6 +13,15 @@ make -j$NBPROC
 cd ..
 cd ..
 
+unzip tiff-4.3.0.zip
+cd tiff-4.3.0
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+rm VERSION
+make -j$NBPROC
+sudo make install
+cd ..
+sudo rm -r tiff-4.3.0
 
 #Compile wxWidgets-master
 #unzip wxWidgets-master.zip
