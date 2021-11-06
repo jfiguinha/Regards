@@ -321,6 +321,11 @@
         <Library Value="x264"/>
         <Library Value="jpeg"/>
         <Library Value="z"/>
+        <Library Value="va"/>
+        <Library Value="va-x11"/>
+        <Library Value="va-drm"/>
+        <Library Value="vdpau"/>
+        <Library Value="bz2"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
