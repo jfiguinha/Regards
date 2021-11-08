@@ -962,7 +962,8 @@
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libidn2/lib/libidn2.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/fribidi/lib/libfribidi.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/gmp/lib/libgmp.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /usr/local/opt/gmp/lib/libgmp.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/harfbuzz/lib/libharfbuzz.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libsodium/lib/libsodium.23.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/libtasn1/lib/libtasn1.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -977,7 +978,6 @@
         <Command Enabled="yes">cp /usr/local/opt/brotli/lib/libbrotlidec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/brotli/lib/libbrotlicommon.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/brotli/lib/libbrotlienc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="no">#cp /usr/local/lib/gcc/11/libgcc_s.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_gl-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/exiv2/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -992,7 +992,16 @@
         <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu_net-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_html-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_html-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_qa-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_core-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu_net-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_html-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">chmod a+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_gl-3.1.dylib @executable_path/../Frameworks/libwx_osx_cocoau_gl-3.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/exiv2/lib/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/fftw/lib/libfftw3f.3.dylib @executable_path/../Frameworks/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1004,6 +1013,7 @@
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/wxwidgets/lib/libwx_osx_cocoau_core-3.1.dylib @executable_path/../Frameworks/libwx_osx_cocoau_core-3.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/wxwidgets/lib/libwx_baseu_xml-3.1.dylib @executable_path/../Frameworks/libwx_baseu_xml-3.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/wxwidgets/lib/libwx_baseu_net-3.1.dylib @executable_path/../Frameworks/libwx_baseu_net-3.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.dylib @executable_path/../Frameworks/libfreeimage.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/opt/wxwidgets/lib/libwx_baseu-3.1.dylib @executable_path/../Frameworks/libwx_baseu-3.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glew/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -1452,6 +1462,30 @@
         <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu_xml-3.1.5.0.0.dylib  @executable_path/../Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu_xml-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_osx_cocoau_core-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_osx_cocoau_core-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu_xml-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_osx_cocoau_html-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_osx_cocoau_html-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_osx_cocoau_core-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu_xml-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_xrc-3.1.5.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_baseu_net-3.1.5.0.0.dylib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
