@@ -13,7 +13,7 @@
     <File Name="DetectFace.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Directory">
-    <File Name="dirdlg.mm"/>
+    <File Name="dirdlg.mm" ExcludeProjConfig=""/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

@@ -35,7 +35,7 @@
 #include "wx/generic/dirctrlg.h" // for wxFileIconsTable
 
 #include "wx/osx/private.h"
-
+/*
 wxIMPLEMENT_CLASS(wxDirDialog, wxDialog);
 
 void wxDirDialog::Init()
@@ -172,7 +172,7 @@ void wxDirDialog::SetTitle(const wxString &title)
     m_title = title;
     wxDialog::SetTitle(title);
 }
-
+*/
 size_t wxGetAvailableDrives(wxArrayString &paths, wxArrayString &names, wxArrayInt &icon_ids)
 {
     NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
