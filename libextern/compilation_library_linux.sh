@@ -53,10 +53,14 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-wget -O vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz
-tar xf vcpkg.tar.gz
+FILE=vcpkg.tar.gz
+if [ ! -f FILE ]; then
+    wget -O vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz
+    tar xf vcpkg.tar.gz
+fi
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
+./vcpkg install wxWidgets
 ./vcpkg install exiv2
 ./vcpkg install libmediainfo
 ./vcpkg install opencl
@@ -67,7 +71,6 @@ cd vcpkg-master
 ./vcpkg install glew
 ./vcpkg install x265
 ./vcpkg install libwebp
-./vcpkg install wxWidgets
 ./vcpkg install jasper
 ./vcpkg install libraw
 ./vcpkg install tesseract
