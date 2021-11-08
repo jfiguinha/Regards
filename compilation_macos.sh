@@ -20,6 +20,7 @@ brew install -v qpdf
 brew install -v fftw
 brew install -v wxWidgets
 brew install -v exiv2
+brew install -v freeimage
 
 #Install External Library
 #cd libextern
