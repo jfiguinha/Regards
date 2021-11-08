@@ -1485,7 +1485,6 @@
     <Project Name="libVideoFFMpeg"/>
     <Project Name="libUtility"/>
     <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
     <Project Name="libSqlEngine"/>
     <Project Name="libSqlData"/>
     <Project Name="libPicture"/>
@@ -1518,7 +1517,6 @@
     <Project Name="libavif"/>
     <Project Name="libheif"/>
     <Project Name="libOpenCLEngine"/>
-    <Project Name="libFreeImage"/>
     <Project Name="libDeepLearning"/>
     <Project Name="libResource"/>
   </Dependencies>
@@ -1534,7 +1532,6 @@
     <Project Name="libVideoFFMpeg"/>
     <Project Name="libUtility"/>
     <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
     <Project Name="libTheme"/>
     <Project Name="libSqlData"/>
     <Project Name="libPicture"/>
@@ -1562,7 +1559,6 @@
     <Project Name="libDeepLearning"/>
     <Project Name="libheif"/>
     <Project Name="libavif"/>
-    <Project Name="libFreeImage"/>
     <Project Name="libOpenCLEngine"/>
     <Project Name="libResource"/>
     <Project Name="wxIA"/>

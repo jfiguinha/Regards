@@ -68,8 +68,6 @@
     <File Name="xiofile.h"/>
     <File Name="xmemfile.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;-pthread;;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
@@ -162,4 +160,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -715,7 +715,6 @@
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
     <Project Name="libheif"/>
-    <Project Name="libFreeImage"/>
     <Project Name="libOpenCLEngine"/>
   </Dependencies>
   <Dependencies Name="Release">
@@ -756,9 +755,7 @@
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
     <Project Name="libheif"/>
-    <Project Name="libFreeImage"/>
     <Project Name="libOpenCLEngine"/>
     <Project Name="libResource"/>
-    <Project Name="libSqlite"/>
   </Dependencies>
 </CodeLite_Project>

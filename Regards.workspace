@@ -23,9 +23,6 @@
     </VirtualDirectory>
     <Project Name="libavif" Path="Otherlib/libavif/libavif.project" Active="No"/>
     <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
-    <VirtualDirectory Name="Freeimage">
-      <Project Name="libFreeImage" Path="Otherlib/libFreeImage/libFreeImage.project" Active="No"/>
-    </VirtualDirectory>
     <VirtualDirectory Name="video">
       <VirtualDirectory Name="ffmpeg">
         <Project Name="libffmpeg" Path="Otherlib/libffmpeg/libffmpeg.project" Active="No"/>
@@ -36,7 +33,6 @@
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
     <Project Name="libSqlEngine" Path="libSqlEngine/libSqlEngine.project" Active="No"/>
-    <Project Name="libSqlite" Path="libSqlite/libSqlite.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Exif">
     <Project Name="libGeolocalisation" Path="libGeolocalisation/libGeolocalisation.project" Active="No"/>
@@ -141,14 +137,12 @@
       <Project Name="libavif" ConfigName="Debug"/>
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="RegardsRaw" ConfigName="Debug"/>
-      <Project Name="libFreeImage" ConfigName="Debug"/>
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="MacOsLibExplorer" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
-      <Project Name="libSqlite" ConfigName="Debug"/>
       <Project Name="libffmpeg" ConfigName="Debug"/>
       <Project Name="libffmpeg" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
@@ -220,14 +214,12 @@
       <Project Name="libavif" ConfigName="Release"/>
       <Project Name="libheif" ConfigName="Release"/>
       <Project Name="RegardsRaw" ConfigName="Release"/>
-      <Project Name="libFreeImage" ConfigName="Release"/>
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="MacOsLibExplorer" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
-      <Project Name="libSqlite" ConfigName="Release"/>
       <Project Name="libffmpeg" ConfigName="Release"/>
       <Project Name="libffmpeg" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
