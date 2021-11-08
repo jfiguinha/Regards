@@ -53,6 +53,7 @@ cd vcpkg-master
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install sdl2
+./vcpkg install opencl
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
