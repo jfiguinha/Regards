@@ -384,6 +384,7 @@
         <Library Value="jpegxr"/>
         <Library Value="webpdemux"/>
         <Library Value="webpmux"/>
+        <Library Value="webp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
