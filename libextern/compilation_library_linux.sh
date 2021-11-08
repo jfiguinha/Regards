@@ -34,10 +34,10 @@ if [ ! -f FILE ]; then
 fi
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
+./vcpkg install opencv[contrib]
 ./vcpkg install wxWidgets
 ./vcpkg install exiv2
 ./vcpkg install libmediainfo
-./vcpkg install opencl
 ./vcpkg install libde265
 ./vcpkg install fftw3
 ./vcpkg install libexif
@@ -53,7 +53,6 @@ cd vcpkg-master
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install sdl2
-./vcpkg install opencv[contrib]
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
