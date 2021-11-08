@@ -48,11 +48,3 @@ chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
 
-unzip project_linux.zip
-
-export PROJECTPATH=$PWD
-make -j$NBPROC
-
-mkdir build
-
-cp -R ./RegardsViewer_linux/Release ./build

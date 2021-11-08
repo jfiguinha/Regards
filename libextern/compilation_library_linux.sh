@@ -67,7 +67,7 @@ cd vcpkg-master
 ./vcpkg install glew
 ./vcpkg install x265
 ./vcpkg install libwebp
-./vcpkg install wxWdigets
+./vcpkg install wxWidgets
 ./vcpkg install jasper
 ./vcpkg install libraw
 ./vcpkg install tesseract
