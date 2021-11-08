@@ -75,6 +75,7 @@ cd vcpkg-master
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
+./vcpkg install sdl2
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
