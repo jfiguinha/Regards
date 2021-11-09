@@ -932,6 +932,8 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/glib/lib/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libde265/lib/libde265.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libexif/lib/libexif.12.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /opt/homebrew/opt/mbedtls/lib/libmbedcrypto.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /opt/homebrew/opt/cjson/lib/libcjson.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/poppler/lib/libpoppler-cpp.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/qpdf/lib/libqpdf.28.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/opencore-amr/lib/libopencore-amrnb.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -964,6 +966,7 @@
         <Command Enabled="yes">cp /opt/homebrew/opt/gcc/lib/gcc/11/libgfortran.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/gcc/lib/gcc/11/libgomp.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/gmp/lib/libgmp.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp /opt/homebrew/opt/librist/lib/librist.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/harfbuzz/lib/libharfbuzz.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libsodium/lib/libsodium.23.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/libtasn1/lib/libtasn1.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -976,6 +979,9 @@
         <Command Enabled="yes">cp /opt/homebrew/lib/gcc/11/libgcc_s.1.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/srt/lib/libsrt.1.4.4.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/fftw/lib/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+	 <Command Enabled="yes">cp  /opt/homebrew/opt/libvpx/lib/libvpx.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+	 <Command Enabled="yes">cp  /opt/homebrew/opt/libvmaf/lib/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+	 <Command Enabled="yes">cp  /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/wxwidgets/lib/libwx_osx_cocoau_gl-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/wxwidgets/lib/libwx_osx_cocoau_webview-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /opt/homebrew/opt/wxwidgets/lib/libwx_osx_cocoau_xrc-3.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -1468,13 +1474,18 @@
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/libvmaf/lib/libvmaf.1.dylib @executable_path/../Frameworks/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.6.dylib @executable_path/../Frameworks/libjxl.0.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libavcodec.58.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnss3.dylib @executable_path/../Frameworks/libnss3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libsmime3.dylib</Command>
-		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libsmime3.dylibb</Command>
+		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libsmime3.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libnss3.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnss3.dylib @executable_path/../Frameworks/libnss3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libssl3.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/nss/3.72/lib/libnssutil3.dylib @executable_path/../Frameworks/libnssutil3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libssl3.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/jpeg-xl/lib/libjxl.0.6.dylib @executable_path/../Frameworks/libjxl.0.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpmux.3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /opt/homebrew/Cellar/webp/1.2.1_1/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpdemux.2.dylib</Command>
+	 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/mbedtls/lib/libmbedcrypto.10.dylib @executable_path/../Frameworks/libmbedcrypto.10.dylib ./Release/RegardsViewer.app/Contents/Frameworks/librist.4.dylib</Command>
+	 <Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/cjson/lib/libcjson.1.dylib @executable_path/../Frameworks/libcjson.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/librist.4.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib @executable_path/../Frameworks/libbrotlidec.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.6.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib @executable_path/../Frameworks/libbrotlicommon.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.6.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib @executable_path/../Frameworks/libbrotlienc.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjxl.0.6.dylib</Command>
         <Command Enabled="yes">codesign -fs - ./Release/RegardsViewer.app --deep</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
