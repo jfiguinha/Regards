@@ -309,7 +309,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Shcore.lib;rav1e.lib;dav1d.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;mediainfod.lib;poppler-cpp.lib;qpdf.lib;rawd.lib;psapi.lib;x265-static.lib;aom.lib;opencv_calib3d451d.lib;opencv_objdetect451d.lib;opencv_core451d.lib;opencv_video451d.lib;opencv_dnn451d.lib;opencv_xfeatures2d451d.lib;opencv_features2d451d.lib;opencv_imgproc451d.lib;opencv_imgcodecs451d.lib;opencv_highgui451d.lib;opencv_flann451d.lib;opencv_face451d.lib;opencv_xphoto451d.lib;opencv_photo451d.lib;webpdemuxd.lib;webpdecoderd.lib;webpd.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.80.0d.lib;tesseract41d.lib;cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;turbojpegd.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;SDL2d.lib;glew32d.lib;libcurl-d.lib;iconv.lib;IlmImfd.lib;libopenjp2d.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;rav1e.lib;dav1d.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;mediainfod.lib;poppler-cpp.lib;qpdf.lib;raw_rd.lib;psapi.lib;x265-static.lib;aom.lib;opencv_calib3dd.lib;opencv_objdetectd.lib;opencv_cored.lib;opencv_videod.lib;opencv_dnnd.lib;opencv_xfeatures2dd.lib;opencv_features2dd.lib;opencv_imgprocd.lib;opencv_imgcodecsd.lib;opencv_highguid.lib;opencv_flannd.lib;opencv_faced.lib;opencv_xphotod.lib;opencv_photod.lib;webpdemuxd.lib;webpdecoderd.lib;webpd.lib;libexif.lib;freetyped.lib;libxml2.lib;jasperd.lib;leptonica-1.81.1d.lib;tesseract41d.lib;cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;turbojpeg.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;SDL2d.lib;glew32d.lib;libcurl-d.lib;iconv.lib;IlmImf-2_5_d.lib;openjp2.lib;libpng16.lib;heif_writer_shared.lib;tiff.lib;libexpatd.lib;sqlite3.lib;FreeImaged.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources
@@ -324,21 +324,21 @@ XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\poppler-cpp.dll" $
 XCOPY /Y "$(SolutionDir)\libextern\aom\build\Release\aom.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\rav1e\bin\rav1e.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\dav1d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_core451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_objdetect451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_dnn451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_imgproc451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_imgcodecs451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_face451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_calib3d451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_flann451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_video451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_videoio451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_xfeatures2d451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_features2d451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_xphoto451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_photo451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Debug\opencv_highgui451d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_cored.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_objdetectd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_dnnd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_imgprocd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_imgcodecsd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_faced.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_calib3dd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_flannd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_videod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_videoiod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_xfeatures2dd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_features2dd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_xphotod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_photod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\opencv_highguid.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -390,7 +390,16 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlide
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\lzmad.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\mediainfod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\wx*315ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\wx*315ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\FreeImaged.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\leptonica-1.81.1d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\lcms2d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libprotobufd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\IlmImf-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\Half-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\Imath-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\IlmThread-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
