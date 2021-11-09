@@ -1534,6 +1534,8 @@
         <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_osx_cocoau_core-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_osx_cocoau_core-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.dylib</Command>
 		<Command Enabled="yes">install_name_tool -change  /usr/local/Cellar/wxwidgets/3.1.5/lib/libwx_baseu_xml-3.1.5.0.0.dylib @executable_path/../Frameworks/libwx_baseu_xml-3.1.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwx_osx_cocoau_qa-3.1.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg-xl/lib/libjxl.0.dylib  @executable_path/../Frameworks/libjxl.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
+<Command Enabled="yes">install_name_tool -change /usr/local/opt/libvmaf/lib/libvmaf.1.dylib  @executable_path/../Frameworks/libvmaf.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.3.dylib</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
