@@ -584,7 +584,7 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
-      <AdditionalDependencies>Shcore.lib;rav1e.lib;dav1d.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;raw.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d451.lib;opencv_objdetect451.lib;opencv_core451.lib;opencv_dnn451.lib;opencv_features2d451.lib;opencv_xfeatures2d451.lib;opencv_imgproc451.lib;opencv_imgcodecs451.lib;opencv_highgui451.lib;opencv_face451.lib;opencv_video451.lib;opencv_xphoto451.lib;opencv_photo451.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.80.0.lib;tesseract41.lib;freetype.lib;cairo.lib;jasper.lib;iconv.lib;fontconfig.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;fftw3f.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;SDL2.lib;glew32.lib;libcurl.lib;IlmImf.lib;libopenjp2.lib;heif_writer_shared.lib;libtiff.lib;libexpat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;rav1e.lib;dav1d.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;raw_r.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d.lib;opencv_objdetect.lib;opencv_core.lib;opencv_dnn.lib;opencv_features2d.lib;opencv_xfeatures2d.lib;opencv_imgproc.lib;opencv_imgcodecs.lib;opencv_highgui.lib;opencv_face.lib;opencv_video.lib;opencv_xphoto.lib;opencv_photo.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.81.1.lib;tesseract41.lib;freetype.lib;cairo.lib;jasper.lib;iconv.lib;fontconfig.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;fftw3f.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;SDL2.lib;glew32.lib;libcurl.lib;IlmImf-2_5.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;sqlite3.lib;freeimage.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <EnableUAC>false</EnableUAC>
     </Link>
@@ -600,21 +600,21 @@ XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\poppler.dll" $(Sol
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\poppler-cpp.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\rav1e\bin\rav1e.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\aom\build\Release\aom.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_core451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_objdetect451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_dnn451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_imgproc451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_imgcodecs451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_face451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_calib3d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_flann451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_video451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_videoio451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xfeatures2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_features2d451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_xphoto451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_photo451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)\libextern\opencv\opencv-4.5.1\build\bin\Release\opencv_highgui451.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_core.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_objdetect.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_dnn.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_imgproc.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_imgcodecs.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_face.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_calib3d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_flann.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_video.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_videoio.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_xfeatures2d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_features2d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_xphoto.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_photo.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\opencv_highgui.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\freetype.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\poppler_windows-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)\libextern\ffmpeg-master\bin\*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
@@ -669,7 +669,18 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlicommon.d
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\exiv2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\mediainfo.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\$(Configuration)\  
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\wx*315u*.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\FreeImage.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\leptonica-1.81.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lcms2.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\libprotobuf.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\wx*315u*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\raw.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmImf-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Half-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\Imath-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmThread-2_5.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -792,7 +803,8 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlidec.dll"
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\lzma.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll"  $(SolutionDir)$(Platform)\$(Configuration)\  
-XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(oneMKLProductDir)\redist\intel64\mkl_intel_thread.1.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -916,12 +928,6 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <ProjectReference Include="..\libEmail\libEmail.vcxproj">
       <Project>{b9f8de9e-8e05-4455-955d-dc31f55d87bd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\libjpeg\libjpeg.vcxproj">
-      <Project>{d739c874-1589-40c9-b506-346f0f4d28d1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libextern\zlib\zlib.vcxproj">
-      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libOpenCLEngine\libOpenCLEngine.vcxproj">
       <Project>{e9b03d35-95a4-4669-80bf-275b587b44a6}</Project>
     </ProjectReference>
@@ -955,9 +961,6 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <ProjectReference Include="..\libSqlEngine\libSqlEngine.vcxproj">
       <Project>{dbdf9029-404c-4c2a-b226-485e21d3e785}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libSqlite\libsqlite.vcxproj">
-      <Project>{c9f9bf26-e1a1-48ed-81db-d1f2144791bb}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libTheme\libTheme.vcxproj">
       <Project>{9b54079f-2ae2-477a-b157-6db796be4aff}</Project>
     </ProjectReference>
@@ -987,12 +990,6 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libffmpeg\libffmpeg.vcxproj">
       <Project>{ce591fa1-6863-4410-a259-2567261afa51}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libFreeImage\Source\FreeImageLib\FreeImageLib.2017.vcxproj">
-      <Project>{9e219df2-315d-478e-8a07-8960c377ce1e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libFreeImage\Source\LibJXR\LibJXR.2017.vcxproj">
-      <Project>{244455e0-5f25-4451-9540-f317883e52a8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libheif\libheif.vcxproj">
       <Project>{27ae55ec-bd2c-4843-8333-26b52bf4fbba}</Project>

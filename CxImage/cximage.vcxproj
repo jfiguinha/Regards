@@ -416,9 +416,6 @@
     <ClInclude Include="xmemfile.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
-      <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Otherlib\libJbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
     </ProjectReference>

@@ -439,9 +439,6 @@
     <ClCompile Include="../libRegardsBpg/x265_glue.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libextern\zlib\zlib.vcxproj">
-      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libavcodec\libavcodec.vcxproj">
       <Project>{bcea1415-c333-4b79-9038-0b9efd72a4f4}</Project>
     </ProjectReference>

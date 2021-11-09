@@ -484,9 +484,6 @@
     <ProjectReference Include="..\libEmail\libEmail.vcxproj">
       <Project>{b9f8de9e-8e05-4455-955d-dc31f55d87bd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\zlib\zlib.vcxproj">
-      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libFiltre\libFiltre.vcxproj">
       <Project>{67274429-0b74-48ab-9b74-0d3e15c825be}</Project>
     </ProjectReference>
@@ -519,9 +516,6 @@
     </ProjectReference>
     <ProjectReference Include="..\libSqlEngine\libSqlEngine.vcxproj">
       <Project>{dbdf9029-404c-4c2a-b226-485e21d3e785}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libSqlite\libsqlite.vcxproj">
-      <Project>{c9f9bf26-e1a1-48ed-81db-d1f2144791bb}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libTheme\libTheme.vcxproj">
       <Project>{9b54079f-2ae2-477a-b157-6db796be4aff}</Project>
@@ -561,12 +555,6 @@
     </ProjectReference>
     <ProjectReference Include="..\otherlib\libbpg\libgetopt\getopt.vcxproj">
       <Project>{a2169bc8-cf99-40bf-83f3-b0e38f7067bd}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libFreeImage\Source\FreeImagelib\FreeImagelib.2017.vcxproj">
-      <Project>{9e219df2-315d-478e-8a07-8960c377ce1e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Otherlib\libFreeImage\Source\libJXR\libJXR.2017.vcxproj">
-      <Project>{244455e0-5f25-4451-9540-f317883e52a8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libheif\libheif.vcxproj">
       <Project>{27ae55ec-bd2c-4843-8333-26b52bf4fbba}</Project>
