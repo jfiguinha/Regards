@@ -87,7 +87,8 @@ int main( int argc, char** argv )
         wxString dylibName = libName[libName.size() - 1];
         //SaveArrayStringToFile(txtFile, output);
         int start = isMacOsFolder ? 1 : 2;
-        
+         bool findModification = false;
+
         for(int i=start;i<output.GetCount();i++) 
         { 
             wxString lineText = output.Item(i);
@@ -115,6 +116,7 @@ int main( int argc, char** argv )
                 wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + listOflib[listOflib.size() - 1] + " " + fileName;
                 //txtFile.AddLine(installName); 
                 changeNameTool.push_back(installName);
+                findModification = true;
                 
             }
             else if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
@@ -125,26 +127,17 @@ int main( int argc, char** argv )
                     wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + listOflib[listOflib.size() - 1] + " " + fileName;
                     //txtFile.AddLine(installName); 
                     changeNameTool.push_back(installName);
+                    findModification = true;
             }
-            else if(!isMacOsFolder){
-
-                std::vector<wxString> listOfString = split(lineText, '(');
-                
-                wxString toWrite = "mv ";
-                wxString libPath = listOfString[0];
-                
-                if(!(libPath.find("/System/Library/Frameworks") == 1 || libPath.find("/usr/lib") == 1))
-                {
-                    toWrite += "./Frameworks/" + dylibName;
-                    toWrite += " ./Release/RegardsViewer.app/Contents/Frameworks";
-                    moveFile[dylibName] = toWrite;
-                    //moveFile.push_back(toWrite);
-                }
-                
- 
-            }
-            
         } 
+        
+         if(!isMacOsFolder && !findModification)
+         {
+            wxString toWrite = "mv ";
+            toWrite += fileName;
+            toWrite += " ./Release/RegardsViewer.app/Contents/Frameworks";
+            moveFile[dylibName] = toWrite;
+         }
     }
     
     int nbLine = 0;
