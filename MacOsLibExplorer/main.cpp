@@ -41,18 +41,18 @@ std::vector<wxString> split(const wxString& s, char seperator)
 int main( int argc, char** argv )
 {
     bool isMacOsFolder = true;
-    if(argc < 2)
+    if(argc < 3)
     {
         printf("Missing folder argument");
         return 0;
     }
     
-    if(argc == 3)
+    if(argc == 4)
         isMacOsFolder = false;
 	// initialize wxWidgets
 	wxInitializer init;
     wxArrayString files;
-    wxTextFile txtFile(argv[2]); 
+    wxTextFile txtFile(argv[3]); 
     txtFile.Create(); 
     txtFile.Open();
     
@@ -63,14 +63,8 @@ int main( int argc, char** argv )
 	wxPrintf( wxT("Hello in wxWidgets World!\n\n") );
     wxString dirPath = argv[1];
     std::vector<wxString> libNameFolder = split(dirPath, '/');
-    wxString folder_output_final = "";
+    wxString folder_output_final = argv[2];
     wxString folder_output = "./Frameworks";
-    for(int i = 0;i < libNameFolder.size() - 1;i++)
-    {
-        folder_output_final += libNameFolder[i] + "/";
-    }
-    folder_output_final += "Frameworks";
-    //folder_output = "./Frameworks";
     
     printf("directory %s \n",dirPath.ToStdString().c_str());
     wxString filename;
@@ -93,24 +87,30 @@ int main( int argc, char** argv )
         { 
             wxString lineText = output.Item(i);
             //int index = lineText.find("/System/Library/Frameworks");
-             //printf("index %i \n", index);
+            
             //|| lineText.find(dylibName) > 1
             
-            if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("@loader_path") == 1 || lineText.find("@rpath") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
+            if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
             {
                 printf("Line %s\n", lineText.ToStdString().c_str());
                 std::vector<wxString> listOfString = split(lineText, '(');
                 wxString toWrite = "cp ";
-                wxString libPath = listOfString[0];
-                //printf("libPath %s\n", libPath.ToStdString().c_str());
-                toWrite += libPath;
+                 wxString libPath = listOfString[0];
+                if(lineText.find("@loader_path") == 1 || lineText.find("@rpath") == 1)
+                {
+                     std::vector<wxString> listOflib = split(libPath, '/');
+                     toWrite += "/opt/homebrew/lib/" + listOflib[listOflib.size() - 1];
+                }
+                else
+                    toWrite += libPath;
                 toWrite += " " + folder_output;
 
                 //txtFile.AddLine(toWrite);    
-                
-                std::vector<wxString> listOflib = split(libPath, '/');
-                //printf("listOflib %s\n", listOflib[listOflib.size() - 1].ToStdString().c_str());
-                if(!wxFileExists(folder_output + "/" + listOflib[listOflib.size() - 1]))
+                 std::vector<wxString> listOflib = split(libPath, '/');
+                wxString fileOut = folder_output_final + "/" + listOflib[listOflib.size() - 1];
+                //printf("Copy file  : %s \n",toWrite.ToStdString().c_str());
+                //printf("Test if file exist : %s \n",fileOut.ToStdString().c_str());
+                if(!wxFileExists(fileOut))
                     copyFile[libPath] = toWrite;
                 
                 wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + listOflib[listOflib.size() - 1] + " " + fileName;
@@ -119,25 +119,15 @@ int main( int argc, char** argv )
                 findModification = true;
                 
             }
-            else if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
-            {
-                    std::vector<wxString> listOfString = split(lineText, '(');
-                    wxString libPath = listOfString[0];
-                    std::vector<wxString> listOflib = split(libPath, '/');
-                    wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + listOflib[listOflib.size() - 1] + " " + fileName;
-                    //txtFile.AddLine(installName); 
-                    changeNameTool.push_back(installName);
-                    findModification = true;
-            }
         } 
-        
          if(!isMacOsFolder && !findModification)
          {
             wxString toWrite = "mv ";
             toWrite += fileName;
-            toWrite += " ./Release/RegardsViewer.app/Contents/Frameworks";
+            toWrite += " " + folder_output_final;
             moveFile[dylibName] = toWrite;
          }
+
     }
     
     int nbLine = 0;
