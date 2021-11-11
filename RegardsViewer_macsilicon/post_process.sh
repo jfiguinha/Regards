@@ -1,4 +1,5 @@
 #/bin/bash
+mkdir Frameworks
 rm change_dylib.sh
 FILE=change_dylib.sh
 ./MacOsLibExplorer ./Release/RegardsViewer.app/Contents/MacOS change_dylib.sh 1
@@ -8,9 +9,12 @@ for i in {1..7}
 do
    echo "Welcome $i times"
    rm change_dylib.sh
-   ./MacOsLibExplorer ./Release/RegardsViewer.app/Contents/Frameworks change_dylib.sh
-	if [ -f FILE ]; then
+   
+   ./MacOsLibExplorer ./Frameworks change_dylib.sh
+	if [ -f "FILE" ]; then
+		
 		chmod +x change_dylib.sh
+		break
 		./change_dylib.sh
 	else
 		break
