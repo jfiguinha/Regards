@@ -96,7 +96,6 @@ namespace Regards
 			void OnPageSetup(wxCommandEvent& event);
 			void OnFileSystemModified(wxFileSystemWatcherEvent& event);
 			void HideScanner(wxCommandEvent& event);
-			void ShowOpenCLConfiguration(const bool& showRestart);
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif

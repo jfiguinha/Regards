@@ -7,7 +7,7 @@
 #include "SQLRemoveData.h"
 #include <PrintEngine.h>
 #include <LibResource.h>
-#include <OpenCLDialog.h>
+//#include <OpenCLDialog.h>
 #include <wx/filename.h>
 #include <ConfigRegards.h>
 #include "MainThemeInit.h"
@@ -245,12 +245,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			CRegardsConfigParam* regards_config_param = CParamInit::getInstance();
 			if (regards_config_param != nullptr)
 			{
-				vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+				std::vector<compute::platform> platforms = compute::system::platforms();
+				//vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 				wxString platformName = regards_config_param->GetOpenCLPlatformName();
 				//int indexDevice = config->GetOpenCLPlatformIndex();
-				for (OpenCLPlatform* platform : listPlatform)
+				for (compute::platform platform : platforms)
 				{
-					if (platformName == platform->platformName)
+					if (platformName == platform.name())
 						findPlatform = true;
 				}
 			}
@@ -258,13 +259,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			//OpenCL auto selected
 			if (platform_name == "" || !findPlatform)
 			{
-				if (COpenCLEngine::GetNbPlatform() == 1)
-					COpenCLEngine::GetDefaultGpuDeviceInformation();
-				else
-				{
-					bool restart = false;
-					ShowOpenCLConfiguration(restart);
-				}
+				COpenCLEngine::GetDefaultGpuDeviceInformation();
 			}
 		}
 	}
@@ -366,41 +361,6 @@ bool CViewerFrame::CheckDatabase(FolderCatalogVector& folderList)
 	}
 
 	return folderChange;
-}
-
-void CViewerFrame::ShowOpenCLConfiguration(const bool& showRestart)
-{
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
-
-	if (supportOpenCL)
-	{
-		OpenCLDialog configFile(this);
-		configFile.ShowModal();
-		if (configFile.IsOk())
-		{
-			const wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1); //L"&Thumbnail";
-			const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);
-			//L"&Help";
-			CRegardsConfigParam* regards_config_param = CParamInit::getInstance();
-			if (regards_config_param != nullptr)
-			{
-				regards_config_param->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
-				regards_config_param->SetOpenCLPlatformName(configFile.GetPlatformName());
-			}
-
-			if (showRestart)
-				wxMessageBox(labelRestart, labelInformations);
-		}
-	}
-	else
-	{
-		const wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1); //L"&Help";
-		const wxString openclDevice = CLibResource::LoadStringFromResource(L"LBLOPENCLDEVICEREQUIRED", 1);
-		wxMessageBox(openclDevice, labelInformations);
-	}
 }
 
 int CViewerFrame::ShowScanner()

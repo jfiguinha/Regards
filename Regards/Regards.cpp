@@ -211,7 +211,7 @@ bool MyApp::OnInit()
 
 	if (!configFileExist)
 	{
-		vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+		std::vector<compute::platform> listPlatform = compute::system::platforms();
 		if (listPlatform.size() == 0)
 			regardsParam->SetIsOpenCLSupport(false);
 		else

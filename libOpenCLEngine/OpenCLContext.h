@@ -6,6 +6,8 @@
 #endif
 #include "OpenCLInfos.h"
 #include <opencv2/core/ocl.hpp>
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 using namespace std;
 
 #define OPENCL_UCHAR 1
@@ -20,43 +22,25 @@ namespace Regards
 		class COpenCLContext
 		{
 		public:
-			COpenCLContext(cl_platform_id platformId, const wxString & platformName, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl);
+			COpenCLContext(compute::context& context, const bool &opengl);
 			~COpenCLContext();
-			int GenerateContext();
 
-			cl_context GetContext()
+			//int GenerateContext();
+
+			compute::context & GetContext()
 			{
 				return context;
 			}
 
-			bool RegenerateContext(const bool& opengl);
-            
-            const cl_device_type GetDeviceType()
-            {
-                return deviceType;
-            }
-
-			const cl_platform_id GetPlatformId()
+			/*
+			cl_device_id * GetSelectedDevice()
 			{
-				return platform;
+				cl_device_id deviceId = context.get_device().id();
+				return &deviceId;
 			}
+			*/
 
-			const cl_device_id * GetSelectedDevice()
-			{
-				return &device;
-			}
-
-			const cl_uint GetNumberOfDevice()
-			{
-				return 1;
-			}
-
-			cl_device_id GetDeviceId()
-			{
-				return device;
-			}
-
-			cl_command_queue GetCommandQueue()
+			compute::command_queue GetCommandQueue()
 			{
 				return queue;
 			}
@@ -68,7 +52,7 @@ namespace Regards
             
             uint64_t GetMaxMemoryAllocable()
             {
-                return COpenCLInfos::devideMaxMemAllocSize(device);
+                return COpenCLInfos::devideMaxMemAllocSize(context.get_device().id());
             }
 
 			void GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag);
@@ -85,6 +69,12 @@ namespace Regards
 				return platform_name;
 			}
 
+			const cl_uint GetNumberOfDevice()
+			{
+				return 1;
+			}
+
+
 			cv::ocl::OpenCLExecutionContext GetContextForOpenCV()
 			{
 				return opencvContext;
@@ -97,18 +87,11 @@ namespace Regards
 
 		private:
 
-
-			void CreateContext();
-			void CreateQueue(cl_command_queue_properties queue_properties = 0);
-
+			compute::context context;
 			bool sharedContextCompatible = false;
             bool isOpenGL = false;
-			cl_platform_id platform;
 			wxString platform_name;
-			cl_device_id device;
-			cl_context context;
-            cl_device_type deviceType;
-			cl_command_queue queue;
+			compute::command_queue queue;
 			cv::ocl::OpenCLExecutionContext opencvContext;
 			vector<COpenCLProgram *> listProgram;
 		};

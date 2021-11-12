@@ -24,6 +24,8 @@
 #include <OpenCVEffect.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS, wxTimerEvent);
@@ -2228,7 +2230,7 @@ bool CVideoControlSoft::IsCPUContext()
 	if (isCPU == -1)
 	{
 		if (openclContext != nullptr)
-			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
+			isCPU = (openclContext->GetContext().get_device().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);

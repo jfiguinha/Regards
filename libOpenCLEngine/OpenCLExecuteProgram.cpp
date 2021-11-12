@@ -272,8 +272,10 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 		parameter->Add(kernel, numArg++);
 	}
 
+	cl_device_id deviceId = context->GetContext().get_device().id();
+
 	size_t local_size_max;
-	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t),
+	err = clGetKernelWorkGroupInfo(kernel, deviceId, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t),
 	                               &local_size_max, nullptr);
 	Error::CheckError(err);
 
@@ -335,12 +337,12 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 		parameter->Add(kernel, numArg++);
 	}
 
-
+	cl_device_id deviceId = context->GetContext().get_device().id();
 	size_t local_size = 0;
 
 	// get maximum workgroup size
 	size_t local_size_max;
-	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t),
+	err = clGetKernelWorkGroupInfo(kernel, deviceId, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t),
 	                               &local_size_max, nullptr);
 	Error::CheckError(err);
 

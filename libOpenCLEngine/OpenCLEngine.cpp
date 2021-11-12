@@ -4,449 +4,42 @@
 #include "OpenCLContext.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#include <boost/compute/core.hpp>
+#include <boost/compute/interop/opengl/context.hpp>
+namespace compute = boost::compute;
 #include <opencv2/core/ocl.hpp>
-#define GL_MAJOR_VERSION 0x821B
-#define GL_MINOR_VERSION 0x821C
 using namespace Regards::OpenCL;
 
-#if defined (__APPLE__) || defined(MACOSX)
- static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
-#else
-static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
-#endif
 
-
-vector<OpenCLDevice*> COpenCLDeviceList::listOfDevice;
-vector<OpenCLPlatform*> COpenCLPlatformList::listOfPlatform;
-
-void COpenCLPlatformList::GetListOfPlatform()
+bool COpenCLPlatformList::SelectPlatform(const wxString& name, compute::platform & platformSelect)
 {
-	printf("GetListOfPlatform \n");
-	Error error("error");
-	cl_uint num_of_platforms = 0;
-	// get total number of available platforms:
-	cl_int err = clGetPlatformIDs(0, nullptr, &num_of_platforms);
-	error.CheckError(err);
+	bool findPlatform = false;
+	std::vector<compute::platform> platforms = compute::system::platforms();
 
-	// use vector for automatic memory management
-	vector<cl_platform_id> platforms(num_of_platforms);
-	// get IDs for all platforms:
-	err = clGetPlatformIDs(num_of_platforms, &platforms[0], nullptr);
-	error.CheckError(err);
+	vector<compute::platform>::iterator i = std::find_if(platforms.begin(),
+		platforms.end(),
+		[&](const auto& val) { return val.name() == name.ToStdString(); });
 
-	//cl_uint selected_platform_index = num_of_platforms;
-	//bool by_index = false;
-
-	//cout << "Platforms (" << num_of_platforms << "):\n";
-
-	// TODO In case of empty platform name select the default platform or 0th platform?
-
-	for (cl_uint i = 0; i < num_of_platforms; ++i)
+	if (i != platforms.end())
 	{
-		// Get the length for the i-th platform name
-		size_t platform_name_length = 0;
-		err = clGetPlatformInfo(
-			platforms[i],
-			CL_PLATFORM_NAME,
-			0,
-			nullptr,
-			&platform_name_length
-		);
-		error.CheckError(err);
-
-
-		// Get the name itself for the i-th platform
-		// use vector for automatic memory management
-		vector<char> platform_name(platform_name_length);
-		err = clGetPlatformInfo(
-			platforms[i],
-			CL_PLATFORM_NAME,
-			platform_name_length,
-			&platform_name[0],
-			nullptr
-		);
-		error.CheckError(err);
-
-		auto device = new OpenCLPlatform();
-		device->platformIndex = i;
-		device->platformName = wxString(&platform_name[0]);
-		device->platformId = platforms[i];
-		listOfPlatform.push_back(device);
-		//cout << "    [" << i << "] " << &platform_name[0];
+		findPlatform = true;
+		platformSelect = *i;
 	}
 
-	//printf("GetListOfPlatform size : %d \n", listOfPlatform.size());
+	return findPlatform;
 }
 
-cl_platform_id COpenCLDeviceList::SelectPlatform(const wxString& platform_name_or_index)
+bool COpenCLPlatformList::SelectPlatform(const int & index, compute::platform& platformSelect)
 {
-	cl_uint num_of_platforms = 0;
-	// get total number of available platforms:
-	cl_int err = clGetPlatformIDs(0, nullptr, &num_of_platforms);
-	Error::CheckError(err);
-
-	// use vector for automatic memory management
-	vector<cl_platform_id> platforms(num_of_platforms);
-	// get IDs for all platforms:
-	err = clGetPlatformIDs(num_of_platforms, &platforms[0], nullptr);
-	Error::CheckError(err);
-
-	cl_uint selected_platform_index = num_of_platforms;
-	bool by_index = false;
-
-	if (Error::is_number(platform_name_or_index))
+	bool findPlatform = false;
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	if (index < platforms.size())
 	{
-		// Select platform by index:
-		by_index = true;
-
-		// Detection is simple: just try to represent x as an int
-		try
-		{
-			// If x is a number, then str_to returns without an exception
-			// In case when x cannot be converted to int
-			// str_to rises Error exception (see str_to definitin)
-			selected_platform_index = Error::str_to(platform_name_or_index);
-		}
-		catch (const Error&)
-		{
-			// fail: x is not a number
-			selected_platform_index = 0;
-		}
-		// does not return here; need to look at the complete platfrom list
+		findPlatform = true;
+		platformSelect = platforms[index];
 	}
 
-	// this is ignored in case when we have platform already selected by index
-	wxString required_platform_subname = platform_name_or_index;
-
-	//cout << "Platforms (" << num_of_platforms << "):\n";
-
-	// TODO In case of empty platform name select the default platform or 0th platform?
-
-	for (cl_uint i = 0; i < num_of_platforms; ++i)
-	{
-		// Get the length for the i-th platform name
-		size_t platform_name_length = 0;
-		err = clGetPlatformInfo(
-			platforms[i],
-			CL_PLATFORM_NAME,
-			0,
-			nullptr,
-			&platform_name_length
-		);
-		Error::CheckError(err);
-
-		// Get the name itself for the i-th platform
-		// use vector for automatic memory management
-		vector<char> platform_name(platform_name_length);
-		err = clGetPlatformInfo(
-			platforms[i],
-			CL_PLATFORM_NAME,
-			platform_name_length,
-			&platform_name[0],
-			nullptr
-		);
-		Error::CheckError(err);
-
-		//cout << "    [" << i << "] " << &platform_name[0];
-
-		// decide if this i-th platform is what we are looking for
-		// we select the first one matched skipping the next one if any
-		//
-		if (
-			selected_platform_index == i || ( // we already selected the platform by index
-				wxString(&platform_name[0]).find(required_platform_subname) != wxString::npos &&
-				selected_platform_index == num_of_platforms) // haven't selected yet
-		)
-		{
-			//cout << " [Selected]";
-			selected_platform_index = i;
-			// do not stop here, just want to see all available platforms
-		}
-
-		// TODO Something when more than one platform matches a given subname
-
-		//cout << endl;
-	}
-
-	if (by_index && selected_platform_index >= num_of_platforms)
-	{
-		throw Error(
-			"Given index of platform (" + platform_name_or_index + ") "
-			"is out of range of available platforms"
-		);
-	}
-
-	if (!by_index && selected_platform_index >= num_of_platforms)
-	{
-		throw Error(
-			"There is no found platform with name containing \"" +
-			required_platform_subname + "\" as a substring\n"
-		);
-	}
-
-	return platforms[selected_platform_index];
-}
-
-
-cl_device_type COpenCLDeviceList::ParseDeviceType(const wxString& device_type_name)
-{
-	cl_device_type device_type = 0;
-	for (size_t pos = 0, next = 0; next != wxString::npos;)
-	{
-		next = device_type_name.find_first_of("+|", pos);
-		size_t substr_len = (next != wxString::npos) ? (next - pos) : (string::npos);
-		wxString name = device_type_name.substr(pos, substr_len);
-		if (
-			name == "all" ||
-			name == "ALL" ||
-			name == "CL_DEVICE_TYPE_ALL"
-		)
-		{
-			return CL_DEVICE_TYPE_ALL;
-		}
-
-		if (
-			name == "default" ||
-			name == "DEFAULT" ||
-			name == "CL_DEVICE_TYPE_DEFAULT"
-		)
-		{
-			return CL_DEVICE_TYPE_DEFAULT;
-		}
-
-		if (
-			name == "cpu" ||
-			name == "CPU" ||
-			name == "CL_DEVICE_TYPE_CPU"
-		)
-		{
-			return CL_DEVICE_TYPE_CPU;
-		}
-
-		if (
-			name == "gpu" ||
-			name == "GPU" ||
-			name == "CL_DEVICE_TYPE_GPU"
-		)
-		{
-			return CL_DEVICE_TYPE_GPU;
-		}
-
-		if (
-			name == "acc" ||
-			name == "ACC" ||
-			name == "accelerator" ||
-			name == "ACCELERATOR" ||
-			name == "CL_DEVICE_TYPE_ACCELERATOR"
-		)
-		{
-			return CL_DEVICE_TYPE_ACCELERATOR;
-		}
-
-		throw Error(
-			"Cannot recognize " + device_type_name + " as a device type"
-		);
-	}
-	return device_type;
-}
-
-char* strnstr(const char* s1, const char* s2, int length)
-{
-	if (s1 == nullptr || s2 == nullptr)
-		return nullptr;
-	printf("searching \n\n\"%s\"\n for %.*s\n", s1, length, s2);
-
-	auto ss1 = static_cast<char*>(malloc(strlen(s1) + 1));
-	strcpy(ss1, s1);
-	auto ss2 = static_cast<char*>(malloc(length + 1));
-	strncpy(ss2, s2, length);
-	char* result = strstr(ss1, ss2);
-	free(ss1);
-	free(ss2);
-	return result;
-}
-
-
-int COpenCLDeviceList::IsExtensionSupported(const char* support_str, const char* ext_string, size_t ext_buffer_size)
-{
-	size_t offset = 0;
-	const char* space_substr = strnstr(ext_string + offset, " ", ext_buffer_size - offset);
-	size_t space_pos = space_substr ? space_substr - ext_string : 0;
-	while (space_pos < ext_buffer_size)
-	{
-		if (strncmp(support_str, ext_string + offset, space_pos) == 0)
-		{
-			// Device supports requested extension!
-			printf("Info: Found extension support %s!\n", support_str);
-			return 1;
-		}
-		// Keep searching -- skip to next token string
-		offset = space_pos + 1;
-		space_substr = strnstr(ext_string + offset, " ", ext_buffer_size - offset);
-		space_pos = space_substr ? space_substr - ext_string : 0;
-	}
-	printf("Warning: Extension not supported %s!\n", support_str);
-	return 0;
-}
-
-wxString COpenCLDeviceList::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
-{
-	// Get the length for the i-th device name
-	size_t device_name_length = 0;
-	cl_int err = clGetDeviceInfo(
-		device,
-		param_name,
-		0,
-		nullptr,
-		&device_name_length
-	);
-	Error::CheckError(err);
-
-	// Get the name itself for the i-th device
-	// use vector for automatic memory management
-	vector<char> device_name(device_name_length);
-	err = clGetDeviceInfo(
-		device,
-		param_name,
-		device_name_length,
-		&device_name[0],
-		nullptr
-	);
-	Error::CheckError(err);
-
-	return wxString(&device_name[0]);
-}
-
-void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_platform_id platform,
-                                        cl_device_type device_type)
-{
-	cl_uint num_of_devices;
-
-	cl_int err = clGetDeviceIDs(
-		platform,
-		device_type,
-		0,
-		nullptr,
-		&num_of_devices
-	);
-
-	Error::CheckError(err);
-
-	vector<cl_device_id> devices(num_of_devices);
-
-	err = clGetDeviceIDs(
-		platform,
-		device_type,
-		num_of_devices,
-		&devices[0],
-		nullptr
-	);
-	Error::CheckError(err);
-	bool findOpenGLSharing = false;
-	for (cl_uint i = 0; i < num_of_devices; ++i)
-	{
-		int supported = 0;
-		cl_device_type type;
-		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
-		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
-
-		if (type == CL_DEVICE_TYPE_GPU)
-		{
-			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
-			supported = supportExt.find(CL_GL_SHARING_EXT);
-			if (supported > 0)
-				findOpenGLSharing = true;
-		}
-
-		if (findOpenGLSharing)
-			break;
-
-		printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
-	}
-
-	for (cl_uint i = 0; i < num_of_devices; ++i)
-	{
-		int supported = 0;
-		cl_device_type type;
-		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
-		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
-
-		if (type == CL_DEVICE_TYPE_GPU)
-		{
-			wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
-			supported = supportExt.find(CL_GL_SHARING_EXT);
-			if (supported > 0)
-				supported = 1;
-			else
-				supported = 0;
-		}
-
-
-		if (findOpenGLSharing && supported)
-		{
-			auto device = new OpenCLDevice();
-			device->deviceIndex = i;
-			device->deviceName = deviceName;
-			device->platformId = platform;
-			device->deviceId = devices[i];
-			device->deviceType = type;
-			device->openGlSharing = supported;
-			listOfDevice.push_back(device);
-            printf("Device found OpenGL shared : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
-			break;
-		}
-		else
-		{
-			auto device = new OpenCLDevice();
-			device->deviceIndex = i;
-			device->deviceName = deviceName;
-			device->platformId = platform;
-			device->deviceId = devices[i];
-			device->deviceType = type;
-			device->openGlSharing = supported;
-			listOfDevice.push_back(device);
-		}
-		
-	}
-}
-
-OpenCLDevice* COpenCLEngine::GetDefaultDevice()
-{
-	wxString platformName;
-	OpenCLPlatform* platform = nullptr;
-	OpenCLDevice* device = nullptr;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-	{
-		platformName = config->GetOpenCLPlatformName();
-		if (platformName != "")
-		{
-			platform = COpenCLPlatformList::SelectPlatform(platformName);
-			if (platform != nullptr)
-			{
-				int indexDevice = config->GetOpenCLPlatformIndex();
-				device = COpenCLDeviceList::SelectDevice(platform, indexDevice);
-			}
-		}
-
-		if (platform == nullptr)
-		{
-			printf("GetDefaultDevice Platform is null \n");
-			platform = COpenCLPlatformList::SelectPlatform(0);
-			if (platform != nullptr)
-			{
-				device = COpenCLDeviceList::SelectDevice(platform, 0);
-			}
-		}
-	}
-
-	if (device != nullptr)
-		printf("GetDefaultDevice Platform Name : %s Device Name : %s \n", CConvertUtility::ConvertToUTF8(platformName),
-		       CConvertUtility::ConvertToUTF8(device->deviceName));
-	else
-		printf("GetDefaultDevice Platform Name : %s Device Name : None \n",
-		       CConvertUtility::ConvertToUTF8(platformName));
-	return device;
+	return findPlatform;
 }
 
 COpenCLEngine::COpenCLEngine()
@@ -457,47 +50,27 @@ COpenCLEngine::COpenCLEngine()
 COpenCLContext * COpenCLEngine::CreateInstance(const bool& attachOpenCV)
 {
 	COpenCLContext* contextLocal = nullptr;
-	OpenCLPlatform* platform = nullptr;
-	OpenCLDevice* device = GetDefaultDevice();
-
-	if (device == nullptr)
+	try
 	{
-		platform = COpenCLPlatformList::SelectPlatform(0);
-		device = COpenCLDeviceList::SelectDevice(platform, 0);
+
+		compute::context context = boost::compute::opengl_create_shared_context();
+		contextLocal = new COpenCLContext(context,
+			true);
 	}
-
-	if (device != nullptr)
+	catch (...)
 	{
-		contextLocal = new COpenCLContext(device->platformId, "", device->deviceId, device->deviceType,
-			device->openGlSharing);
-		int rtnValue = contextLocal->GenerateContext();
-		if (rtnValue == -1)
-		{
-			delete contextLocal;
-			contextLocal = nullptr;
-		}
-
-		if (platform == nullptr)
-		{
-			vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-
-			auto i = std::find_if(listPlatform.begin(),
-				listPlatform.end(),
-				[&](const auto& val) { return val->platformId == device->platformId; });
-
-			if (i != listPlatform.end())
-				platform = *i;
-
-			contextLocal->SetPlatformName(platform->platformName);
-		}
+		compute::device gpu = compute::system::default_device();
+		compute::context context(gpu);
+		contextLocal = new COpenCLContext(context,
+			false);
 	}
 
 #ifdef OPENCV_OPENCL
-	if (platform != nullptr && contextLocal != nullptr && device != nullptr && attachOpenCV)
+	if (attachOpenCV)
 	{
 		cv::ocl::setUseOpenCL(true);
 		contextLocal->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
-			platform->platformName.ToStdString(), platform->platformId, contextLocal->GetContext(), device->deviceId));
+			contextLocal->GetContext().get_device().platform().name(), contextLocal->GetContext().get_device().platform().id(), contextLocal->GetContext(), contextLocal->GetContext().get_device().id()));
 
 		//Set OpenCV to use OpenCL context
 		//
@@ -505,97 +78,80 @@ COpenCLContext * COpenCLEngine::CreateInstance(const bool& attachOpenCV)
 	}
 #endif
 
-	//_singleton = contextLocal;
-
 	return contextLocal;
 }
 
-/*
-OpenCLExecutionContext cv::ocl::OpenCLExecutionContext::create(const std::string & 	platformName,
-	void * 	platformID,
-	void * 	context,
-	void * 	deviceID
-)
-*/
 
 COpenCLEngine::~COpenCLEngine()
 {
 
 }
 
-OpenCLDevice* COpenCLDeviceList::SelectDevice(const wxString& deviceName)
+int COpenCLDeviceList::SelectDevice(const wxString& platformName, const wxString& deviceName, compute::device& deviceSelect)
 {
-	if (listOfDevice.size() == 0)
-		GetAllDevice();
-
-	auto i = std::find_if(listOfDevice.begin(),
-	                      listOfDevice.end(),
-	                      [&](const auto& val) { return val->deviceName == deviceName; });
-
-	if (i != listOfDevice.end())
-		return *i;
-
-	return nullptr;
-}
-
-void COpenCLDeviceList::GetAllDevice()
-{
-	printf("GetAllDevice \n");
-	vector<OpenCLPlatform*> platformList = COpenCLPlatformList::GetPlatform();
-	for (OpenCLPlatform* platform : platformList)
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	bool findPlatform = false;
+	bool findDevice = false;
+	int index_platform = 0;
+	int index_device = -1;
+	for (compute::platform platform : platforms)
 	{
-		if (platform != nullptr)
+		if (platformName == platform.name())
 		{
-			printf("Platform Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
-			cl_device_type deviceType = ParseDeviceType("ALL");
-			try
-			{
-				GetListOfDevice(listOfDevice, platform->platformId, deviceType);
-			}
-			catch (...)
-			{
-				printf("Platform Error Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
-			}
+			findPlatform = true;
+			break;
 		}
-	}
-}
-
-OpenCLDevice* COpenCLDeviceList::SelectDevice(OpenCLPlatform* platform, const int& index)
-{
-	//OpenCLDevice * deviceSelected = nullptr;
-
-	if (listOfDevice.empty())
-		GetAllDevice();
-
-	auto i = std::find_if(listOfDevice.begin(),
-	                      listOfDevice.end(),
-	                      [&](const auto& openCL)
-	                      {
-		                      return openCL->deviceIndex == index && platform->platformId == openCL->platformId;
-	                      });
-
-	if (i != listOfDevice.end())
-		return *i;
-
-	return nullptr;
-}
-
-vector<OpenCLDevice*> COpenCLDeviceList::GetPlatformDevice(OpenCLPlatform* platform)
-{
-	vector<OpenCLDevice*> listSelectDevice;
-
-	if (listOfDevice.empty())
-		GetAllDevice();
-
-	for (OpenCLDevice* openCL : listOfDevice)
-	{
-		if (platform->platformId == openCL->platformId)
-		{
-			listSelectDevice.push_back(openCL);
-		}
+		index_platform++;
 	}
 
-	return listSelectDevice;
+	if (findPlatform)
+	{
+		for (int i = 0; i < platforms[index_platform].devices().size(); i++)
+		{
+			if (platforms[index_platform].devices()[i].name() >= deviceName)
+			{
+				deviceSelect = platforms[index_platform].devices()[i];
+				findDevice = true;
+				index_device = i;
+			}
+		}
+			
+	}
+
+	return index_device;
+}
+
+int COpenCLDeviceList::SelectDevice(const wxString& platformName, const wxString& deviceName)
+{
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	bool findPlatform = false;
+	bool findDevice = false;
+	int index_platform = 0;
+	int index_device = 0;
+	for (compute::platform platform : platforms)
+	{
+		if (platformName == platform.name())
+		{
+			findPlatform = true;
+			break;
+		}
+		index_platform++;
+	}
+
+	if (findPlatform)
+	{
+		for (int i = 0; i < platforms[index_platform].devices().size(); i++)
+		{
+			if (platforms[index_platform].devices()[i].name() >= deviceName)
+			{
+				findDevice = true;
+				index_device = i;
+			}
+		}
+
+	}
+
+	return index_device;
 }
 
 int COpenCLEngine::SupportOpenCL()
@@ -609,56 +165,43 @@ int COpenCLEngine::SupportOpenCL()
 
 int COpenCLEngine::GetNbPlatform()
 {
-	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-	return listPlatform.size();
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	return platforms.size();
 }
 
 int COpenCLEngine::GetDefaultGpuDeviceInformation()
 {
-	//wxString platformName = "";
-	//wxString device_name = "";
-	int indexDevice = -1;
-	OpenCLPlatform* openCLPlatformSelected = nullptr;
-	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-	bool findGpuDevice = false;
-	for (OpenCLPlatform* openCLPlatform : listPlatform)
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	int deviceIndex = 0;
+	int platformIndex = 0;
+	compute::device gpu = compute::system::default_device();
+
+	for (int i = 0; i < platforms.size(); i++)
 	{
-		//platformName == openCLPlatform->platformName;
-		openCLPlatformSelected = openCLPlatform;
-		break;
-	}
-
-	if (openCLPlatformSelected != nullptr)
-	{
-		vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
-
-		for (OpenCLDevice* openCLDevice : listDevice)
+		compute::platform platform = platforms[i];
+		if (platform.id() == gpu.platform().id())
 		{
-			if (openCLDevice->deviceType == CL_DEVICE_TYPE_GPU)
-			{
-				indexDevice = openCLDevice->deviceIndex;
-				//device_name = openCLDevice->deviceName;
-				findGpuDevice = true;
-				break;
-			}
-		}
-
-		if (!findGpuDevice)
-		{
-			for (OpenCLDevice* openCLDevice : listDevice)
-			{
-				indexDevice = openCLDevice->deviceIndex;
-				//device_name = openCLDevice->deviceName;
-				break;
-			}
+			platformIndex = i;
+			break;
 		}
 	}
 
+
+	for (int j = 0; j < platforms[platformIndex].devices().size(); j++)
+	{
+		compute::device device = platforms[platformIndex].devices()[j];
+		if (gpu.id() == device.id())
+		{
+			deviceIndex = j;
+			break;
+		}
+	}
+	
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 	{
-		config->SetOpenCLPlatformIndex(indexDevice);
-		config->SetOpenCLPlatformName(openCLPlatformSelected->platformName);
+		config->SetOpenCLPlatformIndex(deviceIndex);
+		config->SetOpenCLPlatformName(gpu.platform().name());
 	}
 
 	return 0;

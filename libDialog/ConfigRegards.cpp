@@ -130,11 +130,9 @@ ConfigRegards::~ConfigRegards()
 
 int ConfigRegards::GetDeviceIndex()
 {
+	wxString platformselectItem = cbOpenCLPlatform->GetStringSelection();
 	wxString selectItem = cbOpenCLDevice->GetStringSelection();
-	OpenCLDevice* openCLDevice = COpenCLDeviceList::SelectDevice(selectItem);
-	if (openCLDevice != nullptr)
-		return openCLDevice->deviceIndex;
-	return 0;
+	return COpenCLDeviceList::SelectDevice(platformselectItem, selectItem);
 }
 
 wxString ConfigRegards::GetPlatformName()
@@ -146,30 +144,29 @@ wxString ConfigRegards::GetPlatformName()
 void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
 {
 	wxString device = "";
-	OpenCLPlatform* openCLPlatformSelected = nullptr;
 	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
-	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-
-	for (OpenCLPlatform* openCLPlatform : listPlatform)
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	int plaformIndex = 0;
+	for (compute::platform platform : platforms)
 	{
-		if (selectItem == openCLPlatform->platformName)
+		if (selectItem.ToStdString() == platform.name())
 		{
-			openCLPlatformSelected = openCLPlatform;
 			break;
 		}
+		plaformIndex++;
 	}
 
 	int i = 0;
 	cbOpenCLDevice->Clear();
 
-	vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+	std::vector<compute::device> devices = platforms[plaformIndex].devices();
 
-	for (OpenCLDevice* openCLDevice : listDevice)
+	for (compute::device localdevice : devices)
 	{
-		cbOpenCLDevice->Append(openCLDevice->deviceName);
+		cbOpenCLDevice->Append(localdevice.name());
 		if (i == 0)
 		{
-			device = openCLDevice->deviceName;
+			device = localdevice.name();
 			i++;
 		}
 	}
@@ -256,33 +253,37 @@ void ConfigRegards::init()
 
 	rbKernelInMemory->SetSelection(kernelInMemory);
 
-	OpenCLPlatform* openCLPlatformSelected = nullptr;
 	this->SetTitle("OpenCL Device Selection");
-	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+	std::vector<compute::platform> platforms = compute::system::platforms();
+	int platformIndex = -1;
+	int deviceIndex = 0;
 
-	for (OpenCLPlatform* openCLPlatform : listPlatform)
+	for (compute::platform openCLPlatform : platforms)
 	{
-		cbOpenCLPlatform->Append(openCLPlatform->platformName);
-		if (platformName == openCLPlatform->platformName)
+		cbOpenCLPlatform->Append(openCLPlatform.name());
+		if (platformName == openCLPlatform.name())
 		{
-			openCLPlatformSelected = openCLPlatform;
+			break;
 		}
+		platformIndex++;
 	}
 
 	cbOpenCLPlatform->SetStringSelection(platformName);
 
-	if (openCLPlatformSelected != nullptr)
+	if (platformIndex >= 0)
 	{
-		vector<OpenCLDevice*> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+		std::vector<compute::device> devices = platforms[platformIndex].devices();
 
 		printf("Select Device Index : %d \n", indexDevice);
-		for (OpenCLDevice* openCLDevice : listDevice)
+		for (compute::device openCLDevice : devices)
 		{
-			cbOpenCLDevice->Append(openCLDevice->deviceName);
-			if (openCLDevice->deviceIndex == indexDevice)
+			cbOpenCLDevice->Append(openCLDevice.name());
+			if (deviceIndex == indexDevice)
 			{
-				deviceName = openCLDevice->deviceName;
+				deviceName = openCLDevice.name();
+				break;
 			}
+			deviceIndex++;
 		}
 
 		cbOpenCLDevice->SetStringSelection(deviceName);

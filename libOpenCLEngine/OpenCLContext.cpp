@@ -25,16 +25,16 @@ int COpenCLContext::GetDefaultType()
 	return OPENCL_UCHAR;
 }
 
-COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString& platformName, cl_device_id deviceId,
-                               cl_device_type deviceType, const bool& opengl): context(nullptr)
+COpenCLContext::COpenCLContext(compute::context& context, const bool& opengl): context(nullptr)
 {
 	this->isOpenGL = opengl;
-	platform = platformId;
-	device = deviceId;
-	this->platform_name = platformName;
-	this->deviceType = deviceType;
-	queue = nullptr;
-	context = nullptr;
+	this->context = context;
+	if (isOpenGL)
+		sharedContextCompatible = true;
+	else
+		sharedContextCompatible = false;
+	queue = compute::command_queue(context, context.get_device());
+
 }
 
 void COpenCLContext::SetPlatformName(const wxString& platform_name)
@@ -144,131 +144,4 @@ COpenCLContext::~COpenCLContext()
 	}
 
 	listProgram.clear();
-}
-
-bool COpenCLContext::RegenerateContext(const bool& opengl)
-{
-	this->isOpenGL = opengl;
-
-	if (queue)
-	{
-		cl_int err = clReleaseCommandQueue(queue);
-
-		Error::CheckError(err);
-	}
-
-	if (context)
-	{
-		cl_int err = clReleaseContext(context);
-
-		Error::CheckError(err);
-	}
-	try
-	{
-		GenerateContext();
-		return 0;
-	}
-	catch (...)
-	{
-		return -1;
-	}
-}
-
-int COpenCLContext::GenerateContext()
-{
-	try
-	{
-		CreateContext();
-		CreateQueue();
-		return 0;
-	}
-	catch (...)
-	{
-		return -1;
-	}
-}
-
-
-void COpenCLContext::CreateQueue(cl_command_queue_properties queue_properties)
-{
-	if (!device)
-	{
-		throw Error("Device is not selected");
-	}
-
-	cl_int err = 0;
-	queue = clCreateCommandQueue(context, device, queue_properties, &err);
-	Error::CheckError(err);
-}
-
-void COpenCLContext::CreateContext()
-{
-	if (!platform)
-	{
-		throw Error("Platform is not selected");
-	}
-
-	if (!device)
-	{
-		throw Error("Device is not selected");
-	}
-
-	if (isOpenGL)
-	{
-
-    #ifdef WIN32
-            // Create CL context properties, add WGL context & handle to DC
-            cl_context_properties properties[] = {
-                CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
-                CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
-                CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
-                0
-            };
-    #elif defined(__WXGTK__)
-
-            // Create CL context properties, add GLX context & handle to DC
-            cl_context_properties properties[] = {
-             CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
-             CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
-             CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
-             0
-            };
-    #elif defined(__APPLE__)
-
-            // Get current CGL Context and CGL Share group
-            CGLContextObj kCGLContext = CGLGetCurrentContext();
-            CGLShareGroupObj kCGLShareGroup = CGLGetShareGroup(kCGLContext);
-            // Create CL context properties, add handle & share-group enum
-            cl_context_properties properties[] = {
-                CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
-            (cl_context_properties)kCGLShareGroup, 0
-            };
-
-    #endif
-
-		cl_int err = 0;
-		context = clCreateContext(properties, 1, &device, nullptr, nullptr, &err);
-		//Error::CheckError(err);
-		if (err == CL_SUCCESS)
-		{
-			sharedContextCompatible = true;
-			return;
-		}
-
-		std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
-		std::cerr << "Create a compatible OpenCL context." << std::endl;
-	}
-
-	sharedContextCompatible = false;
-
-	//Generate context without shared compatibility
-	cl_context_properties context_props[] = {
-		CL_CONTEXT_PLATFORM,
-		cl_context_properties(platform),
-		0
-	};
-
-	cl_int err = 0;
-	context = clCreateContext(context_props, 1, &device, nullptr, nullptr, &err);
-	Error::CheckError(err);
 }
