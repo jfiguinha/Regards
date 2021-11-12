@@ -1,6 +1,8 @@
 #include <header.h>
 #include "OpenCLParameter.h"
 #include "utility.h"
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 using namespace Regards::OpenCL;
 
 
@@ -9,32 +11,24 @@ void COpenCLParameter::SetLibelle(const wxString& libelle)
 	this->libelle = libelle;
 }
 
-void COpenCLParameterInt::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterInt::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_int), &value);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_int), &value);
 }
 
-void COpenCLParameterUShort::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterUShort::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_ushort), &value);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_ushort), &value);
 }
 
-void COpenCLParameterUInt::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterUInt::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_uint), &value);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_uint), &value);
 }
 
-void COpenCLParameterFloat::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterFloat::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_float), &value);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_float), &value);
 }
 
 void COpenCLParameterByteArray::SetValue(cl_context context, uint8_t* value, int size, cl_mem_flags flag)
@@ -47,11 +41,9 @@ void COpenCLParameterByteArray::SetValue(cl_context context, uint8_t* value, int
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterByteArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterByteArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterIntArray::SetValue(cl_context context, int* value, int size, cl_mem_flags flag)
@@ -63,11 +55,9 @@ void COpenCLParameterIntArray::SetValue(cl_context context, int* value, int size
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterIntArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterIntArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 
@@ -80,11 +70,9 @@ void COpenCLParameterFloatArray::SetValue(cl_context context, float* value, int 
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterFloatArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterFloatArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short* value, int size, cl_mem_flags flag)
@@ -96,11 +84,9 @@ void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short* v
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterUShortArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterUShortArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 
@@ -124,7 +110,7 @@ void COpenCLParameter::Release()
 	}
 }
 
-void COpenCLParameterColorData::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterColorData::Add(compute::kernel & kernelHandle, int numArg)
 {
 	cl_int err;
 	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
@@ -140,11 +126,9 @@ void COpenCLParameterClMem::SetValue(cl_mem memValue)
 	cl_buffer = memValue;
 }
 
-void COpenCLParameterClMem::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterClMem::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterUCharArray::SetValue(cl_context context, unsigned char* value, int size, cl_mem_flags flag)
@@ -156,11 +140,9 @@ void COpenCLParameterUCharArray::SetValue(cl_context context, unsigned char* val
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterUCharArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterUCharArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterShortArray::SetValue(cl_context context, short* value, int size, cl_mem_flags flag)
@@ -172,11 +154,9 @@ void COpenCLParameterShortArray::SetValue(cl_context context, short* value, int 
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterShortArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterShortArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterUintArray::SetValue(cl_context context, unsigned int* value, int size, cl_mem_flags flag)
@@ -188,9 +168,7 @@ void COpenCLParameterUintArray::SetValue(cl_context context, unsigned int* value
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterUintArray::Add(cl_kernel kernelHandle, int numArg)
+void COpenCLParameterUintArray::Add(compute::kernel & kernelHandle, int numArg)
 {
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
+	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }

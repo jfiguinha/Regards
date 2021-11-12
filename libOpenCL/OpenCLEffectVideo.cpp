@@ -1072,15 +1072,6 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			program->ExecuteProgram2D(programCL->GetProgram(), "RgbaToYUV420P", &vecParam, middleWidth, middleHeight);
 
 			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
@@ -1189,15 +1180,6 @@ int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& wi
 		cl_mem memvalue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 
 		if (src)

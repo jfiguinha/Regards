@@ -23,64 +23,84 @@ COpenCLExecuteProgram::COpenCLExecuteProgram(COpenCLContext* context, const cl_m
 
 COpenCLExecuteProgram::~COpenCLExecuteProgram()
 {
+}
+
+void COpenCLExecuteProgram::ExecuteProgram1D(const compute::program & program, const wxString& kernelName,
+                                             const size_t& global_size, const size_t& outputBufferSize)
+{
 	try
 	{
-		if (kernel)
-		{
-			clReleaseKernel(kernel);
-		}
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		ExecuteKernel1D(global_size, outputBufferSize);
 	}
 	catch (...)
 	{
-		//destructorException();
+
 	}
 }
 
-void COpenCLExecuteProgram::ExecuteProgram1D(const cl_program& program, const wxString& kernelName,
-                                             const size_t& global_size, const size_t& outputBufferSize)
+void COpenCLExecuteProgram::ExecuteProgram1D(const compute::program & program, const wxString& kernelName)
 {
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-	ExecuteKernel1D(global_size, outputBufferSize);
+	try
+	{
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		size_t global_size = width * height;
+		ExecuteKernel1D(global_size, bitmapSize);
+	}
+	catch (...)
+	{
+
+	}
+	
 }
 
-void COpenCLExecuteProgram::ExecuteProgram1D(const cl_program& program, const wxString& kernelName)
+void COpenCLExecuteProgram::ExecuteProgram(const compute::program & program, const wxString& kernelName)
 {
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-	size_t global_size = width * height;
-	ExecuteKernel1D(global_size, bitmapSize);
+	try
+	{
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		ExecuteKernel2D(bitmapSize);
+	}
+	catch (...)
+	{
+
+	}
 }
 
-void COpenCLExecuteProgram::ExecuteProgram(const cl_program& program, const wxString& kernelName)
-{
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-	ExecuteKernel2D(bitmapSize);
-}
-
-void COpenCLExecuteProgram::ExecuteProgram(const cl_program& program, const wxString& kernelName,
+void COpenCLExecuteProgram::ExecuteProgram(const compute::program & program, const wxString& kernelName,
                                            const size_t& outputBufferSize)
 {
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-	ExecuteKernel2D(outputBufferSize);
+	try
+	{
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		ExecuteKernel2D(outputBufferSize);
+	}
+	catch (...)
+	{
+
+	}
 }
 
 
-void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wxString& kernelName,
+void COpenCLExecuteProgram::ExecuteProgram2D(const compute::program & program, const wxString& kernelName,
                                              vector<COpenCLParameter*>* vecParam, size_t* offset, size_t* gs_d,
                                              size_t* ls)
 {
 	this->vecParam = vecParam;
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-	ExecuteKernel2D(offset, gs_d, ls);
+	try
+	{
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		ExecuteKernel2D(offset, gs_d, ls);
+	}
+	catch (...)
+	{
+
+	}
 }
 
 void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, CRegardsBitmap* bitmapOut)
@@ -170,8 +190,9 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	if (cl_output_buffer == static_cast<cl_mem>(nullptr))
 		throw Error("Failed to create Output Buffer!");
 
-	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_output_buffer);
-	Error::CheckError(err);
+	//err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_output_buffer);
+	//Error::CheckError(err);
+	kernel.set_arg(0, sizeof(cl_mem), &cl_output_buffer);
 
 
 	int numArg = 1;
@@ -229,34 +250,41 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	}
 }
 
-void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wxString& kernelName,
+void COpenCLExecuteProgram::ExecuteProgram2D(const compute::program & program, const wxString& kernelName,
                                              vector<COpenCLParameter*>* vecParam, int width, int height)
 {
-	cl_int err = 0;
-	kernel = clCreateKernel(program, kernelName.c_str(), &err);
-	Error::CheckError(err);
-
-	size_t global_work_size[2] = {static_cast<size_t>(width), static_cast<size_t>(height)};
-
-	int numArg = 0;
-	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
+	try
 	{
-		COpenCLParameter* parameter = *it;
-		parameter->Add(kernel, numArg++);
+		compute::kernel _kernel(program, kernelName.ToStdString());
+		kernel = _kernel;
+		cl_int err = 0;
+
+		size_t global_work_size[2] = {static_cast<size_t>(width), static_cast<size_t>(height)};
+
+		int numArg = 0;
+		for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
+		{
+			COpenCLParameter* parameter = *it;
+			parameter->Add(kernel, numArg++);
+		}
+
+		err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
+									 global_work_size, nullptr, 0, nullptr, nullptr);
+		Error::CheckError(err);
+
+		err = clFinish(context->GetCommandQueue());
+		Error::CheckError(err);
+
+		for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
+		{
+			COpenCLParameter* parameter = *it;
+			if (!parameter->GetNoDelete())
+				parameter->Release();
+		}
 	}
-
-	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
-	                             global_work_size, nullptr, 0, nullptr, nullptr);
-	Error::CheckError(err);
-
-	err = clFinish(context->GetCommandQueue());
-	Error::CheckError(err);
-
-	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
+	catch (...)
 	{
-		COpenCLParameter* parameter = *it;
-		if (!parameter->GetNoDelete())
-			parameter->Release();
+
 	}
 }
 
@@ -326,9 +354,11 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 	if (cl_output_buffer == static_cast<cl_mem>(nullptr))
 		throw Error("Failed to create Output Buffer!");
 
+	kernel.set_arg(0, sizeof(cl_mem), &cl_output_buffer);
+	/*
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &cl_output_buffer);
 	Error::CheckError(err);
-
+	*/
 
 	int numArg = 1;
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)

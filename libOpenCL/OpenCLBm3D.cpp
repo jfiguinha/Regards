@@ -258,16 +258,6 @@ cl_mem COpenCLBm3D::ExecuteBasicFilter(const float &sigma, COpenCLParameterShort
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_basic_filter");
 			outputValue = program->GetOutput();
 			delete program;
-
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -355,16 +345,6 @@ cl_mem COpenCLBm3D::ExecuteWienerFilter(const float &sigma, const cl_mem & basic
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_wiener_filter");
 			outputValue = program->GetOutput();
 			delete program;
-
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -453,16 +433,6 @@ void COpenCLBm3D::CalculDistanceStep2(const cl_mem & basicPicture, COpenCLParame
 
 			program->ExecuteProgram2D(programCL->GetProgram(), "calc_distances", &vecParam, offset, gs_d, ls);
 			delete program;
-
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 		}
@@ -550,16 +520,6 @@ void COpenCLBm3D::CalculDistanceStep1(COpenCLParameterShortArray * similar_coord
 
 			program->ExecuteProgram2D(programCL->GetProgram(), "calc_distances", &vecParam, offset, gs_d, ls);
 			delete program;
-
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
