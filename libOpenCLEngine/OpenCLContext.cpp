@@ -113,30 +113,6 @@ COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId)
 
 COpenCLContext::~COpenCLContext()
 {
-	try
-	{
-		// Release objects in the opposite order of creation
-
-		if (queue)
-		{
-			cl_int err = clReleaseCommandQueue(queue);
-
-			Error::CheckError(err);
-		}
-
-		if (context)
-		{
-			cl_int err = clReleaseContext(context);
-
-			Error::CheckError(err);
-		}
-	}
-	catch (...)
-	{
-		//destructorException();
-	}
-
-
 	for (COpenCLProgram* program : listProgram)
 	{
 		delete program;
