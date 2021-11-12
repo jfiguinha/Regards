@@ -16,7 +16,7 @@ COpenCLExecuteProgram::COpenCLExecuteProgram(COpenCLContext* context, const cl_m
 {
 	this->flag = flag;
 	this->context = context;
-	//keepMemory = false;
+	keepMemory = false;
 	cl_output_buffer = nullptr;
 }
 
@@ -210,6 +210,38 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	err = clFinish(context->GetCommandQueue());
 	Error::CheckError(err);
 
+	if (!keepMemory)
+	{
+		if (flag == CL_MEM_USE_HOST_PTR)
+		{
+			void* tmp_ptr = clEnqueueMapBuffer(context->GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0,
+			                                   outputBufferSize, 0, nullptr, nullptr, &err);
+			Error::CheckError(err);
+			if (tmp_ptr != data)
+			{
+				// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
+				throw Error("clEnqueueMapBuffer failed to return original pointer");
+			}
+
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueUnmapMemObject(context->GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+			Error::CheckError(err);
+		}
+		else
+		{
+			err = clEnqueueReadBuffer(context->GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, outputBufferSize, data,
+			                          0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+		}
+
+		err = clReleaseMemObject(cl_output_buffer);
+		Error::CheckError(err);
+	}
+
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
 		COpenCLParameter* parameter = *it;
@@ -298,12 +330,11 @@ cl_mem COpenCLExecuteProgram::GetOutput()
 	return cl_output_buffer;
 }
 
-/*
 void COpenCLExecuteProgram::SetKeepOutput(const bool& keepMemory)
 {
 	this->keepMemory = keepMemory;
 }
-*/
+
 void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const size_t& outputBufferSize)
 {
 	cl_event cl_perf_event = nullptr;
@@ -350,6 +381,39 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 	err = clFinish(context->GetCommandQueue());
 	Error::CheckError(err);
 
+	if (!keepMemory)
+	{
+		if (flag == CL_MEM_USE_HOST_PTR)
+		{
+			void* tmp_ptr = clEnqueueMapBuffer(context->GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0,
+			                                   bitmapSize, 0, nullptr, nullptr, &err);
+			Error::CheckError(err);
+			if (tmp_ptr != data)
+			{
+				// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
+				throw Error("clEnqueueMapBuffer failed to return original pointer");
+			}
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueUnmapMemObject(context->GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+			Error::CheckError(err);
+		}
+		else
+		{
+			err = clEnqueueReadBuffer(context->GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, bitmapSize, data, 0,
+			                          nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(context->GetCommandQueue());
+			Error::CheckError(err);
+		}
+
+		//if (context->GetCommandQueue())
+		//	clReleaseCommandQueue(context->GetCommandQueue());
+
+		err = clReleaseMemObject(cl_output_buffer);
+		Error::CheckError(err);
+	}
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
 		COpenCLParameter* parameter = *it;

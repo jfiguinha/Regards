@@ -254,6 +254,7 @@ cl_mem COpenCLBm3D::ExecuteBasicFilter(const float &sigma, COpenCLParameterShort
 			vecParam.push_back(paramTot_globals_d);
 
 			program->SetParameter(&vecParam, sizeoutput * sizeof(float), width, height, nullptr);
+			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_basic_filter");
 			outputValue = program->GetOutput();
 			delete program;
@@ -340,6 +341,7 @@ cl_mem COpenCLBm3D::ExecuteWienerFilter(const float &sigma, const cl_mem & basic
 			vecParam.push_back(paramTot_globals_d);
 
 			program->SetParameter(&vecParam, sizeoutput * sizeof(float), width, height, nullptr);
+			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_wiener_filter");
 			outputValue = program->GetOutput();
 			delete program;

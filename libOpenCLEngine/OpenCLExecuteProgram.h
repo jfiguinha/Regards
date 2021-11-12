@@ -45,7 +45,7 @@ namespace Regards
 			void ExecuteProgram2D(const compute::program& program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, int width, int height);
 			
 			cl_mem GetOutput();
-
+			void SetKeepOutput(const bool &keepMemory);
 		private:
 
 			void ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls);
@@ -61,7 +61,7 @@ namespace Regards
 			COpenCLContext * context;
 			vector<COpenCLParameter *> * vecParam;
 			cl_mem cl_output_buffer;
-
+			bool keepMemory;
 		};
 	}
 }
