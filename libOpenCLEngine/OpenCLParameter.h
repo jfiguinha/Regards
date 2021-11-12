@@ -157,76 +157,74 @@ namespace Regards
 			cl_float value;
 		};
 
-		class COpenCLParameterByteArray : public COpenCLParameter
+		class COpenCLParameterArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterByteArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
 			{
-				dataType = 4;
 				noDeleteClMem = noDeleteMem;
 				this->memory_flags = memory_flags;
 			};
 
-			void SetValue(cl_context context, uint8_t* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
+			virtual void Add(compute::kernel& kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterIntArray : public COpenCLParameter
+		class COpenCLParameterByteArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterIntArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterByteArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
+			{
+				dataType = 4;
+			};
+
+			void SetValue(cl_context context, uint8_t* value, int size, cl_mem_flags flag);
+		};
+
+		class COpenCLParameterIntArray : public COpenCLParameterArray
+		{
+		public:
+			COpenCLParameterIntArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 5;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 
 			void SetValue(cl_context context, int* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterFloatArray : public COpenCLParameter
+		class COpenCLParameterFloatArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterFloatArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterFloatArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 6;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 			void SetValue(cl_context context, float* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterColorData : public COpenCLParameter
+		class COpenCLParameterColorData : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterColorData(const bool& noDeleteMem = false)
+			COpenCLParameterColorData(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 7;
-				noDeleteClMem = noDeleteMem;
 			};
 
 
 			void SetValue(cl_context context, COLORData* value, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterUShortArray : public COpenCLParameter
+		class COpenCLParameterUShortArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterUShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterUShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 9;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 
 			void SetValue(cl_context context, unsigned short* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
 		class COpenCLParameterClMem : public COpenCLParameter
@@ -269,14 +267,12 @@ namespace Regards
 			cl_ushort value;
 		};
 
-		class COpenCLParameterUCharArray : public COpenCLParameter
+		class COpenCLParameterUCharArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterUCharArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterUCharArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 11;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 			~COpenCLParameterUCharArray() override
@@ -284,17 +280,14 @@ namespace Regards
 			};
 
 			void SetValue(cl_context context, unsigned char* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterShortArray : public COpenCLParameter
+		class COpenCLParameterShortArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterShortArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 12;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 			~COpenCLParameterShortArray() override
@@ -302,17 +295,14 @@ namespace Regards
 			};
 
 			void SetValue(cl_context context, short* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 
-		class COpenCLParameterUintArray : public COpenCLParameter
+		class COpenCLParameterUintArray : public COpenCLParameterArray
 		{
 		public:
-			COpenCLParameterUintArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY)
+			COpenCLParameterUintArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) : COpenCLParameterArray(noDeleteMem, memory_flags)
 			{
 				dataType = 13;
-				noDeleteClMem = noDeleteMem;
-				this->memory_flags = memory_flags;
 			};
 
 			~COpenCLParameterUintArray() override
@@ -320,7 +310,6 @@ namespace Regards
 			};
 
 			void SetValue(cl_context context, unsigned int* value, int size, cl_mem_flags flag);
-			void Add(compute::kernel & kernelHandle, int numArg) override;
 		};
 	}
 }

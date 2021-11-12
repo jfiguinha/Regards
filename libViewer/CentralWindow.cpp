@@ -1120,24 +1120,24 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 				CImageLoadingFormat* image_loading_format = thumbnail->image;
 				if (image_loading_format != nullptr)
 				{
-					auto bitmap = new CImageLoadingFormat();
+					image = new CImageLoadingFormat();
 					switch (thumbnail->image->GetFormat())
 					{
 					case TYPE_IMAGE_CXIMAGE:
-						bitmap->SetPicture(image_loading_format->GetCxImage());
+						image->SetPicture(image_loading_format->GetCxImage());
 						break;
 					case TYPE_IMAGE_WXIMAGE:
-						bitmap->SetPicture(image_loading_format->GetwxImage());
+						image->SetPicture(image_loading_format->GetwxImage());
 						break;
 					case TYPE_IMAGE_REGARDSIMAGE:
-						bitmap->SetPicture(image_loading_format->GetRegardsBitmap());
+						image->SetPicture(image_loading_format->GetRegardsBitmap());
 						break;
 					case TYPE_IMAGE_REGARDSJPEGIMAGE:
-						bitmap->SetPicture(image_loading_format->GetwxImage());
+						image->SetPicture(image_loading_format->GetwxImage());
 						break;
 					default: ;
 					}
-					bitmap->SetFilename(thumbnail->image->GetFilename());
+					image->SetFilename(thumbnail->image->GetFilename());
 					//SetBitmap(bitmap, false, true);
 				}
 			}

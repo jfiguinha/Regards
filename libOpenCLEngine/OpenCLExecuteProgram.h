@@ -47,7 +47,9 @@ namespace Regards
 			cl_mem GetOutput();
 			void SetKeepOutput(const bool &keepMemory);
 		private:
-
+			void CreateValue(const size_t& outputBufferSize, void* data, const cl_mem_flags& flag);
+			void DeleteParam();
+			void KeepMemory(const size_t& outputBufferSize);
 			void ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls);
 			void ExecuteKernel2D(const size_t & outputBufferSize);
 			void ExecuteKernel1D(const size_t & global_size, const size_t & outputBufferSize);

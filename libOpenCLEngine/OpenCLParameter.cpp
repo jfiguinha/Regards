@@ -41,7 +41,7 @@ void COpenCLParameterByteArray::SetValue(cl_context context, uint8_t* value, int
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterByteArray::Add(compute::kernel & kernelHandle, int numArg)
+void COpenCLParameterArray::Add(compute::kernel & kernelHandle, int numArg)
 {
 	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
@@ -55,12 +55,6 @@ void COpenCLParameterIntArray::SetValue(cl_context context, int* value, int size
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterIntArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
-}
-
-
 void COpenCLParameterFloatArray::SetValue(cl_context context, float* value, int size, cl_mem_flags flag)
 {
 	cl_int err;
@@ -68,11 +62,6 @@ void COpenCLParameterFloatArray::SetValue(cl_context context, float* value, int 
 	Error::CheckError(err);
 	if (cl_buffer == static_cast<cl_mem>(nullptr))
 		throw Error("Failed to create Input Buffer!");
-}
-
-void COpenCLParameterFloatArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short* value, int size, cl_mem_flags flag)
@@ -83,12 +72,6 @@ void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short* v
 	if (cl_buffer == static_cast<cl_mem>(nullptr))
 		throw Error("Failed to create Input Buffer!");
 }
-
-void COpenCLParameterUShortArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
-}
-
 
 void COpenCLParameterColorData::SetValue(cl_context context, COLORData* value, cl_mem_flags flag)
 {
@@ -109,14 +92,6 @@ void COpenCLParameter::Release()
 		cl_buffer = nullptr;
 	}
 }
-
-void COpenCLParameterColorData::Add(compute::kernel & kernelHandle, int numArg)
-{
-	cl_int err;
-	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), &cl_buffer);
-	Error::CheckError(err);
-}
-
 
 void COpenCLParameterClMem::SetValue(cl_mem memValue)
 {
@@ -140,11 +115,6 @@ void COpenCLParameterUCharArray::SetValue(cl_context context, unsigned char* val
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterUCharArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
-}
-
 void COpenCLParameterShortArray::SetValue(cl_context context, short* value, int size, cl_mem_flags flag)
 {
 	cl_int err;
@@ -152,11 +122,6 @@ void COpenCLParameterShortArray::SetValue(cl_context context, short* value, int 
 	Error::CheckError(err);
 	if (cl_buffer == static_cast<cl_mem>(nullptr))
 		throw Error("Failed to create Input Buffer!");
-}
-
-void COpenCLParameterShortArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
 }
 
 void COpenCLParameterUintArray::SetValue(cl_context context, unsigned int* value, int size, cl_mem_flags flag)
@@ -168,7 +133,3 @@ void COpenCLParameterUintArray::SetValue(cl_context context, unsigned int* value
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterUintArray::Add(compute::kernel & kernelHandle, int numArg)
-{
-	kernelHandle.set_arg(numArg, sizeof(cl_mem), &cl_buffer);
-}
