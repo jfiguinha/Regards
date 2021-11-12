@@ -27,6 +27,7 @@ sudo pacman -S sdl2
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sane
 sudo pacman -S poppler
+sudo pacman -S ffmpeg
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
