@@ -131,7 +131,7 @@ cl_mem COpenCLEffectVideo::GetRgbaSourceBitmap(int rgba)
 			paramRGBA->SetLibelle("rgba");
 			vecParam.push_back(paramRGBA);
 
-			program->SetKeepOutput(true);
+			
 			program->SetParameter(&vecParam, srcwidth, srcheight, srcwidth * srcheight * GetSizeData());
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 			memvalue = program->GetOutput();
@@ -180,7 +180,7 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 			paramRGBA->SetLibelle("rgba");
 			vecParam.push_back(paramRGBA);
 
-			program->SetKeepOutput(true);
+			
 			program->SetParameter(&vecParam, widthOut, heightOut, cl_image);
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 
@@ -222,7 +222,7 @@ void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
 			paramRGBA->SetLibelle("rgba");
 			vecParam.push_back(paramRGBA);
 
-			program->SetKeepOutput(true);
+			
 			program->SetParameter(&vecParam, widthOut, heightOut, cl_image);
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 
@@ -298,7 +298,7 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 			}
 
 			program->SetParameter(&vecParam, w, h, clBuffer);
-			program->SetKeepOutput(true);
+			
 			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
 			delete program;
 
@@ -363,7 +363,7 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 				vecParam.push_back(paramOutHeight);
 			}
 			program->SetParameter(&vecParam, srcwidth, srcheight, GetSizeData() * srcwidth * srcheight);
-			program->SetKeepOutput(true);
+			
 			program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
 			outputValue = program->GetOutput();
 
@@ -505,7 +505,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 			try
 			{
 				program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * GetSizeData());
-				program->SetKeepOutput(true);
+				
 				program->ExecuteProgram(programCL->GetProgram(), "Interpolation");
 				memvalue = program->GetOutput();
 			}
@@ -616,7 +616,7 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 			try
 			{
 				program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * GetSizeData());
-				program->SetKeepOutput(true);
+				
 				program->ExecuteProgram(programCL->GetProgram(), "InterpolationZone");
 				memvalue = program->GetOutput();
 			}
@@ -788,7 +788,7 @@ cl_mem COpenCLEffectVideo::LoadRegardsImage(uint8_t * data, const int &width, co
 		vecParam.push_back(paramHeight);
 
 		program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
-		program->SetKeepOutput(true);
+		
 		program->ExecuteProgram1D(programCL->GetProgram(), "LoadRegardsBitmap");
 		outputValue = program->GetOutput();
 
@@ -1175,7 +1175,7 @@ int COpenCLEffectVideo::CopyOpenGLTexture(cl_mem cl_openglTexture, const int& wi
 
 
 		program->SetParameter(&vecParam, width, height, width * height * GetSizeData());
-		program->SetKeepOutput(true);
+		
 		program->ExecuteProgram(programCL->GetProgram(), "CopyFromOpenGLTexture");
 		cl_mem memvalue = program->GetOutput();
 
