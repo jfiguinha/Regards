@@ -136,15 +136,6 @@ cl_mem COpenCLEffectVideo::GetRgbaSourceBitmap(int rgba)
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 			memvalue = program->GetOutput();
 			delete program;
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 			paramSrc = nullptr;
 			paramSrcWidth = nullptr;
@@ -185,15 +176,6 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 
 			delete program;
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 			paramOutput = nullptr;
 			paramOutWidth = nullptr;
@@ -227,15 +209,6 @@ void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
 			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 
 			delete program;
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 		}
@@ -301,15 +274,6 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
 			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -368,15 +332,6 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 			outputValue = program->GetOutput();
 
 			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 
 			if (paramSrc == nullptr)
 				paramSrc = new COpenCLParameterClMem();
@@ -515,16 +470,6 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 			}
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			if (paramOutput == nullptr)
@@ -626,16 +571,6 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 			}
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			if (paramOutput == nullptr)
@@ -677,16 +612,6 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem input, const int& width, co
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -723,16 +648,6 @@ void COpenCLEffectVideo::GetBitmap(CRegardsBitmap * bitmap, cl_mem input, const 
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -793,15 +708,6 @@ cl_mem COpenCLEffectVideo::LoadRegardsImage(uint8_t * data, const int &width, co
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 	}
 	return outputValue;

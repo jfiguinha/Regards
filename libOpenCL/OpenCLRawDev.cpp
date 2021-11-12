@@ -205,16 +205,6 @@ cl_mem COpenCLRawDev::OutputData(int sizeOutput, int lpass)
 			program->ExecuteProgram1D(programCL->GetProgram(), "OutputData", sizeOutput, sizeOutput * sizeof(cl_ushort4));
 			outputValue = program->GetOutput();
 			delete program;
-
-
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -242,15 +232,6 @@ cl_mem COpenCLRawDev::GetAlphaChannel(int sizeOutput)
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetAlphaChannel", sizeOutput, sizeOutput * sizeof(cl_float));
 			outputValue = program->GetOutput();
 			delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -289,14 +270,6 @@ cl_mem COpenCLRawDev::WaveletDenoiseNormalizeValue(int size, int hpass, int lpas
 			outputValue = program->GetOutput();
 			delete program;
 
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -350,14 +323,6 @@ cl_mem COpenCLRawDev::WaveletDenoiseByColSetValue(int hpass, int lpass, int sc)
 			outputValue = program->GetOutput();
 			delete program;
 
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -406,14 +371,6 @@ cl_mem COpenCLRawDev::WaveletDenoiseByRowSetValue(int lpass, int sc)
 			outputValue = program->GetOutput();
 			delete program;
 
-		for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}

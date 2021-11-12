@@ -246,8 +246,8 @@ CBitmapWnd::~CBitmapWnd(void)
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
 
-	if (openclContext != nullptr)
-		delete openclContext;
+	//if (openclContext != nullptr)
+	//	delete openclContext;
 
 }
 

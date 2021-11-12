@@ -4,8 +4,9 @@
 #include <RegardsBitmap.h>
 #include <RegardsFloatBitmap.h>
 #include "utility.h"
+#include <boost/compute/utility/dim.hpp>
 using namespace Regards::OpenCL;
-
+using compute::dim;
 #define PAD_LINES 2
 
 COpenCLExecuteProgram::COpenCLExecuteProgram(COpenCLContext* context, const cl_mem_flags& flag): kernel(nullptr),
@@ -246,7 +247,10 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	{
 		COpenCLParameter* parameter = *it;
 		if (!parameter->GetNoDelete())
+		{
 			parameter->Release();
+			delete parameter;
+		}
 	}
 }
 
@@ -255,8 +259,8 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const compute::program & program, c
 {
 	try
 	{
-		compute::kernel _kernel(program, kernelName.ToStdString());
-		kernel = _kernel;
+		compute::kernel kernel(program, kernelName.ToStdString());
+		//kernel = _kernel;
 		cl_int err = 0;
 
 		size_t global_work_size[2] = {static_cast<size_t>(width), static_cast<size_t>(height)};
@@ -268,18 +272,26 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const compute::program & program, c
 			parameter->Add(kernel, numArg++);
 		}
 
+		/*
 		err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
 									 global_work_size, nullptr, 0, nullptr, nullptr);
 		Error::CheckError(err);
 
 		err = clFinish(context->GetCommandQueue());
 		Error::CheckError(err);
+		*/
+		context->GetCommandQueue().enqueue_nd_range_kernel(
+			kernel, dim(0, 0), dim(width, height), dim(1, 1)
+		);
 
 		for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 		{
 			COpenCLParameter* parameter = *it;
 			if (!parameter->GetNoDelete())
+			{
 				parameter->Release();
+				delete parameter;
+			}
 		}
 	}
 	catch (...)
@@ -300,6 +312,11 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 		parameter->Add(kernel, numArg++);
 	}
 
+	context->GetCommandQueue().enqueue_nd_range_kernel(
+		kernel, 2, offset, gs_d, ls
+	);
+
+	/*
 	cl_device_id deviceId = context->GetContext().get_device().id();
 
 	size_t local_size_max;
@@ -316,12 +333,15 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 
 	err = clFinish(context->GetCommandQueue());
 	Error::CheckError(err);
-
+	*/
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
 		COpenCLParameter* parameter = *it;
 		if (!parameter->GetNoDelete())
+		{
 			parameter->Release();
+			delete parameter;
+		}
 	}
 }
 
@@ -367,6 +387,12 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 		parameter->Add(kernel, numArg++);
 	}
 
+
+	context->GetCommandQueue().enqueue_1d_range_kernel(
+		kernel, 0, global_size, 0
+	);
+
+	/*
 	cl_device_id deviceId = context->GetContext().get_device().id();
 	size_t local_size = 0;
 
@@ -380,7 +406,7 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 	                             local_size ? &local_size : nullptr, 0, nullptr, &cl_perf_event);
 	err = clFinish(context->GetCommandQueue());
 	Error::CheckError(err);
-
+	*/
 	if (!keepMemory)
 	{
 		if (flag == CL_MEM_USE_HOST_PTR)
@@ -418,6 +444,9 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 	{
 		COpenCLParameter* parameter = *it;
 		if (!parameter->GetNoDelete())
+		{
 			parameter->Release();
+			delete parameter;
+		}
 	}
 }

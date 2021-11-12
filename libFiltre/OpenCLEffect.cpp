@@ -238,15 +238,6 @@ cl_mem COpenCLEffect::LoadRegardsImage(uint8_t* data, const int& width, const in
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -283,15 +274,6 @@ cl_mem COpenCLEffect::LoadFloatImage(float* data, const int& width, const int& h
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -419,15 +401,6 @@ cl_mem COpenCLEffect::LoadCxImageAlpha(uint8_t* data, uint8_t* alpha, const int&
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 
 		//SetOutputValue(outputValue,width,height);
@@ -475,15 +448,6 @@ cl_mem COpenCLEffect::LoadCxImage(uint8_t* data, const int& width, const int& he
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 
 		//SetOutputValue(outputValue,width,height);
@@ -532,16 +496,6 @@ cl_mem COpenCLEffect::LoadWxImageAlpha(uint8_t* data, uint8_t* alpha, const int&
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 
 		//SetOutputValue(outputValue,width,height);
@@ -586,15 +540,6 @@ cl_mem COpenCLEffect::LoadWxImage(uint8_t* data, const int& width, const int& he
 		outputValue = program->GetOutput();
 
 		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -718,16 +663,6 @@ void COpenCLEffect::GetBitmap(CRegardsBitmap*& bitmap, cl_mem input, const int& 
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -766,16 +701,6 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(cl_mem input, const int& width, const i
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -816,16 +741,6 @@ CRegardsFloatBitmap* COpenCLEffect::GetFloatBitmap(cl_mem input, const int& widt
 			program->ExecuteProgram1D(programCL->GetProgram(), "GetFloatBitmap");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 		}
 	}
@@ -1033,15 +948,6 @@ void COpenCLEffect::GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const int&
 			program->ExecuteProgram2D(programCL->GetProgram(), "RgbaToYUV420P", &vecParam, middleWidth, middleHeight);
 
 			delete program;
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
@@ -1180,16 +1086,6 @@ wxImage COpenCLEffect::GetwxImage()
 			program->ExecuteProgram1D(programCL->GetProgram(), "BitmapToWxImage");
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			paramOutput = nullptr;
@@ -1264,25 +1160,9 @@ int COpenCLEffect::GetRgbaBitmap(void* cl_image)
 		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 
 		delete program;
-
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
 		vecParam.clear();
 	}
 
-	/*
-	if(paramOutput != nullptr)
-		paramOutput = nullptr;
-	else
-		input = nullptr;
-	*/
 	return 0;
 }
 
