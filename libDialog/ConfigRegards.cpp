@@ -48,9 +48,6 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	btPicturePath = static_cast<wxButton*>(FindWindow(XRCID("ID_PICTUREPATH")));
 	txtVideoPath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTVIDEOPATH")));
 	btVideoPath = static_cast<wxButton*>(FindWindow(XRCID("ID_VIDEOPATH")));
-	cbOpenCLDevice = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBOPENCLDEVICE")));
-	cbOpenCLPlatform = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBOPENCLPLATFORM")));
-	rbKernelInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBKERNELINMEMORY")));
 
 	rbDatabaseInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATAINMEMORY")));
 	rbAutoRotate = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBROTATEAUTO")));
@@ -64,8 +61,6 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
-	Connect(XRCID("ID_CBOPENCLPLATFORM"), wxEVT_COMMAND_COMBOBOX_SELECTED,
-	        (wxObjectEventFunction)&ConfigRegards::OnPlatformSelected);
 	//Connect(wxID_ANY, wxEVT_INIT_DIALOG, (wxObjectEventFunction)&ConfigRegards::OnInit);
 	Connect(XRCID("ID_VIDEOPATH"), wxEVT_COMMAND_BUTTON_CLICKED,
 	        (wxObjectEventFunction)&ConfigRegards::OnbtnPathVideoClick);
@@ -126,52 +121,6 @@ ConfigRegards::~ConfigRegards()
 {
 	//(*Destroy(ConfigRegards)
 	//*)
-}
-
-int ConfigRegards::GetDeviceIndex()
-{
-	wxString platformselectItem = cbOpenCLPlatform->GetStringSelection();
-	wxString selectItem = cbOpenCLDevice->GetStringSelection();
-	return COpenCLDeviceList::SelectDevice(platformselectItem, selectItem);
-}
-
-wxString ConfigRegards::GetPlatformName()
-{
-	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
-	return selectItem;
-}
-
-void ConfigRegards::OnPlatformSelected(wxCommandEvent& event)
-{
-	wxString device = "";
-	wxString selectItem = cbOpenCLPlatform->GetStringSelection();
-	std::vector<compute::platform> platforms = compute::system::platforms();
-	int plaformIndex = 0;
-	for (compute::platform platform : platforms)
-	{
-		if (selectItem.ToStdString() == platform.name())
-		{
-			break;
-		}
-		plaformIndex++;
-	}
-
-	int i = 0;
-	cbOpenCLDevice->Clear();
-
-	std::vector<compute::device> devices = platforms[plaformIndex].devices();
-
-	for (compute::device localdevice : devices)
-	{
-		cbOpenCLDevice->Append(localdevice.name());
-		if (i == 0)
-		{
-			device = localdevice.name();
-			i++;
-		}
-	}
-
-	cbOpenCLDevice->SetStringSelection(device);
 }
 
 void ConfigRegards::init()
@@ -237,57 +186,6 @@ void ConfigRegards::init()
 
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
-
-	bool kernelInMemory = false;
-	wxString platformName = "";
-	wxString deviceName = "";
-	int indexDevice = -1;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-	{
-		platformName = config->GetOpenCLPlatformName();
-		indexDevice = config->GetOpenCLPlatformIndex();
-		kernelInMemory = config->GetOpenCLLoadFromBinaries();
-		//int supportOpenCL = config->GetIsOpenCLSupport();
-	}
-
-	rbKernelInMemory->SetSelection(kernelInMemory);
-
-	this->SetTitle("OpenCL Device Selection");
-	std::vector<compute::platform> platforms = compute::system::platforms();
-	int platformIndex = -1;
-	int deviceIndex = 0;
-
-	for (compute::platform openCLPlatform : platforms)
-	{
-		cbOpenCLPlatform->Append(openCLPlatform.name());
-		if (platformName == openCLPlatform.name())
-		{
-			break;
-		}
-		platformIndex++;
-	}
-
-	cbOpenCLPlatform->SetStringSelection(platformName);
-
-	if (platformIndex >= 0)
-	{
-		std::vector<compute::device> devices = platforms[platformIndex].devices();
-
-		printf("Select Device Index : %d \n", indexDevice);
-		for (compute::device openCLDevice : devices)
-		{
-			cbOpenCLDevice->Append(openCLDevice.name());
-			if (deviceIndex == indexDevice)
-			{
-				deviceName = openCLDevice.name();
-				break;
-			}
-			deviceIndex++;
-		}
-
-		cbOpenCLDevice->SetStringSelection(deviceName);
-	}
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -296,53 +194,8 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	bool showInfosRestart = false;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	CMainParam* mainparam = CMainParamInit::getInstance();
-
-	//Get old value to compare with new value
-	//int _transition = max((regardsParam->GetEffect() - 300), 0);
-	//int _autoRotate = regardsParam->GetDetectOrientation();
-	//int _autoContrast = regardsParam->GetAutoConstrast();
-	//int _videoFaceDetection = regardsParam->GetFaceVideoDetection();
 	int _faceDetection = regardsParam->GetFaceDetection();
-	//int _timeDiaporama = regardsParam->GetDiaporamaTime();
-	//int _thumbnailProcess = regardsParam->GetThumbnailProcess();
-	//int _exifProcess = regardsParam->GetExifProcess();
-	//int _faceProcess = regardsParam->GetFaceProcess();
-	//int _dataInMemory = regardsParam->GetDatabaseInMemory();
-	//int _interpolation = regardsParam->GetInterpolationType();
-
-	wxString _platformName = "";
-	wxString _deviceName = "";
-	int _indexDevice = -1;
-
-	if (regardsParam != nullptr)
-	{
-		//int _supportOpenCL = 0;
-		_platformName = regardsParam->GetOpenCLPlatformName();
-		_indexDevice = regardsParam->GetOpenCLPlatformIndex();
-		//_supportOpenCL = regardsParam->GetIsOpenCLSupport();
-	}
-
-
 	int nbProcesseur = thread::hardware_concurrency();
-
-	int kernelInMemory = rbKernelInMemory->GetSelection();
-
-	if (regardsParam != nullptr)
-	{
-		regardsParam->SetOpenCLLoadFromBinaries(kernelInMemory);
-		regardsParam->SetOpenCLPlatformIndex(GetDeviceIndex());
-		regardsParam->SetOpenCLPlatformName(GetPlatformName());
-
-		if (_platformName != GetPlatformName())
-			showInfosRestart = true;
-
-		if (_indexDevice != GetDeviceIndex())
-			showInfosRestart = true;
-
-		if (regardsParam->GetOpenCLLoadFromBinaries() != kernelInMemory)
-			showInfosRestart = true;
-	}
-
 
 	if (mainparam != nullptr)
 	{

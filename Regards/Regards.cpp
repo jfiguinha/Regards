@@ -77,9 +77,6 @@ void MyApp::MacOpenFile(const wxString &fileName)
 
 int MyApp::Close()
 {
-	if (openclEngine != nullptr)
-		delete openclEngine;
-
 	CSqlInit::KillSqlEngine();
 	CPrintEngine::Kill();
 
@@ -215,17 +212,9 @@ bool MyApp::OnInit()
 		if (listPlatform.size() == 0)
 			regardsParam->SetIsOpenCLSupport(false);
 		else
-		{
-			regardsParam->SetIsOpenCLSupport(true);
-			openclEngine = new COpenCLEngine();
-		}
-			
+			regardsParam->SetIsOpenCLSupport(true);		
 	}
-	else
-	{
-		if(regardsParam->GetIsOpenCLSupport())
-			openclEngine = new COpenCLEngine();
-	}
+
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

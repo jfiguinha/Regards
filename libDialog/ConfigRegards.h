@@ -49,10 +49,6 @@ public:
 	wxComboBox* rbTransitionDiaporamaEffect;
 	wxComboBox* rbInterpolation;
 
-	wxComboBox* cbOpenCLDevice;
-	wxComboBox* cbOpenCLPlatform;
-	wxRadioBox* rbKernelInMemory;
-
 	//ID_RBVIDEOFACEDETECTION
 	wxRadioBox* rbVideoFaceDetection;
 	wxRadioBox* rbFaceDetection;
@@ -72,9 +68,7 @@ private:
 	void OnBtnMusicDiaporamaClick(wxCommandEvent& event);
 	void OnbtnPathVideoClick(wxCommandEvent& event);
 	void OnBtnPathPictureClick(wxCommandEvent& event);
-	int GetDeviceIndex();
-	wxString GetPlatformName();
-	void OnPlatformSelected(wxCommandEvent& event);
+
 
 	//(*Handlers(ConfigRegards)
 	void init();

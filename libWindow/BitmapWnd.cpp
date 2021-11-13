@@ -40,8 +40,6 @@ extern bool processrecognitionison;
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
 
-extern Regards::OpenCL::COpenCLEngine* openclEngine;
-
 extern float clamp(float val, float minval, float maxval);
 
 //-----------------------------------------------------------------------------
@@ -1967,9 +1965,9 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		}
 		else
 		{
-			if (openclEngine != nullptr && openclContext == nullptr)
+			if (openclContext == nullptr)
 			{
-				openclContext = openclEngine->CreateInstance(true);
+				openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 			}
 			openclContext->GetContextForOpenCV().bind();
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");

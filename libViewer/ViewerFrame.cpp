@@ -137,14 +137,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	{
 		if (folderList.size() == 0)
 		{
-			/*
-			wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
-			wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-			dlg.SetPath(path);
-			if (dlg.ShowModal() == wxID_OK)
-			{
-				dirpath = dlg.GetPath();
-			}*/
 			dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
 		}
 	}
@@ -231,41 +223,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #endif
 	//Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
-
-	if (folderList.size() == 0)
-	{
-		wxString platform_name = "";
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-		{
-			platform_name = config->GetOpenCLPlatformName();
-		}
-
-		if (config->GetIsOpenCLSupport())
-		{
-			bool findPlatform = false;
-			//Verify if opencl old platform exist
-			CRegardsConfigParam* regards_config_param = CParamInit::getInstance();
-			if (regards_config_param != nullptr)
-			{
-				std::vector<compute::platform> platforms = compute::system::platforms();
-				//vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
-				wxString platformName = regards_config_param->GetOpenCLPlatformName();
-				//int indexDevice = config->GetOpenCLPlatformIndex();
-				for (compute::platform platform : platforms)
-				{
-					if (platformName == platform.name())
-						findPlatform = true;
-				}
-			}
-
-			//OpenCL auto selected
-			if (platform_name == "" || !findPlatform)
-			{
-				COpenCLEngine::GetDefaultGpuDeviceInformation();
-			}
-		}
-	}
 
 	if (fileToOpen != "")
 	{

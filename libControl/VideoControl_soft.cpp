@@ -33,8 +33,6 @@ wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
 AVFrame* copyFrameBuffer = nullptr;
 
-extern Regards::OpenCL::COpenCLEngine* openclEngine;
-
 #ifdef GLUT
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -1077,20 +1075,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	double scale_factor = 1.0f;
 #endif
 
-	/*
-	if (reloadResource)
-	{
-		if (renderBitmapOpenGL != nullptr)
-		{
-			delete renderBitmapOpenGL;
-			renderBitmapOpenGL = nullptr;
-		}
-		reloadResource = false;
-	}
 
-	reloadResource = false;
-	*/
-	
 	GLTexture* glTexture = nullptr;
 	GLTexture* glTextureOutput = nullptr;
 
@@ -1104,9 +1089,9 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 
 	if (IsSupportOpenCL())
 	{
-		if (openclEngine != nullptr && openclContext == nullptr)
+		if (openclContext == nullptr)
 		{
-			openclContext = openclEngine->CreateInstance(true);
+			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 		openclContext->GetContextForOpenCV().bind();

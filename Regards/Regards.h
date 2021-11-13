@@ -34,7 +34,6 @@
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 
-COpenCLEngine * openclEngine = nullptr;
 
 #ifdef SDL2
 #include <SDL.h>

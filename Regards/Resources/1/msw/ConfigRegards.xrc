@@ -168,40 +168,6 @@
 							</object>
 						</object>
 						<object class="notebookpage">
-						<label>OpenCL Parameter</label>
-							<object class="wxPanel" name="page_4">
-								<object class="wxStaticText" name="ID_STATICTEXT1">
-									<label>OpenCL Platform Selection :</label>
-									<pos>24,24</pos>
-									<size>240,20</size>
-								</object>
-								<object class="wxComboBox" name="ID_CBOPENCLPLATFORM">
-									<pos>16,50</pos>
-									<size>248,30</size>
-								</object>
-								<object class="wxStaticText" name="ID_STATICTEXT2">
-									<label>OpenCL Device Selection :</label>
-									<pos>24,85</pos>
-									<size>240,20</size>
-								</object>
-								<object class="wxComboBox" name="ID_CBOPENCLDEVICE">
-									<pos>16,110</pos>
-									<size>248,30</size>
-								</object>
-								<object class="wxRadioBox" name="ID_RBKERNELINMEMORY">
-									<label>OpenCL Kernel in memory</label>
-									<style>wxRA_SPECIFY_COLS</style>
-									<content>
-										<item>No</item>
-										<item>Yes</item>
-									</content>
-									<default>-1</default>
-									<pos>20,150</pos>
-									<size>300,70</size>
-								</object>
-						</object>
-					</object>
-						<object class="notebookpage">
 						<label>External Program</label>
 							<object class="wxPanel" name="page_4">
 								<object class="wxStaticBox" name="sbPictureExternalProgram">
