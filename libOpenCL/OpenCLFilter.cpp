@@ -9,6 +9,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
+#include <boost/compute/algorithm/copy.hpp>
 #include <boost/compute/core.hpp>
 namespace compute = boost::compute;
 using namespace Regards::OpenCL;
@@ -33,7 +34,7 @@ cl_mem COpenCLFilter::BilateralEffect(cl_mem inputData, int width, int height, c
 	cl_mem value;
 	try
 	{
-		context->GetContextForOpenCV().bind();
+		//context->GetContextForOpenCV().bind();
 		cv::UMat cvDest;
 		cv::UMat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
@@ -63,7 +64,7 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 	cl_mem value;
 	try
 	{
-		context->GetContextForOpenCV().bind();
+		//context->GetContextForOpenCV().bind();
 		cv::UMat cvDest;
 		cv::UMat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
@@ -86,39 +87,12 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 
 }
 
-cl_mem COpenCLFilter::OilPaintingEffect(cl_mem inputData, int width, int height, const int &size, const int &dynRatio)
-{
-	cl_mem value;
-	try
-	{
-		context->GetContextForOpenCV().bind();
-		cv::Mat cvDest;
-		cv::Mat cvSrc;
-		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
-		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
-		cv::xphoto::oilPainting(cvSrc, cvDest, size, dynRatio, cv::COLOR_BGR2Lab);
-		cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
-		value = CopyOpenCVTexture(cvImage, width, height);
-		cvDest.release();
-		cvSrc.release();
-		cvImage.release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	return value;
-
-}
-
 cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
 {
 	cl_mem value;
 	try
 	{
-		context->GetContextForOpenCV().bind();
+		//context->GetContextForOpenCV().bind();
 		//bool frameStabilized = false;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
@@ -165,7 +139,7 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 	cl_mem value;
 	try
 	{
-		context->GetContextForOpenCV().bind();
+		//context->GetContextForOpenCV().bind();
 		//bool frameStabilized = false;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 

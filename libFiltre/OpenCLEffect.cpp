@@ -118,45 +118,6 @@ int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const 
 	return 0;
 }
 
-
-int COpenCLEffect::OilPaintingEffect(const int& size, const int& dynRatio)
-{
-	CDeepLearning::LockOpenCLDnn();
-
-    try
-    {
-	    if (context != nullptr)
-        {
-	        cl_mem output = nullptr;
-	        int _height = 0;
-	        int _width = 0;
-	        COpenCLFilter openclFilter(context);
-            if (preview && paramOutput != nullptr)
-            {
-                _width = widthOut;
-                _height = heightOut;
-                output = openclFilter.OilPaintingEffect(paramOutput->GetValue(), widthOut, heightOut, size, dynRatio);
-            }
-            else
-            {
-                _width = width;
-                _height = height;
-                output = openclFilter.OilPaintingEffect(input->GetValue(), width, height, size, dynRatio);
-            }
-            SetOutputValue(output, _width, _height);
-        }
-    }
-    catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-
-	CDeepLearning::UnlockOpenCLDnn();
-	return 0;
-}
-
 int COpenCLEffect::Bm3d(const int& fSigma)
 {
 	if (context != nullptr)

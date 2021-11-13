@@ -135,12 +135,23 @@ bool COilPaintingFilter::IsSourcePreview()
 
 void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
+	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && source != nullptr)
 	{
 		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
-		filtreEffet->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
-	}
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
 
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete imageLoad;
+	}
 }
 
 
@@ -156,19 +167,14 @@ CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectPar
 	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
 		COilPaintingEffectParameter* oilPaintingParam = (COilPaintingEffectParameter*)effectParameter;
-		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
-		if (filter != nullptr)
-		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
-			image.SetPicture(source);
-			filter->SetBitmap(&image);
-			
-			imageLoad = new CImageLoadingFormat();
-			filter->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
-			imageLoad->SetPicture(bitmapOut);
-		}
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image(false);
+		image.SetPicture(source);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
 	}
 
 	return imageLoad;

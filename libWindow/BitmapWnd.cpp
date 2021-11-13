@@ -1971,7 +1971,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 			{
 				openclContext = openclEngine->CreateInstance(true);
 			}
-
+			openclContext->GetContextForOpenCV().bind();
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}

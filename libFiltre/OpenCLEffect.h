@@ -47,7 +47,7 @@ namespace Regards
 			int MeanShift(const float& fSpatialRadius, const float& fColorRadius) { return -1; };
 			int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 			int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize);
-			int OilPaintingEffect(const int &size, const int &dynRatio);
+			int OilPaintingEffect(const int &size, const int &dynRatio) { return -1; };
 			void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 			void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 			int CartoonifyImage(const int & mode) { return -1; };
