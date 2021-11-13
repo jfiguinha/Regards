@@ -28,6 +28,7 @@
 #include <OpenCLEngine.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
+#include <wx/stdpaths.h>
 #include <wx/busyinfo.h>
 using namespace std;
 using namespace Regards::Print;
@@ -136,13 +137,15 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	{
 		if (folderList.size() == 0)
 		{
+			/*
 			wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
 			wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 			dlg.SetPath(path);
 			if (dlg.ShowModal() == wxID_OK)
 			{
 				dirpath = dlg.GetPath();
-			}
+			}*/
+			dirpath = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
 		}
 	}
 
