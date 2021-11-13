@@ -53,6 +53,7 @@ cd vcpkg-master
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install sdl2
+./vcpkg install boost-compute
 ./vcpkg install opencl
 cd ..
 

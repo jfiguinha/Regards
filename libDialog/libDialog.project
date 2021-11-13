@@ -26,10 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="OpenCL">
-    <File Name="OpenCLDialog.h"/>
-    <File Name="OpenCLDialog.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Video">
     <VirtualDirectory Name="Preview">
       <File Name="SliderVideoPreview.h"/>
