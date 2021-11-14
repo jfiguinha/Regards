@@ -33,11 +33,10 @@ void CShowPreview::UpdateScreenRatio()
 
 CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
                            wxWindowID mainViewerId, CThemeParam* config,
-                           const wxString& videoFilename, COpenCLContext* openclContext,
+                           const wxString& videoFilename,
                            CVideoOptionCompress* videoOptionCompress)
 	: CWindowMain("ShowBitmap", parent, id)
 {
-	this->openclContext = openclContext;
 	transitionEnd = false;
 	tempImage = nullptr;
 	scrollbar = nullptr;
@@ -310,7 +309,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 	}
 
 	if (transcodeFFmpeg == nullptr)
-		transcodeFFmpeg = new CFFmpegTranscodingPimpl(openclContext, decoder);
+		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder);
 
 	if (decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame();

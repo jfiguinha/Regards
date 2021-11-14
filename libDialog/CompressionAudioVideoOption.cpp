@@ -48,7 +48,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename, COpenCLContext* openclContext,
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename,
                                                          const wxString& videoOutputFilename)
 {
 	isOk = false;
@@ -281,13 +281,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	GetCompressionOption(&videoOptionCompress);
 
 #ifdef __APPLE__
-	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, openclContext, &videoOptionCompress);
+	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 #else
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, openclContext, &videoOptionCompress);
+	                                    viewerTheme, videoFilename, &videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);

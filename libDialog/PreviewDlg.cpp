@@ -13,7 +13,7 @@ using namespace Regards::Picture;
 #define PANE_PREVIEW 3
 
 
-CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenCLContext* openclContext,
+CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString& videoFilename,
                          CVideoOptionCompress* videoOptionCompress)
 {
 	wxXmlResource::Get()->LoadObject(this, parent, _T("PreviewDlg"), _T("wxDialog"));
@@ -28,7 +28,7 @@ CPreviewDlg::CPreviewDlg(wxWindow* parent, const wxString& videoFilename, COpenC
 		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
 	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, openclContext, videoOptionCompress);
+	                                    viewerTheme, videoFilename, videoOptionCompress);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->Raise();
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,

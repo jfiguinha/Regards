@@ -2205,11 +2205,6 @@ void CVideoControlSoft::FlipHorizontal()
 		this->Refresh();
 }
 
-COpenCLContext* CVideoControlSoft::GetOpenclContext()
-{
-	return openclContext;
-}
-
 bool CVideoControlSoft::IsCPUContext()
 {
 	if (isCPU == -1)

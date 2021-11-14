@@ -22,7 +22,7 @@ namespace Regards
 		{
 		public:
 			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
-			             CThemeParam* config, const wxString& videoFilename,  COpenCLContext* openclContext,
+			             CThemeParam* config, const wxString& videoFilename,
 			             CVideoOptionCompress* videoOptionCompress);
 			~CShowPreview() override;
 
@@ -73,7 +73,6 @@ namespace Regards
 			CBitmapWnd* bitmapWindow;
 			CRegardsConfigParam* configRegards;
 			CImageLoadingFormat* tempImage;
-			COpenCLContext* openclContext;
 
 			bool defaultToolbar;
 			bool defaultViewer;
