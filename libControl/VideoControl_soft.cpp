@@ -899,9 +899,6 @@ CVideoControlSoft::~CVideoControlSoft()
 		delete renderBitmapOpenGL;
 	}
 
-	if (openclContext != nullptr)
-		delete openclContext;
-
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
