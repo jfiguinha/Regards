@@ -1094,7 +1094,6 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
-		openclContext->GetContextForOpenCV().bind();
 	}
 
 	std::clock_t start;

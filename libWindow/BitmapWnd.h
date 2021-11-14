@@ -58,6 +58,8 @@ namespace Regards
 			int GetHeight() override;
 			CFiltreEffet* GetFiltreEffet() override;
 
+			virtual void SetPreview(const int& value);
+
 			wxWindow* GetWindow()
 			{
 				return this;

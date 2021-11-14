@@ -126,8 +126,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenCL - OpenGL", "OpenCL -
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libOpenCLEngine", "libOpenCLEngine\libOpenCLEngine.vcxproj", "{E9B03D35-95A4-4669-80BF-275B587B44A6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RegardsSelectApplication", "RegardsSelectApplication\RegardsSelectApplication.vcxproj", "{29C861C3-4F69-475A-A15C-3099AD378929}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ffmpeg", "ffmpeg", "{23E4721B-C29E-413D-8F24-BAC32923BA19}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libffmpeg", "Otherlib\libffmpeg\libffmpeg.vcxproj", "{CE591FA1-6863-4410-A259-2567261AFA51}"
@@ -1033,30 +1031,6 @@ Global
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.Release|x64.Build.0 = Release|x64
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.Release|x86.ActiveCfg = Release|Win32
 		{E9B03D35-95A4-4669-80BF-275B587B44A6}.Release|x86.Build.0 = Release|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug_windows10|x64.ActiveCfg = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug_windows10|x64.Build.0 = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug_windows10|x86.ActiveCfg = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug_windows10|x86.Build.0 = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug|x64.ActiveCfg = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug|x64.Build.0 = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug|x86.ActiveCfg = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug|x86.Build.0 = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug-X64|x64.ActiveCfg = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug-X64|x64.Build.0 = Debug|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug-X64|x86.ActiveCfg = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Debug-X64|x86.Build.0 = Debug|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_avx|x64.ActiveCfg = Release_avx|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_avx|x64.Build.0 = Release_avx|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_avx|x86.ActiveCfg = Release_avx|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_avx|x86.Build.0 = Release_avx|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_windows10|x64.ActiveCfg = Release_avx|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_windows10|x64.Build.0 = Release_avx|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_windows10|x86.ActiveCfg = Release_avx|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release_windows10|x86.Build.0 = Release_avx|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release|x64.ActiveCfg = Release|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release|x64.Build.0 = Release|x64
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release|x86.ActiveCfg = Release|Win32
-		{29C861C3-4F69-475A-A15C-3099AD378929}.Release|x86.Build.0 = Release|Win32
 		{CE591FA1-6863-4410-A259-2567261AFA51}.Debug_windows10|x64.ActiveCfg = Debug|x64
 		{CE591FA1-6863-4410-A259-2567261AFA51}.Debug_windows10|x64.Build.0 = Debug|x64
 		{CE591FA1-6863-4410-A259-2567261AFA51}.Debug_windows10|x86.ActiveCfg = Debug|Win32

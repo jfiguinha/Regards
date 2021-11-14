@@ -1627,6 +1627,11 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widthOutpu
 	}
 }
 
+void CBitmapWnd::SetPreview(const int& value)
+{
+	preview = value;
+}
+
 int CBitmapWnd::GetWidth()
 {
 	return GetWindowWidth();
@@ -1969,7 +1974,6 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 			{
 				openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 			}
-			openclContext->GetContextForOpenCV().bind();
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}

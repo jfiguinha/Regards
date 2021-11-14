@@ -358,6 +358,9 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {
 	bool frameStabilized = false;
+
+	context->GetContextForOpenCV().bind();
+
 	cv::UMat cvImage = GetOpenCVStruct(true);
 
 	if (videoEffectParameter->stabilizeVideo)

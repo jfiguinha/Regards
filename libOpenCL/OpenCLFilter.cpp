@@ -34,7 +34,7 @@ cl_mem COpenCLFilter::BilateralEffect(cl_mem inputData, int width, int height, c
 	cl_mem value;
 	try
 	{
-		//context->GetContextForOpenCV().bind();
+		context->GetContextForOpenCV().bind();
 		cv::UMat cvDest;
 		cv::UMat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
@@ -64,7 +64,7 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 	cl_mem value;
 	try
 	{
-		//context->GetContextForOpenCV().bind();
+		context->GetContextForOpenCV().bind();
 		cv::UMat cvDest;
 		cv::UMat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
@@ -92,7 +92,7 @@ cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float 
 	cl_mem value;
 	try
 	{
-		//context->GetContextForOpenCV().bind();
+		context->GetContextForOpenCV().bind();
 		//bool frameStabilized = false;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 
@@ -139,7 +139,7 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 	cl_mem value;
 	try
 	{
-		//context->GetContextForOpenCV().bind();
+		context->GetContextForOpenCV().bind();
 		//bool frameStabilized = false;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 

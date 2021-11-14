@@ -468,7 +468,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail
 		filename = bitmap->GetFilename();
 		//bitmapWindow->FixArrowNavigation(true);
 		bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
-		int numEffect;
+		int numEffect = 0;
 
 		if (isDiaporama)
 			numEffect = configRegards->GetDiaporamaTransitionEffect();

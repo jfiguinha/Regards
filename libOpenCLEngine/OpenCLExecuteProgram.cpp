@@ -242,10 +242,10 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 
 	KeepMemory(outputBufferSize);
 
-	DeleteParam();
+	DeleteParam(vecParam);
 }
 
-void COpenCLExecuteProgram::DeleteParam()
+void COpenCLExecuteProgram::DeleteParam(vector<COpenCLParameter*>* & vecParam)
 {
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -276,7 +276,7 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const compute::program & program, c
 			kernel, dim(0, 0), dim(width, height), dim(1, 1)
 		);
 
-		DeleteParam();
+		DeleteParam(vecParam);
 	}
 	catch (...)
 	{
@@ -298,7 +298,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 		kernel, 2, offset, gs_d, ls
 	);
 
-	DeleteParam();
+	DeleteParam(vecParam);
 }
 
 cl_mem COpenCLExecuteProgram::GetOutput()
@@ -329,5 +329,5 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 
 	KeepMemory(bitmapSize);
 
-	DeleteParam();
+	DeleteParam(vecParam);
 }
