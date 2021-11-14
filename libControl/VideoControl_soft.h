@@ -34,7 +34,7 @@ class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterfac
 public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain* windowMain, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
-
+	COpenCLContext * GetOpenclContext();
 	void ReloadResource();
 	bool IsPause();
 	void SetVideoDuration(const int64_t& duration, const int64_t& startTime) override;

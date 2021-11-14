@@ -57,7 +57,7 @@ public:
 	};
 
 
-	CFFmpegTranscodingPimpl(const wxString& acceleratorHardware): stream_ctx(nullptr),
+	CFFmpegTranscodingPimpl(const wxString& acceleratorHardware, COpenCLContext* openclContext): stream_ctx(nullptr),
 		m_dlgProgress(nullptr),
 		videoCompressOption(nullptr), duration{}
 	{
@@ -74,13 +74,7 @@ public:
 
 		if (supportOpenCL)
 		{
-			compute::device gpu = compute::system::default_device();
-			compute::context context(gpu);
-			openclContext = new COpenCLContext(context,
-					false);
-			openclContext->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
-				openclContext->GetContext().get_device().platform().name(), openclContext->GetContext().get_device().platform().id(), openclContext->GetContext(), openclContext->GetContext().get_device().id()));
-
+			this->openclContext = openclContext;
 			if (openclContext != nullptr)
 				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
@@ -140,9 +134,6 @@ public:
 #endif
 		if (localContext != nullptr)
 			sws_freeContext(localContext);
-
-		if (openclContext != nullptr)
-			delete openclContext;
 
 		if (openclEffectYUV != nullptr)
 			delete openclEffectYUV;

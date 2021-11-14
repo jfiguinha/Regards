@@ -15,7 +15,7 @@
 #include <FFmpegDecodeFrame.h>
 #include <FileUtility.h>
 #include <Tracing.h>
-
+#include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -301,7 +301,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
                                 const bool& updatePicture)
 {
 	wxString decoder = "";
-
+	CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
@@ -309,7 +309,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 	}
 
 	if (transcodeFFmpeg == nullptr)
-		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder);
+		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder, videoControlSoft->GetOpenclContext());
 
 	if (decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame();

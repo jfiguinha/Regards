@@ -117,6 +117,11 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 
 }
 
+COpenCLContext * CVideoControlSoft::GetOpenclContext()
+{
+	return openclContext;
+}
+
 void CVideoControlSoft::DiaporamaMode(const bool& value)
 {
 	isDiaporama = value;

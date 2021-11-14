@@ -418,7 +418,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		return;
 
 	int ret = 0;
-	CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
+	//CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
 
 	wxString filepath = filenameOutput;
 	if (filenameOutput == "")
@@ -467,7 +467,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		}
 	}
 	
-	//auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
+	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
 	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath);
 	compressAudioVideoOption.ShowModal();
 	wxString filename_in = filename;
@@ -525,7 +525,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							if (wxFileExists(filepath))
 								wxRemoveFile(filepath);
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
 							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
 						}
 					}
@@ -592,7 +592,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutVideo))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
 							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption);
 							isAudio = true;
 						}
@@ -604,7 +604,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutAudio))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
 							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption);
 							isAudio = false;
 						}

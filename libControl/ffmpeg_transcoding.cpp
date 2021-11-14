@@ -10,13 +10,13 @@
 #include <LibResource.h>
 
 
-CFFmpegTranscoding::CFFmpegTranscoding(const wxString& acceleratorHardware):
+CFFmpegTranscoding::CFFmpegTranscoding(const wxString& acceleratorHardware, COpenCLContext * openclContext):
 	encode_thread(nullptr),
 	m_dlgProgress(nullptr),
 	mainWindow(nullptr),
 	videoCompressOption(nullptr)
 {
-	pimpl = new CFFmpegTranscodingPimpl(acceleratorHardware);
+	pimpl = new CFFmpegTranscodingPimpl(acceleratorHardware, openclContext);
 }
 
 CFFmpegTranscoding::~CFFmpegTranscoding()
