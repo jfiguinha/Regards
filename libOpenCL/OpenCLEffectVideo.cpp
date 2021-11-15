@@ -13,15 +13,15 @@
 #include "hqdn3d.h"
 #include <OpenCVEffect.h>
 #include <VideoStabilization.h>
-//#include <RegardsConfigParam.h>
-//#include <ParamInit.h>
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
 COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context): widthOut(0), heightOut(0), srcwidth(0), srcheight(0)
 {
 	openCLProgram = nullptr;
-	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (context->GetContext().get_device().gpu == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 
 	openCLProgram = nullptr;
@@ -357,8 +357,10 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {
-	context->GetContextForOpenCV().bind();
 	bool frameStabilized = false;
+
+	context->GetContextForOpenCV().bind();
+
 	cv::UMat cvImage = GetOpenCVStruct(true);
 
 	if (videoEffectParameter->stabilizeVideo)
@@ -470,16 +472,6 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 			}
 
 			delete program;
-
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
 			vecParam.clear();
 
 			if (paramOutput == nullptr)

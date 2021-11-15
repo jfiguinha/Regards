@@ -1094,9 +1094,10 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 
 	if (IsSupportOpenCL())
 	{
+
 		if (openclContext == nullptr)
 		{
-			openclContext = new COpenCLContext(true);
+			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
@@ -2215,7 +2216,7 @@ bool CVideoControlSoft::IsCPUContext()
 	if (isCPU == -1)
 	{
 		if (openclContext != nullptr)
-			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
+			isCPU = (openclContext->GetContext().get_device().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);

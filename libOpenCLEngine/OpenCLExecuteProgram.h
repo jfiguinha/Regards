@@ -11,6 +11,8 @@
 #else
 #include <CL/cl.h>
 #endif
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 using namespace std;
 
 class CRegardsBitmap;
@@ -35,24 +37,23 @@ namespace Regards
 			void SetParameter(vector<COpenCLParameter *> * vecParam, wxImage * imageOut);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, int sizeOutput, int width, int height, void * dataPt);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, int width, int height, cl_mem output);
-			void ExecuteProgram(const cl_program &program, const wxString &kernelName);
-			void ExecuteProgram(const cl_program &program, const wxString &kernelName, const size_t & outputBufferSize);
-			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName);
-			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName, const size_t & global_size, const size_t & outputBufferSize);
-			void ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, size_t * offset, size_t * gs_d, size_t * ls);
-			void ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, int width, int height);
+			void ExecuteProgram(const compute::program & program, const wxString &kernelName);
+			void ExecuteProgram(const compute::program& program, const wxString &kernelName, const size_t & outputBufferSize);
+			void ExecuteProgram1D(const compute::program& program, const wxString &kernelName);
+			void ExecuteProgram1D(const compute::program& program, const wxString &kernelName, const size_t & global_size, const size_t & outputBufferSize);
+			void ExecuteProgram2D(const compute::program& program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, size_t * offset, size_t * gs_d, size_t * ls);
+			void ExecuteProgram2D(const compute::program& program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, int width, int height);
 			
 			cl_mem GetOutput();
 			void SetKeepOutput(const bool &keepMemory);
 		private:
-
-			void DeleteParam(vector<COpenCLParameter*>*& vecParam);
-			void KeepMemory(const size_t& outputBufferSize);
 			void CreateValue(const size_t& outputBufferSize, void* data, const cl_mem_flags& flag);
+			void DeleteParam(vector<COpenCLParameter*>* & vecParam);
+			void KeepMemory(const size_t& outputBufferSize);
 			void ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls);
 			void ExecuteKernel2D(const size_t & outputBufferSize);
 			void ExecuteKernel1D(const size_t & global_size, const size_t & outputBufferSize);
-			cl_kernel kernel;
+			compute::kernel kernel;
 			cl_mem_flags flag;
 			void * data;
 			int width;
