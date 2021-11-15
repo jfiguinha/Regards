@@ -446,7 +446,8 @@ void CListFace::FacialRecognition(void* param)
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
-		CThumbnailVideo video(path->filename);
+		CThumbnailVideo video;
+		video.SetFilename(path->filename);
 		int width = 0;
 		int height = 0;
 

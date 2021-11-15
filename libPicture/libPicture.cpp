@@ -1450,7 +1450,8 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
 				int rotation = 0;
-				CThumbnailVideo video(szFileName);
+				CThumbnailVideo video;
+				video.SetFilename(szFileName);
 				bitmap->SetPicture(
 					video.GetVideoFrame(rotation, percent, timePosition, widthThumbnail, heightThumbnail));
 				bitmap->SetOrientation(rotation);
@@ -1933,7 +1934,8 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case AV1:
 		case MOV:
 			{
-				CThumbnailVideo video(szFileName);
+				CThumbnailVideo video;
+				video.SetFilename(szFileName);
 				//CConvertUtility::ConvertToStdString
 				vector<CImageVideoThumbnail*> listVideo = video.GetVideoListFrame(
 					widthThumbnail, heightThumbnail, compressJpeg);
@@ -1982,7 +1984,8 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	else
 	{
-		CThumbnailVideo video(szFileName);
+		CThumbnailVideo video;
+		video.SetFilename(szFileName);
 		is_valid = video.IsOk();
 		fileValid.insert(std::make_pair(szFileName, is_valid));
 	}
@@ -2792,7 +2795,8 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		case MOV:
 			{
 				int orientation = 0;
-				CThumbnailVideo video(fileName);
+				CThumbnailVideo video;
+				video.SetFilename(fileName);
 				int percent = (static_cast<float>(numPicture) / static_cast<float>(20)) * 100.0f;
 				bitmap->SetPicture(video.GetVideoFrame(0, 0, orientation, percent));
 				bitmap->SetOrientation(orientation);
@@ -3163,7 +3167,8 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case MOV:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CThumbnailVideo video(fileName);
+			CThumbnailVideo video;
+			video.SetFilename(fileName);
 			video.GetVideoDimensions(width, height, rotation);
 		}
 		break;

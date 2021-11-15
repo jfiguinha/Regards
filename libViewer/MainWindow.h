@@ -9,7 +9,7 @@ class CPictureCategorieLoadData;
 class CPictureCategorie;
 class IStatusBarInterface;
 class CFFmpegTranscoding;
-
+class CompressionAudioVideoOption;
 
 namespace Regards
 {
@@ -108,6 +108,7 @@ namespace Regards
 			void UpdateFolder();
 			void PhotoProcess(CPhotos* photo);
 
+			CompressionAudioVideoOption * compressAudioVideoOption = nullptr;
 			wxString tempVideoFile = "";
 			wxString tempAudioVideoFile = "";
 			bool fullscreen;

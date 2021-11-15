@@ -8,8 +8,9 @@ class CVideoEffectParameter;
 class CThumbnailVideo
 {
 public:
-	CThumbnailVideo(const wxString& fileName);
+	CThumbnailVideo();
 	~CThumbnailVideo();
+	void SetFilename(const wxString& fileName);
 	bool IsHardwareDecoderCompatible();
 	CRegardsBitmap* GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight, int& rotation, int percent = 10);
 	CRegardsBitmap* GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight, const bool& copy = false);
@@ -23,7 +24,7 @@ public:
 private:
 	//void ApplyEffectToBitmap(CRegardsBitmap* & bitmap, CVideoEffectParameter* videoEffectParameter);
 	wxString filename;
-	CFFmpegDecodeFrame* decodeFrame;
+	CFFmpegDecodeFrame* decodeFrame = nullptr;
 
 	CRegardsBitmap* TestIsValidBitmap(CRegardsBitmap* in);
 };

@@ -10,16 +10,16 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "header.h"
+#include <boost/compute/core.hpp>
+namespace compute = boost::compute;
 #include <Regards.h>
 #include <FilterData.h>
-
 #include <wx/window.h>
 #include "SqlInit.h"
 #include <libPicture.h>
 #include <FilterWindowParam.h>
 #include <ConvertUtility.h>
 #include <FileUtility.h>
-
 #include "ParamInit.h"
 using namespace Regards::Picture;
 

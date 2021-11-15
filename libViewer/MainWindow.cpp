@@ -468,15 +468,17 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	}
 	
 	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
-	CompressionAudioVideoOption compressAudioVideoOption(this, filename, filepath);
-	compressAudioVideoOption.ShowModal();
+	if(compressAudioVideoOption == nullptr)
+		compressAudioVideoOption = new CompressionAudioVideoOption(this, filename, filepath);
+
+	compressAudioVideoOption->ShowModal();
 	wxString filename_in = filename;
-	if (compressAudioVideoOption.IsOk())
+	if (compressAudioVideoOption->IsOk())
 	{
 		if (ffmpegEncoder == nullptr)
 		{
 			auto videoCompressOption = new CVideoOptionCompress();
-			compressAudioVideoOption.GetCompressionOption(videoCompressOption);
+			compressAudioVideoOption->GetCompressionOption(videoCompressOption);
 
 			if ((videoCompressOption->audioDirectCopy && videoCompressOption->videoDirectCopy) || (!videoCompressOption->audioDirectCopy && !videoCompressOption->videoDirectCopy))
 			{

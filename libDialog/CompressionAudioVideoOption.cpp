@@ -7,7 +7,6 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <RegardsConfigParam.h>
-#include "PreviewDlg.h"
 #include <videothumb.h>
 #include "ShowPreview.h"
 #include <LibResource.h>
@@ -178,7 +177,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		decoder = regardsParam->GetVideoDecoderHardware();
 	}
 	*/
-	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
+	ffmpegTranscoding = new CThumbnailVideo();
+	ffmpegTranscoding->SetFilename(videoFilename);
 	SetBitmap(0);
 
 	timeTotal = ffmpegTranscoding->GetMovieDuration();

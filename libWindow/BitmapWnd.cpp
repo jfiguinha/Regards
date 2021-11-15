@@ -20,7 +20,6 @@
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
 #include <OpenCLContext.h>
-#include <OpenCLEngine.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
 
@@ -244,8 +243,8 @@ CBitmapWnd::~CBitmapWnd(void)
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
 
-	//if (openclContext != nullptr)
-	//	delete openclContext;
+	if (openclContext != nullptr)
+		delete openclContext;
 
 }
 
@@ -1972,7 +1971,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		{
 			if (openclContext == nullptr)
 			{
-				openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+				openclContext = new COpenCLContext(true);
 			}
 			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
