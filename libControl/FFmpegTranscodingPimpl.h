@@ -71,7 +71,7 @@ public:
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
 			supportOpenCL = config->GetIsOpenCLSupport();
-
+		ffmpegDecodeFrame = new CFFmpegDecodeFrame();
 		if (supportOpenCL)
 		{
 			this->openclContext = openclContext;

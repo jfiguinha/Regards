@@ -2581,6 +2581,9 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemo
 	showpreview = false;
 	this->outputFile = output;
 	this->dataOutput = dataOutput;
+	if (ffmpegDecodeFrame != nullptr)
+		delete ffmpegDecodeFrame;
+
 	ffmpegDecodeFrame = new CFFmpegDecodeFrame();
 	ffmpegDecodeFrame->OpenFile(input);
 	if ((ret = OpenFile(input, output)) < 0)
