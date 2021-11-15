@@ -47,8 +47,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 	second = timeToSplitlocal;
 }
 
-CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename,
-                                                         const wxString& videoOutputFilename)
+CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 {
 	isOk = false;
 	this->videoFilename = videoFilename;
@@ -170,19 +169,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
 
 	wxString decoder = "";
-	/*
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
-	*/
 	ffmpegTranscoding = new CThumbnailVideo();
-	ffmpegTranscoding->SetFilename(videoFilename);
-	SetBitmap(0);
 
-	timeTotal = ffmpegTranscoding->GetMovieDuration();
-	slVideo->SetMax(timeTotal);
 
 
 	CThemeSlider theme;
@@ -193,25 +181,10 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		viewerTheme->GetVideoSliderTheme(&theme);
 		theme.font.SetColorFont(*wxBLACK);
 	}
-
-
-	//labelTimeStart->SetRange(0, timeTotal);
-	//labelTimeEnd->SetRange(0, timeTotal);
-	labelTimeStart->SetTime(0, 0, 0);
-
-	int hour = 0;
-	int minute = 0;
-	int second = 0;
-	GetTimeToHourMinuteSecond(timeTotal, hour, minute, second);
-	labelTimeEnd->SetTime(hour, minute, second);
-
-
 	wxColour bgColor = labelTimeStart->GetParent()->GetBackgroundColour();
 	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
-	sliderVideoPosition->SetPosition(slVideo->GetPosition());
 	auto size = wxSize(slVideo->GetSize().x, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
-	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 	sliderVideoPosition->SetBackgroundColour(bgColor);
 	slVideo->Show(false);
 
@@ -219,6 +192,43 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideFromChange);
 	Connect(XRCID("ID_STENDMOVIE"), wxEVT_TIME_CHANGED,
 	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnSlideToChange);
+
+
+	CThemeBitmapWindow themeBitmap;
+	showBitmapWindow = nullptr;
+	//CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+
+	if (viewerTheme != nullptr)
+		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
+
+
+
+#ifdef __APPLE__
+	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme);
+	showBitmapWindow->Show(true);
+	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
+#else
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
+	                                    viewerTheme);
+	showBitmapWindow->Show(true);
+	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
+	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
+	bitmapPreview->Show(false);
+	panel->Show(true);
+	
+#endif
+
+}
+
+
+void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
+	const wxString& videoOutputFilename)
+{
+	CVideoOptionCompress videoOptionCompress;
+	GetCompressionOption(&videoOptionCompress);
+	showBitmapWindow->SetParameter(videoFilename, &videoOptionCompress);
+	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+
 
 	wxFileName filepath(videoOutputFilename);
 	extension = filepath.GetExt();
@@ -268,40 +278,22 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent, const
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-#ifdef USE_PREVIEW_INTEGRATE
+	ffmpegTranscoding->SetFilename(videoFilename);
+	timeTotal = ffmpegTranscoding->GetMovieDuration();
+	slVideo->SetMax(timeTotal);
 
-	CThemeBitmapWindow themeBitmap;
-	showBitmapWindow = nullptr;
-	//CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	//labelTimeEnd->SetRange(0, timeTotal);
+	labelTimeStart->SetTime(0, 0, 0);
 
-	if (viewerTheme != nullptr)
-		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
+	int hour = 0;
+	int minute = 0;
+	int second = 0;
+	GetTimeToHourMinuteSecond(timeTotal, hour, minute, second);
+	labelTimeEnd->SetTime(hour, minute, second);
 
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
+	sliderVideoPosition->SetTotalSecondTime(timeTotal);
 
-#ifdef __APPLE__
-	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme, videoFilename, &videoOptionCompress);
-	showBitmapWindow->Show(true);
-	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
-	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
-#else
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme, videoFilename, &videoOptionCompress);
-	showBitmapWindow->Show(true);
-	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
-	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
-	bitmapPreview->Show(false);
-	panel->Show(true);
-	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
-#endif
-#else
-	CVideoOptionCompress videoOptionCompress;
-	GetCompressionOption(&videoOptionCompress);
-	previewDlg = new CPreviewDlg(this, videoFilename, openCLEngine, &videoOptionCompress);
-#endif
 }
-
 
 void CompressionAudioVideoOption::OnErrorCompression(wxCommandEvent& event)
 {
@@ -473,13 +465,6 @@ void CompressionAudioVideoOption::ChangeLabelPicture(const wxString& label)
 	stPreviewPicture->SetLabel(label);
 }
 
-void CompressionAudioVideoOption::SetBitmap(const long& pos)
-{
-	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
-	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
-	bitmap->SetBitmap(picture);
-}
-
 void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 {
 	wxDateTime pos = event.GetDate();
@@ -500,7 +485,6 @@ void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeStart->SetTime(hour1, min, sec);
 	}
-	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
@@ -523,7 +507,6 @@ void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeEnd->SetTime(hour1, min, sec);
 	}
-	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
@@ -531,13 +514,8 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 	int type = event.GetInt();
 	long value = event.GetExtraLong();
 
-	SetBitmap(value);
-
 	if (type == 1)
 	{
-		//labelTimeStart->SetValue(value);
-		//labelTimeStart->SetValue(ConvertSecondToTime(value));
-		//timeStart->SetLabel(ConvertSecondToTime(value));
 		int hour = 0;
 		int minute = 0;
 		int second = 0;
@@ -552,7 +530,6 @@ void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 		int second = 0;
 		GetTimeToHourMinuteSecond(value, hour, minute, second);
 		labelTimeEnd->SetTime(hour, minute, second);
-		//timeEnd->SetLabel(ConvertSecondToTime(value));
 	}
 }
 
@@ -569,8 +546,7 @@ CompressionAudioVideoOption::~CompressionAudioVideoOption()
 		delete sliderVideoPosition;
 		sliderVideoPosition = nullptr;
 	}
-	//if (previewDlg != nullptr)
-	//	delete previewDlg;
+
 	if (showBitmapWindow != nullptr)
 		delete showBitmapWindow;
 

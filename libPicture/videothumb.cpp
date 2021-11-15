@@ -113,8 +113,10 @@ int64_t CThumbnailVideo::GetMovieDuration()
 vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail,
                                                                  const bool& compressJpeg)
 {
+	int exifRotation = 0;
 	int rotation = decodeFrame->GetRotation();
-
+	if(rotation != 0)
+		exifRotation = decodeFrame->GetExifRotation();
 	vector<CImageVideoThumbnail*> listPicture;
 	for (auto i = 0; i < 100; i += 5)
 	{
@@ -124,7 +126,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->image = new CImageLoadingFormat();
 		int timePosition = 0;
 		CRegardsBitmap* picture = TestIsValidBitmap(GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail));
-
+		picture->RotateRawExif(exifRotation);
 		cxVideo->timePosition = timePosition;
 		if (compressJpeg)
 		{

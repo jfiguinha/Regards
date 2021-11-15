@@ -137,16 +137,16 @@ namespace Regards
 			void GetBitmap(CRegardsBitmap * & bitmap, cl_mem input, const int &width, const int &height);
 			//Bitmap Memory Buffer
 			bool dataIsOk ;
-			COpenCLParameter * input;
-			COpenCLParameterInt * paramWidth;
-			COpenCLParameterInt * paramHeight;
+			COpenCLParameter * input = nullptr;
+			COpenCLParameterInt * paramWidth = nullptr;
+			COpenCLParameterInt * paramHeight = nullptr;
 
 			bool opencvBuffer = false;
 			//cv::UMat cvImage;
 			int width;
 			int height;
 
-			COpenCLParameterClMem * paramOutput;
+			COpenCLParameterClMem * paramOutput = nullptr;
 			int widthOut;
 			int heightOut;
 		};

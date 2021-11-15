@@ -469,7 +469,9 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	
 	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
 	if(compressAudioVideoOption == nullptr)
-		compressAudioVideoOption = new CompressionAudioVideoOption(this, filename, filepath);
+		compressAudioVideoOption = new CompressionAudioVideoOption(this);
+
+	compressAudioVideoOption->SetFile(filename, filepath);
 
 	compressAudioVideoOption->ShowModal();
 	wxString filename_in = filename;

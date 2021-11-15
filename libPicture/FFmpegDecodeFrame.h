@@ -37,6 +37,7 @@ public:
 	CFFmpegDecodeFrame();
 	~CFFmpegDecodeFrame();
 	void EndTreatment();
+	int GetExifRotation();
 	void OpenFile(const wxString& filename);
 	bool IsOk();
 	void GetVideoInfos(int& width, int& height, int& rotation);

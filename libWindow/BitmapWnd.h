@@ -297,7 +297,7 @@ namespace Regards
 			CRegardsConfigParam* config;
 
 			bool copyBitmap = false;
-			CFiltreEffet* filtreEffet;
+			CFiltreEffet* filtreEffet = nullptr;
 			CRegardsBitmap * copyBmpSrc = nullptr;
 			bool needUpdate = false;
 			CRenderBitmapOpenGL* renderOpenGL = nullptr;

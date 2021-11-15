@@ -17,6 +17,7 @@
 #include <Tracing.h>
 #include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
+#include <MetadataExiv2.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -32,21 +33,16 @@ void CShowPreview::UpdateScreenRatio()
 }
 
 CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-                           wxWindowID mainViewerId, CThemeParam* config,
-                           const wxString& videoFilename,
-                           CVideoOptionCompress* videoOptionCompress)
+                           wxWindowID mainViewerId, CThemeParam* config)
 	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
-	tempImage = nullptr;
 	scrollbar = nullptr;
 	previewToolbar = nullptr;
 	bitmapWindow = nullptr;
 	configRegards = nullptr;
 	defaultToolbar = true;
 	defaultViewer = true;
-	this->videoOptionCompress = *videoOptionCompress;
-
 
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
@@ -103,27 +99,40 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	Connect(wxEVENT_UPDATEPICTURE, wxCommandEventHandler(CShowPreview::OnUpdatePicture));
 
 	wxString decoder = "";
-	/*
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
-	*/
+	progressValue = 0;
+
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+
+}
+
+void CShowPreview::SetParameter(const wxString& videoFilename,
+	CVideoOptionCompress* videoOptionCompress)
+{
+	isFirstPicture = true;
+	wxString decoder = "";
+	this->videoOptionCompress = *videoOptionCompress;
 	progressValue = 0;
 	filename = videoFilename;
 
+	if (decodeFrameOriginal != nullptr)
+		delete decodeFrameOriginal;
+	decodeFrameOriginal = nullptr;
+	if (transcodeFFmpeg != nullptr)
+		delete transcodeFFmpeg;
+	transcodeFFmpeg = nullptr;
+	if (decodeFrame != nullptr)
+		delete decodeFrame;
+	decodeFrame = nullptr;
 	decodeFrameOriginal = new CFFmpegDecodeFrame();
 	decodeFrameOriginal->OpenFile(filename);
 	timeTotal = decodeFrameOriginal->GetTotalTime();
 
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	//SlidePosChange(0, "");
 
-	//m_animation->LoadFile(resourcePath + "/loading.gif");
-
-	//this->SetSize(640, 480);
+	MoveSlider(0);
+	//this->Resize();
 }
 
 void CShowPreview::ShowPicture(CFFmpegDecodeFrame* decodeFrame, const wxString& label)
@@ -132,6 +141,7 @@ void CShowPreview::ShowPicture(CFFmpegDecodeFrame* decodeFrame, const wxString& 
 	if (bitmap != nullptr && bitmap->GetBitmapWidth() > 0 && bitmap->GetBitmapHeight())
 	{
 		auto imageLoadingFormat = new CImageLoadingFormat(false);
+		bitmap->SetOrientation(decodeFrameOriginal->GetExifRotation());
 		imageLoadingFormat->SetPicture(bitmap);
 		if (isFirstPicture)
 			bitmapWindow->SetBitmap(imageLoadingFormat, false);
@@ -239,40 +249,21 @@ void CShowPreview::ThreadLoading(void* data)
 	if (!showPreview->moveSlider)
 	{
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
-		//fileTemp = CFileUtility::GetTempFile("video_temp.mkv", true);
-
 		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, &dataOutput, showPreview->filename, fileTemp,
 		                                                   showPreview->position, &showPreview->videoOptionCompress);
-		//showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
 		showPreview->transcodeFFmpeg->EndTreatment();
 
 		if (ret == 0)
 		{
 			showPreview->compressIsOK = true;
-
 			showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
-			//showPreview->decodeFrame->OpenFile(fileTemp);
 			showPreview->decodeFrame->GetFrameBitmapPosition(0);
-			CRegardsBitmap* bmp = showPreview->decodeFrame->GetBitmap(false);
-			if (bmp != nullptr)
-				bmp->VertFlipBuf();
 			showPreview->decodeFrame->EndTreatment();
 		}
 		else
 			showPreview->compressIsOK = false;
 
 		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-		CRegardsBitmap* bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
-		if (bmp != nullptr)
-			bmp->VertFlipBuf();
-
-		if (showPreview->key == "Click")
-		{
-			showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-			bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
-			if (bmp != nullptr)
-				bmp->VertFlipBuf();
-		}
 
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
@@ -280,11 +271,6 @@ void CShowPreview::ThreadLoading(void* data)
 	else
 	{
 		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-		CRegardsBitmap* bmp = showPreview->decodeFrameOriginal->GetBitmap(false);
-		if (bmp != nullptr)
-			bmp->VertFlipBuf();
-
-
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -390,6 +376,7 @@ CShowPreview::~CShowPreview()
 	delete(previewToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
+	delete(sliderVideo);
 
 	if (transcodeFFmpeg != nullptr)
 		delete transcodeFFmpeg;
@@ -435,8 +422,11 @@ bool CShowPreview::SetBitmap(CImageLoadingFormat* bitmap)
 		previewToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 
 	if (bitmapWindow != nullptr)
-		bitmapWindow->SetBitmap(bitmap, false);
+	{
 
+		bitmap->SetOrientation(orientation);
+		bitmapWindow->SetBitmap(bitmap, false);
+	}
 
 	return true;
 }

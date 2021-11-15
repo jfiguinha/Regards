@@ -22,10 +22,9 @@ namespace Regards
 		{
 		public:
 			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
-			             CThemeParam* config, const wxString& videoFilename,
-			             CVideoOptionCompress* videoOptionCompress);
+			             CThemeParam* config);
 			~CShowPreview() override;
-
+			void SetParameter(const wxString& videoFilename, CVideoOptionCompress* videoOptionCompress);
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			//CRegardsBitmap* GetBitmap(const bool& source);
 			void UpdateScreenRatio() override;
@@ -72,7 +71,6 @@ namespace Regards
 			CSliderVideoPreview* sliderVideo;
 			CBitmapWnd* bitmapWindow;
 			CRegardsConfigParam* configRegards;
-			CImageLoadingFormat* tempImage;
 
 			bool defaultToolbar;
 			bool defaultViewer;
@@ -96,6 +94,7 @@ namespace Regards
 			bool firstTime = true;
 			bool compressIsOK = true;
 			wxString key = "";
+			int orientation = 0;
 		};
 	}
 }

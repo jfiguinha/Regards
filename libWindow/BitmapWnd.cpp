@@ -237,14 +237,14 @@ CBitmapWnd::~CBitmapWnd(void)
 		delete filtreEffet;
 	filtreEffet = nullptr;
 
-	if (renderOpenGL)
-		renderOpenGL->SetCurrent(*this);
-
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
 
 	if (openclContext != nullptr)
 		delete openclContext;
+
+	if (source != nullptr)
+		delete source;
 
 }
 

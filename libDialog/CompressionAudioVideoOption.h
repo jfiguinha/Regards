@@ -39,10 +39,10 @@ class CVideoEffectParameter;
 class CompressionAudioVideoOption : public wxDialog
 {
 public:
-	CompressionAudioVideoOption(wxWindow* parent, const wxString& videoFilename, const wxString& videoOutputFilename);
+	CompressionAudioVideoOption(wxWindow* parent);
 	~CompressionAudioVideoOption() override;
 	void GetCompressionOption(CVideoOptionCompress* videoOptionCompress);
-
+	void CompressionAudioVideoOption::SetFile(const wxString& videoFilename, const wxString& videoOutputFilename);
 	wxButton* btnCancel;
 	wxButton* btnOk;
 	wxButton* btnPreview;
@@ -136,10 +136,7 @@ private:
 
 	void OnSlideFromChange(wxDateEvent& event);
 	void OnSlideToChange(wxDateEvent& event);
-	void SetBitmap(const long& pos);
 
-	//void OnVideoSliderChange(wxScrollEvent& event);
-	//*)
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;

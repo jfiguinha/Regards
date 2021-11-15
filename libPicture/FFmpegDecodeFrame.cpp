@@ -81,6 +81,21 @@ void CFFmpegDecodeFrame::GetVideoInfos(int& width, int& height, int& rotation)
 	rotation = this->rotation;
 }
 
+int CFFmpegDecodeFrame::GetExifRotation()
+{
+	if (rotation != 0)
+	{
+		if (rotation == -90)
+			return 5;
+		else if (rotation == 90)
+			return 7;
+		else if (rotation == 180)
+			return 3;
+	}
+
+	return 4;
+}
+
 int CFFmpegDecodeFrame::GetRotation()
 {
 	return rotation;
@@ -598,24 +613,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 		av_packet_unref(&packet);
 	}
 
-
-	if (rotation != 0)
-	{
-		auto m_OriginalBitmapBits = (CRgbaquad*)image->GetPtBitmap();
-		auto m_size = wxSize(videoFrameOutputWidth, videoFrameOutputHeight);
-		wxSize m_sizedst;
-		CRgbaquad clrBack;
-		CRotateByShearRGB Rot(CRotateByShearRGB::Progress);
-		CRgbaquad* m_ScaledBitmapBits = Rot.AllocAndRotate(
-			m_OriginalBitmapBits,
-			m_size,
-			rotation,
-			&m_sizedst,
-			clrBack
-		);
-		image->SetBitmap((uint8_t*)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
-		delete[] m_ScaledBitmapBits;
-	}
+	
 	if (pictureFind)
 		ret = 0;
 	return ret;
@@ -625,6 +623,7 @@ CRegardsBitmap* CFFmpegDecodeFrame::GetBitmap(const bool& copy)
 {
 	if (!isOk)
 		return nullptr;
+
 
 	if (copy && image != nullptr)
 	{
