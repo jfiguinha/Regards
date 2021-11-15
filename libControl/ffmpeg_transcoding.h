@@ -1,5 +1,5 @@
 #pragma once
-#include <OpenCLEngine.h>
+#include <OpenCLContext.h>
 using namespace Regards::OpenCL;
 class CFFmpegTranscodingPimpl;
 class CompressVideo;

@@ -9,15 +9,13 @@
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
-#include <boost/compute/algorithm/copy.hpp>
-#include <boost/compute/core.hpp>
-namespace compute = boost::compute;
+
 using namespace Regards::OpenCL;
 
 
 COpenCLFilter::COpenCLFilter(COpenCLContext * context)
 {
-	bool useMemory = (context->GetContext().get_device().gpu == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	this->context = context;
 }
@@ -86,6 +84,7 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 	return value;
 
 }
+
 
 cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
 {
@@ -874,6 +873,7 @@ cl_mem COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, con
 
 		delete[] kernel;
 		delete[] offsetsMotion;
+
 		vecParam.clear();
 	}
 	return outputValue;
@@ -916,6 +916,7 @@ cl_mem COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStr
 			outputValue = nullptr;
 		}
 		delete program;
+
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1419,7 +1420,6 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 			outputValue = nullptr;
 		}
 		delete program;
-
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1495,7 +1495,6 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		}
 
 		delete program;
-
 		vecParam.clear();
 	}
 	return outputValue;

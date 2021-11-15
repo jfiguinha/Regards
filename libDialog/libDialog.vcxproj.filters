@@ -126,9 +126,6 @@
     <ClCompile Include="SliderVideoSelection.cpp">
       <Filter>CompressionVideo</Filter>
     </ClCompile>
-    <ClCompile Include="PreviewDlg.cpp">
-      <Filter>CompressionVideo</Filter>
-    </ClCompile>
     <ClCompile Include="ShowPreview.cpp">
       <Filter>CompressionVideo\Preview</Filter>
     </ClCompile>
@@ -207,9 +204,6 @@
       <Filter>CompressionVideo</Filter>
     </ClInclude>
     <ClInclude Include="SliderVideoSelection.h">
-      <Filter>CompressionVideo</Filter>
-    </ClInclude>
-    <ClInclude Include="PreviewDlg.h">
       <Filter>CompressionVideo</Filter>
     </ClInclude>
     <ClInclude Include="ShowPreview.h">

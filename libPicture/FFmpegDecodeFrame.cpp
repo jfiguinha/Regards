@@ -147,23 +147,6 @@ CFFmpegDecodeFrame::CFFmpegDecodeFrame(): stream_ctx(nullptr)
 	first = true;
 	image = new CRegardsBitmap();
 }
-;
-
-void CFFmpegDecodeFrame::EndTreatment()
-{
-	if (cleanPacket)
-	{
-		if (packet.data != nullptr)
-			av_packet_unref(&packet);
-		Release();
-		if (bitmapShow != nullptr)
-		{
-			bitmapShow->join();
-			delete bitmapShow;
-		}
-		cleanPacket = false;
-	}
-}
 
 
 CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
@@ -184,13 +167,30 @@ CFFmpegDecodeFrame::~CFFmpegDecodeFrame()
 		av_frame_free(&dst);
 	}
 
-
 	if (scaleContext != nullptr)
 		sws_freeContext(scaleContext);
 
 	if (image != nullptr)
 		delete image;
-};
+}
+
+void CFFmpegDecodeFrame::EndTreatment()
+{
+	if (cleanPacket)
+	{
+		if (packet.data != nullptr)
+			av_packet_unref(&packet);
+		Release();
+		if (bitmapShow != nullptr)
+		{
+			bitmapShow->join();
+			delete bitmapShow;
+		}
+		cleanPacket = false;
+	}
+}
+
+
 
 
 static enum AVPixelFormat hw_pix_fmt;
@@ -516,6 +516,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 	if(ret >= 0)
 		avcodec_flush_buffers(codec_ctx);
 
+
 	while (!pictureFind)
 	{
 
@@ -587,7 +588,7 @@ int CFFmpegDecodeFrame::GetFrameBitmapPosition(const long& timeInSeconds, const 
 
 			if (deleteMemory)
 			{
-				//av_freep(&sw_frame->data[0]);
+				av_freep(&sw_frame->data[0]);
 				av_frame_free(&sw_frame);
 			}
 			else

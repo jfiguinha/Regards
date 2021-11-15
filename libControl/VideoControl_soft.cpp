@@ -24,8 +24,6 @@
 #include <OpenCVEffect.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
-#include <boost/compute/core.hpp>
-namespace compute = boost::compute;
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS, wxTimerEvent);
@@ -902,6 +900,9 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
+	if (openclContext != nullptr)
+		delete openclContext;
+
 	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;
 
@@ -917,6 +918,7 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
 	localContext = nullptr;
+
 }
 
 void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap* picture)
@@ -968,7 +970,8 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideo(movie);
+		thumbnailVideo = new CThumbnailVideo;
+		thumbnailVideo->SetFilename(movie);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;
@@ -1093,7 +1096,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	{
 		if (openclContext == nullptr)
 		{
-			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+			openclContext = new COpenCLContext(true);
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
@@ -2212,7 +2215,7 @@ bool CVideoControlSoft::IsCPUContext()
 	if (isCPU == -1)
 	{
 		if (openclContext != nullptr)
-			isCPU = (openclContext->GetContext().get_device().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
+			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);
