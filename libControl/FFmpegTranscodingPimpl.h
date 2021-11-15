@@ -156,6 +156,8 @@ public:
 
 	int IsSupportOpenCL();
 
+	int GetExifRotation();
+
 private:
 
 
@@ -199,7 +201,7 @@ private:
 	StreamContext* stream_ctx;
 	AVPacket packet;
 	bool cleanPacket = false;
-
+	int rotation = 0;
 	COpenCLContext* openclContext = nullptr;
 	CRegardsBitmap* bitmapVideo = nullptr;
 	std::thread* bitmapShow = nullptr;

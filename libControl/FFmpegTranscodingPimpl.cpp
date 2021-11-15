@@ -19,6 +19,7 @@
 extern "C" {
 #include <libavutil/opt.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/display.h>
 }
 
 using namespace Regards::OpenCL;
@@ -183,6 +184,20 @@ static wxString ConvertSecondToTime(int sec)
 	return wxString::Format("%02d:%02d:%02d\n", h, m, s);
 }
 
+int CFFmpegTranscodingPimpl::GetExifRotation()
+{
+	if (rotation != 0)
+	{
+		if (rotation == -90)
+			return 5;
+		else if (rotation == 90)
+			return 7;
+		else if (rotation == 180)
+			return 3;
+	}
+
+	return 4;
+}
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 {
@@ -221,10 +236,12 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 			}
 			ffmpeg_trans->copyFrameBuffer = nullptr;
 			ffmpeg_trans->muFrame.unlock();
+			ffmpeg_trans->bitmapVideo->RotateRawExif(ffmpeg_trans->GetExifRotation());
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		}
 		else
 		{
+			ffmpeg_trans->bitmapCopy->RotateRawExif(ffmpeg_trans->GetExifRotation());
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapCopy);
 		}
 
@@ -408,6 +425,12 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 			{
 				startTime = ifmt_ctx->start_time;
 				duration_movie = ifmt_ctx->duration / 1000000;
+				auto matrix = reinterpret_cast<int32_t*>(
+					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+				if (matrix)
+					rotation = lround(av_display_rotation_get(matrix));
+				else
+					rotation = 0;
 			}
 		}
 		stream_ctx[i].dec_ctx = codec_ctx;
