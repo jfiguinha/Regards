@@ -1,6 +1,7 @@
 #include <header.h>
 #include "CompressVideo.h"
 #include <window_id.h>
+#include <wx/dcmemory.h>
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(CompressVideo)
 //*)
@@ -20,6 +21,7 @@ END_EVENT_TABLE()
 
 CompressVideo::CompressVideo(wxWindow* parent)
 {
+	
 	isOk = true;
 	//(*Initialize(CompressVideo)
 	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressVideo"),_T("wxDialog"));
@@ -41,18 +43,54 @@ CompressVideo::CompressVideo(wxWindow* parent)
 #ifndef __APPLE__
 	bitmap->Show(false);
 #endif
+	wxSize size = bitmap->GetSize();
+	_localBmp = wxBitmap(size.GetWidth(), size.GetHeight(), -1);
 }
 
 void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 {
+	wxSize size = bitmap->GetSize();
 	auto bmp = static_cast<wxImage*>(event.GetClientData());
-	scale = bmp->Scale(344, 200).Mirror(false);
+	float new_ratio = 1;
+	int pictureWidth = bmp->GetWidth();
+	int pictureHeight = bmp->GetHeight();
+	int _width = size.GetWidth();
+	int _height = size.GetHeight();
+	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
+
+	if (pictureWidth > pictureHeight)
+		new_ratio = static_cast<float>(_width) / static_cast<float>(pictureWidth);
+	else
+		new_ratio = static_cast<float>(_height) / static_cast<float>(pictureHeight);
+
+	if ((pictureHeight * new_ratio) > _height)
+	{
+		new_ratio = static_cast<float>(_height) / static_cast<float>(pictureHeight);
+	}
+	if ((pictureWidth * new_ratio) > _width)
+	{
+		new_ratio = static_cast<float>(_width) / static_cast<float>(pictureWidth);
+	}
+	scale = bmp->Scale(pictureWidth * new_ratio, pictureHeight * new_ratio);
+
+	
+	int xPos = (size.GetWidth() - scale.GetWidth()) / 2;
+	int yPos = (size.GetHeight() - scale.GetHeight()) / 2;
+
+	
+	wxMemoryDC bbBuffer;
+	bbBuffer.SelectObject(_localBmp);
+	bbBuffer.SetBackground(*wxBLACK_BRUSH);
+	bbBuffer.Clear();
+	bbBuffer.DrawBitmap(scale, xPos, yPos);
+	bbBuffer.SelectObject(wxNullBitmap);
+
 #ifdef __APPLE__
     bitmap->SetBitmap(scale);
 #else
 	wxPoint pt = bitmap->GetPosition();
 	wxClientDC dc(this);
-	dc.DrawBitmap(scale, pt.x, pt.y);
+	dc.DrawBitmap(_localBmp, pt.x, pt.y );
 #endif
 	delete bmp;
 }

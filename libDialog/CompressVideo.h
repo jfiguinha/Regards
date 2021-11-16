@@ -41,7 +41,7 @@ private:
 	void OnSetValueMaxProgressBar(wxCommandEvent& event);
 	void OnSetText(wxCommandEvent& event);
 	void OnSetBitmap(wxCommandEvent& event);
-
+	wxBitmap _localBmp;
 	//*)
 	bool isOk;
 	wxImage scale;

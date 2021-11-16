@@ -5,7 +5,7 @@
 		<centered>1</centered>
 		<size>400,400</size>
 		<object class="wxStaticBitmap" name="ID_BITMAPVIDEO">
-			<pos>24,30</pos>
+			<pos>24,20</pos>
 			<size>344,240</size>
 		</object>
 		<object class="wxStaticText" name="ID_STPROGRESS">

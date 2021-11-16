@@ -733,7 +733,7 @@ void CImageLoadingFormat::ApplyExifOrientation()
 		return;
 
 
-	int exifOrientation = 0;
+	int exifOrientation = orientation;
 	CLibPicture libPicture;
 	if (libPicture.TestIsExifCompatible(filename))
 	{

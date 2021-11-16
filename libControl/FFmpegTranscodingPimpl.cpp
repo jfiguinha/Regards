@@ -236,16 +236,24 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 			}
 			ffmpeg_trans->copyFrameBuffer = nullptr;
 			ffmpeg_trans->muFrame.unlock();
-			ffmpeg_trans->bitmapVideo->RotateRawExif(ffmpeg_trans->GetExifRotation());
+			//ffmpeg_trans->bitmapVideo->RotateExif(ffmpeg_trans->GetExifRotation());
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapVideo);
 		}
 		else
 		{
-			ffmpeg_trans->bitmapCopy->RotateRawExif(ffmpeg_trans->GetExifRotation());
+			//ffmpeg_trans->bitmapCopy->RotateExif(ffmpeg_trans->GetExifRotation());
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapCopy);
 		}
 
+		CRegardsBitmap* bmp = imageLoadingFormat->GetRegardsBitmap(true);
+		if (ffmpeg_trans->GetExifRotation() >= 5 && bmp->GetBitmapWidth() > bmp->GetBitmapHeight())
+		{
+			bmp->RotateExif(ffmpeg_trans->GetExifRotation());
+			imageLoadingFormat->SetPicture(bmp);
+
+		}
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
+		delete bmp;
 		ffmpeg_trans->muWriteData.lock();
 
 		double duration_total = ffmpeg_trans->duration_movie;
