@@ -42,7 +42,7 @@ public:
 	CompressionAudioVideoOption(wxWindow* parent);
 	~CompressionAudioVideoOption() override;
 	void GetCompressionOption(CVideoOptionCompress* videoOptionCompress);
-	void CompressionAudioVideoOption::SetFile(const wxString& videoFilename, const wxString& videoOutputFilename);
+	void SetFile(const wxString& videoFilename, const wxString& videoOutputFilename);
 	wxButton* btnCancel;
 	wxButton* btnOk;
 	wxButton* btnPreview;
