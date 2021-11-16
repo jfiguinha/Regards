@@ -241,8 +241,8 @@ CBitmapWnd::~CBitmapWnd(void)
 	if (renderOpenGL != nullptr)
 		delete renderOpenGL;
 
-	if (openclContext != nullptr)
-		delete openclContext;
+	//if (openclContext != nullptr)
+	//	delete openclContext;
 
 	if (source != nullptr)
 		delete source;
@@ -1916,6 +1916,11 @@ void CBitmapWnd::ReloadResource()
 	//reloadResource = true;
 }
 
+void CBitmapWnd::SetOpenGLOutput(const bool& value)
+{
+	isOpenGLShow = value;
+}
+
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
@@ -1932,57 +1937,127 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-
-	wxPaintDC(this);
-
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"OnPaint\n");
+	if (!isOpenGLShow)
+	{
+		wxPaintDC dc(this);
+
+		printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport \n");
+
+		CRgbaquad color;
+
+#ifndef WIN32
+		double scale_factor = GetContentScaleFactor();
+#else
+		double scale_factor = 1.0f;
 #endif
 
-	if (renderOpenGL == nullptr)
-	{
-		renderOpenGL = new CRenderBitmapOpenGL(this);
+		int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+		int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
-		//Now we have a context, retrieve pointers to OGL functions
-		renderOpenGL->Init(this);
-
-		renderOpenGL->LoadingResource(scale_factor);
-
-
-		if (filtreEffet != nullptr)
-			delete filtreEffet;
-		filtreEffet = nullptr;
-		
-	}
-	renderOpenGL->SetCurrent(*this);
-
-
-	if (renderOpenGL != nullptr)
-	{
-		if (!IsSupportOpenCL())
+		if (loadBitmap)
 		{
-			printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
-			RenderToScreenWithoutOpenCLSupport();
+			if (filtreEffet == nullptr)
+				filtreEffet = new CFiltreEffet(color, nullptr, source);
+			else
+				filtreEffet->SetBitmap(source);
+
+			bitmapLoad = true;
+		}
+
+		if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
+		{
+			int left = 0, top = 0;
+			int tailleAffichageWidth = widthOutput;
+			int tailleAffichageHeight = heightOutput;
+			int filterInterpolation = 0;
+			if (GetWidth() * scale_factor > tailleAffichageWidth)
+				left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+			else
+				left = 0;
+
+			if (GetHeight() * scale_factor > tailleAffichageHeight)
+				top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+			else
+				top = 0;
+
+
+			wxRect rc(0, 0, 0, 0);
+			CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+			filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, flipHorizontal, !flipVertical, angle);
+			CRegardsBitmap * source = filtreEffet->GetBitmap(false);
+			CImageLoadingFormat imageFormat;
+			imageFormat.SetPicture(source);
+			wxImage* scale = imageFormat.GetwxImage();
+
+
+			int xPos = (GetWidth() - scale->GetWidth()) / 2;
+			int yPos = (GetHeight() - scale->GetHeight()) / 2;
+
+			FillRect(&dc, this->GetRect(), this->ThemeColourBackground);
+			dc.DrawBitmap(*scale, xPos, yPos);
+
+			delete scale;
 		}
 		else
 		{
-			if (openclContext == nullptr)
-			{
-				openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-			}
-			printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
-			RenderToScreenWithOpenCLSupport();
+			FillRect(&dc, this->GetRect(), this->ThemeColourBackground);
 		}
-		
-
-		AfterRender();
 	}
-	
-	this->SwapBuffers();
+	else
+	{
+
+
+	#if defined(WIN32) && defined(_DEBUG)
+		DWORD tickCount = GetTickCount();
+		OutputDebugString(L"OnPaint\n");
+	#endif
+
+		if (renderOpenGL == nullptr)
+		{
+			renderOpenGL = new CRenderBitmapOpenGL(this);
+
+			//Now we have a context, retrieve pointers to OGL functions
+			renderOpenGL->Init(this);
+
+			renderOpenGL->LoadingResource(scale_factor);
+
+
+			if (filtreEffet != nullptr)
+				delete filtreEffet;
+			filtreEffet = nullptr;
+
+		}
+		renderOpenGL->SetCurrent(*this);
+
+
+		if (renderOpenGL != nullptr)
+		{
+			if (!IsSupportOpenCL())
+			{
+				printf("CBitmapWnd OnPaint RenderToScreenWithoutOpenCLSupport\n");
+				RenderToScreenWithoutOpenCLSupport();
+			}
+			else
+			{
+				if (openclContext == nullptr)
+				{
+					openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+				}
+				printf("CBitmapWnd OnPaint RenderToScreenWithOpenCLSupport \n");
+				RenderToScreenWithOpenCLSupport();
+			}
+
+
+			AfterRender();
+		}
+
+		this->SwapBuffers();
+	}
+
+
 
 
 

@@ -900,8 +900,8 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
-	if (openclContext != nullptr)
-		delete openclContext;
+	//if (openclContext != nullptr)
+	//	delete openclContext;
 
 	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;

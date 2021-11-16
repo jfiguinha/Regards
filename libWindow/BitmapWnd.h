@@ -111,6 +111,7 @@ namespace Regards
 			};
 			int GetKey();
 
+			void SetOpenGLOutput(const bool& value);
 
 			void SetFullscreen(const bool& fullscreen);
 
@@ -327,6 +328,7 @@ namespace Regards
 			int posLargeur = 0;
 			int posHauteur = 0;
 
+			bool isOpenGLShow = true;
 			int oldWidth = 0;
 			int oldHeight = 0;
 			bool loadBitmap = false;
