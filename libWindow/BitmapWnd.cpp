@@ -1997,14 +1997,14 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 			int xPos = (GetWidth() - scale->GetWidth()) / 2;
 			int yPos = (GetHeight() - scale->GetHeight()) / 2;
 
-			FillRect(&dc, this->GetRect(), this->ThemeColourBackground);
+			FillRect(&dc, this->GetRect(), themeBitmap.colorBack);
 			dc.DrawBitmap(*scale, xPos, yPos);
 
 			delete scale;
 		}
 		else
 		{
-			FillRect(&dc, this->GetRect(), this->ThemeColourBackground);
+			FillRect(&dc, this->GetRect(), themeBitmap.colorBack);
 		}
 	}
 	else
