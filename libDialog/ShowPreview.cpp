@@ -71,7 +71,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	themeBitmap.colorScreen = wxColour("black");
 
 	bitmapWindow = new CBitmapWnd(this, bitmapViewerId, previewToolbar, 0, themeBitmap);
-	bitmapWindow->SetOpenGLOutput(false);
+	//bitmapWindow->SetOpenGLOutput(false);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
