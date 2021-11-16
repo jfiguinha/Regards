@@ -28,14 +28,12 @@
   </Plugins>
   <VirtualDirectory Name="Video">
     <VirtualDirectory Name="Preview">
+      <File Name="PreviewToolbar.cpp"/>
       <File Name="SliderVideoPreview.h"/>
       <File Name="ShowPreview.h"/>
       <File Name="PreviewToolbar.h"/>
-      <File Name="PreviewDlg.h"/>
       <File Name="SliderVideoPreview.cpp"/>
       <File Name="ShowPreview.cpp"/>
-      <File Name="PreviewToolbar.cpp"/>
-      <File Name="PreviewDlg.cpp"/>
     </VirtualDirectory>
     <File Name="SliderVideoSelection.h"/>
     <File Name="CompressVideo.cpp"/>
