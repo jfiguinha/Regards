@@ -1942,7 +1942,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 	if (!isOpenGLShow)
 	{
-		wxPaintDC dc(this);
+		wxAutoBufferedPaintDC  dc(this);
 
 		printf("CBitmapWnd RenderToScreenWithoutOpenCLSupport \n");
 
@@ -1969,6 +1969,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 		if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 		{
+			int _angle = angle + GetAngleFromExif();
 			int left = 0, top = 0;
 			int tailleAffichageWidth = widthOutput;
 			int tailleAffichageHeight = heightOutput;
@@ -1986,7 +1987,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 
 			wxRect rc(0, 0, 0, 0);
 			CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
-			filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, flipHorizontal, !flipVertical, angle);
+			filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, flipHorizontal, !flipVertical, _angle);
 			CRegardsBitmap * source = filtreEffet->GetBitmap(false);
 			CImageLoadingFormat imageFormat;
 			imageFormat.SetPicture(source);
