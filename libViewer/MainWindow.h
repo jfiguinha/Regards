@@ -108,7 +108,7 @@ namespace Regards
 			void UpdateFolder();
 			void PhotoProcess(CPhotos* photo);
 
-			//CompressionAudioVideoOption * compressAudioVideoOption = nullptr;
+			CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
 			wxString tempVideoFile = "";
 			wxString tempAudioVideoFile = "";
 			bool fullscreen;

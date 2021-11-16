@@ -139,7 +139,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	/*----------------------------------------------------------------------
 	 *
 	 * Manage Event
-	 * 
+	 *
 	 ----------------------------------------------------------------------*/
 	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
 	Connect(wxEVENT_FACEINFOSUPDATE, wxCommandEventHandler(CMainWindow::OnFaceInfosUpdate));
@@ -182,12 +182,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 
-	int tabWidth[] = {100, 300, 300, 300};
+	int tabWidth[] = { 100, 300, 300, 300 };
 	statusBar->SetFieldsCount(4);
 	statusBar->SetStatusWidths(4, tabWidth);
 
 	progressBar = new wxGauge(statusBar, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, statusBar->GetSize().y),
-	                          wxGA_HORIZONTAL);
+		wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
 	refreshFolder = true;
@@ -230,9 +230,9 @@ void CMainWindow::OnDeleteFace(wxCommandEvent& event)
 		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 		wxQueueEvent(this, eventChange);
 	}
-	
 
-	
+
+
 }
 
 void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
@@ -260,7 +260,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filename,
-		                            "mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			"mp4 " + filename + " (*.mp4)|*.mp4", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...
 
@@ -274,7 +274,7 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 	}
 
 	int time_movie = CThumbnailVideoExport::GenerateVideoFromList(tempVideoFile, list, timeDelai, 30, 1920, 1080,
-	                                                              numEffect);
+		numEffect);
 
 	if (time_movie == 0)
 	{
@@ -427,16 +427,16 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		wxString savevideofile = CLibResource::LoadStringFromResource(L"LBLSAVEVIDEOFILE", 1);
 		wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
-		
+
 		wxString filenameToSave = videoFilename.GetName();
 		/*
 		wxString extension = videoFilename.GetExt();
 		filenameToSave = filenameToSave.Remove(filenameToSave.size() - filenameToSave.size(), filenameToSave.size());
 		*/
 		wxFileDialog saveFileDialog(nullptr, savevideofile, "", filenameToSave,
-		                            "mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label +
-		                            " (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label +
-		                            " (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			"mp4 " + filename_label + " (*.mp4)|*.mp4|webm " + filename_label +
+			" (*.webm)|*.webm|mov " + filename_label + " (*.mov)|*.mov|mkv " + filename_label +
+			" (*.mkv)|*.mkv", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return; // the user changed idea...
 
@@ -462,24 +462,25 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 			case 3:
 				filepath += ".mkv";
 				break;
-			default: ;
+			default:;
 			}
 		}
 	}
-	
+
 	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
-	CompressionAudioVideoOption compressAudioVideoOption(this);
+	if (compressAudioVideoOption == nullptr)
+		compressAudioVideoOption = new CompressionAudioVideoOption(this);
 
-	compressAudioVideoOption.SetFile(filename, filepath);
+	compressAudioVideoOption->SetFile(filename, filepath);
 
-	compressAudioVideoOption.ShowModal();
+	compressAudioVideoOption->ShowModal();
 	wxString filename_in = filename;
-	if (compressAudioVideoOption.IsOk())
+	if (compressAudioVideoOption->IsOk())
 	{
 		if (ffmpegEncoder == nullptr)
 		{
 			auto videoCompressOption = new CVideoOptionCompress();
-			compressAudioVideoOption.GetCompressionOption(videoCompressOption);
+			compressAudioVideoOption->GetCompressionOption(videoCompressOption);
 
 			if ((videoCompressOption->audioDirectCopy && videoCompressOption->videoDirectCopy) || (!videoCompressOption->audioDirectCopy && !videoCompressOption->videoDirectCopy))
 			{
@@ -675,7 +676,7 @@ void CMainWindow::OnEditFile(wxCommandEvent& event)
 	{
 		const wxString allfiles = CLibResource::LoadStringFromResource(L"LBLALLFILES", 1);
 		wxFileDialog openFileDialog(nullptr, title, "", "",
-		                            allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			allfiles, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (openFileDialog.ShowModal() == wxID_OK)
 			pathProgram = openFileDialog.GetPath();
 	}
@@ -759,46 +760,46 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 		switch (typeMessage)
 		{
 		case 0:
-			{
-				const wxString picture = CLibResource::LoadStringFromResource(L"LBLCRITERIANBIMAGE", 1);
-				SetDataToStatusBar(event.GetClientData(), picture);
-			}
-			break;
+		{
+			const wxString picture = CLibResource::LoadStringFromResource(L"LBLCRITERIANBIMAGE", 1);
+			SetDataToStatusBar(event.GetClientData(), picture);
+		}
+		break;
 
 		case 1:
+		{
+			if (statusBarViewer != nullptr)
 			{
-				if (statusBarViewer != nullptr)
-				{
-					statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
-					statusBarViewer->SetPosProgressBar(0);
-				}
-				delete thumbnailMessage;
+				statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
+				statusBarViewer->SetPosProgressBar(0);
 			}
-			break;
+			delete thumbnailMessage;
+		}
+		break;
 
 		case 2:
-			{
-				const wxString picture = CLibResource::LoadStringFromResource(L"LBLFOLDERPROCESSING", 1);
-				SetDataToStatusBar(event.GetClientData(), picture);
-			}
-			break;
+		{
+			const wxString picture = CLibResource::LoadStringFromResource(L"LBLFOLDERPROCESSING", 1);
+			SetDataToStatusBar(event.GetClientData(), picture);
+		}
+		break;
 
 		case 3:
-			{
-				TRACE();
-				const wxString picture = CLibResource::LoadStringFromResource(L"LBLPICTURERENDER", 1);
-				SetDataToStatusBar(event.GetClientData(), picture);
-			}
-			break;
+		{
+			TRACE();
+			const wxString picture = CLibResource::LoadStringFromResource(L"LBLPICTURERENDER", 1);
+			SetDataToStatusBar(event.GetClientData(), picture);
+		}
+		break;
 
 		case 4:
-			{
-				TRACE();
-				const wxString picture = CLibResource::LoadStringFromResource(L"LBLFACEPROCESS", 1);
-				SetDataToStatusBar(event.GetClientData(), picture);
-			}
-			break;
-		default: ;
+		{
+			TRACE();
+			const wxString picture = CLibResource::LoadStringFromResource(L"LBLFACEPROCESS", 1);
+			SetDataToStatusBar(event.GetClientData(), picture);
+		}
+		break;
+		default:;
 		}
 	}
 }
@@ -988,8 +989,7 @@ bool CMainWindow::FindNextValidFile()
 
 			localFilename = centralWnd->ImageSuivante(false);
 		}
-	}
-	while (!isFound);
+	} while (!isFound);
 
 	return isFound;
 }
@@ -1022,8 +1022,7 @@ bool CMainWindow::FindPreviousValidFile()
 
 			localFilename = centralWnd->ImagePrecedente(false);
 		}
-	}
-	while (!isFound);
+	} while (!isFound);
 
 	return isFound;
 }
@@ -1087,7 +1086,7 @@ void CMainWindow::RefreshFolder()
 		wxString fichier;
 		CSqlInsertFile sqlInsertFile;
 		nbFile += sqlInsertFile.ImportFileFromFolder(folderlocal.GetFolderPath(), folderlocal.GetNumFolder(),
-		                                             fichier);
+			fichier);
 	}
 
 	if (folderChange || nbFile > 0)
@@ -1333,10 +1332,10 @@ void CMainWindow::Resize()
 		toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
 		toolbar->Refresh();
 		centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width,
-		                    rcAffichageBitmap.height);
+			rcAffichageBitmap.height);
 		centralWnd->Refresh();
 		statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width,
-		                   sizeStatusBar.y);
+			sizeStatusBar.y);
 		statusBar->Refresh();
 	}
 	else
