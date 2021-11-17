@@ -163,6 +163,7 @@ public:
 	MyApp(
 	)
 	{
+		logNo = new wxLogNull();
 		//Init x11
 		regardsParam = nullptr;
 		frameStart = nullptr;
@@ -321,7 +322,7 @@ private:
 	wxString fileToOpen;
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
-
+	wxLogNull * logNo;
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member
 #endif
