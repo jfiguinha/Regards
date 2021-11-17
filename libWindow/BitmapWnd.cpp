@@ -1940,6 +1940,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
+/*
 	if (!isOpenGLShow)
 	{
 		wxAutoBufferedPaintDC  dc(this);
@@ -2009,7 +2010,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	}
 	else
 	{
-
+*/
 
 	#if defined(WIN32) && defined(_DEBUG)
 		DWORD tickCount = GetTickCount();
@@ -2056,7 +2057,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 		}
 
 		this->SwapBuffers();
-	}
+//}
 
 
 
