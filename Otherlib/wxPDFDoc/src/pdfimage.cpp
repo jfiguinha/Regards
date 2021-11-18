@@ -158,7 +158,7 @@ wxPdfImage::ConvertWxImage(const wxImage& image, bool jpegFormat)
     return false;
   }
 #endif // wxUSE_LIBJPEG
-
+  wxLogNull logNo;
   bool isValid = false;
   wxBitmapType bitmapType = (jpegFormat) ? wxBITMAP_TYPE_JPEG : wxBITMAP_TYPE_PNG;
   if (wxImage::FindHandler(bitmapType) == NULL)

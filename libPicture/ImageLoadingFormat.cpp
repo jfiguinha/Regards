@@ -963,6 +963,7 @@ wxImage* CImageLoadingFormat::GetwxImage(const bool& copy)
 		{
 			if (_jpegImage != nullptr)
 			{
+				wxLogNull logNo;
 				auto _wxImage = new wxImage();
 				wxMemoryInputStream jpegStream(_jpegImage->GetData(), _jpegImage->GetSize());
 				_wxImage->LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);

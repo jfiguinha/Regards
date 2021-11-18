@@ -962,6 +962,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case HEIC:
 		{
+			wxLogNull logNo;
 			uint8_t* data = nullptr;
 			unsigned int size = 0;
 			bool hasExif = false;
@@ -1004,6 +1005,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 	case AVIF:
 		{
+			wxLogNull logNo;
 			uint8_t* data = nullptr;
 			unsigned int size = 0;
 			bool hasExif = false;
@@ -1042,7 +1044,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case JPEG:
 		{
-            
+			wxLogNull logNo;
             wxImage * image = bitmap->GetwxImage(true);
             image->SetOption("wxIMAGE_OPTION_QUALITY",quality);
             image->SaveFile(fileName,wxBITMAP_TYPE_JPEG);
@@ -1120,6 +1122,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 			if (option == 0)
 			{
+				wxLogNull logNo;
 #ifdef WIN32
 				file = tempFolder + "\\temporary.jpg";
 #else
@@ -3288,6 +3291,7 @@ CPictureData* CLibPicture::LoadPictureData(const wxString& filename, bool& pictu
 
 bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int option, int quality)
 {
+	wxLogNull logNo;
 	int _option = option;
 	int _quality = quality;
 

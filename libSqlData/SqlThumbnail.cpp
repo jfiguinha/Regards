@@ -81,6 +81,7 @@ vector<int> CSqlThumbnail::GetAllPhotoThumbnail()
 
 wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 {
+	wxLogNull logNo;
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");

@@ -96,6 +96,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 
 wxImage CSqlThumbnailVideo::GetThumbnail(const wxString & path, const int &numVideo)
 {
+	wxLogNull logNo;
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");

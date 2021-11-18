@@ -447,6 +447,7 @@ int CSqlFacePhoto::GetNumFace(const wxString & path, const int &numberface)
 
 wxImage CSqlFacePhoto::GetFace(const int &numFace)
 {
+	wxLogNull logNo;
 	/*
 	bitmap.Destroy();
 	type = 0;
