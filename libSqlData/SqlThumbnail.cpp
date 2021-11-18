@@ -107,7 +107,13 @@ CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 	{
 		CLibPicture libPicture;
 		picture = libPicture.LoadPicture(thumbnail);
-		picture->SetFilename(thumbnail);
+		if(picture != nullptr)
+			picture->SetFilename(thumbnail);
+		else
+		{
+			printf("error");
+			DeleteThumbnail(numPhoto);
+		}
 	}
 	return picture;
 }
