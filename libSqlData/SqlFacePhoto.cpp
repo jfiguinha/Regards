@@ -8,6 +8,7 @@
 #include <FileUtility.h>
 #include <ImageLoadingFormat.h>
 #include <libPicture.h>
+#include <LibResource.h>
 #include <wx/file.h>
 #include <wx/dir.h>
 using namespace Regards::Sqlite;
@@ -459,6 +460,12 @@ wxImage CSqlFacePhoto::GetFace(const int &numFace)
 	if (wxFileExists(thumbnail))
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 	
+	if (!image.IsOk())
+	{
+		DeleteNumFace(numFace);
+		image.LoadFile(CLibResource::GetPhotoCancel(), wxBITMAP_TYPE_PNG);
+	}
+
 	return image.Mirror(false);
 }
 
