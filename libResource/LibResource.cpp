@@ -73,13 +73,12 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
     if(!isError)
     {
         data = new uint8_t[w*h*4];
+        if (data == NULL) {
+            printf("Could not alloc image buffer.\n");
+            isError = true;
+        }
     }
-        
-    if (data == NULL) {
-        printf("Could not alloc image buffer.\n");
-        isError = true;
-    }
-
+    
     if(!isError)
         nsvgRasterize(rast, image, 0,0,1, data, w, h, w*4);
 
