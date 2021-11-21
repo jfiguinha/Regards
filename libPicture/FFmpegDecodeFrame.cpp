@@ -208,7 +208,7 @@ void CFFmpegDecodeFrame::EndTreatment()
 
 
 
-static enum AVPixelFormat hw_pix_fmt;
+//static enum AVPixelFormat hw_pix_fmt;
 
 bool CFFmpegDecodeFrame::IsOk()
 {

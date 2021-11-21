@@ -18,7 +18,7 @@ namespace Regards
 			CPictureData * GetBitmap(const wxString &idName);
 			wxString GetText(const wxString& idName);
 			wxString GetOpenGLShader(const wxString& idName);
-
+			wxString GetFilepath(const wxString& idName);
 			wxString GetVectorFromFile(const wxString &idName);
             wxString GetVector(const wxString &idName);
 			wxString GetLibelle(const wxString &idName, const int &idLang);

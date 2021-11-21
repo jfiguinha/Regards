@@ -45,13 +45,52 @@ void CLibResource::KillSqlEngine()
 
 wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight)
 {
-    wxImage img;
+    int w = 0, h = 0;
+    int width = buttonWidth;
+    int height = buttonHeight;
+    //Calcul Ratio picture
     bool isError = false;
+
+    {
+        NSVGimage* image = NULL;
+        image = nsvgParseFromFile(filename.ToStdString().c_str(), "px", 96.0f, 0, 0);
+        if (image == NULL)
+        {
+            isError = true;
+            printf("Could not open SVG image.\n");
+        }
+
+        if (!isError)
+        {
+            w = (int)image->width;
+            h = (int)image->height;
+
+        }
+
+        nsvgDelete(image);
+    }
+
+    float ratio = 1.0f;
+    if (w != h)
+    {
+        if (w > h)
+        {
+            ratio = (float)h / (float)w;
+            height = width * ratio;
+        }
+        else
+        {
+            ratio = (float)w / (float)h;
+            width = height * ratio;
+        }
+    }
+
+
+    wxImage img;
     NSVGimage *image = NULL;
     NSVGrasterizer *rast = NULL;
-    int w, h;
     uint8_t * data = nullptr;
-    image = nsvgParseFromFile(filename.ToStdString().c_str(), "px", 96.0f, buttonWidth, buttonHeight);
+    image = nsvgParseFromFile(filename.ToStdString().c_str(), "px", 96.0f, width, height);
     if (image == NULL) 
     {
         isError = true;
@@ -99,37 +138,59 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
         unsigned char* dataOut = anImage.GetData();
         unsigned char* dataAlpha = anImage.GetAlpha();
 
-        if (data != nullptr)
         {
-            int pos_data;
-            for (auto y = 0; y < height; y++)
+            if (data != nullptr)
             {
-                if (flip)
-                    pos_data = y * widthSrcSize;
-                else
-                    pos_data = ((height - y) * widthSrcSize) - widthSrcSize;
-                int posDataOut = y * (width * 3);
-                int posAlpha = y * width;
-                for (auto x = 0; x < width; x++)
+                int pos_data;
+                for (auto y = 0; y < height; y++)
                 {
-                    dataOut[posDataOut] = data[pos_data + 2];
-                    dataOut[posDataOut + 1] = data[pos_data + 1];
-                    dataOut[posDataOut + 2] = data[pos_data];
-                    dataAlpha[posAlpha++] = data[pos_data + 3];
-                    pos_data += 4;
-                    posDataOut += 3;
+                    pos_data = y * widthSrcSize;
+                    int posDataOut = y * (width * 3);
+                    int posAlpha = y * width;
+                    for (auto x = 0; x < width; x++)
+                    {
+                        dataOut[posDataOut] = data[pos_data + 2];
+                        dataOut[posDataOut + 1] = data[pos_data + 1];
+                        dataOut[posDataOut + 2] = data[pos_data];
+                        dataAlpha[posAlpha++] = data[pos_data + 3];
+                        pos_data += 4;
+                        posDataOut += 3;
+                    }
                 }
             }
+            delete[] data;
         }
-        delete[] data;
-        return anImage;
+
+
+        {
+            int posX = (buttonWidth - w) / 2;
+            int posY = (buttonHeight - h) / 2;
+            wxImage final(buttonWidth, buttonHeight, true);
+            final.InitAlpha();
+            unsigned char* dataAlpha = final.GetAlpha();
+            if (dataAlpha != nullptr)
+            {
+                for (auto y = 0; y < buttonHeight; y++)
+                {
+                    int posAlpha = y * buttonWidth;
+                    for (auto x = 0; x < buttonWidth; x++)
+                    {
+                        dataAlpha[posAlpha++] = 0;
+                    }
+                }
+            }
+            final.Paste(anImage, posX, posY);
+            return final;
+        }
+
     }
 	return img;
 }
 
 wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight)
 {
-    wxString filename = GetVector(idName);
+    CSqlResource sqlResource;
+    wxString filename = sqlResource.GetFilepath(idName);
     return CreatePictureFromSVGFilename(filename, buttonWidth, buttonHeight);
 }
 

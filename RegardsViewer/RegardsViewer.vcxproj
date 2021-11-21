@@ -1010,9 +1010,6 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <ProjectReference Include="..\Otherlib\wxPDFDoc\wxPDFDoc.vcxproj">
       <Project>{3d1770b4-abf8-49b1-a17a-4e31d18906f2}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\otherlib\wxsvg\wxsvg.vcxproj">
-      <Project>{58ac16a3-2d52-4737-8b04-9bff91429228}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\wxCheckTree\wxCheckTree.vcxproj">
       <Project>{475d02bb-fbd5-4094-8cd8-d33d9804cd24}</Project>
     </ProjectReference>

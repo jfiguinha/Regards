@@ -67,7 +67,7 @@ private:
 	//bool processEnd = true;
 	//int nbframePerSecond = 0;
 	static int read_packet(void* opaque, uint8_t* buf, int buf_size);
-	AVBufferRef* hw_device_ctx = nullptr;
+	//AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
 
