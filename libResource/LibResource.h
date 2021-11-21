@@ -16,6 +16,7 @@ public:
 	static wxString GetOpenCLFloatProgram(const wxString& idName);
 	static wxString GetOpenCLUcharProgram(const wxString& idName);
     static wxString GetVector(const wxString &idName);
+    static wxImage CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight);
 	static wxImage CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight);
     static int GetExtensionId(const wxString &extension);
 	static wxString GetPhotoCancel();

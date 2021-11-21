@@ -37,7 +37,7 @@ namespace Regards
 
 
 		private:
-			wxImage CreateFromSVG(const int& buttonWidth, const int& buttonHeight, const wxString& vector);
+			
 			void CreateStar();
 			void DrawStar(wxDC* deviceContext, const int& x, const int& y);
 

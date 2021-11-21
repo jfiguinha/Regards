@@ -5,7 +5,6 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include <wxSVG/SVGDocument.h>
 
 CSliderVideoSelection::CSliderVideoSelection(wxWindow* parent, wxWindowID id, wxWindow* eventWnd,
                                              const CThemeSlider& themeSlider)

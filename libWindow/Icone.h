@@ -96,7 +96,7 @@ namespace Regards
 			}
 
 		private:
-			wxImage CreateFromSVG(const int& buttonWidth, const int& buttonHeight, const wxString& vector);
+			
 			void RenderPictureBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
 			void RenderVideoBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
 			void RenderBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
@@ -127,11 +127,7 @@ namespace Regards
 			wxImage bitmapCheckOff;
 			wxImage bitmapDelete;
 			bool useBackgroundColor;
-			wxString photoVector;
-			wxString checkOnVector;
-			wxString checkOffVector;
 			wxColour backgroundColor;
-			wxString deleteVector;
 
 			wxString tempImageVector;
 			bool pictureLoad;

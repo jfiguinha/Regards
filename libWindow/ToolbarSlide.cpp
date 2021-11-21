@@ -3,7 +3,6 @@
 #include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include <wxSVG/SVGDocument.h>
 #include "SliderInterface.h"
 using namespace Regards::Window;
 

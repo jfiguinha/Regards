@@ -1,6 +1,5 @@
 #include "header.h"
 #include "TreeElementCheckBox.h"
-#include <wxSVG/SVGDocument.h>
 #include <LibResource.h>
 using namespace Regards::Window;
 

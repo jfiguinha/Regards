@@ -3,7 +3,6 @@
 #include "InfosSeparationBarFace.h"
 #include <WindowMain.h>
 #include <ChangeLabel.h>
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <LibResource.h>
 #include <SqlFaceLabel.h>

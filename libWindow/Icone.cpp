@@ -7,7 +7,6 @@
 #include "LoadingResource.h"
 #include "WindowMain.h"
 #include <config_id.h>
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #ifdef WIN32
 #endif
@@ -88,12 +87,7 @@ CIcone& CIcone::operator=(const CIcone& other)
 	bitmapCheckOn = other.bitmapCheckOn;
 	bitmapCheckOff = other.bitmapCheckOff;
 	useBackgroundColor = other.useBackgroundColor;
-	photoVector = other.photoVector;
-	checkOnVector = other.checkOnVector;
-	checkOffVector = other.checkOffVector;
 	backgroundColor = other.backgroundColor;
-
-	tempImageVector = other.tempImageVector;
 	pictureLoad = other.pictureLoad;
 	showSelected = other.showSelected;
 	isChecked = other.isChecked;
@@ -214,10 +208,10 @@ CIcone::CIcone(): numElement(0), oldx(0), oldy(0)
 	if (config != nullptr)
 		numLib = config->GetEffectLibrary();
 
-	photoVector = CLibResource::GetVector(L"IDB_PHOTOTEMP");
-	deleteVector = CLibResource::GetVector(L"IDB_DELETE");
-	checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
-	checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
+	//photoVector = CLibResource::GetVector(L"IDB_PHOTOTEMP");
+	//deleteVector = CLibResource::GetVector(L"IDB_DELETE");
+	//checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
+	//checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
 	useBackgroundColor = false;
 	thumbnailIconeCache = config->GetThumbnailIconeCache();
 }
@@ -243,23 +237,6 @@ void CIcone::StopLoadingPicture()
 void CIcone::SetPictureLoading(const wxImage& imageLoading)
 {
 	pictureLoading = imageLoading;
-}
-
-wxImage CIcone::CreateFromSVG(const int& buttonWidth, const int& buttonHeight, const wxString& vector)
-{
-	wxImage img;
-	if (vector.size() > 0)
-	{
-		wxStringInputStream memBuffer(vector);
-		wxSVGDocument svgDoc;
-		svgDoc.Load(memBuffer);
-		img = svgDoc.Render(buttonWidth, buttonHeight, nullptr, true, true);
-	}
-	else
-	{
-		img.Create(buttonWidth, buttonHeight);
-	}
-	return img;
 }
 
 wxImage CIcone::GenerateVideoIcone()
@@ -698,7 +675,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 				photoDefault = false;
 				wxColor colorToReplace = wxColor(0, 0, 0);
 				wxColor colorActifReplacement = wxColor(255, 255, 255);
-				image = CreateFromSVG(themeIcone.GetWidth(), themeIcone.GetHeight(), photoVector);
+				image = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", themeIcone.GetWidth(), themeIcone.GetHeight());
 				image.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 				              colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 

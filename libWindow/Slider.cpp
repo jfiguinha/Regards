@@ -4,7 +4,6 @@
 #include <LibResource.h>
 #include <wx/dcbuffer.h>
 #include <ClosedHandCursor.h>
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 
 #include "ScrollbarHorizontalWnd.h"

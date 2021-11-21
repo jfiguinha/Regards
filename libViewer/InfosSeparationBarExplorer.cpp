@@ -1,7 +1,6 @@
 #include <header.h>
 #include "InfosSeparationBarExplorer.h"
 #include <WindowMain.h>
-#include <wxSVG/SVGDocument.h>
 #include <LibResource.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;

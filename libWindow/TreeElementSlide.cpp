@@ -1,6 +1,5 @@
 #include "header.h"
 #include "TreeElementSlide.h"
-#include <wxSVG/SVGDocument.h>
 #include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"

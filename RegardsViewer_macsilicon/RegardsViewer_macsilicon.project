@@ -60,7 +60,6 @@
     <Project Name="libControl"/>
     <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
     <Project Name="libPsd"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
@@ -106,7 +105,6 @@
     <Project Name="libDialog"/>
     <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
     <Project Name="libPsd"/>
@@ -174,7 +172,6 @@
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="$(shell ../libextern/wxconfig_lib.sh);-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT;-framework ImageCaptureCore;-framework CoreML;-framework Vision;">
-        <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
@@ -201,7 +198,6 @@
         <Library Value="Theme"/>
         <Library Value="Parameter"/>
         <Library Value="CxImage"/>
-        <Library Value="wxSVG"/>
         <Library Value="wx_osx_cocoau_gl-3.1"/>
         <Library Value="GLEW"/>
         <Library Value="exiv2"/>
@@ -388,7 +384,6 @@
         <LibraryPath Value="../libOpenCL/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
         <LibraryPath Value="../libWindowMain/Release"/>
-        <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../libAppleFunction/Release"/>

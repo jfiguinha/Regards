@@ -4,7 +4,6 @@
 #include <LibResource.h>
 #include <wx/dcbuffer.h>
 #include <wx/sstream.h>
-#include <wxSVG/SVGDocument.h>
 #include <window_id.h>
 
 using namespace Regards::Window;

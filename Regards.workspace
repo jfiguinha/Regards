@@ -39,7 +39,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="wxWidgetComponent">
     <Project Name="wxCheckTree" Path="wxCheckTree/wxCheckTree.project" Active="No"/>
-    <Project Name="wxSVG" Path="Otherlib/wxSVG/wxSVG.project" Active="No"/>
     <Project Name="wxIA" Path="Otherlib/wxIA/wxIA.project" Active="No"/>
     <Project Name="wxPDFDoc" Path="Otherlib/wxPDFDoc/wxPDFDoc.project" Active="No"/>
   </VirtualDirectory>
@@ -102,7 +101,6 @@
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="libOpenGL" ConfigName="Debug"/>
       <Project Name="wxCheckTree" ConfigName="Debug"/>
-      <Project Name="wxSVG" ConfigName="Debug"/>
       <Project Name="libOpenGL" ConfigName="Debug"/>
       <Project Name="test" ConfigName="Debug"/>
       <Project Name="FaceRecognition" ConfigName="Debug"/>
@@ -179,7 +177,6 @@
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="libOpenGL" ConfigName="Release"/>
       <Project Name="wxCheckTree" ConfigName="Release"/>
-      <Project Name="wxSVG" ConfigName="Release"/>
       <Project Name="libOpenGL" ConfigName="Release"/>
       <Project Name="test" ConfigName="Release"/>
       <Project Name="FaceRecognition" ConfigName="Release"/>

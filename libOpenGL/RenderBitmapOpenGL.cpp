@@ -15,7 +15,6 @@
 #endif
 #include <LibResource.h>
 #include <libPicture.h>
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <RegardsBitmap.h>
 using namespace Regards::OpenGL;

@@ -1,6 +1,5 @@
 #include "header.h"
 #include "TreeElementListBox.h"
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <LibResource.h>
 using namespace Regards::Window;

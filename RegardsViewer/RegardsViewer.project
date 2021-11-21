@@ -702,7 +702,6 @@
     <Project Name="libControl"/>
     <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
     <Project Name="libavcodec"/>
@@ -740,7 +739,6 @@
     <Project Name="libEmail"/>
     <Project Name="libDialog"/>
     <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
     <Project Name="libbpg"/>

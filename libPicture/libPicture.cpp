@@ -18,7 +18,6 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <DeepLearning.h>
-
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -82,8 +81,6 @@ using namespace Regards::exiv2;
 #include <JxrOption.h>
 #include <PDFOption.h>
 #include <CompressionOption.h>
-
-#include <wxSVG/SVGDocument.h>
 
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1
@@ -2442,12 +2439,9 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 
 		case SVG:
 		{
-			auto image = new wxImage();
-			auto svgDoc = new wxSVGDocument;
-			svgDoc->Load(fileName);
-			*image = svgDoc->Render(svgWidth, svgHeight);
-			bitmap->SetPicture(image);
-			delete svgDoc;
+            wxImage img = CLibResource::CreatePictureFromSVGFilename(fileName, svgWidth, svgHeight);
+			 auto image = new wxImage(img);
+            bitmap->SetPicture(image);
 		}
 		break;
 #ifdef LIBBPG

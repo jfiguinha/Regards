@@ -5,7 +5,6 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 using namespace Regards::Video;
 

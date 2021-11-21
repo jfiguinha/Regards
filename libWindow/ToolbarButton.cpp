@@ -3,7 +3,6 @@
 #include <theme.h>
 #include <LibResource.h>
 #include "WindowMain.h"
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 

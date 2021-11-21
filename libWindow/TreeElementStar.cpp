@@ -1,7 +1,6 @@
 #include "header.h"
 #include "TreeElementStar.h"
 #include "LibResource.h"
-#include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <SqlCriteria.h>
 #include <SqlPhotoCriteria.h>
@@ -20,30 +19,10 @@ CTreeElementStar::~CTreeElementStar()
 {
 }
 
-
-wxImage CTreeElementStar::CreateFromSVG(const int& buttonWidth, const int& buttonHeight, const wxString& vector)
-{
-	wxImage img;
-	if (vector.size() > 0)
-	{
-		wxStringInputStream memBuffer(vector);
-		wxSVGDocument svgDoc;
-		svgDoc.Load(memBuffer);
-		img = svgDoc.Render(buttonWidth, buttonHeight, nullptr, true, true);
-	}
-	else
-	{
-		img.Create(buttonWidth, buttonHeight);
-	}
-	return img;
-}
-
 void CTreeElementStar::CreateStar()
 {
-	wxString star = CLibResource::GetVector(L"IDB_STAREMPTY");
-	starEmpty = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
-	star = CLibResource::GetVector(L"IDB_STARYELLOW");
-	starYellow = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
+	starEmpty = CLibResource::CreatePictureFromSVG(L"IDB_STAREMPTY", themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2);
+	starYellow = CLibResource::CreatePictureFromSVG(L"IDB_STARYELLOW", themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2);
 }
 
 void CTreeElementStar::SetNumPhoto(const int& numPhotoId)

@@ -5,7 +5,6 @@
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include <wxSVG/SVGDocument.h>
 using namespace Regards::Control;
 
 wxDEFINE_EVENT(TIMER_MOUSE, wxTimerEvent);
