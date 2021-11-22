@@ -280,27 +280,24 @@ CImageLoadingFormat * CSqlFacePhoto::GetFacePicture(const int &numFace)
 bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 {
 	type = 2;
-	for(int i = 0;i < listNumPhoto.size();i++)
-	{
-		int numPhoto = listNumPhoto[i];
-		CSqlPhotos sqlPhoto;
-		wxString path = sqlPhoto.GetPhotoPath(numPhoto);
+	
+	tbb::parallel_for(0, (int)listNumPhoto.size(), 1, [=](int i)
+		{
+			int numPhoto = listNumPhoto[i];
+			CSqlPhotos sqlPhoto;
+			wxString path = sqlPhoto.GetPhotoPath(numPhoto);
 
-		CSqlFindFacePhoto findFacePhoto;
-		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);		
-		
-		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
-			[&](tbb::blocked_range<int> r)
+			CSqlFindFacePhoto findFacePhoto;
+			std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(path);
+
+			for (int i1 = 0; i1 < listFace.size(); ++i1)
 			{
-				for (int i1 = r.begin(); i1 < r.end(); ++i1)
-				{
-					CFaceName facename = listFace[i1];
-					DeleteNumFace(facename.numFace);
-				}
-			});
-		
-		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
-	}
+				CFaceName facename = listFace[i1];
+				DeleteNumFace(facename.numFace);
+			}
+
+			ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath in (select fullpath from Photos where NumPhoto = " + to_string(numPhoto) + ")");
+		});
     
 	RebuildLink();
 	return 0;
@@ -309,7 +306,6 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
 void CSqlFacePhoto::RebuildLink()
 {
 	//Recomposition des liens entre photos
-	CSqlFaceRecognition faceRecognition;
 	CSqlFaceLabel faceLabel;
 	vector<int> listFace = faceLabel.GetFaceLabelAlone();
 
@@ -328,21 +324,19 @@ void CSqlFacePhoto::RebuildLink()
 	}
 	*/
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)listFace.size(), 1, [=](int i)
+	{
+		int oldNumFace = listFace[i];
+		numFace = -1;
+		ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ORDER BY numFace ASC LIMIT 1");
+		if (numFace != -1)
 		{
-			for (int i = r.begin(); i < r.end(); ++i)
-			{
-				int oldNumFace = listFace[i];
-				numFace = -1;
-				ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ORDER BY numFace ASC LIMIT 1");
-				if (numFace != -1)
-				{
-					faceLabel.UpdateNumFaceLabel(oldNumFace, numFace);
-					faceRecognition.UpdateFaceRecognition(oldNumFace, numFace);
-				}
-			}
-		});
+			CSqlFaceRecognition faceRecognition;
+			CSqlFaceLabel faceLabel;
+			faceLabel.UpdateNumFaceLabel(oldNumFace, numFace);
+			faceRecognition.UpdateFaceRecognition(oldNumFace, numFace);
+		}
+	});
 
 
     DeleteFaceNameAlone();

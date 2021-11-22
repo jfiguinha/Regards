@@ -103,7 +103,6 @@ namespace Regards
 			CScrollbarWnd* scrollbar;
 			CSliderVideo* videoSlider;
 			CVideoControlSoft* videoWindow;
-			//CVideoEffectParameter * videoEffectParameter;
 			CWindowMain* windowMain;
 			bool showToolbarSup = false;
 			bool play;

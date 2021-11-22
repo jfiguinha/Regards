@@ -33,21 +33,26 @@ void CSqlPhotosWithoutThumbnail::UpdateVideoList()
     PhotosVector photosVector;
     CSqlFindPhotos findPhotos;
     findPhotos.GetAllVideo(&photosVector);
-    CLibPicture libPicture;
-    CSqlThumbnailVideo sqlThumbnailVideo;
-    for(CPhotos photo : photosVector)
-    {
-        if(libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
-        {
-            if(sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
-            {
-                wxString fullpath = photo.GetPath();
-                fullpath.Replace("'", "''");          
-				if(!IsPathFind(photo.GetPath()))
-					ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath + "', 1, 0)");
-            }
-        }
-    }  
+   
+    
+   // for(CPhotos photo : photosVector)
+
+	tbb::parallel_for(0, (int)photosVector.size(), 1, [=](int i)
+		{
+			CSqlThumbnailVideo sqlThumbnailVideo;
+			CLibPicture libPicture;
+			CPhotos photo = photosVector[i];
+			if (libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
+			{
+				if (sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
+				{
+					wxString fullpath = photo.GetPath();
+					fullpath.Replace("'", "''");
+					if (!IsPathFind(photo.GetPath()))
+						ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath + "', 1, 0)");
+				}
+			}
+		});
 }
 
 void CSqlPhotosWithoutThumbnail::UpdatePhotoList()
