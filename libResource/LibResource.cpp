@@ -48,6 +48,19 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
     int w = 0, h = 0;
     int width = buttonWidth;
     int height = buttonHeight;
+
+    if (width != height)
+    {
+        if (width > height)
+        {
+            width = height;
+        }
+        else
+        {
+            height = width;
+        }
+    }
+
     //Calcul Ratio picture
     bool isError = false;
 
@@ -84,7 +97,6 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
             width = height * ratio;
         }
     }
-
 
     wxImage img;
     NSVGimage *image = NULL;
