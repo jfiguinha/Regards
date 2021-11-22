@@ -775,6 +775,19 @@ struct mytask
 		this->frame = frame;
 	}
 
+
+	void ApplyFilter()
+	{
+		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
+		if (frame->picture != nullptr)
+		{
+			frame->picture->SetFilename(frame->filename);
+		}
+
+		delete[] frame->_memoryBuffer;
+		frame->_memoryBuffer = nullptr;
+	}
+
 	void operator()()
 	{
 		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
@@ -899,8 +912,8 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 
 
 #ifdef USE_TBB
+
 			std::vector<mytask> tasks;
-			//
 
 			for (const auto masterId : itemIds)
 			{
@@ -913,15 +926,11 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 			}
 
 
-			parallel_for(
-				tbb::blocked_range<size_t>(0, tasks.size()),
-				[&tasks](const tbb::blocked_range<size_t>& r)
+			tbb::parallel_for(0, (int)tasks.size(), 1, [=](int k)
 				{
-					for (size_t i = r.begin(); i < r.end(); ++i)
-						tasks[i]();
-				}
-			);
-
+					mytask task = tasks[k];
+					task.ApplyFilter();
+				});
 
 			if (tasks.size() > 0)
 			{
@@ -980,6 +989,7 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 			}
 
 			tasks.clear();
+
 #else
 
 

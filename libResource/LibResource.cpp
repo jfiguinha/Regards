@@ -153,12 +153,12 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
         {
             if (data != nullptr)
             {
-                int pos_data;
-                for (auto y = 0; y < height; y++)
-                {
-                    pos_data = y * widthSrcSize;
+
+                tbb::parallel_for(0, height, 1, [=](int y) { //changed line
+                    int pos_data = y * widthSrcSize;
                     int posDataOut = y * (width * 3);
                     int posAlpha = y * width;
+
                     for (auto x = 0; x < width; x++)
                     {
                         dataOut[posDataOut] = data[pos_data + 2];
@@ -168,7 +168,8 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
                         pos_data += 4;
                         posDataOut += 3;
                     }
-                }
+                    }); //added ); at the end
+
             }
             delete[] data;
         }
@@ -182,14 +183,14 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
             unsigned char* dataAlpha = final.GetAlpha();
             if (dataAlpha != nullptr)
             {
-                for (auto y = 0; y < buttonHeight; y++)
+                tbb::parallel_for(0, buttonHeight, 1, [=](int y)
                 {
                     int posAlpha = y * buttonWidth;
                     for (auto x = 0; x < buttonWidth; x++)
-                    {
                         dataAlpha[posAlpha++] = 0;
-                    }
-                }
+                });
+
+
             }
             final.Paste(anImage, posX, posY);
             return final;

@@ -166,19 +166,18 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 		sort(files.begin(), files.end());
 
 	listFace.resize(files.size());
+	for (int i = 0; i < files.size(); i++)
+		listFace[i] = new CImageLoadingFormat();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
-		[&](tbb::blocked_range<int> r)
+
+	tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
 		{
-			for (int i = r.begin(); i < r.end(); ++i)
-			{
-				wxString file = files[i];
-				CLibPicture libPicture;
-				CImageLoadingFormat* picture = libPicture.LoadPicture(file);
-				picture->Flip();
-				listFace[i] = picture;
-			}
-		});
+			wxString file = files[i];
+			CLibPicture libPicture;
+			CImageLoadingFormat* picture = listFace.at(i);
+			libPicture.LoadPicture(file,false,0, picture);
+			picture->Flip();
+	});
 
 	/*
 	for (wxString file : files)
@@ -209,8 +208,6 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 	documentPath.append("/Face");
 #endif
 
-	
-
 	wxString thumbnail = CFileUtility::GetFaceThumbnailPath(numFace);
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 	if (files.size() > 0)
@@ -218,17 +215,15 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 
 	listFace.resize(files.size());
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
-		[&](tbb::blocked_range<int> r)
+
+	tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
 		{
-			for (int i = r.begin(); i < r.end(); ++i)
-			{
-				wxString file = files[i];
-				CLibPicture libPicture;
-				CImageLoadingFormat* picture = libPicture.LoadPicture(file);
-				picture->Flip();
-				listFace[i] = picture;
-			}
+			wxString file = files[i];
+			CLibPicture libPicture;
+			CImageLoadingFormat* picture = libPicture.LoadPicture(file);
+			picture->Flip();
+			CImageLoadingFormat* local = listFace.at(i);
+			local = picture;
 		});
 
 
@@ -364,15 +359,12 @@ bool CSqlFacePhoto::DeleteListOfPhoto(const vector<wxString> & listPhoto)
 
 		CSqlFindFacePhoto findFacePhoto;
 		std::vector<CFaceName> listFace = findFacePhoto.GetListFaceNum(listPhoto[i]);
-		tbb::parallel_for(tbb::blocked_range<int>(0, listFace.size()),
-			[&](tbb::blocked_range<int> r)
-			{
-				for (int i1 = r.begin(); i1 < r.end(); ++i1)
-				{
-					CFaceName facename = listFace[i1];
-					DeleteNumFace(facename.numFace);
-				}
-			});
+
+
+		tbb::parallel_for(0, (int)listFace.size(), 1, [=](int k) { //changed line
+				CFaceName facename = listFace[k];
+				DeleteNumFace(facename.numFace);
+		});
 
 		ExecuteRequestWithNoResult("DELETE FROM FACE_PROCESSING WHERE fullpath = '" + fullpath + "'");
 	}
@@ -497,16 +489,11 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
-		[&](tbb::blocked_range<int> r)
-		{
-			for (int i = r.begin(); i < r.end(); ++i)
+	tbb::parallel_for(0, (int)listFace.size(), 1, [=](int i) {
+			wxString filename = files[i];
+			if (wxFileExists(filename))
 			{
-				wxString filename = files[i];
-				if (wxFileExists(filename))
-				{
-					wxRemoveFile(filename);
-				}
+				wxRemoveFile(filename);
 			}
 		});
 

@@ -4,6 +4,7 @@
 #include <wx/dir.h>
 #include "SqlResult.h"
 #include <algorithm>
+#include <mutex>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
@@ -152,37 +153,38 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog * dial
 
 	if (files.size() > 0)
 	{
-		CLibPicture libPicture;
 		BeginTransaction();
-
-		tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
-			[&](tbb::blocked_range<int> r)
+		std::mutex * s_mutex = new std::mutex();
+		
+		tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
+		{
+			wxString file = files[i];
+			CLibPicture libPicture;
+			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{
-				for (int i = r.begin(); i < r.end(); ++i)
-				{
-					wxString file = files[i];
+				const int extensionId = libPicture.TestImageFormat(file);
+				file.Replace("'", "''");
+				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+			}
 
-					if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
-					{
-						const int extensionId = libPicture.TestImageFormat(file);
-						file.Replace("'", "''");
-						ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
-					}
-
-					if(dialog != nullptr)
-					{
-						wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
-						dialog->Update(i, message);
-					}
-
-				}
-			});
+			if(dialog != nullptr)
+			{
+				s_mutex->lock();
+				wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+				dialog->Update(i, message);
+				s_mutex->unlock();
+			}
+		});
 		
 		CommitTransection();
 
+		delete s_mutex;
+
+		CLibPicture libPicture;
 		bool first = true;
 		for (size_t i = 0; i < files.size(); i++)
 		{
+			
 			wxString file = files[i];
 			if (libPicture.TestImageFormat(file) != 0)
 			{
@@ -191,12 +193,8 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog * dial
 					firstFile = file;
 					break;
 				}
-					
 			}
 		}
-		
-		
-
 	}
 	return files.size();
 }

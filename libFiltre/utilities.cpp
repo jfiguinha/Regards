@@ -306,8 +306,7 @@ int color_space_transform(
         return EXIT_SUCCESS;
 
     //! Declarations
-    vector<float> tmp;
-    tmp.resize(chnls * width * height);
+    float * tmp = new float[chnls * width * height];
     const unsigned red   = 0;
     const unsigned green = width * height;
     const unsigned blue  = width * height * 2;
@@ -317,69 +316,57 @@ int color_space_transform(
     {
         if (rgb2yuv)
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
-                {
-                    for (int k = 0; k < width * height; k++)
-                    {
-                        //! Y
-                        tmp[k + red] = 0.299f * img[k + red] + 0.587f * img[k + green] + 0.114f * img[k + blue];
-                        //! U
-                        tmp[k + green] = -0.14713f * img[k + red] - 0.28886f * img[k + green] + 0.436f * img[k + blue];
-                        //! V
-                        tmp[k + blue] = 0.615f * img[k + red] - 0.51498f * img[k + green] - 0.10001f * img[k + blue];
-                    }
-                });
+            tbb::parallel_for(
+                    0, (int)(width * height), 1, [=](int k)
+            {
+                    //! Y
+                    tmp[k + red] = 0.299f * img[k + red] + 0.587f * img[k + green] + 0.114f * img[k + blue];
+                    //! U
+                    tmp[k + green] = -0.14713f * img[k + red] - 0.28886f * img[k + green] + 0.436f * img[k + blue];
+                    //! V
+                    tmp[k + blue] = 0.615f * img[k + red] - 0.51498f * img[k + green] - 0.10001f * img[k + blue];
+            });
         }
         else
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
+            tbb::parallel_for(
+                0, (int)(width * height), 1, [=](int k)
                 {
-                    for (int k = 0; k < width * height; k++)
-                    {
                         //! Red   channel
                         tmp[k + red] = img[k + red] + 1.13983f * img[k + blue];
                         //! Green channel
                         tmp[k + green] = img[k + red] - 0.39465f * img[k + green] - 0.5806f * img[k + blue];
                         //! Blue  channel
                         tmp[k + blue] = img[k + red] + 2.03211f * img[k + green];
-                    }
-                });
+               });
         }
     }
     else if (color_space == YCBCR)
     {
         if (rgb2yuv)
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
+            tbb::parallel_for(
+                0, (int)(width * height), 1, [=](int k)
                 {
-                    for (int k = 0; k < width * height; k++)
-                    {
                         //! Y
                         tmp[k + red] = 0.299f * img[k + red] + 0.587f * img[k + green] + 0.114f * img[k + blue];
                         //! U
                         tmp[k + green] = -0.169f * img[k + red] - 0.331f * img[k + green] + 0.500f * img[k + blue];
                         //! V
                         tmp[k + blue] = 0.500f * img[k + red] - 0.419f * img[k + green] - 0.081f * img[k + blue];
-                    }
                 });
         }
         else
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
+            tbb::parallel_for(
+                0, (int)(width * height), 1, [=](int k)
                 {
-                    for (int k = 0; k < width * height; k++)
-                    {
                         //! Red   channel
                         tmp[k + red] = 1.000f * img[k + red] + 0.000f * img[k + green] + 1.402f * img[k + blue];
                         //! Green channel
                         tmp[k + green] = 1.000f * img[k + red] - 0.344f * img[k + green] - 0.714f * img[k + blue];
                         //! Blue  channel
                         tmp[k + blue] = 1.000f * img[k + red] + 1.772f * img[k + green] + 0.000f * img[k + blue];
-                    }
                 });
         }
     }
@@ -387,34 +374,28 @@ int color_space_transform(
     {
         if (rgb2yuv)
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
+            tbb::parallel_for(
+                0, (int)(width * height), 1, [=](int k)
                 {
-                    for (int k = 0; k < width * height; k++)
-                    {
                         //! Y
                         tmp[k + red] = 0.333f * img[k + red] + 0.333f * img[k + green] + 0.333f * img[k + blue];
                         //! U
                         tmp[k + green] = 0.500f * img[k + red] + 0.000f * img[k + green] - 0.500f * img[k + blue];
                         //! V
                         tmp[k + blue] = 0.250f * img[k + red] - 0.500f * img[k + green] + 0.250f * img[k + blue];
-                    }
                 });
         }
         else
         {
-            tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-                [&](tbb::blocked_range<int> r)
+            tbb::parallel_for(
+                0, (int)(width * height), 1, [=](int k)
                 {
-                    for (int k = 0; k < width * height; k++)
-                    {
                         //! Red   channel
                         tmp[k + red] = 1.0f * img[k + red] + 1.0f * img[k + green] + 0.666f * img[k + blue];
                         //! Green cha
                         tmp[k + green] = 1.0f * img[k + red] + 0.0f * img[k + green] - 1.333f * img[k + blue];
                         //! Blue  cha
                         tmp[k + blue] = 1.0f * img[k + red] - 1.0f * img[k + green] + 0.666f * img[k + blue];
-                    }
                 });
         }
     }
@@ -424,13 +405,11 @@ int color_space_transform(
         return EXIT_FAILURE;
     }
 
-    tbb::parallel_for(tbb::blocked_range<int>(0, width * height),
-        [&](tbb::blocked_range<int> r)
-        {
-            for (int k = 0; k < width * height * chnls; k++)
-                img[k] = tmp[k];
-        });
+    float* ptImg = &img.at(0);
 
+    memcpy(ptImg, tmp, width * height * chnls);
+
+    delete[] tmp;
     return EXIT_SUCCESS;
 }
 

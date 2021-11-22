@@ -2296,6 +2296,16 @@ CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 //------------------------------------------------------------------------------
 CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture)
 {
+	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
+	return bitmap;
+}
+
+//------------------------------------------------------------------------------
+//Chargement d'une image par son nom
+//------------------------------------------------------------------------------
+void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture, CImageLoadingFormat * bitmap)
+{
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD tickCount = GetTickCount();
 	OutputDebugString(L"LoadPicture\n");
@@ -2303,7 +2313,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	printf("CLibPicture LoadPicture \n");
-	auto bitmap = new CImageLoadingFormat();
+	
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
 	bool applyExif = true;
@@ -2865,7 +2875,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	}
 	catch (...)
 	{
-		return nullptr;
 	}
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -2886,8 +2895,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		bitmap = LoadPicture(CLibResource::GetPhotoCancel());
 		bitmap->SetFilename(fileName);
 	}
-
-	return bitmap;
 }
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& flip, const bool& loadAlpha)

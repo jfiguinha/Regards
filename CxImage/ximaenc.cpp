@@ -556,34 +556,30 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	weightX * wY = new weightX[height];
 
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, height),
-		[&](tbb::blocked_range<int> r)
-		{
-			for (auto y = 0; y < height; y++)
-			{
-				float posY = (float)y * ratioY;
-				int valueB = (int)posY;
-				float realB = posY - valueB;
-				wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
-				wY[y].tabF[1] = ::Filter(-(0.0f - realB));
-				wY[y].tabF[2] = ::Filter(-(1.0f - realB));
-				wY[y].tabF[3] = ::Filter(-(2.0f - realB));
-			}
+	//tbb::parallel_for(tbb::blocked_range<int>(0, height),
+	//	[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, height, 1, [=](int y) {
+		float posY = (float)y * ratioY;
+		int valueB = (int)posY;
+		float realB = posY - valueB;
+		wY[y].tabF[0] = ::Filter(-(-1.0f - realB));
+		wY[y].tabF[1] = ::Filter(-(0.0f - realB));
+		wY[y].tabF[2] = ::Filter(-(1.0f - realB));
+		wY[y].tabF[3] = ::Filter(-(2.0f - realB));
+
 		});
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, width),
-		[&](tbb::blocked_range<int> r)
-		{
-			for (auto x = 0; x < width; x++)
-			{
-				float posX = (float)x * ratioX;
-				int valueA = (int)posX;
-				float realA = posX - valueA;
-				wX[x].tabF[0] = ::Filter((-1.0f - realA));
-				wX[x].tabF[1] = ::Filter((0.0f - realA));
-				wX[x].tabF[2] = ::Filter((1.0f - realA));
-				wX[x].tabF[3] = ::Filter((2.0f - realA));
-			}
+	//tbb::parallel_for(tbb::blocked_range<int>(0, width),
+	//	[&](tbb::blocked_range<int> r)
+
+	tbb::parallel_for(0, width, 1, [=](int x) {
+			float posX = (float)x * ratioX;
+			int valueA = (int)posX;
+			float realA = posX - valueA;
+			wX[x].tabF[0] = ::Filter((-1.0f - realA));
+			wX[x].tabF[1] = ::Filter((0.0f - realA));
+			wX[x].tabF[2] = ::Filter((1.0f - realA));
+			wX[x].tabF[3] = ::Filter((2.0f - realA));
 		});
 
 
@@ -593,7 +589,7 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 		int tailleYOut = y * width;
 
 
-	for (auto x = 0; x < width; x++)
+		for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
 			int position = (x + tailleYOut) << 2;
@@ -1089,19 +1085,17 @@ bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
 	if (EncodeSafeCheck(hFile)) return false;
 
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
-		[&](tbb::blocked_range<int> r)
+//	tbb::parallel_for(tbb::blocked_range<int>(0, head.biHeight),
+//		[&](tbb::blocked_range<int> r)
+		tbb::parallel_for(0, (int)head.biHeight, 1, [=](int y1)
 		{
-			for (int32_t y1 = 0; y1 < head.biHeight; y1++)
-			{
-				int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
-				for (int32_t x = 0; x < head.biWidth; x++) {
-					RGBQUAD color = BlindGetPixelColor(x, y);
-					hFile->PutC(color.rgbRed);
-					hFile->PutC(color.rgbGreen);
-					hFile->PutC(color.rgbBlue);
-					hFile->PutC(color.rgbReserved);
-				}
+			int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
+			for (int32_t x = 0; x < head.biWidth; x++) {
+				RGBQUAD color = BlindGetPixelColor(x, y);
+				hFile->PutC(color.rgbRed);
+				hFile->PutC(color.rgbGreen);
+				hFile->PutC(color.rgbBlue);
+				hFile->PutC(color.rgbReserved);
 			}
 		});
 	return true;

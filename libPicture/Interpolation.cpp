@@ -310,11 +310,12 @@ wxImage CInterpolation::ExecuteNV12(uint8_t* data, const int& widthIn, const int
 
 	uint8_t* dataOut = imageout.GetData();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		[&](tbb::blocked_range<int> r)
+//	tbb::parallel_for(tbb::blocked_range<int>(0, size),
+//		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)size, 1, [=](int i)
 		{
-			for (auto i = 0; i < size; ++i)
-			{
+	//		for (auto i = 0; i < size; ++i)
+	//		{
 				int y = i / width;
 				int x = i - (y * width);
 
@@ -358,7 +359,7 @@ wxImage CInterpolation::ExecuteNV12(uint8_t* data, const int& widthIn, const int
 				}
 				CRgbaquad color = GetColorValueFromNV12(data, widthIn, heightIn, posX, posY, pitch, surfaceHeight);
 				memcpy(dataOut + (i * 3), &color, 3);
-			}
+	//		}
 		});
 	return imageout;
 }
@@ -387,11 +388,8 @@ const wxImage CInterpolation::Execute(uint8_t* data, const int& widthIn, const i
 
 	uint8_t* dataOut = imageout.GetData();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)size, 1, [=](int i)
 		{
-			for (auto i = 0; i < size; ++i)
-			{
 				int y = i / width;
 				int x = i - (y * width);
 
@@ -435,7 +433,6 @@ const wxImage CInterpolation::Execute(uint8_t* data, const int& widthIn, const i
 				}
 				CRgbaquad color = GetColorValue(data, widthIn, heightIn, posX, posY);
 				memcpy(dataOut + (i * 3), &color, 3);
-			}
 		});
 	return imageout;
 }
@@ -463,11 +460,8 @@ wxImage CInterpolation::ExecuteYUV(CBitmapYUV* bmpYUV, const int& widthOut, cons
 
 	uint8_t* dataOut = imageout.GetData();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)size, 1, [=](int i)
 		{
-			for (auto i = 0; i < size; ++i)
-			{
 				int y = i / width;
 				int x = i - (y * width);
 
@@ -511,7 +505,6 @@ wxImage CInterpolation::ExecuteYUV(CBitmapYUV* bmpYUV, const int& widthOut, cons
 				}
 				CRgbaquad color = GetColorFromYUV(bmpYUV, posX, posY);
 				memcpy(dataOut + (i * 3), &color, 3);
-			}
 		});
 	return imageout;
 }
@@ -540,11 +533,8 @@ wxImage* CInterpolation::ExecuteNV12(uint8_t* dataY, uint8_t* dataUV, const int&
 
 	uint8_t* dataOut = imageout->GetData();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)size, 1, [=](int i)
 		{
-			for (auto i = 0; i < size; ++i)
-			{
 				int y = i / width;
 				int x = i - (y * width);
 
@@ -588,7 +578,6 @@ wxImage* CInterpolation::ExecuteNV12(uint8_t* dataY, uint8_t* dataUV, const int&
 				}
 				CRgbaquad color = GetColorFromNV12(dataY, dataUV, widthIn, heightIn, posX, posY);
 				memcpy(dataOut + (i * 3), &color, 3);
-			}
 		});
 	return imageout;
 }
@@ -613,11 +602,8 @@ wxImage CInterpolation::Execute(CRegardsBitmap* In, const int& widthOut, const i
 
 	uint8_t* dataOut = imageout.GetData();
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)size, 1, [=](int i)
 		{
-			for (auto i = 0; i < size; ++i)
-			{
 				int y = i / widthOut;
 				int x = i - (y * widthOut);
 
@@ -662,7 +648,6 @@ wxImage CInterpolation::Execute(CRegardsBitmap* In, const int& widthOut, const i
 				dataOut[i * 3] = color.GetRed(); // R
 				dataOut[i * 3 + 1] = color.GetGreen(); // G
 				dataOut[i * 3 + 2] = color.GetBlue(); // B
-			}
 		});
 	return imageout;
 }
@@ -690,14 +675,12 @@ void CInterpolation::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, const wx
 			}
 		}
 
-		parallel_for(
-			tbb::blocked_range<size_t>(0, tasks.size()),
-			[&tasks](const tbb::blocked_range<size_t>& r)
+		tbb::parallel_for(0, (int)tasks.size(), 1, [=](int i)
 			{
-				for (size_t i = r.begin(); i < r.end(); ++i)
-					tasks[i]();
-			}
-		);
+				myFiltreInterpolationTask task = tasks[i];
+				task();
+			});
+
 #else
 		
 
@@ -733,16 +716,16 @@ void CInterpolation::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 		float ratioY = static_cast<float>(heightIn) / static_cast<float>(height);
 
 
-		for (auto y = 0; y < height; y++)
-		{
 
-			for (auto x = 0; x < width; x++)
+		tbb::parallel_for(0, height, 1, [=](int y)
 			{
-				float posY = static_cast<float>(y) * ratioY;
-				float posX = static_cast<float>(x) * ratioX;
-				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
-			}
-		}
+				for (auto x = 0; x < width; x++)
+				{
+					float posY = static_cast<float>(y) * ratioY;
+					float posX = static_cast<float>(x) * ratioX;
+					Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+				}
+			});
 	}
 }
 

@@ -162,16 +162,12 @@ bool CSqlThumbnail::EraseThumbnail()
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, files.size()),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
 		{
-			for (int i = r.begin(); i < r.end(); ++i)
-			{
 				wxString filename = files[i];
 				if (wxFileExists(filename))
 					wxRemoveFile(filename);
-			}
-		});
+	});
 
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
@@ -182,19 +178,15 @@ bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
 	listPhoto.clear();
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder));
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, listPhoto.size()),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, (int)listPhoto.size(), 1, [=](int i)
+	{
+		int idPhoto = listPhoto[i];
+		wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
+		if (wxFileExists(thumbnail))
 		{
-			for (int i = r.begin(); i < r.end(); ++i)
-			{
-				int idPhoto = listPhoto[i];
-				wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(idPhoto));
-				if (wxFileExists(thumbnail))
-				{
-					wxRemoveFile(thumbnail);
-				}
-			}
-		});
+			wxRemoveFile(thumbnail);
+		}
+	});
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
 }
 

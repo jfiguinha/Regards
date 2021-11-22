@@ -16,14 +16,12 @@ void COpenCVEffectPimpl::EqualizeHistogram(Mat& src)
 	Mat chans[4];
 	split(src, chans);
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, 4),
-		[&](tbb::blocked_range<int> r)
+//	tbb::parallel_for(tbb::blocked_range<int>(0, 4),
+//		[&](tbb::blocked_range<int> r)
+		tbb::parallel_for(0, 4, 1, [=](int i)
 		{
-			for (int i = 0; i < 4; i++)
-			{
-				chans[i] = Mat::zeros(src.rows, src.cols, CV_8UC1);
-				equalizeHist(chans[i], chans[i]);
-			}
+			//chans[i] = Mat::zeros(src.rows, src.cols, CV_8UC1);
+			equalizeHist(chans[i], chans[i]);
 		});
 
 	merge(chans, 4, src);

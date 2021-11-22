@@ -38,11 +38,8 @@ wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap* bitmap)
 
 	if (data != nullptr)
 	{
-		tbb::parallel_for(tbb::blocked_range<int>(0, size),
-			[&](tbb::blocked_range<int> r)
+		tbb::parallel_for(0, size, 1, [=](int i)
 			{
-				for (auto i = 0; i < size; ++i)
-				{
 					int y = i / width;
 					int x = i - (y * width);
 					int positionInput = ((height - y - 1) * width + x) << 2;
@@ -51,7 +48,6 @@ wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap* bitmap)
 					dataOut[position] = data[positionInput + 2];
 					dataOut[position + 1] = data[positionInput + 1];
 					dataOut[position + 2] = data[positionInput];
-				}
 			});
 	}
 

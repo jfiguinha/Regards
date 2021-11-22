@@ -28,6 +28,7 @@ namespace Regards
 			CLibPicture();
 			virtual ~CLibPicture();
 
+			void LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture, CImageLoadingFormat * bitmap);
 			bool TestIsVideoValid(const wxString & szFileName);
 			void DefineSVGSize(const int &width, const int &height);
 			bool HasThumbnail(const wxString &filename);

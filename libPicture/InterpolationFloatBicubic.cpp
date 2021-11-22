@@ -25,11 +25,8 @@ void CInterpolationFloat::CalculWeight(const int32_t& width, const int32_t& heig
 	wX = new weightX[width];
 	wY = new weightX[height];
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, height),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, height, 1, [=](int y)
 		{
-			for (auto y = 0; y < height; y++)
-			{
 				float posY = static_cast<float>(y) * ratioY + posTop;
 				int valueB = static_cast<int>(posY);
 				float realB = posY - valueB;
@@ -37,14 +34,10 @@ void CInterpolationFloat::CalculWeight(const int32_t& width, const int32_t& heig
 				wY[y].tabF[1] = Filter(-(0.0f - realB));
 				wY[y].tabF[2] = Filter(-(1.0f - realB));
 				wY[y].tabF[3] = Filter(-(2.0f - realB));
-			}
 		});
 	
-	tbb::parallel_for(tbb::blocked_range<int>(0, width),
-		[&](tbb::blocked_range<int> r)
+	tbb::parallel_for(0, width, 1, [=](int x)
 		{
-			for (auto x = 0; x < width; x++)
-			{
 				float posX = static_cast<float>(x) * ratioX + posLeft;
 				int valueA = static_cast<int>(posX);
 				float realA = posX - valueA;
@@ -52,7 +45,6 @@ void CInterpolationFloat::CalculWeight(const int32_t& width, const int32_t& heig
 				wX[x].tabF[1] = Filter((0.0f - realA));
 				wX[x].tabF[2] = Filter((1.0f - realA));
 				wX[x].tabF[3] = Filter((2.0f - realA));
-			}
 		});
 }
 
@@ -73,19 +65,19 @@ void CInterpolationFloat::Execute(CRegardsFloatBitmap* In, CRegardsFloatBitmap* 
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-		for (auto y = 0; y < height; y++)
-		{
-			for (auto x = 0; x < width; x++)
+		tbb::parallel_for(0, height, 1, [=](int y)
 			{
-				float posY = static_cast<float>(y) * ratioY;
-				float posX = static_cast<float>(x) * ratioX;
-				float color[4];
-				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
-				memcpy(&data[i], &color, sizeof(weightX));
-				//Out->SetColorValue(x, y, color);
-			}
-		}
+				for (auto x = 0; x < width; x++)
+				{
+					float posY = static_cast<float>(y) * ratioY;
+					float posX = static_cast<float>(x) * ratioX;
+					float color[4];
+					Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+					int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
+					memcpy(&data[i], &color, sizeof(weightX));
+					//Out->SetColorValue(x, y, color);
+				}
+			});
 	}
 }
 

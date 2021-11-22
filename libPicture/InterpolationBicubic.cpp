@@ -52,7 +52,6 @@ struct myFiltreInterpolationBicubicTask
 	CInterpolationBicubic* filtre;
 };
 
-
 CInterpolationBicubic::CInterpolationBicubic(const double& dWidth)
 {
 	wX = nullptr;
@@ -76,11 +75,9 @@ void CInterpolationBicubic::CalculWeight(const int32_t& width, const int32_t& he
 	wX = new weightX[width];
 	wY = new weightX[height];
 
-	tbb::parallel_for(tbb::blocked_range<int>(0, height),
-		[&](tbb::blocked_range<int> r)
+
+	tbb::parallel_for(0, height, 1, [=](int y)
 		{
-			for (auto y = 0; y < height; y++)
-			{
 				float posY = static_cast<float>(y) * ratioY + posTop;
 				int valueB = static_cast<int>(posY);
 				float realB = posY - valueB;
@@ -88,13 +85,10 @@ void CInterpolationBicubic::CalculWeight(const int32_t& width, const int32_t& he
 				wY[y].tabF[1] = Filter(-(0.0f - realB));
 				wY[y].tabF[2] = Filter(-(1.0f - realB));
 				wY[y].tabF[3] = Filter(-(2.0f - realB));
-			}
 		});
-	tbb::parallel_for(tbb::blocked_range<int>(0, width),
-		[&](tbb::blocked_range<int> r)
+
+	tbb::parallel_for(0, width, 1, [=](int x)
 		{
-			for (auto x = 0; x < width; x++)
-			{
 				float posX = static_cast<float>(x) * ratioX + posLeft;
 				int valueA = static_cast<int>(posX);
 				float realA = posX - valueA;
@@ -102,7 +96,6 @@ void CInterpolationBicubic::CalculWeight(const int32_t& width, const int32_t& he
 				wX[x].tabF[1] = Filter((0.0f - realA));
 				wX[x].tabF[2] = Filter((1.0f - realA));
 				wX[x].tabF[3] = Filter((2.0f - realA));
-			}
 		});
 }
 
@@ -126,14 +119,11 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 			ratioY = static_cast<float>(widthIn) / static_cast<float>(rectToShow.width);
 		}
 
-		//float posY = 0;
-		//float posX = 0;
-
-
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
-
 #ifdef USE_TBB
 		std::vector<myFiltreInterpolationBicubicTask> tasks;
+
+		int size = height * width;
 
 		for (auto y = 0; y < height; y++)
 		{
@@ -143,6 +133,13 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 			}
 		}
 
+		tbb::parallel_for(0, size, 1, [=](int i)
+			{
+				myFiltreInterpolationBicubicTask task = tasks[i];
+				task();
+			});
+
+		/*
 		parallel_for(
 			tbb::blocked_range<size_t>(0, tasks.size()),
 			[&tasks](const tbb::blocked_range<size_t>& r)
@@ -151,6 +148,7 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 					tasks[i]();
 			}
 		);
+		*/
 #else
 
 
@@ -194,23 +192,20 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out, c
 			ratioY = static_cast<float>(widthIn) / static_cast<float>(height);
 		}
 
-		float posY = 0;
-		float posX = 0;
-
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-
-
-		for (auto y = 0; y < height; y++)
-		{
-			for (auto x = 0; x < width; x++)
+		tbb::parallel_for(0, height, 1, [=](int y)
 			{
-				CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, flipH, flipV, angle, posX, posY);
-				CRgbaquad color;
-				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				Out->SetColorValue(x, y, color);
-			}
-		}
+				for (auto x = 0; x < width; x++)
+				{
+					float posY = 0;
+					float posX = 0;
+					CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, flipH, flipV, angle, posX, posY);
+					CRgbaquad color;
+					Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+					Out->SetColorValue(x, y, color);
+				}
+			});
 
 		delete[] wX;
 		delete[] wY;
@@ -236,21 +231,19 @@ void CInterpolationBicubic::Execute(wxImage* In, CRegardsBitmap* & Out)
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-
-		for (auto y = 0; y < height; y++)
-		{
-
-			for (auto x = 0; x < width; x++)
+		tbb::parallel_for(0, height, 1, [=](int y)
 			{
-				float posY = static_cast<float>(y) * ratioY;
-				float posX = static_cast<float>(x) * ratioX;
-				CRgbaquad color;
-				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
-				memcpy(data + i, &color, sizeof(CRgbaquad));
-				//Out->SetColorValue(x, y, color);
-			}
-		}
+				for (auto x = 0; x < width; x++)
+				{
+					float posY = static_cast<float>(y) * ratioY;
+					float posX = static_cast<float>(x) * ratioX;
+					CRgbaquad color;
+					Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+					int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
+					memcpy(data + i, &color, sizeof(CRgbaquad));
+					//Out->SetColorValue(x, y, color);
+				}
+			});
 	}
 }
 
@@ -272,21 +265,19 @@ void CInterpolationBicubic::Execute(CRegardsBitmap* In, CRegardsBitmap* & Out)
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-
-		for (auto y = 0; y < height; y++)
-		{
-
-			for (auto x = 0; x < width; x++)
+		tbb::parallel_for(0, height, 1, [=](int y)
 			{
-				float posY = static_cast<float>(y) * ratioY;
-				float posX = static_cast<float>(x) * ratioX;
-				CRgbaquad color;
-				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-				int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
-				memcpy(data + i, &color, sizeof(CRgbaquad));
-				//Out->SetColorValue(x, y, color);
-			}
-		}
+				for (auto x = 0; x < width; x++)
+				{
+					float posY = static_cast<float>(y) * ratioY;
+					float posX = static_cast<float>(x) * ratioX;
+					CRgbaquad color;
+					Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+					int i = (x << 2) + (y * (width << 2)); // int i = Out->GetPosition(x, y);
+					memcpy(data + i, &color, sizeof(CRgbaquad));
+					//Out->SetColorValue(x, y, color);
+				}
+			});
 	}
 }
 

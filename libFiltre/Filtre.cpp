@@ -19,6 +19,12 @@ struct myFiltreTask {
     {
 		filtre->PixelCompute(x, y, pBitsSrc, pBitsDest);
 	}
+
+	void ExecuteFilter()
+	{
+		filtre->PixelCompute(x, y, pBitsSrc, pBitsDest);
+	}
+
 	int x;
 	int y;
 	uint8_t * pBitsSrc;
@@ -69,24 +75,24 @@ void CFiltre::Compute()
 		//tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
 		std::vector<myFiltreTask> tasks;
-		//
 		for (auto y = 0; y < bmHeight; y++)
 		{
-			//
 			for (auto x = 0; x < bmWidth; x++)
 			{
 				tasks.push_back(myFiltreTask(x, y, pBitsSrc, pBitsDest, this));
 			}
 		}
+		
 
 		tbb::parallel_for(
-			tbb::blocked_range<size_t>(0, tasks.size()),
-			[&tasks](const tbb::blocked_range<size_t>& r) 
+			0, bmHeight * bmWidth, 1, [=](int y)
 			{
-				for (size_t i = r.begin(); i < r.end(); ++i) 
-					tasks[i]();
+				//for (size_t i = r.begin(); i < r.end(); ++i) 
+				myFiltreTask task = tasks[y];
+				task.ExecuteFilter();
 			}
 		);
+
 #else
 
 
