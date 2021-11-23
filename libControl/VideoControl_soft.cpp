@@ -190,19 +190,6 @@ bool CVideoControlSoft::IsFFmpegDecode()
 	return isffmpegDecode;
 }
 
-/*
-void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
-{
-	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
-	bitmap->SetFilename(this->filename);
-	if (isffmpegDecode)
-		bitmap->VertFlipBuf();
-	imageLoading->SetPicture(bitmap);
-	CSavePicture::SavePicture(nullptr, imageLoading, filename);
-	if (imageLoading != nullptr)
-		delete imageLoading;
-}
-*/
 //-----------------------------------------------------------------
 //Gestion du click de souris
 //-----------------------------------------------------------------
@@ -1883,58 +1870,12 @@ void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 	oldheightDenoise = height;
 }
 
-/*
-Old Code for opengl interop
-
-void CVideoControlSoft::ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height)
-{
-	cl_int err = 0;
-	cv::ocl::setUseOpenCL(true);
-	cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
-
-	cv::UMat cvImage;
-	err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureDisplay, 0, 0, 0);
-	Error::CheckError(err);
-
-	openclEffect->GetRgbaBitmap(cl_textureDisplay);
-	cv::ocl::convertFromImage(cl_textureDisplay, cvImage);
-
-	bool frameStabilized = openclEffect->ApplyOpenCVEffect(cvImage, &videoEffectParameter, openCVStabilization);
-	if (frameStabilized)
-	{
-		//Update texture
-		cl_mem matcv = (cl_mem)cvImage.handle(cv::ACCESS_READ);
-
-		size_t offset = 0;
-		size_t origin[3] = { 0, 0, 0 };
-		size_t region[3] = { width, height, 1 };
-
-		err = clEnqueueCopyBufferToImage(openclContext->GetCommandQueue(), matcv, cl_textureDisplay, offset, origin, region, 0, NULL, NULL);
-		Error::CheckError(err);
-	}
-
-	err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureDisplay, 0, 0, 0);
-	Error::CheckError(err);
-	err = clFlush(openclContext->GetCommandQueue());
-	Error::CheckError(err);
-
-}
-*/
-
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
 	printf("RenderToTexture 1\n");
 
-#ifndef WIN32
-	// double scale_factor = GetContentScaleFactor();
-#else
-	// double scale_factor = 1.0f;
-#endif
-
 	if (openclEffect == nullptr)
 		return nullptr;
-
-	//float zoomRatio = GetZoomRatio();
 
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
@@ -1951,9 +1892,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
 	{
-		//cl_int err = 0;
-		//cv::ocl::setUseOpenCL(true);
-		//cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 		if (openCVStabilization == nullptr)
 			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
@@ -1987,15 +1925,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			{
 				cl_int err;
 				cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
-				/*
-				if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
-				{
-					ApplyOpenCVEffectWithOpenCLOpenGLInterop(openclEffect, cl_image, widthOutput, heightOutput);
-					isOpenGLOpenCL = true;
-				}
-				else if (cl_image != nullptr)
-				{
-				*/
 				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
 				Error::CheckError(err);
 				openclEffect->GetRgbaBitmap(cl_image);
@@ -2004,7 +1933,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 				err = clFlush(openclContext->GetCommandQueue());
 				Error::CheckError(err);
 				isOpenGLOpenCL = true;
-				//}
 			}
 			catch (...)
 			{
@@ -2022,12 +1950,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		{
 			openclEffect->FlipVertical();
 			CRegardsBitmap* bitmap = openclEffect->GetRgbaBitmap();
-
-			/*
-			bool frameStabilized = false;
-			if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.effectEnable && openclContext->IsSharedContextCompatible())
-				frameStabilized = ApplyOpenCVEffect(bitmap);
-			*/
 			glTexture->SetData(bitmap->GetPtBitmap(), widthOutput, heightOutput);
 			delete bitmap;
 		}
@@ -2036,7 +1958,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	}
 
 	printf("RenderToTexture End\n");
-	//inverted = true;
 	return glTexture;
 }
 
@@ -2077,12 +1998,6 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
-#ifndef WIN32
-	//double scale_factor = GetContentScaleFactor();
-#else
-	//double scale_factor = 1.0f;
-#endif
-
 	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 
 	int filterInterpolation = 0;
@@ -2126,12 +2041,6 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 {
-#ifndef WIN32
-	//  double scale_factor = GetContentScaleFactor();
-#else
-	// double scale_factor = 1.0f;
-#endif
-
 	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	if (!IsOpenGLDecoding())
 	{
@@ -2218,9 +2127,6 @@ bool CVideoControlSoft::IsCPUContext()
 		if (openclContext != nullptr)
 			isCPU = (openclContext->GetContext().get_device().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
-
-	//printf("IsCPUContext CPU : %d \n", isCPU);
-
 	return (isCPU == 1 ? true : false);
 }
 
