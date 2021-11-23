@@ -1,13 +1,11 @@
 #pragma once
 #include "VideoControlInterface.h"
 #include "WindowOpenGLMain.h"
-
 #include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 #include <OpenCLEffectVideoYUV.h>
 #include <OpenCLEffectVideoNV12.h>
 #include <VideoStabilization.h>
-
 
 extern "C" {
 #include <libswscale/swscale.h>
@@ -100,14 +98,10 @@ public:
 	void SetEncoderHardware(const wxString& encoderHardware, const bool& opengl);
 
 protected:
-	//void ApplyOpenCVEffectWithOpenCLOpenGLInterop(COpenCLEffectVideo * openclEffect, cl_mem cl_textureDisplay, const int &width, const int &height);
 	bool ApplyOpenCVEffect(CRegardsBitmap* pictureFrame);
-
 	bool IsHardwareCompatible();
 	float GetHauteurMax();
 	float GetLargeurMax();
-	//void ExportPicture(CRegardsBitmap * bitmap);
-
 	void CalculTextureSize(int& widthOut, int& heightOut);
 	void UpdateScrollBar();
 	void MoveTop();

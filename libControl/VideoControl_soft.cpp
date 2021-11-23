@@ -1872,8 +1872,6 @@ void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
-	printf("RenderToTexture 1\n");
-
 	if (openclEffect == nullptr)
 		return nullptr;
 
@@ -1881,8 +1879,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	wxRect rect;
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-
-	printf("RenderToTexture 2\n");
 
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
@@ -1942,10 +1938,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	if (!isOpenGLOpenCL)
 	{
-		printf("RenderToTexture !isOpenGLOpenCL toto\n");
-
 		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();
@@ -1953,11 +1946,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			glTexture->SetData(bitmap->GetPtBitmap(), widthOutput, heightOutput);
 			delete bitmap;
 		}
-		else
-			printf("CVideoControl glTexture Error \n");
 	}
-
-	printf("RenderToTexture End\n");
 	return glTexture;
 }
 

@@ -20,8 +20,6 @@ public:
 	int GetThumbnailHeight();
 	void DeleteData();
 	void InitContext(AVFrame* src_frame, const bool& bicubic, const int& thumbnailWidth, const int& thumbnailHeight);
-	//void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
-	//CRegardsBitmap * ConvertFrameToRgba32();
 	int GetConvert(CRegardsBitmap* bitmap, AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
 	CRegardsBitmap* GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
 
