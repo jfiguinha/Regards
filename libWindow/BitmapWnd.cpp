@@ -1919,11 +1919,7 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 #else
 	double scale_factor = 1.0f;
 #endif
-	//TRACE();
-#if defined(WIN32) && defined(_DEBUG)
-	OutputDebugString(L"CBitmapWnd::OnPaint");
-	OutputDebugString(L"\n");
-#endif
+
 
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
@@ -1970,18 +1966,6 @@ void CBitmapWnd::on_paint(wxPaintEvent& event)
 	this->SwapBuffers();
 
 	printf("CBitmapWnd End OnPaint \n");
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
-	DWORD Result = LasttickCount - tickCount;
-
-	wchar_t Temp[10];
-	swprintf_s(Temp, L"%d", Result);
-	OutputDebugString(L"Render Time : ");
-	OutputDebugString(Temp);
-	OutputDebugString(L"\n");
-#endif
-
 
 	oldWidth = GetWidth();
 	oldHeight = GetHeight();
