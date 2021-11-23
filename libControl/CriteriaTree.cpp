@@ -470,6 +470,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement* element, wxWindow* window,
 		auto treeElementStar = static_cast<CTreeElementStar*>(treeElement);
 		treeElementStar->ClickElement(window, x, y);
 		window->Refresh();
+
 		wxWindow* criteriawindow = window->FindWindowById(CRITERIAFOLDERWINDOWID);
 
 		if (criteriawindow)
@@ -478,6 +479,7 @@ void CCriteriaTree::ClickOnElement(CPositionElement* element, wxWindow* window,
 			evt.SetExtraLong(2);
 			criteriawindow->GetEventHandler()->AddPendingEvent(evt);
 		}
+
 	}
 	else if (element->GetType() == ELEMENT_TEXTEVALUE)
 	{

@@ -168,16 +168,27 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
             reqSQIn.append("))");
 		}
 
-		if (listStarNotSelected.size()  != 0 || listKeywordNotSelected.size() != 0)
+		if (listStarSelected.size()  > 0 && listKeywordSelected.size() > 0)
 		{
 			reqSQIn.append(" and PH.NumPhoto in (");
 			reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE CR.NumCriteria in (");
-			if (listStarNotSelected.size() != 0)
+			reqSQIn.append(GetSearchSQL(listStarSelected));
+			reqSQIn.append(" INTERSECT ");
+			reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE CR.NumCriteria in (");
+			reqSQIn.append(GetSearchSQL(listKeywordSelected));
+			reqSQIn.append(")");
+		}
+		else if (listStarSelected.size() > 0 || listKeywordSelected.size() > 0)
+		{
+			reqSQIn.append(" and PH.NumPhoto in (");
+			reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE CR.NumCriteria in (");
+			if (listStarSelected.size() != 0)
 				reqSQIn.append(GetSearchSQL(listStarSelected));
-			if(listKeywordNotSelected.size() != 0)
+			else if (listKeywordSelected.size() != 0)
 				reqSQIn.append(GetSearchSQL(listKeywordSelected));
 			reqSQIn.append(")");
 		}
+
 		reqSQIn += ") Group By NumPhoto";
         printf("Requete Photos Search Criteria : %s \n", CConvertUtility::ConvertToUTF8(reqSQIn));
 		//ExecuteRequest(reqSQIn);

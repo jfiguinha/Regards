@@ -1112,7 +1112,7 @@ void CMainWindow::UpdateFolder()
 	wxString requestSql = "";
 	pictures.clear();
 	CSqlFindPhotos sqlFindPhotos;
-
+	localFilename = centralWnd->GetFilename();
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
 	if (categoryFolder != nullptr)

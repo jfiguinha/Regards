@@ -67,7 +67,7 @@ namespace Regards
 			CPositionElement* VerifChildParentCheckBox(const int& numParent, bool& isAllUnchecked, const bool& checkOn);
 			void VerifParentCheckBox(CTreeDataCategory* treeData, const bool& checkOn);
 			void GestionCheckBoxParent(const int& numParent, const bool& check);
-			bool GetCheckState(const wxString& exifKey, const wxString& key);
+			bool GetCheckState(const wxString& exifKey, const wxString& key, const int& numCategorie);
 			bool GetTriangleState(const wxString& exifKey, const wxString& key);
 
 			//Variable
@@ -75,6 +75,7 @@ namespace Regards
 			int idElement;
 			int yPos;
 			wxString sqlRequest;
+			wxString oldsqlRequest;
 			CTreeDataCategory* treeDataModify;
 			wxString stateValue;
 			wxString stateTriangleValue;
