@@ -60,44 +60,10 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
-	//Connect(ID_BUT_EXPORT, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnExport));
 	Connect(wxEVENT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
 	Connect(wxEVENT_CHECKTREE_READ, wxCommandEventHandler(COcrWnd::OnSelRead), NULL, this);
 	
 
-}
-
-void COcrWnd::OnExport(wxCommandEvent& event)
-{
-#ifdef WIN32
-	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
-	if (showBitmap != nullptr)
-	{
-		CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
-		bitmapBackground->VertFlipBuf();
-		for (ChOcrElement * text : listRect)
-		{
-			if (text->itemClass == "ocr_line")
-			{
-				ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
-				CRgbaquad color = CRgbaquad(255, 255, 255);
-				//uint8_t * data = bitmapBackground->GetPtBitmap();
-				int maxY = bboxText->rect.y + bboxText->rect.height;
-				int maxX = bboxText->rect.x + bboxText->rect.width;
-				for (int y = bboxText->rect.y; y < maxY; y++)
-				{
-					for (int x = bboxText->rect.x; x < maxX; x++)
-					{
-						bitmapBackground->SetColorValue(x, y, color);
-					}
-				}
-			}
-		}
-		bitmapBackground->VertFlipBuf();
-		bitmapBackground->SaveToBmp("c:\\developpement\\test.bmp");
-		delete bitmapBackground;
-	}
-#endif
 }
 
 void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
@@ -117,18 +83,6 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 			}
 		}
 	}
-
-	/*
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-	resourcePath = resourcePath + "\\espeak";
-	wxString language = choice->GetStringSelection();
-	wxString link = resourcePath + "\\espeak-ng.exe \"" + label + "\" -v" + language.substr(0,2) + " --path=" + resourcePath;
-	wxExecute(link);
-#else
-	resourcePath = resourcePath + "/espeak";
-#endif    
-	*/
 }
 
 void COcrWnd::Init()
