@@ -115,7 +115,7 @@ namespace Regards
 			wxStatusBar* statusBar;
 			CToolbar* toolbar;
 			CCentralWindow* centralWnd;
-			CompressionAudioVideoOption * compressAudioVideoOption = nullptr;
+
 			IStatusBarInterface* statusBarViewer;
 			wxRect posWindow;
 			PhotosVector pictures;

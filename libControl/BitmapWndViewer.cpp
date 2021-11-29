@@ -280,7 +280,7 @@ void CBitmapWndViewer::SetParent(wxWindow* parent)
 
 void CBitmapWndViewer::OnTimer(wxTimerEvent& event)
 {
-	switch (event.GetEventType())
+	switch (event.GetId())
 	{
 	case TIMER_TRANSITION:
 		OnTransition(event);

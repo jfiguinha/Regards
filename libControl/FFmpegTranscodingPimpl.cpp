@@ -1865,7 +1865,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
-		if (openclContext->GetDefaultType() == OPENCL_UCHAR)
+		if (openclContext2d->GetDefaultType() == OPENCL_UCHAR)
 		{
 			if (bitmapData == nullptr)
 				bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
@@ -1902,7 +1902,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		CImageLoadingFormat imageFormat(false);
 		imageFormat.SetPicture(GetBitmapRGBA(tmp_frame));
 
-		CFiltreEffet filtre(color, openclContext, &imageFormat);
+		CFiltreEffet filtre(color, openclContext2d, &imageFormat);
 
 		if (videoCompressOption != nullptr)
 		{

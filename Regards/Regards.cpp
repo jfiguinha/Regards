@@ -24,6 +24,8 @@ namespace compute = boost::compute;
 
 using namespace Regards::Picture;
 
+COpenCLContext* openclContext2d = nullptr;
+
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
 	parser.SetDesc(g_cmdLineDesc);
@@ -221,6 +223,11 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
+	if (regardsParam->GetIsOpenCLSupport())
+	{
+		openclContext2d = Regards::OpenCL::COpenCLEngine::Create2DInstance();
+	}
+	
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

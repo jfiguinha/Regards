@@ -106,7 +106,7 @@ int CVideoControlSoft::UpdateResized()
 
 void CVideoControlSoft::OnTimer(wxTimerEvent& event)
 {
-	switch (event.GetEventType())
+	switch (event.GetId())
 	{
 	case TIMER_PLAYSTOP:
 		OnPlayStop(event);

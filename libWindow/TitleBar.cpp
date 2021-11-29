@@ -18,7 +18,7 @@ CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleB
 	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESHDATA", 1);
 	CreateBitmapCrossOff();
 	CreateBitmapCrossOn();
-	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_FOLDER_REFRESH", themeTitle.GetCroixWidth() - 2,
+	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_REFRESH", themeTitle.GetCroixWidth() - 2,
 	                                                     themeTitle.GetCroixHeight() - 2);
 	CreateBitmapRefreshOff();
 	CreateBitmapRefreshOn();

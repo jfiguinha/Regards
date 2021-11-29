@@ -3,6 +3,7 @@
 #include "BitmapWnd2D.h"
 #include "BitmapWndRender.h"
 
+extern COpenCLContext* openclContext2d;
 
 //-----------------------------------------------------------------------------
 //
@@ -162,7 +163,7 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	bitmapWndRender->OnPaint2D(this, nullptr);
+	bitmapWndRender->OnPaint2D(this, openclContext2d);
 	
 
 }

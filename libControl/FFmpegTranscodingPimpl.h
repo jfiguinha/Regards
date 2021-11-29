@@ -27,6 +27,8 @@ class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
 
+extern COpenCLContext* openclContext2d;
+
 class CFFmpegTranscodingPimpl
 {
 public:
@@ -74,13 +76,8 @@ public:
 
 		if (supportOpenCL)
 		{
-			if (openclContext == nullptr)
-			{
-				openclContext = Regards::OpenCL::COpenCLEngine::Create2DInstance();
-			}
-
-			if (openclContext != nullptr)
-				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+			if (openclContext2d != nullptr)
+				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext2d);
 		}
 	}
 	;
@@ -207,7 +204,7 @@ private:
 	bool cleanPacket = false;
 	int rotation = 0;
 	CRegardsBitmap* bitmapVideo = nullptr;
-	COpenCLContext* openclContext = nullptr;
+
 	std::thread* bitmapShow = nullptr;
 	CompressVideo* m_dlgProgress;
 	mutex muEnding;
