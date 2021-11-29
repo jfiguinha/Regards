@@ -1,4 +1,4 @@
-﻿#include "header.h"
+#include "header.h"
 
 // stdafx.h : fichier Include pour les fichiers Include système standard,
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
@@ -29,7 +29,7 @@ CRenderBitmapOpenGL::CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL)
 
 GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
 {
-	renderOpenGL->FindShader(shaderName, glSlShaderType_i);
+	return renderOpenGL->FindShader(shaderName, glSlShaderType_i);
 }
 
 void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
