@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Display">
+    <File Name="ShowElement.h"/>
+    <File Name="ShowElement.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -34,8 +38,6 @@
       <File Name="ffmpeg_transcoding.h"/>
       <File Name="ffmpeg_transcoding.cpp"/>
     </VirtualDirectory>
-    <File Name="ShowVideo.cpp"/>
-    <File Name="ShowVideo.h"/>
     <VirtualDirectory Name="Core">
       <File Name="SlideToolbar.h"/>
       <File Name="SlideToolbar.cpp"/>
@@ -94,9 +96,7 @@
       <File Name="BitmapToolbar.h"/>
       <File Name="BitmapToolbar.cpp"/>
     </VirtualDirectory>
-    <File Name="ShowBitmap.cpp"/>
     <File Name="BitmapWndViewer.cpp"/>
-    <File Name="ShowBitmap.h"/>
     <File Name="BitmapWndViewer.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Effect">

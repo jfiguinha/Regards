@@ -403,7 +403,7 @@ void CBitmapWndViewer::DeterminePos(wxRect& rc, const int& nTailleAffichageWidth
 void CBitmapWndViewer::SetDessinRatio()
 {
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -713,7 +713,7 @@ void CBitmapWndViewer::SetNextPictureMove(const bool& value)
 void CBitmapWndViewer::AfterRender()
 {
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -755,7 +755,7 @@ void CBitmapWndViewer::AfterRender()
 void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 {
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -813,7 +813,7 @@ void CBitmapWndViewer::KeyPress(const int& key)
 void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 {
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif

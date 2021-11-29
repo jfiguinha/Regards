@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libWindow" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Render">
+    <File Name="IBitmapRenderInterface.h"/>
+    <File Name="BitmapWndRender.h"/>
+    <File Name="BitmapWndRender.cpp"/>
+    <File Name="BitmapWnd3d.h"/>
+    <File Name="BitmapWnd3d.cpp"/>
+    <File Name="BitmapWnd2d.h"/>
+    <File Name="BitmapWnd2d.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -55,7 +64,6 @@
     <File Name="PanelWithClickToolbar.cpp"/>
     <File Name="ClickToolbar.cpp"/>
     <File Name="TabWindow.cpp"/>
-    <File Name="BitmapWnd.cpp"/>
     <File Name="EmptyWindow.cpp"/>
     <File Name="Icone.cpp"/>
     <File Name="InfosSeparationBar.cpp"/>
@@ -104,7 +112,6 @@
     <File Name="ClickToolbar.h"/>
     <File Name="TabWindow.h"/>
     <File Name="BitmapInterface.h"/>
-    <File Name="BitmapWnd.h"/>
     <File Name="EmptyWindow.h"/>
     <File Name="Icone.h"/>
     <File Name="IMoveWindow.h"/>
