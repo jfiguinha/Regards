@@ -61,13 +61,17 @@ namespace Regards
 			void RenderToTexture();
 
 
-		protected:
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
 			void RenderQuad(GLTexture* texture, int left = 0, int top = 0, bool inverted = false);
 			void RenderQuad(GLTexture* texture, const int& width, const int& height, const bool& flipH,
-			                const bool& flipV, int left = 0, int top = 0, bool inverted = false);
+				const bool& flipV, int left = 0, int top = 0, bool inverted = false);
 			void RenderQuad(GLTexture* texture, const bool& flipH, const bool& flipV, int left = 0, int top = 0,
-			                bool inverted = false);
+				bool inverted = false);
+
+			GLTexture* GetTextureDisplay();
+
+		protected:
+
 			GLTexture* textureDisplay;
 			int width;
 			int height;

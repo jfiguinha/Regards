@@ -737,7 +737,7 @@ void CBitmapWndViewer::AfterRender()
 
 		if (numEffect != 0 && (etape > 0 && etape < 101) && afterEffect != nullptr)
 		{
-			afterEffect->AfterRender(nextPicture, renderOpenGL, this, etape, scale_factor, isNext, ratio);
+			afterEffect->AfterRender(nextPicture, renderBitmapOpenGL, this, etape, scale_factor, isNext, ratio);
 		}
 	}
 
@@ -746,8 +746,8 @@ void CBitmapWndViewer::AfterRender()
 		//Insertion dans le HBITMAP
 		if (fixArrow && (etape == 0 || etape == 100))
 		{
-			renderOpenGL->ShowArrowPrevious();
-			renderOpenGL->ShowArrowNext();
+			renderBitmapOpenGL->ShowArrowPrevious();
+			renderBitmapOpenGL->ShowArrowNext();
 		}
 	}
 }
@@ -778,7 +778,7 @@ void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 
 		bool isValid = false;
 		if (afterEffect != nullptr)
-			isValid = afterEffect->RenderTexture(nextPicture, source, this, renderOpenGL, scale_factor, etape);
+			isValid = afterEffect->RenderTexture(nextPicture, source, this, renderBitmapOpenGL, scale_factor, etape);
 
 		if (!isValid)
 			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);

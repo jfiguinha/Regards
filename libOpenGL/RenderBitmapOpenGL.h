@@ -14,11 +14,11 @@ namespace Regards
 {
 	namespace OpenGL
 	{
-		class CRenderBitmapOpenGL : public CRenderOpenGL
+		class CRenderBitmapOpenGL
 		{
 		public:
-			CRenderBitmapOpenGL(wxGLCanvas* canvas);
-			~CRenderBitmapOpenGL() override;
+			CRenderBitmapOpenGL(CRenderOpenGL * renderOpenGL);
+			~CRenderBitmapOpenGL();
 			void LoadingResource(const double& scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
@@ -29,9 +29,11 @@ namespace Regards
 			void ShowSecondBitmapWithAlpha(GLTexture* textureTransition, const int& alpha, const int& width,
 			                               const int& height, const int& left, const int& top);
 
+			GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 		private:
 			GLTexture* textureArrowRight;
 			GLTexture* textureArrowLeft;
+			CRenderOpenGL* renderOpenGL = nullptr;
 		};
 	}
 }

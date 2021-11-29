@@ -162,7 +162,7 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	bitmapWndRender->OnPaint2D(this);
+	bitmapWndRender->OnPaint2D(this, nullptr);
 	
 
 }

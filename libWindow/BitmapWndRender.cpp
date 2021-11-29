@@ -52,7 +52,7 @@ extern float clamp(float val, float minval, float maxval);
 CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme)
 {
 	glTexture = nullptr;
-	renderOpenGL = nullptr;
+	renderBitmapOpenGL = nullptr;
 	idWindowMain = idMain;
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
@@ -287,8 +287,8 @@ CBitmapWndRender::~CBitmapWndRender(void)
 		delete filtreEffet;
 	filtreEffet = nullptr;
 
-	if (renderOpenGL != nullptr)
-		delete renderOpenGL;
+	if (renderBitmapOpenGL != nullptr)
+		delete renderBitmapOpenGL;
 
 	if (source != nullptr)
 		delete source;
@@ -1936,7 +1936,7 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 	isOpenGLShow = value;
 }
 
-void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
+void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
@@ -2006,7 +2006,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
-void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas)
+void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext)
 {
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
@@ -2016,23 +2016,20 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas)
 
 	isOpenGLShow = true;
 
-	if (renderOpenGL == nullptr)
+	if (renderBitmapOpenGL == nullptr)
 	{
-		renderOpenGL = new CRenderBitmapOpenGL(canvas);
-
-		renderOpenGL->Init(canvas);
-
-		renderOpenGL->LoadingResource(scale_factor);
-
+		this->renderOpenGL = renderOpenGL;
+		renderBitmapOpenGL = new CRenderBitmapOpenGL(renderOpenGL);
+		renderBitmapOpenGL->LoadingResource(scale_factor);
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 		filtreEffet = nullptr;
-
 	}
-	renderOpenGL->SetCurrent(*canvas);
+	
+	this->openclContext = openclContext;
 
 
-	if (renderOpenGL != nullptr)
+	if (renderBitmapOpenGL != nullptr)
 	{
 		if (!IsSupportOpenCL())
 		{
@@ -2041,10 +2038,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas)
 		}
 		else
 		{
-			if (openclContext == nullptr)
-			{
-				openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-			}
+
 			printf("CBitmapWndRender OnPaint RenderToScreenWithOpenCLSupport \n");
 			RenderToScreenWithOpenCLSupport();
 		}

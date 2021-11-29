@@ -1,11 +1,14 @@
 #pragma once
 #include <GLcontext.h>
-
+#include <RenderOpenGL.h>
+#include <OpenCLContext.h>
+using namespace Regards::OpenGL;
+using namespace Regards::OpenCL;
 class IBitmapRenderInterface
 {
 public:
-	virtual void OnPaint3D(wxGLCanvas* canvas) = 0;
-	virtual void OnPaint2D(wxWindow * gdi) = 0;
+	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext) = 0;
+	virtual void OnPaint2D(wxWindow * gdi, COpenCLContext* openclContext) = 0;
 	virtual void OnMouseMove(wxMouseEvent& event) = 0;
 	virtual void OnLButtonDown(wxMouseEvent& event) = 0;
 	virtual void OnRButtonDown(wxMouseEvent& event) = 0;

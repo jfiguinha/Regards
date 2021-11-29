@@ -78,7 +78,7 @@ namespace Regards
 			void OnCommand(wxCommandEvent& event);
 
 			IBitmapRenderInterface* bitmapWndRender = nullptr;
-
+			COpenCLContext* openclContext = nullptr;
 
 		};
 	}

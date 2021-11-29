@@ -30,6 +30,11 @@ bool CRenderOpenGL::IsInit()
 	return isInit;
 }
 
+GLTexture* CRenderOpenGL::GetTextureDisplay()
+{
+	return textureDisplay;
+}
+
 void CRenderOpenGL::Init(wxGLCanvas* canvas)
 {
 	if (!isInit)

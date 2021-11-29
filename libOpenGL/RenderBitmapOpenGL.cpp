@@ -20,13 +20,17 @@
 using namespace Regards::OpenGL;
 using namespace Regards::Picture;
 
-CRenderBitmapOpenGL::CRenderBitmapOpenGL(wxGLCanvas* canvas)
-	: CRenderOpenGL(canvas)
+CRenderBitmapOpenGL::CRenderBitmapOpenGL(CRenderOpenGL* renderOpenGL)
 {
 	textureArrowRight = nullptr;
 	textureArrowLeft = nullptr;
+	this->renderOpenGL = renderOpenGL;
 }
 
+GLSLShader* CRenderBitmapOpenGL::FindShader(const wxString& shaderName, GLenum glSlShaderType_i)
+{
+	renderOpenGL->FindShader(shaderName, glSlShaderType_i);
+}
 
 void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
 {
@@ -63,7 +67,7 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n ");
-	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
@@ -76,7 +80,7 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int
 			printf("SetParam intensity failed \n ");
 		}
 	}
-	RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+	renderOpenGL->RenderQuad(glTexture, flipH, flipV, left, top, inverted);
 	if (m_pShader != nullptr)
 		m_pShader->DisableShader();
 
@@ -146,7 +150,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture* textureTransition
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	textureTransition->Enable();
 	printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n ");
-	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
@@ -178,14 +182,14 @@ CRenderBitmapOpenGL::~CRenderBitmapOpenGL()
 
 void CRenderBitmapOpenGL::ShowArrowNext()
 {
-	int left = width - textureArrowLeft->GetWidth();
-	int top = (height - textureArrowRight->GetHeight()) / 2;
+	int left = renderOpenGL->GetWidth() - textureArrowLeft->GetWidth();
+	int top = (renderOpenGL->GetHeight() - textureArrowRight->GetHeight()) / 2;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowRight->Enable();
-	RenderQuad(textureArrowRight, left, top);
+	renderOpenGL->RenderQuad(textureArrowRight, left, top);
 	textureArrowRight->Disable();
 	glDisable(GL_BLEND);
 }
@@ -193,13 +197,13 @@ void CRenderBitmapOpenGL::ShowArrowNext()
 void CRenderBitmapOpenGL::ShowArrowPrevious()
 {
 	int left = 0;
-	int top = (height - textureArrowLeft->GetHeight()) / 2;
+	int top = (renderOpenGL->GetHeight() - textureArrowLeft->GetHeight()) / 2;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	textureArrowLeft->Enable();
-	RenderQuad(textureArrowLeft, left, top);
+	renderOpenGL->RenderQuad(textureArrowLeft, left, top);
 	textureArrowLeft->Disable();
 
 	glDisable(GL_BLEND);

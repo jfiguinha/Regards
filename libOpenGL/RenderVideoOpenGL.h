@@ -22,11 +22,11 @@ namespace Regards
 			float bottom = 0;
 		};
 
-		class CRenderVideoOpenGL : public CRenderOpenGL
+		class CRenderVideoOpenGL
 		{
 		public:
-			CRenderVideoOpenGL(wxGLCanvas* canvas);
-			~CRenderVideoOpenGL() override;
+			CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL);
+			~CRenderVideoOpenGL();
 
 			void DeleteVideoTexture();
 			GLTexture* GetVideoTexture(const int& width, const int& height);
@@ -41,10 +41,6 @@ namespace Regards
 			void ShowSubtitle();
 			void DeleteSubtitle();
 
-			float GetVersion()
-			{
-				return myGLVersion;
-			}
 
 			void RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
 			                      const bool& inverted);
@@ -70,7 +66,7 @@ namespace Regards
 			GLTexture* textureVideo;
 			GLTexture* textureVideoCopy;
 			cl_mem cl_textureVideoCopy;
-
+			CRenderOpenGL* renderOpenGL = nullptr;
 			GLuint fboId;
 		};
 	}

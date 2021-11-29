@@ -3,6 +3,9 @@
 #include "BitmapWnd3D.h"
 #include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
+#include <OpenCLContext.h>
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
 
 //-----------------------------------------------------------------------------
 //
@@ -12,7 +15,7 @@ CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	: CWindowOpenGLMain("CBitmapWnd3D", parent, id)
 {
 
-
+	renderOpenGL = nullptr;
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd3D::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd3D::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd3D::OnLButtonDown));
@@ -162,7 +165,20 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	bitmapWndRender->OnPaint3D(this);
+	if (renderOpenGL == nullptr)
+	{
+		renderOpenGL = new CRenderOpenGL(this);
+		renderOpenGL->Init(this);
+	}
+
+	if (openclContext == nullptr)
+	{
+		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+	}
+
+	renderOpenGL->SetCurrent(*this);
+
+	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
 }
 
 
