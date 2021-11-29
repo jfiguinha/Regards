@@ -62,7 +62,6 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
-	//Connect(ID_BUT_EXPORT, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnExport));
 	Connect(wxEVENT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
 	Connect(wxEVENT_CHECKTREE_READ, wxCommandEventHandler(COcrWnd::OnSelRead), NULL, this);
 	
@@ -86,18 +85,6 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 			}
 		}
 	}
-
-	/*
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-	resourcePath = resourcePath + "\\espeak";
-	wxString language = choice->GetStringSelection();
-	wxString link = resourcePath + "\\espeak-ng.exe \"" + label + "\" -v" + language.substr(0,2) + " --path=" + resourcePath;
-	wxExecute(link);
-#else
-	resourcePath = resourcePath + "/espeak";
-#endif    
-	*/
 }
 
 void COcrWnd::Init()
