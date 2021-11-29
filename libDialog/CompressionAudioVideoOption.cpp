@@ -182,6 +182,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	sliderVideoPosition = new CSliderVideoSelection(labelTimeStart->GetParent(), wxID_ANY, this, theme);
 	auto size = wxSize(slVideo->GetSize().x, theme.GetHeight());
 	sliderVideoPosition->SetSize(size);
+	sliderVideoPosition->SetPosition(slVideo->GetPosition());
 	sliderVideoPosition->SetBackgroundColour(bgColor);
 	slVideo->Show(false);
 
@@ -216,6 +217,13 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 
 }
 
+void CompressionAudioVideoOption::SetBitmap(const long& pos)
+{
+	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
+	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
+	bitmap->SetBitmap(picture);
+}
+
 
 void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	const wxString& videoOutputFilename)
@@ -225,7 +233,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	showBitmapWindow->SetParameter(videoFilename, &videoOptionCompress);
 	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 
-
+	
 	wxFileName filepath(videoOutputFilename);
 	extension = filepath.GetExt();
 	if (extension == "mpeg")
@@ -288,6 +296,10 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	labelTimeEnd->SetTime(hour, minute, second);
 
 	sliderVideoPosition->SetTotalSecondTime(timeTotal);
+
+
+
+	SetBitmap(0);
 
 }
 
@@ -481,6 +493,7 @@ void CompressionAudioVideoOption::OnSlideFromChange(wxDateEvent& event)
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeStart->SetTime(hour1, min, sec);
 	}
+	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
@@ -503,12 +516,15 @@ void CompressionAudioVideoOption::OnSlideToChange(wxDateEvent& event)
 		GetTimeToHourMinuteSecond(_timeTotal, hour1, min, sec);
 		labelTimeEnd->SetTime(hour1, min, sec);
 	}
+	SetBitmap(_timeTotal);
 }
 
 void CompressionAudioVideoOption::OnVideoSliderChange(wxCommandEvent& event)
 {
 	int type = event.GetInt();
 	long value = event.GetExtraLong();
+
+	SetBitmap(value);
 
 	if (type == 1)
 	{

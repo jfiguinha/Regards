@@ -117,6 +117,7 @@ protected:
 private:
 	//wxImage ApplyFilter(CRegardsBitmap * bitmap, CVideoEffectParameter * videoEffectParameter);
 	wxString ConvertSecondToTime(int64_t sec);
+	void SetBitmap(const long& pos);
 	//void OnPaint(wxPaintEvent &event);
 	void OnClosePreview(wxCommandEvent& event);
 	void OnErrorCompression(wxCommandEvent& event);
