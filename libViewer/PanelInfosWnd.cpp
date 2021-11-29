@@ -2,6 +2,7 @@
 #include "PanelInfosWnd.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
+#include <BitmapWnd3D.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <window_id.h>
@@ -14,13 +15,12 @@
 #include "ThumbnailViewerEffectWnd.h"
 #include <FilterData.h>
 #include "ViewerParamInit.h"
-#include <ShowBitmap.h>
+#include <ShowElement.h>
 #include <MainParamInit.h>
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include "PicturePanel.h"
 #include <effect_id.h>
-
 #include "ParamInit.h"
 using namespace Regards::Picture;
 using namespace Regards::Internet;
@@ -382,7 +382,12 @@ void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-	auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+	CBitmapWndViewer* bitmapViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERID));
+	if (bitmapWindow != nullptr)
+	{
+		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
 
 	if (bitmapViewer != nullptr)
 	{
@@ -441,7 +446,7 @@ void CPanelInfosWnd::HistoryUpdate()
 	if (!isVideo)
 	{
 		wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
-		auto bitmapViewer = static_cast<CShowBitmap*>(this->FindWindowById(SHOWBITMAPVIEWERID));
+		auto bitmapViewer = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (bitmapViewer != nullptr)
 		{
 			CRegardsBitmap* bitmap = bitmapViewer->GetBitmap(true);

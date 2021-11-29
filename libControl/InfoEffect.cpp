@@ -7,6 +7,7 @@
 #include <ImageLoadingFormat.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
+#include "BitmapWnd3D.h"
 #include "BitmapWndViewer.h"
 #include <TreeData.h>
 #include <TreeElementControlInterface.h>
@@ -100,7 +101,12 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 	auto treeData = element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
-		auto bitmapViewer = dynamic_cast<CBitmapWndViewer*>(window->FindWindowById(bitmapWindowId));
+		CBitmapWndViewer* bitmapViewer = nullptr;
+		auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+		if (bitmapWindow != nullptr)
+		{
+			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		}
 		if (bitmapViewer != nullptr)
 		{
 			wxString key = treeData->GetExifKey();

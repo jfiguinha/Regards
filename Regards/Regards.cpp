@@ -21,10 +21,8 @@ namespace compute = boost::compute;
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include "ParamInit.h"
+
 using namespace Regards::Picture;
-
-//#define TEST_NOISE
-
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -161,6 +159,14 @@ bool MyApp::OnInit()
 	printf("Resource Path %s \n", CConvertUtility::ConvertToUTF8(resourcePath));
 
 	CLibPicture::Initx265Decoder();
+
+#ifdef GLUT
+#ifndef __APPLE__
+	int argc = 1;
+	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
+	glutInit(&argc, argv);
+#endif
+#endif
 
 #ifdef TEST_FFMPEG
 	wxString tempAudio = "d:\\video\\audio.mp3";

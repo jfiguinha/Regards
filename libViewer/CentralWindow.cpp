@@ -10,7 +10,6 @@
 #include <picture_id.h>
 #include <ThumbnailMessage.h>
 #include "PictureElement.h"
-#include <ShowVideo.h>
 #include <wx/display.h>
 #include "AnimationToolbar.h"
 #include "PanelPhotoWnd.h"
@@ -28,6 +27,7 @@
 #include <PanelWithClickToolbar.h>
 #include "PreviewWnd.h"
 #include <ParamInit.h>
+#include <ShowElement.h>
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
 #include <Tracing.h>
@@ -816,10 +816,7 @@ void CCentralWindow::ShowPicture(CBitmapReturn * pictureData, const int & redraw
 					mainWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
 
-				//SetBitmap(pictureData->bitmap, isThumbnail);
 				StopAnimation();
-				//bool refresh = isPicture ? false : true;
-				bool result = false;
 				bool isSetImage = false;
 				isAnimation = false;
 				isPicture = true;
@@ -1626,7 +1623,7 @@ void CCentralWindow::SetPosition(const long& timePosition)
 {
 	if (isVideo)
 	{
-		auto showVideoWindow = static_cast<CShowVideo*>(this->FindWindowById(SHOWVIDEOVIEWERID));
+		auto showVideoWindow = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 #ifdef FFMPEG
 		if (showVideoWindow != nullptr)
 			showVideoWindow->SetPosition(timePosition);

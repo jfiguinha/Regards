@@ -11,8 +11,7 @@
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 #include <libPicture.h>
-#include <ShowVideo.h>
-#include <ShowBitmap.h>
+#include <ShowElement.h>
 #include "ThumbnailMultiPage.h"
 #include <window_id.h>
 #include "ScannerFrame.h"
@@ -110,7 +109,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	//----------------------------------------------------------------------------------------
 	if (viewerTheme != nullptr)
 	{
-		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme, false);
+		showBitmapWindow = new CShowElement(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme, false);
 		windowManager->AddWindow(showBitmapWindow, Pos::wxCENTRAL, false, 0, rect, SCANNER_MAINVIEWERWINDOWID, false);
 	}
 

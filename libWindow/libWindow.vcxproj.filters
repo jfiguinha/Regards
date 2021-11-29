@@ -177,7 +177,7 @@
     <ClInclude Include="wxImagePanel.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="BitmapWnd.h">
+    <ClInclude Include="BitmapWnd3d.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="WindowManager.h">
@@ -218,6 +218,15 @@
     </ClInclude>
     <ClInclude Include="ThumbnailMessage.h">
       <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapWndRender.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="IBitmapRenderInterface.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapWnd2d.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -347,7 +356,7 @@
     <ClCompile Include="wxImagePanel.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="BitmapWnd.cpp">
+    <ClCompile Include="BitmapWnd3d.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="WindowManager.cpp">
@@ -379,6 +388,12 @@
     </ClCompile>
     <ClCompile Include="TreeDataStars.cpp">
       <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapWndRender.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapWnd2d.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

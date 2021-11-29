@@ -27,7 +27,7 @@ namespace Regards
 			~CThumbnailFace(void) override;
 			void init();
 			void MoveFace(const wxString& faceName);
-			void DeleteIcone(CIcone* numSelect);
+			void DeleteIcone(CIcone* numSelect) override;
 		
 		protected:
 			void OnMouseRelease(const int& x, const int& y) override;

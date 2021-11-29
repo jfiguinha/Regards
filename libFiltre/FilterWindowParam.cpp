@@ -130,8 +130,6 @@ void CFilterWindowParam::ApplyExifToPoint(wxPoint& pt, int numExif, const int &w
 	int y = width - pt.y;
 	int x = pt.x;
 
-	int width90 = height;
-	int height90 = width;
 	
 	switch (numExif)
 	{

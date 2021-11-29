@@ -26,9 +26,11 @@
 #include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
-wxDEFINE_EVENT(TIMER_FPS, wxTimerEvent);
-wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
-wxDEFINE_EVENT(TIMER_PLAYSTOP, wxTimerEvent);
+
+#define TIMER_FPS 0x10001
+#define TIMER_PLAYSTART 0x10002
+#define TIMER_PLAYSTOP 0x10003
+
 AVFrame* copyFrameBuffer = nullptr;
 
 #ifdef GLUT
@@ -38,21 +40,11 @@ AVFrame* copyFrameBuffer = nullptr;
 #include <GL/glut.h>
 #endif
 #endif
-//#include <CL/cl_gl.h>
 
-
-CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
-                                     IVideoInterface* eventPlayer)
-	: CWindowOpenGLMain("CVideoControl", parent, id)
+CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* eventPlayer)
 {
 	renderBitmapOpenGL = nullptr;
-#ifdef GLUT
-#ifndef __APPLE__
-	int argc = 1;
-	char* argv[1] = {wxString((wxTheApp->argv)[0]).char_str()};
-	glutInit(&argc, argv);
-#endif
-#endif
+
 	hq3d = nullptr; // new Chqdn3d(videoEffectParameter.denoisingLevel);
 	widthVideo = 0;
 	heightVideo = 0;
@@ -67,7 +59,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	flipV = false;
 	newVideo = true;
 	flipH = false;
-	videoEnd = false;
+	videoEnd = true;
 	exit = false;
 	quitWindow = false;
 	videoStart = false;
@@ -75,49 +67,98 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	pictureSubtitle = nullptr;
 	video_aspect_ratio = 0.0;
 	config = CParamInit::getInstance();
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControlSoft::on_paint));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControlSoft::OnSize));
-	Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
-	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CVideoControlSoft::StopVideoThread));
-	Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
-	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
-	fpsTimer = new wxTimer(this, TIMER_FPS);
-	playStartTimer = new wxTimer(this, TIMER_PLAYSTART);
-	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
-	Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
-	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
-	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
-	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CVideoControlSoft::OnScrollMove));
-	Connect(wxEVT_MOTION, wxMouseEventHandler(CVideoControlSoft::OnMouseMove));
-	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnLButtonDown));
-	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CVideoControlSoft::OnLButtonUp));
-	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CVideoControlSoft::OnKeyDown));
-	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CVideoControlSoft::OnKeyUp));
-	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CVideoControlSoft::OnLeftPosition));
-	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CVideoControlSoft::OnTopPosition));
-	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CVideoControlSoft::OnSetPosition));
-	playStopTimer = new wxTimer(this, TIMER_PLAYSTOP);
-	Connect(TIMER_PLAYSTOP, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStop), nullptr, this);
 	pause = false;
-	videoEnd = true;
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
 
-	openclContext = nullptr;
-
 	openclEffectYUV = nullptr;
-
 	hCursorHand = CResourceCursor::GetClosedHand();
-	ffmfc = new CFFmfc(this, wxID_ANY);
 	pictureFrame = new CRegardsBitmap();
-
-
 }
 
-COpenCLContext * CVideoControlSoft::GetOpenclContext()
+vector<int> CVideoControlSoft::GetListTimer()
 {
-	return openclContext;
+	vector<int> list;
+	list.push_back(TIMER_PLAYSTOP);
+	list.push_back(TIMER_FPS);
+	list.push_back(TIMER_PLAYSTART);
+	return list;
+}
+vector<int> CVideoControlSoft::GetListCommand()
+{
+	vector<int> list;
+	list.push_back(wxEVENT_SCROLLMOVE);
+	list.push_back(wxEVENT_ENDVIDEOTHREAD);
+	list.push_back(wxEVENT_STOPVIDEO);
+	list.push_back(EVENT_VIDEOSTART);
+	list.push_back(wxEVENT_LEFTPOSITION);
+	list.push_back(wxEVENT_TOPPOSITION);
+	list.push_back(wxEVENT_SETPOSITION);
+	list.push_back(EVENT_VIDEOROTATION);
+	return list;
+}
+
+int CVideoControlSoft::UpdateResized()
+{
+	Resize();
+	return 0;
+}
+
+void CVideoControlSoft::OnTimer(wxTimerEvent& event)
+{
+	switch (event.GetEventType())
+	{
+	case TIMER_PLAYSTOP:
+		OnPlayStop(event);
+		break;
+	case TIMER_FPS:
+		OnShowFPS(event);
+		break;
+	case TIMER_PLAYSTART:
+		OnPlayStart(event);
+		break;
+	}
+}
+
+void CVideoControlSoft::OnCommand(wxCommandEvent& event)
+{
+	switch (event.GetEventType())
+	{
+	case wxEVENT_SCROLLMOVE:
+		OnScrollMove(event);
+		break;
+	case wxEVENT_ENDVIDEOTHREAD:
+		EndVideoThread(event);
+		break;
+	case wxEVENT_STOPVIDEO:
+		StopVideoThread(event);
+		break;
+	case EVENT_VIDEOSTART:
+		VideoStart(event);
+		break;
+	case wxEVENT_LEFTPOSITION:
+		OnLeftPosition(event);
+		break;
+	case wxEVENT_TOPPOSITION:
+		OnTopPosition(event);
+		break;
+	case wxEVENT_SETPOSITION:
+		OnSetPosition(event);
+		break;
+	case EVENT_VIDEOROTATION:
+		VideoRotation(event);
+		break;
+	}
+}
+
+void CVideoControlSoft::SetParent(wxWindow* parent)
+{
+	parentRender = parent;
+
+	fpsTimer = new wxTimer(parentRender, TIMER_FPS);
+	playStartTimer = new wxTimer(parentRender, TIMER_PLAYSTART);
+	playStopTimer = new wxTimer(parentRender, TIMER_PLAYSTOP);
+	ffmfc = new CFFmfc(parentRender, wxID_ANY);
 }
 
 void CVideoControlSoft::DiaporamaMode(const bool& value)
@@ -196,13 +237,13 @@ bool CVideoControlSoft::IsFFmpegDecode()
 void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 {
 	TRACE();
-	this->SetFocus();
+	parentRender->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 	mouseBlock = true;
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
-	CaptureMouse();
+	parentRender->CaptureMouse();
 	wxSetCursor(hCursorHand);
 }
 
@@ -221,8 +262,8 @@ void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 	mouseBlock = false;
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
-	if (HasCapture())
-		ReleaseMouse();
+	if (parentRender->HasCapture())
+		parentRender->ReleaseMouse();
 }
 
 //------------------------------------------------------------------------------------
@@ -261,7 +302,7 @@ void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 void CVideoControlSoft::TestMaxX()
 {
 	float bitmapRatioWidth = GetBitmapWidth();
-	float screenWidth = static_cast<float>(GetWidth());
+	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 
 	TRACE();
@@ -280,7 +321,7 @@ void CVideoControlSoft::TestMaxX()
 void CVideoControlSoft::TestMaxY()
 {
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenHeight = static_cast<float>(GetHeight());
+	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
 
 	TRACE();
@@ -301,8 +342,7 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 
-	wxCommandEvent evt(wxEVENT_REFRESH);
-	videoSoft->GetEventHandler()->AddPendingEvent(evt);
+	videoSoft->parentRender->Refresh();
 	//videoSoft->Refresh();
 }
 
@@ -343,14 +383,14 @@ void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	this->Refresh();
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	this->Refresh();
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
@@ -372,18 +412,18 @@ void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
 
 void CVideoControlSoft::MoveTop()
 {
-	wxWindow* parent = this->GetParent();
+	wxWindow* parent = parentRender->GetParent();
 
 	if (parent != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_MOVETOP);
+		wxCommandEvent evt(wxEVT_NULL, wxEVENT_MOVETOP);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
 void CVideoControlSoft::MoveLeft()
 {
-	wxWindow* parent = this->GetParent();
+	wxWindow* parent = parentRender->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -394,7 +434,7 @@ void CVideoControlSoft::MoveLeft()
 
 void CVideoControlSoft::MoveBottom()
 {
-	wxWindow* parent = this->GetParent();
+	wxWindow* parent = parentRender->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -436,7 +476,7 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 	muVideoEffect.unlock();
 
-	this->Refresh();
+	parentRender->Refresh();
 }
 
 
@@ -451,17 +491,17 @@ float CVideoControlSoft::CalculPictureRatio(const int& pictureWidth, const int& 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		new_ratio = static_cast<float>(GetWidth()) / static_cast<float>(pictureWidth);
+		new_ratio = static_cast<float>(parentRender->GetSize().GetWidth()) / static_cast<float>(pictureWidth);
 	else
-		new_ratio = static_cast<float>(GetHeight()) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(parentRender->GetSize().GetHeight()) / static_cast<float>(pictureHeight);
 
-	if ((pictureHeight * new_ratio) > GetHeight())
+	if ((pictureHeight * new_ratio) > parentRender->GetSize().GetHeight())
 	{
-		new_ratio = static_cast<float>(GetHeight()) / static_cast<float>(pictureHeight);
+		new_ratio = static_cast<float>(parentRender->GetSize().GetHeight()) / static_cast<float>(pictureHeight);
 	}
-	if ((pictureWidth * new_ratio) > GetWidth())
+	if ((pictureWidth * new_ratio) > parentRender->GetSize().GetWidth())
 	{
-		new_ratio = static_cast<float>(GetWidth()) / static_cast<float>(pictureWidth);
+		new_ratio = static_cast<float>(parentRender->GetSize().GetWidth()) / static_cast<float>(pictureWidth);
 	}
 
 	return new_ratio;
@@ -547,7 +587,7 @@ void CVideoControlSoft::UpdateScrollBar()
 {
 	int widthOut = 0;
 	int heightOut = 0;
-	wxWindow* parent = this->GetParent();
+	wxWindow* parent = parentRender->GetParent();
 	CalculTextureSize(widthOut, heightOut);
 	if (parent != nullptr)
 	{
@@ -568,12 +608,12 @@ void CVideoControlSoft::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-	this->Refresh();
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::MoveRight()
 {
-	wxWindow* parent = this->GetParent();
+	wxWindow* parent = parentRender->GetParent();
 
 	if (parent != nullptr)
 	{
@@ -646,17 +686,11 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 	}
 }
 
-
-void CVideoControlSoft::OnRefresh(wxCommandEvent& event)
-{
-	Refresh();
-}
-
 void CVideoControlSoft::SetRotation(const int& rotation)
 {
 	wxCommandEvent event(EVENT_VIDEOROTATION);
 	event.SetExtraLong(rotation);
-	wxPostEvent(this, event);
+	wxPostEvent(parentRender, event);
 }
 
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
@@ -713,15 +747,20 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 	else
 	{
 		if (pause)
-			Refresh();
+			parentRender->Refresh();
 	}
 	//Refresh();
 }
 
-CVideoControlSoft* CVideoControlSoft::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
-                                                   IVideoInterface* eventPlayer)
+
+bool CVideoControlSoft::GetPausedValue()
 {
-	return new CVideoControlSoft(parent, id, windowMain, eventPlayer);
+	return pause;
+};
+
+void CVideoControlSoft::RedrawFrame()
+{
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -783,6 +822,11 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	//if (!videoRenderStart && !stopVideo)
 	//     this->FastRefresh(this, true);
 #endif
+}
+
+void CVideoControlSoft::SetEndProgram(const bool& endProgram)
+{
+	this->endProgram = endProgram;
 }
 
 void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
@@ -880,15 +924,12 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if (renderBitmapOpenGL != nullptr)
 	{
-		renderBitmapOpenGL->SetCurrent(*this);
 		delete renderBitmapOpenGL;
 	}
 
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
-	//if (openclContext != nullptr)
-	//	delete openclContext;
 
 	if (pictureSubtitle != nullptr)
 		delete pictureSubtitle;
@@ -1012,7 +1053,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 		ShrinkVideo();
 
 
-		wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+		wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
@@ -1028,7 +1069,7 @@ int CVideoControlSoft::getWidth()
 #else
 	double scale_factor = 1.0f;
 #endif
-	return GetSize().x * scale_factor;
+	return parentRender->GetSize().x * scale_factor;
 }
 
 int CVideoControlSoft::getHeight()
@@ -1038,12 +1079,12 @@ int CVideoControlSoft::getHeight()
 #else
 	double scale_factor = 1.0f;
 #endif
-	return GetSize().y * scale_factor;
+	return parentRender->GetSize().y * scale_factor;
 }
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
-	this->Refresh();
+	parentRender->Refresh();
 }
 
 void CVideoControlSoft::ReloadResource()
@@ -1051,7 +1092,11 @@ void CVideoControlSoft::ReloadResource()
 	//reloadResource = true;
 }
 
-void CVideoControlSoft::on_paint(wxPaintEvent& event)
+void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
+{
+}
+
+void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas)
 {
 	
 	// This is a dummy, to avoid an endless succession of paint messages.
@@ -1062,7 +1107,7 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	deleteTexture = true;
 	inverted = true;
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -1073,18 +1118,21 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 
 	if (renderBitmapOpenGL == nullptr)
 	{
-		renderBitmapOpenGL = new CRenderVideoOpenGL(this);
-		renderBitmapOpenGL->Init(this);
+		renderBitmapOpenGL = new CRenderVideoOpenGL(canvas);
+		renderBitmapOpenGL->Init(canvas);
 	}
 
-	renderBitmapOpenGL->SetCurrent(*this);
+	renderBitmapOpenGL->SetCurrent(*canvas);
 
 	if (IsSupportOpenCL())
 	{
-
 		if (openclContext == nullptr)
 		{
 			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+		}
+
+		if (openclEffectYUV == nullptr && openclContext != nullptr)
+		{
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
@@ -1093,8 +1141,8 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 	start = std::clock();
 
 
-	int width = GetWindowWidth() * scale_factor;
-	int height = GetWindowHeight() * scale_factor;
+	int width = parentRender->GetSize().GetWidth() * scale_factor;
+	int height = parentRender->GetSize().GetHeight() * scale_factor;
 	if (width == 0 || height == 0)
 		return;
 
@@ -1123,16 +1171,6 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 			glTexture = RenderToGLTexture();
 	}
 
-
-	//#ifdef __APPLE__
-	/*
-	    if(videoRenderStart && glTexture != nullptr)
-	    {  
-	        renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
-	        renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
-	    }
-	*/
-	//#else
 
 	if (videoRenderStart && glTexture != nullptr)
 	{
@@ -1176,15 +1214,15 @@ void CVideoControlSoft::on_paint(wxPaintEvent& event)
 		printf("renderBitmapOpenGL->CreateScreenRender \n");
 		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 	}
-	//#endif
 
-	this->SwapBuffers();
+	canvas->SwapBuffers();
 
 	if (deleteTexture && glTexture != nullptr)
 		delete glTexture;
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
+	
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1193,7 +1231,7 @@ int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
 	//SetVideoPosition(videoPosition / 1000);
 	wxCommandEvent evt(wxEVENT_SETPOSITION);
 	evt.SetExtraLong(videoPosition / 1000);
-	this->GetEventHandler()->AddPendingEvent(evt);
+	parentRender->GetEventHandler()->AddPendingEvent(evt);
 	return 0;
 }
 
@@ -1204,7 +1242,7 @@ int CVideoControlSoft::ChangeAudioStream(int newStreamAudio)
 	//SetVideoPosition(videoPosition / 1000);
 	wxCommandEvent evt(wxEVENT_SETPOSITION);
 	evt.SetExtraLong(videoPosition / 1000);
-	this->GetEventHandler()->AddPendingEvent(evt);
+	parentRender->GetEventHandler()->AddPendingEvent(evt);
 	return 0;
 }
 
@@ -1221,7 +1259,7 @@ void CVideoControlSoft::OnPlay()
 		if (pause && !_videoEnd)
 		{
 			ffmfc->Pause();
-			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
@@ -1257,7 +1295,7 @@ void CVideoControlSoft::OnStop(wxString photoName)
 	}
 	standByMovie = photoName;
 
-	wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+	wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
@@ -1268,14 +1306,14 @@ void CVideoControlSoft::OnStop(wxString photoName)
 float CVideoControlSoft::GetLargeurMax()
 {
 	float bitmapRatioWidth = GetBitmapWidth();
-	float screenWidth = static_cast<float>(GetWidth());
+	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	return bitmapRatioWidth - screenWidth;
 }
 
 float CVideoControlSoft::GetHauteurMax()
 {
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenHeight = static_cast<float>(GetHeight());
+	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 	return bitmapRatioHeight - screenHeight;
 }
 
@@ -1285,8 +1323,8 @@ void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenWidth = static_cast<float>(GetWidth());
-	float screenHeight = static_cast<float>(GetHeight());
+	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
+	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
@@ -1382,8 +1420,8 @@ void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
-	CaptureMouse();
-	SetFocus();
+	parentRender->CaptureMouse();
+	parentRender->SetFocus();
 }
 
 //-----------------------------------------------------------------
@@ -1394,8 +1432,8 @@ void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 	TRACE();
 	mouseBlock = false;
 	wxSetCursor(wxCursor(wxCURSOR_ARROW));
-	if (HasCapture())
-		ReleaseMouse();
+	if (parentRender->HasCapture())
+		parentRender->ReleaseMouse();
 }
 
 void CVideoControlSoft::CalculCenterPicture()
@@ -1404,8 +1442,8 @@ void CVideoControlSoft::CalculCenterPicture()
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
-	float screenWidth = static_cast<float>(GetWidth());
-	float screenHeight = static_cast<float>(GetHeight());
+	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
+	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 
 
 	//float middleScreenWidth = screenWidth / 2.0f;
@@ -1458,7 +1496,7 @@ void CVideoControlSoft::OnPause()
 		{
 			ffmfc->Pause();
 
-			wxWindow* window = this->FindWindowById(PREVIEWVIEWERID);
+			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
 				wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
@@ -1604,10 +1642,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	widthVideo = src_frame->width;
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
-
-	wxCommandEvent event(wxEVENT_REFRESH);
-	wxPostEvent(this, event);
-	//std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
+	parentRender->Refresh();
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
@@ -1664,15 +1699,15 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 
 void CVideoControlSoft::Resize()
 {
-	float screenWidth = static_cast<float>(GetWidth());
-	float screenHeight = static_cast<float>(GetHeight());
+	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
+	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 	
 	if (!stopVideo)
 	{
 		updateContext = true;
 
 		if (videoStart)
-			ffmfc->VideoDisplaySize(GetWindowWidth(), GetWindowHeight());
+			ffmfc->VideoDisplaySize(parentRender->GetSize().GetWidth(), parentRender->GetSize().GetHeight());
 
 		if (pause && isffmpegDecode && copyFrameBuffer != nullptr)
 		{
@@ -1706,7 +1741,7 @@ void CVideoControlSoft::Resize()
 			UpdateScrollBar();
 		}
 
-		Refresh();
+		parentRender->Refresh();
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
@@ -1773,7 +1808,7 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 {
 	TRACE();
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -1784,7 +1819,7 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 	int yValue = 0;
 
 
-	if (widthOutput > GetWidth() * scale_factor)
+	if (widthOutput > parentRender->GetSize().GetWidth() * scale_factor)
 	{
 		left = 0;
 		xValue = posLargeur * scale_factor;
@@ -1792,13 +1827,13 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 	else
 	{
 		xValue = 0;
-		left = (GetWidth() * scale_factor - widthOutput) / 2;
+		left = (parentRender->GetSize().GetWidth() * scale_factor - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = GetWidth() * scale_factor - (left * 2);
+	widthInterpolationSize = parentRender->GetSize().GetWidth() * scale_factor - (left * 2);
 
 
-	if (heightOutput > GetHeight() * scale_factor)
+	if (heightOutput > parentRender->GetSize().GetHeight() * scale_factor)
 	{
 		top = 0;
 		yValue = posHauteur * scale_factor;
@@ -1806,15 +1841,15 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 	else
 	{
 		yValue = 0;
-		top = (GetHeight() * scale_factor - heightOutput) / 2;
+		top = (parentRender->GetSize().GetHeight() * scale_factor - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = GetHeight() * scale_factor - (top * 2);
+	heightInterpolationSize = parentRender->GetSize().GetHeight() * scale_factor - (top * 2);
 
 	rc.x = max(xValue, 0);
 	if (invert)
 	{
-		int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+		int heightmax = heightOutput - (parentRender->GetSize().GetHeight() * scale_factor) - yValue;
 		rc.y = max(heightmax, 0);
 	}
 	else
@@ -1826,7 +1861,7 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc)
 {
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = parentRender->GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -1838,13 +1873,13 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 	int tailleAffichageWidth = widthOutput;
 	int tailleAffichageHeight = heightOutput;
 
-	if (GetWidth() * scale_factor > tailleAffichageWidth)
-		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+	if (parentRender->GetSize().GetWidth() * scale_factor > tailleAffichageWidth)
+		left = ((parentRender->GetSize().GetWidth() * scale_factor - tailleAffichageWidth) / 2);
 	else
 		left = 0;
 
-	if (GetHeight() * scale_factor > tailleAffichageHeight)
-		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+	if (parentRender->GetSize().GetHeight() * scale_factor > tailleAffichageHeight)
+		top = ((parentRender->GetSize().GetHeight() * scale_factor - tailleAffichageHeight) / 2);
 	else
 		top = 0;
 
@@ -2099,14 +2134,14 @@ void CVideoControlSoft::FlipVertical()
 {
 	flipV = !flipV;
 	if (pause)
-		this->Refresh();
+		parentRender->Refresh();
 }
 
 void CVideoControlSoft::FlipHorizontal()
 {
 	flipH = !flipH;
 	if (pause)
-		this->Refresh();
+		parentRender->Refresh();
 }
 
 bool CVideoControlSoft::IsCPUContext()

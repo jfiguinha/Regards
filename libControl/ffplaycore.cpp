@@ -212,8 +212,6 @@ void CFFmfc::ExitEvent(wxCommandEvent& event)
 
 void CFFmfc::QuitEvent(wxCommandEvent& event)
 {
-
-	
 	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
@@ -521,7 +519,8 @@ int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxSt
 
 
 	wxCommandEvent event(EVENT_VIDEOSTART);
-	wxPostEvent(_pimpl->parent, event);
+	//event.SetId(EVENT_VIDEOSTART);
+	wxPostEvent(_pimpl->parent->GetParent(), event);
 
 	return 0;
 }

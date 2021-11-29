@@ -6,7 +6,8 @@
 #include <FileUtility.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <ShowBitmap.h>
+#include <BitmapWndViewer.h>
+#include <BitmapWnd3D.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <libPicture.h>
@@ -15,6 +16,7 @@
 #include <FiltreEffet.h>
 #include <FilterData.h>
 #include <wx/progdlg.h>
+#include <ShowElement.h>
 #include <LibResource.h>
 #include <Draw.h>
 #include <wx/filefn.h>
@@ -67,39 +69,6 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 
 }
 
-void COcrWnd::OnExport(wxCommandEvent& event)
-{
-#ifdef WIN32
-	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
-	if (showBitmap != nullptr)
-	{
-		CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
-		bitmapBackground->VertFlipBuf();
-		for (ChOcrElement * text : listRect)
-		{
-			if (text->itemClass == "ocr_line")
-			{
-				ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
-				CRgbaquad color = CRgbaquad(255, 255, 255);
-				//uint8_t * data = bitmapBackground->GetPtBitmap();
-				int maxY = bboxText->rect.y + bboxText->rect.height;
-				int maxX = bboxText->rect.x + bboxText->rect.width;
-				for (int y = bboxText->rect.y; y < maxY; y++)
-				{
-					for (int x = bboxText->rect.x; x < maxX; x++)
-					{
-						bitmapBackground->SetColorValue(x, y, color);
-					}
-				}
-			}
-		}
-		bitmapBackground->VertFlipBuf();
-		bitmapBackground->SaveToBmp("c:\\developpement\\test.bmp");
-		delete bitmapBackground;
-	}
-#endif
-}
-
 void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 {
 	int id = aEvent.GetInt();
@@ -141,12 +110,22 @@ void COcrWnd::Init()
 
 COcrWnd::~COcrWnd()
 {
-
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
+	if (bitmapWindow != nullptr)
+	{
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+		{
+			wndViewer->RemoveListener();
+		}
+	}
+	/*
 	CBitmapWndViewer * showBitmap = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (showBitmap != nullptr)
 	{
 		showBitmap->RemoveListener();
 	}
+	*/
 }
 
 CImageLoadingFormat * COcrWnd::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
@@ -241,7 +220,7 @@ void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
 		}
 	}
 	//GenerateLayerBitmap();
-	CBitmapWndViewer * viewer = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWnd3D* viewer = (CBitmapWnd3D*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (viewer != nullptr)
 		viewer->Refresh();
 }
@@ -513,7 +492,13 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 
 void COcrWnd::OnOcr(wxCommandEvent& event)
 {
-	CBitmapWndViewer * viewer = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWndViewer* viewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
+	if (bitmapWindow != nullptr)
+	{
+		viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
 	if (viewer != nullptr)
 	{
 		viewer->SetListener(this);
@@ -524,7 +509,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	//int i = choice->GetSelection();
 	wxString language = choice->GetStringSelection();
 
-	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
+	CShowElement * showBitmap = (CShowElement*)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
 	if (showBitmap != nullptr)
 	{
 		try
@@ -626,7 +611,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		}
 	}
 	//GenerateLayerBitmap();
-	viewer->Refresh();
+	bitmapWindow->Refresh();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)

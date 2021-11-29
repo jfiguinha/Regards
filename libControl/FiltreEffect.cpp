@@ -6,6 +6,7 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include "BitmapWndViewer.h"
+#include "BitmapWnd3D.h"
 #include <TreeElementTexte.h>
 #include <TreeElementSlide.h>
 #include <TreeElementTriangle.h>
@@ -59,7 +60,15 @@ void CFiltreEffect::AddTreeInfos(const wxString& exifKey, CTreeElementValue* pos
 void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* source, const wxString& filename,
                          const int& filtre)
 {
-	auto bitmapViewer = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
+	CBitmapWndViewer* bitmapViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+	if (bitmapWindow != nullptr)
+	{
+		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+
+	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
 
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
@@ -104,21 +113,32 @@ void CFiltreEffect::UpdateScreenRatio()
 
 void CFiltreEffect::UpdateMousePosition()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
+	CBitmapWndViewer* bitmapViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
 	{
-		CImageLoadingFormat* imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
-		bitmapWindow->UpdateBitmap(imageLoad, false);
+		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+	if (bitmapViewer != nullptr)
+	{
+		CImageLoadingFormat* imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapViewer);
+		bitmapViewer->UpdateBitmap(imageLoad, false);
 	}
 }
 
 CImageLoadingFormat* CFiltreEffect::ApplyEffect()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
+	CBitmapWndViewer* bitmapViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+	if (bitmapWindow != nullptr)
+	{
+		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
 
 	if (filterEffect != nullptr)
 	{
-		return filterEffect->ApplyEffect(effectParameter, bitmapWindow);
+		return filterEffect->ApplyEffect(effectParameter, bitmapViewer);
 	}
 	return nullptr;
 }

@@ -83,6 +83,9 @@ using namespace Regards::Introduction;
 using namespace Regards::Viewer;
 
 #include <GL/glew.h>
+#ifndef __APPLE__
+#include <gl\glut.h>
+#endif
 #if defined(_WIN32)
 #elif defined(_WIN64)
 #include <GL/wglew.h>
@@ -163,6 +166,8 @@ public:
 	MyApp(
 	)
 	{
+
+
 		logNo = new wxLogNull();
 		//Init x11
 		regardsParam = nullptr;

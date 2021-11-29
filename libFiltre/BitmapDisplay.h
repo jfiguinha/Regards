@@ -27,7 +27,6 @@ class IBitmapDisplay
 {
 public:
     virtual ~IBitmapDisplay(){};
-	virtual COpenCLContext * GetOpenCLContext() = 0;
 	virtual int GetHPos() = 0;
 	virtual int GetVPos() = 0;
 	virtual int GetWidth() = 0;

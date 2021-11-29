@@ -2,7 +2,7 @@
 #include "PreviewToolbar.h"
 #include <LibResource.h>
 #include <BitmapWndViewer.h>
-
+#include <BitmapWnd2d.h>
 
 using namespace Regards::Control;
 
@@ -68,18 +68,31 @@ CPreviewToolbar::~CPreviewToolbar()
 
 void CPreviewToolbar::ZoomPos(const int& position)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
-
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->SetRatioPos(position);
+	{
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+	//auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+	if (wndViewer != nullptr)
+		wndViewer->SetRatioPos(position);
 }
 
 void CPreviewToolbar::ZoomOn()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapWindow->ZoomOn();
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+	//auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+	if (wndViewer != nullptr)
+	{
+		wndViewer->ZoomOn();
 	}
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
@@ -88,10 +101,16 @@ void CPreviewToolbar::ZoomOn()
 
 void CPreviewToolbar::ChangeZoomInPos()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
-	if (slide != nullptr && bitmapWindow != nullptr)
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	if (bitmapWindow != nullptr)
 	{
-		int dwPos = bitmapWindow->GetPosRatio();
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+	if (slide != nullptr && wndViewer != nullptr)
+	{
+		int dwPos = wndViewer->GetPosRatio();
 		dwPos++;
 		if (dwPos >= slide->GetNbValue())
 			dwPos = slide->GetNbValue() - 1;
@@ -101,10 +120,16 @@ void CPreviewToolbar::ChangeZoomInPos()
 
 void CPreviewToolbar::ChangeZoomOutPos()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
-	if (slide != nullptr && bitmapWindow != nullptr)
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	if (bitmapWindow != nullptr)
 	{
-		int dwPos = bitmapWindow->GetPosRatio();
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+
+	if (slide != nullptr && wndViewer != nullptr)
+	{
+		int dwPos = wndViewer->GetPosRatio();
 		dwPos--;
 		if (dwPos < 0)
 			dwPos = 0;
@@ -115,9 +140,14 @@ void CPreviewToolbar::ChangeZoomOutPos()
 
 void CPreviewToolbar::ZoomOut()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->ZoomOut();
+	{
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+	if (wndViewer != nullptr)
+		wndViewer->ZoomOut();
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
 	ChangeZoomOutPos();
@@ -146,22 +176,31 @@ void CPreviewToolbar::SetTrackBarPosition(const int& iPos)
 
 void CPreviewToolbar::SlidePosChange(const int& position, const wxString& key)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->SetZoomPosition(position);
+	{
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+	if (wndViewer != nullptr)
+		wndViewer->SetZoomPosition(position);
 }
 
 
 void CPreviewToolbar::EventManager(const int& id)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	CBitmapWndViewer* wndViewer = nullptr;
+	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
+	{
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+	}
+	if (wndViewer != nullptr)
 	{
 		switch (id)
 		{
 		case IDM_SETSHRINK:
-			if (bitmapWindow != nullptr)
-				bitmapWindow->ShrinkImage();
+			wndViewer->ShrinkImage();
 			break;
 
 		case WM_ZOOMOUT:

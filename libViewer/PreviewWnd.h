@@ -16,16 +16,10 @@ namespace Regards
 
 	using namespace Window;
 
-	namespace Video
-	{
-		class CShowVideo;
-	}
-
-	using namespace Video;
 
 	namespace Control
 	{
-		class CShowBitmap;
+		class CShowElement;
 		class CFiltreToolbar;
 	}
 
@@ -80,8 +74,7 @@ namespace Regards
 			void OnShowToolbar(wxCommandEvent& event);
 			void StartAnimation(wxCommandEvent& event);
 
-			CShowBitmap* showBitmapWindow;
-			CShowVideo* showVideoWindow;
+			CShowElement* showElement;
 
 			CAnimationToolbar* animationToolbar;
 			CPreviewToolbar* previewToolbar;

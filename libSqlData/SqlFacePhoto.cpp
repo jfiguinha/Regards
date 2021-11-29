@@ -59,6 +59,8 @@ bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
 	ExecuteRequestWithNoResult("DELETE FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(numFace));
 	ExecuteRequestWithNoResult("DELETE FROM FACE_NAME WHERE NumFace = " + to_string(numFace));
 	DeleteFaceNameAlone();
+
+	return true;
 }
 
 void CSqlFacePhoto::EraseFace(const int& numFace)
@@ -469,6 +471,8 @@ bool CSqlFacePhoto::DeletePhotoFaceDatabase(const wxString & path)
 	{
 		DeleteNumFace(i);
 	}
+
+	return true;
 }
 
 bool CSqlFacePhoto::DeleteFaceDatabase()

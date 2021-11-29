@@ -13,7 +13,7 @@
 #include "FiltreEffectWnd.h"
 #include <InfoEffectWnd.h>
 #include "ThumbnailViewerEffectWnd.h"
-#include <ShowBitmap.h>
+#include <ShowElement.h>
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 using namespace Regards::Internet;
@@ -160,7 +160,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 void CPanelInfosWnd::HistoryUpdate()
 {
 	wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
-	CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERIDPDF);
+	auto bitmapViewer = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERIDPDF));
 	if (bitmapViewer != nullptr)
 	{
 		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);

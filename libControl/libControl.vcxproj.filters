@@ -61,9 +61,6 @@
     <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="ShowBitmap.cpp">
-      <Filter>Bitmap</Filter>
-    </ClCompile>
     <ClCompile Include="BitmapWndViewer.cpp">
       <Filter>Bitmap</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
     </ClCompile>
     <ClCompile Include="BitmapToolbar.cpp">
       <Filter>Bitmap</Filter>
-    </ClCompile>
-    <ClCompile Include="ShowVideo.cpp">
-      <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="ffmfcpimpl.cpp">
       <Filter>Video\Core</Filter>
@@ -111,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="MoveEffectTexture.cpp">
       <Filter>Bitmap\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowElement.cpp">
+      <Filter>Display</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +174,6 @@
     <ClInclude Include="ThumbnailViewerEffectWnd.h">
       <Filter>Thumbnail\header</Filter>
     </ClInclude>
-    <ClInclude Include="ShowBitmap.h">
-      <Filter>Bitmap</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapWndViewer.h">
       <Filter>Bitmap</Filter>
     </ClInclude>
@@ -188,9 +182,6 @@
     </ClInclude>
     <ClInclude Include="BitmapToolbar.h">
       <Filter>Bitmap</Filter>
-    </ClInclude>
-    <ClInclude Include="ShowVideo.h">
-      <Filter>Video</Filter>
     </ClInclude>
     <ClInclude Include="VideoInterface.h">
       <Filter>Video\Core</Filter>
@@ -252,6 +243,9 @@
     <ClInclude Include="DiaporamaEffect.h">
       <Filter>Bitmap\PostEffect</Filter>
     </ClInclude>
+    <ClInclude Include="ShowElement.h">
+      <Filter>Display</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -298,6 +292,9 @@
     </Filter>
     <Filter Include="Bitmap\PostEffect">
       <UniqueIdentifier>{d2ded3d8-c62a-4d3f-baf6-98f01aabb7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Display">
+      <UniqueIdentifier>{b246463e-52ad-47aa-9d15-1a27a40b0a56}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

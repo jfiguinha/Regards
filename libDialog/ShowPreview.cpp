@@ -9,6 +9,8 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <array>
+#include <BitmapWnd2D.h>
+#include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
 #include <FFmpegTranscodingPimpl.h>
@@ -70,13 +72,14 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	themeBitmap.colorScreen = wxColour("black");
 
-	bitmapWindow = new CBitmapWnd(this, bitmapViewerId, previewToolbar, 0, themeBitmap);
-	//bitmapWindow->SetOpenGLOutput(false);
+	bitmapWindow = new CBitmapWndRender(previewToolbar, 0, themeBitmap);
+	bitmapWindowRender = new CBitmapWnd2D(this, bitmapViewerId);
+	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
 
-	scrollbar = new CScrollbarWnd(this, bitmapWindow, wxID_ANY, "BitmapScroll");
+	scrollbar = new CScrollbarWnd(this, bitmapWindowRender, wxID_ANY, "BitmapScroll");
 
 	if (config != nullptr)
 	{
@@ -288,7 +291,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
                                 const bool& updatePicture)
 {
 	wxString decoder = "";
-	CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
+
 	if (videoOptionCompress != nullptr)
 	{
 		this->videoOptionCompress = *videoOptionCompress;
@@ -296,7 +299,7 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 	}
 
 	if (transcodeFFmpeg == nullptr)
-		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder, videoControlSoft->GetOpenclContext());
+		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder);
 
 	if (decodeFrame == nullptr)
 		decodeFrame = new CFFmpegDecodeFrame();
@@ -375,6 +378,7 @@ void CShowPreview::OnMoveBottom(wxCommandEvent& event)
 CShowPreview::~CShowPreview()
 {
 	delete(previewToolbar);
+	delete(bitmapWindowRender);
 	delete(bitmapWindow);
 	delete(scrollbar);
 	delete(sliderVideo);

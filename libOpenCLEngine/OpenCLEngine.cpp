@@ -35,6 +35,30 @@ COpenCLContext * COpenCLEngine::CreateInstance()
 	return contextLocal;
 }
 
+
+COpenCLContext* COpenCLEngine::Create2DInstance()
+{
+	COpenCLContext* contextLocal = nullptr;
+	try
+	{
+
+		compute::device gpu = compute::system::default_device();
+		compute::context context(gpu);
+		contextLocal = new COpenCLContext(context,
+			false);
+	}
+	catch (...)
+	{
+		return nullptr;
+	}
+
+	cv::ocl::setUseOpenCL(true);
+	contextLocal->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
+		contextLocal->GetContext().get_device().platform().name(), contextLocal->GetContext().get_device().platform().id(), contextLocal->GetContext(), contextLocal->GetContext().get_device().id()));
+
+	return contextLocal;
+}
+
 int COpenCLEngine::SupportOpenCL()
 {
 	int supportOpenCL = 0;

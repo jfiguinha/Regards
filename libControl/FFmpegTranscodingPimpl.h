@@ -57,7 +57,7 @@ public:
 	};
 
 
-	CFFmpegTranscodingPimpl(const wxString& acceleratorHardware, COpenCLContext* openclContext): stream_ctx(nullptr),
+	CFFmpegTranscodingPimpl(const wxString& acceleratorHardware): stream_ctx(nullptr),
 		m_dlgProgress(nullptr),
 		videoCompressOption(nullptr), duration{}
 	{
@@ -74,7 +74,11 @@ public:
 
 		if (supportOpenCL)
 		{
-			this->openclContext = openclContext;
+			if (openclContext == nullptr)
+			{
+				openclContext = Regards::OpenCL::COpenCLEngine::Create2DInstance();
+			}
+
 			if (openclContext != nullptr)
 				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
@@ -202,8 +206,8 @@ private:
 	AVPacket packet;
 	bool cleanPacket = false;
 	int rotation = 0;
-	COpenCLContext* openclContext = nullptr;
 	CRegardsBitmap* bitmapVideo = nullptr;
+	COpenCLContext* openclContext = nullptr;
 	std::thread* bitmapShow = nullptr;
 	CompressVideo* m_dlgProgress;
 	mutex muEnding;
@@ -238,8 +242,7 @@ private:
 	CRegardsBitmap* bitmapCopy = nullptr;
 	CRegardsBitmap* bitmapData = nullptr;
 	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
-	//bool hardwareDecode = false;
-	//bool yuvDecodeInit = false;
+	
 	bool showpreview = false;
 
 	//int oldPos = 0;

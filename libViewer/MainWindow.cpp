@@ -12,6 +12,8 @@
 #include "SqlFindPhotos.h"
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
+#include <BitmapWndViewer.h>
+#include <BitmapWnd3d.h>
 #include "Toolbar.h"
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
@@ -31,9 +33,8 @@
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
 #include <ffmpeg_application.h>
-#include <ShowBitmap.h>
 #include "WaitingWindow.h"
-#include <ShowVideo.h>
+#include <ShowElement.h>
 #include <ffmpeg_transcoding.h>
 #include <wx/filedlg.h>
 #include <CompressionAudioVideoOption.h>
@@ -467,8 +468,12 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		}
 	}
 
-	auto videoWindow = static_cast<CVideoControlSoft*>(this->FindWindowById(VIDEOCONTROL));
-	if (compressAudioVideoOption == nullptr)
+	CVideoControlSoft* videoWindow = nullptr;
+	auto windowRender = static_cast<CBitmapWnd3D*>(this->FindWindowById(VIDEOCONTROL));
+	if (windowRender != nullptr)
+		videoWindow = (CVideoControlSoft *)windowRender->GetWndPt();
+
+	if(compressAudioVideoOption == nullptr)
 		compressAudioVideoOption = new CompressionAudioVideoOption(this);
 
 	compressAudioVideoOption->SetFile(filename, filepath);
@@ -529,7 +534,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							if (wxFileExists(filepath))
 								wxRemoveFile(filepath);
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
+							ffmpegEncoder = new CFFmpegTranscoding(decoder);
 							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
 						}
 					}
@@ -596,7 +601,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutVideo))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
+							ffmpegEncoder = new CFFmpegTranscoding(decoder);
 							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption);
 							isAudio = true;
 						}
@@ -608,7 +613,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutAudio))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder, videoWindow->GetOpenclContext());
+							ffmpegEncoder = new CFFmpegTranscoding(decoder);
 							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption);
 							isAudio = false;
 						}
@@ -645,9 +650,16 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	}
 	else
 	{
-		auto bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+		CBitmapWndViewer* viewer = nullptr;
+		auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
 		if (bitmapWindow != nullptr)
-			bitmapWindow->ExportPicture();
+		{
+			viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		}
+
+		//auto bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
+		if (viewer != nullptr)
+			viewer->ExportPicture();
 	}
 }
 
@@ -703,7 +715,7 @@ void CMainWindow::OnPrint(wxCommandEvent& event)
 	bool showPrintPicture = true;
 	if (centralWnd->IsVideo())
 	{
-		auto video = dynamic_cast<CShowVideo*>(this->FindWindowById(SHOWVIDEOVIEWERID));
+		auto video = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (video != nullptr)
 		{
 			if (video->IsPause())
@@ -1401,7 +1413,7 @@ void CMainWindow::TransitionEnd()
 
 	if (!centralWnd->IsDiaporamaStart())
 	{
-		auto showBitmap = static_cast<CShowBitmap*>(this->FindWindowById(SHOWBITMAPVIEWERID));
+		auto showBitmap = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (showBitmap != nullptr)
 		{
 			showBitmap->TransitionEnd();

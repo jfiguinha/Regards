@@ -3,19 +3,23 @@
 #include "PreviewToolbar.h"
 #include "SliderVideoPreview.h"
 #include "ScrollbarWnd.h"
-#include "BitmapWnd.h"
 #include <VideoCompressOption.h>
-using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 class CRegardsBitmap;
 class CFFmpegDecodeFrameFilter;
 class CFFmpegTranscodingPimpl;
 class CFFmpegDecodeFrame;
-
+class CRegardsConfigParam;
+class CImageLoadingFormat;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CBitmapWndRender;
+		class CBitmapWnd2D;
+	}
 	namespace Control
 	{
 		class CShowPreview : public CWindowMain, public CSliderInterface
@@ -69,7 +73,8 @@ namespace Regards
 			CScrollbarWnd* scrollbar;
 			CPreviewToolbar* previewToolbar;
 			CSliderVideoPreview* sliderVideo;
-			CBitmapWnd* bitmapWindow;
+			CBitmapWndRender * bitmapWindow;
+			CBitmapWnd2D * bitmapWindowRender;
 			CRegardsConfigParam* configRegards;
 
 			bool defaultToolbar;

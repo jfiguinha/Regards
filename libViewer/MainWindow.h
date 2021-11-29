@@ -108,7 +108,6 @@ namespace Regards
 			void UpdateFolder();
 			void PhotoProcess(CPhotos* photo);
 
-			CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
 			wxString tempVideoFile = "";
 			wxString tempAudioVideoFile = "";
 			bool fullscreen;
@@ -116,7 +115,7 @@ namespace Regards
 			wxStatusBar* statusBar;
 			CToolbar* toolbar;
 			CCentralWindow* centralWnd;
-
+			CompressionAudioVideoOption * compressAudioVideoOption = nullptr;
 			IStatusBarInterface* statusBarViewer;
 			wxRect posWindow;
 			PhotosVector pictures;

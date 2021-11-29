@@ -497,11 +497,14 @@
     <ClInclude Include="BitmapInfosCheckBox.h" />
     <ClInclude Include="BitmapInfosGps.h" />
     <ClInclude Include="BitmapInterface.h" />
-    <ClInclude Include="BitmapWnd.h" />
+    <ClInclude Include="BitmapWnd2d.h" />
+    <ClInclude Include="BitmapWnd3d.h" />
+    <ClInclude Include="BitmapWndRender.h" />
     <ClInclude Include="CalendarDialogBox.h" />
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="IBitmapRenderInterface.h" />
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="SliderInterface.h" />
@@ -568,7 +571,9 @@
     <ClCompile Include="BitmapInfos.cpp" />
     <ClCompile Include="BitmapInfosCheckBox.cpp" />
     <ClCompile Include="BitmapInfosGps.cpp" />
-    <ClCompile Include="BitmapWnd.cpp" />
+    <ClCompile Include="BitmapWnd2d.cpp" />
+    <ClCompile Include="BitmapWnd3d.cpp" />
+    <ClCompile Include="BitmapWndRender.cpp" />
     <ClCompile Include="CalendarDialogBox.cpp" />
     <ClCompile Include="CalendarSelect.cpp" />
     <ClCompile Include="ClickToolbar.cpp" />

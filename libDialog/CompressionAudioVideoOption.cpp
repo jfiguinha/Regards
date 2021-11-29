@@ -50,10 +50,7 @@ static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& m
 CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 {
 	isOk = false;
-	this->videoFilename = videoFilename;
 	videoEffectParameter = new CVideoEffectParameter();
-
-
 	//(*Initialize(CompressionAudioVideoOption)
 	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressionAudioVideoOption"),_T("wxDialog"));
 	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
@@ -208,8 +205,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 #else
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID,
-	                                    viewerTheme);
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);

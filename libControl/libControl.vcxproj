@@ -535,8 +535,7 @@
     <ClInclude Include="NoneEffectTextureEffect.h" />
     <ClInclude Include="PageCurlFilter.h" />
     <ClInclude Include="PrintEngine.h" />
-    <ClInclude Include="ShowBitmap.h" />
-    <ClInclude Include="ShowVideo.h" />
+    <ClInclude Include="ShowElement.h" />
     <ClInclude Include="SliderVideo.h" />
     <ClInclude Include="SlideToolbar.h" />
     <ClInclude Include="SplitterWithPanel.h" />
@@ -586,8 +585,7 @@
     <ClCompile Include="MoveEffectTexture.cpp" />
     <ClCompile Include="PageCurlFilter.cpp" />
     <ClCompile Include="PrintEngine.cpp" />
-    <ClCompile Include="ShowBitmap.cpp" />
-    <ClCompile Include="ShowVideo.cpp" />
+    <ClCompile Include="ShowElement.cpp" />
     <ClCompile Include="SliderVideo.cpp" />
     <ClCompile Include="SlideToolbar.cpp" />
     <ClCompile Include="SplitterWithPanel.cpp" />

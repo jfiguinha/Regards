@@ -36,7 +36,6 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 		loadFromDatabase = config->GetOpenCLLoadFromBinaries();
 	}
 
-	bool error = false;
 	compute::context context_local = context->GetContext();
 	try
 	{

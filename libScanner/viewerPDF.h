@@ -10,8 +10,7 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CShowBitmap;
-		
+		class CShowElement;
 	}
 }
 
@@ -75,7 +74,7 @@ namespace Regards
 			CPanelInfosWnd * panelInfosWindow;
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
-			CShowBitmap * showBitmapWindow;
+			CShowElement * showBitmapWindow;
 			bool checkValidity;
 			bool isFullscreen;
 			wxString filename;

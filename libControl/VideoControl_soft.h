@@ -1,6 +1,5 @@
 #pragma once
 #include "VideoControlInterface.h"
-#include "WindowOpenGLMain.h"
 #include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 #include <OpenCLEffectVideoYUV.h>
@@ -15,8 +14,9 @@ extern "C" {
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
 #include <ParamInit.h>
-
 #include "RenderVideoOpenGL.h"
+#include <wx/glcanvas.h>
+#include <IBitmapRenderInterface.h>
 
 using namespace Regards::Window;
 using namespace Regards::Video;
@@ -27,12 +27,12 @@ class CFFmfc;
 class CThumbnailVideo;
 class Chqdn3d;
 
-class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
+class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInterface
 {
 public:
-	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain* windowMain, IVideoInterface* eventPlayer);
+	CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
-	COpenCLContext * GetOpenclContext();
+	void SetParent(wxWindow* parent) override;
 	void ReloadResource();
 	bool IsPause();
 	void SetVideoDuration(const int64_t& duration, const int64_t& startTime) override;
@@ -65,27 +65,11 @@ public:
 	int getWidth() override;
 	int getHeight() override;
 
-	wxWindow* GetWindow()
-	{
-		return this;
-	}
-
-	static CVideoControlSoft* CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain* windowMain,
-	                                       IVideoInterface* eventPlayer);
-
 	void SetSubtitulePicture(CRegardsBitmap* picture) override;
 	void DeleteSubtitulePicture() override;
 
-	bool GetPausedValue()
-	{
-		return pause;
-	};
-
-	void RedrawFrame()
-	{
-		this->Refresh();
-	}
-
+	bool GetPausedValue();
+	void RedrawFrame();
 	void SetRotation(const int& rotation) override;
 	void SetData(void* data, const float& sample_aspect_ratio, void* WIN32Context) override;
 	void UpdateScreenRatio() override;
@@ -97,7 +81,43 @@ public:
 	void PlayFirstMovie(const bool& firstMovie);
 	void SetEncoderHardware(const wxString& encoderHardware, const bool& opengl);
 
+	virtual void OnIdle(wxIdleEvent& evt) override;
+	virtual void OnPaint3D(wxGLCanvas* canvas) override;
+	virtual void OnPaint2D(wxWindow * gdi) override;
+	virtual void OnMouseMove(wxMouseEvent& event) override;
+	virtual void OnLButtonDown(wxMouseEvent& event) override;
+	virtual void OnRButtonDown(wxMouseEvent& event) override; 
+	virtual void OnLButtonUp(wxMouseEvent& event) override;
+	virtual void OnLDoubleClick(wxMouseEvent& event) override{};
+	virtual void OnMouseWheel(wxMouseEvent& event) override {};
+	virtual void OnKeyDown(wxKeyEvent& event) override;
+	virtual void OnKeyUp(wxKeyEvent& event) override;
+
+	virtual void OnTimer(wxTimerEvent& event) override;
+	virtual void OnCommand(wxCommandEvent& event) override;
+	virtual vector<int> GetListTimer() override;
+	virtual vector<int> GetListCommand() override;
+	virtual void SetEndProgram(const bool& endProgram) override;
+	virtual int UpdateResized() override;
+
 protected:
+
+	void OnSetPosition(wxCommandEvent& event);
+	void OnLeftPosition(wxCommandEvent& event);
+	void OnTopPosition(wxCommandEvent& event);
+	void EndVideoThread(wxCommandEvent& event);
+	void VideoRotation(wxCommandEvent& event);
+	void OnScrollMove(wxCommandEvent& event);
+
+	void OnShowFPS(wxTimerEvent& event);
+	void OnPlayStart(wxTimerEvent& event);
+	void OnPlayStop(wxTimerEvent& event);
+
+
+	void CalculPositionPicture(const float& x, const float& y);
+	static void GenerateThumbnailVideo(void* data);
+	int IsSupportOpenCL();
+
 	bool ApplyOpenCVEffect(CRegardsBitmap* pictureFrame);
 	bool IsHardwareCompatible();
 	float GetHauteurMax();
@@ -108,30 +128,17 @@ protected:
 	void MoveLeft();
 	void MoveBottom();
 	void MoveRight();
-	void OnSetPosition(wxCommandEvent& event);
-	void OnKeyUp(wxKeyEvent& event);
-	void OnKeyDown(wxKeyEvent& event);
-	void OnLeftPosition(wxCommandEvent& event);
-	void OnTopPosition(wxCommandEvent& event);
-	void CalculPositionPicture(const float& x, const float& y);
-	static void GenerateThumbnailVideo(void* data);
-	int IsSupportOpenCL();
-	void OnRefresh(wxCommandEvent& event) ;
+
+
 	bool GetProcessEnd() override;
-	void EndVideoThread(wxCommandEvent& event);
-	virtual void on_paint(wxPaintEvent& event);
-	void OnRButtonDown(wxMouseEvent& event);
-	void VideoRotation(wxCommandEvent& event);
-	void OnIdle(wxIdleEvent& evt);
-	void OnShowFPS(wxTimerEvent& event);
-	void OnPlayStart(wxTimerEvent& event);
+
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	GLTexture* RenderToGLTexture();
 	GLTexture* RenderToTexture(CRegardsBitmap* bitmap);
 	GLTexture* RenderToTexture(COpenCLEffectVideo* openclEffect);
 	GLTexture* RenderFFmpegToTexture();
-	void OnScrollMove(wxCommandEvent& event);
+
 	void ZoomOn();
 	void ZoomOut();
 	void CalculCenterPicture();
@@ -142,9 +149,7 @@ protected:
 	int GetBitmapHeight();
 	void MouseClick(const int& xPos, const int& yPos);
 	void MouseRelease(const int& xPos, const int& yPos);
-	void OnMouseMove(wxMouseEvent& event);
-	void OnLButtonDown(wxMouseEvent& event);
-	void OnLButtonUp(wxMouseEvent& event);
+
 	void TestMaxX();
 	void TestMaxY();
 	GLTexture* RenderFFmpegToTexture(CRegardsBitmap* source);
@@ -162,6 +167,10 @@ protected:
 	int GetSrcBitmapWidth();
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();
+
+	void GetDenoiserPt(const int& width, const int& height);
+	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
+
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;
@@ -198,8 +207,8 @@ protected:
 	GLTexture* glTextureSrc = nullptr;
 	CRegardsBitmap* bitmap = nullptr;
 	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
-	COpenCLContext* openclContext = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
+	COpenCLContext* openclContext = nullptr;
 	CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;
@@ -240,14 +249,14 @@ protected:
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
-	void GetDenoiserPt(const int& width, const int& height);
-	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
+
 	bool firstMovie = true;
 	wxTimer* playStopTimer;
-	void OnPlayStop(wxTimerEvent& event);
+
 	CRegardsBitmap* previousFrame = nullptr;
 	CRegardsBitmap* bitmapData = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;
 	SwsContext* localContext = nullptr;
-	//bool reloadResource = false;
+	wxWindow* parentRender = nullptr;
+	bool endProgram = false;
 };

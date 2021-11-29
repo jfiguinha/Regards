@@ -2,7 +2,7 @@
 #include "BitmapToolbar.h"
 #include <LibResource.h>
 #include "BitmapWndViewer.h"
-
+#include "BitmapWnd3D.h"
 
 using namespace Regards::Control;
 
@@ -82,18 +82,24 @@ CBitmapToolbar::~CBitmapToolbar()
 
 void CBitmapToolbar::ZoomPos(const int& position)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
-
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->SetRatioPos(position);
+	{
+		CBitmapWndViewer* wndViewer =(CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if(wndViewer != nullptr)
+			wndViewer->SetRatioPos(position);
+	}
+		
 }
 
 void CBitmapToolbar::ZoomOn()
 {
-	auto bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = dynamic_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		bitmapWindow->ZoomOn();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+			wndViewer->ZoomOn();
 	}
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
@@ -102,37 +108,50 @@ void CBitmapToolbar::ZoomOn()
 
 void CBitmapToolbar::ChangeZoomInPos()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		int dwPos = bitmapWindow->GetPosRatio();
-		dwPos++;
-		if (dwPos >= slide->GetNbValue())
-			dwPos = slide->GetNbValue() - 1;
-		SetTrackBarPosition(dwPos);
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+		{
+			int dwPos = wndViewer->GetPosRatio();
+			dwPos++;
+			if (dwPos >= slide->GetNbValue())
+				dwPos = slide->GetNbValue() - 1;
+			SetTrackBarPosition(dwPos);
+		}
+
+
 	}
 }
 
 void CBitmapToolbar::ChangeZoomOutPos()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		int dwPos = bitmapWindow->GetPosRatio();
-		dwPos--;
-		if (dwPos < 0)
-			dwPos = 0;
-		SetTrackBarPosition(dwPos);
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+		{
+			int dwPos = wndViewer->GetPosRatio();
+			dwPos--;
+			if (dwPos < 0)
+				dwPos = 0;
+			SetTrackBarPosition(dwPos);
+		}
 	}
 }
 
 
 void CBitmapToolbar::ZoomOut()
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->ZoomOut();
-
+	{
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+			wndViewer->ZoomOut();
+	}
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
 	ChangeZoomOutPos();
 }
@@ -184,58 +203,54 @@ void CBitmapToolbar::HideExportButton()
 */
 void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
-		bitmapWindow->SetZoomPosition(position);
+	{
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
+			wndViewer->SetZoomPosition(position);
+	}
 }
 
 
 void CBitmapToolbar::EventManager(const int& id)
 {
-	auto bitmapWindow = static_cast<CBitmapWndViewer*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		switch (id)
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (wndViewer != nullptr)
 		{
-		case WM_IMPRIMER:
-			if (bitmapWindow != nullptr)
-				bitmapWindow->PrintPicture();
-			break;
-		case IDM_SETSHRINK:
-			if (bitmapWindow != nullptr)
-				bitmapWindow->ShrinkImage();
-			break;
-
-		case WM_EXPORT:
+			switch (id)
 			{
-				if (bitmapWindow != nullptr)
-				{
-					if (exportPicture)
-						bitmapWindow->ExportPicture();
-					else
-						bitmapWindow->SavePicture();
-				}
+			case WM_IMPRIMER:
+				wndViewer->PrintPicture();
+				break;
+			case IDM_SETSHRINK:
+				wndViewer->ShrinkImage();
+				break;
 
+			case WM_EXPORT:
+			{
+				if (exportPicture)
+					wndViewer->ExportPicture();
+				else
+					wndViewer->SavePicture();
 				break;
 			}
-			/*
-			case WM_SAVE:
-				if (bitmapWindow != nullptr)
-					bitmapWindow->SavePicture();
+			case WM_EMAIL:
+				wndViewer->SendEmail();
 				break;
-	*/
-		case WM_EMAIL:
-			if (bitmapWindow != nullptr)
-				bitmapWindow->SendEmail();
-			break;
 
-		case WM_ZOOMOUT:
-			ZoomOut();
-			break;
-		case WM_ZOOMON:
-			ZoomOn();
-			break;
-		default: ;
+			case WM_ZOOMOUT:
+				ZoomOut();
+				break;
+			case WM_ZOOMON:
+				ZoomOn();
+				break;
+			default:;
+			}
 		}
+
 	}
 }

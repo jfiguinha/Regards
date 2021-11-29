@@ -1,5 +1,5 @@
 #pragma once
-#include "BitmapWnd.h"
+#include "BitmapWndRender.h"
 #include <BitmapInterface.h>
 #include "AfterEffect.h"
 #include <FiltreUpdate.h>
@@ -38,12 +38,12 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CBitmapWndViewer : public CBitmapWnd, public IFiltreUpdate
+		class CBitmapWndViewer : public CBitmapWndRender, public IFiltreUpdate
 		{
 		public:
-			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID mainViewerId,
-			                 const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface);
-			~CBitmapWndViewer() override;
+			CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainViewerId, const CThemeBitmapWindow& theme, CBitmapInterface* bitmapInterface);
+			~CBitmapWndViewer() ;
+			void SetParent(wxWindow* parent) override;
 			CEffectParameter* GetParameter() override;
 			void SetListener(IMouseUpdate* mouseUpdate);
 			void RemoveListener(const bool& applyCancel = true) override;
@@ -68,6 +68,14 @@ namespace Regards
 			void StopTransitionEffect(CImageLoadingFormat* bmpSecond) override;
 			wxPoint GetMousePosition();
 			void CalculCenterPositionPicture() override;
+
+			void OnTransition(wxTimerEvent& event);
+			void OnClick(wxTimerEvent& event);
+
+			void OnTimer(wxTimerEvent& event) override;
+
+			vector<int> GetListTimer() override;
+			
 
 		private:
 			bool IsOpenCLCompatible();
@@ -96,8 +104,7 @@ namespace Regards
 			int GetRawBitmapHeight() override;
 			void AfterSetBitmap() override;
 			void EndTransition();
-			void OnTransition(wxTimerEvent& event);
-			void OnClick(wxTimerEvent& event);
+
 			virtual void BeforeInterpolationBitmap() override;
 
 			wxCursor hCursorCross;
@@ -115,14 +122,14 @@ namespace Regards
 			bool isDiaporama;
 			bool isInUse;
 			bool invertColor;
-			wxTimer* transitionTimer;
-			wxTimer* selectEffectTimer;
-			wxTimer* clickTimer;
+
 			int typeClick = 0;
 			bool isNext = false;
 			int oldTransNumEffect = -1;
 			wxRect arrowPrevious;
 			wxRect arrowNext;
+			wxTimer* transitionTimer;
+			wxTimer* clickTimer;
 		};
 	}
 }

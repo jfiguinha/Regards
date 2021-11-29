@@ -19,6 +19,7 @@ namespace Regards
 		{
 		public:          
 			static COpenCLContext* CreateInstance();
+			static COpenCLContext* Create2DInstance();
 			static int SupportOpenCL();
 		};
 

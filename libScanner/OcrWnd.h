@@ -41,7 +41,6 @@ namespace Regards
 			void OnOcrPDF(wxCommandEvent& event);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			void OnSelRead(wxCommandEvent& aEvent);
-			void OnExport(wxCommandEvent& event);
 			wxRect FindRect(wxString ocr_title);
 			void tesseract_preprocess(wxString source_file, wxString out_file);
 			void OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language);
