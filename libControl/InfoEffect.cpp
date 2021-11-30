@@ -7,7 +7,7 @@
 #include <ImageLoadingFormat.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include "BitmapWnd3D.h"
+#include "BitmapWnd3d.h"
 #include "BitmapWndViewer.h"
 #include <TreeData.h>
 #include <TreeElementControlInterface.h>

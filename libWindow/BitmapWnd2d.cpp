@@ -1,6 +1,6 @@
 // ReSharper disable All
 #include "header.h"
-#include "BitmapWnd2D.h"
+#include "BitmapWnd2d.h"
 #include "BitmapWndRender.h"
 
 extern COpenCLContext* openclContext2d;

@@ -1,6 +1,6 @@
 // ReSharper disable All
 #include "header.h"
-#include "BitmapWnd3D.h"
+#include "BitmapWnd3d.h"
 #include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
 #include <OpenCLContext.h>

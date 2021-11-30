@@ -10,7 +10,7 @@
 #include "InfoEffectWnd.h"
 #include "CloudsEffectParameter.h"
 #include "BitmapWndViewer.h"
-#include "BitmapWnd3D.h"
+#include "BitmapWnd3d.h"
 #include <window_id.h>
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>

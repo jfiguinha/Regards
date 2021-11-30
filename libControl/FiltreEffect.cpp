@@ -6,7 +6,7 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include "BitmapWndViewer.h"
-#include "BitmapWnd3D.h"
+#include "BitmapWnd3d.h"
 #include <TreeElementTexte.h>
 #include <TreeElementSlide.h>
 #include <TreeElementTriangle.h>

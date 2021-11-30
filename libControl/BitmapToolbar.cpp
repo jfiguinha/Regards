@@ -2,7 +2,7 @@
 #include "BitmapToolbar.h"
 #include <LibResource.h>
 #include "BitmapWndViewer.h"
-#include "BitmapWnd3D.h"
+#include "BitmapWnd3d.h"
 
 using namespace Regards::Control;
 

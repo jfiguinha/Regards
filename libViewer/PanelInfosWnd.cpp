@@ -2,7 +2,7 @@
 #include "PanelInfosWnd.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
-#include <BitmapWnd3D.h>
+#include <BitmapWnd3d.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <window_id.h>

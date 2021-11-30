@@ -26,6 +26,8 @@
     <File Name="GLTexture.h"/>
     <File Name="RenderOpenGL.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options=";-Wall;" Assembler="">
@@ -34,12 +36,9 @@
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libOpenCLEngine"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libPicture"/>
-        <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../Otherlib/wxSVG/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -123,6 +122,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

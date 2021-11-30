@@ -25,7 +25,7 @@
 #include <window_id.h>
 #include "SlideToolbar.h"
 #include <ViewerParam.h>
-#include <BitmapWnd3D.h>
+#include <BitmapWnd3d.h>
 #include <SavePicture.h>
 #include <ImageLoadingFormat.h>
 using namespace Regards::Video;

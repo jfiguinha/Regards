@@ -7,7 +7,7 @@
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <BitmapWndViewer.h>
-#include <BitmapWnd3D.h>
+#include <BitmapWnd3d.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <libPicture.h>

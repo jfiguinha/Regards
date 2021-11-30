@@ -9,7 +9,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <array>
-#include <BitmapWnd2D.h>
+#include <BitmapWnd2d.h>
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
