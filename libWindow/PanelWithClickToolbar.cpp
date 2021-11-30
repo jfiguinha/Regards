@@ -255,12 +255,12 @@ void CPanelWithClickToolbar::ShowPanel()
 	{
 		clickWindow->Show(false);
 		paneWindow->Show(true);
-		paneWindow->ForceRefresh();
+		paneWindow->Refresh();
 	}
 	else
 	{
 		clickWindow->Show(true);
 		paneWindow->Show(false);
-		clickWindow->ForceRefresh();
+		clickWindow->Refresh();
 	}
 }

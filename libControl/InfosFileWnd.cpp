@@ -48,16 +48,11 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 		delete(oldInfosFileControl);
 		oldInfosFileControl = threadInfos->infosFileWnd;
 	}
-	// else
-	//     delete(threadInfos->infosFileWnd);
 
 	threadInfos->threadLoadInfos->join();
 	delete threadInfos->threadLoadInfos;
 	delete threadInfos;
 
-	//this->ForceRefresh();
-	//treeWindow->Refresh();
-	//treeWindow->Update();
 }
 
 void CInfosFileWnd::InfosUpdate(const wxString& filename)

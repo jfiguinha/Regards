@@ -169,8 +169,7 @@ void CPreviewToolbar::SetTrackBarPosition(const int& iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		ForceRefresh();
-		//this->Update();
+		Refresh();
 	}
 }
 

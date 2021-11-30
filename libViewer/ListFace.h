@@ -37,7 +37,6 @@ namespace Regards
 			void SetActifItem(const int& numItem, const bool& move);
 			int GetThumbnailHeight();
 			void Resize() override;
-			void ForceRefresh() override;
 			void ClosePane() override;
 			void RefreshPane() override;
 			void FacialRecognitionReload();

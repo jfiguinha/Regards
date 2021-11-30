@@ -525,9 +525,7 @@ void CPanelInfosWnd::LoadInfo()
 	default: ;
 	}
 	//}
-	this->ForceRefresh();
-	//this->Refresh();
-	this->Update();
+	this->Refresh();
 
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)

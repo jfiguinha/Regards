@@ -47,16 +47,10 @@ namespace Regards
 				this->ProcessOnIdleEndEvent(event);
 			}
 
-			virtual void ForceRefresh()
-			{
-				this->Refresh();
-				this->Update();
-			}
-
 			void Resize() override
 			{
 				this->Refresh();
-				this->Update();
+				//this->Update();
 			}
 
 			virtual void SetSizeWindow(const int& x, const int& y, const int& width, const int& height)

@@ -37,9 +37,7 @@ namespace Regards
 			void SetWindow(CWindowMain * window, bool isPanel);
 
 			void SetWindow(CWindowOpenGLMain * window, bool isPanel);
-
-			void ForceRefresh();
-		
+	
 			wxRect rect;
 			wxRect rect_old;
 			Pos position;

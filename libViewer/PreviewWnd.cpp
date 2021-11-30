@@ -507,14 +507,12 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail
 			if (isOldState != 1)
 			{
 				this->Resize();
-				this->ForceRefresh();
 			}
 			isOldState = 1;
 		}
 		else if (!isThumbnail)
 		{
 			showElement->SetBitmap(bitmap, isThumbnail);
-			this->ForceRefresh();
 		}
 	}
 	return true;

@@ -469,7 +469,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	}
 
 	CVideoControlSoft* videoWindow = nullptr;
-	auto windowRender = static_cast<CBitmapWnd3D*>(this->FindWindowById(VIDEOCONTROL));
+	auto windowRender = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
 	if (windowRender != nullptr)
 		videoWindow = (CVideoControlSoft *)windowRender->GetWndPt();
 

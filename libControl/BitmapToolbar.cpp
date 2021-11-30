@@ -172,35 +172,11 @@ void CBitmapToolbar::SetTrackBarPosition(const int& iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		ForceRefresh();
-		//this->Update();
-	}
-}
-/*
-void CBitmapToolbar::ShowExportButton()
-{
-	if (export_button != nullptr)
-	{
-		if (!export_button->IsVisible())
-		{
-			export_button->SetVisible(true);
-			Refresh();
-		}
+		Refresh();
+
 	}
 }
 
-void CBitmapToolbar::HideExportButton()
-{
-	if (export_button != nullptr)
-	{
-		if (export_button->IsVisible())
-		{
-			export_button->SetVisible(false);
-			Refresh();
-		}
-	}
-}
-*/
 void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 {
 	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));

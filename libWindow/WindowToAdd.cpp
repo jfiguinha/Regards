@@ -50,11 +50,3 @@ void CWindowToAdd::SetWindow(CWindowOpenGLMain* window, bool isPanel)
 	this->windowOpengl = window;
 	this->isPanel = isPanel;
 }
-
-void CWindowToAdd::ForceRefresh()
-{
-	if (this->window != nullptr)
-		this->window->ForceRefresh();
-	else if (windowOpengl != nullptr)
-		windowOpengl->ForceRefresh();
-}

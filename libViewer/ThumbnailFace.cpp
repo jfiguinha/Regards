@@ -53,7 +53,7 @@ void CThumbnailFace::OnPictureClick(CThumbnailData* data)
 	CLibPicture libPicture;
 	if (libPicture.TestIsVideo(data->GetFilename()))
 	{
-		wxWindow* window = this->FindWindowById(SHOWVIDEOVIEWERID);
+		wxWindow* window = this->FindWindowById(BITMAPWINDOWVIEWERID);
 		if (window != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_SETPOSITION);

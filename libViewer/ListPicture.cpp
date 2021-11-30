@@ -119,13 +119,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_GENERATEINDEXFILE, wxCommandEventHandler(CListPicture::GenerateIndexFile));
 }
 
-void CListPicture::ForceRefresh()
-{
-	thumbToolbar->ForceRefresh();
-	thumbToolbarZoom->ForceRefresh();
-	thumbnailFolder->ForceRefresh();
-}
-
 CListPicture::~CListPicture()
 {
 	int positionTab = thumbnailFolder->GetTabValue();
@@ -1101,6 +1094,6 @@ void CListPicture::Resize()
 	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
 		//windowManager->Resize();
-		this->ForceRefresh();
+		this->Refresh();
 	}
 }

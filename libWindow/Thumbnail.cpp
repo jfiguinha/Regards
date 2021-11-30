@@ -272,7 +272,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	numOldItem = numItem;
 	moveOnPaint = true;
-	this->ForceRefresh();
+	this->Refresh();
 }
 
 int CThumbnail::ImageSuivante()
