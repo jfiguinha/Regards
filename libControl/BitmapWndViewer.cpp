@@ -232,12 +232,7 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
 	: CBitmapWndRender(slider, mainViewerId, theme)
 {
 	
-	//TRACE();
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	const double scale_factor = 1.0f;
-#endif
+
 
 	mouseUpdate = nullptr;
 	etape = 0;
@@ -259,7 +254,22 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
 	afterEffect = nullptr;
 
 
+}
 
+void CBitmapWndViewer::SetParent(wxWindow* parent)
+{
+	parentRender = parent;
+    
+	//TRACE();
+#ifndef WIN32
+	double scale_factor = parentRender->GetContentScaleFactor();
+#else
+	const double scale_factor = 1.0f;
+#endif
+    
+	transitionTimer = new wxTimer(parentRender, TIMER_TRANSITION);
+	clickTimer = new wxTimer(parentRender, TIMER_CLICK);
+    
 	arrowPrevious.x = 0;
 	arrowPrevious.y = 0;
 	arrowPrevious.width = 32 * scale_factor;
@@ -269,13 +279,6 @@ CBitmapWndViewer::CBitmapWndViewer(CSliderInterface* slider, wxWindowID mainView
 	arrowNext.y = 0;
 	arrowNext.width = 32 * scale_factor;
 	arrowNext.height = 32 * scale_factor;
-}
-
-void CBitmapWndViewer::SetParent(wxWindow* parent)
-{
-	parentRender = parent;
-	transitionTimer = new wxTimer(parentRender, TIMER_TRANSITION);
-	clickTimer = new wxTimer(parentRender, TIMER_CLICK);
 }
 
 void CBitmapWndViewer::OnTimer(wxTimerEvent& event)
