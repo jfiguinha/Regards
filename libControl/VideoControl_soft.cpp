@@ -1637,8 +1637,12 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
+#ifdef WIN32
+	parentRender->Refresh();
+#else
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(parentRender, event);  
+#endif
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
