@@ -30,7 +30,7 @@ CThumbnailMultiPage::~CThumbnailMultiPage(void)
 void CThumbnailMultiPage::OnPictureClick(CThumbnailData * data)
 {
 	int timePosition = 0;
-	//wxWindow * mainWindow = (wxWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+
 	if (parent != nullptr && data != nullptr)
 	{
 		timePosition = data->GetTimePosition();

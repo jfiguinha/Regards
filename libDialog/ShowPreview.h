@@ -25,8 +25,7 @@ namespace Regards
 		class CShowPreview : public CWindowMain, public CSliderInterface
 		{
 		public:
-			CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId,
-			             CThemeParam* config);
+			CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config);
 			~CShowPreview() override;
 			void SetParameter(const wxString& videoFilename, CVideoOptionCompress* videoOptionCompress);
 			//bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);

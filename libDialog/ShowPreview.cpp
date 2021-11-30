@@ -34,8 +34,7 @@ void CShowPreview::UpdateScreenRatio()
 	this->Resize();
 }
 
-CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-                           wxWindowID mainViewerId, CThemeParam* config)
+CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
@@ -64,7 +63,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	previewToolbar = nullptr;
 
-	previewToolbar = new CPreviewToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false);
+	previewToolbar = new CPreviewToolbar(this, wxID_ANY, BITMAPWINDOWVIEWERIDDLG, themeToolbar, false);
 	previewToolbar->SetTabValue(value);
 
 	if (config != nullptr)
@@ -73,7 +72,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	themeBitmap.colorScreen = wxColour("black");
 
 	bitmapWindow = new CBitmapWndRender(previewToolbar, 0, themeBitmap);
-	bitmapWindowRender = new CBitmapWnd2D(this, bitmapViewerId);
+	bitmapWindowRender = new CBitmapWnd2D(this, BITMAPWINDOWVIEWERIDDLG);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)

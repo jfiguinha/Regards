@@ -202,11 +202,11 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 
 
 #ifdef __APPLE__
-	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme);
+	showBitmapWindow = new CShowPreview(this, SHOWBITMAPVIEWERDLGID, viewerTheme);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(panel->GetPosition().x + 20, panel->GetPosition().y + 25, panel->GetSize().x - 40, panel->GetSize().y - 100);
 #else
-	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, BITMAPWINDOWVIEWERIDDLG, MAINVIEWERWINDOWID, viewerTheme);
+	showBitmapWindow = new CShowPreview(panel, SHOWBITMAPVIEWERDLGID, viewerTheme);
 	showBitmapWindow->Show(true);
 	showBitmapWindow->SetSize(bitmapPreview->GetPosition().x, bitmapPreview->GetPosition().y,
 	                          bitmapPreview->GetSize().x, bitmapPreview->GetSize().y);
