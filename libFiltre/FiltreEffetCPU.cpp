@@ -156,7 +156,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			int starting_point = 0;//Starting point of the ellipse//
 			int ending_point = 360;//Ending point of the ellipse//
 			Scalar line_Color(255, 255, 255);//Color of the Ellipse//
-			int thickness =0;//thickens of the line//
+
 			//namedWindow("whiteMatrix");//Declaring a window to show the ellipse//
 			ellipse(mask, center, xy, angle, starting_point, ending_point, line_Color, -1, LINE_AA);//Drawing the ellipse
 

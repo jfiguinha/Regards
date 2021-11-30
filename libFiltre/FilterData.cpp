@@ -34,7 +34,7 @@
 #include "CropFilter.h"
 #include <hqdn3dFilter.h>
 #include <OilPaintingFilter.h>
-#include <BokehFilter.h>
+#include "BokehFilter.h"
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
 #include <effect_id.h>
