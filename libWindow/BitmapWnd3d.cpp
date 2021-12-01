@@ -7,6 +7,8 @@
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 
+extern COpenCLContext* openclContext2d;
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -172,20 +174,18 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	}
 
 #ifdef __WXGTK__
-	if (openclContext == nullptr)
-	{
-		openclContext = Regards::OpenCL::COpenCLEngine::Create2DInstance();
-	}
+    renderOpenGL->SetCurrent(*this);
+	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext2d);
 #else
 	if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 	}
+    renderOpenGL->SetCurrent(*this);
+	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
 #endif
 
-	renderOpenGL->SetCurrent(*this);
 
-	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
 }
 
 
