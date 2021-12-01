@@ -171,10 +171,17 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 		renderOpenGL->Init(this);
 	}
 
+#ifdef __WXGTK__
+	if (openclContext == nullptr)
+	{
+		openclContext = Regards::OpenCL::COpenCLEngine::Create2DInstance();
+	}
+#else
 	if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 	}
+#endif
 
 	renderOpenGL->SetCurrent(*this);
 

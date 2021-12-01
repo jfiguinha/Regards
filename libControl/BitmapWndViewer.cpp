@@ -131,6 +131,7 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 
+/*
 	if (openclContext != nullptr)
 	{
 		if (!openclContext->IsSharedContextCompatible())
@@ -142,7 +143,7 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 			}
 		}
 	}
-
+*/
 	loadBitmap = true;
 	parentRender->Refresh();
 }
