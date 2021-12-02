@@ -1487,8 +1487,6 @@ wxFileIconsTable::wxFileIconsTable()
 {
     m_HashTable = NULL;
     m_smallImageList = NULL;
-    //wxScreenDC dc;
-    //double scale_factor = dc.GetContentScaleFactor();
     m_size = wxSize(16, 16);
 }
 

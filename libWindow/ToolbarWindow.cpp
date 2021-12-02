@@ -213,9 +213,7 @@ void CToolbarWindow::RedrawElement(wxDC* dc, CToolbarElement* nav)
 
 void CToolbarWindow::DrawButton(wxDC* dc, CToolbarElement* nav)
 {
-	double scale_factor = 1.0f;
-
-	wxBitmap pictureBuffer(nav->GetWidth() * scale_factor, nav->GetHeight() * scale_factor);
+	wxBitmap pictureBuffer(nav->GetWidth(), nav->GetHeight());
 	wxMemoryDC memDC(pictureBuffer);
 
 	wxRect rc;
@@ -319,8 +317,6 @@ void CToolbarWindow::DrawBackground(wxDC* deviceContext, const wxRect& rc)
 
 void CToolbarWindow::DrawBackground(wxDC* deviceContext)
 {
-	// double scale_factor = 1.0f;
-
 	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
 		background.Create(GetWindowWidth(), GetWindowHeight());

@@ -406,12 +406,6 @@ void CBitmapWndViewer::DeterminePos(wxRect& rc, const int& nTailleAffichageWidth
 
 void CBitmapWndViewer::SetDessinRatio()
 {
-#ifndef WIN32
-    double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	wxRect rc, rc2;
 	int iLeft, iTop;
 	int iTailleWidth, iTailleHeight;
@@ -716,13 +710,6 @@ void CBitmapWndViewer::SetNextPictureMove(const bool& value)
 
 void CBitmapWndViewer::AfterRender()
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-
 	if (bitmapLoad)
 	{
 		//Affichage de la transition
@@ -758,12 +745,6 @@ void CBitmapWndViewer::AfterRender()
 
 void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	if (glTexture != nullptr)
 	{
 		int x = (GetWidth() * scale_factor - glTexture->GetWidth()) / 2;
@@ -816,13 +797,6 @@ void CBitmapWndViewer::KeyPress(const int& key)
 
 void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		

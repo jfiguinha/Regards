@@ -340,6 +340,8 @@ namespace Regards
 
 			bool endProgram = false;
 			wxWindow* parentRender = nullptr;
+            
+            double scale_factor = 1.0f;
 		};
 	}
 }

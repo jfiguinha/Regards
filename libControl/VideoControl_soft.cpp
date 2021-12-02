@@ -1053,22 +1053,12 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 
 int CVideoControlSoft::getWidth()
 {
-#ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-	return parentRender->GetSize().x * scale_factor;
+	return parentRender->GetSize().x;
 }
 
 int CVideoControlSoft::getHeight()
 {
-#ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-	return parentRender->GetSize().y * scale_factor;
+	return parentRender->GetSize().y;
 }
 
 void CVideoControlSoft::UpdateScreenRatio()

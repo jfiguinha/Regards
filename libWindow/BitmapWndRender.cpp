@@ -440,23 +440,11 @@ void CBitmapWndRender::CalculPositionPicture(const float& x, const float& y)
 
 int CBitmapWndRender::GetHPos()
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	return posLargeur * scale_factor;
 }
 
 int CBitmapWndRender::GetVPos()
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	return posHauteur * scale_factor;
 }
 
@@ -1077,12 +1065,6 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	switch (toolOption)
 	{
 	case MOVEPICTURE:
@@ -1326,12 +1308,6 @@ int CBitmapWndRender::UpdateResized()
 //------------------------------------------------------------------------------------
 void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 {
-	//TRACE();
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	const double scale_factor = 1.0f;
-#endif
 	const int xPos = event.GetX();
 	const int yPos = event.GetY();
 
@@ -1483,13 +1459,6 @@ void CBitmapWndRender::TestMaxPosition()
 void CBitmapWndRender::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize,
 	int& left, int& top, const bool& invert)
 {
-	//TRACE();
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 	int xValue = 0;
@@ -1594,13 +1563,6 @@ int CBitmapWndRender::GetExifOrientation(const int& angle)
 
 void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widthOutput, int& heightOutput)
 {
-	//TRACE();
-
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	int localAngle = angle;
 	int localflipHorizontal = flipHorizontal;
@@ -1610,9 +1572,7 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
-	//if(raw)
-	//	GenerateExifRawPosition(localAngle, localflipHorizontal, localflipVertical);
-	//else
+
 	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
 	if (GetWidth() * scale_factor >= widthOutput && GetHeight() * scale_factor >= heightOutput)
@@ -1661,12 +1621,6 @@ void CBitmapWndRender::SetPreview(const int& value)
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
-
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
 
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
@@ -1782,12 +1736,6 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 	CRgbaquad color;
 
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
@@ -1898,12 +1846,6 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 void CBitmapWndRender::RenderTexture(const bool& invertPos)
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	if (glTexture != nullptr)
 	{
 		int x = (GetWidth() * scale_factor - glTexture->GetWidth()) / 2;
@@ -2018,9 +1960,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext)
 {
 #ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
+	scale_factor = parentRender->GetContentScaleFactor();
 #endif
 
 	isOpenGLShow = true;
