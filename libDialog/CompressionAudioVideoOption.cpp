@@ -11,6 +11,7 @@
 #include "ShowPreview.h"
 #include <LibResource.h>
 #include <RegardsBitmap.h>
+#include <WindowUtility.h>
 extern "C" {
 #include <libavutil/error.h>
 }
@@ -223,6 +224,32 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
 	bitmap_local->RotateExif(orientation);
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
+	int x = 0;
+	int y = 0;
+	if (picture.GetHeight() > 240 || picture.GetWidth() >  340)
+	{
+		if (picture.GetWidth() > picture.GetHeight())
+		{
+			float ratio = 340.0 / picture.GetWidth();
+			picture = picture.ResampleBicubic(picture.GetWidth() * ratio, picture.GetHeight() * ratio);
+		}
+		else
+		{
+			float ratio = 240.0 / 340.0;
+			picture = picture.ResampleBicubic(picture.GetWidth() * ratio, picture.GetHeight() * ratio);
+		}
+		x = (340 - picture.GetWidth()) / 2;
+		y = (240 - picture.GetHeight()) / 2;
+
+	}
+
+	wxBitmap test_bitmap(340, 240);
+	wxMemoryDC temp_dc;
+	temp_dc.SelectObject(test_bitmap);
+	CWindowUtility winUtility;
+	winUtility.FillRect(&temp_dc, wxRect(0,0,340,240), *wxBLACK);
+	temp_dc.DrawBitmap(picture, x, y);
+	temp_dc.SelectObject(wxNullBitmap);
 	bitmap->SetBitmap(picture.Mirror(false));
 }
 
