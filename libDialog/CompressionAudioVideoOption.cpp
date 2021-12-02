@@ -221,7 +221,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
 	int orientation = ffmpegTranscoding->GetVideoOrientation();
-	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
+	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240, true);
 	bitmap_local->RotateExif(orientation);
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
 	int x = 0;
@@ -251,6 +251,8 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	temp_dc.DrawBitmap(picture.Mirror(false), x, y);
 	temp_dc.SelectObject(wxNullBitmap);
 	bitmap->SetBitmap(test_bitmap);
+
+	delete bitmap_local;
 }
 
 
