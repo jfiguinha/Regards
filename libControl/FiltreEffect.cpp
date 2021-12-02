@@ -62,13 +62,11 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* sour
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
 	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
-	if (bitmapWindow != nullptr)
+	if (!isVideo)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		if (bitmapWindow != nullptr)
+			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 	}
-
-
-	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(wxWindow::FindWindowById(bitmapWindowId));
 
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
@@ -97,9 +95,7 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* sour
 		bitmapViewer->SetListener(filterEffect);
 
 	if (bitmapViewer != nullptr)
-	{
 		bitmapViewer->UpdateFiltre(effectParameter);
-	}
 
 	CreateElement();
 }
