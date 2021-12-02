@@ -51,7 +51,7 @@ namespace Regards
 			void Resize() override
 			{
 				this->Refresh();
-				//this->Update();
+				this->Update();
 			}
 
 			virtual void SetSizeWindow(const int& x, const int& y, const int& width, const int& height)
