@@ -1993,13 +1993,10 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
             filterInterpolation);
 
         wxImage image = filtreEffet->GetwxImage();
-
-        int x = (GetWidth() * scale_factor - image.GetWidth()) / 2;
-        int y = (GetHeight() * scale_factor - image.GetHeight()) / 2;
         
         CWindowUtility winUtility;
         winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-        dc.DrawBitmap(image.Mirror(false), x, y);
+        dc.DrawBitmap(image.Mirror(false), left, top);
 
         AfterRender();
     }    
