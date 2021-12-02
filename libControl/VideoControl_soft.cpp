@@ -1629,6 +1629,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(parentRender, event);  
 
+
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()

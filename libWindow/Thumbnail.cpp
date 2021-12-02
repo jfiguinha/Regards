@@ -29,6 +29,8 @@ class CImageLoadingFormat;
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
 
+#define TIMER_TIME_REFRESH 100
+
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 
@@ -945,7 +947,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 							CLibPicture libPicture;
 							if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
 								TestIsAnimation(filename))
-								refreshTimer->Start(100);
+								refreshTimer->Start(TIMER_TIME_REFRESH);
 						}
 					}
 				}
@@ -964,7 +966,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 						CLibPicture libPicture;
 						if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
 							TestIsAnimation(filename))
-							refreshTimer->Start(100);
+							refreshTimer->Start(TIMER_TIME_REFRESH);
 					}
 				}
 
