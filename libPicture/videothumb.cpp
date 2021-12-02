@@ -27,6 +27,10 @@ bool CThumbnailVideo::IsOk()
 	return decodeFrame->IsOk();
 }
 
+int CThumbnailVideo::GetVideoOrientation()
+{
+	return decodeFrame->GetExifRotation();
+}
 
 CThumbnailVideo::~CThumbnailVideo()
 {
