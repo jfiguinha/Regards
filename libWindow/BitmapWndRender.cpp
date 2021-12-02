@@ -1945,61 +1945,70 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 #endif
 
 	wxBufferedPaintDC dc(gdi);
+    
+    if(source != nullptr)
+    {
+        printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
 
-	printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport \n");
+        CRgbaquad color;
 
-	CRgbaquad color;
+        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
+        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
-	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
+        if (filtreEffet == nullptr)
+            filtreEffet = new CFiltreEffet(color, nullptr, source);
+        else
+            filtreEffet->SetBitmap(source);
 
-	if (filtreEffet == nullptr)
-		filtreEffet = new CFiltreEffet(color, nullptr, source);
-	else
-		filtreEffet->SetBitmap(source);
+        if (updateFilter)
+        {
+            BeforeInterpolationBitmap();
+            updateFilter = false;
+        }
 
-	if (updateFilter)
-	{
-		BeforeInterpolationBitmap();
-		updateFilter = false;
-	}
+        printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
 
-	printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
+        int left = 0, top = 0;
+        int tailleAffichageWidth = widthOutput;
+        int tailleAffichageHeight = heightOutput;
+        int filterInterpolation = 0;
+        if (GetWidth() * scale_factor > tailleAffichageWidth)
+            left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+        else
+            left = 0;
 
-	int left = 0, top = 0;
-	int tailleAffichageWidth = widthOutput;
-	int tailleAffichageHeight = heightOutput;
-	int filterInterpolation = 0;
-	if (GetWidth() * scale_factor > tailleAffichageWidth)
-		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
-	else
-		left = 0;
+        if (GetHeight() * scale_factor > tailleAffichageHeight)
+            top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+        else
+            top = 0;
 
-	if (GetHeight() * scale_factor > tailleAffichageHeight)
-		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-	else
-		top = 0;
+        wxRect rc(0, 0, 0, 0);
+        CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 
-	wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        if (regardsParam != nullptr)
+            filterInterpolation = regardsParam->GetInterpolationType();
 
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-		filterInterpolation = regardsParam->GetInterpolationType();
+        filtreEffet->Interpolation(widthOutput, heightOutput, rc, flipHorizontal, flipVertical, angle,
+            filterInterpolation);
 
-	filtreEffet->Interpolation(widthOutput, heightOutput, rc, flipHorizontal, flipVertical, angle,
-		filterInterpolation);
+        wxImage image = filtreEffet->GetwxImage();
 
-	wxImage image = filtreEffet->GetwxImage();
+        int x = (GetWidth() * scale_factor - image.GetWidth()) / 2;
+        int y = (GetHeight() * scale_factor - image.GetHeight()) / 2;
+        
+        CWindowUtility winUtility;
+        winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
+        dc.DrawBitmap(image.Mirror(false), x, y);
 
-	int x = (GetWidth() * scale_factor - image.GetWidth()) / 2;
-	int y = (GetHeight() * scale_factor - image.GetHeight()) / 2;
-	
-	CWindowUtility winUtility;
-	winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-	dc.DrawBitmap(image.Mirror(false), x, y);
+        AfterRender();
+    }    
+    else
+    {
+        CWindowUtility winUtility;
+        winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);  
+    }
 
-	AfterRender();
 
 }
 
