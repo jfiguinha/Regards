@@ -1880,12 +1880,6 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 
 void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	wxBufferedPaintDC dc(gdi);
     
     if(source != nullptr)
@@ -1894,8 +1888,8 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 
         CRgbaquad color;
 
-        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
+        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio());
+        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
             filtreEffet = new CFiltreEffet(color, nullptr, source);
@@ -1931,18 +1925,20 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         if (regardsParam != nullptr)
             filterInterpolation = regardsParam->GetInterpolationType();
 
+		filtreEffet->RotateFree(GetAngleFromExif());
+
         filtreEffet->Interpolation(widthOutput, heightOutput, rc, flipHorizontal, flipVertical, angle,
             filterInterpolation);
 
         wxImage image = filtreEffet->GetwxImage();
-
-        int x = (GetWidth() * scale_factor - image.GetWidth()) / 2;
-        int y = (GetHeight() * scale_factor - image.GetHeight()) / 2;
         
         CWindowUtility winUtility;
         winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-        dc.DrawBitmap(image.Mirror(false), x, y);
-
+#ifndef __WXGTK__
+		dc.DrawBitmap(image, left, top);
+#else
+        dc.DrawBitmap(image.Mirror(false), left, top);
+#endif
         AfterRender();
     }    
     else
