@@ -1125,7 +1125,10 @@ void CMainWindow::UpdateFolder()
 	wxString requestSql = "";
 	pictures.clear();
 	CSqlFindPhotos sqlFindPhotos;
-	localFilename = centralWnd->GetFilename();
+	if (firstFileToShow != "")
+		localFilename = firstFileToShow;
+	else
+		localFilename = centralWnd->GetFilename();
 	auto categoryFolder = static_cast<CCategoryFolderWindow*>(this->FindWindowById(
 		CATEGORYFOLDERWINDOWID));
 	if (categoryFolder != nullptr)
@@ -1155,6 +1158,7 @@ void CMainWindow::UpdateFolder()
 
 	updateFolder = false;
 
+	firstFileToShow = "";
 	numElementTraitement = 0;
 }
 
@@ -1395,7 +1399,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 		const auto newPath = static_cast<wxString*>(event.GetClientData());
 		if (newPath != nullptr)
 		{
-			localFilename = *newPath;
+			firstFileToShow = *newPath;
 			delete newPath;
 		}
 	}

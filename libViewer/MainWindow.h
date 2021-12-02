@@ -142,6 +142,7 @@ namespace Regards
 			wxString fileOutAudio = "";
 			wxString fileOutVideo = "";
 			wxString filepathVideo = "";
+			wxString firstFileToShow = "";
 			bool needToRemux = false;
 			bool isAudio = false;
 

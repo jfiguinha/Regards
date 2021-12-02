@@ -1081,9 +1081,12 @@ void CShowElement::OnPositionVideo(const int64_t& position)
 
 void CShowElement::SetPosition(const int64_t& timePosition)
 {
-	wxCommandEvent evt(wxEVENT_SETPOSITION);
-	evt.SetExtraLong(timePosition);
-	this->GetEventHandler()->AddPendingEvent(evt);
+	if (bitmapWindowRender != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		evt.SetExtraLong(timePosition);
+		bitmapWindowRender->GetEventHandler()->AddPendingEvent(evt);
+	}
 
 }
 
@@ -1103,9 +1106,12 @@ void CShowElement::SetTimePosition(const int64_t& timePosition)
 
 void CShowElement::MoveSlider(const int64_t& position)
 {
-	wxCommandEvent evt(wxEVENT_SETPOSITION);
-	evt.SetExtraLong(position);
-	this->GetEventHandler()->AddPendingEvent(evt);
+	if (bitmapWindowRender != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		evt.SetExtraLong(position);
+		bitmapWindowRender->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CShowElement::InitControl()
