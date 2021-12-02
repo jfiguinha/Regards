@@ -810,10 +810,7 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 		}
 	}
 
-#ifdef __APPLE__
-	//if (!videoRenderStart && !stopVideo)
-	 //    parentRender->Refresh();
-#endif
+
 }
 
 void CVideoControlSoft::SetEndProgram(const bool& endProgram)
@@ -1629,12 +1626,9 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-#ifndef __APPLE__
-	parentRender->Refresh();
-#else
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(parentRender, event);  
-#endif
+
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
