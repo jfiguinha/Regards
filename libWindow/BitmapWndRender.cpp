@@ -1989,6 +1989,8 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         if (regardsParam != nullptr)
             filterInterpolation = regardsParam->GetInterpolationType();
 
+		filtreEffet->RotateFree(GetAngleFromExif());
+
         filtreEffet->Interpolation(widthOutput, heightOutput, rc, flipHorizontal, flipVertical, angle,
             filterInterpolation);
 
@@ -1996,8 +1998,11 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         
         CWindowUtility winUtility;
         winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
+#ifdef WIN32
+		dc.DrawBitmap(image, left, top);
+#else
         dc.DrawBitmap(image.Mirror(false), left, top);
-
+#endif
         AfterRender();
     }    
     else
