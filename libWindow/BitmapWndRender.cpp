@@ -1934,11 +1934,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         
         CWindowUtility winUtility;
         winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-#ifndef __WXGTK__
 		dc.DrawBitmap(image, left, top);
-#else
-        dc.DrawBitmap(image.Mirror(false), left, top);
-#endif
         AfterRender();
     }    
     else
