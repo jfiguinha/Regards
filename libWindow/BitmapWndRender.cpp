@@ -1938,12 +1938,6 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 
 void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {
-#ifndef WIN32
-	double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	wxBufferedPaintDC dc(gdi);
     
     if(source != nullptr)
@@ -1952,8 +1946,8 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 
         CRgbaquad color;
 
-        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
-        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
+        int widthOutput = static_cast<int>(GetBitmapWidthWithRatio());
+        int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
             filtreEffet = new CFiltreEffet(color, nullptr, source);
@@ -1998,7 +1992,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         
         CWindowUtility winUtility;
         winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-#ifdef WIN32
+#ifndef __WXGTK__
 		dc.DrawBitmap(image, left, top);
 #else
         dc.DrawBitmap(image.Mirror(false), left, top);
