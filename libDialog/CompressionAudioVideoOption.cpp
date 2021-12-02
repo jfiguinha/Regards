@@ -238,19 +238,19 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 			float ratio = 240.0 / 340.0;
 			picture = picture.ResampleBicubic(picture.GetWidth() * ratio, picture.GetHeight() * ratio);
 		}
-		x = (340 - picture.GetWidth()) / 2;
-		y = (240 - picture.GetHeight()) / 2;
-
 	}
+
+	x = (340 - picture.GetWidth()) / 2;
+	y = (240 - picture.GetHeight()) / 2;
 
 	wxBitmap test_bitmap(340, 240);
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(test_bitmap);
 	CWindowUtility winUtility;
 	winUtility.FillRect(&temp_dc, wxRect(0,0,340,240), *wxBLACK);
-	temp_dc.DrawBitmap(picture, x, y);
+	temp_dc.DrawBitmap(picture.Mirror(false), x, y);
 	temp_dc.SelectObject(wxNullBitmap);
-	bitmap->SetBitmap(picture.Mirror(false));
+	bitmap->SetBitmap(test_bitmap);
 }
 
 
