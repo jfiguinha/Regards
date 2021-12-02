@@ -567,7 +567,7 @@ void CBitmapWndRender::ZoomOut()
 }
 
 //-----------------------------------------------------------------
-//Mise à l'échelle
+//Mise Ã  l'Ã©chelle
 //-----------------------------------------------------------------
 void CBitmapWndRender::ShrinkImage(const bool& redraw)
 {
@@ -590,7 +590,7 @@ void CBitmapWndRender::ShrinkImage(const bool& redraw)
 
 
 //-----------------------------------------------------------------
-//Mise à l'échelle
+//Mise Ã  l'Ã©chelle
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetShrinkImage(bool active)
 {
@@ -620,7 +620,7 @@ void CBitmapWndRender::SetShowScroll(bool visible)
 }
 
 //-----------------------------------------------------------------
-//Définition de la méthode d'interpolation
+//DÃ©finition de la mÃ©thode d'interpolation
 //-----------------------------------------------------------------
 bool CBitmapWndRender::GetShowScroll()
 {
@@ -1322,7 +1322,7 @@ int CBitmapWndRender::UpdateResized()
 }
 
 //------------------------------------------------------------------------------------
-//Déplacement de la souris
+//DÃ©placement de la souris
 //------------------------------------------------------------------------------------
 void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 {
@@ -1446,14 +1446,14 @@ float CBitmapWndRender::CalculPictureRatio(const int& pictureWidth, const int& p
 }
 
 //-----------------------------------------------------------------
-//Calcul du ratio pour l'image plein écran
+//Calcul du ratio pour l'image plein Ã©cran
 //-----------------------------------------------------------------
 float CBitmapWndRender::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
 	//TRACE();
 	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
 
-	//Détermination du ration par rapport au tableau
+	//DÃ©termination du ration par rapport au tableau
 
 	if (newRatio != 0.0)
 	{
@@ -1997,7 +1997,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 	
 	CWindowUtility winUtility;
 	winUtility.FillRect(&dc, gdi->GetRect(), themeBitmap.colorBack);
-	dc.DrawBitmap(image, x, y);
+	dc.DrawBitmap(image.Mirror(false), x, y);
 
 	AfterRender();
 
