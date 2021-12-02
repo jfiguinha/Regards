@@ -1083,7 +1083,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	//wxPaintDC dc(this);
 	printf("CVideoControlSoft::OnPaint \n");
 	
-	deleteTexture = true;
+	//deleteTexture = true;
 	inverted = true;
 #ifndef WIN32
     double scale_factor = parentRender->GetContentScaleFactor();
