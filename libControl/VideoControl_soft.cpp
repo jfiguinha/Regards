@@ -33,14 +33,6 @@ using namespace Regards::OpenCV;
 
 AVFrame* copyFrameBuffer = nullptr;
 
-#ifdef GLUT
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-#endif
-
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* eventPlayer)
 {
 	renderBitmapOpenGL = nullptr;
@@ -1637,7 +1629,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-#ifdef WIN32
+#ifndef __APPLE__
 	parentRender->Refresh();
 #else
     wxCommandEvent event(wxEVENT_REFRESH);
