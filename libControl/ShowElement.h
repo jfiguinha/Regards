@@ -172,7 +172,7 @@ namespace Regards
 			bool softRender = false;
 			int64_t videoTotalTime = 0;
 			vector<CStreamInfo> listStream;
-			std::vector<int> value;
+			std::vector<int> sound_value;
 		
 
 			bool isVideo = false;

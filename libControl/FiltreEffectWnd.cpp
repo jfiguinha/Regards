@@ -131,7 +131,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 		{
 			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		}
-		//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
+
 		if (bitmapViewer != nullptr)
 		{
 			if (bitmapViewer != nullptr)
@@ -250,7 +250,6 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 					evt.SetInt(numItem);
 					panelInfos->GetEventHandler()->AddPendingEvent(evt);
 				}
-				//panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
 
 				treeWindow->SetTreeControl(filtreEffect);
 				delete(filtreEffectOld);

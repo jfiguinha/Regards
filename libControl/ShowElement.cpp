@@ -223,8 +223,8 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
 
 	for (int i = 0; i < 101; i++)
-		value.push_back(i);
-	slideToolbar->SetTabValue(value);
+		sound_value.push_back(i);
+	slideToolbar->SetTabValue(sound_value);
 	play = false;
 
 	videoWindow->PlayFirstMovie(false);
@@ -852,7 +852,7 @@ void CShowElement::ClickButton(const int& id)
 		slideToolbar->Show(true);
 		showToolbarSup = true;
 		slideToolbar->SetSpeakerMode();
-		slideToolbar->SetTabValue(value);
+		slideToolbar->SetTabValue(sound_value);
 		slideToolbar->SetTrackBarPosition(videoWindow->GetVolume());
 		this->Resize();
 		break;
