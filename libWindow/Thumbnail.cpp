@@ -29,7 +29,7 @@ class CImageLoadingFormat;
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
 
-#define TIMER_TIME_REFRESH 100
+#define TIMER_TIME_REFRESH 200
 
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
@@ -469,7 +469,20 @@ int CThumbnail::GetTabValue()
 
 void CThumbnail::OnAnimation(wxTimerEvent& event)
 {
-	this->Refresh();
+	wxClientDC dc(this);
+	CIcone* numSelect = GetIconeById(numActifPhotoId);
+	wxRect rc = numSelect->GetPos();
+
+	int left = rc.x - posLargeur;
+	int right = rc.x + rc.width - posLargeur;
+
+	if (right > 0 && left < GetWindowWidth())
+		RenderBitmap(&dc, numSelect, -posLargeur, 0);
+
+	if (animationStart)
+		timerAnimation->Start(TIMER_TIME_REFRESH, true);
+	else
+		timerAnimation->Stop();
 }
 
 void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int& positionSize)
@@ -494,11 +507,17 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	int idPhoto = event.GetId();
-	if (idPhoto != -1)
-	{
-		RefreshIcone(idPhoto);
-	}
-	//this->Refresh();
+
+	wxClientDC dc(this);
+	CIcone* numSelect = GetIconeById(idPhoto);
+	wxRect rc = numSelect->GetPos();
+
+	int left = rc.x - posLargeur;
+	int right = rc.x + rc.width - posLargeur;
+
+	if (right > 0 && left < GetWindowWidth())
+		RenderBitmap(&dc, numSelect, -posLargeur, 0);
+
 }
 
 void CThumbnail::MoveTop()
@@ -569,8 +588,15 @@ void CThumbnail::OnScrollMove(wxCommandEvent& event)
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
 {
-	TRACE();
-	this->Refresh();
+	wxClientDC dc(this);
+	CIcone* numSelect = GetIconeById(numActifPhotoId);
+	wxRect rc = numSelect->GetPos();
+
+	int left = rc.x - posLargeur;
+	int right = rc.x + rc.width - posLargeur;
+
+	if (right > 0 && left < GetWindowWidth())
+		RenderBitmap(&dc, numSelect, -posLargeur, 0);
 }
 
 CThumbnail::~CThumbnail()
@@ -1235,7 +1261,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 			m_waitingAnimation->Show();
 			m_waitingAnimation->Start();
 			animationStart = true;
-			timerAnimation->Start(100, true);
+			timerAnimation->Start(100, TIMER_TIME_REFRESH);
 		}
 
 		m_waitingAnimation->SetSize(wxSize(width, height));
@@ -1605,6 +1631,6 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
 	}
-	if (!timerAnimation->IsRunning())
-		timerAnimation->Start(50, true);
+	//if (!timerAnimation->IsRunning())
+	//	timerAnimation->Start(50, true);
 }
