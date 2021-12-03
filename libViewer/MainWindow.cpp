@@ -652,7 +652,7 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	else
 	{
 		CBitmapWndViewer* viewer = nullptr;
-		auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
+		auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
 		if (bitmapWindow != nullptr)
 		{
 			viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
