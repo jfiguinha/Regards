@@ -253,7 +253,7 @@ protected:
 
 	bool firstMovie = true;
 	wxTimer* playStopTimer;
-
+	bool needToRefresh = false;
 	CRegardsBitmap* previousFrame = nullptr;
 	CRegardsBitmap* bitmapData = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;
