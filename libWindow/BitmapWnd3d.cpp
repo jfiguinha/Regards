@@ -181,7 +181,6 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     wxGLCanvas::SetCurrent(*m_context);
 
 #ifdef __WXGTK__
-    
 	bitmapWndRender->OnPaint3D(this, openclContext2d);
 #else
 	if (openclContext == nullptr)

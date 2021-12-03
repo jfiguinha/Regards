@@ -19,7 +19,7 @@ namespace Regards
 		{
 		public:
 			CWindowOpenGLMain(wxString name, wxWindow* parent, wxWindowID id)
-				: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize)
+				: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 			{
 #ifdef __WXGTK__
 #if wxCHECK_VERSION(3, 1, 2)

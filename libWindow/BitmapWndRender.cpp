@@ -1892,7 +1892,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
-            filtreEffet = new CFiltreEffet(color, nullptr, source);
+            filtreEffet = new CFiltreEffet(color, openclContext, source);
         else
             filtreEffet->SetBitmap(source);
 
