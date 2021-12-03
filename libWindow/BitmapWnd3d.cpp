@@ -5,7 +5,6 @@
 #include <RenderOpenGL.h>
 #include <OpenCLContext.h>
 #include <OpenCLEngine.h>
-#include <GL/freeglut.h>
 using namespace Regards::OpenCL;
 
 extern COpenCLContext* openclContext2d;
