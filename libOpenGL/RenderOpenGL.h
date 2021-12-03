@@ -32,12 +32,12 @@ namespace Regards
 			GLSLShader* m_pShader = nullptr;
 		};
 
-		class CRenderOpenGL : public wxGLContext
+		class CRenderOpenGL 
 		{
 		public:
-			CRenderOpenGL(wxGLCanvas* canvas);
-			~CRenderOpenGL() override;
-			wxGLContext* GetGLContext();
+			CRenderOpenGL();
+			~CRenderOpenGL();
+
 			GLTexture* GetDisplayTexture();
 			GLTexture* GetGLTexture();
 			GLTexture* GetDisplayTexture(const int& width, const int& height);
@@ -49,7 +49,7 @@ namespace Regards
 			//GLTexture * GetCopyTextureBitmap(const int &width, const int &height, cl_context context);
 			void Print(int x, int y, const char* string);
 			void DeleteTexture();
-			void Init(wxGLCanvas* canvas);
+
 			bool IsInit();
 			int GetWidth();
 			int GetHeight();
@@ -80,7 +80,7 @@ namespace Regards
 			wxString version;
 			float myGLVersion;
 			vector<COpenGLShader*> listShader;
-			bool isInit = false;
+
 			IMouseUpdate* mouseUpdate;
 		};
 	}

@@ -61,9 +61,11 @@ namespace Regards
 
 			void OnTimer(wxTimerEvent& event);
 			void OnCommand(wxCommandEvent& event);
-			CRenderOpenGL* renderOpenGL = nullptr;
+			
 			IBitmapRenderInterface* bitmapWndRender = nullptr;
 			COpenCLContext* openclContext = nullptr;
+            wxGLContext * m_context = nullptr;
+
 		};
 	}
 }

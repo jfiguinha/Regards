@@ -1075,7 +1075,7 @@ void CVideoControlSoft::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {
 }
 
-void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL, COpenCLContext* openclContext)
+void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, COpenCLContext* openclContext)
 {
 	
 	// This is a dummy, to avoid an endless succession of paint messages.
@@ -1098,8 +1098,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (renderBitmapOpenGL == nullptr)
 	{
-		this->renderOpenGL = renderOpenGL;
-		renderBitmapOpenGL = new CRenderVideoOpenGL(renderOpenGL);
+		renderBitmapOpenGL = new CRenderVideoOpenGL();
 	}
 
 	if (IsSupportOpenCL())
@@ -1147,14 +1146,14 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart && glTexture != nullptr)
 	{
-		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
+		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 
 		glTextureOutput = DisplayTexture(glTexture);
 
 		muVideoEffect.lock();
 		if (videoEffectParameter.showFPS)
 		{
-			renderOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
+			renderBitmapOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
 		}
 		muVideoEffect.unlock();
 
@@ -1185,7 +1184,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	else
 	{
 		printf("renderBitmapOpenGL->CreateScreenRender \n");
-		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
+		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0, 0, 0, 0));
 	}
 
 	canvas->SwapBuffers();
@@ -1924,7 +1923,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	if (openclContext->IsSharedContextCompatible())
 	{
 		printf("RenderToTexture IsSharedContextCompatible 3\n");
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
+		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
 
 		if (glTexture != nullptr)
 		{
@@ -1932,7 +1931,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			try
 			{
 				cl_int err;
-				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
+				cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
 				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
 				Error::CheckError(err);
 				openclEffect->GetRgbaBitmap(cl_image);
@@ -1950,7 +1949,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	if (!isOpenGLOpenCL)
 	{
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();

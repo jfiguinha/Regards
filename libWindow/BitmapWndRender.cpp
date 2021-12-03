@@ -1676,7 +1676,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 			try
 			{
-				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
+				glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
 			}
 			catch (...)
 			{
@@ -1685,7 +1685,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			try
 			{
 				cl_int err;
-				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
+				cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
 				if (cl_image != nullptr)
 				{
 					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr,
@@ -1712,7 +1712,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
 				bitmap->VertFlipBuf();
 
-			glTexture = renderOpenGL->GetDisplayTexture();
+			glTexture = renderBitmapOpenGL->GetDisplayTexture();
 
 			if (glTexture != nullptr)
 				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
@@ -1722,7 +1722,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 		}
 	}
 
-	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+	renderBitmapOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
 		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
 			themeBitmap.colorBack.Blue()));
 
@@ -1771,7 +1771,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
+		renderBitmapOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
 			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
 				themeBitmap.colorBack.Blue()));
 
@@ -1801,16 +1801,16 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			if (regardsParam != nullptr)
 				filterInterpolation = regardsParam->GetInterpolationType();
 
-			renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle,
+			renderBitmapOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle,
 				filterInterpolation);
 
-			renderOpenGL->RenderToTexture();
+			renderBitmapOpenGL->RenderToTexture();
 
 			if (!ApplyPreviewEffect(widthOutput, heightOutput))
 			{
 				CRegardsBitmap* bitmap = nullptr;
 				bitmap = filtreEffet->GetBitmap(false);
-				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+				glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 				if (glTexture != nullptr)
 					glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 				else
@@ -1818,7 +1818,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 				delete bitmap;
 			}
 			else
-				glTexture = renderOpenGL->GetDisplayTexture();
+				glTexture = renderBitmapOpenGL->GetDisplayTexture();
 		}
 		else
 		{
@@ -1833,7 +1833,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			CRegardsBitmap* bitmap = nullptr;
 			bitmap = filtreEffet->GetBitmap(false);
 
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+			glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 			if (glTexture != nullptr)
 				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 			else
@@ -1851,7 +1851,7 @@ void CBitmapWndRender::RenderTexture(const bool& invertPos)
 		int x = (GetWidth() * scale_factor - glTexture->GetWidth()) / 2;
 		int y = (GetHeight() * scale_factor - glTexture->GetHeight()) / 2;
 
-		renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
+		renderBitmapOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
 
 		xPosImage = x;
 		yPosImage = y;
@@ -1949,7 +1949,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
-void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext)
+void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, COpenCLContext* openclContext)
 {
 #ifndef WIN32
 	scale_factor = parentRender->GetContentScaleFactor();
@@ -1959,8 +1959,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenG
 
 	if (renderBitmapOpenGL == nullptr)
 	{
-		this->renderOpenGL = renderOpenGL;
-		renderBitmapOpenGL = new CRenderBitmapOpenGL(renderOpenGL);
+		renderBitmapOpenGL = new CRenderBitmapOpenGL();
 		renderBitmapOpenGL->LoadingResource(scale_factor);
 		if (filtreEffet != nullptr)
 			delete filtreEffet;

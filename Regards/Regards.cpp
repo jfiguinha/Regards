@@ -21,7 +21,6 @@ namespace compute = boost::compute;
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include "ParamInit.h"
-
 using namespace Regards::Picture;
 
 COpenCLContext* openclContext2d = nullptr;

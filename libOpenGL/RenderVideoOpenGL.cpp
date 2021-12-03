@@ -18,14 +18,13 @@
 using namespace Regards::OpenGL;
 //#define RENDER_TO_TEXTURE
 
-CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
+CRenderVideoOpenGL::CRenderVideoOpenGL()
 {
 	textureSubtitle = nullptr;
 	textureVideo = nullptr;
 	textureVideoCopy = nullptr;
 	cl_textureVideoCopy = nullptr;
 	fboId = 0;
-	this->renderOpenGL = renderOpenGL;
 }
 
 
@@ -43,12 +42,12 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 	int width_local = glTexture->GetWidth();
 	int height_local = glTexture->GetHeight();
 
-	int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
-	int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
+	int left_local = (GetWidth() - width_local) / 2;
+	int top_local = (GetHeight() - height_local) / 2;
 
 	if (effectParameter->effectEnable)
 	{
-		GLSLShader* m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_VIDEO");
+		GLSLShader* m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO");
 		if (m_pShader != nullptr)
 		{
 			srand(time(nullptr));
@@ -153,13 +152,13 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 			}
 		}
 
-		renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
+		RenderQuad(glTexture, left_local, top_local, inverted);
 		if (m_pShader != nullptr)
 			m_pShader->DisableShader();
 	}
 	else
 	{
-	renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
+        RenderQuad(glTexture, left_local, top_local, inverted);
 	}
 
 	glTexture->Disable();
@@ -174,19 +173,19 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture* glTextureSrc, 
 	int width_local = glTexture->GetWidth();
 	int height_local = glTexture->GetHeight();
 
-	int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
-	int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
+	int left_local = (GetWidth() - width_local) / 2;
+	int top_local = (GetHeight() - height_local) / 2;
 
-	renderOpenGL->RenderInterpolation(glTextureSrc, glTexture, rect, flipH, flipV, angle, filterInterpolation);
+	RenderInterpolation(glTextureSrc, glTexture, rect, flipH, flipV, angle, filterInterpolation);
 
-	renderOpenGL->RenderToTexture();
+	RenderToTexture();
 
 	wxFloatRect floatRect;
-	floatRect.top = static_cast<float>(top_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetHeight());
-	floatRect.left = static_cast<float>(left_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetWidth());
-	floatRect.right = static_cast<float>(left_local + width_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetWidth());
-	floatRect.bottom = static_cast<float>(top_local + height_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetHeight());
-	RenderWithEffect(renderOpenGL->GetTextureDisplay(), effectParameter, floatRect, false);
+	floatRect.top = static_cast<float>(top_local) / static_cast<float>(GetTextureDisplay()->GetHeight());
+	floatRect.left = static_cast<float>(left_local) / static_cast<float>(GetTextureDisplay()->GetWidth());
+	floatRect.right = static_cast<float>(left_local + width_local) / static_cast<float>(GetTextureDisplay()->GetWidth());
+	floatRect.bottom = static_cast<float>(top_local + height_local) / static_cast<float>(GetTextureDisplay()->GetHeight());
+	RenderWithEffect(GetTextureDisplay(), effectParameter, floatRect, false);
 }
 
 
@@ -204,14 +203,14 @@ void CRenderVideoOpenGL::ShowSubtitle()
 {
 	if (textureSubtitle != nullptr)
 	{
-		int left = (renderOpenGL->GetWidth() - textureSubtitle->GetWidth()) / 2;
+		int left = (GetWidth() - textureSubtitle->GetWidth()) / 2;
 		int top = textureSubtitle->GetHeight();
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		textureSubtitle->Enable();
-		renderOpenGL->RenderQuad(textureSubtitle, left, top, true);
+		RenderQuad(textureSubtitle, left, top, true);
 		textureSubtitle->Disable();
 
 		glDisable(GL_BLEND);

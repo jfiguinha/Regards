@@ -766,7 +766,7 @@ void CBitmapWndViewer::RenderTexture(const bool& invertPos)
 			isValid = afterEffect->RenderTexture(nextPicture, source, this, renderBitmapOpenGL, scale_factor, etape);
 
 		if (!isValid)
-			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
+			renderBitmapOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
 
 		xPosImage = x;
 		yPosImage = y;
@@ -778,8 +778,8 @@ void CBitmapWndViewer::DeleteTexture()
 	if (afterEffect != nullptr)
 		afterEffect->DeleteTexture();
 
-	if (renderOpenGL != nullptr)
-		renderOpenGL->DeleteTexture();
+	if (renderBitmapOpenGL != nullptr)
+		renderBitmapOpenGL->DeleteTexture();
 }
 
 void CBitmapWndViewer::KeyPress(const int& key)

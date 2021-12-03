@@ -137,7 +137,7 @@ namespace Regards
 
 			virtual void SetEndProgram(const bool& endProgram) override;
 
-			virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext) override;
+			virtual void OnPaint3D(wxGLCanvas* canvas, COpenCLContext* openclContext) override;
 			virtual void OnPaint2D(wxWindow * gdi, COpenCLContext* openclContext) override;
 			virtual void OnMouseMove(wxMouseEvent& event) override;
 			virtual void OnLButtonDown(wxMouseEvent& event) override; 
@@ -308,7 +308,7 @@ namespace Regards
 			GLTexture* glTexture = nullptr;
 			GLTexture* glTextureSrc = nullptr;
 			COpenCLContext* openclContext = nullptr;
-			CRenderOpenGL* renderOpenGL = nullptr;
+
 			//Preview Parameter
 			int preview = 0;
 
