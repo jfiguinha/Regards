@@ -22,10 +22,10 @@ namespace Regards
 			float bottom = 0;
 		};
 
-		class CRenderVideoOpenGL : public CRenderOpenGL
+		class CRenderVideoOpenGL
 		{
 		public:
-			CRenderVideoOpenGL();
+			CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL);
 			~CRenderVideoOpenGL();
 
 			void DeleteVideoTexture();
@@ -66,6 +66,7 @@ namespace Regards
 			GLTexture* textureVideo;
 			GLTexture* textureVideoCopy;
 			cl_mem cl_textureVideoCopy;
+			CRenderOpenGL* renderOpenGL = nullptr;
 			GLuint fboId;
 		};
 	}

@@ -7,7 +7,7 @@ using namespace Regards::OpenCL;
 class IBitmapRenderInterface
 {
 public:
-	virtual void OnPaint3D(wxGLCanvas* canvas, COpenCLContext* openclContext) = 0;
+	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext) = 0;
 	virtual void OnPaint2D(wxWindow * gdi, COpenCLContext* openclContext) = 0;
 	virtual void OnMouseMove(wxMouseEvent& event) = 0;
 	virtual void OnLButtonDown(wxMouseEvent& event) = 0;

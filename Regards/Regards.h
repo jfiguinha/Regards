@@ -96,7 +96,13 @@ using namespace Regards::Viewer;
 #endif
 
 #include <wx/glcanvas.h>
-int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+int args[] = {
+    wx_GL_COMPAT_PROFILE,
+    WX_GL_SAMPLES, 4,
+    WX_GL_RGBA, 
+    WX_GL_DOUBLEBUFFER, 
+    WX_GL_DEPTH_SIZE, 16, 
+    0};
 
 // c: pointer to original argc
 // v: pointer to original argv

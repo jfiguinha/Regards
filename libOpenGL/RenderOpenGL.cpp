@@ -15,7 +15,8 @@
 
 using namespace Regards::OpenGL;
 
-CRenderOpenGL::CRenderOpenGL()
+CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
+	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
 	textureDisplay = nullptr;
 	cl_textureDisplay = nullptr;
@@ -24,13 +25,41 @@ CRenderOpenGL::CRenderOpenGL()
 }
 
 
-
+bool CRenderOpenGL::IsInit()
+{
+	return isInit;
+}
 
 GLTexture* CRenderOpenGL::GetTextureDisplay()
 {
 	return textureDisplay;
 }
 
+void CRenderOpenGL::Init(wxGLCanvas* canvas)
+{
+	if (!isInit)
+	{
+		SetCurrent(*canvas);
+		myGLVersion = 0;
+		version = glGetString(GL_VERSION);
+		sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
+
+
+		GLuint err;
+		err = glewInit();
+
+		if (GLEW_OK != err)
+		{
+			// Problem: glewInit failed, something is seriously wrong. 
+			printf("Error: %s\n", glewGetErrorString(err));
+		}
+
+
+		printf("Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+
+		isInit = true;
+	}
+}
 
 GLSLShader* CRenderOpenGL::CreateShader(const wxString& shaderName, GLenum glSlShaderType_i)
 {
@@ -72,6 +101,11 @@ CRenderOpenGL::~CRenderOpenGL()
 		err = clReleaseMemObject(cl_textureDisplay);
 		Error::CheckError(err);
 	}
+}
+
+wxGLContext* CRenderOpenGL::GetGLContext()
+{
+	return this;
 }
 
 void CRenderOpenGL::DeleteTexture()

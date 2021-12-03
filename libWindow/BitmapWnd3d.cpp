@@ -16,14 +16,8 @@ extern COpenCLContext* openclContext2d;
 CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	: CWindowOpenGLMain("CBitmapWnd3D", parent, id)
 {
-    m_context = new wxGLContext(this);
 
-    GLenum err = glewInit();
-    if (err != GLEW_OK) 
-    {
-        printf("Error: %s\n", glewGetErrorString(err));
-    }
-    
+
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd3D::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd3D::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd3D::OnLButtonDown));
@@ -35,9 +29,6 @@ CBitmapWnd3D::CBitmapWnd3D(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd3D::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd3D::OnMouseCaptureLost));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWnd3D::OnIdle));
-    
-
-    
 
 }
 
@@ -173,23 +164,23 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 {
-    wxPaintDC(this); 
-    
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
         
-    wxGLCanvas::SetCurrent(*m_context);
+    if(renderOpenGL == nullptr)
+    {
+        renderOpenGL = new CRenderOpenGL(this);
+        renderOpenGL->Init(this);
+    }  
+    renderOpenGL->SetCurrent(*this);
 
-#ifdef __WXGTK__
-	bitmapWndRender->OnPaint3D(this, openclContext2d);
-#else
+
 	if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 	}
-
-	bitmapWndRender->OnPaint3D(this, openclContext);
-#endif
+    
+	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
 
 
 }
