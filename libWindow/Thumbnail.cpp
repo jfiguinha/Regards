@@ -469,15 +469,7 @@ int CThumbnail::GetTabValue()
 
 void CThumbnail::OnAnimation(wxTimerEvent& event)
 {
-	wxClientDC dc(this);
-	CIcone* numSelect = GetIconeById(numActifPhotoId);
-	wxRect rc = numSelect->GetPos();
-
-	int left = rc.x - posLargeur;
-	int right = rc.x + rc.width - posLargeur;
-
-	if (right > 0 && left < GetWindowWidth())
-		RenderBitmap(&dc, numSelect, -posLargeur, 0);
+	RefreshIcone(numActifPhotoId);
 
 	if (animationStart)
 		timerAnimation->Start(TIMER_TIME_REFRESH, true);
@@ -1624,6 +1616,8 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		}
 		else
 			delete filename;
+
+		this->Refresh();
 	}
 	else
 	{
@@ -1631,6 +1625,6 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
 	}
-	//if (!timerAnimation->IsRunning())
-	//	timerAnimation->Start(50, true);
+
+	
 }

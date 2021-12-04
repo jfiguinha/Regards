@@ -811,8 +811,8 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	}
 	if (needToRefresh)
 	{
-		parentRender->Refresh();
-		needToRefresh = false;
+		//parentRender->Refresh();
+		//needToRefresh = false;
 	}
 		
 
@@ -1621,7 +1621,8 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-	needToRefresh = true;
+	wxCommandEvent event(wxEVENT_REFRESH);
+	wxPostEvent(parentRender, event);
 
 }
 
