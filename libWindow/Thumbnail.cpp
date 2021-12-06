@@ -199,6 +199,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(false);
+		RefreshIcone(numSelectPhotoId);
 	}
 
 
@@ -207,6 +208,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		CIcone* numActif = GetIconeById(numActifPhotoId);
 		if (numActif != nullptr)
 			numActif->SetSelected(false);
+		RefreshIcone(numSelectPhotoId);
 	}
 
 	numActifPhotoId = iconeList->GetPhotoId(numItem);
@@ -270,11 +272,12 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		CIcone* numSelect = GetIconeById(numSelectPhotoId);
 		if (numSelect != nullptr)
 			numSelect->SetSelected(true);
+		RefreshIcone(numSelectPhotoId);
 	}
 
 	numOldItem = numItem;
 	moveOnPaint = true;
-	this->Refresh();
+	//this->Refresh();
 }
 
 int CThumbnail::ImageSuivante()
@@ -493,23 +496,22 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 	wxClientDC dc(this);
 	CIcone* icone = GetIconeById(idPhoto);
 	if (icone != nullptr)
-		icone->RenderIcone(&dc, posLargeur, posHauteur, false, false);
+	{
+		wxRect rc = icone->GetPos();
+		int left = rc.x - posLargeur;
+		int right = rc.x - posLargeur + themeThumbnail.themeIcone.GetWidth();
+		int top = rc.y - posHauteur;
+		int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
+
+		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+			icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+	}
 }
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 {
 	int idPhoto = event.GetId();
-
-	wxClientDC dc(this);
-	CIcone* numSelect = GetIconeById(idPhoto);
-	wxRect rc = numSelect->GetPos();
-
-	int left = rc.x - posLargeur;
-	int right = rc.x + rc.width - posLargeur;
-
-	if (right > 0 && left < GetWindowWidth())
-		RenderBitmap(&dc, numSelect, -posLargeur, 0);
-
+	RefreshIcone(idPhoto);
 }
 
 void CThumbnail::MoveTop()
@@ -580,15 +582,8 @@ void CThumbnail::OnScrollMove(wxCommandEvent& event)
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
 {
-	wxClientDC dc(this);
-	CIcone* numSelect = GetIconeById(numActifPhotoId);
-	wxRect rc = numSelect->GetPos();
-
-	int left = rc.x - posLargeur;
-	int right = rc.x + rc.width - posLargeur;
-
-	if (right > 0 && left < GetWindowWidth())
-		RenderBitmap(&dc, numSelect, -posLargeur, 0);
+	RefreshIcone(numActifPhotoId);
+	RefreshIcone(numSelectPhotoId);
 }
 
 CThumbnail::~CThumbnail()
@@ -792,6 +787,7 @@ void CThumbnail::ProcessIdle()
 	if (photoList.empty())
 	{
 		processIdle = false;
+		this->Refresh();
 	}
 }
 
@@ -1575,7 +1571,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					pThumbnailData->SetIsLoading(false);
 				}
 
-				//RefreshIcone(threadLoadingBitmap->photoId);
+				RefreshIcone(threadLoadingBitmap->photoId);
 			}
 		}
 
@@ -1617,13 +1613,15 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		else
 			delete filename;
 
-		this->Refresh();
+		//this->Refresh();
 	}
 	else
 	{
 		auto wx_command_event = new wxCommandEvent(EVENT_ICONEUPDATE);
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
+
+		//this->Refresh();
 	}
 
 	

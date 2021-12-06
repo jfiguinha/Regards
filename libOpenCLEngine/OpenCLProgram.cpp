@@ -25,16 +25,6 @@ COpenCLProgram::~COpenCLProgram()
 int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxString& programData)
 {
 	CSqlOpenCLKernel sqlOpenCLKernel;
-	wxString platformName = "";
-	int indexDevice = -1;
-
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-	{
-		platformName = config->GetOpenCLPlatformName();
-		indexDevice = config->GetOpenCLPlatformIndex();
-		loadFromDatabase = config->GetOpenCLLoadFromBinaries();
-	}
 
 	compute::context context_local = context->GetContext();
 	try
