@@ -810,12 +810,6 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 		}
 	}
 
-	muVideoRender.lock();
-	if (videoRender)
-		needToRefresh = true;
-	videoRender = false;
-	muVideoRender.unlock();
-
 	if (needToRefresh)
 	{
 		parentRender->Refresh();
@@ -1484,6 +1478,21 @@ void CVideoControlSoft::OnPause()
 		{
 			ffmfc->Pause();
 
+			if (pictureVideo != nullptr)
+				delete pictureVideo;
+			pictureVideo = nullptr;
+
+			if (isffmpegDecode)
+			{
+				pictureVideo = new CRegardsBitmap();
+				*pictureVideo = *pictureFrame;
+			}
+			else
+			{
+				pictureVideo = openclEffectYUV->GetRgbaBitmap(true);
+				pictureVideo->VertFlipBuf();
+			}
+
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1631,9 +1640,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-	muVideoRender.lock();
-	videoRender = true;
-	muVideoRender.unlock();
+	needToRefresh = true;
 
 }
 

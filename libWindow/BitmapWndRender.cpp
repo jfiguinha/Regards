@@ -1904,12 +1904,13 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 
         printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
 
+		int screenWidth = GetWidth() * scale_factor;
         int left = 0, top = 0;
         int tailleAffichageWidth = widthOutput;
         int tailleAffichageHeight = heightOutput;
         int filterInterpolation = 0;
-        if (GetWidth() * scale_factor > tailleAffichageWidth)
-            left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+        if (screenWidth > tailleAffichageWidth)
+            left = ((screenWidth - tailleAffichageWidth) / 2);
         else
             left = 0;
 
