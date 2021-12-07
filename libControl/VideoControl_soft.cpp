@@ -2133,8 +2133,11 @@ bool CVideoControlSoft::IsCPUContext()
 	if (isCPU == -1)
 	{
 		if (openclContext != nullptr)
-			isCPU = (openclContext->GetContext().get_device().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
+			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
+
+	//printf("IsCPUContext CPU : %d \n", isCPU);
+
 	return (isCPU == 1 ? true : false);
 }
 

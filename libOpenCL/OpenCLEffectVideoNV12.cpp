@@ -213,6 +213,15 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 				paramSrc = new COpenCLParameterClMem();
 			paramSrc->SetValue(program->GetOutput());
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}

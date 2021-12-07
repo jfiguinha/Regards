@@ -240,10 +240,6 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
-#ifdef TEST_NOISE
-	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_68_face_landmarks.dat";
-	face_alignement("d:\\metart_firestarter_leaya_high_0048.jpg", eye.ToStdString());
-#endif
 
 	frameStart = new MyFrameIntro("Welcome to Regards", "REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);

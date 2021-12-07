@@ -798,15 +798,25 @@ void COpenCLEffect::GetBitmap(CRegardsBitmap*& bitmap, const bool& source)
 void COpenCLEffect::CopyPictureToTexture2D(void* cl_image)
 {
 	cl_mem cl_picture = (cl_mem)cl_image;
-	compute::command_queue q = context->GetCommandQueue();
-	cl_int err;
-	err = clEnqueueAcquireGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-	Error::CheckError(err);
-	GetRgbaBitmap(cl_picture);
-	err = clEnqueueReleaseGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-	Error::CheckError(err);
-	err = clFlush(q);
-	Error::CheckError(err);
+	if (context != nullptr)
+	{
+		try
+		{
+			cl_command_queue q = context->GetCommandQueue();
+			cl_int err;
+			err = clEnqueueAcquireGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			GetRgbaBitmap(cl_picture);
+			err = clEnqueueReleaseGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFlush(q);
+			Error::CheckError(err);
+		}
+		catch (...)
+		{
+
+		}
+	}
 }
 
 

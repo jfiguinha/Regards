@@ -4,8 +4,7 @@
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
-#include <boost/compute/core.hpp>
-namespace compute = boost::compute;
+
 #define ENABLE_PROFILING 0
 #define UNROLL 1
 
@@ -48,7 +47,7 @@ unsigned next_multiple(const unsigned x, const unsigned n) {
 COpenCLBm3D::COpenCLBm3D(COpenCLContext * context): width(0), height(0), sizeoutput(0), opencl_type(0)
 {
 	openCLProgram = nullptr;
-	bool useMemory = (context->GetContext().get_device().gpu == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	openCLProgram = nullptr;
 	this->context = context;
@@ -258,6 +257,16 @@ cl_mem COpenCLBm3D::ExecuteBasicFilter(const float &sigma, COpenCLParameterShort
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_basic_filter");
 			outputValue = program->GetOutput();
 			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -345,6 +354,16 @@ cl_mem COpenCLBm3D::ExecuteWienerFilter(const float &sigma, const cl_mem & basic
 			program->ExecuteProgram(programCL->GetProgram(), "bm3d_wiener_filter");
 			outputValue = program->GetOutput();
 			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -433,6 +452,16 @@ void COpenCLBm3D::CalculDistanceStep2(const cl_mem & basicPicture, COpenCLParame
 
 			program->ExecuteProgram2D(programCL->GetProgram(), "calc_distances", &vecParam, offset, gs_d, ls);
 			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 
 		}
@@ -520,6 +549,16 @@ void COpenCLBm3D::CalculDistanceStep1(COpenCLParameterShortArray * similar_coord
 
 			program->ExecuteProgram2D(programCL->GetProgram(), "calc_distances", &vecParam, offset, gs_d, ls);
 			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}

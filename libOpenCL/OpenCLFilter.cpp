@@ -9,16 +9,13 @@
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
 #include <opencv2/imgproc.hpp>
-#include <boost/compute/algorithm/copy.hpp>
-#include <boost/compute/core.hpp>
-#include <opencv2/opencv.hpp>
-namespace compute = boost::compute;
+
 using namespace Regards::OpenCL;
 
 
 COpenCLFilter::COpenCLFilter(COpenCLContext * context)
 {
-	bool useMemory = (context->GetContext().get_device().gpu == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	this->context = context;
 }
@@ -87,6 +84,7 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 	return value;
 
 }
+
 
 cl_mem COpenCLFilter::Bm3d(cl_mem inputData, int width, int height, const float & fSigma)
 {
@@ -186,25 +184,28 @@ cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 
 cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
 {
+	//cl_int err = 0;
+	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
+
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if (programCL != nullptr)
 	{
-		vector<COpenCLParameter*> vecParam;
-		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
 
-		COpenCLParameterClMem* dataImage = new COpenCLParameterClMem();
+		COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
 		dataImage->SetNoDelete(true);
-		dataImage->SetValue((cl_mem)dst.handle(cv::ACCESS_READ));
+		dataImage->SetValue(clBuffer);
 		vecParam.push_back(dataImage);
 
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
 		paramWidth->SetLibelle("width");
 		paramWidth->SetValue(width);
 		vecParam.push_back(paramWidth);
 
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
 		paramHeight->SetLibelle("height");
 		paramHeight->SetValue(height);
 		vecParam.push_back(paramHeight);
@@ -215,9 +216,20 @@ cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
 		outputValue = program->GetOutput();
 
 		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+
 		vecParam.clear();
 	}
-	
+
+
 	return outputValue;
 }
 
@@ -253,6 +265,15 @@ cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height, const 
 			}
 
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -324,6 +345,15 @@ cl_mem COpenCLFilter::ExtractBlocSize(cl_mem sourceData, const int & size, const
 			}
 
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -393,6 +423,15 @@ void COpenCLFilter::InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const 
 			}
 
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -436,6 +475,15 @@ cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int widt
 			}
 
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -487,6 +535,15 @@ cl_mem COpenCLFilter::Fusion(cl_mem inputData, cl_mem secondPictureData, const f
 			}
 
 			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if(!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
 			vecParam.clear();
 		}
 	}
@@ -536,6 +593,15 @@ cl_mem COpenCLFilter::SharpenMasking(const float &sharpness, cl_mem inputData, i
 		}
 
 		delete program;
+
+        for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -580,6 +646,15 @@ cl_mem COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -619,6 +694,15 @@ cl_mem COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blu
 			outputValue = nullptr;
 		}
 		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -661,6 +745,15 @@ cl_mem COpenCLFilter::FiltreMosaic(cl_mem inputData, int width, int height)
 			outputValue = nullptr;
 		}
 		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -708,6 +801,16 @@ cl_mem COpenCLFilter::Blur(const int &radius, cl_mem inputData, int width, int h
 			outputValue = nullptr;
 		}
 		delete program;
+
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -755,6 +858,15 @@ cl_mem COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cl
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -827,6 +939,15 @@ cl_mem COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, con
 
 		delete[] kernel;
 		delete[] offsetsMotion;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -869,6 +990,15 @@ cl_mem COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStr
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -911,6 +1041,15 @@ cl_mem COpenCLFilter::ErodeDilate(const wxString &functionName, cl_mem inputData
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -948,6 +1087,15 @@ cl_mem COpenCLFilter::Posterize(const float &level, const float &gamma, cl_mem i
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -985,6 +1133,15 @@ cl_mem COpenCLFilter::Solarize(const long &threshold, cl_mem inputData, int widt
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1027,6 +1184,15 @@ cl_mem COpenCLFilter::Median(cl_mem inputData, int width, int height)
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1069,6 +1235,16 @@ cl_mem COpenCLFilter::Noise(cl_mem inputData, int width, int height)
 			outputValue = nullptr;
 		}
 		delete program;
+
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1124,6 +1300,17 @@ cl_mem COpenCLFilter::Flip(const wxString &functionName, cl_mem inputData, int w
 			outputValue = nullptr;
 		}
 		delete program;
+
+
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1177,6 +1364,17 @@ cl_mem COpenCLFilter::Swirl(const float &radius, const float &angle, cl_mem inpu
 			outputValue = nullptr;
 		}
 		delete program;
+
+
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1219,6 +1417,17 @@ cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const doub
 			outputValue = nullptr;
 		}
 		delete program;
+
+
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1265,6 +1474,15 @@ cl_mem COpenCLFilter::ColorEffect(const wxString &functionName, cl_mem inputData
 			outputValue = nullptr;
 		}
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1373,6 +1591,15 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 		}
 		delete program;
 
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1449,6 +1676,14 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 
 		delete program;
 
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1507,6 +1742,15 @@ cl_mem COpenCLFilter::Denoise(const wxString &functionName, const float &sigma, 
 		}
 
 		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;
@@ -1600,6 +1844,15 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		}
 
 		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
 		vecParam.clear();
 	}
 	return outputValue;

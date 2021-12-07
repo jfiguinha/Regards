@@ -4,8 +4,7 @@
 #else
 #include <CL/cl.h>
 #endif
-#include <boost/compute/core.hpp>
-namespace compute = boost::compute;
+
 namespace Regards
 {
 	namespace OpenCL
@@ -24,10 +23,7 @@ namespace Regards
 
 			void SetBuildOptions(const wxString &buildOption);
 
-			const compute::program& GetProgram()
-			{
-				return program;
-			}
+			const cl_program GetProgram();
 
 			const wxString GetProgramId();
 
@@ -38,13 +34,13 @@ namespace Regards
 
 			wxString GetOpenCLIncludeDir();
 
-			int CreateAndBuildProgram(const wxString &programId, const wxString &programData);
+			int CreateAndBuildProgram(const wxString &programId, const wxString &programData, const wxString &buildOption);
             
             bool LoadProgramFromBinaries(const wxString &programId);
             
 			wxString buildOption;
 			wxString numProgramId;
-			compute::program program;
+			cl_program program;
 			int typeData;
 			COpenCLContext * context;
             

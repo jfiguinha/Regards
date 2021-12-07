@@ -199,6 +199,15 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 					paramSrc = new COpenCLParameterClMem();
 				paramSrc->SetValue(program->GetOutput());
 				delete program;
+
+				for (COpenCLParameter * parameter : vecParam)
+				{
+					if (!parameter->GetNoDelete())
+					{
+						delete parameter;
+						parameter = nullptr;
+					}
+				}
 				vecParam.clear();
 			}
 		}
@@ -245,6 +254,15 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 					paramSrc = new COpenCLParameterClMem();
 				paramSrc->SetValue(program->GetOutput());
 				delete program;
+
+				for (COpenCLParameter * parameter : vecParam)
+				{
+					if (!parameter->GetNoDelete())
+					{
+						delete parameter;
+						parameter = nullptr;
+					}
+				}
 				vecParam.clear();
 			}
 		}
