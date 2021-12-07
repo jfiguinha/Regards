@@ -126,23 +126,14 @@ __kernel void BitmapToOpenGLTexture(__write_only image2d_t output, const __globa
 	int y = get_global_id(1);
 	y = height - y - 1;
 	int position = x + y * width;
-	/*
-	float4 value = input[position];
-	if(rgba == 0)
-	{
-		value.x = input[position].z;
-		value.z = input[position].x;
-	}
-	*/
+
 	float4 value;
+	float4 divisor = 255.0f;
 	float4 color = rgbaUintToFloat4(input[position]);
 		
 	if(rgba == 1)
 	{
-		value.x = color.x / 255.0f;
-		value.y = color.y / 255.0f;
-		value.z = color.z / 255.0f;
-		value.w = color.w / 255.0f;	
+		value = color / divisor;
 	}
 	else
 	{
@@ -167,10 +158,8 @@ __constant sampler_t sampler =
 __kernel void ImportFromOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
 {
 	int position = get_global_id(0);
-	output[position].x = input[position].x;
-	output[position].y = input[position].y;
-	output[position].z = input[position].z;
-	output[position].w = input[position].w;
+	output[position] = input[position];
+
 }
 
 //----------------------------------------------------
@@ -179,10 +168,7 @@ __kernel void ImportFromOpencv(__global uchar4 * output,const __global uchar4 * 
 __kernel void CopyToOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
 {
 	int position = get_global_id(0);
-	output[position].x = input[position].x;
-	output[position].y = input[position].y;
-	output[position].z = input[position].z;
-	output[position].w = input[position].w;
+	output[position] = input[position];
 }
 
 	
@@ -198,16 +184,8 @@ __kernel void OpenGLTextureToBitmap( __global uint * output, __read_only image2d
 	float4 data = read_imagef(input, sampler, pos);
 	
 	int position = x + y * width;
-	//output[position] = read_imagef(input, sampler, pos);
-	
 	output[position] = rgbaFloat4ToUint(data, 255.0f);
-	/*
-	output[position].x = data.x * (float)255;
-	output[position].y = data.y * (float)255;
-	output[position].z = data.z * (float)255;
-	output[position].w = data.w * (float)255;
-	*/
-	
+
 }
 
 //----------------------------------------------------

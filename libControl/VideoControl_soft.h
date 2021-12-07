@@ -201,7 +201,11 @@ protected:
 	wxCursor hCursorHand;
 	mutex muBitmap;
 	mutex muVideoEffect;
+	mutex muVideoRender;
 	mutex muSubtitle;
+	
+	bool videoRender = false;;
+
 	thread* _threadVideo = nullptr;
 	bool threadVideoEnd = true;
 	GLTexture* glTextureSrc = nullptr;
@@ -250,10 +254,11 @@ protected:
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
-
+	bool isInit = false;
 	bool firstMovie = true;
 	wxTimer* playStopTimer;
 	bool needToRefresh = false;
+	
 	CRegardsBitmap* previousFrame = nullptr;
 	CRegardsBitmap* bitmapData = nullptr;
 	COpenCVStabilization* openCVStabilization = nullptr;

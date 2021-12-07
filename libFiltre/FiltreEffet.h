@@ -47,6 +47,7 @@ public:
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int NiveauDeGris();
 	int NoirEtBlanc();
+	void CopyPictureToTexture2D(void* cl_image);
 	int VignetteEffect(const double& radius, const double& power);
 	int Sepia();
 	int Soften();

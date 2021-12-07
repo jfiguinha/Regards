@@ -128,11 +128,17 @@ __constant sampler_t sampler =
 __kernel void ImportFromOpencv(__global float4 * output,const __global uchar4 * input, int width, int height)
 {
 	int position = get_global_id(0);
-	float divisor = 255.0f;
-	output[position].x = (float)(input[position].x / divisor);
-	output[position].y = (float)(input[position].y / divisor);
-	output[position].z = (float)(input[position].z / divisor);
-	output[position].w = (float)(input[position].w / divisor);
+	float4 divisor = 255.0f;
+	output[position] = convert_float4(input[position]) / divisor;
+}
+
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
+__kernel void ImportFromOpencvFloat(__global float4 * output,const __global float4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	output[position] = input[position];
 }
 
 //----------------------------------------------------
@@ -148,6 +154,11 @@ __kernel void CopyToOpencv(__global uchar4 * output,const __global float4 * inpu
 	output[position].w = (uchar)(input[position].w * divisor);
 }
 
+__kernel void CopyToOpencvFloat(__global float4 * output,const __global float4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	output[position] = input[position];
+}
 	
 //----------------------------------------------------
 //Conversion d'un bitmap en wxImage

@@ -46,7 +46,7 @@ auto COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPer
 	if (opencl)
 	{
 		UMat gray;
-		cvtColor(image, gray, COLOR_BGR2GRAY);
+		cvtColor(image, gray, COLOR_BGRA2GRAY);
 
 		if (clipHistPercent == 0)
 		{

@@ -184,6 +184,8 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	isMovingScroll = move;
 
+	bool refresh = false;
+
 	/*
 	if (numOldItem == numItem)
 	{
@@ -208,7 +210,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		CIcone* numActif = GetIconeById(numActifPhotoId);
 		if (numActif != nullptr)
 			numActif->SetSelected(false);
-		RefreshIcone(numSelectPhotoId);
+		RefreshIcone(numActifPhotoId);
 	}
 
 	numActifPhotoId = iconeList->GetPhotoId(numItem);
@@ -226,6 +228,8 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 				size->y = 0;
 				evt.SetClientData(size);
 				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+
+				refresh = true;
 			}
 			posLargeur = 0;
 			posHauteur = 0;
@@ -241,6 +245,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 					CIcone* numActif = GetIconeById(numActifPhotoId);
 					if (numActif != nullptr)
 						rect = numActif->GetPos();
+					RefreshIcone(numActifPhotoId);
 				}
 
 				//Positionnement au milieu
@@ -256,6 +261,8 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 					size->y = yPos;
 					evt.SetClientData(size);
 					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+
+					refresh = true;
 				}
 
 				posLargeur = xPos;
@@ -273,11 +280,17 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 		if (numSelect != nullptr)
 			numSelect->SetSelected(true);
 		RefreshIcone(numSelectPhotoId);
+
 	}
 
 	numOldItem = numItem;
 	moveOnPaint = true;
-	//this->Refresh();
+
+	if (refresh)
+	{
+		this->Refresh();
+		this->Update();
+	}
 }
 
 int CThumbnail::ImageSuivante()

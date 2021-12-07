@@ -13,6 +13,14 @@
 #include "hqdn3d.h"
 #include <OpenCVEffect.h>
 #include <VideoStabilization.h>
+#ifdef __APPLE__
+#include <OpenCL/opencl.h>
+#include <OpenGL/OpenGL.h>
+#elif defined(__WXGTK__)
+#include <CL/cl_gl.h>
+#else
+#include <CL/cl_gl.h>
+#endif
 #include <boost/compute/core.hpp>
 namespace compute = boost::compute;
 using namespace Regards::OpenCL;
@@ -41,6 +49,19 @@ COpenCLParameterClMem * COpenCLEffectVideo::GetPtData(const bool &src)
 	if (src)
 		return paramSrc;
 	return paramOutput;
+}
+
+void COpenCLEffectVideo::CopyPictureToTexture2D(cl_mem cl_image)
+{
+	compute::command_queue q = context->GetCommandQueue();
+	cl_int err;
+	err = clEnqueueAcquireGLObjects(q, 1, &cl_image, 0, nullptr, nullptr);
+	Error::CheckError(err);
+	GetRgbaBitmap(cl_image);
+	err = clEnqueueReleaseGLObjects(q, 1, &cl_image, 0, nullptr, nullptr);
+	Error::CheckError(err);
+	err = clFlush(q);
+	Error::CheckError(err);
 }
 
 int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
@@ -217,80 +238,36 @@ void COpenCLEffectVideo::GetRgbaOpenCV(cl_mem cl_image, int rgba)
 
 cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 {
-	cv::UMat dst;
 	cl_mem clImage;
 	if (src)
 		clImage = paramSrc->GetValue();
 	else
 		clImage = paramOutput->GetValue();
 
-	cl_mem_object_type mem_type = 0;
-	clGetMemObjectInfo(clImage, CL_MEM_TYPE, sizeof(cl_mem_object_type), &mem_type, 0);
-
-	cl_image_format fmt = { 0, 0 };
-	clGetImageInfo(clImage, CL_IMAGE_FORMAT, sizeof(cl_image_format), &fmt, 0);
-
-	int depth = CV_8U;
-	//if (context->GetDefaultType() == OPENCL_FLOAT)
-	//	depth = CV_32F;
-
-	int type = CV_MAKE_TYPE(depth, 4);
-
 	size_t w = src ? srcwidth : widthOut;
 	size_t h = src ? srcheight : heightOut;
-	dst.create((int)h, (int)w, type);
+
+	cv::UMat dst;
+	cv::UMat cvImage;
+	context->GetContextForOpenCV().bind();
+	int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+	int type = CV_MAKE_TYPE(depth, 4);
+	cvImage.create((int)h, (int)w, type);
+	cl_mem clBuffer = (cl_mem)cvImage.handle(cv::ACCESS_RW);
+	cl_command_queue q = context->GetCommandQueue();
+	cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
+	Error::CheckError(err);
+	clFinish(q);
 
 	if (context->GetDefaultType() == OPENCL_FLOAT)
 	{
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		//cl_mem outputValue = nullptr;
-		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			if (src)
-			{
-				paramSrc->SetNoDelete(true);
-				vecParam.push_back(paramSrc);
-				paramSrcWidth->SetNoDelete(true);
-				vecParam.push_back(paramSrcWidth);
-				paramSrcHeight->SetNoDelete(true);
-				vecParam.push_back(paramSrcHeight);
-			}
-			else
-			{
-				paramOutput->SetNoDelete(true);
-				vecParam.push_back(paramOutput);
-				paramOutWidth->SetNoDelete(true);
-				vecParam.push_back(paramOutWidth);
-				paramOutHeight->SetNoDelete(true);
-				vecParam.push_back(paramOutHeight);
-			}
-
-			program->SetParameter(&vecParam, w, h, clBuffer);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
-			delete program;
-			vecParam.clear();
-		}
-	}
-	else
-	{
-		cl_int err = 0;
-		dst.create((int)h, (int)w, type);
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = context->GetCommandQueue();
-		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
-		Error::CheckError(err);
-		clFinish(q);
+		depth = CV_8U;
+		type = CV_MAKE_TYPE(depth, 4);
+		cvImage.convertTo(dst, type, 255.0, 0.0);
+		return dst;
 	}
 
-
-
-	return dst;
+	return cvImage;
 }
 
 void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
@@ -302,55 +279,41 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 		clImage = paramOutput->GetValue();
 
 	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
-	if (context->GetDefaultType() == OPENCL_FLOAT)
+
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	if (programCL != nullptr)
 	{
-		cl_mem outputValue = nullptr;
-		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
+		dataImage->SetNoDelete(true);
+		dataImage->SetValue(clBuffer);
+		vecParam.push_back(dataImage);
+		if (src)
 		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
-			dataImage->SetNoDelete(true);
-			dataImage->SetValue(clBuffer);
-			vecParam.push_back(dataImage);
-			if (src)
-			{
-				vecParam.push_back(paramSrcWidth);
-				vecParam.push_back(paramSrcHeight);
-			}
-			else
-			{
-				vecParam.push_back(paramOutWidth);
-				vecParam.push_back(paramOutHeight);
-			}
-			program->SetParameter(&vecParam, srcwidth, srcheight, GetSizeData() * srcwidth * srcheight);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
-			outputValue = program->GetOutput();
-
-			delete program;
-
-			if (paramSrc == nullptr)
-				paramSrc = new COpenCLParameterClMem();
-			paramSrc->SetValue(outputValue);
-
-			vecParam.clear();
+			vecParam.push_back(paramSrcWidth);
+			vecParam.push_back(paramSrcHeight);
 		}
-	}
-	else
-	{
-		cl_int err = 0;
-		size_t w = src ? srcwidth : widthOut;
-		size_t h = src ? srcheight : heightOut;
+		else
+		{
+			vecParam.push_back(paramOutWidth);
+			vecParam.push_back(paramOutHeight);
+		}
+		program->SetParameter(&vecParam, srcwidth, srcheight, GetSizeData() * srcwidth * srcheight);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
+		outputValue = program->GetOutput();
 
-		cl_mem cl_buffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = context->GetCommandQueue();
-		err = clEnqueueCopyBuffer(q, cl_buffer, clImage, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
-		Error::CheckError(err);
-		clFinish(q);
+		delete program;
+
+		if (paramSrc == nullptr)
+			paramSrc = new COpenCLParameterClMem();
+		paramSrc->SetValue(outputValue);
+
+		vecParam.clear();
 	}
 }
 

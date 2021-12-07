@@ -809,14 +809,21 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 			}
 		}
 	}
+
+	muVideoRender.lock();
+	if (videoRender)
+		needToRefresh = true;
+	videoRender = false;
+	muVideoRender.unlock();
+
 	if (needToRefresh)
 	{
-		//parentRender->Refresh();
-		//needToRefresh = false;
+		parentRender->Refresh();
+		parentRender->Update();
+		needToRefresh = false;
 	}
-		
-
 }
+
 
 void CVideoControlSoft::SetEndProgram(const bool& endProgram)
 {
@@ -1080,27 +1087,9 @@ void CVideoControlSoft::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {
 }
 
+
 void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL, COpenCLContext* openclContext)
 {
-	
-	// This is a dummy, to avoid an endless succession of paint messages.
-	// OnPaint handlers must always create a wxPaintDC.
-	//wxPaintDC dc(this);
-	printf("CVideoControlSoft::OnPaint \n");
-	
-	//deleteTexture = true;
-	inverted = true;
-#ifndef WIN32
-    double scale_factor = parentRender->GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-	this->openclContext = openclContext;
-
-	GLTexture* glTexture = nullptr;
-	GLTexture* glTextureOutput = nullptr;
-
 	if (renderBitmapOpenGL == nullptr)
 	{
 		this->renderOpenGL = renderOpenGL;
@@ -1114,6 +1103,28 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
+
+	this->openclContext = openclContext;
+
+	isInit = true;
+
+
+	// This is a dummy, to avoid an endless succession of paint messages.
+	// OnPaint handlers must always create a wxPaintDC.
+	//wxPaintDC dc(this);
+	printf("CVideoControlSoft::OnPaint \n");
+
+	//deleteTexture = true;
+	inverted = true;
+#ifndef WIN32
+	double scale_factor = parentRender->GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+
+	GLTexture* glTexture = nullptr;
+	GLTexture* glTextureOutput = nullptr;
 
 	std::clock_t start;
 	start = std::clock();
@@ -1200,7 +1211,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
-	
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
@@ -1602,7 +1612,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, void* dxva2Context)
 {
-	//int ret = 0;
+	bool sendMessage = false;
 	bool isCPU = true;
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();
@@ -1621,8 +1631,9 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-	wxCommandEvent event(wxEVENT_REFRESH);
-	wxPostEvent(parentRender, event);
+	muVideoRender.lock();
+	videoRender = true;
+	muVideoRender.unlock();
 
 }
 
@@ -1935,15 +1946,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			printf("RenderToTexture glTexture is not null 3\n");
 			try
 			{
-				cl_int err;
-				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
-				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
-				Error::CheckError(err);
-				openclEffect->GetRgbaBitmap(cl_image);
-				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr, nullptr);
-				Error::CheckError(err);
-				err = clFlush(openclContext->GetCommandQueue());
-				Error::CheckError(err);
+				openclEffect->CopyPictureToTexture2D(renderOpenGL->GetOpenCLTexturePt());
 				isOpenGLOpenCL = true;
 			}
 			catch (...)

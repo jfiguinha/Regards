@@ -57,6 +57,8 @@ namespace Regards
 			CRegardsBitmap* GetBitmap(cl_mem cl_image);
 			void GetBitmap(CRegardsBitmap * bitmap, const bool &src = false);
 
+			void CopyPictureToTexture2D(cl_mem cl_image);
+
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			

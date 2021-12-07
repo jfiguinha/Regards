@@ -70,6 +70,11 @@ int CFiltreEffet::Bm3d(const int& fSigma)
 	return 0;
 }
 
+void CFiltreEffet::CopyPictureToTexture2D(void * cl_image)
+{
+	filtreEffet->CopyPictureToTexture2D(cl_image);
+}
+
 int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace)
 {
 	filtreEffet->BokehEffect(radius, boxsize, nbFace, listFace);

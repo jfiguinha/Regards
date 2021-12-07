@@ -20,6 +20,7 @@
 #include <GL/glx.h>
 #include <CL/cl_gl.h>
 #else
+#include <CL/cl_gl.h>
 #endif
 #include <DeepLearning.h>
 using namespace Regards::OpenCL;
@@ -794,55 +795,21 @@ void COpenCLEffect::GetBitmap(CRegardsBitmap*& bitmap, const bool& source)
 		bitmap->SetFilename(filename);
 }
 
-/*
-void COpenCLEffect::RenderToOpenGLInterop(cl_mem cl_image)
+void COpenCLEffect::CopyPictureToTexture2D(void* cl_image)
 {
-	try
-	{
-		cl_int err;
-		if (cl_image != nullptr)
-		{
-			err = clEnqueueAcquireGLObjects(context->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-			Error::CheckError(err);
-			if (opencvBuffer)
-			{
-				int _width = 0;
-				int _height = 0;
-				//Update texture
-				cl_mem matcv = (cl_mem)cvImage.handle(cv::ACCESS_READ);
-
-				if (preview && paramOutput != nullptr)
-				{
-					_height = heightOut;
-					_width = widthOut;
-				}
-				else
-				{
-					_height = height;
-					_width = width;
-				}
-
-				size_t offset = 0;
-				size_t origin[3] = { 0, 0, 0 };
-				size_t region[3] = { _width, _height, 1 };
-
-				err = clEnqueueCopyBufferToImage(context->GetCommandQueue(), matcv, cl_image, offset, origin, region, 0, NULL, NULL);
-				Error::CheckError(err);
-			}
-			else
-				GetRgbaBitmap(cl_image);
-			err = clEnqueueReleaseGLObjects(context->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-			Error::CheckError(err);
-			err = clFlush(context->GetCommandQueue());
-			Error::CheckError(err);
-		}
-	}
-	catch (...)
-	{
-
-	}
+	cl_mem cl_picture = (cl_mem)cl_image;
+	compute::command_queue q = context->GetCommandQueue();
+	cl_int err;
+	err = clEnqueueAcquireGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
+	Error::CheckError(err);
+	GetRgbaBitmap(cl_picture);
+	err = clEnqueueReleaseGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
+	Error::CheckError(err);
+	err = clFlush(q);
+	Error::CheckError(err);
 }
-*/
+
+
 void COpenCLEffect::GetYUV420P(uint8_t*& y, uint8_t*& u, uint8_t*& v, const int& widthOut, const int& heightOut)
 {
 	int middleWidth = widthOut / 2;

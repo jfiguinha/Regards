@@ -13,6 +13,7 @@ class CFiltreEffetCPU : public IFiltreEffet
 public:
 	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
+	void CopyPictureToTexture2D(void* cl_image) {};
     int Bm3d(const int & fSigma);
 	int HistogramNormalize();
 	int HistogramEqualize();

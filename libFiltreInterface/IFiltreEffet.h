@@ -19,6 +19,8 @@ public:
 	{
 		this->preview = preview;
 	}
+
+	virtual void CopyPictureToTexture2D(void* cl_image) = 0;
 	virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut) = 0;
     virtual int Bm3d(const int & fSigma) = 0;
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) = 0;

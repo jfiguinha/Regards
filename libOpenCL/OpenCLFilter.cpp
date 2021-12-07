@@ -11,6 +11,7 @@
 #include <opencv2/imgproc.hpp>
 #include <boost/compute/algorithm/copy.hpp>
 #include <boost/compute/core.hpp>
+#include <opencv2/opencv.hpp>
 namespace compute = boost::compute;
 using namespace Regards::OpenCL;
 
@@ -161,96 +162,49 @@ cl_mem COpenCLFilter::BrightnessAndContrastAuto(cl_mem inputData, int width, int
 cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
 {
 	cv::UMat dst;
-
-	cl_mem_object_type mem_type = 0;
-	clGetMemObjectInfo(clImage, CL_MEM_TYPE, sizeof(cl_mem_object_type), &mem_type, 0);
-
-	cl_image_format fmt = { 0, 0 };
-	clGetImageInfo(clImage, CL_IMAGE_FORMAT, sizeof(cl_image_format), &fmt, 0);
-
-	int depth = CV_8U;
-	//if (context->GetDefaultType() == OPENCL_FLOAT)
-	//	depth = CV_32F;
-
+	cv::UMat cvImage;
+	context->GetContextForOpenCV().bind();
+	int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 	int type = CV_MAKE_TYPE(depth, 4);
-
-	size_t w = width;
-	size_t h = height;
-	dst.create((int)h, (int)w, type);
+	cvImage.create((int)height, (int)width, type);
+	cl_mem clBuffer = (cl_mem)cvImage.handle(cv::ACCESS_RW);
+	cl_command_queue q = context->GetCommandQueue();
+	cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, width * height * GetSizeData(), NULL, NULL, NULL);
+	Error::CheckError(err);
+	clFinish(q);
 
 	if (context->GetDefaultType() == OPENCL_FLOAT)
 	{
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		//cl_mem outputValue = nullptr;
-		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-			input->SetValue(clImage);
-			input->SetLibelle("input");
-			input->SetNoDelete(true);
-			vecParam.push_back(input);
-
-			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-			paramWidth->SetLibelle("width");
-			paramWidth->SetValue(width);
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-			paramHeight->SetLibelle("height");
-			paramHeight->SetValue(height);
-			vecParam.push_back(paramHeight);
-
-			program->SetParameter(&vecParam, w, h, clBuffer);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
-			delete program;
-			vecParam.clear();
-		}
-	}
-	else
-	{
-		dst.create((int)h, (int)w, type);
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = context->GetCommandQueue();
-		cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
-		Error::CheckError(err);
-		clFinish(q);
+		depth = CV_8U;
+		type = CV_MAKE_TYPE(depth, 4);
+		cvImage.convertTo(dst, type, 255.0, 0.0);
+		return dst;
 	}
 
-
-
-	return dst;
+	return cvImage;
 }
 
 cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
 {
-	//cl_int err = 0;
-	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
-
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if (programCL != nullptr)
 	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
 
-		COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
+		COpenCLParameterClMem* dataImage = new COpenCLParameterClMem();
 		dataImage->SetNoDelete(true);
-		dataImage->SetValue(clBuffer);
+		dataImage->SetValue((cl_mem)dst.handle(cv::ACCESS_READ));
 		vecParam.push_back(dataImage);
 
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
 		paramWidth->SetLibelle("width");
 		paramWidth->SetValue(width);
 		vecParam.push_back(paramWidth);
 
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
 		paramHeight->SetLibelle("height");
 		paramHeight->SetValue(height);
 		vecParam.push_back(paramHeight);
@@ -263,8 +217,7 @@ cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
 		delete program;
 		vecParam.clear();
 	}
-
-
+	
 	return outputValue;
 }
 

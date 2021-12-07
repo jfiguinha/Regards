@@ -37,9 +37,10 @@ namespace Regards
 		public:
 			CRenderOpenGL(wxGLCanvas* canvas);
 			~CRenderOpenGL() override;
+			GLTexture* GetGLTexture();
 			wxGLContext* GetGLContext();
 			GLTexture* GetDisplayTexture();
-			GLTexture* GetGLTexture();
+			void CopyTextureFromOpenCL(cl_mem& image);
 			GLTexture* GetDisplayTexture(const int& width, const int& height);
 			void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
 			GLTexture* GetDisplayTexture(const int& width, const int& height, cl_context context);

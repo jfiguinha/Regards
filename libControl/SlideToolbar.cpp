@@ -9,8 +9,9 @@ using namespace Regards::Video;
 #define IDM_SETSHRINK 7
 #define WM_EXPORT 8
 #define IDM_NONE 9
+#ifndef WIN32
 #define WM_CLOSE 10
-
+#endif
 
 CSlideToolbar::CSlideToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar& theme)
 	: CToolbarWindow(parent, id, theme, false)
