@@ -76,10 +76,16 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
     
 	if (numItem == numItemSelected)
     {
-        wxCommandEvent event(wxEVENT_REFRESH);
-        wxPostEvent(parentRender, event);  
+        if(first_time)
+        {
+             this->Refresh(); 
+             this->Update();         
+         }
+         first_time = false;
+         return;
     }
-    return;
+    
+   
 
 	if (numSelectPhotoId != -1)
 	{
@@ -141,8 +147,8 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-    wxCommandEvent event(wxEVENT_REFRESH);
-    wxPostEvent(parentRender, event);  
+        this->Refresh(); 
+        this->Update();
 
 }
 
@@ -421,6 +427,7 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 {
 	process_end = false;
+    first_time = true;
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFile, size);
 	videoFilename = videoFile;
