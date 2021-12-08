@@ -2,7 +2,7 @@
 #include "PreviewToolbar.h"
 #include <LibResource.h>
 #include <BitmapWndViewer.h>
-#include <BitmapWnd2d.h>
+#include <BitmapWnd3d.h>
 
 using namespace Regards::Control;
 
@@ -69,7 +69,7 @@ CPreviewToolbar::~CPreviewToolbar()
 void CPreviewToolbar::ZoomPos(const int& position)
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -83,7 +83,7 @@ void CPreviewToolbar::ZoomPos(const int& position)
 void CPreviewToolbar::ZoomOn()
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -102,7 +102,7 @@ void CPreviewToolbar::ZoomOn()
 void CPreviewToolbar::ChangeZoomInPos()
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -121,7 +121,7 @@ void CPreviewToolbar::ChangeZoomInPos()
 void CPreviewToolbar::ChangeZoomOutPos()
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -141,7 +141,7 @@ void CPreviewToolbar::ChangeZoomOutPos()
 void CPreviewToolbar::ZoomOut()
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -176,7 +176,7 @@ void CPreviewToolbar::SetTrackBarPosition(const int& iPos)
 void CPreviewToolbar::SlidePosChange(const int& position, const wxString& key)
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
@@ -189,7 +189,7 @@ void CPreviewToolbar::SlidePosChange(const int& position, const wxString& key)
 void CPreviewToolbar::EventManager(const int& id)
 {
 	CBitmapWndViewer* wndViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd2D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
 		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();

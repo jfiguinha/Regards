@@ -18,7 +18,7 @@ namespace Regards
 	namespace Window
 	{
 		class CBitmapWndRender;
-		class CBitmapWnd2D;
+		class CBitmapWnd3D;
 	}
 	namespace Control
 	{
@@ -73,7 +73,7 @@ namespace Regards
 			CPreviewToolbar* previewToolbar;
 			CSliderVideoPreview* sliderVideo;
 			CBitmapWndRender * bitmapWindow;
-			CBitmapWnd2D * bitmapWindowRender;
+			CBitmapWnd3D * bitmapWindowRender;
 			CRegardsConfigParam* configRegards;
 
 			bool defaultToolbar;

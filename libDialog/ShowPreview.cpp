@@ -9,7 +9,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <array>
-#include <BitmapWnd2d.h>
+#include <BitmapWnd3d.h>
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
@@ -19,7 +19,6 @@
 #include <Tracing.h>
 #include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
-#include <MetadataExiv2.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -72,7 +71,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	themeBitmap.colorScreen = wxColour("black");
 
 	bitmapWindow = new CBitmapWndRender(previewToolbar, 0, themeBitmap);
-	bitmapWindowRender = new CBitmapWnd2D(this, BITMAPWINDOWVIEWERIDDLG);
+	bitmapWindowRender = new CBitmapWnd3D(this, BITMAPWINDOWVIEWERIDDLG);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)
@@ -116,7 +115,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	this->videoOptionCompress = *videoOptionCompress;
 	progressValue = 0;
 	filename = videoFilename;
-
+	/*
 	if (decodeFrameOriginal != nullptr)
 		delete decodeFrameOriginal;
 	decodeFrameOriginal = nullptr;
@@ -127,6 +126,9 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 		delete decodeFrame;
 	decodeFrame = nullptr;
 	decodeFrameOriginal = new CFFmpegDecodeFrame();
+	*/
+	if(decodeFrameOriginal == nullptr)
+		decodeFrameOriginal = new CFFmpegDecodeFrame();
 	decodeFrameOriginal->OpenFile(filename);
 	timeTotal = decodeFrameOriginal->GetTotalTime();
 

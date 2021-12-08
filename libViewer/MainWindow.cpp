@@ -473,7 +473,8 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	if (windowRender != nullptr)
 		videoWindow = (CVideoControlSoft *)windowRender->GetWndPt();
 
-	CompressionAudioVideoOption * compressAudioVideoOption = new CompressionAudioVideoOption(this);
+	if(compressAudioVideoOption == nullptr)
+		compressAudioVideoOption = new CompressionAudioVideoOption(this);
 
 	compressAudioVideoOption->SetFile(filename, filepath);
 
@@ -640,7 +641,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		wxMessageBox(message, errorConversion, wxICON_ERROR);
 	}
 
-	delete compressAudioVideoOption;
+	//delete compressAudioVideoOption;
 }
 
 void CMainWindow::OnExportFile(wxCommandEvent& event)
