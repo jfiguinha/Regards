@@ -424,6 +424,9 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 	if (thumbnailVideo != nullptr)
 	{
 		thumbnailVideo->SetVideoPosition(0);
+        wxCommandEvent event(VIDEO_UPDATE_ID);
+        event.SetExtraLong(1);
+        wxPostEvent(this, event);
 	}
 }
 
