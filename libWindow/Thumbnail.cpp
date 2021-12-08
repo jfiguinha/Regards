@@ -1637,5 +1637,8 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		//this->Refresh();
 	}
 
-	
+#ifdef __APPLE__
+    if (!timerAnimation->IsRunning())
+		timerAnimation->Start(50, true);
+#endif
 }
