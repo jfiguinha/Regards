@@ -73,8 +73,13 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 		return;
 
 	const int numItem = FindNumItem(videoPos);
+    
 	if (numItem == numItemSelected)
-		return;
+    {
+        wxCommandEvent event(wxEVENT_REFRESH);
+        wxPostEvent(parentRender, event);  
+    }
+    return;
 
 	if (numSelectPhotoId != -1)
 	{
@@ -136,7 +141,9 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-	Refresh();
+    wxCommandEvent event(wxEVENT_REFRESH);
+    wxPostEvent(parentRender, event);  
+
 }
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
