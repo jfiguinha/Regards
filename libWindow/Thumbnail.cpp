@@ -1637,4 +1637,5 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		//this->Refresh();
 	}
 
+	
 }
