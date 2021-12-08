@@ -97,10 +97,10 @@ void COcrWnd::Init()
 
 COcrWnd::~COcrWnd()
 {
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
+	auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 		if (wndViewer != nullptr)
 		{
 			wndViewer->RemoveListener();
@@ -480,10 +480,10 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 void COcrWnd::OnOcr(wxCommandEvent& event)
 {
 	CBitmapWndViewer* viewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(BITMAPWINDOWVIEWERIDPDF));
+	auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (bitmapWindow != nullptr)
 	{
-		viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		viewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	if (viewer != nullptr)

@@ -61,11 +61,11 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* sour
                          const int& filtre)
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+	auto bitmapWindow = wxWindow::FindWindowById(bitmapWindowId);
 	if (!isVideo)
 	{
 		if (bitmapWindow != nullptr)
-			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+			bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	this->filtre = filtre;
@@ -110,10 +110,10 @@ void CFiltreEffect::UpdateScreenRatio()
 void CFiltreEffect::UpdateMousePosition()
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+	auto bitmapWindow = wxWindow::FindWindowById(bitmapWindowId);
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	if (bitmapViewer != nullptr)
@@ -126,10 +126,10 @@ void CFiltreEffect::UpdateMousePosition()
 CImageLoadingFormat* CFiltreEffect::ApplyEffect()
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(bitmapWindowId));
+	auto bitmapWindow = wxWindow::FindWindowById(bitmapWindowId);
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	if (filterEffect != nullptr)

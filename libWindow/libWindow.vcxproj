@@ -505,6 +505,7 @@
     <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
     <ClInclude Include="IBitmapRenderInterface.h" />
+    <ClInclude Include="IBitmapWnd.h" />
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="SliderInterface.h" />

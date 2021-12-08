@@ -2,8 +2,8 @@
 #include "WindowMain.h"
 #include <RegardsConfigParam.h>
 #include <theme.h>
+#include "IBitmapWnd.h"
 #include "SliderInterface.h"
-#include "IBitmapRenderInterface.h"
 #include <BitmapDisplay.h>
 using namespace std;
 using namespace Regards::OpenCL;
@@ -35,7 +35,7 @@ namespace Regards
 	{
 		class CBitmapWndRender;
 
-		class CBitmapWnd2D : public CWindowMain
+		class CBitmapWnd2D : public CWindowMain, public IBitmapWnd
 		{
 		public:
 			CBitmapWnd2D(wxWindow* parent, wxWindowID id);
@@ -45,7 +45,7 @@ namespace Regards
 
 			virtual void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender);
 
-			IBitmapRenderInterface * GetWndPt();
+			virtual IBitmapRenderInterface * GetWndPt();
 
 			virtual void UpdateScreenRatio() override;
 

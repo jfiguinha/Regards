@@ -228,6 +228,9 @@
     <ClInclude Include="BitmapWnd2d.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="IBitmapWnd.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">

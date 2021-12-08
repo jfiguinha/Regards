@@ -383,10 +383,10 @@ void CPanelInfosWnd::OnFiltreOk(const int& numFiltre)
 void CPanelInfosWnd::OnFiltreCancel()
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERID));
+	auto bitmapWindow = wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	if (bitmapViewer != nullptr)

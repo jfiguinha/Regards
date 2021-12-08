@@ -52,10 +52,10 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 	imageLoad->SetPicture(bitmap);
 
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(bitmapWindowId));
+	auto bitmapWindow = this->FindWindowById(bitmapWindowId);
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
@@ -75,10 +75,10 @@ void CFiltreEffectScrollWnd::OnFiltreOk(const int& numFiltre, CInfoEffectWnd* hi
 {
 	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
 	CBitmapWndViewer* bitmapViewer = nullptr;
-	auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(bitmapWindowId));
+	auto bitmapWindow = this->FindWindowById(bitmapWindowId);
 	if (bitmapWindow != nullptr)
 	{
-		bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+		bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 	}
 
 	if (filtreEffectOld != nullptr && bitmapViewer != nullptr)
@@ -126,10 +126,10 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	if (!isVideo)
 	{
 		CBitmapWndViewer* bitmapViewer = nullptr;
-		auto bitmapWindow = static_cast<CBitmapWnd3D*>(this->FindWindowById(bitmapWindowId));
+		auto bitmapWindow = this->FindWindowById(bitmapWindowId);
 		if (bitmapWindow != nullptr)
 		{
-			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
+			bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
 		}
 
 		if (bitmapViewer != nullptr)
