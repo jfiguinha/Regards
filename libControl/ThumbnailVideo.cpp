@@ -277,6 +277,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	threadDataProcess = true;
 
 	UpdateScroll();
+
+	Refresh();
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -417,6 +419,5 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 	videoFilename = videoFile;
 	// processTimer->Start(500);
 	Refresh();
-    Update();
 	processIdle = true;
 }
