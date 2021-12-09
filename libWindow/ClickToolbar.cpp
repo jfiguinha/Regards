@@ -49,7 +49,7 @@ void CClickToolbar::SetVertical(const bool& vertical)
 	}
 
 
-	Refresh();
+	needToRefresh = true;
 }
 
 CClickToolbar::~CClickToolbar()

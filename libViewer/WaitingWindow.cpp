@@ -66,7 +66,7 @@ void CWaitingWindow::Resize()
 void CWaitingWindow::SetTexte(const wxString& libelle)
 {
 	textToShow = libelle;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CWaitingWindow::on_paint(wxPaintEvent& event)

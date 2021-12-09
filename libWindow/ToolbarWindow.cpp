@@ -27,17 +27,9 @@ CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeTool
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CToolbarWindow::OnMouseCaptureLost));
 	Connect(TIMER_PUSHID, wxEVT_TIMER, wxTimerEventHandler(CToolbarWindow::OnTimerPushButton), nullptr, this);
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CToolbarWindow::OnEraseBackground));
-    Connect(wxEVT_IDLE, wxIdleEventHandler(CToolbarWindow::OnIdle));
 }
 
- void CToolbarWindow::OnIdle(wxIdleEvent& evt)
- {
-     if(needToRefresh)
-    {
-        this->Refresh();
-        needToRefresh = false;
-    }
- }
+
 
 void CToolbarWindow::OnMouseCaptureLost(wxMouseEvent& event)
 {

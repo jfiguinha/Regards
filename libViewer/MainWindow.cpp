@@ -1256,6 +1256,12 @@ void CMainWindow::ProcessIdle()
 //---------------------------------------------------------------
 void CMainWindow::OnIdle(wxIdleEvent& evt)
 {
+    if(needToRefresh)
+    {
+        this->Refresh();
+        needToRefresh = false;
+    }  
+    
 	StartThread();
 }
 

@@ -65,7 +65,7 @@ void CPicturePanel::OnChannelSelect(wxCommandEvent& event)
 	refreshPicture = true;
 
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 CPicturePanel::~CPicturePanel()
@@ -93,12 +93,12 @@ void CPicturePanel::SetPictureToDisplay(CRegardsBitmap* picture)
 	choice_control->Select(0);
 
 	refreshPicture = true;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CPicturePanel::UpdateScreenRatio()
 {
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CPicturePanel::on_paint(wxPaintEvent& event)

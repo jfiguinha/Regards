@@ -111,7 +111,7 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent& event)
 	if (photoCriteria != nullptr)
 		delete photoCriteria;
 
-	Refresh();
+	needToRefresh = true;
 }
 
 void CCriteriaTreeWnd::ShowMap(wxCommandEvent& event)
@@ -183,7 +183,7 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent& event)
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->SendMessageToWindow(filename, 1);
 
-	Refresh();
+	needToRefresh = true;
 }
 
 
@@ -203,7 +203,7 @@ void CCriteriaTreeWnd::ShowKeyWord(wxCommandEvent& event)
 	if (photoCriteria != nullptr)
 		delete photoCriteria;
 
-	Refresh();
+	needToRefresh = true;
 }
 
 CCriteriaTreeWnd::~CCriteriaTreeWnd(void)
@@ -234,6 +234,6 @@ void CCriteriaTreeWnd::SetFile(const wxString& filename)
 		this->filename = filename;
 		UpdateTreeData();
 
-		Refresh();
+		needToRefresh = true;
 	}
 }

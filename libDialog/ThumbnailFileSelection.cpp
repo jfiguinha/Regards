@@ -116,7 +116,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int& typeAffichage)
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailFileSelection::Init(const wxString& filename, const int& typeAffichage)
@@ -192,7 +192,7 @@ void CThumbnailFileSelection::SetListeFile()
 	heightThumbnail = 0;
 	ResizeThumbnail();
 	processIdle = true;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 vector<int> CThumbnailFileSelection::GetSelectItem()
@@ -496,5 +496,5 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 		posHauteur = posY;
 	}
 
-	this->Refresh();
+	needToRefresh = true;
 }

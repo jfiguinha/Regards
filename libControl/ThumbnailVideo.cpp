@@ -137,8 +137,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 	numItemSelected = numItem;
-    this->Refresh(); 
-    //this->Update();
+    needToRefresh = true;
 }
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
@@ -280,7 +279,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	UpdateScroll();
 
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -330,7 +329,7 @@ void CThumbnailVideo::ProcessVideoThumbnail()
 			}
 		}
 	}
-	this->Refresh();
+	needToRefresh = true;
 }
 
 
@@ -420,7 +419,6 @@ void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFile, size);
 	videoFilename = videoFile;
-	// processTimer->Start(500);
-	Refresh();
 	processIdle = true;
+    needToRefresh = true;
 }

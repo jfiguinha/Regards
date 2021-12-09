@@ -32,8 +32,7 @@ namespace Regards
 
 			virtual void OnRefresh(wxCommandEvent& event)
 			{
-				this->Refresh();
-				this->Update();
+                needToRefresh = true;
 			}
 
 
@@ -50,14 +49,13 @@ namespace Regards
 
 			void Resize() override
 			{
-				this->Refresh();
-				this->Update();
+                needToRefresh = true;
 			}
 
 			virtual void SetSizeWindow(const int& x, const int& y, const int& width, const int& height)
 			{
 				this->SetSize(x, y, width, height);
-				this->Refresh();
+				needToRefresh = true;
 			}
 
 			virtual void OnEraseBackground(wxEraseEvent& event)
@@ -67,15 +65,28 @@ namespace Regards
 			virtual void OnSize(wxSizeEvent& event)
 			{
 				this->ProcessOnSizeEvent(event);
+                needToRefresh = true;
 			}
 
 			wxString GetWaitingMessage() override
 			{
 				return "Window waiting : " + to_string(this->GetId());
 			}
+            
+            virtual void OnIdle(wxIdleEvent& evt)
+            {
+                if(needToRefresh)
+                {
+                    this->Refresh();
+                    needToRefresh = false;
+                }  
+            }
 
+            bool needToRefresh = false;
 			wxString name_;
 		};
+        
+
 
 		inline CWindowMain::CWindowMain(const wxString& name, wxWindow* parent, const wxWindowID id):
 			wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0), name_(std::move(name))
@@ -96,6 +107,7 @@ namespace Regards
 			Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
 			Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED,
 			        wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
+            Connect(wxEVT_IDLE, wxIdleEventHandler(CWindowMain::OnIdle));
 		}
 
 		using WindowMainVector = std::vector<CWindowMain*>;

@@ -247,7 +247,7 @@ void CTreeWindow::OnKeyDown(wxKeyEvent& event)
 	if (update)
 	{
 		GenerateScreenBuffer();
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -289,7 +289,7 @@ void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
 	if (update)
 	{
 		GenerateScreenBuffer();
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -350,7 +350,7 @@ void CTreeWindow::Resize()
 {
 	TRACE();
 	GenerateScreenBuffer();
-	this->Refresh();
+	needToRefresh = true;
 	/*
 	wxClientDC dc(this);
 	if (backgroundBuffer.IsOk())
@@ -412,7 +412,7 @@ void CTreeWindow::OnLButtonUp(wxMouseEvent& event)
 	{
 		treeControl->UnclickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
 		GenerateScreenBuffer();
-		this->Refresh();
+		needToRefresh = true;
 	}
 	else
 	{
@@ -438,7 +438,7 @@ void CTreeWindow::OnLButtonDown(wxMouseEvent& event)
 	{
 		treeControl->ClickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
 		GenerateScreenBuffer();
-		this->Refresh();
+		needToRefresh = true;
 	}
 	else
 	{
@@ -462,7 +462,7 @@ void CTreeWindow::OnLDoubleClick(wxMouseEvent& event)
 	{
 		treeControl->DoubleClickOnElement(element);
 		GenerateScreenBuffer();
-		this->Refresh();
+		needToRefresh = true;
 	}
 	else
 	{
@@ -475,7 +475,7 @@ void CTreeWindow::UpdateTreeControl()
 	TRACE();
 	printf("CTreeWindow::UpdateTreeControl \n");
 	GenerateScreenBuffer();
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CTreeWindow::UpdateScreenRatio()
@@ -486,7 +486,7 @@ void CTreeWindow::UpdateScreenRatio()
 	if (this->treeControl != nullptr)
 		this->treeControl->UpdateScreenRatio();
 	GenerateScreenBuffer();
-	this->Refresh();
+	needToRefresh = true;
 }
 
 
@@ -496,7 +496,7 @@ void CTreeWindow::SetTreeControl(CTreeControl* treeControl)
 	printf("CTreeWindow::SetTreeControl \n");
 	this->treeControl = treeControl;
 	GenerateScreenBuffer();
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CTreeWindow::GenerateScreenBuffer()

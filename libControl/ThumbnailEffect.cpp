@@ -366,7 +366,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 	processIdle = true;
 
 	UpdateScroll();
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailEffect::LoadPicture(void* param)
@@ -543,7 +543,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 						}
 					}
 					if (needToRefresh)
-						Refresh();
+						needToRefresh = true;
 				}
 			}
 		}

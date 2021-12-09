@@ -92,13 +92,13 @@ void CToolbarInfos::SetEffectParameterPush()
 void CToolbarInfos::SetEffectInactif()
 {
 	effect->SetVisible(false);
-	Refresh();
+	needToRefresh = true;
 }
 
 void CToolbarInfos::SetEffectParameterInactif()
 {
 	effectParameter->SetVisible(false);
-	Refresh();
+	needToRefresh = true;
 }
 
 void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
@@ -111,7 +111,7 @@ void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
 		if (navPush != nullptr)
 			navPush->SetInactif();
 		effectParameter->SetActif();
-		Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -137,7 +137,7 @@ void CToolbarInfos::Resize()
 	{
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
-	Refresh();
+	needToRefresh = true;
 }
 
 void CToolbarInfos::EventManager(const int &id)

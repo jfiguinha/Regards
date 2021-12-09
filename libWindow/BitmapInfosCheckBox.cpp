@@ -68,7 +68,7 @@ void CBitmapInfosCheckBox::OnLButtonDown(wxMouseEvent& event)
 	if ((x > xPos && x < xPos + bitmapCheckOn.GetWidth()) && (y > yPos && y < yPos + bitmapCheckOn.GetHeight()))
 	{
 		isSelected = !isSelected;
-		Refresh();
+		needToRefresh = true;
 
 		auto wx_command_event = new wxCommandEvent(wxEVENT_CHANGECHECKBOX);
 		wxQueueEvent(this->GetParent(), wx_command_event);

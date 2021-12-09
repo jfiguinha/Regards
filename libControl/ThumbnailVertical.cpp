@@ -64,7 +64,7 @@ wxString CThumbnailVertical::GetWaitingMessage()
 void CThumbnailVertical::SetNoVScroll(const bool& noVscroll)
 {
 	this->noVscroll = noVscroll;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailVertical::RenderIconeWithVScroll(wxDC* deviceContext)

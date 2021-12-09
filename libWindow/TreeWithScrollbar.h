@@ -20,7 +20,7 @@ namespace Regards
 
 		protected:
 			void Resize() override;
-
+            
 			CScrollbarWnd* scrollWindow;
 			CTreeWindow* treeWindow;
 		};

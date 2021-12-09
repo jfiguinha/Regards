@@ -362,7 +362,7 @@ void CScrollbarHorizontalWnd::Resize()
 		rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 	}
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)

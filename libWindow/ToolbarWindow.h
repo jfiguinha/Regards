@@ -34,7 +34,7 @@ namespace Regards
 			void OnMouseHover(wxMouseEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
 			void OnTimerPushButton(wxTimerEvent& event);
-           void OnIdle(wxIdleEvent& evt);
+
 			void OnEraseBackground(wxEraseEvent& event) override
 			{
 			};
@@ -51,7 +51,7 @@ namespace Regards
 			CThemeToolbar themeToolbar;
 			bool saveLastPush;
 			bool isVertical;
-            bool needToRefresh = false;
+
 		private:
 			void DrawButton(wxDC* dc, CToolbarElement* nav);
 			void EmptyNavigator();

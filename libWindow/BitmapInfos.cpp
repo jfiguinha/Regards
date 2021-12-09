@@ -62,8 +62,7 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 		}
 	}
 
-
-	Refresh();
+    needToRefresh = true;
 }
 
 void CBitmapInfos::SetFilename(const wxString& libelle)
@@ -111,7 +110,7 @@ void CBitmapInfos::UpdateData()
 		dateInfos = L"";
 		gpsInfos = "";
 	}
-	Refresh();
+	needToRefresh = true;
 }
 
 int CBitmapInfos::Dayofweek(int d, int m, int y)

@@ -72,7 +72,7 @@ void CSliderVideoPreview::OnMouseClickTimer(wxTimerEvent& event)
 		if (sliderEvent != nullptr)
 			sliderEvent->SlidePosChange(secondTimePast, "Click");
 	}
-	this->Refresh();
+	needToRefresh = true;
 	mouseTimer->Start(100, true);
 }
 
@@ -91,13 +91,13 @@ bool CSliderVideoPreview::IsMouseOver()
 void CSliderVideoPreview::SetPlay()
 {
 	isPlay = true;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoPreview::SetPause()
 {
 	isPlay = false;
-	Refresh();
+	needToRefresh = true;
 }
 
 
@@ -416,7 +416,7 @@ void CSliderVideoPreview::OnMouseMove(wxMouseEvent& event)
 			buttonPreviousActif = false;
 		}
 	}
-	Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoPreview::OnMouseLeave(wxMouseEvent& event)
@@ -483,7 +483,7 @@ void CSliderVideoPreview::OnLButtonDown(wxMouseEvent& event)
 			mouseTimer->Start(100, true);
 		}
 	}
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoPreview::OnLButtonUp(wxMouseEvent& event)

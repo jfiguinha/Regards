@@ -1093,7 +1093,6 @@ void CListPicture::Resize()
 	if (windowManager != nullptr)
 	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
-		//windowManager->Resize();
-		this->Refresh();
+        needToRefresh = true;
 	}
 }

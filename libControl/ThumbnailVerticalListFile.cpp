@@ -68,7 +68,7 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString>& files)
 
 	AfterSetList();
 	threadDataProcess = true;
-	Refresh();
+	needToRefresh = true;
 }
 
 CThumbnailVerticalListFile::~CThumbnailVerticalListFile(void)
@@ -154,7 +154,7 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString& listFile, con
 
 	thumbnailPos = 0;
 	threadDataProcess = true;
-	Refresh();
+	needToRefresh = true;
 }
 
 
@@ -217,5 +217,5 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector& photoVector)
 
 	AfterSetList();
 
-	Refresh();
+	needToRefresh = true;
 }

@@ -61,13 +61,13 @@ bool CSliderVideo::IsMouseOver()
 void CSliderVideo::SetPlay()
 {
 	isPlay = true;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideo::SetPause()
 {
 	isPlay = false;
-	Refresh();
+	needToRefresh = true;
 }
 
 
@@ -452,9 +452,7 @@ void CSliderVideo::OnMouseMove(wxMouseEvent& event)
 			buttonScreenActif = false;
 		}
 	}
-
-
-	Refresh();
+    needToRefresh = true;
 }
 
 void CSliderVideo::OnMouseLeave(wxMouseEvent& event)
@@ -536,7 +534,7 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 			wxSetCursor(wxCURSOR_ARROW);
 		}
 	}
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideo::OnLButtonUp(wxMouseEvent& event)

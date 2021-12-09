@@ -1696,7 +1696,7 @@ bool CCentralWindow::SetAnimation(const wxString& filename)
 
 	LoadAnimationBitmap(filename, 0);
 	if (refresh)
-		Refresh();
+		needToRefresh = true;
 
 
 	SetPanelInfos(false);

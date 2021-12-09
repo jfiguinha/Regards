@@ -465,12 +465,11 @@ void CShowElement::TransitionEnd()
 
 void CShowElement::OnIdle(wxIdleEvent& evt)
 {
-#ifdef __APPLE__
+
     if (refreshSlider && videoSlider->IsShown())
         videoSlider->Refresh();
         
     refreshSlider = false;
-#endif
 
 }
 
@@ -889,11 +888,8 @@ void CShowElement::ClickButton(const int& id)
 		*/
 	}
 
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
+
 }
 
 CShowElement::~CShowElement()
@@ -972,11 +968,7 @@ void CShowElement::OnVideoEnd()
 			centralWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
 }
 
 void CShowElement::OnVideoStop()
@@ -991,11 +983,9 @@ void CShowElement::OnVideoStop()
 			centralWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-#ifdef __APPLE__
+
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
+
 }
 
 
@@ -1006,11 +996,7 @@ void CShowElement::SetVideoDuration(const int64_t& position)
 		videoTotalTime = position;
 		videoSlider->SetTotalSecondTime(position / 1000);
 	}
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
 }
 
 void CShowElement::OnVideoStart()
@@ -1028,7 +1014,7 @@ void CShowElement::OnVideoStart()
 		centralWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	videoSlider->Refresh();
+	refreshSlider = true;
 }
 
 void CShowElement::OnVideoPause()
@@ -1041,12 +1027,8 @@ void CShowElement::OnAfterOpenVideo()
 	videoSlider->SetPastSecondTime(0);
 	ShowSlider(false);
 	PlayVideo();
-	//videoSlider->SetVolumePos(videoWindow->GetVolume());
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
+
 }
 
 
@@ -1069,13 +1051,8 @@ void CShowElement::OnPositionVideo(const int64_t& position)
 				viewerWindow->GetEventHandler()->AddPendingEvent(event);
 			}
 			videoPosOld = videoPos;
-		//}
-
-#ifdef __APPLE__
-		refreshSlider = true;
-#else
-		videoSlider->Refresh();
-#endif
+            
+        refreshSlider = true;
 	}
 }
 
@@ -1098,11 +1075,7 @@ void CShowElement::SetTimePosition(const int64_t& timePosition)
 	{
 		videoSlider->SetPastSecondTime(timePosition / 1000);
 		videoSlider->UpdatePositionEvent();
-#ifdef __APPLE__
 		refreshSlider = true;
-#else
-		videoSlider->Refresh();
-#endif
 	}
 }
 
@@ -1154,11 +1127,8 @@ void CShowElement::StopVideo(wxString photoName)
 	ShowSliderToolbar(true);
 	videoSlider->SetPastSecondTime(0);
 	videoWindow->OnStop(photoName);
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
+
 }
 
 void CShowElement::ShowSliderToolbar(const bool& show)
@@ -1201,11 +1171,7 @@ void CShowElement::PauseVideo()
 	videoWindow->OnPause();
 	ShowSliderToolbar(true);
 	videoSlider->SetPause();
-#ifdef __APPLE__
 	refreshSlider = true;
-#else
-	videoSlider->Refresh();
-#endif
 }
 
 

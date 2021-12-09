@@ -124,7 +124,7 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 	//numSelect = pIcone;
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vector<CImageVideoThumbnail *> & videoThumbnail)
@@ -196,11 +196,11 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 
 	threadDataProcess = true;
 
-	Refresh();
+	needToRefresh = true;
 }
 void CThumbnailMultiPage::SetFile(const wxString &filename, vector<CImageVideoThumbnail *> & videoThumbnail)
 {
 	InitScrollingPos();
 	InitWithDefaultPicture(filename, videoThumbnail);
-	Refresh();
+	needToRefresh = true;
 }

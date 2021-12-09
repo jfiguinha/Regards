@@ -33,7 +33,7 @@ int CBitmapInfosGps::GetHeight()
 
 void CBitmapInfosGps::UpdateScreenRatio()
 {
-	Refresh();
+	needToRefresh = true;
 }
 
 void CBitmapInfosGps::Redraw()

@@ -518,6 +518,12 @@ void CListFace::FacialRecognition(void* param)
 
 void CListFace::OnIdle(wxIdleEvent& evt)
 {
+    if(needToRefresh)
+    {
+        this->Refresh();
+        needToRefresh = false;
+    }      
+
 	if (endProgram)
 	{
 		processIdle = false;
@@ -621,7 +627,7 @@ void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 	RefreshPane();
 	thumbnailFace->init();
 	processIdle = true;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)
@@ -690,7 +696,7 @@ void CListFace::Resize()
 	if (windowManager != nullptr)
 	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 

@@ -17,8 +17,6 @@ namespace Regards
 		private:
 			void on_paint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
-			//void OnMouseMove(wxMouseEvent& event);
-            void OnIdle(wxIdleEvent& evt);
 			void Draw(wxDC* dc);
 			void DrawPreviousElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont);
 			void DrawNextElement(wxDC* dc, const wxString& libelle, const CThemeFont& themeFont);
@@ -29,7 +27,6 @@ namespace Regards
 
 			int typeAffichage;
 			CThemeToolBarZoom themeToolbarZoom;
-            bool needToRefresh = false;
 			wxString criteriaPrevious;
 			wxString criteriaNext;
 			wxString allPhoto;

@@ -315,9 +315,11 @@ void CCategoryFolderWindow::ProcessIdle()
 
 void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 {
-	//TRACE();
-	//if (processIdle && !endProgram)
-	//   ProcessIdle();
+    if(needToRefresh)
+    {
+        this->Refresh();
+        needToRefresh = false;
+    }  
 
 	if (endProgram)
 	{

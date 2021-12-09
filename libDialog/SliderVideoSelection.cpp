@@ -55,13 +55,13 @@ bool CSliderVideoSelection::IsMouseOver()
 void CSliderVideoSelection::SetPlay()
 {
 	isPlay = true;
-	Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoSelection::SetPause()
 {
 	isPlay = false;
-	Refresh();
+	needToRefresh = true;
 }
 
 
@@ -110,7 +110,7 @@ void CSliderVideoSelection::SetTotalSecondTime(const int64_t& secondTime)
 	secondTotalTime = secondTime;
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
 	secondTimeTo = secondTime;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoSelection::SetPastSecondTime(const int64_t& secondTime)
@@ -323,7 +323,7 @@ void CSliderVideoSelection::OnMouseMove(wxMouseEvent& event)
 			}
 		}
 	}
-	Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoSelection::OnMouseLeave(wxMouseEvent& event)
@@ -343,7 +343,7 @@ void CSliderVideoSelection::SetStartTime(const long& pos)
 	{
 		secondTimePast = pos;
 		timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -353,7 +353,7 @@ void CSliderVideoSelection::SetEndTime(const long& pos)
 	{
 		secondTimeTo = pos;
 		totalTime = CConvertUtility::GetTimeLibelle(secondTimeTo);
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -380,7 +380,7 @@ void CSliderVideoSelection::OnLButtonDown(wxMouseEvent& event)
 		}
 	}
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CSliderVideoSelection::OnLButtonUp(wxMouseEvent& event)

@@ -112,26 +112,26 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 void CPreviewToolbar::EnableScreenButton()
 {
 	fullscreen->SetVisible(true);
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CPreviewToolbar::DisableScreenButton()
 {
 	fullscreen->SetVisible(false);
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CPreviewToolbar::EnableSaveButton()
 {
 	save->SetVisible(true);
-	this->Refresh();
+	needToRefresh = true;
 }
 
 
 void CPreviewToolbar::DisableSaveButton()
 {
 	save->SetVisible(false);
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CPreviewToolbar::DisableNavigationButton()
@@ -146,7 +146,7 @@ void CPreviewToolbar::DisableNavigationButton()
 		imageSuiv->SetVisible(false);
 		imageFirst->SetVisible(false);
 		imagePrec->SetVisible(false);
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -162,7 +162,7 @@ void CPreviewToolbar::EnableNavigationButton()
 		imageSuiv->SetVisible(true);
 		imageFirst->SetVisible(true);
 		imagePrec->SetVisible(true);
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -175,14 +175,14 @@ void CPreviewToolbar::SetFullscreen()
 {
 	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLSCREEN", 1);
 	fullscreen->SetLibelle(libelleFullscreen);
-	Refresh();
+	needToRefresh = true;
 }
 
 void CPreviewToolbar::SetScreen()
 {
 	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN", 1);
 	fullscreen->SetLibelle(libelleFullscreen);
-	Refresh();
+	needToRefresh = true;
 }
 
 void CPreviewToolbar::Rotate90()
