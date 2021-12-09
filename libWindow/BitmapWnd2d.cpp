@@ -73,7 +73,7 @@ void CBitmapWnd2D::Resize()
 {
 	//updateFilter = true;
 	bitmapWndRender->UpdateResized();
-	this->Refresh();
+	//this->Refresh();
 }
 
 IBitmapRenderInterface * CBitmapWnd2D::GetWndPt()
@@ -151,7 +151,7 @@ void CBitmapWnd2D::OnMouseWheel(wxMouseEvent& event)
 void CBitmapWnd2D::OnMouseMove(wxMouseEvent& event)
 {
 	bitmapWndRender->OnMouseMove(event);
-	this->Refresh();
+	//this->Refresh();
 }
 
 

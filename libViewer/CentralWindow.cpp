@@ -729,6 +729,8 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 			isNext = false;
 	}
 
+	//thumbnailPicture->Refresh();
+
 	return 0;
 }
 

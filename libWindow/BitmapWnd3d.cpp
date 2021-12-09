@@ -155,7 +155,7 @@ void CBitmapWnd3D::OnMouseWheel(wxMouseEvent& event)
 void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 {
 	bitmapWndRender->OnMouseMove(event);
-	this->Refresh();
+	//this->Refresh();
 }
 
 

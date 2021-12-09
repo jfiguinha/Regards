@@ -504,6 +504,8 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int& positi
 
 void CThumbnail::RefreshIcone(const int& idPhoto)
 {
+	needToRefresh = true;
+	/*
 	wxClientDC dc(this);
 	CIcone* icone = GetIconeById(idPhoto);
 	if (icone != nullptr)
@@ -517,6 +519,7 @@ void CThumbnail::RefreshIcone(const int& idPhoto)
 		if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
 	}
+	*/
 }
 
 void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)

@@ -719,7 +719,8 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				source = bitmapIn;
 				muBitmap.unlock();
 			}
-			RefreshWindow();
+			//RefreshWindow();
+			parentRender->Refresh();
 		}
 	}
 }
@@ -798,8 +799,8 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 
 			RemoveListener(false);
 
-			needToRefresh = true;
-			//parentRender->Update();
+			//needToRefresh = true;
+			parentRender->Refresh();
 
 			//RefreshWindow();
 		}
