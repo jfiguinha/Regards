@@ -113,7 +113,7 @@ namespace Regards
 			void RepeatVideo();
 
 		private:
-			void OnIdle(wxIdleEvent& evt);
+			void OnIdle(wxIdleEvent& evt) override;
 			void OnViewerDblClick(wxCommandEvent& event);
 			void OnViewerZoomIn(wxCommandEvent& event);
 			void OnViewerZoomOut(wxCommandEvent& event);

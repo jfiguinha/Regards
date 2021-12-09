@@ -102,10 +102,10 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
 		CBitmapWndViewer* bitmapViewer = nullptr;
-		auto bitmapWindow = wxWindow::FindWindowById(bitmapWindowId);
+		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
 		if (bitmapWindow != nullptr)
 		{
-			bitmapViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+			bitmapViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		}
 		if (bitmapViewer != nullptr)
 		{

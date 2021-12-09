@@ -82,10 +82,10 @@ CBitmapToolbar::~CBitmapToolbar()
 
 void CBitmapToolbar::ZoomPos(const int& position)
 {
-	auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERID);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer =(CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer =(CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if(wndViewer != nullptr)
 			wndViewer->SetRatioPos(position);
 	}
@@ -94,10 +94,10 @@ void CBitmapToolbar::ZoomPos(const int& position)
 
 void CBitmapToolbar::ZoomOn()
 {
-	auto bitmapWindow = dynamic_cast<CBitmapWnd3D*>(this->FindWindowById(parentId));
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 			wndViewer->ZoomOn();
 	}
@@ -108,10 +108,10 @@ void CBitmapToolbar::ZoomOn()
 
 void CBitmapToolbar::ChangeZoomInPos()
 {
-	auto bitmapWindow = this->FindWindowById(parentId);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
@@ -127,10 +127,10 @@ void CBitmapToolbar::ChangeZoomInPos()
 
 void CBitmapToolbar::ChangeZoomOutPos()
 {
-	auto bitmapWindow = this->FindWindowById(parentId);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (slide != nullptr && bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
@@ -145,10 +145,10 @@ void CBitmapToolbar::ChangeZoomOutPos()
 
 void CBitmapToolbar::ZoomOut()
 {
-	auto bitmapWindow = this->FindWindowById(parentId);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 			wndViewer->ZoomOut();
 	}
@@ -179,10 +179,10 @@ void CBitmapToolbar::SetTrackBarPosition(const int& iPos)
 
 void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 {
-	auto bitmapWindow = this->FindWindowById(parentId);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 			wndViewer->SetZoomPosition(position);
 	}
@@ -191,10 +191,10 @@ void CBitmapToolbar::SlidePosChange(const int& position, const wxString& key)
 
 void CBitmapToolbar::EventManager(const int& id)
 {
-	auto bitmapWindow = this->FindWindowById(parentId);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(this->FindWindowById(parentId));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		if (wndViewer != nullptr)
 		{
 			switch (id)

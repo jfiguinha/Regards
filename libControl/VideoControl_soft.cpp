@@ -1144,7 +1144,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (thumbnailVideo != nullptr && pause && pictureVideo != nullptr)
+		if (thumbnailVideo != nullptr && pictureVideo != nullptr && !IsSupportOpenCL())
 		{
 			muBitmap.lock();
 			glTexture = RenderFFmpegToTexture(pictureVideo);

@@ -41,11 +41,11 @@ namespace Regards
 			CBitmapWnd2D(wxWindow* parent, wxWindowID id);
 			~CBitmapWnd2D(void) override;
 
-			virtual void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender);
+			virtual void SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
 
-			virtual void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender);
+			virtual void UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender) override;
 
-			virtual IBitmapRenderInterface * GetWndPt();
+			virtual IBitmapRenderInterface * GetWndPt() override;
 
 			virtual void UpdateScreenRatio() override;
 

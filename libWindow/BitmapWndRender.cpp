@@ -473,6 +473,8 @@ void CBitmapWndRender::ZoomOn()
 	//updateFilter = true;
 
 	UpdateScrollBar();
+
+	needToRefresh = true;
 }
 
 //-----------------------------------------------------------------
@@ -497,8 +499,9 @@ void CBitmapWndRender::SetZoomPosition(const int& position)
 
 	CalculPositionPicture(centerX, centerY);
 
-
 	UpdateScrollBar();
+
+	needToRefresh = true;
 }
 
 //-----------------------------------------------------------------
@@ -552,6 +555,8 @@ void CBitmapWndRender::ZoomOut()
 	//updateFilter = true;
 
 	UpdateScrollBar();
+
+	needToRefresh = true;
 }
 
 //-----------------------------------------------------------------
@@ -574,6 +579,8 @@ void CBitmapWndRender::ShrinkImage(const bool& redraw)
 	UpdateScrollBar();
 
 	sliderInterface->SetTrackBarPosition(posRatio);
+
+	needToRefresh = true;
 }
 
 
@@ -587,6 +594,8 @@ void CBitmapWndRender::SetShrinkImage(bool active)
 	{
 		shrinkImage = active;
 	}
+
+	needToRefresh = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -790,7 +799,7 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 			RemoveListener(false);
 
 			needToRefresh = true;
-			parentRender->Update();
+			//parentRender->Update();
 
 			//RefreshWindow();
 		}
@@ -1339,6 +1348,8 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 #endif
 
 			updateFilter = true;
+
+			needToRefresh = true;
 		}
 	}
 	break;
@@ -1361,7 +1372,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 
 	MouseMove(xPos * scale_factor, yPos * scale_factor);
 
-	needToRefresh = true;
+	//needToRefresh = true;
 }
 
 

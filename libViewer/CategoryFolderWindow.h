@@ -31,7 +31,7 @@ namespace Regards
 			void OnUpdateGpsInfos(wxCommandEvent& event);
 			void CriteriaPhotoUpdate(wxCommandEvent& event);
 			void RefreshCriteriaSearch(wxCommandEvent& event);
-			void OnIdle(wxIdleEvent& evt);
+			void OnIdle(wxIdleEvent& evt) override;
 			bool GetProcessEnd() override;
 
 			static void FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria);

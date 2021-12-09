@@ -97,22 +97,17 @@ void COcrWnd::Init()
 
 COcrWnd::~COcrWnd()
 {
-	auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWndViewer * wndViewer = nullptr;
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF));
 	if (bitmapWindow != nullptr)
 	{
-		CBitmapWndViewer* wndViewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
-		if (wndViewer != nullptr)
-		{
-			wndViewer->RemoveListener();
-		}
+		wndViewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 	}
-	/*
-	CBitmapWndViewer * showBitmap = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
-	if (showBitmap != nullptr)
+
+	if (wndViewer != nullptr)
 	{
-		showBitmap->RemoveListener();
+		wndViewer->RemoveListener();
 	}
-	*/
 }
 
 CImageLoadingFormat * COcrWnd::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
@@ -480,10 +475,10 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 void COcrWnd::OnOcr(wxCommandEvent& event)
 {
 	CBitmapWndViewer* viewer = nullptr;
-	auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF));
 	if (bitmapWindow != nullptr)
 	{
-		viewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+		viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 	}
 
 	if (viewer != nullptr)
@@ -508,24 +503,13 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	resourcePath = resourcePath + "/tessdata";
 #endif    
 
-			//ETEXT_DESC *monitor = new ETEXT_DESC();
-
 			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
-			// Initialize tesseract-ocr with English, without specifying tessdata path
-			/*
-			if (CExportOcr::api.Init(resourcePath, language)) {
-				fprintf(stderr, "Could not initialize tesseract.\n");
-				throw("Could not initialize tesseract.\n");
-			}
-			*/
 			CLibPicture libPicture;
 			wxString tempFile = CFileUtility::GetTempFile("temp.bmp");
 			CImageLoadingFormat loadingformat(false);
 			loadingformat.SetPicture(bitmapBackground);
 			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
-
-			
 
 			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
 			wxString outputFile = CFileUtility::GetTempFile("ocrfile.hocr");
@@ -537,53 +521,6 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			//outputFile.append(".hocr");
 			LoadOcrBoxFile(outputFile);
 
-			/*
-			Pix *image = pixRead(preprocess.ToStdString().c_str());
-
-			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
-
-			//api->Init(CurDir, "eng");
-
-			CExportOcr::api.SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
-
-			CExportOcr::api.SetImage(image);
-
-
-			Boxa* boxes = CExportOcr::api.GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
-			printf("Found %d textline image components.\n", boxes->n);
-			for (int i = 0; i < boxes->n; i++) {
-				BOX* box = boxaGetBox(boxes, i, L_CLONE);
-				CExportOcr::api.SetRectangle(box->x, box->y, box->w, box->h);
-				BBoxText * bboxText = new BBoxText();
-
-				bboxText->rect.x = box->x;
-				bboxText->rect.y = box->y;
-				bboxText->rect.width = box->w;
-				bboxText->rect.height = box->h;
-				bboxText->rect.x = box->x;
-				bboxText->confidence = CExportOcr::api.MeanTextConf();
-				bboxText->label = wxString::FromUTF8(CExportOcr::api.GetUTF8Text());
-				bboxText->selected = true;
-				//wxTreeItemId childId = treeCtrl->AppendItem(rootId, bboxText.label);
-
-				wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
-
-
-				treeCtrl->SetItemHasChildren(treeid);
-				treeCtrl->MakeCheckable(treeid, true);
-
-
-				bboxText->SetId(treeid);
-				listRect.push_back(bboxText);
-			}
-			
-			// Get OCR result
-			//char * outText = api.GetUTF8Text();
-			//printf("OCR output:\n%s", outText);
-
-			// Destroy used object and release memory
-			CExportOcr::api.End();
-			*/
 			exportPdf->Enable(true);
 			ocrPdf->Enable(false);
 
@@ -598,7 +535,9 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		}
 	}
 	//GenerateLayerBitmap();
-	bitmapWindow->Refresh();
+	wxWindow * local = wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	if(local != nullptr)
+		local->Refresh();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)

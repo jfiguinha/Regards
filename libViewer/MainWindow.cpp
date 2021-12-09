@@ -469,9 +469,11 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	}
 
 	CVideoControlSoft* videoWindow = nullptr;
-	auto windowRender = this->FindWindowById(BITMAPWINDOWVIEWERID);
-	if (windowRender != nullptr)
-		videoWindow = (CVideoControlSoft *)((IBitmapWnd*)windowRender)->GetWndPt();
+	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERID));
+	if (bitmapWindow != nullptr)
+	{
+		videoWindow = (CVideoControlSoft*)bitmapWindow->GetWndPt();
+	}
 
 	if(compressAudioVideoOption == nullptr)
 		compressAudioVideoOption = new CompressionAudioVideoOption(this);
@@ -653,10 +655,10 @@ void CMainWindow::OnExportFile(wxCommandEvent& event)
 	else
 	{
 		CBitmapWndViewer* viewer = nullptr;
-		auto bitmapWindow = this->FindWindowById(BITMAPWINDOWVIEWERID);
+		auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(BITMAPWINDOWVIEWERID));
 		if (bitmapWindow != nullptr)
 		{
-			viewer = (CBitmapWndViewer*)((IBitmapWnd *)bitmapWindow)->GetWndPt();
+			viewer = (CBitmapWndViewer*)bitmapWindow->GetWndPt();
 		}
 
 		//auto bitmapWindow = dynamic_cast<CBitmapWndViewer*>(this->FindWindowById(BITMAPWINDOWVIEWERID));
