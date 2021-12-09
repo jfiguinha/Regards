@@ -333,8 +333,7 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFrame(videoSoft->videoPosition, 0, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
-
-	videoSoft->parentRender->Refresh();
+	videoSoft->needToRefresh = true;
 	//videoSoft->Refresh();
 }
 
@@ -375,14 +374,14 @@ void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
@@ -468,7 +467,7 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 	muVideoEffect.unlock();
 
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 
@@ -600,7 +599,7 @@ void CVideoControlSoft::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 void CVideoControlSoft::MoveRight()
@@ -739,7 +738,7 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter* effectParameter)
 	else
 	{
 		if (pause)
-			parentRender->Refresh();
+			needToRefresh = true;
 	}
 	//Refresh();
 }
@@ -752,7 +751,7 @@ bool CVideoControlSoft::GetPausedValue()
 
 void CVideoControlSoft::RedrawFrame()
 {
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 void CVideoControlSoft::SetVideoPreviewEffect(CEffectParameter* effectParameter)
@@ -813,7 +812,7 @@ void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 	if (needToRefresh)
 	{
 		parentRender->Refresh();
-		parentRender->Update();
+		//parentRender->Update();
 		needToRefresh = false;
 	}
 }
@@ -1069,11 +1068,12 @@ int CVideoControlSoft::getHeight()
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
-	parentRender->Refresh();
+	needToRefresh = true;
 }
 
 void CVideoControlSoft::ReloadResource()
 {
+	needToRefresh = true;
 	//reloadResource = true;
 }
 
@@ -1640,11 +1640,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 
-#ifdef __WXGTK__
     parentRender->Refresh();
-#else
-	needToRefresh = true;
-#endif
 }
 
 int CVideoControlSoft::IsOpenGLDecoding()
@@ -1743,7 +1739,7 @@ void CVideoControlSoft::Resize()
 			UpdateScrollBar();
 		}
 
-		parentRender->Refresh();
+		needToRefresh = true;
 	}
 	oldWidth = screenWidth;
 	oldHeight = screenHeight;
@@ -2128,14 +2124,14 @@ void CVideoControlSoft::FlipVertical()
 {
 	flipV = !flipV;
 	if (pause)
-		parentRender->Refresh();
+		needToRefresh = true;
 }
 
 void CVideoControlSoft::FlipHorizontal()
 {
 	flipH = !flipH;
 	if (pause)
-		parentRender->Refresh();
+		needToRefresh = true;
 }
 
 bool CVideoControlSoft::IsCPUContext()

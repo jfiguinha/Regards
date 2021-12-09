@@ -124,27 +124,27 @@ void CBitmapWndRender::OnCommand(wxCommandEvent& event)
 		break;
 	case wxEVENT_LEFTPOSITION:
 		OnLeftPosition(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_TOPPOSITION:
 		OnTopPosition(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_MOVELEFT:
 		OnMoveLeft(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_MOVERIGHT:
 		OnMoveRight(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_MOVETOP:
 		OnMoveTop(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_MOVEBOTTOM:
 		OnMoveBottom(event);
-		needToRefresh - true;
+		needToRefresh = true;
 		break;
 	case wxEVENT_SCROLLMOVE:
 		OnScrollMove(event);
@@ -789,7 +789,7 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 
 			RemoveListener(false);
 
-			needToRefresh - true;
+			needToRefresh = true;
 			parentRender->Update();
 
 			//RefreshWindow();
@@ -1279,7 +1279,7 @@ void CBitmapWndRender::Resize()
 {
 	//updateFilter = true;
 	UpdateResized();
-	needToRefresh - true;
+	needToRefresh = true;
 }
 
 int CBitmapWndRender::UpdateResized()
@@ -1361,7 +1361,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 
 	MouseMove(xPos * scale_factor, yPos * scale_factor);
 
-	needToRefresh - true;
+	needToRefresh = true;
 }
 
 
@@ -1844,6 +1844,13 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	RenderTexture(false);
 }
 
+void CBitmapWndRender::OnIdle(wxIdleEvent& evt)
+{
+	if (needToRefresh)
+		parentRender->Refresh();
+	needToRefresh = false;
+}
+
 void CBitmapWndRender::RenderTexture(const bool& invertPos)
 {
 	if (glTexture != nullptr)
@@ -1994,7 +2001,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenG
 
 void CBitmapWndRender::RefreshWindow()
 {
-	needToRefresh - true;
+	needToRefresh = true;
 }
 
 //-----------------------------------------------------------------

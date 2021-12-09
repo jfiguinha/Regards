@@ -147,12 +147,8 @@ namespace Regards
 			virtual void OnMouseWheel(wxMouseEvent& event) override;
 			virtual void OnKeyDown(wxKeyEvent& event) override;
 			virtual void OnKeyUp(wxKeyEvent& event) override;
-			virtual void OnIdle(wxIdleEvent& evt) override
-			{
-                if(needToRefresh)
-                    parentRender->Refresh();
-                needToRefresh = false;
-			};
+			virtual void OnIdle(wxIdleEvent& evt) override;
+
 
 			virtual void OnTimer(wxTimerEvent& event) override {};
 			virtual vector<int> GetListTimer() override{
