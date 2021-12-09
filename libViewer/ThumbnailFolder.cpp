@@ -167,7 +167,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector* photoVector, const int& t
 	heightThumbnail = 0;
 	ResizeThumbnail();
     
-    Refresh();
+    needToRefresh = true;
 }
 
 void CThumbnailFolder::Init(const int& typeAffichage)
@@ -236,7 +236,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector* photoVector)
 	heightThumbnail = 0;
 	ResizeThumbnail();
 	processIdle = true;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 
@@ -532,5 +532,5 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 		posHauteur = posY;
 	}
 
-	this->Refresh();
+	needToRefresh = true;
 }

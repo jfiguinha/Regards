@@ -110,7 +110,7 @@ void CThumbnailViewerPicture::SetListeFile()
 	processIdle = true;
 
 	pictures.clear();
-	this->Refresh();
+	needToRefresh = true;
     
 
 }

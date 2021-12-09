@@ -85,7 +85,7 @@ void CAnimationToolbar::AnimationStart()
 		imageStopDiaporama->SetVisible(true);
 		auto event = new wxCommandEvent(wxEVENT_ANIMATIONSTART);
 		wxQueueEvent(mainWindow, event);
-		Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -100,8 +100,7 @@ void CAnimationToolbar::AnimationStop()
 		auto event = new wxCommandEvent(wxEVENT_ANIMATIONSTOP);
 		wxQueueEvent(mainWindow, event);
 
-		//mainWindow->StopAnimation();
-		Refresh();
+        needToRefresh = true;
 	}
 }
 

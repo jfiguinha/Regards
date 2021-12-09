@@ -173,7 +173,6 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowElement::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowElement::OnClose));
 
-
 	progressValue = 0;
 	filename = "";
 
@@ -466,6 +465,13 @@ void CShowElement::TransitionEnd()
 
 void CShowElement::OnIdle(wxIdleEvent& evt)
 {
+#ifdef __APPLE__
+    if (refreshSlider && videoSlider->IsShown())
+        videoSlider->Refresh();
+        
+    refreshSlider = false;
+#endif
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -884,7 +890,7 @@ void CShowElement::ClickButton(const int& id)
 	}
 
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -967,7 +973,7 @@ void CShowElement::OnVideoEnd()
 		}
 	}
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -986,7 +992,7 @@ void CShowElement::OnVideoStop()
 		}
 	}
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -1001,7 +1007,7 @@ void CShowElement::SetVideoDuration(const int64_t& position)
 		videoSlider->SetTotalSecondTime(position / 1000);
 	}
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -1022,11 +1028,7 @@ void CShowElement::OnVideoStart()
 		centralWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-#ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
-#else
 	videoSlider->Refresh();
-#endif
 }
 
 void CShowElement::OnVideoPause()
@@ -1041,7 +1043,7 @@ void CShowElement::OnAfterOpenVideo()
 	PlayVideo();
 	//videoSlider->SetVolumePos(videoWindow->GetVolume());
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -1057,8 +1059,8 @@ void CShowElement::OnPositionVideo(const int64_t& position)
 			videoSlider->SetPastSecondTime(position);
 
 		int videoPos = position / 1000;
-		if (videoPos != videoPosOld)
-		{
+		//if (videoPos != videoPosOld)
+		//{
 			wxWindow* viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 			if (viewerWindow != nullptr)
 			{
@@ -1067,10 +1069,10 @@ void CShowElement::OnPositionVideo(const int64_t& position)
 				viewerWindow->GetEventHandler()->AddPendingEvent(event);
 			}
 			videoPosOld = videoPos;
-		}
+		//}
 
 #ifdef __APPLE__
-		videoSlider->CallRefresh(videoSlider);
+		refreshSlider = true;
 #else
 		videoSlider->Refresh();
 #endif
@@ -1097,7 +1099,7 @@ void CShowElement::SetTimePosition(const int64_t& timePosition)
 		videoSlider->SetPastSecondTime(timePosition / 1000);
 		videoSlider->UpdatePositionEvent();
 #ifdef __APPLE__
-		videoSlider->CallRefresh(videoSlider);
+		refreshSlider = true;
 #else
 		videoSlider->Refresh();
 #endif
@@ -1153,7 +1155,7 @@ void CShowElement::StopVideo(wxString photoName)
 	videoSlider->SetPastSecondTime(0);
 	videoWindow->OnStop(photoName);
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif
@@ -1200,7 +1202,7 @@ void CShowElement::PauseVideo()
 	ShowSliderToolbar(true);
 	videoSlider->SetPause();
 #ifdef __APPLE__
-	videoSlider->CallRefresh(videoSlider);
+	refreshSlider = true;
 #else
 	videoSlider->Refresh();
 #endif

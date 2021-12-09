@@ -124,27 +124,27 @@ void CBitmapWndRender::OnCommand(wxCommandEvent& event)
 		break;
 	case wxEVENT_LEFTPOSITION:
 		OnLeftPosition(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_TOPPOSITION:
 		OnTopPosition(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_MOVELEFT:
 		OnMoveLeft(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_MOVERIGHT:
 		OnMoveRight(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_MOVETOP:
 		OnMoveTop(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_MOVEBOTTOM:
 		OnMoveBottom(event);
-		parentRender->Refresh();
+		needToRefresh - true;
 		break;
 	case wxEVENT_SCROLLMOVE:
 		OnScrollMove(event);
@@ -789,7 +789,7 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 
 			RemoveListener(false);
 
-			parentRender->Refresh();
+			needToRefresh - true;
 			parentRender->Update();
 
 			//RefreshWindow();
@@ -1279,7 +1279,7 @@ void CBitmapWndRender::Resize()
 {
 	//updateFilter = true;
 	UpdateResized();
-	parentRender->Refresh();
+	needToRefresh - true;
 }
 
 int CBitmapWndRender::UpdateResized()
@@ -1361,7 +1361,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 
 	MouseMove(xPos * scale_factor, yPos * scale_factor);
 
-	parentRender->Refresh();
+	needToRefresh - true;
 }
 
 
@@ -1994,7 +1994,7 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenG
 
 void CBitmapWndRender::RefreshWindow()
 {
-	parentRender->Refresh();
+	needToRefresh - true;
 }
 
 //-----------------------------------------------------------------

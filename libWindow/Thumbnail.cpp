@@ -288,8 +288,7 @@ void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 
 	if (refresh)
 	{
-		this->Refresh();
-		this->Update();
+        needToRefresh = true;
 	}
 }
 
@@ -355,7 +354,7 @@ void CThumbnail::ZoomOn()
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnail::ZoomOff()
@@ -368,7 +367,7 @@ void CThumbnail::ZoomOff()
 	const int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnail::ZoomPosition(const int& position)
@@ -383,7 +382,7 @@ void CThumbnail::ZoomPosition(const int& position)
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
 
-	this->Refresh();
+	needToRefresh = true;
 }
 
 
@@ -475,7 +474,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
 {
 	moveOnPaint = true;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 int CThumbnail::GetTabValue()
@@ -500,8 +499,7 @@ void CThumbnail::ChangeTabValue(const vector<int>& TabNewSize, const int& positi
 	this->positionSize = positionSize;
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
-
-	this->Refresh();
+    needToRefresh = true;
 }
 
 void CThumbnail::RefreshIcone(const int& idPhoto)
@@ -576,7 +574,7 @@ void CThumbnail::OnLeftPosition(wxCommandEvent& event)
 	int pos = event.GetInt();
 	posLargeur = pos;
 	moveOnPaint = false;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnail::OnTopPosition(wxCommandEvent& event)
@@ -584,7 +582,7 @@ void CThumbnail::OnTopPosition(wxCommandEvent& event)
 	int pos = event.GetInt();
 	posHauteur = pos;
 	moveOnPaint = false;
-	this->Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnail::OnScrollMove(wxCommandEvent& event)
@@ -800,7 +798,7 @@ void CThumbnail::ProcessIdle()
 	if (photoList.empty())
 	{
 		processIdle = false;
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -824,7 +822,13 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 
 void CThumbnail::OnIdle(wxIdleEvent& evt)
 {
-	StartThread();
+    if(needToRefresh)
+    {
+        this->Refresh();
+        needToRefresh = false;
+    }
+    else
+        StartThread();
 }
 
 bool CThumbnail::GetProcessEnd()
@@ -934,7 +938,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		else if (yPos > this->GetWindowHeight() - 100)
 			MoveBottom();
 		else
-			this->Refresh();
+			needToRefresh = true;
 	}
 	else
 	{
@@ -1003,7 +1007,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 		if (needtoRedraw)
 		{
-			this->Refresh();
+			needToRefresh = true;
 		}
 
 		//this->GetParent()->GetEventHandler()->ProcessEvent(event);
@@ -1095,7 +1099,7 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 	{
 		OnMouseRelease(xPos, yPos);
 		mouseClickMove = false;
-		this->Refresh();
+		needToRefresh = true;
 	}
 }
 
@@ -1177,8 +1181,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		image.SetAlpha(alphaData);
 		bitmapIconDrag = image;
 	}
-	//moveOnPaint = true;
-	this->Refresh();
+    needToRefresh = true;
 }
 
 int CThumbnail::GetNbIconSelected()
@@ -1238,8 +1241,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 	}
 
 	showLoadingBitmap = false;
-
-	this->Refresh();
+    needToRefresh = true;
 }
 
 void CThumbnail::on_paint(wxPaintEvent& event)
@@ -1362,7 +1364,7 @@ void CThumbnail::Resize()
 	TRACE();
 	CalculControlSize();
 	ResizeThumbnail();
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnail::CalculControlSize()
@@ -1463,7 +1465,7 @@ void CThumbnail::OnKeyDown(wxKeyEvent& event)
 			if (mouseClickMove && enableDragAndDrop)
 			{
 				mouseClickMove = false;
-				this->Refresh();
+				needToRefresh = true;
 			}
 		}
 		break;
@@ -1626,7 +1628,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		else
 			delete filename;
 
-		//this->Refresh();
+		needToRefresh = true;
 	}
 	else
 	{
@@ -1634,7 +1636,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		wx_command_event->SetClientData(threadLoadingBitmap);
 		wxQueueEvent(this, wx_command_event);
 
-		//this->Refresh();
+		needToRefresh = true;
 	}
 
 	

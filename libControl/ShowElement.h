@@ -174,7 +174,7 @@ namespace Regards
 			vector<CStreamInfo> listStream;
 			std::vector<int> sound_value;
 		
-
+            bool refreshSlider = false;
 			bool isVideo = false;
 		};
 	}

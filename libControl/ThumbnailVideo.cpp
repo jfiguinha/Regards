@@ -74,14 +74,8 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 
 	const int numItem = FindNumItem(videoPos);
     
-	if (numItem == numItemSelected)
-    {
-        if(oldvideoPos != videoPos)
-        {
-           this->Refresh(); 
-            this->Update();               
-        }
-    oldvideoPos = videoPos;
+	if (numItem == numItemSelected && videoPos != 0)
+    {         
          return;
     }
     
@@ -138,16 +132,13 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 			evt.SetClientData(size);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
-
 		//posLargeur = rect.x;
 	}
 
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
-	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-        this->Refresh(); 
-        this->Update();
-
+    this->Refresh(); 
+    //this->Update();
 }
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)
@@ -425,7 +416,7 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 {
 	process_end = false;
-oldvideoPos = 0;
+
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFile, size);
 	videoFilename = videoFile;

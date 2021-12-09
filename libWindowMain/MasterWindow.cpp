@@ -94,12 +94,6 @@ CMasterWindow::CMasterWindow(void)
 	listMainWindow.push_back(this);
 }
 
-void CMasterWindow::CallRefresh(wxWindow* window)
-{
-	wxCommandEvent event(wxEVENT_REFRESH);
-	wxPostEvent(window, event);
-}
-
 CMasterWindow::~CMasterWindow(void)
 {
 	if (id < listMainWindow.size())

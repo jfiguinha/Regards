@@ -95,11 +95,7 @@ void CThumbnailToolBar::ZoomOn()
 		else
 		{
 			SetTrackBarPosition(dwPos);
-#ifdef __APPLE__
-			this->CallRefresh(this);
-#else
-			Refresh();
-#endif
+			needToRefresh = true;
 		}
 	}
 }
@@ -115,11 +111,7 @@ void CThumbnailToolBar::ZoomOff()
 		else
 		{
 			SetTrackBarPosition(dwPos);
-#ifdef __APPLE__
-			this->CallRefresh(this);
-#else
-			Refresh();
-#endif
+			needToRefresh = true;
 		}
 	}
 }
@@ -136,11 +128,7 @@ void CThumbnailToolBar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-		Refresh();
-#endif
+        needToRefresh = true;
 	}
 }
 

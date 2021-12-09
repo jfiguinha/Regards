@@ -219,6 +219,8 @@ namespace Regards
 			bool enableDragAndDrop = false;
 			int nbElementInIconeList = 0;
 			bool firstRefresh = true;
+            
+            bool needToRefresh = false;
 		};
 	}
 }

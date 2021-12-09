@@ -65,7 +65,7 @@ bool CThumbnailFaceToolBar::ZoomOn()
 			return false;
 		}
 		SetTrackBarPosition(dwPos);
-		Refresh();
+		needToRefresh = true;
 		
 	}
     return true;
@@ -82,7 +82,7 @@ bool CThumbnailFaceToolBar::ZoomOff()
 			return false;
 		}
 		SetTrackBarPosition(dwPos);
-		Refresh();
+		needToRefresh = true;
 		
 	}
     return true;
@@ -100,7 +100,7 @@ void CThumbnailFaceToolBar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		Refresh();
+		needToRefresh = true;
 	}
 }
 

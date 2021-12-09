@@ -156,7 +156,7 @@ void CThumbnailFace::init()
 	heightThumbnail = 0;
 	ResizeThumbnail();
 
-	Refresh();
+	needToRefresh = true;
 }
 
 bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone* icone, CWindowMain* parent)
@@ -245,7 +245,7 @@ void CThumbnailFace::MoveFace(const wxString& faceName)
 	auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 	wxQueueEvent(mainWnd, eventChange);
 
-	Refresh();
+	needToRefresh = true;
 }
 
 void CThumbnailFace::DeleteEmptyFace()
@@ -734,6 +734,6 @@ void CThumbnailFace::UpdateScrollWithVScroll()
 		posLargeur = posX;
 		posHauteur = posY;
 	}
-	this->Refresh();
+	needToRefresh = true;
 }
 #endif

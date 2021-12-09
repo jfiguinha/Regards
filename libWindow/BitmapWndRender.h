@@ -149,6 +149,9 @@ namespace Regards
 			virtual void OnKeyUp(wxKeyEvent& event) override;
 			virtual void OnIdle(wxIdleEvent& evt) override
 			{
+                if(needToRefresh)
+                    parentRender->Refresh();
+                needToRefresh = false;
 			};
 
 			virtual void OnTimer(wxTimerEvent& event) override {};
@@ -336,8 +339,8 @@ namespace Regards
 			bool destroyOpenGLRender = false;
 			IMouseUpdate* mouseUpdate;
 			CEffectParameter* effectParameter;
-			bool openGLRenderBitmap = true;
-
+			bool openGLRenderBitmap = true;     
+            bool needToRefresh = false;
 			bool endProgram = false;
 			wxWindow* parentRender = nullptr;
             

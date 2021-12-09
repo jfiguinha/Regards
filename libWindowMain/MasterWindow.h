@@ -71,8 +71,6 @@ namespace Regards
 
 			virtual wxString GetWaitingMessage() { return wxString(); };
 
-			virtual void CallRefresh(wxWindow* window);
-
 			virtual void Resize() = 0;
 
 			virtual bool GetProcessStop();

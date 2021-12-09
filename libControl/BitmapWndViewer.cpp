@@ -145,7 +145,7 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 	}
 */
 	loadBitmap = true;
-	parentRender->Refresh();
+	needToRefresh - true;
 }
 
 CEffectParameter* CBitmapWndViewer::GetParameter()
@@ -339,7 +339,7 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 		{
 			m_bTransition = true;
 			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
-			parentRender->Refresh();
+			needToRefresh - true;
 		}
 	}
 }
@@ -812,13 +812,13 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 			m_cDessin->MouseMove(x, y, hpos, vpos, GetRatio());
 			updateFilter = true;
 			needUpdate = true;
-			parentRender->Refresh();
+			needToRefresh - true;
 		}
 		else if (CFiltreData::SupportMouseSelection(toolOption))
 		{
 			m_cDessin->Selection(x, y, hpos, vpos, GetRatio());
 			//updateFilter = true;
-			parentRender->Refresh();
+			needToRefresh - true;
 		}
 	}
 	else
