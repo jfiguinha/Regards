@@ -73,6 +73,11 @@ namespace Regards
 				return "Window waiting : " + to_string(this->GetId());
 			}
             
+            virtual void IdleFunction()
+            {
+                
+            }
+            
             virtual void OnIdle(wxIdleEvent& evt)
             {
                 if(needToRefresh)
@@ -80,6 +85,8 @@ namespace Regards
                     this->Refresh();
                     needToRefresh = false;
                 }  
+                
+                IdleFunction();
             }
 
             bool needToRefresh = false;

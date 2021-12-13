@@ -44,6 +44,8 @@ namespace Regards
 			virtual int GetWindowHeight();
 			void SetWindowWidth(const int& width);
 			virtual int GetWindowWidth();
+            
+            virtual void IdleFunction() = 0;
 
 			virtual void UpdateScreenRatio() = 0;
 

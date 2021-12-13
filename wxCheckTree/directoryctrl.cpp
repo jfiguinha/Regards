@@ -308,7 +308,17 @@ bool wxDirItemData::HasFiles(const wxString& WXUNUSED(spec)) const
     return dir.HasFiles();
 }
 
-
+#ifndef __WXGTK__
+wxBEGIN_EVENT_TABLE(wxGenericDirCtrl, wxControl)
+  EVT_TREE_ITEM_EXPANDING     (wxID_TREECTRL, wxGenericDirCtrl::OnExpandItem)
+  EVT_TREE_ITEM_COLLAPSED     (wxID_TREECTRL, wxGenericDirCtrl::OnCollapseItem)
+  EVT_TREE_BEGIN_LABEL_EDIT   (wxID_TREECTRL, wxGenericDirCtrl::OnBeginEditItem)
+  EVT_TREE_END_LABEL_EDIT     (wxID_TREECTRL, wxGenericDirCtrl::OnEndEditItem)
+  EVT_TREE_SEL_CHANGED        (wxID_TREECTRL, wxGenericDirCtrl::OnTreeSelChange)
+  EVT_TREE_ITEM_ACTIVATED     (wxID_TREECTRL, wxGenericDirCtrl::OnItemActivated)
+  EVT_SIZE                    (wxGenericDirCtrl::OnSize)
+wxEND_EVENT_TABLE()
+#endif
 
 wxGenericDirCtrl::wxGenericDirCtrl(void)
 {
@@ -354,7 +364,7 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 
     long treeStyle = wxTR_HAS_BUTTONS;
-    
+#ifdef __WXGTK__ 
     Connect(wxEVT_TREE_ITEM_EXPANDING, wxTreeEventHandler(wxGenericDirCtrl::OnExpandItem));
     Connect(wxEVT_TREE_ITEM_COLLAPSED, wxTreeEventHandler(wxGenericDirCtrl::OnCollapseItem));
     Connect(wxEVT_TREE_BEGIN_LABEL_EDIT, wxTreeEventHandler(wxGenericDirCtrl::OnBeginEditItem));
@@ -362,7 +372,7 @@ bool wxGenericDirCtrl::Create(wxWindow *parent,
     Connect(wxEVT_TREE_SEL_CHANGED, wxTreeEventHandler(wxGenericDirCtrl::OnTreeSelChange));
     Connect(wxEVT_TREE_ITEM_ACTIVATED, wxTreeEventHandler(wxGenericDirCtrl::OnItemActivated));
     Connect(wxEVT_SIZE, wxSizeEventHandler(wxGenericDirCtrl::OnSize));
-
+#endif
 
    // treeStyle |= wxTR_HIDE_ROOT;
 
@@ -1299,11 +1309,13 @@ wxTreeItemId wxGenericDirCtrl::AppendItem (const wxTreeItemId & parent,
 
 //wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
 
-/*
+#ifndef __WXGTK__
+
 wxBEGIN_EVENT_TABLE(wxDirFilterListCtrl, wxChoice)
     EVT_CHOICE(wxID_ANY, wxDirFilterListCtrl::OnSelFilter)
 wxEND_EVENT_TABLE()
-*/
+
+#endif
 
 bool wxDirFilterListCtrl::Create(wxGenericDirCtrl* parent,
                                  wxWindowID treeid,
@@ -1319,9 +1331,9 @@ bool wxDirFilterListCtrl::Create(wxGenericDirCtrl* parent,
         style |= parent->HasFlag(wxDIRCTRL_3D_INTERNAL) ? wxBORDER_SUNKEN
                                                         : wxBORDER_NONE;
     }
-    
+#ifdef __WXGTK__ 
     Connect(wxEVT_CHOICE, wxCommandEventHandler(wxDirFilterListCtrl::OnSelFilter));
-
+#endif
     return wxChoice::Create(parent, treeid, pos, size, 0, NULL, style);
 }
 
