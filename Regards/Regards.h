@@ -23,6 +23,8 @@
 #include <libPicture.h>
 #include <wx/textfile.h>
 #include <wx/display.h>
+#include <tbb/global_control.h>
+#include <tbb/parallel_for.h>
 //#define TEST_WINDOWMANAGER
 
 #ifdef TEST_WINDOWMANAGER
@@ -334,6 +336,7 @@ private:
 	wxString m_strImageFilterList;
 	wxString m_strImageFilter;
 	wxLogNull * logNo;
+
 #ifdef __WXMSW__
 	//ULONG_PTR m_gdiplusToken;   // class member
 #endif

@@ -77,6 +77,7 @@ void MyApp::MacOpenFile(const wxString &fileName)
 
 int MyApp::Close()
 {
+  
 	CSqlInit::KillSqlEngine();
 	CPrintEngine::Kill();
 
@@ -121,6 +122,7 @@ int MyApp::Close()
 #if defined(__WXMSW__) && defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
+
 	return 0;
 }
 
@@ -129,6 +131,7 @@ int MyApp::Close()
 bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
+    
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())
