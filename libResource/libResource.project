@@ -60,7 +60,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
