@@ -10,8 +10,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "header.h"
-#include <boost/compute/core.hpp>
-namespace compute = boost::compute;
 #include <Regards.h>
 #include <FilterData.h>
 #include <wx/window.h>
@@ -219,8 +217,8 @@ bool MyApp::OnInit()
 
 	if (!configFileExist)
 	{
-		std::vector<compute::platform> listPlatform = compute::system::platforms();
-		if (listPlatform.size() == 0)
+		int nbPlatform = Regards::OpenCL::COpenCLPlatformList::GetPlatformCount();
+		if (nbPlatform == 0)
 			regardsParam->SetIsOpenCLSupport(false);
 		else
 			regardsParam->SetIsOpenCLSupport(true);		

@@ -90,6 +90,14 @@ namespace Regards
 
 				return listOfPlatform;
 			}
+            
+            static int GetPlatformCount()
+			{
+				if (listOfPlatform.size() == 0)
+					GetListOfPlatform();
+
+				return listOfPlatform.size();
+			}
 
 		private:
 	

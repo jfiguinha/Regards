@@ -18,14 +18,23 @@
     <File Name="../libRegardsBpg/bpgenc.h"/>
     <File Name="../libRegardsBpg/DllBpg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++11;-Wall;-fPIC;-pthread" C_Options="-std=c99;-Wall;-fPIC;-pthread;-fopenmp;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>
-        <IncludePath Value="../../../libextern/x265_3.2/source"/>
-        <IncludePath Value="../../../libextern/x265_3.2/source/build"/>
+        <IncludePath Value="$${HOME}/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
         <Preprocessor Value="HAVE_AV_CONFIG_H"/>
@@ -36,7 +45,6 @@
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;">
         <LibraryPath Value="."/>
-        <LibraryPath Value="../../../libextern/x265_3.2/source/build"/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
         <Library Value="avcodec_bpg"/>
@@ -134,14 +142,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
 </CodeLite_Project>

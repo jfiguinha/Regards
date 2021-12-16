@@ -34,12 +34,11 @@ if [ ! -f FILE ]; then
 fi
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
-./vcpkg install opencv[contrib]
 ./vcpkg install wxWidgets
-./vcpkg install exiv2
+./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
-./vcpkg install fftw3
+./vcpkg install fftw3[avx2,openmp,threads]
 ./vcpkg install libexif
 ./vcpkg install tbb
 ./vcpkg install glew
@@ -52,14 +51,32 @@ cd vcpkg-master
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
-./vcpkg install sdl2
-./vcpkg install boost-compute
-./vcpkg install opencl
+./vcpkg install ffmpeg[all-gpl]
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
 rm vcpkg-master/installed/x64-linux/lib/libpng.a
 
-chmod +x ffmpeg_linux.sh
-./ffmpeg_linux.sh
+#!/bin/bash
+mkdir opencv
+
+wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
+mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
+
+wget https://github.com/opencv/opencv/archive/4.5.1.zip
+mv 4.5.1.zip opencv/opencv-4.5.1.zip
+
+#compile opencv
+cd opencv
+unzip opencv-4.5.1.zip
+unzip opencv_contrib-4.5.1.zip
+cd opencv-4.5.1
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.5.1/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+cd ..
