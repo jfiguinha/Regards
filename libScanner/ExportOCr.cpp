@@ -35,12 +35,6 @@ tesseract::TessBaseAPI CExportOcr::api;
 #if defined(USE_OPENCL)
 #include "openclwrapper.h"      // for OpenclDevice
 #endif
-//#include "simddetect.h"
-//#include "tprintf.h"            // for tprintf
-
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 #if defined(HAVE_LIBARCHIVE)
 #include <archive.h>

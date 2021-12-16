@@ -4,12 +4,6 @@
 #include <fftw3.h>
 #include <vector>
 
-#ifdef _OPENMP
-#define _NO_OPENMP 0
-#else
-    #define _NO_OPENMP 1
-#endif
-
 /** ------------------ **/
 /** - Main functions - **/
 /** ------------------ **/

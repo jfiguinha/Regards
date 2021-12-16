@@ -144,47 +144,15 @@ int run_bm3d(
         != EXIT_SUCCESS) return EXIT_FAILURE;
 
     //! Check if OpenMP is used or if number of cores of the computer is > 1
-    unsigned _nb_threads = nb_threads;
-    if (verbose)
-    {
-        cout << "OpenMP multithreading is";
-#ifndef _OPENMP
-        cout << " not";
-#endif
-        cout << " available." << endl;
-    }
+    unsigned _nb_threads = std::thread::hardware_concurrency();;
 
-    // set _nb_threads
-#ifdef _OPENMP
-    unsigned avail_nb_threads = omp_get_max_threads();
-    unsigned avail_nb_cores = omp_get_num_procs();
-
-    // if specified number exceeds available threads of if not specified at all
-    // at least use all available threads
-    if (_nb_threads > avail_nb_threads || _nb_threads == 0)
-    {
-        // log if specified number of threads exeeds number of real cores
-        if (_nb_threads > avail_nb_cores)
-            cout << "Parameter nb_threads should not exceed the number of real cores." << endl;
-        _nb_threads = avail_nb_threads;
-    }
     // In case the number of threads is not a power of 2
     if (!power_of_2(_nb_threads))
         _nb_threads = closest_power_of_2(_nb_threads);
-#else
-    if (_nb_threads > 1)
-    {
-        cout << "Parameter nb_threads has no effect if OpenMP multithreading is not available." << endl;
-    }
-    _nb_threads = 1;
-#endif
 
     if (verbose)
     {
         cout << "Working threads: " << _nb_threads;
-#ifdef _OPENMP
-        cout << " (Must be 2^n) (Total available threads/real cores: " << avail_nb_threads << "/" << avail_nb_cores << ")";
-#endif
         cout << endl;
     }
 
