@@ -257,7 +257,7 @@ private:
 
     void setFixedOption(const SANE_Option_Descriptor* option, SANE_Int option_index, double value, double* result);
 
-    void DoSetOptions();
+    bool DoSetOptions();
   
     bool setStringOption(const SANE_Option_Descriptor* option, SANE_Int option_index, const std::string& value, std::string* result);
   

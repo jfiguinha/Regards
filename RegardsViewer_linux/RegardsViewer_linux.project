@@ -123,7 +123,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++17;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
+      <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
@@ -354,7 +354,6 @@
         <Library Value="ICE"/>
         <Library Value="X11"/>
         <Library Value="Xext"/>
-        <Library Value="Xtst"/>
         <Library Value="expat"/>
         <Library Value="c"/>
         <Library Value="freetype"/>
@@ -465,7 +464,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>

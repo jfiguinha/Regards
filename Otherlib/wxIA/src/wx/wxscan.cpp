@@ -214,7 +214,7 @@ void wxScanSane::SetOption(const int &dpi, const Scanner::ScanMode &scanMode)
 }
 
 
-void wxScanSane::DoSetOptions()
+bool wxScanSane::DoSetOptions()
 {
 	int index = 0;
 	const SANE_Option_Descriptor* option;
@@ -370,7 +370,8 @@ void wxScanSane::DoSetOptions()
 		}
 	}
     
-        printf("Do Set Options End\n");
+    printf("Do Set Options End\n");
+    return true;
 
 }
 

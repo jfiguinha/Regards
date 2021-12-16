@@ -27,6 +27,8 @@
     <File Name="DeepLearning.h"/>
     <File Name="base64.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
@@ -63,7 +65,6 @@
       </Debugger>
       <PreBuild>
         <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp header.h Debug/header.h;fi</Command>
-        <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild/>
       <CustomBuild Enabled="no">
@@ -87,7 +88,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
@@ -106,8 +107,6 @@
       </Debugger>
       <PreBuild>
         <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp header.h Release/header.h;fi</Command>
-        <Command Enabled="yes"/>
-        <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild/>
       <CustomBuild Enabled="no">
@@ -132,6 +131,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

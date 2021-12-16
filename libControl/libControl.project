@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Display">
-    <File Name="ShowElement.h"/>
-    <File Name="ShowElement.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -30,6 +26,10 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Display">
+    <File Name="ShowElement.h"/>
+    <File Name="ShowElement.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Video">
     <File Name="VideoCompressOption.h"/>
     <VirtualDirectory Name="Encoder">
@@ -151,6 +151,8 @@
     <File Name="InfosSeparationBarEffect.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
@@ -233,7 +235,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3;" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -273,6 +275,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -160,7 +160,8 @@ float value[256];
 
 float clamp(float val, float minval, float maxval)
 {
-	return std::clamp(val, minval, maxval);
+	//return std::clamp(val, minval, maxval);
+    return std::max(minval, std::min(val, maxval));
 }
 
 //const char *x265_version_str = "x265 HEVC encoder 1.30";

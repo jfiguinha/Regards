@@ -54,13 +54,6 @@
 #endif
 #endif
 
-#ifndef __APPLE__
-#ifndef _OPENMP
-#define _OPENMP
-#endif
-
-#include <omp.h>
-#endif
 #include <thread>
 #include <mutex>
 #include <algorithm>
