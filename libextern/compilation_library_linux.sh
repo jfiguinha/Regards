@@ -27,13 +27,10 @@ make -j$NBPROC
 sudo make install
 cd ..
 
-FILE=vcpkg.tar.gz
-if [ ! -f FILE ]; then
-    wget -O vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz
-    tar xf vcpkg.tar.gz
-fi
+tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
+./vcpkg install opencv[contrib,ipp,openmp]
 ./vcpkg install wxWidgets
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
@@ -57,26 +54,3 @@ cd ..
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
 rm vcpkg-master/installed/x64-linux/lib/libpng.a
-
-#!/bin/bash
-mkdir opencv
-
-wget https://github.com/opencv/opencv_contrib/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv_contrib-4.5.1.zip
-
-wget https://github.com/opencv/opencv/archive/4.5.1.zip
-mv 4.5.1.zip opencv/opencv-4.5.1.zip
-
-#compile opencv
-cd opencv
-unzip opencv-4.5.1.zip
-unzip opencv_contrib-4.5.1.zip
-cd opencv-4.5.1
-mkdir build
-cd build
-cmake -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.5.1/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-cd ..
