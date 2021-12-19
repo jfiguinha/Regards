@@ -257,9 +257,6 @@
     <ClCompile Include="SqlThumbnailVideo.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="SqlLibExplorer.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

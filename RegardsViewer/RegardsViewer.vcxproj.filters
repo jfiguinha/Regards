@@ -141,9 +141,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="..\Regards\Regards.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

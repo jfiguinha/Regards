@@ -329,9 +329,6 @@
     <ClCompile Include="src\wxpoppler.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\pdfcjkfontdata.inc">

@@ -44,9 +44,6 @@
     <ClCompile Include="FileGeolocation.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="GeoPluginValue.cpp">
       <Filter>Datastructure</Filter>
     </ClCompile>

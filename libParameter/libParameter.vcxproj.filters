@@ -74,9 +74,6 @@
     <ClCompile Include="RegardsConfigParam.cpp">
       <Filter>Main Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="ScannerParam.cpp">
       <Filter>Scanner</Filter>
     </ClCompile>
