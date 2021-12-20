@@ -50,9 +50,6 @@
     <ClCompile Include="wxmd5.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="RegistryAccess.cpp">
       <Filter>Registry</Filter>
     </ClCompile>

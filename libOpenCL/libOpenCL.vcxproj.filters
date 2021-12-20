@@ -62,8 +62,5 @@
     <ClCompile Include="OpenCLBm3D.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

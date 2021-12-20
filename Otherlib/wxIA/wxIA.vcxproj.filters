@@ -56,9 +56,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="wia\DataClasses.cpp">
       <Filter>wia\source</Filter>
     </ClCompile>

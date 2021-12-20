@@ -341,9 +341,6 @@
     <ClCompile Include="TreeWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="TabWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

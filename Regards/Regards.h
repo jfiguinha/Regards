@@ -23,8 +23,6 @@
 #include <libPicture.h>
 #include <wx/textfile.h>
 #include <wx/display.h>
-#include <tbb/global_control.h>
-#include <tbb/parallel_for.h>
 //#define TEST_WINDOWMANAGER
 
 #ifdef TEST_WINDOWMANAGER

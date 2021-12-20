@@ -78,9 +78,6 @@
     <ClCompile Include="IndexGenerator.cpp">
       <Filter>Index Generator</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SavePicture.cpp">
       <Filter>SavePicture</Filter>
     </ClCompile>
@@ -137,9 +134,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="wx_pch.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigRegards.h">
       <Filter>Configuration</Filter>
     </ClInclude>

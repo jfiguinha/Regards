@@ -233,9 +233,6 @@
     <ClCompile Include="PreviewWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>header</Filter>
-    </ClCompile>
     <ClCompile Include="toolbar.cpp">
       <Filter>Toolbar\source</Filter>
     </ClCompile>
