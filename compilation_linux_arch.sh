@@ -45,6 +45,6 @@ sudo pacman -S ffmpeg
 
 #Install External Library
 cd libextern
-chmod +x compilation_library_linux_arch.sh
-./compilation_library_linux_arch.sh
+chmod +x compilation_library_linux.sh
+./compilation_library_linux.sh
 cd ..
