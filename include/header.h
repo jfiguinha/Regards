@@ -5,6 +5,9 @@
 #include <wx/wx.h>
 #endif
 
+#ifndef __REGARDS__
+#define __REGARDS__
+#endif
 
 #ifndef wxUSE_PDF
 #define wxUSE_PDF
