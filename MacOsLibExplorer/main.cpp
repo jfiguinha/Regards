@@ -103,6 +103,7 @@ int main( int argc, char** argv )
                 }
                 else
                     toWrite += libPath;
+                folder_output.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
                 toWrite += " " + folder_output;
 
                 //txtFile.AddLine(toWrite);    
@@ -113,7 +114,9 @@ int main( int argc, char** argv )
                 if(!wxFileExists(fileOut))
                     copyFile[libPath] = toWrite;
                 
-                wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + listOflib[listOflib.size() - 1] + " " + fileName;
+                wxString outputFilename = listOflib[listOflib.size() - 1];
+                outputFilename.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
+                wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
                 //txtFile.AddLine(installName); 
                 changeNameTool.push_back(installName);
                 findModification = true;
