@@ -18,4 +18,5 @@ vcpkg install dav1d:x64-windows --recurse
 vcpkg install wxWidgets:x64-windows --recurse
 vcpkg install opencv[contrib,ipp,openmp]:x64-windows --recurse
 vcpkg install freeimage:x64-windows --recurse
+vcpkg install aom:x64-windows --recurse
 vcpkg install opencl:x64-windows --recurse
