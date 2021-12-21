@@ -111,7 +111,7 @@ int main( int argc, char** argv )
                 wxString fileOut = folder_output_final + "/" + listOflib[listOflib.size() - 1];
                 //printf("Copy file  : %s \n",toWrite.ToStdString().c_str());
                 //printf("Test if file exist : %s \n",fileOut.ToStdString().c_str());
-                if(!wxFileExists(fileOut))
+                if(!wxFileExists(fileOut) && fileOut.find("3.1.5.0.0.dylib")==wxNOT_FOUND)
                     copyFile[libPath] = toWrite;
                 
                 wxString outputFilename = listOflib[listOflib.size() - 1];
