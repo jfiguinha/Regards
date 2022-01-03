@@ -58,17 +58,16 @@ namespace Regards
 			bool GetProcessEnd() override;
 			static void FindFaceCompatible(const vector<int>& listFace);
 			static void FacialRecognition(void* param);
-#ifndef __APPLE
 			static void LoadResource(void* param);
-#endif
 			void OnFaceVideoAdd(wxCommandEvent& event);
 
 			CWindowManager* windowManager = nullptr;
 			CScrollbarWnd* thumbscrollbar = nullptr;
 			CThumbnailFaceToolBar* thumbFaceToolbar = nullptr;
+#ifndef __APPLE__
 			CThumbnailFacePertinenceToolBar* thumbFacePertinenceToolbar = nullptr;
+#endif
 			CThumbnailFace* thumbnailFace = nullptr;
-
 			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;
 			int nbProcessFaceRecognition = 0;

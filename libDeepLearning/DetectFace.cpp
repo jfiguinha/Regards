@@ -70,7 +70,7 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const int& confidenceThres
 		cvtColor(frameOpenCVDNN, frameOpenCVDNN, COLOR_BGRA2BGR);
 
 
-		for (int i = 0; i < listFaceRect; i++)
+		for (int i = 0; i < listFaceRect.size(); i++)
 		{
 			CFace face;
 			face.confidence = 1.0;
@@ -82,14 +82,21 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const int& confidenceThres
 			int x2 = rect.x + rect.width;
 			int y2 = rect.y + rect.height;
 
-			face.myROI = Rect(Point(x1, y1), Point(x2, y2));
-			face.croppedImage = frameOpenCVDNN(face.myROI);
-			listOfFace.push_back(face);
-			pointOfFace.push_back(face.myROI);
+            try{
+                face.myROI = Rect(Point(x1, y1), Point(x2, y2));
+                face.croppedImage = frameOpenCVDNN(face.myROI);
+                listOfFace.push_back(face);
+                pointOfFace.push_back(face.myROI);   
+            }
+            catch (Exception& e)
+            {
+                const char* err_msg = e.what();
+                std::cout << "exception caught: " << err_msg << std::endl;
+                std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            }
+
 		}
 	}
-
-	return faceDetect;
 
 #else
 	if (!isload)
@@ -278,8 +285,10 @@ void CDetectFace::LoadModel(const string& config_file, const string& weight_file
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
+    
+    isload = true;
 #endif
-	isload = true;
+	
 }
 
 

@@ -3,27 +3,12 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "FaceRect.h"
 #include <vector>
-
-
-
 using namespace std;
 
 class CRegardsBitmap;
 #ifdef __APPLE__
 class MyDetectFaceImpl;
-
-
-class FaceRect
-{
-public:
-    int x;
-    int y;
-    int width;
-    int height;
-};
-
 #endif
 
 class CFace
@@ -49,9 +34,11 @@ public:
 
 private:
 
-    static bool isload;
+    
 
 #ifdef __APPLE__
     MyDetectFaceImpl* _impl;
+#else
+    static bool isload;
 #endif
 };
