@@ -1480,21 +1480,14 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
 	TRACE();
 	int move;
-#ifdef __APPLE__
     
-    if (event.m_wheelRotation == 1)
+    printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
+
+    if (event.GetWheelRotation() > 0)
         move = 0;
-    else if (event.m_wheelRotation == -1)
+    else
        move = 1;
-    
-#else
 
-	if (event.m_wheelRotation == 120)
-		move = 0;
-	else
-		move = 1;
-
-#endif
 
 	if (controlKeyPush)
 		move += 10;

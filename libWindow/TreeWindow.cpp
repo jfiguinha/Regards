@@ -256,35 +256,12 @@ void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
 	TRACE();
 
 	bool update;
-
-#ifdef __APPLE__
     
-    if (event.m_wheelRotation == 1)
-    {
+    if (event.GetWheelRotation() > 0)
         this->MoveTop();
-         update = true;         
-    }
-    else if (event.m_wheelRotation == -1)
-    {
-         update = true;
-         this->MoveBottom();
-    }
-        
-    
-#else
-
-	if (event.m_wheelRotation == 120)
-	{
-		this->MoveTop();
-		update = true;
-	}
-	else
-	{
-		update = true;
-		this->MoveBottom();
-	}
-
-#endif
+    else
+        this->MoveBottom();
+    update = true; 
 
 	if (update)
 	{

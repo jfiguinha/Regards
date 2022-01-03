@@ -1240,21 +1240,10 @@ void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 {
 	//TRACE();
 	int move = 0;
-#ifdef __APPLE__
-
-	if (event.m_wheelRotation == 1)
-		move = 0;
-	else if (event.m_wheelRotation == -1)
-		move = 1;
-
-#else
-
-	if (event.m_wheelRotation == 120)
-		move = 0;
-	else
-		move = 1;
-
-#endif
+    if (event.GetWheelRotation() > 0)
+        move = 0;
+    else
+       move = 1;
 
 	if (controlKeyPush)
 		move += 10;
