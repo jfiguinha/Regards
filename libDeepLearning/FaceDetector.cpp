@@ -10,6 +10,7 @@
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
 #include "OpenCVEffect.h"
+#include "DetectFace.h"
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -26,56 +27,42 @@ struct FaceValueIntegration
 };
 
 
-
-//#define CAFFE
-//#define WRITE_OUTPUT_SAMPLE
-
-
-static Net net; // And finally we load the DNN responsible for face recognition.
 static Net netRecognition;
 static Net netPosition;
 
-const float confidenceThreshold = 0.59;
-const Scalar meanVal(104.0, 177.0, 123.0);
 
+const Scalar meanVal(104.0, 177.0, 123.0);
+const float confidenceThreshold = 0.59;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
-std::mutex CFaceDetector::muDnnAccess;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<face::Facemark> facemark;
 
 bool CFaceDetector::LockOpenCLDnn()
 {
-#ifndef __WXGTK__
-	muDnnAccess.lock();
-#endif
-	return true;
+	return CDetectFace::LockOpenCLDnn();
 }
 
 bool CFaceDetector::UnlockOpenCLDnn()
 {
-#ifndef __WXGTK__
-	muDnnAccess.unlock();
-#endif
-	return true;
+	return CDetectFace::UnlockOpenCLDnn();;
 }
 
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
-	//this->fastDetection = fastDetection;
+	detectFace = new CDetectFace();
 }
 
 CFaceDetector::~CFaceDetector()
 {
+	delete detectFace;
 }
 
-void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle,
-                                 const Mat& image)
+void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle, CRegardsBitmap* pBitmap)
 {
 	float bestConfidence = 0;
-	Mat dst;
-	RotateCorrectly(image, dst, angle);
-	int nbFace = FindNbFace(dst, bestConfidence, confidenceThreshold);
+	RotateCorrectly(pBitmap, angle);
+	int nbFace = FindNbFace(pBitmap, bestConfidence, confidenceThreshold);
 	if (nbFace > 0 && (nbFace > maxFace || bestConfidence > confidence))
 	{
 		maxFace = nbFace;
@@ -83,19 +70,8 @@ void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confid
 		confidence = bestConfidence;
 		bestConfidence = 0.0;
 	}
-	dst.release();
+
 }
-
-
-int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
-{
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	cvtColor(image, image, COLOR_BGRA2BGR);
-	int value = DectectOrientationByFaceDetector(image);
-	image.release();
-	return value;
-}
-
 
 float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
@@ -123,26 +99,19 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 	return new_ratio;
 }
 
-int CFaceDetector::DectectOrientationByFaceDetector(const Mat& image)
+int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 {
-	Mat gray, resized;
-
-	gray = image;
-
 	int angle = 0;
 	int selectAngle = 0;
 	int maxFace = 0;
 	float confidence = 0;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
 	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
 	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
 	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, gray);
-
-	gray.release();
-	resized.release();
+	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
 
 	return selectAngle;
 }
@@ -151,6 +120,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const Mat& image)
 void CFaceDetector::LoadModel(const string& config_file, const string& weight_file, const string& recognition,
                               const string& face_landmark, const string &protoPosition, const string& weightPosition)
 {
+
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
 	const std::string caffeWeightFile = weight_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
@@ -160,35 +130,11 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	const std::string tensorflowWeightFile = weight_file;
 	// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector_uint8.pb";
 #endif
-
 	try
 	{
-		/*
-			"{ backend     |  0 | Choose one of computation backends: "
-						 "0: automatically (by default), "
-						 "1: Halide language (http://halide-lang.org/), "
-						 "2: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
-						 "3: OpenCV implementation }"
-			"{ target      | 0 | Choose one of target computation devices: "
-						 "0: CPU target (by default), "
-						 "1: OpenCL, "
-						 "2: OpenCL fp16 (half-float precision), "
-						 "3: VPU }"
-
-		*/
-
-		/*
-		DNN_TARGET_CPU = 0,
-		DNN_TARGET_OPENCL,
-		DNN_TARGET_OPENCL_FP16,
-		DNN_TARGET_MYRIAD,
-		DNN_TARGET_VULKAN,
-		DNN_TARGET_FPGA,  //!< FPGA device with CPU fallbacks using Inference Engine's Heterogeneous plugin.
-		DNN_TARGET_CUDA,
-		DNN_TARGET_CUDA_FP16
-		*/
 
 #ifndef __WXGTK__
+		CDetectFace detectFace;
 		bool openCLCompatible = false;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -196,23 +142,6 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 			if (config->GetIsOpenCLSupport())
 				openCLCompatible = true;
 		}
-
-
-
-		// Read the network into Memory
-		//netPosition = readNetFromCaffe(protoPosition, weightPosition);
-
-
-#ifdef CAFFE
-		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
-#else
-		net = readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
-#endif
-		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		if (openCLCompatible)
-			net.setPreferableTarget(DNN_TARGET_OPENCL);
-		else
-			net.setPreferableTarget(DNN_TARGET_CPU);
 
 		netRecognition = readNetFromTorch(recognition);
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
@@ -222,13 +151,6 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
 
 #else
-#ifdef CAFFE
-		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
-#else
-		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
-#endif
-		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		net.setPreferableTarget(DNN_TARGET_CPU);
 
 		netRecognition = cv::dnn::readNetFromTorch(recognition);
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
@@ -237,6 +159,9 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 
 		facemark = face::createFacemarkKazemi();
 		facemark->loadModel(face_landmark);
+
+		detectFace.LoadModel(config_file, weight_file);
+
 		cout << "Loaded model" << endl;
 	}
 	catch (Exception& e)
@@ -359,8 +284,9 @@ double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 }
 
 
-Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, const Mat& image)
+Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, CRegardsBitmap* pBitmap)
 {
+	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	Mat dst;
 	// Rotate around the center
 	auto center = Point2d(faceLocation.x + faceLocation.width / 2, faceLocation.y + faceLocation.height / 2);
@@ -397,10 +323,9 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	return dst;
 }
 
-std::vector<cv::Rect> CFaceDetector::GetRectFace(cv::Mat &picture)
+std::vector<cv::Rect> CFaceDetector::GetRectFace(CRegardsBitmap * picture)
 {
 	std::vector<cv::Rect> listFace;
-	int i = 0;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
@@ -409,59 +334,7 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(cv::Mat &picture)
 	if (isLoading)
 	{
 		std::vector<CFace> listOfFace;
-		detectFaceOpenCVDNN(picture, listOfFace, listFace);
-
-
-		/*
-		try
-		{
-			// Specify the input image dimensions
-			int inWidth = 368;
-			int inHeight = 368;
-
-			// Prepare the frame to be fed to the network
-			Mat inpBlob = blobFromImage(picture, 1.0 / 255, Size(inWidth, inHeight), Scalar(0, 0, 0), false, false);
-
-			// Set the prepared object as the input blob of the network
-			netPosition.setInput(inpBlob);
-
-			Mat output = netPosition.forward();
-
-			int H = output.size[2];
-			int W = output.size[3];
-
-			// find the position of the body parts
-			vector<Point> points(nPoints);
-			for (int n = 0; n < nPoints; n++)
-			{
-				// Probability map of corresponding body's part.
-				Mat probMap(H, W, CV_32F, output.ptr(0, n));
-
-				Point2f p(-1, -1);
-				Point maxLoc;
-				double prob;
-				minMaxLoc(probMap, 0, &prob, 0, &maxLoc);
-				if (prob > thresh)
-				{
-					p = maxLoc;
-					p.x *= (float)frameWidth / W;
-					p.y *= (float)frameHeight / H;
-
-					circle(frameCopy, cv::Point((int)p.x, (int)p.y), 8, Scalar(0, 255, 255), -1);
-					cv::putText(frameCopy, cv::format("%d", n), cv::Point((int)p.x, (int)p.y), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255), 2);
-
-				}
-				points[n] = p;
-			}
-		}
-		catch (Exception& e)
-		{
-			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
-		*/
-
+		detectFace->DetectFace(picture, confidenceThreshold, listOfFace, listFace);
 	}
 
 	return listFace;
@@ -479,23 +352,16 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 	if (isLoading)
 	{
 		pBitmap->VertFlipBuf();
-
-
 		CSqlFacePhoto facePhoto;
 		Mat dest;
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
-		//std::vector<char> data = pictureData->CopyData();
 
-		Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		cvtColor(image, dest, COLOR_BGRA2BGR);
-		int angle = DectectOrientationByFaceDetector(dest);
+		int angle = DectectOrientationByFaceDetector(pBitmap);
 		if (angle != 0)
-			RotateCorrectly(dest, image, angle);
-		else
-			image = dest;
+			RotateCorrectly(pBitmap, angle);
 
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
 		for (CFace face : listOfFace)
 		{
@@ -515,7 +381,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				{
 					try
 					{
-						face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, image);
+						face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, pBitmap);
 						std::vector<uchar> buff;
 						resize(face.croppedImage, face.croppedImage, size);
 						ImageToJpegBuffer(face.croppedImage, buff);
@@ -542,7 +408,6 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				return listFace;
 			}
 		}
-		image.release();
 		dest.release();
 	}
 
@@ -565,15 +430,11 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 		Mat dest;
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
-		Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		cvtColor(image, dest, COLOR_BGRA2BGR);
-		int angle = DectectOrientationByFaceDetector(image);
+		int angle = DectectOrientationByFaceDetector(pBitmap);
 		if (angle != 0)
-			RotateCorrectly(image, dest, angle);
-		else
-			dest = image;
+			RotateCorrectly(pBitmap, angle);
 
-		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
 		if (listOfFace.size() > 0)
 		{
@@ -715,29 +576,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						}
 					}
 
-
-					/*
-					cv::Mat gray;
-					std::vector<cv::Rect> eyes;
-					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
-					eye_cascade.detectMultiScale(gray, eyes, 1.3, 5, CASCADE_FIND_BIGGEST_OBJECT, cv::Size(listOfFace[i].croppedImage.rows * 0.1, listOfFace[i].croppedImage.cols * 0.1));
-#ifndef NDEBUG
-					cv::rectangle(image, pointOfFace[i], cv::Scalar(0, 255, 0));
-#endif
-					for (cv::Rect rect : eyes)
-					{
-						cv::Rect rectEye;
-
-						rectEye.x = rect.x + pointOfFace[i].x;
-						rectEye.y = rect.y + pointOfFace[i].y;
-						rectEye.width = rect.width;
-						rectEye.height = rect.height;
-#ifndef NDEBUG
-						cv::rectangle(image, rectEye, cv::Scalar(255, 0, 0));
-#endif
-						RemoveRedEye(dest, rectEye);
-					}
-					*/
 				}
 			}
 		}
@@ -746,87 +584,22 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 		{
 			if (angle != 0)
 			{
-				RotateCorrectly(dest, image, (360 - angle) % 360);
-				cvtColor(image, image, COLOR_BGR2BGRA);
+				RotateCorrectly(pBitmap, (360 - angle) % 360);
 			}
-			else
-				cvtColor(dest, image, COLOR_BGR2BGRA);
-			pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-			pBitmap->VertFlipBuf();
 		}
 
-		image.release();
 		dest.release();
 	}
 }
 
 
-//--------------------------------------------------
-//Code From https://github.com/spmallick/learnopencv
-//--------------------------------------------------
-void CFaceDetector::detectFaceOpenCVDNN(const Mat& frameOpenCVDNN, std::vector<CFace>& listOfFace,
-                                        std::vector<Rect>& pointOfFace)
-{
-	int frameHeight = frameOpenCVDNN.rows;
-	int frameWidth = frameOpenCVDNN.cols;
 
-	try
-	{
-		muDnnAccess.lock();
-#ifdef CAFFE
-        cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300) , (104.0, 177.0, 123.0), false, false);
-#else
-
-		Mat inputBlob = blobFromImage(frameOpenCVDNN, 1.0, Size(300, 300), (104.0, 177.0, 123.0), false, false);
-
-#endif
-		net.setInput(inputBlob, "data");
-		Mat detection = net.forward("detection_out").clone();
-		/*
-		net.setInput(inputBlob);
-		auto detection = net.forward().clone();
-		*/
-		muDnnAccess.unlock();
-
-		Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
-
-		for (int i = 0; i < detectionMat.rows; i++)
-		{
-			float confidence = detectionMat.at<float>(i, 2);
-			if (confidence > confidenceThreshold)
-			{
-				CFace face;
-				face.confidence = confidence;
-
-				int x1 = static_cast<int>(detectionMat.at<float>(i, 3) * frameWidth);
-				int y1 = static_cast<int>(detectionMat.at<float>(i, 4) * frameHeight);
-				int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
-				int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
-
-				face.myROI = Rect(Point(x1, y1), Point(x2, y2));
-				face.croppedImage = frameOpenCVDNN(face.myROI);
-				listOfFace.push_back(face);
-				pointOfFace.push_back(face.myROI);
-			}
-		}
-
-		detectionMat.release();
-		inputBlob.release();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-}
-
-int CFaceDetector::FindNbFace(Mat& image, float& bestConfidence, const float& confidence)
+int CFaceDetector::FindNbFace(CRegardsBitmap * image, float& bestConfidence, const float& confidence)
 {
 	std::vector<Rect> pointOfFace;
 	std::vector<CFace> listOfFace;
 	int nbFace = 0;
-	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+	detectFace->DetectFace(image, confidenceThreshold, listOfFace, pointOfFace);
 
 	for (int i = 0; i < listOfFace.size(); i++)
 	{
@@ -842,71 +615,25 @@ int CFaceDetector::FindNbFace(Mat& image, float& bestConfidence, const float& co
 }
 
 
-int CFaceDetector::DetectAngleOrientation(const Mat& image)
-{
-	int angle = 0;
-	Mat dst; //Mat object for output image file
-	int tab[] = {0, 270, 90, 180};
-	for (int type = 0; type < 4; type++)
-	{
-		std::vector<Rect> pointOfFace;
-		std::vector<CFace> listOfFace;
-		int angle_detect = tab[type];
-		RotateCorrectly(image, dst, angle_detect);
-
-
-#ifdef WRITE_OUTPUT_SAMPLE
-		wxString file = "d:\\test" + to_string(type) + ".jpg";
-		cv::imwrite(file.ToStdString(), dst);
-#endif
-
-		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
-
-		if (listOfFace.size() > 0)
-		{
-			angle = angle_detect;
-			break;
-		}
-
-		if (listOfFace.size() > 0)
-		{
-			for (int i = 0; i < listOfFace.size(); i++)
-				listOfFace[i].croppedImage.release();
-		}
-	}
-
-	dst.release();
-
-	return angle;
-}
-
-void CFaceDetector::RotateCorrectly(const Mat& src, Mat& dst, int angle)
+void CFaceDetector::RotateCorrectly(CRegardsBitmap * pBitmap, int angle)
 {
 	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
 	if (angle == 90)
 	{
-		// Rotate clockwise 270 degrees
-		transpose(src, dst);
-		flip(dst, dst, 0);
+		pBitmap->Rotation90();
 	}
 	else if (angle == 180)
 	{
-		// Rotate clockwise 180 degrees
-		flip(src, dst, -1);
+		pBitmap->HorzFlipBuf();
+		pBitmap->VertFlipBuf();
 	}
 	else if (angle == 270)
 	{
-		// Rotate clockwise 90 degrees
-		transpose(src, dst);
-		flip(dst, dst, 1);
+		pBitmap->Rotation90();
+		pBitmap->HorzFlipBuf();
+		pBitmap->VertFlipBuf();
 	}
-	else if (angle == 0)
-	{
-		if (src.data != dst.data)
-		{
-			src.copyTo(dst);
-		}
-	}
+
 }
 
 

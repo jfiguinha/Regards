@@ -4,18 +4,12 @@
 class CRegardsBitmap;
 class CPictureData;
 class FaceRect;
+class CDetectFace;
 
 namespace Regards
 {
 	namespace OpenCV
 	{
-		class CFace
-		{
-		public:
-			float confidence;
-			cv::Mat croppedImage;
-			cv::Rect myROI;
-		};
 
 		class CFaceDetector
 		{
@@ -28,28 +22,27 @@ namespace Regards
 			                      const string& face_landmark, const string& protoPosition, const string& weightPosition);
 			std::vector<int> FindFace(CRegardsBitmap* pBitmap);
 			void DetectEyes(CRegardsBitmap* pBitmap);
-			std::vector<cv::Rect> GetRectFace(cv::Mat& picture);
-			int FindNbFace(cv::Mat& image, float& bestConfidence, const float& confidence = 0.5);
-			int DetectAngleOrientation(const cv::Mat& image);
+			std::vector<cv::Rect> GetRectFace(CRegardsBitmap * picture);
 			int DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap);
-			void RotateCorrectly(const cv::Mat& src, cv::Mat& dst, int angle);
 			int FaceRecognition(const int& numFace);
+
 		private:
+
+			void RotateCorrectly(CRegardsBitmap* pBitmap, int angle);
+			int FindNbFace(CRegardsBitmap * image, float& bestConfidence, const float& confidence = 0.5);
 			double face_opencv_alignement(cv::Mat& image, bool& findEye);
-			int DectectOrientationByFaceDetector(const cv::Mat& image);
-			void RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle,
-			                  const cv::Mat& image);
+			void RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle, CRegardsBitmap* pBitmap);
 			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox);
 			void ImageToJpegBuffer(cv::Mat& image, std::vector<uchar>& buff);
-			void detectFaceOpenCVDNN(const cv::Mat& frameOpenCVDNN, std::vector<CFace>& listOfFace,
-			                         std::vector<cv::Rect>& pointOfFace);
-			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, const cv::Mat& image);
+			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, CRegardsBitmap* pBitmap);
+
+			CDetectFace * detectFace;
 
 			static bool isload;
 
 			static std::mutex muFaceMark;
 			static std::mutex muLoading;
-			static std::mutex muDnnAccess;
+			
 		};
 	}
 }

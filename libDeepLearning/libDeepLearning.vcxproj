@@ -49,6 +49,7 @@
     </ClCompile>
     <ClCompile Include="base64.cpp" />
     <ClCompile Include="DeepLearning.cpp" />
+    <ClCompile Include="DetectFace.cpp" />
     <ClCompile Include="DetectRotation.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
     <ClCompile Include="header.cpp">
@@ -64,8 +65,10 @@
   <ItemGroup>
     <ClInclude Include="base64.h" />
     <ClInclude Include="DeepLearning.h" />
+    <ClInclude Include="DetectFace.h" />
     <ClInclude Include="DetectRotation.h" />
     <ClInclude Include="FaceDetector.h" />
+    <ClInclude Include="FaceRect.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="OpenCVEffect.h" />
     <ClInclude Include="VideoStabilization.h" />

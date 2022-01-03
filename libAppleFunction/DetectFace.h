@@ -14,12 +14,21 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "FaceRect.h"
 #include <vector>
 using namespace std;
 
 class MyDetectFaceImpl;
 class CRegardsBitmap;
+
+
+class FaceRect
+{
+public:
+    int x;
+    int y;
+    int width;
+    int height;
+};
 
 class CDetectFace
 {

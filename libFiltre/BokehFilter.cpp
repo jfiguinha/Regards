@@ -61,13 +61,13 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 	source->VertFlipBuf();
 
 	//Find Face on source
-	cv::Mat dst;
-	cv::Mat image_local(source->GetBitmapHeight(), source->GetBitmapWidth(), CV_8UC4, source->GetPtBitmap());
-	cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
+	//cv::Mat dst;
+	//cv::Mat image_local(source->GetBitmapHeight(), source->GetBitmapWidth(), CV_8UC4, source->GetPtBitmap());
+	//cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
 
 	//Extract Face and Get Rectangle
 	CFaceDetector face_detector(true);
-	vector<cv::Rect> listFace = face_detector.GetRectFace(dst);
+	vector<cv::Rect> listFace = face_detector.GetRectFace(source);
 	if (listFace.size() > 0)
 	{
 		faceRect.SetX(listFace[0].x);
