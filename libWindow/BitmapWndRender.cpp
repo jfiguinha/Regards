@@ -1070,7 +1070,6 @@ void CBitmapWndRender::OnRButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 {
-	//TRACE();
 	parentRender->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -1091,8 +1090,12 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 		wxSetCursor(*wxSTANDARD_CURSOR);
 		break;
 	}
-
+    
+#ifdef __WXGTK__
 	MouseClick(xPos * scale_factor, yPos * scale_factor);
+#else
+    MouseClick(xPos, yPos);
+#endif
 }
 
 //-----------------------------------------------------------------

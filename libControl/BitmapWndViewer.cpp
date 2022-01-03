@@ -627,6 +627,9 @@ void CBitmapWndViewer::MouseRelease(const int& xPos, const int& yPos)
 
 void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 {
+
+
+    
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = GetHPos();
@@ -635,12 +638,6 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 		int x = (xPos - xPosImage);
 		int y = (yPos - yPosImage);
 
-
-		printf("MouseClick xPos : %d xPosImage : %d \n", xPos, xPosImage);
-		printf("MouseClick yPos : %d yPosImage : %d \n", yPos, yPosImage);
-
-		printf("MouseClick x : %d \n", x);
-		printf("MouseClick y : %d \n", y);
 
 		invertColor = true;
 		mouseBlock = true;
@@ -651,6 +648,10 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 	{
 		int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
 		int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
+
+    
+		printf("MouseClick xPos : %d xPosImage : %d \n", xPos, yPos);
+		printf("Arrow yPos : %d yPosImage : %d Arrow Width : %d \n", yPosTop, yPosBottom, arrowPrevious.GetWidth());
 
 		if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 		{
