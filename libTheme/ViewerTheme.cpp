@@ -83,7 +83,9 @@ void CMainTheme::InitThumbnailToolbar()
 	themeThumbnailToolbar.button.showButtonOnly = 1;
 
 	themeThumbnailToolbar.slider.isColorBackground = true;
+#ifdef __APPLE__
     themeThumbnailToolbar.slider.colorBack.Set(51, 54, 62);
+#endif
 	themeThumbnailToolbar.slider.SetWidth(200);
 	themeThumbnailToolbar.slider.SetHeight(30);
 
