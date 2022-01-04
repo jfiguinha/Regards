@@ -134,8 +134,10 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	try
 	{
 
+        CDetectFace detectFace;
+        
 #ifndef __WXGTK__
-		CDetectFace detectFace;
+		
 		bool openCLCompatible = false;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
