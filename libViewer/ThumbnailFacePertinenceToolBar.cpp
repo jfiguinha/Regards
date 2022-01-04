@@ -36,6 +36,7 @@ CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* paren
     moins->SetLibelleTooltip(zoomoff);
 	navElement.push_back(moins);
 
+    //themeToolbar.slider.colorBack.Set(51, 54, 62);
 	slide = new CToolbarSlide(themeToolbar.slider, this);
 	navElement.push_back(slide);
 

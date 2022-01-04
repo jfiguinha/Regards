@@ -101,6 +101,7 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 
 int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 {
+
 	int angle = 0;
 	int selectAngle = 0;
 	int maxFace = 0;
@@ -357,9 +358,9 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
 
-		int angle = DectectOrientationByFaceDetector(pBitmap);
-		if (angle != 0)
-			RotateCorrectly(pBitmap, angle);
+		//int angle = DectectOrientationByFaceDetector(pBitmap);
+		//if (angle != 0)
+		//	RotateCorrectly(pBitmap, angle);
 
 		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
@@ -430,9 +431,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 		Mat dest;
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
-		int angle = DectectOrientationByFaceDetector(pBitmap);
-		if (angle != 0)
-			RotateCorrectly(pBitmap, angle);
+		//int angle = DectectOrientationByFaceDetector(pBitmap);
+		//if (angle != 0)
+		//	RotateCorrectly(pBitmap, angle);
 
 		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
@@ -579,7 +580,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 				}
 			}
 		}
-
+        /*
 		if (faceFound)
 		{
 			if (angle != 0)
@@ -587,7 +588,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 				RotateCorrectly(pBitmap, (360 - angle) % 360);
 			}
 		}
-
+        */
 		dest.release();
 	}
 }

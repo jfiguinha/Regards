@@ -55,25 +55,23 @@ bool CDetectFace::UnlockOpenCLDnn()
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const int& confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
+void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
 {
 #ifdef __APPLE__
 
+    float bestConfidence = 0;
 	vector<FaceRect> listFaceRect;
 	int faceDetect = 0;
 	if (_impl)
-		faceDetect = _impl->DetectRectFace(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap(), listFaceRect);
+		faceDetect = _impl->DetectRectFace(confidenceThreshold, bestConfidence, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap(), listFaceRect);
 
 	if (faceDetect > 0)
 	{
 		Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-		cvtColor(frameOpenCVDNN, frameOpenCVDNN, COLOR_BGRA2BGR);
-
-
 		for (int i = 0; i < listFaceRect.size(); i++)
 		{
 			CFace face;
-			face.confidence = 1.0;
+			
 
 			FaceRect rect = listFaceRect[i];
 
@@ -82,19 +80,22 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const int& confidenceThres
 			int x2 = rect.x + rect.width;
 			int y2 = rect.y + rect.height;
 
-            try{
-                face.myROI = Rect(Point(x1, y1), Point(x2, y2));
-                face.croppedImage = frameOpenCVDNN(face.myROI);
-                listOfFace.push_back(face);
-                pointOfFace.push_back(face.myROI);   
+            if (rect.confidence > confidenceThreshold)
+			{
+                try{
+                    face.confidence = rect.confidence;
+                    face.myROI = Rect(Point(x1, y1), Point(x2, y2));
+                    face.croppedImage = frameOpenCVDNN(face.myROI);
+                    listOfFace.push_back(face);
+                    pointOfFace.push_back(face.myROI);   
+                }
+                catch (Exception& e)
+                {
+                    const char* err_msg = e.what();
+                    std::cout << "exception caught: " << err_msg << std::endl;
+                    std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+                }
             }
-            catch (Exception& e)
-            {
-                const char* err_msg = e.what();
-                std::cout << "exception caught: " << err_msg << std::endl;
-                std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-            }
-
 		}
 	}
 
@@ -153,13 +154,13 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const int& confidenceThres
 #endif
 }
 
-int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const int& confidenceThreshold, float& bestConfidence, const float& confidence)
+int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const float& confidenceThreshold, float& bestConfidence)
 {
 #ifdef __APPLE__
 
 	int faceDetect = 0;
 	if (_impl)
-		faceDetect = _impl->MyDetectFace(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+		faceDetect = _impl->MyDetectFace(confidenceThreshold, bestConfidence, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	return faceDetect;
 
 #else
@@ -189,6 +190,8 @@ int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const int& confidenceThresho
 			float confidence = detectionMat.at<float>(i, 2);
 			if (confidence > confidenceThreshold)
 			{
+                if(bestConfidence < confidence)
+                    bestConfidence = confidence;
 				nbFaceDetect++;
 			}
 		}

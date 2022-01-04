@@ -36,7 +36,7 @@ MyDetectFaceImpl::~MyDetectFaceImpl( void )
     return self;
 }
 
-- (NSInteger)detectFace:(CGImageRef)image{
+- (NSInteger)detectFace:(CGImageRef)image confidence:(float) confidenceThreshold  bestConfidence:(float &) best {
     //create req
 	int nbFace = 0;
     VNDetectFaceRectanglesRequest *faceDetectionReq = [VNDetectFaceRectanglesRequest new];
@@ -48,9 +48,14 @@ MyDetectFaceImpl::~MyDetectFaceImpl( void )
     
     //is there a face?
     for(VNFaceObservation *observation in faceDetectionReq.results){
-        if(observation){
-			//[self drawFaceRect:image];
-			nbFace++;
+        if(observation)
+        {
+			if(confidenceThreshold < observation.confidence)
+            {
+                nbFace++;
+                if(observation.confidence > best)
+                    best = observation.confidence;
+            }
         }
     }
 	
@@ -99,7 +104,7 @@ MyDetectFaceImpl::~MyDetectFaceImpl( void )
 */
 @end
 
-int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t * data)
+int MyDetectFaceImpl::MyDetectFace(const float &confidenceThreshold, float & best, const int &width, const int &height, uint8_t * data)
 {
     faceDetectServiceDelegate * shareDelegate = [[faceDetectServiceDelegate alloc] init];
     
@@ -122,7 +127,7 @@ int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t 
 										bitmapInfo,
 										provider,NULL,NO,renderingIntent);
 
-	int nbFaceDetect = [shareDelegate detectFace:imageRef];
+	int nbFaceDetect = [shareDelegate detectFace:imageRef confidence:confidenceThreshold bestConfidence:best];
    // NSMutableArray * listRect = [shareDelegate drawFaceRect:imageRef];
 	
 	CGImageRelease(imageRef);
@@ -131,7 +136,7 @@ int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t 
     
 }
 
- int MyDetectFaceImpl::DetectRectFace(const int &width, const int &height, uint8_t * data, vector<FaceRect> & listRect)
+ int MyDetectFaceImpl::DetectRectFace(const float &confidenceThreshold, float & best, const int &width, const int &height, uint8_t * data, vector<FaceRect> & listRect)
  {
         faceDetectServiceDelegate * shareDelegate = [[faceDetectServiceDelegate alloc] init];
     
@@ -154,18 +159,44 @@ int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t 
 										bitmapInfo,
 										provider,NULL,NO,renderingIntent);
 
-	int nbFaceDetect = [shareDelegate detectFace:imageRef];
+     VNDetectFaceRectanglesRequest *faceDetectionReq = [VNDetectFaceRectanglesRequest new];
+     NSDictionary *d = [[NSDictionary alloc] init];
+     //req handler
+     VNImageRequestHandler *handler = [[VNImageRequestHandler alloc] initWithCGImage:imageRef options:d];
+     //send req to handler
+     [handler performRequests:@[faceDetectionReq] error:nil];
+     
+     int nbFaceDetect = 0;
+     //is there a face?
+     for(VNFaceObservation *observation in faceDetectionReq.results){
+         if(observation)
+         {
+             if(confidenceThreshold < observation.confidence)
+             {
+                 CGRect boundingBox = observation.boundingBox;
+                 float x= boundingBox.origin.x * width;
+                 float w= boundingBox.size.width * width;
+                 float h= boundingBox.size.height * height;
+                 float y= height*(1-boundingBox.origin.y)-h;
+                 
+                 FaceRect face;
+                 face.x = x;
+                 face.y = y;
+                 face.width = w;
+                 face.height = h;
+                 face.confidence = observation.confidence;
+                 
+                 nbFaceDetect++;
+                 
+                 listRect.push_back(face);
+             }
+         }
+     }
+     /*
+	int nbFaceDetect = [shareDelegate detectFace:imageRef confidence:confidenceThreshold bestConfidence:best];
     VNDetectFaceLandmarksRequest * faceLandmarks = [shareDelegate drawFaceRect:imageRef];
 	for(VNFaceObservation *observation in faceLandmarks.results)
     {
-        /*
-        CGRect boundingBox = observation.boundingBox;
-        FaceRect face;
-        face.x = boundingBox.origin.x;
-        face.y = boundingBox.origin.y;
-        face.width = boundingBox.size.width;
-        face.height = boundingBox.size.height;
-        */
         CGRect boundingBox = observation.boundingBox;
         float x= boundingBox.origin.x * width;
         float w= boundingBox.size.width * width;
@@ -177,10 +208,11 @@ int MyDetectFaceImpl::MyDetectFace(const int &width, const int &height, uint8_t 
         face.y = y;
         face.width = w;
         face.height = h;
+        face.confidence = observation.confidence;
         
         listRect.push_back(face);
     }
-        
+        */
 	CGImageRelease(imageRef);
 
 	return nbFaceDetect;

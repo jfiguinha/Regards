@@ -64,9 +64,7 @@ namespace Regards
 			CWindowManager* windowManager = nullptr;
 			CScrollbarWnd* thumbscrollbar = nullptr;
 			CThumbnailFaceToolBar* thumbFaceToolbar = nullptr;
-#ifndef __APPLE__
 			CThumbnailFacePertinenceToolBar* thumbFacePertinenceToolbar = nullptr;
-#endif
 			CThumbnailFace* thumbnailFace = nullptr;
 			int nbProcessFacePhoto = 0;
 			bool isLoadingResource;

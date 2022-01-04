@@ -29,8 +29,8 @@ public:
     static bool UnlockOpenCLDnn();
 
     void LoadModel(const string& config_file, const string& weight_file);
-    void DetectFace(CRegardsBitmap* bitmap, const int & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-    int FindNbFace(CRegardsBitmap* bitmap, const int& confidenceThreshold, float& bestConfidence, const float& confidence);
+    void DetectFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
+    int FindNbFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, float& bestConfidence);
 
 private:
 

@@ -21,8 +21,8 @@ class MyDetectFaceImpl
 public:
     MyDetectFaceImpl ( void );
     ~MyDetectFaceImpl( void );
-    int DetectRectFace(const int &width, const int &height, uint8_t * data, vector<FaceRect> & listRect);
-    int MyDetectFace(const int &width, const int &height, uint8_t * data);
+    int DetectRectFace(const float &confidenceThreshold, float & best, const int &width, const int &height, uint8_t * data, vector<FaceRect> & listRect);
+    int MyDetectFace(const float &confidenceThreshold, float & best, const int &width, const int &height, uint8_t * data);
 
 };
 
