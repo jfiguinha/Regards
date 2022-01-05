@@ -33,9 +33,6 @@ void CInfoAbout::Init()
 {
 	top = tr.begin();
 	tree<CTreeData*>::iterator top;
-	//	int item = 0;
-	//	int index = 0;
-
 	top = tr.begin();
 
 	auto treeDataPicture = new CTreeData();
@@ -48,22 +45,16 @@ void CInfoAbout::Init()
 	treeDataFileName->SetValue("Figuinha Jacques");
 	tr.append_child(child, treeDataFileName);
 
-	auto treeDataTest = new CTreeData();
-	treeDataTest->SetIsParent(false);
-	treeDataTest->SetKey("Test By");
-	treeDataTest->SetValue("SPADOTTO Sebastien");
-	tr.append_child(child, treeDataTest);
-
 	auto treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.68.8");
+	treeDataWidth->SetValue("2.68.9");
 	tr.append_child(child, treeDataWidth);
 
 	auto treeDataAnnee = new CTreeData();
 	treeDataAnnee->SetIsParent(false);
 	treeDataAnnee->SetKey("Copyright");
-	treeDataAnnee->SetValue("2014 - 2021");
+	treeDataAnnee->SetValue("2014 - 2022");
 	tr.append_child(child, treeDataAnnee);
 
 	auto treeDataLib = new CTreeData();
