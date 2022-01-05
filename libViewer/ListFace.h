@@ -40,6 +40,9 @@ namespace Regards
 			void ClosePane() override;
 			void RefreshPane() override;
 			void FacialRecognitionReload();
+			int ImageSuivante();
+			wxString GetFilename(const int & numItem);
+			int ImagePrecedente();
 
 		private:
 			static void FacialDetectionRecognition(void* param);

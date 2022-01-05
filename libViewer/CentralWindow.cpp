@@ -449,6 +449,11 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 				localFilename = thumbnailPicture->GetFilename(numItem);
 			}
 		}
+		else if (windowMode == WINDOW_FACE)
+		{	
+			numItem = listFace->ImageSuivante();
+			localFilename = listFace->GetFilename(numItem);
+		}
 	}
 
 	if (localFilename != "" && loadPicture)
@@ -550,6 +555,11 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 				numItem = thumbnailPicture->ImagePrecedente();
 				localFilename = thumbnailPicture->GetFilename(numItem);
 			}
+		}
+		else if (windowMode == WINDOW_FACE)
+		{
+			numItem = listFace->ImagePrecedente();
+			localFilename = listFace->GetFilename(numItem);
 		}
 	}
 

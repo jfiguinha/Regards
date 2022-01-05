@@ -178,6 +178,26 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	listProcessWindow.push_back(this);
 }
 
+int CListFace::ImageSuivante()
+{
+	if(thumbnailFace != nullptr)
+		return thumbnailFace->ImageSuivante();
+	return 0;
+}
+
+wxString CListFace::GetFilename(const int& numItem)
+{
+	if (thumbnailFace != nullptr)
+		return thumbnailFace->GetFilename(numItem);
+	return "";
+}
+
+int CListFace::ImagePrecedente()
+{
+	if (thumbnailFace != nullptr)
+		return thumbnailFace->ImagePrecedente();
+	return 0;
+}
 
 
 void CListFace::ClosePane()
