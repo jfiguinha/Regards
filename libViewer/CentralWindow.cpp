@@ -715,13 +715,13 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		}
 	}
 
-	if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE || windowMode == WINDOW_EXPLORER)
-	{
-		if (thumbnailPicture != nullptr)
-			thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
-		if (listPicture != nullptr)
-			listPicture->SetActifItem(GetPhotoId(filename), true);
-	}
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
+	if (listPicture != nullptr)
+		listPicture->SetActifItem(GetPhotoId(filename), true);
+	if (listFace != nullptr)
+		listFace->SetActifItem(GetPhotoId(filename), true);
+
 	int outItem = 0;
 
 	if (windowMode == WINDOW_EXPLORER)
@@ -740,8 +740,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 	}
 	else if (windowMode == WINDOW_FACE)
 	{
-		if (listFace != nullptr)
-			listFace->SetActifItem(GetPhotoId(filename), true);
+
 
 		if (listFace != nullptr)
 		{
