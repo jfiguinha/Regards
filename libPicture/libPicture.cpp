@@ -555,6 +555,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 		}
 		break;
 
+	case ASCII:
 	case TGA:
 	case PCX:
 	case MNG:

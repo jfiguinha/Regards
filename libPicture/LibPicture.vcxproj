@@ -498,6 +498,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="ascii.h" />
     <ClInclude Include="avif.h" />
     <ClInclude Include="avif_heif.h" />
     <ClInclude Include="BmpOption.h" />
@@ -550,6 +551,7 @@
     <ClInclude Include="yuv422.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ascii.cpp" />
     <ClCompile Include="avif.cpp" />
     <ClCompile Include="avif_heif.cpp" />
     <ClCompile Include="BmpOption.cpp" />
