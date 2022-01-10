@@ -180,10 +180,17 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 int CListFace::ImageSuivante()
 {
+    int numItem = -1;
 	if(thumbnailFace != nullptr)
-		return thumbnailFace->ImageSuivante();
-	return 0;
+		numItem = thumbnailFace->ImageSuivante();
+    if(numItem =- -1)
+    {
+        int photoId = thumbnailFace->GetNumPhotoId(numItem);
+        thumbnailFace->SetActifItem(photoId, false);
+    }
+	return numItem;
 }
+
 
 wxString CListFace::GetFilename(const int& numItem)
 {
@@ -194,9 +201,15 @@ wxString CListFace::GetFilename(const int& numItem)
 
 int CListFace::ImagePrecedente()
 {
+    int numItem = 0;
 	if (thumbnailFace != nullptr)
-		return thumbnailFace->ImagePrecedente();
-	return 0;
+		numItem = thumbnailFace->ImagePrecedente();
+    if(numItem =- -1)
+    {
+        int photoId = thumbnailFace->GetNumPhotoId(numItem);
+        thumbnailFace->SetActifItem(photoId, false);
+    }
+	return numItem;
 }
 
 

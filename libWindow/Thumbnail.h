@@ -28,7 +28,7 @@ namespace Regards
 			int ImageFin();
 			int ImageDebut();
 			int GetNbElement();
-
+            int GetNumPhotoId(const int &numItem);
 			int GetNumItem();
 
 			void ZoomOn();

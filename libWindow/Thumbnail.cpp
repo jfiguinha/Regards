@@ -176,6 +176,11 @@ int CThumbnail::GetNumItemById(const int& idPhoto)
 	return 0;
 }
 
+int CThumbnail::GetNumPhotoId(const int &numItem)
+{
+    return iconeList->GetPhotoId(numItem);
+}
+
 void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 {
 	TRACE();
