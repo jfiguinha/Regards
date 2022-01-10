@@ -20,6 +20,11 @@ CRgbaquad::CRgbaquad(const uint8_t& red, const uint8_t& green, const uint8_t& bl
 	}
 }
 
+int CRgbaquad::GetIntensity() const
+{
+    return (red + green + blue) / 3;
+}
+
 CRgbaquad::CRgbaquad()
 {
 	this->red = 0;

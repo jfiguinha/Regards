@@ -90,6 +90,8 @@ public:
 	uint8_t GetBlue() const;
 
 	uint8_t GetAlpha() const;
+    
+    int GetIntensity() const;
 
 private:
 	std::vector<wxString> Split(const wxString& s, char seperator);

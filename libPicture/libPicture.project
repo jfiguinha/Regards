@@ -118,6 +118,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ascii.cpp"/>
     <File Name="regards_webp.cpp"/>
     <File Name="picture_utility.cpp"/>
     <File Name="avif.cpp"/>
@@ -128,6 +129,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ascii.h"/>
     <File Name="regards_webp.h"/>
     <File Name="picture_utility.h"/>
     <File Name="avif.h"/>

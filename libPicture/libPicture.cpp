@@ -18,6 +18,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <DeepLearning.h>
+#include "ascii.h"
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -583,6 +584,13 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	wxString informations_error = CLibResource::LoadStringFromResource(L"informationserror", 1);
 	switch (iFormat)
 	{
+    case ASCII:
+    {
+        CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+        CBitmapToAscii::SaveToAscii(regards, fileName.ToStdString());
+        break;
+    }
+    
 	case PFM:
 		{
 			CRegardsFloatBitmap* regards = bitmap->GetFloatBitmap(true);
