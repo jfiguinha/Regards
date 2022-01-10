@@ -591,6 +591,13 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 			numLocalItem = thumbnailPicture->GetNumItem();
 		}
 	}
+	else if (windowMode == WINDOW_FACE)
+	{
+		if (listFace != nullptr)
+		{
+			numLocalItem = listFace->GetNumItem();
+		}
+	}
 
 	if (filename != this->filename || refresh)
 	{
@@ -708,12 +715,13 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		}
 	}
 
-
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
-	if (listPicture != nullptr)
-		listPicture->SetActifItem(GetPhotoId(filename), true);
-
+	if (windowMode == WINDOW_VIEWER || windowMode == WINDOW_PICTURE || windowMode == WINDOW_EXPLORER)
+	{
+		if (thumbnailPicture != nullptr)
+			thumbnailPicture->SetActifItem(GetPhotoId(filename), true);
+		if (listPicture != nullptr)
+			listPicture->SetActifItem(GetPhotoId(filename), true);
+	}
 	int outItem = 0;
 
 	if (windowMode == WINDOW_EXPLORER)
@@ -728,6 +736,16 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		if (thumbnailPicture != nullptr)
 		{
 			outItem = thumbnailPicture->GetNumItem();
+		}
+	}
+	else if (windowMode == WINDOW_FACE)
+	{
+		if (listFace != nullptr)
+			listFace->SetActifItem(GetPhotoId(filename), true);
+
+		if (listFace != nullptr)
+		{
+			outItem = listFace->GetNumItem();
 		}
 	}
 

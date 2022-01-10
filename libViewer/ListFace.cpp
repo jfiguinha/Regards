@@ -183,11 +183,13 @@ int CListFace::ImageSuivante()
     int numItem = -1;
 	if(thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImageSuivante();
+	/*
     if(numItem =- -1)
     {
         int photoId = thumbnailFace->GetNumPhotoId(numItem);
         thumbnailFace->SetActifItem(photoId, false);
     }
+	*/
 	return numItem;
 }
 
@@ -199,16 +201,25 @@ wxString CListFace::GetFilename(const int& numItem)
 	return "";
 }
 
+int CListFace::GetNumItem()
+{
+	if (thumbnailFace != nullptr)
+		return thumbnailFace->GetNumItem();
+	return -1;
+}
+
 int CListFace::ImagePrecedente()
 {
     int numItem = 0;
 	if (thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImagePrecedente();
+	/*
     if(numItem =- -1)
     {
         int photoId = thumbnailFace->GetNumPhotoId(numItem);
         thumbnailFace->SetActifItem(photoId, false);
     }
+	*/
 	return numItem;
 }
 

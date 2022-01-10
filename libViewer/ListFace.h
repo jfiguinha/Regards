@@ -43,7 +43,7 @@ namespace Regards
 			int ImageSuivante();
 			wxString GetFilename(const int & numItem);
 			int ImagePrecedente();
-
+			int GetNumItem();
 		private:
 			static void FacialDetectionRecognition(void* param);
 
