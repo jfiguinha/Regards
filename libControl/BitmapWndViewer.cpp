@@ -188,9 +188,11 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 	if (preview > 1 && mouseUpdate != nullptr)
 	{
 		
+		
 		if (copyBmpSrc == nullptr || updateFilter)
 		{
 			wxBeginBusyCursor();
+			filtreEffet->SetPreviewMode(false);
 			mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
 			if (copyBmpSrc != nullptr)
 				delete copyBmpSrc;
@@ -198,6 +200,8 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 			updateFilter = false;
 			bitmapwidth = copyBmpSrc->GetBitmapWidth();
 			bitmapheight = copyBmpSrc->GetBitmapHeight();
+
+			//copyBmpSrc->SaveToBmp("d:\\test.bmp");
 
 			if (mouseUpdate->NeedToShrink())
 				ShrinkImage();

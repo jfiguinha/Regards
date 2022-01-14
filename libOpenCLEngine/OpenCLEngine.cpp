@@ -583,6 +583,7 @@ void COpenCLDeviceList::GetAllDevice()
 			{
 				printf("Platform Error Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
 			}
+			break;
 			//deviceType = ParseDeviceType("CPU");
 			//GetListOfDevice(listOfDevice, platform->platformId, deviceType);
 		}
