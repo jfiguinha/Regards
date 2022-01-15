@@ -67,7 +67,7 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const float & confidenceTh
 
 	if (faceDetect > 0)
 	{
-		Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		Mat frameOpenCVDNN = bitmap->GetMatrix();
 		for (int i = 0; i < listFaceRect.size(); i++)
 		{
 			CFace face;
@@ -103,8 +103,9 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const float & confidenceTh
 	if (!isload)
 		return;
 
-	Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
-	cvtColor(frameOpenCVDNN, frameOpenCVDNN, COLOR_BGRA2BGR);
+	//Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	Mat frameOpenCVDNN;
+	cvtColor(bitmap->GetMatrix(), frameOpenCVDNN, COLOR_BGRA2BGR);
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
 
@@ -168,9 +169,9 @@ int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const float& confidenceThres
 	if (!isload)
 		return;
 
-	Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+	Mat frameOpenCVDNN;// (bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	int nbFaceDetect = 0;
-	cvtColor(frameOpenCVDNN, frameOpenCVDNN, COLOR_BGRA2BGR);
+	cvtColor(bitmap->GetMatrix(), frameOpenCVDNN, COLOR_BGRA2BGR);
 	try
 	{
 #ifdef CAFFE

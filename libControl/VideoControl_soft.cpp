@@ -1981,8 +1981,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 {
 	bool frameStabilized = false;
-	cv::Mat image(pictureFrame->GetBitmapHeight(), pictureFrame->GetBitmapWidth(), CV_8UC4,
-	              pictureFrame->GetPtBitmap());
+	cv::Mat image = pictureFrame->GetMatrix();
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
@@ -2009,7 +2008,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 		frameStabilized = true;
 		COpenCVEffect::BrightnessAndContrastAuto(image);
 	}
-	pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
+	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;
 }
 

@@ -249,20 +249,20 @@ void COpenCVEffect::BrightnessAndContrastAuto(Mat& image, float clipHistPercent)
 
 void COpenCVEffect::BrightnessAndContrastAuto(CRegardsBitmap* pBitmap, float clipHistPercent)
 {
-	Mat dest;
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
-	pBitmap->SetBitmap(dest.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-	dest.release();
-	image.release();
+	//Mat dest;
+	//Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	COpenCVEffectPimpl::BrightnessAndContrastAuto(pBitmap->GetMatrix(), 1);
+	//pBitmap->SetBitmap(dest.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	//dest.release();
+//	image.release();
 }
 
 void COpenCVEffect::EqualizeHistogram(CRegardsBitmap* pBitmap)
 {
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	COpenCVEffectPimpl::EqualizeHistogram(image);
-	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-	image.release();
+	//Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	COpenCVEffectPimpl::EqualizeHistogram(pBitmap->GetMatrix());
+	//pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	//image.release();
 }
 
 
@@ -305,7 +305,7 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* 
 	Mat hist;
 	Mat src;
 	int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat image = pBitmap->GetMatrix();
 	Mat histImage(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
 	auto color = Scalar(255, 255, 255);
 
@@ -381,7 +381,7 @@ void COpenCVEffect::CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* 
 
 
 	cvtColor(mat, histImage, COLOR_BGR2BGRA);
-	histogram->SetBitmap(histImage.data, hist_w, hist_h);
+	histogram->SetMatrix(histImage);
 	histogram->VertFlipBuf();
 
 	hist.release();

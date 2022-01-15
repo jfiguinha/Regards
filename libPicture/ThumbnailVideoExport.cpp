@@ -262,16 +262,14 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 	{
 		if (!filename1.empty())
 		{
-			dest = Mat(pBitmap1->GetBitmapHeight(), pBitmap1->GetBitmapWidth(), CV_8UC4, pBitmap1->GetPtBitmap());
+			dest = pBitmap1->GetMatrix();
 			cvtColor(dest, src1, COLOR_BGRA2BGR);
-			dest.release();
 		}
 
 		if (!filename2.empty())
 		{
-			dest = Mat(pBitmap2->GetBitmapHeight(), pBitmap2->GetBitmapWidth(), CV_8UC4, pBitmap2->GetPtBitmap());
+			dest = pBitmap2->GetMatrix();
 			cvtColor(dest, src2, COLOR_BGRA2BGR);
-			dest.release();
 		}
 	}
 

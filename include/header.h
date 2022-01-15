@@ -73,7 +73,7 @@
 #include <cerrno>
 #include <sys/stat.h>
 #include <wx/version.h>
-
+#include <opencv2/core/mat.hpp>
 using namespace std;
 
 /*  check if the current version is at least major.minor.release */

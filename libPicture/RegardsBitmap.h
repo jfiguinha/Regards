@@ -14,7 +14,6 @@ public:
 	CRegardsBitmap(const int& iWidth, const int& iHeight, const int& iDepth = 32);
 	CRegardsBitmap();
 	virtual ~CRegardsBitmap();
-	void DeleteMemory(const bool& keepMem);
 
 	CRegardsBitmap& operator=(const CRegardsBitmap& other);
 	void GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr);
@@ -67,7 +66,12 @@ public:
 	const long GetWidthSize();
 	const int GetBitmapWidth();
 	const int GetBitmapHeight();
-	const short GetBitmapDepth();
+
+	cv::Mat& GetMatrix();
+	void SetMatrix(const cv::Mat& matrix);
+
+	int GetBitmapDepth();
+
 	void ConvertToBgr();
 	int GetPosition(const int& x, const int& y);
 
@@ -101,13 +105,7 @@ protected:
 	//HBITMAP GetFlipBitmap(const BOOL &bLateral);
 
 	wxString filename;
-	int m_iWidth;
-	int m_iHeight;
-	long m_lSize;
-	short m_sDepth;
-	bool transparent;
-	uint8_t* data;
+	cv::Mat bitmapMatrix;
 	int orientation;
-	bool keepMem = true;
-	//bool needRotate;
+
 };

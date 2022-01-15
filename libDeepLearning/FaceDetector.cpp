@@ -289,7 +289,7 @@ double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 
 Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, CRegardsBitmap* pBitmap)
 {
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+	Mat image = pBitmap->GetMatrix();
 	Mat dst;
 	// Rotate around the center
 	auto center = Point2d(faceLocation.x + faceLocation.width / 2, faceLocation.y + faceLocation.height / 2);

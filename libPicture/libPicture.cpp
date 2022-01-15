@@ -1040,7 +1040,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
 			CAvif::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
-			image->DeleteMemory(false);
 			delete image;
 			if (data != nullptr)
 				delete[] data;
@@ -2401,15 +2400,14 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case EXR:
 		case HDR:
 		{
-			CRegardsBitmap* picture = nullptr;
+			CRegardsBitmap* picture = new CRegardsBitmap();
 			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
 			//cv::Mat ldr;
 			cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
 			tonemap->process(hdr, hdr);
 			hdr.convertTo(hdr, CV_8UC3, 255);
 			cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
-			picture = new CRegardsBitmap();
-			picture->SetBitmap(hdr.data, hdr.cols, hdr.rows);
+			picture->SetMatrix(hdr);
 			picture->VertFlipBuf();
 			picture->SetFilename(fileName);
 			bitmap->SetPicture(picture);

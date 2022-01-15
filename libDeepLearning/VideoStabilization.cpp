@@ -386,8 +386,7 @@ COpenCVStabilization::~COpenCVStabilization()
 
 void COpenCVStabilization::AddFrame(CRegardsBitmap* pBitmap)
 {
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->AnalyseFrame(image);
+	pimpl->AnalyseFrame(pBitmap->GetMatrix());
 }
 
 void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
@@ -402,8 +401,7 @@ int COpenCVStabilization::GetNbFrame()
 
 void COpenCVStabilization::BufferFrame(CRegardsBitmap* pBitmap)
 {
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-	pimpl->AnalyseFrame(image);
+	pimpl->AnalyseFrame(pBitmap->GetMatrix());
 	nbFrameBuffer++;
 }
 
@@ -420,10 +418,8 @@ int COpenCVStabilization::GetNbFrameBuffer()
 
 void COpenCVStabilization::CorrectFrame(CRegardsBitmap* pBitmap)
 {
-	Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
 	pimpl->CalculTransformation();
-	pimpl->CorrectedFrame(image);
-	pBitmap->SetBitmap(image.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	pimpl->CorrectedFrame(pBitmap->GetMatrix());
 }
 
 void COpenCVStabilization::AddFrame(const Mat& image)
