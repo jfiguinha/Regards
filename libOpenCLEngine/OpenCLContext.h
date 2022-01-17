@@ -1,11 +1,7 @@
 #pragma once
-#ifdef __APPLE__
-#include <OpenCL/cl.h>
-#else
-#include <CL/cl.h>
-#endif
-#include "OpenCLInfos.h"
 #include <opencv2/core/ocl.hpp>
+#include "OpenCLInfos.h"
+
 using namespace std;
 
 #define OPENCL_UCHAR 1

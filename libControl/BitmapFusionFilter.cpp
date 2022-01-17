@@ -1,4 +1,5 @@
 #include <header.h>
+#include <OpenCLContext.h>
 //
 //  BrightAndContrastFilter.cpp
 //  Regards.libViewer
@@ -13,7 +14,6 @@
 #include <InterpolationBicubic.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
-#include <OpenCLContext.h>
 #include <effect_id.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>

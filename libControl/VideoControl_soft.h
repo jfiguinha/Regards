@@ -1,6 +1,5 @@
 #pragma once
 #include "VideoControlInterface.h"
-#include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 #include <OpenCLEffectVideoYUV.h>
 #include <OpenCLEffectVideoNV12.h>

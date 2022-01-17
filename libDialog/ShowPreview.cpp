@@ -1,4 +1,5 @@
 #include <header.h>
+#include <FFmpegTranscodingPimpl.h>
 #include "ShowPreview.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -13,7 +14,6 @@
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
-#include <FFmpegTranscodingPimpl.h>
 #include <FFmpegDecodeFrame.h>
 #include <FileUtility.h>
 #include <Tracing.h>

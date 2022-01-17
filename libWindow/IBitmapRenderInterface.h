@@ -1,9 +1,19 @@
 #pragma once
 #include <GLcontext.h>
 #include <RenderOpenGL.h>
-#include <OpenCLContext.h>
+//#include <OpenCLContext.h>
 using namespace Regards::OpenGL;
+
+namespace Regards
+{
+    namespace OpenCL
+    {
+        class COpenCLContext;
+    }
+}
+
 using namespace Regards::OpenCL;
+
 class IBitmapRenderInterface
 {
 public:

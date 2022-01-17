@@ -1,5 +1,6 @@
 // ReSharper disable All
 #include "header.h"
+#include <OpenCLContext.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/opengl.hpp>
 #include "VideoControl_soft.h"

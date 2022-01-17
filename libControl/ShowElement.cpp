@@ -1,4 +1,5 @@
 #include <header.h>
+#include <OpenCLContext.h>
 #include "ShowElement.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -21,7 +22,6 @@
 //--------------------------------------------------
 #include "SliderVideo.h"
 #include "VideoControl_soft.h"
-#include <OpenCLContext.h>
 #include <window_id.h>
 #include "SlideToolbar.h"
 #include <ViewerParam.h>

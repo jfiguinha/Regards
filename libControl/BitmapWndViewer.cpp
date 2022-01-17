@@ -1,4 +1,5 @@
 #include <header.h>
+#include <OpenCLContext.h>
 #include "BitmapWndViewer.h"
 #include <ConvertUtility.h>
 #include <FiltreEffet.h>
@@ -13,7 +14,6 @@
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 #include <RegardsBitmap.h>
-#include <OpenCLContext.h>
 #include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>

@@ -1,5 +1,6 @@
 // ReSharper disable All
 #include "header.h"
+#include <OpenCLContext.h>
 #include "BitmapWndRender.h"
 #include <RGBAQuad.h>
 #include <FiltreEffet.h>
@@ -19,7 +20,6 @@
 #endif
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
-#include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>

@@ -1,9 +1,9 @@
 // ReSharper disable All
 #include "header.h"
+#include <OpenCLContext.h>
 #include "BitmapWnd3d.h"
 #include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
-#include <OpenCLContext.h>
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 

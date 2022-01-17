@@ -9,14 +9,23 @@
 #include "VideoInterface.h"
 #include "ScrollbarWnd.h"
 #include <ThemeParam.h>
-#include <OpenCLContext.h>
 #include <FiltreUpdate.h>
-using namespace Regards::OpenCL;
 using namespace Regards::Window;
 using namespace Regards::Video;
 class CRegardsBitmap;
 class CVideoControlSoft;
 class CRegardsConfigParam;
+
+
+namespace Regards
+{
+    namespace OpenCL
+    {
+        class COpenCLContext;
+    }
+}
+
+using namespace Regards::OpenCL;
 
 namespace Regards
 {

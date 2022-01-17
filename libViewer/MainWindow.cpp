@@ -1,4 +1,5 @@
 #include <header.h>
+#include <ffmpeg_transcoding.h>
 #include "MainWindow.h"
 #include <LibResource.h>
 #include "ViewerParamInit.h"
@@ -35,7 +36,6 @@
 #include <ffmpeg_application.h>
 #include "WaitingWindow.h"
 #include <ShowElement.h>
-#include <ffmpeg_transcoding.h>
 #include <wx/filedlg.h>
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
