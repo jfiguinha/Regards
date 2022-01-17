@@ -6,6 +6,7 @@
 
 CModificationManager::CModificationManager(const wxString& folder)
 {
+	orientation = 0;
 	nbModification = 0;
 	numModification = 0;
 	this->folder = folder;
@@ -24,7 +25,8 @@ void CModificationManager::Init(CRegardsBitmap* bitmap)
 	}
 
 	EraseData();
-
+	filenameBitmap = bitmap->GetFilename();
+	orientation = bitmap->GetOrientation();
 	listLibelle.push_back(bitmap->GetFilename());
 	wxString filename = GetFilenameWithModification(numModification);
 	bitmap->WriteFile(filename);
@@ -84,9 +86,9 @@ wxString CModificationManager::GetFilenameWithModification(const unsigned int& n
 	filename.append(folder.begin(), folder.end());
 
 #ifdef WIN32
-	filename.append("\\" + to_string(numModification) + ".rgd");
+	filename.append("\\" + to_string(numModification) + ".bmp");
 #else
-    filename.append("//" + to_string(numModification) + ".rgd");
+    filename.append("//" + to_string(numModification) + ".bmp");
 #endif
 
 	return filename;
@@ -103,9 +105,10 @@ CRegardsBitmap* CModificationManager::GetModification(const unsigned int& numMod
 	//return history.GetPhoto(numModification);
 	wxString filename = GetFilenameWithModification(numModification);
 
-	auto bitmap = new CRegardsBitmap();
+	CRegardsBitmap * bitmap = new CRegardsBitmap();
 	bitmap->ReadFile(filename);
-
+	bitmap->SetOrientation(orientation);
+	bitmap->SetFilename(filenameBitmap);
 	this->numModification = numModification;
 
 	return bitmap;

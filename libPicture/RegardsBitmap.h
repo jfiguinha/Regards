@@ -54,9 +54,6 @@ public:
 	CRgbaquad* GetPtColorValue(const int& x, const int& y);
 	void SetColorValue(const int& x, const int& y, const CRgbaquad& color);
 	void SetAlphaValue(const int& value);
-
-	//void SetBitmap(uint8_t* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight, const bool& m_bFlip = false, const bool& copy = true);
-	//void SetBitmap(CRgbaquad* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight, const bool& m_bFlip = false);
 	void SetBitmap(const int& iWidth, const int& iHeight, const int& iDepth = 32);
 
 	uint8_t* GetPtBitmap();

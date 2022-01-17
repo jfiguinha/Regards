@@ -19,6 +19,8 @@ private:
 	void EraseData();
 	int nbModification;
 	int numModification;
+	int orientation;
 	wxString folder;
+	wxString filenameBitmap;
 	vector<wxString> listLibelle;
 };
