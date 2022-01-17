@@ -5,31 +5,19 @@
 
 CPictureData::~CPictureData()
 {
-	if (data != nullptr)
-		delete[] data;
-
-	data = nullptr;
+	bitmapMatrix.release();
 }
 
 int CPictureData::GetWidth()
 {
-	return width;
-}
-
-void CPictureData::SetWidth(const int& width)
-{
-	this->width = width;
+	return bitmapMatrix.cols;
 }
 
 int CPictureData::GetHeight()
 {
-	return height;
+	return bitmapMatrix.rows;
 }
 
-void CPictureData::SetHeight(const int& height)
-{
-	this->height = height;
-}
 
 wxString CPictureData::GetFilename()
 {
@@ -43,7 +31,7 @@ void CPictureData::SetFilename(const wxString& filename)
 
 uint8_t* CPictureData::GetData()
 {
-	return data;
+	return bitmapMatrix.data;
 }
 
 int CPictureData::GetSize()
@@ -58,14 +46,11 @@ std::vector<char> CPictureData::CopyData()
 	return _data;
 }
 */
-void CPictureData::SetData(uint8_t* & extdata, const int& size)
+void CPictureData::SetData(const int& width, const int& height, uint8_t* & extdata, const int& size)
 {
 	if (extdata != nullptr && size > 0)
 	{
-		if (data != nullptr)
-			delete[] data;
-		data = new uint8_t[size];
-		memcpy(data, extdata, size * sizeof(uint8_t));
+		bitmapMatrix = cv::Mat(height, width, CV_8UC4, extdata);
 		this->size = size;
 	}
 }
@@ -73,7 +58,7 @@ void CPictureData::SetData(uint8_t* & extdata, const int& size)
 void CPictureData::CopyData(CRegardsBitmap* & bitmap)
 {
 	if (bitmap != nullptr)
-		bitmap->SetBitmap(data, width, height, false, true);
+		bitmap->SetMatrix(bitmapMatrix);
 }
 
 
@@ -104,7 +89,7 @@ float CPictureData::CalculPictureRatio(const int& pictureWidth, const int& pictu
 
 	return newRatio;
 }
-
+/*
 void CPictureData::SetJpegData(uint8_t* & extdata, const int& outputsize)
 {
 	data = new uint8_t[outputsize];

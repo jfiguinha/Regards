@@ -127,13 +127,16 @@ bool CMotionBlur::MotionBlur(CRegardsBitmap * bitmap, const double &radius, cons
 
 void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel, const vector<wxPoint> & offsets)
 {
+	
 	uint8_t * pBitsSrc = bitmap->GetPtBitmap();
 	//long i = 0;
 	long bmHeight = bitmap->GetBitmapHeight();
 	long bmWidth = bitmap->GetBitmapWidth();
-	long m_lSize = bmHeight * bmWidth * 4;
 	long lWidthSize = bitmap->GetWidthSize();
-	uint8_t * lData = new uint8_t[m_lSize * sizeof(uint8_t)];
+
+	cv::Mat bitmapMatrix = cv::Mat(bmHeight, bmWidth, CV_8UC4);
+
+	uint8_t* lData = bitmapMatrix.data;
 
 	for (auto y = 0; y < bmHeight; y++)
 	{
@@ -182,7 +185,6 @@ void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel
 		}
 	}
 
-	bitmap->SetBitmap(lData, (int)bmWidth, bmHeight);
+	bitmap->SetMatrix(bitmapMatrix);
 
-	delete[] lData;
 }

@@ -65,8 +65,6 @@ public:
 	virtual int RGBFilter(const int &red, const int &green, const int &blue) = 0;
 	virtual int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity) = 0;
 	virtual int Swirl(const float &radius, const float &angle) = 0;
-	virtual int Contrast(const double &contrast, const uint8_t &offset) = 0;
-	virtual int Lightness(const double &factor) = 0;
 	virtual int Posterize(const float &level, const float &gamma) = 0;
 	virtual int Solarize(const long &threshold) = 0;
 	virtual int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity) = 0;

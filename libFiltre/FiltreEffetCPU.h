@@ -64,8 +64,6 @@ public:
 	int Resize(const int &imageWidth, const int &imageHeight, const int &interpolation);
 	int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity);
 	int Swirl(const float &radius, const float &angle);
-	int Contrast(const double &contrast, const uint8_t &offset);
-	int Lightness(const double &factor);
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);
 	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
@@ -78,6 +76,10 @@ public:
 	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
 
 private:
+
+	int Contrast(const double& contrast, const uint8_t& offset);
+	int Lightness(const double& factor);
+
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat &mask);

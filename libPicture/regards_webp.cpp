@@ -26,7 +26,8 @@ CRegardsBitmap* CRegardsWebp::GetPicture(const wxString& filename)
 		picture = new CRegardsBitmap();
 		int width = 0, height = 0;
 		uint8_t* data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
-		picture->SetBitmap(data, width, height, true, false);
+        cv::Mat bitmapMatrix = cv::Mat(height, width, CV_8UC4, data);
+        picture->SetMatrix(bitmapMatrix);
 		delete[] _compressedImage;
 	}
 	return picture;
@@ -69,7 +70,10 @@ vector<CRegardsBitmap*> CRegardsWebp::GetAllPicture(const wxString& filename, in
             }
   
             delay = timestamp - prev_frame_timestamp;
-            curr_bitmap->SetBitmap(frame_rgba, anim_info.canvas_width, anim_info.canvas_height, true, true);
+
+            cv::Mat bitmapMatrix = cv::Mat(anim_info.canvas_height, anim_info.canvas_width, CV_8UC4, frame_rgba);
+            curr_bitmap->SetMatrix(bitmapMatrix, true);
+           // curr_bitmap->SetBitmap(frame_rgba, anim_info.canvas_width, anim_info.canvas_height, true, true);
             curr_bitmap->ConvertToBgr();
             curr_bitmap->SetFilename(filename);
             prev_frame_timestamp = timestamp;

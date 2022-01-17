@@ -2,7 +2,7 @@
 #include "ScaleThumbnail.h"
 #include <RegardsBitmap.h>
 #include <InterpolationBicubic.h>
-
+#include <opencv2/opencv.hpp>
 using namespace Regards::Picture;
 
 CScaleThumbnail::CScaleThumbnail(void)
@@ -87,10 +87,16 @@ void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap* pBitmap, const int& widt
 	//Création d'un nouveau bitmap à la bonne échelle
 	if (nTailleAffichageWidth != pBitmap->GetBitmapWidth() && nTailleAffichageHeight != pBitmap->GetBitmapHeight())
 	{
-		auto scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);
+		//auto scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);
+		/*
 		CInterpolationBicubic imageScale;
 		imageScale.Execute(pBitmap, scaleBitmap);
 		pBitmap->SetBitmap(scaleBitmap->GetPtBitmap(), nTailleAffichageWidth, nTailleAffichageHeight);
-		delete scaleBitmap;
+		*/
+
+		cv::Mat resized_down;
+		cv::resize(pBitmap->GetMatrix(), resized_down, cv::Size(nTailleAffichageWidth, nTailleAffichageHeight), cv::INTER_CUBIC);
+
+		//delete scaleBitmap;
 	}
 }

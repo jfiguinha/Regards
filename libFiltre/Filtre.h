@@ -15,7 +15,7 @@ namespace Regards
 			virtual ~CFiltre();
 			void SetParameter(CRegardsBitmap * pBitmap, CRgbaquad color);
 			void Compute();
-			virtual void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest) {};
+			virtual void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest) {};
 
 		protected:
 			
@@ -41,7 +41,7 @@ namespace Regards
 			~CGrayScale(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ namespace Regards
 			~CSharpenMasking(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			float sharpness;
 		};
 
@@ -68,7 +68,7 @@ namespace Regards
 			~CBlackAndWhite(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ namespace Regards
 			~CMedian(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 		private:
 			short quick_select(short * arr, int n);
@@ -100,7 +100,7 @@ namespace Regards
 			~CNegatif(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ namespace Regards
 			~CPhotoFiltre(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 		private:
 			CRgbaquad colorValue;
@@ -150,7 +150,7 @@ namespace Regards
 			~CRgbFiltre(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 		private:
 			int m_lRValue;
@@ -170,7 +170,7 @@ namespace Regards
 			~CSepiaFiltre(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 		};
 
@@ -192,7 +192,7 @@ namespace Regards
 			~CMatrixConvolution(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 			short * kernel;
 			short Ksize;
@@ -211,7 +211,7 @@ namespace Regards
 			~CDilate(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ namespace Regards
 			~CErode(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +240,7 @@ namespace Regards
 
 		protected:
 			float Noise2d(int x, int y);
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -257,7 +257,7 @@ namespace Regards
 			~CMosaic(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 			int size;
 		};
@@ -280,7 +280,7 @@ namespace Regards
 			~CPosterize(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 			long _offset;
 			float posterize[256];
@@ -311,7 +311,7 @@ namespace Regards
 			~CSolarize(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 
 			uint8_t solarize[256];
 		};
@@ -336,7 +336,7 @@ namespace Regards
 			~CSwirl(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			float EuclideanDist(FLOATPOINT p);
 			float EuclideanDist(FLOATPOINT p, FLOATPOINT q);
 			float DotProduct(FLOATPOINT p, FLOATPOINT q);
@@ -373,7 +373,7 @@ namespace Regards
 			~CContrast(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			uint8_t m_dTemp[256];
 
 		};
@@ -409,7 +409,7 @@ namespace Regards
 			~CLightness(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			uint8_t m_dTemp[256];
 		};
 
@@ -425,7 +425,7 @@ namespace Regards
 			~CBilateral(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			int fSize;
 			float sigmaX;
 			float sigmaP;
@@ -443,7 +443,7 @@ namespace Regards
 			~CNlmeans(void){};
 
 		protected:
-			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 			int fSize;
 			int bSize;
 			float sigma;

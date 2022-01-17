@@ -288,6 +288,8 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 
 	while (sqlResult->Next())
 	{
+		int width = 0;
+		int height = 0;
         
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
@@ -304,11 +306,11 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 				break;
 
 			case 2:
-				memFile->SetWidth(sqlResult->ColumnDataInt(i));
+				width = sqlResult->ColumnDataInt(i);
 				break;
 
 			case 3:
-				memFile->SetHeight(sqlResult->ColumnDataInt(i));
+				height = sqlResult->ColumnDataInt(i);
 				break;
 
 			case 4:
@@ -324,7 +326,7 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 						
 						//const int req_comps = 4;
 						//int actual_comps = 4;
-						int sizeBuffer = memFile->GetWidth() * memFile->GetHeight() * 4;
+						int sizeBuffer = width * height * 4;
 						if(sizeBuffer != size)
 							assert("error");
 						else
@@ -333,7 +335,7 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 							sqlResult->ColumnDataBlob(i, (void * &)data, sizeBuffer);
 							if (data != nullptr)
 							{
-								memFile->SetData(data, sizeBuffer);
+								memFile->SetData(width, height, data, sizeBuffer);
 
 								delete[] data;
 								data = nullptr;

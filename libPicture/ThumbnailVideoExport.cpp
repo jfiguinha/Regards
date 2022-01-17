@@ -232,7 +232,7 @@ auto CThumbnailVideoExportImpl::WriteVideoFrame(Mat* dest, CRegardsBitmap* pBitm
 	{
 		Mat destination;
 		cvtColor(*dest, destination, COLOR_BGR2BGRA);
-		pBitmap->SetBitmap(destination.data, width, height);
+		pBitmap->SetMatrix(destination);
 		WritePicture(pBitmap);
 		destination.release();
 	}

@@ -55,7 +55,7 @@ namespace Regards
 			bool TestIsExifCompatible(const wxString &filename);
 			int SavePictureOption(const int &format, int &option, int &quality);
 			int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap, const int &option, const int &quality);
-			CPictureData * LoadPictureData(const wxString &filename, bool &pictureOK);
+			//CPictureData * LoadPictureData(const wxString &filename, bool &pictureOK);
 			//-----------------------------------------------------------------------
 			//Fonction de conversion
 			//-----------------------------------------------------------------------
@@ -91,7 +91,7 @@ namespace Regards
 
 		private:
 
-			CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+			//CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
 			CRegardsBitmap * LoadFromFreeImage(const char* filename);
 			bool PictureDimensionFreeImage(const char* filename, int &width, int &height);

@@ -1272,6 +1272,7 @@ int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
+
 	double offset;
 
 	if (contrast == 0)
@@ -1293,6 +1294,48 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const doubl
 	}
 
 	Lightness(brightness);
+	
+	return 0;
+}
+
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+int CFiltreEffetCPU::Contrast(const double& contrast, const uint8_t& offset)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		auto filtre = new CContrast(contrast, offset);
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+	}
+
+	return 0;
+}
+
+int CFiltreEffetCPU::Lightness(const double& factor)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		auto filtre = new CLightness(factor);
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+	}
 
 	return 0;
 }
@@ -1351,10 +1394,25 @@ int CFiltreEffetCPU::Sepia()
 
 	if (bitmap != nullptr)
 	{
+		cv::Mat output_img;
+		cv::Mat image = bitmap->GetMatrix();
+
+		cv::Mat kernel =
+			(cv::Mat_<float>(3, 3)
+				<<
+				0.272, 0.534, 0.131,
+				0.349, 0.686, 0.168,
+				0.393, 0.769, 0.189);
+
+		cv::transform(image, output_img, kernel);
+		
+		bitmap->SetMatrix(output_img);
+		/*
 		auto filtre = new CSepiaFiltre();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
 	}
 	return 0;
 }
@@ -1377,6 +1435,7 @@ int CFiltreEffetCPU::Soften()
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+
 	}
 	return 0;
 }
@@ -1571,10 +1630,29 @@ int CFiltreEffetCPU::Noise()
 
 	if (bitmap != nullptr)
 	{
+
 		auto filtre = new CNoise();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+
+		/*
+		vector<Mat> bgr_planes;
+		split(bitmap->GetMatrix(), bgr_planes);
+
+		for (int i = 0; i < 3; i++)
+		{
+			cv::Mat noise = Mat(bgr_planes[i].size(), CV_64F);
+			Mat result;
+			normalize(bgr_planes[i], result, 0.0, 1.0, NORM_MINMAX, CV_64F);
+			cv::randn(noise, 0, 0.1);
+			result = result + noise;
+			normalize(result, result, 0.0, 1.0, NORM_MINMAX, CV_64F);
+			result.convertTo(bgr_planes[i], CV_32F, 255, 0);
+		}
+
+		cv::merge(bgr_planes, bitmap->GetMatrix());
+		*/
 	}
 	return 0;
 }
@@ -1626,47 +1704,6 @@ int CFiltreEffetCPU::Negatif()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Contrast(const double& contrast, const uint8_t& offset)
-{
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		auto filtre = new CContrast(contrast, offset);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
-	}
-
-	return 0;
-}
-
-int CFiltreEffetCPU::Lightness(const double& factor)
-{
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		auto filtre = new CLightness(factor);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
-	}
-
-	return 0;
-}
-
-//----------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------
 int CFiltreEffetCPU::FiltreEdge()
 {
 	CRegardsBitmap* bitmap;
@@ -1682,6 +1719,7 @@ int CFiltreEffetCPU::FiltreEdge()
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+
 	}
 
 	return 0;

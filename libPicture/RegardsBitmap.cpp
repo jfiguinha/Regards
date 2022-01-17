@@ -318,36 +318,11 @@ void CRegardsBitmap::WriteFile(const wxString& filename)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void CRegardsBitmap::SetBitmap(CRgbaquad* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight,
-                               const bool& m_bFlip)
-{
-	bitmapMatrix.release();
-
-	bitmapMatrix = cv::Mat(bmHeight, bmWidth, CV_8UC4);
-
-	memcpy(bitmapMatrix.data, m_bBuffer, bmHeight * bmWidth * 4);
-
-	if (m_bFlip)
-		VertFlipBuf();
-
-	bitmapMatrix.cols = bmWidth;
-	bitmapMatrix.rows = bmHeight;
-}
 
 void CRegardsBitmap::SetBitmap(const int& iWidth, const int& iHeight, const int& iDepth)
 {
-	if (bitmapMatrix.cols != iWidth || bitmapMatrix.rows != iHeight)
-	{
-		bitmapMatrix.release();
-
-		bitmapMatrix = cv::Mat(iHeight, iWidth, CV_8UC4);
-
-		bitmapMatrix.cols = iWidth;
-		bitmapMatrix.rows = iHeight;
-	}
+	bitmapMatrix.release();
+	bitmapMatrix = cv::Mat(iHeight, iWidth, CV_8UC4);
 }
 
 
@@ -380,9 +355,13 @@ cv::Mat& CRegardsBitmap::GetMatrix()
 	return bitmapMatrix;
 }
 
-void CRegardsBitmap::SetMatrix(const cv::Mat& matrix)
+void CRegardsBitmap::SetMatrix(const cv::Mat& matrix, const bool& m_bFlip)
 {
-	bitmapMatrix = matrix;
+	matrix.copyTo(bitmapMatrix);
+	if (m_bFlip)
+	{
+		VertFlipBuf();
+	}
 }
 
 
@@ -429,25 +408,6 @@ bool CRegardsBitmap::VertFlipBuf()
 	return true;
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-//
-//////////////////////////////////////////////////////////////////////////////////////////
-void CRegardsBitmap::SetBitmap(uint8_t* m_bBuffer, const unsigned int& bmWidth, const unsigned int& bmHeight,
-                               const bool& m_bFlip, const bool& copy)
-{
-	if (m_bBuffer == nullptr)
-		return;
-
-	long localSize = bmWidth * bmHeight * 4;
-
-	bitmapMatrix.release();
-
-	bitmapMatrix = cv::Mat(bmHeight, bmWidth, CV_8UC4, m_bBuffer);
-
-	if (m_bFlip)
-		VertFlipBuf();
-}
 
 bool CRegardsBitmap::RotateRawExif(const int& orientation)
 {
@@ -624,16 +584,20 @@ void CRegardsBitmap::SetAlphaValue(const int& value)
 	uint8_t alphaValue = (static_cast<float>(value) / 100.0f) * 255;
 	if (!bitmapMatrix.empty())
 	{
-
-		for (auto y = 0; y < GetBitmapHeight(); y++)
+		vector<cv::Mat> bgr_planes;
+		split(bitmapMatrix, bgr_planes);
+		bgr_planes[3] = cv::Scalar(alphaValue);
+		cv::merge(bgr_planes, bitmapMatrix);
+		/*
+		for (auto y = 0; y < bitmapMatrix.rows; y++)
 		{
-
 			for (auto x = 0; x < bitmapMatrix.cols; x++)
 			{
 				CRgbaquad* colorSrc = GetPtColorValue(x, y);
 				colorSrc->SetAlpha(alphaValue);
 			}
 		}
+		*/
 	}
 }
 
@@ -666,20 +630,7 @@ void CRegardsBitmap::ConvertToBgr()
 {
 	if (!bitmapMatrix.empty())
 	{
-		for (auto y = 0; y < GetBitmapHeight(); y++)
-		{
-
-			for (auto x = 0; x < bitmapMatrix.cols; x++)
-			{
-				CRgbaquad* colorSrc = GetPtColorValue(x, y);
-				if (colorSrc != nullptr)
-				{
-					uint8_t blue = colorSrc->GetBlue();
-					colorSrc->SetBlue(colorSrc->GetRed());
-					colorSrc->SetRed(blue);
-				}
-			}
-		}
+		cvtColor(bitmapMatrix, bitmapMatrix, cv::COLOR_RGBA2BGRA);
 	}
 }
 
@@ -839,6 +790,7 @@ int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad& Transp)
 
 void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 {
+	/*
 	int size = bitmapMatrix.cols << 2;
 	auto buffer = new uint8_t[size];
 
@@ -860,6 +812,10 @@ void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 	}
 
 	delete[] buffer;
+	*/
+	if (!bitmapMatrix.empty())
+		bitmapMatrix = cv::Scalar(m_cValue.GetBlue(), m_cValue.GetGreen(), m_cValue.GetRed());
+
 }
 
 
@@ -916,20 +872,4 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourc
 	return 0;
 }
 
-void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap* background, const int& xStart, const int& yStart)
-{
-	if (!bitmapMatrix.empty())
-	{
 
-		for (auto y = 0; y < bitmapMatrix.rows; y++)
-		{
-
-			for (auto x = 0; x < bitmapMatrix.cols; x++)
-			{
-				CRgbaquad color2 = GetColorValue(x, y);
-				if (color2.GetAlpha() == 0)
-					SetColorValue(x, y, background->GetColorValue(x + xStart, y + yStart));
-			}
-		}
-	}
-}

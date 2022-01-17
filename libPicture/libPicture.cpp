@@ -2251,6 +2251,7 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, in
 
 CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 {
+	cv::Mat bitmapMatrix;
 	CRegardsBitmap* bitmap = nullptr;
 #ifdef __FREEIMAGE__
 	//pointer to the image, once loaded
@@ -2279,17 +2280,18 @@ CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 
 	dibRgba = FreeImage_ConvertTo32Bits(dib);
 
-	//retrieve the image data
-	bits = FreeImage_GetBits(dibRgba);
+
 	//get the image width and height
 	width = FreeImage_GetWidth(dibRgba);
 	height = FreeImage_GetHeight(dibRgba);
+	bitmapMatrix = cv::Mat(height, width, CV_8UC4, FreeImage_GetBits(dibRgba));
+
 	//if this somehow one of these failed (they shouldn't), return failure
-	if ((bits == nullptr) || (width == 0) || (height == 0))
+	if (bitmapMatrix.empty())
 		return bitmap;
 
 	bitmap = new CRegardsBitmap();
-	bitmap->SetBitmap(bits, width, height);
+	bitmap->SetMatrix(bitmapMatrix);
 	bitmap->SetFilename(filename);
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
@@ -2465,17 +2467,20 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case BPG:
 		{
 			size_t data_size;
+			CRegardsBitmap* picture = nullptr;
 			uint8_t* _compressedImage = CPictureUtility::readfile(fileName, data_size);
 			if (_compressedImage != nullptr && data_size > 0)
 			{
 #if defined(WIN32)
+				
 				int width = 0, height = 0;
 				//size_t size = 0;
 				uint8_t* data = nullptr;
 				if (BPG_GetDimensions(_compressedImage, data_size, width, height) == 0)
 				{
+					picture = new CRegardsBitmap(width, height);
 					int returnValue = 0;
-					data = new uint8_t[width * height * 4];
+					data = picture->GetPtBitmap();
 					size_t data_len = width * height * 4;
 					returnValue = BPG_GetPictureBGRA(_compressedImage, data_size, data, data_len, width, height,
 						true);
@@ -2509,10 +2514,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				}
 
 #endif
-				if (data != nullptr)
+				if (picture != nullptr)
 				{
-					auto picture = new CRegardsBitmap();
-					picture->SetBitmap(data, width, height, false, false);
 					bitmap->SetPicture(picture);
 					bitmap->SetFilename(fileName);
 				}
@@ -3244,7 +3247,7 @@ void CLibPicture::UninitFreeImage()
 	FreeImage_DeInitialise();
 }
 
-
+/*
 CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pictureOK, const int& resizeWidth,
                                              const int& resizeHeight)
 {
@@ -3290,12 +3293,14 @@ CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pic
 
 	return picture_data;
 }
-
+*/
+/*
 CPictureData* CLibPicture::LoadPictureData(const wxString& filename, bool& pictureOK)
 {
 	auto pictureData = LoadPictureToJpeg(filename, pictureOK);
 	return pictureData;
 }
+*/
 
 bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int option, int quality)
 {

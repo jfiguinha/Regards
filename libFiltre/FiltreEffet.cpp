@@ -554,19 +554,6 @@ int CFiltreEffet::Negatif()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffet::Contrast(const double& contrast, const uint8_t& offset)
-{
-	return filtreEffet->Contrast(contrast, offset);
-}
-
-int CFiltreEffet::Lightness(const double& factor)
-{
-	return filtreEffet->Lightness(factor);
-}
-
-//----------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------
 int CFiltreEffet::FiltreEdge()
 {
 	return filtreEffet->FiltreEdge();

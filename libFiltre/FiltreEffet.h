@@ -78,8 +78,6 @@ public:
 	int RGBFilter(const int &red, const int &green, const int &blue);
 	int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity);
 	int Swirl(const float &radius, const float &angle);
-	int Contrast(const double &contrast, const uint8_t &offset);
-	int Lightness(const double &factor);
 	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);

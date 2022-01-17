@@ -6,7 +6,7 @@ using namespace Regards::FiltreEffet;
 #ifdef USE_TBB
 
 struct myFiltreTask {
-	myFiltreTask(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest, CFiltre * pt)
+	myFiltreTask(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest, CFiltre * pt)
 	{
 		this->x = x;
 		this->y = y;
@@ -27,8 +27,8 @@ struct myFiltreTask {
 
 	int x;
 	int y;
-	uint8_t * pBitsSrc;
-	uint8_t * pBitsDest;
+	cv::Mat pBitsSrc;
+	cv::Mat pBitsDest;
 	CFiltre * filtre;
 };
 #endif
@@ -65,10 +65,10 @@ void CFiltre::Compute()
 {
 	if (pBitmap->GetPtBitmap() != nullptr)
 	{
-		uint8_t * pBitsSrc;
-		uint8_t * pBitsDest;
-		pBitsDest = new uint8_t[pictureSize];
-		pBitsSrc = pBitmap->GetPtBitmap();
+		cv::Mat pBitsSrc;
+		cv::Mat pBitsDest;
+		pBitsSrc = pBitmap->GetMatrix();
+		pBitsSrc.copyTo(pBitsDest);
 
 #ifdef USE_TBB		
 		//tbb::task_scheduler_init init;  // Automatic number of threads
@@ -106,19 +106,17 @@ void CFiltre::Compute()
 		}
 #endif
 
-		pBitmap->SetBitmap(pBitsDest, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-		delete[] pBitsDest;
-		pBitsDest = nullptr;
+		pBitmap->SetMatrix(pBitsDest);
 	}
 }
 
 
-void CSharpenMasking::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CSharpenMasking::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	const int position = GetPosition(x, y);
-	const int origin_r = pBitsSrc[position];
-	const int origin_g = pBitsSrc[position + 1];
-	const int origin_b = pBitsSrc[position + 2];
+	const int origin_r = pBitsSrc.data[position];
+	const int origin_g = pBitsSrc.data[position + 1];
+	const int origin_b = pBitsSrc.data[position + 2];
 
 	int _r = 0;
 	int _g = 0;
@@ -131,9 +129,9 @@ void CSharpenMasking::PixelCompute(const int &x, const int &y, uint8_t * & pBits
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
-				_r  += *(pBitsSrc + pos);
-				_g  += *(pBitsSrc + pos + 1);
-				_b  += *(pBitsSrc + pos + 2);
+				_r  += *(pBitsSrc.data + pos);
+				_g  += *(pBitsSrc.data + pos + 1);
+				_b  += *(pBitsSrc.data + pos + 2);
 			}
 		}
 	}
@@ -155,35 +153,35 @@ void CSharpenMasking::PixelCompute(const int &x, const int &y, uint8_t * & pBits
 	_b = _b < 0 ? 0 : _b;
 	_b = _b > 255 ? 255 : _b;
 
-	pBitsDest[position] = _r;
-	pBitsDest[position + 1] = _g;
-	pBitsDest[position + 2] = _b;
+	pBitsDest.data[position] = _r;
+	pBitsDest.data[position + 1] = _g;
+	pBitsDest.data[position + 2] = _b;
 }
 
-void CGrayScale::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CGrayScale::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t Moyenne = ((pBitsSrc[position] * 0.299) + (pBitsSrc[position + 1] * 0.587) + (pBitsSrc[position + 2] * 0.114));
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t Moyenne = ((pBitsSrc.data[position] * 0.299) + (pBitsSrc.data[position + 1] * 0.587) + (pBitsSrc.data[position + 2] * 0.114));
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	uint8_t data[4] = { Moyenne, Moyenne, Moyenne, alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CBlackAndWhite::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CBlackAndWhite::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	uint8_t i_value;
 	const int position = GetPosition(x, y);
-	const double moyenne = ((pBitsSrc[position] * 0.144f) + (pBitsSrc[position + 1] * 0.587f) + (pBitsSrc[position + 2] * 0.299f));
+	const double moyenne = ((pBitsSrc.data[position] * 0.144f) + (pBitsSrc.data[position + 1] * 0.587f) + (pBitsSrc.data[position + 2] * 0.299f));
 	moyenne < 128.0 ? i_value = 0 : i_value = 255;
-	const uint8_t alpha = pBitsSrc[position + 3];
+	const uint8_t alpha = pBitsSrc.data[position + 3];
 	uint8_t data[4] = { i_value, i_value, i_value, alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 
 
 
 }
 
-void CBilateral::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CBilateral::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//uint8_t iValue = 0;
 	int position = GetPosition(x, y);
@@ -198,9 +196,9 @@ void CBilateral::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 	  float res_z = 0;
 	  float sum_z = 0;  
   
-	  uint8_t r = pBitsSrc[position];
-	  uint8_t g = pBitsSrc[position+1];
-	  uint8_t b = pBitsSrc[position+2];
+	  uint8_t r = pBitsSrc.data[position];
+	  uint8_t g = pBitsSrc.data[position+1];
+	  uint8_t b = pBitsSrc.data[position+2];
 	  float SX = 1.f/sigmaX/sigmaX;
 	  float SP = 1.f/sigmaP/sigmaP;
 
@@ -213,9 +211,9 @@ void CBilateral::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 			int position_local = (x+k) * 4 + (y+m) * pBitmap->GetBitmapWidth() * 4;
 			if(position_local >= 0 && position_local < maxPosition)
 			{
-				uint8_t r_pix1 = pBitsSrc[position_local];  
-				uint8_t g_pix1 = pBitsSrc[position_local+1];  
-				uint8_t b_pix1 = pBitsSrc[position_local+2];  
+				uint8_t r_pix1 = pBitsSrc.data[position_local];  
+				uint8_t g_pix1 = pBitsSrc.data[position_local+1];  
+				uint8_t b_pix1 = pBitsSrc.data[position_local+2];  
 			
                 float value = exp(-SX*(k*k+m*m));
             
@@ -234,12 +232,12 @@ void CBilateral::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 		}
 	  }
 
-	  pBitsDest[position] = (res_x/sum_x);
-	  pBitsDest[position+1] = (res_y/sum_y);
-	  pBitsDest[position+2] = (res_z/sum_z);
+	  pBitsDest.data[position] = (res_x/sum_x);
+	  pBitsDest.data[position+1] = (res_y/sum_y);
+	  pBitsDest.data[position+2] = (res_z/sum_z);
 }
 
-void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CNlmeans::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//uint8_t iValue = 0;
 	int position = GetPosition(x, y);
@@ -277,9 +275,9 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 			if(position_local < 0 || position_local >= maxPosition)
 				continue;
 
-			r = pBitsSrc[position];
-			g = pBitsSrc[position+1];
-			b = pBitsSrc[position+2];
+			r = pBitsSrc.data[position];
+			g = pBitsSrc.data[position+1];
+			b = pBitsSrc.data[position+2];
 
 			for(int i2 = -fSize;i2<=fSize;i2++)
 			{
@@ -293,13 +291,13 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 					if(pos2 < 0 || pos2 >= maxPosition)
 						continue;						
 					
-					r_p0 = pBitsSrc[pos1];
-					g_p0 = pBitsSrc[pos1+1];
-					b_p0 = pBitsSrc[pos1+2];
+					r_p0 = pBitsSrc.data[pos1];
+					g_p0 = pBitsSrc.data[pos1+1];
+					b_p0 = pBitsSrc.data[pos1+2];
 
-					r_p1 = pBitsSrc[pos2];
-					g_p1 = pBitsSrc[pos2 + 1];
-					b_p1 = pBitsSrc[pos2 + 2];
+					r_p1 = pBitsSrc.data[pos2];
+					g_p1 = pBitsSrc.data[pos2 + 1];
+					b_p1 = pBitsSrc.data[pos2 + 2];
 					
 					dist_x += (1.f*r_p1-1.f*r_p0)*(1.f*r_p1-1.f*r_p0);
 					dist_y += (1.f*g_p1-1.f*g_p0)*(1.f*g_p1-1.f*g_p0);
@@ -326,9 +324,9 @@ void CNlmeans::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, ui
 		}
 	}	
 	
-	pBitsDest[position] = res_x / sum_x;
-	pBitsDest[position+1] = res_y / sum_y;
-	pBitsDest[position+2] = res_z / sum_z;
+	pBitsDest.data[position] = res_x / sum_x;
+	pBitsDest.data[position+1] = res_y / sum_y;
+	pBitsDest.data[position+2] = res_z / sum_z;
 
 }
 
@@ -386,7 +384,7 @@ short CMedian::quick_select(short * arr, int n)
 
 #undef ELEM_SWAP
 
-void CMedian::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CMedian::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
 	int iSize = 9 * sizeof(short);
@@ -407,39 +405,39 @@ void CMedian::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uin
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
-				m_TabRValue[k] = *(pBitsSrc + pos);
-				m_TabGValue[k] = *(pBitsSrc + pos + 1);
-				m_TabBValue[k] = *(pBitsSrc + pos + 2);
+				m_TabRValue[k] = *(pBitsSrc.data + pos);
+				m_TabGValue[k] = *(pBitsSrc.data + pos + 1);
+				m_TabBValue[k] = *(pBitsSrc.data + pos + 2);
 			}
 			k++;
 		}
 	}
 
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	uint8_t data[4] = { static_cast<uint8_t>(quick_select(m_TabRValue, 9)), static_cast<uint8_t>(quick_select(m_TabGValue, 9)), static_cast<uint8_t>(quick_select(m_TabBValue, 9)), alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 
 }
 
 
-void CNegatif::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CNegatif::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//uint8_t iValue = 0;
 	int position = GetPosition(x, y);
-	uint8_t data[4] = { static_cast<uint8_t>(255 - pBitsSrc[position]), static_cast<uint8_t>(255 - pBitsSrc[position + 1]), static_cast<uint8_t>(255 - pBitsSrc[position + 2]), pBitsSrc[position + 3] };
-	memcpy(pBitsDest + position, data, 4);
+	uint8_t data[4] = { static_cast<uint8_t>(255 - pBitsSrc.data[position]), static_cast<uint8_t>(255 - pBitsSrc.data[position + 1]), static_cast<uint8_t>(255 - pBitsSrc.data[position + 2]), pBitsSrc.data[position + 3] };
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CPhotoFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CPhotoFiltre::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//CRgbaquad color;
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
-	//memcpy(&color, pBitsSrc + position, 4);
+	uint8_t alpha = pBitsSrc.data[position + 3];
+	//memcpy(&color, pBitsSrc.data + position, 4);
 
-	int _r = r + pBitsSrc[position] * diff;
-	int _g = g + pBitsSrc[position + 1] * diff;
-	int _b = b + pBitsSrc[position + 2] * diff;
+	int _r = r + pBitsSrc.data[position] * diff;
+	int _g = g + pBitsSrc.data[position + 1] * diff;
+	int _b = b + pBitsSrc.data[position + 2] * diff;
 
 	_r = _r < 0 ? 0 : _r;
 	_r = _r > 255 ? 255 : _r;
@@ -452,14 +450,14 @@ void CPhotoFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc
 
 	uint8_t data[4] = { static_cast<uint8_t>(_r), static_cast<uint8_t>(_g), static_cast<uint8_t>(_b), alpha };
 
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CRgbFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CRgbFiltre::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
-	memcpy(&color, pBitsSrc + position, 4);
+	uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
 
 	int red = color.GetRed() + m_lRValue;
 	int green = color.GetGreen() + m_lGValue;
@@ -476,16 +474,16 @@ void CRgbFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 
 	uint8_t data[4] = { r, g, b, alpha };
 
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
 
-void CSepiaFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CSepiaFiltre::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	CRgbaquad color;
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
-	memcpy(&color, pBitsSrc + position, 4);
+	uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
 
 	float temp;
 	temp = (0.393f * color.GetFRed()) + (0.769f * color.GetFGreen()) + (0.189f * color.GetFBlue());
@@ -497,13 +495,13 @@ void CSepiaFiltre::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc
 
 	uint8_t data[4] = { r, g, b, alpha };
 
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CMatrixConvolution::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	float red = 0.0;
 	float green = 0.0;
 	float blue = 0.0;
@@ -520,9 +518,9 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, uint8_t * & pB
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
-				red += *(pBitsSrc + pos) * kernel[k];
-				green += *(pBitsSrc + pos + 1) * kernel[k];
-				blue += *(pBitsSrc + pos + 2) * kernel[k];
+				red += *(pBitsSrc.data + pos) * kernel[k];
+				green += *(pBitsSrc.data + pos + 1) * kernel[k];
+				blue += *(pBitsSrc.data + pos + 2) * kernel[k];
 			}
 			k++;
 			
@@ -543,14 +541,14 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, uint8_t * & pB
 	uint8_t b = blue > 255 ? 255 : blue;
 	
 	uint8_t data[4] = { r, g, b, alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 
 }
 
-void CDilate::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CDilate::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	uint8_t r = 255;
 	uint8_t g = 255;
 	uint8_t b = 255;
@@ -562,21 +560,21 @@ void CDilate::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uin
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
-				r = min(r, *(pBitsSrc + pos));
-				g = min(g, *(pBitsSrc + pos + 1));
-				b = min(b, *(pBitsSrc + pos + 2));
+				r = min(r, *(pBitsSrc.data + pos));
+				g = min(g, *(pBitsSrc.data + pos + 1));
+				b = min(b, *(pBitsSrc.data + pos + 2));
 			}
 		}
 	}
 
 	uint8_t data[4] = { r, g, b, alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CErode::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CErode::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	uint8_t r = 0;
 	uint8_t g = 0;
 	uint8_t b = 0;
@@ -588,15 +586,15 @@ void CErode::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
-				r = max(r, *(pBitsSrc + pos));
-				g = max(g, *(pBitsSrc + pos + 1));
-				b = max(b, *(pBitsSrc + pos + 2));
+				r = max(r, *(pBitsSrc.data + pos));
+				g = max(g, *(pBitsSrc.data + pos + 1));
+				b = max(b, *(pBitsSrc.data + pos + 2));
 			}
 		}
 	}
 
 	uint8_t data[4] = { r, g, b, alpha };
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
 float CNoise::Noise2d(int x, int y)
@@ -605,14 +603,14 @@ float CNoise::Noise2d(int x, int y)
 	return 255 * (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
 }
 
-void CNoise::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CNoise::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int pos = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[pos + 3];
+	uint8_t alpha = pBitsSrc.data[pos + 3];
 	float n = Noise2d(int(x), int(y));
-	int r = *(pBitsSrc + pos) + n;
-	int g = *(pBitsSrc + pos + 1) + n;
-	int b = *(pBitsSrc + pos + 2) + n;
+	int r = *(pBitsSrc.data + pos) + n;
+	int g = *(pBitsSrc.data + pos + 1) + n;
+	int b = *(pBitsSrc.data + pos + 2) + n;
 
 	
 	r = max(0, min(255, r));
@@ -620,10 +618,10 @@ void CNoise::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint
 	b = max(0, min(255, b));
 
 	uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
-	memcpy(pBitsDest + pos, data, 4);
+	memcpy(pBitsDest.data + pos, data, 4);
 }
 
-void CMosaic::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CMosaic::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//uint8_t r = 0;
 	//uint8_t g = 0;
@@ -638,8 +636,8 @@ void CMosaic::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uin
 	int posOut = GetPosition(x, y);
 	int pos = GetPosition(s*w, t*h);
 
-	uint8_t data[4] = { *(pBitsSrc + pos), *(pBitsSrc + pos + 1), *(pBitsSrc + pos + 2), *(pBitsSrc + pos + 3) };
-	memcpy(pBitsDest + posOut, data, 4);
+	uint8_t data[4] = { *(pBitsSrc.data + pos), *(pBitsSrc.data + pos + 1), *(pBitsSrc.data + pos + 2), *(pBitsSrc.data + pos + 3) };
+	memcpy(pBitsDest.data + posOut, data, 4);
 }
 
 float CSwirl::EuclideanDist(FLOATPOINT p)
@@ -714,7 +712,7 @@ wxPoint CSwirl::PostFX(int x, int y, int width, int height, float radius, float 
 
 }
 
-void CSwirl::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CSwirl::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	//uint8_t data[4];
 	wxPoint pt = PostFX(x, y, bmWidth, bmHeight, radius, angle);
@@ -722,49 +720,49 @@ void CSwirl::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint
 	{
 		int positionSrc = GetPosition(pt.x, pt.y); 
 		int positionDest = GetPosition(x, y);
-		memcpy(pBitsDest + positionDest, pBitsSrc + positionSrc, 4);
+		memcpy(pBitsDest.data + positionDest, pBitsSrc.data + positionSrc, 4);
 	}
 	else
 	{
 		int positionDest = GetPosition(x, y);
-		memcpy(pBitsDest + positionDest, &color, 4);
+		memcpy(pBitsDest.data + positionDest, &color, 4);
 	}
 }
 
-void CContrast::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CContrast::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 
-	int r = m_dTemp[pBitsSrc[position]];
-	int g = m_dTemp[pBitsSrc[position + 1]];
-	int b = m_dTemp[pBitsSrc[position + 2]];
+	int r = m_dTemp[pBitsSrc.data[position]];
+	int g = m_dTemp[pBitsSrc.data[position + 1]];
+	int b = m_dTemp[pBitsSrc.data[position + 2]];
 
 	uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
 
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CLightness::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CLightness::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc[position + 3];
+	uint8_t alpha = pBitsSrc.data[position + 3];
 
-	int r = m_dTemp[pBitsSrc[position]];
-	int g = m_dTemp[pBitsSrc[position + 1]];
-	int b = m_dTemp[pBitsSrc[position + 2]];
+	int r = m_dTemp[pBitsSrc.data[position]];
+	int g = m_dTemp[pBitsSrc.data[position + 1]];
+	int b = m_dTemp[pBitsSrc.data[position + 2]];
 
 	uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
 
-	memcpy(pBitsDest + position, data, 4);
+	memcpy(pBitsDest.data + position, data, 4);
 }
 
-void CPosterize::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CPosterize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	CRgbaquad color;
 	int position = GetPosition(x, y);
-	//uint8_t alpha = pBitsSrc[position + 3];
-	memcpy(&color, pBitsSrc + position, 4);
+	//uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
 
 	int r = color.GetFRed() / _offset;
 	int g = color.GetFGreen() / _offset;
@@ -776,18 +774,18 @@ void CPosterize::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, 
 
 	color = CRgbaquad(posterize[r], posterize[g], posterize[b]);
 
-	memcpy(pBitsDest + position, &color, 3);
+	memcpy(pBitsDest.data + position, &color, 3);
 
 }
 
-void CSolarize::PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest)
+void CSolarize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	CRgbaquad color;
 	int position = GetPosition(x, y);
-	//uint8_t alpha = pBitsSrc[position + 3];
-	memcpy(&color, pBitsSrc + position, 4);
+	//uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
 
 	color = CRgbaquad(solarize[color.GetRed()], solarize[color.GetGreen()], solarize[color.GetBlue()]);
 
-	memcpy(pBitsDest + position, &color, 3);
+	memcpy(pBitsDest.data + position, &color, 3);
 }

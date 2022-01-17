@@ -13,13 +13,14 @@
 #define GLUT
 //#define WX_PRECOMP
 
-#include <ImageLoadingFormat.h>
-#include <PictureData.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/dnn.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <mutex>
 #include <thread>
+#include <ImageLoadingFormat.h>
+#include <PictureData.h>
 using namespace std;
