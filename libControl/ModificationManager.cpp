@@ -86,9 +86,9 @@ wxString CModificationManager::GetFilenameWithModification(const unsigned int& n
 	filename.append(folder.begin(), folder.end());
 
 #ifdef WIN32
-	filename.append("\\" + to_string(numModification) + ".bmp");
+	filename.append("\\" + to_string(numModification) + ".png");
 #else
-    filename.append("//" + to_string(numModification) + ".bmp");
+    filename.append("//" + to_string(numModification) + ".png");
 #endif
 
 	return filename;

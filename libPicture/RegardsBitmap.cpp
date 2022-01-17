@@ -287,40 +287,12 @@ void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 
 void CRegardsBitmap::ReadFile(const wxString& filename)
 {
-	/*
-	FILE* file = fopen(filename.c_str(), "rb"); // File pointer
-	if (file != nullptr)
-	{
-		bitmapMatrix.release();
-		int width = 0;
-		int height = 0;
-		fread(&width, sizeof(int), sizeof(int), file);
-		fread(&height, sizeof(int), sizeof(int), file);
-		fread(&orientation, sizeof(int), sizeof(int), file);
-		bitmapMatrix = cv::Mat(height, width, CV_8UC4);
-		long size = bitmapMatrix.cols * bitmapMatrix.rows * 4;
-		fread(bitmapMatrix.data, sizeof(uint8_t), size, file);
-		fclose(file);
-	}
-	*/
 	bitmapMatrix = cv::imread(filename.ToStdString(), CV_8UC4);
 }
 
 void CRegardsBitmap::WriteFile(const wxString& filename)
 {
 	cv::imwrite(filename.ToStdString(), bitmapMatrix);
-	/*
-	long size = bitmapMatrix.cols * bitmapMatrix.rows * 4;
-	FILE* file = fopen(filename.c_str(), "wb"); // File pointer
-	if (file != nullptr)
-	{
-		fwrite(&bitmapMatrix.cols, sizeof(int), sizeof(int), file);
-		fwrite(&bitmapMatrix.rows, sizeof(int), sizeof(int), file);
-		fwrite(&orientation, sizeof(int), sizeof(int), file);
-		fwrite(bitmapMatrix.data, sizeof(uint8_t), size, file);
-		fclose(file);
-	}
-	*/
 }
 
 
