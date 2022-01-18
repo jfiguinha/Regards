@@ -22,7 +22,7 @@ public:
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace);
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
-	int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize);
+	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 	int GetRgbaBitmap(void * cl_image){return -1;};
     void SetBitmap(CImageLoadingFormat * bitmap);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
@@ -77,7 +77,8 @@ public:
 	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
 
 private:
-
+	int Contrast(const double& contrast, const uint8_t& offset);
+	int Lightness(const double& factor);
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat &mask);

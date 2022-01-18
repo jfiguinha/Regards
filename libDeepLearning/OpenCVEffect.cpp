@@ -241,9 +241,22 @@ void COpenCVEffect::BrightnessAndContrastAuto(UMat& image, float clipHistPercent
 	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
 }
 
+void COpenCVEffect::NlmeansFilter(UMat& image, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
+{
+	COpenCVEffectPimpl::NlmeansFilter(image, h, hColor, templateWindowSize, searchWindowSize);
+}
+
 void COpenCVEffect::BrightnessAndContrastAuto(Mat& image, float clipHistPercent)
 {
 	COpenCVEffectPimpl::BrightnessAndContrastAuto(image, 1);
+}
+
+void COpenCVEffectPimpl::NlmeansFilter(UMat& image, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
+{
+	//cvtColor(image, image, COLOR_BGRA2BGR);
+	//fastNlMeansDenoisingColored(image, image, h, hColor, templateWindowSize, searchWindowSize);
+	fastNlMeansDenoising(image, image,templateWindowSize, searchWindowSize);
+	//cvtColor(image, image, COLOR_BGR2BGRA);
 }
 
 

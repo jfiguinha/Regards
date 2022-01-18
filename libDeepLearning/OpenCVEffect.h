@@ -11,6 +11,7 @@ namespace cv
 		static void BrightnessAndContrastAuto(Mat& image, float clipHistPercent = 0, bool opencl = true);
 		static void EqualizeHistogram(Mat& src);
 		static void BrightnessAndContrastAuto(UMat& image, float clipHistPercent);
+		static void NlmeansFilter(UMat& image, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 	};
 }
 
@@ -41,6 +42,7 @@ namespace Regards
 			                               const wxColour& colorFont);
 			static void NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue,
 			                               const int& maxValue);
+			static void NlmeansFilter(cv::UMat& image, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 		};
 	}
 }

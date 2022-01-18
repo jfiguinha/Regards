@@ -880,7 +880,7 @@ int CFiltreEffetCPU::BilateralFilter(const int& fSize, const int& sigmaX, const 
 	return -1;
 }
 
-int CFiltreEffetCPU::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
+int CFiltreEffetCPU::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	CRegardsBitmap* bitmap;
 	if (preview)
@@ -897,7 +897,7 @@ int CFiltreEffetCPU::NlmeansFilter(const int& h, const int& templateWindowSize, 
 		Mat dst;
 		Mat out;
 		cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
-		fastNlMeansDenoisingColored(dst, out, h, h, templateWindowSize, searchWindowSize);
+		fastNlMeansDenoisingColored(dst, out, h, hColor, templateWindowSize, searchWindowSize);
 		cvtColor(out, bitmap->GetMatrix(), COLOR_BGR2BGRA);
 		dst.release();
 		out.release();
@@ -1281,32 +1281,6 @@ int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		Mat new_image;
-
-		double alpha = 1.0f;
-		if(contrast > 0)
-			alpha = 1.0f + contrast / 100.0; /*< Simple contrast control */
-		else
-			alpha = contrast / 100.0; /*< Simple contrast control */
-		int beta = brightness;       /*< Simple brightness control */
-		Mat image;
-		cvtColor(bitmap->GetMatrix(), image, COLOR_BGRA2BGR);
-		image.convertTo(new_image, -1, alpha, beta);
-		cvtColor(new_image, new_image, COLOR_BGR2BGRA);
-		bitmap->SetMatrix(new_image);
-
-		
-	}
-
-	/*
 	double offset;
 
 	if (contrast == 0)
@@ -1328,11 +1302,49 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const doubl
 	}
 
 	Lightness(brightness);
-	*/
 	return 0;
 }
 
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+int CFiltreEffetCPU::Contrast(const double& contrast, const uint8_t& offset)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
 
+	if (bitmap != nullptr)
+	{
+		auto filtre = new CContrast(contrast, offset);
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+	}
+
+	return 0;
+}
+
+int CFiltreEffetCPU::Lightness(const double& factor)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		auto filtre = new CLightness(factor);
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+	}
+
+	return 0;
+}
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////

@@ -152,7 +152,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	filtreInterface->AddTreeInfos(enableDenoiseEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
 	
 	vector<float> elementDenoiseLevel;
-	for (float i = 0; i < 255; i += 1)
+	for (float i = 0; i < 20; i += 1)
 		elementDenoiseLevel.push_back(i);
 
 	filtreInterface->AddTreeInfos(effectDenoising, new CTreeElementValueFloat(videoEffectParameter->denoisingLevel), &elementDenoiseLevel, 4);
@@ -160,11 +160,11 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	filtreInterface->AddTreeInfos(enableOpenglDenoising, new CTreeElementValueInt(videoEffectParameter->openglDenoise), &videoEffectParameter->openglDenoise, 2, 2);
 
 	vector<float> elementSigma;
-	for (float i = 0; i < 100; i+=1)
+	for (float i = 1; i < 30; i+=2)
 		elementSigma.push_back(i);
 
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
-	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold), &elementSigma, 4);
+	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold), &elementDenoiseLevel, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
 
 

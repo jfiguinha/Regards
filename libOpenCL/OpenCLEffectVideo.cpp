@@ -418,6 +418,13 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 		frameStabilized = true;
 	}
 
+	/*
+	if (videoEffectParameter->denoiseEnable)
+	{
+		Regards::OpenCV::COpenCVEffect::NlmeansFilter(cvImage, videoEffectParameter->h, videoEffectParameter->hColor, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
+		frameStabilized = true;
+	}
+	*/
 	if (frameStabilized)
 	{
 		CopyOpenCVTexture(cvImage, true);
@@ -945,12 +952,12 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 	{
 		if (paramOutput != nullptr)
 		{
-			output = openclFilter.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3, paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.NlMeans(paramOutput->GetValue(), widthOut, heightOut, videoEffectParameter->h, videoEffectParameter->hColor, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
 			paramOutput->SetValue(output);
 		}
 		else
 		{
-			output = openclFilter.HQDn3D(videoEffectParameter->denoisingLevel, 4, 3, 3, paramSrc->GetValue(), srcwidth, srcheight);
+			output = openclFilter.NlMeans(paramSrc->GetValue(), srcwidth, srcheight, videoEffectParameter->h, videoEffectParameter->hColor, videoEffectParameter->templateWindowSize, videoEffectParameter->searchWindowSize);
 			paramSrc->SetValue(output);
 		}
 	}

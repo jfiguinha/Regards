@@ -61,7 +61,7 @@ namespace Regards
 			cl_mem BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent);
 			cl_mem BilateralEffect(cl_mem inputData, int width, int height, const int& fSize, const int& sigmaX, const int& sigmaP);
 			cl_mem Bm3d(cl_mem inputData, int width, int height, const float & fSigma);
-			cl_mem NlMeans(cl_mem inputData, int width, int height, const int& h, const int& templateWindowSize, const int& searchWindowSize);
+			cl_mem NlMeans(cl_mem inputData, int width, int height, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 		protected:
 
 			cv::UMat GetOpenCVStruct(cl_mem inputData, int width, int height);

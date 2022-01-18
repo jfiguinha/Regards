@@ -94,9 +94,9 @@ int CFiltreEffet::BilateralFilter(const int & fSize, const int& sigmaX, const in
 }
 
 
-int CFiltreEffet::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
+int CFiltreEffet::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
-	return filtreEffet->NlmeansFilter(h, templateWindowSize, searchWindowSize);
+	return filtreEffet->NlmeansFilter(h, hColor, templateWindowSize, searchWindowSize);
 }
 
 int CFiltreEffet::MeanShift(const float& fSpatialRadius, const float& fColorRadius)

@@ -1214,7 +1214,7 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 	return 0;
 }
 
-int COpenCLEffect::NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize)
+int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	CDeepLearning::LockOpenCLDnn();
 	if (context != nullptr)
@@ -1227,13 +1227,13 @@ int COpenCLEffect::NlmeansFilter(const int& h, const int& templateWindowSize, co
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.NlMeans(paramOutput->GetValue(), widthOut, heightOut, h, templateWindowSize, searchWindowSize);
+			output = openclFilter.NlMeans(paramOutput->GetValue(), widthOut, heightOut, h, hColor, templateWindowSize, searchWindowSize);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.NlMeans(input->GetValue(), width, height, h, templateWindowSize, searchWindowSize);
+			output = openclFilter.NlMeans(input->GetValue(), width, height, h, hColor, templateWindowSize, searchWindowSize);
 		}
 		SetOutputValue(output, _width, _height);
 	}

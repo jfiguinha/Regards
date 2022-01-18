@@ -29,7 +29,7 @@ public:
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual int WaveFilter(int x, int y, short height, int scale, int radius) = 0;
 	virtual int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP) = 0;
-	virtual int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize) = 0;
+	virtual int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize) = 0;
 	virtual int GetRgbaBitmap(void * cl_image) = 0; 
 	virtual int HistogramNormalize() = 0;
 	virtual int HistogramEqualize() = 0;

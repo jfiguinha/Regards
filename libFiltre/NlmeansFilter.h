@@ -28,6 +28,7 @@ namespace Regards
             CImageLoadingFormat* ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer);
         private:
 			wxString libelleEffectH;
+            wxString libelleEffectHColor;
 			wxString libelleEffectTemplateWindowSize;
             wxString libelleEffectSearchWindowSize;
         };

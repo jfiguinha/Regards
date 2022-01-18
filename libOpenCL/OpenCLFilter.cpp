@@ -57,7 +57,7 @@ cl_mem COpenCLFilter::BilateralEffect(cl_mem inputData, int width, int height, c
 
 }
 
-cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int& h, const int& templateWindowSize, const int& searchWindowSize)
+cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	cl_mem value;
 	try
@@ -67,7 +67,7 @@ cl_mem COpenCLFilter::NlMeans(cl_mem inputData, int width, int height, const int
 		cv::UMat cvSrc;
 		cv::UMat cvImage = GetOpenCVStruct(inputData, width, height);
 		cv::cvtColor(cvImage, cvSrc, cv::COLOR_BGRA2BGR);
-		cv::fastNlMeansDenoisingColored(cvSrc, cvDest, h, h, templateWindowSize, searchWindowSize);
+		cv::fastNlMeansDenoisingColored(cvSrc, cvDest, h, hColor, templateWindowSize, searchWindowSize);
 		cv::cvtColor(cvDest, cvImage, cv::COLOR_BGR2BGRA);
 		value = CopyOpenCVTexture(cvImage, width, height);
 		cvDest.release();
@@ -1435,6 +1435,7 @@ cl_mem COpenCLFilter::Swirl(const float &radius, const float &angle, cl_mem inpu
 cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cl_mem inputData, int width, int height)
 {
 
+
 	cl_mem outputValue = nullptr;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
@@ -1484,7 +1485,6 @@ cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const doub
 		vecParam.clear();
 	}
 	return outputValue;
-
 
 }
 

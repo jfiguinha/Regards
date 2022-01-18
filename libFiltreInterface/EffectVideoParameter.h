@@ -77,13 +77,7 @@ public:
 		filmgrainenable = 0;
 
 		ratioSelect = 0;
-		/*
-		tabRatio.push_back(1.0f);
-		tabRatio.push_back(1.33f);
-		tabRatio.push_back(1.66f);
-		tabRatio.push_back(1.85f);
-		tabRatio.push_back(2.35f);
-		*/
+
 		tabRatio = zoom;
 		tabZoom = vect;
 		for (int i = 0; i < tabZoom.size(); i++)
@@ -92,16 +86,6 @@ public:
 				zoomSelect = i;
 		}
 
-
-		/*
-		GLfloat sigma = 11.0f, threshold = .180f, slider = 0.f; //running
-		// GLfloat sigma = 7.0f, threshold = .180f, slider = 0.f; //running
-		GLfloat kSigma = 2.f;
-
-		GLfloat aSigma[3] = {9.f, 7.f, 7.f};
-		GLfloat aThreshold[3] = {.180f, .195f, .180f};
-		GLfloat aKSigma[3] = {3.f, 3.f, 2.f};
-		*/
 	}
 	;
 	~CVideoEffectParameter()
@@ -156,5 +140,11 @@ public:
 	bool autoConstrast = false;
 	bool stabilizeVideo = false;
 	int stabilizeImageBuffere = 2;
+
+
+	int templateWindowSize = 7;
+	int searchWindowSize = 21;
+	int h = 3;
+	int hColor = 3;
 };
 

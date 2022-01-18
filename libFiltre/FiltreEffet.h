@@ -82,7 +82,7 @@ public:
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
-	int NlmeansFilter(const int& h, const int& templateWindowSize, const int& searchWindowSize);
+	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
     int Bm3d(const int & fSigma);
 	void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);

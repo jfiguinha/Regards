@@ -20,6 +20,7 @@ using namespace Regards::Filter;
 CNlmeansFilter::CNlmeansFilter()
 {
 	libelleEffectH = "Effect.Filter Strengh";//CLibResource::LoadStringFromResource(L"LBLEFFECTFSIZE",1);//
+	libelleEffectHColor = "Effect.Filter Color Strengh";//CLibResource::LoadStringFromResource(L"LBLEFFECTFSIZE",1);//
 	libelleEffectTemplateWindowSize = "Effect.Template Size";//CLibResource::LoadStringFromResource(L"LBLEFFECTBSIZE",1);//"Effect.BSize";
 	libelleEffectSearchWindowSize = "Effect.Search Size";//CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);//LBLEFFECTSIGMA;//"Effect.Sigma";
 }
@@ -61,8 +62,16 @@ void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap *
 		if(i%2 == 1)
 			elementColor.push_back(i);
 	}
+
+
+	vector<int> elementH;
+	for (auto i = 1; i < 26; i++)
+	{
+		elementH.push_back(i);
+	}
     
-    filtreInterface->AddTreeInfos(libelleEffectH,new CTreeElementValueInt(nlmeansEffectParameter->h), &elementColor);
+    filtreInterface->AddTreeInfos(libelleEffectH,new CTreeElementValueInt(nlmeansEffectParameter->h), &elementH);
+	filtreInterface->AddTreeInfos(libelleEffectHColor, new CTreeElementValueInt(nlmeansEffectParameter->hColor), &elementH);
 	filtreInterface->AddTreeInfos(libelleEffectTemplateWindowSize,new CTreeElementValueInt(nlmeansEffectParameter->templateWindowSize), &elementColor);
 	filtreInterface->AddTreeInfos(libelleEffectSearchWindowSize,new CTreeElementValueInt(nlmeansEffectParameter->searchWindowSize), &elementColor);
 }
@@ -99,6 +108,10 @@ void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
     {
         nlmeansEffectParameter->h = value;
     }
+	else if (key == libelleEffectHColor)
+	{
+		nlmeansEffectParameter->hColor = value;
+	}
 	else if (key == libelleEffectTemplateWindowSize)
     {
         nlmeansEffectParameter->templateWindowSize = value;
@@ -114,7 +127,7 @@ void CNlmeansFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* e
 	if (effectParameter != nullptr && filtreEffet != nullptr)
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
-		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->hColor, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
 	}
 }
 
@@ -145,7 +158,7 @@ void CNlmeansFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter,
 	if (effectParameter != nullptr && source != nullptr)
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
-		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->hColor, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
 	}
 
 }
@@ -171,7 +184,7 @@ CImageLoadingFormat* CNlmeansFilter::ApplyEffect(CEffectParameter* effectParamet
 			image.SetPicture(source);
 			filter->SetBitmap(&image);
 			
-			filter->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
+			filter->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->hColor, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
