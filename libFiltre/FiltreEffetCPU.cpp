@@ -1420,7 +1420,6 @@ int CFiltreEffetCPU::Soften()
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-
 	}
 	return 0;
 }

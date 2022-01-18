@@ -275,6 +275,8 @@ int CLibPicture::TestImageFormat(const wxString& szFileName)
 			return 0;
 
 		numExt = TestExtension(extension.Lower());
+		if (numExt == ASCII)
+			numExt = 0;
 	}
 	return numExt;
 }
