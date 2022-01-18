@@ -163,6 +163,7 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
+	//openclContext2d->GetContextForOpenCV().bind();
 	bitmapWndRender->OnPaint2D(this, openclContext2d);
 	
 

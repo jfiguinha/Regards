@@ -82,8 +82,6 @@ namespace Regards
 			int Median();
 			int Dilate();
 
-
-			int Denoise(const float &sigma, const float &threshold, const float &kSigma);
 			int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 			int Posterize(const float &level, const float &gamma);
 			int Solarize(const long &threshold);

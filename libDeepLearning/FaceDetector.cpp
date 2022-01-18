@@ -148,10 +148,12 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 
 		netRecognition = readNetFromTorch(recognition);
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
+
 		if (openCLCompatible)
 			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
+		
 
 #else
 

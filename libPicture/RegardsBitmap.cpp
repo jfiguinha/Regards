@@ -830,6 +830,7 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourc
 {
 	if (!bitmapMatrix.empty())
 	{
+		/*
 		float diff = 1.0f - pourcentage;
 
 		for (auto y = 0; y < bitmapMatrix.rows; y++)
@@ -845,6 +846,11 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourc
 				SetColorValue(x, y, color2);
 			}
 		}
+		*/
+		cv::Mat dst;
+		float beta = (1.0 - pourcentage);
+		cv::addWeighted(bitmapMatrix, pourcentage, nextPicture->GetMatrix(), beta, 0.0, dst);
+		dst.copyTo(bitmapMatrix);
 	}
 	return 0;
 }

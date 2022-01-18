@@ -183,8 +183,10 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+		openclContext->GetContextForOpenCV().bind();
 	}
     
+	
 	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
     
 #endif

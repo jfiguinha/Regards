@@ -35,6 +35,7 @@ public:
 	wxImage GetwxImage();
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int SharpenMasking(const float &sharpness);
+	int GroundGlassEffect(const double& radius);
 	int NiveauDeGris();
 	int NoirEtBlanc();
 	int Sepia();
@@ -76,9 +77,6 @@ public:
 	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
 
 private:
-
-	int Contrast(const double& contrast, const uint8_t& offset);
-	int Lightness(const double& factor);
 
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);

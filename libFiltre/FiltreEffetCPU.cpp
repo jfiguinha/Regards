@@ -917,10 +917,19 @@ int CFiltreEffetCPU::SharpenMasking(const float& sharpness)
 
 	if (bitmap != nullptr)
 	{
+		/*
 		auto sharpenMasking = new CSharpenMasking(sharpness);
 		sharpenMasking->SetParameter(bitmap, backColor);
 		sharpenMasking->Compute();
 		delete sharpenMasking;
+		*/
+		Mat blurred; 
+		double sigma = 1, threshold = 5, amount = sharpness;
+		cv::GaussianBlur(bitmap->GetMatrix(), blurred, Size(), sigma, sigma);
+		Mat lowConstrastMask = abs(bitmap->GetMatrix() - blurred) < threshold;
+		Mat sharpened = bitmap->GetMatrix() * (1 + amount) + blurred * (-amount);
+		bitmap->GetMatrix().copyTo(sharpened, lowConstrastMask);
+		bitmap->SetMatrix(sharpened);
 		return 0;
 	}
 	return -1;
@@ -1272,7 +1281,32 @@ int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
 
+	if (bitmap != nullptr)
+	{
+		Mat new_image;
+
+		double alpha = 1.0f;
+		if(contrast > 0)
+			alpha = 1.0f + contrast / 100.0; /*< Simple contrast control */
+		else
+			alpha = contrast / 100.0; /*< Simple contrast control */
+		int beta = brightness;       /*< Simple brightness control */
+		Mat image;
+		cvtColor(bitmap->GetMatrix(), image, COLOR_BGRA2BGR);
+		image.convertTo(new_image, -1, alpha, beta);
+		cvtColor(new_image, new_image, COLOR_BGR2BGRA);
+		bitmap->SetMatrix(new_image);
+
+		
+	}
+
+	/*
 	double offset;
 
 	if (contrast == 0)
@@ -1294,51 +1328,11 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const doubl
 	}
 
 	Lightness(brightness);
-	
+	*/
 	return 0;
 }
 
 
-//----------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------
-int CFiltreEffetCPU::Contrast(const double& contrast, const uint8_t& offset)
-{
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		auto filtre = new CContrast(contrast, offset);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
-	}
-
-	return 0;
-}
-
-int CFiltreEffetCPU::Lightness(const double& factor)
-{
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		auto filtre = new CLightness(factor);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
-	}
-
-	return 0;
-}
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
@@ -1394,10 +1388,27 @@ int CFiltreEffetCPU::Sepia()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		auto filtre = new CSepiaFiltre();
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+		*/
+
+		Mat dest;
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2BGR);
+
+		cv::Mat kernel =
+			(cv::Mat_<float>(3, 3)
+				<<
+				0.272, 0.534, 0.131,
+				0.349, 0.686, 0.168,
+				0.393, 0.769, 0.189);
+
+		cv::transform(dest, dest, kernel);
+		cvtColor(dest, dest, COLOR_BGR2BGRA);
+		bitmap->SetMatrix(dest);
+
 	}
 	return 0;
 }
@@ -1420,6 +1431,7 @@ int CFiltreEffetCPU::Soften()
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+
 	}
 	return 0;
 }
@@ -1698,11 +1710,25 @@ int CFiltreEffetCPU::FiltreEdge()
 
 	if (bitmap != nullptr)
 	{
+		/*
 		short kernel[] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
 		auto filtre = new CMatrixConvolution(kernel, 3, 1, 0);
 		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
+	*/
+		
+		Mat dest;
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2GRAY);
+
+		Mat img_blur;
+		cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
+		Mat edges;
+		Canny(img_blur, edges, 100, 200, 3, false);
+
+		cvtColor(edges, dest, COLOR_GRAY2BGRA);
+		bitmap->SetMatrix(dest);
+		
 
 	}
 
@@ -1787,8 +1813,42 @@ int CFiltreEffetCPU::MotionBlur(const double& radius, const double& sigma, const
 		auto filtre = new CMotionBlur();
 		filtre->MotionBlur(bitmap, radius, sigma, angle);
 		delete filtre;
+
 	}
 	return 0;
+}
+
+int CFiltreEffetCPU::GroundGlassEffect(const double& radius)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+
+		Mat imageSource = bitmap->GetMatrix();
+		cvtColor(imageSource, imageSource, COLOR_BGRA2BGR);
+		Mat imageResult = imageSource.clone();
+		RNG rng;
+		int randomNum;
+		int Number = radius;
+
+		for (int i = 0; i < imageSource.rows - Number; i++)
+			for (int j = 0; j < imageSource.cols - Number; j++)
+			{
+				randomNum = rng.uniform(0, Number);
+				imageResult.at<Vec3b>(i, j)[0] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[0];
+				imageResult.at<Vec3b>(i, j)[1] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[1];
+				imageResult.at<Vec3b>(i, j)[2] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[2];
+			}
+
+		cvtColor(imageResult, imageResult, COLOR_BGR2BGRA);
+		bitmap->SetMatrix(imageResult);
+	}
+
 }
 
 //----------------------------------------------------------------------------

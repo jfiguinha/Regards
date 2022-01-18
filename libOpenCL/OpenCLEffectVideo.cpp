@@ -289,7 +289,7 @@ cv::UMat COpenCLEffectVideo::GetOpenCVStruct(const bool &src)
 
 	cv::UMat dst;
 	cv::UMat cvImage;
-	context->GetContextForOpenCV().bind();
+	//context->GetContextForOpenCV().bind();
 	int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 	int type = CV_MAKE_TYPE(depth, 4);
 	cvImage.create((int)h, (int)w, type);
@@ -383,7 +383,7 @@ void COpenCLEffectVideo::CopyOpenCVTexture(cv::UMat & dst, const bool &src)
 
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {
-	context->GetContextForOpenCV().bind();
+	//context->GetContextForOpenCV().bind();
 	bool frameStabilized = false;
 	cv::UMat cvImage = GetOpenCVStruct(true);
 
