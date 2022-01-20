@@ -59,10 +59,6 @@ int CFiltreEffet::GetHeight()
 	return filtreEffet->GetHeight();
 }
 
-CRegardsBitmap* CFiltreEffet::GetPtBitmap()
-{
-	return filtreEffet->GetPtBitmap();
-}
 
 int CFiltreEffet::Bm3d(const int& fSigma)
 {
@@ -223,20 +219,6 @@ CRegardsBitmap* CFiltreEffet::GetBitmap(const bool& source)
 	return filtreEffet->GetBitmap(source);
 }
 
-void CFiltreEffet::GetYUV420P(uint8_t* & y, uint8_t* & u, uint8_t* & v, const int& widthOut, const int& heightOut)
-{
-	filtreEffet->GetYUV420P(y, u, v, widthOut, heightOut);
-}
-
-void CFiltreEffet::GetBitmap(CRegardsBitmap* & bitmap, const bool& source)
-{
-	filtreEffet->GetBitmap(bitmap, source);
-}
-
-CRegardsFloatBitmap* CFiltreEffet::GetFloatBitmap(const bool& source)
-{
-	return filtreEffet->GetFloatBitmap(source);
-}
 
 int CFiltreEffet::HistogramNormalize()
 {

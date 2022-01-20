@@ -31,42 +31,41 @@ namespace Regards
 			virtual ~COpenCLFilter();
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
-			cl_mem HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cl_mem inputData, int width, int height);
-			//cl_mem Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cl_mem inputData, int width, int height);
-			cl_mem FiltreConvolution(const wxString &programName, const wxString &functionName, cl_mem inputData, int width, int height);
-			cl_mem MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cl_mem inputData, int width, int height);
-			cl_mem SharpenMasking(const float &sharpness, cl_mem inputData, int width, int height);
-			cl_mem PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cl_mem inputData, int width, int height);
-			cl_mem RGBFilter(const int &red, const int &green, const int &blue, cl_mem inputData, int width, int height);
-			cl_mem FiltreMosaic(cl_mem inputData, int width, int height);
-			cl_mem Blur(const int &radius, cl_mem inputData, int width, int height);
-			cl_mem BoxBlur(const int &coeff, const wxString &functionName, cl_mem inputData, int width, int height, bool noDeleteData = false);
-			cl_mem ErodeDilate(const wxString &functionName, cl_mem inputData, int width, int height);
-			cl_mem Posterize(const float &level, const float &gamma, cl_mem inputData, int width, int height);
-			cl_mem Solarize(const long &threshold, cl_mem inputData, int width, int height);
-			cl_mem Median(cl_mem inputData, int width, int height);
-			cl_mem Noise(cl_mem inputData, int width, int height);
-			cl_mem Flip(const wxString &functionName, cl_mem inputData, int width, int height);
-			cl_mem Swirl(const float &radius, const float &angle, cl_mem inputData, int width, int height);
-			cl_mem BrightnessAndContrast(const double &brightness, const double &contrast, cl_mem inputData, int width, int height);
-			cl_mem ColorEffect(const wxString &functionName, cl_mem inputData, int width, int height);
-			cl_mem Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cl_mem inputData, int width, int height);
-			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
-			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
-			cl_mem Fusion(cl_mem inputData, cl_mem secondPictureData, const float &pourcentage, int width, int height);
-			cl_mem ConvertToY(cl_mem inputData, int width, int height, const wxString & functionName = "ConvertToY");
-			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height, const wxString & functionName = "InsertYValue");
-			cl_mem ExtractBlocSize(cl_mem sourceData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
-			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
-			cl_mem BrightnessAndContrastAuto(cl_mem inputData, int width, int height, float clipHistPercent);
-			cl_mem BilateralEffect(cl_mem inputData, int width, int height, const int& fSize, const int& sigmaX, const int& sigmaP);
-			cl_mem Bm3d(cl_mem inputData, int width, int height, const float & fSigma);
-			cl_mem NlMeans(cl_mem inputData, int width, int height, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
+			void HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cv::UMat & inputData);
+			//cv::UMat Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cv::UMat & inputData);
+			void FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat& inputData);
+			void MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::UMat& inputData);
+			void SharpenMasking(const float &sharpness, cv::UMat& inputData);
+			void PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat& inputData);
+			void RGBFilter(const int &red, const int &green, const int &blue, cv::UMat& inputData);
+			void FiltreMosaic(cv::UMat& inputData);
+			void Blur(const int &radius, cv::UMat& inputData);
+			void BoxBlur(const int &coeff, const wxString &functionName, cv::UMat& inputData, bool noDeleteData = false);
+			void ErodeDilate(const wxString &functionName, cv::UMat& inputData);
+			void Posterize(const float &level, const float &gamma, cv::UMat& inputData);
+			void Solarize(const long &threshold, cv::UMat& inputData);
+			void Median(cv::UMat& inputData);
+			void Noise(cv::UMat& inputData);
+			void Flip(const wxString &functionName, cv::UMat& inputData);
+			void Swirl(const float &radius, const float &angle, cv::UMat& inputData);
+			void BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat& inputData);
+			void ColorEffect(const wxString &functionName, cv::UMat& inputData);
+			void Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData);
+			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
+			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
+			void Fusion(cv::UMat& inputData, const cv::UMat& secondPictureData, const float &pourcentage);
+			
+			int GetRgbaBitmap(void* cl_image,const cv::UMat& inputData);
+			void BrightnessAndContrastAuto(cv::UMat & inputData, float clipHistPercent);
+			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
+			void Bm3d(cv::UMat & inputData, const float & fSigma);
+			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
+
 		protected:
 
-			cv::UMat GetOpenCVStruct(cl_mem inputData, int width, int height);
-			cl_mem CopyOpenCVTexture(cv::UMat & dst, int width, int height);
-			
+			cv::UMat GetOpenCVStruct(cl_mem clImage, int width, int height);
+			cl_mem CopyOpenCVTexture(cv::UMat& dst, int width, int height);
+
 			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;

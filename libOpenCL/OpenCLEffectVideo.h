@@ -36,6 +36,7 @@ namespace Regards
 		class COpenCLParameterInt;
 		class COpenCLParameterByteArray;
 		class COpenCLParameterClMem;
+		class COpenCLFilter;
 
 		class COpenCLEffectVideo
 		{
@@ -52,11 +53,7 @@ namespace Regards
 			virtual bool IsOk();
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
-			CRegardsBitmap* GetRgbaBitmap(const bool &src = false);
-			cl_mem LoadRegardsImage(uint8_t * data, const int &width, const int &height);
-			CRegardsBitmap* GetBitmap(cl_mem cl_image);
-			void GetBitmap(CRegardsBitmap * bitmap, const bool &src = false);
-
+			CRegardsBitmap* GetBitmap(const bool &src = false);
 			void CopyPictureToTexture2D(cl_mem cl_image);
 
 			void AutoContrast();
@@ -68,58 +65,26 @@ namespace Regards
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
-#if defined(__x86_64__) || defined(_M_AMD64)	
-			void GetRgbaOpenCV(cl_mem cl_image, int rgba = 0);
-			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
-			cl_mem GetRgbaSourceBitmap(int rgba = 0);
-#elif defined(__APPLE__)
-			void GetRgbaOpenCV(cl_mem cl_image, int rgba = 1);
-			void GetRgbaBitmap(cl_mem cl_image, int rgba = 1);
-			cl_mem GetRgbaSourceBitmap(int rgba = 1);
-#endif 
-
+			
 			
 			void ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization);
-			int GetSrcWidth();
-			int GetSrcHeight();
-			int GetThumbnailWidth();
-			int GetThumbnailHeight();
-			int CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const bool &src);
-
-			COpenCLParameterClMem * GetPtData(const bool &src);
 			int GetDataSizeWidth(const bool &src);
 
-			cv::UMat GetOpenCVStruct(const bool &src);
-			void CopyOpenCVTexture(cv::UMat & dst, const bool &src);
-			//void UpdateData();
 		protected:
 
+			int GetRgbaBitmap(void* cl_image);
 			int GetSizeData();
-			CRegardsBitmap* GetBitmap(cl_mem input, const int& width, const int& height);
-			void GetBitmap(CRegardsBitmap * bitmap, cl_mem input, const int& width, const int& height);
 			COpenCLProgram * GetProgram(const wxString &numProgram);
 			cl_mem_flags  flag;
-
+			cv::UMat GetOpenCVStruct(cl_mem clImage, int width, int height);
 
 			COpenCLProgram * openCLProgram;
 			COpenCLContext * context;
-			//bool dataIsOk;
-			//Bitmap Memory Buffer
-
-			//COpenCLParameterByteArray * paramInput;
-
-			int widthOut;
-			int heightOut;
-			int srcwidth;
-			int srcheight;
-			COpenCLParameterClMem * paramOutput = nullptr;
-			COpenCLParameterInt * paramOutWidth = nullptr;
-			COpenCLParameterInt * paramOutHeight = nullptr;
-
-			COpenCLParameterInt * paramSrcWidth = nullptr;
-			COpenCLParameterInt * paramSrcHeight = nullptr;
-			COpenCLParameterClMem * paramSrc = nullptr;
-
+			COpenCLFilter* openclFilter = nullptr;
+			wxString filename;
+			cv::UMat paramSrc;
+			cv::UMat paramOutput;
+			bool interpolatePicture = false;
 			bool needToTranscode = false;
 		};
 

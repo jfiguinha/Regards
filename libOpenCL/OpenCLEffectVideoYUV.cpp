@@ -151,8 +151,6 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 {
 	if (!needToTranscode)
 		return;
-	srcwidth = widthOut;
-	srcheight = heightOut;
 
 	if (context != nullptr)
 	{
@@ -166,38 +164,34 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				vector<COpenCLParameter *> vecParam;
 				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
 
-				this->widthOut = widthOut;
-				this->heightOut = heightOut;
-
 				vecParam.push_back(inputY);
 				vecParam.push_back(inputU);
 				vecParam.push_back(paramWidth);
 				vecParam.push_back(paramHeight);
 
-				if (paramSrcWidth == nullptr)
-					paramSrcWidth = new COpenCLParameterInt();
+				COpenCLParameterInt * paramSrcWidth = new COpenCLParameterInt();
 				paramSrcWidth->SetLibelle("widthOut");
-				paramSrcWidth->SetNoDelete(true);
 				paramSrcWidth->SetValue(widthOut);
 				vecParam.push_back(paramSrcWidth);
 
-				if (paramSrcHeight == nullptr)
-					paramSrcHeight = new COpenCLParameterInt();
-
+				COpenCLParameterInt * paramSrcHeight = new COpenCLParameterInt();
 				paramSrcHeight->SetLibelle("heightOut");
 				paramSrcHeight->SetValue(heightOut);
-				paramSrcHeight->SetNoDelete(true);
 				vecParam.push_back(paramSrcHeight);
 
 				vecParam.push_back(paramLineSize);
 
-				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
+				paramSrc.release();
+				int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+				int type = CV_MAKE_TYPE(depth, 4);
+				paramSrc.create((int)heightOut, (int)widthOut, type);
+				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
+				//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
+				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
 
-				if (paramSrc == nullptr)
-					paramSrc = new COpenCLParameterClMem();
-				paramSrc->SetValue(program->GetOutput());
+				//paramSrc = GetOpenCVStruct(program->GetOutput(), widthOut, heightOut);
 				delete program;
 
 				for (COpenCLParameter * parameter : vecParam)
@@ -220,39 +214,36 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				vector<COpenCLParameter *> vecParam;
 				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
 
-				this->widthOut = widthOut;
-				this->heightOut = heightOut;
-
 				vecParam.push_back(inputY);
 				vecParam.push_back(inputU);
 				vecParam.push_back(inputV);
 				vecParam.push_back(paramWidth);
 				vecParam.push_back(paramHeight);
 
-				if (paramSrcWidth == nullptr)
-					paramSrcWidth = new COpenCLParameterInt();
+				COpenCLParameterInt * paramSrcWidth = new COpenCLParameterInt();
 				paramSrcWidth->SetLibelle("widthOut");
-				paramSrcWidth->SetNoDelete(true);
 				paramSrcWidth->SetValue(widthOut);
 				vecParam.push_back(paramSrcWidth);
 
-				if (paramSrcHeight == nullptr)
-					paramSrcHeight = new COpenCLParameterInt();
-
+				COpenCLParameterInt * paramSrcHeight = new COpenCLParameterInt();
 				paramSrcHeight->SetLibelle("heightOut");
 				paramSrcHeight->SetValue(heightOut);
-				paramSrcHeight->SetNoDelete(true);
 				vecParam.push_back(paramSrcHeight);
 
 				vecParam.push_back(paramLineSize);
 
-				program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
+				paramSrc.release();
+				int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+				int type = CV_MAKE_TYPE(depth, 4);
+				paramSrc.create((int)heightOut, (int)widthOut, type);
+				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
+				//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
+				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
+				//program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
 
-				if (paramSrc == nullptr)
-					paramSrc = new COpenCLParameterClMem();
-				paramSrc->SetValue(program->GetOutput());
+				//paramSrc = GetOpenCVStruct(program->GetOutput(), widthOut, heightOut);
 				delete program;
 
 				for (COpenCLParameter * parameter : vecParam)

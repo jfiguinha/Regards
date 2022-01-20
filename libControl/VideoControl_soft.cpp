@@ -210,7 +210,7 @@ CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		else
 		{
 			muBitmap.lock();
-			bitmap = openclEffectYUV->GetRgbaBitmap(true);
+			bitmap = openclEffectYUV->GetBitmap(true);
 			muBitmap.unlock();
 		}
 	}
@@ -1490,7 +1490,7 @@ void CVideoControlSoft::OnPause()
 			}
 			else
 			{
-				pictureVideo = openclEffectYUV->GetRgbaBitmap(true);
+				pictureVideo = openclEffectYUV->GetBitmap(true);
 				pictureVideo->VertFlipBuf();
 			}
 
@@ -1971,7 +1971,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		if (glTexture != nullptr)
 		{
 			openclEffect->FlipVertical();
-			CRegardsBitmap* bitmap = openclEffect->GetRgbaBitmap();
+			CRegardsBitmap* bitmap = openclEffect->GetBitmap();
 			glTexture->SetData(bitmap->GetPtBitmap(), widthOutput, heightOutput);
 			delete bitmap;
 		}

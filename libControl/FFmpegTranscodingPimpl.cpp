@@ -1867,9 +1867,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 
 		if (openclContext2d->GetDefaultType() == OPENCL_UCHAR)
 		{
-			if (bitmapData == nullptr)
-				bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
-			openclEffectYUV->GetBitmap(bitmapData);
+			if (bitmapData != nullptr)
+				delete bitmapData;
+			bitmapData = openclEffectYUV->GetBitmap();
 
 			decodeBitmap = true;
 		}
@@ -1945,7 +1945,9 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 				}
 			}
 
-			filtre.GetBitmap(bitmapData, true);
+			if (bitmapData != nullptr)
+				delete bitmapData;
+			bitmapData = filtre.GetBitmap(true);
 
 			decodeBitmap = true;
 		}

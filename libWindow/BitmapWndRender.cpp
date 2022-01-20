@@ -1765,7 +1765,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			if (glTextureSrc != nullptr)
 				delete glTextureSrc;
 
-			CRegardsBitmap* bitmap = filtreEffet->GetPtBitmap();
+			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
 
 			glTextureSrc = new GLTexture();
 			glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());

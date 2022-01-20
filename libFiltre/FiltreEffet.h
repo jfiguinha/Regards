@@ -88,14 +88,11 @@ public:
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 	int MeanShift(const float & fSpatialRadius, const float& fColorRadius);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
+	//void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
     int GetLib();
 	//void SetLib(const int &numLib);
 	wxImage GetwxImage();
 	CRegardsBitmap * GetBitmap(const bool &source);
-	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
-	CRegardsBitmap * GetPtBitmap();
-    CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 	IFiltreEffet * GetInstance()
 	{
 		return filtreEffet;

@@ -81,6 +81,8 @@ namespace Regards
 			int Noise();
 			int Median();
 			int Dilate();
+			int GetWidth();
+			int GetHeight();
 
 			int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 			int Posterize(const float &level, const float &gamma);
@@ -103,52 +105,26 @@ namespace Regards
 			int HistogramEqualize(CRegardsBitmap * bitmap){ return  -1; }
 
 			int GetRgbaBitmap(void * cl_image);
-			cl_mem LoadRegardsImage(uint8_t * data, const int &width, const int &height);
-			cl_mem LoadCxImageAlpha(uint8_t * data, uint8_t * alpha, const int &width, const int &heighta, const int &effwidth, const bool & RGB = 0);
-			cl_mem LoadCxImage(uint8_t * data, const int &width, const int &height, const int &effwidth, const bool & RGB = 0);
-			cl_mem LoadWxImageAlpha(uint8_t * data, uint8_t * alpha, const int &width, const int &heighta, const int &effwidth);
-			cl_mem LoadWxImage(uint8_t * data, const int &width, const int &height, const int &effwidth);
-			cl_mem LoadFloatImage(float* data, const int& width, const int& height);
-			CRegardsBitmap* GetBitmap(const bool& source);
-			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
-			CRegardsBitmap * GetPtBitmap();
-			void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
-			virtual int GetWidth();
-			virtual int GetHeight();
-			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
-			int BrightnessAndContrastAuto(float clipHistPercent);
 
+			//void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
+			//virtual int GetWidth();
+			//virtual int GetHeight();
+			//void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
+			int BrightnessAndContrastAuto(float clipHistPercent);
+			CRegardsBitmap* GetBitmap(const bool& source);
 
 			//void RenderToOpenGLInterop(cl_mem cl_image);
 
 		protected:
 
-			int GetSizeData() const;
 
+			int GetSizeData() const;
+			COpenCLContext* context = nullptr;
 			cl_mem_flags  flag;
 			wxString filename;
-			COpenCLContext * context;
-			void SetOutputValue(cl_mem output, int widthOutput, int heightOutput);
-			void RefreshMemoryBitmap(CRegardsBitmap * bitmapOut);
-			void RefreshMemoryBitmap(cl_mem bitmapOut, const int & widthOutput, const int &  heightOutput);
 
-			CRegardsFloatBitmap* GetFloatBitmap(cl_mem input, const int& width, const int& height);
-			CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
-			void GetBitmap(CRegardsBitmap * & bitmap, cl_mem input, const int &width, const int &height);
-			//Bitmap Memory Buffer
-			bool dataIsOk ;
-			COpenCLParameter * input = nullptr;
-			COpenCLParameterInt * paramWidth = nullptr;
-			COpenCLParameterInt * paramHeight = nullptr;
-
-			bool opencvBuffer = false;
-			//cv::UMat cvImage;
-			int width;
-			int height;
-
-			COpenCLParameterClMem * paramOutput = nullptr;
-			int widthOut;
-			int heightOut;
+			cv::UMat input;
+			cv::UMat paramOutput;
 		};
 
 	}
