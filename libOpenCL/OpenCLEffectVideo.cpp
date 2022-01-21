@@ -51,9 +51,10 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 }
 
 
-
+#ifndef __WXGTK__
 void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source)
 {
+__
 	try
 	{
 		if (source)
@@ -73,7 +74,9 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 	{
 
 	}
+
 }
+#endif
 
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {

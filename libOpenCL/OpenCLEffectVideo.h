@@ -56,8 +56,9 @@ namespace Regards
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
+#ifndef __WXGTK__
 			void CopyPictureToTexture2D(GLTexture* texture, const bool& source);
-
+#endif
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			

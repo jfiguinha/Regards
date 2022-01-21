@@ -38,7 +38,9 @@ public:
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, COpenCLParameterClMem * data_mem, const int &width, const int &height);
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
+#ifndef __WXGTK__
 	void CopyPictureToTexture2D(GLTexture * texture, const bool& source);
+#endif
 	void SetPreviewMode(const bool& value);
 	void SetBitmap(CImageLoadingFormat * bitmap);
 	void SetPreview(const bool &value);

@@ -1942,7 +1942,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	bool isOpenGLOpenCL = false;
 	openGLDecoding = false;
-
+#ifndef __WXGTK__
 	if (openclContext->IsSharedContextCompatible())
 	{
 		printf("RenderToTexture IsSharedContextCompatible 3\n");
@@ -1961,7 +1961,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			}
 		}
 	}
-
+#endif
 	if (!isOpenGLOpenCL)
 	{
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);

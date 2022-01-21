@@ -1674,6 +1674,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		bool textureBinging = false;
 
+#ifndef __WXGTK__
 		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 		{
 			printf("CBitmapWndRender IsSharedContextCompatible \n");
@@ -1688,6 +1689,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 			filtreEffet->CopyPictureToTexture2D(glTexture, false);
 		}
+#endif
 
 		if (!textureBinging)
 		{

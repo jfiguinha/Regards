@@ -218,7 +218,7 @@ void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercen
 	convertScaleAbs(image, image, alpha, beta);
 }
 
-
+#ifndef __WXGTK__
 void CFiltreEffetCPU::CopyPictureToTexture2D(GLTexture * texture, const bool& source)
 {
 	CRegardsBitmap* bitmap;
@@ -236,7 +236,7 @@ void CFiltreEffetCPU::CopyPictureToTexture2D(GLTexture * texture, const bool& so
 
 	}
 }
-
+#endif
 
 int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const int & nbFace, const wxRect & listFace)
 {

@@ -30,7 +30,7 @@ cd ..
 tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
-./vcpkg install opencv[contrib,ipp,openmp]
+./vcpkg install opencv[contrib,ipp,openmp,opengl]
 ./vcpkg install wxWidgets
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo

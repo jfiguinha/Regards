@@ -29,15 +29,23 @@ namespace Regards
 
 			int GetTextureID();
 
+#ifndef __WXGTK__
 			cv::ogl::Texture2D* GetGLTexture();
-
+#endif
 			int GetWidth();
 			int GetHeight();
 
 		protected:
 
 			void checkErrors(std::string desc);
+#ifdef __WXGTK__
+            bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
+			uint m_nTextureID;
+			int width;
+			int height;
+#else
 			cv::ogl::Texture2D * texture;
+#endif
 		};
 	}
 }

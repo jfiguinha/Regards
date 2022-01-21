@@ -133,7 +133,7 @@ COpenCLEffect::~COpenCLEffect()
 	input.release();
 	paramOutput.release();
 }
-
+#ifndef __WXGTK__
 void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool &source)
 {
 	try
@@ -156,7 +156,7 @@ void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool &sour
 
 	}
 }
-
+#endif
 CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 {
 	CRegardsBitmap* bitmapOut = new CRegardsBitmap();

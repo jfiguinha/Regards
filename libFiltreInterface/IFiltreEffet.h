@@ -40,8 +40,9 @@ public:
 	{
 		this->preview = preview;
 	}
-
+#ifndef __WXGTK__
 	virtual void CopyPictureToTexture2D(GLTexture * texture, const bool& source) = 0;
+#endif
     virtual int Bm3d(const int & fSigma) = 0;
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) = 0;
 	virtual int OilPaintingEffect(const int &size, const int &dynRatio) = 0;
