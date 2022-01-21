@@ -1,12 +1,7 @@
 #include "header.h"
 #include "VideoStabilization.h"
 #include <RegardsBitmap.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/dnn.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/core/ocl.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/core/mat.hpp>
+
 using namespace Regards::OpenCV;
 using namespace cv;
 

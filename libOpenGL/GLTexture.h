@@ -1,6 +1,11 @@
 #pragma once
-#include "GLcontext.h"
-#include <opencv2/core/opengl.hpp>
+namespace cv
+{
+    namespace ogl
+    {
+        class Texture2D;
+    }
+}
 
 class CRegardsBitmap;
 
@@ -12,24 +17,17 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int& nWidth, const int& nHeight, GLenum format = GL_BGRA_EXT);
+			GLTexture(const int& nWidth, const int& nHeight);
 			GLTexture();
 			~GLTexture(void);
 
-			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
 			void Enable();
 			void SetData(CRegardsBitmap* bitmap);
 
-			void Disable()
-			{
-				glDisable(GL_TEXTURE_2D);
-			}
+			void Disable();
 
-			int GetTextureID()
-			{
-				return texture.texId();
-			}
+			int GetTextureID();
 
 			cv::ogl::Texture2D* GetGLTexture();
 
@@ -39,7 +37,7 @@ namespace Regards
 		protected:
 
 			void checkErrors(std::string desc);
-			cv::ogl::Texture2D texture;
+			cv::ogl::Texture2D * texture;
 		};
 	}
 }

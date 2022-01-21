@@ -1,11 +1,6 @@
 
 #include <header.h>
 #include "FiltreEffetCPU.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/dnn.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/xphoto.hpp>
-#include <opencv2/imgproc.hpp>
 #include "InterpolationBicubic.h"
 #include "InterpolationFilters.h"
 #include "PerlinNoise.h"
@@ -21,7 +16,7 @@
 #include <fstream>
 #include "bm3dfilter.h"
 #include <GLTexture.h>
-#include <opencv2/core/opengl.hpp>
+#include <opencv2/xphoto.hpp>
 #include "VideoStabilization.h"
 
 using namespace Regards::OpenCV;

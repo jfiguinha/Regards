@@ -16,9 +16,6 @@
 #include <ImageLoadingFormat.h>
 #include "TreeElementValue.h"
 #include <BitmapDisplay.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-
 #include "bilateralFilter.h"
 using namespace Regards::Filter;
 

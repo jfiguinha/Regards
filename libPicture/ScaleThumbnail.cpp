@@ -2,7 +2,6 @@
 #include "ScaleThumbnail.h"
 #include <RegardsBitmap.h>
 #include <InterpolationBicubic.h>
-#include <opencv2/opencv.hpp>
 using namespace Regards::Picture;
 
 CScaleThumbnail::CScaleThumbnail(void)
@@ -16,7 +15,7 @@ CScaleThumbnail::~CScaleThumbnail(void)
 
 
 //-----------------------------------------------------------------
-//Calcul du ratio pour l'image plein écran
+//Calcul du ratio pour l'image plein Ã©cran
 //-----------------------------------------------------------------
 float CScaleThumbnail::CalculRatio(CRegardsBitmap* pBitmap, const int& xMax, const int& yMax)
 {
@@ -45,7 +44,7 @@ float CScaleThumbnail::CalculRatio(CRegardsBitmap* pBitmap, const int& xMax, con
 }
 
 //-----------------------------------------------------------------
-//Calcul du ratio pour l'image plein écran
+//Calcul du ratio pour l'image plein Ã©cran
 //-----------------------------------------------------------------
 float CScaleThumbnail::CalculRatio(const int& width, const int& height, const int& xMax, const int& yMax)
 {
@@ -84,7 +83,7 @@ void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap* pBitmap, const int& widt
 
 
 	//RedrawPicture
-	//Création d'un nouveau bitmap à la bonne échelle
+	//CrÃ©ation d'un nouveau bitmap Ã  la bonne Ã©chelle
 	if (nTailleAffichageWidth != pBitmap->GetBitmapWidth() && nTailleAffichageHeight != pBitmap->GetBitmapHeight())
 	{
 		//auto scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);

@@ -7,9 +7,6 @@
 #include <FiltreEffet.h>
 #include <BitmapDisplay.h>
 #include <ImageLoadingFormat.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-
 using namespace Regards::Filter;
 
 CGaussianBlurFilter::CGaussianBlurFilter()

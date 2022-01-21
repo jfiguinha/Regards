@@ -9,9 +9,6 @@
 #define __FREEIMAGE__
 #include <FreeImage.h>
 #include "MetadataExiv2.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/core.hpp>
 #include "regards_webp.h"
 #include "picture_utility.h"
 #include <ximage.h>

@@ -4,12 +4,6 @@
 //////////////////////////////////////////////////////////////////////
 #include "RegardsBitmap.h"
 #include <fstream>
-#include <opencv2/core/core.hpp> 
-#include <opencv2/opencv.hpp>
-#include <opencv2/dnn.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/xphoto.hpp>
-#include <opencv2/imgproc.hpp>
 extern float value[256];
 extern float clamp(float val, float minval, float maxval);
 

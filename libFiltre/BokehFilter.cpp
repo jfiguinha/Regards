@@ -4,7 +4,7 @@
 //  Regards.libViewer
 //
 //  Created by figuinha jacques on 12/04/2016.
-//  Copyright © 2016 figuinha jacques. All rights reserved.
+//  Copyright Â© 2016 figuinha jacques. All rights reserved.
 //
 
 #include "BokehFilter.h"
@@ -15,8 +15,6 @@
 #include <BitmapDisplay.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
 #include <FaceDetector.h>
 using namespace Regards::Filter;
 using namespace Regards::OpenCV;

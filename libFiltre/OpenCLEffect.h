@@ -1,6 +1,5 @@
 #pragma once
 #include "IFiltreEffet.h"
-#include <GLTexture.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else

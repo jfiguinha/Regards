@@ -4,7 +4,6 @@
 #include "OpenCLContext.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <opencv2/core/ocl.hpp>
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C
 using namespace Regards::OpenCL;

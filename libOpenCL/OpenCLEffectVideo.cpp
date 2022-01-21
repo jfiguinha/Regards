@@ -1,15 +1,12 @@
 // ReSharper disable All
 #include <header.h>
 #include "OpenCLEffectVideo.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/opengl.hpp>
-#include <opencv2/core/ocl.hpp>
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include <RegardsBitmap.h>
 #include "utility.h"
 #include "EffectVideoParameter.h"
-#include "OpenclFilter.h"
+#include "OpenCLFilter.h"
 #include "hqdn3d.h"
 #include <VideoStabilization.h>
 

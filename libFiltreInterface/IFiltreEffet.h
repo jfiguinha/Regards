@@ -1,6 +1,5 @@
 #pragma once
 #include <RGBAQuad.h>
-#include <GLTexture.h>
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
@@ -13,6 +12,15 @@ namespace Regards
 	{
 		class COpenCVStabilization;
 	}
+}
+
+
+namespace Regards
+{
+	namespace OpenGL
+	{
+        class GLTexture;
+    }
 }
 
 using namespace Regards::OpenGL;

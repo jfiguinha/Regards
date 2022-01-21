@@ -5,11 +5,7 @@
 #include "RegardsBitmap.h"
 #include "utility.h"
 #include <CvPlot/cvplot.h>
-#include <opencv2/core/ocl.hpp>
-#include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
-#include <opencv2/imgproc.hpp>
-
 using namespace Regards::OpenCL;
 
 

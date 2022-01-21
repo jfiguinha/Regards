@@ -1,4 +1,5 @@
 #include <header.h>
+#include <ximage.h>
 #include "OpenCLEffect.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
@@ -9,21 +10,9 @@
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
-#include <ximage.h>
-//#include <RegardsConfigParam.h>
-//#include <ParamInit.h>
 #include "OpenCLBm3D.h"
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#include <OpenGL/OpenGL.h>
-#elif defined(__WXGTK__)
-#include <GL/glx.h>
-#include <CL/cl_gl.h>
-#else
-#include <CL/cl_gl.h>
-#endif
 #include <DeepLearning.h>
-#include <opencv2/core/opengl.hpp>
+#include <GLTexture.h>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
