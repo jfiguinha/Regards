@@ -205,9 +205,9 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
-
+	inputData.release();
 	dest.copyTo(inputData);
-	//dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
@@ -264,7 +264,9 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::UMat & inputData)
@@ -316,7 +318,9 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
@@ -371,7 +375,9 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::Blur(const int &radius, cv::UMat & inputData)
@@ -446,7 +452,9 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::UMat & inputData)
@@ -532,7 +540,9 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat & inputData)
@@ -588,7 +598,9 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::UMat & inputData)
@@ -656,7 +668,9 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
@@ -706,7 +720,9 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::Median(cv::UMat & inputData)
@@ -777,7 +793,9 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 
@@ -858,7 +876,9 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 }
 
 void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
@@ -915,7 +935,9 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 
 }
 
@@ -1013,6 +1035,11 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
 		cv::cvtColor(cvDest, inputData, cv::COLOR_BGR2BGRA);
 
+		cvDest.release();
+		ycbcr.release();
+		yChannel.release();
+		yChannelOut.release();
+
 	}
 }
 
@@ -1082,7 +1109,9 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 		}
 		vecParam.clear();
 	}
+	inputData.release();
 	dest.copyTo(inputData);
+	dest.release();
 
 }
 

@@ -466,6 +466,10 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 	{
 		cv::cvtColor(cvDest, paramSrc, cv::COLOR_BGR2BGRA);
 	}
+
+	cvDest.release();
+	ycbcr.release();
+	yChannel.release();
 }
 
 bool COpenCLEffectVideo::IsOk()
