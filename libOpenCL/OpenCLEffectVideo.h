@@ -74,11 +74,9 @@ namespace Regards
 
 		protected:
 
-			int GetRgbaBitmap(void* cl_image);
 			int GetSizeData();
 			COpenCLProgram * GetProgram(const wxString &numProgram);
 			cl_mem_flags  flag;
-			cv::UMat GetOpenCVStruct(cl_mem clImage, int width, int height);
 
 			COpenCLProgram * openCLProgram;
 			COpenCLContext * context;

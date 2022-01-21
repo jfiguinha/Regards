@@ -49,56 +49,6 @@ void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, cons
 }
 
 
-int COpenCLFilter::GetRgbaBitmap(void* cl_image, const cv::UMat& inputData)
-{
-	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-	if (programCL != nullptr)
-	{
-		cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-		int width = inputData.cols;
-		int height = inputData.rows;
-
-		vector<COpenCLParameter*> vecParam;
-		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem* paramOutput = new COpenCLParameterClMem();
-		paramOutput->SetLibelle("input");
-		paramOutput->SetValue(clBuffer);
-		paramOutput->SetNoDelete(true);
-		vecParam.push_back(paramOutput);
-
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(width);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(height);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-
-		COpenCLParameterInt* paramRGBA = new COpenCLParameterInt();
-
-#if defined(__x86_64__) || defined(_M_AMD64)	
-		paramRGBA->SetValue(0);
-#elif defined(__APPLE__)
-		paramRGBA->SetValue(1);
-#endif 
-		paramRGBA->SetLibelle("rgba");
-		vecParam.push_back(paramRGBA);
-
-		program->SetKeepOutput(true);
-		program->SetParameter(&vecParam, width, height, (cl_mem)cl_image);
-		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-
-		delete program;
-		vecParam.clear();
-	}
-
-	return 0;
-}
-
 void COpenCLFilter::NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	cv::UMat cvDest;
@@ -174,77 +124,6 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat & inputData, float clipHi
 	}
 }
 
-cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
-{
-	cv::UMat cvImage;
-
-	int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-	int type = CV_MAKE_TYPE(depth, 4);
-	cvImage.create((int)height, (int)width, type);
-	cl_mem clBuffer = (cl_mem)cvImage.handle(cv::ACCESS_RW);
-	cl_command_queue q = context->GetCommandQueue();
-	cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, width * height * GetSizeData(), NULL, NULL, NULL);
-	Error::CheckError(err);
-	clFinish(q);
-
-	err = clReleaseMemObject(clImage);
-	Error::CheckError(err);
-	clImage = nullptr;
-
-	return cvImage;
-}
-
-cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
-{
-	//cl_int err = 0;
-	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
-
-	cl_mem outputValue = nullptr;
-	
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
-		dataImage->SetNoDelete(true);
-		dataImage->SetValue(clBuffer);
-		vecParam.push_back(dataImage);
-
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetLibelle("width");
-		paramWidth->SetValue(width);
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetLibelle("height");
-		paramHeight->SetValue(height);
-		vecParam.push_back(paramHeight);
-
-		program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
-		program->SetKeepOutput(true);
-		program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
-		outputValue = program->GetOutput();
-
-		delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-
-		vecParam.clear();
-	}
-
-
-	return outputValue;
-}
-
 
 //----------------------------------------------------------------------------
 //
@@ -268,9 +147,9 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureDat
 
 void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 {
-	cv::UMat paramSrc;
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SHARPENMASKING");
 	if (programCL != nullptr)
 	{
@@ -301,16 +180,17 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		try
 		{
 			
-			//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
-			//program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)paramSrc.handle(cv::ACCESS_RW));
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "SharpenMasking");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 
 		delete program;
@@ -326,13 +206,14 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		vecParam.clear();
 	}
 
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
+	//dest.copyTo(inputData);
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -359,14 +240,17 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 		
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "PhotoFiltre");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -380,13 +264,13 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::UMat & inputData)
 {
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if(programCL != nullptr)
 	{
@@ -408,14 +292,17 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "RGBFiltre");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -429,13 +316,13 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 {
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
 	if(programCL != nullptr)
 	{
@@ -460,14 +347,17 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Mosaic");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -481,7 +371,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::Blur(const int &radius, cv::UMat & inputData)
@@ -500,8 +390,9 @@ void COpenCLFilter::Blur(const int &radius, cv::UMat & inputData)
 
 void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::UMat & inputData, bool noDeleteData)
 {
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_BOXBLUR");
 	if (programCL != nullptr)
 	{
@@ -531,14 +422,17 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -552,13 +446,14 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::UMat & inputData)
 {
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
 	{
@@ -610,14 +505,17 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "MotionBlur");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -634,13 +532,14 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat & inputData)
 {
+	cv::UMat dest;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	
 	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
 	{
@@ -665,14 +564,17 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -686,7 +588,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::UMat & inputData)
@@ -710,7 +612,7 @@ void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::UMat & inputDa
 void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -730,14 +632,17 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Posterisation");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -751,13 +656,13 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -777,14 +682,17 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Solarization");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -798,7 +706,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::Median(cv::UMat & inputData)
@@ -819,7 +727,7 @@ void COpenCLFilter::Median(cv::UMat & inputData)
 void COpenCLFilter::Noise(cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
 	{
@@ -844,14 +752,17 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Noise");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -866,7 +777,7 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 
@@ -886,7 +797,7 @@ void COpenCLFilter::Flip(const wxString &functionName, cv::UMat & inputData)
 void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	if (programCL != nullptr)
 	{
@@ -921,14 +832,17 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Swirl");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -944,13 +858,13 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 }
 
 void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
 {
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -975,14 +889,17 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 
 		try
 		{
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, GetSizeData() * inputData.cols * inputData.rows);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "LightAndContrast");
-			outputValue = program->GetOutput();
+			
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
+			
 		}
 		delete program;
 
@@ -998,7 +915,7 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, inputData.cols, inputData.rows);
+	dest.copyTo(inputData);
 
 }
 
@@ -1101,9 +1018,8 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 
 void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData)
 {
-
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	cl_mem outputValue = nullptr;
+	cv::UMat dest;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_ROTATION");
 	if (programCL != nullptr)
 	{
@@ -1143,14 +1059,15 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 
 		try
 		{
-			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
+			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, widthOut, heightOut, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
-			outputValue = program->GetOutput();
 		}
 		catch(...)
 		{
-			outputValue = nullptr;
 		}
 		delete program;
 
@@ -1165,7 +1082,7 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 		}
 		vecParam.clear();
 	}
-	inputData = GetOpenCVStruct(outputValue, widthOut, heightOut);
+	dest.copyTo(inputData);
 
 }
 

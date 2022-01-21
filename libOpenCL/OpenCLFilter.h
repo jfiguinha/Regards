@@ -54,17 +54,12 @@ namespace Regards
 			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
 			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
 			void Fusion(cv::UMat& inputData, const cv::UMat& secondPictureData, const float &pourcentage);
-			
-			int GetRgbaBitmap(void* cl_image,const cv::UMat& inputData);
 			void BrightnessAndContrastAuto(cv::UMat & inputData, float clipHistPercent);
 			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat & inputData, const float & fSigma);
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 
 		protected:
-
-			cv::UMat GetOpenCVStruct(cl_mem clImage, int width, int height);
-			cl_mem CopyOpenCVTexture(cv::UMat& dst, int width, int height);
 
 			int GetSizeData();
 			cl_mem_flags  flag;

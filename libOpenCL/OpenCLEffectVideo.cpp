@@ -55,20 +55,6 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 }
 
 
-int COpenCLEffectVideo::GetRgbaBitmap(void* cl_image)
-{
-	
-	if (interpolatePicture && !paramOutput.empty())
-	{
-		openclFilter->GetRgbaBitmap(cl_image, paramOutput);
-	}
-	else
-	{
-		openclFilter->GetRgbaBitmap(cl_image, paramSrc);
-	}
-
-	return 0;
-}
 
 void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source)
 {
@@ -130,25 +116,6 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 	}
 }
 
-cv::UMat COpenCLEffectVideo::GetOpenCVStruct(cl_mem clImage, int width, int height)
-{
-	cv::UMat cvImage;
-
-	int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-	int type = CV_MAKE_TYPE(depth, 4);
-	cvImage.create((int)height, (int)width, type);
-	cl_mem clBuffer = (cl_mem)cvImage.handle(cv::ACCESS_RW);
-	cl_command_queue q = context->GetCommandQueue();
-	cl_int err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, width * height * GetSizeData(), NULL, NULL, NULL);
-	Error::CheckError(err);
-	clFinish(q);
-
-	err = clReleaseMemObject(clImage);
-	Error::CheckError(err);
-	clImage = nullptr;
-
-	return cvImage;
-}
 
 void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
 {

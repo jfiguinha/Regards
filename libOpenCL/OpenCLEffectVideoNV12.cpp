@@ -200,14 +200,11 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			int type = CV_MAKE_TYPE(depth, 4);
 			paramSrc.create((int)heightOut, (int)widthOut, type);
 			cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
-			//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
 			program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 
-			//program->SetParameter(&vecParam, widthOut, heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Convert");
 
-			//paramSrc = GetOpenCVStruct(program->GetOutput(), widthOut, heightOut);
 
 			delete program;
 

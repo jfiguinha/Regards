@@ -16,7 +16,7 @@ GLTexture::GLTexture()
 GLTexture::GLTexture(const int& nWidth, const int& nHeight, GLenum format)
 {
 	//Create(nWidth, nHeight, nullptr);
-	texture.create(nHeight, nWidth, cv::ogl::Texture2D::Format::RGBA);
+	texture.create(nHeight, nWidth, cv::ogl::Texture2D::Format::RGBA, true);
 }
 
 int GLTexture::GetWidth()
@@ -34,7 +34,7 @@ void GLTexture::SetData(CRegardsBitmap* bitmap)
 	if (bitmap != nullptr)
 	{
 		glEnable(GL_TEXTURE_2D);
-		texture.copyFrom(bitmap->GetMatrix());
+		texture.copyFrom(bitmap->GetMatrix(), true);
 	}
 }
 

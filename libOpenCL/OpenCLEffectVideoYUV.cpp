@@ -186,12 +186,9 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				int type = CV_MAKE_TYPE(depth, 4);
 				paramSrc.create((int)heightOut, (int)widthOut, type);
 				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
-				//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
 				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
-
-				//paramSrc = GetOpenCVStruct(program->GetOutput(), widthOut, heightOut);
 				delete program;
 
 				for (COpenCLParameter * parameter : vecParam)
@@ -237,13 +234,9 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				int type = CV_MAKE_TYPE(depth, 4);
 				paramSrc.create((int)heightOut, (int)widthOut, type);
 				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
-				//void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, int width, int height, cl_mem output)
 				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
-				//program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
-
-				//paramSrc = GetOpenCVStruct(program->GetOutput(), widthOut, heightOut);
 				delete program;
 
 				for (COpenCLParameter * parameter : vecParam)
