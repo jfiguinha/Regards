@@ -648,6 +648,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
+	/*
 	if (preview)
 	{
 		if (bitmapOut != nullptr)
@@ -655,11 +656,11 @@ void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 		bitmapOut = bitmap->GetRegardsBitmap();
 	}
 	else
-	{
+	{*/
 		if (pBitmap != nullptr)
 			delete pBitmap;
 		pBitmap = bitmap->GetRegardsBitmap();
-	}
+	//}
 }
 
 int CFiltreEffetCPU::RedEye()

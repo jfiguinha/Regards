@@ -1969,8 +1969,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 		if (glTexture != nullptr)
 		{
-			openclEffect->FlipVertical();
 			CRegardsBitmap* bitmap = openclEffect->GetBitmap();
+			bitmap->ConvertToBgr();
 			glTexture->SetData(bitmap);
 			delete bitmap;
 		}

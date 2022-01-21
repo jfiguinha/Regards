@@ -1692,8 +1692,6 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 		if (!textureBinging)
 		{
 			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
-			if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
-				bitmap->VertFlipBuf();
 
 			glTexture = renderOpenGL->GetDisplayTexture();
 

@@ -57,7 +57,7 @@ namespace Regards
             
             bool IsSharedContextCompatible()
             {
-				return sharedContextCompatible;
+				return false;// sharedContextCompatible;
             }
             
             uint64_t GetMaxMemoryAllocable()
