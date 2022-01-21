@@ -134,6 +134,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libControl"/>
+        <IncludePath Value="../libextern/CvPlot/inc"/>
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../libPicture"/>

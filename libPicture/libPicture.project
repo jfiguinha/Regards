@@ -150,6 +150,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>

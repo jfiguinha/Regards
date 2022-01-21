@@ -53,6 +53,8 @@
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libextern/CvPlot/inc"/>
+        <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libUtility"/>
@@ -61,6 +63,7 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../libFiltre"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -12,8 +12,6 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="DetectFace.cpp"/>
-    <File Name="VideoStabilization.cpp"/>
-    <File Name="OpenCVEffect.cpp"/>
     <File Name="FaceDetector.cpp"/>
     <File Name="DetectRotation.cpp"/>
     <File Name="DeepLearning.cpp"/>
@@ -21,8 +19,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="DetectFace.h"/>
-    <File Name="VideoStabilization.h"/>
-    <File Name="OpenCVEffect.h"/>
     <File Name="header.h"/>
     <File Name="FaceDetector.h"/>
     <File Name="DetectRotation.h"/>

@@ -37,6 +37,10 @@
     <File Name="bm3d.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
+    <VirtualDirectory Name="video">
+      <File Name="VideoStabilization.h"/>
+      <File Name="VideoStabilization.cpp"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="Meanshift">
       <File Name="MeanShift.h"/>
       <File Name="MeanShift.cpp"/>

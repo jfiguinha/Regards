@@ -34,8 +34,8 @@ class CFiltreEffetCPUImpl
 public:
 	//Vignette effect
 	static void generateGradient(Mat& mask, const double& radius, const double& power);
-	static double getMaxDisFromCorners(const Size& imgSize, const Point& center);
-	static double dist(Point a, Point b);
+	static double getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center);
+	static double dist(cv::Point a, cv::Point b);
 };
 
 
@@ -270,7 +270,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			rect.height = dst.rows;
 
 			Mat blur;
-			cv::GaussianBlur(dst, blur, Size(boxsize, boxsize), radius);
+			cv::GaussianBlur(dst, blur, cv::Size(boxsize, boxsize), radius);
 
 
 			int maxWidth = dst.cols;
@@ -296,7 +296,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			Canny(src_gray, src_gray, 200, 100);
 
 			// find the contours
-			vector< vector<Point> > contours;
+			vector< vector<cv::Point> > contours;
 			findContours(src_gray, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
 			// you could also reuse img1 here
@@ -306,8 +306,8 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			drawContours(mask, contours, -1, Scalar(255), FILLED);
 
 		
-			Point center(rect.width / 2, (rectCopy.y + rectCopy.height) / 2);//Declaring the center point
-			Size xy((rectCopy.width / 2) * 1.5, (rectCopy.height / 2) * 1.5);//Declaring the major and minor axis of the ellipse//
+			cv::Point center(rect.width / 2, (rectCopy.y + rectCopy.height) / 2);//Declaring the center point
+			cv::Size xy((rectCopy.width / 2) * 1.5, (rectCopy.height / 2) * 1.5);//Declaring the major and minor axis of the ellipse//
 			int angle = 0;//angle of rotation//
 			int starting_point = 0;//Starting point of the ellipse//
 			int ending_point = 360;//Ending point of the ellipse//
@@ -336,7 +336,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
 
 
-			cv::GaussianBlur(croppedImage, blur_crop, Size(boxsize, boxsize), radius);
+			cv::GaussianBlur(croppedImage, blur_crop, cv::Size(boxsize, boxsize), radius);
 
 
 			// normalize so imwrite(...)/imshow(...) shows the mask correctly!
@@ -479,7 +479,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			// and copy the magic apple
 			croppedImage.copyTo(blur_crop, mask);
 
-			Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
+			cv::Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
 			blur_crop.copyTo(blur(copy));
 
 			cvtColor(blur, bitmap->GetMatrix(), COLOR_BGR2BGRA);
@@ -515,22 +515,22 @@ int CFiltreEffetCPU::OilPaintingEffect(const int& size, const int& dynRatio)
 }
 
 // Helper function to calculate the distance between 2 points.
-double CFiltreEffetCPUImpl::dist(Point a, Point b)
+double CFiltreEffetCPUImpl::dist(cv::Point a, cv::Point b)
 {
 	return sqrt(pow(static_cast<double>(a.x - b.x), 2) + pow(static_cast<double>(a.y - b.y), 2));
 }
 
 // Helper function that computes the longest distance from the edge to the center point.
-double CFiltreEffetCPUImpl::getMaxDisFromCorners(const Size& imgSize, const Point& center)
+double CFiltreEffetCPUImpl::getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center)
 {
 	// given a rect and a line
 	// get which corner of rect is farthest from the line
 
-	std::vector<Point> corners(4);
-	corners[0] = Point(0, 0);
-	corners[1] = Point(imgSize.width, 0);
-	corners[2] = Point(0, imgSize.height);
-	corners[3] = Point(imgSize.width, imgSize.height);
+	std::vector<cv::Point> corners(4);
+	corners[0] = cv::Point(0, 0);
+	corners[1] = cv::Point(imgSize.width, 0);
+	corners[2] = cv::Point(0, imgSize.height);
+	corners[3] = cv::Point(imgSize.width, imgSize.height);
 
 	double maxDis = 0;
 	for (int i = 0; i < 4; ++i)
@@ -557,7 +557,7 @@ double fastCos(double x)
 // firstPt, radius and power, are variables that control the artistic effect of the filter.
 void CFiltreEffetCPUImpl::generateGradient(Mat& mask, const double& radius, const double& power)
 {
-	auto firstPt = Point(mask.size().width / 2, mask.size().height / 2);
+	auto firstPt = cv::Point(mask.size().width / 2, mask.size().height / 2);
 	double maxImageRad = (radius * getMaxDisFromCorners(mask.size(), firstPt));
 	double maxImageRadPower = maxImageRad * power;
 	mask.setTo(Scalar(1));
@@ -565,7 +565,7 @@ void CFiltreEffetCPUImpl::generateGradient(Mat& mask, const double& radius, cons
 	{
 		for (int j = 0; j < mask.cols; j++)
 		{
-			double temp = dist(firstPt, Point(j, i));
+			double temp = dist(firstPt, cv::Point(j, i));
 
 			if (temp > maxImageRad)
 			{
@@ -606,7 +606,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 		Mat src;
 		cvtColor(bitmap->GetMatrix(), src, COLOR_BGRA2BGR);
 
-		auto firstPt = Point(src.size().width / 2, src.size().height / 2);
+		auto firstPt = cv::Point(src.size().width / 2, src.size().height / 2);
 		double maxImageRad = static_cast<float>(radius / 100.0) * CFiltreEffetCPUImpl::getMaxDisFromCorners(
 			src.size(), firstPt);
 		double maxImageRadPower = maxImageRad * static_cast<float>(power / 100.0);
@@ -620,7 +620,7 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 			for (int col = 0; col < src.size().width; col++)
 			{
 
-				double temp = CFiltreEffetCPUImpl::dist(firstPt, Point(col, row));
+				double temp = CFiltreEffetCPUImpl::dist(firstPt, cv::Point(col, row));
 				if (temp > maxImageRad)
 					labImg.at<Vec3b>(row, col)[0] = 0;
 				else
@@ -834,7 +834,7 @@ int CFiltreEffetCPU::CartoonifyImage(const int& mode)
 	// Remove the pixel noise with a good Median filter, before we start detecting edges.
 	medianBlur(srcGray, srcGray, 7);
 
-	Size size = srcGray.size();
+	cv::Size size = srcGray.size();
 	auto mask = Mat(size, CV_8U);
 	auto edges = Mat(size, CV_8U);
 	if (!evilMode)
@@ -874,7 +874,7 @@ int CFiltreEffetCPU::CartoonifyImage(const int& mode)
 
 	// Do the bilateral filtering at a shrunken scale, since it
 	// runs so slowly but doesn't need full resolution for a good effect.
-	Size smallSize;
+	cv::Size smallSize;
 	smallSize.width = size.width / 2;
 	smallSize.height = size.height / 2;
 
@@ -933,7 +933,7 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(Mat smallImgBGR, Mat bigEdges)
 	int sw = smallImgBGR.cols;
 	int sh = smallImgBGR.rows;
 	Mat maskPlusBorder = Mat::zeros(sh + 2, sw + 2, CV_8U);
-	Mat mask = maskPlusBorder(Rect(1, 1, sw, sh)); // mask is a ROI in maskPlusBorder.
+	Mat mask = maskPlusBorder(cv::Rect(1, 1, sw, sh)); // mask is a ROI in maskPlusBorder.
 	resize(bigEdges, mask, smallImgBGR.size());
 
 	// Make the mask values just 0 or 255, to remove weak edges.
@@ -947,13 +947,13 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(Mat smallImgBGR, Mat bigEdges)
 	// Apply flood fill on many points around the face, to cover different shades & colors of the face.
 	// Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
 	const int NUM_SKIN_POINTS = 6;
-	Point skinPts[NUM_SKIN_POINTS];
-	skinPts[0] = Point(sw / 2, sh / 2 - sh / 6);
-	skinPts[1] = Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
-	skinPts[2] = Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
-	skinPts[3] = Point(sw / 2, sh / 2 + sh / 16);
-	skinPts[4] = Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
-	skinPts[5] = Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
+	cv::Point skinPts[NUM_SKIN_POINTS];
+	skinPts[0] = cv::Point(sw / 2, sh / 2 - sh / 6);
+	skinPts[1] = cv::Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
+	skinPts[2] = cv::Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
+	skinPts[3] = cv::Point(sw / 2, sh / 2 + sh / 16);
+	skinPts[4] = cv::Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
+	skinPts[5] = cv::Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
 	// Skin might be fairly dark, or slightly less colorful.
 	// Skin might be very bright, or slightly more colorful but not much more blue.
 	const int LOWER_Y = 60;
@@ -1083,7 +1083,7 @@ int CFiltreEffetCPU::SharpenMasking(const float& sharpness)
 		*/
 		Mat blurred; 
 		double sigma = 1, threshold = 5, amount = sharpness;
-		cv::GaussianBlur(bitmap->GetMatrix(), blurred, Size(), sigma, sigma);
+		cv::GaussianBlur(bitmap->GetMatrix(), blurred, cv::Size(), sigma, sigma);
 		Mat lowConstrastMask = abs(bitmap->GetMatrix() - blurred) < threshold;
 		Mat sharpened = bitmap->GetMatrix() * (1 + amount) + blurred * (-amount);
 		bitmap->GetMatrix().copyTo(sharpened, lowConstrastMask);
@@ -1228,7 +1228,7 @@ int CFiltreEffetCPU::HistogramNormalize()
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
 		int gridsize = 8;
-		Ptr<CLAHE> clahe = createCLAHE(2.0, Size(gridsize, gridsize));
+		cv::Ptr<CLAHE> clahe = createCLAHE(2.0, cv::Size(gridsize, gridsize));
 		clahe->apply(bgr_planes[0], bgr_planes[0]);
 		clahe->apply(bgr_planes[1], bgr_planes[1]);
 		clahe->apply(bgr_planes[2], bgr_planes[2]);
@@ -1620,7 +1620,7 @@ int CFiltreEffetCPU::Blur(const int& radius)
 	if (bitmap != nullptr)
 	{
 		Mat dest;
-		blur(bitmap->GetMatrix(), dest, Size(radius, radius));
+		blur(bitmap->GetMatrix(), dest, cv::Size(radius, radius));
 		bitmap->SetMatrix(dest);
 		dest.release();
 	}
@@ -1642,7 +1642,7 @@ int CFiltreEffetCPU::GaussianBlur(const int& radius, const int& boxSize)
 	if (bitmap != nullptr)
 	{
 		Mat dest;
-		cv::GaussianBlur(bitmap->GetMatrix(), dest, Size(boxSize, boxSize), radius);
+		cv::GaussianBlur(bitmap->GetMatrix(), dest, cv::Size(boxSize, boxSize), radius);
 		bitmap->SetMatrix(dest);
 		dest.release();
 	}
@@ -1892,7 +1892,7 @@ int CFiltreEffetCPU::FiltreEdge()
 		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2GRAY);
 
 		Mat img_blur;
-		cv::GaussianBlur(dest, img_blur, Size(3, 3), 0, 0);
+		cv::GaussianBlur(dest, img_blur, cv::Size(3, 3), 0, 0);
 		Mat edges;
 		Canny(img_blur, edges, 100, 200, 3, false);
 
