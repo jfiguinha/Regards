@@ -16,7 +16,10 @@ namespace Regards
 			void on_paint(wxPaintEvent& event);
 			void UpdateScreenRatio() override;
 		private:
+
+			void CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont);
 			void CreateHistogram();
+			void NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue, const int& maxValue);
 			void OnChannelSelect(wxCommandEvent& event);
 			//void OnRangeSelect(wxSpinEvent& evt);
 			bool refreshPicture = true;

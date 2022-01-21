@@ -107,6 +107,8 @@ namespace Regards
 			int BrightnessAndContrastAuto(float clipHistPercent);
 			CRegardsBitmap* GetBitmap(const bool& source);
 
+			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
+
 		protected:
 
 

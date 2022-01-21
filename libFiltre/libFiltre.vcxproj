@@ -165,7 +165,7 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Otherlib\RegardsRaw;$(IncludePath);$(SolutionDir)\libExtern\ffmpeg-master\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\fftw-3.3.8\api;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libExtern\CvPlot\inc;$(SolutionDir)Otherlib\RegardsRaw;$(IncludePath);$(SolutionDir)\libExtern\ffmpeg-master\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\fftw-3.3.8\api;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -196,7 +196,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Otherlib\RegardsRaw;$(IncludePath);$(SolutionDir)\libExtern\ffmpeg-master\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\fftw-3.3.8\api;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libExtern\CvPlot\inc;$(SolutionDir)Otherlib\RegardsRaw;$(IncludePath);$(SolutionDir)\libExtern\ffmpeg-master\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\fftw-3.3.8\api;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -543,6 +543,7 @@
     <ClInclude Include="SwirlFilter.h" />
     <ClInclude Include="utilities.h" />
     <ClInclude Include="VideoFilter.h" />
+    <ClInclude Include="VideoStabilization.h" />
     <ClInclude Include="videostream.h" />
     <ClInclude Include="VignetteEffectParameter.h" />
     <ClInclude Include="VignetteFilter.h" />
@@ -605,6 +606,7 @@
     <ClCompile Include="SwirlFilter.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="VideoFilter.cpp" />
+    <ClCompile Include="VideoStabilization.cpp" />
     <ClCompile Include="videostream.cpp" />
     <ClCompile Include="VignetteFilter.cpp" />
     <ClCompile Include="Wave.cpp" />

@@ -59,8 +59,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="OpenCVEffect.cpp" />
-    <ClCompile Include="VideoStabilization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base64.h" />
@@ -70,8 +68,6 @@
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FaceRect.h" />
     <ClInclude Include="header.h" />
-    <ClInclude Include="OpenCVEffect.h" />
-    <ClInclude Include="VideoStabilization.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

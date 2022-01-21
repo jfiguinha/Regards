@@ -22,9 +22,10 @@
 #include <ConvertUtility.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
-#include <OpenCVEffect.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
+#include <VideoStabilization.h>
+#include <FiltreEffetCPU.h>
 using namespace Regards::OpenCV;
 //#include "LoadingResource.h"
 
@@ -1924,7 +1925,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		effectEnable)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
 	}
 
@@ -1980,11 +1981,11 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 {
 	bool frameStabilized = false;
-	cv::Mat image = pictureFrame->GetMatrix();
+	cv::Mat & image = pictureFrame->GetMatrix();
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoEffectParameter.stabilizeImageBuffere);
 
 		openCVStabilization->SetNbFrameBuffer(videoEffectParameter.stabilizeImageBuffere);
 
@@ -2005,7 +2006,7 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 	if (videoEffectParameter.autoConstrast)
 	{
 		frameStabilized = true;
-		COpenCVEffect::BrightnessAndContrastAuto(image);
+		CFiltreEffetCPU::BrightnessAndContrastAuto(image, 1.0);
 	}
 	//pictureFrame->SetBitmap(image.data, pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight());
 	return frameStabilized;

@@ -4,12 +4,11 @@
 #include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <libPicture.h>
+#include <FiltreEffetCPU.h>
 #include <FileUtility.h>
-#include <OpenCVEffect.h>
 #include <wx/dir.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
-using namespace Regards::OpenCV;
 
 #define SQL_CREATE_VERSION_TABLE "CREATE TABLE VERSION (libelle NVARCHAR(255) PRIMARY KEY)"
 #define SQL_DROP_VERSION	"DROP TABLE VERSION"
@@ -367,7 +366,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			{
 				if (libPicture.TestImageFormat(file) != 0)
 				{
-					COpenCVEffect::LoadAndRotate(file, 180);
+					CFiltreEffetCPU::LoadAndRotate(file, 180);
 				}
 			}
 		}

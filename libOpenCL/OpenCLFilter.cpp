@@ -4,7 +4,7 @@
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
 #include "utility.h"
-#include <OpenCVEffect.h>
+#include <CvPlot/cvplot.h>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/xphoto.hpp>
@@ -114,7 +114,67 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat & inputData, float clipHi
 {
 	try
 	{
-		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(inputData);
+		int histSize = 256;
+		float alpha, beta;
+		double minGray = 0, maxGray = 0;
+
+		cv::UMat gray;
+		cvtColor(inputData, gray, cv::COLOR_BGRA2GRAY);
+
+		if (clipHistPercent == 0)
+		{
+			// keep full available range
+			minMaxLoc(gray, &minGray, &maxGray);
+		}
+		else
+		{
+			cv::UMat h;
+
+			std::vector<int> channels = { 0 }; // Analyze only the channel 0.
+			std::vector<int> hsize = { 256 };
+			//Quantize the intensities in the image using 256 levels even if all the levels are not present.
+			std::vector<float> hranges = { 0, 256 }; // The range is between 0 - 255 (so less than 256).
+
+			calcHist(std::vector<cv::UMat>(1, gray), channels, cv::noArray(), h, hsize, hranges);
+
+			cv::Mat hist;
+
+			h.copyTo(hist);
+
+			// calculate cumulative distribution from the histogram
+			std::vector<float> accumulator(histSize);
+			accumulator[0] = hist.at<float>(0);
+			for (int i = 1; i < histSize; i++)
+			{
+				accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+			}
+
+			// locate points that cuts at required value
+			float max = accumulator.back();
+			clipHistPercent *= (max / 100.0); //make percent as absolute
+			clipHistPercent /= 2.0; // left and right wings
+			// locate left cut
+			minGray = 0;
+			while (accumulator[minGray] < clipHistPercent)
+				minGray++;
+
+			// locate right cut
+			maxGray = histSize - 1;
+			while (accumulator[maxGray] >= (max - clipHistPercent))
+			{
+				maxGray--;
+				if (maxGray == 0)
+					break;
+			}
+		}
+
+		// current range
+		float inputRange = maxGray - minGray;
+
+		alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+		beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+		convertScaleAbs(inputData, inputData, alpha, beta);
 	}
 	catch (cv::Exception& e)
 	{

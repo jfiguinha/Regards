@@ -42,11 +42,10 @@
 #include <ParamInit.h>
 #include <Tracing.h>
 #include <ThumbnailVideoExport.h>
-#include <OpenCVEffect.h>
 #include <ffplaycore.h>
 #include <ConvertUtility.h>
 #include "SqlFacePhoto.h"
-
+#include <FiltreEffetCPU.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -331,7 +330,7 @@ void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
 	int rotate = event.GetExtraLong();
 
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
-	COpenCVEffect::LoadAndRotate(thumbnail, rotate);
+	CFiltreEffetCPU::LoadAndRotate(thumbnail, rotate);
 	wxWindow* window = this->FindWindowById(THUMBNAILVIEWERPICTURE);
 	if (window != nullptr)
 	{

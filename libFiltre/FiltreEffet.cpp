@@ -64,6 +64,10 @@ int CFiltreEffet::GetHeight()
 	return filtreEffet->GetHeight();
 }
 
+bool CFiltreEffet::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization)
+{
+	return filtreEffet->StabilizeVideo(stabilization);
+}
 
 int CFiltreEffet::Bm3d(const int& fSigma)
 {

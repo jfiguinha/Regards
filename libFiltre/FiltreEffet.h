@@ -25,6 +25,10 @@ namespace Regards
 	{
 		class COpenCLParameterClMem;
 	}
+	namespace OpenCV
+	{
+		class COpenCVStabilization;
+	}
 }
 
 
@@ -100,7 +104,7 @@ public:
     int GetWidth();
 	int GetHeight();
 	int BrightnessAndContrastAuto(float clipHistPercent);
-
+	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization * stabilization);
 private:
 
 

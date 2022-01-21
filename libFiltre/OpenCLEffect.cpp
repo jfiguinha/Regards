@@ -50,6 +50,11 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context
 
 }
 
+bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilizationt)
+{
+	return true;
+}
+
 int COpenCLEffect::GetSizeData() const
 {
 	return sizeof(cl_uint) * 4;

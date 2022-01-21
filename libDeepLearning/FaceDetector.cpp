@@ -9,7 +9,6 @@
 #include <ParamInit.h>
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
-#include "OpenCVEffect.h"
 #include "DetectFace.h"
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080

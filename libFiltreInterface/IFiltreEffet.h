@@ -5,6 +5,15 @@ class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
 class Chqdn3d;
+class COpenCVStabilization;
+
+namespace Regards
+{
+	namespace OpenCV
+	{
+		class COpenCVStabilization;
+	}
+}
 
 using namespace Regards::OpenGL;
 
@@ -78,6 +87,7 @@ public:
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
 	virtual int BrightnessAndContrastAuto(float clipHistPercent) = 0;
+	virtual bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization) = 0;
 protected:
 	//CRegardsBitmap * pBitmap;
 	CRgbaquad backColor;

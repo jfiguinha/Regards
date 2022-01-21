@@ -11,7 +11,6 @@
 #include "EffectVideoParameter.h"
 #include "OpenclFilter.h"
 #include "hqdn3d.h"
-#include <OpenCVEffect.h>
 #include <VideoStabilization.h>
 
 #ifdef __APPLE__
@@ -111,7 +110,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 
 	if (videoEffectParameter->autoConstrast)
 	{
-		Regards::OpenCV::COpenCVEffect::BrightnessAndContrastAuto(paramSrc);
+		openclFilter->BrightnessAndContrastAuto(paramSrc,1.0);
 		frameStabilized = true;
 	}
 }
@@ -156,11 +155,11 @@ void COpenCLEffectVideo::AutoContrast()
 {
 	if (interpolatePicture)
 	{
-		COpenCVEffect::BrightnessAndContrastAuto(paramOutput);
+		openclFilter->BrightnessAndContrastAuto(paramOutput,1.0);
 	}
 	else
 	{
-		COpenCVEffect::BrightnessAndContrastAuto(paramSrc);
+		openclFilter->BrightnessAndContrastAuto(paramSrc,1.0);
 	}
 	
 }

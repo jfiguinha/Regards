@@ -4,12 +4,6 @@
 
 class CRegardsBitmap;
 class Chqdn3d;
-
-namespace cv
-{
-	class Mat;
-}
-
 using namespace Regards::OpenGL;
 
 class CFiltreEffetCPU : public IFiltreEffet
@@ -78,8 +72,12 @@ public:
 	int BrightnessAndContrastAuto(float clipHistPercent);
 	int OilPaintingEffect(const int &size, const int &dynRatio);
 	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
-
+	static void BrightnessAndContrastAuto(cv::Mat& image, float clipHistPercent);
+	static void LoadAndRotate(const wxString& filePath, const int& rotate);
+	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
 private:
+
+	
 	int Contrast(const double& contrast, const uint8_t& offset);
 	int Lightness(const double& factor);
 	void RotateMatrix(const int& angle, cv::Mat& src);

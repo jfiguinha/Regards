@@ -15,7 +15,6 @@
 #include "RedEye.h"
 #include "Wave.h"
 #include <ImageLoadingFormat.h>
-#include <OpenCVEffect.h>
 #include <hqdn3d.h>
 #include "MeanShift.h"
 #include <RegardsBitmap.h>
@@ -23,6 +22,8 @@
 #include "bm3dfilter.h"
 #include <GLTexture.h>
 #include <opencv2/core/opengl.hpp>
+#include "VideoStabilization.h"
+
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 extern float value[256];
@@ -49,6 +50,68 @@ CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingForma
 		printf("toto");
 	}
 }
+
+bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization * openCVStabilization)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	bool frameStabilized = false;
+	cv::Mat image = bitmap->GetMatrix();
+	if (openCVStabilization != nullptr)
+	{
+		if (openCVStabilization->GetNbFrameBuffer() == 0)
+		{
+			openCVStabilization->BufferFrame(image);
+		}
+		else
+		{
+			frameStabilized = true;
+			openCVStabilization->AddFrame(image);
+		}
+
+		if (frameStabilized)
+			openCVStabilization->CorrectFrame(image);
+	}
+
+	return frameStabilized;
+}
+
+void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
+{
+	if (!wxFileExists(filePath.ToStdString()))
+	{
+		return;
+	}
+
+	Mat src = imread(filePath.ToStdString());
+	if (src.empty())
+		return;
+
+	if (rotate == 90)
+	{
+		// Rotate clockwise 270 degrees
+		transpose(src, src);
+		flip(src, src, 0);
+	}
+	else if (rotate == 180)
+	{
+		// Rotate clockwise 180 degrees
+		flip(src, src, -1);
+	}
+	else if (rotate == 270)
+	{
+		// Rotate clockwise 90 degrees
+		transpose(src, src);
+		flip(src, src, 1);
+	}
+	imwrite(filePath.ToStdString(), src);
+	src.release();
+}
+
 
 int CFiltreEffetCPU::GetWidth()
 {
@@ -84,6 +147,82 @@ CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 {
 	return pBitmap;
 }
+
+// ReSharper disable once CppDoxygenUnresolvedReference
+// ReSharper disable once CppDoxygenUnresolvedReference
+/**
+ *  \brief Automatic brightness and contrast optimization with optional histogram clipping
+ *  \param [in]src Input image GRAY or BGR or BGRA
+ *  \param [out]dst Destination image
+ *  \param clipHistPercent cut wings of histogram at given percent tipical=>1, 0=>Disabled
+ *  \note In case of BGRA image, we won't touch the transparency
+*/
+void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercent)
+{
+	int histSize = 256;
+	float alpha, beta;
+	double minGray = 0, maxGray = 0;
+
+	CV_Assert(clipHistPercent >= 0);
+	CV_Assert((image.type() == CV_8UC1) || (image.type() == CV_8UC3) || (image.type() == CV_8UC4));
+
+	//to calculate grayscale histogram
+	Mat gray;
+	if (image.type() == CV_8UC1) gray = image;
+	else if (image.type() == CV_8UC3) cvtColor(image, gray, COLOR_BGR2GRAY);
+	else if (image.type() == CV_8UC4) cvtColor(image, gray, COLOR_BGRA2GRAY);
+	if (clipHistPercent == 0)
+	{
+		// keep full available range
+		minMaxLoc(gray, &minGray, &maxGray);
+	}
+	else
+	{
+		Mat hist; //the grayscale histogram
+
+		float range[] = { 0, 256 };
+		const float* histRange = { range };
+		bool uniform = true;
+		bool accumulate = false;
+		calcHist(&gray, 1, nullptr, Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+
+		// calculate cumulative distribution from the histogram
+		std::vector<float> accumulator(histSize);
+		accumulator[0] = hist.at<float>(0);
+		for (int i = 1; i < histSize; i++)
+		{
+			accumulator[i] = accumulator[i - 1] + hist.at<float>(i);
+		}
+
+		// locate points that cuts at required value
+		float max = accumulator.back();
+		clipHistPercent *= (max / 100.0); //make percent as absolute
+		clipHistPercent /= 2.0; // left and right wings
+		// locate left cut
+		minGray = 0;
+		while (accumulator[minGray] < clipHistPercent)
+			minGray++;
+
+		// locate right cut
+		maxGray = histSize - 1;
+		while (accumulator[maxGray] >= (max - clipHistPercent))
+		{
+			maxGray--;
+			if (maxGray == 0)
+				break;
+		}
+	}
+
+
+	// current range
+	float inputRange = maxGray - minGray;
+
+	alpha = (histSize - 1) / inputRange; // alpha expands current range to histsize range
+	beta = -minGray * alpha; // beta shifts current range so that minGray will go to 0
+
+	convertScaleAbs(image, image, alpha, beta);
+}
+
 
 void CFiltreEffetCPU::CopyPictureToTexture2D(GLTexture * texture, const bool& source)
 {
@@ -2141,7 +2280,7 @@ int CFiltreEffetCPU::BrightnessAndContrastAuto(float clipHistPercent)
 	else
 		bitmap = pBitmap;
 
-	COpenCVEffect::BrightnessAndContrastAuto(bitmap, clipHistPercent);
+	BrightnessAndContrastAuto(bitmap->GetMatrix(), clipHistPercent);
 
 	return 0;
 }
