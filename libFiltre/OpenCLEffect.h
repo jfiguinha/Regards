@@ -1,6 +1,6 @@
 #pragma once
 #include "IFiltreEffet.h"
-
+#include <GLTexture.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
@@ -23,7 +23,7 @@ namespace Regards
 }
 
 using namespace Regards::OpenCL;
-
+using namespace Regards::OpenGL;
 namespace Regards
 {
 	namespace FiltreEffet
@@ -41,7 +41,7 @@ namespace Regards
 			};
 
 
-			void CopyPictureToTexture2D(void* cl_image);
+			void CopyPictureToTexture2D(GLTexture * texture, const bool& source);
 			virtual ~COpenCLEffect();
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };
 			int VignetteEffect(const double& radius = 1.0, const double& power = 0.8) { return -1; };
@@ -104,16 +104,8 @@ namespace Regards
 			int HistogramNormalize(CRegardsBitmap * bitmap){ return  -1; }
 			int HistogramEqualize(CRegardsBitmap * bitmap){ return  -1; }
 
-			int GetRgbaBitmap(void * cl_image);
-
-			//void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
-			//virtual int GetWidth();
-			//virtual int GetHeight();
-			//void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			int BrightnessAndContrastAuto(float clipHistPercent);
 			CRegardsBitmap* GetBitmap(const bool& source);
-
-			//void RenderToOpenGLInterop(cl_mem cl_image);
 
 		protected:
 

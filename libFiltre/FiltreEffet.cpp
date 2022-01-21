@@ -49,6 +49,11 @@ int CFiltreEffet::OilPaintingEffect(const int& size, const int& dynRatio)
 	return filtreEffet->OilPaintingEffect(size, dynRatio);
 }
 
+void CFiltreEffet::CopyPictureToTexture2D(GLTexture * texture, const bool& source)
+{
+	filtreEffet->CopyPictureToTexture2D(texture, source);
+}
+
 int CFiltreEffet::GetWidth()
 {
 	return filtreEffet->GetWidth();
@@ -64,11 +69,6 @@ int CFiltreEffet::Bm3d(const int& fSigma)
 {
 	filtreEffet->Bm3d(fSigma);
 	return 0;
-}
-
-void CFiltreEffet::CopyPictureToTexture2D(void * cl_image)
-{
-	filtreEffet->CopyPictureToTexture2D(cl_image);
 }
 
 int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace)
@@ -196,11 +196,6 @@ CFiltreEffet::~CFiltreEffet()
 {
 	if (filtreEffet != nullptr)
 		delete(filtreEffet);
-}
-
-void CFiltreEffet::GetRgbaBitmap(void* cl_image)
-{
-	filtreEffet->GetRgbaBitmap(cl_image);
 }
 
 int CFiltreEffet::RedEye()

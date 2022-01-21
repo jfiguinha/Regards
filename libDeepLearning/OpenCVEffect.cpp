@@ -104,7 +104,7 @@ auto COpenCVEffectPimpl::BrightnessAndContrastAuto(Mat& image, float clipHistPer
 		Mat gray;
 		if (image.type() == CV_8UC1) gray = image;
 		else if (image.type() == CV_8UC3) cvtColor(image, gray, COLOR_BGR2GRAY);
-		else if (image.type() == CV_8UC4) cvtColor(image, gray, COLOR_BGR2GRAY);
+		else if (image.type() == CV_8UC4) cvtColor(image, gray, COLOR_BGRA2GRAY);
 		if (clipHistPercent == 0)
 		{
 			// keep full available range
@@ -177,7 +177,7 @@ void COpenCVEffectPimpl::BrightnessAndContrastAuto(UMat& src, float clipHistPerc
 	if (opencl)
 	{
 		UMat gray;
-		cvtColor(src, gray, COLOR_BGR2GRAY);
+		cvtColor(src, gray, COLOR_BGRA2GRAY);
 
 		if (clipHistPercent == 0)
 		{

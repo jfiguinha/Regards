@@ -1686,28 +1686,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			{
 			}
 
-			try
-			{
-				cl_int err;
-				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
-				if (cl_image != nullptr)
-				{
-					err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr,
-						nullptr);
-					Error::CheckError(err);
-					filtreEffet->GetRgbaBitmap(cl_image);
-					err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, nullptr,
-						nullptr);
-					Error::CheckError(err);
-					err = clFlush(openclContext->GetCommandQueue());
-					Error::CheckError(err);
-
-					textureBinging = true;
-				}
-			}
-			catch (...)
-			{
-			}
+			filtreEffet->CopyPictureToTexture2D(glTexture, false);
 		}
 
 		if (!textureBinging)
@@ -1719,7 +1698,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			glTexture = renderOpenGL->GetDisplayTexture();
 
 			if (glTexture != nullptr)
-				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+				glTexture->SetData(bitmap);
 			else
 				printf("CBitmapWndRender GetDisplayTexture Error \n");
 			delete bitmap;
@@ -1730,7 +1709,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 		CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
 			themeBitmap.colorBack.Blue()));
 
-	RenderTexture(openclContext->IsSharedContextCompatible());
+	RenderTexture(false);
 
 }
 
@@ -1768,7 +1747,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
 
 			glTextureSrc = new GLTexture();
-			glTextureSrc->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+			glTextureSrc->SetData(bitmap);
 		}
 		loadBitmap = false;
 	}
@@ -1816,7 +1795,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 				bitmap = filtreEffet->GetBitmap(false);
 				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 				if (glTexture != nullptr)
-					glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+					glTexture->SetData(bitmap);
 				else
 					printf("CBitmapWndRender GetDisplayTexture Error \n");
 				delete bitmap;
@@ -1839,7 +1818,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 			if (glTexture != nullptr)
-				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+				glTexture->SetData(bitmap);
 			else
 				printf("CBitmapWndRender GetDisplayTexture Error \n");
 			delete bitmap;

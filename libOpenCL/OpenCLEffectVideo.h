@@ -4,6 +4,7 @@
 #else
 #include <CL/cl.h>
 #endif
+#include <GLTexture.h>
 
 namespace cv
 {
@@ -23,6 +24,7 @@ class CRegardsFloatBitmap;
 class CVideoEffectParameter;
 class Chqdn3d;
 
+using namespace Regards::OpenGL;
 using namespace Regards::OpenCV;
 
 namespace Regards
@@ -54,7 +56,7 @@ namespace Regards
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
-			void CopyPictureToTexture2D(cl_mem cl_image);
+			void CopyPictureToTexture2D(GLTexture* texture, const bool& source);
 
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);

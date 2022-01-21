@@ -1,9 +1,13 @@
 #pragma once
 #include <RGBAQuad.h>
+#include <GLTexture.h>
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
 class Chqdn3d;
+
+using namespace Regards::OpenGL;
+
 class IFiltreEffet
 {
 public:
@@ -20,8 +24,7 @@ public:
 		this->preview = preview;
 	}
 
-	virtual void CopyPictureToTexture2D(void* cl_image) = 0;
-	//virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut) = 0;
+	virtual void CopyPictureToTexture2D(GLTexture * texture, const bool& source) = 0;
     virtual int Bm3d(const int & fSigma) = 0;
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) = 0;
 	virtual int OilPaintingEffect(const int &size, const int &dynRatio) = 0;
@@ -30,7 +33,6 @@ public:
 	virtual int WaveFilter(int x, int y, short height, int scale, int radius) = 0;
 	virtual int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP) = 0;
 	virtual int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize) = 0;
-	virtual int GetRgbaBitmap(void * cl_image) = 0; 
 	virtual int HistogramNormalize() = 0;
 	virtual int HistogramEqualize() = 0;
 	virtual int CartoonifyImage(const int & mode) = 0;

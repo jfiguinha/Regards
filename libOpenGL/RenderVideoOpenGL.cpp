@@ -197,7 +197,7 @@ void CRenderVideoOpenGL::SetSubtitle(CRegardsBitmap* subtitle)
 	textureSubtitle = nullptr;
 
 	textureSubtitle = new GLTexture();
-	textureSubtitle->Create(subtitle->GetBitmapWidth(), subtitle->GetBitmapHeight(), subtitle->GetPtBitmap());
+	textureSubtitle->SetData(subtitle);
 }
 
 void CRenderVideoOpenGL::ShowSubtitle()
@@ -276,7 +276,7 @@ cl_mem CRenderVideoOpenGL::GetCopyVideoTexture(cl_context context)
 				Error::CheckError(err);
 			}
 
-			textureVideoCopy = GLTexture::CreateTextureOutput(textureVideo->GetWidth(), textureVideo->GetHeight());
+			textureVideoCopy = new GLTexture(textureVideo->GetWidth(), textureVideo->GetHeight());
 
 			glBindTexture(GL_TEXTURE_2D, textureVideoCopy->GetTextureID());
 			//cl_textureVideoCopy = clCreateFromGLTexture2D(context, CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, textureVideoCopy->GetTextureID(), &err);
@@ -358,7 +358,7 @@ GLTexture* CRenderVideoOpenGL::GetVideoTextureCopyPt()
 		delete(textureVideoCopy);
 	textureVideoCopy = nullptr;
 
-	textureVideoCopy = GLTexture::CreateTextureOutput(textureVideo->GetWidth(), textureVideo->GetHeight());
+	textureVideoCopy = new GLTexture(textureVideo->GetWidth(), textureVideo->GetHeight());
 
 	glGenFramebuffers(1, &fboId);
 	glBindFramebuffer(GL_FRAMEBUFFER, fboId);

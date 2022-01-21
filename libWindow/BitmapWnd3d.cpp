@@ -184,6 +184,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 		openclContext->GetContextForOpenCV().bind();
+		
 	}
     
 	

@@ -1,5 +1,7 @@
 #pragma once
 #include "IFiltreEffet.h"
+#include <GLTexture.h>
+
 class CRegardsBitmap;
 class Chqdn3d;
 
@@ -8,12 +10,14 @@ namespace cv
 	class Mat;
 }
 
+using namespace Regards::OpenGL;
+
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
 	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
-	void CopyPictureToTexture2D(void* cl_image) {};
+	void CopyPictureToTexture2D(GLTexture * texture, const bool& source);
     int Bm3d(const int & fSigma);
 	int HistogramNormalize();
 	int HistogramEqualize();
@@ -23,7 +27,6 @@ public:
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
-	int GetRgbaBitmap(void * cl_image){return -1;};
     void SetBitmap(CImageLoadingFormat * bitmap);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);

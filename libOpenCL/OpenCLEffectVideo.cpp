@@ -70,27 +70,26 @@ int COpenCLEffectVideo::GetRgbaBitmap(void* cl_image)
 	return 0;
 }
 
-void COpenCLEffectVideo::CopyPictureToTexture2D(cl_mem cl_image)
+void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source)
 {
-	cl_mem cl_picture = (cl_mem)cl_image;
-	if (context != nullptr)
+	try
 	{
-		try
+		if (source)
 		{
-			cl_command_queue q = context->GetCommandQueue();
-			cl_int err;
-			err = clEnqueueAcquireGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			GetRgbaBitmap(cl_picture);
-			err = clEnqueueReleaseGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFlush(q);
-			Error::CheckError(err);
+			cv::ogl::convertToGLTexture2D(paramSrc, *texture->GetGLTexture());
 		}
-		catch (...)
+		else if (interpolatePicture && !paramOutput.empty())
 		{
+			cv::ogl::convertToGLTexture2D(paramOutput, *texture->GetGLTexture());
+		}
+		else
+		{
+			cv::ogl::convertToGLTexture2D(paramSrc, *texture->GetGLTexture());
+		}
+	}
+	catch (...)
+	{
 
-		}
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <RGBAQuad.h>
 #include <effect_id.h>
+#include <GLTexture.h>
 namespace Regards
 {
 	namespace OpenCL
@@ -10,6 +11,7 @@ namespace Regards
 }
 
 using namespace Regards::OpenCL;
+using namespace Regards::OpenGL;
 
 class Chqdn3d;
 class CImageLoadingFormat;
@@ -32,8 +34,8 @@ public:
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, COpenCLParameterClMem * data_mem, const int &width, const int &height);
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
+	void CopyPictureToTexture2D(GLTexture * texture, const bool& source);
 	void SetPreviewMode(const bool& value);
-	void GetRgbaBitmap(void * cl_image);
 	void SetBitmap(CImageLoadingFormat * bitmap);
 	void SetPreview(const bool &value);
 	int RenderEffect(const int &numEffect, CEffectParameter * effectParameter);
@@ -47,7 +49,6 @@ public:
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int NiveauDeGris();
 	int NoirEtBlanc();
-	void CopyPictureToTexture2D(void* cl_image);
 	int VignetteEffect(const double& radius, const double& power);
 	int Sepia();
 	int Soften();
@@ -88,9 +89,7 @@ public:
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 	int MeanShift(const float & fSpatialRadius, const float& fColorRadius);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-	//void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
     int GetLib();
-	//void SetLib(const int &numLib);
 	wxImage GetwxImage();
 	CRegardsBitmap * GetBitmap(const bool &source);
 	IFiltreEffet * GetInstance()

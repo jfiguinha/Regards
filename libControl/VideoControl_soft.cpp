@@ -1109,8 +1109,6 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	//wxPaintDC dc(this);
 	printf("CVideoControlSoft::OnPaint \n");
 
-	//deleteTexture = true;
-	inverted = true;
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else
@@ -1691,7 +1689,7 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 			floatRect.right = 1.0f;
 			floatRect.top = 0;
 			floatRect.bottom = 1.0f;
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, inverted);
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, false);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1782,7 +1780,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int 
 GLTexture* CVideoControlSoft::RenderToTexture(CRegardsBitmap* bitmap)
 {
 	auto glTexture = new GLTexture();
-	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+	glTexture->SetData(bitmap);
 	return glTexture;
 }
 
@@ -1956,7 +1954,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			printf("RenderToTexture glTexture is not null 3\n");
 			try
 			{
-				openclEffect->CopyPictureToTexture2D(renderOpenGL->GetOpenCLTexturePt());
+				openclEffect->CopyPictureToTexture2D(glTexture, false);
 				isOpenGLOpenCL = true;
 			}
 			catch (...)
@@ -1972,7 +1970,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		{
 			openclEffect->FlipVertical();
 			CRegardsBitmap* bitmap = openclEffect->GetBitmap();
-			glTexture->SetData(bitmap->GetPtBitmap(), widthOutput, heightOutput);
+			glTexture->SetData(bitmap);
 			delete bitmap;
 		}
 	}
@@ -2026,7 +2024,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-	inverted = false;
+
 	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	if (angle == 90 || angle == 270)
 	{
@@ -2048,7 +2046,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 		ApplyOpenCVEffect(bitmapOut);
 	}
 
-	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+	glTexture->SetData(bitmapOut);
 	delete bitmapOut;
 
 	deleteTexture = true;
@@ -2070,7 +2068,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
-		inverted = false;
+
 		auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		if (angle == 90 || angle == 270)
 		{
@@ -2092,12 +2090,12 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 			ApplyOpenCVEffect(bitmapOut);
 		}
 
-		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+		glTexture->SetData(bitmapOut);
 		delete bitmapOut;
 	}
 	else
 	{
-		glTexture->Create(pictureFrame->GetBitmapWidth(), pictureFrame->GetBitmapHeight(), pictureFrame->GetPtBitmap());
+		glTexture->SetData(pictureFrame);
 	}
 
 

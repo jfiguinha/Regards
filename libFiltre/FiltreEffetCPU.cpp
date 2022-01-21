@@ -21,10 +21,10 @@
 #include <RegardsBitmap.h>
 #include <fstream>
 #include "bm3dfilter.h"
-
-
+#include <GLTexture.h>
+#include <opencv2/core/opengl.hpp>
 using namespace Regards::OpenCV;
-
+using namespace Regards::OpenGL;
 extern float value[256];
 using namespace Regards::FiltreEffet;
 
@@ -83,6 +83,24 @@ int CFiltreEffetCPU::GetHeight()
 CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 {
 	return pBitmap;
+}
+
+void CFiltreEffetCPU::CopyPictureToTexture2D(GLTexture * texture, const bool& source)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	try
+	{
+		cv::ogl::convertToGLTexture2D(bitmap->GetMatrix(), *texture->GetGLTexture());
+	}
+	catch (...)
+	{
+
+	}
 }
 
 

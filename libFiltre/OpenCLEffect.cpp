@@ -23,6 +23,7 @@
 #include <CL/cl_gl.h>
 #endif
 #include <DeepLearning.h>
+#include <opencv2/core/opengl.hpp>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
@@ -65,24 +66,18 @@ int COpenCLEffect::GetWidth()
 {
 	if (preview && !paramOutput.empty())
 	{
-		paramOutput.cols;
+		return paramOutput.cols;
 	}
-	else
-	{
-		input.cols;
-	}
+	return input.cols;
 }
 
 int COpenCLEffect::GetHeight()
 {
 	if (preview && !paramOutput.empty())
 	{
-		paramOutput.rows;
+		return paramOutput.rows;
 	}
-	else
-	{
-		input.rows;
-	}
+	return input.rows;
 }
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
@@ -145,27 +140,26 @@ COpenCLEffect::~COpenCLEffect()
 	paramOutput.release();
 }
 
-void COpenCLEffect::CopyPictureToTexture2D(void* cl_image)
+void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool &source)
 {
-	cl_mem cl_picture = (cl_mem)cl_image;
-	if (context != nullptr)
+	try
 	{
-		try
+		if (source)
 		{
-			cl_command_queue q = context->GetCommandQueue();
-			cl_int err;
-			err = clEnqueueAcquireGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			GetRgbaBitmap(cl_picture);
-			err = clEnqueueReleaseGLObjects(q, 1, &cl_picture, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFlush(q);
-			Error::CheckError(err);
+			cv::ogl::convertToGLTexture2D(input, *texture->GetGLTexture());
 		}
-		catch (...)
+		else if (preview && !paramOutput.empty())
 		{
+			cv::ogl::convertToGLTexture2D(paramOutput, *texture->GetGLTexture());
+		}
+		else
+		{
+			cv::ogl::convertToGLTexture2D(input, *texture->GetGLTexture());
+		}
+	}
+	catch (...)
+	{
 
-		}
 	}
 }
 
@@ -232,26 +226,6 @@ wxImage COpenCLEffect::GetwxImage()
 	return anImage;
 }
 
-
-int COpenCLEffect::GetRgbaBitmap(void* cl_image)
-{
-	if (context != nullptr)
-	{
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter.GetRgbaBitmap(cl_image, paramOutput);
-		}
-		else
-		{
-			openclFilter.GetRgbaBitmap(cl_image, input);
-		}
-	}
-
-	return 0;
-}
-
-
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 
@@ -297,9 +271,6 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 {
 	if (context != nullptr)
 	{
-		cl_mem output;
-		int _height;
-		int _width;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -336,9 +307,6 @@ int COpenCLEffect::Posterize(const float& level, const float& gamma)
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -480,9 +448,6 @@ int COpenCLEffect::Sepia()
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -502,9 +467,6 @@ int COpenCLEffect::NoirEtBlanc()
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -524,9 +486,6 @@ int COpenCLEffect::NiveauDeGris()
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -546,9 +505,6 @@ int COpenCLEffect::FlipVertical()
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -612,7 +568,6 @@ int COpenCLEffect::Rotate270()
 	{
 		int _widthOut;
 		int _heightOut;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -637,7 +592,6 @@ int COpenCLEffect::RotateFree(const double& angle, const int& widthOut, const in
 	{
 		int _widthOut;
 		int _heightOut;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -677,9 +631,6 @@ int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
 	if (context != nullptr)
 	{
-		int _width;
-		int _height;
-		cl_mem output;
 		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
@@ -1000,6 +951,7 @@ void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, con
 	{
 		COpenCLFilter openclFilter(context);
 		paramOutput = openclFilter.Interpolation(widthOut, heightOut, "Interpolation", method, input, flipH, flipV, angle);
+		preview = true;
 	}
 }
 
@@ -1009,5 +961,6 @@ void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, con
 	{
 		COpenCLFilter openclFilter(context);
 		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc, "InterpolationZone", method, input, flipH, flipV, angle);
+		preview = true;
 	}
 }

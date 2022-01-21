@@ -176,7 +176,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height,
 		}
 		//this->widthBitmap = width;
 		//this->heightBitmap = height;
-		textureDisplay = GLTexture::CreateTextureOutput(width, height);
+		textureDisplay = new GLTexture(width, height);
 
 		glBindTexture(GL_TEXTURE_2D, textureDisplay->GetTextureID());
 		if (context != nullptr)
@@ -588,7 +588,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture()
 		if (textureDisplay != nullptr)
 			delete(textureDisplay);
 
-		textureDisplay = GLTexture::CreateTextureOutput(width, height);
+		textureDisplay = new GLTexture(width, height);
 	}
 	return textureDisplay;
 }
@@ -601,7 +601,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
 		if (textureDisplay != nullptr)
 			delete(textureDisplay);
 
-		textureDisplay = GLTexture::CreateTextureOutput(width, height);
+		textureDisplay = new GLTexture(width, height);
 	}
 	return textureDisplay;
 }

@@ -37,9 +37,9 @@ float4 GetColorFromYUV(const __global uchar *inputY, const __global uchar *input
 		float yComp = inputY[positionSrc];
 		    // RGB conversion
 		
-		color.z = (1.164 * (yComp - 16) + 1.596*(vComp-128));
+		color.x = (1.164 * (yComp - 16) + 1.596*(vComp-128));
 		color.y = (1.164 * (yComp - 16) - 0.391*(uComp-128) - 0.813*(vComp-128));
-		color.x = (1.164 * (yComp - 16) + 2.018*(uComp-128));
+		color.z = (1.164 * (yComp - 16) + 2.018*(uComp-128));
 		color.w = 255.0f;
 
 		float4 minimal = 0.0;

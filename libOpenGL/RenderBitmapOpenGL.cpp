@@ -49,11 +49,11 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
 
 	if (textureArrowRight == nullptr)
 		textureArrowRight = new GLTexture();
-	textureArrowRight->Create(arrowRight->GetBitmapHeight(), arrowRight->GetBitmapWidth(), arrowRight->GetPtBitmap());
+	textureArrowRight->SetData(arrowRight);
 
 	if (textureArrowLeft == nullptr)
 		textureArrowLeft = new GLTexture();
-	textureArrowLeft->Create(arrowLeft->GetBitmapHeight(), arrowLeft->GetBitmapWidth(), arrowLeft->GetPtBitmap());
+	textureArrowLeft->SetData(arrowLeft);
 
 	delete arrowLeft;
 	delete arrowRight;
