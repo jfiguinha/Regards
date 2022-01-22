@@ -56,9 +56,7 @@ namespace Regards
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
-#ifndef __WXGTK__
-			void CopyPictureToTexture2D(GLTexture* texture, const bool& source);
-#endif
+			void CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			
@@ -77,6 +75,7 @@ namespace Regards
 
 			int GetSizeData();
 			COpenCLProgram * GetProgram(const wxString &numProgram);
+			void GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, GLTexture* texture, int rgba);
 			cl_mem_flags  flag;
 
 			COpenCLProgram * openCLProgram;

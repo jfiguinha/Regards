@@ -6,6 +6,7 @@
 #include "utility.h"
 #include <CvPlot/cvplot.h>
 #include <opencv2/xphoto.hpp>
+
 using namespace Regards::OpenCL;
 
 
@@ -198,6 +199,63 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureDat
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+
+
+void COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, Regards::OpenGL::GLTexture* texture, int rgba)
+{
+	if (!inputData.empty())
+	{
+		cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+
+		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem* paramOutput = new COpenCLParameterClMem();
+			paramOutput->SetValue(clBuffer);
+			paramOutput->SetNoDelete(true);
+			vecParam.push_back(paramOutput);
+
+			COpenCLParameterInt* paramOutWidth = new COpenCLParameterInt();
+			paramOutWidth->SetValue(inputData.cols);
+			paramOutWidth->SetNoDelete(false);
+			vecParam.push_back(paramOutWidth);
+
+			COpenCLParameterInt* paramOutHeight = new COpenCLParameterInt();
+			paramOutHeight->SetValue(inputData.rows);
+			paramOutHeight->SetNoDelete(false);
+			vecParam.push_back(paramOutHeight);
+
+			COpenCLParameterInt* paramRGBA = new COpenCLParameterInt();
+			paramRGBA->SetValue(rgba);
+			paramRGBA->SetLibelle("rgba");
+			vecParam.push_back(paramRGBA);
+
+			program->SetKeepOutput(true);
+			program->SetParameter(&vecParam, texture->GetWidth(), texture->GetHeight(), cl_image);
+			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+
+			delete program;
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+			paramOutput = nullptr;
+			paramOutWidth = nullptr;
+			paramOutHeight = nullptr;
+
+		}
 	}
 }
 

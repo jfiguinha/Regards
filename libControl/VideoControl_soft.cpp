@@ -1101,7 +1101,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	this->openclContext = openclContext;
 
 	isInit = true;
-
+	inverted = true;
 
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
@@ -1688,7 +1688,7 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 			floatRect.right = 1.0f;
 			floatRect.top = 0;
 			floatRect.bottom = 1.0f;
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, false);
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, inverted);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1942,7 +1942,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	bool isOpenGLOpenCL = false;
 	openGLDecoding = false;
-#ifndef __WXGTK__
+
 	if (openclContext->IsSharedContextCompatible())
 	{
 		printf("RenderToTexture IsSharedContextCompatible 3\n");
@@ -1953,7 +1953,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			printf("RenderToTexture glTexture is not null 3\n");
 			try
 			{
-				openclEffect->CopyPictureToTexture2D(glTexture, false);
+				openclEffect->CopyPictureToTexture2D(glTexture, false, 1);
 				isOpenGLOpenCL = true;
 			}
 			catch (...)
@@ -1961,7 +1961,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			}
 		}
 	}
-#endif
+
 	if (!isOpenGLOpenCL)
 	{
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
@@ -2023,7 +2023,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-
+	inverted = false;
 	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	if (angle == 90 || angle == 270)
 	{
@@ -2067,7 +2067,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
-
+		inverted = false;
 		auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		if (angle == 90 || angle == 270)
 		{

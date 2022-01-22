@@ -48,12 +48,12 @@ int CFiltreEffet::OilPaintingEffect(const int& size, const int& dynRatio)
 {
 	return filtreEffet->OilPaintingEffect(size, dynRatio);
 }
-#ifndef __WXGTK__
-void CFiltreEffet::CopyPictureToTexture2D(GLTexture * texture, const bool& source)
+
+void CFiltreEffet::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
 {
-	filtreEffet->CopyPictureToTexture2D(texture, source);
+	filtreEffet->CopyPictureToTexture2D(texture, source, rgba);
 }
-#endif
+
 int CFiltreEffet::GetWidth()
 {
 	return filtreEffet->GetWidth();

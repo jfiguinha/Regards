@@ -133,30 +133,65 @@ COpenCLEffect::~COpenCLEffect()
 	input.release();
 	paramOutput.release();
 }
-#ifndef __WXGTK__
-void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool &source)
+
+
+void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& source, int rgba)
 {
-	try
+	cl_int err;
+	cv::UMat src;
+	if (source)
 	{
-		if (source)
+		src = input;
+	}
+	else if (preview && !paramOutput.empty())
+	{
+		src = paramOutput;
+	}
+	else
+	{
+		src = input;
+	}
+
+	cl_mem cl_textureDisplay;
+	glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
+	if (context != nullptr)
+	{
+		cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
+			texture->GetTextureID(), &err);
+		Error::CheckError(err);
+	}
+
+
+	if (context != nullptr)
+	{
+		try
 		{
-			cv::ogl::convertToGLTexture2D(input, *texture->GetGLTexture());
+			COpenCLFilter openclFilter(context);
+			cl_command_queue q = context->GetCommandQueue();
+			cl_int err;
+			err = clEnqueueAcquireGLObjects(q, 1, &cl_textureDisplay, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			openclFilter.GetRgbaBitmap(cl_textureDisplay, src, texture, rgba);
+			err = clEnqueueReleaseGLObjects(q, 1, &cl_textureDisplay, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFlush(q);
+			Error::CheckError(err);
 		}
-		else if (preview && !paramOutput.empty())
+		catch (...)
 		{
-			cv::ogl::convertToGLTexture2D(paramOutput, *texture->GetGLTexture());
-		}
-		else
-		{
-			cv::ogl::convertToGLTexture2D(input, *texture->GetGLTexture());
+
 		}
 	}
-	catch (...)
-	{
 
+	if (cl_textureDisplay != nullptr)
+	{
+		cl_int err;
+		err = clReleaseMemObject(cl_textureDisplay);
+		Error::CheckError(err);
 	}
 }
-#endif
+
+
 CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 {
 	CRegardsBitmap* bitmapOut = new CRegardsBitmap();

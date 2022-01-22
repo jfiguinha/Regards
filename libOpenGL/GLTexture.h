@@ -1,11 +1,5 @@
 #pragma once
-namespace cv
-{
-    namespace ogl
-    {
-        class Texture2D;
-    }
-}
+#include "GLcontext.h"
 
 class CRegardsBitmap;
 
@@ -17,35 +11,37 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int& nWidth, const int& nHeight);
-			GLTexture();
+			GLTexture(const int& nWidth, const int& nHeight, GLenum format = GL_BGRA_EXT);
+			GLTexture(void);
 			~GLTexture(void);
 
+			static GLTexture* CreateTextureOutput(int width, int height, GLenum format = GL_BGRA_EXT);
+			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
+			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
 			void Enable();
-			void SetData(CRegardsBitmap* bitmap);
+			void SetData(CRegardsBitmap * bitmap);
 
-			void Disable();
+			void Disable()
+			{
+				glDisable(GL_TEXTURE_2D);
+			}
 
-			int GetTextureID();
+			int GetTextureID()
+			{
+				return m_nTextureID;
+			}
 
-#ifndef __WXGTK__
-			cv::ogl::Texture2D* GetGLTexture();
-#endif
 			int GetWidth();
 			int GetHeight();
-
+			uint8_t* GetData();
+			void GetData(uint8_t* data);
 		protected:
-
 			void checkErrors(std::string desc);
-#ifdef __WXGTK__
-            bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
-			uint m_nTextureID;
+			GLuint m_nTextureID;
 			int width;
 			int height;
-#else
-			cv::ogl::Texture2D * texture;
-#endif
+			GLenum format;
 		};
 	}
 }

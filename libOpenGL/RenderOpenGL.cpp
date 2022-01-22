@@ -19,7 +19,6 @@ CRenderOpenGL::CRenderOpenGL(wxGLCanvas* canvas)
 	: wxGLContext(canvas), base(0), myGLVersion(0), mouseUpdate(nullptr)
 {
 	textureDisplay = nullptr;
-	cl_textureDisplay = nullptr;
 	width = 0;
 	height = 0;
 }
@@ -94,13 +93,6 @@ CRenderOpenGL::~CRenderOpenGL()
 		delete shader;
 
 	listShader.clear();
-
-	if (cl_textureDisplay != nullptr)
-	{
-		cl_int err;
-		err = clReleaseMemObject(cl_textureDisplay);
-		Error::CheckError(err);
-	}
 }
 
 wxGLContext* CRenderOpenGL::GetGLContext()
@@ -113,14 +105,6 @@ void CRenderOpenGL::DeleteTexture()
 	if (textureDisplay != nullptr)
 		delete(textureDisplay);
 	textureDisplay = nullptr;
-
-	if (cl_textureDisplay != nullptr)
-	{
-		cl_int err;
-		err = clReleaseMemObject(cl_textureDisplay);
-		Error::CheckError(err);
-	}
-	cl_textureDisplay = nullptr;
 }
 
 void CRenderOpenGL::Print(int x, int y, const char* text)
@@ -169,22 +153,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height,
 			delete(textureDisplay);
 		textureDisplay = nullptr;
 
-		if (cl_textureDisplay != nullptr)
-		{
-			err = clReleaseMemObject(cl_textureDisplay);
-			Error::CheckError(err);
-		}
-		//this->widthBitmap = width;
-		//this->heightBitmap = height;
 		textureDisplay = new GLTexture(width, height);
-
-		glBindTexture(GL_TEXTURE_2D, textureDisplay->GetTextureID());
-		if (context != nullptr)
-		{
-			cl_textureDisplay = clCreateFromGLTexture2D(context, CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
-			                                            textureDisplay->GetTextureID(), &err);
-			Error::CheckError(err);
-		}
 	}
 
 	return textureDisplay;
@@ -198,11 +167,6 @@ int CRenderOpenGL::GetWidth()
 int CRenderOpenGL::GetHeight()
 {
 	return height;
-}
-
-cl_mem CRenderOpenGL::GetOpenCLTexturePt()
-{
-	return cl_textureDisplay;
 }
 
 void CRenderOpenGL::CreateScreenRender(const int& width, const int& height, const CRgbaquad& color)

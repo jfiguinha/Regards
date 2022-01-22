@@ -1,88 +1,114 @@
 #include <header.h>
-#include "GLcontext.h"
 #include "GLTexture.h"
 #include <RegardsBitmap.h>
 using namespace Regards::OpenGL;
 
-GLTexture::~GLTexture(void)
+GLTexture::GLTexture(void)
 {
-
-	Delete();
-#ifndef __WXGTK__
-    delete texture;
-#endif
-    
-}
-
-GLTexture::GLTexture()
-{
-#ifndef __WXGTK__
-	texture = new cv::ogl::Texture2D();
-#else
 	m_nTextureID = 0;
 	width = 0;
 	height = 0;
-#endif
+	format = GL_BGRA_EXT;
 }
 
-void GLTexture::Disable()
+GLTexture::~GLTexture(void)
 {
-    glDisable(GL_TEXTURE_2D);
-}
-
-
-int GLTexture::GetTextureID()
-{
-#ifndef __WXGTK__
-    return texture->texId();
-#else
-    return m_nTextureID;
-#endif
+	Delete();
 }
 
 
-GLTexture::GLTexture(const int& nWidth, const int& nHeight)
+GLTexture* GLTexture::CreateTextureOutput(int width, int height, GLenum format)
 {
-#ifndef __WXGTK__
-	texture = new cv::ogl::Texture2D();
-	texture->create(nHeight, nWidth, cv::ogl::Texture2D::Format::RGBA, true);
-#else
+	GLTexture* glTextureDest = new GLTexture(width, height, format);
+	return glTextureDest;
+}
+
+GLTexture::GLTexture(const int& nWidth, const int& nHeight, GLenum format)
+{
 	m_nTextureID = 0;
 	width = nWidth;
 	height = nHeight;
+	this->format = format;
 	Create(nWidth, nHeight, nullptr);
-#endif
 }
 
 int GLTexture::GetWidth()
 {
-#ifndef __WXGTK__
-	return texture->cols();
-#else
-    return width;
-#endif
+	return width;
 }
 
 int GLTexture::GetHeight()
 {
-#ifndef __WXGTK__
-	return texture->rows();
-#else
-    return height;
-#endif
+	return height;
 }
 
-#ifdef __WXGTK__
+uint8_t* GLTexture::GetData()
+{
+	GLuint m_nTextureSize = width * height << 2;
+	uint8_t* m_bData = nullptr;
+	if (m_nTextureID)
+	{
+		m_bData = new uint8_t[m_nTextureSize];
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, m_bData);
+	}
+
+	return m_bData;
+}
+
+void GLTexture::GetData(uint8_t* data)
+{
+	if (m_nTextureID && data != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, data);
+	}
+}
+
+
+void GLTexture::SetData(CRegardsBitmap * bitmap)
+{
+	if (m_nTextureID && bitmap != nullptr)
+	{
+		glEnable(GL_TEXTURE_2D);
+		width = bitmap->GetBitmapWidth();
+		height = bitmap->GetBitmapHeight();
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmap->GetMatrix().data);
+	}
+}
+
+//bool GLTexture::Create(const int &nWidth, const int &nHeight, void *pbyData, const int & nFormat_i, const int & nInternalFormat_i)
 bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 {
 	width = nWidth;
 	height = nHeight;
 
+	//GLuint m_nTextureSize = nWidth * nHeight << 2;
+
+	//int nError = glGetError();
 	if (0 != m_nTextureID)
 	{
 		// if this texture already exists then delete it.
 		Delete();
 	}
+
+	/*
+	//generate the texture ID
+	glGenTextures(1, &m_nTextureID);
+	//binnding the texture
+	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+	//regular sampler params
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//need to set GL_NEAREST
+	//(not GL_NEAREST_MIPMAP_* which would cause CL_INVALID_GL_OBJECT later)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//specify texture dimensions, format etc
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pbyData);
+	*/
+
 
 	glEnable(GL_TEXTURE_2D);
 
@@ -94,39 +120,26 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pbyData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
+	/*
+	glEnable(GL_TEXTURE_2D);
+	glGenTextures(1, &m_nTextureID);
+	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	*/
 	return (GL_NO_ERROR == glGetError());
 }
-#endif
 
-void GLTexture::SetData(CRegardsBitmap* bitmap)
+void GLTexture::SetFilterType(const GLint FilterType_i, const GLint FilterValue_i)
 {
-#ifndef __WXGTK__
-	if (bitmap != nullptr)
-	{
-		glEnable(GL_TEXTURE_2D);
-		texture->copyFrom(bitmap->GetMatrix(), true);
-	}
-#else
-    if (bitmap != nullptr)
-    {
-		glEnable(GL_TEXTURE_2D);
-		width = bitmap->GetBitmapWidth();
-		height = bitmap->GetBitmapHeight();
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmap->GetMatrix().data);
-    }
-#endif
-
+	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+	glTexParameteri(GL_TEXTURE_2D, FilterType_i, FilterValue_i);
 }
-
-#ifndef __WXGTK__
-cv::ogl::Texture2D* GLTexture::GetGLTexture()
-{
-	return texture;
-}
-#endif
 
 void GLTexture::checkErrors(std::string desc)
 {
@@ -141,9 +154,6 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
-#ifndef __WXGTK__
-	texture->release();
-#else
 	checkErrors("GLTexture::Delete()");
 	//glDisable(GL_TEXTURE_2D);
 	printf("Delete Texture id : %d \n", m_nTextureID);
@@ -157,16 +167,10 @@ void GLTexture::Delete()
 	}
 
 	checkErrors("GLTexture::Delete()");
-#endif
 }
 
 void GLTexture::Enable()
 {
-#ifndef __WXGTK__
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture->texId());
-#else
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-#endif
 }

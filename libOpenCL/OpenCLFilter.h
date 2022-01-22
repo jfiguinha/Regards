@@ -9,7 +9,7 @@
 #include <CL/cl.h>
 #endif
 #include <hqdn3d.h>
-
+#include <GLTexture.h>
 class CRegardsBitmap;
 
 namespace Regards
@@ -58,9 +58,11 @@ namespace Regards
 			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat & inputData, const float & fSigma);
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
+			void GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, Regards::OpenGL::GLTexture* texture, int rgba);
 
 		protected:
 
+			
 			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;
