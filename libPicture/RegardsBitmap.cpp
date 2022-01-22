@@ -20,6 +20,7 @@ void CRegardsBitmap::GetY(uint8_t* & lum)
 {
 	if (!bitmapMatrix.empty())
 	{
+		/*
 		for (int posY = 0; posY < GetBitmapHeight(); posY++)
 		{
 			for (int posX = 0; posX < GetBitmapWidth(); posX++)
@@ -29,6 +30,18 @@ void CRegardsBitmap::GetY(uint8_t* & lum)
 				lum[posLocal] = 0.257f * value[bitmapMatrix.data[posPicture + 2]] + 0.504f * value[bitmapMatrix.data[posPicture + 1]] + 0.098f * value[bitmapMatrix.data[posPicture]] + 16;
 			}
 		}
+		*/
+		cv::Mat cvDest;
+		cv::Mat ycbcr;
+		cv::Mat yChannel;
+
+		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+		cv::extractChannel(ycbcr, yChannel, 0);
+		memcpy(lum, yChannel.data, bitmapMatrix.cols * bitmapMatrix.rows);
+
+		yChannel.release();
+		ycbcr.release();
 	}
 }
 
@@ -36,6 +49,7 @@ void CRegardsBitmap::SetY(uint8_t* lum)
 {
 	if (!bitmapMatrix.empty())
 	{
+		/*
 		for (int posY = 0; posY < GetBitmapHeight(); posY++)
 		{
 			for (int posX = 0; posX < GetBitmapWidth(); posX++)
@@ -58,6 +72,28 @@ void CRegardsBitmap::SetY(uint8_t* lum)
 				bitmapMatrix.data[posPicture] = clamp(B, 0.0, 255.0); //min(Y + 2.03211f * U, 255.0f); //B
 			}
 		}
+		*/
+		cv::Mat cvDest;
+		cv::Mat ycbcr;
+		cv::Mat yChannel;
+
+		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+
+		// Extract the Y channel
+		cv::extractChannel(ycbcr, yChannel, 0);
+
+		memcpy(yChannel.data, lum, bitmapMatrix.cols * bitmapMatrix.rows);
+
+		// Merge the the color planes back into an Lab image
+		cv::insertChannel(yChannel, ycbcr, 0);
+
+		// convert back to RGB
+		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
+		cv::cvtColor(cvDest, bitmapMatrix, cv::COLOR_BGR2BGRA);
+		// Temporary Mat not reused, so release from memory.
+		yChannel.release();
+		ycbcr.release();
 	}
 }
 
@@ -361,7 +397,7 @@ bool CRegardsBitmap::HorzFlipBuf()
 //////////////////////////////////////////////////////////////////////////////////////////
 bool CRegardsBitmap::Rotation90()
 {
-	if (!bitmapMatrix.empty())
+	if (bitmapMatrix.empty())
 		return false;
 
 	cv::rotate(bitmapMatrix, bitmapMatrix, cv::ROTATE_90_CLOCKWISE);
@@ -373,8 +409,10 @@ bool CRegardsBitmap::Rotation90()
 //////////////////////////////////////////////////////////////////////////////////////////
 bool CRegardsBitmap::VertFlipBuf()
 {
-	if (!bitmapMatrix.empty())
-		cv::flip(bitmapMatrix, bitmapMatrix, 0);
+	if (bitmapMatrix.empty())
+		return false;
+	
+	cv::flip(bitmapMatrix, bitmapMatrix, 0);
 
 	return true;
 }
@@ -559,16 +597,6 @@ void CRegardsBitmap::SetAlphaValue(const int& value)
 		split(bitmapMatrix, bgr_planes);
 		bgr_planes[3] = cv::Scalar(alphaValue);
 		cv::merge(bgr_planes, bitmapMatrix);
-		/*
-		for (auto y = 0; y < bitmapMatrix.rows; y++)
-		{
-			for (auto x = 0; x < bitmapMatrix.cols; x++)
-			{
-				CRgbaquad* colorSrc = GetPtColorValue(x, y);
-				colorSrc->SetAlpha(alphaValue);
-			}
-		}
-		*/
 	}
 }
 
@@ -720,15 +748,6 @@ CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, con
 
 		cv::Rect myROI(xPos, yPos, (xPos - xEnd), (yEnd - yPos));
 		bitmap->SetMatrix(bitmapMatrix(myROI));
-		/*
-		for (auto y = yPos; y < yEnd; y++)
-		{
-			for (auto x = xPos; x < xEnd; x++)
-			{
-				bitmap->SetColorValue(x - xPos, y - yPos, GetColorValue(x, y));
-			}
-		}
-		*/
 	}
 	return bitmap;
 }
@@ -761,29 +780,6 @@ int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad& Transp)
 
 void CRegardsBitmap::SetBackgroundColor(const CRgbaquad& m_cValue)
 {
-	/*
-	int size = bitmapMatrix.cols << 2;
-	auto buffer = new uint8_t[size];
-
-
-	for (auto x = 0; x < bitmapMatrix.cols; x++)
-	{
-		int position = x << 2;
-		memcpy(buffer + position, &m_cValue, sizeof(CRgbaquad));
-	}
-
-	if (!bitmapMatrix.empty())
-	{
-
-		for (auto y = 0; y < bitmapMatrix.rows; y++)
-		{
-			int position = GetPosition(0, y);
-			memcpy(bitmapMatrix.data + position, buffer, size);
-		}
-	}
-
-	delete[] buffer;
-	*/
 	if (!bitmapMatrix.empty())
 		bitmapMatrix = cv::Scalar(m_cValue.GetBlue(), m_cValue.GetGreen(), m_cValue.GetRed());
 
@@ -824,23 +820,6 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap* nextPicture, const float& pourc
 {
 	if (!bitmapMatrix.empty())
 	{
-		/*
-		float diff = 1.0f - pourcentage;
-
-		for (auto y = 0; y < bitmapMatrix.rows; y++)
-		{
-
-			for (auto x = 0; x < bitmapMatrix.cols; x++)
-			{
-				CRgbaquad color1 = nextPicture->GetColorValue(x, y);
-				CRgbaquad color2 = GetColorValue(x, y);
-				color1.Mul(pourcentage);
-				color2.Mul(diff);
-				color2.Add(color1);
-				SetColorValue(x, y, color2);
-			}
-		}
-		*/
 		cv::Mat dst;
 		float beta = (1.0 - pourcentage);
 		cv::addWeighted(bitmapMatrix, pourcentage, nextPicture->GetMatrix(), beta, 0.0, dst);

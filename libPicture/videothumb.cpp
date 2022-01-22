@@ -84,19 +84,6 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(int& rotation, const int& percent
 	int _timePosition = (totalTime * percent) / 100.0f;
 	CRegardsBitmap* bitmap = GetVideoFrame(_timePosition, thumbnailWidth, thumbnailHeight, true);
 	timePosition = _timePosition;
-	/*
-	int ret = decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
-	if (ret != 0)
-	{
-		delete decodeFrame;
-		decodeFrame = new CFFmpegDecodeFrame("");
-		decodeFrame->OpenFile(filename);
-		decodeFrame->GetFrameBitmapPosition(timePosition, thumbnailWidth, thumbnailHeight);
-	}
-
-	rotation = decodeFrame->GetRotation();
-	*/
-
 	return TestIsValidBitmap(bitmap);
 }
 
