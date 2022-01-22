@@ -395,12 +395,30 @@ bool CRegardsBitmap::HorzFlipBuf()
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////////////
-bool CRegardsBitmap::Rotation90()
+bool CRegardsBitmap::Rotate90()
+{
+	if (bitmapMatrix.empty())
+		return false;
+
+	cv::rotate(bitmapMatrix, bitmapMatrix, cv::ROTATE_90_COUNTERCLOCKWISE);
+	return true;
+}
+
+bool CRegardsBitmap::Rotate270()
 {
 	if (bitmapMatrix.empty())
 		return false;
 
 	cv::rotate(bitmapMatrix, bitmapMatrix, cv::ROTATE_90_CLOCKWISE);
+	return true;
+}
+
+bool CRegardsBitmap::Rotate180()
+{
+	if (bitmapMatrix.empty())
+		return false;
+
+	cv::rotate(bitmapMatrix, bitmapMatrix, cv::ROTATE_180);
 	return true;
 }
 
@@ -417,7 +435,7 @@ bool CRegardsBitmap::VertFlipBuf()
 	return true;
 }
 
-
+/*
 bool CRegardsBitmap::RotateRawExif(const int& orientation)
 {
 	bool ret = true;
@@ -429,35 +447,35 @@ bool CRegardsBitmap::RotateRawExif(const int& orientation)
 		this->HorzFlipBuf();
 		break;
 	case 3: // bottom right side
-		this->HorzFlipBuf();
+		this->Rotate90();
 		this->VertFlipBuf();
 		break;
 	case 4: // bottom left side
 		this->VertFlipBuf();
 		break;
 	case 5: //left side top
-		this->Rotation90();
+		this->Rotate90();
 		//this->VertFlipBuf();
 		break;
 	case 6: // right side top
-		this->Rotation90();
+		this->Rotate90();
 		//this->VertFlipBuf();
 		this->HorzFlipBuf();
 		break;
 	case 7: // right side bottom
-		this->Rotation90();
+		this->Rotate90();
 		this->HorzFlipBuf();
 		this->VertFlipBuf();
 		break;
 	case 8: // left side bottom
-		this->Rotation90();
+		this->Rotate90();
 		this->VertFlipBuf();
 		break;
-	default: ;
+	default:;
 	}
 	return ret;
 }
-
+*/
 bool CRegardsBitmap::RotateExif(const int& orientation)
 {
 	bool ret = true;
@@ -476,20 +494,20 @@ bool CRegardsBitmap::RotateExif(const int& orientation)
 		this->VertFlipBuf();
 		break;
 	case 5: //left side top
-		this->Rotation90();
-		this->VertFlipBuf();
+		this->Rotate90();
 		this->HorzFlipBuf();
 		break;
 	case 6: // right side top
-		this->Rotation90();
-		this->VertFlipBuf();
+		this->Rotate90();
 		break;
 	case 7: // right side bottom
-		this->Rotation90();
+		this->Rotate90();
+		this->VertFlipBuf();
 		break;
 	case 8: // left side bottom
-		this->Rotation90();
+		this->Rotate90();
 		this->HorzFlipBuf();
+		this->VertFlipBuf();
 		break;
 	default: ;
 	}

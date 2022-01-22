@@ -57,6 +57,7 @@ public:
 	int PhotoFiltre(const CRgbaquad &clValue, const int &intensity);
 	int Rotate90();
 	int Rotate270();
+	int Rotate180();
 	int BrightnessAndContrast(const double &brightness, const double &contrast);
 	int RGBFilter(const int &red, const int &green, const int &blue);
 	int Resize(const int &imageWidth, const int &imageHeight, const int &interpolation);

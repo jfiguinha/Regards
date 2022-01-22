@@ -632,6 +632,19 @@ void CFiltreEffet::CalculNewSize(const int32_t& x, const int32_t& y, const doubl
 //----------------------------------------------------------------------------
 int CFiltreEffet::RotateFree(const double& angle)
 {
+	if (angle == 180.0)
+	{
+		return filtreEffet->Rotate180();
+	}
+	else if (angle == 90.0)
+	{
+		return filtreEffet->Rotate90();
+	}
+	else if (angle == 270.0)
+	{
+		return filtreEffet->Rotate270();
+	}
+
 	int widthOut;
 	int heightOut;
 	CalculNewSize(filtreEffet->GetWidth(), filtreEffet->GetHeight(), angle, widthOut, heightOut);

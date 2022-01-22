@@ -123,6 +123,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		filename = bitmap->GetFilename();
 		local.copyTo(input);
 		delete _bitmap;
+		preview = false;
 
 	}
 
@@ -218,41 +219,64 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 	return bitmapOut;
 
 }
+
+//-----------------------------------------------------------------------------------------------
+//Get Output
+//-----------------------------------------------------------------------------------------------
+
+wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
+{
+	wxImage anImage(input.cols, input.rows, false);
+	
+	if (!input.empty())
+	{
+		cl_mem clBuffer = (cl_mem)input.handle(cv::ACCESS_RW);
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+			COpenCLParameterClMem * paramOutput = new COpenCLParameterClMem();
+			paramOutput->SetValue(clBuffer);
+			paramOutput->SetNoDelete(true);
+			paramOutput->SetLibelle("input");
+			vecParam.push_back(paramOutput);
+
+			COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("widthIn");
+			paramWidth->SetValue(input.cols);
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("heightIn");
+			paramHeight->SetValue(input.rows);
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, &anImage);
+			program->ExecuteProgram1D(programCL->GetProgram(), "BitmapToWxImage");
+
+			delete program;
+			vecParam.clear();
+
+		}
+	}
+	return anImage;
+}
+
+
 //-----------------------------------------------------------------------------------------------
 //Get Output
 //-----------------------------------------------------------------------------------------------
 
 wxImage COpenCLEffect::GetwxImage()
 {
-	cv::Mat output;
-
 	if (preview && !paramOutput.empty())
 	{
-		paramOutput.copyTo(output);
+		return GetwxImage(paramOutput);
 	}
-	else
-	{
-		input.copyTo(output);
-	}
-
-	wxImage anImage(output.cols, output.rows, false);
-	unsigned char* dataOut = anImage.GetData();
-	if (output.data != nullptr)
-	{
-		int size = output.cols * output.rows;
-		tbb::parallel_for(
-			0, size, 1, [=](int i)
-			{
-				const int y = i / output.cols;
-				const int x = i - (y * output.cols);
-				const int calcul = (output.rows - y - 1) * output.cols + x;
-				dataOut[i * 3] = output.data[(calcul << 2) + 2]; // R
-				dataOut[i * 3 + 1] = output.data[(calcul << 2) + 1]; // G
-				dataOut[i * 3 + 2] = output.data[(calcul << 2)]; // B
-			});
-	}
-
-	return anImage;
+	return GetwxImage(input);
+	
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -534,14 +558,13 @@ int COpenCLEffect::FlipVertical()
 {
 	if (context != nullptr)
 	{
-		COpenCLFilter openclFilter(context);
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Flip("FlipVertical", paramOutput);
+			cv::flip(paramOutput, paramOutput, 0);
 		}
 		else
 		{
-			openclFilter.Flip("FlipVertical", input);
+			cv::flip(input, input, 0);
 		}
 	}
 
@@ -550,18 +573,13 @@ int COpenCLEffect::FlipVertical()
 
 int COpenCLEffect::FlipHorizontal()
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		COpenCLFilter opencl_filter(context);
-		if (preview && !paramOutput.empty())
-		{
-			opencl_filter.Flip("FlipHorizontal", paramOutput);
-		}
-		else
-		{
-
-			opencl_filter.Flip("FlipHorizontal", input);
-		}
+		cv::flip(paramOutput, paramOutput, 1);
+	}
+	else
+	{
+		cv::flip(input, input, 1);
 	}
 
 	return 0;
@@ -569,47 +587,39 @@ int COpenCLEffect::FlipHorizontal()
 
 int COpenCLEffect::Rotate90()
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		int _widthOut;
-		int _heightOut;
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			_widthOut = paramOutput.rows;
-			_heightOut = paramOutput.cols;
-			openclFilter.Rotate("Rotation90", _widthOut, _heightOut, 90.0f, paramOutput);
-		}
-		else
-		{
-			_widthOut = input.rows;
-			_heightOut = input.cols;
-			openclFilter.Rotate("Rotation90", _widthOut, _heightOut, 90.0f, input);
-		}
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
 	}
+	else
+	{
+		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
+	}
+	return 0;
+}
 
+int COpenCLEffect::Rotate180()
+{
+	if (preview && !paramOutput.empty())
+	{
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_180);
+	}
+	else
+	{
+		cv::rotate(input, input, cv::ROTATE_180);
+	}
 	return 0;
 }
 
 int COpenCLEffect::Rotate270()
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		int _widthOut;
-		int _heightOut;
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			_widthOut = paramOutput.rows;
-			_heightOut = paramOutput.cols;
-			openclFilter.Rotate("Rotation270", _widthOut, _heightOut, 270.0f, paramOutput);
-		}
-		else
-		{
-			_widthOut = input.rows;
-			_heightOut = input.cols;
-			openclFilter.Rotate("Rotation270", _widthOut, _heightOut, 270.0f, input);
-		}
+		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
+	}
+	else
+	{
+		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
 	}
 	return 0;
 }
@@ -634,6 +644,7 @@ int COpenCLEffect::RotateFree(const double& angle, const int& widthOut, const in
 			_heightOut = heightOut;
 			openclFilter.Rotate("RotateFree", widthOut, heightOut, angle, input);
 		}
+		
 	}
 	return 0;
 }

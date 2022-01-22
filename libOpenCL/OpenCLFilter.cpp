@@ -1202,7 +1202,7 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 		{
 			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			dest.create(heightOut, widthOut, type);
 			program->SetParameter(&vecParam, widthOut, heightOut, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);

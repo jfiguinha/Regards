@@ -79,6 +79,7 @@ public:
 	virtual int PhotoFiltre(const CRgbaquad &clValue, const int &intensity) = 0;
 	virtual int Rotate90() = 0;
 	virtual int Rotate270() = 0;
+	virtual int Rotate180() = 0;
 	virtual int RotateFree(const double &angle, const int &widthOut, const int &heightOut) = 0;
 	virtual int BrightnessAndContrast(const double &brightness, const double &contrast) = 0;
 	virtual int RGBFilter(const int &red, const int &green, const int &blue) = 0;

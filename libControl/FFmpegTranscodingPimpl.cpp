@@ -1853,13 +1853,18 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 			openclEffectYUV->SetMemoryData(tmp_frame->data[0], ysize, tmp_frame->data[1], usize, tmp_frame->data[2],
 			                               vsize, tmp_frame->width, tmp_frame->height, tmp_frame->linesize[0]);
 		}
+
+		bool opencvEffect = false;
 		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
+		openclEffectYUV->ConvertToBgr();
 		if (stabilizeFrame || correctedContrast)
 		{
 			if (openCVStabilization == nullptr)
 				openCVStabilization = new COpenCVStabilization(
 					videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 			openclEffectYUV->ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+			
+			opencvEffect = true;
 		}
 
 		openclEffectYUV->FlipVertical();
@@ -1870,7 +1875,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 			if (bitmapData != nullptr)
 				delete bitmapData;
 			bitmapData = openclEffectYUV->GetBitmap();
-
+			//if (opencvEffect)
+			//	bitmapData->ConvertToBgr();
 			decodeBitmap = true;
 		}
 		else

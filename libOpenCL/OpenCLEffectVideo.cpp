@@ -105,7 +105,11 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 		Error::CheckError(err);
 	}
 }
-
+void COpenCLEffectVideo::ConvertToBgr()
+{
+	if(!paramSrc.empty())
+		cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
+}
 
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {

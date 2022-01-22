@@ -35,11 +35,13 @@ public:
 
 	//Gestion Exif
 	bool RotateExif(const int& orientation = 0);
-	bool RotateRawExif(const int& orientation = 0);
+	//bool RotateRawExif(const int& orientation = 0);
 	//bool RotateAppleExif(const int & orientation = 0);
 
 	//Rotation
-	bool Rotation90();
+	bool Rotate90();
+	bool Rotate180();
+	bool Rotate270();
 
 	//Flip
 	bool HorzFlipBuf();

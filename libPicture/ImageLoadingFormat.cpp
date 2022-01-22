@@ -210,7 +210,7 @@ void CImageLoadingFormat::Rotate90()
 
 	case TYPE_IMAGE_REGARDSIMAGE:
 		{
-			_image->Rotation90();
+			_image->Rotate90();
 		}
 		break;
 

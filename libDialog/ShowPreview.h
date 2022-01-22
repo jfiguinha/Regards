@@ -73,7 +73,7 @@ namespace Regards
 			CPreviewToolbar* previewToolbar;
 			CSliderVideoPreview* sliderVideo;
 			CBitmapWndRender * bitmapWindow;
-			CBitmapWnd3D * bitmapWindowRender;
+			CBitmapWnd3D* bitmapWindowRender;
 			CRegardsConfigParam* configRegards;
 
 			bool defaultToolbar;

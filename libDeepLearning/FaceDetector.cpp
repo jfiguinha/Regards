@@ -624,18 +624,15 @@ void CFaceDetector::RotateCorrectly(CRegardsBitmap * pBitmap, int angle)
 	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
 	if (angle == 90)
 	{
-		pBitmap->Rotation90();
+		pBitmap->Rotate90();
 	}
 	else if (angle == 180)
 	{
-		pBitmap->HorzFlipBuf();
-		pBitmap->VertFlipBuf();
+		pBitmap->Rotate180();
 	}
 	else if (angle == 270)
 	{
-		pBitmap->Rotation90();
-		pBitmap->HorzFlipBuf();
-		pBitmap->VertFlipBuf();
+		pBitmap->Rotate270();
 	}
 
 }

@@ -66,7 +66,7 @@ namespace Regards
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
-			
+			void ConvertToBgr();
 			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
 			void ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization);
 			int GetDataSizeWidth(const bool &src);

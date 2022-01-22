@@ -2107,7 +2107,22 @@ int CFiltreEffetCPU::Rotate90()
 
 	if (bitmap != nullptr)
 	{
-		RotateMatrix(270, bitmap->GetMatrix());
+		bitmap->Rotate90();
+	}
+	return 0;
+}
+
+int CFiltreEffetCPU::Rotate180()
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		bitmap->Rotate180();
 	}
 	return 0;
 }
@@ -2125,7 +2140,7 @@ int CFiltreEffetCPU::Rotate270()
 
 	if (bitmap != nullptr)
 	{
-		RotateMatrix(90, bitmap->GetMatrix());
+		bitmap->Rotate270();
 	}
 	return 0;
 }

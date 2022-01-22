@@ -117,7 +117,8 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->image = new CImageLoadingFormat();
 		int timePosition = 0;
 		CRegardsBitmap* picture = TestIsValidBitmap(GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail));
-		picture->RotateRawExif(exifRotation);
+		picture->RotateExif(exifRotation);
+		picture->VertFlipBuf();
 		cxVideo->timePosition = timePosition;
 		if (compressJpeg)
 		{

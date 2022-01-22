@@ -65,6 +65,7 @@ namespace Regards
 			int WaveFilter(int x, int y, short height, int scale, int radius);
 			int Rotate90();
 			int Rotate270();
+			int Rotate180();
 			int Negatif();
 			int Sepia();
 			int NoirEtBlanc();
@@ -111,7 +112,7 @@ namespace Regards
 
 		protected:
 
-
+			wxImage GetwxImage(cv::UMat& input);
 			int GetSizeData() const;
 			COpenCLContext* context = nullptr;
 			cl_mem_flags  flag;
