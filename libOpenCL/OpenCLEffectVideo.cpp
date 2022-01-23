@@ -364,11 +364,11 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 				clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
 			}
 
-			COpenCLParameterClMem * paramSrc = new COpenCLParameterClMem();
-			paramSrc->SetNoDelete(true);
-			paramSrc->SetLibelle("input");
-			paramSrc->SetValue(clBuffer);
-
+			COpenCLParameterClMem * inputSrc = new COpenCLParameterClMem();
+			inputSrc->SetNoDelete(true);
+			inputSrc->SetLibelle("input");
+			inputSrc->SetValue(clBuffer);
+			vecParam.push_back(inputSrc);
 
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);

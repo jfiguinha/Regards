@@ -147,7 +147,7 @@ int COpenCLEffectVideoYUV::GetSizeData()
 }
 
 
-void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &heightOut)
+void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &heightOut, const int& rgba)
 {
 	if (!needToTranscode)
 		return;
@@ -226,6 +226,11 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				paramSrcHeight->SetLibelle("heightOut");
 				paramSrcHeight->SetValue(heightOut);
 				vecParam.push_back(paramSrcHeight);
+
+				COpenCLParameterInt* paramRgba = new COpenCLParameterInt();
+				paramRgba->SetLibelle("rgba");
+				paramRgba->SetValue(rgba);
+				vecParam.push_back(paramRgba);
 
 				vecParam.push_back(paramLineSize);
 

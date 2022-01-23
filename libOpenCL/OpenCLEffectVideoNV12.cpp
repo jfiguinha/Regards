@@ -146,7 +146,7 @@ bool COpenCLEffectVideoNV12::IsOk()
 	return isOk;
 }
 
-void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut)
+void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut, const int& rgba)
 {
 	if (!needToTranscode)
 		return;

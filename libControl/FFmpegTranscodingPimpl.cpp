@@ -1855,8 +1855,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		}
 
 		bool opencvEffect = false;
-		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
-		openclEffectYUV->ConvertToBgr();
+		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height, 1);
+		//openclEffectYUV->ConvertToBgr();
 		if (stabilizeFrame || correctedContrast)
 		{
 			if (openCVStabilization == nullptr)
@@ -1870,37 +1870,25 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		openclEffectYUV->FlipVertical();
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
-		if (openclContext2d->GetDefaultType() == OPENCL_UCHAR)
+		decodeBitmap = false;
+
+		if (dst_hardware == nullptr)
 		{
-			if (bitmapData != nullptr)
-				delete bitmapData;
-			bitmapData = openclEffectYUV->GetBitmap();
-			//if (opencvEffect)
-			//	bitmapData->ConvertToBgr();
-			decodeBitmap = true;
+			dst_hardware = av_frame_alloc();
+			dst_hardware->format = AV_PIX_FMT_YUV420P;
+			dst_hardware->width = stream->dec_frame->width;
+			dst_hardware->height = stream->dec_frame->height;
+			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
+				            AV_PIX_FMT_YUV420P, 1);
 		}
+
+		openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2],
+			                        stream->dec_frame->width, stream->dec_frame->height);
+
+		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
+			av_frame_copy_props(dst_hardware, stream->dec_frame);
 		else
-		{
-			decodeBitmap = false;
-
-			if (dst_hardware == nullptr)
-			{
-				dst_hardware = av_frame_alloc();
-				dst_hardware->format = AV_PIX_FMT_YUV420P;
-				dst_hardware->width = stream->dec_frame->width;
-				dst_hardware->height = stream->dec_frame->height;
-				av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
-				               AV_PIX_FMT_YUV420P, 1);
-			}
-
-			openclEffectYUV->GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2],
-			                            stream->dec_frame->width, stream->dec_frame->height);
-
-			if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
-				av_frame_copy_props(dst_hardware, stream->dec_frame);
-			else
-				av_frame_copy_props(dst_hardware, tmp_frame);
-		}
+			av_frame_copy_props(dst_hardware, tmp_frame);
 	}
 	else
 	{
