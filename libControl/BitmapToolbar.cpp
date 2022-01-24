@@ -115,7 +115,6 @@ void CBitmapToolbar::ChangeZoomInPos()
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
-			dwPos++;
 			if (dwPos >= slide->GetNbValue())
 				dwPos = slide->GetNbValue() - 1;
 			SetTrackBarPosition(dwPos);
@@ -134,7 +133,6 @@ void CBitmapToolbar::ChangeZoomOutPos()
 		if (wndViewer != nullptr)
 		{
 			int dwPos = wndViewer->GetPosRatio();
-			dwPos--;
 			if (dwPos < 0)
 				dwPos = 0;
 			SetTrackBarPosition(dwPos);

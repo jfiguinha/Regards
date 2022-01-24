@@ -120,9 +120,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	CThemeScrollBar themeScroll;
 	CThemeToolbar themeToolbar;
 	std::vector<int> value = {
-		1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200,
-		1600
-	};
+		1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
 
 	this->bitmapInterface = bitmapInterface;
 
@@ -142,6 +140,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	//			CBitmapWndRender(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 
 	bitmapWindow = new CBitmapWndViewer(pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
+	bitmapWindow->SetTabValue(value);
 	bitmapWindowRender = new CBitmapWnd3D(this, bitmapViewerId);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 

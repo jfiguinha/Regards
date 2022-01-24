@@ -51,17 +51,16 @@ namespace Regards
 			void BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat& inputData);
 			void ColorEffect(const wxString &functionName, cv::UMat& inputData);
 			void Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData);
-			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
-			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle);
+			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio);
+			cv::UMat Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio);
 			void Fusion(cv::UMat& inputData, const cv::UMat& secondPictureData, const float &pourcentage);
 			void BrightnessAndContrastAuto(cv::UMat & inputData, float clipHistPercent);
 			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat & inputData, const float & fSigma);
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
-			void GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, Regards::OpenGL::GLTexture* texture, int rgba);
 
 		protected:
-
+			cv::UMat upscaleImage(cv::UMat img, int method, int scale);
 			
 			int GetSizeData();
 			cl_mem_flags  flag;

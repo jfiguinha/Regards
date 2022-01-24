@@ -6,8 +6,116 @@
 #include "utility.h"
 #include <CvPlot/cvplot.h>
 #include <opencv2/xphoto.hpp>
-
+#include <opencv2/dnn_superres.hpp>
+#include <FileUtility.h>
+#include <mutex>
 using namespace Regards::OpenCL;
+using namespace cv;
+using namespace dnn;
+using namespace dnn_superres;
+
+#define EDSR 7
+#define ESPCN 8
+#define FSRCNN 9
+#define LapSRN 10
+
+bool isUsed = false;
+std::mutex muDnnSuperResImpl;
+
+string GenerateModelPath(string modelName, int scale)
+{
+	wxString path = "";
+#ifdef WIN32
+	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
+#else
+	path = CFileUtility::GetResourcesFolderPath() + "/model/pose_iter_160000.caffemodel";
+#endif
+
+	return path.ToStdString();
+}
+
+bool TestIfMethodIsValid(int method, int scale)
+{
+	if (method == EDSR && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == ESPCN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == FSRCNN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == LapSRN && (scale == 2 || scale == 4 || scale == 8))
+	{
+		return true;
+	}
+	return false;
+}
+
+cv::UMat COpenCLFilter::upscaleImage(cv::UMat img, int method, int scale)
+{
+	isUsed = true;
+	UMat outputImage;
+	try
+	{
+		//muDnnSuperResImpl.lock();
+
+		DnnSuperResImpl sr;
+		
+
+		switch (method)
+		{
+		case EDSR: 
+			{
+				string algorithm = "edsr";
+				sr.readModel(GenerateModelPath("EDSR",scale));
+				sr.setModel(algorithm, scale);
+			}
+			break;
+
+		case ESPCN:
+			{
+				string algorithm = "espcn";
+				sr.readModel(GenerateModelPath("ESPCN", scale));
+				sr.setModel(algorithm, scale);
+			}
+			break;
+		case FSRCNN:
+			{
+				string algorithm = "fsrcnn";
+				sr.readModel(GenerateModelPath("FSRCNN", scale));
+				sr.setModel(algorithm, scale);
+			}
+			break;
+		case LapSRN:
+			{
+				string algorithm = "lapsrn";
+				sr.readModel(GenerateModelPath("LapSRN", scale));
+				sr.setModel(algorithm, scale);
+			}
+			break;
+		}
+
+		sr.setPreferableTarget(DNN_TARGET_OPENCL);
+		sr.upsample(img, outputImage);
+
+		//muDnnSuperResImpl.unlock();
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	isUsed = false;
+	return outputImage;
+}
+
 
 
 COpenCLFilter::COpenCLFilter(COpenCLContext * context)
@@ -202,62 +310,6 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureDat
 	}
 }
 
-
-
-void COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, Regards::OpenGL::GLTexture* texture, int rgba)
-{
-	if (!inputData.empty())
-	{
-		cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-
-		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter*> vecParam;
-			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem* paramOutput = new COpenCLParameterClMem();
-			paramOutput->SetValue(clBuffer);
-			paramOutput->SetNoDelete(true);
-			vecParam.push_back(paramOutput);
-
-			COpenCLParameterInt* paramOutWidth = new COpenCLParameterInt();
-			paramOutWidth->SetValue(inputData.cols);
-			paramOutWidth->SetNoDelete(false);
-			vecParam.push_back(paramOutWidth);
-
-			COpenCLParameterInt* paramOutHeight = new COpenCLParameterInt();
-			paramOutHeight->SetValue(inputData.rows);
-			paramOutHeight->SetNoDelete(false);
-			vecParam.push_back(paramOutHeight);
-
-			COpenCLParameterInt* paramRGBA = new COpenCLParameterInt();
-			paramRGBA->SetValue(rgba);
-			paramRGBA->SetLibelle("rgba");
-			vecParam.push_back(paramRGBA);
-
-			program->SetKeepOutput(true);
-			program->SetParameter(&vecParam, texture->GetWidth(), texture->GetHeight(), cl_image);
-			program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-
-			delete program;
-
-			for (COpenCLParameter* parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-			paramOutput = nullptr;
-			paramOutWidth = nullptr;
-			paramOutHeight = nullptr;
-
-		}
-	}
-}
 
 void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 {
@@ -1229,95 +1281,371 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 
 }
 
-cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle)
+cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
 {
-	cv::UMat cvImage;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+	cv::Rect rect;
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
 
-	if (programCL != nullptr)
+	if (angle == 270)
 	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		int srcx = posY;
+		int srcy = posX;
 
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetNoDelete(true);
-		input->SetLibelle("input");
-		vecParam.push_back(input);	
+		posX = srcx;
+		posY = srcy;
 
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(inputData.cols);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(inputData.rows);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-		paramWidthOut->SetLibelle("widthOut");
-		paramWidthOut->SetValue(widthOut);
-		vecParam.push_back(paramWidthOut);
-
-		COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-		paramHeightOut->SetLibelle("heightOut");
-		paramHeightOut->SetValue(heightOut);
-		vecParam.push_back(paramHeightOut);
-
-		COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
-		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(flipH);
-		vecParam.push_back(paramflipH);
-
-		COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
-		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(flipV);
-		vecParam.push_back(paramflipV);
-
-		COpenCLParameterInt * paramangle = new COpenCLParameterInt();
-		paramangle->SetLibelle("angle");
-		paramangle->SetValue(angle);
-		vecParam.push_back(paramangle);
-
-		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
-		paramtype->SetLibelle("type");
-		paramtype->SetValue(method);
-		vecParam.push_back(paramtype);
-
-		try
-		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			cvImage.create((int)heightOut, (int)widthOut, type);
-
-			program->SetParameter(&vecParam,  widthOut, heightOut, (cl_mem)cvImage.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), functionName);
-		}
-		catch(...)
-		{
-		}
-
-		delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
+		posX = widthIn - posX - 1;
 	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+
+	if (angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
+
+	rect.x = abs(posX);
+	rect.y = abs(posY);
+	return rect;
+}
+
+cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio)
+{
+	cv::UMat cvImage = inputData;
+
+	try
+	{
+		//////////////////////////////////////////////////////////////////////////////////////////
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////
+		if (angle == 90)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+		}
+		else if (angle == 270)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+		}
+		else if (angle == 180)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
+		}
+
+		/*
+	nearest neighbor interpolation
+	INTER_NEAREST = 0,
+	bilinear interpolation
+	INTER_LINEAR = 1,
+	bicubic interpolation
+	INTER_CUBIC = 2,
+	resampling using pixel area relation. It may be a preferred method for image decimation, as
+	it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
+	method.
+	INTER_AREA = 3,
+	Lanczos interpolation over 8x8 neighborhood
+	INTER_LANCZOS4 = 4,
+	Bit exact bilinear interpolation
+	INTER_LINEAR_EXACT = 5,
+	Bit exact nearest neighbor interpolation. This will produce same results as
+	the nearest neighbor method in PIL, scikit-image or Matlab.
+	INTER_NEAREST_EXACT = 6,
+	*/
+
+		cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+
+		if (flipH)
+		{
+			cv::flip(cvImage, cvImage, 1);
+		}
+		if (flipV)
+		{
+			cv::flip(cvImage, cvImage, 0);
+		}
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return cvImage;
+	/*
+	cv::UMat cvImage;
+	if (method > 11)
+	{
+		//Super Resolution
+		string path = "FSRCNN_x3.pb";
+		string modelName = "fsrcnn";
+		cvImage = upscaleImage(inputData, modelName, path, 3);
+	}
+	else
+	{
+
+		
+		cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+		COpenCLProgram* programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+			input->SetValue(clBuffer);
+			input->SetNoDelete(true);
+			input->SetLibelle("input");
+			vecParam.push_back(input);
+
+			COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+			paramWidth->SetValue(inputData.cols);
+			paramWidth->SetLibelle("width");
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+			paramHeight->SetValue(inputData.rows);
+			paramHeight->SetLibelle("height");
+			vecParam.push_back(paramHeight);
+
+			COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
+			paramWidthOut->SetLibelle("widthOut");
+			paramWidthOut->SetValue(widthOut);
+			vecParam.push_back(paramWidthOut);
+
+			COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
+			paramHeightOut->SetLibelle("heightOut");
+			paramHeightOut->SetValue(heightOut);
+			vecParam.push_back(paramHeightOut);
+
+			COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+			paramflipH->SetLibelle("flipH");
+			paramflipH->SetValue(flipH);
+			vecParam.push_back(paramflipH);
+
+			COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+			paramflipV->SetLibelle("flipV");
+			paramflipV->SetValue(flipV);
+			vecParam.push_back(paramflipV);
+
+			COpenCLParameterInt* paramangle = new COpenCLParameterInt();
+			paramangle->SetLibelle("angle");
+			paramangle->SetValue(angle);
+			vecParam.push_back(paramangle);
+
+			COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+			paramtype->SetLibelle("type");
+			paramtype->SetValue(method);
+			vecParam.push_back(paramtype);
+
+			try
+			{
+				int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+				int type = CV_MAKE_TYPE(depth, 4);
+				cvImage.create((int)heightOut, (int)widthOut, type);
+
+				program->SetParameter(&vecParam, widthOut, heightOut, (cl_mem)cvImage.handle(cv::ACCESS_RW));
+				program->SetKeepOutput(true);
+				program->ExecuteProgram(programCL->GetProgram(), functionName);
+			}
+			catch (...)
+			{
+			}
+
+			delete program;
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+
 	return cvImage;// GetOpenCVStruct(outputValue, widthOut, heightOut);
+	*/
 }
 
 
-cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle)
+cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio)
 {
+	cv::UMat cvImage;
+	//inputData.copyTo(cvImage);
+	cv::cvtColor(inputData, cvImage, cv::COLOR_BGRA2BGR);
+
+	try
+	{
+
+
+
+		float ratioX = (float)inputData.cols / rc.width;
+		float ratioY = (float)inputData.rows / rc.height;
+		if (angle == 90)
+		{
+			ratioX = (float)inputData.cols / (float)rc.height;
+			ratioY = (float)inputData.rows / (float)rc.width;
+		}
+		else if (angle == 270)
+		{
+			ratioX = (float)inputData.cols / (float)rc.height;
+			ratioY = (float)inputData.rows / (float)rc.width;
+		}
+
+		cv::Rect rectGlobal;
+		cv::Rect rect_begin = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
+		cv::Rect rect_end = CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
+		rectGlobal.x = rect_begin.x;
+		rectGlobal.y = rect_begin.y;
+		rectGlobal.width = rect_end.x;
+		rectGlobal.height = rect_end.y;
+		if (rectGlobal.x > rectGlobal.width)
+		{
+			int x_end = rectGlobal.x;
+			int x = rectGlobal.width;
+			rectGlobal.x = x;
+			rectGlobal.width = x_end - x;
+		}
+		else
+		{
+			rectGlobal.width -= rectGlobal.x;
+		}
+
+		if (rectGlobal.y > rectGlobal.height)
+		{
+			int y_end = rectGlobal.y;
+			int y = rectGlobal.height;
+			rectGlobal.y = y;
+			rectGlobal.height = y_end - y;
+		}
+		else
+		{
+			rectGlobal.height -= rectGlobal.y;
+		}
+
+		if ((rectGlobal.height + rectGlobal.y) > cvImage.rows)
+		{
+			rectGlobal.height = cvImage.rows - rectGlobal.y;
+		}
+		if ((rectGlobal.width + rectGlobal.x) > cvImage.cols)
+		{
+			rectGlobal.width = cvImage.cols - rectGlobal.x;
+		}
+
+		cvImage = cvImage(rectGlobal);
+
+
+		if (angle == 90)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+		}
+		else if (angle == 270)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+		}
+		else if (angle == 180)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
+		}
+
+
+		/*
+		nearest neighbor interpolation
+		INTER_NEAREST = 0,
+		bilinear interpolation
+		INTER_LINEAR = 1,
+		bicubic interpolation
+		INTER_CUBIC = 2,
+		resampling using pixel area relation. It may be a preferred method for image decimation, as
+		it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
+		method.
+		INTER_AREA = 3,
+		Lanczos interpolation over 8x8 neighborhood
+		INTER_LANCZOS4 = 4,
+		Bit exact bilinear interpolation
+		INTER_LINEAR_EXACT = 5,
+		Bit exact nearest neighbor interpolation. This will produce same results as
+		the nearest neighbor method in PIL, scikit-image or Matlab.
+		INTER_NEAREST_EXACT = 6,
+		*/
+		if (ratio != 100)
+		{
+			if (method > 6 && TestIfMethodIsValid(method, (ratio / 100)) && !isUsed)
+			{
+				cvImage = upscaleImage(cvImage, method, (ratio / 100));
+			}
+			else
+			{
+				if (method > 6)
+				{
+					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), INTER_NEAREST_EXACT);
+				}
+				else
+					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+			}
+		}
+
+		//Apply Transformation
+		if (flipH)
+		{
+			cv::flip(cvImage, cvImage, 1);
+		}
+		if (flipV)
+		{
+			cv::flip(cvImage, cvImage, 0);
+		}
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+	//UMat out;
+	//cvImage.copyTo(out);
+	return cvImage;
+
+
+	/*
 	cv::UMat cvImage;
 	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
@@ -1421,4 +1749,7 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 		vecParam.clear();
 	}
 	return cvImage;// GetOpenCVStruct(outputValue, widthOut, heightOut);
+	*/
+
+
 }

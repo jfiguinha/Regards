@@ -54,55 +54,71 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 {
 
 	cl_int err;
-	cv::UMat input;
+	cv::UMat u;
 	if (source)
 	{
-		input = paramSrc;
+		u = paramSrc;
 	}
 	else if (interpolatePicture && !paramOutput.empty())
 	{
-		input = paramOutput;
+		u = paramOutput;
 	}
 	else
 	{
-		input = paramSrc;
+		u = paramSrc;
 	}
 
-	cl_mem cl_textureDisplay = nullptr;
-	glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
-	if (context != nullptr)
+	try
 	{
-		cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
-			texture->GetTextureID(), &err);
-		Error::CheckError(err);
-	}
 
-
-	if (context != nullptr && cl_textureDisplay != nullptr)
-	{
-		try
+		cl_mem cl_textureDisplay;
+		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
+		if (context != nullptr)
 		{
-			cl_command_queue q = context->GetCommandQueue();
-			cl_int err;
-			err = clEnqueueAcquireGLObjects(q, 1, &cl_textureDisplay, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			openclFilter->GetRgbaBitmap(cl_textureDisplay, input, texture, rgba);
-			err = clEnqueueReleaseGLObjects(q, 1, &cl_textureDisplay, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFlush(q);
+			cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
+				texture->GetTextureID(), &err);
 			Error::CheckError(err);
 		}
-		catch (...)
-		{
 
-		}
+
+		cv::Size srcSize = u.size();
+		//CV_Assert(srcSize.width == (int)texture.cols() && srcSize.height == (int)texture.rows());
+
+		using namespace cv::ocl;
+		Context& ctx = Context::getDefault();
+		cl_context context = (cl_context)ctx.ptr();
+
+		cl_int status = 0;
+
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+
+		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+		status = clEnqueueAcquireGLObjects(q, 1, &cl_textureDisplay, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+		size_t offset = 0; // TODO
+		size_t dst_origin[3] = { 0, 0, 0 };
+		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
+		status = clEnqueueCopyBufferToImage(q, clBuffer, cl_textureDisplay, offset, dst_origin, region, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+		status = clEnqueueReleaseGLObjects(q, 1, &cl_textureDisplay, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+		status = clFinish(q); // TODO Use events
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
+
+		status = clReleaseMemObject(cl_textureDisplay); // TODO RAII
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
 	}
-
-	if (cl_textureDisplay != nullptr)
+	catch (cv::Exception& e)
 	{
-		cl_int err;
-		err = clReleaseMemObject(cl_textureDisplay);
-		Error::CheckError(err);
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
 void COpenCLEffectVideo::ConvertToBgr()
@@ -149,22 +165,22 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 }
 
 
-void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
+void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
 	if (context != nullptr && !paramSrc.empty())
 	{
 		
-		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, "Interpolation", bicubic, paramSrc, flipH, flipV, angle);
+		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, "Interpolation", bicubic, paramSrc, flipH, flipV, angle, ratio);
 		interpolatePicture = true;
 	}
 }
 
-void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
+void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
 	if (context != nullptr && !paramSrc.empty())
 	{
 		
-		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, "InterpolationZone", bicubic, paramSrc, flipH, flipV, angle);
+		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, "InterpolationZone", bicubic, paramSrc, flipH, flipV, angle, ratio);
 		interpolatePicture = true;
 	}
 }

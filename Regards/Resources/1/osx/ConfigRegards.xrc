@@ -54,20 +54,21 @@
 									<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
 										<pos>205,94</pos>
 										<size>170,20</size>
-										<value>CubicFilter</value>
+										<value>NEAREST</value>
 										<content>
-											<item>CubicFilter</item>
-											<item>BboxFilter</item>
-											<item>HermiteFilter</item>
-											<item>HanningFilter</item>
-											<item>CatromFilter</item>
-											<item>MitchellFilter</item>
-											<item>TriangleFilter</item>
-											<item>QuadraticFilter</item>
-											<item>BlackmanFilter</item>
-											<item>HammingFilter</item>
-											<item>GaussianFilter</item>
-											<item>BilinearFilter</item>
+											<item>NEAREST</item>
+											<item>LINEAR</item>
+											<item>CUBIC</item>
+											<item>AREA</item>
+											<item>LANCZOS4</item>
+											<item>LINEAR_EXACT</item>
+											<item>NEAREST_EXACT</item>
+											<item>EDSR</item>
+											<item>ESPCN</item>
+											<item>FSRCNN</item>
+											<item>LapSRN</item>
+											<item>None</item>
+										</content>
 											<item>None</item>
 										</content>
 									</object>

@@ -250,13 +250,13 @@ int CFiltreEffet::SharpenMasking(const float& sharpness)
 }
 
 void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV,
-                                 int angle)
+                                 int angle, int ratio)
 {
 #ifdef _CALCU_DIFF_TIME
 	LARGE_INTEGER start_time;
 	LARGE_INTEGER end_time;
 #endif
-	filtreEffet->Interpolation(widthOut, heightOut, method, flipH, flipV, angle);
+	filtreEffet->Interpolation(widthOut, heightOut, method, flipH, flipV, angle, ratio);
 
 #ifdef _CALCU_DIFF_TIME
 #if defined(WIN32) && defined(_DEBUG)
@@ -270,13 +270,13 @@ void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, cons
 }
 
 void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-                                 int flipH, int flipV, int angle)
+                                 int flipH, int flipV, int angle, int ratio)
 {
 #ifdef _CALCU_DIFF_TIME
 	LARGE_INTEGER start_time;
 	LARGE_INTEGER end_time;
 #endif
-	filtreEffet->Interpolation(widthOut, heightOut, rc, method, flipH, flipV, angle);
+	filtreEffet->Interpolation(widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
 
 #ifdef _CALCU_DIFF_TIME
 	::QueryPerformanceCounter((LARGE_INTEGER*)&end_time);

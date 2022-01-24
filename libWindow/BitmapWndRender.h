@@ -162,6 +162,9 @@ namespace Regards
 			{
 				return endProgram;
 			}
+
+			void SetTabValue(const std::vector<int>& value);
+
 		protected:
 
 			virtual void OnUpdateBitmap(wxCommandEvent& event);
@@ -276,11 +279,8 @@ namespace Regards
 
 			int iKey;
 			
-			static const long Max;
-			static const float TabRatio[];
-
 			wxString filename;
-
+			std::vector<int> value;
 			float centerX;
 			float centerY;
 			bool showScroll;

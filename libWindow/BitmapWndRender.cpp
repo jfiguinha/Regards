@@ -30,11 +30,6 @@ using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace Regards::exiv2;
 using namespace Regards::OpenCL;
-const float CBitmapWndRender::TabRatio[] = {
-	0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f, 1.33f, 1.5f,
-	1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f
-};
-const long CBitmapWndRender::Max = 26;
 
 extern bool processrecognitionison;
 
@@ -88,6 +83,11 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	bitmapLoad = false;
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	parentRender = nullptr;
+}
+
+void CBitmapWndRender::SetTabValue(const std::vector<int> & value)
+{
+	this->value = value;
 }
 
 CRgbaquad CBitmapWndRender::GetBackColor()
@@ -267,11 +267,11 @@ void CBitmapWndRender::SetRatioPos(const int& pos)
 
 	posRatio = pos;
 
-	if (posRatio > Max)
+	if (posRatio >= value.size())
 	{
-		posRatio = Max;
+		posRatio = value.size() - 1;
 	}
-	ratio = TabRatio[posRatio];
+	ratio = ((float)value[posRatio] / 100.0f);
 
 	CalculPositionPicture(centerX, centerY);
 	RefreshWindow();
@@ -462,11 +462,11 @@ void CBitmapWndRender::ZoomOn()
 	shrinkImage = false;
 
 	posRatio++;
-	if (posRatio > Max)
+	if (posRatio >= value.size())
 	{
-		posRatio = Max;
+		posRatio = value.size() - 1;
 	}
-	ratio = TabRatio[posRatio];
+	ratio = ((float)value[posRatio] / 100.0f);
 
 	CalculPositionPicture(centerX, centerY);
 
@@ -474,7 +474,7 @@ void CBitmapWndRender::ZoomOn()
 
 	UpdateScrollBar();
 
-	needToRefresh = true;
+	//needToRefresh = true;
 }
 
 //-----------------------------------------------------------------
@@ -491,11 +491,11 @@ void CBitmapWndRender::SetZoomPosition(const int& position)
 	shrinkImage = false;
 
 	posRatio = position;
-	if (posRatio > Max)
+	if (posRatio >= value.size())
 	{
-		posRatio = Max;
+		posRatio = value.size() - 1;
 	}
-	ratio = TabRatio[posRatio];
+	ratio = ((float)value[posRatio] / 100.0f);
 
 	CalculPositionPicture(centerX, centerY);
 
@@ -548,7 +548,7 @@ void CBitmapWndRender::ZoomOut()
 	if (posRatio < 0)
 		posRatio = 0;
 
-	ratio = TabRatio[posRatio];
+	ratio = ((float)value[posRatio] / 100.0f);
 
 	CalculPositionPicture(centerX, centerY);
 
@@ -556,7 +556,7 @@ void CBitmapWndRender::ZoomOut()
 
 	UpdateScrollBar();
 
-	needToRefresh = true;
+	//needToRefresh = true;
 }
 
 //-----------------------------------------------------------------
@@ -810,15 +810,15 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 void CBitmapWndRender::CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen)
 {
 	//TRACE();
-	xScreen = static_cast<int>(static_cast<float>(xReal) * ratio);
-	yScreen = static_cast<int>(static_cast<float>(yReal) * ratio);
+	xScreen = static_cast<int>(static_cast<float>(xReal) * (ratio));
+	yScreen = static_cast<int>(static_cast<float>(yReal) * (ratio));
 }
 
 void CBitmapWndRender::CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal)
 {
 	//TRACE();
-	xReal = static_cast<int>(static_cast<float>(xScreen) / ratio);
-	yReal = static_cast<int>(static_cast<float>(yScreen) / ratio);
+	xReal = static_cast<int>(static_cast<float>(xScreen) / (ratio));
+	yReal = static_cast<int>(static_cast<float>(yScreen) / (ratio));
 }
 
 
@@ -1340,7 +1340,13 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 			OutputDebugString(message);
 #endif
 
-			updateFilter = true;
+			if (mouseUpdate != nullptr)
+			{
+				if (mouseUpdate->IsSourcePreview())
+				{
+					updateFilter = true;
+				}
+			}
 
 			needToRefresh = true;
 		}
@@ -1437,11 +1443,11 @@ float CBitmapWndRender::CalculRatio(const int& pictureWidth, const int& pictureH
 
 	if (newRatio != 0.0)
 	{
-		for (int i = 0; i < Max; i++)
+		for (int i = 0; i < value.size(); i++)
 		{
-			if (newRatio < TabRatio[i])
+			if (newRatio < ((float)value[i] / 100.0f))
 			{
-				ratio = TabRatio[i];
+				ratio = ((float)value[i] / 100.0f);
 				posRatio = i;
 				break;
 			}
@@ -1579,13 +1585,15 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 
 	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
+	/*
 	if (GetWidth() * scale_factor >= widthOutput && GetHeight() * scale_factor >= heightOutput)
 	{
 		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal,
-			localflipVertical, localAngle);
+			localflipVertical, localAngle, (int)((float)value[posRatio] / 100.0f));
 	}
 	else
 	{
+	*/
 		int left = 0, top = 0;
 		int tailleAffichageWidth = widthOutput;
 		int tailleAffichageHeight = heightOutput;
@@ -1600,11 +1608,13 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 		else
 			top = 0;
 
+
+
 		wxRect rc(0, 0, 0, 0);
 		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
-			localflipVertical, localAngle);
-	}
+			localflipVertical, localAngle, value[posRatio]);
+	//}
 
 
 	if (regardsParam != nullptr)
@@ -1673,7 +1683,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
 		bool textureBinging = false;
-
+		
 		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 		{
 			printf("CBitmapWndRender IsSharedContextCompatible \n");
@@ -1687,10 +1697,10 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			}
 
 			filtreEffet->CopyPictureToTexture2D(glTexture, false, 0);
-			invert = true;
+			invert = false;
 			textureBinging = true;
 		}
-
+		
 		if (!textureBinging)
 		{
 			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
@@ -1867,6 +1877,7 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 {
 	isOpenGLShow = value;
 }
+
 
 void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 {

@@ -1180,7 +1180,7 @@ wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV,
-                                    int angle)
+                                    int angle, int ratio)
 {
 	if (bitmapOut != nullptr)
 		delete bitmapOut;
@@ -1197,7 +1197,7 @@ void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, c
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-                                    int flipH, int flipV, int angle)
+                                    int flipH, int flipV, int angle, int ratio)
 {
 	if (bitmapOut != nullptr)
 		delete bitmapOut;
