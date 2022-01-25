@@ -61,7 +61,6 @@ namespace Regards
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
-			virtual void InterpolationBicubic(const int& widthOut, const int& heightOut, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut, const int &rgba=0) {};
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);

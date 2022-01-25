@@ -1,8 +1,6 @@
 
 #include <header.h>
 #include "FiltreEffetCPU.h"
-#include "InterpolationBicubic.h"
-#include "InterpolationFilters.h"
 #include "PerlinNoise.h"
 #include "LensFlare.h"
 #include "MotionBlur.h"
@@ -18,11 +16,20 @@
 #include <GLTexture.h>
 #include <opencv2/xphoto.hpp>
 #include "VideoStabilization.h"
-
+#include <opencv2/dnn_superres.hpp>
+#include <FileUtility.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
+using namespace cv;
+using namespace dnn;
+using namespace dnn_superres;
 extern float value[256];
 using namespace Regards::FiltreEffet;
+
+#define EDSR 7
+#define ESPCN 8
+#define FSRCNN 9
+#define LapSRN 10
 
 class CFiltreEffetCPUImpl
 {
@@ -31,7 +38,170 @@ public:
 	static void generateGradient(Mat& mask, const double& radius, const double& power);
 	static double getMaxDisFromCorners(const cv::Size& imgSize, const cv::Point& center);
 	static double dist(cv::Point a, cv::Point b);
+	static cv::Mat upscaleImage(cv::Mat img, int method, int scale);
+	static string GenerateModelPath(string modelName, int scale);
+	static bool TestIfMethodIsValid(int method, int scale);
+	static cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
+
 };
+
+
+cv::Rect CFiltreEffetCPUImpl::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
+{
+	cv::Rect rect;
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
+
+	if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+
+	if (angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
+
+	rect.x = abs(posX);
+	rect.y = abs(posY);
+	return rect;
+}
+
+
+string CFiltreEffetCPUImpl::GenerateModelPath(string modelName, int scale)
+{
+	wxString path = "";
+#ifdef WIN32
+	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
+#else
+	path = CFileUtility::GetResourcesFolderPath() + "/model/pose_iter_160000.caffemodel";
+#endif
+
+	return path.ToStdString();
+}
+
+bool CFiltreEffetCPUImpl::TestIfMethodIsValid(int method, int scale)
+{
+	if (method == EDSR && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == ESPCN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == FSRCNN && (scale == 2 || scale == 3 || scale == 4))
+	{
+		return true;
+	}
+	else if (method == LapSRN && (scale == 2 || scale == 4 || scale == 8))
+	{
+		return true;
+	}
+	return false;
+}
+
+cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
+{
+	Mat outputImage;
+	try
+	{
+		//muDnnSuperResImpl.lock();
+
+		DnnSuperResImpl sr;
+
+
+		switch (method)
+		{
+		case EDSR:
+		{
+			string algorithm = "edsr";
+			sr.readModel(GenerateModelPath("EDSR", scale));
+			sr.setModel(algorithm, scale);
+		}
+		break;
+
+		case ESPCN:
+		{
+			string algorithm = "espcn";
+			sr.readModel(GenerateModelPath("ESPCN", scale));
+			sr.setModel(algorithm, scale);
+		}
+		break;
+		case FSRCNN:
+		{
+			string algorithm = "fsrcnn";
+			sr.readModel(GenerateModelPath("FSRCNN", scale));
+			sr.setModel(algorithm, scale);
+		}
+		break;
+		case LapSRN:
+		{
+			string algorithm = "lapsrn";
+			sr.readModel(GenerateModelPath("LapSRN", scale));
+			sr.setModel(algorithm, scale);
+		}
+		break;
+		}
+
+		sr.setPreferableTarget(DNN_TARGET_OPENCL);
+		sr.upsample(img, outputImage);
+
+		//muDnnSuperResImpl.unlock();
+
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return outputImage;
+}
+
 
 
 CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingFormat* bitmap)
@@ -685,7 +855,7 @@ CRegardsFloatBitmap* CFiltreEffetCPU::GetFloatBitmap(const bool& source)
 
 	CImageLoadingFormat imageLoading(false);
 	imageLoading.SetPicture(bitmap);
-	return imageLoading.GetFloatBitmap(true);
+	return imageLoading.GetFloatBitmap();
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
@@ -1178,22 +1348,125 @@ wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 	return anImage;
 }
 
-
-void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV,
-                                    int angle, int ratio)
+CRegardsBitmap * CFiltreEffetCPU::Interpolation(CRegardsBitmap * pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+	int flipH, int flipV, int angle, int ratio)
 {
-	if (bitmapOut != nullptr)
-		delete bitmapOut;
+	cv::Mat cvImage;
+	cv::cvtColor(pBitmap->GetMatrix(), cvImage, cv::COLOR_BGRA2BGR);
 
-	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	ApplyInterpolationFilters(pBitmap, bitmapOut, flipH, flipV, angle, method);
+	try
+	{
 
-/*
- *
- * static void ApplyInterpolationFilters(CRegardsBitmap* bitmap, CRegardsBitmap* & bitmapOut, const wxRect& rc,
-                                      const int& flipH, const int& flipV, const int& angle,
-                                      const int& filterInterpolation)
- */
+
+
+		float ratioX = (float)pBitmap->GetMatrix().cols / rc.width;
+		float ratioY = (float)pBitmap->GetMatrix().rows / rc.height;
+		if (angle == 90)
+		{
+			ratioX = (float)pBitmap->GetMatrix().cols / (float)rc.height;
+			ratioY = (float)pBitmap->GetMatrix().rows / (float)rc.width;
+		}
+		else if (angle == 270)
+		{
+			ratioX = (float)pBitmap->GetMatrix().cols / (float)rc.height;
+			ratioY = (float)pBitmap->GetMatrix().rows / (float)rc.width;
+		}
+
+		cv::Rect rectGlobal;
+		cv::Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(pBitmap->GetMatrix().cols, pBitmap->GetMatrix().rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
+		cv::Rect rect_end = CFiltreEffetCPUImpl::CalculRect(pBitmap->GetMatrix().cols, pBitmap->GetMatrix().rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
+		rectGlobal.x = rect_begin.x;
+		rectGlobal.y = rect_begin.y;
+		rectGlobal.width = rect_end.x;
+		rectGlobal.height = rect_end.y;
+		if (rectGlobal.x > rectGlobal.width)
+		{
+			int x_end = rectGlobal.x;
+			int x = rectGlobal.width;
+			rectGlobal.x = x;
+			rectGlobal.width = x_end - x;
+		}
+		else
+		{
+			rectGlobal.width -= rectGlobal.x;
+		}
+
+		if (rectGlobal.y > rectGlobal.height)
+		{
+			int y_end = rectGlobal.y;
+			int y = rectGlobal.height;
+			rectGlobal.y = y;
+			rectGlobal.height = y_end - y;
+		}
+		else
+		{
+			rectGlobal.height -= rectGlobal.y;
+		}
+
+		if ((rectGlobal.height + rectGlobal.y) > cvImage.rows)
+		{
+			rectGlobal.height = cvImage.rows - rectGlobal.y;
+		}
+		if ((rectGlobal.width + rectGlobal.x) > cvImage.cols)
+		{
+			rectGlobal.width = cvImage.cols - rectGlobal.x;
+		}
+
+		cvImage = cvImage(rectGlobal);
+
+
+		if (angle == 90)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+		}
+		else if (angle == 270)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+		}
+		else if (angle == 180)
+		{
+			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
+		}
+
+		if (ratio != 100)
+		{
+			if (method > 6 && CFiltreEffetCPUImpl::TestIfMethodIsValid(method, (ratio / 100)))
+			{
+				cvImage = CFiltreEffetCPUImpl::upscaleImage(cvImage, method, (ratio / 100));
+			}
+			else
+			{
+				if (method > 6)
+				{
+					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), INTER_NEAREST_EXACT);
+				}
+				else
+					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+			}
+		}
+
+		//Apply Transformation
+		if (flipH)
+		{
+			cv::flip(cvImage, cvImage, 1);
+		}
+		if (flipV)
+		{
+			cv::flip(cvImage, cvImage, 0);
+		}
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+
+	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	bitmapOut->SetMatrix(cvImage);
+	return bitmapOut;
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
@@ -1202,9 +1475,7 @@ void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, c
 	if (bitmapOut != nullptr)
 		delete bitmapOut;
 
-	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	//CInterpolationBicubic interpolation;
-	ApplyInterpolationFilters(pBitmap, bitmapOut, rc, flipH, flipV, angle, method);
+	bitmapOut = Interpolation(pBitmap, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
 }
 
 int CFiltreEffetCPU::HistogramNormalize()
@@ -1401,8 +1672,11 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& colo
 		auto _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
-		CInterpolationBicubic interpolation;
-		interpolation.Execute(&localBitmap, _local);
+
+
+		cv::resize(localBitmap.GetMatrix(), _local->GetMatrix(), cv::Size(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight()), INTER_CUBIC);
+		//CInterpolationBicubic interpolation;
+		//interpolation.Execute(&localBitmap, _local);
 		Fusion(_local, intensity / 100.0f);
 		delete _local;
 	}

@@ -1002,22 +1002,13 @@ int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 //Execute INTERPOLATION
 //-----------------------------------------------------------------------------------------------
 
-void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV, int angle, int ratio)
-{
-	if (context != nullptr)
-	{
-		COpenCLFilter openclFilter(context);
-		paramOutput = openclFilter.Interpolation(widthOut, heightOut, "Interpolation", method, input, flipH, flipV, angle, ratio);
-		preview = true;
-	}
-}
 
 void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
 {
 	if (context != nullptr)
 	{
 		COpenCLFilter openclFilter(context);
-		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc, "InterpolationZone", method, input, flipH, flipV, angle, ratio);
+		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc,  method, input, flipH, flipV, angle, ratio);
 		preview = true;
 	}
 }

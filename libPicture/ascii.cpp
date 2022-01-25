@@ -3,7 +3,6 @@
 #include <algorithm>    // std::max
 #include <fstream>
 #include <RegardsBitmap.h>
-#include "Interpolation.h"
 using namespace std;
 
 const string DENSITY = "@QB#NgWM8RDHdOKq9$6khEPXwmeZaoS2yjufF]}{tx1zv7lciL/\\|?*>r^;:_\"~,'.-`";
@@ -45,8 +44,11 @@ void CBitmapToAscii::SaveToAscii(CRegardsBitmap * source, const string &filename
     }
 
     CRegardsBitmap* out = new CRegardsBitmap(source->GetBitmapWidth() * new_ratio, source->GetBitmapHeight() * new_ratio);
-    CInterpolation interpolation;
-    interpolation.Execute(source, out);
+
+    cv::resize(source->GetMatrix(), out->GetMatrix(), cv::Size(out->GetBitmapWidth(), out->GetBitmapHeight()), cv::INTER_CUBIC);
+
+    //CInterpolation interpolation;
+    //interpolation.Execute(source, out);
 
    	std::ofstream outfile(filenameOut);
     if( outfile.fail() )

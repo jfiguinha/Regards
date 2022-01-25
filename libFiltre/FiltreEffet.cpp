@@ -249,26 +249,6 @@ int CFiltreEffet::SharpenMasking(const float& sharpness)
 	return filtreEffet->SharpenMasking(sharpness);
 }
 
-void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, const int& method, int flipH, int flipV,
-                                 int angle, int ratio)
-{
-#ifdef _CALCU_DIFF_TIME
-	LARGE_INTEGER start_time;
-	LARGE_INTEGER end_time;
-#endif
-	filtreEffet->Interpolation(widthOut, heightOut, method, flipH, flipV, angle, ratio);
-
-#ifdef _CALCU_DIFF_TIME
-#if defined(WIN32) && defined(_DEBUG)
-	::QueryPerformanceCounter((LARGE_INTEGER*)&end_time);
-	float gm_diffTime = (float)(((double)end_time.QuadPart - (double)start_time.QuadPart) / 1000000);
-	wxString data = to_string(gm_diffTime);
-	OutputDebugString(L"cuda time : " + data + "\n");
-
-#endif
-#endif
-}
-
 void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
                                  int flipH, int flipV, int angle, int ratio)
 {

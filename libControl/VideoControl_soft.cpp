@@ -14,7 +14,6 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
-#include <InterpolationFilters.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
@@ -2014,6 +2013,8 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
 	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	CRgbaquad backColor;
+	//CFiltreEffetCPU* filtreEffect = new CFiltreEffetCPU(backColor, pictureFrame);
 
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
@@ -2025,13 +2026,19 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 	inverted = false;
-	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+	CRegardsBitmap * bitmapOut = nullptr;
 	if (angle == 90 || angle == 270)
 	{
-		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput,rc, filterInterpolation,
+			!flipH, flipV, angle, (int)GetZoomRatio() * 100);
+		//ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
 	}
 	else
-		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+	{
+		//ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+		CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation,
+			flipH, !flipV, angle, (int)GetZoomRatio() * 100);
+	}
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2069,6 +2076,22 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
 		inverted = false;
+
+		CRegardsBitmap* bitmapOut = nullptr;
+		if (angle == 90 || angle == 270)
+		{
+			bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation,
+				!flipH, flipV, angle, (int)GetZoomRatio() * 100);
+			//ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
+		}
+		else
+		{
+			//ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+			CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation,
+				flipH, !flipV, angle, (int)GetZoomRatio() * 100);
+		}
+
+		/*
 		auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		if (angle == 90 || angle == 270)
 		{
@@ -2076,7 +2099,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 		}
 		else
 			ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
-
+		*/
 		//Test if denoising Effect
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 		{

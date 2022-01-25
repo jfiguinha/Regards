@@ -164,23 +164,12 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 	}
 }
 
-
-void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
-{
-	if (context != nullptr && !paramSrc.empty())
-	{
-		
-		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, "Interpolation", bicubic, paramSrc, flipH, flipV, angle, ratio);
-		interpolatePicture = true;
-	}
-}
-
 void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
 	if (context != nullptr && !paramSrc.empty())
 	{
 		
-		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, "InterpolationZone", bicubic, paramSrc, flipH, flipV, angle, ratio);
+		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, bicubic, paramSrc, flipH, flipV, angle, ratio);
 		interpolatePicture = true;
 	}
 }

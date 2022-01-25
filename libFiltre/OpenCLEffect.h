@@ -50,7 +50,6 @@ namespace Regards
 			int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 			int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 			int OilPaintingEffect(const int &size, const int &dynRatio) { return -1; };
-			void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle, int ratio);
 			void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
 			int CartoonifyImage(const int & mode) { return -1; };
 			int NiveauDeGris();
