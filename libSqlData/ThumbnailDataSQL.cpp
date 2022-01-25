@@ -103,7 +103,7 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
 			int compressMethod = 0;
 			unsigned long outputsize = 0;
 			bitmap->ConvertToRGB24(true);
-			uint8_t* dest = bitmap->GetJpegData(outputsize);
+			uint8_t* dest = bitmap->GetJpegData(outputsize, compressMethod);
 			//wxString hash = wxMD5::GetFileMD5(filename);
 			wxFileName file(filename);
 			wxULongLong sizeFile = file.GetSize();
@@ -111,7 +111,7 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
 			if (dest != nullptr)
 				sqlThumbnail.InsertThumbnail(filename, dest, outputsize, bitmap->GetWidth(), bitmap->GetHeight(), hash);
 
-			bitmap->DestroyJpegData(dest);
+			bitmap->DestroyJpegData(dest, compressMethod);
 
 			dest = nullptr;
 

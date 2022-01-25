@@ -11,6 +11,7 @@
 #include "BitmapFusionFilter.h"
 #include <RegardsBitmap.h>
 #include <ImageLoadingFormat.h>
+#include <InterpolationBicubic.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
 #include <effect_id.h>
@@ -50,13 +51,9 @@ CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLo
 	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
 
 	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-
-	cv::resize(bitmapTemp->GetMatrix(), bitmapOut->GetMatrix(), cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
-
-	/*
 	CInterpolationBicubic interpolation;
 	interpolation.Execute(bitmapTemp, bitmapOut);
-	*/
+
 	delete bitmapTemp;
 
 	out.width = widthOutput;

@@ -156,6 +156,8 @@ void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& sour
 	try
 	{
 
+
+
 		if(rgba == 0)
 			cv::cvtColor(u, u, cv::COLOR_BGRA2RGBA);
 		cl_mem cl_textureDisplay;
@@ -998,17 +1000,12 @@ int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 	return 0;
 }
 
-//-----------------------------------------------------------------------------------------------
-//Execute INTERPOLATION
-//-----------------------------------------------------------------------------------------------
-
-
 void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
 {
 	if (context != nullptr)
 	{
 		COpenCLFilter openclFilter(context);
-		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc,  method, input, flipH, flipV, angle, ratio);
+		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio);
 		preview = true;
 	}
 }

@@ -849,7 +849,7 @@ CRegardsFloatBitmap* CBitmapWndRender::GetFloatBitmap(const bool& source)
 	//TRACE();
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
-		CRegardsFloatBitmap* bitmap = this->source->GetFloatBitmap();
+		CRegardsFloatBitmap* bitmap = this->source->GetFloatBitmap(source);
 		return bitmap;
 	}
 	return nullptr;
@@ -1585,26 +1585,36 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 
 	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
-	int left = 0, top = 0;
-	int tailleAffichageWidth = widthOutput;
-	int tailleAffichageHeight = heightOutput;
-
-	if (GetWidth() * scale_factor > tailleAffichageWidth)
-		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+	/*
+	if (GetWidth() * scale_factor >= widthOutput && GetHeight() * scale_factor >= heightOutput)
+	{
+		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal,
+			localflipVertical, localAngle, (int)((float)value[posRatio] / 100.0f));
+	}
 	else
-		left = 0;
+	{
+	*/
+		int left = 0, top = 0;
+		int tailleAffichageWidth = widthOutput;
+		int tailleAffichageHeight = heightOutput;
 
-	if (GetHeight() * scale_factor > tailleAffichageHeight)
-		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-	else
-		top = 0;
+		if (GetWidth() * scale_factor > tailleAffichageWidth)
+			left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+		else
+			left = 0;
+
+		if (GetHeight() * scale_factor > tailleAffichageHeight)
+			top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+		else
+			top = 0;
 
 
 
-	wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
-	filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
-		localflipVertical, localAngle, value[posRatio]);
+		wxRect rc(0, 0, 0, 0);
+		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
+			localflipVertical, localAngle, value[posRatio]);
+	//}
 
 
 	if (regardsParam != nullptr)

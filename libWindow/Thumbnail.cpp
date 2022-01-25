@@ -881,13 +881,13 @@ void CThumbnail::LoadPicture(void* param)
 				int compressMethod = 0;
 				unsigned long outputsize = 0;
 				bitmap->image->ConvertToRGB24(true);
-				uint8_t* dest = bitmap->image->GetJpegData(outputsize);
+				uint8_t* dest = bitmap->image->GetJpegData(outputsize, compressMethod);
 				if (dest != nullptr)
 					sqlThumbnailVideo.InsertThumbnail(filename, dest, outputsize, bitmap->image->GetWidth(),
 					                                  bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
 					                                  bitmap->timePosition);
 
-				bitmap->image->DestroyJpegData(dest);
+				bitmap->image->DestroyJpegData(dest, compressMethod);
 
 				if (i == selectPicture)
 					threadLoadingBitmap->bitmapIcone = bitmap->image;

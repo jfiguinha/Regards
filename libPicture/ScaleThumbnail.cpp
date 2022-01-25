@@ -1,6 +1,7 @@
 #include <header.h>
 #include "ScaleThumbnail.h"
 #include <RegardsBitmap.h>
+#include <InterpolationBicubic.h>
 using namespace Regards::Picture;
 
 CScaleThumbnail::CScaleThumbnail(void)

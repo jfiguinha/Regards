@@ -512,6 +512,11 @@
     <ClInclude Include="hqdn3d.h" />
     <ClInclude Include="ImageLoadingFormat.h" />
     <ClInclude Include="ImageVideoThumbnail.h" />
+    <ClInclude Include="Interpolation.h" />
+    <ClInclude Include="InterpolationBicubic.h" />
+    <ClInclude Include="InterpolationBilinear.h" />
+    <ClInclude Include="InterpolationFilters.h" />
+    <ClInclude Include="InterpolationFloatBicubic.h" />
     <ClInclude Include="J2kOption.h" />
     <ClInclude Include="JpegOption.h" />
     <ClInclude Include="JxrOption.h" />
@@ -528,6 +533,7 @@
     <ClInclude Include="raw.h" />
     <ClInclude Include="RegardsBitmap.h" />
     <ClInclude Include="RegardsFloatBitmap.h" />
+    <ClInclude Include="RegardsJpegPicture.h" />
     <ClInclude Include="RegardsRaw.h" />
     <ClInclude Include="regards_webp.h" />
     <ClInclude Include="RGBAQuad.h" />
@@ -557,6 +563,10 @@
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="hqdn3d.cpp" />
     <ClCompile Include="ImageLoadingFormat.cpp" />
+    <ClCompile Include="Interpolation.cpp" />
+    <ClCompile Include="InterpolationBicubic.cpp" />
+    <ClCompile Include="InterpolationBilinear.cpp" />
+    <ClCompile Include="InterpolationFloatBicubic.cpp" />
     <ClCompile Include="J2kOption.cpp" />
     <ClCompile Include="JpegOption.cpp" />
     <ClCompile Include="JxrOption.cpp" />
@@ -572,6 +582,7 @@
     <ClCompile Include="raw.cpp" />
     <ClCompile Include="RegardsBitmap.cpp" />
     <ClCompile Include="RegardsFloatBitmap.cpp" />
+    <ClCompile Include="RegardsJpegPicture.cpp" />
     <ClCompile Include="RegardsRaw.cpp" />
     <ClCompile Include="regards_webp.cpp" />
     <ClCompile Include="RGBAQuad.cpp" />

@@ -1425,6 +1425,26 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
 		}
 
+
+		/*
+		nearest neighbor interpolation
+		INTER_NEAREST = 0,
+		bilinear interpolation
+		INTER_LINEAR = 1,
+		bicubic interpolation
+		INTER_CUBIC = 2,
+		resampling using pixel area relation. It may be a preferred method for image decimation, as
+		it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
+		method.
+		INTER_AREA = 3,
+		Lanczos interpolation over 8x8 neighborhood
+		INTER_LANCZOS4 = 4,
+		Bit exact bilinear interpolation
+		INTER_LINEAR_EXACT = 5,
+		Bit exact nearest neighbor interpolation. This will produce same results as
+		the nearest neighbor method in PIL, scikit-image or Matlab.
+		INTER_NEAREST_EXACT = 6,
+		*/
 		if (ratio != 100)
 		{
 			if (method > 6 && TestIfMethodIsValid(method, (ratio / 100)) && !isUsed)
@@ -1441,6 +1461,9 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
 			}
 		}
+
+		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), cv::INTER_NEAREST_EXACT);
 
 		//Apply Transformation
 		if (flipH)
@@ -1463,4 +1486,113 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 	//UMat out;
 	//cvImage.copyTo(out);
 	return cvImage;
+
+
+	/*
+	cv::UMat cvImage;
+	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);	
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(inputData.cols);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(inputData.rows);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
+		paramWidthOut->SetLibelle("widthOut");
+		paramWidthOut->SetValue(widthOut);
+		vecParam.push_back(paramWidthOut);
+
+		COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
+		paramHeightOut->SetLibelle("heightOut");
+		paramHeightOut->SetValue(heightOut);
+		vecParam.push_back(paramHeightOut);
+
+		COpenCLParameterFloat * left = new COpenCLParameterFloat();
+		left->SetLibelle("left");
+		left->SetValue(rc.x);
+		vecParam.push_back(left);
+
+		COpenCLParameterFloat * top = new COpenCLParameterFloat();
+		top->SetLibelle("top");
+		top->SetValue(rc.y);
+		vecParam.push_back(top);
+
+		COpenCLParameterFloat * bitmapWidth = new COpenCLParameterFloat();
+		bitmapWidth->SetLibelle("bitmapWidth");
+		bitmapWidth->SetValue(rc.width);
+		vecParam.push_back(bitmapWidth);
+
+		COpenCLParameterFloat * bitmapHeight = new COpenCLParameterFloat();
+		bitmapHeight->SetLibelle("bitmapHeight");
+		bitmapHeight->SetValue(rc.height);
+		vecParam.push_back(bitmapHeight);
+
+		COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
+		paramflipH->SetLibelle("flipH");
+		paramflipH->SetValue(flipH);
+		vecParam.push_back(paramflipH);
+
+		COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
+		paramflipV->SetLibelle("flipV");
+		paramflipV->SetValue(flipV);
+		vecParam.push_back(paramflipV);
+
+		COpenCLParameterInt * paramangle = new COpenCLParameterInt();
+		paramangle->SetLibelle("angle");
+		paramangle->SetValue(angle);
+		vecParam.push_back(paramangle);
+
+		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+		paramtype->SetLibelle("type");
+		paramtype->SetValue(method);
+		vecParam.push_back(paramtype);
+
+		
+		int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+		int type = CV_MAKE_TYPE(depth, 4);
+		cvImage.create((int)heightOut, (int)widthOut, type);
+		//cl_mem clBufferOut = (cl_mem)cvImage.handle(cv::ACCESS_RW);
+
+		try
+		{
+			program->SetKeepOutput(true);
+			program->SetParameter(&vecParam,  widthOut, heightOut, (cl_mem)cvImage.handle(cv::ACCESS_RW));
+			program->ExecuteProgram(programCL->GetProgram(), functionName);
+		}
+		catch(...)
+		{
+		}
+
+		delete program;
+
+	for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return cvImage;// GetOpenCVStruct(outputValue, widthOut, heightOut);
+	*/
+
+
 }

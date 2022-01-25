@@ -1,4 +1,3 @@
-
 #include <header.h>
 #include "FiltreEffetCPU.h"
 #include "PerlinNoise.h"
@@ -855,7 +854,7 @@ CRegardsFloatBitmap* CFiltreEffetCPU::GetFloatBitmap(const bool& source)
 
 	CImageLoadingFormat imageLoading(false);
 	imageLoading.SetPicture(bitmap);
-	return imageLoading.GetFloatBitmap();
+	return imageLoading.GetFloatBitmap(true);
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
@@ -1348,7 +1347,10 @@ wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 	return anImage;
 }
 
-CRegardsBitmap * CFiltreEffetCPU::Interpolation(CRegardsBitmap * pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+
+
+
+CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	int flipH, int flipV, int angle, int ratio)
 {
 	cv::Mat cvImage;
@@ -1464,19 +1466,20 @@ CRegardsBitmap * CFiltreEffetCPU::Interpolation(CRegardsBitmap * pBitmap, const 
 
 	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
 
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	CRegardsBitmap* bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 	bitmapOut->SetMatrix(cvImage);
 	return bitmapOut;
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-                                    int flipH, int flipV, int angle, int ratio)
+	int flipH, int flipV, int angle, int ratio)
 {
 	if (bitmapOut != nullptr)
 		delete bitmapOut;
 
 	bitmapOut = Interpolation(pBitmap, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
 }
+
 
 int CFiltreEffetCPU::HistogramNormalize()
 {
@@ -1672,11 +1675,7 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& colo
 		auto _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
-
-
 		cv::resize(localBitmap.GetMatrix(), _local->GetMatrix(), cv::Size(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight()), INTER_CUBIC);
-		//CInterpolationBicubic interpolation;
-		//interpolation.Execute(&localBitmap, _local);
 		Fusion(_local, intensity / 100.0f);
 		delete _local;
 	}
@@ -2288,7 +2287,7 @@ int CFiltreEffetCPU::GroundGlassEffect(const double& radius)
 		cvtColor(imageResult, imageResult, COLOR_BGR2BGRA);
 		bitmap->SetMatrix(imageResult);
 	}
-
+	return 0;
 }
 
 //----------------------------------------------------------------------------

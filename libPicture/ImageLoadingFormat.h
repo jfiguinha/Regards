@@ -16,16 +16,20 @@ public:
 	CImageLoadingFormat(const bool& memoryDelete = true);
 	~CImageLoadingFormat();
 	void SetMemoryDelete(const bool& memoryDelete);
-	void DestroyJpegData(uint8_t* & data);
+	void DestroyJpegData(uint8_t* & data, const int& compressMethod);
 	void SaveToJpeg(const wxString& filename);
 
 	CImageLoadingFormat* GetPage(const int& numPage);
-	int GetNbPage();
-	CxImage* GetCxImage();
-	uint8_t* GetJpegData(unsigned long& outputsize);
-	wxImage* GetwxImage();
-	CRegardsFloatBitmap* GetFloatBitmap();
+	void SetPicturToJpeg(CRegardsBitmap* image, const bool& flip = true);
+	CxImage* GetCxImage(const bool& copy = true);
+	wxImage* GetwxImage(const bool& copy = true);
 	CRegardsBitmap* GetRegardsBitmap(const bool& copy = true);
+	CRegardsFloatBitmap* GetFloatBitmap(const bool& copy = true);
+
+	int GetNbPage();
+
+	uint8_t* GetJpegData(unsigned long& outputsize, int& compressMethod);
+
 	int Resize(const int& width, const int& height, const int& method);
 	void Flip();
 	void Mirror();
@@ -34,7 +38,7 @@ public:
 	int GetHeight();
 	int GetOrientation();
 	wxString GetFilename();
-
+	int GetFormat();
 	int GetResolution();
 	void SetOrientation(const int& orientation);
 	void SetFilename(const wxString& filename);
@@ -54,6 +58,11 @@ protected:
 	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
 	uint8_t* CompressRegardsBitmapToJpeg(unsigned char* buffer, int width, int height, unsigned long& outputsize);
 	CRegardsBitmap* _image;
+	CxImage* _cxImage;
+	wxImage* _wxImage;
+	CRegardsFloatBitmap* _floatImage;
+	CRegardsJpegPicture* _jpegImage;
+	int format;
 	wxString filename;
 	int orientation;
 	bool convertToRGB24;

@@ -26,8 +26,6 @@ public:
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
     CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 	CRegardsBitmap * GetBitmap(const bool &source);
-	static CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
-		int flipH, int flipV, int angle, int ratio);
 	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 	CRegardsBitmap * GetPtBitmap();
 	wxImage GetwxImage();
@@ -79,7 +77,7 @@ public:
 	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
 private:
 
-	
+	CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
 	int Contrast(const double& contrast, const uint8_t& offset);
 	int Lightness(const double& factor);
 	void RotateMatrix(const int& angle, cv::Mat& src);

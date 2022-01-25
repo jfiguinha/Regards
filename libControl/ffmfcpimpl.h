@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <SDL_thread.h>
 #include <SDL_mutex.h>
+#include <Interpolation.h>
 #include <RegardsBitmap.h>
 #include "VideoControlInterface.h"
 #include <thread>

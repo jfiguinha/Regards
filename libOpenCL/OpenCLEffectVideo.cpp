@@ -164,6 +164,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 	}
 }
 
+
 void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
 	if (context != nullptr && !paramSrc.empty())

@@ -249,6 +249,7 @@ int CFiltreEffet::SharpenMasking(const float& sharpness)
 	return filtreEffet->SharpenMasking(sharpness);
 }
 
+
 void CFiltreEffet::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
                                  int flipH, int flipV, int angle, int ratio)
 {
