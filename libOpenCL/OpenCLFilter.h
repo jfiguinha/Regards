@@ -60,7 +60,7 @@ namespace Regards
 
 		protected:
 			cv::UMat upscaleImage(cv::UMat img, int method, int scale);
-			
+			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
 			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;

@@ -1281,7 +1281,7 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 
 }
 
-cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
+cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
 {
 	cv::Rect rect;
 	float posX = (float)x * ratioX + left * ratioX;
@@ -1483,116 +1483,5 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 	}
 
 	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
-	//UMat out;
-	//cvImage.copyTo(out);
 	return cvImage;
-
-
-	/*
-	cv::UMat cvImage;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
-
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(inputData.cols);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(inputData.rows);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-		paramWidthOut->SetLibelle("widthOut");
-		paramWidthOut->SetValue(widthOut);
-		vecParam.push_back(paramWidthOut);
-
-		COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-		paramHeightOut->SetLibelle("heightOut");
-		paramHeightOut->SetValue(heightOut);
-		vecParam.push_back(paramHeightOut);
-
-		COpenCLParameterFloat * left = new COpenCLParameterFloat();
-		left->SetLibelle("left");
-		left->SetValue(rc.x);
-		vecParam.push_back(left);
-
-		COpenCLParameterFloat * top = new COpenCLParameterFloat();
-		top->SetLibelle("top");
-		top->SetValue(rc.y);
-		vecParam.push_back(top);
-
-		COpenCLParameterFloat * bitmapWidth = new COpenCLParameterFloat();
-		bitmapWidth->SetLibelle("bitmapWidth");
-		bitmapWidth->SetValue(rc.width);
-		vecParam.push_back(bitmapWidth);
-
-		COpenCLParameterFloat * bitmapHeight = new COpenCLParameterFloat();
-		bitmapHeight->SetLibelle("bitmapHeight");
-		bitmapHeight->SetValue(rc.height);
-		vecParam.push_back(bitmapHeight);
-
-		COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
-		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(flipH);
-		vecParam.push_back(paramflipH);
-
-		COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
-		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(flipV);
-		vecParam.push_back(paramflipV);
-
-		COpenCLParameterInt * paramangle = new COpenCLParameterInt();
-		paramangle->SetLibelle("angle");
-		paramangle->SetValue(angle);
-		vecParam.push_back(paramangle);
-
-		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
-		paramtype->SetLibelle("type");
-		paramtype->SetValue(method);
-		vecParam.push_back(paramtype);
-
-		
-		int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-		int type = CV_MAKE_TYPE(depth, 4);
-		cvImage.create((int)heightOut, (int)widthOut, type);
-		//cl_mem clBufferOut = (cl_mem)cvImage.handle(cv::ACCESS_RW);
-
-		try
-		{
-			program->SetKeepOutput(true);
-			program->SetParameter(&vecParam,  widthOut, heightOut, (cl_mem)cvImage.handle(cv::ACCESS_RW));
-			program->ExecuteProgram(programCL->GetProgram(), functionName);
-		}
-		catch(...)
-		{
-		}
-
-		delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
-	return cvImage;// GetOpenCVStruct(outputValue, widthOut, heightOut);
-	*/
-
-
 }

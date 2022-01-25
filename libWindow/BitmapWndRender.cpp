@@ -40,6 +40,11 @@ extern COpenCLContext * openclContext;
 
 extern float clamp(float val, float minval, float maxval);
 
+std::vector<int> _value = {
+	1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200,
+	1600
+};
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -75,7 +80,7 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
-
+	this->value = _value;
 	bitmapwidth = 0;
 	bitmapheight = 0;
 	bitmapUpdate = false;

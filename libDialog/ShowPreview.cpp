@@ -73,6 +73,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	bitmapWindow = new CBitmapWndRender(previewToolbar, 0, themeBitmap);
 	bitmapWindowRender = new CBitmapWnd3D(this, BITMAPWINDOWVIEWERIDDLG);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
+	bitmapWindow->SetTabValue(value);
 	bitmapWindow->SetPreview(1);
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
