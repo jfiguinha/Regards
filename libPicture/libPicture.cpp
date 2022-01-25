@@ -1524,7 +1524,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 		picture->Resize(widthThumbnail, heightThumbnail, 0);
 		picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
 		cxVideo->image = new CImageLoadingFormat();
-		cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap());
+		cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap(), false);
 		if (isAnimation)
 			cxVideo->timePosition = i;
 		else
