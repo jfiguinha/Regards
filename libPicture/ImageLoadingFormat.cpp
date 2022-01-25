@@ -7,7 +7,6 @@
 #include <wx/mstream.h>
 #include <wx/wfstream.h>
 #include <turbojpeg.h>
-#include "RegardsJpegPicture.h"
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -262,7 +261,7 @@ uint8_t* CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char* buffer,
 	{
 		tjCompress2(_jpegCompressor, buffer, width, 0, height, TJPF_BGRX,
 		            &data, &outputsize, TJSAMP_444, JPEG_QUALITY,
-		            TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+		            TJFLAG_FASTDCT);
 	}
 	else
 	{

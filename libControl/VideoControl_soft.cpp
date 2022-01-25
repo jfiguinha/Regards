@@ -1509,21 +1509,6 @@ void CVideoControlSoft::SetVideoDuration(const int64_t& duration, const int64_t&
 		eventPlayer->SetVideoDuration(duration);
 }
 
-/*
-void CVideoControlSoft::SetVideoPosition(const int64_t &  pos)
-{
-	ffmfc->SetTimePosition(pos * 1000 * 1000);
-	if (pause && thumbnailVideo != nullptr)
-	{
-		muBitmap.lock();
-
-		pictureVideo = thumbnailVideo->GetVideoFrame(pos,0,0);
-
-		muBitmap.unlock();
-		this->Refresh();
-	}
-}
-*/
 void CVideoControlSoft::SetCurrentclock(wxString message)
 {
 	this->message = message;

@@ -37,12 +37,6 @@
     <ClCompile Include="RegardsBitmap.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="RegardsFloatBitmap.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsJpegPicture.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
     <ClCompile Include="videothumb.cpp">
       <Filter>ThumbnailVideo</Filter>
     </ClCompile>
@@ -115,6 +109,9 @@
     <ClCompile Include="ascii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RegardsFloatBitmap.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -160,12 +157,6 @@
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="RegardsBitmap.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsFloatBitmap.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsJpegPicture.h">
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="videothumb.h">
@@ -257,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="ascii.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegardsFloatBitmap.h">
+      <Filter>datastructure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

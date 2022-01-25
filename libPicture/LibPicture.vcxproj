@@ -528,7 +528,6 @@
     <ClInclude Include="raw.h" />
     <ClInclude Include="RegardsBitmap.h" />
     <ClInclude Include="RegardsFloatBitmap.h" />
-    <ClInclude Include="RegardsJpegPicture.h" />
     <ClInclude Include="RegardsRaw.h" />
     <ClInclude Include="regards_webp.h" />
     <ClInclude Include="RGBAQuad.h" />
@@ -573,7 +572,6 @@
     <ClCompile Include="raw.cpp" />
     <ClCompile Include="RegardsBitmap.cpp" />
     <ClCompile Include="RegardsFloatBitmap.cpp" />
-    <ClCompile Include="RegardsJpegPicture.cpp" />
     <ClCompile Include="RegardsRaw.cpp" />
     <ClCompile Include="regards_webp.cpp" />
     <ClCompile Include="RGBAQuad.cpp" />
