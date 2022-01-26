@@ -13,7 +13,7 @@
 					<border>5</border>
 					<option>1</option>
 					<object class="wxNotebook">
-						<size>400,250</size>
+						<size>400,350</size>
 						<style>wxBK_TOP</style>
 						<object class="notebookpage">
 							<label>Effect</label>
@@ -63,12 +63,6 @@
 											<item>LANCZOS4</item>
 											<item>LINEAR_EXACT</item>
 											<item>NEAREST_EXACT</item>
-											<item>EDSR</item>
-											<item>ESPCN</item>
-											<item>FSRCNN</item>
-											<item>LapSRN</item>
-											<item>None</item>
-										</content>
 											<item>None</item>
 										</content>
 									</object>
@@ -115,6 +109,34 @@
 										<pos>350,170</pos>
 										<size>20,20</size>
 									</object>
+									<object class="wxRadioBox" name="ID_RBUSESUPERDNN">
+										<label>Use Super Resolution Filter</label>
+										<style>wxRA_SPECIFY_COLS</style>
+										<content>
+											<item>Yes</item>
+											<item>No</item>
+										</content>
+										<default>-1</default>
+										<pos>0,220</pos>
+										<size>180,70</size>
+									</object>									
+									<object class="wxStaticBox" name="sbInterpolation">
+										<label>Super Resolution Filter</label>
+										<pos>200,220</pos>
+										<size>180,70</size>
+									</object>
+									<object class="wxComboBox" name="ID_CBUSESUPERDNNFILTER">
+										<pos>205,240</pos>
+										<size>170,20</size>
+										<value>EDSR</value>
+										<content>
+											<item>EDSR</item>
+											<item>ESPCN</item>
+											<item>FSRCNN</item>
+											<item>LapSRN</item>
+											<item>None</item>
+										</content>
+									</object>										
 							</object>
 						</object>		
 						<object class="notebookpage">

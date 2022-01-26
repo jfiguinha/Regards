@@ -45,6 +45,9 @@ CRegardsConfigParam::CRegardsConfigParam()
 	faceDetection = 0;
 	fastFaceDetection = 1;
 	musicDiaporama = "";
+
+	numSuperResolution = 0;
+	useSuperResolution = 0;
 }
 
 
@@ -122,6 +125,28 @@ int CRegardsConfigParam::GetInterpolationType()
 {
 	return numInterpolation;
 }
+
+int CRegardsConfigParam::GetSuperResolutionType()
+{
+	return numSuperResolution;
+}
+
+int CRegardsConfigParam::GetUseSuperResolution()
+{
+	return useSuperResolution;
+}
+
+void CRegardsConfigParam::SetSuperResolutionType(const int& value)
+{
+	numSuperResolution = value;
+}
+
+
+void CRegardsConfigParam::SetUseSuperResolution(const int& value)
+{
+	useSuperResolution = value;
+}
+
 
 void CRegardsConfigParam::SetInterpolationType(const int& numInterpolation)
 {
@@ -369,6 +394,8 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
 	sectionPosition->append_node(node("autoContrast", to_string(autoContrast)));
 	sectionPosition->append_node(node("openCLFaceSupport", to_string(openCLFaceSupport)));
+	sectionPosition->append_node(node("useSuperResolution", to_string(useSuperResolution)));
+	sectionPosition->append_node(node("numSuperResolution", to_string(numSuperResolution)));
 }
 
 
@@ -579,6 +606,24 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		nodeName = child_node->name();
 		openCLFaceSupport = atoi(child_node->value());
 	}
+
+	child_node = position_node->first_node("useSuperResolution");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		useSuperResolution = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("numSuperResolution");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		numSuperResolution = atoi(child_node->value());
+	}
+
+
 }
 
 

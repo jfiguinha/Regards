@@ -17,6 +17,8 @@
 #include "VideoStabilization.h"
 #include <opencv2/dnn_superres.hpp>
 #include <FileUtility.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 using namespace cv;
@@ -25,10 +27,10 @@ using namespace dnn_superres;
 extern float value[256];
 using namespace Regards::FiltreEffet;
 
-#define EDSR 7
-#define ESPCN 8
-#define FSRCNN 9
-#define LapSRN 10
+#define EDSR 0
+#define ESPCN 1
+#define FSRCNN 2
+#define LapSRN 3
 
 class CFiltreEffetCPUImpl
 {
@@ -1432,18 +1434,17 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 
 		if (ratio != 100)
 		{
-			if (method > 6 && CFiltreEffetCPUImpl::TestIfMethodIsValid(method, (ratio / 100)))
+			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+			int superDnn = regardsParam->GetSuperResolutionType();
+			int useSuperResolution = regardsParam->GetUseSuperResolution();
+
+			if (useSuperResolution && CFiltreEffetCPUImpl::TestIfMethodIsValid(superDnn, (ratio / 100)))
 			{
-				cvImage = CFiltreEffetCPUImpl::upscaleImage(cvImage, method, (ratio / 100));
+				cvImage = CFiltreEffetCPUImpl::upscaleImage(cvImage, superDnn, (ratio / 100));
 			}
 			else
 			{
-				if (method > 6)
-				{
-					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), INTER_NEAREST_EXACT);
-				}
-				else
-					cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+				cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
 			}
 		}
 

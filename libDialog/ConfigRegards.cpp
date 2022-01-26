@@ -58,6 +58,9 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	btMusicDiaporamaPath = static_cast<wxButton*>(FindWindow(XRCID("ID_MUSICDIAPORAMAPATH")));
 
 
+	rbUSESUPERDNN = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBUSESUPERDNN")));
+	cbUSESUPERDNNFILTER = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBUSESUPERDNNFILTER")));
+
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
@@ -158,6 +161,12 @@ void ConfigRegards::init()
 	else
 		rbVideoFaceDetection->SetSelection(0);
 
+	int useSuperResolution = regardsParam->GetUseSuperResolution();
+	if (useSuperResolution == 0)
+		rbUSESUPERDNN->SetSelection(1);
+	else
+		rbUSESUPERDNN->SetSelection(0);
+
 	int faceDetection = regardsParam->GetFaceDetection();
 	if (faceDetection == 0)
 		rbFaceDetection->SetSelection(1);
@@ -186,6 +195,9 @@ void ConfigRegards::init()
 
 	int interpolation = regardsParam->GetInterpolationType();
 	rbInterpolation->SetSelection(interpolation);
+
+	int superDnn = regardsParam->GetSuperResolutionType();
+	cbUSESUPERDNNFILTER->SetSelection(superDnn);
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -241,8 +253,17 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetAutoConstrast(0);
 
+	int useDnn = rbUSESUPERDNN->GetSelection();
+	if (useDnn == 0)
+		regardsParam->SetUseSuperResolution(1);
+	else
+		regardsParam->SetUseSuperResolution(0);
+
 	int interpolation = rbInterpolation->GetSelection();
 	regardsParam->SetInterpolationType(interpolation);
+
+	int superDnn = cbUSESUPERDNNFILTER->GetSelection();
+	regardsParam->SetSuperResolutionType(superDnn);
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);

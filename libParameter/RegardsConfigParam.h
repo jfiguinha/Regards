@@ -30,6 +30,12 @@ public:
 	int GetVideoLibrary();
 	void SetVideoLibrary(const int& numLib);
 
+	int GetSuperResolutionType();
+	void SetSuperResolutionType(const int& value);
+
+	int GetUseSuperResolution();
+	void SetUseSuperResolution(const int& value);
+
 	wxString GetVideoDecoderHardware();
 	void SetVideoDecoderHardware(const wxString& numLib);
 
@@ -170,6 +176,9 @@ protected:
 
 	int autoContrast = 0;
 	int soundVolume = 100;
+
+	int numSuperResolution = 0;
+	int useSuperResolution = 0;
 
 	int videoFaceDetection = 0;
 	int faceDetection = 1;
