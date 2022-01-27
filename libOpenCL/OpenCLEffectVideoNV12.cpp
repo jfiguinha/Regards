@@ -219,5 +219,5 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			vecParam.clear();
 		}
 	}
-
+	cv::cvtColor(paramSrc, paramSrc, cv::COLOR_BGRA2BGR);
 }

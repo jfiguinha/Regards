@@ -20,13 +20,12 @@
 
 // Inline device function to convert 32-bit unsigned integer to floating point rgba color 
 //*****************************************************************
-inline float4 rgbaUintToFloat4(uint c)
+inline float3 rgbaUintToFloat3(uint c)
 {
-    float4 rgba;
+    float3 rgba;
     rgba.x = c & 0xff;
     rgba.y = (c >> 8) & 0xff;
     rgba.z = (c >> 16) & 0xff;
-    rgba.w = (c >> 24) & 0xff;
     return rgba;
 }
 

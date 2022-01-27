@@ -10,7 +10,6 @@
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
-#include "OpenCLBm3D.h"
 #include <DeepLearning.h>
 #include <GLTexture.h>
 using namespace Regards::OpenCL;
@@ -104,7 +103,8 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(true);
 		cv::Mat local = _bitmap->GetMatrix();
 		filename = bitmap->GetFilename();
-		local.copyTo(input);
+		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
+		//local.copyTo(input);
 		delete _bitmap;
 		preview = false;
 
@@ -143,7 +143,10 @@ void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& sour
 
 
 		if(rgba == 0)
-			cv::cvtColor(u, u, cv::COLOR_BGRA2RGBA);
+			cv::cvtColor(u, u, cv::COLOR_BGR2RGBA);
+		else
+			cv::cvtColor(u, u, cv::COLOR_BGR2BGRA);
+
 		cl_mem cl_textureDisplay;
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
 		
@@ -214,7 +217,7 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 	{
 		input.copyTo(output);
 	}
-
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 	bitmapOut->SetMatrix(output);
 
 	if (bitmapOut != nullptr)
@@ -229,11 +232,13 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 
 wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 {
+	cv::UMat cvDest;
+	cv::cvtColor(input, cvDest, cv::COLOR_BGR2BGRA);
 	wxImage anImage(input.cols, input.rows, false);
 	
 	if (!input.empty())
 	{
-		cl_mem clBuffer = (cl_mem)input.handle(cv::ACCESS_RW);
+		cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 		
 		COpenCLProgram* programCL = openclFilter->GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if (programCL != nullptr)

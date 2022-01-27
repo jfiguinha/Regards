@@ -70,6 +70,10 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 
 	try
 	{
+		if (rgba == 0)
+			cv::cvtColor(u, u, cv::COLOR_BGR2RGBA);
+		else
+			cv::cvtColor(u, u, cv::COLOR_BGR2BGRA);
 
 		cl_mem cl_textureDisplay;
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
@@ -222,6 +226,7 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(const bool &src)
 		paramSrc.copyTo(output);
 	}
 
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 	bitmapOut->SetMatrix(output);
 
 	return bitmapOut;
@@ -344,6 +349,17 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 	paramHeight->SetLibelle("heightIn");
 	paramHeight->SetValue(heightOut);
 
+	cv::UMat cvDest;
+
+	if (interpolatePicture)
+	{
+		cv::cvtColor(paramOutput, cvDest, cv::COLOR_BGR2BGRA);
+	}
+	else
+	{
+		cv::cvtColor(paramSrc, cvDest, cv::COLOR_BGR2BGRA);
+	}
+
 	//paramSrc->SetNoDelete(true);
 
 	if (context != nullptr)
@@ -361,14 +377,9 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			vecParam.push_back(inputY);
 			vecParam.push_back(inputU);
 			vecParam.push_back(inputV);
-			if (interpolatePicture)
-			{
-				clBuffer = (cl_mem)paramOutput.handle(cv::ACCESS_RW);
-			}
-			else
-			{
-				clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
-			}
+
+			clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
+
 
 			COpenCLParameterClMem * inputSrc = new COpenCLParameterClMem();
 			inputSrc->SetNoDelete(true);
@@ -457,7 +468,6 @@ void COpenCLEffectVideo::FlipVertical()
 
 void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
-	cv::UMat cvDest;
 	cv::UMat ycbcr;
 	cv::Mat yChannel;
 	int width = 0;
@@ -467,18 +477,17 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 	{
 		width = paramOutput.cols;
 		height = paramOutput.rows;
-		cv::cvtColor(paramOutput, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
 	}
 	else
 	{
 		width = paramSrc.cols;
 		height = paramSrc.rows;
-
-		cv::cvtColor(paramSrc, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
 
 	}
 
-	cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+	
 
 	std::vector<cv::Mat> planes(3);
 	cv::split(ycbcr, planes);
@@ -494,18 +503,17 @@ void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const do
 	//cv::insertChannel(yChannel, ycbcr, 0);
 	cv::merge(planes, ycbcr);
 	// convert back to RGB
-	cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
+	
 
 	if (interpolatePicture)
 	{
-		cv::cvtColor(cvDest, paramOutput, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
 	}
 	else
 	{
-		cv::cvtColor(cvDest, paramSrc, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
 	}
 
-	cvDest.release();
 	ycbcr.release();
 	yChannel.release();
 }

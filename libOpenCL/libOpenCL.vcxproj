@@ -510,20 +510,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="OpenCLBm3D.h" />
     <ClInclude Include="OpenCLEffectVideo.h" />
     <ClInclude Include="OpenCLEffectVideoNV12.h" />
     <ClInclude Include="OpenCLEffectVideoYUV.h" />
     <ClInclude Include="OpenCLFilter.h" />
-    <ClInclude Include="OpenCLRawDev.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OpenCLBm3D.cpp" />
     <ClCompile Include="OpenCLEffectVideo.cpp" />
     <ClCompile Include="OpenCLEffectVideoNV12.cpp" />
     <ClCompile Include="OpenCLEffectVideoYUV.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
-    <ClCompile Include="OpenCLRawDev.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

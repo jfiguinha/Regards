@@ -171,11 +171,7 @@ void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, cons
 {
 	try
 	{
-		cv::UMat cvSrc;
-		cv::cvtColor(inputData, cvSrc, cv::COLOR_BGRA2BGR);
-		cv::bilateralFilter(cvSrc, cvSrc, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
-		cv::cvtColor(cvSrc, inputData, cv::COLOR_BGR2BGRA);
-		cvSrc.release();
+		cv::bilateralFilter(inputData, inputData, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
 
 	}
 	catch (cv::Exception& e)
@@ -190,16 +186,9 @@ void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, cons
 
 void COpenCLFilter::NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
-	cv::UMat cvDest;
 	try
 	{
-		//context->GetContextForOpenCV().bind();
-		
-		cv::UMat cvSrc;
-		cv::cvtColor(inputData, cvSrc, cv::COLOR_BGRA2BGR);
-		cv::fastNlMeansDenoisingColored(cvSrc, cvDest, h, hColor, templateWindowSize, searchWindowSize);
-		cv::cvtColor(cvDest, inputData, cv::COLOR_BGR2BGRA);
-		cvSrc.release();
+		cv::fastNlMeansDenoisingColored(inputData, inputData, h, hColor, templateWindowSize, searchWindowSize);
 
 	}
 	catch (cv::Exception& e)
@@ -215,13 +204,11 @@ void COpenCLFilter::Bm3d(cv::UMat & inputData, const float & fSigma)
 {
 	try
 	{
-		cv::UMat cvDest;
 		cv::UMat ycbcr;
 		cv::UMat yChannel;
 		cv::UMat yChannelOut;
 
-		cv::cvtColor(inputData, cvDest, cv::COLOR_BGRA2BGR);
-		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
 		cv::extractChannel(ycbcr, yChannel, 0);
@@ -232,8 +219,8 @@ void COpenCLFilter::Bm3d(cv::UMat & inputData, const float & fSigma)
 		cv::insertChannel(yChannelOut, ycbcr, 0);
 
 		// convert back to RGB
-		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
-		cv::cvtColor(cvDest, inputData, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
+
 		// Temporary Mat not reused, so release from memory.
 		yChannel.release();
 		ycbcr.release();
@@ -258,7 +245,7 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat & inputData, float clipHi
 		double minGray = 0, maxGray = 0;
 
 		cv::UMat gray;
-		cvtColor(inputData, gray, cv::COLOR_BGRA2GRAY);
+		cvtColor(inputData, gray, cv::COLOR_BGR2GRAY);
 
 		if (clipHistPercent == 0)
 		{
@@ -348,7 +335,9 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureDat
 void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SHARPENMASKING");
 	if (programCL != nullptr)
@@ -406,14 +395,16 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -465,14 +456,16 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if(programCL != nullptr)
 	{
@@ -519,14 +512,16 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
 	if(programCL != nullptr)
 	{
@@ -576,7 +571,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
@@ -597,7 +592,9 @@ void COpenCLFilter::Blur(const int &radius, cv::UMat & inputData)
 void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::UMat & inputData, bool noDeleteData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_BOXBLUR");
 	if (programCL != nullptr)
@@ -653,14 +650,16 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
@@ -741,14 +740,16 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	
 	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
@@ -799,7 +800,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
@@ -823,8 +824,10 @@ void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::UMat & inputDa
 
 void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -869,14 +872,16 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -921,7 +926,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
@@ -942,8 +947,10 @@ void COpenCLFilter::Median(cv::UMat & inputData)
 
 void COpenCLFilter::Noise(cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
 	{
@@ -994,7 +1001,7 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
@@ -1014,8 +1021,10 @@ void COpenCLFilter::Flip(const wxString &functionName, cv::UMat & inputData)
 
 void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	if (programCL != nullptr)
 	{
@@ -1077,14 +1086,16 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 }
 
 void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -1136,7 +1147,7 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 
 }
@@ -1160,8 +1171,6 @@ void COpenCLFilter::ColorEffect(const wxString &functionName, cv::UMat & inputDa
 	{
 		if (functionName == "Sepia")
 		{
-			cvtColor(inputData, cvDest, cv::COLOR_BGRA2BGR);
-
 			cv::Mat kernel =
 				(cv::Mat_<float>(3, 3)
 					<<
@@ -1169,8 +1178,7 @@ void COpenCLFilter::ColorEffect(const wxString &functionName, cv::UMat & inputDa
 					0.349, 0.686, 0.168,
 					0.393, 0.769, 0.189);
 
-			cv::transform(cvDest, cvDest, kernel);
-			cv::cvtColor(cvDest, inputData, cv::COLOR_BGR2BGRA);
+			cv::transform(inputData, inputData, kernel);
 		}
 		else if (functionName == "Negatif")
 		{
@@ -1178,14 +1186,14 @@ void COpenCLFilter::ColorEffect(const wxString &functionName, cv::UMat & inputDa
 		}
 		else if (functionName == "NoirEtBlanc")
 		{
-			cv::cvtColor(inputData, cvDest, cv::COLOR_BGRA2GRAY);
+			cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2GRAY);
 			cv::threshold(cvDest, cvDest, 127, 255, cv::THRESH_BINARY);
-			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGRA);
+			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGR);
 		}
 		else if (functionName == "GrayLevel")
 		{
-			cv::cvtColor(inputData, cvDest, cv::COLOR_BGRA2GRAY);
-			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGRA);
+			cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2GRAY);
+			cv::cvtColor(cvDest, inputData, cv::COLOR_GRAY2BGR);
 		}
 		cvDest.release();
 	}
@@ -1210,13 +1218,11 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 
 	if (context != nullptr)
 	{
-		cv::UMat cvDest;
 		cv::UMat ycbcr;
 		cv::Mat yChannel;
 		cv::Mat yChannelOut;
 
-		cv::cvtColor(inputData, cvDest, cv::COLOR_BGRA2BGR);
-		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
 
 		std::vector<cv::Mat> planes(3);
 		cv::split(ycbcr, planes);
@@ -1232,10 +1238,8 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 		//cv::insertChannel(yChannel, ycbcr, 0);
 		cv::merge(planes, ycbcr);
 		// convert back to RGB
-		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
-		cv::cvtColor(cvDest, inputData, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
 
-		cvDest.release();
 		ycbcr.release();
 		yChannel.release();
 		yChannelOut.release();
@@ -1245,8 +1249,10 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 
 void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData)
 {
-	cl_mem clBuffer = (cl_mem)inputData.handle(cv::ACCESS_RW);
 	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
+	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_ROTATION");
 	if (programCL != nullptr)
 	{
@@ -1310,7 +1316,7 @@ void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, co
 		vecParam.clear();
 	}
 	inputData.release();
-	dest.copyTo(inputData);
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 	dest.release();
 
 }
@@ -1439,8 +1445,8 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			rectGlobal.width = cvImage.cols - rectGlobal.x;
 		}
 
-		//cvImage = cvImage(rectGlobal);
-		cv::cvtColor(cvImage(rectGlobal), cvImage, cv::COLOR_BGRA2BGR);
+		cvImage = cvImage(rectGlobal);
+		//cv::cvtColor(cvImage(rectGlobal), cvImage, cv::COLOR_BGRA2BGR);
 
 		if (angle == 90)
 		{
@@ -1503,7 +1509,7 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			cv::flip(cvImage, cvImage, 0);
 		}
 
-		cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
 	}
 	catch (cv::Exception& e)
 	{
