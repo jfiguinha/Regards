@@ -18,6 +18,7 @@ namespace Regards
 		class COpenCLParameterInt;
 		class COpenCLParameterByteArray;
 		class COpenCLParameterClMem;
+		class COpenCLFilter;
 	}
 }
 
@@ -31,7 +32,6 @@ namespace Regards
 		{
 		public:
 
-			COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, COpenCLParameterClMem * data_mem, const int &width, const int &height);
 			COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap);
 
 			void SetFlag(const bool &useMemory)
@@ -110,7 +110,7 @@ namespace Regards
 			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
 
 		protected:
-
+			COpenCLFilter * openclFilter;
 			wxImage GetwxImage(cv::UMat& input);
 			int GetSizeData() const;
 			COpenCLContext* context = nullptr;

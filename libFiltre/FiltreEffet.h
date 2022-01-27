@@ -35,7 +35,7 @@ namespace Regards
 class CFiltreEffet
 {
 public:
-	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, COpenCLParameterClMem * data_mem, const int &width, const int &height);
+
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
 

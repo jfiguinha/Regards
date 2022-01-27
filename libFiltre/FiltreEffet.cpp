@@ -125,19 +125,6 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLContext, COpenCLParameterClMem* data_mem,
-                           const int& width, const int& height)
-{
-	filtreEffet = nullptr;
-	this->backColor = backColor;
-	this->openCLContext = openCLContext;
-	filename = "";
-	this->width = width;
-	this->height = height;
-	filtreEffet = new COpenCLEffect(backColor, openCLContext, data_mem, width, height);
-	this->numLib = LIBOPENCL;
-}
-
 CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLContext, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;

@@ -11,7 +11,7 @@
 #include <hqdn3d.h>
 #include <GLTexture.h>
 class CRegardsBitmap;
-
+class CSuperSampling;
 namespace Regards
 {
 	namespace OpenCL
@@ -59,7 +59,9 @@ namespace Regards
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 
 		protected:
-			cv::UMat upscaleImage(cv::UMat img, int method, int scale);
+			
+			CSuperSampling* superSampling;
+
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
 			int GetSizeData();
 			cl_mem_flags  flag;

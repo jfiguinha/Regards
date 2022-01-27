@@ -6,7 +6,7 @@
 #include "RegardsBitmap.h"
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
-#include "OpenCLFilter.h"
+#include "openclFilter.h"
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
@@ -26,17 +26,7 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context
 	flag = CL_MEM_COPY_HOST_PTR;
 	this->context = context;
 	SetBitmap(bitmap);
-}
-
-COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context, COpenCLParameterClMem* data_mem, const int& width, const int& height)
-	: IFiltreEffet(backColor)
-{
-	//bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
-	this->backColor = backColor;
-	//flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-	flag = CL_MEM_COPY_HOST_PTR;
-	this->context = context;
-
+	openclFilter = new COpenCLFilter(context);
 }
 
 bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilizationt)
@@ -48,13 +38,6 @@ int COpenCLEffect::GetSizeData() const
 {
 	return sizeof(cl_uint) * 4;
 }
-
-/*
-CRegardsBitmap* COpenCLEffect::GetPtBitmap()
-{
-	return GetBitmap(false);
-}
-*/
 
 int COpenCLEffect::GetWidth()
 {
@@ -76,16 +59,16 @@ int COpenCLEffect::GetHeight()
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput);
+			openclFilter->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, paramOutput);
 		}
 		else
 		{
-			openclFilter.HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input);
+			openclFilter->HQDn3D(LumSpac, ChromSpac, LumTmp, ChromTmp, input);
 		}
 	}
 	return 0;
@@ -93,16 +76,16 @@ int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const 
 
 int COpenCLEffect::Bm3d(const int& fSigma)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Bm3d(paramOutput, fSigma);
+			openclFilter->Bm3d(paramOutput, fSigma);
 		}
 		else
 		{
-			 openclFilter.Bm3d(input, fSigma);
+			 openclFilter->Bm3d(input, fSigma);
 		}
 	}
 	return 0;
@@ -131,6 +114,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 
 COpenCLEffect::~COpenCLEffect()
 {
+	delete openclFilter;
 	input.release();
 	paramOutput.release();
 }
@@ -162,7 +146,7 @@ void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& sour
 			cv::cvtColor(u, u, cv::COLOR_BGRA2RGBA);
 		cl_mem cl_textureDisplay;
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
-		if (context != nullptr)
+		
 		{
 			cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
 				texture->GetTextureID(), &err);
@@ -174,8 +158,8 @@ void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& sour
 		//CV_Assert(srcSize.width == (int)texture.cols() && srcSize.height == (int)texture.rows());
 
 		using namespace cv::ocl;
-		Context& ctx = Context::getDefault();
-		cl_context context = (cl_context)ctx.ptr();
+		//Context& ctx = Context::getDefault();
+		//cl_context context = (cl_context)ctx.ptr();
 
 		cl_int status = 0;
 
@@ -250,8 +234,8 @@ wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 	if (!input.empty())
 	{
 		cl_mem clBuffer = (cl_mem)input.handle(cv::ACCESS_RW);
-		COpenCLFilter openclFilter(context);
-		COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		
+		COpenCLProgram* programCL = openclFilter->GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if (programCL != nullptr)
 		{
 			vector<COpenCLParameter*> vecParam;
@@ -305,16 +289,16 @@ int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const in
 {
 	CDeepLearning::LockOpenCLDnn();
 	
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
+			openclFilter->BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
 		}
 		else
 		{
-			openclFilter.BilateralEffect(input, fSize, sigmaX, sigmaP);
+			openclFilter->BilateralEffect(input, fSize, sigmaX, sigmaP);
 		}
 	}
 
@@ -324,16 +308,16 @@ int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const in
 
 int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.BrightnessAndContrast(brightness, contrast, paramOutput);
+			openclFilter->BrightnessAndContrast(brightness, contrast, paramOutput);
 		}
 		else
 		{
-			openclFilter.BrightnessAndContrast(brightness, contrast, input);
+			openclFilter->BrightnessAndContrast(brightness, contrast, input);
 		}
 	}
 	return 0;
@@ -341,16 +325,16 @@ int COpenCLEffect::BrightnessAndContrast(const double& brightness, const double&
 
 int COpenCLEffect::Swirl(const float& radius, const float& angle)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Swirl(radius, angle, paramOutput);
+			openclFilter->Swirl(radius, angle, paramOutput);
 		}
 		else
 		{
-			openclFilter.Swirl(radius, angle, input);
+			openclFilter->Swirl(radius, angle, input);
 		}
 	}
 	return 0;
@@ -359,16 +343,16 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	CDeepLearning::LockOpenCLDnn();
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.NlMeans(paramOutput, h, hColor, templateWindowSize, searchWindowSize);
+			openclFilter->NlMeans(paramOutput, h, hColor, templateWindowSize, searchWindowSize);
 		}
 		else
 		{
-			openclFilter.NlMeans(input, h, hColor, templateWindowSize, searchWindowSize);
+			openclFilter->NlMeans(input, h, hColor, templateWindowSize, searchWindowSize);
 		}
 	}
 	CDeepLearning::UnlockOpenCLDnn();
@@ -377,16 +361,16 @@ int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& tem
 
 int COpenCLEffect::Posterize(const float& level, const float& gamma)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Posterize(level, gamma, paramOutput);
+			openclFilter->Posterize(level, gamma, paramOutput);
 		}
 		else
 		{
-			openclFilter.Posterize(level, gamma, input);
+			openclFilter->Posterize(level, gamma, input);
 		}
 	}
 	return 0;
@@ -395,7 +379,7 @@ int COpenCLEffect::Posterize(const float& level, const float& gamma)
 int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const double& angle)
 {
 	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
-	if (context != nullptr)
+	
 	{
 		vector<double> kernel;
 		vector<wxPoint> offsets;
@@ -408,17 +392,17 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 		if (kernel.size() < 3)
 			return false;
 
-		if (context != nullptr)
+		
 		{
 			offsets = CMotionBlur::GetOffsetKernel(kernel.size(), angle);
-			COpenCLFilter openclFilter(context);
+			
 			if (preview && !paramOutput.empty())
 			{
-				openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(), paramOutput);
+				openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), paramOutput);
 			}
 			else
 			{
-				openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(), input);
+				openclFilter->MotionBlurCompute(kernel, offsets, kernel.size(), input);
 			}
 		}
 	}
@@ -429,16 +413,16 @@ int COpenCLEffect::MotionBlur(const double& radius, const double& sigma, const d
 
 int COpenCLEffect::Median()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Median(paramOutput);
+			openclFilter->Median(paramOutput);
 		}
 		else
 		{
-			openclFilter.Median(input);
+			openclFilter->Median(input);
 		}
 	}
 	return 0;
@@ -446,16 +430,16 @@ int COpenCLEffect::Median()
 
 int COpenCLEffect::Negatif()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.ColorEffect("Negatif", paramOutput);
+			openclFilter->ColorEffect("Negatif", paramOutput);
 		}
 		else
 		{
-			openclFilter.ColorEffect("Negatif", input);
+			openclFilter->ColorEffect("Negatif", input);
 		}
 	}
 
@@ -467,16 +451,16 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 	CDeepLearning::LockOpenCLDnn();
     try
     {
-        if (context != nullptr)
+        
         {
-            COpenCLFilter openclFilter(context);
+            
             if (preview && !paramOutput.empty())
             {
-                openclFilter.BrightnessAndContrastAuto(paramOutput, clipHistPercent);
+                openclFilter->BrightnessAndContrastAuto(paramOutput, clipHistPercent);
             }
             else
             {
-                openclFilter.BrightnessAndContrastAuto(input, clipHistPercent);
+                openclFilter->BrightnessAndContrastAuto(input, clipHistPercent);
             }
         }
     }
@@ -518,16 +502,16 @@ int COpenCLEffect::GetHeight()
 
 int COpenCLEffect::Sepia()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.ColorEffect("Sepia", paramOutput);
+			openclFilter->ColorEffect("Sepia", paramOutput);
 		}
 		else
 		{
-			openclFilter.ColorEffect("Sepia", input);
+			openclFilter->ColorEffect("Sepia", input);
 		}
 
 	}
@@ -537,16 +521,16 @@ int COpenCLEffect::Sepia()
 
 int COpenCLEffect::NoirEtBlanc()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.ColorEffect("NoirEtBlanc", paramOutput);
+			openclFilter->ColorEffect("NoirEtBlanc", paramOutput);
 		}
 		else
 		{
-			openclFilter.ColorEffect("NoirEtBlanc", input);
+			openclFilter->ColorEffect("NoirEtBlanc", input);
 		}
 
 	}
@@ -556,16 +540,16 @@ int COpenCLEffect::NoirEtBlanc()
 
 int COpenCLEffect::NiveauDeGris()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.ColorEffect("GrayLevel", paramOutput);
+			openclFilter->ColorEffect("GrayLevel", paramOutput);
 		}
 		else
 		{
-			openclFilter.ColorEffect("GrayLevel", input);
+			openclFilter->ColorEffect("GrayLevel", input);
 		}
 
 	}
@@ -575,7 +559,7 @@ int COpenCLEffect::NiveauDeGris()
 
 int COpenCLEffect::FlipVertical()
 {
-	if (context != nullptr)
+	
 	{
 		if (preview && !paramOutput.empty())
 		{
@@ -646,40 +630,29 @@ int COpenCLEffect::Rotate270()
 
 int COpenCLEffect::RotateFree(const double& angle, const int& widthOut, const int& heightOut)
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		int _widthOut;
-		int _heightOut;
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			_widthOut = widthOut;
-			_heightOut = heightOut;
-			openclFilter.Rotate("RotateFree", widthOut, heightOut, angle, paramOutput);
-		}
-		else
-		{
-			_widthOut = widthOut;
-			_heightOut = heightOut;
-			openclFilter.Rotate("RotateFree", widthOut, heightOut, angle, input);
-		}
-		
+		openclFilter->Rotate("RotateFree", widthOut, heightOut, angle, paramOutput);
+	}
+	else
+	{
+		openclFilter->Rotate("RotateFree", widthOut, heightOut, angle, input);
 	}
 	return 0;
 }
 
 int COpenCLEffect::SharpenMasking(const float& sharpness)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.SharpenMasking(sharpness, paramOutput);
+			openclFilter->SharpenMasking(sharpness, paramOutput);
 		}
 		else
 		{
-			openclFilter.SharpenMasking(sharpness, input);
+			openclFilter->SharpenMasking(sharpness, input);
 		}
 	}
 
@@ -688,16 +661,16 @@ int COpenCLEffect::SharpenMasking(const float& sharpness)
 
 int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.PhotoFiltre(clValue, intensity, paramOutput);
+			openclFilter->PhotoFiltre(clValue, intensity, paramOutput);
 		}
 		else
 		{
-			openclFilter.PhotoFiltre(clValue, intensity, input);
+			openclFilter->PhotoFiltre(clValue, intensity, input);
 		}
 	}
 
@@ -706,16 +679,16 @@ int COpenCLEffect::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 
 int COpenCLEffect::Solarize(const long& threshold)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Solarize(threshold, paramOutput);
+			openclFilter->Solarize(threshold, paramOutput);
 		}
 		else
 		{
-			openclFilter.Solarize(threshold, input);
+			openclFilter->Solarize(threshold, input);
 		}
 	}
 
@@ -724,39 +697,27 @@ int COpenCLEffect::Solarize(const long& threshold)
 
 int COpenCLEffect::RGBFilter(const int& red, const int& green, const int& blue)
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter.RGBFilter(red, green, blue, paramOutput);
-		}
-		else
-		{
-			openclFilter.RGBFilter(red, green, blue, input);
-		}
-		
+		openclFilter->RGBFilter(red, green, blue, paramOutput);
 	}
-
+	else
+	{
+		openclFilter->RGBFilter(red, green, blue, input);
+	}
 	return 0;
 }
 
 int COpenCLEffect::FiltreMosaic()
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter.FiltreMosaic(paramOutput);
-		}
-		else
-		{
-			openclFilter.FiltreMosaic(input);
-		}
-		
+		openclFilter->FiltreMosaic(paramOutput);
 	}
-
+	else
+	{
+		openclFilter->FiltreMosaic(input);
+	}
 	return 0;
 }
 
@@ -766,55 +727,45 @@ int COpenCLEffect::FiltreMosaic()
 //----------------------------------------------------------------------------
 int COpenCLEffect::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
 {
-	if (context != nullptr)
-	{
-		cv::UMat second;
-		bitmapSecond->GetMatrix().copyTo(second);
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter.Fusion(paramOutput, second, pourcentage);
-		}
-		else
-		{
-			openclFilter.Fusion(input, second, pourcentage);
-		}
+	cv::UMat second;
+	bitmapSecond->GetMatrix().copyTo(second);
 		
+	if (preview && !paramOutput.empty())
+	{
+		openclFilter->Fusion(paramOutput, second, pourcentage);
+	}
+	else
+	{
+		openclFilter->Fusion(input, second, pourcentage);
 	}
 	return 0;
 }
 
 int COpenCLEffect::Soften()
 {
-	if (context != nullptr)
+	if (preview && !paramOutput.empty())
 	{
-		COpenCLFilter openclFilter(context);
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", paramOutput);
-		}
-		else
-		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", input);
-		}
-		
+		openclFilter->FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", paramOutput);
 	}
-
+	else
+	{
+		openclFilter->FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", input);
+	}
 	return 0;
 }
 
 int COpenCLEffect::Noise()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Noise(paramOutput);
+			openclFilter->Noise(paramOutput);
 		}
 		else
 		{
-			openclFilter.Noise(input);
+			openclFilter->Noise(input);
 		}
 		
 	}
@@ -824,16 +775,16 @@ int COpenCLEffect::Noise()
 
 int COpenCLEffect::Blur(const int& radius)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.Blur(radius, paramOutput);
+			openclFilter->Blur(radius, paramOutput);
 		}
 		else
 		{
-			openclFilter.Blur(radius, input);
+			openclFilter->Blur(radius, input);
 		}
 		
 	}
@@ -843,16 +794,16 @@ int COpenCLEffect::Blur(const int& radius)
 
 int COpenCLEffect::Emboss()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", paramOutput);
+			openclFilter->FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", paramOutput);
 		}
 		else
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", input);
+			openclFilter->FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", input);
 		}
 		
 	}
@@ -863,16 +814,16 @@ int COpenCLEffect::Emboss()
 
 int COpenCLEffect::SharpenStrong()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", paramOutput);
+			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", paramOutput);
 		}
 		else
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", input);
+			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", input);
 		}
 		
 	}
@@ -882,16 +833,16 @@ int COpenCLEffect::SharpenStrong()
 
 int COpenCLEffect::Sharpen()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", paramOutput);
+			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", paramOutput);
 		}
 		else
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", input);
+			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", input);
 		}
 		
 	}
@@ -901,16 +852,16 @@ int COpenCLEffect::Sharpen()
 
 int COpenCLEffect::FiltreEdge()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_EDGE", "Edge", paramOutput);
+			openclFilter->FiltreConvolution("IDR_OPENCL_EDGE", "Edge", paramOutput);
 		}
 		else
 		{
-			openclFilter.FiltreConvolution("IDR_OPENCL_EDGE", "Edge", input);
+			openclFilter->FiltreConvolution("IDR_OPENCL_EDGE", "Edge", input);
 		}
 		
 	}
@@ -920,16 +871,16 @@ int COpenCLEffect::FiltreEdge()
 
 int COpenCLEffect::Erode()
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
+		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter.ErodeDilate("Erode", paramOutput);
+			openclFilter->ErodeDilate("Erode", paramOutput);
 		}
 		else
 		{
-			openclFilter.ErodeDilate("Erode", input);
+			openclFilter->ErodeDilate("Erode", input);
 		}
 	}
 	return 0;
@@ -937,14 +888,14 @@ int COpenCLEffect::Erode()
 
 int COpenCLEffect::Dilate()
 {
-	COpenCLFilter openclFilter(context);
+	
 	if (preview && !paramOutput.empty())
 	{
-		openclFilter.ErodeDilate("Dilate", paramOutput);
+		openclFilter->ErodeDilate("Dilate", paramOutput);
 	}
 	else
 	{
-		openclFilter.ErodeDilate("Dilate", input);
+		openclFilter->ErodeDilate("Dilate", input);
 	}
 	return 0;
 }
@@ -952,7 +903,7 @@ int COpenCLEffect::Dilate()
 int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 {
 	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
-	if (context != nullptr)
+	
 	{
 		if (boxSize > 0)
 		{
@@ -1002,10 +953,10 @@ int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 
 void COpenCLEffect::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
 {
-	if (context != nullptr)
+	
 	{
-		COpenCLFilter openclFilter(context);
-		paramOutput = openclFilter.Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio);
+		
+		paramOutput = openclFilter->Interpolation(widthOut, heightOut, rc, method, input, flipH, flipV, angle, ratio);
 		preview = true;
 	}
 }

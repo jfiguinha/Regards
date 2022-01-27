@@ -24,7 +24,23 @@ using namespace dnn_superres;
 bool isUsed = false;
 std::mutex muDnnSuperResImpl;
 
-string GenerateModelPath(string modelName, int scale)
+
+class CSuperSampling
+{
+public:
+	CSuperSampling() {};
+	~CSuperSampling() {};
+	string GenerateModelPath(string modelName, int scale);
+	bool TestIfMethodIsValid(int method, int scale);
+	cv::UMat upscaleImage(cv::UMat img, int method, int scale);
+
+private:
+	DnnSuperResImpl sr;
+	int oldscale = -1;
+	int oldmethod = -1;
+};
+
+string CSuperSampling::GenerateModelPath(string modelName, int scale)
 {
 	wxString path = "";
 #ifdef WIN32
@@ -36,7 +52,7 @@ string GenerateModelPath(string modelName, int scale)
 	return path.ToStdString();
 }
 
-bool TestIfMethodIsValid(int method, int scale)
+bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 {
 	if (method == EDSR && (scale == 2 || scale == 3 || scale == 4))
 	{
@@ -57,63 +73,77 @@ bool TestIfMethodIsValid(int method, int scale)
 	return false;
 }
 
-cv::UMat COpenCLFilter::upscaleImage(cv::UMat img, int method, int scale)
+cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 {
 	isUsed = true;
 	UMat outputImage;
-	try
+
+	if (oldscale != scale || oldmethod != method)
 	{
-		//muDnnSuperResImpl.lock();
-
-		DnnSuperResImpl sr;
-		
-
-		switch (method)
+		try
 		{
-		case EDSR: 
+			switch (method)
+			{
+			case EDSR:
 			{
 				string algorithm = "edsr";
-				sr.readModel(GenerateModelPath("EDSR",scale));
+				sr.readModel(GenerateModelPath("EDSR", scale));
 				sr.setModel(algorithm, scale);
 			}
 			break;
 
-		case ESPCN:
+			case ESPCN:
 			{
 				string algorithm = "espcn";
 				sr.readModel(GenerateModelPath("ESPCN", scale));
 				sr.setModel(algorithm, scale);
 			}
 			break;
-		case FSRCNN:
+			case FSRCNN:
 			{
 				string algorithm = "fsrcnn";
 				sr.readModel(GenerateModelPath("FSRCNN", scale));
 				sr.setModel(algorithm, scale);
 			}
 			break;
-		case LapSRN:
+			case LapSRN:
 			{
 				string algorithm = "lapsrn";
 				sr.readModel(GenerateModelPath("LapSRN", scale));
 				sr.setModel(algorithm, scale);
 			}
 			break;
+			}
+
+			sr.setPreferableTarget(DNN_TARGET_OPENCL);
+			sr.upsample(img, outputImage);
+
+			//muDnnSuperResImpl.unlock();
+
 		}
-
-		sr.setPreferableTarget(DNN_TARGET_OPENCL);
-		sr.upsample(img, outputImage);
-
-		//muDnnSuperResImpl.unlock();
-
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
 	}
-	catch (cv::Exception& e)
+	else
 	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		try
+		{
+			sr.upsample(img, outputImage);
+		}
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
 	}
 
+	oldscale = scale;
+	oldmethod = method;
 	isUsed = false;
 	return outputImage;
 }
@@ -126,12 +156,14 @@ COpenCLFilter::COpenCLFilter(COpenCLContext * context)
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	this->context = context;
 	hq3d = nullptr;
+	superSampling = new CSuperSampling();
 }
 
 COpenCLFilter::~COpenCLFilter()
 {
 	if (hq3d != nullptr)
 		delete hq3d;
+	delete superSampling;
 }
 
 
@@ -1350,14 +1382,10 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio)
 {
 	cv::UMat cvImage;
-	//inputData.copyTo(cvImage);
-	cv::cvtColor(inputData, cvImage, cv::COLOR_BGRA2BGR);
+	inputData.copyTo(cvImage);
 
 	try
 	{
-
-
-
 		float ratioX = (float)inputData.cols / rc.width;
 		float ratioY = (float)inputData.rows / rc.height;
 		if (angle == 90)
@@ -1411,8 +1439,8 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			rectGlobal.width = cvImage.cols - rectGlobal.x;
 		}
 
-		cvImage = cvImage(rectGlobal);
-
+		//cvImage = cvImage(rectGlobal);
+		cv::cvtColor(cvImage(rectGlobal), cvImage, cv::COLOR_BGRA2BGR);
 
 		if (angle == 90)
 		{
@@ -1452,9 +1480,9 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 			int superDnn = regardsParam->GetSuperResolutionType();
 			int useSuperResolution = regardsParam->GetUseSuperResolution();
-			if (useSuperResolution && TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
+			if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
 			{
-				cvImage = upscaleImage(cvImage, superDnn, (ratio / 100));
+				cvImage = superSampling->upscaleImage(cvImage, superDnn, (ratio / 100));
 			}
 			else
 			{
@@ -1474,14 +1502,17 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 		{
 			cv::flip(cvImage, cvImage, 0);
 		}
+
+		cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
 	}
 	catch (cv::Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		
 	}
 
-	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+	
 	return cvImage;
 }
