@@ -25,7 +25,8 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
 extern bool processrecognitionison;
 
 using namespace Regards::Picture;
@@ -166,11 +167,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	
 
-	isLoadingResource = true;
-	auto path = new CThreadFace();
-	path->mainWindow = this;
-	path->thread = new thread(LoadResource, path);
-	processIdle = false;
+	processIdle = true;
 
 	nbProcessFacePhoto = 0;
 
@@ -261,6 +258,7 @@ void CListFace::OnResourceLoad(wxCommandEvent& event)
 
 	processIdle = true;
 	isLoadingResource = false;
+	resourceLoaded = true;
 }
 
 
@@ -592,6 +590,20 @@ bool CListFace::GetProcessEnd()
 void CListFace::ProcessIdle()
 {
 	int faceDetection = 0;
+	if (COpenCLEngine::InstanceCreate() == false)
+	{
+		processIdle = true;
+		return;
+	}
+	else if(!isLoadingResource && !resourceLoaded)
+	{
+		isLoadingResource = true;
+		auto path = new CThreadFace();
+		path->mainWindow = this;
+		path->thread = new thread(LoadResource, path);
+		return;
+	}
+
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 	{

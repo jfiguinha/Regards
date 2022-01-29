@@ -90,7 +90,6 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 
 		using namespace cv::ocl;
 		Context& ctx = Context::getDefault();
-		cl_context context = (cl_context)ctx.ptr();
 
 		cl_int status = 0;
 

@@ -18,6 +18,8 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 vector<OpenCLDevice*> COpenCLDeviceList::listOfDevice;
 vector<OpenCLPlatform*> COpenCLPlatformList::listOfPlatform;
 
+bool COpenCLEngine::instanceCreate = false;
+
 void COpenCLPlatformList::GetListOfPlatform()
 {
 	printf("GetListOfPlatform \n");
@@ -467,13 +469,19 @@ COpenCLContext* COpenCLEngine::Create2DInstance()
 	if (platform != nullptr && device != nullptr && _singleton != nullptr)
 	{
 		cv::ocl::setUseOpenCL(true);
-		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
-			platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
+		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 
 	}
 #endif
 
+	instanceCreate = true;
+
 	return _singleton;
+}
+
+bool COpenCLEngine::InstanceCreate()
+{
+	return instanceCreate;
 }
 
 COpenCLContext* COpenCLEngine::CreateInstance()
@@ -518,11 +526,12 @@ COpenCLContext* COpenCLEngine::CreateInstance()
 	if (platform != nullptr && device != nullptr && _singleton != nullptr)
 	{
 		cv::ocl::setUseOpenCL(true);
-		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
-			platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
+		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 
 	}
 #endif
+
+	instanceCreate = true;
 
 	return _singleton;
 }

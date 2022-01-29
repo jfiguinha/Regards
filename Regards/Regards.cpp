@@ -22,7 +22,7 @@
 
 using namespace Regards::Picture;
 
-COpenCLContext* openclContext2d = nullptr;
+COpenCLContext* openclContext = nullptr;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -224,11 +224,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-	if (regardsParam->GetIsOpenCLSupport())
-	{
-		openclContext2d = Regards::OpenCL::COpenCLEngine::Create2DInstance();
-	}
-	
+
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

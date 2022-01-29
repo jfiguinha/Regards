@@ -2,8 +2,9 @@
 #include "header.h"
 #include "BitmapWnd2d.h"
 #include "BitmapWndRender.h"
-
-extern COpenCLContext* openclContext2d;
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
+extern COpenCLContext* openclContext;
 
 //-----------------------------------------------------------------------------
 //
@@ -163,8 +164,12 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	//openclContext2d->GetContextForOpenCV().bind();
-	bitmapWndRender->OnPaint2D(this, openclContext2d);
+	if (openclContext == nullptr)
+	{
+		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+	}
+
+	bitmapWndRender->OnPaint2D(this, openclContext);
 	
 
 }

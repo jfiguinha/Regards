@@ -7,7 +7,7 @@
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 
-extern COpenCLContext* openclContext2d;
+extern COpenCLContext* openclContext;
 
 //-----------------------------------------------------------------------------
 //
@@ -174,24 +174,14 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
     renderOpenGL->SetCurrent(*this);
 
-#ifdef __WXGTK__
-
-    bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext2d);
-
-#else
-
     if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-		
-		
 	}
     
-	openclContext->GetContextForOpenCV().bind();
+	//openclContext->GetContextForOpenCV().bind();
 	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
     
-#endif
-
 }
 
 

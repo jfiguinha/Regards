@@ -27,7 +27,7 @@ class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
 
-extern COpenCLContext* openclContext2d;
+extern COpenCLContext* openclContext;
 
 class CFFmpegTranscodingPimpl
 {
@@ -76,8 +76,8 @@ public:
 
 		if (supportOpenCL)
 		{
-			if (openclContext2d != nullptr)
-				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext2d);
+			if (openclContext != nullptr)
+				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 		}
 	}
 	;

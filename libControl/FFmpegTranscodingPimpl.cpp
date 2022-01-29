@@ -1896,7 +1896,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		CImageLoadingFormat imageFormat(false);
 		imageFormat.SetPicture(GetBitmapRGBA(tmp_frame));
 
-		CFiltreEffet filtre(color, openclContext2d, &imageFormat);
+		CFiltreEffet filtre(color, openclContext, &imageFormat);
 
 		if (videoCompressOption != nullptr)
 		{
