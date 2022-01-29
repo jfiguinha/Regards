@@ -10,12 +10,12 @@
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 
+extern COpenCLContext* openclContext;
 
-COpenCLProgram::COpenCLProgram(COpenCLContext* context, const int& type)
+COpenCLProgram::COpenCLProgram(const int& type)
 {
 	program = nullptr;
 	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
-	this->context = context;
 	this->typeData = type; // context->GetDefaultType();
 }
 
@@ -47,12 +47,12 @@ bool COpenCLProgram::LoadProgramFromBinaries(const wxString& programId)
 		COpenCLKernelData* outputData = sqlOpenCLKernel.GetOpenCLKernel(programId, platformName, indexDevice, typeData);
 		if (outputData != nullptr)
 		{
-			program = clCreateProgramWithBinary(context->GetContext(), context->GetNumberOfDevice(),
-			                                    context->GetSelectedDevice(), &outputData->program_size,
+			program = clCreateProgramWithBinary(openclContext->GetContext(), openclContext->GetNumberOfDevice(),
+				openclContext->GetSelectedDevice(), &outputData->program_size,
 			                                    const_cast<const unsigned char**>(&outputData->program_file),
 			                                    nullptr, &err);
 
-			err = clBuildProgram(program, context->GetNumberOfDevice(), context->GetSelectedDevice(), nullptr, nullptr,
+			err = clBuildProgram(program, openclContext->GetNumberOfDevice(), openclContext->GetSelectedDevice(), nullptr, nullptr,
 			                     nullptr);
 
 			delete outputData;
@@ -89,21 +89,21 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 	cl_int err;
 	// TODO Using prepared length and not terminating by 0 is better way?
 
-	program = clCreateProgramWithSource(context->GetContext(), 1, &raw_text, nullptr, &err);
+	program = clCreateProgramWithSource(openclContext->GetContext(), 1, &raw_text, nullptr, &err);
 	Error::CheckError(err);
 
-	err = clBuildProgram(program, context->GetNumberOfDevice(), context->GetSelectedDevice(), buildOption.c_str(),
+	err = clBuildProgram(program, openclContext->GetNumberOfDevice(), openclContext->GetSelectedDevice(), buildOption.c_str(),
 	                     nullptr, nullptr);
 	Error::CheckError(err);
 
 	if (err == CL_BUILD_PROGRAM_FAILURE)
 	{
-		for (size_t i = 0; i < context->GetNumberOfDevice(); i++)
+		for (size_t i = 0; i < openclContext->GetNumberOfDevice(); i++)
 		{
 			size_t log_length = 0;
 			err = clGetProgramBuildInfo(
 				program,
-				context->GetSelectedDevice()[i],
+				openclContext->GetSelectedDevice()[i],
 				CL_PROGRAM_BUILD_LOG,
 				0,
 				nullptr,
@@ -115,7 +115,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 
 			err = clGetProgramBuildInfo(
 				program,
-				context->GetSelectedDevice()[i],
+				openclContext->GetSelectedDevice()[i],
 				CL_PROGRAM_BUILD_LOG,
 				log_length,
 				&log[0],
@@ -146,7 +146,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 		try
 		{
 			// Read the binaries size
-			const size_t binaries_size_alloc_size = sizeof(size_t) * context->GetNumberOfDevice();
+			const size_t binaries_size_alloc_size = sizeof(size_t) * openclContext->GetNumberOfDevice();
 			binaries_size = static_cast<size_t*>(malloc(binaries_size_alloc_size));
 			if (!binaries_size)
 			{
@@ -161,7 +161,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 			}
 
 			// Read the binaries
-			const size_t binaries_ptr_alloc_size = sizeof(unsigned char*) * context->GetNumberOfDevice();
+			const size_t binaries_ptr_alloc_size = sizeof(unsigned char*) * openclContext->GetNumberOfDevice();
 			binaries_ptr = static_cast<unsigned char**>(malloc(binaries_ptr_alloc_size));
 			if (!binaries_ptr)
 			{
@@ -170,7 +170,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 			}
 
 			memset(binaries_ptr, 0, binaries_ptr_alloc_size);
-			for (i = 0; i < context->GetNumberOfDevice(); ++i)
+			for (i = 0; i < openclContext->GetNumberOfDevice(); ++i)
 			{
 				binaries_ptr[i] = static_cast<unsigned char*>(malloc(binaries_size[i]));
 				if (!binaries_ptr[i])
@@ -188,7 +188,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 				throw std::invalid_argument("Error");
 			}
 
-			if (indexDevice < context->GetNumberOfDevice())
+			if (indexDevice < openclContext->GetNumberOfDevice())
 			{
 				sqlOpenCLKernel.InsertOpenCLKernel(binaries_ptr[indexDevice], binaries_size[indexDevice], programId,
 				                                   platformName, indexDevice, typeData);
@@ -200,7 +200,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString& programId, const wxStr
 		// Free the return value buffer
 		if (binaries_ptr)
 		{
-			for (i = 0; i < context->GetNumberOfDevice(); ++i)
+			for (i = 0; i < openclContext->GetNumberOfDevice(); ++i)
 			{
 				free(binaries_ptr[i]);
 			}

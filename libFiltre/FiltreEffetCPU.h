@@ -11,7 +11,7 @@ class CFiltreEffetCPU : public IFiltreEffet
 public:
 	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
-	void CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
+
     int Bm3d(const int & fSigma);
 	int HistogramNormalize();
 	int HistogramEqualize();

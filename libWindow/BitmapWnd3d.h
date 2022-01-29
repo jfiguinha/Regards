@@ -6,8 +6,6 @@
 #include "IBitmapWnd.h"
 #include <BitmapDisplay.h>
 using namespace std;
-using namespace Regards::OpenCL;
-
 
 #define MOVEPICTURE 2
 #define ZOOMPICTURE 3
@@ -63,7 +61,7 @@ namespace Regards
 			void OnCommand(wxCommandEvent& event);
 			CRenderOpenGL* renderOpenGL = nullptr;
 			IBitmapRenderInterface* bitmapWndRender = nullptr;
-			COpenCLContext* openclContext = nullptr;
+			
 		};
 	}
 }

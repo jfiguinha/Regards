@@ -2,15 +2,6 @@
 #include <RGBAQuad.h>
 #include <effect_id.h>
 #include <GLTexture.h>
-namespace Regards
-{
-	namespace OpenCL
-	{
-		class COpenCLContext;
-	}
-}
-
-using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 
 class Chqdn3d;
@@ -21,10 +12,6 @@ class CEffectParameter;
 class IFiltreEffet;
 namespace Regards
 {
-	namespace OpenCL
-	{
-		class COpenCLParameterClMem;
-	}
 	namespace OpenCV
 	{
 		class COpenCVStabilization;
@@ -36,10 +23,8 @@ class CFiltreEffet
 {
 public:
 
-	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
+	CFiltreEffet(const CRgbaquad &backColor, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
-
-	void CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 
 	void SetPreviewMode(const bool& value);
 	void SetBitmap(CImageLoadingFormat * bitmap);
@@ -108,8 +93,6 @@ public:
 	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization * stabilization);
 private:
 
-
-	COpenCLContext * openCLContext;
 	void CalculNewSize(const int32_t &x, const int32_t &y, const double &angle, int &width, int &height);
 	//CRegardsBitmap * pBitmap;
 	IFiltreEffet * filtreEffet;

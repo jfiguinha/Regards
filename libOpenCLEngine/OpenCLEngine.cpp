@@ -4,6 +4,7 @@
 #include "OpenCLContext.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#include <opencv2/core/ocl.hpp>
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C
 using namespace Regards::OpenCL;
@@ -18,7 +19,13 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 vector<OpenCLDevice*> COpenCLDeviceList::listOfDevice;
 vector<OpenCLPlatform*> COpenCLPlatformList::listOfPlatform;
 
+
 bool COpenCLEngine::instanceCreate = false;
+bool COpenCLEngine::InstanceCreate()
+{
+	return instanceCreate;
+}
+
 
 void COpenCLPlatformList::GetListOfPlatform()
 {
@@ -470,18 +477,13 @@ COpenCLContext* COpenCLEngine::Create2DInstance()
 	{
 		cv::ocl::setUseOpenCL(true);
 		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
+		//_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
+		//	platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
 
 	}
 #endif
-
 	instanceCreate = true;
-
 	return _singleton;
-}
-
-bool COpenCLEngine::InstanceCreate()
-{
-	return instanceCreate;
 }
 
 COpenCLContext* COpenCLEngine::CreateInstance()
@@ -522,8 +524,17 @@ COpenCLContext* COpenCLEngine::CreateInstance()
 		}
 	}
 
-	instanceCreate = true;
+#ifdef OPENCV_OPENCL
+	if (platform != nullptr && device != nullptr && _singleton != nullptr)
+	{
+		cv::ocl::setUseOpenCL(true);
+		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
+		//_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::create(
+		//	platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId));
 
+	}
+#endif
+	instanceCreate = true;
 	return _singleton;
 }
 
@@ -582,7 +593,6 @@ void COpenCLDeviceList::GetAllDevice()
 			{
 				printf("Platform Error Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
 			}
-			break;
 			//deviceType = ParseDeviceType("CPU");
 			//GetListOfDevice(listOfDevice, platform->platformId, deviceType);
 		}

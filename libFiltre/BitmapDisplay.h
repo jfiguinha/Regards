@@ -8,20 +8,11 @@ namespace Regards
 	}
 }
 
-namespace Regards
-{
-	namespace OpenCL
-	{
-		class COpenCLContext;
-	}
-}
-
 class CFiltreEffet;
 class CRegardsFloatBitmap;
 class CImageLoadingFormat;
 
 using namespace Regards::FiltreEffet;
-using namespace Regards::OpenCL;
 
 class IBitmapDisplay
 {

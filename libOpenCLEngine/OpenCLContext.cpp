@@ -20,8 +20,8 @@ using namespace Regards::OpenCL;
 int COpenCLContext::GetDefaultType()
 {
 	//Todo Modify to support change in parameter
-	//if (sharedContextCompatible)
-	//	return OPENCL_FLOAT;
+	if (sharedContextCompatible)
+		return OPENCL_FLOAT;
 	return OPENCL_UCHAR;
 }
 
@@ -97,7 +97,7 @@ COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId, const i
 	//Ajout du program en pré chargement
 	if (!findPreloadShader)
 	{
-		program = new COpenCLProgram(this, type);
+		program = new COpenCLProgram(type);
 		program->SetProgramId(numProgramId);
 		listProgram.push_back(program);
 	}

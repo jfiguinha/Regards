@@ -2,6 +2,7 @@
 #include "OpenCLFilter.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
+#include <OpenCLContext.h>
 #include "RegardsBitmap.h"
 #include "utility.h"
 #include <CvPlot/cvplot.h>
@@ -11,6 +12,7 @@
 #include <mutex>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+
 using namespace Regards::OpenCL;
 using namespace cv;
 using namespace dnn;
@@ -24,6 +26,7 @@ using namespace dnn_superres;
 bool isUsed = false;
 std::mutex muDnnSuperResImpl;
 
+extern COpenCLContext* openclContext;
 
 class CSuperSampling
 {
@@ -150,11 +153,10 @@ cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 
 
 
-COpenCLFilter::COpenCLFilter(COpenCLContext * context)
+COpenCLFilter::COpenCLFilter()
 {
-	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-	this->context = context;
 	hq3d = nullptr;
 	superSampling = new CSuperSampling();
 }
@@ -343,7 +345,7 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 				
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -369,7 +371,7 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		try
 		{
 			
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -409,7 +411,7 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -426,12 +428,12 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 
 		COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
 		paramColor->SetLibelle("color");
-		paramColor->SetValue(context->GetContext(), &color, flag);
+		paramColor->SetValue(openclContext->GetContext(), &color, flag);
 		vecParam.push_back(paramColor);
 		
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -470,7 +472,7 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -482,12 +484,12 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 
 		COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
 		paramColor->SetLibelle("color");
-		paramColor->SetValue(context->GetContext(), &color, flag);
+		paramColor->SetValue(openclContext->GetContext(), &color, flag);
 		vecParam.push_back(paramColor);
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -526,7 +528,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -546,7 +548,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -600,7 +602,7 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(noDeleteData);
 		input->SetValue(clBuffer);
@@ -625,7 +627,7 @@ void COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cv::
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -665,7 +667,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 				
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -689,7 +691,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 
 		COpenCLParameterFloatArray * paramkernelMotion = new COpenCLParameterFloatArray();
 		paramkernelMotion->SetLibelle("kernelMotion");
-		paramkernelMotion->SetValue(context->GetContext(), kernel, size, flag);
+		paramkernelMotion->SetValue(openclContext->GetContext(), kernel, size, flag);
 		vecParam.push_back(paramkernelMotion);
 
 		int * offsetsMotion = new int[kernelMotion.size() * 2];
@@ -701,7 +703,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 
 		COpenCLParameterIntArray * paramoffsets = new COpenCLParameterIntArray();
 		paramoffsets->SetLibelle("offsets");
-		paramoffsets->SetValue(context->GetContext(), offsetsMotion, size * 2, flag);
+		paramoffsets->SetValue(openclContext->GetContext(), offsetsMotion, size * 2, flag);
 		vecParam.push_back(paramoffsets);
 	
 
@@ -712,7 +714,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -755,7 +757,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -775,7 +777,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -832,7 +834,7 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -847,7 +849,7 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -886,7 +888,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -901,7 +903,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -955,7 +957,7 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -975,7 +977,7 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -1029,7 +1031,7 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -1059,7 +1061,7 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -1100,7 +1102,7 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
 		input->SetValue(clBuffer);
@@ -1120,7 +1122,7 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 
 		try
 		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
@@ -1159,8 +1161,8 @@ int COpenCLFilter::GetSizeData()
 
 COpenCLProgram * COpenCLFilter::GetProgram(const wxString &numProgram)
 {
-	if (context != nullptr)
-		return context->GetProgram(numProgram);
+	if (openclContext != nullptr)
+		return openclContext->GetProgram(numProgram);
 	return nullptr;
 }
 
@@ -1216,7 +1218,7 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, LumTmp);
 	}
 
-	if (context != nullptr)
+	if (openclContext != nullptr)
 	{
 		cv::UMat ycbcr;
 		cv::Mat yChannel;
@@ -1392,7 +1394,6 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 		}
 
 		cvImage = cvImage(rectGlobal);
-		//cv::cvtColor(cvImage(rectGlobal), cvImage, cv::COLOR_BGRA2BGR);
 
 		if (angle == 90)
 		{

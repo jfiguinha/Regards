@@ -32,6 +32,7 @@ using namespace Regards::OpenCV;
 #define TIMER_PLAYSTOP 0x10003
 
 AVFrame* copyFrameBuffer = nullptr;
+extern COpenCLContext* openclContext;
 
 CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* eventPlayer)
 {
@@ -1077,12 +1078,12 @@ void CVideoControlSoft::ReloadResource()
 	//reloadResource = true;
 }
 
-void CVideoControlSoft::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
+void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
 {
 }
 
 
-void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL, COpenCLContext* openclContext)
+void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
 	if (renderBitmapOpenGL == nullptr)
 	{
@@ -1094,11 +1095,9 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	{
 		if (openclEffectYUV == nullptr && openclContext != nullptr)
 		{
-			openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+			openclEffectYUV = new COpenCLEffectVideoYUV();
 		}
 	}
-
-	this->openclContext = openclContext;
 
 	isInit = true;
 	inverted = true;
@@ -1951,17 +1950,14 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		if (glTexture != nullptr)
 		{
 			printf("RenderToTexture glTexture is not null 3\n");
-			try
+			if(openclEffect->CopyPictureToTexture2D(glTexture, false, 1))
 			{
-				openclEffect->CopyPictureToTexture2D(glTexture, false, 1);
 				isOpenGLOpenCL = true;
 				inverted = false;
 			}
-			catch (...)
-			{
-			}
 		}
 	}
+
 
 	if (!isOpenGLOpenCL)
 	{
@@ -1973,6 +1969,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 			glTexture->SetData(bitmap);
 			delete bitmap;
 		}
+		inverted = false;
 	}
 	return glTexture;
 }

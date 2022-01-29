@@ -9,13 +9,11 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		class COpenCLContext;
-
 		class COpenCLProgram
 		{
 		public:
 
-			COpenCLProgram(COpenCLContext * context, const int& type);
+			COpenCLProgram( const int& type);
 
 			~COpenCLProgram();
 
@@ -41,9 +39,7 @@ namespace Regards
 			wxString buildOption;
 			wxString numProgramId;
 			cl_program program;
-			int typeData;
-			COpenCLContext * context;
-            
+			int typeData;           
             bool loadFromDatabase = false;
 		};
 

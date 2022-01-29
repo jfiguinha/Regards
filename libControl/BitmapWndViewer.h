@@ -3,7 +3,7 @@
 #include <BitmapInterface.h>
 #include "AfterEffect.h"
 #include <FiltreUpdate.h>
-using namespace Regards::OpenCL;
+
 class CDecodeRawPicture;
 class CEffectParameter;
 class IMouseUpdate;
@@ -13,12 +13,6 @@ using namespace Regards::Window;
 
 namespace Regards
 {
-	namespace OpenCL
-	{
-		class COpenCLEngine;
-		class COpenCLContext;
-	}
-
 	namespace OpenGL
 	{
 		class GLTexture;
@@ -31,7 +25,6 @@ namespace Regards
 }
 
 using namespace Regards::OpenGL;
-using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 namespace Regards

@@ -4,6 +4,7 @@
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
+#include <OpenCLContext.h>
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
 #include "openclFilter.h"
@@ -17,15 +18,15 @@ using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
 
 #define NONE_FILTER 12
+extern COpenCLContext* openclContext;
 
-COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, COpenCLContext* context, CImageLoadingFormat* bitmap)
+COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(backColor)
 {
 	this->backColor = backColor;
 	flag = CL_MEM_COPY_HOST_PTR;
-	this->context = context;
 	SetBitmap(bitmap);
-	openclFilter = new COpenCLFilter(context);
+	openclFilter = new COpenCLFilter();
 }
 
 bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilizationt)
@@ -119,85 +120,6 @@ COpenCLEffect::~COpenCLEffect()
 	delete openclFilter;
 	input.release();
 	paramOutput.release();
-}
-
-
-void COpenCLEffect::CopyPictureToTexture2D(GLTexture * texture, const bool& source, int rgba)
-{
-	cl_int err;
-	cv::UMat u;
-	if (source)
-	{
-		u = input;
-	}
-	else if (preview && !paramOutput.empty())
-	{
-		u = paramOutput;
-	}
-	else
-	{
-		u = input;
-	}
-	
-	try
-	{
-
-
-
-		if(rgba == 0)
-			cv::cvtColor(u, u, cv::COLOR_BGR2RGBA);
-		else
-			cv::cvtColor(u, u, cv::COLOR_BGR2BGRA);
-
-		cl_mem cl_textureDisplay;
-		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
-		
-		{
-			cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
-				texture->GetTextureID(), &err);
-			Error::CheckError(err);
-		}
-
-
-		cv::Size srcSize = u.size();
-		//CV_Assert(srcSize.width == (int)texture.cols() && srcSize.height == (int)texture.rows());
-
-		using namespace cv::ocl;
-		//Context& ctx = Context::getDefault();
-		//cl_context context = (cl_context)ctx.ptr();
-
-		cl_int status = 0;
-
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
-
-		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
-		status = clEnqueueAcquireGLObjects(q, 1, &cl_textureDisplay, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-		size_t offset = 0; // TODO
-		size_t dst_origin[3] = { 0, 0, 0 };
-		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
-		status = clEnqueueCopyBufferToImage(q, clBuffer, cl_textureDisplay, offset, dst_origin, region, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-		status = clEnqueueReleaseGLObjects(q, 1, &cl_textureDisplay, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
-
-		status = clFinish(q); // TODO Use events
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
-
-		status = clReleaseMemObject(cl_textureDisplay); // TODO RAII
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
 }
 
 
@@ -901,7 +823,7 @@ int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
 
 			bool noDeleteData = true;
 
-			COpenCLFilter opencl_filter(context);
+			COpenCLFilter opencl_filter;
 			if (preview && !paramOutput.empty())
 			{
 				opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", paramOutput, noDeleteData);

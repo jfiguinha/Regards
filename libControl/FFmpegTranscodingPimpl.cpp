@@ -12,7 +12,6 @@
 #include <chrono>
 #include <FiltreEffet.h>
 #include <OpenCLFilter.h>
-#include <OpenCLContext.h>
 #include <OpenCLEffectVideoYUV.h>
 
 
@@ -1896,7 +1895,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		CImageLoadingFormat imageFormat(false);
 		imageFormat.SetPicture(GetBitmapRGBA(tmp_frame));
 
-		CFiltreEffet filtre(color, openclContext, &imageFormat);
+		CFiltreEffet filtre(color, &imageFormat);
 
 		if (videoCompressOption != nullptr)
 		{

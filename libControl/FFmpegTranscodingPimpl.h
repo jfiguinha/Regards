@@ -77,7 +77,7 @@ public:
 		if (supportOpenCL)
 		{
 			if (openclContext != nullptr)
-				openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+				openclEffectYUV = new COpenCLEffectVideoYUV();
 		}
 	}
 	;

@@ -12,7 +12,6 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		class COpenCLContext;
 		class COpenCLProgram;
 		class COpenCLParameter;
 		class COpenCLParameterInt;
@@ -32,15 +31,13 @@ namespace Regards
 		{
 		public:
 
-			COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap);
+			COpenCLEffect(const CRgbaquad &backColor,  CImageLoadingFormat * bitmap);
 
 			void SetFlag(const bool &useMemory)
 			{
 				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 			};
 
-
-			void CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 
 			virtual ~COpenCLEffect();
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };
@@ -113,7 +110,6 @@ namespace Regards
 			COpenCLFilter * openclFilter;
 			wxImage GetwxImage(cv::UMat& input);
 			int GetSizeData() const;
-			COpenCLContext* context = nullptr;
 			cl_mem_flags  flag;
 			wxString filename;
 			cv::Mat alphaChannel;

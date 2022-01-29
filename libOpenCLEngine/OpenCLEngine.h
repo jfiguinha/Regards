@@ -143,10 +143,10 @@ namespace Regards
 			static int GetDefaultGpuDeviceInformation();
 			static int SupportOpenCL();
 
-
 			static bool InstanceCreate();
 		private:
 			static bool instanceCreate;
+
 		};
 
 	}

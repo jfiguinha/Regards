@@ -1,5 +1,4 @@
 #include <header.h>
-#include <OpenCLContext.h>
 #include "BitmapWndViewer.h"
 #include <ConvertUtility.h>
 #include <FiltreEffet.h>
@@ -23,6 +22,7 @@
 #include "DiaporamaEffect.h"
 #include <wx/busyinfo.h>
 #include <wx/activityindicator.h>
+#include <OpenCLContext.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -47,6 +47,7 @@ enum
 	TIMER_CLICK = 3
 };
 
+extern COpenCLContext* openclContext;
 
 #define PREVIEW_NONE 0
 #define TIMER_TRANSITION_TIME 30
@@ -131,19 +132,6 @@ void CBitmapWndViewer::RemoveListener(const bool& applyCancel)
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
 
-/*
-	if (openclContext != nullptr)
-	{
-		if (!openclContext->IsSharedContextCompatible())
-		{
-			if (renderOpenGL != nullptr)
-			{
-				delete renderOpenGL;
-				renderOpenGL = nullptr;
-			}
-		}
-	}
-*/
 	loadBitmap = true;
 	needToRefresh = true;
 }
@@ -547,7 +535,7 @@ bool CBitmapWndViewer::IsOpenCLCompatible()
 	if (filtreEffet == nullptr)
 		return false;
 
-	return (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL);
+	return true;
 }
 
 //---------------------------------------------------------

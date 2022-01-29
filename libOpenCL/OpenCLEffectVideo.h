@@ -31,8 +31,6 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-
-		class COpenCLContext;
 		class COpenCLProgram;
 		class COpenCLParameter;
 		class COpenCLParameterInt;
@@ -44,7 +42,7 @@ namespace Regards
 		{
 		public:
 
-			COpenCLEffectVideo(COpenCLContext * context);
+			COpenCLEffectVideo();
 
 			void SetFlag(const bool &useMemory)
 			{
@@ -56,7 +54,7 @@ namespace Regards
 			
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
-			void CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
+			bool CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			
@@ -67,7 +65,7 @@ namespace Regards
             void FlipVertical();
 			void ConvertToBgr();
 			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
-			void ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization);
+			void ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, Regards::OpenCV::COpenCVStabilization * openCVStabilization);
 			int GetDataSizeWidth(const bool &src);
 
 		protected:
@@ -78,7 +76,6 @@ namespace Regards
 			cl_mem_flags  flag;
 
 			COpenCLProgram * openCLProgram;
-			COpenCLContext * context;
 			COpenCLFilter* openclFilter = nullptr;
 			wxString filename;
 			cv::UMat paramSrc;

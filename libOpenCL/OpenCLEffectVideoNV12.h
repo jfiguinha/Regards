@@ -10,7 +10,7 @@ namespace Regards
 		{
 		public:
 
-			COpenCLEffectVideoNV12(COpenCLContext * context);
+			COpenCLEffectVideoNV12();
 			virtual ~COpenCLEffectVideoNV12();
 			bool IsOk();
 			void SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &widthPitch, const int &format = 0);

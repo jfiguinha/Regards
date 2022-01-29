@@ -6,8 +6,6 @@
 #include "SliderInterface.h"
 #include <BitmapDisplay.h>
 using namespace std;
-using namespace Regards::OpenCL;
-
 class CRegardsBitmap;
 class CFiltreEffet;
 class CImageLoadingFormat;
@@ -18,15 +16,6 @@ class CEffectParameter;
 #define MOVEPICTURE 2
 #define ZOOMPICTURE 3
 
-namespace Regards
-{
-	namespace OpenCL
-	{
-		class COpenCLContext;
-	}
-}
-
-using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 namespace Regards

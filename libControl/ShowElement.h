@@ -16,17 +16,6 @@ class CRegardsBitmap;
 class CVideoControlSoft;
 class CRegardsConfigParam;
 
-
-namespace Regards
-{
-    namespace OpenCL
-    {
-        class COpenCLContext;
-    }
-}
-
-using namespace Regards::OpenCL;
-
 namespace Regards
 {
 	namespace Window

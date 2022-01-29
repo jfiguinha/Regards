@@ -14,12 +14,7 @@ extern float value[256];
 using namespace Regards::FiltreEffet;
 using namespace std;
 
-/*
-void CFiltreEffet::SetLib(const int &lib)
-{
-	numLib = lib;
-}
-*/
+extern COpenCLContext* openclContext;
 
 int CFiltreEffet::GetLib()
 {
@@ -47,11 +42,6 @@ int CFiltreEffet::RenderEffect(const int& numEffect, CEffectParameter* effectPar
 int CFiltreEffet::OilPaintingEffect(const int& size, const int& dynRatio)
 {
 	return filtreEffet->OilPaintingEffect(size, dynRatio);
-}
-
-void CFiltreEffet::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
-{
-	filtreEffet->CopyPictureToTexture2D(texture, source, rgba);
 }
 
 int CFiltreEffet::GetWidth()
@@ -125,20 +115,20 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLContext, CImageLoadingFormat* bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
 	this->numLib = LIBCPU;
-	this->openCLContext = openCLContext;
+
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
 	//filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 
-	if (openCLContext != nullptr)
+	if (openclContext != nullptr)
 	{
-		filtreEffet = new COpenCLEffect(backColor, openCLContext, bitmap);
+		filtreEffet = new COpenCLEffect(backColor, bitmap);
 		this->numLib = LIBOPENCL;
 	}
 	
@@ -153,10 +143,10 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openCLCon
 bool CFiltreEffet::OpenCLHasEnoughMemory()
 {
 	printf("OpenCLHasEnoughMemory \n");
-	if (openCLContext != nullptr)
+	if (openclContext != nullptr)
 	{
-		uint64_t memsizeMax = openCLContext->GetMaxMemoryAllocable();
-		if (openCLContext->GetDefaultType() == OPENCL_UCHAR)
+		uint64_t memsizeMax = openclContext->GetMaxMemoryAllocable();
+		if (openclContext->GetDefaultType() == OPENCL_UCHAR)
 		{
 			if (memsizeMax > width * height * sizeof(cl_uint))
 			{

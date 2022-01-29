@@ -81,8 +81,8 @@ public:
 	void SetEncoderHardware(const wxString& encoderHardware, const bool& opengl);
 
 	virtual void OnIdle(wxIdleEvent& evt) override;
-	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL, COpenCLContext* openclContext) override;
-	virtual void OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext) override;
+	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;
+	virtual void OnPaint2D(wxWindow* gdi) override;
 	virtual void OnMouseMove(wxMouseEvent& event) override;
 	virtual void OnLButtonDown(wxMouseEvent& event) override;
 	virtual void OnRButtonDown(wxMouseEvent& event) override; 
@@ -212,7 +212,7 @@ protected:
 	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
-	COpenCLContext* openclContext = nullptr;
+	
 	CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;

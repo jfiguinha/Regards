@@ -1,5 +1,5 @@
 #include <header.h>
-#include <OpenCLContext.h>
+
 //
 //  BrightAndContrastFilter.cpp
 //  Regards.libViewer

@@ -1652,7 +1652,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, openclContext, source);
+			filtreEffet = new CFiltreEffet(color, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
@@ -1687,37 +1687,15 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-		bool textureBinging = false;
-		
-		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-		{
-			printf("CBitmapWndRender IsSharedContextCompatible \n");
+		CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
 
-			try
-			{
-				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
-			}
-			catch (...)
-			{
-			}
+		glTexture = renderOpenGL->GetDisplayTexture();
 
-			filtreEffet->CopyPictureToTexture2D(glTexture, false, 0);
-			invert = false;
-			textureBinging = true;
-		}
-		
-		if (!textureBinging)
-		{
-			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
-
-			glTexture = renderOpenGL->GetDisplayTexture();
-
-			if (glTexture != nullptr)
-				glTexture->SetData(bitmap);
-			else
-				printf("CBitmapWndRender GetDisplayTexture Error \n");
-			delete bitmap;
-		}
+		if (glTexture != nullptr)
+			glTexture->SetData(bitmap);
+		else
+			printf("CBitmapWndRender GetDisplayTexture Error \n");
+		delete bitmap;
 	}
 
 	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,
@@ -1740,7 +1718,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, nullptr, source);
+			filtreEffet = new CFiltreEffet(color, source);
 		else
 			filtreEffet->SetBitmap(source);
 	}
@@ -1884,7 +1862,7 @@ void CBitmapWndRender::SetOpenGLOutput(const bool& value)
 }
 
 
-void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
+void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
 {
 	wxBufferedPaintDC dc(gdi);
     
@@ -1898,7 +1876,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
         int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
-            filtreEffet = new CFiltreEffet(color, nullptr, source);
+            filtreEffet = new CFiltreEffet(color, source);
         else
             filtreEffet->SetBitmap(source);
 
@@ -1943,7 +1921,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi, COpenCLContext* openclContext)
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
-void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL, COpenCLContext* openclContext)
+void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL)
 {
 #ifndef WIN32
 	scale_factor = parentRender->GetContentScaleFactor();
@@ -1960,8 +1938,6 @@ void CBitmapWndRender::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenG
 			delete filtreEffet;
 		filtreEffet = nullptr;
 	}
-	
-	this->openclContext = openclContext;
 
 
 	if (renderBitmapOpenGL != nullptr)

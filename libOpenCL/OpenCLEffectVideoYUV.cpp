@@ -3,11 +3,11 @@
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
-
 using namespace Regards::OpenCL;
+extern COpenCLContext* openclContext;
 
-COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)
-	:  COpenCLEffectVideo(context)
+COpenCLEffectVideoYUV::COpenCLEffectVideoYUV()
+	:  COpenCLEffectVideo()
 {
 	inputY = nullptr;
 	inputU = nullptr;
@@ -63,13 +63,13 @@ void COpenCLEffectVideoYUV::SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint
 		inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
 	inputY->SetNoDelete(true);
-	inputY->SetValue(context->GetContext(), bufferY, sizeY, flag);
+	inputY->SetValue(openclContext->GetContext(), bufferY, sizeY, flag);
 
 	if (inputU == nullptr)
 		inputU = new COpenCLParameterByteArray();
 	inputU->SetLibelle("inputUV");
 	inputU->SetNoDelete(true);
-	inputU->SetValue(context->GetContext(), bufferUV, sizeUV, flag);
+	inputU->SetValue(openclContext->GetContext(), bufferUV, sizeUV, flag);
 
 	if (paramWidth == nullptr)
 		paramWidth = new COpenCLParameterInt();
@@ -100,19 +100,19 @@ void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t 
 		inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
 	inputY->SetNoDelete(true);
-	inputY->SetValue(context->GetContext(), bufferY, sizeY, flag);
+	inputY->SetValue(openclContext->GetContext(), bufferY, sizeY, flag);
 	
 	if (inputU == nullptr)
 		inputU = new COpenCLParameterByteArray();
 	inputU->SetLibelle("inputU");
 	inputU->SetNoDelete(true);
-	inputU->SetValue(context->GetContext(), bufferU, sizeU, flag);
+	inputU->SetValue(openclContext->GetContext(), bufferU, sizeU, flag);
 
 	if (inputV == nullptr)
 		inputV = new COpenCLParameterByteArray();
 	inputV->SetNoDelete(true);
 	inputV->SetLibelle("inputV");
-	inputV->SetValue(context->GetContext(), bufferV, sizeV, flag);
+	inputV->SetValue(openclContext->GetContext(), bufferV, sizeV, flag);
 
 	if (paramWidth == nullptr)
 		paramWidth = new COpenCLParameterInt();
@@ -152,7 +152,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 	if (!needToTranscode)
 		return;
 
-	if (context != nullptr)
+	if (openclContext != nullptr)
 	{
 		COpenCLProgram * program_cl;
 		if (formatData == 1)
@@ -162,7 +162,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 			if (program_cl != nullptr)
 			{
 				vector<COpenCLParameter *> vecParam;
-				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 				vecParam.push_back(inputY);
 				vecParam.push_back(inputU);
@@ -182,7 +182,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				vecParam.push_back(paramLineSize);
 
 				paramSrc.release();
-				int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+				int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 				int type = CV_MAKE_TYPE(depth, 4);
 				paramSrc.create((int)heightOut, (int)widthOut, type);
 				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
@@ -209,7 +209,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 			if (program_cl != nullptr)
 			{
 				vector<COpenCLParameter *> vecParam;
-				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+				COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 				vecParam.push_back(inputY);
 				vecParam.push_back(inputU);
@@ -235,7 +235,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				vecParam.push_back(paramLineSize);
 
 				paramSrc.release();
-				int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+				int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 				int type = CV_MAKE_TYPE(depth, 4);
 				paramSrc.create((int)heightOut, (int)widthOut, type);
 				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);

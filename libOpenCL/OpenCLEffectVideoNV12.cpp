@@ -4,13 +4,13 @@
 #include "OpenCLProgram.h"
 #include "OpenCLContext.h"
 using namespace Regards::OpenCL;
-
+extern COpenCLContext* openclContext;
 /**
  * \brief 
  * \param context 
  */
-COpenCLEffectVideoNV12::COpenCLEffectVideoNV12(COpenCLContext * context)
-	: COpenCLEffectVideo(context), formatData(0)
+COpenCLEffectVideoNV12::COpenCLEffectVideoNV12()
+	: COpenCLEffectVideo(), formatData(0)
 {
 	inputY = nullptr;
 	inputUV = nullptr;
@@ -72,7 +72,7 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * buffer, int size, const int
 		input = new COpenCLParameterByteArray();
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
-	input->SetValue(context->GetContext(), buffer, size, flag);
+	input->SetValue(openclContext->GetContext(), buffer, size, flag);
 	
 	if (paramWidth != nullptr)
 		paramWidth = new COpenCLParameterInt();
@@ -109,13 +109,13 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t
 		inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
 	inputY->SetNoDelete(true);
-	inputY->SetValue(context->GetContext(), bufferY, sizeY, flag);
+	inputY->SetValue(openclContext->GetContext(), bufferY, sizeY, flag);
 	
 	if (inputUV != nullptr)
 		inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputU");
 	inputUV->SetNoDelete(true);
-	inputUV->SetValue(context->GetContext(), bufferUV, sizeUV, flag);
+	inputUV->SetValue(openclContext->GetContext(), bufferUV, sizeUV, flag);
 
 	if (paramWidth != nullptr)
 		paramWidth = new COpenCLParameterInt();
@@ -151,7 +151,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 	if (!needToTranscode)
 		return;
 
-	if (context != nullptr)
+	if (openclContext != nullptr)
 	{
 		COpenCLProgram * programCL;
 
@@ -160,7 +160,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 		if (programCL != nullptr)
 		{
 			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 			if (typeData == 1)
 			{
@@ -196,7 +196,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 
 
 			paramSrc.release();
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			paramSrc.create((int)heightOut, (int)widthOut, type);
 			cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);

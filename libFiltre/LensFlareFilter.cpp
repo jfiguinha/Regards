@@ -129,7 +129,7 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
@@ -209,7 +209,7 @@ void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParamete
 		ApplyExifToPoint(pt, source->GetOrientation(), source->GetBitmapWidth(), source->GetBitmapHeight());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
 
 		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 

@@ -169,7 +169,7 @@ void CBitmapWnd2D::OnPaint(wxPaintEvent& event)
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 	}
 
-	bitmapWndRender->OnPaint2D(this, openclContext);
+	bitmapWndRender->OnPaint2D(this);
 	
 
 }

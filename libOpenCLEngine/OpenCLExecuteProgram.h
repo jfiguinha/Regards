@@ -20,13 +20,10 @@ namespace Regards
 {
 	namespace OpenCL
 	{
-		class COpenCLContext;
-
-
 		class COpenCLExecuteProgram
 		{
 		public:
-			COpenCLExecuteProgram(COpenCLContext * context, const cl_mem_flags &flag);
+			COpenCLExecuteProgram( const cl_mem_flags &flag);
 			~COpenCLExecuteProgram();
 			void SetParameter(vector<COpenCLParameter*>* vecParam, CRegardsFloatBitmap* bitmapOut);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, CRegardsBitmap * bitmapOut);
@@ -55,8 +52,6 @@ namespace Regards
 			int width;
 			int height;
 			int bitmapSize;
-			//size_t global_size;
-			COpenCLContext * context;
 			vector<COpenCLParameter *> * vecParam;
 			cl_mem cl_output_buffer;
 			bool keepMemory;

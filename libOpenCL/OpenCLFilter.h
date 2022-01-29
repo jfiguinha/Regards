@@ -1,6 +1,5 @@
 #pragma once
 #include <RGBAQuad.h>
-#include "OpenCLContext.h"
 #include "OpenCLParameter.h"
 #include <vector>
 #ifdef __APPLE__
@@ -16,12 +15,13 @@ namespace Regards
 {
 	namespace OpenCL
 	{
+		class COpenCLProgram;
 
 		class COpenCLFilter
 		{
 		public:
 
-			COpenCLFilter(COpenCLContext * context);
+			COpenCLFilter();
 
 			void SetFlag(const bool &useMemory)
 			{
@@ -65,7 +65,6 @@ namespace Regards
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
 			int GetSizeData();
 			cl_mem_flags  flag;
-			COpenCLContext * context;
 			Chqdn3d * hq3d = nullptr;
 			double oldLevelDenoise = 0;
 			int oldwidthDenoise = 0;

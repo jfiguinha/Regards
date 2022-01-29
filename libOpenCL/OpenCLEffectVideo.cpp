@@ -9,7 +9,7 @@
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
 #include <VideoStabilization.h>
-
+#include <OpenCLContext.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
@@ -24,33 +24,19 @@
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
-COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
+extern COpenCLContext* openclContext;
+
+COpenCLEffectVideo::COpenCLEffectVideo()
 {
 	openCLProgram = nullptr;
-	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
+	bool useMemory = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 	openCLProgram = nullptr;
-	this->context = context;
-	openclFilter = new COpenCLFilter(context);
+	openclFilter = new COpenCLFilter();
 }
 
-int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
-{
-	return paramSrc.cols * GetSizeData();
-}
 
-COpenCLEffectVideo::~COpenCLEffectVideo()
-{
-	if (openCLProgram != nullptr)
-		delete openCLProgram;
-
-	openCLProgram = nullptr;
-
-	if (openclFilter != nullptr)
-		delete openclFilter;
-}
-
-void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
+bool COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
 {
 
 	cl_int err;
@@ -77,9 +63,9 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 
 		cl_mem cl_textureDisplay;
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
-		if (context != nullptr)
+		if (openclContext != nullptr)
 		{
-			cl_textureDisplay = clCreateFromGLTexture2D(context->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
+			cl_textureDisplay = clCreateFromGLTexture2D(openclContext->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0,
 				texture->GetTextureID(), &err);
 			Error::CheckError(err);
 		}
@@ -122,8 +108,28 @@ void COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& 
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		return false;
 	}
+
+	return true;
 }
+
+int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
+{
+	return paramSrc.cols * GetSizeData();
+}
+
+COpenCLEffectVideo::~COpenCLEffectVideo()
+{
+	if (openCLProgram != nullptr)
+		delete openCLProgram;
+
+	openCLProgram = nullptr;
+
+	if (openclFilter != nullptr)
+		delete openclFilter;
+}
+
 void COpenCLEffectVideo::ConvertToBgr()
 {
 	if(!paramSrc.empty())
@@ -170,7 +176,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 
 void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
-	if (context != nullptr && !paramSrc.empty())
+	if (openclContext != nullptr && !paramSrc.empty())
 	{
 		
 		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, bicubic, paramSrc, flipH, flipV, angle, ratio);
@@ -326,17 +332,17 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 	COpenCLParameterByteArray *	inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
 	inputY->SetNoDelete(true);
-	inputY->SetValue(context->GetContext(), y, widthOut * heightOut, flag);
+	inputY->SetValue(openclContext->GetContext(), y, widthOut * heightOut, flag);
 
 	COpenCLParameterByteArray *	inputU = new COpenCLParameterByteArray();
 	inputU->SetLibelle("inputU");
 	inputU->SetNoDelete(true);
-	inputU->SetValue(context->GetContext(), u, middleWidth * middleHeight, flag);
+	inputU->SetValue(openclContext->GetContext(), u, middleWidth * middleHeight, flag);
 
 	COpenCLParameterByteArray *	inputV = new COpenCLParameterByteArray();
 	inputV->SetNoDelete(true);
 	inputV->SetLibelle("inputV");
-	inputV->SetValue(context->GetContext(), v, middleWidth * middleHeight, flag);
+	inputV->SetValue(openclContext->GetContext(), v, middleWidth * middleHeight, flag);
 
 	COpenCLParameterInt *	paramWidth = new COpenCLParameterInt();
 	paramWidth->SetNoDelete(true);
@@ -361,7 +367,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 
 	//paramSrc->SetNoDelete(true);
 
-	if (context != nullptr)
+	if (openclContext != nullptr)
 	{
 		COpenCLProgram * programCL = nullptr;
 
@@ -371,7 +377,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 		{
 			cl_mem clBuffer;
 			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
 
 			vecParam.push_back(inputY);
 			vecParam.push_back(inputU);
@@ -403,19 +409,19 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			}
 			vecParam.clear();
 
-			cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
+			cl_int err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
 			Error::CheckError(err);
-			err = clFinish(context->GetCommandQueue());
-			Error::CheckError(err);
-
-			err = clEnqueueReadBuffer(context->GetCommandQueue(), inputU->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, u, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFinish(context->GetCommandQueue());
+			err = clFinish(openclContext->GetCommandQueue());
 			Error::CheckError(err);
 
-			err = clEnqueueReadBuffer(context->GetCommandQueue(), inputV->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, v, 0, nullptr, nullptr);
+			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputU->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, u, 0, nullptr, nullptr);
 			Error::CheckError(err);
-			err = clFinish(context->GetCommandQueue());
+			err = clFinish(openclContext->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputV->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, v, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(openclContext->GetCommandQueue());
 			Error::CheckError(err);
 		}
 	}
@@ -526,8 +532,8 @@ bool COpenCLEffectVideo::IsOk()
 
 COpenCLProgram * COpenCLEffectVideo::GetProgram(const wxString &numProgram)
 {
-	if (context != nullptr)
-		return context->GetProgram(numProgram, context->GetDefaultType());
+	if (openclContext != nullptr)
+		return openclContext->GetProgram(numProgram, openclContext->GetDefaultType());
 	return nullptr;
 }
 
