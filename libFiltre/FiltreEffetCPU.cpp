@@ -187,7 +187,7 @@ cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
 		break;
 		}
 
-		sr.setPreferableTarget(DNN_TARGET_OPENCL);
+		sr.setPreferableTarget(DNN_TARGET_CPU);
 		sr.upsample(img, outputImage);
 
 		//muDnnSuperResImpl.unlock();
