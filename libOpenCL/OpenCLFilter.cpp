@@ -1249,76 +1249,22 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 
 void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData)
 {
-	cv::UMat dest;
 	cv::UMat cvDest;
-	cv::cvtColor(inputData, cvDest, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_ROTATION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+	// get rotation matrix for rotating the image around its center in pixel coordinates
+	const Point2f center((inputData.cols - 1) / 2.0, (inputData.rows - 1) / 2.0);
+	Mat rot = getRotationMatrix2D(center, angle, 1.0);
+	// determine bounding rectangle, center not relevant
+	Rect2f bbox = RotatedRect(Point2f(), inputData.size(), angle).boundingRect2f();
+	// adjust transformation matrix
+	rot.at<double>(0, 2) += bbox.width / 2.0 - inputData.cols / 2.0;
+	rot.at<double>(1, 2) += bbox.height / 2.0 - inputData.rows / 2.0;
 
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
+	warpAffine(inputData, cvDest, rot, bbox.size());
 
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(inputData.cols);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(inputData.rows);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-		paramWidthOut->SetLibelle("widthOut");
-		paramWidthOut->SetValue(widthOut);
-		vecParam.push_back(paramWidthOut);
-
-		COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-		paramHeightOut->SetLibelle("heightOut");
-		paramHeightOut->SetValue(heightOut);
-		vecParam.push_back(paramHeightOut);
-
-		COpenCLParameterFloat * paramAngle = new COpenCLParameterFloat();
-		paramAngle->SetLibelle("angle");
-		paramAngle->SetValue(angle);
-		vecParam.push_back(paramAngle);
-
-		try
-		{
-			int depth = (context->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create(heightOut, widthOut, type);
-			program->SetParameter(&vecParam, widthOut, heightOut, (cl_mem)dest.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), functionName);
-		}
-		catch(...)
-		{
-		}
-		delete program;
-
-
-	for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
+	rot.release();
 	inputData.release();
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-	dest.release();
-
+	cvDest.copyTo(inputData);
+	cvDest.release();
 }
 
 cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)

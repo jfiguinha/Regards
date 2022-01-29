@@ -2407,30 +2407,56 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case BMP:
 		case PPM:
 		{
-			CRegardsBitmap* picture = new CRegardsBitmap();
-			cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); // correct element size should be CV_32FC3
-			cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
-			picture->SetMatrix(matPicture);
-			picture->VertFlipBuf();
-			picture->SetFilename(fileName);
-			bitmap->SetPicture(picture);
+			try
+			{
+				CRegardsBitmap* picture = new CRegardsBitmap();
+				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); // correct element size should be CV_32FC3
+				if (matPicture.channels() != 4)
+				{
+					if(matPicture.channels() == 3)
+						cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
+					else if (matPicture.channels() == 1)
+						cvtColor(matPicture, matPicture, cv::COLOR_GRAY2BGRA);
+				}
+				
+				picture->SetMatrix(matPicture);
+				picture->VertFlipBuf();
+				picture->SetFilename(fileName);
+				bitmap->SetPicture(picture);
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
 		}
 		break;
 
 		case EXR:
 		case HDR:
 		{
-			CRegardsBitmap* picture = new CRegardsBitmap();
-			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
-			//cv::Mat ldr;
-			cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
-			tonemap->process(hdr, hdr);
-			hdr.convertTo(hdr, CV_8UC3, 255);
-			cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
-			picture->SetMatrix(hdr);
-			picture->VertFlipBuf();
-			picture->SetFilename(fileName);
-			bitmap->SetPicture(picture);
+			try
+			{
+				CRegardsBitmap* picture = new CRegardsBitmap();
+				cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
+				//cv::Mat ldr;
+				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
+				tonemap->process(hdr, hdr);
+				hdr.convertTo(hdr, CV_8UC3, 255);
+				cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
+				picture->SetMatrix(hdr);
+				picture->VertFlipBuf();
+				picture->SetFilename(fileName);
+				bitmap->SetPicture(picture);
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
+
 		}
 		break;
 

@@ -1276,81 +1276,21 @@ CFiltreEffetCPU::~CFiltreEffetCPU()
 
 wxImage CFiltreEffetCPU::GetwxImage()
 {
-	int width;
-	int height;
-	unsigned char* data;
 	if (bitmapOut != nullptr)
 	{
-		width = bitmapOut->GetBitmapWidth();
-		height = bitmapOut->GetBitmapHeight();
-		data = bitmapOut->GetPtBitmap();
+		return GetwxImage(bitmapOut);
 	}
-	else
-	{
-		width = pBitmap->GetBitmapWidth();
-		height = pBitmap->GetBitmapHeight();
-		data = pBitmap->GetPtBitmap();
-	}
-	wxImage anImage(width, height, false);
-	unsigned char* dataOut = anImage.GetData();
-	int size = width * height;
-	//pBitmap->VertFlipBuf();
-
-	if (data != nullptr)
-	{
-//		tbb::parallel_for(tbb::blocked_range<int>(0, size),
-//			[&](tbb::blocked_range<int> r)
-			tbb::parallel_for(
-			0, size, 1, [=](int i)
-			{
-				//for (int i = 0; i < size; ++i)
-				//{
-					const int y = i / width;
-					const int x = i - (y * width);
-					const int calcul = (height - y - 1) * width + x;
-					dataOut[i * 3] = data[(calcul << 2) + 2]; // R
-					dataOut[i * 3 + 1] = data[(calcul << 2) + 1]; // G
-					dataOut[i * 3 + 2] = data[(calcul << 2)]; // B
-				//}
-			});
-	}
-	return anImage;
+	return GetwxImage(pBitmap);
 }
 
 wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
 {
-	const int width = bitmap->GetBitmapWidth();
-	const int height = bitmap->GetBitmapHeight();
-	unsigned char* data = bitmap->GetPtBitmap();
-	wxImage anImage(width, height, false);
-	unsigned char* dataOut = anImage.GetData();
-	const int size = width * height;
-	//pBitmap->VertFlipBuf();
-
-	if (data != nullptr)
-	{
-		//tbb::parallel_for(tbb::blocked_range<int>(0, size),
-		//	[&](tbb::blocked_range<int> r)
-		//	{
-		tbb::parallel_for(
-			0, size, 1, [=](int i)
-			{
-				const int y = i / width;
-					const int x = i - (y * width);
-					const int pos = i * 3;
-					const int calcul = ((height - y - 1) * width + x) << 2;
-					//int calcul = y * width + x;
-					dataOut[pos] = data[calcul + 2]; // R
-					dataOut[pos + 1] = data[calcul + 1]; // G
-					dataOut[pos + 2] = data[calcul]; // B
-			});
-	}
-
+	cv::Mat cvDest;
+	cv::cvtColor(bitmap->GetMatrix(), cvDest, cv::COLOR_BGRA2RGB);
+	cv::flip(cvDest, cvDest, 0);
+	wxImage anImage(cvDest.cols, cvDest.rows, cvDest.data, TRUE);
 	return anImage;
 }
-
-
-
 
 CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	int flipH, int flipV, int angle, int ratio)

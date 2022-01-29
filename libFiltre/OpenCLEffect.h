@@ -116,7 +116,7 @@ namespace Regards
 			COpenCLContext* context = nullptr;
 			cl_mem_flags  flag;
 			wxString filename;
-
+			cv::Mat alphaChannel;
 			cv::UMat input;
 			cv::UMat paramOutput;
 		};

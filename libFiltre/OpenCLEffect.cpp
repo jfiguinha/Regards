@@ -103,6 +103,8 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(true);
 		cv::Mat local = _bitmap->GetMatrix();
 		filename = bitmap->GetFilename();
+		vector<cv::Mat> channels;
+		cv::extractChannel(local, alphaChannel, 3);
 		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
 		//local.copyTo(input);
 		delete _bitmap;
@@ -208,16 +210,21 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 	if (source)
 	{
 		input.copyTo(output);
+		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		cv::insertChannel(alphaChannel, output, 3);
 	}
 	else if (preview && !paramOutput.empty())
 	{
 		paramOutput.copyTo(output);
+		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 	}
 	else
 	{
 		input.copyTo(output);
+		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		cv::insertChannel(alphaChannel, output, 3);
 	}
-	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+	
 	bitmapOut->SetMatrix(output);
 
 	if (bitmapOut != nullptr)
@@ -232,43 +239,11 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 
 wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 {
-	cv::UMat cvDest;
-	cv::cvtColor(input, cvDest, cv::COLOR_BGR2BGRA);
-	wxImage anImage(input.cols, input.rows, false);
-	
-	if (!input.empty())
-	{
-		cl_mem clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
-		
-		COpenCLProgram* programCL = openclFilter->GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter*> vecParam;
-			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
-			COpenCLParameterClMem * paramOutput = new COpenCLParameterClMem();
-			paramOutput->SetValue(clBuffer);
-			paramOutput->SetNoDelete(true);
-			paramOutput->SetLibelle("input");
-			vecParam.push_back(paramOutput);
-
-			COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-			paramWidth->SetLibelle("widthIn");
-			paramWidth->SetValue(input.cols);
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-			paramHeight->SetLibelle("heightIn");
-			paramHeight->SetValue(input.rows);
-			vecParam.push_back(paramHeight);
-
-			program->SetParameter(&vecParam, &anImage);
-			program->ExecuteProgram1D(programCL->GetProgram(), "BitmapToWxImage");
-
-			delete program;
-			vecParam.clear();
-
-		}
-	}
+	cv::Mat cvDest;
+	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
+	cv::flip(cvDest, cvDest, 0);
+	wxImage anImage(input.cols, input.rows, cvDest.data, TRUE);
+	//anImage.Mirror(false);
 	return anImage;
 }
 
