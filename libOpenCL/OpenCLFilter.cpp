@@ -173,7 +173,9 @@ void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, cons
 {
 	try
 	{
-		cv::bilateralFilter(inputData, inputData, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		cv::UMat dest;
+		cv::bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		dest.copyTo(inputData);
 
 	}
 	catch (cv::Exception& e)
@@ -687,6 +689,110 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+}
+
+void COpenCLFilter::Emboss(cv::UMat& inputData)
+{
+	try
+	{
+		// Construct kernel (all entries initialized to 0)
+		Mat kernel(3, 3, CV_32F, Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(2, 2) = 1.0;
+		UMat dest;
+		filter2D(inputData, dest, inputData.depth(), kernel);
+		dest.copyTo(inputData);
+		dest.release();
+		kernel.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+
+}
+
+void COpenCLFilter::Sharpen(cv::UMat& inputData)
+{
+	try
+	{
+		// Construct kernel (all entries initialized to 0)
+		// Construct kernel (all entries initialized to 0)
+		cv::Mat kernel(3, 3, CV_32F, cv::Scalar(0));
+		// assigns kernel values
+		kernel.at<float>(1, 1) = 5.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 2) = -1.0;
+
+		UMat dest;
+		filter2D(inputData, dest, inputData.depth(), kernel);
+		dest.copyTo(inputData);
+		dest.release();
+		kernel.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+}
+
+void COpenCLFilter::SharpenStrong(cv::UMat& inputData)
+{
+	try
+	{
+		Mat kernel(3, 3, CV_32F, Scalar(0));
+		kernel.at<float>(0, 0) = -1.0;
+		kernel.at<float>(0, 1) = -1.0;
+		kernel.at<float>(0, 2) = -1.0;
+		kernel.at<float>(1, 0) = -1.0;
+		kernel.at<float>(1, 1) = 9.0;
+		kernel.at<float>(1, 2) = -1.0;
+		kernel.at<float>(2, 0) = -1.0;
+		kernel.at<float>(2, 1) = -1.0;
+		kernel.at<float>(2, 2) = -1.0;
+		UMat dest;
+		filter2D(inputData, dest, inputData.depth(), kernel);
+		dest.copyTo(inputData);
+		dest.release();
+		kernel.release();
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+
+}
+
+void COpenCLFilter::Edge(cv::UMat& inputData)
+{
+	try
+	{
+		UMat dest;
+		cvtColor(inputData, dest, COLOR_BGR2GRAY);
+
+		Mat img_blur;
+		cv::GaussianBlur(dest, img_blur, cv::Size(3, 3), 0, 0);
+		UMat edges;
+		Canny(img_blur, edges, 100, 200, 3, false);
+
+		cvtColor(edges, inputData, COLOR_GRAY2BGR);
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat & inputData)

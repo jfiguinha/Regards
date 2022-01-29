@@ -31,6 +31,10 @@ namespace Regards
 			virtual ~COpenCLFilter();
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
+			void Emboss(cv::UMat& inputData);
+			void Sharpen(cv::UMat& inputData);
+			void Edge(cv::UMat& inputData);
+			void SharpenStrong(cv::UMat& inputData);
 			void HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cv::UMat & inputData);
 			//cv::UMat Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cv::UMat & inputData);
 			void FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat& inputData);

@@ -189,22 +189,15 @@ wxImage COpenCLEffect::GetwxImage()
 
 int COpenCLEffect::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
-	CDeepLearning::LockOpenCLDnn();
-	
-	
-	{
 		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
-		}
-		else
-		{
-			openclFilter->BilateralEffect(input, fSize, sigmaX, sigmaP);
-		}
+	if (preview && !paramOutput.empty())
+	{
+		openclFilter->BilateralEffect(paramOutput, fSize, sigmaX, sigmaP);
 	}
-
-	CDeepLearning::UnlockOpenCLDnn();
+	else
+	{
+		openclFilter->BilateralEffect(input, fSize, sigmaX, sigmaP);
+	}
 	return 0;
 }
 
@@ -697,17 +690,13 @@ int COpenCLEffect::Blur(const int& radius)
 int COpenCLEffect::Emboss()
 {
 	
+	if (preview && !paramOutput.empty())
 	{
-		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", paramOutput);
-		}
-		else
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss", input);
-		}
-		
+		openclFilter->Emboss(paramOutput);
+	}
+	else
+	{
+		openclFilter->Emboss(input);
 	}
 
 	return 0;
@@ -716,58 +705,42 @@ int COpenCLEffect::Emboss()
 
 int COpenCLEffect::SharpenStrong()
 {
-	
 	{
-		
 		if (preview && !paramOutput.empty())
 		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", paramOutput);
+			openclFilter->SharpenStrong(paramOutput);
 		}
 		else
 		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", input);
+			openclFilter->SharpenStrong(input);
 		}
-		
 	}
-
 	return 0;
 }
 
 int COpenCLEffect::Sharpen()
-{
-	
+{		
+	if (preview && !paramOutput.empty())
 	{
-		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", paramOutput);
-		}
-		else
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", input);
-		}
-		
+		openclFilter->Sharpen(paramOutput);
 	}
-
+	else
+	{
+		openclFilter->Sharpen(input);
+	}
 	return 0;
 }
 
 int COpenCLEffect::FiltreEdge()
 {
-	
+	if (preview && !paramOutput.empty())
 	{
-		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_EDGE", "Edge", paramOutput);
-		}
-		else
-		{
-			openclFilter->FiltreConvolution("IDR_OPENCL_EDGE", "Edge", input);
-		}
-		
+		openclFilter->Edge(paramOutput);
 	}
-
+	else
+	{
+		openclFilter->Edge(input);
+	}
 	return 0;
 }
 
