@@ -191,7 +191,7 @@ void COpenCLEffectVideo::LoadRegardsBitmap(CRegardsBitmap * bitmap)
 	{
 		cv::Mat local = bitmap->GetMatrix();
 		filename = bitmap->GetFilename();
-		local.copyTo(paramSrc);
+		cv::cvtColor(local, paramSrc, cv::COLOR_BGRA2BGR);
 
 	}
 	interpolatePicture = false;
