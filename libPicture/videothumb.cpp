@@ -120,13 +120,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		picture->RotateExif(exifRotation);
 		//picture->VertFlipBuf();
 		cxVideo->timePosition = timePosition;
-		if (compressJpeg)
-		{
-			cxVideo->image->SetPicturToJpeg(picture, false);
-			delete picture;
-		}
-		else
-			cxVideo->image->SetPicture(picture);
+		cxVideo->image->SetPicture(picture);
 		cxVideo->image->SetFilename(filename);
 		cxVideo->image->SetOrientation(rotation);
 		listPicture.push_back(cxVideo);
