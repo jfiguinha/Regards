@@ -142,7 +142,7 @@ void COilPaintingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParame
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -170,7 +170,7 @@ CImageLoadingFormat* COilPaintingFilter::ApplyEffect(CEffectParameter* effectPar
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		filtre->OilPaintingEffect(oilPaintingParam->size, oilPaintingParam->dynRatio);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));

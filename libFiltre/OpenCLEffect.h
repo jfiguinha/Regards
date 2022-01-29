@@ -67,7 +67,7 @@ namespace Regards
 			int NoirEtBlanc();
 			int Soften();
 			int Blur(const int &radius);
-			int GaussianBlur(const int &radius, const int &boxsize);
+			int GaussianBlur(const int& radius, const int& boxSize);
 			int Emboss();
 			int SharpenStrong();
 			int Sharpen();

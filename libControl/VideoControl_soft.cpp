@@ -1965,7 +1965,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		if (glTexture != nullptr)
 		{
 			CRegardsBitmap* bitmap = openclEffect->GetBitmap();
-			bitmap->ConvertToBgr();
 			glTexture->SetData(bitmap);
 			delete bitmap;
 		}

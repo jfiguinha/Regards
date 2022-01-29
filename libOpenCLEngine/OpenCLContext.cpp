@@ -19,9 +19,6 @@ using namespace Regards::OpenCL;
 
 int COpenCLContext::GetDefaultType()
 {
-	//Todo Modify to support change in parameter
-	if (sharedContextCompatible)
-		return OPENCL_FLOAT;
 	return OPENCL_UCHAR;
 }
 

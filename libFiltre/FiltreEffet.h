@@ -2,6 +2,8 @@
 #include <RGBAQuad.h>
 #include <effect_id.h>
 #include <GLTexture.h>
+#include <OpenCLContext.h>
+using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 
 class Chqdn3d;
@@ -23,7 +25,7 @@ class CFiltreEffet
 {
 public:
 
-	CFiltreEffet(const CRgbaquad &backColor, CImageLoadingFormat * bitmap);
+	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext* openclContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
 
 	void SetPreviewMode(const bool& value);
@@ -36,7 +38,6 @@ public:
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace);
 	int HistogramNormalize();
 	int HistogramEqualize();
-    bool OpenCLHasEnoughMemory();
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int NiveauDeGris();
 	int NoirEtBlanc();

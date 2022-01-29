@@ -257,6 +257,6 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 		}
 
 	}
-	cv::cvtColor(paramSrc, paramSrc, cv::COLOR_BGRA2BGR);
+	cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGR);
 }
 

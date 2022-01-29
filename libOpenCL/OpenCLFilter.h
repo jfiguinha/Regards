@@ -40,7 +40,7 @@ namespace Regards
 			void RGBFilter(const int &red, const int &green, const int &blue, cv::UMat& inputData);
 			void FiltreMosaic(cv::UMat& inputData);
 			void Blur(const int &radius, cv::UMat& inputData);
-			void BoxBlur(const int &coeff, const wxString &functionName, cv::UMat& inputData, bool noDeleteData = false);
+			void GaussianBlur(const int& radius, const int& boxSize, cv::UMat& inputData);
 			void ErodeDilate(const wxString &functionName, cv::UMat& inputData);
 			void Posterize(const float &level, const float &gamma, cv::UMat& inputData);
 			void Solarize(const long &threshold, cv::UMat& inputData);

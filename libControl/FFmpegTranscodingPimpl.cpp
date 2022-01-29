@@ -22,14 +22,7 @@ extern "C" {
 }
 
 using namespace Regards::OpenCL;
-//static const int dst_width = 1920;
-//static const int dst_height = 1080;
 static const int dst_vbit_rate = 1500000;
-//static const int dst_abit_rate = 128000;
-//static const int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
-//static const int dst_sample_rate = 44100;
-//static const AVCodecID VIDEO_CODEC = AV_CODEC_ID_H265;
-//static const AVCodecID AUDIO_CODEC = AV_CODEC_ID_AAC;
 
 
 static const char* hb_h264_level_names[] = {
@@ -1824,65 +1817,6 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 
-	CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
-	openclEffectYUV->LoadRegardsBitmap(bitmap);
-
-	if (stabilizeFrame || correctedContrast)
-	{
-		if (openCVStabilization == nullptr)
-			openCVStabilization = new COpenCVStabilization(
-				videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
-		openclEffectYUV->ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
-	}
-
-	//openclEffectYUV->FlipVertical();
-	openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
-
-	if (dst_hardware == nullptr)
-	{
-		dst_hardware = av_frame_alloc();
-
-		av_opt_set_int(scaleContext, "srcw", tmp_frame->width, 0);
-		av_opt_set_int(scaleContext, "srch", tmp_frame->height, 0);
-		av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
-		av_opt_set_int(scaleContext, "dstw", tmp_frame->width, 0);
-		av_opt_set_int(scaleContext, "dsth", tmp_frame->height, 0);
-		av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
-		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
-		{
-			sws_freeContext(scaleContext);
-			throw std::logic_error("Failed to initialise scale context");
-		}
-
-
-		dst_hardware->format = AV_PIX_FMT_YUV420P;
-		dst_hardware->width = stream->dec_frame->width;
-		dst_hardware->height = stream->dec_frame->height;
-		av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
-			AV_PIX_FMT_YUV420P, 1);
-	}
-	av_frame_copy_props(dst_hardware, tmp_frame);
-
-	if (bitmapData != nullptr)
-		delete bitmapData;
-
-	bitmapData = openclEffectYUV->GetBitmap(true);
-
-	uint8_t* convertedFrameBuffer_data = bitmapData->GetPtBitmap();
-	int linesize = bitmapData->GetBitmapWidth() * 4;
-
-	sws_scale(scaleContext, &convertedFrameBuffer_data, &linesize, 0, bitmapData->GetBitmapHeight(),
-		dst_hardware->data, dst_hardware->linesize);
-
-
-
-
-	//int modFrame = 0;
-	//bool ffmpegToRGBA = !IsSupportOpenCL();
-
-	/*
 	if (openclEffectYUV != nullptr)
 	{
 		if (acceleratorHardware != "" && stream->dec_frame->format == hw_pix_fmt)
@@ -1911,7 +1845,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		}
 
 		bool opencvEffect = false;
-		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height, 1);
+		openclEffectYUV->TranscodePicture(tmp_frame->width, tmp_frame->height);
+
+		openclEffectYUV->FlipVertical();
+
 		//openclEffectYUV->ConvertToBgr();
 		if (stabilizeFrame || correctedContrast)
 		{
@@ -1923,7 +1860,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 			opencvEffect = true;
 		}
 
-		openclEffectYUV->FlipVertical();
+		
 		openclEffectYUV->ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
 		decodeBitmap = false;
@@ -1952,7 +1889,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		CImageLoadingFormat imageFormat(false);
 		imageFormat.SetPicture(GetBitmapRGBA(tmp_frame));
 
-		CFiltreEffet filtre(color, &imageFormat);
+		CFiltreEffet filtre(color, nullptr, &imageFormat);
 
 		if (videoCompressOption != nullptr)
 		{
@@ -2044,11 +1981,6 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame* & tmp_frame, StreamContext
 		av_frame_free(&tmp_frame);
 		deleteFrame = false;
 	}
-
-	*/
-
-
-
 
 	tmp_frame = dst_hardware;
 	nbFrame++;

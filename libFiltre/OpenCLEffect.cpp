@@ -133,7 +133,7 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 	{
 		input.copyTo(output);
 		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		cv::insertChannel(alphaChannel, output, 3);
+		//cv::insertChannel(alphaChannel, output, 3);
 	}
 	else if (preview && !paramOutput.empty())
 	{
@@ -144,7 +144,7 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 	{
 		input.copyTo(output);
 		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		cv::insertChannel(alphaChannel, output, 3);
+		//cv::insertChannel(alphaChannel, output, 3);
 	}
 	
 	bitmapOut->SetMatrix(output);
@@ -802,53 +802,15 @@ int COpenCLEffect::Dilate()
 	return 0;
 }
 
-int COpenCLEffect::GaussianBlur(const int& r, const int& boxSize)
+int COpenCLEffect::GaussianBlur(const int& radius, const int& boxSize)
 {
-	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
-	
+	if (preview && !paramOutput.empty())
 	{
-		if (boxSize > 0)
-		{
-			const double wIdeal = sqrt((double)(12 * r * r / boxSize + 1));
-			int wl = static_cast<int>(floor(wIdeal));
-			if (wl % 2 == 0)
-				wl--;
-			int wu = wl + 2;
-			const double mIdeal = (12 * r * r - boxSize * wl * wl - 4 * boxSize * wl - 3 * boxSize) / (-4 * wl - 4);
-			int m = round(mIdeal);
-			vector<int> gaussCoeff;
-			gaussCoeff.reserve(boxSize);
-			for (auto i = 0; i < boxSize; i++)
-				gaussCoeff.push_back(i < m ? wl : wu);
-
-			bool noDeleteData = true;
-
-			COpenCLFilter opencl_filter;
-			if (preview && !paramOutput.empty())
-			{
-				opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", paramOutput, noDeleteData);
-				noDeleteData = false;
-				opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurV", paramOutput, noDeleteData);
-
-				for (auto i = 1; i < boxSize; i++)
-				{
-					opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurH", paramOutput, noDeleteData);
-					opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurV", paramOutput, noDeleteData);
-				}
-			}
-			else
-			{
-				opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", input, noDeleteData);
-				noDeleteData = false;
-				opencl_filter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurV", input, noDeleteData);
-
-				for (auto i = 1; i < boxSize; i++)
-				{
-					opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurH", input, noDeleteData);
-					opencl_filter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurV", input, noDeleteData);
-				}
-			}
-		}
+		openclFilter->GaussianBlur(radius, boxSize, paramOutput);
+	}
+	else
+	{
+		openclFilter->GaussianBlur(radius, boxSize, input);
 	}
 	return 0;
 }

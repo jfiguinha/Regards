@@ -107,7 +107,7 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 		{
 			CImageLoadingFormat image;
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
+			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 			filtre->RenderEffect(GetNameFilter(), effectParameter);
 			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -235,9 +235,15 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 	{
 		if (filtre != nullptr)
 		{
+			int orientation = bitmapViewer->GetOrientation();
 			filtre->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap * bitmapOut = filtre->GetBitmap(true);
+			if (orientation > 4)
+			{
+				bitmapOut->VertFlipBuf();
+				bitmapOut->HorzFlipBuf();
+			}
 			imageLoad->SetPicture(bitmapOut);
 			imageLoad->SetOrientation(0);
 		}
@@ -250,7 +256,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			CImageLoadingFormat image;
 			bitmap->RotateExif(bitmapViewer->GetOrientation());
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), &image);
+			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 			filtre_effet->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre_effet->GetBitmap(true));

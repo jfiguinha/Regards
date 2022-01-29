@@ -14,7 +14,6 @@ extern float value[256];
 using namespace Regards::FiltreEffet;
 using namespace std;
 
-extern COpenCLContext* openclContext;
 
 int CFiltreEffet::GetLib()
 {
@@ -115,7 +114,7 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openclContext, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
@@ -137,34 +136,6 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, CImageLoadingFormat* bitm
 		filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 	}
 
-}
-
-
-bool CFiltreEffet::OpenCLHasEnoughMemory()
-{
-	printf("OpenCLHasEnoughMemory \n");
-	if (openclContext != nullptr)
-	{
-		uint64_t memsizeMax = openclContext->GetMaxMemoryAllocable();
-		if (openclContext->GetDefaultType() == OPENCL_UCHAR)
-		{
-			if (memsizeMax > width * height * sizeof(cl_uint))
-			{
-				printf("OpenCLHasEnoughMemory UCHAR return true \n");
-				return true;
-			}
-		}
-		else
-		{
-			if (memsizeMax > width * height * 4 * sizeof(float))
-			{
-				printf("OpenCLHasEnoughMemory CL_FLOAT return true \n");
-				return true;
-			}
-		}
-	}
-	printf("OpenCLHasEnoughMemory return false \n");
-	return false;
 }
 
 void CFiltreEffet::SetBitmap(CImageLoadingFormat* bitmap)
