@@ -522,15 +522,6 @@ COpenCLContext* COpenCLEngine::CreateInstance()
 		}
 	}
 
-#ifdef OPENCV_OPENCL
-	if (platform != nullptr && device != nullptr && _singleton != nullptr)
-	{
-		cv::ocl::setUseOpenCL(true);
-		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
-
-	}
-#endif
-
 	instanceCreate = true;
 
 	return _singleton;

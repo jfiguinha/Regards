@@ -24,6 +24,11 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 }
 
 
+wxString CFFmpegTranscoding::GetOutputFilename()
+{
+	return output;
+}
+
 void CFFmpegTranscoding::EncodeFileThread(void* data)
 {
 	auto ffmpeg_encoding = static_cast<CFFmpegTranscoding*>(data);

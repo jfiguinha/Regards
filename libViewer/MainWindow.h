@@ -145,6 +145,7 @@ namespace Regards
 			wxString firstFileToShow = "";
 			bool needToRemux = false;
 			bool isAudio = false;
+			int videoOutputRotation = 0;
 
 		};
 	}

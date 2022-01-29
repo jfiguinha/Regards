@@ -177,9 +177,10 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     if (openclContext == nullptr)
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+		cv::ocl::setUseOpenCL(true);
+		cv::ocl::attachContext(openclContext->GetPlatformName().ToStdString(), openclContext->GetPlatformId(), openclContext->GetContext(), openclContext->GetDeviceId());
 	}
-    
-	//openclContext->GetContextForOpenCV().bind();
+
 	bitmapWndRender->OnPaint3D(this, renderOpenGL, openclContext);
     
 }

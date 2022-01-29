@@ -254,3 +254,20 @@ int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const
 
 	return 0;
 }
+
+int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const wxString& outputFile, const int& rotate)
+{
+	//ffmpeg -i 20200509_132328.mp4 -map_metadata 0 -metadata:s:v rotate=-90 -codec copy output.mp4
+	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-i");
+	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back("-map_metadata");
+	arrayOfStrings.push_back("0");
+	arrayOfStrings.push_back("-metadata:s:v");
+	arrayOfStrings.push_back("rotate=" + std::to_string(rotate));
+	arrayOfStrings.push_back("-codec");
+	arrayOfStrings.push_back("copy");
+	arrayOfStrings.push_back(outputFile.ToStdString());
+	ExecuteFFmpeg();
+	return 0;
+}

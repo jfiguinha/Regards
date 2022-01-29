@@ -15,6 +15,7 @@ public:
 	               CVideoOptionCompress* videoCompressOption);
 	int EndDecodeFile(const int& returnValue);
 	vector<wxString> ListOfEncoder();
+	wxString GetOutputFilename();
 protected:
 	static void EncodeFileThread(void* data);
 	wxString input;

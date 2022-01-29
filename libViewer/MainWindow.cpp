@@ -46,6 +46,7 @@
 #include <ConvertUtility.h>
 #include "SqlFacePhoto.h"
 #include <FiltreEffetCPU.h>
+#include <MediaInfo.h>
 using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -342,10 +343,14 @@ void CMainWindow::OnUpdateExifThumbnail(wxCommandEvent& event)
 
 void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 {
+	wxString outputFile = "";
 	int ret = event.GetInt();
 	if (ffmpegEncoder != nullptr)
 	{
 		ffmpegEncoder->EndDecodeFile(ret);
+
+		outputFile = ffmpegEncoder->GetOutputFilename();
+
 		delete ffmpegEncoder;
 		ffmpegEncoder = nullptr;
 	}
@@ -410,6 +415,31 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 			wxRemoveFile(fileOut);
 	}
 
+
+
+
+	if (videoOutputRotation != 0)
+	{
+		CFFmpegApp fmpegApp(false);
+		try
+		{
+			wxFileName file_temp(outputFile);
+			wxString fileOutVideo = CFileUtility::GetTempFile("temp_video." + file_temp.GetExt(), file_temp.GetPath(), true);
+			fmpegApp.ExecuteFFmpegAddRotateInfo(outputFile, fileOutVideo, (360 - videoOutputRotation) % 360);
+
+			if (wxFileExists(outputFile))
+				wxRemoveFile(outputFile);
+
+			wxCopyFile(fileOutVideo, outputFile);
+		}
+		catch (int e)
+		{
+			fmpegApp.Cleanup(e);
+		}
+
+
+	}
+
 }
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
@@ -429,6 +459,9 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 
 
 		wxString filenameToSave = videoFilename.GetName();
+		CMediaInfo metadata;
+		videoOutputRotation = metadata.GetVideoRotation(filename);
+
 		/*
 		wxString extension = videoFilename.GetExt();
 		filenameToSave = filenameToSave.Remove(filenameToSave.size() - filenameToSave.size(), filenameToSave.size());
@@ -622,6 +655,10 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							ret = -1;
 					}
 				}
+
+
+
+
 			}
 
 		}
@@ -633,6 +670,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		event.SetInt(0);
 		wxPostEvent(this, event);
 	}
+
 
 	if (ret < 0)
 	{
