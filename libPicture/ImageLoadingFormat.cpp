@@ -378,57 +378,6 @@ bool CImageLoadingFormat::IsOk()
 
 }
 
-void CImageLoadingFormat::ApplyExifOrientation()
-{
-	if (!IsOk())
-		return;
-
-
-	int exifOrientation = orientation;
-	CLibPicture libPicture;
-	if (libPicture.TestIsExifCompatible(filename))
-	{
-		CMetadataExiv2 metadata(filename);
-		exifOrientation = metadata.GetOrientation();
-	}
-#ifdef ROTDETECT
-	if (orientation == -1 || orientation == 1)
-	{
-		float result[4];
-		CRotDetect rotDetect;
-		rotDetect.rotdetect(this, result, false);
-
-		CRotDetect::rotation rot = rotDetect.analyzeResult(result);
-		//printf("Orientation of %s is ", argv[optIndex]);
-		switch (rot)
-		{
-		case CRotDetect::NOT_ROTATED:
-			exifOrientation = 0;
-			break;
-		case CRotDetect::ROTATED90CW:
-			exifOrientation = 6;
-			break;
-		case CRotDetect::ROTATED90CCW:
-			exifOrientation = 3;
-			break;
-		}
-	}
-#endif
-	ApplyExifOrientation(exifOrientation);
-}
-
-
-void CImageLoadingFormat::ApplyExifOrientation(const int& exifMethod)
-{
-	if (!IsOk())
-		return;
-
-	printf("TYPE_IMAGE_REGARDSIMAGE Exif Method : %d \n", exifMethod);
-	//if(exifMethod == 0)
-	//	_image->RotateRawExif(exifOrientation);
-	//else
-	_image->RotateExif(exifMethod);
-}
 
 CImageLoadingFormat* CImageLoadingFormat::GetPage(const int& numPage)
 {

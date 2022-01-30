@@ -166,10 +166,6 @@ void CSavePicture::ExportPicture(wxWindow* window, const wxString& filename)
 							wxString fileoutput = fileName.GetPath() + "\\" + fileName.GetName() + "_" +
 								to_string(numPage) + extension;
 
-
-							if (!libPicture.TestIsExifCompatible(filename))
-								imageFormat->ApplyExifOrientation(imageFormat->GetOrientation());
-
 							libPicture.SavePicture(fileoutput, imageFormat, option, quality);
 						}
 					}

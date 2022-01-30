@@ -179,7 +179,6 @@ CRegardsBitmap* CLibPicture::LoadPictureToBGRA(const wxString& filename, bool& p
 		}
 
 		pictureOK = true;
-		imageLoading->ApplyExifOrientation();
 		pictureData = imageLoading->GetRegardsBitmap(true);
 	}
 	else
@@ -1305,9 +1304,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	if (SavePictureOption(iFormat, option, quality) == 1)
 	{
-		if (!TestIsExifCompatible(fileName))
-			bitmap->ApplyExifOrientation(bitmap->GetOrientation());
-
 		SavePicture(wxfileName, bitmap, option, quality);
 	}
 
@@ -1337,9 +1333,6 @@ int CLibPicture::SavePicture(const wxString& fileNameIn, const wxString& fileNam
 			int j = i + 1;
 			wxString filenameOutput = "";
 			CImageLoadingFormat* picture = LoadPicture(fileNameIn, false, i);
-			if (!TestIsExifCompatible(fileNameOut))
-				picture->ApplyExifOrientation(picture->GetOrientation());
-
 			wxString message = "In progress : " + to_string(j) + "/" + to_string(nbPicture);
 			if (false == dialog.Update(i, message))
 			{
@@ -2022,8 +2015,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		if (imageLoading != nullptr && imageLoading->IsOk())
 		{
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
-			if (isFromExif)
-				imageLoading->ApplyExifOrientation();
 		}
 		else
 			notThumbnail = true;
@@ -2045,7 +2036,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			if (imageLoading != nullptr && imageLoading->IsOk())
 			{
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-				imageLoading->ApplyExifOrientation();
 			}
 		}
 		else
@@ -2077,7 +2067,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				if (imageLoading != nullptr && imageLoading->IsOk())
 				{
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-					imageLoading->ApplyExifOrientation();
+					//imageLoading->ApplyExifOrientation();
 				}
 			}
 			else
@@ -2093,11 +2083,10 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				imageLoading = new CImageLoadingFormat();
 				imageLoading->SetFilename(fileName);
 				imageLoading->SetPicture(image);
+				imageLoading->SetOrientation(orientation);
 				if (imageLoading->IsOk())
 				{
-					//imageLoading->ConvertToBGR(true);
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-					imageLoading->ApplyExifOrientation();
 				}
 			}
 			else
@@ -2120,7 +2109,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		if (imageLoading != nullptr && imageLoading->IsOk())
 		{
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-			imageLoading->ApplyExifOrientation();
 		}
 	}
 
@@ -2146,14 +2134,9 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			{
 				bitmap->VertFlipBuf();
 				int exif_method = DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
-				imageLoading->ApplyExifOrientation(exif_method);
 				sqlPhotos.InsertPhotoExif(fileName, exif_method);
 				delete bitmap;
 			}
-		}
-		else
-		{
-			imageLoading->ApplyExifOrientation(exif);
 		}
 	}
 

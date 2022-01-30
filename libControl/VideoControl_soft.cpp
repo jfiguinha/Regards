@@ -1949,6 +1949,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	bool isOpenGLOpenCL = false;
 	openGLDecoding = false;
 
+
 	if (openclContext->IsSharedContextCompatible())
 	{
 		printf("RenderToTexture IsSharedContextCompatible 3\n");

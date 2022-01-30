@@ -46,8 +46,7 @@ public:
 	bool IsOk();
 	void ConvertToRGB24(const bool& convert);
 	void ConvertToBGR(const bool& convert);
-	void ApplyExifOrientation(const int& exifMethod);
-	void ApplyExifOrientation();
+
 protected:
 	void DeletePicture();
 	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
