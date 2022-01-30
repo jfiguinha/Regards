@@ -14,7 +14,7 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
-#include <InterpolationFilters.h>
+
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
@@ -2018,24 +2018,41 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
 	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	CRgbaquad backColor;
 
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
+	if (videoEffectParameter.rotation != 0)
+	{
+		if (videoEffectParameter.rotation == 90 || videoEffectParameter.rotation == -270)
+		{
+			pictureFrame->Rotate90();
+		}
+		else if (videoEffectParameter.rotation == 270 || videoEffectParameter.rotation == -90)
+		{
+			pictureFrame->Rotate270();
+		}
+		else if (videoEffectParameter.rotation == 180)
+		{
+			pictureFrame->Rotate180();
+		}
+	}
+
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 	inverted = false;
-	auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-	if (angle == 90 || angle == 270)
-	{
-		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
-	}
+	int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
+
+	CRegardsBitmap* bitmapOut = nullptr;
+	if (calculAngle == 0 || calculAngle == 180)
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
 	else
-		ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2068,18 +2085,35 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 		if (regardsParam != nullptr)
 			filterInterpolation = regardsParam->GetInterpolationType();
 
+		if (videoEffectParameter.rotation != 0)
+		{
+			if (videoEffectParameter.rotation == 90 || videoEffectParameter.rotation == -270)
+			{
+				pictureFrame->Rotate90();
+			}
+			else if (videoEffectParameter.rotation == 270 || videoEffectParameter.rotation == -90)
+			{
+				pictureFrame->Rotate270();
+			}
+			else if (videoEffectParameter.rotation == 180)
+			{
+				pictureFrame->Rotate180();
+			}
+		}
+
+
 		int widthOutput = 0;
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
 		inverted = false;
-		auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-		if (angle == 90 || angle == 270)
-		{
-			ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, !flipH, flipV, angle, filterInterpolation);
-		}
+		int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
+
+		CRegardsBitmap* bitmapOut = nullptr;
+		if (calculAngle == 0 || calculAngle == 180)
+			bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
 		else
-			ApplyInterpolationFilters(pictureFrame, bitmapOut, rc, flipH, !flipV, angle, filterInterpolation);
+			bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
 
 		//Test if denoising Effect
 		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)

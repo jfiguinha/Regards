@@ -3,7 +3,6 @@
 #include <algorithm>    // std::max
 #include <fstream>
 #include <RegardsBitmap.h>
-#include "Interpolation.h"
 using namespace std;
 
 const string DENSITY = "@QB#NgWM8RDHdOKq9$6khEPXwmeZaoS2yjufF]}{tx1zv7lciL/\\|?*>r^;:_\"~,'.-`";
@@ -44,26 +43,27 @@ void CBitmapToAscii::SaveToAscii(CRegardsBitmap * source, const string &filename
         new_ratio = static_cast<float>(width) / static_cast<float>(pictureWidth);
     }
 
-    CRegardsBitmap* out = new CRegardsBitmap(source->GetBitmapWidth() * new_ratio, source->GetBitmapHeight() * new_ratio);
-    CInterpolation interpolation;
-    interpolation.Execute(source, out);
+    CRegardsBitmap bitmap;
+    cv::Mat out;
+    cv::resize(source->GetMatrix(), out, cv::Size(source->GetBitmapWidth() * new_ratio, source->GetBitmapHeight() * new_ratio), cv::INTER_CUBIC);
 
-   	std::ofstream outfile(filenameOut);
+    bitmap.SetMatrix(out);
+    std::ofstream outfile(filenameOut);
     if( outfile.fail() )
     {
         cerr << "!Error opening " << filenameOut << endl;
         return;
     }
     
-    for(int y = 0;y < out->GetBitmapHeight();y++)
+    for(int y = 0;y < out.rows;y++)
     {
-         for(int x = 0; x < out->GetBitmapWidth(); x++)
+         for(int x = 0; x < out.cols; x++)
          {
-             CRgbaquad rgba = out->GetColorValue(x,y);
+             CRgbaquad rgba = bitmap.GetColorValue(x,y);
              outfile << getDensity(rgba.GetIntensity());    
          }
           outfile << endl;
     }     
 	outfile.close(); 
-    delete out;
+
 }

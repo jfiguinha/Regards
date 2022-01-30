@@ -6,8 +6,6 @@
 #include "RegardsBitmap.h"
 #include <wx/mstream.h>
 #include <wx/wfstream.h>
-#include <InterpolationBicubic.h>
-#include <InterpolationFloatBicubic.h>
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
 #ifdef ROTDETECT
@@ -404,11 +402,16 @@ int CImageLoadingFormat::Resize(const int& pictureWidth, const int& pictureHeigh
 
 	if (thumbnailWidth > 0 && thumbnailHeight > 0)
 	{
+		cv::Mat out;
+		cv::resize(_image->GetMatrix(), out,cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
+		_image->SetMatrix(out);
+		/*
 		CInterpolationBicubic interpolation;
 		auto bitmapOut = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
 		interpolation.Execute(_image, bitmapOut);
 		delete _image;
 		_image = bitmapOut;
+		*/
 
 	}
 	return 0;

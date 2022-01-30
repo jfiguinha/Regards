@@ -46,18 +46,6 @@
     <ClCompile Include="videothumb.cpp">
       <Filter>ThumbnailVideo</Filter>
     </ClCompile>
-    <ClCompile Include="InterpolationBicubic.cpp">
-      <Filter>Interpolation</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationFloatBicubic.cpp">
-      <Filter>Interpolation</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpolation.cpp">
-      <Filter>Interpolation</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationBilinear.cpp">
-      <Filter>Interpolation</Filter>
-    </ClCompile>
     <ClCompile Include="BmpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -183,21 +171,6 @@
     <ClInclude Include="videothumb.h">
       <Filter>ThumbnailVideo</Filter>
     </ClInclude>
-    <ClInclude Include="InterpolationBicubic.h">
-      <Filter>Interpolation</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationFloatBicubic.h">
-      <Filter>Interpolation</Filter>
-    </ClInclude>
-    <ClInclude Include="Interpolation.h">
-      <Filter>Interpolation</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationBilinear.h">
-      <Filter>Interpolation</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationFilters.h">
-      <Filter>Interpolation</Filter>
-    </ClInclude>
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>ThumbnailVideo</Filter>
     </ClInclude>
@@ -307,9 +280,6 @@
     </Filter>
     <Filter Include="ThumbnailVideo">
       <UniqueIdentifier>{3441aef7-2d8c-4c2b-8ef0-aaa85458a520}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interpolation">
-      <UniqueIdentifier>{3416b6d8-bec8-4f8c-8300-c5b3e87eaf85}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dialog">
       <UniqueIdentifier>{bdc0c1a0-e7de-486c-a3af-db9eba76d898}</UniqueIdentifier>

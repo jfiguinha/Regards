@@ -74,9 +74,10 @@ public:
 	static void BrightnessAndContrastAuto(cv::Mat& image, float clipHistPercent);
 	static void LoadAndRotate(const wxString& filePath, const int& rotate);
 	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
+	static CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
 private:
 
-	CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
+	
 	int Contrast(const double& contrast, const uint8_t& offset);
 	int Lightness(const double& factor);
 	void RotateMatrix(const int& angle, cv::Mat& src);
