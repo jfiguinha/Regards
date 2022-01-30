@@ -91,6 +91,8 @@ int CFFmpegDecodeFrame::GetExifRotation()
 			return 7;
 		else if (rotation == 180)
 			return 3;
+		else if (rotation == -180)
+			return 2;
 	}
 
 	return 4;

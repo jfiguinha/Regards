@@ -105,7 +105,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
                                                                  const bool& compressJpeg)
 {
 	int exifRotation = 0;
-	int rotation = decodeFrame->GetRotation();
+	int rotation =decodeFrame->GetRotation();
 	if(rotation != 0)
 		exifRotation = decodeFrame->GetExifRotation();
 	vector<CImageVideoThumbnail*> listPicture;
@@ -118,7 +118,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		int timePosition = 0;
 		CRegardsBitmap* picture = TestIsValidBitmap(GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail));
 		picture->RotateExif(exifRotation);
-		if(exifRotation == 0)
+		if(rotation == 0)
 			picture->VertFlipBuf();
 		cxVideo->timePosition = timePosition;
 		cxVideo->image->SetPicture(picture);
