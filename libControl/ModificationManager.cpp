@@ -107,7 +107,10 @@ CRegardsBitmap* CModificationManager::GetModification(const unsigned int& numMod
 
 	CRegardsBitmap * bitmap = new CRegardsBitmap();
 	bitmap->ReadFile(filename);
-	bitmap->SetOrientation(orientation);
+	if(numModification > 0)
+		bitmap->SetOrientation(0);
+	else
+		bitmap->SetOrientation(orientation);
 	bitmap->SetFilename(filenameBitmap);
 	this->numModification = numModification;
 

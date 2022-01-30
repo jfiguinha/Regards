@@ -317,7 +317,8 @@ void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 
 void CRegardsBitmap::ReadFile(const wxString& filename)
 {
-	bitmapMatrix = cv::imread(filename.ToStdString(), CV_8UC4);
+	bitmapMatrix = cv::imread(filename.ToStdString());
+	cv::cvtColor(bitmapMatrix, bitmapMatrix, cv::COLOR_BGR2BGRA);
 }
 
 void CRegardsBitmap::WriteFile(const wxString& filename)
