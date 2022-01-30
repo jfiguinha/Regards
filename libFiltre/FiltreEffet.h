@@ -76,7 +76,7 @@ public:
 	int Solarize(const long &threshold);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 	int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
-    int Bm3d(const int & fSigma);
+
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
 	int MeanShift(const float & fSpatialRadius, const float& fColorRadius);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);

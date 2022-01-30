@@ -11,7 +11,6 @@
 #include "MeanShift.h"
 #include <RegardsBitmap.h>
 #include <fstream>
-#include "bm3dfilter.h"
 #include <GLTexture.h>
 #include <opencv2/xphoto.hpp>
 #include "VideoStabilization.h"
@@ -877,27 +876,6 @@ int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radiu
 	return -1;
 }
 
-int CFiltreEffetCPU::Bm3d(const int& fSigma)
-{
-	CRegardsBitmap* bitmap;
-	if (preview)
-		bitmap = bitmapOut;
-	else
-		bitmap = pBitmap;
-
-	if (bitmap != nullptr)
-	{
-		const int nbProcess = thread::hardware_concurrency();
-		auto bm3dFilter = new CBm3DFilter(bitmap, value[fSigma]);
-		bm3dFilter->DetermineData(nbProcess - 1);
-		bm3dFilter->ExecuteFilter();
-		CRegardsBitmap* copyBitmap = bm3dFilter->GetResult();
-		memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
-		delete bm3dFilter;
-		return 0;
-	}
-	return -1;
-}
 
 // Remove black dots (upto 4x4 in size) of noise from a pure black & white image.
 // ie: The input image should be mostly white (255) and just contains some black (0) noise

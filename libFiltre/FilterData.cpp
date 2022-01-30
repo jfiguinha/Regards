@@ -12,7 +12,6 @@
 #include <DecodeRaw.h>
 #include <EffectParameter.h>
 #include "VignetteFilter.h"
-#include "bm3dWindowFilter.h"
 #include "LensFlareFilter.h"
 #include "SwirlFilter.h"
 #include "ColorBalanceFilter.h"
@@ -220,11 +219,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
         filterEffect = new  CNlmeansFilter();
         break;
     }
-
-
-    case IDM_FILTER_BM3D:
-        filterEffect = new  CBm3dWindowFilter();
-        break;
 
     case IDM_FILTRE_ERODE:
         filterEffect = new  CErodeFilter();

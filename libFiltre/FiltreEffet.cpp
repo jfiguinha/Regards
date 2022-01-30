@@ -58,12 +58,6 @@ bool CFiltreEffet::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabili
 	return filtreEffet->StabilizeVideo(stabilization);
 }
 
-int CFiltreEffet::Bm3d(const int& fSigma)
-{
-	filtreEffet->Bm3d(fSigma);
-	return 0;
-}
-
 int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace)
 {
 	filtreEffet->BokehEffect(radius, boxsize, nbFace, listFace);

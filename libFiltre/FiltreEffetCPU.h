@@ -12,7 +12,6 @@ public:
 	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
 
-    int Bm3d(const int & fSigma);
 	int HistogramNormalize();
 	int HistogramEqualize();
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);

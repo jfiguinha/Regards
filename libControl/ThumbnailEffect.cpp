@@ -234,6 +234,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			thumbnailData->SetNumPhotoId(numEffect);
 			switch (numEffect)
 			{
+				/*
 			case IDM_FILTER_BM3D:
 				{
 					CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_FILTRE_BM3D");
@@ -244,7 +245,7 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 					thumbnailData->SetBitmap(&image);
 					break;
 				}
-
+				*/
 
 			case IDM_REDEYE:
 				{

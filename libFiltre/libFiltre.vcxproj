@@ -476,10 +476,7 @@
     <ClInclude Include="BitmapEffectParameter.h" />
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BlurFilter.h" />
-    <ClInclude Include="bm3d.h" />
     <ClInclude Include="bm3dEffectParameter.h" />
-    <ClInclude Include="bm3dfilter.h" />
-    <ClInclude Include="bm3dWindowFilter.h" />
     <ClInclude Include="BokehEffectParameter.h" />
     <ClInclude Include="BokehFilter.h" />
     <ClInclude Include="BrightAndContrastEffectParameter.h" />
@@ -512,7 +509,6 @@
     <ClInclude Include="LensFlare.h" />
     <ClInclude Include="LensFlareEffectParameter.h" />
     <ClInclude Include="LensFlareFilter.h" />
-    <ClInclude Include="lib_transforms.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="MeanShift.h" />
     <ClInclude Include="MotionBlur.h" />
@@ -541,7 +537,6 @@
     <ClInclude Include="SolarisationFilter.h" />
     <ClInclude Include="SwirlEffectParameter.h" />
     <ClInclude Include="SwirlFilter.h" />
-    <ClInclude Include="utilities.h" />
     <ClInclude Include="VideoFilter.h" />
     <ClInclude Include="VideoStabilization.h" />
     <ClInclude Include="videostream.h" />
@@ -562,9 +557,6 @@
     <ClCompile Include="AudioVideoFilter.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
-    <ClCompile Include="bm3d.cpp" />
-    <ClCompile Include="bm3dfilter.cpp" />
-    <ClCompile Include="bm3dWindowFilter.cpp" />
     <ClCompile Include="BokehFilter.cpp" />
     <ClCompile Include="BrightAndContrastFilter.cpp" />
     <ClCompile Include="CartoonFilter.cpp" />
@@ -586,7 +578,6 @@
     <ClCompile Include="hqdn3dFilter.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />
-    <ClCompile Include="lib_transforms.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="MeanShift.cpp" />
     <ClCompile Include="MotionBlur.cpp" />
@@ -604,7 +595,6 @@
     <ClCompile Include="SharpenMaskingFilter.cpp" />
     <ClCompile Include="SolarisationFilter.cpp" />
     <ClCompile Include="SwirlFilter.cpp" />
-    <ClCompile Include="utilities.cpp" />
     <ClCompile Include="VideoFilter.cpp" />
     <ClCompile Include="VideoStabilization.cpp" />
     <ClCompile Include="videostream.cpp" />

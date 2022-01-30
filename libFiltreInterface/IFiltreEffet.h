@@ -41,7 +41,7 @@ public:
 		this->preview = preview;
 	}
 
-    virtual int Bm3d(const int & fSigma) = 0;
+
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) = 0;
 	virtual int OilPaintingEffect(const int &size, const int &dynRatio) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio) = 0;

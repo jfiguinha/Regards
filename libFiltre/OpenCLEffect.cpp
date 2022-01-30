@@ -74,23 +74,6 @@ int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const 
 	return 0;
 }
 
-int COpenCLEffect::Bm3d(const int& fSigma)
-{
-	
-	{
-		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->Bm3d(paramOutput, fSigma);
-		}
-		else
-		{
-			 openclFilter->Bm3d(input, fSigma);
-		}
-	}
-	return 0;
-}
-
 int COpenCLEffect::WaveFilter(int x, int y, short height, int scale, int radius)
 {
 	return -1;

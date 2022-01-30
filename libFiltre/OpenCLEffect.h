@@ -42,7 +42,6 @@ namespace Regards
 			virtual ~COpenCLEffect();
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };
 			int VignetteEffect(const double& radius = 1.0, const double& power = 0.8) { return -1; };
-            int Bm3d(const int & fSigma);
 			int MeanShift(const float& fSpatialRadius, const float& fColorRadius) { return -1; };
 			int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
 			int NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);

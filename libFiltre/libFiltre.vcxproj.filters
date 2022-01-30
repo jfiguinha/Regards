@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="bm3d">
-      <UniqueIdentifier>{aa91fbfd-a6c0-4ed0-8c1a-32fdf1734a1a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Filter">
       <UniqueIdentifier>{fa946c5c-e182-4532-9539-79844f6bf274}</UniqueIdentifier>
     </Filter>
@@ -72,18 +69,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bm3d.h">
-      <Filter>bm3d</Filter>
-    </ClInclude>
-    <ClInclude Include="bm3dfilter.h">
-      <Filter>bm3d</Filter>
-    </ClInclude>
-    <ClInclude Include="lib_transforms.h">
-      <Filter>bm3d</Filter>
-    </ClInclude>
-    <ClInclude Include="utilities.h">
-      <Filter>bm3d</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -193,9 +178,6 @@
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="BlurFilter.h">
-      <Filter>window\picture</Filter>
-    </ClInclude>
-    <ClInclude Include="bm3dWindowFilter.h">
       <Filter>window\picture</Filter>
     </ClInclude>
     <ClInclude Include="BrightAndContrastFilter.h">
@@ -320,18 +302,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bm3d.cpp">
-      <Filter>bm3d</Filter>
-    </ClCompile>
-    <ClCompile Include="bm3dfilter.cpp">
-      <Filter>bm3d</Filter>
-    </ClCompile>
-    <ClCompile Include="lib_transforms.cpp">
-      <Filter>bm3d</Filter>
-    </ClCompile>
-    <ClCompile Include="utilities.cpp">
-      <Filter>bm3d</Filter>
-    </ClCompile>
     <ClCompile Include="circle.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
@@ -378,9 +348,6 @@
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="BlurFilter.cpp">
-      <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="bm3dWindowFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
     <ClCompile Include="BrightAndContrastFilter.cpp">
