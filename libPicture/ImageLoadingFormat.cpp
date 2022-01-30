@@ -129,7 +129,8 @@ From exiftool documentation
 
 void CImageLoadingFormat::SetOrientation(const int& orientation)
 {
-	this->orientation = orientation;
+	_image->RotateExif(orientation);
+	this->orientation = 0;
 }
 
 
@@ -162,7 +163,8 @@ void CImageLoadingFormat::SetPicture(CRegardsBitmap* image, const bool& convertT
 	if (image != nullptr)
 	{
 		_image = image;
-		orientation = image->GetOrientation();
+		_image->RotateExif(image->GetOrientation());
+		orientation = 0;// image->GetOrientation();
 		if (orientation < 0)
 			orientation = 0;
 		filename = _image->GetFilename();

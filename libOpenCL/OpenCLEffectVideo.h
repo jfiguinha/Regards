@@ -57,7 +57,7 @@ namespace Regards
 			bool CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
-			
+			void Rotate(CVideoEffectParameter* videoEffectParameter);
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut, const int &rgba=0) {};

@@ -136,6 +136,26 @@ void COpenCLEffectVideo::ConvertToBgr()
 		cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGRA);
 }
 
+void COpenCLEffectVideo::Rotate(CVideoEffectParameter* videoEffectParameter)
+{
+	if (videoEffectParameter->rotation != 0)
+	{
+		if (videoEffectParameter->rotation == 90 || videoEffectParameter->rotation == -270)
+		{
+			cv::rotate(paramSrc, paramSrc, cv::ROTATE_90_CLOCKWISE);
+		}
+		else if (videoEffectParameter->rotation == 270 || videoEffectParameter->rotation == -90)
+		{
+			cv::rotate(paramSrc, paramSrc, cv::ROTATE_90_COUNTERCLOCKWISE);
+		}
+		else if (videoEffectParameter->rotation == 180)
+		{
+			cv::rotate(paramSrc, paramSrc, cv::ROTATE_180);
+		}
+	}
+}
+
+
 void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectParameter, COpenCVStabilization * openCVStabilization)
 {
 	//context->GetContextForOpenCV().bind();
@@ -171,6 +191,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 		openclFilter->BrightnessAndContrastAuto(paramSrc,1.0);
 		frameStabilized = true;
 	}
+
 }
 
 

@@ -1383,12 +1383,7 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 	{
 		float ratioX = (float)inputData.cols / rc.width;
 		float ratioY = (float)inputData.rows / rc.height;
-		if (angle == 90)
-		{
-			ratioX = (float)inputData.cols / (float)rc.height;
-			ratioY = (float)inputData.rows / (float)rc.width;
-		}
-		else if (angle == 270)
+		if (angle == 90 || angle == 270)
 		{
 			ratioX = (float)inputData.cols / (float)rc.height;
 			ratioY = (float)inputData.rows / (float)rc.width;
@@ -1438,11 +1433,23 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 
 		if (angle == 90)
 		{
-			cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			else if (flipV || flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+
 		}
 		else if (angle == 270)
 		{
-			cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			else if (flipV || flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			
 		}
 		else if (angle == 180)
 		{
@@ -1488,6 +1495,7 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), cv::INTER_NEAREST_EXACT);
 
 		//Apply Transformation
+
 		if (flipH)
 		{
 			cv::flip(cvImage, cvImage, 1);

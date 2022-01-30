@@ -1336,14 +1336,25 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 
 		cvImage = cvImage(rectGlobal);
 
-
 		if (angle == 90)
 		{
-			cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			if (flipH && !flipV)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			else if (!flipH && flipV)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+
 		}
 		else if (angle == 270)
 		{
-			cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			if (flipH && !flipV)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			else if (!flipH && flipV)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			else
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+
 		}
 		else if (angle == 180)
 		{

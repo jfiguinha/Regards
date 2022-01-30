@@ -1918,6 +1918,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
+	openclEffect->Rotate(&videoEffectParameter);
+
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
 	{
@@ -1926,11 +1928,16 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
 	}
 
+	int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation, (int)GetZoomRatio() * 100);
+
+	if(calculAngle == 0 || calculAngle == 180)
+		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
+	else
+		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
