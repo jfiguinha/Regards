@@ -88,8 +88,30 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 
 		source->VertFlipBuf();
 
-		CRegardsBitmap * bitmapOut = source->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
+		cv::Mat out;
+		try
+		{
+			cv::Mat matrix = source->GetMatrix();
+			cv::Rect rect;
+			rect.x = rcZoom.x;
+			rect.y = rcZoom.y;
+			rect.width = rcZoom.width;
+			rect.height = rcZoom.height;
+			out = matrix(rect);
+		}
+		catch (cv::Exception& e)
+		{
+			out = source->GetMatrix();
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
 
+
+
+		CRegardsBitmap* bitmapOut = new CRegardsBitmap();
+
+		bitmapOut->SetMatrix(out);
 		bitmapOut->VertFlipBuf();
 
 		imageLoad = new CImageLoadingFormat();
