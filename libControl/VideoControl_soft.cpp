@@ -1475,6 +1475,7 @@ void CVideoControlSoft::OnPause()
 		{
 			ffmfc->Pause();
 
+			/*
 			if (pictureVideo != nullptr)
 				delete pictureVideo;
 			pictureVideo = nullptr;
@@ -1489,7 +1490,7 @@ void CVideoControlSoft::OnPause()
 				pictureVideo = openclEffectYUV->GetBitmap(true);
 				pictureVideo->VertFlipBuf();
 			}
-
+			*/
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1643,53 +1644,20 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 #endif
 }
 
-int CVideoControlSoft::IsOpenGLDecoding()
-{
-	int supportOpenGL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenGL = config->GetVideoLibrary();
-
-	return supportOpenGL;
-}
-
 GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 {
 	GLTexture* glTextureOutput = nullptr;
 	if (glTexture != nullptr)
 	{
-		if (!IsSupportOpenCL() && IsOpenGLDecoding())
-		{
-			printf("DisplayTexture openGLDecoding \n");
-
-			//float zoomRatio = GetZoomRatio();
-			int filterInterpolation = 0;
-			int widthOutput = 0;
-			int heightOutput = 0;
-			int local_angle = (360 - angle) % 360;
-			wxRect rc(0, 0, 0, 0);
-			CalculPositionVideo(widthOutput, heightOutput, rc);
-			glTextureOutput = new GLTexture(widthOutput, heightOutput);
-
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-			if (regardsParam != nullptr)
-				filterInterpolation = regardsParam->GetInterpolationType();
-
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter,
-			                                                  flipH, !flipV, local_angle, filterInterpolation, true);
-		}
-		else
-		{
-			printf("DisplayTexture not openGLDecoding \n");
-			muVideoEffect.lock();
-			wxFloatRect floatRect;
-			floatRect.left = 0;
-			floatRect.right = 1.0f;
-			floatRect.top = 0;
-			floatRect.bottom = 1.0f;
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, inverted);
-			muVideoEffect.unlock();
-		}
+		printf("DisplayTexture not openGLDecoding \n");
+		muVideoEffect.lock();
+		wxFloatRect floatRect;
+		floatRect.left = 0;
+		floatRect.right = 1.0f;
+		floatRect.top = 0;
+		floatRect.bottom = 1.0f;
+		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, inverted);
+		muVideoEffect.unlock();
 	}
 
 	return glTextureOutput;
@@ -2015,9 +1983,10 @@ bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 	return frameStabilized;
 }
 
+
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
-	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
+	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
 
 	int filterInterpolation = 0;
@@ -2045,14 +2014,14 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-	inverted = false;
+	//inverted = false;
 	int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
 
 	CRegardsBitmap* bitmapOut = nullptr;
 	if (calculAngle == 0 || calculAngle == 180)
-		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, calculAngle, (int)GetZoomRatio() * 100);
 	else
-		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipV, flipH, calculAngle, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2067,79 +2036,26 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 		ApplyOpenCVEffect(bitmapOut);
 	}
 
-	glTexture->SetData(bitmapOut);
+
+	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+	if (glTexture != nullptr)
+	{
+		glTexture->SetData(bitmapOut);
+		
+	}
+
 	delete bitmapOut;
 
-	deleteTexture = true;
-	//delete bitmap;
 	return glTexture;
 }
 
+
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 {
-	auto glTexture = new GLTexture(GetSrcBitmapWidth(), GetSrcBitmapHeight());
-	if (!IsOpenGLDecoding())
-	{
-		int filterInterpolation = 0;
-		CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-		if (regardsParam != nullptr)
-			filterInterpolation = regardsParam->GetInterpolationType();
+	CRegardsBitmap bitmap;
+	bitmap = *pictureFrame;
+	return RenderFFmpegToTexture(&bitmap);
 
-		if (videoEffectParameter.rotation != 0)
-		{
-			if (videoEffectParameter.rotation == 90 || videoEffectParameter.rotation == -270)
-			{
-				pictureFrame->Rotate90();
-			}
-			else if (videoEffectParameter.rotation == 270 || videoEffectParameter.rotation == -90)
-			{
-				pictureFrame->Rotate270();
-			}
-			else if (videoEffectParameter.rotation == 180)
-			{
-				pictureFrame->Rotate180();
-			}
-		}
-
-
-		int widthOutput = 0;
-		int heightOutput = 0;
-		wxRect rc(0, 0, 0, 0);
-		CalculPositionVideo(widthOutput, heightOutput, rc);
-		inverted = false;
-		int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
-
-		CRegardsBitmap* bitmapOut = nullptr;
-		if (calculAngle == 0 || calculAngle == 180)
-			bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
-		else
-			bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
-
-		//Test if denoising Effect
-		if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
-		{
-			GetDenoiserPt(widthOutput, heightOutput);
-			hq3d->ApplyDenoise3D(bitmapOut);
-		}
-
-		if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
-			effectEnable)
-		{
-			ApplyOpenCVEffect(bitmapOut);
-		}
-
-		glTexture->SetData(bitmapOut);
-		delete bitmapOut;
-	}
-	else
-	{
-		glTexture->SetData(pictureFrame);
-	}
-
-
-	deleteTexture = true;
-	//delete bitmap;
-	return glTexture;
 }
 
 

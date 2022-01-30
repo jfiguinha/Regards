@@ -159,7 +159,7 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 	}
 	else
 	{
-	renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
+		renderOpenGL->RenderQuad(glTexture, left_local, top_local, inverted);
 	}
 
 	glTexture->Disable();

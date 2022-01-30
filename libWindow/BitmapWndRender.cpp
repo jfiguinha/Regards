@@ -1732,16 +1732,6 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 
 	if (loadBitmap || updateFilter || glTextureSrc == nullptr)
 	{
-		if (IsOpenGLDecoding())
-		{
-			if (glTextureSrc != nullptr)
-				delete glTextureSrc;
-
-			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
-
-			glTextureSrc = new GLTexture();
-			glTextureSrc->SetData(bitmap);
-		}
 		loadBitmap = false;
 	}
 
@@ -1751,71 +1741,23 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(),
 				themeBitmap.colorBack.Blue()));
 
-		if (IsOpenGLDecoding())
-		{
-			printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport openGLRenderBitmap \n");
+		printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
 
-			int left = 0, top = 0;
-			int tailleAffichageWidth = widthOutput;
-			int tailleAffichageHeight = heightOutput;
-			int filterInterpolation = 0;
-			if (GetWidth() * scale_factor > tailleAffichageWidth)
-				left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
-			else
-				left = 0;
+		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-			if (GetHeight() * scale_factor > tailleAffichageHeight)
-				top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-			else
-				top = 0;
+		ApplyPreviewEffect(widthOutput, heightOutput);
 
-			wxRect rc(0, 0, 0, 0);
-			CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
-			auto glTextureOutput = new GLTexture(widthOutput, heightOutput);
+		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-			if (regardsParam != nullptr)
-				filterInterpolation = regardsParam->GetInterpolationType();
+		CRegardsBitmap* bitmap = nullptr;
+		bitmap = filtreEffet->GetBitmap(false);
 
-			renderOpenGL->RenderInterpolation(glTextureSrc, glTextureOutput, rc, flipHorizontal, flipVertical, angle,
-				filterInterpolation);
-
-			renderOpenGL->RenderToTexture();
-
-			if (!ApplyPreviewEffect(widthOutput, heightOutput))
-			{
-				CRegardsBitmap* bitmap = nullptr;
-				bitmap = filtreEffet->GetBitmap(false);
-				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
-				if (glTexture != nullptr)
-					glTexture->SetData(bitmap);
-				else
-					printf("CBitmapWndRender GetDisplayTexture Error \n");
-				delete bitmap;
-			}
-			else
-				glTexture = renderOpenGL->GetDisplayTexture();
-		}
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+		if (glTexture != nullptr)
+			glTexture->SetData(bitmap);
 		else
-		{
-			printf("CBitmapWndRender RenderToScreenWithoutOpenCLSupport without OpenGL \n");
-
-			GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-			ApplyPreviewEffect(widthOutput, heightOutput);
-
-			printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
-
-			CRegardsBitmap* bitmap = nullptr;
-			bitmap = filtreEffet->GetBitmap(false);
-
-			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
-			if (glTexture != nullptr)
-				glTexture->SetData(bitmap);
-			else
-				printf("CBitmapWndRender GetDisplayTexture Error \n");
-			delete bitmap;
-		}
+			printf("CBitmapWndRender GetDisplayTexture Error \n");
+		delete bitmap;
 	}
 	RenderTexture(false);
 }
@@ -1839,16 +1781,6 @@ void CBitmapWndRender::RenderTexture(const bool& invertPos)
 		xPosImage = x;
 		yPosImage = y;
 	}
-}
-
-int CBitmapWndRender::IsOpenGLDecoding()
-{
-	int supportOpenGL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenGL = config->GetVideoLibrary();
-
-	return supportOpenGL;
 }
 
 void CBitmapWndRender::ReloadResource()

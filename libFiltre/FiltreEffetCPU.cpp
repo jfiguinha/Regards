@@ -1278,25 +1278,17 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 
 	try
 	{
-
-
-
-		float ratioX = (float)pBitmap->GetMatrix().cols / rc.width;
-		float ratioY = (float)pBitmap->GetMatrix().rows / rc.height;
-		if (angle == 90)
+		float ratioX = (float)cvImage.cols / rc.width;
+		float ratioY = (float)cvImage.rows / rc.height;
+		if (angle == 90 || angle == 270)
 		{
-			ratioX = (float)pBitmap->GetMatrix().cols / (float)rc.height;
-			ratioY = (float)pBitmap->GetMatrix().rows / (float)rc.width;
-		}
-		else if (angle == 270)
-		{
-			ratioX = (float)pBitmap->GetMatrix().cols / (float)rc.height;
-			ratioY = (float)pBitmap->GetMatrix().rows / (float)rc.width;
+			ratioX = (float)cvImage.cols / (float)rc.height;
+			ratioY = (float)cvImage.rows / (float)rc.width;
 		}
 
 		cv::Rect rectGlobal;
-		cv::Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(pBitmap->GetMatrix().cols, pBitmap->GetMatrix().rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
-		cv::Rect rect_end = CFiltreEffetCPUImpl::CalculRect(pBitmap->GetMatrix().cols, pBitmap->GetMatrix().rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
+		cv::Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(cvImage.cols, cvImage.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
+		cv::Rect rect_end = CFiltreEffetCPUImpl::CalculRect(cvImage.cols, cvImage.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
 		rectGlobal.x = rect_begin.x;
 		rectGlobal.y = rect_begin.y;
 		rectGlobal.width = rect_end.x;
@@ -1338,9 +1330,9 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 
 		if (angle == 90)
 		{
-			if (flipH && !flipV)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
-			else if (!flipH && flipV)
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
+			else if (flipV || flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
 			else
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
@@ -1348,9 +1340,9 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 		}
 		else if (angle == 270)
 		{
-			if (flipH && !flipV)
-				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
-			else if (!flipH && flipV)
+			if (flipV && flipH)
+				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
+			else if (flipV || flipH)
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_CLOCKWISE);
 			else
 				cv::rotate(cvImage, cvImage, cv::ROTATE_90_COUNTERCLOCKWISE);
@@ -1361,12 +1353,31 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 			cv::rotate(cvImage, cvImage, cv::ROTATE_180);
 		}
 
+
+		/*
+		nearest neighbor interpolation
+		INTER_NEAREST = 0,
+		bilinear interpolation
+		INTER_LINEAR = 1,
+		bicubic interpolation
+		INTER_CUBIC = 2,
+		resampling using pixel area relation. It may be a preferred method for image decimation, as
+		it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
+		method.
+		INTER_AREA = 3,
+		Lanczos interpolation over 8x8 neighborhood
+		INTER_LANCZOS4 = 4,
+		Bit exact bilinear interpolation
+		INTER_LINEAR_EXACT = 5,
+		Bit exact nearest neighbor interpolation. This will produce same results as
+		the nearest neighbor method in PIL, scikit-image or Matlab.
+		INTER_NEAREST_EXACT = 6,
+		*/
 		if (ratio != 100)
 		{
 			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 			int superDnn = regardsParam->GetSuperResolutionType();
 			int useSuperResolution = regardsParam->GetUseSuperResolution();
-
 			if (useSuperResolution && CFiltreEffetCPUImpl::TestIfMethodIsValid(superDnn, (ratio / 100)))
 			{
 				cvImage = CFiltreEffetCPUImpl::upscaleImage(cvImage, superDnn, (ratio / 100));
@@ -1377,7 +1388,11 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 			}
 		}
 
+		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), cv::INTER_NEAREST_EXACT);
+
 		//Apply Transformation
+
 		if (flipH)
 		{
 			cv::flip(cvImage, cvImage, 1);
@@ -1386,12 +1401,15 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 		{
 			cv::flip(cvImage, cvImage, 0);
 		}
+
+		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
 	}
 	catch (cv::Exception& e)
 	{
 		const char* err_msg = e.what();
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+
 	}
 
 	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
