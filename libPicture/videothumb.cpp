@@ -118,7 +118,8 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		int timePosition = 0;
 		CRegardsBitmap* picture = TestIsValidBitmap(GetVideoFrame(rotation, i, timePosition, widthThumbnail, heightThumbnail));
 		picture->RotateExif(exifRotation);
-		//picture->VertFlipBuf();
+		if(exifRotation == 0)
+			picture->VertFlipBuf();
 		cxVideo->timePosition = timePosition;
 		cxVideo->image->SetPicture(picture);
 		cxVideo->image->SetFilename(filename);
