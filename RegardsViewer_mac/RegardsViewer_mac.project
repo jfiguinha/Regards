@@ -244,6 +244,7 @@
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
         <Library Value="opencv_dnn"/>
+        <Library Value="opencv_dnn_superres"/>
         <Library Value="opencv_features2d"/>
         <Library Value="opencv_imgproc"/>
         <Library Value="opencv_imgcodecs"/>
