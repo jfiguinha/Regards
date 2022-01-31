@@ -30,18 +30,14 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="OpenCLFilter.cpp"/>
-    <File Name="OpenCLBm3D.cpp"/>
     <File Name="OpenCLEffectVideoNV12.cpp"/>
     <File Name="OpenCLEffectVideoYUV.cpp"/>
-    <File Name="OpenCLRawDev.cpp"/>
     <File Name="OpenCLEffectVideo.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="OpenCLFilter.h"/>
-    <File Name="OpenCLBm3D.h"/>
     <File Name="OpenCLEffectVideoNV12.h"/>
     <File Name="OpenCLEffectVideoYUV.h"/>
-    <File Name="OpenCLRawDev.h"/>
     <File Name="OpenCLEffectVideo.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
@@ -64,6 +60,8 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../libFiltre"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

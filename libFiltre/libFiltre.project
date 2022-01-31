@@ -26,16 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="bm3d">
-    <File Name="bm3dfilter.h"/>
-    <File Name="bm3dfilter.cpp"/>
-    <File Name="utilities.h"/>
-    <File Name="utilities.cpp"/>
-    <File Name="lib_transforms.h"/>
-    <File Name="lib_transforms.cpp"/>
-    <File Name="bm3d.h"/>
-    <File Name="bm3d.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <VirtualDirectory Name="video">
       <File Name="VideoStabilization.h"/>
@@ -140,8 +130,6 @@
       <File Name="hqdn3dFilter.h"/>
       <File Name="hqdn3dFilter.cpp"/>
       <File Name="hqdn3dEffectParameter.h"/>
-      <File Name="bm3dWindowFilter.h"/>
-      <File Name="bm3dWindowFilter.cpp"/>
       <File Name="GaussianBlurFilter.h"/>
       <File Name="GaussianBlurFilter.cpp"/>
       <File Name="ColorBalanceFilter.h"/>

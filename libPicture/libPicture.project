@@ -38,17 +38,6 @@
     <File Name="RotateByShearRGB.h"/>
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="interpolation">
-    <File Name="InterpolationBilinear.cpp"/>
-    <File Name="InterpolationBicubic.h"/>
-    <File Name="InterpolationBicubic.cpp"/>
-    <File Name="Interpolation.h"/>
-    <File Name="Interpolation.cpp"/>
-    <File Name="InterpolationBilinear.h"/>
-    <File Name="InterpolationFloatBicubic.cpp"/>
-    <File Name="InterpolationFilters.h"/>
-    <File Name="InterpolationFloatBicubic.h"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="ThumbnailVideo">
     <File Name="videothumb.h"/>
     <File Name="ImageVideoThumbnail.h"/>

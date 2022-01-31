@@ -1,5 +1,5 @@
 #include <header.h>
-#include <ximage.h>
+#include <OpenCLFilter.h>
 #include "OpenCLEffect.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
@@ -7,7 +7,7 @@
 #include <OpenCLContext.h>
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
-#include "openclFilter.h"
+//
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #define minmax
