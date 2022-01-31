@@ -1190,17 +1190,10 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	{
 		if (wxFileName::FileExists(fileName) && (iFormat != AVIF) && (iFormat != HEIC))
 		{
-#ifdef EXIV2
 			CMetadataExiv2 pictureMetadata(bitmap->GetFilename());
-
 			int typeImage = TestImageFormat(bitmap->GetFilename());
-			if (typeImage == RAWFILE)
-			{
-				pictureMetadata.SetOrientation(0);
-			}
-
+			pictureMetadata.SetOrientation(0);
 			pictureMetadata.CopyMetadata(fileName);
-#endif
 		}
 	}
 
