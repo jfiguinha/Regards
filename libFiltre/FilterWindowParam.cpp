@@ -85,19 +85,8 @@ bool CFilterWindowParam::IsOpenCLCompatible()
 	return true;
 }
 
-bool CFilterWindowParam::IsOpenGLCompatible()
-{
-	//if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
-	//	return true;
-	return false;
-}
-
 void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int& widthOutput, int& heightOutput)
 {
-	if (CFiltreData::IsOpenGLCompatible(GetNameFilter()))
-		return;
-
-	//filtreEffet->SetPreview(true);
 	if (CFiltreData::IsOpenCLCompatible(GetNameFilter()) && supportOpenCL)
 		filtreEffet->RenderEffect(GetNameFilter(), effectParameter);
 	else
@@ -274,30 +263,3 @@ CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectP
 	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetNameFilter());
 	return imageLoad;
 }
-
-void CFilterWindowParam::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-    printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n " );
-	GLSLShader * m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
-	if (m_pShader != nullptr)
-	{
-		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("textureScreen", textureID))
-		{
-			printf("SetTexture textureScreen failed \n ");
-		}
-		if (!m_pShader->SetParam("intensity", 100))
-		{
-			printf("SetParam intensity failed \n ");
-		}
-	}
-}
-
-void CFilterWindowParam::DisableOpenGLShader()
-{
-	//glBindTexture(GL_TEXTURE_2D, 0);
-
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-}
-

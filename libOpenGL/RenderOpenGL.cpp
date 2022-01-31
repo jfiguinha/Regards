@@ -431,106 +431,11 @@ void CRenderOpenGL::RenderToTexture()
 	textureDisplay->Disable();
 }
 
-
-void CRenderOpenGL::RenderInterpolation(GLTexture* glTextureSrc, GLTexture* glTexture, const wxRect& rect,
-                                        const int& flipH, const int& flipV, const int& angle,
-                                        const int& filterInterpolation)
-{
-	glTexture->Enable();
-	glTextureSrc->Enable();
-
-	int width_local = glTexture->GetWidth();
-	int height_local = glTexture->GetHeight();
-
-	int left_local = (width - width_local) / 2;
-	int top_local = (height - height_local) / 2;
-
-
-	GLSLShader* m_pShader = FindShader(L"IDR_GLSL_SHADER_INTERPOLATION");
-	if (m_pShader != nullptr)
-	{
-		srand(time(nullptr));
-		//float timer = rand() % 1000 + 1;
-
-		m_pShader->EnableShader();
-		if (!m_pShader->SetParam("fWidth", glTexture->GetWidth()))
-		{
-			printf("SetParam sharpness failed \n ");
-		}
-		if (!m_pShader->SetParam("fHeight", glTexture->GetHeight()))
-		{
-			printf("SetParam sharpness failed \n ");
-		}
-		if (!m_pShader->SetTexture("texUnitSrc", glTextureSrc->GetTextureID()))
-		{
-			printf("SetTexture texUnit failed \n ");
-		}
-		if (!m_pShader->SetParam("fWidthSrc", glTextureSrc->GetWidth()))
-		{
-			printf("SetParam sharpness failed \n ");
-		}
-		if (!m_pShader->SetParam("fHeightSrc", glTextureSrc->GetHeight()))
-		{
-			printf("SetParam sharpness failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("left", rect.x))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("top", rect.y))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("bitmapWidth", rect.width))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("bitmapHeight", rect.height))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("flipH", flipH))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("flipV", flipV))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("angle", angle))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-		if (!m_pShader->SetIntegerParam("type", filterInterpolation))
-		{
-			printf("SetParam colorboost failed \n ");
-		}
-	}
-
-	RenderQuad(glTexture, left_local, top_local, false);
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-
-	glTexture->Disable();
-	glTextureSrc->Disable();
-}
-
 void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
                                    const int& top, const bool& inverted)
 {
 	bool renderPreview = false;
 	textureDisplay->Enable();
-
-	if (mousUpdate != nullptr)
-	{
-		if (mousUpdate->IsOpenGLCompatible())
-		{
-			mousUpdate->ApplyOpenGLShader(this, effectParameter, textureDisplay->GetTextureID());
-			RenderQuad(textureDisplay, left, top, inverted);
-			mousUpdate->DisableOpenGLShader();
-			renderPreview = true;
-		}
-	}
 
 	if (!renderPreview)
 	{

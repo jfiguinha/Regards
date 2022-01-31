@@ -37,11 +37,6 @@ CColorBalanceFilter::~CColorBalanceFilter()
     
 }
 
-bool CColorBalanceFilter::IsOpenGLCompatible()
-{
-	return false;
-}
-
 wxString CColorBalanceFilter::GetFilterLabel()
 {
 	return CLibResource::LoadStringFromResource("LBLfilterColor", 1);
@@ -97,46 +92,6 @@ void CColorBalanceFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 		}
 	}
 }
-
-void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
-	if (rgbEffectParameter != nullptr)
-	{
-        printf("GLSLShader IDR_GLSL_SHADER_RGB \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_RGB");
-		if (m_pShader != nullptr)
-		{
-			/*
-			uniform float widthScreen;
-			uniform float heightScreen;
-			uniform float red;
-			uniform float green;
-			uniform float blue;
-			uniform float left;
-			uniform float top;
-			*/
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("red", rgbEffectParameter->red))
-			{
-				printf("SetParam red failed \n ");
-			}
-			if (!m_pShader->SetParam("green", rgbEffectParameter->green))
-			{
-				printf("SetParam green failed \n ");
-			}
-			if (!m_pShader->SetParam("blue", rgbEffectParameter->blue))
-			{
-				printf("SetParam blue failed \n ");
-			}
-		}
-	}
-}
-
 
 void CColorBalanceFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {

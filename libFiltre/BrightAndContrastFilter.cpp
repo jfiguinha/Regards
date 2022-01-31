@@ -29,11 +29,6 @@ CBrightAndContrastFilter::~CBrightAndContrastFilter()
     
 }
 
-bool CBrightAndContrastFilter::IsOpenGLCompatible()
-{
-    return false;
-}
-
 int CBrightAndContrastFilter::TypeApplyFilter()
 {
     return 2;
@@ -86,33 +81,6 @@ void CBrightAndContrastFilter::FilterChangeParam(CEffectParameter * effectParame
     {
         BrightAndContrastEffectParameter->brightness = value->GetValue();
     }
-}
-
-
-void CBrightAndContrastFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CBrightAndContrastEffectParameter * brightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-	if (brightAndContrastEffectParameter != nullptr)
-	{
-        printf("GLSLShader IDR_GLSL_BRIGHTANDCONTRAST_SHADER \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_BRIGHTANDCONTRAST_SHADER");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-            if (!m_pShader->SetTexture("textureScreen", textureID))
-            {
-                printf("SetTexture textureScreen failed \n ");
-            }
-			if (!m_pShader->SetParam("contrast", brightAndContrastEffectParameter->contrast))
-			{
-				printf("SetParam contrast failed \n ");
-			}
-			if (!m_pShader->SetParam("brightness", brightAndContrastEffectParameter->brightness))
-			{
-				printf("SetParam brightness failed \n ");
-			}
-		}
-	}
 }
 
 void CBrightAndContrastFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)

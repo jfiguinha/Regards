@@ -165,31 +165,6 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 	glTexture->Disable();
 }
 
-
-void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture* glTextureSrc, GLTexture* glTexture,
-                                                       const wxRect& rect, CVideoEffectParameter* effectParameter,
-                                                       const int& flipH, const int& flipV, const int& angle,
-                                                       const int& filterInterpolation, const bool& inverted)
-{
-	int width_local = glTexture->GetWidth();
-	int height_local = glTexture->GetHeight();
-
-	int left_local = (renderOpenGL->GetWidth() - width_local) / 2;
-	int top_local = (renderOpenGL->GetHeight() - height_local) / 2;
-
-	renderOpenGL->RenderInterpolation(glTextureSrc, glTexture, rect, flipH, flipV, angle, filterInterpolation);
-
-	renderOpenGL->RenderToTexture();
-
-	wxFloatRect floatRect;
-	floatRect.top = static_cast<float>(top_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetHeight());
-	floatRect.left = static_cast<float>(left_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetWidth());
-	floatRect.right = static_cast<float>(left_local + width_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetWidth());
-	floatRect.bottom = static_cast<float>(top_local + height_local) / static_cast<float>(renderOpenGL->GetTextureDisplay()->GetHeight());
-	RenderWithEffect(renderOpenGL->GetTextureDisplay(), effectParameter, floatRect, false);
-}
-
-
 void CRenderVideoOpenGL::SetSubtitle(CRegardsBitmap* subtitle)
 {
 	if (textureSubtitle != nullptr)

@@ -33,11 +33,6 @@ int CSolarisationFilter::TypeApplyFilter()
 	return 2;
 }
 
-bool CSolarisationFilter::IsOpenGLCompatible()
-{
-	return false;
-}
-
 wxString CSolarisationFilter::GetFilterLabel()
 {
 	return CLibResource::LoadStringFromResource("LBLfilterSolarize", 1);
@@ -79,28 +74,6 @@ void CSolarisationFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 		if (key == libelleEffectThreshold)
 		{
 			solarisationEffectParameter->threshold = value;
-		}
-	}
-}
-
-void CSolarisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-	if (solarisationEffectParameter != nullptr)
-	{
-        printf("GLSLShader IDR_GLSL_SHADER_SOLARIZE \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SOLARIZE");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("threshold", solarisationEffectParameter->threshold))
-			{
-				printf("SetParam sharpness failed \n ");
-			}
 		}
 	}
 }

@@ -308,14 +308,6 @@ CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 	return nullptr;
 }
 
-bool CFiltreData::IsOpenGLCompatible(const int &numFilter)
-{
-    CFilterWindowParam* filterEffect = filterList[numFilter];
-    if (filterEffect != nullptr)
-        return filterEffect->IsOpenGLCompatible();
-
-	return false;
-}
 
 bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {

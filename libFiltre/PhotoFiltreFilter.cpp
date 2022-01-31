@@ -31,11 +31,6 @@ CPhotoFiltreFilter::~CPhotoFiltreFilter()
     
 }
 
-bool CPhotoFiltreFilter::IsOpenGLCompatible()
-{
-    return false;
-}
-
 int CPhotoFiltreFilter::TypeApplyFilter()
 {
     return 2;
@@ -99,49 +94,6 @@ void CPhotoFiltreFilter::FilterChangeParam(CEffectParameter * effectParameter,  
     {
         photoEffectParameter->intensity = value;
     }
-}
-
-void CPhotoFiltreFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-	if (photoEffectParameter != nullptr)
-	{
-        printf("GLSLShader IDR_GLSL_SHADER_PHOTOFILTER \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_PHOTOFILTER");
-		if (m_pShader != nullptr)
-		{
-			/*
-			uniform float widthScreen;
-			uniform float heightScreen;
-			uniform float red;
-			uniform float green;
-			uniform float blue;
-			uniform float left;
-			uniform float top;
-			*/
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("red", photoEffectParameter->red))
-			{
-				printf("SetParam red failed \n ");
-			}
-			if (!m_pShader->SetParam("green", photoEffectParameter->green))
-			{
-				printf("SetParam green failed \n ");
-			}
-			if (!m_pShader->SetParam("blue", photoEffectParameter->blue))
-			{
-				printf("SetParam blue failed \n ");
-			}
-			if (!m_pShader->SetParam("intensity", photoEffectParameter->intensity))
-			{
-				printf("SetParam blue failed \n ");
-			}
-		}
-	}
 }
 
 void CPhotoFiltreFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)

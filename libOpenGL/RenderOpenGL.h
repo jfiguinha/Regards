@@ -55,9 +55,7 @@ namespace Regards
 			int GetHeight();
 			GLSLShader* CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 			GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
-			void RenderInterpolation(GLTexture* glTextureSrc, GLTexture* glTexture, const wxRect& rect,
-			                         const int& flipH, const int& flipV, const int& angle,
-			                         const int& filterInterpolation);
+
 			void RenderToTexture();
 
 

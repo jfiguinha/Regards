@@ -34,11 +34,6 @@ int CSwirlFilter::TypeApplyFilter()
 	return 2;
 }
 
-bool CSwirlFilter::IsOpenGLCompatible()
-{
-	return false;
-}
-
 wxString CSwirlFilter::GetFilterLabel()
 {
 	return CLibResource::LoadStringFromResource("LBLfilterSwirl", 1);
@@ -93,68 +88,6 @@ void CSwirlFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
     }
 }
 
-
-void CSwirlFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
-	if (swirlEffectParameter != nullptr)
-	{
-		/*
-uniform float widthScreen;
-uniform float heightScreen;
-uniform float widthBitmap;
-uniform float heightBitmap;
-uniform float left;
-uniform float top;
-
-// Swirl effect parameters
-uniform float radius;
-uniform float angleDegree;
-		*/
-        printf("GLSLShader IDR_GLSL_SHADER_SWIRL \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SWIRL");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("widthScreen", renderOpenGL->GetWidth()))
-			{
-				printf("SetParam widthBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("heightScreen", renderOpenGL->GetHeight()))
-			{
-				printf("SetParam heightBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("widthBitmap", swirlEffectParameter->bitmapWidth))
-			{
-				printf("SetParam widthBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("heightBitmap", swirlEffectParameter->bitmapHeight))
-			{
-				printf("SetParam heightBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("left", 0))
-			{
-				printf("SetParam widthBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("top", 0))
-			{
-				printf("SetParam heightBitmap failed \n ");
-			}
-			if (!m_pShader->SetParam("radius", swirlEffectParameter->radius))
-			{
-				printf("SetParam radius failed \n ");
-			}
-			if (!m_pShader->SetParam("angleDegree", swirlEffectParameter->angle))
-			{
-				printf("SetParam angleDegree failed \n ");
-			}
-		}
-	}
-}
 
 void CSwirlFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {

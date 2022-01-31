@@ -26,7 +26,6 @@ public:
 	static void SetCursor(const int &numFilter);
 	static bool SupportMouseSelection(const int &numFilter);
     static bool NeedPreview(const int &numFilter);
-	static bool IsOpenGLCompatible(const int &numFilter);
 	static bool IsOpenCLCompatible(const int &numFilter);
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);

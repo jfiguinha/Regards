@@ -56,9 +56,6 @@ public:
 	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int& widthOutput, int& heightOutput);
 	virtual void ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* m_cDessin);
 	static CImageLoadingFormat * RenderEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, int numFiltre);
-	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
-	virtual void DisableOpenGLShader();
-	virtual bool IsOpenGLCompatible();
 	virtual bool IsOpenCLCompatible();
 	virtual bool SupportMouseSelection();
 	virtual bool SupportMouseClick();

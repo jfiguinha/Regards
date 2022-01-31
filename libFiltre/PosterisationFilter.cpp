@@ -34,11 +34,6 @@ CPosterisationFilter::~CPosterisationFilter()
     
 }
 
-bool CPosterisationFilter::IsOpenGLCompatible()
-{
-	return true;
-}
-
 wxString CPosterisationFilter::GetFilterLabel()
 {
 	return CLibResource::LoadStringFromResource("LBLfilterPosterisation", 1);
@@ -93,31 +88,6 @@ void CPosterisationFilter::FilterChangeParam(CEffectParameter * effectParameter,
 	}
 }
 
-void CPosterisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
-{
-	CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
-	if (posterisationEffectParameter != nullptr)
-	{
-        printf("GLSLShader IDR_GLSL_SHADER_POSTERIZE \n " );
-		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_POSTERIZE");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureID))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("level", posterisationEffectParameter->level))
-			{
-				printf("SetParam red failed \n ");
-			}
-			if (!m_pShader->SetParam("gamma", posterisationEffectParameter->gamma))
-			{
-				printf("SetParam green failed \n ");
-			}
-		}
-	}
-}
 
 void CPosterisationFilter::RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview)
 {
