@@ -48,7 +48,7 @@ string CSuperSampling::GenerateModelPath(string modelName, int scale)
 #ifdef WIN32
 	path = CFileUtility::GetResourcesFolderPath() + "\\model\\" + modelName + "_x" + to_string(scale) + ".pb";
 #else
-	path = CFileUtility::GetResourcesFolderPath() + "/model/pose_iter_160000.caffemodel";
+	path = CFileUtility::GetResourcesFolderPath() + "/model/"  + modelName + "_x" + to_string(scale) + ".pb";
 #endif
 
 	return path.ToStdString();
