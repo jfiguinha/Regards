@@ -1170,12 +1170,6 @@ int CFiltreEffetCPU::SharpenMasking(const float& sharpness)
 
 	if (bitmap != nullptr)
 	{
-		/*
-		auto sharpenMasking = new CSharpenMasking(sharpness);
-		sharpenMasking->SetParameter(bitmap, backColor);
-		sharpenMasking->Compute();
-		delete sharpenMasking;
-		*/
 		Mat blurred; 
 		double sigma = 1, threshold = 5, amount = sharpness;
 		cv::GaussianBlur(bitmap->GetMatrix(), blurred, cv::Size(), sigma, sigma);
@@ -1345,11 +1339,17 @@ CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const in
 
 		if (flipH)
 		{
-			cv::flip(cvImage, cvImage, 1);
+			if (angle == 90 || angle == 270)
+				cv::flip(cvImage, cvImage, 0);
+			else
+				cv::flip(cvImage, cvImage, 1);
 		}
 		if (flipV)
 		{
-			cv::flip(cvImage, cvImage, 0);
+			if (angle == 90 || angle == 270)
+				cv::flip(cvImage, cvImage, 1);
+			else
+				cv::flip(cvImage, cvImage, 0);
 		}
 
 		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
@@ -1509,10 +1509,9 @@ int CFiltreEffetCPU::RGBFilter(const int& red, const int& green, const int& blue
 
 	if (bitmap != nullptr)
 	{
-		auto filtre = new CRgbFiltre(red, green, blue);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
+		cv::Scalar color = cv::Scalar(red, green, blue);
+		cv::Mat out = bitmap->GetMatrix() + color;
+		bitmap->SetMatrix(out);
 	}
 	return 0;
 }
@@ -1606,6 +1605,7 @@ int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
+	/*
 	double offset;
 
 	if (contrast == 0)
@@ -1627,6 +1627,23 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const doubl
 	}
 
 	Lightness(brightness);
+	*/
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		float alpha = contrast / 100.0f; //# Contrast control(1.0 - 3.0)
+		float beta = brightness; //# Brightness control(0 - 100)
+		cv::Mat image;
+		cv::convertScaleAbs(bitmap->GetMatrix(), image, alpha, beta);
+		bitmap->SetMatrix(image);
+		//adjusted = cv2.convertScaleAbs(image, alpha = alpha, beta = beta)
+	}
+
 	return 0;
 }
 
@@ -2234,10 +2251,17 @@ int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 
 	if (bitmap != nullptr)
 	{
-		auto filtre = new CPhotoFiltre(clValue, intensity);
-		filtre->SetParameter(bitmap, backColor);
-		filtre->Compute();
-		delete filtre;
+		float coeff = (float)intensity / 100.0f;
+		float diff = 1.0f - coeff;
+		cv::Mat out;
+		cv::Mat out_one;
+		out_one = bitmap->GetMatrix().mul(diff);
+
+		cv::Scalar color = cv::Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
+		cv::Scalar out_two = color * coeff;
+
+		cv::add(out_one, out_two, out);
+		bitmap->SetMatrix(out);
 	}
 	return 0;
 }

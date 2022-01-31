@@ -338,184 +338,70 @@ void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureDat
 
 void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
-	
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SHARPENMASKING");
-	if (programCL != nullptr)
+	try
 	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
-				
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
+		Mat origin;
+		inputData.copyTo(origin);
+		
+		Mat blurred;
+		double sigma = 1, threshold = 5, amount = sharpness;
+		cv::GaussianBlur(inputData, blurred, cv::Size(), sigma, sigma);
 
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(inputData.cols);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
 
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(inputData.rows);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterFloat * paramIntensity = new COpenCLParameterFloat();
-		paramIntensity->SetLibelle("sharpness");
-		paramIntensity->SetValue(sharpness);
-		vecParam.push_back(paramIntensity);
-
-		try
-		{
-			
-			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "SharpenMasking");
-			
-		}
-		catch(...)
-		{
-			
-		}
-
-		delete program;
-
-        for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
+		Mat lowConstrastMask = abs(origin - blurred) < threshold;
+		Mat sharpened = origin * (1 + amount) + blurred * (-amount);
+		origin.copyTo(sharpened, lowConstrastMask);
+		sharpened.copyTo(inputData);
 	}
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	if (programCL != nullptr)
+	try
 	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
+		float coeff = (float)intensity / 100.0f;
+		float diff = 1.0f - coeff;
+		cv::UMat out;
+		cv::UMat out_one;
+		out_one = inputData.mul(diff);
 
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
+		cv::Scalar color = cv::Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
+		cv::Scalar out_two = color * coeff;
 
-		COpenCLParameterInt * paramIntensity = new COpenCLParameterInt();
-		paramIntensity->SetLibelle("intensity");
-		paramIntensity->SetValue(intensity);
-		vecParam.push_back(paramIntensity);
-
-		COLORData color = { clValue.GetRed(), clValue.GetGreen(), clValue.GetBlue(), 0 };
-
-		COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
-		paramColor->SetLibelle("color");
-		paramColor->SetValue(openclContext->GetContext(), &color, flag);
-		vecParam.push_back(paramColor);
-		
-		try
-		{
-			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "PhotoFiltre");
-			
-		}
-		catch(...)
-		{
-			
-		}
-		delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
+		cv::add(out_one, out_two, out);
+		out.copyTo(inputData);
 	}
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::UMat & inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	if(programCL != nullptr)
+	try
 	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
-
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
-
-		COLORData color = { red, green, blue, 0 };
-
-		COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
-		paramColor->SetLibelle("color");
-		paramColor->SetValue(openclContext->GetContext(), &color, flag);
-		vecParam.push_back(paramColor);
-
-		try
-		{
-			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "RGBFiltre");
-			
-		}
-		catch(...)
-		{
-			
-		}
-		delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
+		cv::UMat out;
+		cv::Scalar color = cv::Scalar(blue, green, red);
+		cv::add(inputData, color, out);
+		out.copyTo(inputData);
 	}
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+
 }
 
 void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
@@ -1138,6 +1024,7 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
 {
+	/*
 	cv::UMat dest;
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
@@ -1194,6 +1081,19 @@ void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	*/
+	cv::UMat cvDest;
+	try
+	{
+		cv::convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
+		cvDest.copyTo(inputData);
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 int COpenCLFilter::GetSizeData()
@@ -1499,13 +1399,18 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 
 		if (flipH)
 		{
-			cv::flip(cvImage, cvImage, 1);
+			if (angle == 90 || angle == 270)
+				cv::flip(cvImage, cvImage, 0);
+			else
+				cv::flip(cvImage, cvImage, 1);
 		}
 		if (flipV)
 		{
-			cv::flip(cvImage, cvImage, 0);
+			if (angle == 90 || angle == 270)
+				cv::flip(cvImage, cvImage, 1);
+			else
+				cv::flip(cvImage, cvImage, 0);
 		}
-
 		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
 	}
 	catch (cv::Exception& e)

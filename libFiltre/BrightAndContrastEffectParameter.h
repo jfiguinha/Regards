@@ -5,7 +5,7 @@ class CBrightAndContrastEffectParameter : public CEffectParameter
 public:
 	CBrightAndContrastEffectParameter()
 	{
-		contrast = 20;
+		contrast = 15;
 		brightness = 20;
 	};
 	~CBrightAndContrastEffectParameter(){};

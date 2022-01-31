@@ -31,60 +31,6 @@ namespace Regards
 			int pictureSize;
 		};
 
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Photo Filtre
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CPhotoFiltre : public CFiltre
-		{
-		public:
-			CPhotoFiltre(CRgbaquad colorValue, int iDensity)
-			{
-				this->colorValue = colorValue;
-
-				int m_iDiff = 255 - iDensity;
-				this->diff = m_iDiff / 255.0;
-				this->iDensity = float(iDensity) / 255.0;
-
-				r = colorValue.GetFRed() * this->iDensity;
-				g = colorValue.GetFGreen() * this->iDensity;
-				b = colorValue.GetFBlue() * this->iDensity;
-			};
-			~CPhotoFiltre(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-
-		private:
-			CRgbaquad colorValue;
-			float r;
-			float g;
-			float b;
-			float iDensity;
-			float diff;
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre CRgbaquad
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CRgbFiltre : public CFiltre
-		{
-		public:
-			CRgbFiltre(const int &m_lRValue, const int &m_lGValue, const int &m_lBValue)
-			{
-				this->m_lRValue = m_lRValue;
-				this->m_lGValue = m_lGValue;
-				this->m_lBValue = m_lBValue;
-			};
-			~CRgbFiltre(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-
-		private:
-			int m_lRValue;
-			int m_lGValue;
-			int m_lBValue;
-		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//Filtre Matrix Convolution 3x3

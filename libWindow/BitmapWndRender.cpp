@@ -911,15 +911,9 @@ int CBitmapWndRender::GetRawBitmapHeight()
 
 int CBitmapWndRender::GetBitmapWidth()
 {
-	//TRACE();
-	int localAngle = angle;
-	int localflipHorizontal = flipHorizontal;
-	int localflipVertical = flipVertical;
-	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
-
 	if (bitmapLoad)
 	{
-		if (localAngle == 90 || localAngle == 270)
+		if (angle == 90 || angle == 270)
 			return GetRawBitmapHeight();
 		return GetRawBitmapWidth();
 	}
@@ -928,15 +922,9 @@ int CBitmapWndRender::GetBitmapWidth()
 
 int CBitmapWndRender::GetBitmapHeight()
 {
-	//TRACE();
-	int localAngle = angle;
-	int localflipHorizontal = flipHorizontal;
-	int localflipVertical = flipVertical;
-	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
-
 	if (bitmapLoad)
 	{
-		if (localAngle == 90 || localAngle == 270)
+		if (angle == 90 || angle == 270)
 			return GetRawBitmapWidth();
 		return GetRawBitmapHeight();
 	}
@@ -1522,57 +1510,6 @@ void CBitmapWndRender::UpdateScreenRatio()
 	Resize();
 }
 
-void CBitmapWndRender::GenerateExifPosition(int& localAngle, int& localflipHorizontal, int& localflipVertical)
-{
-	//TRACE();
-	switch (GetOrientation())
-	{
-	case 1: // top left side
-		break;
-	case 2: // top right side
-		localflipHorizontal = (localflipHorizontal == 1) ? 0 : 1;
-		break;
-	case 3: // bottom right side
-		localflipHorizontal = (localflipHorizontal == 1) ? 0 : 1;
-		localflipVertical = (localflipVertical == 1) ? 0 : 1;
-		break;
-	case 4: // bottom left side
-		localflipVertical = (localflipVertical == 1) ? 0 : 1;
-		break;
-	case 5: //left side top
-		localAngle += 90;
-		localflipVertical = (localflipVertical == 1) ? 0 : 1;
-		//localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
-		break;
-	case 6: // right side top
-		localAngle += 90;
-		localflipHorizontal = (localflipHorizontal == 1) ? 0 : 1;
-		localflipVertical = (localflipVertical == 1) ? 0 : 1;
-		break;
-	case 7: // right side bottom
-		localAngle += 90;
-		localflipHorizontal = (localflipHorizontal == 1) ? 0 : 1;
-		break;
-	case 8: // left side bottom
-		localAngle += 90;
-		//localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
-		break;
-	}
-
-	localAngle = localAngle % 360;
-}
-
-int CBitmapWndRender::GetExifOrientation(const int& angle)
-{
-	if (angle > 44 && angle < 135) //Rotate 90
-		return 8;
-	if (angle > 134 && angle < 225) //Rotate 180
-		return 3;
-	if (angle > 224 && angle < 315)
-		return 6;
-	return 0;
-}
-
 void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widthOutput, int& heightOutput)
 {
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
@@ -1585,39 +1522,24 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
+	int left = 0, top = 0;
+	int tailleAffichageWidth = widthOutput;
+	int tailleAffichageHeight = heightOutput;
 
-	/*
-	if (GetWidth() * scale_factor >= widthOutput && GetHeight() * scale_factor >= heightOutput)
-	{
-		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal,
-			localflipVertical, localAngle, (int)((float)value[posRatio] / 100.0f));
-	}
+	if (GetWidth() * scale_factor > tailleAffichageWidth)
+		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
 	else
-	{
-	*/
-		int left = 0, top = 0;
-		int tailleAffichageWidth = widthOutput;
-		int tailleAffichageHeight = heightOutput;
+		left = 0;
 
-		if (GetWidth() * scale_factor > tailleAffichageWidth)
-			left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
-		else
-			left = 0;
+	if (GetHeight() * scale_factor > tailleAffichageHeight)
+		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+	else
+		top = 0;
 
-		if (GetHeight() * scale_factor > tailleAffichageHeight)
-			top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
-		else
-			top = 0;
-
-
-
-		wxRect rc(0, 0, 0, 0);
-		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
-		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
-			localflipVertical, localAngle, value[posRatio]);
-	//}
-
+	wxRect rc(0, 0, 0, 0);
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+	filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
+		localflipVertical, localAngle, value[posRatio]);
 
 	if (regardsParam != nullptr)
 	{

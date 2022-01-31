@@ -219,7 +219,7 @@ namespace Regards
 			};
 
 			void GenerateScreenBitmap(CFiltreEffet* filtre, int& widthOutput, int& heightOutput);
-			void GenerateExifPosition(int& localAngle, int& localflipHorizontal, int& localflipVertical);
+
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
 
 			float GetBitmapWidthWithRatio();

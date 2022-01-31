@@ -60,11 +60,15 @@ void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, CRegar
 	
 	this->source = source;
 
+	vector<int> elementContrast;
+	for (int i = 0; i < 200; i++)
+		elementContrast.push_back(i);
+
     vector<int> elementColor;
     for (int i = -100; i < 101; i++)
         elementColor.push_back(i);
     
-    filtreInterface->AddTreeInfos(libelleEffectContrast,new CTreeElementValueInt(BrightAndContrastEffectParameter->contrast), &elementColor);
+    filtreInterface->AddTreeInfos(libelleEffectContrast,new CTreeElementValueInt(BrightAndContrastEffectParameter->contrast), &elementContrast);
     filtreInterface->AddTreeInfos(libelleEffectLightness,new CTreeElementValueInt(BrightAndContrastEffectParameter->brightness), &elementColor);
 }
 

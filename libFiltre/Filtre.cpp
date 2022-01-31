@@ -111,54 +111,6 @@ void CFiltre::Compute()
 }
 
 
-void CPhotoFiltre::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
-{
-	//CRgbaquad color;
-	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc.data[position + 3];
-	//memcpy(&color, pBitsSrc.data + position, 4);
-
-	int _r = r + pBitsSrc.data[position] * diff;
-	int _g = g + pBitsSrc.data[position + 1] * diff;
-	int _b = b + pBitsSrc.data[position + 2] * diff;
-
-	_r = _r < 0 ? 0 : _r;
-	_r = _r > 255 ? 255 : _r;
-
-	_g = _g < 0 ? 0 : _g;
-	_g = _g > 255 ? 255 : _g;
-
-	_b = _b < 0 ? 0 : _b;
-	_b = _b > 255 ? 255 : _b;
-
-	uint8_t data[4] = { static_cast<uint8_t>(_b), static_cast<uint8_t>(_g), static_cast<uint8_t>(_r), alpha };
-
-	memcpy(pBitsDest.data + position, data, 4);
-}
-
-void CRgbFiltre::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
-{
-	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc.data[position + 3];
-	memcpy(&color, pBitsSrc.data + position, 4);
-
-	int red = color.GetRed() + m_lRValue;
-	int green = color.GetGreen() + m_lGValue;
-	int blue = color.GetBlue() + m_lBValue;
-
-	red = red < 0 ? 0 : red;
-	uint8_t r = red > 255 ? 255 : red;
-
-	green = green < 0 ? 0 : green;
-	uint8_t g = green > 255 ? 255 : green;
-
-	blue = blue < 0 ? 0 : blue;
-	uint8_t b = blue > 255 ? 255 : blue;
-
-	uint8_t data[4] = { b, g, r, alpha };
-
-	memcpy(pBitsDest.data + position, data, 4);
-}
 
 
 void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
