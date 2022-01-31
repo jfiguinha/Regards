@@ -567,20 +567,11 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		{
 			if (metaData.GetOrientation() == -1)
 			{
-				CSqlPhotos sqlPhotos;
-				int exif = sqlPhotos.GetPhotoExif(bitmap->GetFilename());
-				if (exif != -1)
-				{
-					bitmap->SetOrientation(exif);
-				}
-				else
-				{
-					auto path = new CThreadRotate();
-					path->filename = bitmap->GetFilename();
-					path->mainWindow = this;
-					path->bitmap = bitmap->GetRegardsBitmap();
-					path->thread = new thread(RotateRecognition, path);
-				}
+				auto path = new CThreadRotate();
+				path->filename = bitmap->GetFilename();
+				path->mainWindow = this;
+				path->bitmap = bitmap->GetRegardsBitmap();
+				path->thread = new thread(RotateRecognition, path);
 			}
 		}
 

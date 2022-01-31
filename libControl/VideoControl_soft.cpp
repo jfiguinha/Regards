@@ -688,9 +688,18 @@ void CVideoControlSoft::SetRotation(const int& rotation)
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
 	long rotation = event.GetExtraLong();
-	if (rotation < 0)
-		rotation = 360 + rotation;
-	angle = rotation % 360;
+	if (rotation == 90)
+		angle = 90;
+	else if (rotation == -90)
+		angle = 270;
+	else if (rotation == -180)
+		angle = 180;
+	else if (rotation == 180)
+		angle = 180;
+	else if (rotation == -270)
+		angle = 90;
+	else if (rotation == 270)
+		angle = 270;
 	muVideoEffect.lock();
 	videoEffectParameter.rotation = rotation;
 	muVideoEffect.unlock();
@@ -1474,23 +1483,6 @@ void CVideoControlSoft::OnPause()
 		if (!pause)
 		{
 			ffmfc->Pause();
-
-			/*
-			if (pictureVideo != nullptr)
-				delete pictureVideo;
-			pictureVideo = nullptr;
-
-			if (isffmpegDecode)
-			{
-				pictureVideo = new CRegardsBitmap();
-				*pictureVideo = *pictureFrame;
-			}
-			else
-			{
-				pictureVideo = openclEffectYUV->GetBitmap(true);
-				pictureVideo->VertFlipBuf();
-			}
-			*/
 			wxWindow* window = wxWindow::FindWindowById(PREVIEWVIEWERID);
 			if (window != nullptr)
 			{
@@ -1886,7 +1878,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 
-	openclEffect->Rotate(&videoEffectParameter);
+	//openclEffect->Rotate(&videoEffectParameter);
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
@@ -1896,16 +1888,15 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		openclEffect->ApplyOpenCVEffect(&videoEffectParameter, openCVStabilization);
 	}
 
-	int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	if(calculAngle == 0 || calculAngle == 180)
-		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
+	if(angle == 0 || angle == 180)
+		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation, (int)GetZoomRatio() * 100);
 	else
-		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipV, flipH, calculAngle, filterInterpolation, (int)GetZoomRatio() * 100);
+		openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipV, flipH, angle, filterInterpolation, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -1988,40 +1979,22 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 {
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
-
+	inverted = false;
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	if (videoEffectParameter.rotation != 0)
-	{
-		if (videoEffectParameter.rotation == 90 || videoEffectParameter.rotation == -270)
-		{
-			pictureFrame->Rotate90();
-		}
-		else if (videoEffectParameter.rotation == 270 || videoEffectParameter.rotation == -90)
-		{
-			pictureFrame->Rotate270();
-		}
-		else if (videoEffectParameter.rotation == 180)
-		{
-			pictureFrame->Rotate180();
-		}
-	}
-
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-	//inverted = false;
-	int calculAngle = (360 - abs(angle - videoEffectParameter.rotation)) % 360;
 
 	CRegardsBitmap* bitmapOut = nullptr;
-	if (calculAngle == 0 || calculAngle == 180)
-		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, calculAngle, (int)GetZoomRatio() * 100);
+	if (angle == 0 || angle == 180)
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, angle, (int)GetZoomRatio() * 100);
 	else
-		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipV, flipH, calculAngle, (int)GetZoomRatio() * 100);
+		bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipV, flipH, angle, (int)GetZoomRatio() * 100);
 
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2049,7 +2022,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	return glTexture;
 }
 
-
+/*
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 {
 	CRegardsBitmap bitmap;
@@ -2057,7 +2030,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture()
 	return RenderFFmpegToTexture(&bitmap);
 
 }
-
+*/
 
 void CVideoControlSoft::Rotate90()
 {
@@ -2218,9 +2191,11 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 	}
 	else
 	{
+		CRegardsBitmap bitmap;
 		muBitmap.lock();
-		glTexture = RenderFFmpegToTexture();
+		bitmap = *pictureFrame;
 		muBitmap.unlock();
+		glTexture = RenderFFmpegToTexture(&bitmap);
 	}
 
 	duration = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);

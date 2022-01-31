@@ -2121,25 +2121,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		imageLoading = GetCancelPhoto(fileName, widthThumbnail, heightThumbnail);
 	}
 
-
-	if (imageLoading->GetOrientation() == -1 && TestIsPicture(fileName) && configRegards->GetDetectOrientation() &&
-		DeepLearning::CDeepLearning::IsResourceReady())
-	{
-		CSqlPhotos sqlPhotos;
-		int exif = sqlPhotos.GetPhotoExif(fileName);
-		if (exif == -1)
-		{
-			CRegardsBitmap* bitmap = imageLoading->GetRegardsBitmap();
-			if (bitmap != nullptr)
-			{
-				bitmap->VertFlipBuf();
-				int exif_method = DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
-				sqlPhotos.InsertPhotoExif(fileName, exif_method);
-				delete bitmap;
-			}
-		}
-	}
-
 	return imageLoading;
 }
 

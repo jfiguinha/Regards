@@ -780,6 +780,18 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 			flipHorizontal = 0;
 			angle = 0;
 
+			//updateFilter = true;
+			CSqlPhotos sqlPhotos;
+			int exif = sqlPhotos.GetPhotoExif(filename);
+			if (exif != -1)
+			{
+				sqlPhotos.GetAngleAndFlip(exif, angle, flipHorizontal, flipVertical);
+			}
+			else
+			{
+				sqlPhotos.InsertPhotoExif(filename, 0);
+			}
+
 			printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 			muBitmap.lock();
 			if (source != nullptr)
@@ -939,6 +951,11 @@ void CBitmapWndRender::FlipVertical()
 		flipVertical = 0;
 	else
 		flipVertical = 1;
+
+
+	CSqlPhotos sqlPhotos;
+	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
+	sqlPhotos.UpdatePhotoExif(filename, exifCode);
 	//updateFilter = true;
 	RefreshWindow();
 }
@@ -948,23 +965,10 @@ void CBitmapWndRender::Rotate90()
 	//TRACE();
 	angle += 90;
 	angle = angle % 360;
-	//updateFilter = true;
+
 	CSqlPhotos sqlPhotos;
-	int exif = sqlPhotos.GetPhotoExif(filename);
-	if (exif != -1)
-	{
-		exif = GetExifOrientation(angle + GetAngleFromExif());
-		sqlPhotos.UpdatePhotoExif(filename, exif);
-		int numPhoto = sqlPhotos.GetPhotoId(filename);
-		wxWindow* window = wxWindow::FindWindowById(idWindowMain);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
-			evt.SetInt(numPhoto);
-			evt.SetExtraLong(90);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-	}
+	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
+	sqlPhotos.UpdatePhotoExif(filename, exifCode);
 
 	UpdateResized();
 	RefreshWindow();
@@ -999,22 +1003,10 @@ void CBitmapWndRender::Rotate270()
 	angle = angle % 360;
 	//updateFilter = true;
 
+
 	CSqlPhotos sqlPhotos;
-	int exif = sqlPhotos.GetPhotoExif(filename);
-	if (exif != -1)
-	{
-		exif = GetExifOrientation(angle + GetAngleFromExif());
-		sqlPhotos.UpdatePhotoExif(filename, exif);
-		int id = sqlPhotos.GetPhotoId(filename);
-		wxWindow* window = wxWindow::FindWindowById(idWindowMain);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_UPDATETHUMBNAILEXIF);
-			evt.SetInt(id);
-			evt.SetExtraLong(270);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-	}
+	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
+	sqlPhotos.UpdatePhotoExif(filename, exifCode);
 
 	UpdateResized();
 	RefreshWindow();
@@ -1028,6 +1020,11 @@ void CBitmapWndRender::FlipHorizontal()
 	else
 		flipHorizontal = 1;
 	//updateFilter = true;
+
+	CSqlPhotos sqlPhotos;
+	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
+	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+
 	RefreshWindow();
 }
 

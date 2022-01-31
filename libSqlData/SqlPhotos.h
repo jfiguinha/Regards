@@ -2,6 +2,10 @@
 #include "SqlExecuteRequest.h"
 #include <Criteria.h>
 
+
+//Exif Value
+//Angle HFlip VFlip 
+
 namespace Regards
 {
 	namespace Sqlite
@@ -22,6 +26,9 @@ namespace Regards
 			bool InsertPhotoExif(const wxString& filepath, const int64_t& exif);
 			bool UpdatePhotoExif(const wxString& filepath, const int64_t& exif);
 			wxString GetPhotoPath(const int64_t &numPhoto);
+
+			void GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, int& flipV);
+			int GetExifFromAngleAndFlip(const int& angle, const int& flipH, const int& flipV);
 
 			bool DeletePhoto(const int64_t &numPhoto);
 			void DeletePhotoSearch();

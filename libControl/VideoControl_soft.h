@@ -136,7 +136,7 @@ protected:
 	GLTexture* RenderToGLTexture();
 	GLTexture* RenderToTexture(CRegardsBitmap* bitmap);
 	GLTexture* RenderToTexture(COpenCLEffectVideo* openclEffect);
-	GLTexture* RenderFFmpegToTexture();
+	//GLTexture* RenderFFmpegToTexture();
 
 	void ZoomOn();
 	void ZoomOut();

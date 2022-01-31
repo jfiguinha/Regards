@@ -214,15 +214,6 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						if (imageLoad != nullptr)
 							bitmapViewer->SetBitmap(imageLoad, true);
 
-						if (numItem == IDM_ROTATE90 || numItem == IDM_ROTATE270)
-						{
-							CSqlPhotos sqlPhotos;
-							int exif = sqlPhotos.GetPhotoExif(filename);
-							if (exif != -1)
-							{
-								sqlPhotos.UpdatePhotoExif(filename, 0);
-							}
-						}
 					}
 					break;
 				}
