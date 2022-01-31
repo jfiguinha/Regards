@@ -32,78 +32,6 @@ namespace Regards
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Niveau de Gris
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CGrayScale : public CFiltre
-		{
-		public:
-			CGrayScale(){};
-			~CGrayScale(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Niveau de Gris
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CSharpenMasking : public CFiltre
-		{
-		public:
-			CSharpenMasking(const float &sharpness){ this->sharpness = sharpness; };
-			~CSharpenMasking(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-			float sharpness;
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Noir et Blanc
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CBlackAndWhite : public CFiltre
-		{
-		public:
-			CBlackAndWhite(){};
-			~CBlackAndWhite(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Median
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CMedian : public CFiltre
-		{
-		public:
-			CMedian(void){};
-			~CMedian(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-
-		private:
-			short quick_select(short * arr, int n);
-
-
-			
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Negatif
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CNegatif : public CFiltre
-		{
-		public:
-			CNegatif(){};
-			~CNegatif(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
 		//Filtre Photo Filtre
 		///////////////////////////////////////////////////////////////////////////////////////////
 		class CPhotoFiltre : public CFiltre
@@ -159,22 +87,6 @@ namespace Regards
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Sepia
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CSepiaFiltre : public CFiltre
-		{
-		public:
-			CSepiaFiltre()
-			{
-			};
-			~CSepiaFiltre(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
 		//Filtre Matrix Convolution 3x3
 		///////////////////////////////////////////////////////////////////////////////////////////
 		class CMatrixConvolution : public CFiltre
@@ -198,34 +110,6 @@ namespace Regards
 			short Ksize;
 			short Kfactor;
 			short Koffset;
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Dilate
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CDilate : public CFiltre
-		{
-		public:
-
-			CDilate(){};
-			~CDilate(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-		};
-
-		///////////////////////////////////////////////////////////////////////////////////////////
-		//Filtre Dilate
-		///////////////////////////////////////////////////////////////////////////////////////////
-		class CErode : public CFiltre
-		{
-		public:
-
-			CErode(){};
-			~CErode(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -413,41 +297,6 @@ namespace Regards
 			uint8_t m_dTemp[256];
 		};
 
-		class CBilateral : public CFiltre
-		{
-		public:
-			CBilateral(const int & fSize, const float & sigmaX, const float & sigmaP)
-			{ 
-				this->fSize = fSize; 
-				this->sigmaX = sigmaX; 
-				this->sigmaP = sigmaP; 
-			};
-			~CBilateral(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-			int fSize;
-			float sigmaX;
-			float sigmaP;
-		};
-
-		class CNlmeans : public CFiltre
-		{
-		public:
-			CNlmeans( const int & FSIZE, const int & BSIZE,const float & SIGMA)
-			{ 
-				this->fSize = FSIZE; 
-				this->bSize = BSIZE; 
-				this->sigma = SIGMA; 
-			};
-			~CNlmeans(void){};
-
-		protected:
-			void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest);
-			int fSize;
-			int bSize;
-			float sigma;
-		};
 	}
 }
 

@@ -113,7 +113,7 @@ bool CRegardsConfigParam::GetDxva2Actif()
 
 bool CRegardsConfigParam::GetIsOpenCLSupport()
 {
-	return openCLSupport;
+	return false;// openCLSupport;
 }
 
 void CRegardsConfigParam::SetIsOpenCLSupport(const int& openCLSupport)

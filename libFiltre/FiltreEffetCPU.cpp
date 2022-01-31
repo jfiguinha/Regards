@@ -508,46 +508,6 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			// normalize so imwrite(...)/imshow(...) shows the mask correctly!
 			normalize(mask.clone(), mask, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
 
-			/*
-			int oldx = 0;
-			int yPos = 0;
-			bool exit = false;
-			for (int y = 0; y < rect.height; y++)
-			{
-				for (int x = 0; x < rect.width; x++)
-				{
-					uchar color = mask.at<uchar>(y, x);
-					if (color == 255)
-					{
-						int _x = x;
-
-						if (y > rect.height / 2)
-						{
-							if (x > _x)
-								x = _x;
-
-							yPos = y;
-							oldx = _x;
-							exit = true;
-							break;
-						}
-					}
-					if (exit)
-						break;
-				}
-			}
-
-			//imshow("mask", mask);
-
-			//cv::Rect _rect(0, rect.height / 2, maxWidth, rect.height / 2);
-			//cv::rectangle(mask, _rect, cv::Scalar(255, 255, 255), -1);
-
-			//imshow("mask", mask);
-			
-			
-			*/
-			//bitwise_not(mask, mask);
-			//std::map<int, int> listOfPoint;
 
 			int oldx = 0;
 			for (int y = 0; y < rect.height; y++)
@@ -814,19 +774,9 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	/*
-	if (preview)
-	{
-		if (bitmapOut != nullptr)
-			delete bitmapOut;
-		bitmapOut = bitmap->GetRegardsBitmap();
-	}
-	else
-	{*/
-		if (pBitmap != nullptr)
-			delete pBitmap;
-		pBitmap = bitmap->GetRegardsBitmap();
-	//}
+	if (pBitmap != nullptr)
+		delete pBitmap;
+	pBitmap = bitmap->GetRegardsBitmap();
 }
 
 int CFiltreEffetCPU::RedEye()

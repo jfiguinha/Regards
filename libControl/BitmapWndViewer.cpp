@@ -180,15 +180,36 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 		if (copyBmpSrc == nullptr || updateFilter)
 		{
 			wxBeginBusyCursor();
-			filtreEffet->SetPreviewMode(false);
-			mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
-			if (copyBmpSrc != nullptr)
-				delete copyBmpSrc;
-			copyBmpSrc = filtreEffet->GetBitmap(true);
-			updateFilter = false;
-			bitmapwidth = copyBmpSrc->GetBitmapWidth();
-			bitmapheight = copyBmpSrc->GetBitmapHeight();
 
+			if (IsSupportOpenCL())
+			{
+				filtreEffet->SetPreviewMode(false);
+				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+				if (copyBmpSrc != nullptr)
+					delete copyBmpSrc;
+				copyBmpSrc = filtreEffet->GetBitmap(true);
+				updateFilter = false;
+				bitmapwidth = copyBmpSrc->GetBitmapWidth();
+				bitmapheight = copyBmpSrc->GetBitmapHeight();
+			}
+			else
+			{
+				if (copyBmpSrc == nullptr)
+				{
+					copyBmpSrc = filtreEffet->GetBitmap(true);
+					updateFilter = false;
+					bitmapwidth = copyBmpSrc->GetBitmapWidth();
+					bitmapheight = copyBmpSrc->GetBitmapHeight();
+				}
+				else
+				{
+					CImageLoadingFormat image(false);
+					image.SetPicture(copyBmpSrc);
+					filtreEffet->SetBitmap(&image);
+				}
+				filtreEffet->SetPreviewMode(false);
+				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
+			}
 			//copyBmpSrc->SaveToBmp("d:\\test.bmp");
 
 			if (mouseUpdate->NeedToShrink())

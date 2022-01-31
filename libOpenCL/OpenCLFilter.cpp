@@ -400,6 +400,7 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
 }
 
 void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
