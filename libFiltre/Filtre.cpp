@@ -292,34 +292,6 @@ void CSwirl::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, 
 	}
 }
 
-void CContrast::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
-{
-	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc.data[position + 3];
-
-	int r = m_dTemp[pBitsSrc.data[position]];
-	int g = m_dTemp[pBitsSrc.data[position + 1]];
-	int b = m_dTemp[pBitsSrc.data[position + 2]];
-
-	uint8_t data[4] = { static_cast<uint8_t>(b), static_cast<uint8_t>(g), static_cast<uint8_t>(r), alpha };
-
-	memcpy(pBitsDest.data + position, data, 4);
-}
-
-void CLightness::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
-{
-	int position = GetPosition(x, y);
-	uint8_t alpha = pBitsSrc.data[position + 3];
-
-	int r = m_dTemp[pBitsSrc.data[position]];
-	int g = m_dTemp[pBitsSrc.data[position + 1]];
-	int b = m_dTemp[pBitsSrc.data[position + 2]];
-
-	uint8_t data[4] = { static_cast<uint8_t>(b), static_cast<uint8_t>(g), static_cast<uint8_t>(r), alpha };
-
-	memcpy(pBitsDest.data + position, data, 4);
-}
-
 void CPosterize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
 	CRgbaquad color;

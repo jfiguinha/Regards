@@ -77,9 +77,7 @@ public:
 	static CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
 private:
 
-	
-	int Contrast(const double& contrast, const uint8_t& offset);
-	int Lightness(const double& factor);
+
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat &mask);
