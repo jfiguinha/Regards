@@ -12,8 +12,8 @@ namespace Regards
 				wxString &errorMessage);
 
 
-			static void monitorProgress(ETEXT_DESC *monitor, int page);
-			static void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor);
+			static void monitorProgress(tesseract::ETEXT_DESC *monitor, int page);
+			static void ocrProcess(tesseract::TessBaseAPI *api, tesseract::ETEXT_DESC *monitor);
 
 
 

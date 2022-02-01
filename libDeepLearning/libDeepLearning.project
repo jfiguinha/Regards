@@ -19,7 +19,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="DetectFace.h"/>
-    <File Name="header.h"/>
     <File Name="FaceDetector.h"/>
     <File Name="DetectRotation.h"/>
     <File Name="DeepLearning.h"/>
@@ -29,7 +28,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;-pthread;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
@@ -38,6 +37,7 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libextern/CvPlot/inc"/>
+        <IncludePath Value="../include"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="">
@@ -46,7 +46,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -61,9 +61,7 @@
         <PostConnectCommands/>
         <StartupCommands/>
       </Debugger>
-      <PreBuild>
-        <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp header.h Debug/header.h;fi</Command>
-      </PreBuild>
+      <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -87,7 +85,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="Intel" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -103,9 +101,7 @@
         <PostConnectCommands/>
         <StartupCommands/>
       </Debugger>
-      <PreBuild>
-        <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp header.h Release/header.h;fi</Command>
-      </PreBuild>
+      <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

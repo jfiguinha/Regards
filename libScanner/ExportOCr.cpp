@@ -95,12 +95,12 @@ static void SetVariablesFromCLArgs(tesseract::TessBaseAPI* api, int argc,
 }
 */
 static void PrintLangsList(tesseract::TessBaseAPI* api) {
-	GenericVector<STRING> languages;
+	std::vector<std::string> languages;
 	api->GetAvailableLanguagesAsVector(&languages);
 	printf("List of available languages (%d):\n", languages.size());
 	for (int index = 0; index < languages.size(); ++index) {
-		STRING& string = languages[index];
-		printf("%s\n", string.string());
+		std::string& lang = languages[index];
+		printf("%s\n", lang.c_str());
 	}
 	api->End();
 }
@@ -137,8 +137,8 @@ static void checkArgValues(int arg, const char* mode, int count) {
 static void ParseArgs(const int argc, char** argv, const char** lang,
 	const char** image, const char** outputbase,
 	const char** datapath, l_int32* dpi, bool* list_langs,
-	bool* print_parameters, GenericVector<STRING>* vars_vec,
-	GenericVector<STRING>* vars_values, l_int32* arg_i,
+	bool* print_parameters, std::vector<std::string>* vars_vec,
+	std::vector<std::string>* vars_values, l_int32* arg_i,
 	tesseract::PageSegMode* pagesegmode,
 	tesseract::OcrEngineMode* enginemode) {
 	bool noocr = false;
@@ -251,7 +251,7 @@ static void ParseArgs(const int argc, char** argv, const char** lang,
 
 static void PreloadRenderers(
 	tesseract::TessBaseAPI* api,
-	tesseract::PointerVector<tesseract::TessResultRenderer>* renderers,
+	std::vector<tesseract::TessResultRenderer *> * renderers,
 	tesseract::PageSegMode pagesegmode, const char* outputbase) {
 	if (pagesegmode == tesseract::PSM_OSD_ONLY) {
 #ifndef DISABLED_LEGACY_ENGINE
@@ -418,7 +418,7 @@ static void PreloadRenderers(
 	}
 }
 
-void CExportOcr::monitorProgress(ETEXT_DESC *monitor, int page)
+void CExportOcr::monitorProgress(tesseract::ETEXT_DESC *monitor, int page)
 {
 	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
@@ -430,7 +430,7 @@ void CExportOcr::monitorProgress(ETEXT_DESC *monitor, int page)
 	}
 }
 
-void CExportOcr::ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor) {
+void CExportOcr::ocrProcess(tesseract::TessBaseAPI *api, tesseract::ETEXT_DESC *monitor) {
 	api->Recognize(monitor);
 }
 
@@ -461,8 +461,8 @@ int CExportOcr::ExportOcr(
 	/* main() calls functions like ParseArgs which call exit().
 	 * This results in memory leaks if vars_vec and vars_values are
 	 * declared as auto variables (destructor is not called then). */
-	static GenericVector<STRING> vars_vec;
-	static GenericVector<STRING> vars_values;
+	static std::vector<std::string> vars_vec;
+	static std::vector<std::string> vars_values;
 
 #if !defined(DEBUG)
 	// Disable debugging and informational messages from Leptonica.
@@ -498,7 +498,7 @@ int CExportOcr::ExportOcr(
 	// Avoid memory leak caused by auto variable when return is called.
 	
 	// Avoid memory leak caused by auto variable when exit() is called.
-	tesseract::PointerVector<tesseract::TessResultRenderer> renderers;
+	std::vector<tesseract::TessResultRenderer *> renderers;
 
 	api.SetOutputName(outputbase);
 
@@ -593,7 +593,7 @@ int CExportOcr::ExportOcr(
 
 #ifdef DISABLED_LEGACY_ENGINE
 		auto cur_psm = api->GetPageSegMode();
-		auto osd_warning = std::string("");
+		auto osd_warning = std::std::string("");
 		if (cur_psm == tesseract::PSM_OSD_ONLY) {
 			const char* disabled_osd_msg =
 				"\nERROR: The page segmentation mode 0 (OSD Only) is currently disabled.\n\n";
@@ -655,7 +655,7 @@ int CExportOcr::ExportOcr(
 		delete renderers[i];
 	}
 	*/
-	//tesseract::PointerVector<tesseract::TessResultRenderer> renderers;
+	//std::vector<tesseract::TessResultRenderer> renderers;
 
 
 	api.End();

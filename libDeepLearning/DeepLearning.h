@@ -2,6 +2,7 @@
 
 class CPictureData;
 class FaceRect;
+class CRegardsBitmap;
 
 namespace Regards
 {

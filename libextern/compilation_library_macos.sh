@@ -23,3 +23,13 @@ make install
 cd ..
 cd ..
 
+FILE=wxWidgets-3.1.5.tar.bz2
+if [ ! -f FILE ]; then
+    wget https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.tar.bz2
+    tar xf wxWidgets-3.1.5.tar.bz2
+fi
+cd wxWidgets-3.1.5
+./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-unicode --disable-debug --with-cxx=11
+make -j$NBPROC
+cd ..
+

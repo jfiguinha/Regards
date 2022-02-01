@@ -73,7 +73,6 @@
 #include <cerrno>
 #include <sys/stat.h>
 #include <wx/version.h>
-#include <opencv2/core/opengl.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core/mat.hpp>
