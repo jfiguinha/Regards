@@ -91,6 +91,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 
 	double frame_count = int(capture.get(CAP_PROP_FRAME_COUNT));
 	int nbFrame = frame_count / 20;
+	double fps = capture.get(CAP_PROP_FPS);
 	int pos = 0;
 	vector<CImageVideoThumbnail*> listPicture;
 	for (auto i = 0; i < 100; i += 5)
@@ -100,7 +101,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->rotation = rotation;
 		cxVideo->percent = i;
 		cxVideo->image = new CImageLoadingFormat();
-		int timePosition = 0;
+		int timePosition = pos / fps;
 
 		bool success = capture.set(CAP_PROP_POS_FRAMES, pos);
 		capture >> frame;

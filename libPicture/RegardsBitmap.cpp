@@ -107,6 +107,22 @@ void CRegardsBitmap::SetOrientation(const int& orientation)
 	this->orientation = orientation;
 }
 
+void CRegardsBitmap::ApplyRotation(const int& rotation)
+{
+	if (rotation == 90)
+		Rotate90();
+	else if (rotation == -90)
+		Rotate270();
+	else if (rotation == -180)
+		Rotate180();
+	else if (rotation == 180)
+		Rotate180();
+	else if (rotation == -270)
+		Rotate90();
+	else if (rotation == 270)
+		Rotate270();
+}
+
 bool CRegardsBitmap::IsValid()
 {
 	if (bitmapMatrix.empty() || GetBitmapHeight() == 0 || GetBitmapWidth() == 0 || GetBitmapSize() == 0)

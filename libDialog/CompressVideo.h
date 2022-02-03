@@ -9,13 +9,12 @@
 #endif
 //(*Headers(TiffOption)
 //*)
-
-class CImageLoadingFormat;
+class CRegardsBitmap;
 
 class CompressVideo : public wxDialog
 {
 public:
-	CompressVideo(wxWindow* parent);
+	CompressVideo(wxWindow* parent, int rotation);
 	~CompressVideo() override;
 
 	wxButton* btnCancel;
@@ -28,7 +27,7 @@ public:
 	//wxPanel * panel;
 	bool IsOk();
 	void SetPos(const int& max, const int& pos);
-	void SetBitmap(wxImage* bmp);
+	void SetBitmap(CRegardsBitmap * bmp);
 	void SetTextProgression(const wxString& texte, const int& type = 0);
 protected:
 	//(*Identifiers(TiffOption)
@@ -44,6 +43,7 @@ private:
 	wxBitmap _localBmp;
 	//*)
 	bool isOk;
+	int rotation = 0;
 	wxImage scale;
 	std::mutex muBitmap;
 DECLARE_EVENT_TABLE()

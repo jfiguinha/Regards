@@ -21,7 +21,7 @@ public:
 
 	void GetY(uint8_t* & lum);
 	void SetY(uint8_t* lum);
-
+	void ApplyRotation(const int& rotation);
 	void ReadFile(const wxString& filename);
 	void WriteFile(const wxString& filename);
 

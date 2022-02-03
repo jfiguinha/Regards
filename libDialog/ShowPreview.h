@@ -85,6 +85,7 @@ namespace Regards
 			CRegardsBitmap * decodeFrame = nullptr;
 			CRegardsBitmap* decodeFrameOriginal = nullptr;
 			
+
 			wxString extension;
 			bool transitionEnd;
 			wxString filename;

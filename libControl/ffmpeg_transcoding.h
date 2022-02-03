@@ -12,7 +12,7 @@ public:
 	CFFmpegTranscoding(const wxString& acceleratorHardware);
 	~CFFmpegTranscoding();
 	int EncodeFile(wxWindow* mainWindow, const wxString& input, const wxString& output,
-	               CVideoOptionCompress* videoCompressOption);
+	               CVideoOptionCompress* videoCompressOption, int rotation);
 	int EndDecodeFile(const int& returnValue);
 	vector<wxString> ListOfEncoder();
 	wxString GetOutputFilename();

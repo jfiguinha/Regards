@@ -75,14 +75,14 @@ int CFFmpegTranscoding::EndDecodeFile(const int& returnValue)
 }
 
 int CFFmpegTranscoding::EncodeFile(wxWindow* mainWindow, const wxString& input, const wxString& output,
-                                   CVideoOptionCompress* videoCompressOption)
+                                   CVideoOptionCompress* videoCompressOption, int rotation)
 {
 	this->mainWindow = mainWindow;
 	this->input = input;
 	this->output = output;
 	this->videoCompressOption = videoCompressOption;
 	ListOfEncoder();
-	m_dlgProgress = new CompressVideo(nullptr);
+	m_dlgProgress = new CompressVideo(nullptr, rotation);
 	m_dlgProgress->Show();
 	encode_thread = new std::thread(EncodeFileThread, this);
 	return 0;

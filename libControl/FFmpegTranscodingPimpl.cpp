@@ -241,11 +241,8 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		}
 
 		CRegardsBitmap* bmp = imageLoadingFormat->GetRegardsBitmap(false);
-		if (ffmpeg_trans->GetExifRotation() >= 5 && bmp->GetBitmapWidth() > bmp->GetBitmapHeight())
-			bmp->RotateExif(ffmpeg_trans->GetExifRotation());
-		else
-			bmp->VertFlipBuf();
-		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
+		bmp->VertFlipBuf();
+		ffmpeg_trans->m_dlgProgress->SetBitmap(bmp);
 		ffmpeg_trans->muWriteData.lock();
 
 		double duration_total = ffmpeg_trans->duration_movie;

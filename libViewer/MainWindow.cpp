@@ -569,7 +569,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 								wxRemoveFile(filepath);
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding(decoder);
-							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption);
+							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption, videoOutputRotation);
 						}
 					}
 					else
@@ -636,7 +636,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding(decoder);
-							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption);
+							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption, videoOutputRotation);
 							isAudio = true;
 						}
 						else
@@ -648,7 +648,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding(decoder);
-							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption);
+							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption, videoOutputRotation);
 							isAudio = false;
 						}
 						else

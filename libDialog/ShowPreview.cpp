@@ -122,7 +122,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 
 	videoOriginal->SetFilename(filename);
 	timeTotal = videoOriginal->GetMovieDuration();
-
+	orientation = videoOriginal->GetVideoOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
 	decodeFrameOriginal = videoOriginal->GetVideoFrame(0, 0, 0);
@@ -254,6 +254,7 @@ void CShowPreview::ThreadLoading(void* data)
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
+			showPreview->decodeFrame->ApplyRotation(showPreview->orientation);
 			//showPreview->compressIsOK = true;
 			//showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
 			//showPreview->decodeFrame->GetFrameBitmapPosition(0);

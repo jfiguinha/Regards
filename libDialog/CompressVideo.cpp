@@ -2,6 +2,8 @@
 #include "CompressVideo.h"
 #include <window_id.h>
 #include <wx/dcmemory.h>
+
+#include <RegardsBitmap.h>
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(CompressVideo)
 //*)
@@ -9,7 +11,9 @@
 //(*InternalHeaders(CompressVideo)
 #include <wx/xrc/xmlres.h>
 #include <wx/statbmp.h>
+#include <libPicture.h>
 //*)
+using namespace Regards::Picture;
 
 //(*IdInit(CompressVideo)
 //*)
@@ -19,9 +23,9 @@ BEGIN_EVENT_TABLE(CompressVideo, wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-CompressVideo::CompressVideo(wxWindow* parent)
+CompressVideo::CompressVideo(wxWindow* parent, int rotation)
 {
-	
+	this->rotation = rotation;
 	isOk = true;
 	//(*Initialize(CompressVideo)
 	wxXmlResource::Get()->LoadObject(this, parent,_T("CompressVideo"),_T("wxDialog"));
@@ -49,11 +53,38 @@ CompressVideo::CompressVideo(wxWindow* parent)
 
 void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 {
+
+
+
+
 	wxSize size = bitmap->GetSize();
 	auto bmp = static_cast<wxImage*>(event.GetClientData());
+	wxImage out;
+	//ApplyRotation to image
+	if (rotation == 90)
+		out = bmp->Rotate90();
+	else if (rotation == -90)
+	{
+		out = bmp->Rotate180();
+		out = out.Rotate90();
+	}
+	else if (rotation == -180)
+		out = bmp->Rotate180();
+	else if (rotation == 180)
+		out = bmp->Rotate180();
+	else if (rotation == -270)
+		out = bmp->Rotate90();
+	else if (rotation == 270)
+	{
+		out = bmp->Rotate180();
+		out = out.Rotate90();
+	}
+	else
+		out = *bmp;
+
 	float new_ratio = 1;
-	int pictureWidth = bmp->GetWidth();
-	int pictureHeight = bmp->GetHeight();
+	int pictureWidth = out.GetWidth();
+	int pictureHeight = out.GetHeight();
 	int _width = size.GetWidth();
 	int _height = size.GetHeight();
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
@@ -71,7 +102,7 @@ void CompressVideo::OnSetBitmap(wxCommandEvent& event)
 	{
 		new_ratio = static_cast<float>(_width) / static_cast<float>(pictureWidth);
 	}
-	scale = bmp->Scale(pictureWidth * new_ratio, pictureHeight * new_ratio);
+	scale = out.Scale(pictureWidth * new_ratio, pictureHeight * new_ratio);
 
 	
 	int xPos = (size.GetWidth() - scale.GetWidth()) / 2;
@@ -186,23 +217,12 @@ void CompressVideo::SetPos(const int& max, const int& pos)
 	//ggProgress->SetValue(pos);
 }
 
-void CompressVideo::SetBitmap(wxImage* bmp)
+void CompressVideo::SetBitmap(CRegardsBitmap * bmp)
 {
-	//#ifdef __APPLE__
-
+	wxImage* image = CLibPicture::ConvertRegardsBitmapToWXImage(bmp);
 	auto event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
-	event->SetClientData(bmp);
+	event->SetClientData(image);
 	wxQueueEvent(this, event);
-	/*
-#else
-	scale = bmp->Scale(344, 200).Mirror(false);
-	wxPoint pt = bitmap->GetPosition();
-	wxClientDC dc(this);
-	dc.DrawBitmap(scale, pt.x, pt.y);
-    delete bmp;
-#endif
-*/
-	//bitmap->SetBitmap(scale);
 }
 
 
