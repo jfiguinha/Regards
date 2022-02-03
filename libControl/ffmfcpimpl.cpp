@@ -40,7 +40,7 @@ inline int compute_mod(int a, int b)
 
 AVCodecContext* GetCodec(AVStream* avStream)
 {
-	AVCodec* pCodec = avcodec_find_decoder(avStream->codecpar->codec_id);
+	AVCodec* pCodec = (AVCodec*)avcodec_find_decoder(avStream->codecpar->codec_id);
 	AVCodecContext* pCodecCtx = avcodec_alloc_context3(pCodec);
 	avcodec_parameters_to_context(pCodecCtx, avStream->codecpar);
 	return pCodecCtx;
@@ -1330,8 +1330,8 @@ AVDictionary* CFFmfcPimpl::filter_codec_opts(AVDictionary* opts, enum AVCodecID 
 
 	if (!codec)
 		codec = s->oformat
-			        ? avcodec_find_encoder(codec_id)
-			        : avcodec_find_decoder(codec_id);
+			        ? (AVCodec * )avcodec_find_encoder(codec_id)
+			        : (AVCodec*)avcodec_find_decoder(codec_id);
 	if (!codec)
 		return nullptr;
 
@@ -1670,7 +1670,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		goto fail;
 	avctx->pkt_timebase = ic->streams[stream_index]->time_base;
 
-	codec = avcodec_find_decoder(avctx->codec_id);
+	codec = (AVCodec*)avcodec_find_decoder(avctx->codec_id);
 
 	switch (avctx->codec_type)
     {
@@ -1680,7 +1680,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 	}
     
 	if (forced_codec_name)
-		codec = avcodec_find_decoder_by_name(forced_codec_name);
+		codec = (AVCodec*)avcodec_find_decoder_by_name(forced_codec_name);
         
 	if (!codec) 
     {
@@ -1989,7 +1989,7 @@ int CFFmfcPimpl::decode_interrupt_cb(void* ctx)
 	return abort;
 }
 
-int CFFmfcPimpl::is_realtime(AVFormatContext* s)
+int CFFmfcPimpl::is_realtime(AVFormatContext* s, char * filename)
 {
 	if (!strcmp(s->iformat->name, "rtp")
 		|| !strcmp(s->iformat->name, "rtsp")
@@ -1997,8 +1997,8 @@ int CFFmfcPimpl::is_realtime(AVFormatContext* s)
 	)
 		return 1;
 
-	if (s->pb && (!strncmp(s->filename, "rtp:", 4)
-			|| !strncmp(s->filename, "udp:", 4)
+	if (s->pb && (!strncmp(filename, "rtp:", 4)
+			|| !strncmp(filename, "udp:", 4)
 		)
 	)
 		return 1;
@@ -2128,7 +2128,7 @@ int CFFmfcPimpl::read_thread(void* arg)
 		}
 	}
 
-	is->realtime = is->_pimpl->is_realtime(ic);
+	is->realtime = is->_pimpl->is_realtime(ic, is->filename);
 
 	if (is->_pimpl->show_status)
 		av_dump_format(ic, 0, is->filename, 0);

@@ -9,7 +9,7 @@ using namespace Regards::Window;
 class CRegardsBitmap;
 class CFFmpegDecodeFrameFilter;
 class CFFmpegTranscodingPimpl;
-class CFFmpegDecodeFrame;
+class CThumbnailVideo;
 class CRegardsConfigParam;
 class CImageLoadingFormat;
 
@@ -62,7 +62,7 @@ namespace Regards
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-			void ShowPicture(CFFmpegDecodeFrame* decodeFrame, const wxString& label);
+			void ShowPicture(CRegardsBitmap* decodeFrame, const wxString& label);
 			void OnShowOriginal(wxCommandEvent& event);
 			void OnShowNew(wxCommandEvent& event);
 			void OnUpdatePicture(wxCommandEvent& event);
@@ -79,11 +79,12 @@ namespace Regards
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-
+			CThumbnailVideo* videoOriginal;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscodingPimpl* transcodeFFmpeg = nullptr;
-			CFFmpegDecodeFrame* decodeFrame = nullptr;
-			CFFmpegDecodeFrame* decodeFrameOriginal = nullptr;
+			CRegardsBitmap * decodeFrame = nullptr;
+			CRegardsBitmap* decodeFrameOriginal = nullptr;
+			
 			wxString extension;
 			bool transitionEnd;
 			wxString filename;

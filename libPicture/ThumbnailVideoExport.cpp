@@ -1,13 +1,19 @@
 // ReSharper disable All
 #include <header.h>
 #include "ThumbnailVideoExport.h"
-#include "FFmpegDecodeFrame.h"
 #include "RegardsBitmap.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include "libPicture.h"
 #include <wx/progdlg.h>
 #include <effect_id.h>
+
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavutil/timestamp.h>
+}
 using namespace cv;
 using namespace Regards::Picture;
 
@@ -58,7 +64,7 @@ private:
 	//AVOutputFormat* fmt_ = nullptr;
 	AVFormatContext* oc = nullptr;
 	AVStream* stream = nullptr;
-	AVCodec* codec = nullptr;
+	const AVCodec* codec = nullptr;
 	AVCodecContext* c = nullptr;
 	AVPacket* pkt = nullptr;
 	AVFrame* yuvpic = nullptr;
@@ -513,10 +519,10 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 
 	// Setting up the codec:
 	// Setting up the codec:
-	avcodec_get_context_defaults3(stream->codec, codec);
-	//c=avcodec_alloc_context3(codec);
+	//avcodec_get_context_defaults3(stream->codec, codec);
+	c = avcodec_alloc_context3(codec);
 	int videoBitRate = 1500;
-	c = stream->codec;
+	//c = stream->codec;
 	c->width = width;
 	c->height = height;
 	c->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -542,7 +548,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 	}
 
 	stream->time_base = {1, fps};
-	stream->codec = c;
+	//stream->codec = c;
 	// Once the codec is set up, we need to let the container know which codec are the streams using, in this case the only (video) stream.
 	av_dump_format(oc, 0, outfile, 1);
 	avio_open(&oc->pb, outfile, AVIO_FLAG_WRITE);
@@ -568,7 +574,7 @@ int CThumbnailVideoExportImpl::GenerateFFmpegVideoFromList(const wxString& outfi
 
 	av_write_trailer(oc); // Writing the end of the file.
 	avio_closep(&oc->pb); // Closing the file.
-	avcodec_close(stream->codec);
+	avcodec_close(c);
 
 	// Freeing all the allocated memory:
 	sws_freeContext(convertCtx);

@@ -79,7 +79,7 @@ using namespace Regards::exiv2;
 #include <JxrOption.h>
 #include <PDFOption.h>
 #include <CompressionOption.h>
-
+#include <opencv2/core/core.hpp>
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1
 #define TYPE_IMAGE_REGARDSIMAGE 2
@@ -1445,9 +1445,8 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				int rotation = 0;
 				CThumbnailVideo video;
 				video.SetFilename(szFileName);
-				bitmap->SetPicture(
-					video.GetVideoFrame(rotation, percent, timePosition, widthThumbnail, heightThumbnail));
-				bitmap->SetOrientation(rotation);
+				bitmap->SetPicture(video.GetVideoFrame(timePosition, widthThumbnail, heightThumbnail));
+				bitmap->SetOrientation(video.GetVideoOrientation());
 				bitmap->SetFilename(szFileName);
 				break;
 			}
@@ -1959,10 +1958,15 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 	}
 	else
 	{
-		CThumbnailVideo video;
-		video.SetFilename(szFileName);
-		is_valid = video.IsOk();
-		fileValid.insert(std::make_pair(szFileName, is_valid));
+		//CThumbnailVideo video;
+		//video.SetFilename(szFileName);
+		//is_valid = video.IsOk();
+		cv::VideoCapture capture(szFileName.ToStdString());
+		if (capture.isOpened())
+		{
+			fileValid.insert(std::make_pair(szFileName, is_valid));
+			is_valid = true;
+		}
 	}
 	return is_valid;
 }
@@ -2607,9 +2611,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				int orientation = 0;
 				CThumbnailVideo video;
 				video.SetFilename(fileName);
-				int percent = (static_cast<float>(numPicture) / static_cast<float>(20)) * 100.0f;
-				bitmap->SetPicture(video.GetVideoFrame(0, 0, orientation, percent));
-				bitmap->SetOrientation(orientation);
+				int duration = video.GetMovieDuration() * 20.0 / 100.0;
+				bitmap->SetPicture(video.GetVideoFrame(duration, 0, 0));
+				bitmap->SetOrientation(video.GetVideoOrientation());
 				bitmap->SetFilename(fileName);
 			}
 			break;

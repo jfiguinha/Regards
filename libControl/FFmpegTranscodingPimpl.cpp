@@ -16,9 +16,12 @@
 
 
 extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavcodec/packet.h>
 #include <libavutil/opt.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/display.h>
+#include <libavutil/channel_layout.h>
 }
 
 using namespace Regards::OpenCL;
@@ -237,15 +240,12 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 			imageLoadingFormat->SetPicture(ffmpeg_trans->bitmapCopy);
 		}
 
-		CRegardsBitmap* bmp = imageLoadingFormat->GetRegardsBitmap(true);
+		CRegardsBitmap* bmp = imageLoadingFormat->GetRegardsBitmap(false);
 		if (ffmpeg_trans->GetExifRotation() >= 5 && bmp->GetBitmapWidth() > bmp->GetBitmapHeight())
-		{
 			bmp->RotateExif(ffmpeg_trans->GetExifRotation());
-			imageLoadingFormat->SetPicture(bmp);
-
-		}
+		else
+			bmp->VertFlipBuf();
 		ffmpeg_trans->m_dlgProgress->SetBitmap(imageLoadingFormat->GetwxImage());
-		delete bmp;
 		ffmpeg_trans->muWriteData.lock();
 
 		double duration_total = ffmpeg_trans->duration_movie;
@@ -342,7 +342,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 		AVStream* stream = ifmt_ctx->streams[i];
 		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
 			continue;
-		AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
+		const AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
 		AVCodecContext* codec_ctx;
 		if (!dec)
 		{
@@ -830,7 +830,7 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID& codec_id, const w
 	wxString encoderHardName = GetCodecName(codec_id, encoderName);
 	if (encoderName.size() > 0)
 	{
-		AVCodec* p_codec = avcodec_find_encoder_by_name(encoderHardName);
+		const AVCodec* p_codec = avcodec_find_encoder_by_name(encoderHardName);
 
 		if (p_codec != nullptr)
 		{
@@ -864,7 +864,7 @@ bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID& codec_id, AVCodec
 {
 	bool isSucceed = false;
 	AVCodecContext* pCodecCtx = nullptr;
-	AVCodec* p_codec = avcodec_find_encoder(codec_id);
+	const AVCodec* p_codec = avcodec_find_encoder(codec_id);
 
 	if (p_codec != nullptr)
 	{
@@ -1057,7 +1057,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 	AVStream* out_stream;
 	AVStream* in_stream;
 	AVCodecContext *dec_ctx, *enc_ctx;
-	AVCodec* encoder;
+	const AVCodec* encoder;
 	int ret;
 	wxString encoderHardware = "";
 	unsigned int i;
@@ -1139,28 +1139,6 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 
 		dec_ctx = stream_ctx[i].dec_ctx;
 
-		if ((videoCompressOption->audioDirectCopy && dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO) || (videoCompressOption
-			->videoDirectCopy && dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO))
-		{
-			AVStream* av_stream = ifmt_ctx->streams[i];
-			AVStream* stream = avformat_new_stream(ofmt_ctx, av_stream->codec->codec);
-			if (!stream)
-			{
-				fprintf(stderr, "Failed allocating output stream\n");
-				ret = AVERROR_UNKNOWN;
-				return AVERROR_UNKNOWN;
-			}
-			ret = avcodec_copy_context(stream->codec, av_stream->codec);
-			if (ret < 0)
-			{
-				fprintf(stderr, "Failed to copy context from input to output stream codec context\n");
-				return AVERROR_UNKNOWN;
-			}
-			if (ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
-				stream->codec->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-			continue;
-		}
 		out_stream = avformat_new_stream(ofmt_ctx, nullptr);
 		if (!out_stream)
 		{
@@ -1626,7 +1604,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 		av_log(nullptr, AV_LOG_DEBUG, "Muxing frame\n");
 		/* mux encoded frame */
 		av_write_frame(ofmt_ctx, &enc_pkt);
-		av_free_packet(&enc_pkt);
+		av_packet_unref(&enc_pkt);
 	}
 
 	return ret;
@@ -1794,7 +1772,7 @@ CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 		}
 	}
 
-	int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height);
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height,16);
 	if (numBytes != bitmapData->GetBitmapSize())
 	{
 		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
@@ -2045,7 +2023,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 		if (packet.stream_index != videoStreamIndex)
 		{
-			av_free_packet(&packet);
+			av_packet_unref(&packet);
 			continue;
 		}
 
@@ -2105,7 +2083,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 				if (packet.buf == nullptr)
 				{
-					av_free_packet(&packet);
+					av_packet_unref(&packet);
 					continue;
 				}
 
@@ -2325,7 +2303,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 			{
 				auto pkt = new AVPacket;
 				av_new_packet(pkt, packet.size);
-				av_copy_packet(pkt, &packet);
+				av_packet_ref(pkt, &packet);
 
 				StreamContext* stream = &stream_ctx[stream_index];
 
@@ -2414,7 +2392,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 					SetFrameData(tmp_frame, m_dlgProgress);
 
-					av_free_packet(pkt);
+					av_packet_unref(pkt);
 				}
 			}
 
@@ -2456,7 +2434,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 				if (packet.buf == nullptr)
 				{
-					av_free_packet(&packet);
+					av_packet_unref(&packet);
 					continue;
 				}
 

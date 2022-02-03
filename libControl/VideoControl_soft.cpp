@@ -1591,7 +1591,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 		}
 	}
 
-	int numBytes = avpicture_get_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height);
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
 	if (numBytes != bitmapData->GetBitmapSize())
 	{
 		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);

@@ -6,6 +6,7 @@
 #else
 #include <window_id.h>
 #endif
+#include <wx/filename.h>
 #include <libPicture.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
@@ -14,7 +15,7 @@
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
-#include <FFmpegDecodeFrame.h>
+#include <videothumb.h>
 #include <FileUtility.h>
 #include <Tracing.h>
 #include <VideoControl_soft.h>
@@ -43,6 +44,8 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	configRegards = nullptr;
 	defaultToolbar = true;
 	defaultViewer = true;
+	decodeFrame = nullptr;
+	decodeFrameOriginal = nullptr;
 
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
@@ -105,7 +108,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	progressValue = 0;
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-
+	videoOriginal = new CThumbnailVideo();
 }
 
 void CShowPreview::SetParameter(const wxString& videoFilename,
@@ -116,38 +119,23 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	this->videoOptionCompress = *videoOptionCompress;
 	progressValue = 0;
 	filename = videoFilename;
-	/*
-	if (decodeFrameOriginal != nullptr)
-		delete decodeFrameOriginal;
-	decodeFrameOriginal = nullptr;
-	if (transcodeFFmpeg != nullptr)
-		delete transcodeFFmpeg;
-	transcodeFFmpeg = nullptr;
-	if (decodeFrame != nullptr)
-		delete decodeFrame;
-	decodeFrame = nullptr;
-	decodeFrameOriginal = new CFFmpegDecodeFrame();
-	*/
-	if(decodeFrameOriginal == nullptr)
-		decodeFrameOriginal = new CFFmpegDecodeFrame();
-	decodeFrameOriginal->OpenFile(filename);
-	timeTotal = decodeFrameOriginal->GetTotalTime();
+
+	videoOriginal->SetFilename(filename);
+	timeTotal = videoOriginal->GetMovieDuration();
 
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	//SlidePosChange(0, "");
+	decodeFrameOriginal = videoOriginal->GetVideoFrame(0, 0, 0);
 
 	MoveSlider(0);
 	//this->Resize();
 }
 
-void CShowPreview::ShowPicture(CFFmpegDecodeFrame* decodeFrame, const wxString& label)
+void CShowPreview::ShowPicture(CRegardsBitmap* bitmap, const wxString& label)
 {
-	CRegardsBitmap* bitmap = decodeFrame->GetBitmap(false);
 	if (bitmap != nullptr && bitmap->GetBitmapWidth() > 0 && bitmap->GetBitmapHeight())
 	{
 		auto imageLoadingFormat = new CImageLoadingFormat(false);
-		bitmap->SetOrientation(decodeFrameOriginal->GetExifRotation());
 		imageLoadingFormat->SetPicture(bitmap);
 		if (isFirstPicture)
 			bitmapWindow->SetBitmap(imageLoadingFormat, false);
@@ -245,38 +233,49 @@ void CShowPreview::ThreadLoading(void* data)
 	int ret = 0;
 	auto showPreview = static_cast<CShowPreview*>(data);
 
-	//CImageLoadingFormat * imageLoadingFormat = nullptr;
-	//CRegardsBitmap * picture = nullptr;
-
-	wxMemoryOutputStream dataOutput;
-
 	wxString fileTemp = "";
 
 	if (!showPreview->moveSlider)
 	{
+		if (showPreview->extension == "")
+		{
+			wxFileName filename(showPreview->filename);
+			showPreview->extension = filename.GetExt();
+		}
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
-		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, &dataOutput, showPreview->filename, fileTemp,
+		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, nullptr, showPreview->filename, fileTemp,
 		                                                   showPreview->position, &showPreview->videoOptionCompress);
 		showPreview->transcodeFFmpeg->EndTreatment();
 
 		if (ret == 0)
 		{
-			showPreview->compressIsOK = true;
-			showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
-			showPreview->decodeFrame->GetFrameBitmapPosition(0);
-			showPreview->decodeFrame->EndTreatment();
+			CThumbnailVideo video;
+			video.SetFilename(fileTemp);
+			if (showPreview->decodeFrame != nullptr)
+				delete showPreview->decodeFrame;
+			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
+			//showPreview->compressIsOK = true;
+			//showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
+			//showPreview->decodeFrame->GetFrameBitmapPosition(0);
+			//showPreview->decodeFrame->EndTreatment();
 		}
 		else
 			showPreview->compressIsOK = false;
 
-		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+		if (showPreview->decodeFrameOriginal != nullptr)
+			delete showPreview->decodeFrameOriginal;
+
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
 
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
 	else
 	{
-		showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+		if (showPreview->decodeFrameOriginal != nullptr)
+			delete showPreview->decodeFrameOriginal;
+		//showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -303,8 +302,6 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 	if (transcodeFFmpeg == nullptr)
 		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder);
 
-	if (decodeFrame == nullptr)
-		decodeFrame = new CFFmpegDecodeFrame();
 
 	sliderVideo->Start();
 

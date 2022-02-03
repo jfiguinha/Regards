@@ -582,7 +582,7 @@ public:
 
 	static int decode_interrupt_cb(void *ctx);
 
-	int is_realtime(AVFormatContext *s);
+	int is_realtime(AVFormatContext *s, char * filename);
 	
 	/* this thread gets the stream from the disk or the network */
 	//½âÂëÏß³Ì£¬»ñµÃÊÓÒôÆµPacket²¢·ÅÈë¶ÓÁÐ

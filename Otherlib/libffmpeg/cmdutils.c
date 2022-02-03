@@ -31,6 +31,7 @@
 
 //#include "config.h"
 //#include "compat/va_copy.h"
+#include "libavcodec/bsf.h"
 #include "libavformat/avformat.h"
 #include "libavfilter/avfilter.h"
 #include "libavdevice/avdevice.h"

@@ -20,7 +20,7 @@ extern "C" {
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
 #include <VideoStabilization.h>
-#include <FFmpegDecodeFrame.h>
+
 using namespace Regards::OpenCV;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;

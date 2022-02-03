@@ -503,10 +503,8 @@
     <ClInclude Include="avif_heif.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
-    <ClInclude Include="buffer_data.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="ExrOption.h" />
-    <ClInclude Include="FFmpegDecodeFrame.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="hqdn3d.h" />
@@ -553,7 +551,6 @@
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
     <ClCompile Include="ExrOption.cpp" />
-    <ClCompile Include="FFmpegDecodeFrame.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="hqdn3d.cpp" />

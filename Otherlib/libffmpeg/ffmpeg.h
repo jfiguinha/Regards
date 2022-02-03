@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <signal.h>
-
+#include "libavcodec/bsf.h"
 #include "libavformat/avformat.h"
 #include "libavformat/avio.h"
 #include "libavcodec/avcodec.h"
@@ -254,6 +254,7 @@ typedef struct InputFilter {
     uint64_t channel_layout;
 
     AVBufferRef* hw_frames_ctx;
+    int32_t* displaymatrix;
 
     int eof;
 } InputFilter;
@@ -306,13 +307,14 @@ typedef struct InputStream {
     AVCodecContext* dec_ctx;
     const AVCodec* dec;
     AVFrame* decoded_frame;
-    AVFrame* filter_frame; /* a ref of decoded_frame, to be sent to filters */
     AVPacket* pkt;
 
+    int64_t       prev_pkt_pts;
     int64_t       start;     /* time when read started */
     /* predicted dts of the next packet read for this stream or (when there are
      * several frames in a packet) of the next frame in current packet (in AV_TIME_BASE units) */
     int64_t       next_dts;
+    int64_t first_dts;       ///< dts of the first packet read for this stream (in AV_TIME_BASE units)
     int64_t       dts;       ///< dts of the last packet read for this stream (in AV_TIME_BASE units)
 
     int64_t       next_pts;  ///< synthetic pts for the next decode frame (in AV_TIME_BASE units)
@@ -355,8 +357,6 @@ typedef struct InputStream {
         unsigned int initialize; ///< marks if sub2video_update should force an initialization
     } sub2video;
 
-    int dr1;
-
     /* decoded data from this stream goes into all those filters
      * currently video and audio only */
     InputFilter** filters;
@@ -373,11 +373,9 @@ typedef struct InputStream {
     /* hwaccel context */
     void* hwaccel_ctx;
     void (*hwaccel_uninit)(AVCodecContext* s);
-    int  (*hwaccel_get_buffer)(AVCodecContext* s, AVFrame* frame, int flags);
     int  (*hwaccel_retrieve_data)(AVCodecContext* s, AVFrame* frame);
     enum AVPixelFormat hwaccel_pix_fmt;
     enum AVPixelFormat hwaccel_retrieved_pix_fmt;
-    AVBufferRef* hw_frames_ctx;
 
     /* stats */
     // combined size of all the packets read

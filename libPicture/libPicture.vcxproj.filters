@@ -94,9 +94,6 @@
     <ClCompile Include="RGBAQuad.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="FFmpegDecodeFrame.cpp">
-      <Filter>ThumbnailVideo</Filter>
-    </ClCompile>
     <ClCompile Include="avif_heif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -228,9 +225,6 @@
     <ClInclude Include="RGBAQuad.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="FFmpegDecodeFrame.h">
-      <Filter>ThumbnailVideo</Filter>
-    </ClInclude>
     <ClInclude Include="RotateByShear.h">
       <Filter>Rotate</Filter>
     </ClInclude>
@@ -242,9 +236,6 @@
     </ClInclude>
     <ClInclude Include="hqdn3d.h">
       <Filter>hqdb3d</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_data.h">
-      <Filter>ThumbnailVideo</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVideoExport.h">
       <Filter>ThumbnailVideoGenerator</Filter>
