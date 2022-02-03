@@ -838,6 +838,13 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID& codec_id, const w
 			const int ret = avcodec_open2(pCodecCtx, p_codec, &param);
 			if (ret < 0)
 			{
+				/*
+				char str_err[256];
+				if (av_strerror(ret, str_err, 256) == 0)
+				{ 
+					printf("Error (%s) returned from encoded video", ret);
+				}
+				*/
 				avcodec_close(pCodecCtx);
 				avcodec_free_context(&pCodecCtx);
 				pCodecCtx = nullptr;

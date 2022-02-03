@@ -136,7 +136,7 @@ namespace Regards
 			bool criteriaSendMessage;
 			bool checkVersion;
 			bool setViewerMode = false;
-			CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
+			//CompressionAudioVideoOption* compressAudioVideoOption = nullptr;
 			CFFmpegTranscoding* ffmpegEncoder = nullptr;
 			wxString fileOut = "";
 			wxString fileOutAudio = "";
