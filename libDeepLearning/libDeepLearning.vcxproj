@@ -52,13 +52,6 @@
     <ClCompile Include="DetectFace.cpp" />
     <ClCompile Include="DetectRotation.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
-    <ClCompile Include="header.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base64.h" />
@@ -67,7 +60,6 @@
     <ClInclude Include="DetectRotation.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FaceRect.h" />
-    <ClInclude Include="header.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -247,7 +239,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libUtility;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\include;..\libextern\librapidxml;..\libParameter;..\libPicture;..\libSqlData;..\libSqlEngine;..\libUtility;..\libSqlite;..\libDatastructure;$(SolutionDir)libextern\opencv\opencv_contrib-4.5.1\modules\face\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\video\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\stitching\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\photo\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\ml\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\flann\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\calib3d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\features2d\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\dnn\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\highgui\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgcodecs\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\imgproc\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\objdetect\include;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\videoio\include</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -260,6 +252,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)\include\header_release.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -375,6 +368,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeaderOutputFile>$(SolutionDir)\include\header_debug.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -317,9 +317,9 @@ void CFFmfcPimpl::video_display(VideoState* is)
 					for (int i = 0; i < sp->sub.num_rects; i++)
 					{
 						AVSubtitleRect* rect = sp->sub.rects[i];
-						AVPicture picture = rect->pict;
+						//AVPicture picture = rect->pict;
 						auto bitmap = new CRegardsBitmap(rect->w, rect->h);
-						uint8_t* data = picture.data[0];
+						uint8_t* data = rect->data[0];
 
 						for (int y = 0; y < rect->h; y++)
 						{
@@ -327,7 +327,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 							{
 								int r, g, b, a;
 								int j = *data++;
-								RGBA_IN(r, g, b, a, (uint32_t*)picture.data[1] + j);
+								RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
 								CRgbaquad color(r, g, b, a);
 								bitmap->SetColorValue(x, y, color);
 							}
@@ -606,16 +606,15 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 								int pitch, j;
 
 								AVSubtitleRect* rect = sp->sub.rects[i];
-								AVPicture picture = rect->pict;
 								auto bitmap = new CRegardsBitmap(rect->w, rect->h);
-								uint8_t* data = picture.data[0];
+								uint8_t* data = rect->data[0];
 								for (int y = 0; y < rect->h; y++)
 								{
 									for (int x = 0; x < rect->w; x++)
 									{
 										int r, g, b, a;
 										int j = *data++;
-										RGBA_IN(r, g, b, a, (uint32_t*)picture.data[1] + j);
+										RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
 										CRgbaquad color(r, g, b, a);
 										bitmap->SetColorValue(x, y, color);
 									}
