@@ -318,10 +318,13 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 			if (wxFileExists(tempAudio))
 				wxRemoveFile(tempAudio);
 
-			ExportVideo(tempAudioVideoFile, filepath);
+			rename(tempAudioVideoFile, filepath);
 		}
 		else
-			ExportVideo(tempVideoFile, filepath);
+			rename(tempVideoFile, filepath);
+
+		wxString infos = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
+		wxMessageBox("Diaporama movie create", infos, wxICON_INFORMATION);
 	}
 }
 
