@@ -8,7 +8,7 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 class CFFmpegDecodeFrameFilter;
-class CFFmpegTranscodingPimpl;
+class CFFmpegTranscoding;
 class CThumbnailVideo;
 class CRegardsConfigParam;
 class CImageLoadingFormat;
@@ -81,7 +81,7 @@ namespace Regards
 			//bool bitmapWndLocal;
 			CThumbnailVideo* videoOriginal;
 			CVideoOptionCompress videoOptionCompress;
-			CFFmpegTranscodingPimpl* transcodeFFmpeg = nullptr;
+			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
 			CRegardsBitmap * decodeFrame = nullptr;
 			CRegardsBitmap* decodeFrameOriginal = nullptr;
 			

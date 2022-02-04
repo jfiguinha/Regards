@@ -179,20 +179,87 @@ static wxString ConvertSecondToTime(int sec)
 	return wxString::Format("%02d:%02d:%02d\n", h, m, s);
 }
 
-int CFFmpegTranscodingPimpl::GetExifRotation()
+CFFmpegTranscodingPimpl::CFFmpegTranscodingPimpl() : stream_ctx(nullptr),
+m_dlgProgress(nullptr),
+videoCompressOption(nullptr), duration{}
 {
-	if (rotation != 0)
+	dst = av_frame_alloc();
+	scaleContext = sws_alloc_context();
+	packet.data = nullptr;
+	packet.size = 0;
+	bitmapCopy = new CRegardsBitmap();
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	if (supportOpenCL)
 	{
-		if (rotation == -90)
-			return 5;
-		else if (rotation == 90)
-			return 7;
-		else if (rotation == 180)
-			return 3;
+		if (openclContext != nullptr)
+			openclEffectYUV = new COpenCLEffectVideoYUV();
+	}
+}
+;
+
+void CFFmpegTranscodingPimpl::EndTreatment()
+{
+	if (cleanPacket)
+	{
+		if (packet.data != nullptr)
+			av_packet_unref(&packet);
+		Release();
+		if (bitmapShow != nullptr)
+		{
+			bitmapShow->join();
+			delete bitmapShow;
+		}
+		cleanPacket = false;
+	}
+}
+
+CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
+{
+	EndTreatment();
+
+	if (copyFrameBuffer != nullptr)
+	{
+		av_freep(&copyFrameBuffer->data[0]);
+		av_frame_free(&copyFrameBuffer);
 	}
 
-	return 4;
-}
+	copyFrameBuffer = nullptr;
+
+	if (dst != nullptr)
+	{
+		av_freep(&dst->data[0]);
+		av_frame_free(&dst);
+	}
+
+	if (dst_hardware != nullptr)
+	{
+		av_freep(&dst_hardware->data[0]);
+		av_frame_free(&dst_hardware);
+	}
+
+
+	if (scaleContext != nullptr)
+		sws_freeContext(scaleContext);
+#ifdef USE_FILTER
+	if (filterContext != nullptr)
+		sws_freeContext(filterContext);
+#endif
+	if (localContext != nullptr)
+		sws_freeContext(localContext);
+
+	if (openclEffectYUV != nullptr)
+		delete openclEffectYUV;
+
+	if (bitmapCopy != nullptr)
+		delete bitmapCopy;
+
+	if (bitmapData != nullptr)
+		delete bitmapData;
+};
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 {
@@ -1669,9 +1736,6 @@ int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame* frame, unsigned 
 
 void CFFmpegTranscodingPimpl::SetFrameData(AVFrame* src_frame, CompressVideo* m_dlgProgress)
 {
-	if (processEnd)
-		return;
-
 	bool createFrame = true;
 
 	if (bitmapShow == nullptr)
@@ -2562,7 +2626,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 	return ret;
 }
 
-int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemoryOutputStream* dataOutput, const wxString& input,
+int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input,
                                             const wxString& output, const long& time,
                                             CVideoOptionCompress* videoCompressOption)
 {
@@ -2580,7 +2644,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemo
 	else
 		isBuffer = true;
 	this->videoCompressOption = videoCompressOption;
-	processEnd = false;
 	showpreview = false;
 	this->outputFile = output;
 	this->dataOutput = dataOutput;
@@ -2607,7 +2670,6 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	//bool first = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
-	processEnd = false;
 
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;

@@ -231,9 +231,6 @@ void CMainWindow::OnDeleteFace(wxCommandEvent& event)
 		auto eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
 		wxQueueEvent(this, eventChange);
 	}
-
-
-
 }
 
 void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
@@ -570,7 +567,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 							if (wxFileExists(filepath))
 								wxRemoveFile(filepath);
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding();
 							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption, videoOutputRotation);
 						}
 					}
@@ -637,7 +634,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutVideo))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding();
 							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption, videoOutputRotation);
 							isAudio = true;
 						}
@@ -649,7 +646,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						if (wxFileExists(fileOutAudio))
 						{
 							wxString decoder = "";
-							ffmpegEncoder = new CFFmpegTranscoding(decoder);
+							ffmpegEncoder = new CFFmpegTranscoding();
 							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption, videoOutputRotation);
 							isAudio = false;
 						}

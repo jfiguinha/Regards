@@ -1,5 +1,4 @@
 #include <header.h>
-#include <FFmpegTranscodingPimpl.h>
 #include "ShowPreview.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -20,6 +19,7 @@
 #include <Tracing.h>
 #include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
+#include "ffmpeg_transcoding.h"
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -109,6 +109,9 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	videoOriginal = new CThumbnailVideo();
+
+
+	transcodeFFmpeg = new CFFmpegTranscoding();
 }
 
 void CShowPreview::SetParameter(const wxString& videoFilename,
@@ -243,9 +246,7 @@ void CShowPreview::ThreadLoading(void* data)
 			showPreview->extension = filename.GetExt();
 		}
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
-		ret = showPreview->transcodeFFmpeg->EncodeOneFrame(nullptr, nullptr, showPreview->filename, fileTemp,
-		                                                   showPreview->position, &showPreview->videoOptionCompress);
-		showPreview->transcodeFFmpeg->EndTreatment();
+		ret = showPreview->transcodeFFmpeg->EncodeFrame(showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
 
 		if (ret == 0)
 		{
@@ -300,8 +301,6 @@ void CShowPreview::UpdateBitmap(CVideoOptionCompress* videoOptionCompress, const
 		this->extension = extension;
 	}
 
-	if (transcodeFFmpeg == nullptr)
-		transcodeFFmpeg = new CFFmpegTranscodingPimpl(decoder);
 
 
 	sliderVideo->Start();

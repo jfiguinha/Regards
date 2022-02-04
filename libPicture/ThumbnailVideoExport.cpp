@@ -111,6 +111,7 @@ void CThumbnailVideoOpenCVExportImpl::WritePicture(cv::Mat& dest)
 	outputVideo.write(dest);
 }
 
+
 //**********************************************************************
 //
 //**********************************************************************
@@ -133,8 +134,6 @@ CRegardsBitmap* CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& file
 	delete pBitmap;
 	return src_bitmap;
 }
-
-
 
 //**********************************************************************
 //

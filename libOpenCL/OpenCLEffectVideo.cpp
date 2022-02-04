@@ -35,6 +35,32 @@ COpenCLEffectVideo::COpenCLEffectVideo()
 	openclFilter = new COpenCLFilter();
 }
 
+void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
+{
+	cv::cvtColor(frame, paramSrc, cv::COLOR_BGR2BGRA);
+}
+
+cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)
+{
+	cv::Mat output;
+
+	if (src)
+	{
+		paramSrc.copyTo(output);
+	}
+	else if (interpolatePicture)
+	{
+		paramOutput.copyTo(output);
+	}
+	else
+	{
+		paramSrc.copyTo(output);
+	}
+
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+
+	return output;
+}
 
 bool COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
 {

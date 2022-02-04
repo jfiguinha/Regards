@@ -59,109 +59,18 @@ public:
 	};
 
 
-	CFFmpegTranscodingPimpl(const wxString& acceleratorHardware): stream_ctx(nullptr),
-		m_dlgProgress(nullptr),
-		videoCompressOption(nullptr), duration{}
-	{
-		dst = av_frame_alloc();
-		scaleContext = sws_alloc_context();
-		packet.data = nullptr;
-		packet.size = 0;
-		this->acceleratorHardware = acceleratorHardware;
-		bitmapCopy = new CRegardsBitmap();
-		int supportOpenCL = 0;
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-			supportOpenCL = config->GetIsOpenCLSupport();
+	CFFmpegTranscodingPimpl();
+	~CFFmpegTranscodingPimpl();
 
-		if (supportOpenCL)
-		{
-			if (openclContext != nullptr)
-				openclEffectYUV = new COpenCLEffectVideoYUV();
-		}
-	}
-	;
-
-	void EndTreatment()
-	{
-		if (cleanPacket)
-		{
-			if (packet.data != nullptr)
-				av_packet_unref(&packet);
-			Release();
-			if (bitmapShow != nullptr)
-			{
-				bitmapShow->join();
-				delete bitmapShow;
-			}
-			cleanPacket = false;
-		}
-	}
-
-	~CFFmpegTranscodingPimpl()
-	{
-		EndTreatment();
-
-		if (copyFrameBuffer != nullptr)
-		{
-			av_freep(&copyFrameBuffer->data[0]);
-			av_frame_free(&copyFrameBuffer);
-		}
-
-		copyFrameBuffer = nullptr;
-
-		if (dst != nullptr)
-		{
-			av_freep(&dst->data[0]);
-			av_frame_free(&dst);
-		}
-
-		if (dst_hardware != nullptr)
-		{
-			av_freep(&dst_hardware->data[0]);
-			av_frame_free(&dst_hardware);
-		}
-
-
-		if (scaleContext != nullptr)
-			sws_freeContext(scaleContext);
-#ifdef USE_FILTER
-		if(filterContext != nullptr)
-			sws_freeContext(filterContext);
-#endif
-		if (localContext != nullptr)
-			sws_freeContext(localContext);
-
-		if (openclEffectYUV != nullptr)
-			delete openclEffectYUV;
-
-		if (bitmapCopy != nullptr)
-			delete bitmapCopy;
-
-		if (bitmapData != nullptr)
-			delete bitmapData;
-	};
-
-	static void DisplayPreview(void* data);
-
-	void ProcessEnd()
-	{
-		processEnd = true;
-	}
-
-	int EncodeOneFrame(CompressVideo* m_dlgProgress, wxMemoryOutputStream* dataOutput, const wxString& input, const wxString& output,
-	                   const long& time, CVideoOptionCompress* videoCompressOption);
-	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress,
-	               CVideoOptionCompress* videoCompressOption);
-	int OpenFile(const wxString& input, const wxString& output);
-
-	int IsSupportOpenCL();
-
-	int GetExifRotation();
-
+	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption);
+	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
+	
 private:
 
-
+	static void DisplayPreview(void* data);
+	void EndTreatment();
+	int IsSupportOpenCL();
+	int OpenFile(const wxString& input, const wxString& output);
 	static int write_packet(void* opaque, uint8_t* buf, int buf_size);
 
 	void VideoTreatment(AVFrame* & tmp_frame, StreamContext* stream);
@@ -217,7 +126,6 @@ private:
 	char duration[255];
 	double pos = 0;
 	double pourcentage = 0;
-	bool processEnd = true;
 	int nbframe = 0;
 	int nbframePerSecond = 0;
 	AVBufferRef* hw_device_ctx = nullptr;

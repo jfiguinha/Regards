@@ -51,7 +51,8 @@ namespace Regards
 
 			virtual ~COpenCLEffectVideo();
 			virtual bool IsOk();
-			
+			void SetMatrix(cv::Mat& frame);
+			cv::Mat GetMatrix(const bool & src = true);
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
 			bool CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);

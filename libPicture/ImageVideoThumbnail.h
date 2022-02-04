@@ -9,30 +9,6 @@
 #pragma once
 #include "ImageLoadingFormat.h"
 
-#if (defined(__APPLE__) || defined(WIN32)) && !defined(FFMPEG)
-
-class CRegardsBitmap;
-
-class CImageVideoThumbnail
-{
-public:
-    
-	CImageVideoThumbnail()
-	{
-		image = nullptr;
-		rotation = 0;
-		percent = 0;
-		timePosition = 0;
-	};
-	~CImageVideoThumbnail(){};
-    
-    CRegardsBitmap * image;
-    int rotation;
-    int percent;
-    int timePosition;
-};
-
-#elif defined(FFMPEG)
 
 class CImageLoadingFormat;
 
@@ -64,4 +40,4 @@ public:
 	int timePosition;
 	bool memoryDelete = true;
 };
-#endif
+
