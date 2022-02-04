@@ -10,13 +10,14 @@ vcpkg install freeglut:x64-windows --recurse
 vcpkg install x265:x64-windows --recurse
 vcpkg install OpenExr:x64-windows --recurse
 vcpkg install libraw:x64-windows --recurse
-vcpkg install fftw3[avx2,openmp,threads]:x64-windows --recurse
 vcpkg install jasper:x64-windows --recurse
 vcpkg install curl:x64-windows --recurse
 vcpkg install exiv2[video,xmp]:x64-windows --recurse
 vcpkg install dav1d:x64-windows --recurse
 vcpkg install wxWidgets:x64-windows --recurse
-vcpkg install opencv[contrib,ipp,openmp]:x64-windows --recurse
+vcpkg install opencv[contrib,ipp,openmp,ffmpeg]:x64-windows --recurse
 vcpkg install freeimage:x64-windows --recurse
 vcpkg install aom:x64-windows --recurse
+vcpkg install poppler:x64-windows --recurse
+vcpkg install libmediainfo:x64-windows --recurse
 vcpkg install opencl:x64-windows --recurse
