@@ -67,6 +67,7 @@ public:
 	
 private:
 
+	cv::Mat ApplyProcess(CRegardsBitmap* bitmap);
 	static void DisplayPreview(void* data);
 	void EndTreatment();
 	int IsSupportOpenCL();
@@ -79,9 +80,9 @@ private:
 	void DecodeHardwareFrame(AVFrame* & tmp_frame, AVFrame* sw_frame, StreamContext* stream);
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
 	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx,
-	                              const wxString& encoderName);
+		const wxString& encoderName);
 	bool openHardEncoder(const AVCodecID& codec_id, const wxString& encoderName, AVCodecContext* pSourceCodecCtx,
-	                     AVStream* stream);
+		AVStream* stream);
 	bool openSoftEncoder(const AVCodecID& codec_id, AVCodecContext* pSourceCodecCtx, AVStream* stream);
 	AVCodecID GetCodecID(AVMediaType codec_type) const;
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString& nameEncoder);
@@ -89,10 +90,7 @@ private:
 
 	int open_input_file(const wxString& filename);
 	int open_output_file(const wxString& filename);
-#ifdef USE_FILTER
-	int init_filter(FilteringContext* fctx, AVCodecContext *dec_ctx, AVCodecContext *enc_ctx, const char *filter_spec);
-	int init_filters(void);
-#endif
+
 	int filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress,
 	                              const int& isvideo);
 	int flush_encoder(unsigned int stream_index);
@@ -115,6 +113,7 @@ private:
 	mutex muFrame;
 	mutex muWriteData;
 	bool isend = true;
+	wxString input_file = "";
 
 	CVideoOptionCompress* videoCompressOption;
 	//char timebase[255];

@@ -262,7 +262,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	CVideoOptionCompress videoOptionCompress;
 	GetCompressionOption(&videoOptionCompress);
 	showBitmapWindow->SetParameter(videoFilename, &videoOptionCompress);
-	showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
+	//showBitmapWindow->UpdateBitmap(&videoOptionCompress, extension);
 
 	
 	wxFileName filepath(videoOutputFilename);

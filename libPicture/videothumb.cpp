@@ -34,31 +34,42 @@ int CThumbnailVideo::GetVideoOrientation()
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
+	CRegardsBitmap* regardBitmap = nullptr;
 	VideoCapture capture(filename.ToStdString());
 	Mat frame;
 	Mat resize;
 	double fps = capture.get(CAP_PROP_FPS);
 	double noFrame = fps * timePosition;
-	bool success = capture.set(CAP_PROP_POS_FRAMES, noFrame);
+	if(timePosition != 0)
+		capture.set(CAP_PROP_POS_FRAMES, noFrame);
 
 	if (!capture.isOpened())
 		throw "Error when reading steam_avi";
 
-	capture >> frame;
-	cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
-	
-	CRegardsBitmap* regardBitmap = new CRegardsBitmap();
-	if (thumbnailWidth != 0 && thumbnailHeight != 0)
+	try
 	{
-		cv::resize(frame, resize, cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
+		capture >> frame;
+		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+
+		regardBitmap = new CRegardsBitmap();
+		if (thumbnailWidth != 0 && thumbnailHeight != 0)
+		{
+			cv::resize(frame, resize, cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
+		}
+		else
+		{
+
+			regardBitmap->SetMatrix(frame);
+		}
+
+		regardBitmap->VertFlipBuf();
 	}
-	else
+	catch(...)
 	{
-	
+		frame = cv::Mat(320, 240, CV_8UC4, cv::Scalar(0, 0, 0));
+		regardBitmap = new CRegardsBitmap();
 		regardBitmap->SetMatrix(frame);
 	}
-
-	regardBitmap->VertFlipBuf();
 	return regardBitmap;
 
 }
