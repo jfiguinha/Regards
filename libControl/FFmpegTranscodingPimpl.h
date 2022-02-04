@@ -26,7 +26,7 @@ using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
-
+class CffmpegToBitmap;
 extern COpenCLContext* openclContext;
 
 class CFFmpegTranscodingPimpl
@@ -86,7 +86,7 @@ private:
 	AVCodecID GetCodecID(AVMediaType codec_type) const;
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString& nameEncoder);
 	int encode_write_frame(AVFrame* filt_frame, unsigned int stream_index);
-	void CopyFrame(AVFrame* frame);
+
 	int open_input_file(const wxString& filename);
 	int open_output_file(const wxString& filename);
 #ifdef USE_FILTER
@@ -115,7 +115,7 @@ private:
 	mutex muFrame;
 	mutex muWriteData;
 	bool isend = true;
-	AVFrame* copyFrameBuffer = nullptr;
+
 	CVideoOptionCompress* videoCompressOption;
 	//char timebase[255];
 	char duration[255];
@@ -126,7 +126,9 @@ private:
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
-	wxString acceleratorHardware = "dxva2";
+
+	CRegardsBitmap* bmp = nullptr;
+
 	double duration_movie = 0.0;
 	AVFrame* dst = nullptr;
 	AVFrame* dst_hardware = nullptr;
