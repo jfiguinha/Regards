@@ -105,15 +105,10 @@ private:
 
 	AVFormatContext* ifmt_ctx = nullptr;
 	AVFormatContext* ofmt_ctx = nullptr;
-#ifdef USE_FILTER
-	FilteringContext *filter_ctx = nullptr;
-#endif
 	StreamContext* stream_ctx;
 	AVPacket packet;
 	bool cleanPacket = false;
 	int rotation = 0;
-	CRegardsBitmap* bitmapVideo = nullptr;
-
 	std::thread* bitmapShow = nullptr;
 	CompressVideo* m_dlgProgress;
 	mutex muEnding;
@@ -136,37 +131,19 @@ private:
 	AVFrame* dst = nullptr;
 	AVFrame* dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
-#ifdef USE_FILTER
-	SwsContext* filterContext = nullptr;
-#endif
 	SwsContext* localContext = nullptr;
-	//bool m_allowSeek = true;
 	int videoStreamIndex = 0;
 	int64_t startTime = 0;
-	//CRegardsBitmap * bitmap = nullptr;
-	CRegardsBitmap* bitmapCopy = nullptr;
-	CRegardsBitmap* bitmapData = nullptr;
-	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
-	
 	bool showpreview = false;
-
-	//int oldPos = 0;
 	bool encodeOneFrame = false;
 	bool first = true;
 	bool deleteFrame = false;
 	bool first_frame = true;
-	//bool first_yuv = true;
 
-	bool isBuffer = false;
-
-	AVIOContext* avio_ctx = nullptr;
-	wxMemoryOutputStream* dataOutput = nullptr;
-	uint8_t* avio_ctx_buffer = nullptr;
-	size_t avio_ctx_buffer_size = 4096;
 	wxString outputFile;
 	std::map<int, int> streamCorrespondant;
 
-	COpenCVStabilization* openCVStabilization = nullptr;
+	Regards::OpenCV::COpenCVStabilization* openCVStabilization = nullptr;
 	int nbFrame = 0;
 
 	int framerate = 30;

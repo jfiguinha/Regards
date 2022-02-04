@@ -9,7 +9,7 @@ using namespace Regards::OpenGL;
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
-	CFiltreEffetCPU(const CRgbaquad &back_color, CImageLoadingFormat * bitmap);
+	CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
 
 	int HistogramNormalize();

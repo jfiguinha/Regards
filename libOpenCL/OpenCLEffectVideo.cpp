@@ -37,7 +37,7 @@ COpenCLEffectVideo::COpenCLEffectVideo()
 
 void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 {
-	cv::cvtColor(frame, paramSrc, cv::COLOR_BGR2BGRA);
+	cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
 cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)

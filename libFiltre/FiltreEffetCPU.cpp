@@ -203,7 +203,7 @@ cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
 
 
 
-CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad& back_color, CImageLoadingFormat* bitmap)
+CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(back_color)
 {
 	this->backColor = back_color;
