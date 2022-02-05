@@ -256,6 +256,7 @@ void CShowPreview::ThreadLoading(void* data)
 				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
 			showPreview->decodeFrame->ApplyRotation(showPreview->orientation);
+			showPreview->decodeFrame->VertFlipBuf();
 			//showPreview->compressIsOK = true;
 			//showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
 			//showPreview->decodeFrame->GetFrameBitmapPosition(0);

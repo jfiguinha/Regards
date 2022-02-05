@@ -14,7 +14,7 @@
 #include <OpenCLFilter.h>
 #include <OpenCLEffectVideo.h>
 #include <FiltreEffetCPU.h>
-
+#include <MediaInfo.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavcodec/packet.h>
@@ -1683,6 +1683,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	}
 	CRegardsBitmap bitmap;
 	bitmap.SetMatrix(frameOutput);
+	bitmap.ApplyRotation(rotation);
+	bitmap.VertFlipBuf();
 	frameOutput = ApplyProcess(&bitmap);
 
 	AVFrame* frame = av_frame_alloc();
@@ -1690,9 +1692,12 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		fprintf(stderr, "Could not allocate video frame\n");
 		exit(1);
 	}
+
+	StreamContext* stream = &stream_ctx[videoStreamIndex];
+
 	frame->format = AV_PIX_FMT_YUV420P;
-	frame->width = frameOutput.cols;
-	frame->height = frameOutput.rows;
+	frame->width = stream->dec_ctx->width;
+	frame->height = stream->dec_ctx->height;
 
 	/* the image can be allocated by any means and av_image_alloc() is
 	 * just the most convenient way if av_malloc() is to be used */
@@ -1704,7 +1709,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	if (dst_hardware == nullptr)
 	{
-		dst_hardware = av_frame_alloc();
+		//dst_hardware = av_frame_alloc();
 
 		av_opt_set_int(scaleContext, "srcw", frame->width, 0);
 		av_opt_set_int(scaleContext, "srch", frame->height, 0);
@@ -1731,15 +1736,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	AVPacket pkt;
 	/* encode 1 second of video */
 	for (int i = 0; i < fps; i++) {
-		av_init_packet(&pkt);
-		pkt.data = NULL;    // packet data will be allocated by the encoder
-		pkt.size = 0;
-		stream_index = packet.stream_index;
 		frame->pts = i;
-
 		ret = filter_encode_write_frame(frame, stream_index, nullptr, 1);
-
-		av_packet_unref(&pkt);
 	}
 
 	// flush encoder
@@ -2070,6 +2068,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	showpreview = false;
 	this->outputFile = output;
 	input_file = input;
+
+	CMediaInfo mediaInfo;
+	orientation = mediaInfo.GetVideoRotation(input);
+
+	orientation = 360 - orientation;
+
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
 

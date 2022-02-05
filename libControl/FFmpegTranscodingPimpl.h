@@ -114,7 +114,8 @@ private:
 	mutex muWriteData;
 	bool isend = true;
 	wxString input_file = "";
-
+	int orientation = 0;
+	int videoIndex = 0;
 	CVideoOptionCompress* videoCompressOption;
 	//char timebase[255];
 	char duration[255];

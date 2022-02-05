@@ -193,7 +193,6 @@ CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		bitmap = new CRegardsBitmap();
 		muBitmap.lock();
 		*bitmap = *pictureVideo;
-		bitmap->VertFlipBuf();
 		muBitmap.unlock();
 		isFromBuffer = true;
 	}

@@ -1446,7 +1446,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				CThumbnailVideo video;
 				video.SetFilename(szFileName);
 				bitmap->SetPicture(video.GetVideoFrame(timePosition, widthThumbnail, heightThumbnail));
-				bitmap->SetOrientation(video.GetVideoOrientation());
+				bitmap->SetOrientation(0);
 				bitmap->SetFilename(szFileName);
 				break;
 			}
@@ -2613,7 +2613,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				video.SetFilename(fileName);
 				int duration = video.GetMovieDuration() * 20.0 / 100.0;
 				bitmap->SetPicture(video.GetVideoFrame(duration, 0, 0));
-				bitmap->SetOrientation(video.GetVideoOrientation());
+				bitmap->SetOrientation(0);
 				bitmap->SetFilename(fileName);
 			}
 			break;

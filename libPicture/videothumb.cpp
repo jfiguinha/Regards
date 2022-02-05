@@ -34,20 +34,22 @@ int CThumbnailVideo::GetVideoOrientation()
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
-	CRegardsBitmap* regardBitmap = nullptr;
-	VideoCapture capture(filename.ToStdString());
 	Mat frame;
-	Mat resize;
-	double fps = capture.get(CAP_PROP_FPS);
-	double noFrame = fps * timePosition;
-	if(timePosition != 0)
-		capture.set(CAP_PROP_POS_FRAMES, noFrame);
-
-	if (!capture.isOpened())
-		throw "Error when reading steam_avi";
-
+	CRegardsBitmap* regardBitmap = nullptr;
 	try
 	{
+		
+		VideoCapture capture(filename.ToStdString());
+		
+		Mat resize;
+		double fps = capture.get(CAP_PROP_FPS);
+		double noFrame = fps * timePosition;
+		if (timePosition != 0)
+			capture.set(CAP_PROP_POS_FRAMES, noFrame);
+
+		if (!capture.isOpened())
+			throw "Error when reading steam_avi";
+
 		capture >> frame;
 		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
@@ -125,7 +127,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->timePosition = timePosition;
 		cxVideo->image->SetPicture(picture);
 		cxVideo->image->SetFilename(filename);
-		cxVideo->image->SetOrientation(rotation);
+		cxVideo->image->SetOrientation(0);
 		listPicture.push_back(cxVideo);
 
 		pos += nbFrame;

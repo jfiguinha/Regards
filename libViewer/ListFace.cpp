@@ -508,9 +508,7 @@ void CListFace::FacialRecognition(void* param)
 			if (pictureData != nullptr)
 			{
 				pictureData->SetFilename(path->filename);
-				pictureData->SetOrientation(orientation);
-				pictureData->VertFlipBuf();
-
+				pictureData->SetOrientation(0);
 				listFace = CDeepLearning::FindFace(pictureData);
 				path->nbFace = listFace.size();
 			}
