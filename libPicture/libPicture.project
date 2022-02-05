@@ -41,9 +41,7 @@
   <VirtualDirectory Name="ThumbnailVideo">
     <File Name="videothumb.h"/>
     <File Name="ImageVideoThumbnail.h"/>
-    <File Name="FFmpegDecodeFrame.h"/>
     <File Name="videothumb.cpp"/>
-    <File Name="FFmpegDecodeFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
     <File Name="ThumbnailData.h"/>

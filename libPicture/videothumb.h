@@ -15,7 +15,7 @@ public:
 	void GetVideoDimensions(int& width, int& height, int& rotation);
 	int64_t GetMovieDuration();
 	int GetVideoOrientation();
-	vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail, const bool& compressJpeg);
+	vector<CImageVideoThumbnail*> GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail, const bool& compressJpeg);
 private:
 	wxString filename;
 
