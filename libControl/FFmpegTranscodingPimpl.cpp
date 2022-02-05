@@ -1306,45 +1306,49 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 
 	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
 
-	if (ret < 0)
-		return ret;
-
-	while (ret >= 0)
+	if (ret >= 0)
 	{
-		ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
-
-		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-			return 0;
-
-		/* prepare packet for muxing */
-		enc_pkt.stream_index = stream_index;
-
-		int outputIndex = streamCorrespondant[stream_index];
-
-		if (ofmt_ctx->streams[outputIndex]->time_base.den == ifmt_ctx->streams[outputIndex]->time_base.den
-			&& ofmt_ctx->streams[outputIndex]->time_base.num == ifmt_ctx->streams[outputIndex]->time_base.num)
+		while (ret >= 0)
 		{
-			av_packet_rescale_ts(&enc_pkt,
-				ifmt_ctx->streams[outputIndex]->time_base,
-				ofmt_ctx->streams[outputIndex]->time_base);
+			ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
+
+			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			{
+				ret = 0;
+				break;
+			}
+			/* prepare packet for muxing */
+			enc_pkt.stream_index = stream_index;
+
+			int outputIndex = streamCorrespondant[stream_index];
+
+			if (ofmt_ctx->streams[outputIndex]->time_base.den == ifmt_ctx->streams[outputIndex]->time_base.den
+				&& ofmt_ctx->streams[outputIndex]->time_base.num == ifmt_ctx->streams[outputIndex]->time_base.num)
+			{
+				av_packet_rescale_ts(&enc_pkt,
+					ifmt_ctx->streams[outputIndex]->time_base,
+					ofmt_ctx->streams[outputIndex]->time_base);
+			}
+			else
+			{
+				av_packet_rescale_ts(&enc_pkt,
+					stream->enc_ctx->time_base,
+					ofmt_ctx->streams[outputIndex]->time_base);
+			}
+
+			if (enc_pkt.duration > 0)
+				enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base,
+					stream->enc_ctx->time_base);
+
+
+			av_log(nullptr, AV_LOG_DEBUG, "Muxing frame\n");
+			/* mux encoded frame */
+			av_write_frame(ofmt_ctx, &enc_pkt);
+			//av_packet_unref(&enc_pkt);
 		}
-		else
-		{
-			av_packet_rescale_ts(&enc_pkt,
-				stream->enc_ctx->time_base,
-				ofmt_ctx->streams[outputIndex]->time_base);
-		}
-
-		if (enc_pkt.duration > 0)
-			enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base,
-				stream->enc_ctx->time_base);
-
-
-		av_log(nullptr, AV_LOG_DEBUG, "Muxing frame\n");
-		/* mux encoded frame */
-		av_write_frame(ofmt_ctx, &enc_pkt);
-		av_packet_unref(&enc_pkt);
 	}
+
+	av_free_packet(&enc_pkt);
 
 	return ret;
 }
@@ -1670,7 +1674,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
 
 	bool firstPos = true;
-
+	int height = 0;
+	int width = 0;
 	double fps = 0;
 	Mat frameOutput;
 	{
@@ -1679,6 +1684,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		double noFrame = fps * timeInSeconds;
 		bool success = capture.set(CAP_PROP_POS_FRAMES, noFrame);
 		capture >> frameOutput;
+		width = capture.get(CAP_PROP_FRAME_WIDTH);
+		height = capture.get(CAP_PROP_FRAME_HEIGHT);
 		cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 	}
 	CRegardsBitmap bitmap;
@@ -1733,8 +1740,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	sws_scale(scaleContext, &frameOutput.data, &linesize, 0, frameOutput.rows,
 		frame->data, frame->linesize);
 
-	AVPacket pkt;
-	/* encode 1 second of video */
+
 	for (int i = 0; i < fps; i++) {
 		frame->pts = i;
 		ret = filter_encode_write_frame(frame, stream_index, nullptr, 1);
@@ -2137,6 +2143,7 @@ void CFFmpegTranscodingPimpl::Release()
 		stream_ctx = nullptr;
 		ifmt_ctx = nullptr;
 	}
+
 
 	if (ofmt_ctx != nullptr)
 	{
