@@ -6,6 +6,7 @@
 #include <RegardsBitmap.h>
 #include <opencv2/core/core.hpp>
 #include "MediaInfo.h"
+#include <ConvertUtility.h>
 using namespace Regards::Picture;
 using namespace cv;
 
@@ -28,7 +29,7 @@ CThumbnailVideo::~CThumbnailVideo()
 int CThumbnailVideo::GetVideoOrientation()
 {
 	CMediaInfo mediaInfo;
-	return mediaInfo.GetVideoRotation(filename);
+	return mediaInfo.GetVideoRotation(CConvertUtility::ConvertToUTF8(filename));
 
 }
 
@@ -39,7 +40,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 	try
 	{
 		
-		VideoCapture capture(filename.ToStdString());
+		VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
 		
 		Mat resize;
 		double fps = capture.get(CAP_PROP_FPS);
@@ -99,7 +100,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 
 void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
 {
-	VideoCapture capture(filename.ToStdString());
+	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
 	width = capture.get(CAP_PROP_FRAME_WIDTH);
 	height = capture.get(CAP_PROP_FRAME_HEIGHT);
 	
@@ -107,7 +108,7 @@ void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
 
 int64_t CThumbnailVideo::GetMovieDuration()
 {
-	VideoCapture capture(filename.ToStdString());
+	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
 	double fps = capture.get(CAP_PROP_FPS);
 	double frame_count = int(capture.get(CAP_PROP_FRAME_COUNT));
 	double duration = frame_count / fps;
@@ -119,7 +120,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 {
 	int exifRotation = 0;
 	int rotation = GetVideoOrientation();
-	VideoCapture capture(filename.ToStdString());
+	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
 	if (!capture.isOpened())
 		throw "Error when reading steam_avi";
 

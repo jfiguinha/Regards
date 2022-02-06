@@ -1675,7 +1675,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	double fps = 0;
 	Mat frameOutput;
 	{
-		VideoCapture capture(input_file.ToStdString());
+		VideoCapture capture(CConvertUtility::ConvertToUTF8(input_file));
 		fps = capture.get(CAP_PROP_FPS);
 		double noFrame = fps * timeInSeconds;
 		bool success = capture.set(CAP_PROP_POS_FRAMES, noFrame);
@@ -2087,7 +2087,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	begin = std::chrono::steady_clock::now();
 
 	{
-		VideoCapture capture(input.ToStdString());
+		VideoCapture capture(CConvertUtility::ConvertToUTF8(input));
 		fps = capture.get(CAP_PROP_FPS);
 		totalFrame = int(capture.get(CAP_PROP_FRAME_COUNT));
 		duration = totalFrame / fps;

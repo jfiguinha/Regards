@@ -1961,7 +1961,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 		//CThumbnailVideo video;
 		//video.SetFilename(szFileName);
 		//is_valid = video.IsOk();
-		cv::VideoCapture capture(szFileName.ToStdString());
+		cv::VideoCapture capture(CConvertUtility::ConvertToUTF8(szFileName));
 		if (capture.isOpened())
 		{
 			fileValid.insert(std::make_pair(szFileName, is_valid));
