@@ -248,6 +248,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 	CFFmpegTranscodingPimpl* ffmpeg_trans = static_cast<CFFmpegTranscodingPimpl*>(data);
 	if (ffmpeg_trans != nullptr)
 	{
+		char duration[255];
 		//auto imageLoadingFormat = new CImageLoadingFormat(false);
 		ffmpeg_trans->muFrame.lock();
 		ffmpeg_trans->m_dlgProgress->SetBitmap(ffmpeg_trans->bmp);
@@ -255,25 +256,28 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		ffmpeg_trans->muFrame.unlock();
 		ffmpeg_trans->muWriteData.lock();
 
-		double duration_total = ffmpeg_trans->duration_movie;
+		double percent = ((double)ffmpeg_trans->nbFrameEncoded / (double)ffmpeg_trans->totalFrame);
+		double pos = percent * ffmpeg_trans->duration;
 
-		int posVideo = static_cast<int>(ffmpeg_trans->pos);
+		sprintf(duration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(percent * 100), static_cast<int>(pos), static_cast<int>(ffmpeg_trans->duration));
 
-		ffmpeg_trans->m_dlgProgress->SetPos(duration_total, posVideo);
-		ffmpeg_trans->m_dlgProgress->SetTextProgression(ffmpeg_trans->duration);
+		ffmpeg_trans->m_dlgProgress->SetPos(static_cast<int>(ffmpeg_trans->duration), static_cast<int>(pos));
+		ffmpeg_trans->m_dlgProgress->SetTextProgression(duration);
 
 
 		double dif = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::steady_clock::now() - ffmpeg_trans->begin).count();
             
        // dif = dif / 100.0;
-		wxString frame = wxString::Format("%d fps", static_cast<int>(ffmpeg_trans->nbframe / dif));
+		int nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
+		int missingFrame = ffmpeg_trans->totalFrame - ffmpeg_trans->nbFrameEncoded;
+
+		double timeMissing = missingFrame / nbFpsPerSecond;
+
+		wxString frame = wxString::Format("%d fps", nbFpsPerSecond);
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
 
-		double pourcentage = (static_cast<double>(posVideo) / duration_total) * 100.0f;
-		double timeMissing = (dif * 100.0f) / pourcentage;
-
-		frame = ConvertSecondToTime(static_cast<int>(timeMissing - dif));
+		frame = ConvertSecondToTime(timeMissing);
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 3);
 
 		frame = ConvertSecondToTime(static_cast<int>(dif));
@@ -390,7 +394,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
 				startTime = ifmt_ctx->start_time;
-				duration_movie = ifmt_ctx->duration / 1000000;
+
 				auto matrix = reinterpret_cast<int32_t*>(
 					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
 				if (matrix)
@@ -1519,7 +1523,6 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 
 void CFFmpegTranscodingPimpl::VideoInfos(StreamContext* stream)
 {
-	nbframe++;
 	end = std::chrono::steady_clock::now();
 
 	if (first_frame)
@@ -1527,15 +1530,6 @@ void CFFmpegTranscodingPimpl::VideoInfos(StreamContext* stream)
 		first_frame = false;
 	}
 
-	muWriteData.lock();
-	double duration_total = duration_movie;
-
-	int posVideo = static_cast<int>(pos);
-	pourcentage = (posVideo / duration_total) * 100.0f;
-	this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-	sprintf(duration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(pourcentage), posVideo,
-		static_cast<int>(duration_total));
-	muWriteData.unlock();
 }
 
 
@@ -1855,7 +1849,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 				threadEnd = isend;
 				muEnding.unlock();
 
-				nbframe++;
+				nbFrameEncoded++;
 				end = std::chrono::steady_clock::now();
 
 				if (threadEnd)
@@ -1889,8 +1883,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 						stream->dec_ctx->time_base);
 				}
 
-				pos = (static_cast<double>(pkt->pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
-				//double dts = ((double)pkt->dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
 				ret = avcodec_send_packet(stream->dec_ctx, pkt);
 				if (ret < 0)
 				{
@@ -1915,17 +1907,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 					tmp_frame = stream->dec_frame;
 
 					tmp_frame->pts = tmp_frame->best_effort_timestamp;
-
-					muWriteData.lock();
-					double duration_total = duration_movie;
-
-
-					int posVideo = static_cast<int>(pos);
-					pourcentage = (posVideo / duration_total) * 100.0f;
-					this->nbframePerSecond = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-					sprintf(duration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(pourcentage),
-						posVideo, static_cast<int>(duration_total));
-					muWriteData.unlock();
 
 					SetFrameData(tmp_frame, m_dlgProgress);
 
@@ -1959,9 +1940,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 				/*
 
 					*/
-				pos = (static_cast<double>(packet.pts) * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.
-					den);
-				// double dts = ((double)packet.dts * stream->dec_ctx->time_base.num / stream->dec_ctx->time_base.den);
+
 				ret = avcodec_send_packet(stream->dec_ctx, &packet);
 				if (ret < 0)
 				{
@@ -1974,14 +1953,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 					av_packet_unref(&packet);
 					continue;
 				}
-
-				/*
-				printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-					av_ts2str(packet->pts), av_ts2timestr(packet->pts, time_base),
-					av_ts2str(packet->dts), av_ts2timestr(packet->dts, time_base),
-					av_ts2str(packet->duration), av_ts2timestr(packet->duration, time_base),
-					pkt->stream_index);
-				*/
 
 
 				AVFrame* tmp_frame = nullptr;
@@ -2005,12 +1976,16 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 								VideoTreatment(tmp_frame, stream);
 
 						VideoInfos(stream);
+
+						nbFrameEncoded++;
 					}
 
 
 					ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
 					if (ret < 0)
 						return ret;
+
+					
 				}
 			}
 			else
@@ -2069,7 +2044,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 {
 	int ret;
 	this->m_dlgProgress = m_dlgProgress;
-	nbframe = 0;
+	totalFrame = 0;
 	encodeOneFrame = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
@@ -2099,7 +2074,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	this->m_dlgProgress = m_dlgProgress;
 	//unsigned int stream_index;
 	//unsigned int i;
-	nbframe = 0;
+	totalFrame = 0;
 	encodeOneFrame = false;
 	//bool first = true;
 	cleanPacket = false;
@@ -2110,6 +2085,14 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
+
+	{
+		VideoCapture capture(input.ToStdString());
+		fps = capture.get(CAP_PROP_FPS);
+		totalFrame = int(capture.get(CAP_PROP_FRAME_COUNT));
+		duration = totalFrame / fps;
+
+	}
 
 	ret = ProcessEncodeFile(dst);
 	return ret;

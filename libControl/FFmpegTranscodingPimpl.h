@@ -117,19 +117,18 @@ private:
 	int orientation = 0;
 	int videoIndex = 0;
 	CVideoOptionCompress* videoCompressOption;
-	//char timebase[255];
-	char duration[255];
-	double pos = 0;
-	double pourcentage = 0;
-	int nbframe = 0;
-	int nbframePerSecond = 0;
+
+	double duration = 0;
+	int totalFrame = 0;
+	int nbFrameEncoded = 0;
+	int fps = 0;
+
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
 
 	CRegardsBitmap* bmp = nullptr;
 
-	double duration_movie = 0.0;
 	AVFrame* dst = nullptr;
 	AVFrame* dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
