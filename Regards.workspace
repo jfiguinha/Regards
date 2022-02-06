@@ -72,7 +72,7 @@
     <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
@@ -148,7 +148,7 @@
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>
