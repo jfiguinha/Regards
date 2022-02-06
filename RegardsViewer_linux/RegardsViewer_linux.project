@@ -410,6 +410,7 @@
         <Library Value="ssl"/>
         <Library Value="jpeg"/>
         <Library Value="turbojpeg"/>
+        <Library Value="zen"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

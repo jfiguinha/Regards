@@ -1647,7 +1647,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	int ret = 0;
 	int stream_index = 0;
 	//bool startEncoding = true;
-	bool pictureFind = false;
+	//bool pictureFind = false;
 	int nb_max_Frame = 30;
 	//int fps = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
 	int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
@@ -1803,7 +1803,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 	int stream_index = 0;
 	//bool first = true;
 	//bool startEncoding = true;
-	bool first_frame = true;
+//	bool first_frame = true;
 
 	/* read all packets */
 	while (m_dlgProgress->IsOk())
