@@ -265,6 +265,8 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 
 		double dif = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::steady_clock::now() - ffmpeg_trans->begin).count();
+            
+       // dif = dif / 100.0;
 		wxString frame = wxString::Format("%d fps", static_cast<int>(ffmpeg_trans->nbframe / dif));
 		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
 
