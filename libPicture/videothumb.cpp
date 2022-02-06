@@ -56,7 +56,28 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 		regardBitmap = new CRegardsBitmap();
 		if (thumbnailWidth != 0 && thumbnailHeight != 0)
 		{
-			cv::resize(frame, resize, cv::Size(thumbnailWidth, thumbnailHeight), cv::INTER_CUBIC);
+            //Calcul Ratio
+            	float new_ratio = 1;
+
+            int pictureWidth = frame.cols, pictureHeight = frame.rows;
+
+            if (pictureWidth > pictureHeight)
+                new_ratio = static_cast<float>(thumbnailWidth) / static_cast<float>(pictureWidth);
+            else
+                new_ratio = static_cast<float>(thumbnailHeight) / static_cast<float>(pictureHeight);
+
+            if ((pictureHeight * new_ratio) > thumbnailHeight)
+            {
+                new_ratio = static_cast<float>(thumbnailHeight) / static_cast<float>(pictureHeight);
+            }
+            if ((pictureWidth * new_ratio) > thumbnailWidth)
+            {
+                new_ratio = static_cast<float>(thumbnailWidth) / static_cast<float>(pictureWidth);
+            }
+            
+            
+			cv::resize(frame, resize, cv::Size(pictureWidth * new_ratio, pictureHeight * new_ratio), cv::INTER_CUBIC);
+            regardBitmap->SetMatrix(resize);
 		}
 		else
 		{

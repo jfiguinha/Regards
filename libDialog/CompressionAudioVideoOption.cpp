@@ -226,20 +226,6 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local, true, false);
 	int x = 0;
 	int y = 0;
-	if (picture.GetHeight() > 240 || picture.GetWidth() >  340)
-	{
-		if (picture.GetWidth() > picture.GetHeight())
-		{
-			float ratio = 340.0 / picture.GetWidth();
-			picture = picture.ResampleBicubic(picture.GetWidth() * ratio, picture.GetHeight() * ratio);
-		}
-		else
-		{
-			float ratio = 240.0 / 340.0;
-			picture = picture.ResampleBicubic(picture.GetWidth() * ratio, picture.GetHeight() * ratio);
-		}
-	}
-
 	x = (340 - picture.GetWidth()) / 2;
 	y = (240 - picture.GetHeight()) / 2;
 
