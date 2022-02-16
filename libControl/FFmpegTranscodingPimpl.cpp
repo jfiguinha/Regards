@@ -499,8 +499,6 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 	pCodecCtx->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
 #endif
 
-	
-
 	// some formats want stream headers to be separate
 	if (pCodecCtx->flags & AVFMT_GLOBALHEADER)
 		pCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
@@ -548,8 +546,8 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		// bitrate * fps
 		pCodecCtx->bit_rate_tolerance = videoCompressOption->videoBitRate * av_q2d(pCodecCtx->framerate) + 1;
 
-		if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
-			av_dict_set(&param, "rc", "vbr_hq", 0);
+		//if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
+		//	av_dict_set(&param, "rc", "vbr_hq", 0);
 
 		if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "amf")
 			av_dict_set(&param, "rc", "vbr_peak", 0);
@@ -580,7 +578,6 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 				/ pCodecCtx->framerate.den;
 			//hb_log("encavcodec: encoding at CQ %.2f", job->vquality);
 		}
-		//Set constant quality for nvenc
 		else if ((codec_id == AV_CODEC_ID_H264 || codec_id == AV_CODEC_ID_H265) && encoderName == "nvenc")
 		{
 			char qualityI[7];
@@ -856,13 +853,13 @@ bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID& codec_id, const w
 			const int ret = avcodec_open2(pCodecCtx, p_codec, &param);
 			if (ret < 0)
 			{
-				/*
+				
 				char str_err[256];
 				if (av_strerror(ret, str_err, 256) == 0)
 				{
-					printf("Error (%s) returned from encoded video", ret);
+					printf("Error (%s) returned from encoded video", str_err);
 				}
-				*/
+				
 				avcodec_close(pCodecCtx);
 				avcodec_free_context(&pCodecCtx);
 				pCodecCtx = nullptr;
