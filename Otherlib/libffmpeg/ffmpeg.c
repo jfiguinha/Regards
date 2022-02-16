@@ -3261,7 +3261,7 @@ static int init_output_stream_streamcopy(OutputStream* ost)
 		if (sd)
 			av_display_rotation_set((int32_t*)sd, -ost->rotate_override_value);
 	}
-
+	
 	switch (par_dst->codec_type)
 	{
 	case AVMEDIA_TYPE_AUDIO:

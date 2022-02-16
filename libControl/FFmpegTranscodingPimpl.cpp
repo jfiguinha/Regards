@@ -24,9 +24,21 @@ extern "C" {
 #include <libavutil/channel_layout.h>
 }
 #include <opencv2/core/core.hpp>
+#include <ffmpeg_application.h>
 using namespace cv;
 using namespace Regards::OpenCL;
 static const int dst_vbit_rate = 1500000;
+
+static const char* DURATION = "duration";
+static const char* AUDIO_CODEC = "audio_codec";
+static const char* VIDEO_CODEC = "video_codec";
+static const char* ICY_METADATA = "icy_metadata";
+static const char* ROTATE = "rotate";
+static const char* FRAMERATE = "framerate";
+static const char* CHAPTER_START_TIME = "chapter_start_time";
+static const char* CHAPTER_END_TIME = "chapter_end_time";
+static const char* CHAPTER_COUNT = "chapter_count";
+static const char* FILESIZE = "filesize";
 
 
 static const char* hb_h264_level_names[] = {
@@ -43,6 +55,40 @@ static const char* hb_h265_level_names[] = {
 	"5.0", "5.1", "5.2", "6.0", "6.1", "6.2", nullptr,
 };
 
+const char* extract_metadata_internal(AVFormatContext* ic, AVStream* audio_st, AVStream* video_st, const char* key) {
+	char* value = NULL;
+
+	if (!ic) {
+		return value;
+	}
+
+	if (key) {
+		if (av_dict_get(ic->metadata, key, NULL, AV_DICT_MATCH_CASE)) {
+			value = av_dict_get(ic->metadata, key, NULL, AV_DICT_MATCH_CASE)->value;
+		}
+		else if (audio_st && av_dict_get(audio_st->metadata, key, NULL, AV_DICT_MATCH_CASE)) {
+			value = av_dict_get(audio_st->metadata, key, NULL, AV_DICT_MATCH_CASE)->value;
+		}
+		else if (video_st && av_dict_get(video_st->metadata, key, NULL, AV_DICT_MATCH_CASE)) {
+			value = av_dict_get(video_st->metadata, key, NULL, AV_DICT_MATCH_CASE)->value;
+		}
+	}
+
+	return value;
+}
+
+void set_rotation(AVFormatContext* ic, AVStream* audio_st, AVStream* video_st) {
+	if (!extract_metadata_internal(ic, audio_st, video_st, ROTATE) && video_st && video_st->metadata) {
+		AVDictionaryEntry* entry = av_dict_get(video_st->metadata, ROTATE, NULL, AV_DICT_MATCH_CASE);
+
+		if (entry && entry->value) {
+			av_dict_set(&ic->metadata, ROTATE, entry->value, 0);
+		}
+		else {
+			av_dict_set(&ic->metadata, ROTATE, "0", 0);
+		}
+	}
+}
 
 /**********************************************************************
  * hb_reduce
@@ -453,6 +499,7 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 	pCodecCtx->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
 #endif
 
+	
 
 	// some formats want stream headers to be separate
 	if (pCodecCtx->flags & AVFMT_GLOBALHEADER)
@@ -783,8 +830,6 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 		av_dict_set(&param, "gops_per_idr", "1", 0);
 	}
 
-	//apply_encoder_preset(codec_id, &param, videoCompressOption->videoPreset);
-
 	return param;
 }
 
@@ -1070,6 +1115,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 	}
 
 	//
+	AVStream* streamAudio = nullptr;
+	AVStream* streamVideo = nullptr;
 	int nbStream = 0;
 	int outStream = 0;
 	for (i = 0; i < ifmt_ctx->nb_streams; i++)
@@ -1089,6 +1136,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 			return AVERROR_UNKNOWN;
 		}
 
+		
+
 		streamInNumberInOut[i] = outStream++;
 
 		in_stream = ifmt_ctx->streams[i];
@@ -1100,6 +1149,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 
 			if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
+				streamVideo = out_stream;
 				enc_ctx = nullptr;
 				encoder = nullptr;
 #ifdef WIN32
@@ -1177,6 +1227,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 				return AVERROR_INVALIDDATA;
 			}
 
+				
+
 
 			enc_ctx = avcodec_alloc_context3(encoder);
 			if (!enc_ctx)
@@ -1193,6 +1245,14 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 				AVDictionary* param = setEncoderParam(VIDEO_CODEC, enc_ctx, dec_ctx, encoderHardware);
 				enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
+				if (rotate != 0)
+				{
+					uint8_t* sd = av_stream_new_side_data(streamVideo, AV_PKT_DATA_DISPLAYMATRIX,
+						sizeof(int32_t) * 9);
+					if (sd)
+						av_display_rotation_set((int32_t*)sd, rotate);
+				}
+
 				int ret = avcodec_open2(enc_ctx, encoder, &param);
 				if (ret < 0)
 				{
@@ -1202,6 +1262,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 			}
 			else
 			{
+				streamAudio = out_stream;
 				//enc_ctx->bit_rate = dst_abit_rate;
 				enc_ctx->sample_rate = dec_ctx->sample_rate;
 				enc_ctx->channel_layout = dec_ctx->channel_layout;
@@ -1274,6 +1335,14 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 		}
 	}
 
+
+
+
+
+	//AVDictionaryEntry* rotate_tag = av_dict_get(ifmt_ctx->metadata, "rotate", NULL, 0);
+	//if (rotate_tag != nullptr)
+	//	av_dict_set(&ofmt_ctx->metadata, rotate_tag->key, rotate_tag->value, 0);
+	
 	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 1);
 
 	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
@@ -1287,6 +1356,9 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 		}
 	}
 
+	av_dict_copy(&ofmt_ctx->metadata, ifmt_ctx->metadata, AV_DICT_DONT_OVERWRITE);
+	set_rotation(ofmt_ctx, ifmt_ctx->streams[videoStreamIndex], streamAudio);
+
 	/* init muxer, write output file header */
 	ret = avformat_write_header(ofmt_ctx, nullptr);
 	if (ret < 0)
@@ -1294,6 +1366,8 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 		av_log(nullptr, AV_LOG_ERROR, "Error occurred when opening output file\n");
 		return ret;
 	}
+
+	
 
 	return 0;
 }
@@ -1413,6 +1487,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 {
 	if (stream_ctx[stream_index].enc_ctx != nullptr)
 	{
+		
 		av_log(nullptr, AV_LOG_INFO, "Flushing stream #%u encoder\n", stream_index);
 		if (!(stream_ctx[stream_index].enc_ctx->codec->capabilities &
 			AV_CODEC_CAP_DELAY))
@@ -1430,6 +1505,8 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
+
+
 
 	return ret;
 }
@@ -1697,6 +1774,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	}
 
 	StreamContext* stream = &stream_ctx[videoStreamIndex];
+
+	
 
 	frame->format = AV_PIX_FMT_YUV420P;
 	frame->width = stream->dec_ctx->width;
@@ -2053,7 +2132,8 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	input_file = input;
 
 	CMediaInfo mediaInfo;
-	orientation = mediaInfo.GetVideoRotation(input);
+	rotate = mediaInfo.GetVideoRotation(input);
+	orientation = rotate;
 
 	orientation = 360 - orientation;
 
@@ -2064,8 +2144,11 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	begin = std::chrono::steady_clock::now();
 
 	ret = ProcessEncodeOneFrameFile(dst, time);
+
 	return ret;
 }
+
+
 
 int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress,
 	CVideoOptionCompress* videoCompressOption)
@@ -2079,6 +2162,9 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	//bool first = true;
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
+
+	CMediaInfo mediaInfo;
+	rotate = mediaInfo.GetVideoRotation(input);
 
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;

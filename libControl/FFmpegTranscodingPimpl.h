@@ -122,7 +122,7 @@ private:
 	int totalFrame = 0;
 	int nbFrameEncoded = 0;
 	int fps = 0;
-
+	int rotate = 0;
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;

@@ -415,37 +415,15 @@ void CMainWindow::OnEndDecompressFile(wxCommandEvent& event)
 			wxRemoveFile(fileOut);
 	}
 
-
-
-
-	if (videoOutputRotation != 0)
-	{
-		CFFmpegApp fmpegApp(false);
-		try
-		{
-			wxFileName file_temp(outputFile);
-			wxString fileOutVideo = CFileUtility::GetTempFile("temp_video." + file_temp.GetExt(), file_temp.GetPath(), true);
-			fmpegApp.ExecuteFFmpegAddRotateInfo(outputFile, fileOutVideo, (360 - videoOutputRotation) % 360);
-
-			if (wxFileExists(outputFile))
-				wxRemoveFile(outputFile);
-
-			wxCopyFile(fileOutVideo, outputFile);
-		}
-		catch (int e)
-		{
-			fmpegApp.Cleanup(e);
-		}
-
-
-	}
-
 }
 
 void CMainWindow::ExportVideo(const wxString& filename, const wxString& filenameOutput)
 {
 	if (!wxFileExists(filename))
 		return;
+
+	CMediaInfo metadata;
+	int rotation = metadata.GetVideoRotation(filename);
 
 	int ret = 0;
 	//CVideoControlSoft* videoControlSoft = (CVideoControlSoft*)this->FindWindowById(VIDEOCONTROL);
@@ -458,9 +436,9 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 		wxString filename_label = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 
 
+
+
 		wxString filenameToSave = videoFilename.GetName();
-		CMediaInfo metadata;
-		videoOutputRotation = metadata.GetVideoRotation(filename);
 
 		/*
 		wxString extension = videoFilename.GetExt();
@@ -568,7 +546,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 								wxRemoveFile(filepath);
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding();
-							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption, videoOutputRotation);
+							ffmpegEncoder->EncodeFile(this, filename_in, filepath, videoCompressOption, rotation);
 						}
 					}
 					else
@@ -635,7 +613,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding();
-							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption, videoOutputRotation);
+							ffmpegEncoder->EncodeFile(this, fileOutVideo, fileOut, videoCompressOption, rotation);
 							isAudio = true;
 						}
 						else
@@ -647,7 +625,7 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 						{
 							wxString decoder = "";
 							ffmpegEncoder = new CFFmpegTranscoding();
-							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption, videoOutputRotation);
+							ffmpegEncoder->EncodeFile(this, fileOutAudio, fileOut, videoCompressOption, rotation);
 							isAudio = false;
 						}
 						else
