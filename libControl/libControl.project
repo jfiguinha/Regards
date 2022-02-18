@@ -186,6 +186,7 @@
         <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../Otherlib/libffmpeg"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="GLEW_STATIC"/>
         <Preprocessor Value="DXVA2"/>

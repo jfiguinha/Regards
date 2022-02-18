@@ -253,10 +253,15 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	av_free(is->filename);
 
 	av_free(is);
-
+    
+    if(nb_hw_devices > 0)
+        hw_device_free_all();
+    
 
 	wxCommandEvent evt(FF_QUIT_EVENT);
 	parent->GetEventHandler()->AddPendingEvent(evt);
+
+    
 
 	abortMutex.lock();
 	exit_video = false;
