@@ -237,6 +237,9 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	if (is->subtitle_stream >= 0)
 		stream_component_close(is, is->subtitle_stream);
 
+	//if (is->viddec.avctx->hw_device_ctx != nullptr)
+	//	av_buffer_unref(&is->viddec.avctx->hw_device_ctx);
+
 	avformat_close_input(&is->ic);
 
 	packet_queue_destroy(&is->videoq);
@@ -254,8 +257,7 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 
 	av_free(is);
     
-    if(nb_hw_devices > 0)
-        hw_device_free_all();
+
     
 
 	wxCommandEvent evt(FF_QUIT_EVENT);
@@ -1910,10 +1912,16 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 		}
 		break;
 	case AVMEDIA_TYPE_VIDEO:
-		decoder_abort(&is->viddec, &is->pictq);
-		decoder_destroy(&is->viddec);
+
 		if (is->hwaccel_uninit)
 			is->hwaccel_uninit(is->viddec.avctx);
+
+		if(is->viddec.avctx->hw_device_ctx != nullptr)
+			av_buffer_unref(&hw_device_ctx);
+
+		decoder_abort(&is->viddec, &is->pictq);
+		decoder_destroy(&is->viddec);
+
 		break;
 	case AVMEDIA_TYPE_SUBTITLE:
 		decoder_abort(&is->subdec, &is->subpq);

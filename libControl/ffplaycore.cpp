@@ -479,7 +479,7 @@ int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxSt
 
 	this->filename = filename;
 
-	_pimpl->acceleratorHardware = acceleratorHardware;
+	//_pimpl->acceleratorHardware = acceleratorHardware;
 	_pimpl->isOpenGLDecoding = isOpenGLDecoding;
 	_pimpl->percentVolume = volume;
 	printf("SetFile Volume index : %d \n", _pimpl->percentVolume);
