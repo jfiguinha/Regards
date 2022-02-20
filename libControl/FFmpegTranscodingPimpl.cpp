@@ -1749,7 +1749,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	double fps = 0;
 	Mat frameOutput;
 	{
-		VideoCapture capture(CConvertUtility::ConvertToUTF8(input_file));
+		VideoCapture capture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 		fps = capture.get(CAP_PROP_FPS);
 		double noFrame = fps * timeInSeconds;
 		bool success = capture.set(CAP_PROP_POS_FRAMES, noFrame);

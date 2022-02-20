@@ -40,7 +40,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 	try
 	{
 		
-		VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
+		VideoCapture capture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
 		
 		Mat resize;
 		double fps = capture.get(CAP_PROP_FPS);
@@ -120,7 +120,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 {
 	int exifRotation = 0;
 	int rotation = GetVideoOrientation();
-	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
+	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY,{ CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture.isOpened())
 		throw "Error when reading steam_avi";
 
