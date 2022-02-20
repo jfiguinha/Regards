@@ -167,7 +167,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 	        (wxObjectEventFunction)&CompressionAudioVideoOption::OnVideoCodecSelect);
 
 	wxString decoder = "";
-	ffmpegTranscoding = new CThumbnailVideo();
+	
 
 
 
@@ -299,7 +299,11 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 		cbAudioCodec->SetStringSelection("VORBIS");
 	}
 
-	ffmpegTranscoding->SetFilename(videoFilename);
+	if (ffmpegTranscoding != nullptr)
+		delete ffmpegTranscoding;
+
+	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
+	//ffmpegTranscoding->SetFilename(videoFilename);
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 

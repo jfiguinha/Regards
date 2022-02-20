@@ -29,16 +29,16 @@ using namespace cv;
 using namespace Regards::OpenCL;
 static const int dst_vbit_rate = 1500000;
 
-static const char* DURATION = "duration";
-static const char* AUDIO_CODEC = "audio_codec";
-static const char* VIDEO_CODEC = "video_codec";
-static const char* ICY_METADATA = "icy_metadata";
+//static const char* DURATION = "duration";
+//static const char* AUDIO_CODEC = "audio_codec";
+//static const char* VIDEO_CODEC = "video_codec";
+//static const char* ICY_METADATA = "icy_metadata";
 static const char* ROTATE = "rotate";
-static const char* FRAMERATE = "framerate";
-static const char* CHAPTER_START_TIME = "chapter_start_time";
-static const char* CHAPTER_END_TIME = "chapter_end_time";
-static const char* CHAPTER_COUNT = "chapter_count";
-static const char* FILESIZE = "filesize";
+//static const char* FRAMERATE = "framerate";
+//static const char* CHAPTER_START_TIME = "chapter_start_time";
+//static const char* CHAPTER_END_TIME = "chapter_end_time";
+//static const char* CHAPTER_COUNT = "chapter_count";
+//static const char* FILESIZE = "filesize";
 
 
 static const char* hb_h264_level_names[] = {
@@ -285,6 +285,8 @@ CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
 
+	if (capture != nullptr)
+		delete capture;
 
 };
 
@@ -1550,7 +1552,7 @@ CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext* stream)
 {
-	bool decodeBitmap = false;
+	//bool decodeBitmap = false;
 
 	CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
 
@@ -1722,7 +1724,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	int stream_index = 0;
 	//bool startEncoding = true;
 	//bool pictureFind = false;
-	int nb_max_Frame = 30;
+	//int nb_max_Frame = 30;
 	//int fps = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
 	int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
 
@@ -1743,19 +1745,15 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
 
-	bool firstPos = true;
-	int height = 0;
-	int width = 0;
+	//bool firstPos = true;
 	double fps = 0;
 	Mat frameOutput;
 	{
-		VideoCapture capture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
-		fps = capture.get(CAP_PROP_FPS);
+		
+		fps = capture->get(CAP_PROP_FPS);
 		double noFrame = fps * timeInSeconds;
-		bool success = capture.set(CAP_PROP_POS_FRAMES, noFrame);
-		capture >> frameOutput;
-		width = capture.get(CAP_PROP_FRAME_WIDTH);
-		height = capture.get(CAP_PROP_FRAME_HEIGHT);
+		bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
+		*capture >> frameOutput;
 		cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 	}
 	CRegardsBitmap bitmap;
@@ -1806,7 +1804,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	}
 
 
-	int got_output = 0;
+	//int got_output = 0;
 	int linesize = frameOutput.cols * 4;
 
 	sws_scale(scaleContext, &frameOutput.data, &linesize, 0, frameOutput.rows,
@@ -2128,8 +2126,15 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	this->outputFile = output;
 	input_file = input;
 
-	CMediaInfo mediaInfo;
-	rotate = mediaInfo.GetVideoRotation(input);
+	if (capture != nullptr)
+		delete capture;
+
+	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	if (!capture->isOpened())
+		throw "Error when reading steam_avi";
+
+	rotate = capture->get(CAP_PROP_ORIENTATION_META);
+
 	orientation = rotate;
 
 	orientation = 360 - orientation;
@@ -2160,8 +2165,13 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	cleanPacket = false;
 	this->videoCompressOption = videoCompressOption;
 
-	CMediaInfo mediaInfo;
-	rotate = mediaInfo.GetVideoRotation(input);
+	if (capture != nullptr)
+		delete capture;
+
+	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	if (!capture->isOpened())
+		throw "Error when reading steam_avi";
+
 
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
@@ -2170,9 +2180,8 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	begin = std::chrono::steady_clock::now();
 
 	{
-		VideoCapture capture(CConvertUtility::ConvertToUTF8(input));
-		fps = capture.get(CAP_PROP_FPS);
-		totalFrame = int(capture.get(CAP_PROP_FRAME_COUNT));
+		fps = capture->get(CAP_PROP_FPS);
+		totalFrame = int(capture->get(CAP_PROP_FRAME_COUNT));
 		duration = totalFrame / fps;
 
 	}

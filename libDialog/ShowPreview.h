@@ -79,7 +79,7 @@ namespace Regards
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-			CThumbnailVideo* videoOriginal;
+			CThumbnailVideo* videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
 			CRegardsBitmap * decodeFrame = nullptr;

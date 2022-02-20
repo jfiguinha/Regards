@@ -5,12 +5,16 @@ class CRegardsBitmap;
 class CFFmpegDecodeFrame;
 class CVideoEffectParameter;
 
+namespace cv
+{
+	class VideoCapture;
+}
+
 class CThumbnailVideo
 {
 public:
-	CThumbnailVideo();
+	CThumbnailVideo(const wxString& fileName);
 	~CThumbnailVideo();
-	void SetFilename(const wxString& fileName);
 	CRegardsBitmap* GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight);
 	void GetVideoDimensions(int& width, int& height, int& rotation);
 	int64_t GetMovieDuration();
@@ -18,5 +22,5 @@ public:
 	vector<CImageVideoThumbnail*> GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail, const bool& compressJpeg);
 private:
 	wxString filename;
-
+	cv::VideoCapture * capture;
 };

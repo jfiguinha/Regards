@@ -73,7 +73,7 @@ namespace Regards
 				return "Window waiting : " + to_string(this->GetId());
 			}
             
-            virtual void IdleFunction()
+            virtual void IdleFunction() override
             {
                 
             }

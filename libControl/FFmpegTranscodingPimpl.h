@@ -29,6 +29,11 @@ class CFiltreEffet;
 class CffmpegToBitmap;
 extern COpenCLContext* openclContext;
 
+namespace cv
+{
+	class VideoCapture;
+}
+
 class CFFmpegTranscodingPimpl
 {
 public:
@@ -115,7 +120,6 @@ private:
 	bool isend = true;
 	wxString input_file = "";
 	int orientation = 0;
-	int videoIndex = 0;
 	CVideoOptionCompress* videoCompressOption;
 
 	double duration = 0;
@@ -138,7 +142,6 @@ private:
 	bool showpreview = false;
 	bool encodeOneFrame = false;
 	bool first = true;
-	bool deleteFrame = false;
 	bool first_frame = true;
 
 	wxString outputFile;
@@ -149,5 +152,6 @@ private:
 
 	int framerate = 30;
 
+	cv::VideoCapture * capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

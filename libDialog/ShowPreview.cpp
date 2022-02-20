@@ -108,7 +108,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	progressValue = 0;
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	videoOriginal = new CThumbnailVideo();
+	//videoOriginal
 
 
 	transcodeFFmpeg = new CFFmpegTranscoding();
@@ -123,7 +123,10 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	progressValue = 0;
 	filename = videoFilename;
 
-	videoOriginal->SetFilename(filename);
+	if (videoOriginal != nullptr)
+		delete videoOriginal;
+
+	videoOriginal = new CThumbnailVideo(filename);
 	timeTotal = videoOriginal->GetMovieDuration();
 	orientation = videoOriginal->GetVideoOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
@@ -250,16 +253,11 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CThumbnailVideo video;
-			video.SetFilename(fileTemp);
+			CThumbnailVideo video(fileTemp);
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
 			showPreview->decodeFrame->VertFlipBuf();
-			//showPreview->compressIsOK = true;
-			//showPreview->decodeFrame->OpenFile(&dataOutput, fileTemp);
-			//showPreview->decodeFrame->GetFrameBitmapPosition(0);
-			//showPreview->decodeFrame->EndTreatment();
 		}
 		else
 			showPreview->compressIsOK = false;

@@ -10,26 +10,22 @@
 using namespace Regards::Picture;
 using namespace cv;
 
-CThumbnailVideo::CThumbnailVideo()
-{
-	
-
-}
-
-void CThumbnailVideo::SetFilename(const wxString& fileName)
+CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	filename = fileName;
+	capture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(fileName), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+	if (!capture->isOpened())
+		throw "Error when reading steam_avi";
 }
 
 CThumbnailVideo::~CThumbnailVideo()
 {
-
+	delete capture;
 }
 
 int CThumbnailVideo::GetVideoOrientation()
 {
-	CMediaInfo mediaInfo;
-	return mediaInfo.GetVideoRotation(CConvertUtility::ConvertToUTF8(filename));
+	return capture->get(CAP_PROP_ORIENTATION_META);
 
 }
 
@@ -40,18 +36,15 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 	try
 	{
 		
-		VideoCapture capture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+		
 		
 		Mat resize;
-		double fps = capture.get(CAP_PROP_FPS);
+		double fps = capture->get(CAP_PROP_FPS);
 		double noFrame = fps * timePosition;
 		if (timePosition != 0)
-			capture.set(CAP_PROP_POS_FRAMES, noFrame);
+			capture->set(CAP_PROP_POS_FRAMES, noFrame);
 
-		if (!capture.isOpened())
-			throw "Error when reading steam_avi";
-
-		capture >> frame;
+		*capture >> frame;
 		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
 		regardBitmap = new CRegardsBitmap();
@@ -100,17 +93,15 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 
 void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
 {
-	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
-	width = capture.get(CAP_PROP_FRAME_WIDTH);
-	height = capture.get(CAP_PROP_FRAME_HEIGHT);
+	width = capture->get(CAP_PROP_FRAME_WIDTH);
+	height = capture->get(CAP_PROP_FRAME_HEIGHT);
 	
 }
 
 int64_t CThumbnailVideo::GetMovieDuration()
 {
-	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename));
-	double fps = capture.get(CAP_PROP_FPS);
-	double frame_count = int(capture.get(CAP_PROP_FRAME_COUNT));
+	double fps = capture->get(CAP_PROP_FPS);
+	double frame_count = int(capture->get(CAP_PROP_FRAME_COUNT));
 	double duration = frame_count / fps;
 	return duration;
 }
@@ -118,15 +109,13 @@ int64_t CThumbnailVideo::GetMovieDuration()
 vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail,
                                                                  const bool& compressJpeg)
 {
-	int exifRotation = 0;
 	int rotation = GetVideoOrientation();
-	VideoCapture capture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY,{ CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
-	if (!capture.isOpened())
-		throw "Error when reading steam_avi";
 
-	double frame_count = int(capture.get(CAP_PROP_FRAME_COUNT));
+
+
+	double frame_count = int(capture->get(CAP_PROP_FRAME_COUNT));
 	int nbFrame = frame_count / 20;
-	double fps = capture.get(CAP_PROP_FPS);
+	double fps = capture->get(CAP_PROP_FPS);
 	int pos = 0;
 	vector<CImageVideoThumbnail*> listPicture;
 	for (auto i = 0; i < 100; i += 5)
@@ -136,17 +125,17 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 		cxVideo->rotation = rotation;
 		cxVideo->percent = i;
 		cxVideo->image = new CImageLoadingFormat();
-		int timePosition = pos / fps;
+		double timePosition = ((double)pos / (double)fps) * 1000;
 
-		bool success = capture.set(CAP_PROP_POS_FRAMES, pos);
-		capture >> frame;
+		bool success = capture->set(CAP_PROP_POS_MSEC, timePosition);
+		*capture >> frame;
 		CRegardsBitmap* picture = new CRegardsBitmap();
 
 		cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
 
 		picture->SetMatrix(frame);
 		picture->VertFlipBuf();
-		cxVideo->timePosition = timePosition;
+		cxVideo->timePosition = pos / fps;
 		cxVideo->image->SetPicture(picture);
 		cxVideo->image->SetFilename(filename);
 		cxVideo->image->SetOrientation(0);

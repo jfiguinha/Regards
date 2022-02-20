@@ -1443,8 +1443,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
 				int rotation = 0;
-				CThumbnailVideo video;
-				video.SetFilename(szFileName);
+				CThumbnailVideo video(szFileName);
 				bitmap->SetPicture(video.GetVideoFrame(timePosition, widthThumbnail, heightThumbnail));
 				bitmap->SetOrientation(0);
 				bitmap->SetFilename(szFileName);
@@ -1908,9 +1907,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case AV1:
 		case MOV:
 			{
-				CThumbnailVideo video;
-				video.SetFilename(szFileName);
-				//CConvertUtility::ConvertToStdString
+				CThumbnailVideo video(szFileName);
 				vector<CImageVideoThumbnail*> listVideo = video.GetVideoListFrame(
 					widthThumbnail, heightThumbnail, compressJpeg);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
@@ -2609,8 +2606,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case MOV:
 			{
 				int orientation = 0;
-				CThumbnailVideo video;
-				video.SetFilename(fileName);
+				CThumbnailVideo video(fileName);
 				int duration = video.GetMovieDuration() * 20.0 / 100.0;
 				bitmap->SetPicture(video.GetVideoFrame(duration, 0, 0));
 				bitmap->SetOrientation(0);
@@ -2978,8 +2974,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case MOV:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CThumbnailVideo video;
-			video.SetFilename(fileName);
+			CThumbnailVideo video(fileName);
 			video.GetVideoDimensions(width, height, rotation);
 		}
 		break;
