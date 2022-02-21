@@ -471,6 +471,8 @@ public:
 
 	void packet_queue_start(PacketQueue *q);
 
+	enum AVPixelFormat find_fmt_by_hw_type(const enum AVHWDeviceType type);
+
 	int packet_queue_put_nullpacket(PacketQueue* q, AVPacket* pkt, int stream_index);
 
 	int GetPosition(VideoState* is);
@@ -678,9 +680,11 @@ public:
 	AVFrame * dst = av_frame_alloc();
 	SwsContext* scaleContext = nullptr;
 #ifdef WIN32
-	wxString acceleratorHardware = "dxva2";
+	wxString acceleratorHardware = "d3d11va";
+#elif defined(__APPLE__)
+	wxString acceleratorHardware = "videotoolbox";
 #else
-	wxString acceleratorHardware = "";
+	wxString acceleratorHardware = "vaapi";
 #endif
 	bool isOpenGLDecoding = false;
 	int find_stream_info = 1;
@@ -694,33 +698,8 @@ public:
 //Hardware Accelerator
 //------------------------------------------------------------------------
 
-
-	int nb_hw_devices = 0;
-	HWDevice ** hw_devices = nullptr;
-
-	HWDevice* hw_device_get_by_type(enum AVHWDeviceType type);
-	HWDevice* hw_device_get_by_name(const char* name);
-	HWDevice* hw_device_add(void);
 	static int hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input);
-	CFFmfcPimpl::HWDevice* hw_device_match_by_codec(const AVCodec* codec);
-	void hw_device_free_all(void);
 	int hwaccel_decode_init(AVCodecContext* avctx);
-	int hw_device_setup_for_decode(VideoState* ist);
-	char* hw_device_default_name(enum AVHWDeviceType type);
-	int hw_device_init_from_string(const char* arg, CFFmfcPimpl::HWDevice** dev_out);
-	int hw_device_init_from_type(enum AVHWDeviceType type,
-		const char* device,
-		HWDevice** dev_out);
-        
-#ifdef __APPLE__
-    static int videotoolbox_retrieve_data(AVCodecContext *s, AVFrame *frame);
-    static void videotoolbox_uninit(AVCodecContext *s);
-    int videotoolbox_init(AVCodecContext *s);
+	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
 
-    typedef struct VTContext {
-        AVFrame *tmp_frame;
-    } VTContext;
-
-    char *videotoolbox_pixfmt = nullptr;
-#endif
 };
