@@ -316,21 +316,30 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		double dif = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::steady_clock::now() - ffmpeg_trans->begin).count();
             
-       // dif = dif / 100.0;
-		int nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
-		int missingFrame = ffmpeg_trans->totalFrame - ffmpeg_trans->nbFrameEncoded;
+		try
+		{
 
-		double timeMissing = missingFrame / nbFpsPerSecond;
+			// dif = dif / 100.0;
+			int nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
+			int missingFrame = ffmpeg_trans->totalFrame - ffmpeg_trans->nbFrameEncoded;
 
-		wxString frame = wxString::Format("%d fps", nbFpsPerSecond);
-		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
+			double timeMissing = missingFrame / nbFpsPerSecond;
 
-		frame = ConvertSecondToTime(timeMissing);
-		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 3);
+			wxString frame = wxString::Format("%d fps", nbFpsPerSecond);
+			ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
 
-		frame = ConvertSecondToTime(static_cast<int>(dif));
-		ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 1);
+			frame = ConvertSecondToTime(timeMissing);
+			ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 3);
 
+			frame = ConvertSecondToTime(static_cast<int>(dif));
+			ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 1);
+
+
+
+		}
+		catch (...)
+		{
+		}
 		ffmpeg_trans->muWriteData.unlock();
 
 
@@ -1371,6 +1380,43 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 	return 0;
 }
 
+
+int CFFmpegTranscodingPimpl::encode_write_frame_withoutpos(AVFrame* filt_frame, unsigned int stream_index)
+{
+	StreamContext* stream = &stream_ctx[stream_index];
+	int ret;
+	AVPacket enc_pkt;
+
+	av_log(nullptr, AV_LOG_INFO, "Encoding frame\n");
+	/* encode filtered frame */
+	enc_pkt.data = nullptr;
+	enc_pkt.size = 0;
+	av_init_packet(&enc_pkt);
+
+	ret = avcodec_send_frame(stream->enc_ctx, filt_frame);
+
+	if (ret >= 0)
+	{
+		while (ret >= 0)
+		{
+			ret = avcodec_receive_packet(stream->enc_ctx, &enc_pkt);
+
+			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			{
+				ret = 0;
+				break;
+			}
+
+			av_write_frame(ofmt_ctx, &enc_pkt);
+			//av_packet_unref(&enc_pkt);
+		}
+	}
+
+	av_free_packet(&enc_pkt);
+
+	return ret;
+}
+
 int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned int stream_index)
 {
 	StreamContext* stream = &stream_ctx[stream_index];
@@ -1418,7 +1464,6 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 			if (enc_pkt.duration > 0)
 				enc_pkt.duration = av_rescale_q(enc_pkt.duration, ofmt_ctx->streams[outputIndex]->time_base,
 					stream->enc_ctx->time_base);
-
 
 			av_log(nullptr, AV_LOG_DEBUG, "Muxing frame\n");
 			/* mux encoded frame */
@@ -1718,32 +1763,33 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(CRegardsBitmap* bitmap)
 	return mat;
 }
 
+static void encode(AVCodecContext* enc_ctx, AVFrame* frame, AVPacket* pkt,
+	FILE* outfile)
+{
+	int ret;
+	ret = avcodec_send_frame(enc_ctx, frame);
+	if (ret < 0) {
+		fprintf(stderr, "Error sending a frame for encoding\n");
+		return;
+	}
+
+	while (ret >= 0) {
+		ret = avcodec_receive_packet(enc_ctx, pkt);
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			return;
+		else if (ret < 0) {
+			fprintf(stderr, "Error during encoding\n");
+			exit(1);
+		}
+		fwrite(pkt->data, 1, pkt->size, outfile);
+		av_packet_unref(pkt);
+	}
+}
+
 int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds)
 {
 	int ret = 0;
 	int stream_index = 0;
-	//bool startEncoding = true;
-	//bool pictureFind = false;
-	//int nb_max_Frame = 30;
-	//int fps = stream->dec_ctx->framerate.num / stream->dec_ctx->framerate.den;
-	int64_t timestamp = static_cast<int64_t>(timeInSeconds) * 1000 * 1000 + startTime;
-
-	if (timestamp < 0)
-	{
-		timestamp = 0;
-	}
-
-	//int64_t timestamp = (AV_TIME_BASE / 100) * static_cast<int64_t>(videoCompressOption->startTime);
-	int64_t seek_target = timestamp;
-	int64_t seek_rel = 0;
-	int64_t seek_min = seek_rel > 0 ? seek_target - seek_rel + 2 : INT64_MIN;
-	int64_t seek_max = seek_rel < 0 ? seek_target - seek_rel - 2 : INT64_MAX;
-	int seek_flags = 0;
-	seek_flags &= ~AVSEEK_FLAG_BYTE;
-	// FIXME the +-2 is due to rounding being not done in the correct direction in generation
-	//      of the seek_pos/seek_rel variables
-
-	ret = avformat_seek_file(ifmt_ctx, -1, seek_min, seek_target, seek_max, seek_flags);
 
 	//bool firstPos = true;
 	double fps = 0;
@@ -1810,10 +1856,14 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	sws_scale(scaleContext, &frameOutput.data, &linesize, 0, frameOutput.rows,
 		frame->data, frame->linesize);
 
+	//ret = av_frame_get_buffer(frame, 0);
 
 	for (int i = 0; i < fps; i++) {
 		frame->pts = i;
-		ret = filter_encode_write_frame(frame, stream_index, nullptr, 1);
+
+		ret = encode_write_frame(frame, stream_index);
+		if (ret < 0)
+			break;
 	}
 
 	// flush encoder
@@ -1828,7 +1878,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	ret = av_write_trailer(ofmt_ctx);
 
-	av_freep(&frame->data[0]);
+	//av_freep(&frame->data[0]);
 	av_frame_free(&frame);
 
 	return ret;
@@ -2159,6 +2209,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	this->m_dlgProgress = m_dlgProgress;
 	//unsigned int stream_index;
 	//unsigned int i;
+	input_file = input;
 	totalFrame = 0;
 	encodeOneFrame = false;
 	//bool first = true;
@@ -2168,7 +2219,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 

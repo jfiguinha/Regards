@@ -78,7 +78,7 @@ private:
 	int IsSupportOpenCL();
 	int OpenFile(const wxString& input, const wxString& output);
 	static int write_packet(void* opaque, uint8_t* buf, int buf_size);
-
+	int encode_write_frame_withoutpos(AVFrame* filt_frame, unsigned int stream_index);
 	void VideoTreatment(AVFrame* & tmp_frame, StreamContext* stream);
 	int ProcessEncodeFile(AVFrame* dst);
 	int ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds);
