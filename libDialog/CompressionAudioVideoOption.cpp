@@ -237,7 +237,7 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	temp_dc.DrawBitmap(picture.Mirror(false), x, y);
 	temp_dc.SelectObject(wxNullBitmap);
 	bitmap->SetBitmap(test_bitmap);
-
+	
 	delete bitmap_local;
 }
 

@@ -148,6 +148,9 @@ void CShowPreview::ShowPicture(CRegardsBitmap* bitmap, const wxString& label)
 		else
 			bitmapWindow->UpdateBitmap(imageLoadingFormat, false);
 
+		if (isFirstPicture)
+			bitmapWindow->ShrinkImage();
+
 		auto dlg = static_cast<CompressionAudioVideoOption*>(this->FindWindowByName("CompressionAudioVideoOption"));
 		dlg->ChangeLabelPicture(label);
 

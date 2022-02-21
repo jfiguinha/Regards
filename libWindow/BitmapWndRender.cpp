@@ -710,6 +710,8 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				loadBitmap = true;
 				bitmapLoad = true;
 				filename = bitmapIn->GetFilename();
+				bitmapwidth = bitmapIn->GetWidth();
+				bitmapheight = bitmapIn->GetHeight();
 				bitmapUpdate = true;
 
 				printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
@@ -723,6 +725,9 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 
 				source = bitmapIn;
 				muBitmap.unlock();
+
+				if(shrinkImage)
+					ShrinkImage(false);
 			}
 			//RefreshWindow();
 			parentRender->Refresh();

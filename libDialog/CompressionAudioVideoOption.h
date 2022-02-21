@@ -141,7 +141,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	CThumbnailVideo* ffmpegTranscoding;
+	CThumbnailVideo* ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif
