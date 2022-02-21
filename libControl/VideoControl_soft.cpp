@@ -1112,7 +1112,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	//wxPaintDC dc(this);
-	printf("CVideoControlSoft::OnPaint \n");
+	//printf("CVideoControlSoft::OnPaint \n");
 
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
@@ -1614,7 +1614,7 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	if (IsSupportOpenCL())
 		isCPU = IsCPUContext();
 
-	printf("Set Data Begin \n");
+	//printf("Set Data Begin \n");
 
 	videoRenderStart = true;
 
@@ -1639,7 +1639,7 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 	GLTexture* glTextureOutput = nullptr;
 	if (glTexture != nullptr)
 	{
-		printf("DisplayTexture not openGLDecoding \n");
+		//printf("DisplayTexture not openGLDecoding \n");
 		muVideoEffect.lock();
 		wxFloatRect floatRect;
 		floatRect.left = 0;
@@ -2133,15 +2133,15 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 
 	if (!isffmpegDecode)
 	{
-		printf("VideoControl Is use_opencl 1\n");
+		//printf("VideoControl Is use_opencl 1\n");
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
-			printf("VideoControl Is use_opencl 2\n");
+			//printf("VideoControl Is use_opencl 2\n");
 			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
 			muBitmap.unlock();
 		}
-		printf("VideoControl Is use_opencl 3\n");
+		//printf("VideoControl Is use_opencl 3\n");
 
 		deleteTexture = false;
 	}

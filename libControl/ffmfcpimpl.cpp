@@ -1730,6 +1730,54 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             bool error = false;
             enum AVHWDeviceType type;
 
+#ifndef __APPLE__
+
+#ifdef WIN32
+            wxString list[] = {"D3D11VA", "DXVA2", "opencl", "CUDA", "QSV"};
+#else
+            wxString list[] = {"vdpau", "cuda", "vaapi", "opencl", "qsv"};
+            
+#endif
+            for(int i = 0;i < 4;i++)
+            {
+                type = av_hwdevice_find_type_by_name(list[i]);
+                if (type == AV_HWDEVICE_TYPE_NONE)
+                {
+                    fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
+                    fprintf(stderr, "Available device types:");
+                    while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+                        fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+                    fprintf(stderr, "\n");
+
+                    error = true;
+                }
+
+                if(!error)
+                {
+                    if (hw_decoder_init(avctx, type) < 0)
+                        error = true;
+                }
+                if (!error)
+                {
+                    if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+                        error = true;
+                    }
+
+                    isSuccess = true;
+                }    
+                if(isSuccess)
+                {
+                    printf("Success for hardware decoding : %s ! \n", list[i].ToStdString().c_str());
+                    break;
+                }
+                else
+                {
+                    printf("Error No Success for hardware decoding : %s ! \n", list[i].ToStdString().c_str());
+                }
+            }
+
+#else
+
             type = av_hwdevice_find_type_by_name(acceleratorHardware);
             if (type == AV_HWDEVICE_TYPE_NONE)
             {
@@ -1755,12 +1803,17 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
                 isSuccess = true;
             }
+#endif
+
         }
 
         if(!isSuccess)
         {
+            printf("No success for hardware decoding ! \n");
             ret = avcodec_open2(avctx, codec, &opts);
         }
+        else
+             printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
         
         if(ret < 0)
         {

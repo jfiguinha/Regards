@@ -985,7 +985,7 @@ void CCentralWindow::SetPanelInfos(const bool& isThumbnail)
 
 void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 {
-	printf("CCentralWindow::SetVideoPos \n");
+	//printf("CCentralWindow::SetVideoPos \n");
 	int64_t pos = event.GetExtraLong();
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(pos);
@@ -993,7 +993,7 @@ void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 {
-	printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
+	//printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
 
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(animationPosition);

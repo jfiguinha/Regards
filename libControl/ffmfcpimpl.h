@@ -679,12 +679,13 @@ public:
 	bool first = true;
 	AVFrame * dst = av_frame_alloc();
 	SwsContext* scaleContext = nullptr;
+       
 #ifdef WIN32
 	wxString acceleratorHardware = "d3d11va";
 #elif defined(__APPLE__)
 	wxString acceleratorHardware = "videotoolbox";
 #else
-	wxString acceleratorHardware = "vaapi";
+	wxString acceleratorHardware = "cuda";
 #endif
 	bool isOpenGLDecoding = false;
 	int find_stream_info = 1;

@@ -2261,7 +2261,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 #endif
 
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	printf("CLibPicture LoadPicture \n");
+	//printf("CLibPicture LoadPicture \n");
 	
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
