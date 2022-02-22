@@ -3,8 +3,18 @@
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
 #include <mutex>
-
 using namespace std;
+
+#ifdef WIN32
+wxString listHardware[] = { "cuda", "qsv", "d3d11va", "dxva2", "opencl"  };
+int sizeList = 5;
+#elif defined(__APPLE__)
+wxString listHardware[] = { "videotoolbox", "opencl" };
+int sizeList = 2;
+#else
+wxString listHardware[] = { "vdpau", "cuda", "vaapi", "opencl", "qsv" };
+int sizeList = 5;
+#endif
 
 bool exit_video = false;
 std::mutex abortMutex;
@@ -1730,17 +1740,9 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             bool error = false;
             enum AVHWDeviceType type;
 
-#ifndef __APPLE__
-
-#ifdef WIN32
-            wxString list[] = {"D3D11VA", "DXVA2", "opencl", "CUDA", "QSV"};
-#else
-            wxString list[] = {"vdpau", "cuda", "vaapi", "opencl", "qsv"};
-            
-#endif
-            for(int i = 0;i < 4;i++)
+            for(int i = 0;i < sizeList;i++)
             {
-                type = av_hwdevice_find_type_by_name(list[i]);
+                type = av_hwdevice_find_type_by_name(listHardware[i]);
                 if (type == AV_HWDEVICE_TYPE_NONE)
                 {
                     fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
@@ -1767,44 +1769,15 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
                 }    
                 if(isSuccess)
                 {
-                    printf("Success for hardware decoding : %s ! \n", list[i].ToStdString().c_str());
+					acceleratorHardware = listHardware[i];
+                    printf("Success for hardware decoding : %s ! \n", listHardware[i].ToStdString().c_str());
                     break;
                 }
                 else
                 {
-                    printf("Error No Success for hardware decoding : %s ! \n", list[i].ToStdString().c_str());
+                    printf("Error No Success for hardware decoding : %s ! \n", listHardware[i].ToStdString().c_str());
                 }
             }
-
-#else
-
-            type = av_hwdevice_find_type_by_name(acceleratorHardware);
-            if (type == AV_HWDEVICE_TYPE_NONE)
-            {
-                fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
-                fprintf(stderr, "Available device types:");
-                while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-                    fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-                fprintf(stderr, "\n");
-
-                error = true;
-            }
-
-            if(!error)
-            {
-                if (hw_decoder_init(avctx, type) < 0)
-                    error = true;
-            }
-            if (!error)
-            {
-                if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-                    error = true;
-                }
-
-                isSuccess = true;
-            }
-#endif
-
         }
 
         if(!isSuccess)
