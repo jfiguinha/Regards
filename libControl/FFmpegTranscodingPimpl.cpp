@@ -27,20 +27,8 @@ extern "C" {
 #include <ffmpeg_application.h>
 using namespace cv;
 using namespace Regards::OpenCL;
-static const int dst_vbit_rate = 1500000;
 
-//static const char* DURATION = "duration";
-//static const char* AUDIO_CODEC = "audio_codec";
-//static const char* VIDEO_CODEC = "video_codec";
-//static const char* ICY_METADATA = "icy_metadata";
 static const char* ROTATE = "rotate";
-//static const char* FRAMERATE = "framerate";
-//static const char* CHAPTER_START_TIME = "chapter_start_time";
-//static const char* CHAPTER_END_TIME = "chapter_end_time";
-//static const char* CHAPTER_COUNT = "chapter_count";
-//static const char* FILESIZE = "filesize";
-
-
 static const char* hb_h264_level_names[] = {
 	"auto", "1.0", "1b", "1.1", "1.2", "1.3", "2.0", "2.1", "2.2", "3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "5.0",
 	"5.1", "5.2", nullptr,
@@ -214,6 +202,18 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 	return apply_vpx_preset(av_opts, preset);
 }
 */
+
+#ifdef WIN32
+wxString listencoderHardware[] = {"nvenc", "amf", "qsv","mf", "libmfx", "OpenCL" };
+int sizeListEncoderHardware = 6;
+#elif defined(__APPLE__)
+wxString listencoderHardware[] = { "videotoolbox", "OpenCL"};
+int sizeListEncoderHardware = 1;
+#else
+wxString listencoderHardware[] = { "nvenc", "VAAPI", "libmfx", "OpenCL" };
+int sizeListEncoderHardware = 4;
+#endif
+
 
 
 static enum AVPixelFormat hw_pix_fmt;
@@ -472,43 +472,8 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 }
 
 
-AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx,
-	AVCodecContext* pSourceCodecCtx, const wxString& encoderName)
+AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, const wxString& encoderName)
 {
-	//int in_w = dst_width;
-	//	int in_h = dst_height;
-
-#ifdef HANDBRAKE
-	pCodecCtx->codec_id = codec_id;
-	pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
-	pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
-	pCodecCtx->width = in_w;
-	pCodecCtx->height = in_h;
-	pCodecCtx->time_base.num = 1;
-	pCodecCtx->time_base.den = 30;
-	pCodecCtx->bit_rate = dst_vbit_rate;
-	pCodecCtx->gop_size = 30 * 1;
-	pCodecCtx->max_b_frames = 0;
-#else
-
-	// Set things in context that we will allow the user to
-	// override with advanced settings.
-	//AVRational time_base_from_framerate;
-	//time_base_from_framerate.num = pSourceCodecCtx->framerate.den;
-	//time_base_from_framerate.den = pSourceCodecCtx->framerate.num;
-	pCodecCtx->codec_id = codec_id;
-	pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
-	pCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
-	pCodecCtx->width = pSourceCodecCtx->width;
-	pCodecCtx->height = pSourceCodecCtx->height;
-	pCodecCtx->framerate = pSourceCodecCtx->framerate;
-	pCodecCtx->time_base = pSourceCodecCtx->time_base;
-	pCodecCtx->bit_rate = dst_vbit_rate;
-	pCodecCtx->gop_size = (pCodecCtx->framerate.num / pCodecCtx->framerate.den) * 1;
-	pCodecCtx->max_b_frames = 0;
-	framerate = (pCodecCtx->framerate.num / pCodecCtx->framerate.den) * 1;
-	pCodecCtx->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
-#endif
 
 	// some formats want stream headers to be separate
 	if (pCodecCtx->flags & AVFMT_GLOBALHEADER)
@@ -842,85 +807,6 @@ AVDictionary* CFFmpegTranscodingPimpl::setEncoderParam(const AVCodecID& codec_id
 }
 
 
-//h264_amf
-//h264_nvenc
-
-bool CFFmpegTranscodingPimpl::openHardEncoder(const AVCodecID& codec_id, const wxString& encoderName,
-	AVCodecContext* pSourceCodecCtx, AVStream* stream)
-{
-	bool isSucceed = false;
-	AVCodecContext* pCodecCtx = nullptr;
-	wxString encoderHardName = GetCodecName(codec_id, encoderName);
-	if (encoderName.size() > 0)
-	{
-		const AVCodec* p_codec = avcodec_find_encoder_by_name(encoderHardName);
-
-		if (p_codec != nullptr)
-		{
-			pCodecCtx = avcodec_alloc_context3(p_codec);
-			pCodecCtx->thread_count = 1;
-			AVDictionary* param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, encoderName);
-
-			const int ret = avcodec_open2(pCodecCtx, p_codec, &param);
-			if (ret < 0)
-			{
-				
-				char str_err[256];
-				if (av_strerror(ret, str_err, 256) == 0)
-				{
-					printf("Error (%s) returned from encoded video", str_err);
-				}
-				
-				avcodec_close(pCodecCtx);
-				avcodec_free_context(&pCodecCtx);
-				pCodecCtx = nullptr;
-				isSucceed = false;
-			}
-			else
-			{
-				isSucceed = true;
-			}
-		}
-	}
-	avcodec_close(pCodecCtx);
-	avcodec_free_context(&pCodecCtx);
-	pCodecCtx = nullptr;
-	return isSucceed;
-}
-
-
-bool CFFmpegTranscodingPimpl::openSoftEncoder(const AVCodecID& codec_id, AVCodecContext* pSourceCodecCtx,
-	AVStream* stream)
-{
-	bool isSucceed = false;
-	AVCodecContext* pCodecCtx = nullptr;
-	const AVCodec* p_codec = avcodec_find_encoder(codec_id);
-
-	if (p_codec != nullptr)
-	{
-		pCodecCtx = avcodec_alloc_context3(p_codec);
-		pCodecCtx->thread_count = 1;
-		AVDictionary* param = setEncoderParam(codec_id, pCodecCtx, pSourceCodecCtx, "");
-
-		const int ret = avcodec_open2(pCodecCtx, p_codec, &param);
-		if (ret < 0)
-		{
-			avcodec_close(pCodecCtx);
-			avcodec_free_context(&pCodecCtx);
-			pCodecCtx = nullptr;
-			isSucceed = false;
-		}
-		else
-		{
-			isSucceed = true;
-		}
-	}
-
-	avcodec_close(pCodecCtx);
-	avcodec_free_context(&pCodecCtx);
-	pCodecCtx = nullptr;
-	return isSucceed;
-}
 
 wxString CFFmpegTranscodingPimpl::GetCodecName(AVCodecID codec_type, const wxString& encoderHardware)
 {
@@ -1082,6 +968,22 @@ int CFFmpegTranscodingPimpl::write_packet(void* opaque, uint8_t* buf, int buf_si
 	return buf_size;
 }
 
+void CFFmpegTranscodingPimpl::SetParamFromVideoCodec(AVCodecContext* c, AVCodecContext* pSourceCodecCtx)
+{
+	c->codec_type = AVMEDIA_TYPE_VIDEO;
+	c->pix_fmt = AV_PIX_FMT_YUV420P;
+	c->width = pSourceCodecCtx->width;
+	c->height = pSourceCodecCtx->height;
+	c->framerate = pSourceCodecCtx->framerate;
+	c->time_base = pSourceCodecCtx->time_base;
+	framerate = (c->framerate.num / c->framerate.den) * 1;
+	c->bit_rate = 1000 * videoCompressOption->videoBitRate;
+	c->gop_size = framerate;
+	c->max_b_frames = 1;
+	c->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
+	
+}
+
 int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 {
 	AVStream* out_stream;
@@ -1159,116 +1061,47 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 			{
 				streamVideo = out_stream;
 				enc_ctx = nullptr;
-				encoder = nullptr;
-#ifdef WIN32
+
+				width = dec_ctx->width;
+				height = dec_ctx->height;
+
+
 				if (videoCompressOption->videoHardware)
 				{
-					bool success = false;
-					encoderHardware = "nvenc"; //NVIDIA ENC
-					success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
-					if (!success)
+					for (int i = 0; i < sizeListEncoderHardware; i++)
 					{
-						encoderHardware = "amf"; //AMD VCE
-						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
-					}
-					if (!success)
-					{
-						encoderHardware = "qsv"; //Quicktime
-						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
-					}
-					if (!success)
-					{
-						encoderHardware = "mf"; //MediaFoundation
-						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
-					}
-					if (success)
-					{
-						//printf("Hardware Encoder video use : %s \n", encoderHardware);
-						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, encoderHardware));
-					}
-					else
-					{
-						encoder = avcodec_find_encoder(VIDEO_CODEC);
-						encoderHardware = "";
+						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, listencoderHardware[i]);
+						if (enc_ctx)
+						{
+							encoderHardware = listencoderHardware[i];
+							break;
+						}
 					}
 				}
-				else
+
+				if (!enc_ctx)
 				{
-					encoderHardware = "";
-					encoder = avcodec_find_encoder(VIDEO_CODEC);
+					encoderHardware = ""; //MediaFoundation
+					enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
 				}
-#elif defined(__APPLE__)
-				if (videoCompressOption->videoHardware)
-				{
-					bool success = false;
-					if (!success)
-					{
-						encoderHardware = "videotoolbox"; //Quicktime
-						success = openHardEncoder(VIDEO_CODEC, encoderHardware, dec_ctx, in_stream);
-					}
-					if (success)
-					{
-						encoder = avcodec_find_encoder_by_name(GetCodecName(VIDEO_CODEC, encoderHardware));
-					}
-					else
-					{
-						encoderHardware = "";
-						encoder = avcodec_find_encoder(VIDEO_CODEC);
-					}
-				}
-				else {
-					encoderHardware = "";
-					encoder = avcodec_find_encoder(VIDEO_CODEC);
-				}
-#else
-				encoderHardware = "";
-				encoder = avcodec_find_encoder(VIDEO_CODEC);
-#endif
 			}
 			else
 			{
 				encoder = avcodec_find_encoder(AUDIO_CODEC);
+				enc_ctx = avcodec_alloc_context3(encoder);
+				if (!enc_ctx)
+				{
+					av_log(nullptr, AV_LOG_FATAL, "Failed to allocate the encoder context\n");
+					return AVERROR(ENOMEM);
+				}
 			}
-			if (!encoder)
+			if (!enc_ctx)
 			{
 				av_log(nullptr, AV_LOG_FATAL, "Necessary encoder not found\n");
 				return AVERROR_INVALIDDATA;
 			}
 
-				
-
-
-			enc_ctx = avcodec_alloc_context3(encoder);
-			if (!enc_ctx)
-			{
-				av_log(nullptr, AV_LOG_FATAL, "Failed to allocate the encoder context\n");
-				return AVERROR(ENOMEM);
-			}
-
-			/* In this example, we transcode to same properties (picture size,
-				 * sample rate etc.). These properties can be changed for output
-				 * streams easily using filters */
-			if (dec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				AVDictionary* param = setEncoderParam(VIDEO_CODEC, enc_ctx, dec_ctx, encoderHardware);
-				enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-
-				if (rotate != 0)
-				{
-					uint8_t* sd = av_stream_new_side_data(streamVideo, AV_PKT_DATA_DISPLAYMATRIX,
-						sizeof(int32_t) * 9);
-					if (sd)
-						av_display_rotation_set((int32_t*)sd, rotate);
-				}
-
-				int ret = avcodec_open2(enc_ctx, encoder, &param);
-				if (ret < 0)
-				{
-					av_log(nullptr, AV_LOG_ERROR, "Cannot open video encoder for stream #%u\n", i);
-					return ret;
-				}
-			}
-			else
+			if(dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
 			{
 				streamAudio = out_stream;
 				//enc_ctx->bit_rate = dst_abit_rate;
@@ -1815,9 +1648,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	}
 
 	StreamContext* stream = &stream_ctx[videoStreamIndex];
-
-	
-
 	frame->format = AV_PIX_FMT_YUV420P;
 	frame->width = stream->dec_ctx->width;
 	frame->height = stream->dec_ctx->height;
@@ -1860,7 +1690,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	for (int i = 0; i < fps; i++) {
 		frame->pts = i;
-
 		ret = encode_write_frame(frame, stream_index);
 		if (ret < 0)
 			break;
@@ -1878,7 +1707,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	ret = av_write_trailer(ofmt_ctx);
 
-	//av_freep(&frame->data[0]);
+	av_freep(&frame->data[0]);
 	av_frame_free(&frame);
 
 	return ret;
@@ -2189,13 +2018,17 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 
 	orientation = 360 - orientation;
 
+	/*
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
 
+	*/
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
 
-	ret = ProcessEncodeOneFrameFile(dst, time);
+	//ret = ProcessEncodeOneFrameFile(dst, time);
+
+	EncodeOneFrameFFmpeg(output, dst, time);
 
 	return ret;
 }
@@ -2224,18 +2057,22 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 		throw "Error when reading steam_avi";
 
 
+	{
+		fps = capture->get(CAP_PROP_FPS);
+		totalFrame = int(capture->get(CAP_PROP_FRAME_COUNT));
+		width = capture->get(CAP_PROP_FRAME_WIDTH);
+		height = capture->get(CAP_PROP_FRAME_HEIGHT);
+		duration = totalFrame / fps;
+		rotate = capture->get(CAP_PROP_ORIENTATION_META);
+
+	}
+
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
 
 	cleanPacket = true;
 	begin = std::chrono::steady_clock::now();
 
-	{
-		fps = capture->get(CAP_PROP_FPS);
-		totalFrame = int(capture->get(CAP_PROP_FRAME_COUNT));
-		duration = totalFrame / fps;
-
-	}
 
 	ret = ProcessEncodeFile(dst);
 	return ret;
@@ -2282,4 +2119,256 @@ void CFFmpegTranscodingPimpl::Release()
 
 		ofmt_ctx = nullptr;
 	}
+}
+
+
+void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile)
+{
+	int ret;
+	AVPacket enc_pkt;
+	enc_pkt.data = nullptr;
+	enc_pkt.size = 0;
+	av_init_packet(&enc_pkt);
+
+	ret = avcodec_send_frame(enc_ctx, frame);
+	if (ret < 0) {
+		exit(1);
+	}
+
+	while (ret >= 0) {
+		ret = avcodec_receive_packet(enc_ctx, &enc_pkt);
+		if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+			return;
+		else if (ret < 0) {
+			fprintf(stderr, "Error during encoding\n");
+			exit(1);
+		}
+
+		fwrite(enc_pkt.data, 1, enc_pkt.size, outfile);
+		
+	}
+
+	av_packet_unref(&enc_pkt);
+}
+
+AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pSourceCodecCtx, AVStream * streamVideo, wxString encoderName)
+{
+	AVCodecContext * c = nullptr;
+	wxString encoderHardName = GetCodecName(codec_id, encoderName);
+
+	const AVCodec* p_codec = avcodec_find_encoder_by_name(encoderHardName);
+
+	if (encoderName == "")
+		encoderHardName = "";
+
+	if (p_codec != nullptr)
+	{
+		c = avcodec_alloc_context3(p_codec);
+		if (pSourceCodecCtx != nullptr)
+		{
+			// Set things in context that we will allow the user to
+			// override with advanced settings.
+			//AVRational time_base_from_framerate;
+			//time_base_from_framerate.num = pSourceCodecCtx->framerate.den;
+			//time_base_from_framerate.den = pSourceCodecCtx->framerate.num;
+			framerate = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
+			c->codec_id = codec_id;
+			c->codec_type = AVMEDIA_TYPE_VIDEO;
+			c->pix_fmt = AV_PIX_FMT_YUV420P;
+			c->width = pSourceCodecCtx->width;
+			c->height = pSourceCodecCtx->height;
+			c->framerate = pSourceCodecCtx->framerate;
+			c->time_base = pSourceCodecCtx->time_base;
+			c->bit_rate = videoCompressOption->videoBitRate;
+			c->gop_size = framerate;
+			c->max_b_frames = 0;
+			c->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
+
+			if (videoCompressOption->videoQualityOrBitRate == 0)
+				c->compression_level = videoCompressOption->videoCompressionValue;
+		}
+		else
+		{
+			c->codec_type = AVMEDIA_TYPE_VIDEO;
+			c->pix_fmt = AV_PIX_FMT_YUV420P;
+			c->width = width;
+			c->height = height;
+			c->time_base = { 1,  (int)fps };
+			c->framerate = { (int)fps, 1 };
+			c->bit_rate = 1000 * videoCompressOption->videoBitRate;
+			c->gop_size = fps;
+			c->max_b_frames = 0;
+			if (videoCompressOption->videoQualityOrBitRate == 0)
+				c->compression_level = videoCompressOption->videoCompressionValue;
+		}
+		AVDictionary* param = setEncoderParam(codec_id, c, encoderHardName);
+
+		if (rotate != 0 && streamVideo != nullptr)
+		{
+			uint8_t* sd = av_stream_new_side_data(streamVideo, AV_PKT_DATA_DISPLAYMATRIX,
+				sizeof(int32_t) * 9);
+			if (sd)
+				av_display_rotation_set((int32_t*)sd, rotate);
+		}
+
+		const int ret = avcodec_open2(c, p_codec, &param);
+		if (ret < 0)
+		{
+
+			char str_err[256];
+			if (av_strerror(ret, str_err, 256) == 0)
+			{
+				printf("Error (%s) returned from encoded video", str_err);
+			}
+
+			avcodec_close(c);
+			avcodec_free_context(&c);
+			c = nullptr;
+		}
+	}
+	return c;
+}
+
+int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
+{
+	AVCodecID codec_name;
+	const AVCodec* codec;
+	AVCodecContext* c = NULL;
+	int i, ret, x, y;
+	FILE* f;
+	AVFrame* frame;
+	uint8_t endcode[] = { 0, 0, 1, 0xb7 };
+
+	int stream_index = 0;
+	try
+	{
+		//bool firstPos = true;
+		//double fps = 0;
+		Mat frameOutput;
+		{
+			fps = capture->get(CAP_PROP_FPS);
+			double noFrame = fps * timeInSeconds;
+			bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
+			width = capture->get(CAP_PROP_FRAME_WIDTH);
+			height = capture->get(CAP_PROP_FRAME_HEIGHT);
+			*capture >> frameOutput;
+			cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
+		}
+		CRegardsBitmap bitmap;
+		bitmap.SetMatrix(frameOutput);
+		bitmap.ApplyRotation(rotation);
+		bitmap.VertFlipBuf();
+		frameOutput = ApplyProcess(&bitmap);
+
+		codec_name = GetCodecID(AVMEDIA_TYPE_VIDEO);
+
+		bool isSuccess = false;
+		wxString encoderHardware = "";
+
+		if (videoCompressOption->videoHardware)
+		{
+			for (int i = 0; i < sizeListEncoderHardware; i++)
+			{
+				c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, listencoderHardware[i]);
+				if (c)
+				{
+					encoderHardware = listencoderHardware[i];
+					break;
+				}
+			}
+		}
+
+		if (!c)
+		{
+			c = OpenFFmpegEncoder(codec_name, nullptr, nullptr, encoderHardware);
+		}
+
+
+		if (!c)
+			throw "can't open";
+
+		f = fopen(filename, "wb");
+		if (!f) {
+			fprintf(stderr, "Could not open %s\n", filename);
+			throw "can't open";
+		}
+
+		frame = av_frame_alloc();
+		if (!frame) {
+			fprintf(stderr, "Could not allocate video frame\n");
+			throw "can't alloc";
+		}
+		frame->format = c->pix_fmt;
+		frame->width = c->width;
+		frame->height = c->height;
+
+		ret = av_frame_get_buffer(frame, 0);
+		if (ret < 0) {
+			fprintf(stderr, "Could not allocate the video frame data\n");
+			throw "can't alloc";
+		}
+
+		if (dst_hardware == nullptr)
+		{
+			//dst_hardware = av_frame_alloc();
+
+			av_opt_set_int(scaleContext, "srcw", frame->width, 0);
+			av_opt_set_int(scaleContext, "srch", frame->height, 0);
+			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
+			av_opt_set_int(scaleContext, "dstw", frame->width, 0);
+			av_opt_set_int(scaleContext, "dsth", frame->height, 0);
+			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
+
+			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+			{
+				sws_freeContext(scaleContext);
+				throw std::logic_error("Failed to initialise scale context");
+			}
+		}
+
+
+
+		//int got_output = 0;
+		int linesize = frameOutput.cols * 4;
+
+
+		sws_scale(scaleContext, &frameOutput.data, &linesize, 0, frameOutput.rows,
+			frame->data, frame->linesize);
+
+
+
+		/* encode 1 second of video */
+		for (i = 0; i < fps; i++) {
+
+
+			frame->pts = i;
+
+			/* encode the image */
+			EncodeOneFrame(c, frame,f);
+		}
+
+		/* flush the encoder */
+		EncodeOneFrame(c, NULL, f);
+
+		/* Add sequence end code to have a real MPEG file.
+		   It makes only sense because this tiny examples writes packets
+		   directly. This is called "elementary stream" and only works for some
+		   codecs. To create a valid file, you usually need to write packets
+		   into a proper file format or protocol; see muxing.c.
+		 */
+		if (codec->id == AV_CODEC_ID_MPEG1VIDEO || codec->id == AV_CODEC_ID_MPEG2VIDEO)
+			fwrite(endcode, 1, sizeof(endcode), f);
+		
+
+		avcodec_free_context(&c);
+		av_frame_free(&frame);
+
+	}
+	catch (...)
+	{
+
+	}
+	fclose(f);
+	return 0;
 }

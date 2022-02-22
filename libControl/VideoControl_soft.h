@@ -204,7 +204,7 @@ protected:
 	mutex muSubtitle;
 	
 	bool videoRender = false;;
-
+	bool videoStartRender = false;
 	thread* _threadVideo = nullptr;
 	bool threadVideoEnd = true;
 	GLTexture* glTextureSrc = nullptr;

@@ -72,6 +72,9 @@ public:
 	
 private:
 
+	void EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile);
+	int EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds);
+
 	cv::Mat ApplyProcess(CRegardsBitmap* bitmap);
 	static void DisplayPreview(void* data);
 	void EndTreatment();
@@ -84,11 +87,10 @@ private:
 	int ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds);
 	void DecodeHardwareFrame(AVFrame* & tmp_frame, AVFrame* sw_frame, StreamContext* stream);
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
-	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx,
-		const wxString& encoderName);
-	bool openHardEncoder(const AVCodecID& codec_id, const wxString& encoderName, AVCodecContext* pSourceCodecCtx,
-		AVStream* stream);
-	bool openSoftEncoder(const AVCodecID& codec_id, AVCodecContext* pSourceCodecCtx, AVStream* stream);
+
+	AVCodecContext * OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, wxString encoderName);
+	void SetParamFromVideoCodec(AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx);
+	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx,	const wxString& encoderName);
 	AVCodecID GetCodecID(AVMediaType codec_type) const;
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString& nameEncoder);
 	int encode_write_frame(AVFrame* filt_frame, unsigned int stream_index);
@@ -132,7 +134,8 @@ private:
 	std::chrono::steady_clock::time_point end;
 
 	CRegardsBitmap* bmp = nullptr;
-
+	int width = 0;
+	int height = 0;
 	AVFrame* dst = nullptr;
 	AVFrame* dst_hardware = nullptr;
 	SwsContext* scaleContext = nullptr;
@@ -151,6 +154,8 @@ private:
 	int nbFrame = 0;
 
 	int framerate = 30;
+
+	
 
 	cv::VideoCapture * capture = nullptr;
 	std::map<int, int> streamInNumberInOut;

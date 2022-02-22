@@ -1013,8 +1013,9 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		if (playStartTimer->IsRunning())
 			playStartTimer->Stop();
-		startVideo = play;
+		startVideo = true;
 		stopVideo = false;
+		videoStartRender = false;
 		angle = 0;
 		flipV = false;
 		flipH = false;
@@ -1025,14 +1026,16 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 		filename = movie;
 		standByMovie = "";
 		pause = false;
+		firstMovie = true;
+		/*
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
 		               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
 		               firstMovie ? 0 : GetSoundVolume());
+		*/
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
 		muVideoEffect.unlock();
-		if (firstMovie)
-			playStopTimer->Start(100, true);
+
 		firstMovie = false;
 	}
 	else if (movie != filename)
@@ -1209,6 +1212,10 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
+
+	if (!videoStartRender)
+		playStartTimer->Start(100, true);
+	videoStartRender = true;
 }
 
 int CVideoControlSoft::ChangeSubtitleStream(int newStreamSubtitle)
