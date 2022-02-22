@@ -204,13 +204,13 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 */
 
 #ifdef WIN32
-wxString listencoderHardware[] = {"nvenc", "amf", "qsv","mf", "libmfx", "OpenCL" };
+wxString listencoderHardware[] = {"nvenc", "amf", "qsv","mf", "libmfx", "opencl" };
 int sizeListEncoderHardware = 6;
 #elif defined(__APPLE__)
-wxString listencoderHardware[] = { "videotoolbox", "OpenCL"};
+wxString listencoderHardware[] = { "videotoolbox", "opencl"};
 int sizeListEncoderHardware = 1;
 #else
-wxString listencoderHardware[] = { "nvenc", "VAAPI", "libmfx", "OpenCL" };
+wxString listencoderHardware[] = { "nvenc", "vaapi", "libmfx", "opencl" };
 int sizeListEncoderHardware = 4;
 #endif
 
@@ -2154,12 +2154,18 @@ void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* f
 AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pSourceCodecCtx, AVStream * streamVideo, wxString encoderName)
 {
 	AVCodecContext * c = nullptr;
-	wxString encoderHardName = GetCodecName(codec_id, encoderName);
-
-	const AVCodec* p_codec = avcodec_find_encoder_by_name(encoderHardName);
-
-	if (encoderName == "")
-		encoderHardName = "";
+    wxString encoderHardName = "";
+    const AVCodec* p_codec;
+    
+    if(encoderName != "")
+    {
+        encoderHardName = GetCodecName(codec_id, encoderName);
+        p_codec = avcodec_find_encoder_by_name(encoderHardName);
+    }
+    else
+    {
+        p_codec = avcodec_find_encoder(codec_id);
+    }
 
 	if (p_codec != nullptr)
 	{
@@ -2363,12 +2369,14 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 		avcodec_free_context(&c);
 		av_frame_free(&frame);
+        
+        fclose(f);
 
 	}
 	catch (...)
 	{
 
 	}
-	fclose(f);
+	
 	return 0;
 }
