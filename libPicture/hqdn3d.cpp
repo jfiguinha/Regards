@@ -31,9 +31,7 @@ extern float value[256];
 
 #define ABS(A) ( (A) > 0 ? (A) : -(A) )
 
-unsigned int Chqdn3d::hqdn3d_lowpass_mul(int prev_mul,
-                                         int curr_mul,
-                                         short* coef)
+inline unsigned int hqdn3d_lowpass_mul(int prev_mul, int curr_mul, short* coef)
 {
 	int d = (prev_mul - curr_mul) >> 4;
 	return curr_mul + coef[d];
@@ -70,19 +68,15 @@ void Chqdn3d::hqdn3d_denoise_temporal(unsigned char* frame_src,
 
 	temporal += 0x1000;
 
+#pragma omp parallel for
 	for (y = 0; y < h; y++)
 	{
 		for (x = 0; x < w; x++)
 		{
-			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-			                                        frame_src[x] << 8,
-			                                        temporal);
-			frame_dst[x] = (tmp + 0x7F) >> 8;
+			int position = y * w + x;
+			frame_ant[position] = tmp = hqdn3d_lowpass_mul(frame_ant[position], frame_src[position] << 8, temporal);
+			frame_dst[position] = (tmp + 0x7F) >> 8;
 		}
-
-		frame_src += w;
-		frame_dst += w;
-		frame_ant += w;
 	}
 }
 
@@ -95,53 +89,50 @@ void Chqdn3d::hqdn3d_denoise_spatial(unsigned char* frame_src,
                                      short* spatial,
                                      short* temporal)
 {
-	int x, y;
-	unsigned int pixel_ant;
-	unsigned int tmp;
-
+	
 	spatial += 0x1000;
 	temporal += 0x1000;
 
-	/* First line has no top neighbor. Only left one for each tmp and last frame */
-	pixel_ant = frame_src[0] << 8;
 
-	for (x = 0; x < w; x++)
+#pragma omp parallel for
+	for (int x = 0; x < w; x++)
 	{
-		line_ant[x] = tmp = pixel_ant = hqdn3d_lowpass_mul(pixel_ant,
-		                                                   frame_src[x] << 8,
-		                                                   spatial);
-		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-		                                        tmp,
-		                                        temporal);
+		unsigned int tmp;
+		/* First line has no top neighbor. Only left one for each tmp and last frame */
+		unsigned int pixel_ant = frame_src[0] << 8;
+		line_ant[x] = tmp = pixel_ant = hqdn3d_lowpass_mul(pixel_ant, frame_src[x] << 8, spatial);
+		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x], tmp, temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 
-	for (y = 1; y < h; y++)
+	for (int y = 1; y < h; y++)
 	{
+		unsigned int tmp;
+		int x = 0;
 		frame_src += w;
 		frame_dst += w;
 		frame_ant += w;
-		pixel_ant = frame_src[0] << 8;
+		unsigned int pixel_ant = frame_src[0] << 8;
 
 		for (x = 0; x < w - 1; x++)
 		{
 			line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],
-			                                       pixel_ant,
-			                                       spatial);
+				pixel_ant,
+				spatial);
 			pixel_ant = hqdn3d_lowpass_mul(pixel_ant,
-			                               frame_src[x + 1] << 8,
-			                               spatial);
+				frame_src[x + 1] << 8,
+				spatial);
 			frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-			                                        tmp,
-			                                        temporal);
+				tmp,
+				temporal);
 			frame_dst[x] = (tmp + 0x7F) >> 8;
 		}
 		line_ant[x] = tmp = hqdn3d_lowpass_mul(line_ant[x],
-		                                       pixel_ant,
-		                                       spatial);
+			pixel_ant,
+			spatial);
 		frame_ant[x] = tmp = hqdn3d_lowpass_mul(frame_ant[x],
-		                                        tmp,
-		                                        temporal);
+			tmp,
+			temporal);
 		frame_dst[x] = (tmp + 0x7F) >> 8;
 	}
 }
@@ -163,11 +154,13 @@ void Chqdn3d::hqdn3d_denoise(unsigned char* frame_src,
 		unsigned char* src = frame_src;
 		(*frame_ant_ptr) = frame_ant = static_cast<unsigned short*>(malloc(w * h * sizeof(unsigned short)));
 
-		for (y = 0; y < h; y++, frame_src += w, frame_ant += w)
+#pragma omp parallel for
+		for (y = 0; y < h; y++)//, frame_src += w, frame_ant += w)
 		{
 			for (x = 0; x < w; x++)
 			{
-				frame_ant[x] = frame_src[x] << 8;
+				int position = y * w + x;
+				frame_ant[position] = frame_src[position] << 8;
 			}
 		}
 		frame_src = src;

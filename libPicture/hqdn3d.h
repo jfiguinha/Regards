@@ -10,9 +10,9 @@ public:
 	uint8_t* ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h);
 
 private:
-	unsigned int hqdn3d_lowpass_mul(int prev_mul,
-	                                int curr_mul,
-	                                short* coef);
+	//unsigned int hqdn3d_lowpass_mul(int prev_mul,
+	//                                int curr_mul,
+	//                                short* coef);
 	void hqdn3d_precalc_coef(short* ct,
 	                         double dist25);
 	void hqdn3d_denoise_temporal(unsigned char* frame_src,

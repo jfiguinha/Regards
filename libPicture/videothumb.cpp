@@ -105,7 +105,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 
 void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
 {
-	if (!isOpen)
+	if (isOpen)
 	{
 		width = capture->get(CAP_PROP_FRAME_WIDTH);
 		height = capture->get(CAP_PROP_FRAME_HEIGHT);

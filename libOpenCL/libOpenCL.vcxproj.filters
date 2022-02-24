@@ -12,7 +12,7 @@
     <Filter Include="header">
       <UniqueIdentifier>{4ac54e02-2524-4677-9b45-efc88ece30af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Fichiers sources">
+    <Filter Include="Fichiers sources">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
@@ -38,17 +38,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OpenCLFilter.cpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClCompile>
     <ClCompile Include="OpenCLEffectVideo.cpp">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OpenCLEffectVideoNV12.cpp">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OpenCLEffectVideoYUV.cpp">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCLFilter.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

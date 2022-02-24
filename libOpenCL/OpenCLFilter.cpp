@@ -191,7 +191,27 @@ void COpenCLFilter::NlMeans(cv::UMat & inputData, const int& h, const int& hColo
 {
 	try
 	{
-		cv::fastNlMeansDenoisingColored(inputData, inputData, h, hColor, templateWindowSize, searchWindowSize);
+		cv::UMat ycbcr;
+		cv::UMat yChannel;
+		cv::UMat yChannelOut;
+
+		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
+
+		// Extract the Y channel
+		cv::extractChannel(ycbcr, yChannel, 0);
+
+		cv::fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
+
+		// Merge the the color planes back into an Lab image
+		cv::insertChannel(yChannelOut, ycbcr, 0);
+
+		// convert back to RGB
+		cv::cvtColor(ycbcr, inputData, cv::COLOR_YCrCb2BGR);
+
+		// Temporary Mat not reused, so release from memory.
+		yChannel.release();
+		ycbcr.release();
+		yChannelOut.release();
 
 	}
 	catch (cv::Exception& e)
