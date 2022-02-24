@@ -14,8 +14,8 @@ CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	filename = fileName;
 	capture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(fileName), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
-	if (!capture->isOpened())
-		throw "Error when reading steam_avi";
+	isOpen = capture->isOpened();
+		
 }
 
 CThumbnailVideo::~CThumbnailVideo()
@@ -25,14 +25,26 @@ CThumbnailVideo::~CThumbnailVideo()
 
 int CThumbnailVideo::GetVideoOrientation()
 {
+	if (!isOpen)
+		return 0;
 	return capture->get(CAP_PROP_ORIENTATION_META);
 
 }
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
+
 	Mat frame;
 	CRegardsBitmap* regardBitmap = nullptr;
+
+	if (!isOpen)
+	{
+		frame = cv::Mat(320, 240, CV_8UC4, cv::Scalar(0, 0, 0));
+		regardBitmap = new CRegardsBitmap();
+		regardBitmap->SetMatrix(frame);
+		return regardBitmap;
+	}
+
 	try
 	{
 		
@@ -93,8 +105,16 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& timePosition, const in
 
 void CThumbnailVideo::GetVideoDimensions(int& width, int& height, int& rotation)
 {
-	width = capture->get(CAP_PROP_FRAME_WIDTH);
-	height = capture->get(CAP_PROP_FRAME_HEIGHT);
+	if (!isOpen)
+	{
+		width = capture->get(CAP_PROP_FRAME_WIDTH);
+		height = capture->get(CAP_PROP_FRAME_HEIGHT);
+	}
+	else
+	{
+		width = 0;
+		height = 0;
+	}
 	
 }
 
@@ -103,12 +123,20 @@ int64_t CThumbnailVideo::GetMovieDuration()
 	double fps = capture->get(CAP_PROP_FPS);
 	double frame_count = int(capture->get(CAP_PROP_FRAME_COUNT));
 	double duration = frame_count / fps;
+
+	if (!isOpen)
+		return 0;
+
 	return duration;
 }
 
 vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widthThumbnail, const int& heightThumbnail,
                                                                  const bool& compressJpeg)
 {
+	vector<CImageVideoThumbnail*> listPicture;
+	if (!isOpen)
+		return listPicture;
+
 	int rotation = GetVideoOrientation();
 
 
@@ -117,7 +145,7 @@ vector<CImageVideoThumbnail*> CThumbnailVideo::GetVideoListFrame(const int& widt
 	int nbFrame = frame_count / 20;
 	double fps = capture->get(CAP_PROP_FPS);
 	int pos = 0;
-	vector<CImageVideoThumbnail*> listPicture;
+	
 	for (auto i = 0; i < 100; i += 5)
 	{
 		Mat frame;

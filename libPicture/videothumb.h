@@ -23,4 +23,5 @@ public:
 private:
 	wxString filename;
 	cv::VideoCapture * capture;
+	bool isOpen = false;
 };
