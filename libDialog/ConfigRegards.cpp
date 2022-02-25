@@ -300,6 +300,11 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	int faceProcess = scProcessFace->GetValue();
 	int exifProcess = scProcessExif->GetValue();
 
+#ifndef __APPLE__
+
+	wxString oldencoder = regardsParam->GetHardwareEncoder();
+	wxString olddecoder = regardsParam->GetHardwareDecoder();
+
 	wxString encoder = rbVideoEncoderHard->GetStringSelection();
 	wxString decoder = rbVideoDecoderHard->GetStringSelection();
 
@@ -312,6 +317,13 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetHardwareDecoder("");
 	else
 		regardsParam->SetHardwareDecoder(decoder);
+
+	if (oldencoder != encoder)
+		showInfosRestart = true;
+	if (olddecoder != decoder)
+		showInfosRestart = true;
+
+#endif
 
 	if (thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
 	{
