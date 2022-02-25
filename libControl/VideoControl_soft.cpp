@@ -1027,6 +1027,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 		standByMovie = "";
 		pause = false;
 		firstMovie = true;
+
 		/*
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
 		               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
@@ -1037,6 +1038,9 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 		muVideoEffect.unlock();
 
 		firstMovie = false;
+		parentRender->Refresh();
+
+
 	}
 	else if (movie != filename)
 	{
