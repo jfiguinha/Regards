@@ -1449,11 +1449,14 @@ int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType 
 {
 	int err = 0;
 
-	if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
-		nullptr, nullptr, 0)) < 0)
+	if(hw_device_ctx == NULL)
 	{
-		fprintf(stderr, "Failed to create specified HW device.\n");
-		return err;
+		if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
+			nullptr, nullptr, 0)) < 0)
+		{
+			fprintf(stderr, "Failed to create specified HW device.\n");
+			return err;
+		}
 	}
 	ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
 
@@ -1933,7 +1936,7 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 			is->hwaccel_uninit(is->viddec.avctx);
 
 		if(is->viddec.avctx->hw_device_ctx != nullptr)
-			av_buffer_unref(&hw_device_ctx);
+			av_buffer_unref(&is->viddec.avctx->hw_device_ctx);
 
 		decoder_abort(&is->viddec, &is->pictq);
 		decoder_destroy(&is->viddec);
