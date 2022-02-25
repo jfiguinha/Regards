@@ -1245,7 +1245,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame_withoutpos(AVFrame* filt_frame, 
 		}
 	}
 
-	av_free_packet(&enc_pkt);
+	av_packet_unref(&enc_pkt);
 
 	return ret;
 }
@@ -1305,7 +1305,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 		}
 	}
 
-	av_free_packet(&enc_pkt);
+	av_packet_unref(&enc_pkt);
 
 	return ret;
 }
