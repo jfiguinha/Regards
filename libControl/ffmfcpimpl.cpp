@@ -1747,54 +1747,90 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             enum AVHWDeviceType type;
 
 			CRegardsConfigParam* config = CParamInit::getInstance();
+            if(config != nullptr)
+            {
+				acceleratorHardware = config->GetHardwareDecoder();
+                if(acceleratorHardware != "")
+                {
+                    type = av_hwdevice_find_type_by_name(acceleratorHardware);
+                    if (type == AV_HWDEVICE_TYPE_NONE)
+                    {
+                        fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+                        fprintf(stderr, "Available device types:");
+                        while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+                            fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+                        fprintf(stderr, "\n");
 
-			for (int i = 0; i < sizeList; i++)
-			{
-				if (i == 0 && config != nullptr)
-					acceleratorHardware = config->GetHardwareDecoder();
-				else
-					acceleratorHardware = listHardware[i];
+                        error = true;
+                    }
 
-				type = av_hwdevice_find_type_by_name(acceleratorHardware);
-				if (type == AV_HWDEVICE_TYPE_NONE)
-				{
-					fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
-					fprintf(stderr, "Available device types:");
-					while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-						fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-					fprintf(stderr, "\n");
+                    if (!error)
+                    {
+                        if (hw_decoder_init(avctx, type) < 0)
+                            error = true;
+                    }
+                    if (!error)
+                    {
+                        if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+                            error = true;
+                        }
 
-					error = true;
-				}
-
-				if (!error)
-				{
-					if (hw_decoder_init(avctx, type) < 0)
-						error = true;
-				}
-				if (!error)
-				{
-					if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-						error = true;
-					}
-
-					isSuccess = true;
-				}
-				if (isSuccess)
-				{
-					printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-					break;
-				}
-				else
-				{
-					printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-				}
-
-				if (i == 0 && config != nullptr && !isSuccess)
-				{
-					i--;
-				}
+                        isSuccess = true;
+                    }
+                    if (isSuccess)
+                    {
+                        printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+                    }
+                    else
+                    {
+                        printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+                    }   
+                }
 			}
+            
+            
+             if (!isSuccess)
+             {
+                for (int i = 0; i < sizeList; i++)
+                {
+                    acceleratorHardware = listHardware[i];
+                    type = av_hwdevice_find_type_by_name(acceleratorHardware);
+                    if (type == AV_HWDEVICE_TYPE_NONE)
+                    {
+                        fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+                        fprintf(stderr, "Available device types:");
+                        while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+                            fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+                        fprintf(stderr, "\n");
+
+                        error = true;
+                    }
+
+                    if (!error)
+                    {
+                        if (hw_decoder_init(avctx, type) < 0)
+                            error = true;
+                    }
+                    if (!error)
+                    {
+                        if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+                            error = true;
+                        }
+
+                        isSuccess = true;
+                    }
+                    if (isSuccess)
+                    {
+                        printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+                        break;
+                    }
+                    else
+                    {
+                        printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+                    }
+                }
+             }
+
         }
 
         if(!isSuccess)
