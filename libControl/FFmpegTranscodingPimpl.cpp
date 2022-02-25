@@ -1068,13 +1068,24 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 
 				if (videoCompressOption->videoHardware)
 				{
-					for (int i = 0; i < sizeListEncoderHardware; i++)
+					CRegardsConfigParam* config = CParamInit::getInstance();
+					if (config != nullptr)
 					{
-						enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, listencoderHardware[i]);
-						if (enc_ctx)
+						wxString encoderHardware = config->GetHardwareEncoder();
+						if (encoderHardware != "")
+							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, encoderHardware);
+
+					}
+					if (enc_ctx != nullptr)
+					{
+						for (int i = 0; i < sizeListEncoderHardware; i++)
 						{
-							encoderHardware = listencoderHardware[i];
-							break;
+							enc_ctx = OpenFFmpegEncoder(VIDEO_CODEC, dec_ctx, streamVideo, listencoderHardware[i]);
+							if (enc_ctx)
+							{
+								encoderHardware = listencoderHardware[i];
+								break;
+							}
 						}
 					}
 				}

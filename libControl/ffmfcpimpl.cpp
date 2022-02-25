@@ -3,6 +3,8 @@
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
 #include <mutex>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace std;
 
 #ifdef WIN32
@@ -1656,6 +1658,7 @@ the_end:
 	return ret;
 }
 
+
 /* open a given stream. Return 0 if OK */
 //´ò¿ªÒ»¸öStream£¬ÊÓÆµ»òÒôÆµ
 int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
@@ -1740,44 +1743,55 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             bool error = false;
             enum AVHWDeviceType type;
 
-            for(int i = 0;i < sizeList;i++)
-            {
-                type = av_hwdevice_find_type_by_name(listHardware[i]);
-                if (type == AV_HWDEVICE_TYPE_NONE)
-                {
-                    fprintf(stderr, "Device type %s is not supported.\n", "dxva2");
-                    fprintf(stderr, "Available device types:");
-                    while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-                        fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-                    fprintf(stderr, "\n");
+			CRegardsConfigParam* config = CParamInit::getInstance();
 
-                    error = true;
-                }
-
-                if(!error)
-                {
-                    if (hw_decoder_init(avctx, type) < 0)
-                        error = true;
-                }
-                if (!error)
-                {
-                    if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-                        error = true;
-                    }
-
-                    isSuccess = true;
-                }    
-                if(isSuccess)
-                {
+			for (int i = 0; i < sizeList; i++)
+			{
+				if (i == 0 && config != nullptr)
+					acceleratorHardware = config->GetHardwareDecoder();
+				else
 					acceleratorHardware = listHardware[i];
-                    printf("Success for hardware decoding : %s ! \n", listHardware[i].ToStdString().c_str());
-                    break;
-                }
-                else
-                {
-                    printf("Error No Success for hardware decoding : %s ! \n", listHardware[i].ToStdString().c_str());
-                }
-            }
+
+				type = av_hwdevice_find_type_by_name(acceleratorHardware);
+				if (type == AV_HWDEVICE_TYPE_NONE)
+				{
+					fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+					fprintf(stderr, "Available device types:");
+					while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+						fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+					fprintf(stderr, "\n");
+
+					error = true;
+				}
+
+				if (!error)
+				{
+					if (hw_decoder_init(avctx, type) < 0)
+						error = true;
+				}
+				if (!error)
+				{
+					if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+						error = true;
+					}
+
+					isSuccess = true;
+				}
+				if (isSuccess)
+				{
+					printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+					break;
+				}
+				else
+				{
+					printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+				}
+
+				if (i == 0 && config != nullptr && !isSuccess)
+				{
+					i--;
+				}
+			}
         }
 
         if(!isSuccess)

@@ -191,18 +191,8 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	}
 
 	softRender = true;
-	wxString decoder = "";
-
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-	if (regardsParam != nullptr)
-	{
-		decoder = regardsParam->GetVideoDecoderHardware();
-	}
-
 	videoWindow = new CVideoControlSoft(windowMain, this);
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
-	videoWindow->SetEncoderHardware(decoder, false);
-
 	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 
 	if (config != nullptr)

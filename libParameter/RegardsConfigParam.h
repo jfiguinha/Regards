@@ -36,9 +36,6 @@ public:
 	int GetUseSuperResolution();
 	void SetUseSuperResolution(const int& value);
 
-	wxString GetVideoDecoderHardware();
-	void SetVideoDecoderHardware(const wxString& numLib);
-
 	wxString GetMusicDiaporama();
 	void SetMusicDiaporama(const wxString& musicDiaporama);
 
@@ -105,8 +102,11 @@ public:
 	bool GetIsOpenCLSupport();
 	void SetIsOpenCLSupport(const int& openCLSupport);
 
-	void SetDxva2Actif(const int& useDxva2);
-	bool GetDxva2Actif();
+	void SetHardwareDecoder(const wxString& hardwareDecoder);
+	wxString GetHardwareDecoder();
+
+	void SetHardwareEncoder(const wxString& hardwareEncoder);
+	wxString GetHardwareEncoder();
 
 	int GetDetectOrientation();
 	void SetDectectOrientation(const int& detectOrientation);
@@ -170,7 +170,6 @@ protected:
 
 	int loadFromBinaries = 0;
 	int openCLSupport = 0;
-	int useDxva2 = 0;
 
 	int openCLFaceSupport = 0;
 

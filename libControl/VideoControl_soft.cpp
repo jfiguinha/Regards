@@ -844,12 +844,6 @@ void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 
-void CVideoControlSoft::SetEncoderHardware(const wxString& encoderHardware, const bool& opengl)
-{
-	acceleratorHardware = encoderHardware;
-	isOpenGLDecoding = opengl;
-}
-
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
 	if (!endProgram)

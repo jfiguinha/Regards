@@ -235,23 +235,8 @@
 								</content>
 								<default>-1</default>
 								<pos>0,0</pos>
-								<size>380,70</size>
-							</object>		
-							<object class="wxStaticBox" name="sbDiaporama">
-								<label>Sequence</label>
-								<pos>0,90</pos>
-								<size>380,50</size>
-							</object>
-							<object class="wxSpinCtrl" name="ID_SCTIME">
-								<value>0</value>
-								<pos>120,110</pos>
-								<size>120,21</size>
-							</object>
-							<object class="wxStaticText" name="ID_STTIME">
-								<label>Time :</label>
-								<pos>16,110</pos>
-								<size>40,24</size>
-							</object>
+								<size>190,70</size>
+							</object>	
 							<object class="wxRadioBox" name="ID_RBFACEDETECTION">
 								<label>Detect Face</label>
 								<style>wxRA_SPECIFY_COLS</style>
@@ -260,10 +245,60 @@
 									<item>No</item>
 								</content>
 								<default>-1</default>
-								<pos>0,140</pos>
-								<size>380,70</size>
-							</object>	
+								<pos>190,0</pos>
+								<size>190,70</size>
+							</object>								
+							<object class="wxStaticBox" name="sbDiaporama">
+								<label>Diaporama Sequence</label>
+								<pos>0,80</pos>
+								<size>380,50</size>
 							</object>
+							<object class="wxSpinCtrl" name="ID_SCTIME">
+								<value>0</value>
+								<pos>120,100</pos>
+								<size>120,21</size>
+							</object>
+							<object class="wxStaticText" name="ID_STTIME">
+								<label>Time :</label>
+								<pos>16,100</pos>
+								<size>40,24</size>
+							</object>
+							<object class="wxStaticBox" name="sbVideoDecoderHard">
+								<label>Video Decoder Hardware</label>
+								<pos>0,150</pos>
+								<size>190,70</size>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEODECODERHARD">
+								<pos>10,170</pos>
+								<size>170,20</size>
+								<value>auto</value>
+								<content>
+									<item>auto</item>
+									<item>cuda</item>
+									<item>vdpau</item>
+									<item>vaapi</item>
+									<item>opencl</item>
+									<item>qsv</item>
+								</content>
+							</object>		
+							<object class="wxStaticBox" name="sbVideoEncoderHard">
+								<label>Video Encoder Hardware</label>
+								<pos>190,150</pos>
+								<size>190,70</size>
+							</object>
+							<object class="wxComboBox" name="ID_CBVIDEOENCODERHARD">
+								<pos>200,170</pos>
+								<size>170,20</size>
+								<value>auto</value>
+								<content>
+									<item>auto</item>
+									<item>nvenc</item>
+									<item>vaapi</item>
+									<item>libmfx</item>
+									<item>opencl</item>
+								</content>
+							</object>								
+						</object>
 					</object>
 					</object>
 				</object>

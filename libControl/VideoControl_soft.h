@@ -78,7 +78,6 @@ public:
 	void FlipVertical();
 	void FlipHorizontal();
 	void PlayFirstMovie(const bool& firstMovie);
-	void SetEncoderHardware(const wxString& encoderHardware, const bool& opengl);
 
 	virtual void OnIdle(wxIdleEvent& evt) override;
 	virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL) override;

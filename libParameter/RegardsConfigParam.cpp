@@ -32,13 +32,14 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numLanguage = 1;
 	numInterpolation = 0;
 	openCLSupport = 0;
-	useDxva2 = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
-#ifdef WIN32
-	videoDecoderHardware = "dxva2";
+#ifdef __APPLE__
+	videoDecoderHardware = "videotoolbox";
+	videoEncoderHardware = "videotoolbox";
 #else
 	videoDecoderHardware = "";
+	videoEncoderHardware = "";
 #endif
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
@@ -81,15 +82,6 @@ void CRegardsConfigParam::SetFaceVideoDetection(const int& videoFaceDetection)
 	this->videoFaceDetection = videoFaceDetection;
 }
 
-wxString CRegardsConfigParam::GetVideoDecoderHardware()
-{
-	return videoDecoderHardware;
-}
-
-void CRegardsConfigParam::SetVideoDecoderHardware(const wxString& numLib)
-{
-	videoDecoderHardware = numLib;
-}
 
 int CRegardsConfigParam::GetAutoConstrast()
 {
@@ -101,14 +93,24 @@ void CRegardsConfigParam::SetAutoConstrast(const int& autoContrast)
 	this->autoContrast = autoContrast;
 }
 
-void CRegardsConfigParam::SetDxva2Actif(const int& useDxva2)
+void CRegardsConfigParam::SetHardwareDecoder(const wxString& hardwareDecoder)
 {
-	this->useDxva2 = useDxva2;
+	videoDecoderHardware = hardwareDecoder;
 }
 
-bool CRegardsConfigParam::GetDxva2Actif()
+wxString CRegardsConfigParam::GetHardwareDecoder()
 {
-	return useDxva2;
+	return videoDecoderHardware;
+}
+
+void CRegardsConfigParam::SetHardwareEncoder(const wxString& hardwareEncoder)
+{
+	videoEncoderHardware = hardwareEncoder;
+}
+
+wxString CRegardsConfigParam::GetHardwareEncoder()
+{
+	return videoEncoderHardware;
 }
 
 bool CRegardsConfigParam::GetIsOpenCLSupport()
@@ -377,7 +379,6 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
 void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibVideo)));
-	sectionPosition->append_node(node("UseDXVA2", to_string(useDxva2)));
 	sectionPosition->append_node(node("HardwareDecoder", videoDecoderHardware));
 	sectionPosition->append_node(node("HardwareEncoder", videoEncoderHardware));
 	sectionPosition->append_node(node("SoundVolume", to_string(soundVolume)));
@@ -435,14 +436,6 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<>* position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		videoEncoderHardware = child_node->value();
-	}
-
-	child_node = position_node->first_node("UseDXVA2");
-	if (child_node != nullptr)
-	{
-		value = child_node->value();
-		nodeName = child_node->name();
-		useDxva2 = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("SoundVolume");

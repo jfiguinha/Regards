@@ -411,6 +411,7 @@ public:
 
 	}
 
+
 	static int refresh_thread(void* opaque);
 
 	void video_refresh(void* opaque, double* remaining_time);
