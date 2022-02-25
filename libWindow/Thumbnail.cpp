@@ -1582,7 +1582,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 					{
 						pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
 					}
-					pThumbnailData->SetIsProcess(false);
+					pThumbnailData->SetIsProcess(true);
 					pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
 					pThumbnailData->SetIsLoading(false);
 				}

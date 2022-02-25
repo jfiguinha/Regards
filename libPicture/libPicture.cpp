@@ -1573,7 +1573,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	}
 	if (m_ani_images == 0)
 	{
-		wxLogError(wxT("No ANI-format images found"));
+		//wxLogError(wxT("No ANI-format images found"));
 		CImageLoadingFormat* photo_cancel = LoadPicture(CLibResource::GetPhotoCancel());
 		if (photo_cancel->IsOk())
 		{
@@ -1598,7 +1598,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			imageVideoThumbnail->timePosition = 0;
 			listThumbnail->push_back(imageVideoThumbnail);
 		}
-		delete photo_cancel;
+		//delete photo_cancel;
 	}
 	else
 	{
@@ -2694,8 +2694,15 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 	if (!bitmap->IsOk())
 	{
-		delete bitmap;
-		bitmap = LoadPicture(CLibResource::GetPhotoCancel());
+		//delete bitmap;
+		//bitmap = LoadPicture(CLibResource::GetPhotoCancel());
+        
+        CRegardsBitmap* _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(CLibResource::GetPhotoCancel()));
+		if (_bitmap != nullptr)
+		{
+			_bitmap->SetFilename(fileName);
+			bitmap->SetPicture(_bitmap);
+		}
 		bitmap->SetFilename(fileName);
 	}
 }
