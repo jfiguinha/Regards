@@ -52,6 +52,11 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		CSqlThumbnailVideo sqlThumbnailVideo;
 		nbFrame = sqlThumbnailVideo.GetNbThumbnail(filename);
 	}
+    
+    if (numFrame >= nbFrame)
+		numFrame = nbFrame - 1;
+        
+    numFrame = max(numFrame, 0);
 
 	wxImage frameOut;
 	if (numFrame == 0 && nbFrame == 0)
@@ -62,9 +67,6 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	}
 	else
 	{
-		if (numFrame >= nbFrame)
-			numFrame = 1;
-
 		if (numFrame < nbFrame)
 		{
 			if (isVideo)

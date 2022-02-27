@@ -670,8 +670,8 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		if (photoDefault)
 		{
 			image = pThumbnailData->GetwxImage();
-			if (!image.IsOk())
-			{
+            if (!image.IsOk())
+            {
 				photoDefault = false;
 				wxColor colorToReplace = wxColor(0, 0, 0);
 				wxColor colorActifReplacement = wxColor(255, 255, 255);

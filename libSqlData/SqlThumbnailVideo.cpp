@@ -121,6 +121,10 @@ wxImage CSqlThumbnailVideo::GetThumbnail(const wxString & path, const int &numVi
 	wxImage image;
 	if (wxFileExists(thumbnail))
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+    else
+    {
+        printf("error GetThumbnail");
+    }
 	return image;
 }
 
