@@ -69,7 +69,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
     if (numFrame >= nbFrame)
 		numFrame = 0;
         
-   // numFrame = max(numFrame, 0);
+    //numFrame = max(numFrame, 0);
 
 	
 	if (numFrame == 0 && nbFrame == 0)
@@ -82,10 +82,10 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
-
+            bool grabbed = false;
 			if(videoCapture != nullptr)
 			{
-				bool grabbed = false;
+				
 				if (oldnumFrame != numFrame)
 				{
 					if (!videoCapture->read(cvImg))
@@ -103,21 +103,10 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
 						frameOut = wxImage(w, h, cvImg.data, true);
 					}
-					else
-					{
-#ifdef WIN32
-						wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-						wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-						frameOut.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
-					}
-					oldnumFrame = numFrame;
 				}
-
-
 			}
-			else if(isVideo)
+			
+            if(!grabbed)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
