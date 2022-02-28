@@ -27,4 +27,9 @@ private:
 	bool TestBitmap() override;
 	int nbFrame = 0;
 	bool isVideo = false;
+	cv::Mat cvImg;
+	int fps = 0;
+	wxImage frameOut;
+	int oldnumFrame = -1;
+	cv::VideoCapture * videoCapture = nullptr;
 };

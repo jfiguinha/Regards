@@ -1573,32 +1573,19 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	}
 	if (m_ani_images == 0)
 	{
-		//wxLogError(wxT("No ANI-format images found"));
 		CImageLoadingFormat* photo_cancel = LoadPicture(CLibResource::GetPhotoCancel());
 		if (photo_cancel->IsOk())
 		{
-			//CRegardsBitmap* bitmap = photo_cancel->GetRegardsBitmap();
 			photo_cancel->SetFilename(szFileName);
 			auto imageVideoThumbnail = new CImageVideoThumbnail();
 			imageVideoThumbnail->image = photo_cancel;
-			/*
-			if (compressJpeg)
-			{
-				imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
-				delete bitmap;
-			}
-			else
-				imageVideoThumbnail->image->SetPicture(bitmap);
-				*/
 			imageVideoThumbnail->image->SetFilename(szFileName);
-
 			imageVideoThumbnail->rotation = 0;
 			imageVideoThumbnail->delay = 4;
 			imageVideoThumbnail->percent = 100.0f;
 			imageVideoThumbnail->timePosition = 0;
 			listThumbnail->push_back(imageVideoThumbnail);
 		}
-		//delete photo_cancel;
 	}
 	else
 	{

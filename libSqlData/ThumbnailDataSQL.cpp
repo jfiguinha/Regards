@@ -9,6 +9,7 @@ using namespace Regards::Sqlite;
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <FileUtility.h>
+#include <opencv2/videoio.hpp>
 using namespace Regards::Picture;
 
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
@@ -18,11 +19,22 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
 		isVideo = true;
+		
 	}
+	if (libPicture.TestIsVideo(filename))
+	{
+		videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+		//fps = videoCapture->get(cv::CAP_PROP_FPS);
+	}
+	//if (libPicture.TestIsVideo(filename))
+	//	videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+
 }
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)
 {
+	if (videoCapture != nullptr)
+		delete videoCapture;
 }
 
 int CThumbnailDataSQL::GetNbFrame()
@@ -47,6 +59,7 @@ bool CThumbnailDataSQL::TestBitmap()
 
 wxImage CThumbnailDataSQL::GetwxImage()
 {
+	CLibPicture libPicture;
 	if (isVideo) // && nbFrame < 20 )
 	{
 		CSqlThumbnailVideo sqlThumbnailVideo;
@@ -54,7 +67,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	}
     
     if (numFrame >= nbFrame)
-		numFrame = nbFrame - 1;
+		numFrame = 0;
         
     numFrame = max(numFrame, 0);
 
@@ -69,7 +82,32 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
-			if (isVideo)
+
+			if(videoCapture != nullptr)
+			{
+				if (oldnumFrame != numFrame)
+				{
+					if (!videoCapture->read(cvImg))
+					{
+						videoCapture->set(cv::CAP_PROP_POS_MSEC, 0);
+						videoCapture->read(cvImg);
+					}
+
+					int w = cvImg.cols;
+					int h = cvImg.rows;
+					cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+					frameOut = wxImage(w, h, cvImg.data, true);
+					oldnumFrame = numFrame;
+				}
+				else
+				{
+					int w = cvImg.cols;
+					int h = cvImg.rows;
+					frameOut = wxImage(w, h, cvImg.data, true);
+				}
+
+			}
+			else if(isVideo)
 			{
 				CSqlThumbnailVideo sqlThumbnailVideo;
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);

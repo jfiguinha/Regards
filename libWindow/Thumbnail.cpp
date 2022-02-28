@@ -29,7 +29,7 @@ class CImageLoadingFormat;
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
 
-#define TIMER_TIME_REFRESH 200
+#define TIMER_TIME_REFRESH 1000 / 25
 
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
@@ -472,8 +472,8 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	m_waitingAnimation = new wxActivityIndicator(this, wxID_ANY);
 	m_waitingAnimation->Stop();
 	m_waitingAnimation->Hide();
-	//m_animation->SetSize(wxSize(this->GetHeight(), this->GetHeight()));
-	//m_animation->SetBackgroundColour(themeSlider.colorBack);
+
+	refreshTimer->Start(TIMER_TIME_REFRESH);
 }
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
@@ -972,7 +972,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 							numActif->SetActive(false);
 					}
 					needtoRedraw = true;
-					refreshTimer->Stop();
+					//refreshTimer->Stop();
 				}
 
 				if (pBitmapIcone != nullptr)
@@ -1409,13 +1409,13 @@ void CThumbnail::TestMaxX()
 void CThumbnail::OnEnterWindow(wxMouseEvent& event)
 {
 	TRACE();
-	// refreshTimer->Start(100);
+	
 }
 
 void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 {
 	TRACE();
-	refreshTimer->Stop();
+	//refreshTimer->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
