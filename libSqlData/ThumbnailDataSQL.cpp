@@ -10,6 +10,7 @@ using namespace Regards::Sqlite;
 #include <wx/filename.h>
 #include <FileUtility.h>
 #include <opencv2/videoio.hpp>
+#include <ConvertUtility.h>
 using namespace Regards::Picture;
 
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
@@ -23,8 +24,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	}
 	if (libPicture.TestIsVideo(filename))
 	{
-		videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
-		//fps = videoCapture->get(cv::CAP_PROP_FPS);
+		videoCapture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
 	}
 	//if (libPicture.TestIsVideo(filename))
 	//	videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
@@ -102,8 +102,13 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						int h = cvImg.rows;
 						cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
 						frameOut = wxImage(w, h, cvImg.data, true);
+                        oldnumFrame = numFrame;
 					}
+                    
+                    
 				}
+                else
+                    grabbed = true;
 			}
 			
             if(!grabbed)
