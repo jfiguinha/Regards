@@ -69,7 +69,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
     if (numFrame >= nbFrame)
 		numFrame = 0;
         
-    numFrame = max(numFrame, 0);
+   // numFrame = max(numFrame, 0);
 
 	wxImage frameOut;
 	if (numFrame == 0 && nbFrame == 0)
