@@ -123,6 +123,29 @@ wxString CFileUtility::GetResourcesFolderPath()
 #endif
 }
 
+wxString CFileUtility::GetFaceZScorePath(const int& numFace)
+{
+	wxString documentPath = GetDocumentFolderPath();
+#ifdef WIN32
+	documentPath.append("\\Face");
+#else
+	documentPath.append("/Face");
+#endif
+
+	if (!wxDir::Exists(documentPath))
+	{
+		wxDir::Make(documentPath);
+	}
+
+#ifdef WIN32
+	documentPath.append("\\" + to_string(numFace) + ".bin");
+#else
+	documentPath.append("/" + to_string(numFace) + ".bin");
+#endif
+
+	return documentPath;
+}
+
 wxString CFileUtility::GetFaceThumbnailPath(const int& numFace)
 {
 	wxString documentPath = GetDocumentFolderPath();

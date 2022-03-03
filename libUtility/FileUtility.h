@@ -18,4 +18,5 @@ public:
 	static wxString GetFaceThumbnailPath(const int &numFace);
     static wxString GetTempFile(wxString filename, const bool &removeFile = true);
 	static wxString GetTempFile(wxString filename, wxString folder, const bool& removeFile = true);
+	static wxString GetFaceZScorePath(const int& numFace);
 };

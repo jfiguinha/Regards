@@ -20,7 +20,7 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
-	//moveOnPaint = false;
+	preprocess_thumbnail = false;
 }
 
 
@@ -425,7 +425,7 @@ void CThumbnailFolder::RenderIconeWithVScroll(wxDC* deviceContext)
 				int top = rc.y - posHauteur;
 				int bottom = rc.y + rc.height - posHauteur;
 
-				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+//				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 					RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, -posHauteur);
 			}
 		}

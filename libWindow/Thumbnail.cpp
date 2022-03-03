@@ -835,7 +835,8 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
         this->Refresh();
         needToRefresh = false;
     }
-    else
+    
+	if(processIdle)
         StartThread();
 }
 

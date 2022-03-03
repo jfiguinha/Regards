@@ -600,6 +600,11 @@ void CListFace::ProcessIdle()
 		path->thread = new thread(LoadResource, path);
 		return;
 	}
+	else if (isLoadingResource)
+	{
+		processIdle = true;
+		return;
+	}
 
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)

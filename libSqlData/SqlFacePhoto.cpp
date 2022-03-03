@@ -52,6 +52,12 @@ bool CSqlFacePhoto::DeleteNumFaceMaster(const int& numFace)
 			{
 				wxRemoveFile(thumbnail);
 			}
+
+			thumbnail = CFileUtility::GetFaceZScorePath(faceId);
+			if (wxFileExists(thumbnail))
+			{
+				wxRemoveFile(thumbnail);
+			}
 			ExecuteRequestWithNoResult("DELETE FROM FACEPHOTO WHERE NumFace = " + to_string(faceId));
 			ExecuteRequestWithNoResult("DELETE FROM FACEVIDEO WHERE NumFace = " + to_string(faceId));
 		}
@@ -493,6 +499,7 @@ bool CSqlFacePhoto::DeleteFaceDatabase()
 			{
 				wxRemoveFile(filename);
 			}
+
 		});
 
 	/*
