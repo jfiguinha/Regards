@@ -319,8 +319,6 @@ void CFFmfcPimpl::video_display(VideoState* is)
 			if (!is->paused)
 				dlg->SetPos(vp->pts * 1000);
 
-
-
 		if (dlg != nullptr)
 			dlg->SetData(vp->frame, video_aspect_ratio, nullptr);
 		//}
@@ -537,7 +535,8 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 	if (!is->paused && get_master_sync_type(is) == AV_SYNC_EXTERNAL_CLOCK && is->realtime)
 		check_external_clock_speed(is);
 
-	if (!display_disable && is->show_mode != SHOW_MODE_VIDEO && is->audio_st) {
+	if (!display_disable && is->show_mode != SHOW_MODE_VIDEO && is->audio_st) 
+	{
 		time = av_gettime_relative() / 1000000.0;
 		if (is->force_refresh || is->last_vis_time + rdftspeed < time) 
 		{
@@ -1734,9 +1733,6 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
         if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
-            
-
-            //is->hwaccel_device = "dxva2";
             is->avctx = avctx;
             is->avctx->opaque = is;
             is->codec = codec;
@@ -2608,14 +2604,13 @@ int CFFmfcPimpl::refresh_thread(void* opaque)
 		if (abort)
 			break;
 
-	
-
 		if (remaining_time > 0.0)
 			av_usleep((int64_t)(remaining_time * 1000000.0));
+
 		remaining_time = REFRESH_RATE;
+
 		if (is->show_mode != SHOW_MODE_NONE && (!is->paused || is->force_refresh))
 			is->_pimpl->video_refresh(is, &remaining_time);
-
 
 		if (CMasterWindow::endProgram)
 			return 0;

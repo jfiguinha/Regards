@@ -25,6 +25,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 	if (libPicture.TestIsVideo(filename))
 	{
 		videoCapture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+		//fps = videoCapture->get(cv::CAP_PROP_FPS);
 	}
 	//if (libPicture.TestIsVideo(filename))
 	//	videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
@@ -88,10 +89,13 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				
 				if (oldnumFrame != numFrame)
 				{
+					//time_pos += 1000;
+					//videoCapture->set(cv::CAP_PROP_POS_MSEC, time_pos);
 					if (!videoCapture->read(cvImg))
 					{
 						videoCapture->set(cv::CAP_PROP_POS_MSEC, 0);
 						grabbed = videoCapture->read(cvImg);
+						//time_pos = 0;
 					}
 					else
 						grabbed = true;
@@ -104,8 +108,6 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						frameOut = wxImage(w, h, cvImg.data, true);
                         oldnumFrame = numFrame;
 					}
-                    
-                    
 				}
                 else
                     grabbed = true;
