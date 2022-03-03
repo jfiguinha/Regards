@@ -35,9 +35,11 @@ bool CSqlFolderCatalog::InsertFolderCatalog(const int64_t &numCatalog, const wxS
 
 int64_t CSqlFolderCatalog::GetFolderCatalogId(const int64_t &numCatalog, const wxString & folderPath)
 {
+    wxString fullpath = folderPath;
+    fullpath.Replace("'", "''");
     typeResult = 1;
 	numFolderCatalogId = -1;
-	ExecuteRequest("SELECT NumFolderCatalog FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(numCatalog) + " and FolderPath = '" + folderPath + "'");
+	ExecuteRequest("SELECT NumFolderCatalog FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(numCatalog) + " and FolderPath = '" + fullpath + "'");
 	return numFolderCatalogId;
 }
 
