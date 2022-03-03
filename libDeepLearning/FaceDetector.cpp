@@ -9,7 +9,11 @@
 #include <ParamInit.h>
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
+#include <opencv2/face/facerec.hpp>>
 #include "DetectFace.h"
+#include <fstream>
+#include <OpenCLContext.h>
+using namespace Regards::OpenCL;
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -18,6 +22,12 @@ using namespace dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 using namespace std;
+
+using namespace cv;
+using namespace cv::face;
+using namespace std;
+
+extern COpenCLContext* openclContext;
 
 struct FaceValueIntegration
 {
@@ -148,11 +158,12 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 		netRecognition = readNetFromTorch(recognition);
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
+		/*
 		if (openCLCompatible)
 			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
-		
+		*/
 
 #else
 
@@ -714,6 +725,9 @@ Mat eval(Mat face)
 	Mat result;
 	try
 	{
+		if (openclContext != nullptr)
+			openclContext->GetContextForOpenCV().bind();
+
 		Mat blob = blobFromImage(face, 1.0 / 255, Size(96, 96), Scalar(0, 0, 0, 0), true, false);
 		netRecognition.setInput(blob);
 		result = netRecognition.forward().clone();
@@ -732,12 +746,99 @@ Mat eval(Mat face)
 	return result;
 }
 
+// Serialize a cv::Mat to a stringstream
+stringstream serialize(Mat input)
+{
+	// We will need to also serialize the width, height, type and size of the matrix
+	int width = input.cols;
+	int height = input.rows;
+	int type = input.type();
+	size_t size = input.total() * input.elemSize();
+
+	// Initialize a stringstream and write the data
+	stringstream ss;
+	ss.write((char*)(&width), sizeof(int));
+	ss.write((char*)(&height), sizeof(int));
+	ss.write((char*)(&type), sizeof(int));
+	ss.write((char*)(&size), sizeof(size_t));
+
+	// Write the whole image data
+	ss.write((char*)input.data, size);
+
+	return ss;
+}
+
+// Deserialize a Mat from a stringstream
+Mat deserialize(stringstream& input)
+{
+	// The data we need to deserialize
+	int width = 0;
+	int height = 0;
+	int type = 0;
+	size_t size = 0;
+
+	// Read the width, height, type and size of the buffer
+	input.read((char*)(&width), sizeof(int));
+	input.read((char*)(&height), sizeof(int));
+	input.read((char*)(&type), sizeof(int));
+	input.read((char*)(&size), sizeof(size_t));
+
+	// Allocate a buffer for the pixels
+	char* data = new char[size];
+	// Read the pixels from the stringstream
+	input.read(data, size);
+
+	// Construct the image (clone it so that it won't need our buffer anymore)
+	Mat m = Mat(height, width, type, data).clone();
+
+	// Delete our buffer
+	delete[]data;
+
+	// Return the matrix
+	return m;
+}
+
+Mat GetFaceScore(const int& numFace)
+{
+	/*
+	Mat fc1;
+	if (!wxFileExists(CFileUtility::GetFaceZScorePath(numFace).ToStdString()))
+	{
+		Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+		if (face1.empty())
+			throw "Error Mat";
+
+		Mat face1Vec = eval(face1);
+		fc1 = Zscore(face1Vec);
+		wxString outFile = CFileUtility::GetFaceZScorePath(numFace);
+		ofstream out(outFile.ToStdString());
+		out << serialize(fc1).rdbuf();
+		out.close();
+	}
+	else
+	{
+		wxString outFile = CFileUtility::GetFaceZScorePath(numFace);
+		std::ifstream infile(outFile.ToStdString(), ios::in | ios::binary);
+		if (!infile)
+			throw "Error Mat";
+		stringstream s;
+		s << infile.rdbuf();
+		infile.close();
+
+		fc1 = deserialize(s);
+	}
+	*/
+	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+	Mat face1Vec = eval(face1);
+	return Zscore(face1Vec);
+	//return fc1;
+}
 
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
 	int predictedLabel = -1;
 	double maxConfidence = 0.0;
-
+	Mat fc1;
 	bool findFaceCompatible = false;
 	CSqlFacePhoto facePhoto;
 	CSqlFaceRecognition sqlfaceRecognition;
@@ -747,13 +848,9 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	{
 		return 0;
 	}
-	
-	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
-	if(face1.empty())
-		return 0;
-	
-	Mat face1Vec = eval(face1);
-	Mat fc1 = Zscore(face1Vec);
+
+	fc1 = GetFaceScore(numFace);
+
 	std::map<int, FaceValueIntegration>::iterator it;
 	std::map<int, FaceValueIntegration> faceConfidence;
 
@@ -765,12 +862,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			{
 				if (wxFileExists(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString()))
 				{
-					Mat face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
-					if (face2.empty())
-						continue;
-
-					Mat face2Vec = eval(face2);
-					Mat fc2 = Zscore(face2Vec);
+					Mat fc2 = GetFaceScore(picture.numFace);
 					double confidence = CosineDistance(fc1, fc2);
 
 					if (maxConfidence < confidence)
@@ -778,9 +870,6 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 						predictedLabel = picture.numFaceCompatible;
 						maxConfidence = confidence;
 					}
-
-					face2.release();
-					face2Vec.release();
 				}
 
 
@@ -791,23 +880,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			}
 		}
 
-		/*
-		for (it = faceConfidence.begin(); it != faceConfidence.end(); it++)
-		{
-			int numFaceCompatible = it->first;
-			FaceValueIntegration value = faceConfidence[numFaceCompatible];
-
-			double confidence = value.pertinence / value.nbValue;
-
-			if (maxConfidence < confidence)
-			{
-				predictedLabel = numFaceCompatible;
-				maxConfidence = confidence;
-			}
-			
-		}
-		*/
-		if (maxConfidence > 0.6)
+		if (predictedLabel != -1)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;
@@ -829,8 +902,5 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
 	}
 
-
-	face1.release();
-	face1Vec.release();
 	return findFaceCompatible;
 }

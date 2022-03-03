@@ -17,13 +17,15 @@ using namespace cv;
 using namespace cv;
 using namespace dnn;
 
+#include <OpenCLContext.h>
+using namespace Regards::OpenCL;
 static Net net; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFace::muDnnAccess;
 bool CDetectFace::isload = false;
 
 #endif
 
-
+extern COpenCLContext* openclContext;
 
 CDetectFace::CDetectFace(void)
 {
@@ -111,12 +113,15 @@ void CDetectFace::DetectFace(CRegardsBitmap * bitmap, const float & confidenceTh
 
 	try
 	{
+
+		if (openclContext != nullptr)
+			openclContext->GetContextForOpenCV().bind();
+
 #ifdef CAFFE
 		cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
 #else
 
 		Mat inputBlob = blobFromImage(frameOpenCVDNN, 1.0, Size(300, 300), (104.0, 177.0, 123.0), false, false);
-
 #endif
 		net.setInput(inputBlob, "data");
 		Mat detection = net.forward("detection_out").clone();
@@ -174,6 +179,9 @@ int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const float& confidenceThres
 	cvtColor(bitmap->GetMatrix(), frameOpenCVDNN, COLOR_BGRA2BGR);
 	try
 	{
+		if (openclContext != nullptr)
+			openclContext->GetContextForOpenCV().bind();
+
 #ifdef CAFFE
 		cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
 #else
