@@ -880,7 +880,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			}
 		}
 
-		if (predictedLabel != -1)
+		if (predictedLabel != -1 && maxConfidence >= 0.6)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;

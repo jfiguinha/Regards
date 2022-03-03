@@ -85,7 +85,7 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	wxImage image;
@@ -103,7 +103,7 @@ CImageLoadingFormat * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 
 	CImageLoadingFormat * picture = nullptr;
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
@@ -127,7 +127,7 @@ bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
 	type = 6;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	if (wxFileExists(thumbnail))
 	{
