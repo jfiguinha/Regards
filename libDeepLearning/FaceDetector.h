@@ -35,7 +35,9 @@ namespace Regards
 			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox);
 			void ImageToJpegBuffer(cv::Mat& image, std::vector<uchar>& buff);
 			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, CRegardsBitmap* pBitmap);
-
+			cv::Mat FaceDesriptor(cv::Mat face);
+			cv::Mat Zscore(const cv::Mat& fc);
+			cv::Mat GetFaceScore(const int& numFace);
 			CDetectFace * detectFace;
 
 			static bool isload;

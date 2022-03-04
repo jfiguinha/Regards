@@ -9,7 +9,7 @@
 #include <ParamInit.h>
 #include <SqlFaceRecognition.h>
 #include <FileUtility.h>
-#include <opencv2/face/facerec.hpp>>
+#include <opencv2/face/facerec.hpp>
 #include "DetectFace.h"
 #include <fstream>
 #include <OpenCLContext.h>
@@ -23,8 +23,6 @@ using namespace dnn;
 using namespace Regards::OpenCV;
 using namespace Regards::Sqlite;
 using namespace std;
-
-using namespace cv;
 using namespace cv::face;
 using namespace std;
 
@@ -698,10 +696,81 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox)
 	}
 }
 
+/**
+ * This module is using to computing the cosine distance between input feature and ground truth feature
+ */
+inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2) {
+	double dot = v1.dot(v2);
+	double denom_v1 = norm(v1);
+	double denom_v2 = norm(v2);
+
+	return dot / (denom_v1 * denom_v2);
+
+}
+
+
+Mat CFaceDetector::Zscore(const Mat& fc) {
+	Mat mean, std;
+	meanStdDev(fc, mean, std);
+	//    cout << mean << std << endl;
+	Mat fc_norm = (fc - mean) / std;
+	return fc_norm;
+
+}
+
+Mat CFaceDetector::GetFaceScore(const int& numFace)
+{
+	Mat fc1;
+	try
+	{
+		Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+		Mat face1Vec = FaceDesriptor(face1);
+		fc1 = Zscore(face1Vec);
+	
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+#ifdef WIN32
+		wxString error = err_msg;
+		OutputDebugString(error.ToStdWstring().c_str());
+#endif
+	}
+
+	return fc1;
+}
+
+Mat CFaceDetector::FaceDesriptor(Mat face)
+{
+	Mat result;
+	try
+	{
+		if (openclContext != nullptr)
+			openclContext->GetContextForOpenCV().bind();
+
+		Mat blob = blobFromImage(face, 1.0 / 255, Size(96, 96), Scalar(0, 0, 0, 0), true, false);
+		netRecognition.setInput(blob);
+		result = netRecognition.forward().clone();
+		blob.release();
+	}
+	catch (Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+#ifdef WIN32
+		wxString error = err_msg;
+		OutputDebugString(error.ToStdWstring().c_str());
+#endif
+	}
+	return result;
+}
 
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
-	int predictedLabel = -1;
+	//int predictedLabel = -1;
 	double maxConfidence = 0.0;
 	Mat fc1;
 	bool findFaceCompatible = false;
@@ -714,42 +783,34 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		return 0;
 	}
 
-	fc1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(), 0);
+	fc1 = GetFaceScore(numFace);
+	if (fc1.rows == 0 || fc1.cols == 0)
+		return false;
+	//fc1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(),0);
 
 	if (faceRecognitonVec.size() > 0)
 	{
 		int predictedLabel = -1;
-		double confidence = 0.0;
+		double confidence = 0.0; 
 
-		vector<Mat> images;
-		vector<int> labels;
+		//vector<Mat> images;
+		//vector<int> labels;
 
+		
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
-			Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), 0);
-			images.push_back(face1);
-			labels.push_back(picture.numFace);
+			Mat face1 = GetFaceScore(picture.numFace);
+			if (face1.rows == 0 || face1.cols == 0)
+				return false;
+			float score = CosineDistance(fc1, face1);
+			if (score > confidence)
+			{
+				confidence = score;
+				predictedLabel = picture.numFaceCompatible;
+			}
 		}
 
-		try
-		{
-			string testLabel = "";
-			Ptr<EigenFaceRecognizer> model = EigenFaceRecognizer::create();
-			model->train(images, labels);
-			model->predict(fc1, predictedLabel, confidence);
-			//string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testLabel);
-		}
-		catch (Exception& e)
-		{
-			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-#ifdef WIN32
-			wxString error = err_msg;
-			OutputDebugString(error.ToStdWstring().c_str());
-#endif
-		}
-		if (predictedLabel != -1 && maxConfidence >= 0.6)
+		if (predictedLabel != -1 && confidence >= 0.8)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;

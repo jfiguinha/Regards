@@ -340,6 +340,9 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 
 	Error::CheckError(err);
 
+	if (err == -1)
+		return;
+
 	vector<cl_device_id> devices(num_of_devices);
 
 	err = clGetDeviceIDs(

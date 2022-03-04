@@ -549,6 +549,7 @@
     <ClInclude Include="ThumbnailFolder.h" />
     <ClInclude Include="ThumbnailToolBar.h" />
     <ClInclude Include="ThumbnailToolBarZoom.h" />
+    <ClInclude Include="ThumbnailViewerPicture.h" />
     <ClInclude Include="ThumbnailViewerVideo.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ToolbarInfos.h" />
