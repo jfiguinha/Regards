@@ -38,6 +38,7 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libextern/CvPlot/inc"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="">
