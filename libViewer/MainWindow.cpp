@@ -829,6 +829,14 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 			SetDataToStatusBar(event.GetClientData(), picture);
 		}
 		break;
+
+		case 5:
+		{
+			TRACE();
+			const wxString picture = "Face Recognition progress : ";
+			SetDataToStatusBar(event.GetClientData(), picture);
+		}
+		break;
 		default:;
 		}
 	}

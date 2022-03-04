@@ -56,6 +56,7 @@ public:
 	wxWindow* mainWindow = nullptr;
 	wxProgressDialog* dialog = nullptr;
 	int nbFace = 0;
+	int type = 0;
 };
 
 CListFace::CListFace(wxWindow* parent, wxWindowID id)
@@ -295,8 +296,10 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
 	auto path = static_cast<CThreadFace*>(event.GetClientData());
 	int nbFace = 0;
+	int type = 0;
 	if (path != nullptr)
 	{
+		type = path->type;
 		if (path->thread != nullptr)
 		{
 			path->thread->join();
@@ -321,7 +324,7 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 			delete path;
 	}
 
-	if (event.GetInt() == 0)
+	if (type == 0)
 		nbProcessFacePhoto--;
 	else
 		nbProcessFaceRecognition--;
@@ -416,6 +419,7 @@ void CListFace::FacialDetectionRecognition(void* param)
 		for (int numFace : listFace)
 		{
 			CDeepLearning::FindFaceCompatible(numFace);
+			break;
 		}
 	}
 
@@ -424,7 +428,7 @@ void CListFace::FacialDetectionRecognition(void* param)
 	if (path->mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
-		evt.SetInt(1);
+		path->type = 1;
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -555,7 +559,7 @@ void CListFace::FacialRecognition(void* param)
 	if (path->mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
-		evt.SetInt(0);
+		path->type = 0;
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -669,6 +673,19 @@ void CListFace::ProcessIdle()
 			path->filename = "internal";
 			path->thread = new thread(FacialDetectionRecognition, path);
 			nbProcessFaceRecognition++;
+
+			if (sendMessageStatus)
+			{
+				auto thumbnailMessage = new CThumbnailMessage();
+				thumbnailMessage->nbPhoto = listFace.size();
+				thumbnailMessage->thumbnailPos = nbProcessFaceRecognition;
+				thumbnailMessage->nbElement = listFace.size();
+				thumbnailMessage->typeMessage = 5;
+				wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				wxCommandEvent eventChange(wxEVENT_UPDATESTATUSBARMESSAGE);
+				eventChange.SetClientData(thumbnailMessage);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
 		}
 	}
 
