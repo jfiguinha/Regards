@@ -20,7 +20,7 @@ CThumbnailFolder::CThumbnailFolder(wxWindow* parent, wxWindowID id, const CTheme
 	barseparationHeight = 40;
 	widthThumbnail = 0;
 	heightThumbnail = 0;
-	preprocess_thumbnail = false;
+//	preprocess_thumbnail = false;
 }
 
 
