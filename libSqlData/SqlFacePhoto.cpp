@@ -113,7 +113,7 @@ vector<CFaceRecognitionData> CSqlFacePhoto::GetAllNumFaceRecognition()
 {
 	listFaceRecognition.clear();
 	type = 5;
-	ExecuteRequest("Select NumFace, NumFaceCompatible FROM FACE_RECOGNITION GROUP BY NumFaceCompatible");
+	ExecuteRequest("Select NumFace, NumFaceCompatible FROM FACE_RECOGNITION");
 	return listFaceRecognition;
 }
 

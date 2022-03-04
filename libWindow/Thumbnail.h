@@ -119,7 +119,8 @@ namespace Regards
 			virtual void AfterSetList();
 			void RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur);
 			void OnAnimation(wxTimerEvent& event);
-			void OnRefreshIcone(wxTimerEvent& event);
+			void OnRefreshIconeSelect(wxTimerEvent& event);
+			void OnRefreshIconeActif(wxTimerEvent& event);
 			void OnTimerClick(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC* dc) = 0;
 			virtual void UpdateScroll() = 0;
@@ -166,7 +167,8 @@ namespace Regards
 			vector<int> TabSize;
 			int Max;
 
-			wxTimer* refreshTimer;
+			wxTimer* refreshActifTimer;
+			wxTimer* refreshSelectTimer;
 			wxTimer* timeClick;
 			CThemeThumbnail themeThumbnail;
 
@@ -174,6 +176,9 @@ namespace Regards
 			int controlHeight;
 			int thumbnailPos;
 			int nbProcess;
+
+			int timeActif = 0;
+			int timeSelect = 0;
 			/*
 				std::mutex muActif;
 				std::mutex muSelect;

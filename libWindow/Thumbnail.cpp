@@ -25,9 +25,11 @@ using namespace Regards::Window;
 class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
-#define TIMER_REFRESH 5
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
+
+#define TIMER_REFRESH_ACTIF 8
+#define TIMER_REFRESH_SELECT 9
 
 #define TIMER_TIME_REFRESH 1000 / 25
 
@@ -445,8 +447,11 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	timeClick = new wxTimer(this, TIMER_CLICK);
 	Connect(TIMER_CLICK, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerClick), nullptr, this);
 
-	refreshTimer = new wxTimer(this, TIMER_REFRESH);
-	Connect(TIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIcone), nullptr, this);
+	refreshActifTimer = new wxTimer(this, TIMER_REFRESH_ACTIF);
+	Connect(TIMER_REFRESH_ACTIF, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIconeActif), nullptr, this);
+
+	refreshSelectTimer = new wxTimer(this, TIMER_REFRESH_SELECT);
+	Connect(TIMER_REFRESH_SELECT, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIconeSelect), nullptr, this);
 
 	timerAnimation = new wxTimer(this, TIMER_ANIMATION);
 	Connect(TIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnAnimation), nullptr, this);
@@ -473,7 +478,12 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	m_waitingAnimation->Stop();
 	m_waitingAnimation->Hide();
 
-	refreshTimer->Start(TIMER_TIME_REFRESH);
+
+	timeActif = 1000;
+	timeSelect = 1000;
+
+	refreshActifTimer->Start(timeActif, TRUE);
+	refreshSelectTimer->Start(timeSelect, TRUE);
 }
 
 void CThumbnail::OnTimerClick(wxTimerEvent& event)
@@ -599,10 +609,58 @@ void CThumbnail::OnScrollMove(wxCommandEvent& event)
 	moveOnPaint = false;
 }
 
-void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
+void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 {
-	RefreshIcone(numActifPhotoId);
-	RefreshIcone(numSelectPhotoId);
+	//needToRefresh = true;
+	//RefreshIcone(numActifPhotoId);
+	//RefreshIcone(numSelectPhotoId);
+	CLibPicture libPicture;
+	wxClientDC dc(this);
+	{
+		CIcone* icone = GetIconeById(numActifPhotoId);
+		if (icone != nullptr)
+		{
+			CThumbnailData* data = icone->GetData();
+
+			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+				libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				wxRect rc = icone->GetPos();
+				int left = rc.x - posLargeur;
+				int right = rc.x - posLargeur + themeThumbnail.themeIcone.GetWidth();
+				int top = rc.y - posHauteur;
+				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
+
+				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+			}
+		}
+	}
+}
+
+void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
+{
+	CLibPicture libPicture;
+	wxClientDC dc(this);
+	{
+		CIcone* icone = GetIconeById(numSelectPhotoId);
+		if (icone != nullptr)
+		{
+			CThumbnailData* data = icone->GetData();
+			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+				libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				wxRect rc = icone->GetPos();
+				int left = rc.x - posLargeur;
+				int right = rc.x - posLargeur + themeThumbnail.themeIcone.GetWidth();
+				int top = rc.y - posHauteur;
+				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
+
+				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+			}
+		}
+	}
 }
 
 CThumbnail::~CThumbnail()
@@ -610,18 +668,32 @@ CThumbnail::~CThumbnail()
 	TRACE();
 	threadDataProcess = false;
 
-	refreshTimer->Stop();
+	
 
 	timeClick->Stop();
 
 	timerAnimation->Stop();
 
-	while (refreshTimer->IsRunning())
+	refreshActifTimer->Stop();
+
+	while (refreshActifTimer->IsRunning())
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
-	delete refreshTimer;
+	delete refreshActifTimer;
+
+
+	refreshSelectTimer->Stop();
+
+	while (refreshSelectTimer->IsRunning())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+
+	delete refreshSelectTimer;
+
+
 	delete timeClick;
 
 	if (m_animation != nullptr)
@@ -838,6 +910,75 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
     
 	if(processIdle)
         StartThread();
+
+	//	refreshActifTimer->Start(timeActif, TRUE);
+	//refreshSelectTimer->Start(timeSelect, TRUE);
+
+	CLibPicture libPicture;
+	{
+		bool actifActif = false;
+		CIcone* icone = GetIconeById(numActifPhotoId);
+		if (icone != nullptr)
+		{
+			CThumbnailData* data = icone->GetData();
+
+			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+				libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				actifActif = true;
+			}
+			if (libPicture.TestIsVideo(data->GetFilename()))
+			{
+				timeActif = 1000 / 25;
+			}
+			else if (libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				timeActif = 100;
+			}
+			else
+			{
+				timeActif = 1000;
+			}
+		}
+
+		if(actifActif)
+			if (!refreshActifTimer->IsRunning())
+				refreshActifTimer->Start(timeActif, TRUE);
+	}
+
+	{
+		bool actifActif = false;
+		CIcone* icone = GetIconeById(timeSelect);
+		if (icone != nullptr)
+		{
+			CThumbnailData* data = icone->GetData();
+
+			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+				libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				actifActif = true;
+			}
+			if (libPicture.TestIsVideo(data->GetFilename()))
+			{
+				timeSelect = 1000 / 25;
+			}
+			else if (libPicture.TestIsAnimation(data->GetFilename()))
+			{
+				timeSelect = 100;
+			}
+			else
+			{
+				timeSelect = 1000;
+			}
+		}
+
+		if (actifActif)
+			if (!refreshSelectTimer->IsRunning())
+				refreshSelectTimer->Start(timeSelect, TRUE);
+	}
+
+
+
 }
 
 bool CThumbnail::GetProcessEnd()
@@ -973,23 +1114,6 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 							numActif->SetActive(false);
 					}
 					needtoRedraw = true;
-					//refreshTimer->Stop();
-				}
-
-				if (pBitmapIcone != nullptr)
-				{
-					if (!refreshTimer->IsRunning())
-					{
-						CThumbnailData* data = pBitmapIcone->GetData();
-						if (data != nullptr)
-						{
-							wxString filename = data->GetFilename();
-							CLibPicture libPicture;
-							if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
-								TestIsAnimation(filename))
-								refreshTimer->Start(TIMER_TIME_REFRESH);
-						}
-					}
 				}
 			}
 
@@ -997,19 +1121,6 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			{
 				numActifPhotoId = iconePhotoId;
 				pBitmapIcone->SetActive(true);
-				if (pBitmapIcone != nullptr)
-				{
-					CThumbnailData* data = pBitmapIcone->GetData();
-					if (data != nullptr)
-					{
-						wxString filename = data->GetFilename();
-						CLibPicture libPicture;
-						if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.
-							TestIsAnimation(filename))
-							refreshTimer->Start(TIMER_TIME_REFRESH);
-					}
-				}
-
 				needtoRedraw = true;
 			}
 		}

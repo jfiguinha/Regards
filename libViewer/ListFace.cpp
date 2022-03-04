@@ -172,6 +172,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	nbProcessFacePhoto = 0;
 
 
+	isLoadingResource = false;
 	listProcessWindow.push_back(this);
 }
 

@@ -13,6 +13,7 @@
 #include "DetectFace.h"
 #include <fstream>
 #include <OpenCLContext.h>
+#include <opencv2/tracking/tracking_by_matching.hpp>
 using namespace Regards::OpenCL;
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
@@ -158,12 +159,11 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 		netRecognition = readNetFromTorch(recognition);
 		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
-		/*
 		if (openCLCompatible)
 			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
-		*/
+
 
 #else
 
@@ -698,141 +698,6 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox)
 	}
 }
 
-Mat Zscore(const Mat& fc) {
-	Mat mean, std;
-	meanStdDev(fc, mean, std);
-	//    cout << mean << std << endl;
-	Mat fc_norm = (fc - mean) / std;
-	return fc_norm;
-
-}
-
-/**
- * This module is using to computing the cosine distance between input feature and ground truth feature
- */
-inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2) {
-	double dot = v1.dot(v2);
-	double denom_v1 = norm(v1);
-	double denom_v2 = norm(v2);
-
-	return dot / (denom_v1 * denom_v2);
-
-}
-
-
-Mat eval(Mat face)
-{
-	Mat result;
-	try
-	{
-		if (openclContext != nullptr)
-			openclContext->GetContextForOpenCV().bind();
-
-		Mat blob = blobFromImage(face, 1.0 / 255, Size(96, 96), Scalar(0, 0, 0, 0), true, false);
-		netRecognition.setInput(blob);
-		result = netRecognition.forward().clone();
-		blob.release();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-#ifdef WIN32
-		wxString error = err_msg;
-		OutputDebugString(error.ToStdWstring().c_str());
-#endif
-	}
-	return result;
-}
-
-// Serialize a cv::Mat to a stringstream
-stringstream serialize(Mat input)
-{
-	// We will need to also serialize the width, height, type and size of the matrix
-	int width = input.cols;
-	int height = input.rows;
-	int type = input.type();
-	size_t size = input.total() * input.elemSize();
-
-	// Initialize a stringstream and write the data
-	stringstream ss;
-	ss.write((char*)(&width), sizeof(int));
-	ss.write((char*)(&height), sizeof(int));
-	ss.write((char*)(&type), sizeof(int));
-	ss.write((char*)(&size), sizeof(size_t));
-
-	// Write the whole image data
-	ss.write((char*)input.data, size);
-
-	return ss;
-}
-
-// Deserialize a Mat from a stringstream
-Mat deserialize(stringstream& input)
-{
-	// The data we need to deserialize
-	int width = 0;
-	int height = 0;
-	int type = 0;
-	size_t size = 0;
-
-	// Read the width, height, type and size of the buffer
-	input.read((char*)(&width), sizeof(int));
-	input.read((char*)(&height), sizeof(int));
-	input.read((char*)(&type), sizeof(int));
-	input.read((char*)(&size), sizeof(size_t));
-
-	// Allocate a buffer for the pixels
-	char* data = new char[size];
-	// Read the pixels from the stringstream
-	input.read(data, size);
-
-	// Construct the image (clone it so that it won't need our buffer anymore)
-	Mat m = Mat(height, width, type, data).clone();
-
-	// Delete our buffer
-	delete[]data;
-
-	// Return the matrix
-	return m;
-}
-
-Mat GetFaceScore(const int& numFace)
-{
-	/*
-	Mat fc1;
-	if (!wxFileExists(CFileUtility::GetFaceZScorePath(numFace).ToStdString()))
-	{
-		Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
-		if (face1.empty())
-			throw "Error Mat";
-
-		Mat face1Vec = eval(face1);
-		fc1 = Zscore(face1Vec);
-		wxString outFile = CFileUtility::GetFaceZScorePath(numFace);
-		ofstream out(outFile.ToStdString());
-		out << serialize(fc1).rdbuf();
-		out.close();
-	}
-	else
-	{
-		wxString outFile = CFileUtility::GetFaceZScorePath(numFace);
-		std::ifstream infile(outFile.ToStdString(), ios::in | ios::binary);
-		if (!infile)
-			throw "Error Mat";
-		stringstream s;
-		s << infile.rdbuf();
-		infile.close();
-
-		fc1 = deserialize(s);
-	}
-	*/
-	Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
-	Mat face1Vec = eval(face1);
-	return Zscore(face1Vec);
-	//return fc1;
-}
 
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
@@ -849,37 +714,41 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		return 0;
 	}
 
-	fc1 = GetFaceScore(numFace);
-
-	std::map<int, FaceValueIntegration>::iterator it;
-	std::map<int, FaceValueIntegration> faceConfidence;
+	fc1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(), 0);
 
 	if (faceRecognitonVec.size() > 0)
 	{
+		int predictedLabel = -1;
+		double confidence = 0.0;
+
+		vector<Mat> images;
+		vector<int> labels;
+
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
-			try
-			{
-				if (wxFileExists(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString()))
-				{
-					Mat fc2 = GetFaceScore(picture.numFace);
-					double confidence = CosineDistance(fc1, fc2);
-
-					if (maxConfidence < confidence)
-					{
-						predictedLabel = picture.numFaceCompatible;
-						maxConfidence = confidence;
-					}
-				}
-
-
-			}
-			catch(...)
-			{
-				
-			}
+			Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), 0);
+			images.push_back(face1);
+			labels.push_back(picture.numFace);
 		}
 
+		try
+		{
+			string testLabel = "";
+			Ptr<EigenFaceRecognizer> model = EigenFaceRecognizer::create();
+			model->train(images, labels);
+			model->predict(fc1, predictedLabel, confidence);
+			//string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testLabel);
+		}
+		catch (Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+#ifdef WIN32
+			wxString error = err_msg;
+			OutputDebugString(error.ToStdWstring().c_str());
+#endif
+		}
 		if (predictedLabel != -1 && maxConfidence >= 0.6)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
