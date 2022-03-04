@@ -13,6 +13,9 @@
 #ifdef __APPLE__
 #include "MyDetectFaceImpl.h"
 using namespace cv;
+
+#include <OpenCLContext.h>
+using namespace Regards::OpenCL;
 #else
 using namespace cv;
 using namespace dnn;
