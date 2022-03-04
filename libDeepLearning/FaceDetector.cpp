@@ -28,6 +28,8 @@ using namespace std;
 
 extern COpenCLContext* openclContext;
 
+std::map<int, cv::Mat> listScore;
+
 struct FaceValueIntegration
 {
 	double pertinence;
@@ -45,6 +47,11 @@ bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<face::Facemark> facemark;
+
+void CFaceDetector::CleanBase()
+{
+	listScore.clear();
+}
 
 bool CFaceDetector::LockOpenCLDnn()
 {
@@ -799,7 +806,17 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
-			Mat face1 = GetFaceScore(picture.numFace);
+			Mat face1;
+			if (listScore.find(picture.numFace) == listScore.end())
+			{
+				face1 = GetFaceScore(picture.numFace);
+				listScore.insert(std::pair<int,Mat>(picture.numFace, face1));
+			}
+			else
+			{
+				face1 = listScore[picture.numFace];
+			}
+			
 			if (face1.rows == 0 || face1.cols == 0)
 				return false;
 			float score = CosineDistance(fc1, face1);

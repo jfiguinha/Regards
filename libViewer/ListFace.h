@@ -73,6 +73,7 @@ namespace Regards
 			bool isLoadingResource;
 			int nbProcessFaceRecognition = 0;
 			bool resourceLoaded = false;
+			bool cleanDatabase = false;
 			//std::thread * threadResource = nullptr;
 		};
 	}

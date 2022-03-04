@@ -23,6 +23,11 @@ bool CDeepLearning::UnlockOpenCLDnn()
 	return CFaceDetector::UnlockOpenCLDnn();
 }
 
+void CDeepLearning::CleanRecognition()
+{
+	CFaceDetector::CleanBase();
+}
+
 vector<int> CDeepLearning::FindFace(CRegardsBitmap* pictureData)
 {
 	bool fastDetection = true;

@@ -13,7 +13,7 @@ namespace Regards
 		public:
 			static bool LockOpenCLDnn();
 			static bool UnlockOpenCLDnn();
-
+			static void CleanRecognition();
 			static void LoadRessource(const string& config_file, const string& weight_file, const string& recognition,
 			                          const string& face_landmark, const string& protoPosition, const string& weightPosition);
 			static vector<int> FindFace(CRegardsBitmap* pictureData);

@@ -676,6 +676,9 @@ void CListFace::ProcessIdle()
 
 			if (sendMessageStatus)
 			{
+				if(cleanDatabase)
+					CDeepLearning::CleanRecognition();
+				cleanDatabase = false;
 				auto thumbnailMessage = new CThumbnailMessage();
 				thumbnailMessage->nbPhoto = listFace.size();
 				thumbnailMessage->thumbnailPos = nbProcessFaceRecognition;
@@ -699,12 +702,14 @@ void CListFace::ProcessIdle()
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 {
+	cleanDatabase = true;
 	thumbnailFace->init();
 	processIdle = true;
 }
 
 void CListFace::ThumbnailDatabaseRefresh(wxCommandEvent& event)
 {
+	cleanDatabase = true;
 	RefreshPane();
 	thumbnailFace->init();
 	processIdle = true;
