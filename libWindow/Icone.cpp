@@ -150,6 +150,8 @@ void CIcone::SetSizeIcone(const int& width, const int& height)
 	{
 		themeIcone.SetWidth(width);
 		themeIcone.SetHeight(height);
+		scaleBackup.Destroy();
+		photoDefault = false;
 	}
 }
 
@@ -659,51 +661,58 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 	wxMemoryDC memDC(localmemBitmap);
 	wxImage image;
 	wxImage scale;
-	photoDefault = true;
+	
 
 	int tailleAffichageBitmapWidth = 0;
 	int tailleAffichageBitmapHeight = 0;
 	float ratio = 0.0;
 
-	if (pThumbnailData != nullptr)
+	if (!scaleBackup.IsOk() || !photoDefault || scaleBackup.GetWidth() != themeIcone.GetWidth() || scaleBackup.GetHeight() != themeIcone.GetHeight())
 	{
-		if (photoDefault)
+		if (pThumbnailData != nullptr)
 		{
 			image = pThumbnailData->GetwxImage();
-            if (!image.IsOk())
-            {
+			if (!image.IsOk())
+			{
 				photoDefault = false;
 				wxColor colorToReplace = wxColor(0, 0, 0);
 				wxColor colorActifReplacement = wxColor(255, 255, 255);
 				image = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", themeIcone.GetWidth(), themeIcone.GetHeight());
 				image.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-				              colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+					colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
 				returnValue = 1;
 			}
+			else
+				photoDefault = true;
+
 			if (flipHorizontal)
 				image = image.Mirror();
 			if (flipVertical)
 				image = image.Mirror(false);
 		}
-	}
-	if (image.IsOk())
-	{
-		GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight,
-		                   ratio);
-		if (config->GetThumbnailQuality() == 0)
-			scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-		else
-			scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+		if (image.IsOk())
+		{
+			GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight,
+				ratio);
+			if (config->GetThumbnailQuality() == 0)
+				scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+			else
+				scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+		}
+
+		scaleBackup = scale;
+
+		scale.Destroy();
 	}
 
-	RenderBitmap(&memDC, scale, state);
+	RenderBitmap(&memDC, scaleBackup, state);
 
 	memDC.SelectObject(wxNullBitmap);
 
-	scale.Destroy();
+	
 	image.Destroy();
-
+	
 	return localmemBitmap;
 }
 

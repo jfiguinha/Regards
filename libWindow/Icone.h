@@ -135,7 +135,7 @@ namespace Regards
 			bool showDeleted;
 			bool isChecked;
 			bool isSelected;
-			bool photoDefault;
+			bool photoDefault = false;
 			int posXThumbnail;
 			int posYThumbnail;
 			int numElement;
@@ -154,6 +154,7 @@ namespace Regards
 			bool showLoading;
 			wxImage pictureLoading;
 			wxImage transparent;
+			wxImage scaleBackup;
 		};
 
 		using IconeVector = tbb::concurrent_vector<CIcone*>;
