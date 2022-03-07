@@ -733,6 +733,7 @@ Mat CFaceDetector::GetFaceScore(const int& numFace)
 		Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
 		Mat face1Vec = FaceDesriptor(face1);
 		fc1 = Zscore(face1Vec);
+		return fc1;
 	
 	}
 	catch (Exception& e)
@@ -797,13 +798,10 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 
 	if (faceRecognitonVec.size() > 0)
 	{
+		
 		int predictedLabel = -1;
 		double confidence = 0.0; 
 
-		//vector<Mat> images;
-		//vector<int> labels;
-
-		
 		for (CFaceRecognitionData picture : faceRecognitonVec)
 		{
 			Mat face1;
@@ -819,15 +817,39 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 			
 			if (face1.rows == 0 || face1.cols == 0)
 				return false;
-			float score = CosineDistance(fc1, face1);
+
+			cv::detail::tracking::tbm::CosDistance cosDistance(fc1.size());
+			float score = 1.0 - cosDistance.compute(fc1, face1);
+			//float score = CosineDistance(fc1, face1);
 			if (score > confidence)
 			{
 				confidence = score;
 				predictedLabel = picture.numFaceCompatible;
 			}
 		}
+		
+		/*
+		vector<Mat> images;
+		vector<int> labels;
 
-		if (predictedLabel != -1 && confidence >= 0.8)
+		for (CFaceRecognitionData picture : faceRecognitonVec)
+		{
+			Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString(), 0);
+			images.push_back(face1);
+			labels.push_back(picture.numFaceCompatible);
+		}
+
+		Ptr<EigenFaceRecognizer> model = EigenFaceRecognizer::create();
+		model->train(images, labels);
+		// The following line predicts the label of a given
+		// test image:
+		//int predictedLabel = model->predict(testSample);
+		int predictedLabel = -1;
+		double confidence = 0.0;
+		model->predict(fc1, predictedLabel, confidence);
+		string result_message = format("Predicted class = %d / confidence class = %d.", predictedLabel, confidence);
+		*/
+		if (predictedLabel != -1 && confidence > 0.94)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;
