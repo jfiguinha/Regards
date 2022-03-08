@@ -34,13 +34,8 @@ CRegardsConfigParam::CRegardsConfigParam()
 	openCLSupport = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
-#ifdef __APPLE__
-	videoDecoderHardware = "videotoolbox";
-	videoEncoderHardware = "videotoolbox";
-#else
 	videoDecoderHardware = "";
 	videoEncoderHardware = "";
-#endif
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
 	faceDetection = 0;
