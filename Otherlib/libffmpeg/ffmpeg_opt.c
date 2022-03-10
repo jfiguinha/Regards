@@ -132,7 +132,7 @@ static const char *const opt_name_enc_time_bases[]            = {"enc_time_base"
 }
 
 const HWAccel hwaccels[] = {
-#if CONFIG_VIDEOTOOLBOX
+#ifdef __APPLE__
     { "videotoolbox", videotoolbox_init, HWACCEL_VIDEOTOOLBOX, AV_PIX_FMT_VIDEOTOOLBOX },
 #endif
 #if CONFIG_LIBMFX

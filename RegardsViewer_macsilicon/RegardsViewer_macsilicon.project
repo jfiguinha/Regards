@@ -250,6 +250,7 @@
         <Library Value="opencv_imgcodecs"/>
         <Library Value="opencv_highgui"/>
         <Library Value="opencv_face"/>
+        <Library Value="opencv_tracking"/>
         <Library Value="opencv_objdetect"/>
         <Library Value="opencv_video"/>
         <Library Value="opencv_videoio"/>
