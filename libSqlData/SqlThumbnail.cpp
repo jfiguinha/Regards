@@ -90,7 +90,9 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 	wxString thumbnail = CFileUtility::GetThumbnailPath(to_string(numPhoto));
 	wxImage image;
 	if (wxFileExists(thumbnail))
+	{
 		image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+	}
     else
     {
         printf("error GetThumbnail");

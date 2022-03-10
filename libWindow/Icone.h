@@ -46,7 +46,7 @@ namespace Regards
 			CThumbnailData* GetCopyData();
 			void SetTheme(CThemeIcone theme);
 
-			wxBitmap GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false);
+			wxBitmap GetBitmapIcone(int& returnValue, const bool& flipHorizontal = false, const bool& flipVertical = false, const bool& forceRedraw = false);
 			//------------------------------------------
 			//Theme
 			//------------------------------------------
@@ -86,7 +86,7 @@ namespace Regards
 			}
 
 			int RenderIcone(wxDC* dc, const int& posLargeur, const int& posHauteur, const bool& flipHorizontal,
-				const bool& flipVertical);
+				const bool& flipVertical, const bool& forceRedraw = false);
 
 			bool IsChecked();
 
@@ -155,6 +155,8 @@ namespace Regards
 			wxImage pictureLoading;
 			wxImage transparent;
 			wxImage scaleBackup;
+			wxBitmap localmemBitmap_backup;
+			bool redraw = true;
 		};
 
 		using IconeVector = tbb::concurrent_vector<CIcone*>;

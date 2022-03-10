@@ -632,7 +632,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
 			}
 		}
 	}
@@ -657,7 +657,7 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 				int bottom = rc.y - posHauteur + themeThumbnail.themeIcone.GetHeight();
 
 				if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
-					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false);
+					icone->RenderIcone(&dc, -posLargeur, -posHauteur, false, false, true);
 			}
 		}
 	}
@@ -948,7 +948,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	{
 		bool actifActif = false;
-		CIcone* icone = GetIconeById(timeSelect);
+		CIcone* icone = GetIconeById(numSelectPhotoId);
 		if (icone != nullptr)
 		{
 			CThumbnailData* data = icone->GetData();
