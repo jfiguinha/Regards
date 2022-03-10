@@ -539,7 +539,8 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, const wxImage& bitmapScale, const in
 
 		if (!themeIcone.showOnlyThumbnail)
 		{
-			if (const wxString libelle = pThumbnailData->GetTimePositionLibelle(); libelle != L"")
+			const wxString libelle = pThumbnailData->GetTimePositionLibelle();
+			if (libelle != L"")
 			{
 				CThemeFont themeFont = themeIcone.font;
 				wxSize sizeTexte;
@@ -662,15 +663,26 @@ void CIcone::CalculPosition(const wxImage& render)
 
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical, const bool &forceRedraw)
 {
-
+	wxImage image;
 	if (forceRedraw)
 		redraw = true;
+
+	if (!photoDefault)
+	{
+		image = pThumbnailData->GetwxImage();
+		if (image.IsOk())
+			redraw = true;
+	}
+	else
+	{
+		image = pThumbnailData->GetwxImage();
+	}
 
 	if (redraw || (themeIcone.GetWidth() != localmemBitmap_backup.GetWidth() || localmemBitmap_backup.GetHeight() != themeIcone.GetHeight()))
 	{
 		localmemBitmap_backup = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
 		wxMemoryDC memDC(localmemBitmap_backup);
-		wxImage image;
+		
 		wxImage scale;
 
 
@@ -682,7 +694,7 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 		{
 			if (pThumbnailData != nullptr)
 			{
-				image = pThumbnailData->GetwxImage();
+				//image = pThumbnailData->GetwxImage();
 				if (!image.IsOk())
 				{
 					photoDefault = false;

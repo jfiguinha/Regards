@@ -168,12 +168,15 @@ bool CSqlThumbnail::EraseThumbnail()
 	wxArrayString files;
 	wxDir::GetAllFiles(documentPath, &files, wxEmptyString, wxDIR_FILES);
 
-	tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
-		{
-				wxString filename = files[i];
-				if (wxFileExists(filename))
-					wxRemoveFile(filename);
-	});
+	//tbb::parallel_for(0, (int)files.size(), 1, [=](int i)
+	//	{
+	for (int i = 0; i < listPhoto.size(); i++)
+	{
+		wxString filename = files[i];
+		if (wxFileExists(filename))
+			wxRemoveFile(filename);
+	}
+	//});
 
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
 }
