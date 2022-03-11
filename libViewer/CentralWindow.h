@@ -142,8 +142,6 @@ namespace Regards
 			void SetMode(wxCommandEvent& event);
 			void OnShowPicture(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
-			void OnEndLoadPicture(wxCommandEvent& event);
-			static void LoadStartPicture(void * param);
 
 			void OnTimerAnimation(wxTimerEvent& event);
 			void StopLoadingPicture();
@@ -215,7 +213,7 @@ namespace Regards
 			bool musicPause = false;
 			int64_t musicPosition = 0;
 			wxTimer* diaporamaTimer;
-			thread * threadloadPicture;
+
 		};
 	}
 }

@@ -22,11 +22,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 		isVideo = true;
 		
 	}
-	if (libPicture.TestIsVideo(filename))
-	{
-		videoCapture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
-		//fps = videoCapture->get(cv::CAP_PROP_FPS);
-	}
+
 	//if (libPicture.TestIsVideo(filename))
 	//	videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
 
@@ -95,6 +91,12 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	{
 		if (numFrame < nbFrame)
 		{
+			if (libPicture.TestIsVideo(filename) && videoCapture == nullptr)
+			{
+				videoCapture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
+				//fps = videoCapture->get(cv::CAP_PROP_FPS);
+			}
+
             bool grabbed = false;
 			if(videoCapture != nullptr)
 			{

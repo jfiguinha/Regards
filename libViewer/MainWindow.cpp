@@ -197,7 +197,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	listProcessWindow.push_back(this);
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
-		localFilename = config->GetLastShowPicture();
+		firstFileToShow = localFilename = config->GetLastShowPicture();
 }
 
 

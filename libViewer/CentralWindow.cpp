@@ -226,7 +226,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerAnimation), nullptr, this);
 	//Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CCentralWindow::OnLoadPicture));
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
-	Connect(wxEVENT_ENDLOADPICTURE, wxCommandEventHandler(CCentralWindow::OnEndLoadPicture));
+
 
 	Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
 	Connect(wxVIDEO_STOP, wxCommandEventHandler(CCentralWindow::OnVideoStop));
@@ -257,58 +257,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
 
-	
-	/*
-	wxBusyInfo wait("Please wait, loading picture database ...");
-	listPicture->SetListeFile();
-	thumbnailPicture->SetListeFile();
-
-
-	wxString local = "";
-	if (config != nullptr)
-		local = config->GetLastShowPicture();
-	
-	LoadPicture(local);
-	*/
-	threadloadPicture = new thread(LoadStartPicture, this);
 }
 
-void CCentralWindow::OnEndLoadPicture(wxCommandEvent& event)
-{
-	threadloadPicture->join();
-	delete threadloadPicture;
-
-	CMainParam* config = CMainParamInit::getInstance();
-	wxString local = "";
-	if (config != nullptr)
-		local = config->GetLastShowPicture();
-
-	LoadPicture(local, true);
-}
-
-void CCentralWindow::LoadStartPicture(void* param)
-{
-	wxBusyInfo wait("Please wait, loading data ...");
-	CCentralWindow* central = (CCentralWindow*)param;
-	if (central != nullptr)
-	{
-		if (central->listPicture != nullptr)
-			central->listPicture->SetListeFile();
-
-		if (central->thumbnailPicture != nullptr)
-			central->thumbnailPicture->SetListeFile();
-
-		CMainParam* config = CMainParamInit::getInstance();
-		wxString local = "";
-		if (config != nullptr)
-			local = config->GetLastShowPicture();
-
-		central->LoadPicture(local, true);
-	}
-
-	auto event = new wxCommandEvent(wxEVENT_ENDLOADPICTURE);
-	wxQueueEvent(central, event);
-}
 
 void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
 {
