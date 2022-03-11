@@ -59,6 +59,7 @@ public:
 	int timePosition;
 	CImageLoadingFormat* bitmapIcone;
 	thread* _thread;
+	thread* _threadVideo;
 	CThumbnail* thumbnail;
 };
 
@@ -902,6 +903,9 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 
 void CThumbnail::OnIdle(wxIdleEvent& evt)
 {
+	if (endProgram)
+		return;
+
     if(needToRefresh)
     {
         this->Refresh();
@@ -910,9 +914,6 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
     
 	if(processIdle)
         StartThread();
-
-	//	refreshActifTimer->Start(timeActif, TRUE);
-	//refreshSelectTimer->Start(timeSelect, TRUE);
 
 	CLibPicture libPicture;
 	{
@@ -977,14 +978,14 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				refreshSelectTimer->Start(timeSelect, TRUE);
 	}
 
-
+	VideoProcessThumbnail();
 
 }
 
 bool CThumbnail::GetProcessEnd()
 {
 	TRACE();
-	if (nbProcess > 0)
+	if (nbProcess > 0 && nbVideoThumbnailProcess > 0)
 		return false;
 	return true;
 }
@@ -996,17 +997,18 @@ wxString CThumbnail::GetWaitingMessage()
 }
 
 
+
+
 void CThumbnail::LoadPicture(void* param)
 {
 	TRACE();
+	//std::thread* t1 = nullptr;
 	CLibPicture libPicture;
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
 	if (threadLoadingBitmap == nullptr)
 		return;
 
-
-	if (libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsPDF(threadLoadingBitmap->filename) ||
-		libPicture.TestIsAnimation(threadLoadingBitmap->filename))
+	if (libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
 	{
 		vector<CImageVideoThumbnail*> listVideo;
 		libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo, true, true);
@@ -1026,8 +1028,8 @@ void CThumbnail::LoadPicture(void* param)
 				uint8_t* dest = bitmap->image->GetJpegData(outputsize);
 				if (dest != nullptr)
 					sqlThumbnailVideo.InsertThumbnail(filename, dest, outputsize, bitmap->image->GetWidth(),
-					                                  bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
-					                                  bitmap->timePosition);
+						bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
+						bitmap->timePosition);
 
 				bitmap->image->DestroyJpegData(dest);
 
@@ -1045,7 +1047,6 @@ void CThumbnail::LoadPicture(void* param)
 	{
 		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
 	}
-
 
 	auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);

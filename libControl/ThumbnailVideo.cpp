@@ -17,6 +17,14 @@ using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define WX_TIMER_PROCESS 1001
+#define wxEVENT_ENDTHUMBNAIL 1002
+
+struct ThumbnailVideoThread
+{
+	wxWindow * window;
+	wxString filename;
+	thread* threadVideo;
+};
 
 CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                  const bool& testValidity)
@@ -25,6 +33,30 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 	numItemSelected = -1;
 	process_end = true;
 	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndVideoThumbnail));
+	Connect(wxEVENT_ENDTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndThumbnail));
+}
+
+
+void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
+{
+	wxString oldMovie;
+	ThumbnailVideoThread* label = static_cast<ThumbnailVideoThread*>(event.GetClientData());
+
+	oldMovie = label->filename;
+
+	if (label->threadVideo != nullptr)
+	{
+		label->threadVideo->join();
+		delete label->threadVideo;
+	}
+
+	if (label != nullptr)
+		delete label;
+
+
+	nbVideoThumbnailProcess--;
+	if (oldMovie == videoFilename)
+		ProcessVideoThumbnail();
 }
 
 void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
@@ -263,6 +295,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 		}
 
 		processIdle = true;
+
+
 	}
 
 
@@ -279,7 +313,62 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 	UpdateScroll();
 
+	processThumbnailVideo = true;
+
 	needToRefresh = true;
+}
+
+void CThumbnailVideo::VideoProcessThumbnail()
+{
+	CLibPicture libPicture;
+	if (libPicture.TestIsVideo(videoFilename) && nbVideoThumbnailProcess == 0 && processThumbnailVideo)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		int nbResult = sqlThumbnailVideo.GetNbThumbnail(videoFilename);
+		if (nbResult < 20)
+		{
+			ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+			thumStruct->filename = videoFilename;
+			thumStruct->window = this;
+			thumStruct->threadVideo = new thread(LoadMoviePicture, thumStruct);
+			nbVideoThumbnailProcess++;
+		}
+
+		processThumbnailVideo = false;
+	}
+}
+
+void CThumbnailVideo::LoadMoviePicture(void* param)
+{
+	ThumbnailVideoThread * label = static_cast<ThumbnailVideoThread*>(param);
+	CLibPicture libPicture;
+	vector<CImageVideoThumbnail*> listVideo;
+	libPicture.LoadAllVideoThumbnail(label->filename, &listVideo, true, true);
+
+	if (listVideo.size() > 0)
+	{
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		for (int i = 0; i < listVideo.size(); i++)
+		{
+			CImageVideoThumbnail* bitmap = listVideo[i];
+			int compressMethod = 0;
+			unsigned long outputsize = 0;
+			bitmap->image->ConvertToRGB24(true);
+			uint8_t* dest = bitmap->image->GetJpegData(outputsize);
+			if (dest != nullptr)
+				sqlThumbnailVideo.InsertThumbnail(label->filename, dest, outputsize, bitmap->image->GetWidth(),
+					bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
+					bitmap->timePosition);
+
+			bitmap->image->DestroyJpegData(dest);
+
+			dest = nullptr;
+		}
+	}
+
+	auto event = new wxCommandEvent(wxEVENT_ENDTHUMBNAIL);
+	event->SetClientData(label);
+	wxQueueEvent(label->window, event);
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -309,7 +398,10 @@ void CThumbnailVideo::ProcessVideoThumbnail()
 					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
 				}
 				if (thumbnail->image == nullptr)
+				{
 					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+
+				}
 				
 
 				CIcone* pBitmapIcone = iconeList->GetElement(i);
@@ -390,25 +482,6 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFilename, 20);
-
-	/*
-	for (int i = 0; i < nbElementInIconeList; i++)
-	{
-		CIcone* icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			CThumbnailData* pThumbnailData = icone->GetData();
-			wxString filelocalName = iconeList->GetFilename(i);
-			if (videoFilename == filelocalName)
-			{
-				ProcessThumbnail(pThumbnailData);
-				nbProcess++;
-				break;
-			}
-
-		}
-	}
-	*/
 }
 
 

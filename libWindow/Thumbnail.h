@@ -127,7 +127,7 @@ namespace Regards
 
 			void OnRefreshThumbnail(wxCommandEvent& event);
 			void update_render_icone(wxCommandEvent& event);
-
+			virtual void VideoProcessThumbnail() {};
 			//------------------------------------------------------------
 			//Variable
 			//------------------------------------------------------------
@@ -160,7 +160,7 @@ namespace Regards
 
 			int positionSize;
 			bool controlKeyPush = false;
-
+			int nbVideoThumbnailProcess = 0;
 
 			//wxBitmap bitmapFolder;
 			wxBitmap bitmapPhoto;
@@ -179,15 +179,7 @@ namespace Regards
 
 			int timeActif = 0;
 			int timeSelect = 0;
-			/*
-				std::mutex muActif;
-				std::mutex muSelect;
-				std::mutex muLoadIcone;
 
-				CIcone * numActif;
-				CIcone * numSelect;
-				CIcone* loadingIcone;
-				*/
 			wxActivityIndicator* m_waitingAnimation;
 			bool animationStart = false;
 			int numActifPhotoId = -1;
@@ -224,8 +216,9 @@ namespace Regards
 			bool enableDragAndDrop = false;
 			int nbElementInIconeList = 0;
 			bool firstRefresh = true;
-            
+          
             bool needToRefresh = false;
+
 		};
 	}
 }
