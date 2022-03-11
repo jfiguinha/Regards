@@ -31,6 +31,7 @@
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
 #include <Tracing.h>
+#include <wx/busyinfo.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
@@ -38,6 +39,8 @@ using namespace Regards::Viewer;
 using namespace Regards::FiltreEffet;
 
 #define DELAY_ANIMATION 20
+
+#define wxEVENT_ENDLOADPICTURE 1001
 
 #define WINDOW_FACE 2
 #define WINDOW_EXPLORER 3
@@ -178,12 +181,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		scrollPictureWindow->SetPageSize(200);
 		scrollPictureWindow->SetLineSize(200);
 		thumbnailPicture->SetNoVScroll(true);
-
-		if (thumbnailPicture != nullptr)
-		{
-			thumbnailPicture->SetListeFile();
-		}
-
 		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true,
 		                        themeThumbnail.themeIcone.GetHeight() + theme_pane.GetHeight() * 2, rect, libelle,
 		                        "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
@@ -211,7 +208,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		listPicture = new CListPicture(windowManager, LISTPICTUREID);
 		listPicture->Show(false);
-		listPicture->SetListeFile();
 	}
 
 	if (viewerTheme != nullptr)
@@ -230,6 +226,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerAnimation), nullptr, this);
 	//Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CCentralWindow::OnLoadPicture));
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
+	Connect(wxEVENT_ENDLOADPICTURE, wxCommandEventHandler(CCentralWindow::OnEndLoadPicture));
 
 	Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
 	Connect(wxVIDEO_STOP, wxCommandEventHandler(CCentralWindow::OnVideoStop));
@@ -257,22 +254,60 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	event.SetInt(windowMode);
 	wxPostEvent(this, event);
 
-	if (listPicture != nullptr)
-		listPicture->SetListeFile();
+	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
+	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
 
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetListeFile();
+	
+	/*
+	wxBusyInfo wait("Please wait, loading picture database ...");
+	listPicture->SetListeFile();
+	thumbnailPicture->SetListeFile();
+
 
 	wxString local = "";
 	if (config != nullptr)
 		local = config->GetLastShowPicture();
 	
 	LoadPicture(local);
+	*/
+	threadloadPicture = new thread(LoadStartPicture, this);
+}
 
+void CCentralWindow::OnEndLoadPicture(wxCommandEvent& event)
+{
+	threadloadPicture->join();
+	delete threadloadPicture;
 
-	//refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
-	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
-	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerDiaporama), nullptr, this);
+	CMainParam* config = CMainParamInit::getInstance();
+	wxString local = "";
+	if (config != nullptr)
+		local = config->GetLastShowPicture();
+
+	LoadPicture(local, true);
+}
+
+void CCentralWindow::LoadStartPicture(void* param)
+{
+	wxBusyInfo wait("Please wait, loading data ...");
+	CCentralWindow* central = (CCentralWindow*)param;
+	if (central != nullptr)
+	{
+		if (central->listPicture != nullptr)
+			central->listPicture->SetListeFile();
+
+		if (central->thumbnailPicture != nullptr)
+			central->thumbnailPicture->SetListeFile();
+
+		CMainParam* config = CMainParamInit::getInstance();
+		wxString local = "";
+		if (config != nullptr)
+			local = config->GetLastShowPicture();
+
+		central->LoadPicture(local, true);
+	}
+
+	auto event = new wxCommandEvent(wxEVENT_ENDLOADPICTURE);
+	wxQueueEvent(central, event);
 }
 
 void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
