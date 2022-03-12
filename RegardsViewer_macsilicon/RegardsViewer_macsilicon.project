@@ -229,7 +229,6 @@
         <Library Value="dl"/>
         <Library Value="curl"/>
         <Library Value="AppleFunction"/>
-        <Library Value="fftw3f"/>
         <Library Value="exif"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
@@ -251,6 +250,7 @@
         <Library Value="opencv_highgui"/>
         <Library Value="opencv_face"/>
         <Library Value="opencv_objdetect"/>
+        <Library Value="opencv_tracking"/>
         <Library Value="opencv_video"/>
         <Library Value="opencv_videoio"/>
         <Library Value="opencv_xphoto"/>
