@@ -1,6 +1,8 @@
 #include <wx/init.h>
 #include <wx/utils.h> 
 #include <wx/dir.h> 
+#include <string>
+#include <wx/filename.h>
 #if wxVERSION_NUMBER < 2900
     #include <wx/string.h>
 #else
@@ -8,6 +10,8 @@
 #endif
 #include <wx/textfile.h>
 #include <map>
+#include <iostream>
+using namespace std;
 
 bool SaveArrayStringToFile(wxTextFile & txtFile,const wxArrayString &aryStr) 
 { 
@@ -38,6 +42,117 @@ std::vector<wxString> split(const wxString& s, char seperator)
 	return output;
 }
 
+wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolder, wxString folder_output_final, wxString fileOutToWrite)
+{
+    
+    wxRemove(fileOutToWrite);
+    wxTextFile txtFile(fileOutToWrite); 
+    txtFile.Create(); 
+    txtFile.Open();
+   std::map<wxString, wxString> copyFile;
+   std::vector<wxString> changeNameTool;
+   for(int i = 0;i < nbFiles;i++)
+    {
+        wxArrayString output;
+        printf("File : %s\n", files[i].ToStdString().c_str());
+        wxString command = "otool -L " + files[i];
+        wxExecute(command.c_str(), output);
+        
+        wxString fileName = files[i];
+        std::vector<wxString> libName = split(files[i], '/');
+        wxString dylibName = libName[libName.size() - 1];
+        int start = isMacOsFolder ? 1 : 2;
+         bool findModification = false;
+
+        for(int i=start;i<output.GetCount();i++) 
+        { 
+            wxString lineText = output.Item(i);
+            
+
+            if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
+            {
+                wxPrintf("lineText Lib : " + lineText + "\n");
+                std::vector<wxString> listOfString = split(lineText, '(');
+                wxString toWrite = "cp ";
+                 wxString libPath = listOfString[0];
+                 std::vector<wxString> listOflib = split(libPath, '/');
+                if(lineText.find("@loader_path") == 1 || lineText.find("@rpath") == 1)
+                {
+                     toWrite += "/opt/homebrew/lib/" + listOflib[listOflib.size() - 1];
+                     libPath = listOflib[listOflib.size() - 1];
+                }
+                else
+                {
+                    toWrite += libPath;
+                }
+                
+                wxString outputFilename = libPath;
+                outputFilename = listOflib[listOflib.size() - 1];
+                outputFilename.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
+                wxString outputLib = folder_output_final + "/" + outputFilename;
+
+                 if(dylibName == outputFilename)
+                     continue;
+                
+                wxString fileToTest = folder_output_final + "/" + outputFilename;
+                if(wxFileExists(fileToTest) == TRUE)
+                {
+                      //printf("File exists  \n");
+                      continue;
+                }
+
+                if(!wxFileExists(fileToTest) && libPath.find("3.1.5.0.0.dylib")==wxNOT_FOUND)
+                {
+                   // printf("copyFile \n");
+                    copyFile[outputFilename] = toWrite + " " + fileToTest;
+                }
+
+                wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
+                //int pos = lineText.find("@rpath");
+                //printf("Pos : %s + \n",  std::to_string(pos).c_str());
+                
+                if(lineText.find("@rpath") != -1)
+                {
+                   installName = "install_name_tool -change @rpath/" + outputFilename + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
+                  // printf("add install name \n");
+                    
+                }
+                    
+                changeNameTool.push_back(installName);
+                findModification = true;
+                
+            }
+        } 
+    }
+    
+    wxArrayString filesOut;
+    int nbLine = 0;
+    std::map<wxString, wxString>::iterator it = copyFile.begin();
+    while(it != copyFile.end())
+    {
+        auto value = it->second;
+        txtFile.AddLine(value); 
+        it++;
+        filesOut.push_back(folder_output_final + "/" + it->first);
+        //nbLine++;
+    }
+
+    for(wxString installName : changeNameTool) 
+    { 
+        txtFile.AddLine(installName); 
+        //wxPrintf(installName +  "\n");
+        //wxExecute(installName);
+        //nbLine++;
+    } 
+    
+    txtFile.Write();
+    txtFile.Close(); 
+    cout << "Please execute " << fileOutToWrite << endl;
+    char nom[20];
+    cin >> nom;
+    return filesOut;
+}
+
 int main( int argc, char** argv )
 {
     bool isMacOsFolder = true;
@@ -52,114 +167,26 @@ int main( int argc, char** argv )
 	// initialize wxWidgets
 	wxInitializer init;
     wxArrayString files;
-    wxTextFile txtFile(argv[3]); 
-    txtFile.Create(); 
-    txtFile.Open();
     
-    std::map<wxString, wxString> copyFile;
-    std::vector<wxString> changeNameTool;
-    std::map<wxString, wxString> moveFile;
+
     
 	wxPrintf( wxT("Hello in wxWidgets World!\n\n") );
     wxString dirPath = argv[1];
     std::vector<wxString> libNameFolder = split(dirPath, '/');
     wxString folder_output_final = argv[2];
-    wxString folder_output = "./Frameworks";
+   // wxString folder_output = "./Release/RegardsViewer.app/Contents/Frameworks";
     
     printf("directory %s \n",dirPath.ToStdString().c_str());
     wxString filename;
     size_t nbFiles =  wxDir::GetAllFiles(dirPath, &files);
-    for(int i = 0;i < nbFiles;i++)
+    do
     {
-        wxArrayString output;
-        printf("File : %s\n", files[i].ToStdString().c_str());
-        wxString command = "otool -L " + files[i];
-        wxExecute(command.c_str(), output);
-        
-        wxString fileName = files[i];
-        std::vector<wxString> libName = split(files[i], '/');
-        wxString dylibName = libName[libName.size() - 1];
-        //SaveArrayStringToFile(txtFile, output);
-        int start = isMacOsFolder ? 1 : 2;
-         bool findModification = false;
-
-        for(int i=start;i<output.GetCount();i++) 
-        { 
-            wxString lineText = output.Item(i);
-            //int index = lineText.find("/System/Library/Frameworks");
-            
-            //|| lineText.find(dylibName) > 1
-            
-            if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
-            {
-                printf("Line %s\n", lineText.ToStdString().c_str());
-                std::vector<wxString> listOfString = split(lineText, '(');
-                wxString toWrite = "cp ";
-                 wxString libPath = listOfString[0];
-                if(lineText.find("@loader_path") == 1 || lineText.find("@rpath") == 1)
-                {
-                     std::vector<wxString> listOflib = split(libPath, '/');
-                     toWrite += "/opt/homebrew/lib/" + listOflib[listOflib.size() - 1];
-                }
-                else
-                    toWrite += libPath;
-                folder_output.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
-                toWrite += " " + folder_output;
-
-                //txtFile.AddLine(toWrite);    
-                 std::vector<wxString> listOflib = split(libPath, '/');
-                wxString fileOut = folder_output_final + "/" + listOflib[listOflib.size() - 1];
-                //printf("Copy file  : %s \n",toWrite.ToStdString().c_str());
-                //printf("Test if file exist : %s \n",fileOut.ToStdString().c_str());
-                if(!wxFileExists(fileOut) && fileOut.find("3.1.5.0.0.dylib")==wxNOT_FOUND)
-                    copyFile[libPath] = toWrite;
-                
-                wxString outputFilename = listOflib[listOflib.size() - 1];
-                outputFilename.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
-                wxString installName = "install_name_tool -change " + libPath + " @executable_path/../Frameworks/" + outputFilename + " " + fileName;
-                //txtFile.AddLine(installName); 
-                changeNameTool.push_back(installName);
-                findModification = true;
-                
-            }
-        } 
-         if(!isMacOsFolder && !findModification)
-         {
-            wxString toWrite = "mv ";
-            toWrite += fileName;
-            toWrite += " " + folder_output_final;
-            moveFile[dylibName] = toWrite;
-         }
-
-    }
+        files = ExecuteProcess(files, nbFiles, isMacOsFolder, folder_output_final, argv[3]);
+        nbFiles = files.size();
+        isMacOsFolder = false;
+    }while(nbFiles > 0);
     
-    int nbLine = 0;
-    std::map<wxString, wxString>::iterator it = copyFile.begin();
-    while(it != copyFile.end())
-    {
-        auto value = it->second;
-        txtFile.AddLine(value); 
-        it++;
-        nbLine++;
-    }
     
-    for(wxString installName : changeNameTool) 
-    { 
-        txtFile.AddLine(installName); 
-        nbLine++;
-    } 
-    
-    std::map<wxString, wxString>::iterator it_move = moveFile.begin();
-    while(it_move != moveFile.end())
-    {
-        auto value = it_move->second;
-        txtFile.AddLine(value); 
-        nbLine++;
-        it_move++;
-    } 
-    txtFile.Write();
-    txtFile.Close(); 
-    if(nbLine == 0)
-        wxRemoveFile(argv[2]);
+
 	return 0;
 }
