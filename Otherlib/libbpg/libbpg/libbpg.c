@@ -60,6 +60,35 @@ typedef uint8_t PIXEL;
 
 #define MAX_DATA_SIZE ((1 << 30) - 1)
 
+extern const uint8_t ff_log2_tab[256];
+
+#ifndef ff_log2
+#define ff_log2 ff_log2_c
+static av_always_inline av_const int ff_log2_c(unsigned int v)
+{
+     int n = 0;
+     if (v & 0xffff0000) {
+         v >>= 16;
+         n += 16;
+     }
+     if (v & 0xff00) {
+         v >>= 8;
+         n += 8;
+     }
+     n += ff_log2_tab[v];
+     return n;
+ }
+ #endif
+
+#ifndef av_log2
+//av_const int av_log2(unsigned v);
+av_const int av_log2(unsigned v)
+{
+    return ff_log2(v);
+}
+
+#endif
+
 typedef struct {
     int c_shift;
     int c_rnd;

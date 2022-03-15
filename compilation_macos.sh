@@ -16,11 +16,9 @@ brew install -v poppler
 brew install -v mediainfo
 brew install -v libexif
 brew install -v qpdf
-brew install -v fftw
 brew install -v wxWidgets
 brew install -v exiv2
 brew install -v freeimage
-brew install -v ffmpeg
 
 #Install External Library
 cd libextern

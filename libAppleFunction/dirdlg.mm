@@ -23,6 +23,7 @@
 
 #include "wx/dirdlg.h"
 
+
 #ifndef WX_PRECOMP
     #include "wx/msgdlg.h"
     #include "wx/filedlg.h"
@@ -35,6 +36,9 @@
 #include "wx/generic/dirctrlg.h" // for wxFileIconsTable
 
 #include "wx/osx/private.h"
+
+#ifdef TOTO
+
 
 wxIMPLEMENT_CLASS(wxDirDialog, wxDialog);
 
@@ -172,6 +176,7 @@ void wxDirDialog::SetTitle(const wxString &title)
     m_title = title;
     wxDialog::SetTitle(title);
 }
+#endif
 
 size_t wxGetAvailableDrives(wxArrayString &paths, wxArrayString &names, wxArrayInt &icon_ids)
 {

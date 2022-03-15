@@ -13,23 +13,20 @@ make -j$NBPROC
 cd ..
 cd ..
 
-git clone https://github.com/oneapi-src/oneTBB.git
-cd oneTBB
-mkdir build
-cd build
-cmake ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_SHARED_LIBS=ON -DTBB_TEST=FALSE
-make -j$NBPROC
-make install
-cd ..
-cd ..
-
-FILE=wxWidgets-3.1.5.tar.bz2
-if [ ! -f FILE ]; then
-    wget https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.tar.bz2
-    tar xf wxWidgets-3.1.5.tar.bz2
-fi
-cd wxWidgets-3.1.5
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-unicode --disable-debug --with-cxx=11
-make -j$NBPROC
-cd ..
-
+#update pacman
+brew update 
+brew upgrade
+xcode-select --install
+brew install -v cmake
+brew install -v opencv
+brew install -v jasper
+brew install -v jpeg-turbo
+brew install -v libde265
+brew install -v libraw
+brew install -v poppler
+brew install -v mediainfo
+brew install -v libexif
+brew install -v qpdf
+brew install -v exiv2
+brew install -v freeimage
+brew install -v wxWidgets

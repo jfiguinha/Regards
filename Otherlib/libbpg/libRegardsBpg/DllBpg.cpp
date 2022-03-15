@@ -8,7 +8,7 @@
 
 extern "C"
 {
-	#include "libbpg.h"
+	#include <libbpg.h>
 	#include "bpgdec.h"
 	#include "bpgenc.h"
 }
