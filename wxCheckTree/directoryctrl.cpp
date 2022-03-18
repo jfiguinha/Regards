@@ -1307,7 +1307,7 @@ wxTreeItemId wxGenericDirCtrl::AppendItem (const wxTreeItemId & parent,
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
+//wxIMPLEMENT_CLASS(wxDirFilterListCtrl, wxChoice);
 
 #ifndef __WXGTK__
 
