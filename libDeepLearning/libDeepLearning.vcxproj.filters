@@ -16,6 +16,9 @@
     <Filter Include="Plot">
       <UniqueIdentifier>{d503cf95-2a05-4e55-8df3-691f3a9124d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="eyedetection">
+      <UniqueIdentifier>{5c7cbbb3-c7c8-413e-9351-b5099f47e4ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DetectRotation.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="DetectFace.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="eyedetect.cpp">
+      <Filter>eyedetection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DetectRotation.h">
@@ -55,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="FaceRect.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="eyedetect.h">
+      <Filter>eyedetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

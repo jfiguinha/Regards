@@ -14,6 +14,8 @@
 #include <fstream>
 #include <OpenCLContext.h>
 #include <opencv2/tracking/tracking_by_matching.hpp>
+#include "eyedetect.h"
+
 using namespace Regards::OpenCL;
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
@@ -45,8 +47,8 @@ const Scalar meanVal(104.0, 177.0, 123.0);
 const float confidenceThreshold = 0.59;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
-std::mutex CFaceDetector::muFaceMark;
-static Ptr<face::Facemark> facemark;
+//std::mutex CFaceDetector::muFaceMark;
+//static Ptr<face::Facemark> facemark;
 
 void CFaceDetector::CleanBase()
 {
@@ -177,8 +179,9 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 		netRecognition.setPreferableTarget(DNN_TARGET_CPU);
 #endif
 
-		facemark = face::createFacemarkKazemi();
-		facemark->loadModel(face_landmark);
+
+		//facemark = FacemarkLBF::create();		
+		//facemark->loadModel(face_landmark);
 
 		detectFace.LoadModel(config_file, weight_file);
 
@@ -194,6 +197,7 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	isload = true;
 }
 
+#ifdef OLD
 double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 {
 	double theta_deg_eye = 0;
@@ -201,6 +205,9 @@ double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 	int angle_add = 0;
 	//Declaring a variable "image" to store input image given.
 	//Mat detected_edges, Laugh_L, Laugh_R;
+	Mat gray;
+	image.copyTo(gray);
+	//cvtColor(image, gray, COLOR_BGR2GRAY);
 
 	Rect rc;
 	rc.x = 0;
@@ -214,30 +221,43 @@ double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 	std::vector<Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
 	vector<vector<Point2f>> shapes;
 
-	try
+	int i = 0;
+	do
 	{
-		muFaceMark.lock();
-		if (facemark->fit(image, faces, shapes))
+		try
 		{
-			faceFound = true;
+			muFaceMark.lock();
+			if (facemark->fit(gray, faces, shapes))
+			{
+				faceFound = true;
+			}
+			muFaceMark.unlock();
 		}
-		muFaceMark.unlock();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		faceFound = false;
-	}
+		catch (Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			faceFound = false;
+		}
+
+		if (faceFound)
+			break;
+
+		cv::rotate(gray, gray, cv::ROTATE_90_CLOCKWISE);
+
+		i++;
+
+	} while (i < 4);
 
 	if (faceFound)
 	{
 		landmarks = shapes[0];
+		//face::drawFacemarks(gray, landmarks, Scalar(0, 0, 255));
 		/*
 		for (size_t s = 0; s < landmarks.size(); s++) {
 
-			circle(image,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
+			circle(gray,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
 			//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
 			// Right Eyebrow indicies
 			if (s >= 22 && s <= 26) {
@@ -299,10 +319,12 @@ double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
 			angle_add += 180;
 
 		theta_deg_eye = rot_eye / M_PI * 180 + angle_add;
+
+		//imwrite("d:\\test.jpg", gray);
 	}
 	return theta_deg_eye;
 }
-
+#endif
 
 Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect& faceLocation, CRegardsBitmap* pBitmap)
 {
@@ -383,6 +405,9 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 
 		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
+		Mat Source;
+		pBitmap->GetMatrix().copyTo(Source);
+		
 		for (CFace face : listOfFace)
 		{
 			if (face.confidence > confidenceThreshold)
@@ -391,11 +416,57 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				Mat resizedImage;
 				bool findEye = true;
 				Size size(150, 150);
-				resize(face.croppedImage, resizedImage, size);
 
-				angleRot = face_opencv_alignement(resizedImage, findEye);
+				Mat thresh;
+				cv::cvtColor(face.croppedImage, thresh, COLOR_BGR2GRAY);
+				resize(thresh, thresh, size);
 
-				//imwrite("d:\\test.jpg", resizedImage);
+				/*
+				threshold(thresh, thresh, 100, 255, THRESH_BINARY);
+				int morph_elem = 1;
+				int morph_size = 5;
+				int operation = 2;
+				Mat element = getStructuringElement(morph_elem, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
+				morphologyEx(thresh, thresh, operation, element);
+				erode(thresh, thresh, getStructuringElement(MORPH_RECT, Size(3, 3)));
+
+				/*
+				int sizeKernel = 3;
+				for (int y = 0; y < thresh.size().height - sizeKernel; y += sizeKernel)
+				{
+					bool find_black = false;
+					int xStart = 0;
+					int xEnd = 0;
+					for (int x = 0; x < thresh.size().width - sizeKernel; x += sizeKernel)
+					{
+						int nbBlack = 0;
+						for (int i = 0; i < sizeKernel; i++)
+						{
+							for (int j = 0; j < sizeKernel; j++)
+							{
+								int position = (y + i) * thresh.size().width + x + j;
+								if (thresh.data[position] == 0)
+									nbBlack++;
+							}
+						}
+
+						if (nbBlack < 4)
+						{
+							for (int i = 0; i < sizeKernel; i++)
+							{
+								for (int j = 0; j < sizeKernel; j++)
+								{
+									int position = (y + i) * thresh.size().width + x + j;
+									thresh.data[position] = 255;
+								}
+							}
+						}
+
+					}
+				}
+				*/
+				CEyeDetect eyeDetect;
+				angleRot = eyeDetect.findEyesSource(thresh);
 
 				if (findEye)
 				{
@@ -403,11 +474,20 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 					{
 						face.croppedImage = RotateAndExtractFace(angleRot, face.myROI, pBitmap);
 						std::vector<uchar> buff;
+
 						resize(face.croppedImage, face.croppedImage, size);
-						ImageToJpegBuffer(face.croppedImage, buff);
+
+						cv::Mat localFace = face.croppedImage;
+
+		
+
+						ImageToJpegBuffer(localFace, buff);
 						int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows,
 						                                   face.croppedImage.cols, face.confidence, buff.data(),
 						                                   buff.size());
+
+
+
 						listFace.push_back(numFace);
 						face.croppedImage.release();
 					}
@@ -447,13 +527,8 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 
 	if (isLoading)
 	{
-		Mat dest;
 		std::vector<CFace> listOfFace;
 		pBitmap->VertFlipBuf();
-		//int angle = DectectOrientationByFaceDetector(pBitmap);
-		//if (angle != 0)
-		//	RotateCorrectly(pBitmap, angle);
-
 		detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
 
 		if (listOfFace.size() > 0)
@@ -462,153 +537,24 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 			{
 				if (listOfFace[i].confidence > confidenceThreshold)
 				{
-					vector<Rect> faces;
-					Mat gray, detected_edges, Laugh_L, Laugh_R;
-
 					Rect rc = listOfFace[i].myROI;
+					Mat face = listOfFace[i].croppedImage;
 
-					faces.push_back(rc);
+					CEyeDetect eyeDetect;
+					vector<cv::Rect> eyesPos = eyeDetect.EyesPosition(face);
 
-					std::vector<Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
-					vector<vector<Point2f>> shapes;
-
-
-					try
+					for (int i = 0; i < eyesPos.size(); i++)
 					{
-						muFaceMark.lock();
-						if (facemark->fit(dest, faces, shapes))
-						{
-							faceFound = true;
-						}
-						muFaceMark.unlock();
-					}
-					catch (Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-						faceFound = false;
-					}
-
-
-					if (faceFound)
-					{
-						landmarks = shapes[0];
-
-						/*
-						for (size_t s = 0; s < landmarks.size(); s++) {
-
-							circle(dest, landmarks[s], 2.0, Scalar(255, 0, 0), 30, 8);
-							//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
-							// Right Eyebrow indicies
-							if (s >= 22 && s <= 26) {
-								R_Eyebrow.push_back(landmarks[s]);
-								//circle( image,landmarks[s], 2.0, Scalar( 0, 0, 255 ), 1, 8 );
-							}
-							// Left Eyebrow indicies
-							else if (s >= 17 && s <= 21) {
-								L_Eyebrow.push_back(landmarks[s]);
-							}
-							// Left Eye indicies
-							else if (s >= 36 && s <= 41) {
-								L_Eye.push_back(landmarks[s]);
-							}
-							// Right Eye indicies
-							else if (s >= 42 && s <= 47) {
-								R_Eye.push_back(landmarks[s]);
-							}
-							// Mouth indicies
-							else if (s >= 48 && s <= 67) {
-								Mouth.push_back(landmarks[s]);
-							}
-							// Jawline Indicies
-							else if (s >= 0 && s <= 16) {
-								Jaw_Line.push_back(landmarks[s]);
-							}
-							// Nose Indicies
-							else if (s >= 27 && s <= 35) {
-								Nose.push_back(landmarks[s]);
-							}
-						}
-						*/
-						int posMinLeftEyeY = landmarks[i + 36].y;
-						int posMaxLeftEyeY = 0;
-						int posMaxRightEyeY = 0;
-						int posMinRightEyeY = landmarks[i + 42].y;
-
-						int posMinLeftEyeX = landmarks[i + 36].x;
-						int posMaxLeftEyeX = 0;
-						int posMinRightEyeX = landmarks[i + 42].x;
-						int posMaxRightEyeX = 0;
-						for (int i1 = 0; i1 < 6; i1++)
-						{
-							if (posMinLeftEyeY > landmarks[i1 + 36].y)
-								posMinLeftEyeY = landmarks[i1 + 36].y;
-
-							if (posMaxLeftEyeY < landmarks[i1 + 36].y)
-								posMaxLeftEyeY = landmarks[i1 + 36].y;
-
-							if (posMinRightEyeY > landmarks[i1 + 42].y)
-								posMinRightEyeY = landmarks[i1 + 42].y;
-
-							if (posMaxRightEyeY < landmarks[i1 + 42].y)
-								posMaxRightEyeY = landmarks[i1 + 42].y;
-
-							if (posMinLeftEyeX > landmarks[i1 + 36].x)
-								posMinLeftEyeX = landmarks[i1 + 36].x;
-
-							if (posMaxLeftEyeX < landmarks[i1 + 36].x)
-								posMaxLeftEyeX = landmarks[i1 + 36].x;
-
-							if (posMinRightEyeX > landmarks[i1 + 42].x)
-								posMinRightEyeX = landmarks[i1 + 42].x;
-
-							if (posMaxRightEyeX < landmarks[i1 + 42].x)
-								posMaxRightEyeX = landmarks[i1 + 42].x;
-						}
-
-						//Left Eye
-						{
-							Rect rectEye;
-							rectEye.x = posMinLeftEyeX; // +pointOfFace[i].x;
-							rectEye.y = posMinLeftEyeY; // +pointOfFace[i].y;
-							rectEye.width = posMaxLeftEyeX - posMinLeftEyeX;
-							rectEye.height = posMaxLeftEyeY - posMinLeftEyeY;
-							RemoveRedEye(dest, rectEye);
-
-#ifndef NDEBUG
-							cv::rectangle(dest, rectEye, cv::Scalar(255, 0, 0),10);
-#endif
-						}
-
-						//Right Eye
-						{
-							Rect rectEye;
-							rectEye.x = posMinRightEyeX; // +pointOfFace[i].x;
-							rectEye.y = posMinRightEyeY; // +pointOfFace[i].y;
-							rectEye.width = posMaxRightEyeX - posMinRightEyeX;
-							rectEye.height = posMaxRightEyeY - posMinRightEyeY;
-							RemoveRedEye(dest, rectEye);
-
-#ifndef NDEBUG
-							cv::rectangle(dest, rectEye, cv::Scalar(255, 0, 0), 10);
-#endif
-						}
+						cv::Rect rectEye = eyesPos[i];
+						rectEye.x += rc.x;
+						rectEye.y += rc.y;
+						RemoveRedEye(pBitmap->GetMatrix(), rectEye);
 					}
 
 				}
 			}
 		}
-        /*
-		if (faceFound)
-		{
-			if (angle != 0)
-			{
-				RotateCorrectly(pBitmap, (360 - angle) % 360);
-			}
-		}
-        */
-		dest.release();
+
 	}
 }
 
@@ -849,7 +795,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		model->predict(fc1, predictedLabel, confidence);
 		string result_message = format("Predicted class = %d / confidence class = %d.", predictedLabel, confidence);
 		*/
-		if (predictedLabel != -1 && confidence > 0.94)
+		if (predictedLabel != -1 && confidence > 0.90)
 		{
 			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
 			findFaceCompatible = true;

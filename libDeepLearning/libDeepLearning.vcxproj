@@ -51,6 +51,7 @@
     <ClCompile Include="DeepLearning.cpp" />
     <ClCompile Include="DetectFace.cpp" />
     <ClCompile Include="DetectRotation.cpp" />
+    <ClCompile Include="eyedetect.cpp" />
     <ClCompile Include="FaceDetector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +59,7 @@
     <ClInclude Include="DeepLearning.h" />
     <ClInclude Include="DetectFace.h" />
     <ClInclude Include="DetectRotation.h" />
+    <ClInclude Include="eyedetect.h" />
     <ClInclude Include="FaceDetector.h" />
     <ClInclude Include="FaceRect.h" />
   </ItemGroup>
