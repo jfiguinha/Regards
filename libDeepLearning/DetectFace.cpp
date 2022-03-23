@@ -10,6 +10,8 @@
 #include <RegardsBitmap.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
+#include <FileUtility.h>
+
 #ifdef __APPLE__
 #include "MyDetectFaceImpl.h"
 using namespace cv;
@@ -28,6 +30,8 @@ bool CDetectFace::isload = false;
 
 #endif
 
+
+
 extern COpenCLContext* openclContext;
 
 CDetectFace::CDetectFace(void)
@@ -45,15 +49,6 @@ CDetectFace::~CDetectFace(void)
 #endif
 }
 
-bool CDetectFace::LockOpenCLDnn()
-{
-	return true;
-}
-
-bool CDetectFace::UnlockOpenCLDnn()
-{
-	return true;
-}
 
 
 
@@ -224,6 +219,7 @@ int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const float& confidenceThres
 
 void CDetectFace::LoadModel(const string& config_file, const string& weight_file)
 {
+
 #ifdef __APPLE__
 #else
 #ifdef CAFFE
@@ -278,11 +274,12 @@ void CDetectFace::LoadModel(const string& config_file, const string& weight_file
 		net = readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
 #endif
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
+		/*
 		if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			net.setPreferableTarget(DNN_TARGET_CPU);
-
+		*/
 #else
 #ifdef CAFFE
 		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
@@ -305,5 +302,3 @@ void CDetectFace::LoadModel(const string& config_file, const string& weight_file
 #endif
 	
 }
-
-

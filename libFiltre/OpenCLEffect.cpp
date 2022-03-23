@@ -220,20 +220,15 @@ int COpenCLEffect::Swirl(const float& radius, const float& angle)
 
 int COpenCLEffect::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
-	CDeepLearning::LockOpenCLDnn();
-	
+	if (preview && !paramOutput.empty())
 	{
-		
-		if (preview && !paramOutput.empty())
-		{
-			openclFilter->NlMeans(paramOutput, h, hColor, templateWindowSize, searchWindowSize);
-		}
-		else
-		{
-			openclFilter->NlMeans(input, h, hColor, templateWindowSize, searchWindowSize);
-		}
+		openclFilter->NlMeans(paramOutput, h, hColor, templateWindowSize, searchWindowSize);
 	}
-	CDeepLearning::UnlockOpenCLDnn();
+	else
+	{
+		openclFilter->NlMeans(input, h, hColor, templateWindowSize, searchWindowSize);
+	}
+
 	return 0;
 }
 
@@ -326,7 +321,7 @@ int COpenCLEffect::Negatif()
 
 int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 {
-	CDeepLearning::LockOpenCLDnn();
+
     try
     {
         
@@ -348,35 +343,10 @@ int COpenCLEffect::BrightnessAndContrastAuto(float clipHistPercent)
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-	CDeepLearning::UnlockOpenCLDnn();
+
 	return 0;
 }
 
-/*
-int COpenCLEffect::GetWidth()
-{
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput.cols;
-	}
-	else
-	{
-		return input.cols;
-	}
-}
-
-int COpenCLEffect::GetHeight()
-{
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput.rows;
-	}
-	else
-	{
-		return input.rows;
-	}
-}
-*/
 
 int COpenCLEffect::Sepia()
 {

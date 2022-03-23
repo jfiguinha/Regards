@@ -5,6 +5,7 @@ class CRegardsBitmap;
 class CPictureData;
 class FaceRect;
 class CDetectFace;
+class CDetectFacePCN;
 
 namespace Regards
 {
@@ -16,8 +17,6 @@ namespace Regards
 		public:
 			CFaceDetector(const bool& fastDetection);
 			~CFaceDetector();
-			static bool LockOpenCLDnn();
-			static bool UnlockOpenCLDnn();
 			static void CleanBase();
 			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition,
 			                      const string& face_landmark, const string& protoPosition, const string& weightPosition);
@@ -33,14 +32,14 @@ namespace Regards
 			int FindNbFace(CRegardsBitmap * image, float& bestConfidence, const float& confidence = 0.5);
 			//double face_opencv_alignement(cv::Mat& image, bool& findEye);
 			void RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle, CRegardsBitmap* pBitmap);
-			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox);
+			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox, int radius);
 			void ImageToJpegBuffer(cv::Mat& image, std::vector<uchar>& buff);
-			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, CRegardsBitmap* pBitmap);
+			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, cv::Mat image);
 			cv::Mat FaceDesriptor(cv::Mat face);
 			cv::Mat Zscore(const cv::Mat& fc);
 			cv::Mat GetFaceScore(const int& numFace);
-			CDetectFace * detectFace;
-
+			//CDetectFace * detectFace;
+			CDetectFacePCN * detectFacePCN;
 			static bool isload;
 
 			static std::mutex muFaceMark;

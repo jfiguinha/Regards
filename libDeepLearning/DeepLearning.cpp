@@ -13,16 +13,6 @@ using namespace Regards::Viewer;
 static bool isload = false;
 static std::mutex muLoading;
 
-bool CDeepLearning::LockOpenCLDnn()
-{
-	return CFaceDetector::LockOpenCLDnn();
-}
-
-bool CDeepLearning::UnlockOpenCLDnn()
-{
-	return CFaceDetector::UnlockOpenCLDnn();
-}
-
 void CDeepLearning::CleanRecognition()
 {
 	CFaceDetector::CleanBase();

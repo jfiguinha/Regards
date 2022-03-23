@@ -367,14 +367,14 @@ vector<cv::Rect> CEyeDetect::EyesPosition(cv::Mat & faceROI)
 	cv::Point rightPupil = findEyeCenter(faceROI, rightEyeRegion, "Right Eye");
 	// get corner regions
 	cv::Rect leftCornerRegion;
-	leftCornerRegion.x = leftPupil.x - (eye_region_width / 2);
-	leftCornerRegion.y = leftPupil.y - (eye_region_height / 2);
+	leftCornerRegion.x = max(leftPupil.x - (eye_region_width / 2),0);
+	leftCornerRegion.y = max(leftPupil.y - (eye_region_height / 2), 0);
 	leftCornerRegion.width = eye_region_width;
 	leftCornerRegion.height = eye_region_height;
 
 	cv::Rect rightCornerRegion;
-	rightCornerRegion.x = rightPupil.x - (eye_region_width / 2);
-	rightCornerRegion.y = rightPupil.y - (eye_region_height / 2);
+	rightCornerRegion.x = max(rightPupil.x - (eye_region_width / 2), 0);
+	rightCornerRegion.y = max(rightPupil.y - (eye_region_height / 2), 0);
 	rightCornerRegion.width = eye_region_width;
 	rightCornerRegion.height = eye_region_height;
 
@@ -461,112 +461,54 @@ int CEyeDetect::findEyesSource(cv::Mat & faceROI)
 
 }
 
-int CEyeDetect::findEyes(cv::Mat & faceROI)
+cv::Point CEyeDetect::findEye(const cv::Mat & faceROI)
 {
-	Mat result;
-	Mat source;
-	bool isEyeCorrect = true;
-	source = faceROI(cv::Rect(20, 20, faceROI.size().width - 40, faceROI.size().height - 40));
-	//faceROI.copyTo(source);
 	cv::Mat debugFace = faceROI;
-	cv::Rect face = cv::Rect(0, 0, source.size().width / 2, source.size().height / 2);
+	cv::Rect face = cv::Rect(0, 0, faceROI.size().width, faceROI.size().height);
 
 	if (kSmoothFaceImage) {
 		double sigma = kSmoothFaceFactor * face.width;
-		GaussianBlur(source, source, cv::Size(0, 0), sigma);
+		GaussianBlur(faceROI, faceROI, cv::Size(0, 0), sigma);
 	}
+	//-- Find eye regions and draw them
+	int eye_region_width = face.width * (kEyePercentWidth / 100.0);
+	int eye_region_height = face.width * (kEyePercentHeight / 100.0);
+	int eye_region_top = face.height * (kEyePercentTop / 100.0);
+	cv::Rect leftEyeRegion(face.width * (kEyePercentSide / 100.0),
+		eye_region_top, eye_region_width, eye_region_height);
 
-	int sizeRect = 5;
 
 	//-- Find Eye Centers
-	cv::Point leftPupil = findEyeCenter(source, face, "Left Eye");
+	cv::Point leftPupil = findEyeCenter(faceROI, leftEyeRegion, "Left Eye");
 
-
-
-	cv::Rect faceRight;
-	cv::Point rightPupil;
-	try
-	{
-		faceRight.x = source.size().width / 2;
-		faceRight.y = 0;
-		faceRight.height = source.size().height / 2;
-		faceRight.width = source.size().width / 2;
-		rightPupil = findEyeCenter(source, faceRight, "Right Eye");
-		rightPupil.x += faceRight.x;
-	}
-	catch (...)
-	{
-
-	}
-
-	cv::Point bottomPupil;
-	try
-	{
-		cv::Rect faceBottom;
-		faceBottom.x = 0;
-		faceBottom.y = source.size().height / 2;
-		faceBottom.height = source.size().height / 2;
-		faceBottom.width = source.size().width / 2;
-		bottomPupil = findEyeCenter(source, faceBottom, "Bottom Eye");
-		bottomPupil.y += faceBottom.y;
-
-	}
-	catch (...)
-	{
-
-	}
-	
-	cv::Point bottomRightPupil;
-	try
-	{
-		cv::Rect rightbottomPupil;
-		rightbottomPupil.x = source.size().width / 2;
-		rightbottomPupil.y = source.size().height / 2;
-		rightbottomPupil.height = source.size().height / 2;
-		rightbottomPupil.width = source.size().width / 2;
-		bottomRightPupil = findEyeCenter(source, rightbottomPupil, "Bottom Right Eye");
-		bottomRightPupil.y += rightbottomPupil.y;
-		bottomRightPupil.x += rightbottomPupil.x;
-
-	}
-	catch (...)
-	{
-
-	}
-
-	circle(source, leftPupil, 3, 200);
-	circle(source, rightPupil, 3, 200);
-	circle(source, bottomPupil, 3, 200);
-	circle(source, bottomRightPupil, 3, 200);
-
-	int angle = 0;
-
-	double rot_eye_left_right_top = abs(atan2(abs(rightPupil.y - leftPupil.y), abs(rightPupil.x - leftPupil.x)) / M_PI * 180);
-	double rot_eye_left_left_bottom = abs(atan2(abs(bottomPupil.x - leftPupil.x), abs(bottomPupil.y - leftPupil.y)) / M_PI * 180);
- 	double rot_eye_right_right_bottom = abs(atan2(abs(rightPupil.x - bottomRightPupil.x), abs(rightPupil.y - bottomRightPupil.y)) / M_PI * 180);
-
-	int distX = abs(leftPupil.x - rightPupil.x);
-	int distY = abs(leftPupil.y - bottomPupil.y);
-	
-
-
-	if (rot_eye_left_right_top < rot_eye_left_left_bottom)
-		angle = 0;
-	else 
-		angle = 90;
-
-
-	imshow("Face", source);
-	waitKey();
 	/*
-	if (rot_eye_left_right_top < 10)
-		angle = 0;
+	// get corner regions
+	cv::Rect leftRightCornerRegion(leftEyeRegion);
+	leftRightCornerRegion.width -= leftPupil.x;
+	leftRightCornerRegion.x += leftPupil.x;
+	leftRightCornerRegion.height /= 2;
+	leftRightCornerRegion.y += leftRightCornerRegion.height / 2;
+	cv::Rect leftLeftCornerRegion(leftEyeRegion);
+	leftLeftCornerRegion.width = leftPupil.x;
+	leftLeftCornerRegion.height /= 2;
+	leftLeftCornerRegion.y += leftLeftCornerRegion.height / 2;
 
-	if (leftPupil.x < 7 || leftPupil.y < 7)
-		angle = 0;
+	leftPupil.x += leftEyeRegion.x;
+	leftPupil.y += leftEyeRegion.y;
+	// draw eye centers
+
+	//-- Find Eye Corners
+	if (kEnableEyeCorner) {
+		cv::Point2f leftRightCorner = findEyeCorner(faceROI(leftRightCornerRegion), true, false);
+		leftRightCorner.x += leftRightCornerRegion.x;
+		leftRightCorner.y += leftRightCornerRegion.y;
+		cv::Point2f leftLeftCorner = findEyeCorner(faceROI(leftLeftCornerRegion), true, true);
+		leftLeftCorner.x += leftLeftCornerRegion.x;
+		leftLeftCorner.y += leftLeftCornerRegion.y;
+
+	}
 	*/
-	angle = atan2(rightPupil.y - leftPupil.y, rightPupil.x - leftPupil.x) / M_PI * 180;
-	return angle;
+	return leftPupil;
 }
 
 int CEyeDetect::GetAngleEyes(cv::Mat & faceROI)

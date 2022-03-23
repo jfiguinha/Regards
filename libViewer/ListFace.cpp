@@ -354,7 +354,7 @@ void CListFace::LoadResource(void* param)
 	
 #endif
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "\\model\\nn4.small2.v1.t7";
-	wxString landmark = "";// CFileUtility::GetResourcesFolderPath() + "\\model\\lbfmodel.yaml";// face_landmark_model.dat";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 
 	wxString protoPosition = CFileUtility::GetResourcesFolderPath() + "\\model\\pose_deploy_linevec_faster_4_stages.prototxt";
 	wxString protoWeigth = CFileUtility::GetResourcesFolderPath() + "\\model\\pose_iter_160000.caffemodel";

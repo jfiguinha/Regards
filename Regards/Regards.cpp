@@ -126,96 +126,6 @@ int MyApp::Close()
 	return 0;
 }
 
-int match(string filename, string templatename)
-{
-	Mat ref = cv::imread(filename,0);
-	Mat tpl = cv::imread(templatename, 0);
-	if (ref.empty() || tpl.empty())
-	{
-		cout << "Error reading file(s)!" << endl;
-		return -1;
-	}
-
-	//imshow("file", ref);
-//	imshow("template", tpl);
-
-	Mat res_32f(ref.rows - tpl.rows + 1, ref.cols - tpl.cols + 1, CV_32FC1);
-	matchTemplate(ref, tpl, res_32f, TM_CCORR_NORMED);
-
-	Mat res;
-	res_32f.convertTo(res, CV_8U, 255.0);
-	//imshow("result", res);
-
-	int size = ((tpl.cols + tpl.rows) / 4) * 2 + 1; //force size to be odd
-	adaptiveThreshold(res, res, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, size, -128);
-//	imshow("result_thresh", res);
-
-	while (true)
-	{
-		double minval, maxval, threshold = 0.8;
-		Point minloc, maxloc;
-		minMaxLoc(res, &minval, &maxval, &minloc, &maxloc);
-
-		if (maxval > 0)
-		{
-			rectangle(ref, maxloc, Point(maxloc.x + tpl.cols, maxloc.y + tpl.rows), CV_RGB(0, 255, 0), 2);
-			floodFill(res, maxloc, 0); //mark drawn blob
-		}
-		else
-			break;
-	}
-
-	imshow("final", ref);
-	waitKey(0);
-	exit(0);
-	return 0;
-}
-
-void DetectCircle(string filename)
-{
-	Mat src = cv::imread(filename);
-	Mat gray;
-	cvtColor(src, gray, COLOR_BGR2GRAY);
-//	cv::morphologyEx(gray, gray, 4, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(150, 150)));
-//	imshow("detected circles", gray);
-//	waitKey();
-
-	//cv::threshold(gray, gray, 0, 255, cv::THRESH_OTSU);
-	//imshow("detected circles", gray);
-	//waitKey();
-	//GaussianBlur(gray, gray, Size(7, 7), 2, 2);
-
-
-	//medianBlur(gray, gray, 5);
-	//resize(gray, gray, Size(300, 300));
-	vector<Vec3f> circles;
-	
-	//cv::HoughCircles(gray, circles, HOUGH_GRADIENT, 2, gray.rows / 4);
-
-	
-	HoughCircles(gray, circles, HOUGH_GRADIENT, 19,
-		30,  // change this value to detect circles with different distances to each other
-		10, 10, 1, 10 // change the last two parameters
-	//(min_radius & max_radius) to detect larger circles
-	);
-	
-	//HoughCircles(gray, circles, HOUGH_GRADIENT, 2, 100.0, 30, 150, 1, 10);
-	for (size_t i = 0; i < circles.size(); i++)
-	{
-		Vec3i c = circles[i];
-		Point center = Point(c[0], c[1]);
-		// circle center
-		circle(src, center, 1, Scalar(0, 100, 100), 3, LINE_AA);
-		// circle outline
-		int radius = c[2];
-		circle(src, center, radius, Scalar(255, 0, 255), 3, LINE_AA);
-	}
-	imshow("detected circles", src);
-	waitKey();
-	exit(0);
-}
-
-
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
@@ -237,230 +147,199 @@ bool MyApp::OnInit()
 		printf("SQLite in serialized mode \n");
 	}
 
+#ifdef TEST_PCN
+	wxArrayString listFiles;
+	wxDir::GetAllFiles("C:\\Users\\jfigu\\Documents\\Regards\\face", &listFiles);
+
+	const char* detection_model_path = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN.caffemodel";
+	const char* pcn1_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-1.prototxt";
+	const char* pcn2_proto = "C:\\developpement\\FaceKit-master\\PCN\\\model\\PCN-2.prototxt";
+	const char* pcn3_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-3.prototxt";
+	const char* tracking_model_path = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-Tracking.caffemodel";
+	const char* tracking_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-Tracking.prototxt";
+
+	Net net_1 = readNet(pcn1_proto, detection_model_path);
+	Net net_2 = readNet(pcn2_proto, detection_model_path);
+	Net net_3 = readNet(pcn3_proto, detection_model_path);
+
+	for (int i = 0; i < listFiles.size(); i++)
+	{
+		cv::Mat img = imread(listFiles[i].ToStdString());
+		Mat paddedImg = padImg(img);
+
+		cv::Mat img180, img90, imgNeg90;
+		cv::flip(paddedImg, img180, 0);
+		cv::transpose(paddedImg, img90);
+		cv::flip(img90, imgNeg90, 0);
+
+		float thresholds[] = { 0.37, 0.43, 0.95 };
+
+		cv::TickMeter tm;
+		tm.reset();
+		tm.start();
+
+		int minFaceSize = 40;
+		std::vector<FaceBox> faces = PCN_1(img, paddedImg, net_1, thresholds[0], minFaceSize);
+		faces = NMS(faces, true, 0.8);
+		faces = PCN_2(paddedImg, img180, net_2, thresholds[1], 24, faces);
+		faces = NMS(faces, true, 0.8);
+		faces = PCN_3(paddedImg, img180, img90, imgNeg90, net_3, thresholds[2], 48, faces);
+		faces = NMS(faces, false, 0.3);
+
+		tm.stop();
+		std::cout << "Time Cost: " << tm.getTimeMilli() << " ms" << std::endl;
+
+		std::vector<FaceBox> preList = TransformBoxes(img, paddedImg, faces);
+
+		for (int i = 0; i < preList.size(); i++)
+		{
+			DrawFace(img, preList[i]);
+		}
+
+		imshow("IMG", img);
+		waitKey();
+	}
+
+#endif
+
+
 #ifdef TEST
+	int nbEyes = 0;
 	vector<cv::Mat> valuePic;
 	vector<cv::Point> value;
 	bool isOk = false;
 	wxArrayString listFiles;
 	wxDir::GetAllFiles("C:\\Users\\jfigu\\Documents\\Regards\\Face", &listFiles);
-
-	for (int i = 0; i < listFiles.size(); i++)
+	int angle = 0;
+	for (int ui = 0; ui < listFiles.size();ui++)
 	{
-		Mat face = imread(listFiles[i].ToStdString(), 0);
-	//	for (int j = 0; j < 4; j++)
-	//	{
-			Mat copy;
-			face.copyTo(copy);
-			int angle = 0;
+		Mat face = imread(listFiles[ui].ToStdString(), 0);
+		for (int i = 0; i < 36; i++)
+		{
 
-			vector<int> ListAngle;
+			Mat tpl;
+			cv::CascadeClassifier eye_cascade, mouth;
+			std::vector<cv::Rect> eyes, mouthi;
+			eye_cascade.load("d:\\haarcascade_eye.xml");
+			eye_cascade.detectMultiScale(face, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
+			mouth.load("d:\\haarcascade_mcs_mouth.xml");
 
-			CEyeDetect eyeDetect;
-			int oldAngle = 360;
-			int angleRot = 0;
-
-			Mat thresh;
-			threshold(copy, thresh, 50, 255, THRESH_BINARY);
-
-
-
-			/*
-			// detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
-			vector<vector<Point>> contours;
-			vector<Vec4i> hierarchy;
-			findContours(thresh, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-			//findContours(thresh2, contours4, hierarchy4, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-
-			// draw contours on the original image
-			Mat image_copy = copy.clone();
-			drawContours(image_copy, contours, -1, Scalar(0, 255, 0), 2);
-			imshow("None approximation", image_copy);
-			waitKey(0);
-			*/
-
-			/*
-			int erosion_elem = 0;
-			int erosion_type = 2;
-			int erosion_size = 0;
-			if (erosion_elem == 0) { erosion_type = MORPH_RECT; }
-			else if (erosion_elem == 1) { erosion_type = MORPH_CROSS; }
-			else if (erosion_elem == 2) { erosion_type = MORPH_ELLIPSE; }
-			Mat element = getStructuringElement(erosion_type,
-				Size(2 * erosion_size + 1, 2 * erosion_size + 1),
-				Point(erosion_size, erosion_size));
-			dilate(thresh, thresh, element);
-			*/
-			// Since MORPH_X : 2,3,4,5 and 6
-			int morph_elem = 1;
-			int morph_size = 5;
-			int operation = 2;
-			Mat element = getStructuringElement(morph_elem, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
-			morphologyEx(thresh, thresh, operation, element);
-			erode(thresh, thresh, getStructuringElement(MORPH_RECT, Size(3, 3)));
-			/**
-			vector<vector<cv::Point>> contours;
-			vector<Vec4i> hierarchy;
-			findContours(thresh, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
-
-			for (int i = 0; i < contours.size(); i++) {
-				vector<cv::Point> contour = contours[i];
-
-				std::sort(contour.begin(), contour.end(), [](const cv::Point& a, const cv::Point& b) { return a.x < b.x; });
-				cv::Point minX = contour[0];
-				cv::circle(thresh, minX, 5, Scalar(255, 0, 255), FILLED);
-
-				cv::Point maxX = contour.back();
-				cv::circle(thresh, maxX, 5, Scalar(255, 0, 0), FILLED);
-
-				std::sort(contour.begin(), contour.end(), [](const cv::Point& a, const cv::Point& b) { return a.y < b.y; });
-				cv::Point minY = contour[0];
-				cv::circle(thresh, minY, 5, Scalar(0, 0, 255), FILLED);
-
-				cv::Point maxY = contour.back();
-				cv::circle(thresh, maxY, 5, Scalar(255, 255, 0), FILLED);
-			}
-			*/
-
-			
-			int sizeKernel = 3;
-			for (int y = 0; y < thresh.size().height - sizeKernel; y += sizeKernel)
+			for (int p = 0; p < eyes.size(); p++)
 			{
-				bool find_black = false;
-				int xStart = 0;
-				int xEnd = 0;
-				for (int x = 0; x < thresh.size().width - sizeKernel; x+=sizeKernel)
+				Rect rect = eyes[p];
+				if (rect.y > (face.size().height / 2))
 				{
-					int nbBlack = 0;
-					for (int i = 0; i < sizeKernel; i++)
-					{
-						for (int j = 0; j < sizeKernel; j++)
-						{
-							int position = (y + i) * thresh.size().width + x + j;
-							if (thresh.data[position] == 0)
-								nbBlack++;
-						}
-					}
-
-					if (nbBlack < 4)
-					{
-						for (int i = 0; i < sizeKernel; i++)
-						{
-							for (int j = 0; j < sizeKernel; j++)
-							{
-								int position = (y + i) * thresh.size().width + x + j;
-								thresh.data[position] = 255;
-							}
-						}
-					}
-
+					eyes.erase(eyes.begin() + p);
+					p--;
 				}
 			}
-			
 
-			/*
-			int pos = 0;
-			for (int y = 0; y < thresh.size().height; y++)
+			for (int i = 0; i < eyes.size(); i++)
 			{
-				bool find_black = false;
-				int xStart = 0;
-				int xEnd = 0;
-				for (int x = 0; x < thresh.size().width; x++, pos++)
+				for (int j = 0; j < eyes.size(); j++)
 				{
-					if (thresh.data[pos] == 0 && !find_black)
+					if (i != j)
 					{
-						xStart = x;
-						find_black = true;
-					}
-					else if (thresh.data[pos] != 0)
-					{
-						if (find_black)
+						Rect interesect = eyes[i] & eyes[j];
+						if (interesect.area() > 0)
 						{
-							int xSize = x - xStart;
-							if (xSize < 8)
-							{
-								for (int i = 0; i < xSize; i++)
-								{
-									thresh.data[pos - i] = 255;
-								}
-							}
-							find_black = false;
+							eyes.erase(eyes.begin() + j);
+							j--;
 						}
 					}
 				}
 			}
-			*/
 
-			imshow("Binary mage", thresh);
-			waitKey(0);
-			//imwrite("d:\\test_eye.png", thresh);
-			/*
-		//	int thresh = 100;
-			RNG rng(12345);
-			vector<vector<Point> > contours;
-			vector<Vec4i> hierarchy;
-			findContours(thresh, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-			Mat drawing = Mat::zeros(thresh.size(), CV_8UC3);
-			for (size_t i = 0; i < contours.size(); i++)
+
+			int angleEye = 0;
+			if (eyes.size() == 2)
 			{
-				Rect roi = boundingRect(contours[i]); // This is a OpenCV function
-
-
-				Mat mask = Mat::zeros(drawing.size(), CV_8UC1);
-				Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
-				//drawContours(mask, contours, (int)i, color, 2, LINE_8, hierarchy, 0);
-				drawContours(mask, contours, -1, Scalar(255), FILLED);
-
-				// Extract region using mask for region 
-				Mat contourRegion;
-				Mat imageROI;
-				thresh.copyTo(imageROI, mask); // 'image' is the image you used to compute the contours.
-				contourRegion = imageROI(roi);
-
-				imshow("Binary contourRegion", contourRegion);
-				waitKey(0);
-
-				break;
+				cv::Point leftPupil;
+				leftPupil.x = eyes[0].x + eyes[0].width / 2;
+				leftPupil.y = eyes[0].y + eyes[0].height / 2;
+				cv::Point rightPupil;
+				rightPupil.x = eyes[1].x + eyes[1].width / 2;
+				rightPupil.y = eyes[1].y + eyes[1].height / 2;
+				angleEye = atan2(rightPupil.y - leftPupil.y, rightPupil.x - leftPupil.x) / M_PI * 180;
 			}
-			*/
-			/*
-			Mat result;
-			int match_method = TM_SQDIFF_NORMED;
-			Mat templ = imread("d:\\eye.png", 0);
-			matchTemplate(thresh, templ, result, TM_SQDIFF_NORMED);
-
-			normalize(result, result, 0, 1, NORM_MINMAX, -1, Mat());
-			double minVal; double maxVal; Point minLoc; Point maxLoc;
-			Point matchLoc;
-			minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
-			if (match_method == TM_SQDIFF || match_method == TM_SQDIFF_NORMED)
+			
+			if (eyes.size() != 2 || (angleEye == 0))
 			{
-				matchLoc = minLoc;
+				Mat src = imread(listFiles[ui].ToStdString(), 0);
+				angle += 10;
+				// get rotation matrix for rotating the image around its center in pixel coordinates
+				cv::Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
+				cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+				// determine bounding rectangle, center not relevant
+				cv::Rect2f bbox = cv::RotatedRect(cv::Point2f(), src.size(), angle).boundingRect2f();
+				// adjust transformation matrix
+				rot.at<double>(0, 2) += bbox.width / 2.0 - src.cols / 2.0;
+				rot.at<double>(1, 2) += bbox.height / 2.0 - src.rows / 2.0;
+				cv::warpAffine(src, face, rot, bbox.size());
+				continue;
 			}
-			else
+
+			imwrite("d:\\test_picture\\test" + to_string(ui) + ".jpg", face);
+
+
+
+			bool error = false;
+
+			if (eyes.size() > 2)
 			{
-				matchLoc = maxLoc;
+				CEyeDetect eyeDetect;
+				for (int p = 0; p < eyes.size(); p++)
+				{
+					Mat image;
+					Rect rect = eyes[p];
+					tpl = face(rect);
+					int angle = eyeDetect.findEyes(tpl);
+					imshow("test Right", tpl);
+					waitKey(0);
+				}
 			}
-			rectangle(thresh, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
-			rectangle(result, matchLoc, Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), Scalar::all(0), 2, 8, 0);
-			imshow("image_window", thresh);
-			imshow("result_window", result);
 
- 			imshow("Face", result);
-			waitKey();
-			*/
-   			angle = eyeDetect.findEyesSource(thresh);
-		//	cv::rotate(face, face, cv::ROTATE_90_CLOCKWISE);
 
-			/*
-			if (angle == 90)
-				cv::rotate(face, face, cv::ROTATE_90_CLOCKWISE);
-			if (angle == 270)
-				cv::rotate(face, face, cv::ROTATE_90_COUNTERCLOCKWISE);
-			*/
-			//imshow("Face", copy);
-			//waitKey();
+			if (eyes.size() > 2)
+			{
+				printf("Error");
+				error = true;
+			}
 
-		//}
+			cv::Scalar colors[3];
+			colors[0] = cv::Scalar(255, 0, 0);
+			colors[1] = cv::Scalar(0, 255, 0);
+			colors[2] = cv::Scalar(0, 0, 255);
+
+			for (int k = 0; k < eyes.size(); k++)
+			{
+				Mat image;
+				Rect rect = eyes[k];
+				tpl = face(rect);
+				nbEyes++;
+			}
+
+			break;
+
+		}
+
+		/*
+		CEyeDetect eyeDetect;
+   		eyes = eyeDetect.EyesPosition(face);
+		Mat eyeLeft = face(eyes[0]);
+		Mat eyeRight = face(eyes[1]);
+
+
+		imshow("test Right", face);
+		waitKey(0);
+
+		imshow("test Left",eyeLeft);
+		waitKey(0);
+
+		imshow("test Right", eyeRight);
+		waitKey(0);
+		*/
+
 	}
 	exit(0);
 #endif

@@ -7,7 +7,7 @@ public:
 	~CEyeDetect();
 	vector<cv::Rect> EyesPosition(cv::Mat & faceROI);
 	int findEyesSource(cv::Mat & faceROI);
-	int findEyes(cv::Mat & faceROI);
+	cv::Point findEye(const cv::Mat& faceROI);
 	int GetAngleEyes(cv::Mat & faceROI);
 
 private:
@@ -40,15 +40,15 @@ private:
 	const float kSmoothFaceFactor = 0.005;
 
 	// Algorithm Parameters
-	const int kFastEyeWidth = 40;
+	const int kFastEyeWidth = 50;
 	const int kWeightBlurSize = 5;
 	const bool kEnableWeight = true;
 	const float kWeightDivisor = 1.0;
-	const double kGradientThreshold = 80.0;
+	const double kGradientThreshold = 50.0;
 
 	// Postprocessing
 	const bool kEnablePostProcess = true;
-	const float kPostProcessThreshold = 0.90;
+	const float kPostProcessThreshold = 0.97;
 
 	// Eye Corner
 	const bool kEnableEyeCorner = false;

@@ -1,0 +1,345 @@
+name: "PCN-Tracking"
+
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 96
+input_dim: 96
+
+###########################conv1##############################
+layer {
+  name: "conv1_1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1_1"
+  convolution_param {
+    num_output: 8
+    kernel_size: 3
+    stride: 1
+    pad: 1
+  }
+}
+
+layer {
+  name: "conv1_1/relu"
+  type: "ReLU"
+  bottom: "conv1_1"
+  top: "conv1_1"
+}
+########################
+layer {
+  name: "conv1_2"
+  type: "Convolution"
+  bottom: "conv1_1"
+  top: "conv1_2"
+  convolution_param {
+    num_output: 8
+    kernel_size: 1
+    stride: 1
+    pad: 0
+  }
+}
+
+layer {
+  name: "conv1_2/relu"
+  type: "ReLU"
+  bottom: "conv1_2"
+  top: "conv1_2"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1_2"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+
+###########################conv2##############################
+
+layer {
+  name: "conv2_1"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2_1"
+  convolution_param {
+    num_output: 16
+    kernel_size: 3
+    stride: 1
+    pad: 1
+  }
+}
+
+layer {
+  name: "conv2_1/relu"
+  type: "ReLU"
+  bottom: "conv2_1"
+  top: "conv2_1"
+}
+#########################
+layer {
+  name: "conv2_2"
+  type: "Convolution"
+  bottom: "conv2_1"
+  top: "conv2_2"
+  convolution_param {
+    num_output: 16
+    kernel_size: 1
+    stride: 1
+    pad: 0
+  }
+}
+
+layer {
+  name: "conv2_2/relu"
+  type: "ReLU"
+  bottom: "conv2_2"
+  top: "conv2_2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2_2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+
+###########################conv3##############################
+
+layer {
+  name: "conv3_1"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3_1"
+  convolution_param {
+    num_output: 32
+    kernel_size: 3
+    stride: 1
+    pad: 1
+  }
+}
+
+layer {
+  name: "conv3_1/relu"
+  type: "ReLU"
+  bottom: "conv3_1"
+  top: "conv3_1"
+}
+######################
+layer {
+  name: "conv3_2"
+  type: "Convolution"
+  bottom: "conv3_1"
+  top: "conv3_2"
+  convolution_param {
+    num_output: 32
+    kernel_size: 1
+    stride: 1
+    pad: 0
+  }
+}
+
+layer {
+  name: "conv3_2/relu"
+  type: "ReLU"
+  bottom: "conv3_2"
+  top: "conv3_2"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv3_2"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+
+###########################conv4##############################
+
+layer {
+  name: "conv4_1"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "conv4_1"
+  convolution_param {
+    num_output: 64
+    kernel_size: 3
+    stride: 1
+    pad: 1
+  }
+}
+
+layer {
+  name: "conv4_1/relu"
+  type: "ReLU"
+  bottom: "conv4_1"
+  top: "conv4_1"
+}
+########################
+layer {
+  name: "conv4_2"
+  type: "Convolution"
+  bottom: "conv4_1"
+  top: "conv4_2"
+  convolution_param {
+    num_output: 64
+    kernel_size: 1
+    stride: 1
+    pad: 0
+  }
+}
+
+layer {
+  name: "conv4_2/relu"
+  type: "ReLU"
+  bottom: "conv4_2"
+  top: "conv4_2"
+}
+layer {
+  name: "pool4"
+  type: "Pooling"
+  bottom: "conv4_2"
+  top: "pool4"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+
+###########################conv5##############################
+
+layer {
+  name: "conv5_1"
+  type: "Convolution"
+  bottom: "pool4"
+  top: "conv5_1"
+  convolution_param {
+    num_output: 128
+    kernel_size: 3
+    stride: 1
+    pad: 1
+  }
+}
+
+layer {
+  name: "conv5_1/relu"
+  type: "ReLU"
+  bottom: "conv5_1"
+  top: "conv5_1"
+}
+############################
+layer {
+  name: "conv5_2"
+  type: "Convolution"
+  bottom: "conv5_1"
+  top: "conv5_2"
+  convolution_param {
+    num_output: 128
+    kernel_size: 1
+    stride: 1
+    pad: 0
+  }
+}
+
+layer {
+  name: "conv5_2/relu"
+  type: "ReLU"
+  bottom: "conv5_2"
+  top: "conv5_2"
+}
+layer {
+  name: "pool5"
+  type: "Pooling"
+  bottom: "conv5_2"
+  top: "pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+
+
+################################fc6######################################
+
+layer {
+  name: "fc6"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6"
+  inner_product_param {
+    num_output: 256
+  }
+}
+layer {
+  name: "fc6/relu"
+  type: "ReLU"
+  bottom: "fc6"
+  top: "fc6"
+}
+
+###################################################
+
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "fc7"
+  inner_product_param {
+    num_output: 2
+  }
+}
+
+layer {
+  name: "cls_prob"
+  type: "Softmax"
+  bottom: "fc7"
+  top: "cls_prob"
+}
+
+layer {
+  name: "bbox_reg"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "bbox_reg"
+  inner_product_param {
+    num_output: 3
+  }
+}
+
+
+layer {
+  name: "rotate_reg"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "rotate_reg"
+  inner_product_param {
+    num_output: 1
+  }
+}
+
+layer {
+  name: "points_reg"
+  type: "InnerProduct"
+  bottom: "fc6"
+  top: "points_reg"
+  inner_product_param {
+    num_output: 28
+  }
+}
