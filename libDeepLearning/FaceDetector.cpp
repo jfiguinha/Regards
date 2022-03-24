@@ -413,7 +413,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 							try
 							{
 								muFaceMark.lock();
-								facemark->fit(gray, faces, shapes);
+								facemark->fit(faceColor, faces, shapes);
 								muFaceMark.unlock();
 							}
 							catch (Exception& e)
@@ -424,11 +424,22 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 							}
 
 							std::vector<Point2f> landmarks = shapes[0];
-							int radiusL = landmarks[41].y - landmarks[37].y;
-							int radiusR = landmarks[47].y - landmarks[43].y;
+							
+							std::vector<Point2f> _veyeLeft;
+							for(int p = 37;p < 42;p++)
+								_veyeLeft.push_back(landmarks[p]);
 
-							RemoveRedEye(faceColor, eyes[0], radiusL);
-							RemoveRedEye(faceColor, eyes[1], radiusR);
+							Rect eyeLeft = boundingRect(_veyeLeft);
+
+							std::vector<Point2f> _veyeRight;
+							for (int p = 43; p < 48; p++)
+								_veyeRight.push_back(landmarks[p]);
+
+							Rect eyeRight = boundingRect(_veyeRight);
+							
+
+							RemoveRedEye(faceColor, eyes[0], eyeLeft);
+							RemoveRedEye(faceColor, eyes[1], eyeRight);
 
 							{
 								Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
@@ -565,10 +576,23 @@ void overlayImage(Mat* src, Mat* overlay, const Point& location)
 	}
 }
 
-void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, int radius)
+void printGradient(cv::Mat& _input, const cv::Point& _center, const double radius)
 {
-	wxString fileIris = CFileUtility::GetResourcesFolderPath() + "\\eye.png";
-	Mat irisOut = imread(fileIris.ToStdString(), IMREAD_UNCHANGED);
+	cv::circle(_input, _center, radius, cv::Scalar(0, 0, 0), -1);
+
+	for (double i = 1; i < radius; i++)
+	{
+		int color = 180 - int(i / radius * 180); //or some another color calculation
+		color = max(color, 60);
+		cv::circle(_input, _center, i, cv::Scalar(color, color, color), 2);
+	}
+}
+
+
+void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Rect& radius)
+{
+	//wxString fileIris = CFileUtility::GetResourcesFolderPath() + "\\eye.png";
+	//Mat irisOut = imread(fileIris.ToStdString(), IMREAD_UNCHANGED);
 	Mat eyeMat = image(rSelectionBox);
 	Mat eye;
 	cvtColor(eyeMat, eye, COLOR_BGR2GRAY);
@@ -579,85 +603,33 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, int radi
 	double min_val, max_val;
 	Point maxLoc;
 	minMaxLoc(eye, &min_val, &max_val, &minLoc, &maxLoc);
+
 	Rect rc;
-	rc.x = maxLoc.x - radius / 2;
-	rc.y = maxLoc.y - radius / 2;
-	rc.width = radius;
-	rc.height = radius;
+	rc.x = maxLoc.x - radius.width / 2;
+	rc.y = maxLoc.y - radius.height / 2;
+	rc.width = radius.width;
+	rc.height = radius.height;
+
+	int xMax = eyeMat.size().width;
+	int yMax = eyeMat.size().height;
+
+	if (rc.x + rc.width > xMax)
+		rc.width = xMax - rc.x;
+
+	if (rc.y + rc.height > yMax)
+		rc.height = yMax - rc.y;
+
 	Mat iris2 = eyeMat(rc);
-	resize(irisOut, irisOut, Size(rc.width, rc.height));
-	cvtColor(iris2, iris2, COLOR_BGR2BGRA);
-	overlayImage(&iris2, &irisOut, Point(0, 0));
-	cvtColor(iris2, iris2, COLOR_BGRA2BGR);
-	/*
-	Mat im = eyeMat(rc);
+	cvtColor(iris2, iris2, COLOR_BGR2GRAY);
+	cvtColor(iris2, iris2, COLOR_GRAY2BGR);
+	
+	int radiusCircle = iris2.size().width / 4;
+	Point _center = Point(iris2.size().width / 2, iris2.size().height / 2);
+	printGradient(iris2, _center, radiusCircle);
+	
 
-	Mat irisMask;
-	iris2.copyTo(irisMask);
-	irisMask = 0;
-
-	Mat inverseIrisMask;
-	iris2.copyTo(inverseIrisMask);
-	inverseIrisMask = 255;
-
-	Point center = { rc.width / 2, rc.height / 2 };
-	circle(irisMask, center, radius / 2, Scalar(255, 255, 255), FILLED);
-	circle(inverseIrisMask, center, radius / 2, Scalar(0, 0, 0), FILLED);
-	GaussianBlur(irisMask, irisMask, Size(5, 5), BORDER_DEFAULT);
-	GaussianBlur(inverseIrisMask, inverseIrisMask, Size(5, 5), BORDER_DEFAULT);
-
-	imshow("test", irisMask);
-	waitKey(0);
-
-
-	imshow("test", inverseIrisMask);
-	waitKey(0);
-
-
-	Mat imCopy;
-	applyColorMap(iris2, imCopy, COLORMAP_TWILIGHT_SHIFTED);
-	imCopy.convertTo(imCopy, CV_32F, 1.0 / 255.0, 0);
-	irisMask.convertTo(irisMask, CV_32F, 1.0 / 255.0, 0);
-	inverseIrisMask.convertTo(inverseIrisMask, CV_32F, 1.0 / 255.0, 0);
-	im.convertTo(im, CV_32F, 1.0 / 255.0, 0);
-
-	Mat faceWithoutEye;
-	multiply(inverseIrisMask, im, faceWithoutEye);
-
-	imshow("test", faceWithoutEye);
-	waitKey(0);
-
-	Mat newIris;
-	multiply(irisMask,imCopy, newIris);
-
-	imshow("test", newIris);
-	waitKey(0);
-
-	Mat coloredEyesLady = faceWithoutEye + newIris;
-
-	minMaxLoc(coloredEyesLady & min_val, &max_val);
-	Mat im2Convert = coloredEyesLady;// / max_val;
-	im2Convert = im2Convert * 255;
-	im2Convert.convertTo(im2Convert, CV_8UC1, 255.0, 0);
-
-	/*
-	Mat faceWithoutEye = inverseIrisMask.mul(im);
-	Mat newIris = irisMask * imCopy;
-	Mat coloredEyesLady = faceWithoutEye + newIris;
-
-	minMaxLoc(coloredEyesLady &min_val, &max_val);
-	Mat im2Convert = coloredEyesLady / max_val;
-	im2Convert = im2Convert * 255;
-	im2Convert.convertTo(im2Convert, CV_8UC1, 255.0, 0);
-
-	imshow("test", im2Convert);
-	waitKey(0);
-		*/
-
-	//cvtColor(iris2, iris2, COLOR_BGR2GRAY);
-	//cvtColor(iris2, iris2, COLOR_GRAY2BGR);
 	iris2.copyTo(eyeMat(rc));
-	//eyeMat.copyTo(image(rSelectionBox));
+
 
 }
 
