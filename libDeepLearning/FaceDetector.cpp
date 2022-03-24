@@ -576,15 +576,90 @@ void overlayImage(Mat* src, Mat* overlay, const Point& location)
 	}
 }
 
+vector<int> HSVtoRGB(float H, float S, float V) {
+
+	vector<int> RGB;
+
+	if (H > 360 || H < 0 || S>100 || S < 0 || V>100 || V < 0) {
+		cout << "The givem HSV values are not in valid range" << endl;
+		return;
+	}
+	float s = S / 100;
+	float v = V / 100;
+	float C = s * v;
+	float X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
+	float m = v - C;
+	float r, g, b;
+	if (H >= 0 && H < 60) {
+		r = C, g = X, b = 0;
+	}
+	else if (H >= 60 && H < 120) {
+		r = X, g = C, b = 0;
+	}
+	else if (H >= 120 && H < 180) {
+		r = 0, g = C, b = X;
+	}
+	else if (H >= 180 && H < 240) {
+		r = 0, g = X, b = C;
+	}
+	else if (H >= 240 && H < 300) {
+		r = X, g = 0, b = C;
+	}
+	else {
+		r = C, g = 0, b = X;
+	}
+
+	RGB.push_back((b + m) * 255);
+	RGB.push_back((g + m) * 255);
+	RGB.push_back((r + m) * 255);
+
+	return RGB;
+
+}
+
+void YUVfromRGB(double& Y, double& U, double& V, const double R, const double G, const double B)
+{
+	Y = 0.257 * R + 0.504 * G + 0.098 * B + 16;
+	U = -0.148 * R - 0.291 * G + 0.439 * B + 128;
+	V = 0.439 * R - 0.368 * G - 0.071 * B + 128;
+}
+void RGBfromYUV(double& R, double& G, double& B, double Y, double U, double V)
+{
+	Y -= 16;
+	U -= 128;
+	V -= 128;
+	R = 1.164 * Y + 1.596 * V;
+	G = 1.164 * Y - 0.392 * U - 0.813 * V;
+	B = 1.164 * Y + 2.017 * U;
+}
+
 void printGradient(cv::Mat& _input, const cv::Point& _center, const double radius)
 {
-	cv::circle(_input, _center, radius, cv::Scalar(0, 0, 0), -1);
+	//double Y, U, V;
+	//double R, G, B;
+	//cv::circle(_input, _center, radius, cv::Scalar(0, 0, 0), -1);
+	//YUVfromRGB(Y, U, V, 122, 55, 0);
+
+	CRgbaquad color1 = CRgbaquad(255, 255, 255, 0);
+	CRgbaquad color2 = CRgbaquad(122, 55, 0, 0);
+
 
 	for (double i = 1; i < radius; i++)
 	{
-		int color = 180 - int(i / radius * 180); //or some another color calculation
+		
+		int color = 255 - int(i / radius * 255); //or some another color calculation
 		color = max(color, 60);
 		cv::circle(_input, _center, i, cv::Scalar(color, color, color), 2);
+		
+
+		/*
+		double percent = 1.0f - (float)(100 - int(i / radius * 100)) / 100.0f;
+		double resultRed = color1.GetRed() + percent * (color2.GetRed() - color1.GetRed());
+		double resultGreen = color1.GetGreen() + percent * (color2.GetGreen() - color1.GetGreen());
+		double resultBlue = color1.GetBlue() + percent * (color2.GetBlue() - color1.GetBlue());
+
+		cv::circle(_input, _center, i, cv::Scalar(resultRed, resultGreen, resultBlue), 2);
+		*/
 	}
 }
 
@@ -623,7 +698,7 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	cvtColor(iris2, iris2, COLOR_BGR2GRAY);
 	cvtColor(iris2, iris2, COLOR_GRAY2BGR);
 	
-	int radiusCircle = iris2.size().width / 4;
+	float radiusCircle = ((float)iris2.size().width / 2.0) * 0.50;
 	Point _center = Point(iris2.size().width / 2, iris2.size().height / 2);
 	printGradient(iris2, _center, radiusCircle);
 	
