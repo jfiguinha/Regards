@@ -16,7 +16,7 @@
 #include <OpenCLContext.h>
 #include <opencv2/tracking/tracking_by_matching.hpp>
 #include "eyedetect.h"
-
+#include <FileUtility.h>
 using namespace Regards::OpenCL;
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
@@ -42,6 +42,7 @@ struct FaceValueIntegration
 
 static Net netRecognition;
 static Net netPosition;
+static cv::CascadeClassifier eye_cascade;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<face::Facemark> facemark;
 
@@ -129,19 +130,12 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 }
 
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
-void CFaceDetector::LoadModel(const string& config_file, const string& weight_file, const string& recognition,
-                              const string& face_landmark, const string &protoPosition, const string& weightPosition)
+void CFaceDetector::LoadModel(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark)
 {
 
-#ifdef CAFFE
-	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
-	const std::string caffeWeightFile = weight_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
 	const std::string tensorflowConfigFile = config_file;
-	// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector.pbtxt";
 	const std::string tensorflowWeightFile = weight_file;
-	// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector_uint8.pb";
-#endif
+
 	try
 	{
 		CDetectFacePCN detectFacePCN;
@@ -175,7 +169,9 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 		facemark = face::createFacemarkKazemi();
 		facemark->loadModel(face_landmark);
 
-		//detectFace.LoadModel(config_file, weight_file);
+		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
+		eye_cascade.load(fileEye.ToStdString());
+
 		detectFacePCN.LoadModel();
 		cout << "Loaded model" << endl;
 	}
@@ -189,134 +185,6 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	isload = true;
 }
 
-#ifdef OLD
-double CFaceDetector::face_opencv_alignement(Mat& image, bool& findEye)
-{
-	double theta_deg_eye = 0;
-	vector<Rect> faces;
-	int angle_add = 0;
-	//Declaring a variable "image" to store input image given.
-	//Mat detected_edges, Laugh_L, Laugh_R;
-	Mat gray;
-	image.copyTo(gray);
-	//cvtColor(image, gray, COLOR_BGR2GRAY);
-
-	Rect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = image.cols;
-	rc.height = image.rows;
-
-	faces.push_back(rc);
-
-	bool faceFound = false;
-	std::vector<Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
-	vector<vector<Point2f>> shapes;
-
-	int i = 0;
-	do
-	{
-		try
-		{
-			muFaceMark.lock();
-			if (facemark->fit(gray, faces, shapes))
-			{
-				faceFound = true;
-			}
-			muFaceMark.unlock();
-		}
-		catch (Exception& e)
-		{
-			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-			faceFound = false;
-		}
-
-		if (faceFound)
-			break;
-
-		cv::rotate(gray, gray, cv::ROTATE_90_CLOCKWISE);
-
-		i++;
-
-	} while (i < 4);
-
-	if (faceFound)
-	{
-		landmarks = shapes[0];
-		//face::drawFacemarks(gray, landmarks, Scalar(0, 0, 255));
-		/*
-		for (size_t s = 0; s < landmarks.size(); s++) {
-
-			circle(gray,landmarks[s], 2.0, Scalar( 255,0,0 ), 1, 8 );
-			//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
-			// Right Eyebrow indicies
-			if (s >= 22 && s <= 26) {
-				R_Eyebrow.push_back(landmarks[s]);
-				//circle( image,landmarks[s], 2.0, Scalar( 0, 0, 255 ), 1, 8 );
-			}
-			// Left Eyebrow indicies
-			else if (s >= 17 && s <= 21) {
-				L_Eyebrow.push_back(landmarks[s]);
-			}
-			// Left Eye indicies
-			else if (s >= 36 && s <= 41) {
-				L_Eye.push_back(landmarks[s]);
-			}
-			// Right Eye indicies
-			else if (s >= 42 && s <= 47) {
-				R_Eye.push_back(landmarks[s]);
-			}
-			// Mouth indicies
-			else if (s >= 48 && s <= 67) {
-				Mouth.push_back(landmarks[s]);
-			}
-			// Jawline Indicies
-			else if (s >= 0 && s <= 16) {
-				Jaw_Line.push_back(landmarks[s]);
-			}
-			// Nose Indicies
-			else if (s >= 27 && s <= 35) {
-				Nose.push_back(landmarks[s]);
-			}
-		}
-		*/
-		int posLeftEyeY = 0;
-		int posRightEyeY = 0;
-		int posLeftEyeX = 0;
-		int posRightEyeX = 0;
-		for (int i = 0; i < 6; i++)
-		{
-			posLeftEyeY += landmarks[i + 36].y;
-			posRightEyeY += landmarks[i + 42].y;
-			posLeftEyeX += landmarks[i + 36].x;
-			posRightEyeX += landmarks[i + 42].x;
-		}
-		posLeftEyeY /= 8;
-		posRightEyeY /= 8;
-		posLeftEyeX /= 8;
-		posRightEyeX /= 8;
-
-		int posMouthY = 0;
-		for (int i = 48; i < 68; i++)
-			posMouthY += landmarks[i].y;
-
-		posMouthY /= 20;
-
-		double rot_eye = atan2(posRightEyeY - posLeftEyeY, posRightEyeX - posLeftEyeX);
-		//double rot_eye = atan2(landmarks[45].y - landmarks[36].y, landmarks[45].x - landmarks[36].x);
-
-		if (posLeftEyeY > posMouthY && posRightEyeY > posMouthY)
-			angle_add += 180;
-
-		theta_deg_eye = rot_eye / M_PI * 180 + angle_add;
-
-		//imwrite("d:\\test.jpg", gray);
-	}
-	return theta_deg_eye;
-}
-#endif
 
 cv::Point2f rotatePointUsingTransformationMat(const cv::Point2f& inPoint, const cv::Point2f& center, const double& rotAngle)
 {
@@ -499,141 +367,98 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						Mat gray;
 						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
 
+						int radiusL = 40;
+						int radiusR = 40;
+
 						faces.push_back(rc);
 
-						bool faceFound = true;
-						std::vector<Point2f> landmarks, R_Eyebrow, L_Eyebrow, L_Eye, R_Eye, Mouth, Jaw_Line, Nose;
-						vector<vector<Point2f>> shapes;
-
-						int i = 0;
-
-						try
-						{
-							muFaceMark.lock();
-							facemark->fit(gray, faces, shapes);
-							muFaceMark.unlock();
-						}
-						catch (Exception& e)
-						{
-							const char* err_msg = e.what();
-							std::cout << "exception caught: " << err_msg << std::endl;
-							std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-						}
-
-						landmarks = shapes[0];
-						int radiusEyeL = 0;
-						int radiusEyeR = 0;
 						/*
-						for (size_t s = 0; s < landmarks.size(); s++)
-						{
-							
-							//putText(image,to_string(s),landmarks[s],FONT_HERSHEY_PLAIN,0.8,Scalar(0,0,0));
-							// Right Eyebrow indicies
-							if (s >= 22 && s <= 26) {
-								R_Eyebrow.push_back(landmarks[s]);
-								//circle( image,landmarks[s], 2.0, Scalar( 0, 0, 255 ), 1, 8 );
-							}
-							// Left Eyebrow indicies
-							else if (s >= 17 && s <= 21) {
-								L_Eyebrow.push_back(landmarks[s]);
-							}
-							// Left Eye indicies
-							else if (s >= 36 && s <= 41) {
-								circle(gray, landmarks[s], 2.0, Scalar(255, 0, 0), 1, 8);
-								L_Eye.push_back(landmarks[s]);
-							}
-							// Right Eye indicies
-							else if (s >= 42 && s <= 47) {
-								circle(gray, landmarks[s], 2.0, Scalar(255, 0, 0), 1, 8);
-								R_Eye.push_back(landmarks[s]);
-							}
-							// Mouth indicies
-							else if (s >= 48 && s <= 67) {
-								Mouth.push_back(landmarks[s]);
-							}
-							// Jawline Indicies
-							else if (s >= 0 && s <= 16) {
-								Jaw_Line.push_back(landmarks[s]);
-							}
-							// Nose Indicies
-							else if (s >= 27 && s <= 35) {
-								Nose.push_back(landmarks[s]);
-							}
-						}
-						*/
-
-						int radiusL = landmarks[i + 41].y - landmarks[i + 37].y;
-						int radiusR = landmarks[i + 47].y - landmarks[i + 43].y;
-						/*
-						for (int i = 0; i < 6; i++)
-						{
-							posLeftEyeY += landmarks[i + 36].y;
-							posRightEyeY += landmarks[i + 42].y;
-							posLeftEyeX += landmarks[i + 36].x;
-							posRightEyeX += landmarks[i + 42].x;
-						}
 						*/
 
 						//cv::cvtColor(faceColor, gray, COLOR_BGR2GRAY);
-						cv::CascadeClassifier eye_cascade;
+						
 						std::vector<cv::Rect> eyes;
-						eye_cascade.load("d:\\haarcascade_eye.xml");
 						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-						//mouth.load("d:\\haarcascade_mcs_mouth.xml");
 
-						for (int p = 0; p < eyes.size(); p++)
+						if (eyes.size() == 2)
 						{
-							Rect rect = eyes[p];
-							if (rect.y > (face.size().height / 2))
+							for (int p = 0; p < eyes.size(); p++)
 							{
-								eyes.erase(eyes.begin() + p);
-								p--;
-							}
-						}
-
-						for (int k = 0; k < eyes.size(); k++)
-						{
-							for (int j = 0; j < eyes.size(); j++)
-							{
-								if (k != j)
+								Rect rect = eyes[p];
+								if (rect.y > (face.size().height / 2))
 								{
-									Rect interesect = eyes[k] & eyes[j];
-									if (interesect.area() > 0)
+									eyes.erase(eyes.begin() + p);
+									p--;
+								}
+							}
+
+							for (int k = 0; k < eyes.size(); k++)
+							{
+								for (int j = 0; j < eyes.size(); j++)
+								{
+									if (k != j)
 									{
-										eyes.erase(eyes.begin() + j);
-										j--;
+										Rect interesect = eyes[k] & eyes[j];
+										if (interesect.area() > 0)
+										{
+											eyes.erase(eyes.begin() + j);
+											j--;
+										}
 									}
 								}
 							}
+
+							vector<vector<Point2f>> shapes;
+
+							try
+							{
+								muFaceMark.lock();
+								facemark->fit(gray, faces, shapes);
+								muFaceMark.unlock();
+							}
+							catch (Exception& e)
+							{
+								const char* err_msg = e.what();
+								std::cout << "exception caught: " << err_msg << std::endl;
+								std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+							}
+
+							std::vector<Point2f> landmarks = shapes[0];
+							int radiusL = landmarks[41].y - landmarks[37].y;
+							int radiusR = landmarks[47].y - landmarks[43].y;
+
+							RemoveRedEye(faceColor, eyes[0], radiusL);
+							RemoveRedEye(faceColor, eyes[1], radiusR);
+
+							{
+								Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
+								Mat rot = getRotationMatrix2D(center22, 360 - angle, 1.0);
+								// determine bounding rectangle
+								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - angle).boundingRect();
+								// adjust transformation matrix
+								rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
+								rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
+
+								warpAffine(faceColor, faceColor, rot, bbox.size());
+
+								rc = { (bbox.width - listOfFace[i].myROI.width) / 2, (bbox.height - listOfFace[i].myROI.height) / 2,listOfFace[i].myROI.width, listOfFace[i].myROI.height };
+								rc.x += 1;
+								rc.y += 1;
+								rc.width -= 2;
+								rc.height -= 2;
+								faceColor = faceColor(rc);
+							}
+
+							listOfFace[i].myROI.x += 1;
+							listOfFace[i].myROI.y += 1;
+							listOfFace[i].myROI.width -= 2;
+							listOfFace[i].myROI.height -= 2;
+							cv::cvtColor(faceColor, faceColor, COLOR_BGR2BGRA);
+							faceColor.copyTo(dest(listOfFace[i].myROI));
 						}
+						//free(facebbox);
+						//free(landmarks);
 
-						for (int k = 0; k < eyes.size(); k++)
-						{
-							//rectangle(faceColor, eyes[k], Scalar(0, 255, 0), 10);
-							RemoveRedEye(faceColor, eyes[k], radiusL);
-						}
-
-						{
-							Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
-							Mat rot = getRotationMatrix2D(center22, 360 - angle, 1.0);
-							// determine bounding rectangle
-							Rect bbox = RotatedRect(center22, faceColor.size(), 360 - angle).boundingRect();
-							// adjust transformation matrix
-							rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-							rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-							warpAffine(faceColor, faceColor, rot, bbox.size());
-
-							rc = { (bbox.width - listOfFace[i].myROI.width) / 2, (bbox.height - listOfFace[i].myROI.height) / 2,listOfFace[i].myROI.width, listOfFace[i].myROI.height };
-
-							faceColor = faceColor(rc);
-						}
-
-						cv::cvtColor(faceColor, faceColor, COLOR_BGR2BGRA);
-						faceColor.copyTo(dest(listOfFace[i].myROI));
-
-						imshow("test", dest);
-						waitKey(0);
 					}
 					catch (Exception& e)
 					{
@@ -642,92 +467,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 						faceFound = false;
 					}
-
-#ifdef TEST
-
-						vector<Rect> faces;
-						Rect rc = { 0,0,listOfFace[i].myROI.width, listOfFace[i].myROI.height };
-						Mat face = listOfFace[i].croppedImage;
-						int angle = listOfFace[i].angle;
-						Mat gray;
-
-						Mat faceColor;
-						Point2f center22(face.cols / 2.0, face.rows / 2.0);
-						Mat rot = getRotationMatrix2D(center22, angle, 1.0);
-						// determine bounding rectangle
-						Rect bbox = RotatedRect(center22, face.size(), angle).boundingRect();
-						// adjust transformation matrix
-						rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-						warpAffine(face, faceColor, rot, bbox.size());
-
-						cv::cvtColor(faceColor, gray, COLOR_BGR2GRAY);
-						cv::CascadeClassifier eye_cascade;
-						std::vector<cv::Rect> eyes;
-						eye_cascade.load("d:\\haarcascade_eye.xml");
-						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-						//mouth.load("d:\\haarcascade_mcs_mouth.xml");
-
-						for (int p = 0; p < eyes.size(); p++)
-						{
-							Rect rect = eyes[p];
-							if (rect.y > (face.size().height / 2))
-							{
-								eyes.erase(eyes.begin() + p);
-								p--;
-							}
-						}
-
-						for (int k = 0; k < eyes.size(); k++)
-						{
-							for (int j = 0; j < eyes.size(); j++)
-							{
-								if (k != j)
-								{
-									Rect interesect = eyes[k] & eyes[j];
-									if (interesect.area() > 0)
-									{
-										eyes.erase(eyes.begin() + j);
-										j--;
-									}
-								}
-							}
-						}
-
-						for (int k = 0; k < eyes.size(); k++)
-						{
-							//rectangle(faceColor, eyes[k], Scalar(0, 255, 0), 10);
-							RemoveRedEye(faceColor, eyes[k]);
-						}
-
-						{
-							Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
-							Mat rot = getRotationMatrix2D(center22, 360 - angle, 1.0);
-							// determine bounding rectangle
-							Rect bbox = RotatedRect(center22, faceColor.size(), 360 - angle).boundingRect();
-							// adjust transformation matrix
-							rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-							rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-							warpAffine(faceColor, faceColor, rot, bbox.size());
-
-							rc = { (bbox.width - listOfFace[i].myROI.width) / 2, (bbox.height - listOfFace[i].myROI.height) / 2,listOfFace[i].myROI.width, listOfFace[i].myROI.height };
-
-							faceColor = faceColor(rc);
-						}
-
-						cv::cvtColor(faceColor, faceColor, COLOR_BGR2BGRA);
-						faceColor.copyTo(dest(listOfFace[i].myROI));
-					}
-					catch (Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
-			
-#endif
 				}
 				
 			}
@@ -798,13 +537,40 @@ void fillHoles(Mat & mask)
 	mask = (mask2 | mask);
 }
 
+void overlayImage(Mat* src, Mat* overlay, const Point& location)
+{
+	for (int y = max(location.y, 0); y < src->rows; ++y)
+	{
+		int fY = y - location.y;
+
+		if (fY >= overlay->rows)
+			break;
+
+		for (int x = max(location.x, 0); x < src->cols; ++x)
+		{
+			int fX = x - location.x;
+
+			if (fX >= overlay->cols)
+				break;
+
+			double opacity = ((double)overlay->data[fY * overlay->step + fX * overlay->channels() + 3]) / 255;
+
+			for (int c = 0; opacity > 0 && c < src->channels(); ++c)
+			{
+				unsigned char overlayPx = overlay->data[fY * overlay->step + fX * overlay->channels() + c];
+				unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
+				src->data[y * src->step + src->channels() * x + c] = srcPx * (1. - opacity) + overlayPx * opacity;
+			}
+		}
+	}
+}
+
 void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, int radius)
 {
+	wxString fileIris = CFileUtility::GetResourcesFolderPath() + "\\eye.png";
+	Mat irisOut = imread(fileIris.ToStdString(), IMREAD_UNCHANGED);
 	Mat eyeMat = image(rSelectionBox);
 	Mat eye;
-	int radiusw = rSelectionBox.width / 2;
-	int radiush = rSelectionBox.height / 2;
-	Mat iris = imread("d:\\iris.png");
 	cvtColor(eyeMat, eye, COLOR_BGR2GRAY);
 	GaussianBlur(eye, eye, Size(5, 5), 0);
 	double min = 0;
@@ -813,25 +579,85 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, int radi
 	double min_val, max_val;
 	Point maxLoc;
 	minMaxLoc(eye, &min_val, &max_val, &minLoc, &maxLoc);
-	//cv::cvtColor(eye, eye, cv::COLOR_GRAY2BGR);
-	//cv::circle(eye, maxLoc, radius / 2, cv::Scalar(0, 255, 0));
 	Rect rc;
 	rc.x = maxLoc.x - radius / 2;
 	rc.y = maxLoc.y - radius / 2;
 	rc.width = radius;
 	rc.height = radius;
+	Mat iris2 = eyeMat(rc);
+	resize(irisOut, irisOut, Size(rc.width, rc.height));
+	cvtColor(iris2, iris2, COLOR_BGR2BGRA);
+	overlayImage(&iris2, &irisOut, Point(0, 0));
+	cvtColor(iris2, iris2, COLOR_BGRA2BGR);
+	/*
+	Mat im = eyeMat(rc);
 
-	resize(iris, iris,Size(radius, radius));
-	iris.copyTo(eyeMat(rc));
-	imshow("test", eyeMat);
+	Mat irisMask;
+	iris2.copyTo(irisMask);
+	irisMask = 0;
+
+	Mat inverseIrisMask;
+	iris2.copyTo(inverseIrisMask);
+	inverseIrisMask = 255;
+
+	Point center = { rc.width / 2, rc.height / 2 };
+	circle(irisMask, center, radius / 2, Scalar(255, 255, 255), FILLED);
+	circle(inverseIrisMask, center, radius / 2, Scalar(0, 0, 0), FILLED);
+	GaussianBlur(irisMask, irisMask, Size(5, 5), BORDER_DEFAULT);
+	GaussianBlur(inverseIrisMask, inverseIrisMask, Size(5, 5), BORDER_DEFAULT);
+
+	imshow("test", irisMask);
 	waitKey(0);
-	eyeMat.copyTo(image(rSelectionBox));
-	imshow("test", image);
+
+
+	imshow("test", inverseIrisMask);
 	waitKey(0);
 
 
-	// Copy the fixed eye to the output image.
-//	eyeOut.copyTo(image(rSelectionBox));
+	Mat imCopy;
+	applyColorMap(iris2, imCopy, COLORMAP_TWILIGHT_SHIFTED);
+	imCopy.convertTo(imCopy, CV_32F, 1.0 / 255.0, 0);
+	irisMask.convertTo(irisMask, CV_32F, 1.0 / 255.0, 0);
+	inverseIrisMask.convertTo(inverseIrisMask, CV_32F, 1.0 / 255.0, 0);
+	im.convertTo(im, CV_32F, 1.0 / 255.0, 0);
+
+	Mat faceWithoutEye;
+	multiply(inverseIrisMask, im, faceWithoutEye);
+
+	imshow("test", faceWithoutEye);
+	waitKey(0);
+
+	Mat newIris;
+	multiply(irisMask,imCopy, newIris);
+
+	imshow("test", newIris);
+	waitKey(0);
+
+	Mat coloredEyesLady = faceWithoutEye + newIris;
+
+	minMaxLoc(coloredEyesLady & min_val, &max_val);
+	Mat im2Convert = coloredEyesLady;// / max_val;
+	im2Convert = im2Convert * 255;
+	im2Convert.convertTo(im2Convert, CV_8UC1, 255.0, 0);
+
+	/*
+	Mat faceWithoutEye = inverseIrisMask.mul(im);
+	Mat newIris = irisMask * imCopy;
+	Mat coloredEyesLady = faceWithoutEye + newIris;
+
+	minMaxLoc(coloredEyesLady &min_val, &max_val);
+	Mat im2Convert = coloredEyesLady / max_val;
+	im2Convert = im2Convert * 255;
+	im2Convert.convertTo(im2Convert, CV_8UC1, 255.0, 0);
+
+	imshow("test", im2Convert);
+	waitKey(0);
+		*/
+
+	//cvtColor(iris2, iris2, COLOR_BGR2GRAY);
+	//cvtColor(iris2, iris2, COLOR_GRAY2BGR);
+	iris2.copyTo(eyeMat(rc));
+	//eyeMat.copyTo(image(rSelectionBox));
 
 }
 

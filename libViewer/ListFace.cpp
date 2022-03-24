@@ -345,41 +345,24 @@ void CListFace::LoadResource(void* param)
 
 #ifdef WIN32
 	//Face Data Preload
-#ifdef CAFFE
-	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
 	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
-	
-#endif
+
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "\\model\\nn4.small2.v1.t7";
 	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 
-	wxString protoPosition = CFileUtility::GetResourcesFolderPath() + "\\model\\pose_deploy_linevec_faster_4_stages.prototxt";
-	wxString protoWeigth = CFileUtility::GetResourcesFolderPath() + "\\model\\pose_iter_160000.caffemodel";
 #else
 
-#ifdef CAFFE
-	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/deploy.prototxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
+		//Face Data Preload
 	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
-#endif
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "/model/nn4.small2.v1.t7";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/ace_landmark_model.dat";
 
-	wxString protoPosition = CFileUtility::GetResourcesFolderPath() + "/model/pose_deploy_linevec_faster_4_stages.prototxt";
-	wxString protoWeigth = CFileUtility::GetResourcesFolderPath() + "/model/pose_iter_160000.caffemodel";
 #endif
 
-
-
-
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(),
-	                             landmark.ToStdString(), protoPosition.ToStdString(), protoWeigth.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
 
 
 	if (path->mainWindow != nullptr)

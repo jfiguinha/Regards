@@ -40,10 +40,10 @@ vector<int> CDeepLearning::FindFace(CRegardsBitmap* pictureData)
 
 
 void CDeepLearning::LoadRessource(const string& config_file, const string& weight_file, const string& recognition,
-                                  const string& face_landmark, const string& protoPosition, const string& weightPosition)
+                                  const string& face_landmark)
 {
 	//CDetectRotation::LoadModel(rotation_json);
-	CFaceDetector::LoadModel(config_file, weight_file, recognition, face_landmark, protoPosition, weightPosition);
+	CFaceDetector::LoadModel(config_file, weight_file, recognition, face_landmark);
 	muLoading.lock();
 	isload = true;
 	muLoading.unlock();

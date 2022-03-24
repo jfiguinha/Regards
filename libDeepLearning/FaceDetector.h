@@ -18,8 +18,7 @@ namespace Regards
 			CFaceDetector(const bool& fastDetection);
 			~CFaceDetector();
 			static void CleanBase();
-			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition,
-			                      const string& face_landmark, const string& protoPosition, const string& weightPosition);
+			static void LoadModel(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark);
 			std::vector<int> FindFace(CRegardsBitmap* pBitmap);
 			void DetectEyes(CRegardsBitmap* pBitmap);
 			std::vector<cv::Rect> GetRectFace(CRegardsBitmap * picture);
