@@ -60,11 +60,13 @@ void CFaceDetector::CleanBase()
 
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
+	detectFace = new CDetectFace();
 	detectFacePCN = new CDetectFacePCN();
 }
 
 CFaceDetector::~CFaceDetector()
 {
+	delete detectFace;
 	delete detectFacePCN;
 }
 
