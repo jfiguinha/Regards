@@ -555,6 +555,10 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		if (configRegards->GetDetectOrientation() && !isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) &&
 			DeepLearning::CDeepLearning::IsResourceReady())
 		{
+			CRegardsBitmap * _bitmap = bitmap->GetRegardsBitmap();
+			int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap);
+			bitmap->SetOrientation(exif);
+			/*
 			if (metaData.GetOrientation() == -1)
 			{
 				auto path = new CThreadRotate();
@@ -563,6 +567,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 				path->bitmap = bitmap->GetRegardsBitmap();
 				path->thread = new thread(RotateRecognition, path);
 			}
+			*/
 		}
 
 		filename = bitmap->GetFilename();
