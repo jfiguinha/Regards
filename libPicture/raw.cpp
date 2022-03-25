@@ -125,6 +125,8 @@ bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoad
 		rawProcessor->recycle();
 		delete rawProcessor;
 	}
+
+	delete image;
 	return isOk;
 }
 
