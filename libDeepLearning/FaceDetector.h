@@ -36,6 +36,7 @@ namespace Regards
 			cv::Mat GetFaceScore(const int& numFace);
 			void RotateAndCrop(CFace * face, cv::Mat& Source);
 			CDetectFacePCN * detectFacePCN;
+			CDetectFace * detectFace;
 			static bool isload;
 
 			static std::mutex muFaceMark;

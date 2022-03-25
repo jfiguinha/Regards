@@ -150,7 +150,7 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	try
 	{
 		CDetectFacePCN detectFacePCN;
-        
+		CDetectFace detectFace;
 #ifndef __WXGTK__
 		
 		bool openCLCompatible = false;
@@ -180,7 +180,7 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 
 		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 		eye_cascade.load(fileEye.ToStdString());
-
+		detectFace.LoadModel();
 		detectFacePCN.LoadModel();
 		cout << "Loaded model" << endl;
 	}
@@ -276,50 +276,46 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 	if (isLoading)
 	{
 		CSqlFacePhoto facePhoto;
-		Mat dest;
+		Mat dest, source;
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
 
-		pBitmap->VertFlipBuf();
-		Mat source = pBitmap->GetMatrix();
-		detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
-		
-		
-
+		cv::flip(pBitmap->GetMatrix(), source, 0);
+		detectFace->DetectFace(source, confidenceThreshold, listOfFace, pointOfFace);
+		cvtColor(pBitmap->GetMatrix(), source, COLOR_BGRA2BGR);
 		for (CFace face : listOfFace)
 		{
 			if (face.confidence > confidenceThreshold)
 			{
-
 				Mat resizedImage;
 				Size size(150, 150);
+				int angle = 0;
 
-				std::vector<CFace> listOfFacePCN;
-				std::vector<Rect> pointOfFacePCN;
-
+				if(listOfFace.size() == 1)
+					angle = detectFacePCN->DetectFaceAngle(source);
+				else
+					angle = detectFacePCN->DetectFaceAngle(face.croppedImage);
+				
 				try
 				{
-
+					cv::flip(pBitmap->GetMatrix(), source, 0);
+					cv::Mat dst;
+									
 					try
 					{
-						face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, source);
+						dst = RotateAndExtractFace(angle, face.myROI, source);
 					}
 					catch (Exception& e)
 					{
-						face.croppedImage = source(face.myROI);
-						/*
-						// get the center coordinates of the image to create the 2D rotation matrix
-						Point2f center((face.croppedImage.cols - 1) / 2.0, (face.croppedImage.rows - 1) / 2.0);
-						// using getRotationMatrix2D() to get the rotation matrix
-						Mat rotation_matix = getRotationMatrix2D(center, face.angle, 1.0);
-						// rotate the image using warpAffine
-						warpAffine(face.croppedImage, face.croppedImage, rotation_matix, face.croppedImage.size());
-						*/
+						dst = source(face.myROI);
+
+
 					}
 
+					
+					Mat localFace;
  					std::vector<uchar> buff;
-					resize(face.croppedImage, face.croppedImage, size);
-					cv::Mat localFace = face.croppedImage;
+					resize(dst, localFace, size);
 					ImageToJpegBuffer(localFace, buff);
 					int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows,
 						                                face.croppedImage.cols, face.confidence, buff.data(),
@@ -364,6 +360,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 	pBitmap->GetMatrix().copyTo(Source);
 	if (isLoading)
 	{
+		cvtColor(Source, Source, COLOR_BGRA2BGR);
 		cv::flip(Source, Source, 0);
 		std::vector<CFace> listOfFace;
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
@@ -377,26 +374,12 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 					try
 					{
 						Mat face = listOfFace[i].croppedImage;
-						int angle = 0;
-
-						std::vector<CFace> listOfFacePCN;
-						std::vector<Rect> pointOfFacePCN;
-						detectFacePCN->DetectFace(listOfFace[i].croppedImage, listOfFacePCN, pointOfFacePCN);
-
-						if (listOfFacePCN.size() > 0)
-						{
-							angle = listOfFacePCN[0].angle;
-						}
-
 						vector<Rect> faces;
-						
-
-
 						Mat faceColor;
 						Point2f center22(face.cols / 2.0, face.rows / 2.0);
-						Mat rot = getRotationMatrix2D(center22, angle, 1.0);
+						Mat rot = getRotationMatrix2D(center22, listOfFace[i].angle, 1.0);
 						// determine bounding rectangle
-						Rect bbox = RotatedRect(center22, face.size(), angle).boundingRect();
+						Rect bbox = RotatedRect(center22, face.size(), listOfFace[i].angle).boundingRect();
 						// adjust transformation matrix
 						rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
 						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
@@ -476,9 +459,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 
 							{
 								Point2f center22(faceColor.cols / 2.0, faceColor.rows / 2.0);
-								Mat rot = getRotationMatrix2D(center22, 360 - angle, 1.0);
+								Mat rot = getRotationMatrix2D(center22, 360 - listOfFace[i].angle, 1.0);
 								// determine bounding rectangle
-								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - angle).boundingRect();
+								Rect bbox = RotatedRect(center22, faceColor.size(), 360 - listOfFace[i].angle).boundingRect();
 								// adjust transformation matrix
 								rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
 								rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
@@ -517,7 +500,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 		if (faceFound)
 		{
 			cv::flip(Source, Source, 0);
-			Source.copyTo(pBitmap->GetMatrix());
+			cvtColor(Source, pBitmap->GetMatrix(), COLOR_BGR2BGRA);
 		}
 	}
 }

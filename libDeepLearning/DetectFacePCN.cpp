@@ -116,6 +116,66 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
 }
 
 
+//--------------------------------------------------
+//Code From https://github.com/spmallick/learnopencv
+//--------------------------------------------------
+int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
+{
+    if (!isload)
+        return;
+
+    int angle = 0;
+    int frameHeight = frameOpenCVDNN.rows;
+    int frameWidth = frameOpenCVDNN.cols;
+
+    try
+    {
+
+        if (openclContext != nullptr)
+            openclContext->GetContextForOpenCV().bind();
+
+        cv::Mat img = frameOpenCVDNN;
+        Mat paddedImg = padImg(img);
+
+        cv::Mat img180, img90, imgNeg90;
+        cv::flip(paddedImg, img180, 0);
+        cv::transpose(paddedImg, img90);
+        cv::flip(img90, imgNeg90, 0);
+
+        float thresholds[] = { 0.37, 0.43, 0.95 };
+
+        cv::TickMeter tm;
+        tm.reset();
+        tm.start();
+
+        int minFaceSize = 40;
+        std::vector<FaceBox> faces = PCN_1(img, paddedImg, net_1, thresholds[0], minFaceSize);
+        faces = NMS(faces, true, 0.8);
+        faces = PCN_2(paddedImg, img180, net_2, thresholds[1], 24, faces);
+        faces = NMS(faces, true, 0.8);
+        faces = PCN_3(paddedImg, img180, img90, imgNeg90, net_3, thresholds[2], 48, faces);
+        faces = NMS(faces, false, 0.3);
+
+        std::vector<FaceBox> preList = TransformBoxes(img, paddedImg, faces);
+
+        for (int i = 0; i < preList.size(); i++)
+        {
+
+            FaceBox facelocal = preList[i];
+            angle = facelocal.angle + 180;
+        }
+
+    }
+    catch (Exception& e)
+    {
+        const char* err_msg = e.what();
+        std::cout << "exception caught: " << err_msg << std::endl;
+        std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+    }
+    return angle;
+}
+
+
 void CDetectFacePCN::LoadModel()
 {
     wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";

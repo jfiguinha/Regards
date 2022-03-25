@@ -20,8 +20,8 @@ public:
     ~CDetectFace(void);
 
     void LoadModel();
-    void DetectFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-    int FindNbFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, float& bestConfidence);
+    void DetectFace(const Mat & bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
+    int FindNbFace(const Mat& bitmap, const float & confidenceThreshold, float& bestConfidence);
 
 private:
 
