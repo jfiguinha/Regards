@@ -99,7 +99,7 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
             int x2 = facelocal.w + facelocal.x - 1;
             int y2 = facelocal.w + facelocal.y - 1;
             face.myROI = Rect(Point(x1, y1), Point(x2, y2));
-            face.angle = (int)(360 - facelocal.angle) % 360;
+            face.angle = (int)(360.0 - facelocal.angle) % 360;
             face.confidence = facelocal.score;
             face.croppedImage = frameOpenCVDNN(face.myROI);
             listOfFace.push_back(face);
@@ -162,7 +162,7 @@ int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
         {
 
             FaceBox facelocal = preList[i];
-            angle = facelocal.angle + 180;
+            angle = (int)(360.0 - facelocal.angle) % 360;
         }
 
     }
@@ -184,13 +184,14 @@ void CDetectFacePCN::LoadModel()
     {
 
        bool openCLCompatible = false;
+       /*
         CRegardsConfigParam* config = CParamInit::getInstance();
         if (config != nullptr)
         {
             if (config->GetIsOpenCLSupport())
                 openCLCompatible = true;
         }
-
+        */
         wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";
         wxString pcn1_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-1.prototxt";
         wxString pcn2_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-2.prototxt";
@@ -200,14 +201,25 @@ void CDetectFacePCN::LoadModel()
         net_2 = readNet(pcn2_proto.ToStdString(), detection_model_path.ToStdString());
         net_3 = readNet(pcn3_proto.ToStdString(), detection_model_path.ToStdString());
 
+        
         net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);
-        net_1.setPreferableTarget(DNN_TARGET_CPU);
+        if (openCLCompatible)
+            net_1.setPreferableTarget(DNN_TARGET_OPENCL);
+        else
+            net_1.setPreferableTarget(DNN_TARGET_CPU);
 
         net_2.setPreferableBackend(DNN_BACKEND_DEFAULT);
-        net_2.setPreferableTarget(DNN_TARGET_CPU);
+        if (openCLCompatible)
+            net_2.setPreferableTarget(DNN_TARGET_OPENCL);
+        else
+            net_2.setPreferableTarget(DNN_TARGET_CPU);
 
         net_3.setPreferableBackend(DNN_BACKEND_DEFAULT);
-        net_3.setPreferableTarget(DNN_TARGET_CPU);
+        if (openCLCompatible)
+            net_3.setPreferableTarget(DNN_TARGET_OPENCL);
+        else
+            net_3.setPreferableTarget(DNN_TARGET_CPU);
+    
     }
     catch (Exception& e)
     {

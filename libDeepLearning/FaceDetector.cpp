@@ -264,6 +264,28 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(CRegardsBitmap * picture)
 	return listFace;
 }
 
+float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight, const int& pictureWidthOut, const int& pictureHeightOut)
+{
+	float new_ratio = 1;
+
+	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
+
+	if (pictureWidth > pictureHeight)
+		new_ratio = static_cast<float>(pictureWidthOut) / static_cast<float>(pictureWidth);
+	else
+		new_ratio = static_cast<float>(pictureHeightOut) / static_cast<float>(pictureHeight);
+
+	if ((pictureHeight * new_ratio) > pictureHeightOut)
+	{
+		new_ratio = static_cast<float>(pictureHeightOut) / static_cast<float>(pictureHeight);
+	}
+	if ((pictureWidth * new_ratio) > pictureWidthOut)
+	{
+		new_ratio = static_cast<float>(pictureWidthOut) / static_cast<float>(pictureWidth);
+	}
+
+	return new_ratio;
+}
 
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
@@ -281,10 +303,21 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		Mat dest, source;
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
-
+		Mat resizeSource;
 		cv::flip(pBitmap->GetMatrix(), source, 0);
 		cvtColor(source, source, COLOR_BGRA2BGR);
-		detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
+		float dRatio = 1.0;
+		float invertRatio = 1.0;
+		if (source.size().width > 1024 || source.size().height > 1024)
+		{
+			dRatio = CalculPictureRatio(source.size().width, source.size().height, 1024, 1024);
+			invertRatio = CalculPictureRatio(source.size().width * dRatio, source.size().height * dRatio, source.size().width, source.size().height);
+			resize(source, resizeSource, Size(source.size().width * dRatio, source.size().height * dRatio));
+			detectFacePCN->DetectFace(resizeSource, listOfFace, pointOfFace);
+		}
+		else
+			detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
+		
 		
 		for (CFace face : listOfFace)
 		{
@@ -295,7 +328,12 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				
 				try
 				{
-								
+							
+					face.myROI.x *= invertRatio;
+					face.myROI.y *= invertRatio;
+					face.myROI.width *= invertRatio;
+					face.myROI.height *= invertRatio;
+
 					try
 					{
 						resizedImage = RotateAndExtractFace(face.angle, face.myROI, source);
