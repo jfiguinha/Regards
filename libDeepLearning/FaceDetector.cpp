@@ -70,21 +70,6 @@ CFaceDetector::~CFaceDetector()
 	delete detectFacePCN;
 }
 
-void CFaceDetector::RotateOpenCV(const float& angle, int& maxFace, float& confidence, int& selectAngle, CRegardsBitmap* pBitmap)
-{
-	float bestConfidence = 0;
-	RotateCorrectly(pBitmap, angle);
-	int nbFace = FindNbFace(pBitmap, bestConfidence, confidenceThreshold);
-	if (nbFace > 0 && (nbFace > maxFace || bestConfidence > confidence))
-	{
-		maxFace = nbFace;
-		selectAngle = angle;
-		confidence = bestConfidence;
-		bestConfidence = 0.0;
-	}
-
-}
-
 float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
 	if (pictureWidth == 0 && pictureHeight == 0)
@@ -113,18 +98,75 @@ float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 
 int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 {
-
-	int angle = 0;
+	std::vector<Rect> pointOfFace;
+	bool faceFound = false;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
 	int selectAngle = 0;
-	int maxFace = 0;
-	float confidence = 0;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
-	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
-	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
-	angle += 90;
-	RotateOpenCV(angle, maxFace, confidence, selectAngle, pBitmap);
+	Mat Source;
+	pBitmap->GetMatrix().copyTo(Source);
+	if (isLoading)
+	{
+		cv::flip(Source, Source, 1);
+		std::vector<CFace> listOfFace;
+
+		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
+
+		if (listOfFace.size() > 0)
+		{
+			for (int i = 0; i < listOfFace.size(); i++)
+			{
+				if (listOfFace[i].confidence > confidenceThreshold)
+				{
+					try
+					{
+						vector<Rect> faces;
+
+						Mat face = listOfFace[i].croppedImage;
+						int angle = listOfFace[i].angle;
+
+						Mat faceColor;
+						Point2f center22(face.cols / 2.0, face.rows / 2.0);
+						Mat rot = getRotationMatrix2D(center22, angle, 1.0);
+						// determine bounding rectangle
+						Rect bbox = RotatedRect(center22, face.size(), angle).boundingRect();
+						// adjust transformation matrix
+						rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
+						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
+
+						warpAffine(face, faceColor, rot, bbox.size());
+						Rect rc = { 0,0, faceColor.size().width, faceColor.size().height };
+						Mat gray;
+						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
+
+						faces.push_back(rc);
+
+						std::vector<cv::Rect> eyes;
+						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
+
+						if (eyes.size() == 2)
+						{
+							selectAngle = angle;
+							break;
+						}
+
+					}
+					catch (Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+						faceFound = false;
+					}
+				}
+
+			}
+		}
+
+		pBitmap->VertFlipBuf();
+	}
 
 	return selectAngle;
 }
@@ -263,7 +305,6 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 
 	if (isLoading)
 	{
-		pBitmap->VertFlipBuf();
 		CSqlFacePhoto facePhoto;
 		Mat dest;
 		std::vector<CFace> listOfFace;
@@ -274,7 +315,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 
 		Mat Source;
 		pBitmap->GetMatrix().copyTo(Source);
-		
+		cv::flip(Source, Source, 1);
+
 		for (CFace face : listOfFace)
 		{
 			if (face.confidence > confidenceThreshold)
@@ -285,6 +327,15 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 
 				try
 				{
+
+					Mat gray;
+					cvtColor(face.croppedImage, gray, COLOR_BGR2GRAY);
+
+					std::vector<cv::Rect> eyes;
+					eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
+
+					if (eyes.size() != 2)
+						continue;
 
 					face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, Source);
  					std::vector<uchar> buff;
@@ -331,11 +382,11 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 	muLoading.unlock();
 
 	Mat Source;
-	pBitmap->VertFlipBuf();
 	pBitmap->GetMatrix().copyTo(Source);
-	Mat & dest = pBitmap->GetMatrix();
 	if (isLoading)
 	{
+		cv::flip(Source, Source, 1);
+
 		std::vector<CFace> listOfFace;
 		
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
@@ -436,7 +487,6 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 								_veyeRight.push_back(landmarks[p]);
 
 							Rect eyeRight = boundingRect(_veyeRight);
-							
 
 							RemoveRedEye(faceColor, eyes[0], eyeLeft);
 							RemoveRedEye(faceColor, eyes[1], eyeRight);
@@ -465,10 +515,9 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 							listOfFace[i].myROI.width -= 2;
 							listOfFace[i].myROI.height -= 2;
 							cv::cvtColor(faceColor, faceColor, COLOR_BGR2BGRA);
-							faceColor.copyTo(dest(listOfFace[i].myROI));
+							faceColor.copyTo(Source(listOfFace[i].myROI));
+							faceFound = true;
 						}
-						//free(facebbox);
-						//free(landmarks);
 
 					}
 					catch (Exception& e)
@@ -476,14 +525,17 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						const char* err_msg = e.what();
 						std::cout << "exception caught: " << err_msg << std::endl;
 						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-						faceFound = false;
 					}
 				}
 				
 			}
 		}
-		
-		pBitmap->VertFlipBuf();
+
+		if (faceFound)
+		{
+			cv::flip(Source, Source, 1);
+			Source.copyTo(pBitmap->GetMatrix());
+		}
 	}
 }
 
@@ -508,26 +560,6 @@ int CFaceDetector::FindNbFace(CRegardsBitmap * image, float& bestConfidence, con
 
 	return nbFace;
 }
-
-
-void CFaceDetector::RotateCorrectly(CRegardsBitmap * pBitmap, int angle)
-{
-	CV_Assert(angle % 90 == 0 && angle <= 360 && angle >= -360);
-	if (angle == 90)
-	{
-		pBitmap->Rotate90();
-	}
-	else if (angle == 180)
-	{
-		pBitmap->Rotate180();
-	}
-	else if (angle == 270)
-	{
-		pBitmap->Rotate270();
-	}
-
-}
-
 
 void CFaceDetector::ImageToJpegBuffer(Mat& image, std::vector<uchar>& buff)
 {
@@ -666,9 +698,6 @@ void fillHoles(Mat& mask)
 
 void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Rect& radius)
 {
-	//wxString fileIris = CFileUtility::GetResourcesFolderPath() + "\\eye.png";
-	//Mat irisOut = imread(fileIris.ToStdString(), IMREAD_UNCHANGED);
-
 	Mat eyeMat = image(rSelectionBox);
 
 	Mat eye;
@@ -705,151 +734,7 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	cvtColor(img_gray, img_gray, COLOR_GRAY2BGR);
 	iris2.copyTo(img_gray, thresh);
 	img_gray.copyTo(eyeMat(rc));
-
-	/*
-
-	int red_eye_threshold = 40;
-	// Split image to BGR channels
-	Mat bgr[3];
-	split(iris2, bgr);
-
-	// Red eye detection
-	// R > 150 and R > (B + G)
-	// The satisfied region will be 255, and the rest will be 0.
-	Mat mask = (bgr[2] > red_eye_threshold);// &(bgr[2] > (bgr[1] + bgr[0]));
-	// Fill holes in mask
-	fillHoles(mask);
-	imshow("mask", mask);
-	waitKey(0);
-	// Dilate https://docs.opencv.org/4.0.1/d4/d86/group__imgproc__filter.html#ga4ff0f3318642c4f469d0e11f242f3b6c
-	// The masked ROI becomes a little bit larger.
-	// ROI is the red eye region.
-	dilate(mask, mask, Mat(), Point(-1, -1), 3, 1, 1);
-
-	// Fix red eye effect.
-	Mat mean = (bgr[0] + bgr[1]) / 2;
-	mean.copyTo(bgr[0], mask);
-	mean.copyTo(bgr[1], mask);
-	mean.copyTo(bgr[2], mask);
-
-	Mat eye_fixed;
-	merge(bgr, 3, eye_fixed);
-	iris2.copyTo(eyeMat(rc));
-	/*
-
-	cvtColor(iris2, iris2, COLOR_BGR2GRAY);
-	cvtColor(iris2, iris2, COLOR_GRAY2BGR);
-	
-	float radiusCircle = ((float)iris2.size().width / 2.0) * 0.50;
-	Point _center = Point(iris2.size().width / 2, iris2.size().height / 2);
-	printGradient(iris2, _center, radiusCircle);
-	
-
-	iris2.copyTo(eyeMat(rc));
-	*/
-
-
 }
-
-#ifdef TEST
-
-
-eye = eyeMat(select);
-
-imshow("test", eye);
-waitKey(0);
-
-
-vector<Mat>bgr(3);
-split(eye, bgr);
-Mat b = bgr[0];
-Mat g = bgr[1];
-Mat r = bgr[2];
-Mat bg = b + g;
-Mat mask = (bgr[2] > 40) & (bgr[2] > (bgr[1] + bgr[0]));;
-Mat dst = Mat::zeros(eye.rows, eye.cols, CV_8UC3);
-vector<vector<Point> > contours;
-vector<Point> maxCont;
-vector<Vec4i> hierarchy;
-findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-// iterate through all the top-level contours,
-// draw each connected component with its own random color
-
-int thresh = 100;
-RNG rng(12345);
-Mat drawing = Mat::zeros(mask.size(), CV_8UC3);
-for (size_t i = 0; i < contours.size(); i++)
-{
-	Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
-	drawContours(drawing, contours, (int)i, color, 2, LINE_8, hierarchy, 0);
-}
-
-imshow("test", drawing);
-waitKey(0);
-
-double  maxArea = 0;
-for (int k = 0; k < contours.size(); k++)
-{
-	double area = contourArea(contours[k]);
-	if (area > maxArea)
-	{
-		maxArea = area;
-		maxCont = contours[k];
-	}
-}
-
-imshow("test", mask);
-waitKey(0);
-
-mask = mask * 0;
-for (int i = 0; i < maxCont.size(); i++)
-{
-	Point cv = maxCont[i];
-	mask.data[cv.x + cv.y * mask.size().width] = 255;
-}
-//drawContours(mask, maxCont, 0, (255), -1);
-morphologyEx(mask, mask, MORPH_CLOSE, getStructuringElement(MORPH_DILATE, Point(5, 5)));
-
-imshow("test", mask);
-waitKey(0);
-//dilate(mask, mask, Mat(), Point(3, 3), 3);
-
-Mat mean = bg / 2;
-bitwise_and(mean, mask, mean);
-cvtColor(mean, mean, COLOR_GRAY2BGR);
-cvtColor(mask, mask, COLOR_GRAY2BGR);
-bitwise_and(~mask, eye, eye);
-eye = eye - mean;
-
-imshow("test", eye);
-waitKey(0);
-
-/*
-vector<Mat>bgr(3);
-split(eye, bgr);
-Mat mask = (bgr[2] > 40) & (bgr[2] > (bgr[1] + bgr[0]));
-fillHoles(mask);
-dilate(mask, mask, Mat(), Point(-1, -1), 3, 1, 1);
-
-// Calculate the mean channel by averaging
-// the green and blue channels
-Mat mean = (bgr[0] + bgr[1]) / 2;
-
-// Copy the mean image to blue channel with mask.
-mean.copyTo(bgr[0], mask);
-
-// Copy the mean image to green channel with mask.
-mean.copyTo(bgr[1], mask);
-
-// Copy the mean image to red channel with mask.
-mean.copyTo(bgr[2], mask);
-
-// Merge the three channels
-Mat eyeOut;
-merge(bgr, eyeOut);
-*/
-
-#endif
 
 /**
  * This module is using to computing the cosine distance between input feature and ground truth feature
