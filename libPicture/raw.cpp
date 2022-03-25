@@ -66,7 +66,8 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	}
 	else
 	{
-		picture = LoadPicture(fileName);
+		picture = new CImageLoadingFormat();
+		LoadPicture(fileName, picture);
 		picture->SetFilename(fileName);
 		if (thumbnail)
 		{
@@ -78,7 +79,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	return picture;
 }
 
-CImageLoadingFormat* CRaw::LoadPicture(const wxString& fileName)
+bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoadingFormat)
 {
 	int result;
 	LibRaw* rawProcessor = new LibRaw();
@@ -103,13 +104,10 @@ CImageLoadingFormat* CRaw::LoadPicture(const wxString& fileName)
 
 	int width = 0;
 	int height = 0;
-
-
-	CImageLoadingFormat* imageLoadingFormat = nullptr;
+	bool isOk = false;
 	CxImage* image = new CxImage();
 	if (result == 0)
 	{
-		imageLoadingFormat = new CImageLoadingFormat();
 		int raw_color, raw_bitsize;
 		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
 		image->Create(width, height, raw_bitsize * raw_color);
@@ -119,6 +117,7 @@ CImageLoadingFormat* CRaw::LoadPicture(const wxString& fileName)
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
 		image->Flip();
 		imageLoadingFormat->SetPicture(image);
+		isOk = true;
 	}
 
 	if (rawProcessor != nullptr)
@@ -126,7 +125,7 @@ CImageLoadingFormat* CRaw::LoadPicture(const wxString& fileName)
 		rawProcessor->recycle();
 		delete rawProcessor;
 	}
-	return imageLoadingFormat;
+	return isOk;
 }
 
 

@@ -2493,7 +2493,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 #if defined(LIBRAW)
 		case RAWFILE:
 
-			bitmap = CRaw::LoadPicture(fileName);
+			CRaw::LoadPicture(fileName, bitmap);
 				
 			if(bitmap != nullptr)
 				bitmap->SetFilename(fileName);

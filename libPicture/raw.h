@@ -11,7 +11,7 @@ namespace Regards
 		public:
 			static void GetDimensions(const wxString& fileName, int& width, int& height);
 			static CImageLoadingFormat* GetThumbnail(const wxString& fileName, const bool& thumbnail, bool & isFromExif);
-			static CImageLoadingFormat* LoadPicture(const wxString& fileName);
+			static bool LoadPicture(const wxString& fileName, CImageLoadingFormat* imageLoadingFormat);
 		};
 	}
 }
