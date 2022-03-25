@@ -283,48 +283,48 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		std::vector<Rect> pointOfFace;
 
 		cv::flip(pBitmap->GetMatrix(), source, 0);
-		detectFace->DetectFace(source, confidenceThreshold, listOfFace, pointOfFace);
-		cvtColor(pBitmap->GetMatrix(), source, COLOR_BGRA2BGR);
+		cvtColor(source, source, COLOR_BGRA2BGR);
+		detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
+		
 		for (CFace face : listOfFace)
 		{
 			if (face.confidence > confidenceThreshold)
 			{
 				Mat resizedImage;
 				Size size(150, 150);
-				int angle = 0;
-
-				if(listOfFace.size() == 1)
-					angle = detectFacePCN->DetectFaceAngle(source);
-				else
-					angle = detectFacePCN->DetectFaceAngle(face.croppedImage);
 				
 				try
 				{
-					cv::flip(pBitmap->GetMatrix(), source, 0);
-					cv::Mat dst;
-									
+								
 					try
 					{
-						dst = RotateAndExtractFace(angle, face.myROI, source);
+						resizedImage = RotateAndExtractFace(face.angle, face.myROI, source);
 					}
 					catch (Exception& e)
 					{
-						dst = source(face.myROI);
+						resizedImage = source(face.myROI);
 
 
 					}
 
-					
-					Mat localFace;
- 					std::vector<uchar> buff;
-					resize(dst, localFace, size);
-					ImageToJpegBuffer(localFace, buff);
-					int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows,
-						                                face.croppedImage.cols, face.confidence, buff.data(),
-						                                buff.size());
+					float bestConfidence = 0;
+					int nbFace = detectFace->FindNbFace(resizedImage, confidenceThreshold, bestConfidence);
 
-					listFace.push_back(numFace);
-					face.croppedImage.release();
+					if (nbFace > 0)
+					{
+
+
+						Mat localFace;
+						std::vector<uchar> buff;
+						resize(resizedImage, localFace, size);
+						ImageToJpegBuffer(localFace, buff);
+						int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows,
+							face.croppedImage.cols, face.confidence, buff.data(),
+							buff.size());
+
+						listFace.push_back(numFace);
+						face.croppedImage.release();
+					}
 				}
 				catch (Exception& e)
 				{
@@ -399,33 +399,35 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						std::vector<cv::Rect> eyes;
 						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
 
-						if (eyes.size() == 2)
+						for (int p = 0; p < eyes.size(); p++)
 						{
-							for (int p = 0; p < eyes.size(); p++)
+							Rect rect = eyes[p];
+							if (rect.y > (face.size().height / 2))
 							{
-								Rect rect = eyes[p];
-								if (rect.y > (face.size().height / 2))
-								{
-									eyes.erase(eyes.begin() + p);
-									p--;
-								}
+								eyes.erase(eyes.begin() + p);
+								p--;
 							}
+						}
 
-							for (int k = 0; k < eyes.size(); k++)
+						for (int k = 0; k < eyes.size(); k++)
+						{
+							for (int j = 0; j < eyes.size(); j++)
 							{
-								for (int j = 0; j < eyes.size(); j++)
+								if (k != j)
 								{
-									if (k != j)
+									Rect interesect = eyes[k] & eyes[j];
+									if (interesect.area() > 0)
 									{
-										Rect interesect = eyes[k] & eyes[j];
-										if (interesect.area() > 0)
-										{
-											eyes.erase(eyes.begin() + j);
-											j--;
-										}
+										eyes.erase(eyes.begin() + j);
+										j--;
 									}
 								}
 							}
+						}
+
+						if (eyes.size() == 2)
+						{
+
 
 							vector<vector<Point2f>> shapes;
 
