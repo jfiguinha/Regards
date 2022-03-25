@@ -538,15 +538,7 @@ void CFaceDetector::ImageToJpegBuffer(Mat& image, std::vector<uchar>& buff)
 	imencode(".jpg", image, buff, param);
 }
 
-void fillHoles(Mat & mask)
-{
 
-	Mat mask_floodfill = mask.clone();
-	floodFill(mask_floodfill, cv::Point(0, 0), Scalar(255));
-	Mat mask2;
-	bitwise_not(mask_floodfill, mask2);
-	mask = (mask2 | mask);
-}
 
 void overlayImage(Mat* src, Mat* overlay, const Point& location)
 {
@@ -662,13 +654,23 @@ void printGradient(cv::Mat& _input, const cv::Point& _center, const double radiu
 		*/
 	}
 }
+void fillHoles(Mat& mask)
+{
 
+	Mat mask_floodfill = mask.clone();
+	floodFill(mask_floodfill, cv::Point(0, 0), Scalar(255));
+	Mat mask2;
+	bitwise_not(mask_floodfill, mask2);
+	mask = (mask2 | mask);
+}
 
 void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Rect& radius)
 {
 	//wxString fileIris = CFileUtility::GetResourcesFolderPath() + "\\eye.png";
 	//Mat irisOut = imread(fileIris.ToStdString(), IMREAD_UNCHANGED);
+
 	Mat eyeMat = image(rSelectionBox);
+
 	Mat eye;
 	cvtColor(eyeMat, eye, COLOR_BGR2GRAY);
 	GaussianBlur(eye, eye, Size(5, 5), 0);
@@ -695,6 +697,46 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 		rc.height = yMax - rc.y;
 
 	Mat iris2 = eyeMat(rc);
+	Mat img_gray;
+	cvtColor(iris2, img_gray, COLOR_BGR2GRAY);
+	Mat thresh;
+	threshold(img_gray, thresh, 100, 255, THRESH_BINARY);
+	bitwise_not(thresh, thresh);
+	cvtColor(img_gray, img_gray, COLOR_GRAY2BGR);
+	iris2.copyTo(img_gray, thresh);
+	img_gray.copyTo(eyeMat(rc));
+
+	/*
+
+	int red_eye_threshold = 40;
+	// Split image to BGR channels
+	Mat bgr[3];
+	split(iris2, bgr);
+
+	// Red eye detection
+	// R > 150 and R > (B + G)
+	// The satisfied region will be 255, and the rest will be 0.
+	Mat mask = (bgr[2] > red_eye_threshold);// &(bgr[2] > (bgr[1] + bgr[0]));
+	// Fill holes in mask
+	fillHoles(mask);
+	imshow("mask", mask);
+	waitKey(0);
+	// Dilate https://docs.opencv.org/4.0.1/d4/d86/group__imgproc__filter.html#ga4ff0f3318642c4f469d0e11f242f3b6c
+	// The masked ROI becomes a little bit larger.
+	// ROI is the red eye region.
+	dilate(mask, mask, Mat(), Point(-1, -1), 3, 1, 1);
+
+	// Fix red eye effect.
+	Mat mean = (bgr[0] + bgr[1]) / 2;
+	mean.copyTo(bgr[0], mask);
+	mean.copyTo(bgr[1], mask);
+	mean.copyTo(bgr[2], mask);
+
+	Mat eye_fixed;
+	merge(bgr, 3, eye_fixed);
+	iris2.copyTo(eyeMat(rc));
+	/*
+
 	cvtColor(iris2, iris2, COLOR_BGR2GRAY);
 	cvtColor(iris2, iris2, COLOR_GRAY2BGR);
 	
@@ -704,6 +746,7 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	
 
 	iris2.copyTo(eyeMat(rc));
+	*/
 
 
 }
