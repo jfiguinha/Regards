@@ -102,7 +102,6 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 
 bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap)
 {
-
 	DeepLearning::CDeepLearning::DetectEyes(pBitmap);
 
 	/*
