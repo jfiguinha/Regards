@@ -265,6 +265,26 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(CRegardsBitmap * picture)
 	return listFace;
 }
 
+void CFaceDetector::RotateAndCrop(CFace * face, cv::Mat & Source)
+{
+	try
+	{
+		face->croppedImage = RotateAndExtractFace(face->angle, face->myROI, Source);
+	}
+	catch (Exception& e)
+	{
+		face->croppedImage = Source(face->myROI);
+
+		// get the center coordinates of the image to create the 2D rotation matrix
+		Point2f center((face->croppedImage.cols - 1) / 2.0, (face->croppedImage.rows - 1) / 2.0);
+		// using getRotationMatrix2D() to get the rotation matrix
+		Mat rotation_matix = getRotationMatrix2D(center, face->angle, 1.0);
+		// rotate the image using warpAffine
+		warpAffine(face->croppedImage, face->croppedImage, rotation_matix, face->croppedImage.size());
+	}
+
+}
+
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 {
 	std::vector<int> listFace;
@@ -296,23 +316,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 
 				try
 				{
-
-					try
-					{
-						face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, Source);
-					}
-					catch (Exception& e)
-					{
-						face.croppedImage = Source(face.myROI);
-			
-						// get the center coordinates of the image to create the 2D rotation matrix
-						Point2f center((face.croppedImage.cols - 1) / 2.0, (face.croppedImage.rows - 1) / 2.0);
-						// using getRotationMatrix2D() to get the rotation matrix
-						Mat rotation_matix = getRotationMatrix2D(center, face.angle, 1.0);
-						// rotate the image using warpAffine
-						warpAffine(face.croppedImage, face.croppedImage, rotation_matix, face.croppedImage.size());
-					}
-
+					RotateAndCrop(&face, Source);
  					std::vector<uchar> buff;
 					resize(face.croppedImage, face.croppedImage, size);
 					cv::Mat localFace = face.croppedImage;

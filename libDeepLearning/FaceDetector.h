@@ -6,6 +6,7 @@ class CPictureData;
 class FaceRect;
 class CDetectFace;
 class CDetectFacePCN;
+class CFace;
 
 namespace Regards
 {
@@ -33,6 +34,7 @@ namespace Regards
 			cv::Mat FaceDesriptor(cv::Mat face);
 			cv::Mat Zscore(const cv::Mat& fc);
 			cv::Mat GetFaceScore(const int& numFace);
+			void RotateAndCrop(CFace * face, cv::Mat& Source);
 			//CDetectFace * detectFace;
 			CDetectFacePCN * detectFacePCN;
 			static bool isload;
