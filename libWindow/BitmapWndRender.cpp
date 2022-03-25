@@ -671,9 +671,6 @@ void CBitmapWndRender::SetIsBitmapThumbnail(const bool& isThumbnail)
 
 void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& updateAll)
 {
-	//TRACE();
-	printf("CBitmapWndRender::SetBitmap \n");
-	//this->SetFocus();
 	if (bitmapIn != nullptr)
 	{
 		if (bitmapIn->IsOk())
@@ -686,20 +683,15 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				flipVertical = 0;
 				flipHorizontal = 0;
 				angle = 0;
-
-				printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 				muBitmap.lock();
 				if (source != nullptr)
 				{
 					delete source;
-					printf("CBitmapWndRender::SetBitmap   delete source\n");
 					source = nullptr;
 				}
 
 				source = bitmapIn;
-				//source = nullptr;
 				muBitmap.unlock();
-				printf("CBitmapWndRender::SetBitmap  muBitmap.unlock()\n");
 				bitmapwidth = bitmapIn->GetWidth();
 				bitmapheight = bitmapIn->GetHeight();
 				orientation = bitmapIn->GetOrientation();
@@ -714,12 +706,10 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 				bitmapheight = bitmapIn->GetHeight();
 				bitmapUpdate = true;
 
-				printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 				muBitmap.lock();
 				if (source != nullptr)
 				{
 					delete source;
-					printf("CBitmapWndRender::SetBitmap   delete source\n");
 					source = nullptr;
 				}
 
@@ -926,6 +916,13 @@ int CBitmapWndRender::GetBitmapHeight()
 	return 0;
 }
 
+bool CBitmapWndRender::UpdateExifInfos()
+{
+	CSqlPhotos sqlPhotos;
+	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
+	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+}
+
 void CBitmapWndRender::FlipVertical()
 {
 	//TRACE();
@@ -935,9 +932,8 @@ void CBitmapWndRender::FlipVertical()
 		flipVertical = 1;
 
 
-	CSqlPhotos sqlPhotos;
-	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
-	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+	UpdateExifInfos();
+	
 	//updateFilter = true;
 	RefreshWindow();
 }
@@ -948,10 +944,7 @@ void CBitmapWndRender::Rotate90()
 	angle += 90;
 	angle = angle % 360;
 
-	CSqlPhotos sqlPhotos;
-	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
-	sqlPhotos.UpdatePhotoExif(filename, exifCode);
-
+	UpdateExifInfos();
 	UpdateResized();
 	RefreshWindow();
 }
@@ -984,11 +977,7 @@ void CBitmapWndRender::Rotate270()
 	angle += 270;
 	angle = angle % 360;
 	//updateFilter = true;
-
-
-	CSqlPhotos sqlPhotos;
-	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
-	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+	UpdateExifInfos();
 
 	UpdateResized();
 	RefreshWindow();
@@ -1003,9 +992,7 @@ void CBitmapWndRender::FlipHorizontal()
 		flipHorizontal = 1;
 	//updateFilter = true;
 
-	CSqlPhotos sqlPhotos;
-	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
-	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+	UpdateExifInfos();
 
 	RefreshWindow();
 }

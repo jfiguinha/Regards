@@ -142,7 +142,7 @@ namespace Regards
 			virtual void OnKeyUp(wxKeyEvent& event) override;
 			virtual void OnIdle(wxIdleEvent& evt) override;
 
-
+			bool UpdateExifInfos();
 			virtual void OnTimer(wxTimerEvent& event) override {};
 			virtual vector<int> GetListTimer() override{
 				vector<int> list; return list;
