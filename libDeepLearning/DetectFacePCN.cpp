@@ -312,6 +312,10 @@ std::vector<FaceBox> CDetectFacePCN::PCN_1(cv::Mat _img, cv::Mat _paddedImg, cv:
         std::vector<cv::Mat> outputBlobs;
 
         _net.forward(outputBlobs, outputBlobNames);
+
+        if (outputBlobs.size() != 3)
+            break;
+
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];
         cv::Mat regressionData = outputBlobs[2];
@@ -399,6 +403,10 @@ std::vector<FaceBox> CDetectFacePCN::PCN_2(cv::Mat _img, cv::Mat _img180, cv::dn
         std::vector<cv::Mat> outputBlobs;
 
         _net.forward(outputBlobs, outputBlobNames);
+
+        if (outputBlobs.size() != 3)
+            break;
+
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];
         cv::Mat regressionData = outputBlobs[2];
@@ -506,6 +514,10 @@ std::vector<FaceBox> CDetectFacePCN::PCN_3(cv::Mat _img, cv::Mat _img180, cv::Ma
         std::vector<cv::Mat> outputBlobs;
 
         _net.forward(outputBlobs, outputBlobNames);
+
+        if (outputBlobs.size() != 3)
+            break;
+
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];
         cv::Mat regressionData = outputBlobs[2];

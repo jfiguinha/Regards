@@ -109,7 +109,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 	pBitmap->GetMatrix().copyTo(Source);
 	if (isLoading)
 	{
-		cv::flip(Source, Source, 1);
+		cv::flip(Source, Source, 0);
 		std::vector<CFace> listOfFace;
 
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
@@ -122,35 +122,8 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 				{
 					try
 					{
-						vector<Rect> faces;
-
-						Mat face = listOfFace[i].croppedImage;
-						int angle = listOfFace[i].angle;
-
-						Mat faceColor;
-						Point2f center22(face.cols / 2.0, face.rows / 2.0);
-						Mat rot = getRotationMatrix2D(center22, angle, 1.0);
-						// determine bounding rectangle
-						Rect bbox = RotatedRect(center22, face.size(), angle).boundingRect();
-						// adjust transformation matrix
-						rot.at<double>(0, 2) += bbox.width / 2.0 - center22.x;
-						rot.at<double>(1, 2) += bbox.height / 2.0 - center22.y;
-
-						warpAffine(face, faceColor, rot, bbox.size());
-						Rect rc = { 0,0, faceColor.size().width, faceColor.size().height };
-						Mat gray;
-						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
-
-						faces.push_back(rc);
-
-						std::vector<cv::Rect> eyes;
-						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-
-						if (eyes.size() == 2)
-						{
-							selectAngle = angle;
-							break;
-						}
+						selectAngle = listOfFace[i].angle;
+						break;
 
 					}
 					catch (Exception& e)
@@ -164,8 +137,6 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 
 			}
 		}
-
-		pBitmap->VertFlipBuf();
 	}
 
 	return selectAngle;
@@ -310,12 +281,10 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
 
-		//detectFace->DetectFace(pBitmap, confidenceThreshold, listOfFace, pointOfFace);
-		detectFacePCN->DetectFace(pBitmap, listOfFace, pointOfFace);
-
 		Mat Source;
 		pBitmap->GetMatrix().copyTo(Source);
-		cv::flip(Source, Source, 1);
+		cv::flip(Source, Source, 0);
+		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
 
 		for (CFace face : listOfFace)
 		{
@@ -328,16 +297,22 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				try
 				{
 
-					Mat gray;
-					cvtColor(face.croppedImage, gray, COLOR_BGR2GRAY);
+					try
+					{
+						face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, Source);
+					}
+					catch (Exception& e)
+					{
+						face.croppedImage = Source(face.myROI);
+			
+						// get the center coordinates of the image to create the 2D rotation matrix
+						Point2f center((face.croppedImage.cols - 1) / 2.0, (face.croppedImage.rows - 1) / 2.0);
+						// using getRotationMatrix2D() to get the rotation matrix
+						Mat rotation_matix = getRotationMatrix2D(center, face.angle, 1.0);
+						// rotate the image using warpAffine
+						warpAffine(face.croppedImage, face.croppedImage, rotation_matix, face.croppedImage.size());
+					}
 
-					std::vector<cv::Rect> eyes;
-					eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-
-					if (eyes.size() != 2)
-						continue;
-
-					face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, Source);
  					std::vector<uchar> buff;
 					resize(face.croppedImage, face.croppedImage, size);
 					cv::Mat localFace = face.croppedImage;
@@ -385,7 +360,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 	pBitmap->GetMatrix().copyTo(Source);
 	if (isLoading)
 	{
-		cv::flip(Source, Source, 1);
+		cv::flip(Source, Source, 0);
 
 		std::vector<CFace> listOfFace;
 		
@@ -422,12 +397,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 						int radiusR = 40;
 
 						faces.push_back(rc);
-
-						/*
-						*/
-
-						//cv::cvtColor(faceColor, gray, COLOR_BGR2GRAY);
-						
+					
 						std::vector<cv::Rect> eyes;
 						eye_cascade.detectMultiScale(gray, eyes, 1.1, 5);// , 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
 
@@ -533,32 +503,10 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 
 		if (faceFound)
 		{
-			cv::flip(Source, Source, 1);
+			cv::flip(Source, Source, 0);
 			Source.copyTo(pBitmap->GetMatrix());
 		}
 	}
-}
-
-
-
-int CFaceDetector::FindNbFace(CRegardsBitmap * image, float& bestConfidence, const float& confidence)
-{
-	std::vector<Rect> pointOfFace;
-	std::vector<CFace> listOfFace;
-	int nbFace = 0;
-	detectFacePCN->DetectFace(image, listOfFace, pointOfFace);
-
-	for (int i = 0; i < listOfFace.size(); i++)
-	{
-		if (listOfFace[i].confidence > confidence)
-		{
-			if (listOfFace[i].confidence > bestConfidence)
-				bestConfidence = listOfFace[i].confidence;
-			nbFace++;
-		}
-	}
-
-	return nbFace;
 }
 
 void CFaceDetector::ImageToJpegBuffer(Mat& image, std::vector<uchar>& buff)
@@ -568,132 +516,6 @@ void CFaceDetector::ImageToJpegBuffer(Mat& image, std::vector<uchar>& buff)
 	param[0] = IMWRITE_JPEG_QUALITY;
 	param[1] = 80; //default(95) 0-100
 	imencode(".jpg", image, buff, param);
-}
-
-
-
-void overlayImage(Mat* src, Mat* overlay, const Point& location)
-{
-	for (int y = max(location.y, 0); y < src->rows; ++y)
-	{
-		int fY = y - location.y;
-
-		if (fY >= overlay->rows)
-			break;
-
-		for (int x = max(location.x, 0); x < src->cols; ++x)
-		{
-			int fX = x - location.x;
-
-			if (fX >= overlay->cols)
-				break;
-
-			double opacity = ((double)overlay->data[fY * overlay->step + fX * overlay->channels() + 3]) / 255;
-
-			for (int c = 0; opacity > 0 && c < src->channels(); ++c)
-			{
-				unsigned char overlayPx = overlay->data[fY * overlay->step + fX * overlay->channels() + c];
-				unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
-				src->data[y * src->step + src->channels() * x + c] = srcPx * (1. - opacity) + overlayPx * opacity;
-			}
-		}
-	}
-}
-
-vector<int> HSVtoRGB(float H, float S, float V) {
-
-	vector<int> RGB;
-
-	if (H > 360 || H < 0 || S>100 || S < 0 || V>100 || V < 0) {
-		cout << "The givem HSV values are not in valid range" << endl;
-		return;
-	}
-	float s = S / 100;
-	float v = V / 100;
-	float C = s * v;
-	float X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
-	float m = v - C;
-	float r, g, b;
-	if (H >= 0 && H < 60) {
-		r = C, g = X, b = 0;
-	}
-	else if (H >= 60 && H < 120) {
-		r = X, g = C, b = 0;
-	}
-	else if (H >= 120 && H < 180) {
-		r = 0, g = C, b = X;
-	}
-	else if (H >= 180 && H < 240) {
-		r = 0, g = X, b = C;
-	}
-	else if (H >= 240 && H < 300) {
-		r = X, g = 0, b = C;
-	}
-	else {
-		r = C, g = 0, b = X;
-	}
-
-	RGB.push_back((b + m) * 255);
-	RGB.push_back((g + m) * 255);
-	RGB.push_back((r + m) * 255);
-
-	return RGB;
-
-}
-
-void YUVfromRGB(double& Y, double& U, double& V, const double R, const double G, const double B)
-{
-	Y = 0.257 * R + 0.504 * G + 0.098 * B + 16;
-	U = -0.148 * R - 0.291 * G + 0.439 * B + 128;
-	V = 0.439 * R - 0.368 * G - 0.071 * B + 128;
-}
-void RGBfromYUV(double& R, double& G, double& B, double Y, double U, double V)
-{
-	Y -= 16;
-	U -= 128;
-	V -= 128;
-	R = 1.164 * Y + 1.596 * V;
-	G = 1.164 * Y - 0.392 * U - 0.813 * V;
-	B = 1.164 * Y + 2.017 * U;
-}
-
-void printGradient(cv::Mat& _input, const cv::Point& _center, const double radius)
-{
-	//double Y, U, V;
-	//double R, G, B;
-	//cv::circle(_input, _center, radius, cv::Scalar(0, 0, 0), -1);
-	//YUVfromRGB(Y, U, V, 122, 55, 0);
-
-	CRgbaquad color1 = CRgbaquad(255, 255, 255, 0);
-	CRgbaquad color2 = CRgbaquad(122, 55, 0, 0);
-
-
-	for (double i = 1; i < radius; i++)
-	{
-		
-		int color = 255 - int(i / radius * 255); //or some another color calculation
-		color = max(color, 60);
-		cv::circle(_input, _center, i, cv::Scalar(color, color, color), 2);
-		
-
-		/*
-		double percent = 1.0f - (float)(100 - int(i / radius * 100)) / 100.0f;
-		double resultRed = color1.GetRed() + percent * (color2.GetRed() - color1.GetRed());
-		double resultGreen = color1.GetGreen() + percent * (color2.GetGreen() - color1.GetGreen());
-		double resultBlue = color1.GetBlue() + percent * (color2.GetBlue() - color1.GetBlue());
-
-		cv::circle(_input, _center, i, cv::Scalar(resultRed, resultGreen, resultBlue), 2);
-		*/
-	}
-}
-void fillHoles(Mat& mask)
-{
-
-	Mat mask_floodfill = mask.clone();
-	floodFill(mask_floodfill, cv::Point(0, 0), Scalar(255));
-	Mat mask2;
-	bitwise_not(mask_floodfill, mask2);
-	mask = (mask2 | mask);
 }
 
 void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Rect& radius)

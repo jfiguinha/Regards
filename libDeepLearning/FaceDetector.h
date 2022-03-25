@@ -27,7 +27,6 @@ namespace Regards
 
 		private:
 
-			int FindNbFace(CRegardsBitmap * image, float& bestConfidence, const float& confidence = 0.5);
 			void RemoveRedEye(cv::Mat& image, const cv::Rect& rSelectionBox, const cv::Rect & radius);
 			void ImageToJpegBuffer(cv::Mat& image, std::vector<uchar>& buff);
 			cv::Mat RotateAndExtractFace(const double& angle, const cv::Rect& faceLocation, cv::Mat image);
