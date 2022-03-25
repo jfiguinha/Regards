@@ -19,7 +19,7 @@ public:
     CDetectFace(void);
     ~CDetectFace(void);
 
-    void LoadModel(const string& config_file, const string& weight_file);
+    void LoadModel();
     void DetectFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
     int FindNbFace(CRegardsBitmap* bitmap, const float & confidenceThreshold, float& bestConfidence);
 

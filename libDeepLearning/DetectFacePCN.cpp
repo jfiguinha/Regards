@@ -45,24 +45,17 @@ CDetectFacePCN::~CDetectFacePCN(void)
 {
 }
 
-void CDetectFacePCN::DetectFace(CRegardsBitmap* bitmap, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
-{
-    Mat frameOpenCVDNN;
-    cvtColor(bitmap->GetMatrix(), frameOpenCVDNN, COLOR_BGRA2BGR);
-
-    DetectFace(frameOpenCVDNN, listOfFace, pointOfFace);
-}
 
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CDetectFacePCN::DetectFace(cv::Mat faceMat, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
+void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
 {
     if (!isload)
         return;
 
     Mat frameOpenCVDNN;
-    cvtColor(faceMat, frameOpenCVDNN, COLOR_BGRA2BGR);
+    cvtColor(source, frameOpenCVDNN, COLOR_BGRA2BGR);
     int frameHeight = frameOpenCVDNN.rows;
     int frameWidth = frameOpenCVDNN.cols;
 
@@ -148,27 +141,13 @@ void CDetectFacePCN::LoadModel()
         net_3 = readNet(pcn3_proto.ToStdString(), detection_model_path.ToStdString());
 
         net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);
-
-        if (openCLCompatible)
-            net_1.setPreferableTarget(DNN_TARGET_OPENCL);
-        else
-            net_1.setPreferableTarget(DNN_TARGET_CPU);
-
+        net_1.setPreferableTarget(DNN_TARGET_CPU);
 
         net_2.setPreferableBackend(DNN_BACKEND_DEFAULT);
-
-        if (openCLCompatible)
-            net_1.setPreferableTarget(DNN_TARGET_OPENCL);
-        else
-            net_1.setPreferableTarget(DNN_TARGET_CPU);
+        net_2.setPreferableTarget(DNN_TARGET_CPU);
 
         net_3.setPreferableBackend(DNN_BACKEND_DEFAULT);
-
-        if (openCLCompatible)
-            net_1.setPreferableTarget(DNN_TARGET_OPENCL);
-        else
-            net_1.setPreferableTarget(DNN_TARGET_CPU);
-
+        net_3.setPreferableTarget(DNN_TARGET_CPU);
     }
     catch (Exception& e)
     {
@@ -303,18 +282,27 @@ std::vector<FaceBox> CDetectFacePCN::PCN_1(cv::Mat _img, cv::Mat _paddedImg, cv:
 
     while (std::min(resizedImg.rows, resizedImg.cols) >= netSize)
     {
-        // - Set input for net
-        Mat inputMat = preprocessImg(resizedImg);
-        Mat inputBlob = blobFromImage(inputMat, 1.0, Size(), Scalar(), false, false);
-        _net.setInput(inputBlob);
-
-        std::vector<String> outputBlobNames = { "cls_prob", "rotate_cls_prob", "bbox_reg_1" };
+        bool find = true;
         std::vector<cv::Mat> outputBlobs;
+        try
+        {
+            // - Set input for net
+            Mat inputMat = preprocessImg(resizedImg);
+            Mat inputBlob = blobFromImage(inputMat, 1.0, Size(), Scalar(), false, false);
+            _net.setInput(inputBlob);
+            std::vector<String> outputBlobNames = { "cls_prob", "rotate_cls_prob", "bbox_reg_1" };
+            _net.forward(outputBlobs, outputBlobNames);
+        }
+        catch (Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            find = false;
+        }
 
-        _net.forward(outputBlobs, outputBlobNames);
-
-        if (outputBlobs.size() != 3)
-            break;
+        if (!find)
+            continue;
 
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];
@@ -397,15 +385,28 @@ std::vector<FaceBox> CDetectFacePCN::PCN_2(cv::Mat _img, cv::Mat _img180, cv::dn
     // - Process the dataList vector
     for (int dataNr = 0; dataNr < dataList.size(); dataNr++)
     {
-        Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
-        _net.setInput(inputBlob);
-        std::vector<String> outputBlobNames = { "cls_prob", "rotate_cls_prob", "bbox_reg_2" };
+        bool find = true;
         std::vector<cv::Mat> outputBlobs;
+        try
+        {
+            if (openclContext != nullptr)
+                openclContext->GetContextForOpenCV().bind();
 
-        _net.forward(outputBlobs, outputBlobNames);
+            Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
+            _net.setInput(inputBlob);
+            std::vector<String> outputBlobNames = { "cls_prob", "rotate_cls_prob", "bbox_reg_2" };
+            _net.forward(outputBlobs, outputBlobNames);
+        }
+        catch (Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            find = false;
+        }
 
-        if (outputBlobs.size() != 3)
-            break;
+        if (!find)
+            continue;
 
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];
@@ -508,15 +509,31 @@ std::vector<FaceBox> CDetectFacePCN::PCN_3(cv::Mat _img, cv::Mat _img180, cv::Ma
 
     for (int dataNr = 0; dataNr < dataList.size(); dataNr++)
     {
-        Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
-        _net.setInput(inputBlob);
-        std::vector<String> outputBlobNames = { "cls_prob", "rotate_reg_3", "bbox_reg_3" };
+        bool find = true;
         std::vector<cv::Mat> outputBlobs;
+        try
+        {
+            if (openclContext != nullptr)
+                openclContext->GetContextForOpenCV().bind();
 
-        _net.forward(outputBlobs, outputBlobNames);
+            Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
+            _net.setInput(inputBlob);
+            std::vector<String> outputBlobNames = { "cls_prob", "rotate_reg_3", "bbox_reg_3" };
+            _net.forward(outputBlobs, outputBlobNames);
+        }
+        catch (Exception& e)
+        {
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            find = false;
+        }
 
-        if (outputBlobs.size() != 3)
-            break;
+        if (!find)
+            continue;
+
+
+
 
         cv::Mat scoresData = outputBlobs[0];
         cv::Mat rotateProbsData = outputBlobs[1];

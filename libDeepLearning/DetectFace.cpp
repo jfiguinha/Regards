@@ -217,47 +217,17 @@ int CDetectFace::FindNbFace(CRegardsBitmap* bitmap, const float& confidenceThres
 #endif
 }
 
-void CDetectFace::LoadModel(const string& config_file, const string& weight_file)
+void CDetectFace::LoadModel()
 {
 
 #ifdef __APPLE__
 #else
-#ifdef CAFFE
-	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
-	const std::string caffeWeightFile = weight_file;// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
-#else
-	const std::string tensorflowConfigFile = config_file;
-	// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector.pbtxt";
-	const std::string tensorflowWeightFile = weight_file;
-	// "C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\opencv_face_detector_uint8.pb";
-#endif
+	wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
+	wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+
 
 	try
 	{
-		/*
-			"{ backend     |  0 | Choose one of computation backends: "
-						 "0: automatically (by default), "
-						 "1: Halide language (http://halide-lang.org/), "
-						 "2: Intel's Deep Learning Inference Engine (https://software.intel.com/openvino-toolkit), "
-						 "3: OpenCV implementation }"
-			"{ target      | 0 | Choose one of target computation devices: "
-						 "0: CPU target (by default), "
-						 "1: OpenCL, "
-						 "2: OpenCL fp16 (half-float precision), "
-						 "3: VPU }"
-
-		*/
-
-		/*
-		DNN_TARGET_CPU = 0,
-		DNN_TARGET_OPENCL,
-		DNN_TARGET_OPENCL_FP16,
-		DNN_TARGET_MYRIAD,
-		DNN_TARGET_VULKAN,
-		DNN_TARGET_FPGA,  //!< FPGA device with CPU fallbacks using Inference Engine's Heterogeneous plugin.
-		DNN_TARGET_CUDA,
-		DNN_TARGET_CUDA_FP16
-		*/
 
 #ifndef __WXGTK__
 		bool openCLCompatible = false;
@@ -268,24 +238,16 @@ void CDetectFace::LoadModel(const string& config_file, const string& weight_file
 				openCLCompatible = true;
 		}
 
-#ifdef CAFFE
-		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
-#else
-		net = readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
-#endif
+		net = readNetFromTensorflow(tensorflowWeightFile.ToStdString(), tensorflowConfigFile.ToStdString());
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		/*
+
 		if (openCLCompatible)
 			net.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			net.setPreferableTarget(DNN_TARGET_CPU);
-		*/
 #else
-#ifdef CAFFE
-		net = cv::dnn::readNetFromCaffe(caffeConfigFile, caffeWeightFile);
-#else
+
 		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
-#endif
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		net.setPreferableTarget(DNN_TARGET_CPU);
 #endif

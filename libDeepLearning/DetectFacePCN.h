@@ -20,8 +20,7 @@ public:
     ~CDetectFacePCN(void);
 
     void LoadModel();
-    void DetectFace(cv::Mat faceMat, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-    void DetectFace(CRegardsBitmap* bitmap, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
+    void DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
 
 private:
 

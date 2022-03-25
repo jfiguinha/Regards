@@ -35,7 +35,6 @@ namespace Regards
 			cv::Mat Zscore(const cv::Mat& fc);
 			cv::Mat GetFaceScore(const int& numFace);
 			void RotateAndCrop(CFace * face, cv::Mat& Source);
-			//CDetectFace * detectFace;
 			CDetectFacePCN * detectFacePCN;
 			static bool isload;
 

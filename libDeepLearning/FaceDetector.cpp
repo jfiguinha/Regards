@@ -60,13 +60,11 @@ void CFaceDetector::CleanBase()
 
 CFaceDetector::CFaceDetector(const bool& fastDetection)
 {
-	//detectFace = new CDetectFace();
 	detectFacePCN = new CDetectFacePCN();
 }
 
 CFaceDetector::~CFaceDetector()
 {
-	//delete detectFace;
 	delete detectFacePCN;
 }
 
@@ -152,7 +150,6 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 	try
 	{
 		CDetectFacePCN detectFacePCN;
-       // CDetectFace detectFace;
         
 #ifndef __WXGTK__
 		
@@ -171,7 +168,6 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
 		else
 			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
-
 #else
 
 		netRecognition = cv::dnn::readNetFromTorch(recognition);
@@ -259,31 +255,14 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(CRegardsBitmap * picture)
 	if (isLoading)
 	{
 		std::vector<CFace> listOfFace;
-		detectFacePCN->DetectFace(picture, listOfFace, listFace);
+		picture->VertFlipBuf();
+		detectFacePCN->DetectFace(picture->GetMatrix(), listOfFace, listFace);
 	}
 
 	return listFace;
 }
 
-void CFaceDetector::RotateAndCrop(CFace * face, cv::Mat & Source)
-{
-	try
-	{
-		face->croppedImage = RotateAndExtractFace(face->angle, face->myROI, Source);
-	}
-	catch (Exception& e)
-	{
-		face->croppedImage = Source(face->myROI);
 
-		// get the center coordinates of the image to create the 2D rotation matrix
-		Point2f center((face->croppedImage.cols - 1) / 2.0, (face->croppedImage.rows - 1) / 2.0);
-		// using getRotationMatrix2D() to get the rotation matrix
-		Mat rotation_matix = getRotationMatrix2D(center, face->angle, 1.0);
-		// rotate the image using warpAffine
-		warpAffine(face->croppedImage, face->croppedImage, rotation_matix, face->croppedImage.size());
-	}
-
-}
 
 std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 {
@@ -301,10 +280,11 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
 
-		Mat Source;
-		pBitmap->GetMatrix().copyTo(Source);
-		cv::flip(Source, Source, 0);
-		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
+		pBitmap->VertFlipBuf();
+		Mat source = pBitmap->GetMatrix();
+		detectFacePCN->DetectFace(source, listOfFace, pointOfFace);
+		
+		
 
 		for (CFace face : listOfFace)
 		{
@@ -314,9 +294,29 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 				Mat resizedImage;
 				Size size(150, 150);
 
+				std::vector<CFace> listOfFacePCN;
+				std::vector<Rect> pointOfFacePCN;
+
 				try
 				{
-					RotateAndCrop(&face, Source);
+
+					try
+					{
+						face.croppedImage = RotateAndExtractFace(face.angle, face.myROI, source);
+					}
+					catch (Exception& e)
+					{
+						face.croppedImage = source(face.myROI);
+						/*
+						// get the center coordinates of the image to create the 2D rotation matrix
+						Point2f center((face.croppedImage.cols - 1) / 2.0, (face.croppedImage.rows - 1) / 2.0);
+						// using getRotationMatrix2D() to get the rotation matrix
+						Mat rotation_matix = getRotationMatrix2D(center, face.angle, 1.0);
+						// rotate the image using warpAffine
+						warpAffine(face.croppedImage, face.croppedImage, rotation_matix, face.croppedImage.size());
+						*/
+					}
+
  					std::vector<uchar> buff;
 					resize(face.croppedImage, face.croppedImage, size);
 					cv::Mat localFace = face.croppedImage;
@@ -360,14 +360,12 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 	isLoading = isload;
 	muLoading.unlock();
 
-	Mat Source;
+	Mat Source;	
 	pBitmap->GetMatrix().copyTo(Source);
 	if (isLoading)
 	{
 		cv::flip(Source, Source, 0);
-
 		std::vector<CFace> listOfFace;
-		
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
 
 		if (listOfFace.size() > 0)
@@ -378,10 +376,21 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 				{
 					try
 					{
+						Mat face = listOfFace[i].croppedImage;
+						int angle = 0;
+
+						std::vector<CFace> listOfFacePCN;
+						std::vector<Rect> pointOfFacePCN;
+						detectFacePCN->DetectFace(listOfFace[i].croppedImage, listOfFacePCN, pointOfFacePCN);
+
+						if (listOfFacePCN.size() > 0)
+						{
+							angle = listOfFacePCN[0].angle;
+						}
+
 						vector<Rect> faces;
 						
-						Mat face = listOfFace[i].croppedImage;
-						int angle = listOfFace[i].angle;
+
 
 						Mat faceColor;
 						Point2f center22(face.cols / 2.0, face.rows / 2.0);
