@@ -468,22 +468,22 @@ void CShowElement::OnIdle(wxIdleEvent& evt)
 void CShowElement::RotateRecognition(void* param)
 {
 	auto threadRotate = static_cast<CThreadRotate*>(param);
-	if (threadRotate != nullptr)
+if (threadRotate != nullptr)
+{
+	if (threadRotate->bitmap != nullptr)
 	{
-		if (threadRotate->bitmap != nullptr)
-		{
-			threadRotate->isReady = true;
-			threadRotate->bitmap->VertFlipBuf();
-			threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
-		}
-
-		if (threadRotate->mainWindow != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_ROTATEDETECT);
-			evt.SetClientData(threadRotate);
-			threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
-		}
+		threadRotate->isReady = true;
+		threadRotate->bitmap->VertFlipBuf();
+		threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
 	}
+
+	if (threadRotate->mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ROTATEDETECT);
+		evt.SetClientData(threadRotate);
+		threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 }
 
 void CShowElement::OnRotateDetect(wxCommandEvent& event)
@@ -546,31 +546,31 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
+	filename = bitmap->GetFilename();
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
-		CMetadataExiv2 metaData(bitmap->GetFilename());
+		CSqlPhotos sqlPhotos;
+		int exif = sqlPhotos.GetPhotoExif(filename);
+		//CMetadataExiv2 metaData(bitmap->GetFilename());
 		CLibPicture libPicture;
-		if (configRegards->GetDetectOrientation() && !isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) &&
-			DeepLearning::CDeepLearning::IsResourceReady())
+		if (exif == -1 && configRegards->GetDetectOrientation())
 		{
-			CRegardsBitmap * _bitmap = bitmap->GetRegardsBitmap();
-			int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap);
-			bitmap->SetOrientation(exif);
-			/*
-			if (metaData.GetOrientation() == -1)
+			if (!isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) && DeepLearning::CDeepLearning::IsResourceReady())
 			{
-				auto path = new CThreadRotate();
-				path->filename = bitmap->GetFilename();
-				path->mainWindow = this;
-				path->bitmap = bitmap->GetRegardsBitmap();
-				path->thread = new thread(RotateRecognition, path);
+				CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
+				int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap);
+				sqlPhotos.InsertPhotoExif(filename, exif);
+				bitmap->SetOrientation(exif);
 			}
-			*/
+
+		}
+		else if (configRegards->GetDetectOrientation())
+		{
+			bitmap->SetOrientation(exif);
 		}
 
-		filename = bitmap->GetFilename();
+		
 		//bitmapWindow->FixArrowNavigation(true);
 		bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;

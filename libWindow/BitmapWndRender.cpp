@@ -785,19 +785,7 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 			flipHorizontal = 0;
 			angle = 0;
 
-			//updateFilter = true;
-			/*
-			CSqlPhotos sqlPhotos;
-			int exif = sqlPhotos.GetPhotoExif(filename);
-			if (exif != -1)
-			{
-				sqlPhotos.GetAngleAndFlip(exif, angle, flipHorizontal, flipVertical);
-			}
-			else
-			{
-				sqlPhotos.InsertPhotoExif(filename, 0);
-			}
-			*/
+
 			printf("CBitmapWndRender::SetBitmap  muBitmap.lock()\n");
 			muBitmap.lock();
 			if (source != nullptr)
