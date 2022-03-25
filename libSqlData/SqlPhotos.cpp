@@ -190,7 +190,7 @@ void CSqlPhotos::GetAngleAndFlip(const int64_t& exif, int& angle, int& flipH, in
 
 	case 7:
 		angle = 270;
-		flipH = 0
+		flipH = 0;
 		flipV = 0;
 		break;
 
