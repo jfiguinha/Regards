@@ -122,7 +122,7 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
 int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
 {
     if (!isload)
-        return;
+        return 0;
 
     int angle = 0;
     int frameHeight = frameOpenCVDNN.rows;

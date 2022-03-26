@@ -67,7 +67,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 
 	if (faceDetect > 0)
 	{
-		Mat frameOpenCVDNN = bitmap->GetMatrix();
+		Mat frameOpenCVDNN = bitmap;
 		for (int i = 0; i < listFaceRect.size(); i++)
 		{
 			CFace face;
