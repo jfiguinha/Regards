@@ -222,14 +222,16 @@ void CDetectFace::LoadModel()
 
 #ifdef __APPLE__
 #else
-	wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-	wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
-
 
 	try
 	{
 
 #ifndef __WXGTK__
+
+        wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
+        wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+
+
 		bool openCLCompatible = false;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -247,7 +249,10 @@ void CDetectFace::LoadModel()
 			net.setPreferableTarget(DNN_TARGET_CPU);
 #else
 
-		net = cv::dnn::readNetFromTensorflow(tensorflowWeightFile, tensorflowConfigFile);
+        wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
+        wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
+
+		net = readNetFromTensorflow(tensorflowWeightFile.ToStdString(), tensorflowConfigFile.ToStdString());
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		net.setPreferableTarget(DNN_TARGET_CPU);
 #endif

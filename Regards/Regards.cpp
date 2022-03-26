@@ -35,15 +35,6 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
-	/*
-	wxString nbArgument = to_string(wxGetApp().argc);
-	wxMessageBox(nbArgument);
-	//silent_mode = parser.Found(wxT("s"));
-	wxString  par2(wxGetApp().argv[0]);
-	wxMessageBox(par2);
-	wxString par(wxGetApp().argv[1]);
-	wxMessageBox(par);
-	 * */
 	// to get at your unnamed parameters use
 	wxArrayString files;
 	for (auto i = 0; i < parser.GetParamCount(); i++)

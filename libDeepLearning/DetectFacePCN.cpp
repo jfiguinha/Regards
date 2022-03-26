@@ -192,11 +192,19 @@ void CDetectFacePCN::LoadModel()
                 openCLCompatible = true;
         }
         */
+        
+#ifdef WIN32
         wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";
         wxString pcn1_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-1.prototxt";
         wxString pcn2_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-2.prototxt";
         wxString pcn3_proto = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN-3.prototxt";
+#else
+        wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "/model/PCN.caffemodel";
+        wxString pcn1_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-1.prototxt";
+        wxString pcn2_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-2.prototxt";
+        wxString pcn3_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-3.prototxt";
 
+#endif
         net_1 = readNet(pcn1_proto.ToStdString(), detection_model_path.ToStdString());
         net_2 = readNet(pcn2_proto.ToStdString(), detection_model_path.ToStdString());
         net_3 = readNet(pcn3_proto.ToStdString(), detection_model_path.ToStdString());
