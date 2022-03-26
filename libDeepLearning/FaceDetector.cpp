@@ -586,6 +586,12 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	if (rc.y + rc.height > yMax)
 		rc.height = yMax - rc.y;
 
+	if (rc.x < 0)
+		rc.x = 0;
+
+	if (rc.y < 0)
+		rc.y = 0;
+
 	Mat iris2 = eyeMat(rc);
 	Mat img_gray;
 	cvtColor(iris2, img_gray, COLOR_BGR2GRAY);
