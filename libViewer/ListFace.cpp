@@ -358,7 +358,7 @@ void CListFace::LoadResource(void* param)
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
 	wxString recognition = CFileUtility::GetResourcesFolderPath() + "/model/nn4.small2.v1.t7";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/ace_landmark_model.dat";
+	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 
 #endif
 
