@@ -180,7 +180,11 @@ void CFaceDetector::LoadModel(const string& config_file, const string& weight_fi
 		facemark = face::createFacemarkKazemi();
 		facemark->loadModel(face_landmark);
 
+#ifdef WIN32
 		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
+#else
+        wxString fileEye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
+#endif
 		eye_cascade.load(fileEye.ToStdString());
 		detectFace.LoadModel();
 		detectFacePCN.LoadModel();
