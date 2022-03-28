@@ -40,11 +40,12 @@ struct FaceValueIntegration
 };
 
 
-static Net netRecognition;
 static Net netPosition;
 static cv::CascadeClassifier eye_cascade;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<face::Facemark> facemark;
+static Ptr<FaceRecognizerSF> faceRecognizer;
+static Ptr<FaceDetectorYN> detector;
 
 const Scalar meanVal(104.0, 177.0, 123.0);
 const float confidenceThreshold = 0.59;
@@ -143,48 +144,28 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 }
 
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
-void CFaceDetector::LoadModel(const string& config_file, const string& weight_file, const string& recognition, const string& face_landmark)
+void CFaceDetector::LoadModel(const string& face_landmark)
 {
-
-	const std::string tensorflowConfigFile = config_file;
-	const std::string tensorflowWeightFile = weight_file;
 
 	try
 	{
 		CDetectFacePCN detectFacePCN;
 		CDetectFace detectFace;
-#ifndef __WXGTK__
-		
-		bool openCLCompatible = false;
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-		{
-			if (config->GetIsOpenCLSupport())
-				openCLCompatible = true;
-		}
 
-		netRecognition = readNetFromTorch(recognition);
-		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
-
-		if (openCLCompatible)
-			netRecognition.setPreferableTarget(DNN_TARGET_OPENCL);
-		else
-			netRecognition.setPreferableTarget(DNN_TARGET_CPU);
-#else
-
-		netRecognition = cv::dnn::readNetFromTorch(recognition);
-		netRecognition.setPreferableBackend(DNN_BACKEND_DEFAULT);
-		netRecognition.setPreferableTarget(DNN_TARGET_CPU);
-#endif
 
 		facemark = face::createFacemarkKazemi();
 		facemark->loadModel(face_landmark);
 
 #ifdef WIN32
+
+		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "\\model\\face_recognition_sface_2021dec.onnx";
 		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 #else
+		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "/model/face_recognition_sface_2021dec.onnx";
         wxString fileEye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
+
+		faceRecognizer = FaceRecognizerSF::create(fr_modelPath.ToStdString(), "");
 		eye_cascade.load(fileEye.ToStdString());
 		detectFace.LoadModel();
 		detectFacePCN.LoadModel();
@@ -609,82 +590,14 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	img_gray.copyTo(eyeMat(rc));
 }
 
-/**
- * This module is using to computing the cosine distance between input feature and ground truth feature
- */
-inline float CosineDistance(const cv::Mat& v1, const cv::Mat& v2) {
-	double dot = v1.dot(v2);
-	double denom_v1 = norm(v1);
-	double denom_v2 = norm(v2);
 
-	return dot / (denom_v1 * denom_v2);
-
-}
-
-
-Mat CFaceDetector::Zscore(const Mat& fc) {
-	Mat mean, std;
-	meanStdDev(fc, mean, std);
-	//    cout << mean << std << endl;
-	Mat fc_norm = (fc - mean) / std;
-	return fc_norm;
-
-}
-
-Mat CFaceDetector::GetFaceScore(const int& numFace)
-{
-	Mat fc1;
-	try
-	{
-		Mat face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
-		Mat face1Vec = FaceDesriptor(face1);
-		fc1 = Zscore(face1Vec);
-		return fc1;
-	
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-#ifdef WIN32
-		wxString error = err_msg;
-		OutputDebugString(error.ToStdWstring().c_str());
-#endif
-	}
-
-	return fc1;
-}
-
-Mat CFaceDetector::FaceDesriptor(Mat face)
-{
-	Mat result;
-	try
-	{
-		if (openclContext != nullptr)
-			openclContext->GetContextForOpenCV().bind();
-
-		Mat blob = blobFromImage(face, 1.0 / 255, Size(96, 96), Scalar(0, 0, 0, 0), true, false);
-		netRecognition.setInput(blob);
-		result = netRecognition.forward().clone();
-		blob.release();
-	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-#ifdef WIN32
-		wxString error = err_msg;
-		OutputDebugString(error.ToStdWstring().c_str());
-#endif
-	}
-	return result;
-}
 
 int CFaceDetector::FaceRecognition(const int& numFace)
 {
 	//int predictedLabel = -1;
+
+#ifdef OLD
+
 	double maxConfidence = 0.0;
 	Mat fc1;
 	bool findFaceCompatible = false;
@@ -757,4 +670,88 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	}
 
 	return findFaceCompatible;
+#else
+
+
+	double cosine_similar_thresh = 0.363;
+	double l2norm_similar_thresh = 1.128;
+
+	double maxConfidence = 0.0;
+	Mat fc1;
+	bool findFaceCompatible = false;
+	CSqlFacePhoto facePhoto;
+	CSqlFaceRecognition sqlfaceRecognition;
+	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
+
+	if (!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString()))
+	{
+		return 0;
+	}
+
+	Mat aligned_face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+	Mat feature1;
+	faceRecognizer->feature(aligned_face1, feature1);
+	feature1 = feature1.clone();
+
+
+	if (faceRecognitonVec.size() > 0)
+	{
+		int predictedLabel = -1;
+		double confidence = 0.0;
+
+		for (CFaceRecognitionData picture : faceRecognitonVec)
+		{
+
+			Mat aligned_face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
+			Mat feature2;
+			faceRecognizer->feature(aligned_face2, feature2);
+			feature2 = feature2.clone();
+
+
+			double score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_COSINE);
+			//double L2_score = faceRecognizer->match(feature1, feature2, FaceRecognizerSF::DisType::FR_NORM_L2);
+
+			
+			if (score >= cosine_similar_thresh)
+			{
+				confidence = score;
+				predictedLabel = picture.numFaceCompatible;
+			}
+			/*
+			std::cout << " Cosine Similarity: " << cos_score << ", threshold: " << cosine_similar_thresh << ". (higher value means higher similarity, max 1.0)\n";
+			if (L2_score <= l2norm_similar_thresh)
+			{
+				std::cout << "They have the same identity;";
+			}
+			else
+			{
+				std::cout << "They have different identities.";
+			}
+			*/
+		}
+
+		if (predictedLabel != -1 && confidence > cosine_similar_thresh)
+		{
+			sqlfaceRecognition.InsertFaceRecognition(numFace, predictedLabel);
+			findFaceCompatible = true;
+		}
+
+		if (!findFaceCompatible)
+		{
+			CSqlFaceLabel sqlfaceLabel;
+			wxString label = "Face number " + to_string(numFace);
+			sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
+			sqlfaceLabel.InsertFaceLabel(numFace, label, true);
+		}
+	}
+	else
+	{
+		CSqlFaceLabel sqlfaceLabel;
+		wxString label = "Face number " + to_string(numFace);
+		sqlfaceRecognition.InsertFaceRecognition(numFace, numFace);
+		sqlfaceLabel.InsertFaceLabel(numFace, label, true);
+	}
+
+	return findFaceCompatible;
+#endif
 }
