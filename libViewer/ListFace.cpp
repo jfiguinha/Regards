@@ -340,30 +340,7 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 void CListFace::LoadResource(void* param)
 {
 	auto path = static_cast<CThreadFace*>(param);
-
-	//load Ressource
-
-#ifdef WIN32
-	//Face Data Preload
-	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
-
-	wxString recognition = CFileUtility::GetResourcesFolderPath() + "\\model\\nn4.small2.v1.t7";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
-
-#else
-
-		//Face Data Preload
-	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
-	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
-
-	wxString recognition = CFileUtility::GetResourcesFolderPath() + "/model/nn4.small2.v1.t7";
-	wxString landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
-
-#endif
-
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), recognition.ToStdString(), landmark.ToStdString());
-
+	CDeepLearning::LoadRessource();
 
 	if (path->mainWindow != nullptr)
 	{

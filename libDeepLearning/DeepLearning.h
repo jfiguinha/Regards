@@ -13,7 +13,7 @@ namespace Regards
 		public:
 
 			static void CleanRecognition();
-			static void LoadRessource(const string& face_landmark);
+			static void LoadRessource();
 			static vector<int> FindFace(CRegardsBitmap* pictureData);
 			static void DetectEyes(CRegardsBitmap* pBitmap);
 

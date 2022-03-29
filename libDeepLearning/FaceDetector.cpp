@@ -45,14 +45,11 @@ static cv::CascadeClassifier eye_cascade;
 std::mutex CFaceDetector::muFaceMark;
 static Ptr<face::Facemark> facemark;
 static Ptr<FaceRecognizerSF> faceRecognizer;
-static Ptr<FaceDetectorYN> detector;
 
 const Scalar meanVal(104.0, 177.0, 123.0);
 const float confidenceThreshold = 0.59;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
-//std::mutex CFaceDetector::muFaceMark;
-//static Ptr<face::Facemark> facemark;
 
 void CFaceDetector::CleanBase()
 {
@@ -144,7 +141,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 }
 
 //config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
-void CFaceDetector::LoadModel(const string& face_landmark)
+void CFaceDetector::LoadModel()
 {
 
 	try
@@ -153,17 +150,20 @@ void CFaceDetector::LoadModel(const string& face_landmark)
 		CDetectFace detectFace;
 
 
-		facemark = face::createFacemarkKazemi();
-		facemark->loadModel(face_landmark);
 
 #ifdef WIN32
-
+		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "\\model\\face_landmark_model.dat";
 		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "\\model\\face_recognition_sface_2021dec.onnx";
 		wxString fileEye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 #else
+		wxString face_landmark = CFileUtility::GetResourcesFolderPath() + "/model/face_landmark_model.dat";
 		wxString fr_modelPath = CFileUtility::GetResourcesFolderPath() + "/model/face_recognition_sface_2021dec.onnx";
         wxString fileEye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
+
+
+		facemark = face::createFacemarkKazemi();
+		facemark->loadModel(face_landmark.ToStdString());
 
 		faceRecognizer = FaceRecognizerSF::create(fr_modelPath.ToStdString(), "");
 		eye_cascade.load(fileEye.ToStdString());
