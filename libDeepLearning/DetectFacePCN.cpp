@@ -184,14 +184,14 @@ void CDetectFacePCN::LoadModel()
     {
 
        bool openCLCompatible = false;
-       /*
+
         CRegardsConfigParam* config = CParamInit::getInstance();
         if (config != nullptr)
         {
             if (config->GetIsOpenCLSupport())
                 openCLCompatible = true;
         }
-        */
+
         
 #ifdef WIN32
         wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";
@@ -212,19 +212,19 @@ void CDetectFacePCN::LoadModel()
         
         net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);
         if (openCLCompatible)
-            net_1.setPreferableTarget(DNN_TARGET_OPENCL);
+            net_1.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
         else
             net_1.setPreferableTarget(DNN_TARGET_CPU);
 
         net_2.setPreferableBackend(DNN_BACKEND_DEFAULT);
         if (openCLCompatible)
-            net_2.setPreferableTarget(DNN_TARGET_OPENCL);
+            net_2.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
         else
             net_2.setPreferableTarget(DNN_TARGET_CPU);
 
         net_3.setPreferableBackend(DNN_BACKEND_DEFAULT);
         if (openCLCompatible)
-            net_3.setPreferableTarget(DNN_TARGET_OPENCL);
+            net_3.setPreferableTarget(DNN_TARGET_OPENCL_FP16);
         else
             net_3.setPreferableTarget(DNN_TARGET_CPU);
     

@@ -293,9 +293,9 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 		cvtColor(source, source, COLOR_BGRA2BGR);
 		float dRatio = 1.0;
 		float invertRatio = 1.0;
-		if (source.size().width > 1024 || source.size().height > 1024)
+		if (source.size().width > 600 || source.size().height > 600)
 		{
-			dRatio = CalculPictureRatio(source.size().width, source.size().height, 1024, 1024);
+			dRatio = CalculPictureRatio(source.size().width, source.size().height, 600, 600);
 			invertRatio = CalculPictureRatio(source.size().width * dRatio, source.size().height * dRatio, source.size().width, source.size().height);
 			resize(source, resizeSource, Size(source.size().width * dRatio, source.size().height * dRatio));
             detectFacePCN->DetectFace(resizeSource, listOfFace, pointOfFace);
