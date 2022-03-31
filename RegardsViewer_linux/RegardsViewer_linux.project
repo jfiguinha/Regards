@@ -260,7 +260,6 @@
         <Library Value="Half-2_5"/>
         <Library Value="Iex-2_5"/>
         <Library Value="IexMath-2_5"/>
-        <Library Value="IL"/>
         <Library Value="IlmImf-2_5"/>
         <Library Value="IlmImfUtil-2_5"/>
         <Library Value="IlmThread-2_5"/>
@@ -286,7 +285,6 @@
         <Library Value="opencv_face"/>
         <Library Value="opencv_features2d"/>
         <Library Value="opencv_flann"/>
-        <Library Value="opencv_freetype"/>
         <Library Value="opencv_fuzzy"/>
         <Library Value="opencv_hdf"/>
         <Library Value="opencv_hfs"/>
@@ -411,6 +409,11 @@
         <Library Value="jpeg"/>
         <Library Value="turbojpeg"/>
         <Library Value="zen"/>
+        <Library Value="xml2"/>
+        <Library Value="lzma"/>
+        <Library Value="ssh"/>
+        <Library Value="mbedtls"/>
+        <Library Value="mbedcrypto"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

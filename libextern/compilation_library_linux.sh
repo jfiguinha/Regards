@@ -35,16 +35,12 @@ cd vcpkg-master
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
-./vcpkg install fftw3[avx2,openmp,threads]
 ./vcpkg install libexif
 ./vcpkg install tbb
 ./vcpkg install glew
 ./vcpkg install x265
-./vcpkg install libwebp
 ./vcpkg install jasper
 ./vcpkg install libraw
-./vcpkg install tesseract
-./vcpkg install openjpeg
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage

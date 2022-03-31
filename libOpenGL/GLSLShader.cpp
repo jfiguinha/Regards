@@ -259,7 +259,7 @@ bool GLSLShader::SetParam(const char* pParamName_i, const float fValue_i)
 
 	glUniform1f(nParamObj, fValue_i);
 	GLenum glErr = glGetError();
-	printf("SetParam glError %p\n", gluErrorString(glErr));
+	//printf("SetParam glError %p\n", gluErrorString(glErr));
 	return (GL_NO_ERROR == glErr);
 }
 

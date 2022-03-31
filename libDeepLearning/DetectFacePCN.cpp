@@ -184,14 +184,14 @@ void CDetectFacePCN::LoadModel()
     {
 
        bool openCLCompatible = false;
-
+#ifdef WIN32
         CRegardsConfigParam* config = CParamInit::getInstance();
         if (config != nullptr)
         {
             if (config->GetIsOpenCLSupport())
                 openCLCompatible = true;
         }
-
+#endif
         
 #ifdef WIN32
         wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";

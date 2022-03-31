@@ -15,6 +15,7 @@
 #include <fstream>
 #include <OpenCLContext.h>
 #include <opencv2/tracking/tracking_by_matching.hpp>
+#include <opencv2/objdetect/face.hpp>
 #include "eyedetect.h"
 #include <FileUtility.h>
 using namespace Regards::OpenCL;
