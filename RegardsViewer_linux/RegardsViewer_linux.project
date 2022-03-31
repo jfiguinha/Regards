@@ -412,8 +412,6 @@
         <Library Value="xml2"/>
         <Library Value="lzma"/>
         <Library Value="ssh"/>
-        <Library Value="mbedtls"/>
-        <Library Value="mbedcrypto"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
