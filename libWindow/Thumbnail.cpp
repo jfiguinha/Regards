@@ -27,6 +27,8 @@ class CImageLoadingFormat;
 #define TIMER_LOADING 4
 #define TIMER_ANIMATION 6
 #define TIMER_CLICK 7
+#define TIMER_MOVE 3
+
 
 #define TIMER_REFRESH_ACTIF 8
 #define TIMER_REFRESH_SELECT 9
@@ -457,6 +459,9 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail& t
 	timerAnimation = new wxTimer(this, TIMER_ANIMATION);
 	Connect(TIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnAnimation), nullptr, this);
 
+	refreshMouseMove = new wxTimer(this, TIMER_MOVE);
+	Connect(TIMER_MOVE, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnTimerMove), nullptr, this);
+
 	const wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
@@ -544,6 +549,11 @@ void CThumbnail::OnRefreshThumbnail(wxCommandEvent& event)
 	RefreshIcone(idPhoto);
 }
 
+void CThumbnail::OnTimerMove(wxTimerEvent& event)
+{
+	isMoving = false;
+}
+
 void CThumbnail::MoveTop()
 {
 	wxWindow* parent = this->GetParent();
@@ -606,8 +616,10 @@ void CThumbnail::OnTopPosition(wxCommandEvent& event)
 
 void CThumbnail::OnScrollMove(wxCommandEvent& event)
 {
+	refreshMouseMove->Stop();
 	isMovingScroll = isMoving = event.GetInt();
 	moveOnPaint = false;
+	refreshMouseMove->Start(1000, true);
 }
 
 void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
@@ -673,7 +685,7 @@ CThumbnail::~CThumbnail()
 	TRACE();
 	threadDataProcess = false;
 
-	
+	refreshMouseMove->Stop();
 
 	timeClick->Stop();
 
@@ -697,6 +709,8 @@ CThumbnail::~CThumbnail()
 	}
 
 	delete refreshSelectTimer;
+
+	delete refreshMouseMove;
 
 
 	delete timeClick;
@@ -1066,6 +1080,9 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 	if (threadDataProcess == false)
 		return;
 
+	refreshMouseMove->Stop();
+
+	isMoving = true;
 	bool needtoRedraw = false;
 	isMovingScroll = true;
 	bool isChecked = false;
@@ -1138,7 +1155,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 			needToRefresh = true;
 		}
 
-		//this->GetParent()->GetEventHandler()->ProcessEvent(event);
+		refreshMouseMove->Start(1000, true);
 	}
 }
 

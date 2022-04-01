@@ -122,6 +122,7 @@ namespace Regards
 			void OnRefreshIconeSelect(wxTimerEvent& event);
 			void OnRefreshIconeActif(wxTimerEvent& event);
 			void OnTimerClick(wxTimerEvent& event);
+			void OnTimerMove(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC* dc) = 0;
 			virtual void UpdateScroll() = 0;
 
@@ -169,6 +170,7 @@ namespace Regards
 			vector<int> TabSize;
 			int Max;
 
+			wxTimer* refreshMouseMove;
 			wxTimer* refreshActifTimer;
 			wxTimer* refreshSelectTimer;
 			wxTimer* timeClick;
