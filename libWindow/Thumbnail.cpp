@@ -615,6 +615,7 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 	//needToRefresh = true;
 	//RefreshIcone(numActifPhotoId);
 	//RefreshIcone(numSelectPhotoId);
+
 	CLibPicture libPicture;
 	wxClientDC dc(this);
 	{
@@ -637,10 +638,12 @@ void CThumbnail::OnRefreshIconeActif(wxTimerEvent& event)
 			}
 		}
 	}
+
 }
 
 void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 {
+
 	CLibPicture libPicture;
 	wxClientDC dc(this);
 	{
@@ -662,6 +665,7 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 			}
 		}
 	}
+
 }
 
 CThumbnail::~CThumbnail()
@@ -916,6 +920,8 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
         StartThread();
 
 	CLibPicture libPicture;
+
+	if(enableTimer)
 	{
 		bool actifActif = false;
 		CIcone* icone = GetIconeById(numActifPhotoId);
@@ -947,6 +953,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 				refreshActifTimer->Start(timeActif, TRUE);
 	}
 
+	if (enableTimer)
 	{
 		bool actifActif = false;
 		CIcone* icone = GetIconeById(numSelectPhotoId);

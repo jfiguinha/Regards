@@ -32,6 +32,7 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 {
 	numItemSelected = -1;
 	process_end = true;
+	enableTimer = false;
 	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndVideoThumbnail));
 	Connect(wxEVENT_ENDTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndThumbnail));
 }
@@ -111,6 +112,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
          return;
     }
     
+
 	if (numSelectPhotoId != -1)
 	{
 		CIcone* numSelect = GetIconeById(numSelectPhotoId);
@@ -170,6 +172,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t& videoPos)
 	numSelectPhotoId = iconeList->GetPhotoId(numItem);
 	numItemSelected = numItem;
     needToRefresh = true;
+	//this->Refresh();
 }
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const int& size)

@@ -136,6 +136,8 @@ namespace Regards
 			void MoveBottom();
 			void MoveRight();
 
+			bool enableTimer = true;
+
 			//Variable
 			std::mutex lockIconeList;
 			CIconeList* iconeList;
