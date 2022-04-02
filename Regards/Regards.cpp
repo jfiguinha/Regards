@@ -138,203 +138,6 @@ bool MyApp::OnInit()
 		printf("SQLite in serialized mode \n");
 	}
 
-#ifdef TEST_PCN
-	wxArrayString listFiles;
-	wxDir::GetAllFiles("C:\\Users\\jfigu\\Documents\\Regards\\face", &listFiles);
-
-	const char* detection_model_path = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN.caffemodel";
-	const char* pcn1_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-1.prototxt";
-	const char* pcn2_proto = "C:\\developpement\\FaceKit-master\\PCN\\\model\\PCN-2.prototxt";
-	const char* pcn3_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-3.prototxt";
-	const char* tracking_model_path = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-Tracking.caffemodel";
-	const char* tracking_proto = "C:\\developpement\\FaceKit-master\\PCN\\model\\PCN-Tracking.prototxt";
-
-	Net net_1 = readNet(pcn1_proto, detection_model_path);
-	Net net_2 = readNet(pcn2_proto, detection_model_path);
-	Net net_3 = readNet(pcn3_proto, detection_model_path);
-
-	for (int i = 0; i < listFiles.size(); i++)
-	{
-		cv::Mat img = imread(listFiles[i].ToStdString());
-		Mat paddedImg = padImg(img);
-
-		cv::Mat img180, img90, imgNeg90;
-		cv::flip(paddedImg, img180, 0);
-		cv::transpose(paddedImg, img90);
-		cv::flip(img90, imgNeg90, 0);
-
-		float thresholds[] = { 0.37, 0.43, 0.95 };
-
-		cv::TickMeter tm;
-		tm.reset();
-		tm.start();
-
-		int minFaceSize = 40;
-		std::vector<FaceBox> faces = PCN_1(img, paddedImg, net_1, thresholds[0], minFaceSize);
-		faces = NMS(faces, true, 0.8);
-		faces = PCN_2(paddedImg, img180, net_2, thresholds[1], 24, faces);
-		faces = NMS(faces, true, 0.8);
-		faces = PCN_3(paddedImg, img180, img90, imgNeg90, net_3, thresholds[2], 48, faces);
-		faces = NMS(faces, false, 0.3);
-
-		tm.stop();
-		std::cout << "Time Cost: " << tm.getTimeMilli() << " ms" << std::endl;
-
-		std::vector<FaceBox> preList = TransformBoxes(img, paddedImg, faces);
-
-		for (int i = 0; i < preList.size(); i++)
-		{
-			DrawFace(img, preList[i]);
-		}
-
-		imshow("IMG", img);
-		waitKey();
-	}
-
-#endif
-
-
-#ifdef TEST
-	int nbEyes = 0;
-	vector<cv::Mat> valuePic;
-	vector<cv::Point> value;
-	bool isOk = false;
-	wxArrayString listFiles;
-	wxDir::GetAllFiles("C:\\Users\\jfigu\\Documents\\Regards\\Face", &listFiles);
-	int angle = 0;
-	for (int ui = 0; ui < listFiles.size();ui++)
-	{
-		Mat face = imread(listFiles[ui].ToStdString(), 0);
-		for (int i = 0; i < 36; i++)
-		{
-
-			Mat tpl;
-			cv::CascadeClassifier eye_cascade, mouth;
-			std::vector<cv::Rect> eyes, mouthi;
-			eye_cascade.load("d:\\haarcascade_eye.xml");
-			eye_cascade.detectMultiScale(face, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, cv::Size(20, 20));
-			mouth.load("d:\\haarcascade_mcs_mouth.xml");
-
-			for (int p = 0; p < eyes.size(); p++)
-			{
-				Rect rect = eyes[p];
-				if (rect.y > (face.size().height / 2))
-				{
-					eyes.erase(eyes.begin() + p);
-					p--;
-				}
-			}
-
-			for (int i = 0; i < eyes.size(); i++)
-			{
-				for (int j = 0; j < eyes.size(); j++)
-				{
-					if (i != j)
-					{
-						Rect interesect = eyes[i] & eyes[j];
-						if (interesect.area() > 0)
-						{
-							eyes.erase(eyes.begin() + j);
-							j--;
-						}
-					}
-				}
-			}
-
-
-			int angleEye = 0;
-			if (eyes.size() == 2)
-			{
-				cv::Point leftPupil;
-				leftPupil.x = eyes[0].x + eyes[0].width / 2;
-				leftPupil.y = eyes[0].y + eyes[0].height / 2;
-				cv::Point rightPupil;
-				rightPupil.x = eyes[1].x + eyes[1].width / 2;
-				rightPupil.y = eyes[1].y + eyes[1].height / 2;
-				angleEye = atan2(rightPupil.y - leftPupil.y, rightPupil.x - leftPupil.x) / M_PI * 180;
-			}
-			
-			if (eyes.size() != 2 || (angleEye == 0))
-			{
-				Mat src = imread(listFiles[ui].ToStdString(), 0);
-				angle += 10;
-				// get rotation matrix for rotating the image around its center in pixel coordinates
-				cv::Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
-				cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
-				// determine bounding rectangle, center not relevant
-				cv::Rect2f bbox = cv::RotatedRect(cv::Point2f(), src.size(), angle).boundingRect2f();
-				// adjust transformation matrix
-				rot.at<double>(0, 2) += bbox.width / 2.0 - src.cols / 2.0;
-				rot.at<double>(1, 2) += bbox.height / 2.0 - src.rows / 2.0;
-				cv::warpAffine(src, face, rot, bbox.size());
-				continue;
-			}
-
-			imwrite("d:\\test_picture\\test" + to_string(ui) + ".jpg", face);
-
-
-
-			bool error = false;
-
-			if (eyes.size() > 2)
-			{
-				CEyeDetect eyeDetect;
-				for (int p = 0; p < eyes.size(); p++)
-				{
-					Mat image;
-					Rect rect = eyes[p];
-					tpl = face(rect);
-					int angle = eyeDetect.findEyes(tpl);
-					imshow("test Right", tpl);
-					waitKey(0);
-				}
-			}
-
-
-			if (eyes.size() > 2)
-			{
-				printf("Error");
-				error = true;
-			}
-
-			cv::Scalar colors[3];
-			colors[0] = cv::Scalar(255, 0, 0);
-			colors[1] = cv::Scalar(0, 255, 0);
-			colors[2] = cv::Scalar(0, 0, 255);
-
-			for (int k = 0; k < eyes.size(); k++)
-			{
-				Mat image;
-				Rect rect = eyes[k];
-				tpl = face(rect);
-				nbEyes++;
-			}
-
-			break;
-
-		}
-
-		/*
-		CEyeDetect eyeDetect;
-   		eyes = eyeDetect.EyesPosition(face);
-		Mat eyeLeft = face(eyes[0]);
-		Mat eyeRight = face(eyes[1]);
-
-
-		imshow("test Right", face);
-		waitKey(0);
-
-		imshow("test Left",eyeLeft);
-		waitKey(0);
-
-		imshow("test Right", eyeRight);
-		waitKey(0);
-		*/
-
-	}
-	exit(0);
-#endif
-
 	sqlite3_initialize();
 
 	wxInitAllImageHandlers();
@@ -346,10 +149,6 @@ bool MyApp::OnInit()
 	CPrintEngine::Initialize();
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-	printf("Document Path %s \n", CConvertUtility::ConvertToUTF8(documentPath));
-	printf("Resource Path %s \n", CConvertUtility::ConvertToUTF8(resourcePath));
-
 	CLibPicture::Initx265Decoder();
 
 
@@ -361,21 +160,6 @@ bool MyApp::OnInit()
 	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
 	glutInit(&argc, argv);
 #endif
-#endif
-
-#ifdef TEST_FFMPEG
-	wxString tempAudio = "d:\\video\\audio.mp3";
-	wxString filepathAudio = "d:\\video\\song.mp3";
-	wxString extension = "mp3";
-	CFFmpegApp fmpegApp;
-	try
-	{
-		fmpegApp.CropAudio(filepathAudio, to_string(60), extension, tempAudio);
-}
-	catch (int e)
-	{
-		fmpegApp.Cleanup(e);
-	}
 #endif
 
 #if not defined(WIN32) && defined(LIBBPG)
@@ -415,7 +199,7 @@ bool MyApp::OnInit()
 		else
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
-#ifdef __WXGTK__
+#ifndef WIN32
 
 	if (regardsParam->GetIsOpenCLSupport())
 	{
