@@ -12,6 +12,7 @@ public:
 	CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
 
+	bool convertToGLTexture2D(GLTexture* glTexture);
 	int HistogramNormalize();
 	int HistogramEqualize();
 	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);

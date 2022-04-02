@@ -166,7 +166,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 {
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
-        
+       
     if(renderOpenGL == nullptr)
     {
         renderOpenGL = new CRenderOpenGL(this);
@@ -174,6 +174,12 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
     renderOpenGL->SetCurrent(*this);
 
+#ifndef __WXGTK__
+	if (openclContext == nullptr)
+	{
+		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+	}
+#endif
 	if (openclContext != nullptr)
 		openclContext->GetContextForOpenCV().bind();
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);

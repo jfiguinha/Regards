@@ -115,6 +115,18 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	showToolbar = true;
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
 
+
+#ifndef __WXGTK__
+	bool openCLCompatible = false;
+	CRegardsConfigParam* _configRegards = CParamInit::getInstance();
+	if (_configRegards != nullptr)
+	{
+		if (_configRegards->GetIsOpenCLSupport())
+			openCLCompatible = true;
+	}
+#else
+	bool openCLCompatible = false;
+#endif
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -141,6 +153,9 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	bitmapWindow = new CBitmapWndViewer(pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	bitmapWindow->SetTabValue(value);
+
+	if(openCLCompatible)
+		bitmapWindow->UseOpenCLOpenGLInterop(true);
 	bitmapWindowRender = new CBitmapWnd3D(this, bitmapViewerId);
 	bitmapWindowRender->SetBitmapRenderInterface(bitmapWindow);
 
@@ -192,6 +207,9 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	softRender = true;
 	videoWindow = new CVideoControlSoft(windowMain, this);
+	if (openCLCompatible)
+		videoWindow->UseOpenCLOpenGLInterop(true);
+
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 

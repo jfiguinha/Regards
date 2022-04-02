@@ -34,6 +34,24 @@ bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabil
 	return true;
 }
 
+bool COpenCLEffect::convertToGLTexture2D(GLTexture* glTexture)
+{
+	bool isOk = false;
+	{
+
+		if (preview && !paramOutput.empty())
+		{
+			isOk = openclFilter->convertToGLTexture2D(paramOutput, glTexture);
+		}
+		else
+		{
+			isOk = openclFilter->convertToGLTexture2D(input, glTexture);
+		}
+	}
+
+	return isOk;
+}
+
 int COpenCLEffect::GetSizeData() const
 {
 	return sizeof(cl_uint) * 4;
@@ -59,7 +77,6 @@ int COpenCLEffect::GetHeight()
 
 int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp, const double& ChromTmp)
 {
-	
 	{
 		
 		if (preview && !paramOutput.empty())

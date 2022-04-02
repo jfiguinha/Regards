@@ -66,6 +66,8 @@ namespace Regards
 			int GetPosRatio();
 			void SetRatioPos(const int& pos);
 
+			bool UseOpenCLOpenGLInterop(const bool& value);
+
 			int GetBitmapWidth();
 			int GetBitmapHeight();
 
@@ -330,7 +332,7 @@ namespace Regards
             bool needToRefresh = false;
 			bool endProgram = false;
 			wxWindow* parentRender = nullptr;
-            
+			bool useOpenCLOpenGLInterop = false;
             double scale_factor = 1.0f;
 		};
 	}

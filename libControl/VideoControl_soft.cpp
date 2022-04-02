@@ -69,6 +69,11 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* 
 	pictureFrame = new CRegardsBitmap();
 }
 
+bool CVideoControlSoft::UseOpenCLOpenGLInterop(const bool& value)
+{
+	useOpenCLOpenGLInterop = value;
+}
+
 vector<int> CVideoControlSoft::GetListTimer()
 {
 	vector<int> list;
@@ -1903,8 +1908,20 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
 	}
 
+	bool useInterop = false;
+
+
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-	if (glTexture != nullptr)
+
+	if (useOpenCLOpenGLInterop)
+	{
+		if (openclEffect->convertToGLTexture2D(glTexture))
+		{
+			useInterop = true;
+		}
+	}
+
+	if (!useInterop)
 	{
 		CRegardsBitmap* bitmap = openclEffect->GetBitmap();
 		glTexture->SetData(bitmap);

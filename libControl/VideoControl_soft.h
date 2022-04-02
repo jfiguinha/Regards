@@ -98,6 +98,8 @@ public:
 	virtual void SetEndProgram(const bool& endProgram) override;
 	virtual int UpdateResized() override;
 
+	bool UseOpenCLOpenGLInterop(const bool& value);
+
 protected:
 
 	void OnSetPosition(wxCommandEvent& event);
@@ -262,4 +264,5 @@ protected:
 	SwsContext* localContext = nullptr;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
+	bool useOpenCLOpenGLInterop = false;
 };

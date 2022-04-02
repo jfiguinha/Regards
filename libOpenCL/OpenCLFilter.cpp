@@ -167,6 +167,64 @@ COpenCLFilter::~COpenCLFilter()
 	delete superSampling;
 }
 
+bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
+{
+	using namespace cv::ocl;
+	cl_context context = openclContext->GetContext();
+	bool isOk = false;
+	int rgba = 0;
+	UMat u;
+
+	try
+	{
+
+		if (rgba == 0)
+			cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+		else
+			cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
+
+		cl_int status = 0;
+		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
+
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+
+		cl_command_queue q = openclContext->GetCommandQueue();
+
+		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+		size_t offset = 0; // TODO
+		size_t dst_origin[3] = { 0, 0, 0 };
+		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
+		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+		status = clFinish(q); // TODO Use events
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
+
+		status = clReleaseMemObject(clImage); // TODO RAII
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+
+		isOk = true;
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
+
+	return isOk;
+}
+
 
 void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {

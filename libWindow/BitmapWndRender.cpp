@@ -1537,6 +1537,11 @@ void CBitmapWndRender::SetPreview(const int& value)
 	preview = value;
 }
 
+bool CBitmapWndRender::UseOpenCLOpenGLInterop(const bool& value)
+{
+	useOpenCLOpenGLInterop = value;
+}
+
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
@@ -1587,15 +1592,31 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-		CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
+		bool useInterop = false;
 
-		glTexture = renderOpenGL->GetDisplayTexture();
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
-		if (glTexture != nullptr)
-			glTexture->SetData(bitmap);
-		else
-			printf("CBitmapWndRender GetDisplayTexture Error \n");
-		delete bitmap;
+		if (useOpenCLOpenGLInterop)
+		{
+			if (filtreEffet->convertToGLTexture2D(glTexture))
+			{
+				useInterop = true;
+			}
+		}
+
+
+		if (!useInterop)
+		{
+			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
+
+			if (glTexture != nullptr)
+				glTexture->SetData(bitmap);
+			else
+				printf("CBitmapWndRender GetDisplayTexture Error \n");
+
+			delete bitmap;
+		}
+		
 	}
 
 	renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,

@@ -46,6 +46,8 @@ public:
 };
 
 
+
+
 cv::Rect CFiltreEffetCPUImpl::CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top)
 {
 	cv::Rect rect;
@@ -201,6 +203,20 @@ cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
 	return outputImage;
 }
 
+
+bool CFiltreEffetCPU::convertToGLTexture2D(GLTexture* glTexture)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (glTexture != nullptr)
+		glTexture->SetData(bitmap);
+
+	return true;
+}
 
 
 CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitmap)

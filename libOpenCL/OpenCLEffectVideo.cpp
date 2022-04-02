@@ -62,6 +62,20 @@ cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)
 	return output;
 }
 
+bool COpenCLEffectVideo::convertToGLTexture2D(GLTexture* glTexture)
+{
+	bool isOk = false;
+	if (interpolatePicture && !paramOutput.empty())
+	{
+		isOk = openclFilter->convertToGLTexture2D(paramOutput, glTexture);
+	}
+	else
+	{
+		isOk = openclFilter->convertToGLTexture2D(paramSrc, glTexture);
+	}
+	return isOk;
+}
+
 bool COpenCLEffectVideo::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
 {
 

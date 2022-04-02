@@ -38,7 +38,7 @@ namespace Regards
 				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 			};
 
-
+			bool convertToGLTexture2D(GLTexture* glTexture);
 			virtual ~COpenCLEffect();
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };
 			int VignetteEffect(const double& radius = 1.0, const double& power = 0.8) { return -1; };

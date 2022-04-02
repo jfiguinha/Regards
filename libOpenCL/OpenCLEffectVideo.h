@@ -55,6 +55,7 @@ namespace Regards
 			cv::Mat GetMatrix(const bool & src = true);
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
+			bool convertToGLTexture2D(GLTexture* glTexture);
 			bool CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba);
 			void AutoContrast();
 			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
