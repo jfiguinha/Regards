@@ -12,6 +12,12 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
+#if defined __APPLE__
+#include <OpenCL/cl_gl.h>
+#else
+#include <CL/cl_gl.h>
+#endif
+
 using namespace Regards::OpenCL;
 using namespace cv;
 using namespace dnn;
