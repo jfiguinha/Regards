@@ -33,6 +33,7 @@ namespace Regards
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
 			void Emboss(cv::UMat& inputData);
+			
 			void Sharpen(cv::UMat& inputData);
 			void Edge(cv::UMat& inputData);
 			void SharpenStrong(cv::UMat& inputData);
@@ -67,7 +68,7 @@ namespace Regards
 		protected:
 			
 			CSuperSampling* superSampling;
-
+			int GetRgbaBitmap(cl_mem buffer, cl_mem clImage, int width, int height);
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
 			int GetSizeData();
 			cl_mem_flags  flag;

@@ -5,6 +5,8 @@
 #include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
 #include <OpenCLEngine.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::OpenCL;
 
 extern COpenCLContext* openclContext;
@@ -175,9 +177,14 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     renderOpenGL->SetCurrent(*this);
 
 #ifdef WIN32
-	if (openclContext == nullptr)
+
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam->GetIsOpenCLSupport())
 	{
-		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+		if (openclContext == nullptr)
+		{
+			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+		}
 	}
 #endif
 	if (openclContext != nullptr)

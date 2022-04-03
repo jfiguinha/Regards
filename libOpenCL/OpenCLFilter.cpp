@@ -178,16 +178,12 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	int rgba = 0;
 	UMat u;
 
 	try
 	{
 
-		if (rgba == 0)
-			cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
-		else
-			cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
 
 		cl_int status = 0;
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
@@ -195,18 +191,23 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
 		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
-
+		
 		cl_command_queue q = openclContext->GetCommandQueue();
 
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+
+		/*
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+		*/
+		GetRgbaBitmap(clBuffer, clImage, inputData.cols, inputData.rows);
+
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
@@ -1035,6 +1036,52 @@ void COpenCLFilter::Flip(const wxString &functionName, cv::UMat & inputData)
 }
 
 
+int COpenCLFilter::GetRgbaBitmap(cl_mem clBuffer, cl_mem clImage, int width, int height)
+{
+
+	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(flag);
+
+		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(width);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(height);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		program->SetKeepOutput(true);
+		program->SetParameter(&vecParam, width, height, (cl_mem)clImage);
+		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+
+		delete program;
+
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+
+	return 0;
+}
+
 void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & inputData)
 {
 	cv::UMat dest;
@@ -1231,7 +1278,6 @@ void COpenCLFilter::ColorEffect(const wxString &functionName, cv::UMat & inputDa
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 }
-
 
 void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cv::UMat & inputData)
 {
@@ -1507,3 +1553,4 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 	
 	return cvImage;
 }
+
