@@ -182,7 +182,10 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 		for (i = 0; i < image->numcmpts_; ++i){	if (bufs[i]) jas_matrix_destroy(bufs[i]);}
 		free(bufs);
 	}
+    
+#ifndef __APPLE__
 	jas_cleanup();
+#endif
 	if (image)
         jas_image_destroy(image);
 	if (in)

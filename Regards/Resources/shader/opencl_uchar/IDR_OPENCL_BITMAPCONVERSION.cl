@@ -14,22 +14,25 @@ inline float4 rgbaUintToFloat4(uint c)
 //----------------------------------------------------
 //Conversion d'un bitmap en wxImage
 //----------------------------------------------------
-__kernel void BitmapToOpenGLTextureApple(__write_only image2d_t output, const __global uint *input, int width, int height)
+__kernel void ImportFromOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
 {
-	const int2 pos = {get_global_id(0), get_global_id(1)};
-    int x = get_global_id(0);
-	int y = get_global_id(1);
-	int position = x + y * width;
+	int position = get_global_id(0);
+	output[position].x = input[position].x;
+	output[position].y = input[position].y;
+	output[position].z = input[position].z;
+	output[position].w = input[position].w;
+}
 
-	float4 value;
-	float4 color = rgbaUintToFloat4(input[position]);
-
-	value.x = color.z;
-	value.y = color.y;
-	value.z = color.x;
-	value.w = color.w;
-
-	write_imagef(output, (int2)(pos.x, pos.y), value);
+//----------------------------------------------------
+//Conversion d'un bitmap en wxImage
+//----------------------------------------------------
+__kernel void CopyToOpencv(__global uchar4 * output,const __global uchar4 * input, int width, int height)
+{
+	int position = get_global_id(0);
+	output[position].x = input[position].x;
+	output[position].y = input[position].y;
+	output[position].z = input[position].z;
+	output[position].w = input[position].w;
 }
 
 //----------------------------------------------------

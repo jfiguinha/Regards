@@ -67,6 +67,8 @@ namespace Regards
 
 		protected:
 			
+            cv::UMat GetOpenCVStruct(cl_mem clImage, int width, int height);
+            cl_mem CopyOpenCVTexture(cv::UMat & dst, int width, int height);
 			CSuperSampling* superSampling;
 			int GetRgbaBitmap(cl_mem buffer, cl_mem clImage, int width, int height);
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
