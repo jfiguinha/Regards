@@ -2573,6 +2573,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
+/*
         case JP2:
 			{
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
@@ -2588,7 +2589,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				bitmap->SetPicture(_cxImage);
 			}
 			break;
-
+*/
 		case MPG2:
 		case MPEG:
 		case AVCHD:

@@ -114,8 +114,7 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-	jas_cleanup_thread();
-	jas_cleanup_library();
+    jas_cleanup();
 
 	return 0;
 }
@@ -138,20 +137,15 @@ bool MyApp::OnInit()
 	std::set_terminate(onTerminate);
     
     size_t max_mem = get_default_max_mem_usage();
-	jas_conf_clear();
-	static jas_std_allocator_t allocator;
-	jas_std_allocator_init(&allocator);
-	jas_conf_set_allocator(&allocator.base);
-    jas_conf_set_max_mem_usage(max_mem);
 
-	if (jas_init_library()) {
+	if (jas_init()) {
 		fprintf(stderr, "cannot initialize JasPer library\n");
 		return EXIT_FAILURE;
 	}
-	if (jas_init_thread()) {
-		fprintf(stderr, "cannot initialize thread\n");
-		return EXIT_FAILURE;
-	}
+
+    jas_set_max_mem_usage(max_mem);
+
+	jas_setdbglevel(0);
 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
