@@ -720,7 +720,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	case EXR:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			regards->ConvertToBgr();
+			//regards->ConvertToBgr();
 			int _option = EXR_DEFAULT;
 			switch (option)
 			{
@@ -794,7 +794,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	case TGA:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			regards->ConvertToBgr();
+			//regards->ConvertToBgr();
 			int pitch = regards->GetBitmapWidth() * 4;
 			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
 				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
@@ -815,7 +815,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	case MNG:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			regards->ConvertToBgr();
+			//regards->ConvertToBgr();
 			int pitch = regards->GetBitmapWidth() * 4;
 			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
 				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
@@ -836,7 +836,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	case TIFF:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			regards->ConvertToBgr();
+			//regards->ConvertToBgr();
 			int _option = TIFF_DEFAULT;
 			switch (option)
 			{
