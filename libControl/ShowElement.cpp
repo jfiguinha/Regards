@@ -116,7 +116,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
 
 
-#ifdef WIN32
+#ifndef __WXGTK__
 	bool openCLCompatible = false;
 	CRegardsConfigParam* _configRegards = CParamInit::getInstance();
 	if (_configRegards != nullptr)

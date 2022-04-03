@@ -183,8 +183,20 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	try
 	{
 
-		cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
+		
+#ifdef __APPLE__
 
+        cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+
+        Mat local;
+        u.copyTo(local);
+        
+       
+#else
+    
+        cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
+    
+#endif
 		cl_int status = 0;
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
@@ -197,16 +209,13 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-
-		/*
+            
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-		*/
-		GetRgbaBitmap(clBuffer, clImage, inputData.cols, inputData.rows);
 
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
@@ -494,6 +503,12 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
 	if(programCL != nullptr)
@@ -580,6 +595,12 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
@@ -714,136 +735,6 @@ void COpenCLFilter::Sharpen(cv::UMat& inputData)
 	}
 }
 
-cv::UMat COpenCLFilter::GetOpenCVStruct(cl_mem clImage, int width, int height)
-{
-	cv::UMat dst;
-	cl_int err = 0;
-
-	cl_mem_object_type mem_type = 0;
-	clGetMemObjectInfo(clImage, CL_MEM_TYPE, sizeof(cl_mem_object_type), &mem_type, 0);
-
-	cl_image_format fmt = { 0, 0 };
-	clGetImageInfo(clImage, CL_IMAGE_FORMAT, sizeof(cl_image_format), &fmt, 0);
-
-	int depth = CV_8U;
-	//if (context->GetDefaultType() == OPENCL_FLOAT)
-	//	depth = CV_32F;
-
-	int type = CV_MAKE_TYPE(depth, 4);
-
-	size_t w = width;
-	size_t h = height;
-	dst.create((int)h, (int)w, type);
-
-	if (context->GetDefaultType() == OPENCL_FLOAT)
-	{
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		//cl_mem outputValue = nullptr;
-		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-			input->SetValue(clImage);
-			input->SetLibelle("input");
-			input->SetNoDelete(true);
-			vecParam.push_back(input);
-
-			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-			paramWidth->SetLibelle("width");
-			paramWidth->SetValue(width);
-			vecParam.push_back(paramWidth);
-
-			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-			paramHeight->SetLibelle("height");
-			paramHeight->SetValue(height);
-			vecParam.push_back(paramHeight);
-
-			program->SetParameter(&vecParam, w, h, clBuffer);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "CopyToOpencv");
-			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-	else
-	{
-		dst.create((int)h, (int)w, type);
-		cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_RW);
-		cl_command_queue q = (cl_command_queue)context->GetCommandQueue();
-		err = clEnqueueCopyBuffer(q, clImage, clBuffer, 0, 0, w * h * GetSizeData(), NULL, NULL, NULL);
-		Error::CheckError(err);
-		clFinish(q);
-	}
-
-
-
-	return dst;
-}
-
-cl_mem COpenCLFilter::CopyOpenCVTexture(cv::UMat & dst, int width, int height)
-{
-	//cl_int err = 0;
-	cl_mem clBuffer = (cl_mem)dst.handle(cv::ACCESS_READ);
-
-	cl_mem outputValue = nullptr;
-	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem *	dataImage = new COpenCLParameterClMem();
-		dataImage->SetNoDelete(true);
-		dataImage->SetValue(clBuffer);
-		vecParam.push_back(dataImage);
-
-		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-		paramWidth->SetLibelle("width");
-		paramWidth->SetValue(width);
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-		paramHeight->SetLibelle("height");
-		paramHeight->SetValue(height);
-		vecParam.push_back(paramHeight);
-
-		program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
-		program->SetKeepOutput(true);
-		program->ExecuteProgram1D(programCL->GetProgram(), "ImportFromOpencv");
-		outputValue = program->GetOutput();
-
-		delete program;
-
-		for (COpenCLParameter * parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-
-		vecParam.clear();
-	}
-
-
-	return outputValue;
-}
-
 void COpenCLFilter::SharpenStrong(cv::UMat& inputData)
 {
 	try
@@ -902,6 +793,12 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
@@ -978,6 +875,12 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
@@ -1031,6 +934,12 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
@@ -1099,6 +1008,12 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif
+    
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
@@ -1165,59 +1080,26 @@ void COpenCLFilter::Flip(const wxString &functionName, cv::UMat & inputData)
 	}
 }
 
-
-int COpenCLFilter::GetRgbaBitmap(cl_mem clBuffer, cl_mem clImage, int width, int height)
-{
-
-	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter*> vecParam;
-		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(flag);
-
-		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);
-
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(width);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(height);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		program->SetKeepOutput(true);
-		program->SetParameter(&vecParam, width, height, (cl_mem)clImage);
-        program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-		delete program;
-
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
-
-	return 0;
-}
-
 void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & inputData)
 {
-	cv::UMat dest;
+    //cl_mem outputValue = nullptr;
+    cv::UMat dest;
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+
+#ifdef __APPLE__
+    Mat local;
+    cvDestBgra.copyTo(local);
+#endif    
+
+    cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+    
+    //Mat src;
+    //cvDestBgra.copyTo(src);
+    //imwrite("/Users/jacques/Pictures/test2.jpg", src);
+    
+	//cl_mem clBuffer = CopyOpenCVTexture(cvDestBgra, cvDestBgra.size().width, cvDestBgra.size().height);//(cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	if (programCL != nullptr)
 	{
@@ -1258,6 +1140,7 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Swirl");
+            //outputValue = program->GetOutput();
 			
 		}
 		catch(...)
@@ -1278,6 +1161,9 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 		}
 		vecParam.clear();
 	}
+    
+
+    //UMat dest = GetOpenCVStruct(outputValue,  inputData.cols, inputData.rows);
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
