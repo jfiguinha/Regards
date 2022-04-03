@@ -1,7 +1,6 @@
 #pragma once
 #ifdef LIBHEIC
 class CRegardsBitmap;
-class CxMemFile;
 
 namespace Regards
 {

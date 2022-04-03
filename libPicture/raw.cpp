@@ -16,52 +16,47 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	CImageLoadingFormat* picture;
 	int type = 0;
-	CxMemFile* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
+	DataStorage* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
 	if (memFile != nullptr)
 	{
+		/*
+		if (thumb->type == LIBRAW_IMAGE_JPEG)
+		{
+			dataPt = new uint8_t[thumb->data_size];
+			memcpy(dataPt, thumb->data, thumb->data_size);
+			outputFormat = JPEGOUTPUT;
+			size = thumb->data_size;
+			//memPicture = new CxMemFile(thumb->data,thumb->data_size);
+		}
+		else if (thumb->type == LIBRAW_IMAGE_BITMAP)
+		{
+			std::vector<uint8_t> data;
+			outputFormat = BITMAPOUTPUT;
+			write_ppm(thumb, &data);
+			dataPt = new uint8_t[data.size()];
+			size = data.size();
+			memcpy(dataPt, &data[0], data.size());
+		}
+		*/
+
 		if (type == JPEGOUTPUT)
 		{
+			wxMemoryInputStream cxMemFile(memFile->dataPt, memFile->size);
 			isFromExif = true;
 			picture = new CImageLoadingFormat();
-#ifdef TURBOJPEG
-
-			long unsigned int _jpegSize; //!< _jpegSize from above
-			//unsigned char* _compressedImage; //!< _compressedImage from above
-			CRegardsBitmap* image;
-			int jpegSubsamp, width, height;
-			uint8_t* _compressedImage = memFile->GetBuffer(false);
-			_jpegSize = memFile->Size();
-
-			tjhandle _jpegDecompressor = tjInitDecompress();
-
-			tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height, &jpegSubsamp);
-
-			image = new CRegardsBitmap(width, height);
-
-			//if (thumbnail)
-			//	tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
-			//else
-			tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height,
-			              TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
-
-			tjDestroy(_jpegDecompressor);
-
-			picture->SetPicture(image);
+			wxImage jpegImage;
+			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
+			picture->SetPicture(&jpegImage);
 			picture->SetFilename(fileName);
-#else
-			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("jpg"));
-			picture->SetPicture(image);
-			picture->SetFilename(fileName);
-#endif
 		}
 		else
 		{
 			picture = new CImageLoadingFormat();
-			auto image = new CxImage(memFile, CxImage::GetTypeIdFromName("ppm"));
+			CxMemFile memPicture(memFile->dataPt, memFile->size);
+			auto image = new CxImage(&memPicture, CxImage::GetTypeIdFromName("ppm"));
 			picture->SetPicture(image);
 			picture->SetFilename(fileName);
 		}
-
 		delete memFile;
 	}
 	else

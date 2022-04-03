@@ -1,6 +1,5 @@
 #pragma once
 class CRegardsBitmap;
-class CxMemFile;
 class CMetadata;
 
 namespace Regards
@@ -21,7 +20,7 @@ namespace Regards
 			void SetOrientation(const int& orientation);
 			vector<CMetadata> GetMetadata();
 			bool CopyMetadata(const wxString& output);
-			CxMemFile* DecodeThumbnail(wxString& extension, int& orientation);
+			wxMemoryInputStream * DecodeThumbnail(wxString& extension, int& orientation);
 			void SetDateTime(const wxString& dateTime);
 			wxString GetCreationDate();
 			void SetGpsInfos(const wxString& latitudeRef, const wxString& longitudeRef, const wxString& latitude,

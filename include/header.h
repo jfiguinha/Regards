@@ -76,6 +76,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core/mat.hpp>
+#include <wx/mstream.h>
 using namespace std;
 
 /*  check if the current version is at least major.minor.release */

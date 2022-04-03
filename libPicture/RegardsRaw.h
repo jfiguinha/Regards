@@ -6,8 +6,23 @@ using namespace std;
 #define BITMAPOUTPUT 2
 #define NOTHUMBNAIL 3
 
-class CxMemFile;
-class CxImage;
+class DataStorage
+{
+public:
+	DataStorage()
+	{
+
+	}
+	~DataStorage()
+	{
+		if (dataPt != nullptr)
+			delete[] dataPt;
+		dataPt = nullptr;
+	}
+
+	uint8_t* dataPt = nullptr;
+	int size = 0;
+};
 
 namespace Regards
 {
@@ -20,7 +35,7 @@ namespace Regards
 			~CRegardsRaw();
 
 			static void GetDimensions(const string& fileName, int& width, int& height);
-			static CxMemFile* GetThumbnail(const string& fileName, int& outputFormat);
+			static DataStorage * GetThumbnail(const string& fileName, int& outputFormat);
 		};
 	}
 }

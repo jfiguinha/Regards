@@ -2031,7 +2031,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		printf("CLibPicture::LoadThumbnail \n");
 		int orientation = -1;
 		wxString extension;
-		CxMemFile* memFile = nullptr;
+		wxMemoryInputStream * memFile = nullptr;
 		CMetadataExiv2 pictureMetadata(fileName);
 		if (pictureMetadata.HasThumbnail())
 		{
@@ -2058,12 +2058,14 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else if (memFile != nullptr)
 		{
-			auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
-			if (image->GetWidth() > 0 && image->GetHeight() > 0)
+			//auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
+			wxImage jpegImage;
+			jpegImage.LoadFile(*memFile, wxBITMAP_TYPE_JPEG);
+			if (jpegImage.GetWidth() > 0 && jpegImage.GetHeight() > 0)
 			{
 				imageLoading = new CImageLoadingFormat();
 				imageLoading->SetFilename(fileName);
-				imageLoading->SetPicture(image);
+				imageLoading->SetPicture(&jpegImage);
 				imageLoading->SetOrientation(orientation);
 				if (imageLoading->IsOk())
 				{

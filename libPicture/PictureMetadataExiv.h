@@ -4,7 +4,6 @@
 #include <exiv2/iptc.hpp>
 
 class CRegardsBitmap;
-class CxMemFile;
 
 namespace Regards
 {
@@ -23,7 +22,7 @@ namespace Regards
 			int GetOrientation();
 			vector<CMetadata> GetMetadata();
 			bool CopyMetadata(const wxString& output);
-			CxMemFile* DecodeThumbnail(wxString& extension, int& orientation);
+			wxMemoryInputStream * DecodeThumbnail(wxString& extension, int& orientation);
 			void SetDateTime(const wxString& dateTime);
 			void SetOrientation(const int& orientation);
 			void SetGpsInfos(const wxString& latitudeRef, const wxString& longitudeRef, const wxString& latitude,
@@ -36,7 +35,7 @@ namespace Regards
 		private:
 			Exiv2::URationalValue::AutoPtr GetGpsRationalValue(const wxString& gpsValue);
 			wxString GetGpsfValue(const wxString& gpsValue);
-			CxMemFile* LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation);
+			wxMemoryInputStream * LoadThumbnailFromExif(Exiv2::ExifData* dataIn, wxString& extension, int& orientation);
 			void AddAsciiValue(wxString key, wxString value, Exiv2::ExifData& exifData);
 			void AddRationalValue(wxString keyName, wxString value, Exiv2::ExifData& exifData);
 			wxString GetQuickTimeDate(int64_t dateQuicktime);

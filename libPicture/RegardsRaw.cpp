@@ -49,12 +49,9 @@ void write_ppm(libraw_processed_image_t* img, std::vector<uint8_t>* p)
 
 
 
-CxMemFile* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
+DataStorage* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
 {
-	//int i = 1;
-	//int tempimg, row, col;
-	CxMemFile* memPicture = nullptr;
-	// step one: Open file
+	DataStorage * memPicture = new DataStorage();
 	auto RawProcessor = new LibRaw;
 	int ret; //, output_thumbs = 0;
 	outputFormat = BITMAPOUTPUT;
@@ -65,32 +62,26 @@ CxMemFile* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat)
 			libraw_processed_image_t* thumb = RawProcessor->dcraw_make_mem_thumb(&ret);
 			if (thumb)
 			{
-				uint8_t* dataPt = nullptr;
-				int size = 0;
 				if (thumb->type == LIBRAW_IMAGE_JPEG)
 				{
-					dataPt = new uint8_t[thumb->data_size];
-					memcpy(dataPt, thumb->data, thumb->data_size);
+					memPicture->dataPt = new uint8_t[thumb->data_size];
+					memcpy(memPicture->dataPt, thumb->data, thumb->data_size);
 					outputFormat = JPEGOUTPUT;
-					size = thumb->data_size;
-					//memPicture = new CxMemFile(thumb->data,thumb->data_size);
+					memPicture->size = thumb->data_size;
 				}
 				else if (thumb->type == LIBRAW_IMAGE_BITMAP)
 				{
 					std::vector<uint8_t> data;
 					outputFormat = BITMAPOUTPUT;
 					write_ppm(thumb, &data);
-					dataPt = new uint8_t[data.size()];
-					size = data.size();
-					memcpy(dataPt, &data[0], data.size());
+					memPicture->dataPt = new uint8_t[data.size()];
+					memPicture->size = data.size();
+					memcpy(memPicture->dataPt, &data[0], data.size());
 				}
-				memPicture = new CxMemFile(dataPt, size);
 			}
 			else
 				outputFormat = NOTHUMBNAIL;
 		}
-
-		//RawProcessor->recycle();
 	}
 	delete RawProcessor;
 	return memPicture;
