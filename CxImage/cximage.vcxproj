@@ -386,7 +386,6 @@
     <ClCompile Include="ximaico.cpp" />
     <ClCompile Include="ximainfo.cpp" />
     <ClCompile Include="ximaint.cpp" />
-    <ClCompile Include="ximajas.cpp" />
     <ClCompile Include="ximajbg.cpp" />
     <ClCompile Include="ximalpha.cpp" />
     <ClCompile Include="ximalyr.cpp" />
@@ -407,7 +406,6 @@
     <ClInclude Include="ximagif.h" />
     <ClInclude Include="ximaico.h" />
     <ClInclude Include="ximaiter.h" />
-    <ClInclude Include="ximajas.h" />
     <ClInclude Include="ximajbg.h" />
     <ClInclude Include="ximapng.h" />
     <ClInclude Include="ximaska.h" />

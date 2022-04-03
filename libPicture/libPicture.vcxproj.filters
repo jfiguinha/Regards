@@ -13,9 +13,6 @@
     <ClCompile Include="libPicture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pfm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScaleThumbnail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -127,9 +124,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libPicture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScaleThumbnail.h">

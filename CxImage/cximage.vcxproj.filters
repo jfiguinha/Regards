@@ -35,9 +35,6 @@
     <ClCompile Include="ximaint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ximajas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ximajbg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximaiter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ximajas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ximajbg.h">

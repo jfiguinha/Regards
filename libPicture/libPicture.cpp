@@ -27,7 +27,6 @@
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <LibResource.h>
-#include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
 #include <avif.h>
@@ -585,16 +584,34 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	{
     case ASCII:
     {
-        CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+        CRegardsBitmap* regards = bitmap->GetRegardsBitmap(false);
         CBitmapToAscii::SaveToAscii(regards, fileName.ToStdString());
         break;
     }
     
 	case PFM:
 		{
+			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+			int pitch = regards->GetBitmapWidth() * 4;
+			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
+				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
+				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
+			if (!FreeImage_Save(FIF_PFM, floatImage, fileName, 0))
+			{
+				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
+				//L"&Help";
+				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
+			}
+			FreeImage_Unload(floatImage);
+			FreeImage_Unload(Image);
+			delete regards;
+			/*
 			CRegardsFloatBitmap* regards = bitmap->GetFloatBitmap(true);
 			CPfm::WriteFilePFM(regards, fileName, 1.0f);
 			delete regards;
+			*/
 			break;
 		}
 
@@ -668,6 +685,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
+	case JPEG2000:
 	case JP2:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
@@ -814,15 +832,13 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
 				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
 				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
-			if (!FreeImage_Save(FIF_TARGA, floatImage, fileName, 0))
+			if (!FreeImage_Save(FIF_TARGA, Image, fileName, 0))
 			{
 				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
 				//L"&Help";
 				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
 				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
 			}
-			FreeImage_Unload(floatImage);
 			FreeImage_Unload(Image);
 
 			delete regards;
@@ -837,15 +853,13 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
 				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
 				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
-			if (!FreeImage_Save(FIF_PCX, floatImage, fileName, 0))
+			if (!FreeImage_Save(FIF_PCX, Image, fileName, 0))
 			{
 				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
 				//L"&Help";
 				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
 				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
 			}
-			FreeImage_Unload(floatImage);
 			FreeImage_Unload(Image);
 
 			delete regards;
@@ -854,13 +868,22 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case MNG:
 		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("mng"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
+			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
+			regards->ConvertToBgr();
+			int pitch = regards->GetBitmapWidth() * 4;
+			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
+				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
+				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+			if (!FreeImage_Save(FIF_MNG, Image, fileName, 0))
+			{
+				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
+				//L"&Help";
+				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
+				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
+			}
+			FreeImage_Unload(Image);
+
+			delete regards;
 		}
 		break;
 
@@ -890,15 +913,13 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
 			                                               regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
 			                                               FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
-			if (!FreeImage_Save(FIF_TIFF, floatImage, fileName, _option))
+			if (!FreeImage_Save(FIF_TIFF, Image, fileName, _option))
 			{
 				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
 				//L"&Help";
 				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
 				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
 			}
-			FreeImage_Unload(floatImage);
 			FreeImage_Unload(Image);
 
 			delete regards;            
@@ -999,7 +1020,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				}
 			}
 
-			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
+			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
 			CHeic::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
 
 			if (data != nullptr)
@@ -1036,9 +1057,8 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 
-			CRegardsBitmap* image = bitmap->GetRegardsBitmap();
+			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
 			CAvif::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
-			delete image;
 			if (data != nullptr)
 				delete[] data;
 
@@ -1056,52 +1076,16 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
-	case PNM:
-		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
-		}
-		break;
-
-	case JPC:
-		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpc"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
-		}
-		break;
-
-	case JPEG2000:
-		{
-			CxImage* image = bitmap->GetCxImage();
-			image->SetJpegQualityF(static_cast<float>(quality));
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jp2"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
-		}
-		break;
 
 	case PPM:
 		{
-			CxImage* image = bitmap->GetCxImage();
-			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
-			wxString error = image->GetLastError();
-			if (error != "")
-				wxMessageBox(error,
-				             informations_error, wxOK | wxICON_ERROR);
-			delete image;
+			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
+			vector<int> compression_params;
+			compression_params.push_back(32);
+			compression_params.push_back(1);
+			//writing as ppm image
+			cv::imwrite(fileName.ToStdString(), image->GetMatrix(), compression_params);
+
 		}
 		break;
 
@@ -2316,21 +2300,10 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		break;
 #endif
 
-		case PFM:
-		{
-			CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
-			bitmap->SetPicture(test);
-			break;
-		}
 
-		/*/
-		cout << "Width : " << src.cols << endl;
-		cout << "Height: " << src.rows << endl;
-		*/
 		case PNM:
 		case JPEG:
 		case PNG:
-//		case JP2:
 		case TIFF:
 		case WEBP:
 		case BMP:
@@ -2565,31 +2538,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
-		case PGX:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("pgx"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-
-/*
-        case JP2:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("jp2"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-        
-		case JPC:
-			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
-				                            CxImage::GetTypeIdFromName("jpc"));
-				bitmap->SetPicture(_cxImage);
-			}
-			break;
-*/
 		case MPG2:
 		case MPEG:
 		case AVCHD:
@@ -2813,12 +2761,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	switch (iFormat)
 	{
-	case PFM:
-		{
-			CPfm::GetDimensions(fileName, width, height);
-		}
-		break;
-
 	case EXR:
 	case HDR:
 		{
@@ -2862,10 +2804,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jbg"), true);
 		break;
 
-	case TIFF:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tif"), true);
-		break;
-
 	case PDF:
 		{
 			try
@@ -2904,34 +2842,6 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case RAWFILE:
 		typeImage = TYPE_IMAGE_REGARDSIMAGE;
 		CRaw::GetDimensions(fileName, width, height);
-		break;
-
-
-	case GIF:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"), true);
-		break;
-
-	case PNM:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
-		break;
-
-	case PNG:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("png"), true);
-		break;
-
-	case PPM:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
-		break;
-
-
-	case PCD:
-	case MNG:
-	case PSD:
-		//image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"), true);
-		PictureDimensionFreeImage(CConvertUtility::ConvertToUTF8(fileName), width, height);
-		break;
-	case PGX:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pgx"), true);
 		break;
 
 	case SVG:
