@@ -115,8 +115,6 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	showToolbar = true;
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
 
-
-#ifndef __WXGTK__
 	bool openCLCompatible = false;
 	CRegardsConfigParam* _configRegards = CParamInit::getInstance();
 	if (_configRegards != nullptr)
@@ -124,9 +122,7 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 		if (_configRegards->GetIsOpenCLSupport())
 			openCLCompatible = true;
 	}
-#else
-	bool openCLCompatible = false;
-#endif
+
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;

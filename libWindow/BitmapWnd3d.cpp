@@ -176,7 +176,6 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
     renderOpenGL->SetCurrent(*this);
 
-#ifndef __WXGTK__
 
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam->GetIsOpenCLSupport())
@@ -186,7 +185,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 		}
 	}
-#endif
+
 	if (openclContext != nullptr)
 		openclContext->GetContextForOpenCV().bind();
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);

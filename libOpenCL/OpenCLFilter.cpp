@@ -184,7 +184,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	{
         cl_int status = 0;
         
-#ifdef __APPLE__
+#ifndef WIN32
         Mat local;
         u.copyTo(local);	
 #endif
@@ -495,7 +495,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-#ifdef __APPLE__
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
@@ -587,7 +587,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-#ifdef __APPLE__
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
@@ -785,7 +785,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-#ifdef __APPLE__
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
@@ -865,9 +865,11 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 	cv::UMat dest;
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
+    
+    
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-#ifdef __APPLE__
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
@@ -926,11 +928,11 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-#ifdef __APPLE__
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
-    
+ 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
@@ -999,8 +1001,8 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-    
-#ifdef __APPLE__
+
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
 #endif
@@ -1076,13 +1078,18 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
     //cl_mem outputValue = nullptr;
     cv::UMat dest;
 	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    cv::UMat cvDestBgra;
+    int depth = CV_8U;
+    int type = CV_MAKE_TYPE(depth, 4);
+    cvDestBgra.create((int)inputData.rows, (int)inputData.cols, type);
 
-#ifdef __APPLE__
+
+	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+    
+#ifndef WIN32
     Mat local;
     cvDestBgra.copyTo(local);
-#endif    
+#endif
 
     cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
     
@@ -1160,64 +1167,6 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
 {
-	/*
-	cv::UMat dest;
-	cv::UMat cvDest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter *> vecParam;
-		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
-
-		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
-		input->SetValue(clBuffer);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);	
-
-		COpenCLParameterFloat * paramConstrast = new COpenCLParameterFloat();
-		paramConstrast->SetLibelle("contrast");
-		paramConstrast->SetValue(contrast);
-		vecParam.push_back(paramConstrast);
-
-		COpenCLParameterFloat * paramLightness = new COpenCLParameterFloat();
-		paramLightness->SetLibelle("light");
-		paramLightness->SetValue(brightness);
-		vecParam.push_back(paramLightness);
-
-		try
-		{
-			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
-			int type = CV_MAKE_TYPE(depth, 4);
-			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
-			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), "LightAndContrast");
-			
-		}
-		catch(...)
-		{
-			
-		}
-		delete program;
-
-
-
-	for (COpenCLParameter * parameter : vecParam)
-		{
-			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
-	*/
 	cv::UMat cvDest;
 	try
 	{
