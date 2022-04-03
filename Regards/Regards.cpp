@@ -199,8 +199,7 @@ bool MyApp::OnInit()
 		else
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
-#ifndef WIN32
-
+#ifdef __WXGTK__
 	if (regardsParam->GetIsOpenCLSupport())
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();

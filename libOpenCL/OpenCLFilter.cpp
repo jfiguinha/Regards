@@ -190,7 +190,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_RW);
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
 
@@ -1063,8 +1063,7 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem clBuffer, cl_mem clImage, int width, int
 
 		program->SetKeepOutput(true);
 		program->SetParameter(&vecParam, width, height, (cl_mem)clImage);
-		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-
+        program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 		delete program;
 
 
