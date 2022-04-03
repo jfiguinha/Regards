@@ -2330,7 +2330,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case PNM:
 		case JPEG:
 		case PNG:
-		case JP2:
+//		case JP2:
 		case TIFF:
 		case WEBP:
 		case BMP:
@@ -2573,6 +2573,14 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 			break;
 
+        case JP2:
+			{
+				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
+				                            CxImage::GetTypeIdFromName("jp2"));
+				bitmap->SetPicture(_cxImage);
+			}
+			break;
+        
 		case JPC:
 			{
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
