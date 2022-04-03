@@ -176,7 +176,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
     renderOpenGL->SetCurrent(*this);
 
-#ifdef WIN32
+#ifndef __WXGTK__
 
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam->GetIsOpenCLSupport())

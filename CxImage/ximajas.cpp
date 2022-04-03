@@ -183,8 +183,10 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 		free(bufs);
 	}
 	jas_cleanup();
-	if (image) jas_image_destroy(image);
-	if (in) jas_stream_close(in);
+	if (image)
+        jas_image_destroy(image);
+	if (in)
+        jas_stream_close(in);
 
 	return (error==0);
 }
