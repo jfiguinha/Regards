@@ -27,8 +27,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
   cx_try
   {
-	if (jas_init())
-		cx_throw("cannot initialize jasper");
+
 
 	in = jas_stream_fdopen(0, "rb");
 	if (!in)

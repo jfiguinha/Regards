@@ -66,9 +66,13 @@ protected:
 		
 #ifdef __APPLE__
 		static long JasRead(jas_stream_obj_t *obj, char *buf, size_t cnt)
-		{		return ((CxFile*)obj)->Read(buf,1,cnt); }
+		{		
+            return ((CxFile*)obj)->Read(buf,1,cnt); 
+        }
 		static long JasWrite(jas_stream_obj_t *obj, const char *buf, size_t cnt)
-		{		return ((CxFile*)obj)->Write(buf,1,cnt); }
+		{		
+            return ((CxFile*)obj)->Write(buf,1,cnt); 
+            }
 		static long JasSeek(jas_stream_obj_t *obj, long offset, int origin)
 		{		return ((CxFile*)obj)->Seek(offset,origin); }
 		static int JasClose(jas_stream_obj_t * /*obj*/)
