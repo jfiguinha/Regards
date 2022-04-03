@@ -194,7 +194,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
        
 #else
     
-        cv::cvtColor(inputData, u, cv::COLOR_BGR2BGRA);
+		cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
     
 #endif
 		cl_int status = 0;

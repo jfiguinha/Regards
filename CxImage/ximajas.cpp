@@ -183,13 +183,13 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 		free(bufs);
 	}
     
-#ifndef __APPLE__
-	jas_cleanup();
-#endif
-	if (image)
-        jas_image_destroy(image);
+
+
 	if (in)
         jas_stream_close(in);
+
+	if (image)
+		jas_image_destroy(image);
 
 	return (error==0);
 }
@@ -323,9 +323,13 @@ bool CxImageJAS::Encode(CxFile * hFile, uint32_t imagetype)
   }
 
 	for (x = 0; x < numcmpts; ++x) { if (cmpts[x]) { jas_matrix_destroy(cmpts[x]); } }
-	jas_cleanup();
-	if (image) jas_image_destroy(image);
-	if (out) jas_stream_close(out);
+
+	if (out)
+		jas_stream_close(out);
+
+	if (image) 
+		jas_image_destroy(image);
+
 
 	return (error==0);
 }
