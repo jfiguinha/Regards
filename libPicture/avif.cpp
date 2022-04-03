@@ -268,7 +268,8 @@ void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t*
 			avifRGBImageSetDefaults(&rgb, image);
 			rgb.depth = 8; // [8, 10, 12, 16]; Does not need to match image->depth.
 			rgb.format = AVIF_RGB_FORMAT_BGRA; // See choices in avif.h
-			rgb.pixels = source->GetPtBitmap(); // Point at your RGB(A)/BGR(A) pixels here
+			rgb.pixels = new uint8_t[source->GetBitmapSize()]; // Point at your RGB(A)/BGR(A) pixels here
+			memcpy(rgb.pixels, source->GetPtBitmap(), source->GetBitmapSize());
 			rgb.rowBytes = source->GetWidthSize();
 			//memcpy(&rgb.pixels, source->GetPtBitmap(), rgb.rowBytes);
 

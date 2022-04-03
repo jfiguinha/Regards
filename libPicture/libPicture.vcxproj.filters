@@ -109,6 +109,9 @@
     <ClCompile Include="ascii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pfm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -241,6 +244,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ascii.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

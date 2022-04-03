@@ -28,7 +28,7 @@ CBpgOption::CBpgOption(wxWindow* parent)
 	btnCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_CANCEL")));
 	sbCompression = static_cast<wxStaticBox*>(FindWindow(XRCID("ID_SBCOMPRESSION")));
 	slCompression = static_cast<wxSlider*>(FindWindow(XRCID("ID_SLCOMPRESSION")));
-	rbCompression = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCOMPRESSION")));
+	rbCompression = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCODEC")));
 	Connect(XRCID("ID_OK"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CBpgOption::OnbtnOKClick);
 	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&CBpgOption::OnbtnCancelClick);
 	Connect(

@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
-using namespace Regards::Picture;
+
 #define uchar unsigned char
 
 void skip_space(fstream& fileStream)

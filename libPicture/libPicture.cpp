@@ -27,6 +27,7 @@
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <LibResource.h>
+#include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
 #include <avif.h>
@@ -134,15 +135,6 @@ static FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 	if (fif == FIF_UNKNOWN)
 		fif = FreeImage_GetFIFFromFilename(filename);
 	return fif;
-}
-
-static void MyMessageFunction(FREE_IMAGE_FORMAT fif, const char* msg)
-{
-#ifdef WIN32
-#ifndef NDEBUG
-    wxMessageBox(msg,"FreeImage error", wxICON_ERROR);
-#endif
-#endif
 }
 
 
@@ -572,6 +564,17 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 	return returnValue;
 }
 
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char* message) {
+	printf("\n*** ");
+	if (fif != FIF_UNKNOWN) {
+		if (FreeImage_GetFormatFromFIF(fif))
+			printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
+	}
+	printf(message);
+	printf(" ***\n");
+}
+
+
 int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap, const int& option,
                              const int& quality)
 {
@@ -591,27 +594,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
     
 	case PFM:
 		{
-			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			int pitch = regards->GetBitmapWidth() * 4;
-			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
-				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
-				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			FIBITMAP* floatImage = FreeImage_ConvertToRGBAF(Image);
-			if (!FreeImage_Save(FIF_PFM, floatImage, fileName, 0))
-			{
-				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
-				//L"&Help";
-				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
-				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
-			}
-			FreeImage_Unload(floatImage);
-			FreeImage_Unload(Image);
-			delete regards;
-			/*
 			CRegardsFloatBitmap* regards = bitmap->GetFloatBitmap(true);
 			CPfm::WriteFilePFM(regards, fileName, 1.0f);
 			delete regards;
-			*/
 			break;
 		}
 
@@ -637,24 +622,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
-	case IFF:
-		{
-			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			int _option = IFF_DEFAULT;
-			int pitch = regards->GetBitmapWidth() * 4;
-			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
-			                                               regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
-			                                               FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			if (!FreeImage_Save(FIF_IFF, Image, fileName, _option))
-			{
-				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
-				//L"&Help";
-				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
-				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
-			}
-			FreeImage_Unload(Image);
-			delete regards;
-		}
 
 	case J2K:
 		{
@@ -833,27 +800,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
 				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 			if (!FreeImage_Save(FIF_TARGA, Image, fileName, 0))
-			{
-				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
-				//L"&Help";
-				wxString errorinfos = CLibResource::LoadStringFromResource(L"informationserror", 1);
-				wxMessageBox(labelInformations, errorinfos, wxICON_ERROR);
-			}
-			FreeImage_Unload(Image);
-
-			delete regards;
-		}
-		break;
-
-	case PCX:
-		{
-			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
-			regards->ConvertToBgr();
-			int pitch = regards->GetBitmapWidth() * 4;
-			FIBITMAP* Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(),
-				regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK,
-				FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-			if (!FreeImage_Save(FIF_PCX, Image, fileName, 0))
 			{
 				wxString labelInformations = CLibResource::LoadStringFromResource(L"LBLUNABLETOSAVEFILE", 1);
 				//L"&Help";
@@ -1057,11 +1003,11 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 
-			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
+			CRegardsBitmap* image = bitmap->GetRegardsBitmap(true);
 			CAvif::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
 			if (data != nullptr)
 				delete[] data;
-
+			delete image;
 			break;
 		}
 
@@ -1076,15 +1022,23 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		}
 		break;
 
+	case PCX:
+	{
+		wxLogNull logNo;
+		wxImage* image = bitmap->GetwxImage(true);
+		image->SaveFile(fileName, wxBITMAP_TYPE_PCX);
+		delete image;
+		break;
+	}
+
+
 
 	case PPM:
 		{
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
-			vector<int> compression_params;
-			compression_params.push_back(32);
-			compression_params.push_back(1);
-			//writing as ppm image
-			cv::imwrite(fileName.ToStdString(), image->GetMatrix(), compression_params);
+			cv::Mat dest;
+			cv::cvtColor(image->GetMatrix(), dest, cv::COLOR_BGRA2BGR);
+			cv::imwrite(fileName.ToStdString(), dest);
 
 		}
 		break;
@@ -2300,6 +2254,12 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		break;
 #endif
 
+		case PFM:
+		{
+			CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
+			bitmap->SetPicture(test);
+			break;
+		}
 
 		case PNM:
 		case JPEG:
@@ -2770,6 +2730,12 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		}
 		break;
 
+	case PFM:
+	{
+		CPfm::GetDimensions(fileName, width, height);
+	}
+	break;
+
 	case WEBP:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
@@ -2946,7 +2912,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 void CLibPicture::InitFreeImage()
 {
 	FreeImage_Initialise(true);
-	FreeImage_SetOutputMessage(&MyMessageFunction);
+	FreeImage_SetOutputMessage(&FreeImageErrorHandler);
 }
 
 void CLibPicture::UninitFreeImage()
