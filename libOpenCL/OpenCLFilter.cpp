@@ -179,25 +179,16 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
 	UMat u;
-
+    cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
-
-		
-#ifdef __APPLE__
-
-        cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
-
-        Mat local;
-        u.copyTo(local);
+        cl_int status = 0;
         
-       
-#else
-    
-		cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
-    
+#ifdef __APPLE__
+        Mat local;
+        u.copyTo(local);	
 #endif
-		cl_int status = 0;
+
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
@@ -272,7 +263,7 @@ void COpenCLFilter::NlMeans(cv::UMat & inputData, const int& h, const int& hColo
 		cvtColor(inputData, ycbcr, cv::COLOR_BGR2YCrCb);
 
 		// Extract the Y channel
-		cv::extractChannel(ycbcr, yChannel, 0);
+		cv::extractChannel(ycbcr, yChannel, 0);cv::extractChannel(ycbcr, yChannel, 0);
 
 		cv::fastNlMeansDenoising(yChannel, yChannelOut, h, templateWindowSize, searchWindowSize);
 

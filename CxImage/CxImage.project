@@ -37,7 +37,6 @@
     <File Name="ximaico.cpp"/>
     <File Name="ximainfo.cpp"/>
     <File Name="ximaint.cpp"/>
-    <File Name="ximajas.cpp"/>
     <File Name="ximajbg.cpp"/>
     <File Name="ximalpha.cpp"/>
     <File Name="ximalyr.cpp"/>
@@ -59,7 +58,6 @@
     <File Name="ximagif.h"/>
     <File Name="ximaico.h"/>
     <File Name="ximaiter.h"/>
-    <File Name="ximajas.h"/>
     <File Name="ximajbg.h"/>
     <File Name="ximapng.h"/>
     <File Name="ximaska.h"/>
