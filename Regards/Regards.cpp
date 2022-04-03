@@ -114,38 +114,15 @@ int MyApp::Close()
 	_CrtDumpMemoryLeaks();
 #endif
 
-    jas_cleanup();
-
 	return 0;
 }
 
-size_t get_default_max_mem_usage(void)
-{
-	size_t total_mem_size = jas_get_total_mem_size();
-	size_t max_mem;
-	if (total_mem_size) {
-		max_mem = 0.90 * total_mem_size;
-	} else {
-		max_mem = JAS_DEFAULT_MAX_MEM_USAGE;
-	}
-	return max_mem;
-}
+
 
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
 	std::set_terminate(onTerminate);
-    
-    size_t max_mem = get_default_max_mem_usage();
-
-	if (jas_init()) {
-		fprintf(stderr, "cannot initialize JasPer library\n");
-		return EXIT_FAILURE;
-	}
-
-    jas_set_max_mem_usage(max_mem);
-
-	jas_setdbglevel(0);
 
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
