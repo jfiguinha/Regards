@@ -201,14 +201,12 @@ bool MyApp::OnInit()
 		else
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
-#ifdef __WXGTK__
-/*
+
 	if (regardsParam->GetIsOpenCLSupport())
 	{
 		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
 	}
-*/
-#endif
+
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
