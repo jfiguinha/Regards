@@ -61,10 +61,6 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
 
     try
     {
-
-        if (openclContext != nullptr)
-            openclContext->GetContextForOpenCV().bind();
-
         cv::Mat img = frameOpenCVDNN;
         Mat paddedImg = padImg(img);
 
@@ -130,10 +126,6 @@ int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
 
     try
     {
-
-        if (openclContext != nullptr)
-            openclContext->GetContextForOpenCV().bind();
-
         cv::Mat img = frameOpenCVDNN;
         Mat paddedImg = padImg(img);
 
@@ -461,9 +453,6 @@ std::vector<FaceBox> CDetectFacePCN::PCN_2(cv::Mat _img, cv::Mat _img180, cv::dn
         std::vector<cv::Mat> outputBlobs;
         try
         {
-            if (openclContext != nullptr)
-                openclContext->GetContextForOpenCV().bind();
-
             Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
             _net.setInput(inputBlob);
             std::vector<String> outputBlobNames = { "cls_prob", "rotate_cls_prob", "bbox_reg_2" };
@@ -585,9 +574,6 @@ std::vector<FaceBox> CDetectFacePCN::PCN_3(cv::Mat _img, cv::Mat _img180, cv::Ma
         std::vector<cv::Mat> outputBlobs;
         try
         {
-            if (openclContext != nullptr)
-                openclContext->GetContextForOpenCV().bind();
-
             Mat inputBlob = blobFromImage(dataList[dataNr], 1.0, Size(), Scalar(), false, false);
             _net.setInput(inputBlob);
             std::vector<String> outputBlobNames = { "cls_prob", "rotate_reg_3", "bbox_reg_3" };

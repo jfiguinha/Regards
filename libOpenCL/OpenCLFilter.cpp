@@ -1071,8 +1071,8 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
     cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
    

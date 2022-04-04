@@ -112,15 +112,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 	try
 	{
 
-		if (openclContext != nullptr)
-			openclContext->GetContextForOpenCV().bind();
-
-#ifdef CAFFE
-		cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
-#else
-
 		Mat inputBlob = blobFromImage(frameOpenCVDNN, 1.0, Size(300, 300), (104.0, 177.0, 123.0), false, false);
-#endif
 		net.setInput(inputBlob, "data");
 		Mat detection = net.forward("detection_out").clone();
 
@@ -177,16 +169,7 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 	cvtColor(bitmap, frameOpenCVDNN, COLOR_BGRA2BGR);
 	try
 	{
-		if (openclContext != nullptr)
-			openclContext->GetContextForOpenCV().bind();
-
-#ifdef CAFFE
-		cv::Mat inputBlob = cv::dnn::blobFromImage(frameOpenCVDNN, 1.0, cv::Size(300, 300), (104.0, 177.0, 123.0), false, false);
-#else
-
 		Mat inputBlob = blobFromImage(frameOpenCVDNN, 1.0, Size(300, 300), (104.0, 177.0, 123.0), false, false);
-
-#endif
 		net.setInput(inputBlob, "data");
 		Mat detection = net.forward("detection_out").clone();
 
