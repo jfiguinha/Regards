@@ -155,7 +155,7 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat 
 	blue = blue < 0 ? 0 : blue;
 	uint8_t b = blue > 255 ? 255 : blue;
 	
-	uint8_t data[4] = { b, g, r, alpha };
+	uint8_t data[4] = { r, g, b, alpha };
 	memcpy(pBitsDest.data + position, data, 4);
 
 }
@@ -180,7 +180,7 @@ void CNoise::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, 
 	g = max(0, min(255, g));
 	b = max(0, min(255, b));
 
-	uint8_t data[4] = { static_cast<uint8_t>(b), static_cast<uint8_t>(g), static_cast<uint8_t>(r), alpha };
+	uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
 	memcpy(pBitsDest.data + pos, data, 4);
 }
 
@@ -199,7 +199,7 @@ void CMosaic::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc,
 	int posOut = GetPosition(x, y);
 	int pos = GetPosition(s*w, t*h);
 
-	uint8_t data[4] = { *(pBitsSrc.data + pos + 2), *(pBitsSrc.data + pos + 1), *(pBitsSrc.data + pos), *(pBitsSrc.data + pos + 3) };
+	uint8_t data[4] = { *(pBitsSrc.data + pos), *(pBitsSrc.data + pos + 1), *(pBitsSrc.data + pos + 2), *(pBitsSrc.data + pos + 3) };
 	memcpy(pBitsDest.data + posOut, data, 4);
 }
 
@@ -307,7 +307,7 @@ void CPosterize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsS
 	//double dg = pow(posterize[g], gammaFactor);
 	//double db = pow(posterize[b], gammaFactor);
 
-	color = CRgbaquad(posterize[b], posterize[g], posterize[r]);
+	color = CRgbaquad(posterize[r], posterize[g], posterize[b]);
 
 	memcpy(pBitsDest.data + position, &color, 3);
 
@@ -320,7 +320,7 @@ void CSolarize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSr
 	//uint8_t alpha = pBitsSrc.data[position + 3];
 	memcpy(&color, pBitsSrc.data + position, 4);
 
-	color = CRgbaquad(solarize[color.GetBlue()], solarize[color.GetGreen()], solarize[color.GetRed()]);
+	color = CRgbaquad(solarize[color.GetRed()], solarize[color.GetGreen()], solarize[color.GetBlue()]);
 
 	memcpy(pBitsDest.data + position, &color, 3);
 }
