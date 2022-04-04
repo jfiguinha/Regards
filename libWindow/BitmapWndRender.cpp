@@ -1602,6 +1602,8 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 			{
 				useInterop = true;
 			}
+            else
+                useOpenCLOpenGLInterop = false;
 		}
 
 

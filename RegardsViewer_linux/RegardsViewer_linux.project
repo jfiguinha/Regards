@@ -214,8 +214,8 @@
         <Library Value="exiv2-xmp"/>
         <Library Value="Jbig"/>
         <Library Value="xml2"/>
-        <Library Value="jasper"/>
         <Library Value="raw_r"/>
+        <Library Value="jasper"/>
         <Library Value="gomp"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>

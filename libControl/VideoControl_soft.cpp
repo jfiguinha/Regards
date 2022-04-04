@@ -1919,6 +1919,10 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		{
 			useInterop = true;
 		}
+        else
+        {
+            useOpenCLOpenGLInterop = false;
+        }
 	}
 
 	if (!useInterop)

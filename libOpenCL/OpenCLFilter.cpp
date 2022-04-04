@@ -183,10 +183,11 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	try
 	{
         cl_int status = 0;
-        
+        if (openclContext != nullptr)
+            openclContext->GetContextForOpenCV().bind();
 #ifndef WIN32
-        Mat local;
-        u.copyTo(local);	
+        //Mat local;
+        //u.copyTo(local);	
 #endif
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
@@ -495,9 +496,12 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+    
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+    //cvDestBgra.copyTo(local);
 #endif
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -587,9 +591,12 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+    
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+   // cvDestBgra.copyTo(local);
 #endif
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -785,9 +792,12 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+    
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+    //cvDestBgra.copyTo(local);
 #endif
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -866,12 +876,14 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
     
-    
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+    
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+    //cvDestBgra.copyTo(local);
 #endif
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -928,9 +940,12 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+    //cvDestBgra.copyTo(local);
 #endif
  
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -1002,9 +1017,12 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
+
 #ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
+    //Mat local;
+    //cvDestBgra.copyTo(local);
 #endif
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
@@ -1085,11 +1103,11 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-    
-#ifndef WIN32
-    Mat local;
-    cvDestBgra.copyTo(local);
-#endif
+
+    //Mat local;
+    //cvDestBgra.copyTo(local);
+    if (openclContext != nullptr)
+		openclContext->GetContextForOpenCV().bind();
 
     cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
     
