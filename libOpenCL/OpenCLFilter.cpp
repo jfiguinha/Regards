@@ -173,6 +173,7 @@ COpenCLFilter::~COpenCLFilter()
 	delete superSampling;
 }
 
+
 bool COpenCLFilter::convertToGLTexture2D(cv::Mat & inputData, GLTexture* glTexture)
 {
 	using namespace cv::ocl;
@@ -188,21 +189,21 @@ bool COpenCLFilter::convertToGLTexture2D(cv::Mat & inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_RW);
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
 
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-            
+           
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-
+		
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
