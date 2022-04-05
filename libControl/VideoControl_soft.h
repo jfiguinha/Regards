@@ -118,7 +118,7 @@ protected:
 	static void GenerateThumbnailVideo(void* data);
 	int IsSupportOpenCL();
 
-	bool ApplyOpenCVEffect(CRegardsBitmap* pictureFrame);
+	bool ApplyOpenCVEffect(cv::Mat& image);
 	bool IsHardwareCompatible();
 	float GetHauteurMax();
 	float GetLargeurMax();

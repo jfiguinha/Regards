@@ -15,7 +15,7 @@ namespace Regards
 			static void CleanRecognition();
 			static void LoadRessource();
 			static vector<int> FindFace(CRegardsBitmap* pictureData);
-			static void DetectEyes(CRegardsBitmap* pBitmap);
+			static void DetectEyes(cv::Mat& pBitmap);
 
 			static int GetExifOrientation(CRegardsBitmap* pBitmap);
 			static bool IsResourceReady();

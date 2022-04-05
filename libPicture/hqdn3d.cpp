@@ -224,16 +224,32 @@ uint8_t* Chqdn3d::ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h)
 	return y_out;
 }
 
-int Chqdn3d::ApplyDenoise3D(CRegardsBitmap* bitmapIn)
+int Chqdn3d::ApplyDenoise3D(cv::Mat& bitmapIn)
 {
-	w = bitmapIn->GetBitmapWidth();
-	h = bitmapIn->GetBitmapHeight();
+	w = bitmapIn.size().width;
+	h = bitmapIn.size().height;
 
-	bitmapIn->GetY(picture_y);
+	cv::Mat ycbcr;
+	cv::Mat yChannel;
+
+	cvtColor(bitmapIn, ycbcr, cv::COLOR_BGR2YCrCb);
+	
+	cv::extractChannel(ycbcr, yChannel, 0);
+
+	memcpy(picture_y, yChannel.data, bitmapIn.cols * bitmapIn.rows);
 
 	hqdn3d_denoise(picture_y, y_out, Line, &Frame, w, h, hqdn3d_coef[0], hqdn3d_coef[1]);
 
-	bitmapIn->SetY(y_out);
+	memcpy(yChannel.data, y_out, bitmapIn.cols * bitmapIn.rows);
+
+	// Merge the the color planes back into an Lab image
+	cv::insertChannel(yChannel, ycbcr, 0);
+
+	// convert back to RGB
+	cv::cvtColor(ycbcr, bitmapIn, cv::COLOR_YCrCb2BGR);
+
+	yChannel.release();
+	ycbcr.release();
 
 	return 0;
 }

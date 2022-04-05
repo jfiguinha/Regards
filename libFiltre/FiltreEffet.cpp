@@ -4,7 +4,6 @@
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include <OpenCLParameter.h>
-#include "RedEye.h"
 #include <FilterData.h>
 #include "WaveFilter.h"
 #include <ImageLoadingFormat.h>

@@ -103,40 +103,40 @@ vector<double> CMotionBlur::GetMotionBlurKernel(const double &radius,const doubl
 	return kernel;
 }
 
-bool CMotionBlur::MotionBlur(CRegardsBitmap * bitmap, const double &radius, const double &sigma, const double &angle)
+bool CMotionBlur::MotionBlur(cv::Mat & bitmap, const double &radius, const double &sigma, const double &angle)
 {
-	if (bitmap != nullptr)
-	{
-		vector<double> kernel;
-		vector<wxPoint> offsets;
+	vector<double> kernel;
+	vector<wxPoint> offsets;
 
-		if (sigma == 0.0)
-			return 0;
+	if (sigma == 0.0)
+		return 0;
 
-		kernel = GetMotionBlurKernel(radius, sigma);
+	kernel = GetMotionBlurKernel(radius, sigma);
 
-		if (kernel.size() < 3)
-			return false;
+	if (kernel.size() < 3)
+		return false;
 
-		offsets = GetOffsetKernel(kernel.size(), angle);
+	offsets = GetOffsetKernel(kernel.size(), angle);
 
-		Execute(bitmap, kernel, offsets);
-	}
+	Execute(bitmap, kernel, offsets);
+
 	return true;
 }
 
-void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel, const vector<wxPoint> & offsets)
+void CMotionBlur::Execute(cv::Mat & image, const vector<double> & kernel, const vector<wxPoint> & offsets)
 {
 	
-	uint8_t * pBitsSrc = bitmap->GetPtBitmap();
-	//long i = 0;
-	long bmHeight = bitmap->GetBitmapHeight();
-	long bmWidth = bitmap->GetBitmapWidth();
-	long lWidthSize = bitmap->GetWidthSize();
+	cv::Mat imageResult;
+	image.copyTo(imageResult);
 
-	cv::Mat bitmapMatrix = cv::Mat(bmHeight, bmWidth, CV_8UC4);
 
-	uint8_t* lData = bitmapMatrix.data;
+	long bmHeight = image.size().height;
+	long bmWidth = image.size().width;
+	//long lWidthSize = bitmap->GetWidthSize();
+
+	//cv::Mat bitmapMatrix = cv::Mat(bmHeight, bmWidth, CV_8UC4);
+
+	//uint8_t* lData = bitmapMatrix.data;
 
 	for (auto y = 0; y < bmHeight; y++)
 	{
@@ -152,11 +152,12 @@ void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel
 				if ((u < 0) || (u >= bmWidth) || (v < 0) || (v >= bmHeight))
 					continue;
 
-				long ptImage = (v * lWidthSize) + (u * 4);
+				//long ptImage = (v * lWidthSize) + (u * 4);
+				r += kernel[i] * image.at<cv::Vec3b>(v, u)[0];
+				g += kernel[i] * image.at<cv::Vec3b>(v, u)[1];
+				b += kernel[i] * image.at<cv::Vec3b>(v, u)[2];
 
-				r += kernel[i] * *(pBitsSrc + ptImage);
-				g += kernel[i] * *(pBitsSrc + ptImage + 1);
-				b += kernel[i] * *(pBitsSrc + ptImage + 2);
+
 			}
 			
 			if (r < 0)
@@ -164,14 +165,14 @@ void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel
 			else if (r > 255)
 				r = 255;
 
-			*(lData + position) = (uint8_t)r;
+			imageResult.at<cv::Vec3b>(y, x)[0] = (uint8_t)r;
 
 			if (g < 0)
 				g = 0;
 			else if (g > 255)
 				g = 255;
 
-			*(lData + position + 1) = (uint8_t)g;
+			imageResult.at<cv::Vec3b>(y, x)[1] = (uint8_t)g;
 
 
 			if (b < 0)
@@ -179,12 +180,10 @@ void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel
 			else if (b > 255)
 				b = 255;
 
-			*(lData + position + 2) = (uint8_t)b;
-
-			*(lData + position + 3) = 0;
+			imageResult.at<cv::Vec3b>(y, x)[2]  = (uint8_t)b;
 		}
 	}
 
-	bitmap->SetMatrix(bitmapMatrix);
+	imageResult.copyTo(image);
 
 }
