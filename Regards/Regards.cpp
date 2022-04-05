@@ -19,8 +19,6 @@
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include "ParamInit.h"
-#include <eyedetect.h>
-#include <jasper/jasper.h>
 using namespace cv;
 using namespace Regards::Picture;
 
