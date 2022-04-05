@@ -56,6 +56,11 @@ int CFiltreEffet::GetHeight()
 	return filtreEffet->GetHeight();
 }
 
+cv::Mat & CFiltreEffet::GetOpenCVMatrix()
+{
+	return filtreEffet->GetOpenCVMatrix();
+}
+
 bool CFiltreEffet::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization)
 {
 	return filtreEffet->StabilizeVideo(stabilization);

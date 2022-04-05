@@ -153,6 +153,16 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 
 }
 
+cv::Mat & COpenCLEffect::GetOpenCVMatrix()
+{
+	if (preview && !paramOutput.empty())
+	{
+		return paramOutput;
+	}
+	return input;
+
+}
+
 //-----------------------------------------------------------------------------------------------
 //Get Output
 //-----------------------------------------------------------------------------------------------

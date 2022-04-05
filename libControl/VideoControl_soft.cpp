@@ -1927,9 +1927,10 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	if (!useInterop)
 	{
-		CRegardsBitmap* bitmap = openclEffect->GetBitmap();
-		glTexture->SetData(bitmap);
-		delete bitmap;
+		//CRegardsBitmap* bitmap = openclEffect->GetBitmap();
+		cv::Mat local = openclEffect->GetMatrix();
+		glTexture->SetData(local);
+		//delete bitmap;
 	}
 	inverted = false;
 
@@ -2009,8 +2010,8 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 	if (glTexture != nullptr)
 	{
-		cv::cvtColor(bitmapOut, cvImage, cv::COLOR_BGR2BGRA);
-		glTexture->SetData(&cvImage);
+		//cv::cvtColor(bitmapOut, cvImage, cv::COLOR_BGR2BGRA);
+		glTexture->SetData(bitmapOut);
 		
 	}
 

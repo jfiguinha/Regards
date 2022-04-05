@@ -40,8 +40,9 @@ void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 	cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
-cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)
+cv::Mat & COpenCLEffectVideo::GetMatrix(const bool & src)
 {
+	/*
 	cv::Mat output;
 
 	if (src)
@@ -60,6 +61,12 @@ cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)
 	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
 
 	return output;
+	*/
+	if (interpolatePicture && !paramOutput.empty())
+	{
+		return paramOutput;
+	}
+	return paramSrc;
 }
 
 bool COpenCLEffectVideo::convertToGLTexture2D(GLTexture* glTexture)

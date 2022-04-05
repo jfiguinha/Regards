@@ -214,7 +214,7 @@ bool CFiltreEffetCPU::convertToGLTexture2D(GLTexture* glTexture)
 		image = input;
 
 	if (glTexture != nullptr)
-		glTexture->SetData(&image);
+		glTexture->SetData(image);
 
 	return true;
 }
@@ -2401,6 +2401,14 @@ void CFiltreEffetCPU::GetBitmap(CRegardsBitmap* & bitmap, const bool& source)
 	}
 }
 
+cv::Mat& CFiltreEffetCPU::GetOpenCVMatrix()
+{
+	if (preview && !paramOutput.empty())
+	{
+		return paramOutput;
+	}
+	return input;
+}
 
 CRegardsBitmap* CFiltreEffetCPU::GetBitmap(const bool& source)
 {

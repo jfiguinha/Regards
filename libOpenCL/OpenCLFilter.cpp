@@ -179,8 +179,8 @@ bool COpenCLFilter::convertToGLTexture2D(cv::Mat & inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	UMat u;
-    cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+	UMat u = inputData.getUMat(ACCESS_READ);
+    //cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
 	try
 	{
         cl_int status = 0;

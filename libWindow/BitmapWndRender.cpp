@@ -1609,14 +1609,14 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		if (!useInterop)
 		{
-			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
+			cv::Mat output = filtreEffet->GetOpenCVMatrix();
 
 			if (glTexture != nullptr)
-				glTexture->SetData(bitmap);
+				glTexture->SetData(output);
 			else
 				printf("CBitmapWndRender GetDisplayTexture Error \n");
 
-			delete bitmap;
+			//delete bitmap;
 		}
 		
 	}

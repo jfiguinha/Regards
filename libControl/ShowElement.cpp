@@ -116,14 +116,14 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 	windowMain = static_cast<CWindowMain*>(this->FindWindowById(mainViewerId));
 
 	bool openCLCompatible = false;
-
+	/*
 	CRegardsConfigParam* _configRegards = CParamInit::getInstance();
 	if (_configRegards != nullptr)
 	{
 		if (_configRegards->GetIsOpenCLSupport())
 			openCLCompatible = true;
 	}
-
+	*/
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;

@@ -99,6 +99,7 @@ namespace Regards
 			int HistogramLog(CRegardsBitmap * bitmap){ return  -1; }
 			int HistogramNormalize(CRegardsBitmap * bitmap){ return  -1; }
 			int HistogramEqualize(CRegardsBitmap * bitmap){ return  -1; }
+			cv::Mat & GetOpenCVMatrix();
 
 			int BrightnessAndContrastAuto(float clipHistPercent);
 			CRegardsBitmap* GetBitmap(const bool& source);

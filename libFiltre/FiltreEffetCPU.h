@@ -24,7 +24,7 @@ public:
     void SetBitmap(CImageLoadingFormat * bitmap);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
-
+	cv::Mat& GetOpenCVMatrix();
 	CRegardsBitmap * GetBitmap(const bool &source);
 	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 	CRegardsBitmap * GetPtBitmap();
