@@ -449,13 +449,6 @@ int CEyeDetect::findEyesSource(cv::Mat & faceROI)
 
 	}
 
-	/*
-	cv::cvtColor(faceROI, faceROI, COLOR_GRAY2BGR);
-	circle(faceROI, leftPupil, 20, Scalar(255, 0, 0), 4);
-	circle(faceROI, rightPupil, 20, Scalar(255, 0, 0), 4);
-	imshow("Face", faceROI);
-	waitKey();
-	*/
 	double angle = atan2(rightPupil.y - leftPupil.y, rightPupil.x - leftPupil.x) / M_PI * 180;
 	return angle;
 

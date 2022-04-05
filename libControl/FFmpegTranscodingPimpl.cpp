@@ -1644,7 +1644,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		double noFrame = fps * timeInSeconds;
 		bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
 		*capture >> frameOutput;
-		cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 	}
 	CRegardsBitmap bitmap;
 	bitmap.SetMatrix(frameOutput);
@@ -2269,7 +2268,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			width = capture->get(CAP_PROP_FRAME_WIDTH);
 			height = capture->get(CAP_PROP_FRAME_HEIGHT);
 			*capture >> frameOutput;
-			cv::cvtColor(frameOutput, frameOutput, cv::COLOR_BGR2BGRA);
 		}
 		CRegardsBitmap bitmap;
 		bitmap.SetMatrix(frameOutput);

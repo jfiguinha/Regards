@@ -131,19 +131,19 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 
 	if (source)
 	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		//input.copyTo(output);
+		cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
 		//cv::insertChannel(alphaChannel, output, 3);
 	}
 	else if (preview && !paramOutput.empty())
 	{
-		paramOutput.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		//paramOutput.copyTo(output);
+		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2BGRA);
 	}
 	else
 	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		//input.copyTo(output);
+		cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
 		//cv::insertChannel(alphaChannel, output, 3);
 	}
 	

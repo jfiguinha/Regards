@@ -179,6 +179,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
 	UMat u;
+	//inputData.copyTo(u);
     cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
@@ -191,7 +192,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_RW);
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
 

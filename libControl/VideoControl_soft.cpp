@@ -2009,12 +2009,9 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 	if (glTexture != nullptr)
 	{
-		cv::cvtColor(bitmapOut, cvImage, cv::COLOR_BGR2BGRA);
-		glTexture->SetData(&cvImage);
+		glTexture->SetData(cvImage);
 
 	}
-
-
 	return glTexture;
 }
 
