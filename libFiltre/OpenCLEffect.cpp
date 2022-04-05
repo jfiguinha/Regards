@@ -101,14 +101,12 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(true);
+		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
 		cv::Mat local = _bitmap->GetMatrix();
 		filename = bitmap->GetFilename();
 		vector<cv::Mat> channels;
 		cv::extractChannel(local, alphaChannel, 3);
 		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
-		//local.copyTo(input);
-		delete _bitmap;
 		preview = false;
 
 	}

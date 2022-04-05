@@ -10,10 +10,10 @@ namespace Regards
 		public:
 			CWaveFilter();
 			~CWaveFilter();
-			void ProcessEffect(CRegardsBitmap * bitmap, int x, int y, short height, int radius, int scale);
+			void ProcessEffect(cv::Mat & image, int x, int y, short height, int radius, int scale);
 
 		private:
-			void WaterEffect(CRegardsBitmap * bitma);
+			void WaterEffect(cv::Mat& image);
 			void ProcessWaves();
 			void PutDrop(int x, int y, short height, int radius);
 			inline void SetWaveData(int x, int y, int buffer, short data);

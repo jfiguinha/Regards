@@ -21,7 +21,7 @@ namespace Regards
 			static void CleanBase();
 			static void LoadModel();
 			std::vector<int> FindFace(CRegardsBitmap* pBitmap);
-			void DetectEyes(CRegardsBitmap* pBitmap);
+			void DetectEyes(cv::Mat& pBitmap);
 			std::vector<cv::Rect> GetRectFace(CRegardsBitmap * picture);
 			int DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap);
 			int FaceRecognition(const int& numFace);

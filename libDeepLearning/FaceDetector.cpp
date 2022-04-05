@@ -375,7 +375,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 }
 
 
-void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
+void CFaceDetector::DetectEyes(cv::Mat& pBitmap)
 {
 	std::vector<Rect> pointOfFace;
 	bool faceFound = false;
@@ -388,8 +388,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 	Mat Source;	
 	if (isLoading)
 	{
-		cvtColor(pBitmap->GetMatrix(), Source, COLOR_BGRA2BGR);
-		flip(Source, Source, 0);
+		flip(pBitmap, Source, 0);
 		std::vector<CFace> listOfFace;
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
 
@@ -530,8 +529,7 @@ void CFaceDetector::DetectEyes(CRegardsBitmap* pBitmap)
 
 		if (faceFound)
 		{
-			flip(Source, Source, 0);
-			cvtColor(Source, pBitmap->GetMatrix(), COLOR_BGR2BGRA);
+			flip(Source, pBitmap, 0);
 		}
 	}
 }

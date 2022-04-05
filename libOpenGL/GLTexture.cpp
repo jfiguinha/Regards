@@ -65,6 +65,18 @@ void GLTexture::GetData(uint8_t* data)
 	}
 }
 
+void GLTexture::SetData(cv::Mat * bitmap)
+{
+	if (m_nTextureID && bitmap != nullptr)
+	{
+		glEnable(GL_TEXTURE_2D);
+		width = bitmap->size().width;
+		height = bitmap->size().height;
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmap->data);
+	}
+}
+
 
 void GLTexture::SetData(CRegardsBitmap * bitmap)
 {
