@@ -13,17 +13,22 @@ namespace Regards
 		public:
 			CFiltre();
 			virtual ~CFiltre();
-			void SetParameter(cv::Mat & pBitmap, CRgbaquad color);
+			void SetParameter(CRegardsBitmap * pBitmap, CRgbaquad color);
 			void Compute();
 			virtual void PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest) {};
 
 		protected:
-
+			
+			int GetPosition(const int &x, const int &y);
 			int bmWidth;
 			int bmHeight;
 			CRgbaquad color;
-			cv::Mat pBitsSrc;
+			CRegardsBitmap * pBitmap;
+		private:
 
+			
+			int bitmapWidthSize;
+			int pictureSize;
 		};
 
 

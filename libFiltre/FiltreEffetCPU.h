@@ -15,7 +15,7 @@ public:
 	bool convertToGLTexture2D(GLTexture* glTexture);
 	int HistogramNormalize();
 	int HistogramEqualize();
-
+	void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 	int RedEye();
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace);
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);
@@ -24,7 +24,7 @@ public:
     void SetBitmap(CImageLoadingFormat * bitmap);
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
-	cv::Mat& GetOpenCVMatrix();
+    CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 	CRegardsBitmap * GetBitmap(const bool &source);
 	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
 	CRegardsBitmap * GetPtBitmap();
@@ -68,29 +68,30 @@ public:
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
 	virtual int GetWidth();
 	virtual int GetHeight();
+	static wxImage GetwxImage(CRegardsBitmap * bitmap);
 	int BrightnessAndContrastAuto(float clipHistPercent);
 	int OilPaintingEffect(const int &size, const int &dynRatio);
 	int VignetteEffect(const double& radius = 1.0, const double& power = 0.8);
 	static void BrightnessAndContrastAuto(cv::Mat& image, float clipHistPercent);
 	static void LoadAndRotate(const wxString& filePath, const int& rotate);
 	bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
-	static cv::Mat Interpolation(cv::Mat& cvImage, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
+	static CRegardsBitmap* Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio);
 private:
 
 
 	void RotateMatrix(const int& angle, cv::Mat& src);
 	void ChangeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges);
 	void RemovePepperNoise(cv::Mat &mask);
-
+	CRegardsBitmap * bitmapOut;
+	CRegardsBitmap * pBitmap;
 	Chqdn3d * hq3d = nullptr;
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;
-	wxString filename;
+	//const CRgbaquad& back_color_;
+	//cv::Mat bitmapOpenCV;
 
-	cv::Mat alphaChannel;
-	cv::Mat input;
-	cv::Mat paramOutput;
+
 
 };
 

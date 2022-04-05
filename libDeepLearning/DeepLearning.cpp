@@ -49,7 +49,7 @@ void CDeepLearning::LoadRessource()
 }
 
 
-void CDeepLearning::DetectEyes(cv::Mat& pBitmap)
+void CDeepLearning::DetectEyes(CRegardsBitmap* pBitmap)
 {
 	bool fastDetection = true;
 	std::vector<wxRect> listEye;

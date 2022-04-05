@@ -81,6 +81,9 @@
     <ClInclude Include="PerlinNoise.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
+    <ClInclude Include="RedEye.h">
+      <Filter>Filter\include</Filter>
+    </ClInclude>
     <ClInclude Include="Wave.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -321,6 +324,9 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="PerlinNoise.cpp">
+      <Filter>Filter\source</Filter>
+    </ClCompile>
+    <ClCompile Include="RedEye.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="Selection.cpp">

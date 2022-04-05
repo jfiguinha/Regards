@@ -101,12 +101,14 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
+		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(true);
 		cv::Mat local = _bitmap->GetMatrix();
 		filename = bitmap->GetFilename();
 		vector<cv::Mat> channels;
 		cv::extractChannel(local, alphaChannel, 3);
 		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
+		//local.copyTo(input);
+		delete _bitmap;
 		preview = false;
 
 	}
@@ -153,21 +155,11 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 
 }
 
-cv::Mat & COpenCLEffect::GetOpenCVMatrix()
-{
-	if (preview && !paramOutput.empty())
-	{
-		return paramOutput;
-	}
-	return input;
-
-}
-
 //-----------------------------------------------------------------------------------------------
 //Get Output
 //-----------------------------------------------------------------------------------------------
 
-wxImage COpenCLEffect::GetwxImage(cv::Mat & input)
+wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 {
 	cv::Mat cvDest;
 	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
@@ -600,13 +592,16 @@ int COpenCLEffect::FiltreMosaic()
 //----------------------------------------------------------------------------
 int COpenCLEffect::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
 {
+	cv::UMat second;
+	bitmapSecond->GetMatrix().copyTo(second);
+		
 	if (preview && !paramOutput.empty())
 	{
-		openclFilter->Fusion(paramOutput, bitmapSecond->GetMatrix(), pourcentage);
+		openclFilter->Fusion(paramOutput, second, pourcentage);
 	}
 	else
 	{
-		openclFilter->Fusion(input, bitmapSecond->GetMatrix(), pourcentage);
+		openclFilter->Fusion(input, second, pourcentage);
 	}
 	return 0;
 }

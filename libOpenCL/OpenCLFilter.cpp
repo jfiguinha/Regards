@@ -40,7 +40,7 @@ public:
 	~CSuperSampling() {};
 	string GenerateModelPath(string modelName, int scale);
 	bool TestIfMethodIsValid(int method, int scale);
-	cv::Mat upscaleImage(cv::Mat img, int method, int scale);
+	cv::UMat upscaleImage(cv::UMat img, int method, int scale);
 
 private:
 	DnnSuperResImpl sr;
@@ -81,10 +81,10 @@ bool CSuperSampling::TestIfMethodIsValid(int method, int scale)
 	return false;
 }
 
-cv::Mat CSuperSampling::upscaleImage(cv::Mat img, int method, int scale)
+cv::UMat CSuperSampling::upscaleImage(cv::UMat img, int method, int scale)
 {
 	isUsed = true;
-	Mat outputImage;
+	UMat outputImage;
 
 	if (oldscale != scale || oldmethod != method)
 	{
@@ -173,37 +173,39 @@ COpenCLFilter::~COpenCLFilter()
 	delete superSampling;
 }
 
-
-bool COpenCLFilter::convertToGLTexture2D(cv::Mat & inputData, GLTexture* glTexture)
+bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	UMat u = inputData.getUMat(ACCESS_READ);
-    //cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+	UMat u;
+    cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
         cl_int status = 0;
+
+        Mat local;
+        u.copyTo(local);	
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_RW);
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
 
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-           
+            
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-		
+
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
@@ -229,11 +231,14 @@ bool COpenCLFilter::convertToGLTexture2D(cv::Mat & inputData, GLTexture* glTextu
 }
 
 
-void COpenCLFilter::BilateralEffect(cv::Mat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
+void COpenCLFilter::BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP)
 {
 	try
 	{
-		cv::bilateralFilter(inputData, inputData, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		cv::UMat dest;
+		cv::bilateralFilter(inputData, dest, fSize, sigmaX, sigmaP, cv::BORDER_DEFAULT);
+		dest.copyTo(inputData);
+
 	}
 	catch (cv::Exception& e)
 	{
@@ -245,7 +250,7 @@ void COpenCLFilter::BilateralEffect(cv::Mat & inputData, const int& fSize, const
 }
 
 
-void COpenCLFilter::NlMeans(cv::Mat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
+void COpenCLFilter::NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
 	try
 	{
@@ -281,7 +286,7 @@ void COpenCLFilter::NlMeans(cv::Mat & inputData, const int& h, const int& hColor
 }
 
 
-void COpenCLFilter::Bm3d(cv::Mat & inputData, const float & fSigma)
+void COpenCLFilter::Bm3d(cv::UMat & inputData, const float & fSigma)
 {
 	try
 	{
@@ -317,7 +322,7 @@ void COpenCLFilter::Bm3d(cv::Mat & inputData, const float & fSigma)
 
 
 
-void COpenCLFilter::BrightnessAndContrastAuto(cv::Mat & inputData, float clipHistPercent)
+void COpenCLFilter::BrightnessAndContrastAuto(cv::UMat & inputData, float clipHistPercent)
 {
 	try
 	{
@@ -395,14 +400,14 @@ void COpenCLFilter::BrightnessAndContrastAuto(cv::Mat & inputData, float clipHis
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-void COpenCLFilter::Fusion(cv::Mat & inputData, const cv::Mat &secondPictureData, const float &pourcentage)
+void COpenCLFilter::Fusion(cv::UMat& inputData, const cv::UMat &secondPictureData, const float &pourcentage)
 {
 	try
 	{
-		//cv::UMat dst;
+		cv::UMat dst;
 		float beta = (1.0 - pourcentage);
-		cv::addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, inputData);
-		//dst.copyTo(inputData);
+		cv::addWeighted(inputData, pourcentage, secondPictureData, beta, 0.0, dst);
+		dst.copyTo(inputData);
 	}
 	catch (cv::Exception& e)
 	{
@@ -413,16 +418,21 @@ void COpenCLFilter::Fusion(cv::Mat & inputData, const cv::Mat &secondPictureData
 }
 
 
-void COpenCLFilter::SharpenMasking(const float &sharpness, cv::Mat & inputData)
+void COpenCLFilter::SharpenMasking(const float &sharpness, cv::UMat & inputData)
 {
 	try
 	{
+		Mat origin;
+		inputData.copyTo(origin);
+		
 		Mat blurred;
 		double sigma = 1, threshold = 5, amount = sharpness;
 		cv::GaussianBlur(inputData, blurred, cv::Size(), sigma, sigma);
-		Mat lowConstrastMask = abs(inputData - blurred) < threshold;
-		Mat sharpened = inputData * (1 + amount) + blurred * (-amount);
-		inputData.copyTo(sharpened, lowConstrastMask);
+
+
+		Mat lowConstrastMask = abs(origin - blurred) < threshold;
+		Mat sharpened = origin * (1 + amount) + blurred * (-amount);
+		origin.copyTo(sharpened, lowConstrastMask);
 		sharpened.copyTo(inputData);
 	}
 	catch (cv::Exception& e)
@@ -433,21 +443,21 @@ void COpenCLFilter::SharpenMasking(const float &sharpness, cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::Mat & inputData)
+void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat & inputData)
 {
 	try
 	{
 		float coeff = (float)intensity / 100.0f;
 		float diff = 1.0f - coeff;
-		//cv::UMat out;
-		cv::Mat out_one;
+		cv::UMat out;
+		cv::UMat out_one;
 		out_one = inputData.mul(diff);
 
 		cv::Scalar color = cv::Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
 		cv::Scalar out_two = color * coeff;
 
-		cv::add(out_one, out_two, inputData);
-		//out.copyTo(inputData);
+		cv::add(out_one, out_two, out);
+		out.copyTo(inputData);
 	}
 	catch (cv::Exception& e)
 	{
@@ -457,7 +467,7 @@ void COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity, 
 	}
 }
 
-void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::Mat & inputData)
+void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue, cv::UMat & inputData)
 {
 	try
 	{
@@ -476,12 +486,17 @@ void COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blue,
 
 }
 
-void COpenCLFilter::FiltreMosaic(cv::Mat & inputData)
+void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 {
 	cv::UMat dest;
+	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+    
+	Mat local;
+	cvDestBgra.copyTo(local);
+
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
 	if(programCL != nullptr)
 	{
@@ -533,7 +548,7 @@ void COpenCLFilter::FiltreMosaic(cv::Mat & inputData)
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Blur(const int &radius, cv::Mat & inputData)
+void COpenCLFilter::Blur(const int &radius, cv::UMat & inputData)
 {
 	try
 	{
@@ -547,7 +562,7 @@ void COpenCLFilter::Blur(const int &radius, cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::GaussianBlur(const int & radius, const int& boxSize, cv::Mat & inputData)
+void COpenCLFilter::GaussianBlur(const int & radius, const int& boxSize, cv::UMat& inputData)
 {
 	try
 	{
@@ -561,12 +576,17 @@ void COpenCLFilter::GaussianBlur(const int & radius, const int& boxSize, cv::Mat
 	}
 }
 
-void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::Mat & inputData)
+void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cv::UMat & inputData)
 {
 	cv::UMat dest;
+	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+    
+	Mat local;
+	cvDestBgra.copyTo(local);
+    
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
 	{
@@ -648,7 +668,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Emboss(cv::Mat & inputData)
+void COpenCLFilter::Emboss(cv::UMat& inputData)
 {
 	try
 	{
@@ -672,7 +692,7 @@ void COpenCLFilter::Emboss(cv::Mat & inputData)
 
 }
 
-void COpenCLFilter::Sharpen(cv::Mat & inputData)
+void COpenCLFilter::Sharpen(cv::UMat& inputData)
 {
 	try
 	{
@@ -700,7 +720,7 @@ void COpenCLFilter::Sharpen(cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::SharpenStrong(cv::Mat & inputData)
+void COpenCLFilter::SharpenStrong(cv::UMat& inputData)
 {
 	try
 	{
@@ -730,7 +750,7 @@ void COpenCLFilter::SharpenStrong(cv::Mat & inputData)
 
 }
 
-void COpenCLFilter::Edge(cv::Mat & inputData)
+void COpenCLFilter::Edge(cv::UMat& inputData)
 {
 	try
 	{
@@ -752,13 +772,17 @@ void COpenCLFilter::Edge(cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::Mat & inputData)
+void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cv::UMat & inputData)
 {
 	cv::UMat dest;
+	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
- 
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+    
+	Mat local;
+	cvDestBgra.copyTo(local);
+    
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
 	{
@@ -810,7 +834,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::Mat & inputData)
+void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::UMat & inputData)
 {
 	try
 	{
@@ -828,12 +852,18 @@ void COpenCLFilter::ErodeDilate(const wxString &functionName, cv::Mat & inputDat
 	}
 }
 
-void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::Mat & inputData)
+void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat & inputData)
 {
 	cv::UMat dest;
-	cv::UMat cvDestBgra;  
+	cv::UMat cvDest;
+	cv::UMat cvDestBgra;
+    
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+    
+	Mat local;
+	cvDestBgra.copyTo(local);
+    
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -880,13 +910,17 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::Mat & 
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Solarize(const long &threshold, cv::Mat & inputData)
+void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 {
 	cv::UMat dest;
+	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+	Mat local;
+	cvDestBgra.copyTo(local);
+ 
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -933,7 +967,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::Mat & inputData)
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::Median(cv::Mat & inputData)
+void COpenCLFilter::Median(cv::UMat & inputData)
 {
 	try
 	{
@@ -948,13 +982,17 @@ void COpenCLFilter::Median(cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::Noise(cv::Mat & inputData)
+void COpenCLFilter::Noise(cv::UMat & inputData)
 {
 	cv::UMat dest;
+	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-   
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+
+	Mat local;
+	cvDestBgra.copyTo(local);
+    
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
 	{
@@ -1008,7 +1046,7 @@ void COpenCLFilter::Noise(cv::Mat & inputData)
 }
 
 
-void COpenCLFilter::Flip(const wxString &functionName, cv::Mat & inputData)
+void COpenCLFilter::Flip(const wxString &functionName, cv::UMat & inputData)
 {
 	if (functionName == "FlipVertical")
 	{
@@ -1020,14 +1058,23 @@ void COpenCLFilter::Flip(const wxString &functionName, cv::Mat & inputData)
 	}
 }
 
-void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::Mat & inputData)
+void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & inputData)
 {
     //cl_mem outputValue = nullptr;
     cv::UMat dest;
+	cv::UMat cvDest;
     cv::UMat cvDestBgra;
+    int depth = CV_8U;
+    int type = CV_MAKE_TYPE(depth, 4);
+    cvDestBgra.create((int)inputData.rows, (int)inputData.cols, type);
+
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-    cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+
+	Mat local;
+	cvDestBgra.copyTo(local);
+
+    cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
    
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	if (programCL != nullptr)
@@ -1096,11 +1143,13 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::Mat & inp
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::Mat & inputData)
+void COpenCLFilter::BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat & inputData)
 {
+	cv::UMat cvDest;
 	try
 	{
-		cv::convertScaleAbs(inputData, inputData, contrast / 100.0f, brightness);
+		cv::convertScaleAbs(inputData, cvDest, contrast / 100.0f, brightness);
+		cvDest.copyTo(inputData);
 	}
 	catch (cv::Exception& e)
 	{
@@ -1122,7 +1171,7 @@ COpenCLProgram * COpenCLFilter::GetProgram(const wxString &numProgram)
 	return nullptr;
 }
 
-void COpenCLFilter::ColorEffect(const wxString &functionName, cv::Mat & inputData)
+void COpenCLFilter::ColorEffect(const wxString &functionName, cv::UMat & inputData)
 {
 	cv::UMat cvDest;
 	try
@@ -1163,7 +1212,7 @@ void COpenCLFilter::ColorEffect(const wxString &functionName, cv::Mat & inputDat
 	}
 }
 
-void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cv::Mat & inputData)
+void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp, cv::UMat & inputData)
 {
 	if(hq3d == nullptr)
 		hq3d = new Chqdn3d(inputData.cols, inputData.rows, LumSpac, LumTmp);
@@ -1204,7 +1253,7 @@ void COpenCLFilter::HQDn3D(const double & LumSpac, const double & ChromSpac, con
 	}
 }
 
-void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::Mat & inputData)
+void COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cv::UMat & inputData)
 {
 	cv::UMat cvDest;
 	// get rotation matrix for rotating the image around its center in pixel coordinates
@@ -1288,9 +1337,11 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 }
 
 
-cv::Mat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int& method, cv::Mat & inputData, int flipH, int flipV, int angle, int ratio)
+cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio)
 {
-	cv::Mat cvImage;
+	cv::UMat cvImage;
+	inputData.copyTo(cvImage);
+
 	try
 	{
 		float ratioX = (float)inputData.cols / rc.width;
@@ -1332,16 +1383,16 @@ cv::Mat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, 
 			rectGlobal.height -= rectGlobal.y;
 		}
 
-		if ((rectGlobal.height + rectGlobal.y) > inputData.rows)
+		if ((rectGlobal.height + rectGlobal.y) > cvImage.rows)
 		{
-			rectGlobal.height = inputData.rows - rectGlobal.y;
+			rectGlobal.height = cvImage.rows - rectGlobal.y;
 		}
-		if ((rectGlobal.width + rectGlobal.x) > inputData.cols)
+		if ((rectGlobal.width + rectGlobal.x) > cvImage.cols)
 		{
-			rectGlobal.width = inputData.cols - rectGlobal.x;
+			rectGlobal.width = cvImage.cols - rectGlobal.x;
 		}
 
-		cvImage = inputData(rectGlobal);
+		cvImage = cvImage(rectGlobal);
 
 		if (angle == 90)
 		{

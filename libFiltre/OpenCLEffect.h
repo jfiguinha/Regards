@@ -99,7 +99,6 @@ namespace Regards
 			int HistogramLog(CRegardsBitmap * bitmap){ return  -1; }
 			int HistogramNormalize(CRegardsBitmap * bitmap){ return  -1; }
 			int HistogramEqualize(CRegardsBitmap * bitmap){ return  -1; }
-			cv::Mat & GetOpenCVMatrix();
 
 			int BrightnessAndContrastAuto(float clipHistPercent);
 			CRegardsBitmap* GetBitmap(const bool& source);
@@ -108,13 +107,13 @@ namespace Regards
 
 		protected:
 			COpenCLFilter * openclFilter;
-			wxImage GetwxImage(cv::Mat& input);
+			wxImage GetwxImage(cv::UMat& input);
 			int GetSizeData() const;
 			cl_mem_flags  flag;
 			wxString filename;
 			cv::Mat alphaChannel;
-			cv::Mat input;
-			cv::Mat paramOutput;
+			cv::UMat input;
+			cv::UMat paramOutput;
 		};
 
 	}

@@ -21,7 +21,7 @@ namespace Regards
 			void Delete();
 			void Enable();
 			void SetData(CRegardsBitmap * bitmap);
-			void SetData(cv::Mat & bitmap);
+
 			void Disable()
 			{
 				glDisable(GL_TEXTURE_2D);

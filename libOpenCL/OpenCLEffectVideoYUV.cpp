@@ -152,7 +152,6 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 	if (!needToTranscode)
 		return;
 
-	cv::UMat dest;
 	if (openclContext != nullptr)
 	{
 		COpenCLProgram * program_cl;
@@ -182,11 +181,11 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 				vecParam.push_back(paramLineSize);
 
-
+				paramSrc.release();
 				int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 				int type = CV_MAKE_TYPE(depth, 4);
-				dest.create((int)heightOut, (int)widthOut, type);
-				cl_mem clBuffer = (cl_mem)dest.handle(cv::ACCESS_RW);
+				paramSrc.create((int)heightOut, (int)widthOut, type);
+				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
 				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
@@ -235,10 +234,11 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 
 				vecParam.push_back(paramLineSize);
 
+				paramSrc.release();
 				int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 				int type = CV_MAKE_TYPE(depth, 4);
-				dest.create((int)heightOut, (int)widthOut, type);
-				cl_mem clBuffer = (cl_mem)dest.handle(cv::ACCESS_RW);
+				paramSrc.create((int)heightOut, (int)widthOut, type);
+				cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
 				program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(program_cl->GetProgram(), "Convert");
@@ -257,6 +257,6 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 		}
 
 	}
-	cvtColor(dest, paramSrc, cv::COLOR_RGBA2BGR);
+	cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGR);
 }
 

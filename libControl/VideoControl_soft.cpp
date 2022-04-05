@@ -1927,20 +1927,19 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	if (!useInterop)
 	{
-		//CRegardsBitmap* bitmap = openclEffect->GetBitmap();
-		cv::Mat local = openclEffect->GetMatrix();
-		glTexture->SetData(local);
-		//delete bitmap;
+		CRegardsBitmap* bitmap = openclEffect->GetBitmap();
+		glTexture->SetData(bitmap);
+		delete bitmap;
 	}
 	inverted = false;
 
 	return glTexture;
 }
 
-bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
+bool CVideoControlSoft::ApplyOpenCVEffect(CRegardsBitmap* pictureFrame)
 {
 	bool frameStabilized = false;
-
+	cv::Mat & image = pictureFrame->GetMatrix();
 	if (videoEffectParameter.stabilizeVideo)
 	{
 		if (openCVStabilization == nullptr)
@@ -1987,11 +1986,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	cv::Mat cvImage;
-
-	cv::cvtColor(pictureFrame->GetMatrix(), cvImage, cv::COLOR_BGRA2BGR);
-
-	cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, angle, (int)GetZoomRatio() * 100);
+	CRegardsBitmap* bitmapOut = CFiltreEffetCPU::Interpolation(pictureFrame, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, angle, (int)GetZoomRatio() * 100);
 	
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
@@ -2010,11 +2005,11 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 	if (glTexture != nullptr)
 	{
-		//cv::cvtColor(bitmapOut, cvImage, cv::COLOR_BGR2BGRA);
 		glTexture->SetData(bitmapOut);
 		
 	}
 
+	delete bitmapOut;
 
 	return glTexture;
 }

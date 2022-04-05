@@ -4,7 +4,7 @@
 #include "LensFlare.h"
 #include "MotionBlur.h"
 #include "Filtre.h"
-#include <DeepLearning.h>
+#include "RedEye.h"
 #include "Wave.h"
 #include <ImageLoadingFormat.h>
 #include <hqdn3d.h>
@@ -20,7 +20,6 @@
 #include <RegardsConfigParam.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
-using namespace Regards::DeepLearning;
 using namespace cv;
 using namespace dnn;
 using namespace dnn_superres;
@@ -207,14 +206,14 @@ cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
 
 bool CFiltreEffetCPU::convertToGLTexture2D(GLTexture* glTexture)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
 	if (glTexture != nullptr)
-		glTexture->SetData(image);
+		glTexture->SetData(bitmap);
 
 	return true;
 }
@@ -224,30 +223,24 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 	: IFiltreEffet(back_color)
 {
 	this->backColor = back_color;
-
-	if (bitmap != nullptr && bitmap->IsOk())
+	bitmapOut = nullptr;
+	pBitmap = bitmap->GetRegardsBitmap();
+	if(pBitmap == nullptr)
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-		cv::Mat local = _bitmap->GetMatrix();
-		filename = bitmap->GetFilename();
-		vector<cv::Mat> channels;
-		cv::extractChannel(local, alphaChannel, 3);
-		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
-		preview = false;
-
+		printf("toto");
 	}
 }
 
 bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization * openCVStabilization)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
 	bool frameStabilized = false;
-
+	cv::Mat image = bitmap->GetMatrix();
 	if (openCVStabilization != nullptr)
 	{
 		if (openCVStabilization->GetNbFrameBuffer() == 0)
@@ -302,49 +295,37 @@ void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
 
 int CFiltreEffetCPU::GetWidth()
 {
-	cv::Mat image;
 	if (preview)
-		image = paramOutput;
+	{
+		if (bitmapOut != nullptr)
+			return bitmapOut->GetBitmapWidth();
+	}
 	else
-		image = input;
-
-	return image.size().width;
+	{
+		if (pBitmap != nullptr)
+			return pBitmap->GetBitmapWidth();
+	}
+	return 0;
 }
 
 int CFiltreEffetCPU::GetHeight()
 {
-	cv::Mat image;
 	if (preview)
-		image = paramOutput;
+	{
+		if (bitmapOut != nullptr)
+			return bitmapOut->GetBitmapHeight();
+	}
 	else
-		image = input;
-
-	return image.size().height;
+	{
+		if (pBitmap != nullptr)
+			return pBitmap->GetBitmapHeight();
+	}
+	return 0;
 }
 
 CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
 {
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-	cv::Mat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		paramOutput.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-	}
-	else
-	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
-	}
-
-	bitmapOut->SetMatrix(output);
-
-	if (bitmapOut != nullptr)
-		bitmapOut->SetFilename(filename);
-	return bitmapOut;
+	return pBitmap;
 }
 
 // ReSharper disable once CppDoxygenUnresolvedReference
@@ -421,17 +402,40 @@ void CFiltreEffetCPU::BrightnessAndContrastAuto(Mat& image, float clipHistPercen
 
 	convertScaleAbs(image, image, alpha, beta);
 }
+/*
+void CFiltreEffetCPU::CopyPictureToTexture2D(GLTexture* texture, const bool& source, int rgba)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
 
+	if (texture != nullptr)
+	{
+		try
+		{
+			texture->SetData(bitmap);
+		}
+		catch (...)
+		{
+
+		}
+	}
+}*/
 
 int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const int & nbFace, const wxRect & listFace)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
+	Mat dst;
 
-	cv::flip(image, image, 0);
+	pBitmap->VertFlipBuf();
+	
+	cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
 
 	if(nbFace > 0)
 	{
@@ -444,21 +448,21 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			rect.width = listFace.width * 2;
 			rect.x = listFace.x - (width / 2);
 			rect.y = 0;
-			rect.height = image.size().height;
+			rect.height = dst.rows;
 
 			Mat blur;
-			cv::GaussianBlur(image, blur, cv::Size(boxsize, boxsize), radius);
+			cv::GaussianBlur(dst, blur, cv::Size(boxsize, boxsize), radius);
 
 
-			int maxWidth = image.cols;
-			int maxHeight = image.rows;
+			int maxWidth = dst.cols;
+			int maxHeight = dst.rows;
 			if ((rect.width + rect.x) > maxWidth)
 				rect.width = maxWidth - rect.x;
 
 			if ((rect.height + rect.y) > maxHeight)
 				rect.height = maxHeight - rect.y;
 			
-			cv::Mat croppedImage = image(rect);
+			cv::Mat croppedImage = dst(rect);
 			Mat src_gray;
 			Mat detected_edges;
 			Mat output;
@@ -492,6 +496,26 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 
 			//namedWindow("whiteMatrix");//Declaring a window to show the ellipse//
 			ellipse(mask, center, xy, angle, starting_point, ending_point, line_Color, -1, LINE_AA);//Drawing the ellipse
+
+			//waitKey(0);//Waiting for Keystroke
+
+			/*
+			 Before drawing all contours you could also decide
+			 to only draw the contour of the largest connected component
+			 found. Here's some commented out code how to do that:
+			*/
+
+			//    vector<double> areas(contours.size());
+			//    for(int i = 0; i < contours.size(); i++)
+			//        areas[i] = contourArea(Mat(contours[i]));
+			//    double max;
+			//    Point maxPosition;
+			//    minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
+			//    drawContours(mask, contours, maxPosition.y, Scalar(1), CV_FILLED);
+
+				// let's create a new image now
+			//Mat crop(src_gray.rows, src_gray.cols, CV_8UC3);
+
 
 			cv::GaussianBlur(croppedImage, blur_crop, cv::Size(boxsize, boxsize), radius);
 
@@ -599,8 +623,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			cv::Rect copy(rect.x, rect.y, croppedImage.cols, croppedImage.rows);
 			blur_crop.copyTo(blur(copy));
 
-			blur.copyTo(image);
-
+			cvtColor(blur, bitmap->GetMatrix(), COLOR_BGR2BGRA);
 		}
 		catch(...)
 		{
@@ -609,29 +632,26 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 
 
 	}
-	cv::flip(image, image, 0);
+	
+	dst.release();
+	bitmap->VertFlipBuf();
 	return 0;
 }
 
 int CFiltreEffetCPU::OilPaintingEffect(const int& size, const int& dynRatio)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
-
-	try
-	{
-		xphoto::oilPainting(image, image, size, dynRatio, COLOR_BGR2Lab);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-
+		bitmap = pBitmap;
+	Mat dst;
+	Mat image;
+	cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
+	xphoto::oilPainting(dst, image, size, dynRatio, COLOR_BGR2Lab);
+	cvtColor(image, bitmap->GetMatrix(), COLOR_BGR2BGRA);
+	dst.release();
+	image.release();
 	return 0;
 }
 
@@ -716,26 +736,29 @@ double dist(double ax, double ay, double bx, double by)
 
 int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		auto firstPt = cv::Point(image.size().width / 2, image.size().height / 2);
+		Mat src;
+		cvtColor(bitmap->GetMatrix(), src, COLOR_BGRA2BGR);
+
+		auto firstPt = cv::Point(src.size().width / 2, src.size().height / 2);
 		double maxImageRad = static_cast<float>(radius / 100.0) * CFiltreEffetCPUImpl::getMaxDisFromCorners(
-			image.size(), firstPt);
+			src.size(), firstPt);
 		double maxImageRadPower = maxImageRad * static_cast<float>(power / 100.0);
 
-		Mat labImg(image.size(), CV_8UC3);
+		Mat labImg(src.size(), CV_8UC3);
 
-		cvtColor(image, labImg, COLOR_BGR2Lab);
+		cvtColor(src, labImg, COLOR_BGR2Lab);
 
-		for (int row = 0; row < image.size().height; row++)
+		for (int row = 0; row < src.size().height; row++)
 		{
-			for (int col = 0; col < image.size().width; col++)
+			for (int col = 0; col < src.size().width; col++)
 			{
 
 				double temp = CFiltreEffetCPUImpl::dist(firstPt, cv::Point(col, row));
@@ -753,75 +776,69 @@ int CFiltreEffetCPU::VignetteEffect(const double& radius, const double& power)
 			}
 		}
 
-		cvtColor(labImg, image, COLOR_Lab2BGR);
-		labImg.release();
+		cvtColor(labImg, src, COLOR_Lab2BGR);
+		cvtColor(src, bitmap->GetMatrix(), COLOR_BGR2BGRA);
 
+		labImg.release();
+		src.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
 
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	if (bitmap != nullptr)
-	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-		cv::Mat local = _bitmap->GetMatrix();
-		filename = bitmap->GetFilename();
-		vector<cv::Mat> channels;
-		cv::extractChannel(local, alphaChannel, 3);
-		cv::cvtColor(local, input, cv::COLOR_BGRA2BGR);
-		preview = false;
-	}
+	if (pBitmap != nullptr)
+		delete pBitmap;
+	pBitmap = bitmap->GetRegardsBitmap();
 }
 
 int CFiltreEffetCPU::RedEye()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		CDeepLearning::DetectEyes(image);
+		CRedEye redeye;
+		return redeye.RemoveRedEye(bitmap);
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+	return 0;
+}
+
+CRegardsFloatBitmap* CFiltreEffetCPU::GetFloatBitmap(const bool& source)
+{
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	CImageLoadingFormat imageLoading(false);
+	imageLoading.SetPicture(bitmap);
+	return imageLoading.GetFloatBitmap(true);
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto waveFilter = new CWaveFilter();
-		waveFilter->ProcessEffect(image, x, y, height, scale, radius);
+		waveFilter->ProcessEffect(bitmap, x, y, height, scale, radius);
 		delete waveFilter;
+		return 0;
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	return 0;
+	return -1;
 }
 
 
@@ -911,110 +928,104 @@ int CFiltreEffetCPU::CartoonifyImage(const int& mode)
 		break;
 	}
 
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	Mat dst;
+	//Mat src(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+	// Convert from BGR color to Grayscale
+	Mat srcGray;
+	cvtColor(bitmap->GetMatrix(), srcGray, COLOR_BGRA2GRAY);
+
+	// Remove the pixel noise with a good Median filter, before we start detecting edges.
+	medianBlur(srcGray, srcGray, 7);
+
+	cv::Size size = srcGray.size();
+	auto mask = Mat(size, CV_8U);
+	auto edges = Mat(size, CV_8U);
+	if (!evilMode)
 	{
-		Mat dst;
+		// Generate a nice edge mask, similar to a pencil line drawing.
+		Laplacian(srcGray, edges, CV_8U, 5);
+		threshold(edges, mask, 80, 255, THRESH_BINARY_INV);
+		// Mobile cameras usually have lots of noise, so remove small
+		// dots of black noise from the black & white edge mask.
+		RemovePepperNoise(mask);
+	}
+	else
+	{
+		// Evil mode, making everything look like a scary bad guy.
+		// (Where "srcGray" is the original grayscale image plus a medianBlur of size 7x7).
+		Mat edges2;
+		Scharr(srcGray, edges, CV_8U, 1, 0);
+		Scharr(srcGray, edges2, CV_8U, 1, 0, -1);
+		edges += edges2;
+		threshold(edges, mask, 12, 255, THRESH_BINARY_INV);
+		medianBlur(mask, mask, 3);
+		edges2.release();
+	}
+	//imshow("edges", edges);
+	//imshow("mask", mask);
 
-		// Convert from BGR color to Grayscale
-		Mat srcGray;
-		cvtColor(image, srcGray, COLOR_BGRA2GRAY);
-
-		// Remove the pixel noise with a good Median filter, before we start detecting edges.
-		medianBlur(srcGray, srcGray, 7);
-
-		cv::Size size = srcGray.size();
-		auto mask = Mat(size, CV_8U);
-		auto edges = Mat(size, CV_8U);
-		if (!evilMode)
-		{
-			// Generate a nice edge mask, similar to a pencil line drawing.
-			Laplacian(srcGray, edges, CV_8U, 5);
-			threshold(edges, mask, 80, 255, THRESH_BINARY_INV);
-			// Mobile cameras usually have lots of noise, so remove small
-			// dots of black noise from the black & white edge mask.
-			RemovePepperNoise(mask);
-		}
-		else
-		{
-			// Evil mode, making everything look like a scary bad guy.
-			// (Where "srcGray" is the original grayscale image plus a medianBlur of size 7x7).
-			Mat edges2;
-			Scharr(srcGray, edges, CV_8U, 1, 0);
-			Scharr(srcGray, edges2, CV_8U, 1, 0, -1);
-			edges += edges2;
-			threshold(edges, mask, 12, 255, THRESH_BINARY_INV);
-			medianBlur(mask, mask, 3);
-			edges2.release();
-		}
-		//imshow("edges", edges);
-		//imshow("mask", mask);
-
-		// For sketch mode, we just need the mask!
-		if (sketchMode)
-		{
-			// The output image has 3 channels, not a single channel.
-			cvtColor(mask, image, COLOR_GRAY2BGR);
-			dst.release();
-			mask.release();
-			edges.release();
-			return -1;
-		}
-
-		// Do the bilateral filtering at a shrunken scale, since it
-		// runs so slowly but doesn't need full resolution for a good effect.
-		cv::Size smallSize;
-		smallSize.width = size.width / 2;
-		smallSize.height = size.height / 2;
-
-		auto smallImg = Mat(smallSize, CV_8UC3);
-		resize(image, smallImg, smallSize, 0, 0, INTER_LINEAR);
-
-		// Perform many iterations of weak bilateral filtering, to enhance the edges
-		// while blurring the flat regions, like a cartoon.
-		auto tmp = Mat(smallSize, CV_8UC3);
-		int repetitions = 7; // Repetitions for strong cartoon effect.
-		for (int i = 0; i < repetitions; i++)
-		{
-			int d = 9; // Filter size. Has a large effect on speed.
-			double sigmaColor = 9; // Filter color strength.
-			double sigmaSpace = 7; // Positional strength. Effects speed.
-			bilateralFilter(smallImg, tmp, d, sigmaColor, sigmaSpace);
-			bilateralFilter(tmp, smallImg, d, sigmaColor, sigmaSpace);
-		}
-
-		if (alienMode)
-		{
-			// Apply an "alien" filter, when given a shrunken image and the full-res edge mask.
-			// Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
-			ChangeFacialSkinColor(smallImg, edges);
-		}
-
-		// Go back to the original scale.
-		//cvtColor(smallImg, srcBgr, COLOR_BGR2BGRA);
-		resize(smallImg, dst, size, 0, 0, INTER_LINEAR);
-
-		// Use the blurry cartoon image, except for the strong edges that we will leave black.
-		dst.copyTo(image, mask);
-
+	// For sketch mode, we just need the mask!
+	if (sketchMode)
+	{
+		// The output image has 3 channels, not a single channel.
+		cvtColor(mask, bitmap->GetMatrix(), COLOR_GRAY2BGRA);
 		dst.release();
 		mask.release();
-		tmp.release();
-		//srcBgr.release();
-		smallImg.release();
 		edges.release();
+		return -1;
 	}
-	catch (cv::Exception& e)
+
+	// Do the bilateral filtering at a shrunken scale, since it
+	// runs so slowly but doesn't need full resolution for a good effect.
+	cv::Size smallSize;
+	smallSize.width = size.width / 2;
+	smallSize.height = size.height / 2;
+
+	Mat srcBgr;
+	cvtColor(bitmap->GetMatrix(), srcBgr, COLOR_BGRA2BGR);
+	auto smallImg = Mat(smallSize, CV_8UC3);
+	resize(srcBgr, smallImg, smallSize, 0, 0, INTER_LINEAR);
+
+	// Perform many iterations of weak bilateral filtering, to enhance the edges
+	// while blurring the flat regions, like a cartoon.
+	auto tmp = Mat(smallSize, CV_8UC3);
+	int repetitions = 7; // Repetitions for strong cartoon effect.
+	for (int i = 0; i < repetitions; i++)
 	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		int d = 9; // Filter size. Has a large effect on speed.
+		double sigmaColor = 9; // Filter color strength.
+		double sigmaSpace = 7; // Positional strength. Effects speed.
+		bilateralFilter(smallImg, tmp, d, sigmaColor, sigmaSpace);
+		bilateralFilter(tmp, smallImg, d, sigmaColor, sigmaSpace);
 	}
+
+	if (alienMode)
+	{
+		// Apply an "alien" filter, when given a shrunken image and the full-res edge mask.
+		// Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
+		ChangeFacialSkinColor(smallImg, edges);
+	}
+
+	// Go back to the original scale.
+	cvtColor(smallImg, srcBgr, COLOR_BGR2BGRA);
+	resize(srcBgr, dst, size, 0, 0, INTER_LINEAR);
+
+	// Use the blurry cartoon image, except for the strong edges that we will leave black.
+	dst.copyTo(bitmap->GetMatrix(), mask);
+
+	dst.release();
+	mask.release();
+	tmp.release();
+	srcBgr.release();
+	smallImg.release();
+	edges.release();
 	return 0;
 }
 
@@ -1093,128 +1104,136 @@ void CFiltreEffetCPU::ChangeFacialSkinColor(Mat smallImgBGR, Mat bigEdges)
 
 int CFiltreEffetCPU::MeanShift(const float& fSpatialRadius, const float& fColorRadius)
 {
-	cv::Mat image, dst;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cvtColor(image, dst, COLOR_BGR2Lab);
+		Mat dst;
+		cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
+		cvtColor(dst, dst, COLOR_BGR2Lab);
 		// Initilize Mean Shift with spatial bandwith and color bandwith
 		CMeanShift msProcess(fSpatialRadius, fColorRadius);
 		//MSProc(fSpatialRadius, fColorRadius);
 		// Filtering Process
 		msProcess.MSFiltering(dst);
-		cvtColor(dst, image, COLOR_Lab2RGB);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cvtColor(dst, dst, COLOR_Lab2RGB);
+		cvtColor(dst, bitmap->GetMatrix(), COLOR_BGR2BGRA);
+		dst.release();
 	}
 	return 0;
 }
 
 int CFiltreEffetCPU::BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv::Mat output;
-		bilateralFilter(image, output, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
-		output.copyTo(image);
+		Mat dst;
+		Mat out;
+		cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
+		bilateralFilter(dst, out, fSize, sigmaX, sigmaP, BORDER_DEFAULT);
+		cvtColor(out, bitmap->GetMatrix(), COLOR_BGR2BGRA);
+		dst.release();
+		out.release();
 	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	return 0;
+	return -1;
 }
 
 int CFiltreEffetCPU::NlmeansFilter(const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		fastNlMeansDenoisingColored(image, image, h, hColor, templateWindowSize, searchWindowSize);
+		//auto nlmeans = new CNlmeans(fsize, bsize, sigma);
+		//nlmeans->SetParameter(bitmap, backColor);
+		//nlmeans->Compute();
+		//delete nlmeans;
+		Mat dst;
+		Mat out;
+		cvtColor(bitmap->GetMatrix(), dst, COLOR_BGRA2BGR);
+		fastNlMeansDenoisingColored(dst, out, h, hColor, templateWindowSize, searchWindowSize);
+		cvtColor(out, bitmap->GetMatrix(), COLOR_BGR2BGRA);
+		dst.release();
+		out.release();
+		return 0;
 	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	return 0;
-
+	return -1;
 }
 
 
 int CFiltreEffetCPU::SharpenMasking(const float& sharpness)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		Mat blurred; 
 		double sigma = 1, threshold = 5, amount = sharpness;
-		cv::GaussianBlur(image, blurred, cv::Size(), sigma, sigma);
-		Mat lowConstrastMask = abs(image - blurred) < threshold;
-		Mat sharpened = image * (1 + amount) + blurred * (-amount);
-		image.copyTo(sharpened, lowConstrastMask);
-		sharpened.copyTo(image);
+		cv::GaussianBlur(bitmap->GetMatrix(), blurred, cv::Size(), sigma, sigma);
+		Mat lowConstrastMask = abs(bitmap->GetMatrix() - blurred) < threshold;
+		Mat sharpened = bitmap->GetMatrix() * (1 + amount) + blurred * (-amount);
+		bitmap->GetMatrix().copyTo(sharpened, lowConstrastMask);
+		bitmap->SetMatrix(sharpened);
+		return 0;
 	}
-	catch (Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
-	return 0;
+	return -1;
 }
 
 CFiltreEffetCPU::~CFiltreEffetCPU()
 {
+	if (bitmapOut != nullptr)
+		delete bitmapOut;
+	bitmapOut = nullptr;
+
+	if (pBitmap != nullptr)
+		delete pBitmap;
+	pBitmap = nullptr;
+
 	if (hq3d != nullptr)
 		delete hq3d;
 }
 
 wxImage CFiltreEffetCPU::GetwxImage()
 {
-	cv::Mat image;
-	if (preview)
-		image = paramOutput;
-	else
-		image = input;
+	if (bitmapOut != nullptr)
+	{
+		return GetwxImage(bitmapOut);
+	}
+	return GetwxImage(pBitmap);
+}
 
-
+wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap* bitmap)
+{
 	cv::Mat cvDest;
-	cv::cvtColor(image, cvDest, cv::COLOR_BGR2RGB);
+	cv::cvtColor(bitmap->GetMatrix(), cvDest, cv::COLOR_BGRA2RGB);
 	cv::flip(cvDest, cvDest, 0);
 	wxImage anImage(cvDest.cols, cvDest.rows, cvDest.data, TRUE);
 	return anImage;
 }
 
-cv::Mat CFiltreEffetCPU::Interpolation(cv::Mat & cvImage, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
+CRegardsBitmap* CFiltreEffetCPU::Interpolation(CRegardsBitmap* pBitmap, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
+	int flipH, int flipV, int angle, int ratio)
 {
+	cv::Mat cvImage;
+	cv::cvtColor(pBitmap->GetMatrix(), cvImage, cv::COLOR_BGRA2BGR);
 
 	try
 	{
@@ -1357,26 +1376,38 @@ cv::Mat CFiltreEffetCPU::Interpolation(cv::Mat & cvImage, const int& widthOut, c
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 
 	}
-	return cvImage;
+
+	cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+
+	CRegardsBitmap* bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	bitmapOut->SetMatrix(cvImage);
+	return bitmapOut;
 }
 
 void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method,
 	int flipH, int flipV, int angle, int ratio)
 {
-	paramOutput = Interpolation(input, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
+	if (bitmapOut != nullptr)
+		delete bitmapOut;
+
+	bitmapOut = Interpolation(pBitmap, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
 }
 
 
 int CFiltreEffetCPU::HistogramNormalize()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+
+	if (bitmap != nullptr)
 	{
+		Mat dest;
+		Mat image;// (bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+		cvtColor(bitmap->GetMatrix(), image, COLOR_BGRA2BGR);
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
 		int gridsize = 8;
@@ -1384,17 +1415,15 @@ int CFiltreEffetCPU::HistogramNormalize()
 		clahe->apply(bgr_planes[0], bgr_planes[0]);
 		clahe->apply(bgr_planes[1], bgr_planes[1]);
 		clahe->apply(bgr_planes[2], bgr_planes[2]);
-		cv::merge(bgr_planes, image);
+		cv::merge(bgr_planes, dest);
+
+		cvtColor(dest, bitmap->GetMatrix(), COLOR_BGR2BGRA);
 
 		bgr_planes[0].release();
 		bgr_planes[1].release();
 		bgr_planes[2].release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		dest.release();
+		image.release();
 	}
 	return 0;
 	//return CHistogramme::HistogramNormalize(pBitmap);
@@ -1402,67 +1431,63 @@ int CFiltreEffetCPU::HistogramNormalize()
 
 int CFiltreEffetCPU::HistogramEqualize()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+
+	if (bitmap != nullptr)
 	{
+		Mat dest;
+		Mat image;// (bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
+
+		cvtColor(bitmap->GetMatrix(), image, COLOR_BGRA2BGR);
+
 		vector<Mat> bgr_planes;
 		split(image, bgr_planes);
 		equalizeHist(bgr_planes[0], bgr_planes[0]);
 		equalizeHist(bgr_planes[1], bgr_planes[1]);
 		equalizeHist(bgr_planes[2], bgr_planes[2]);
 
-		cv::merge(bgr_planes, image);
+		cv::merge(bgr_planes, dest);
+		cvtColor(dest, bitmap->GetMatrix(), COLOR_BGR2BGRA);
 
 		bgr_planes[0].release();
 		bgr_planes[1].release();
 		bgr_planes[2].release();
-
+		dest.release();
 		image.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
 	return 0;
-
+	//return CHistogramme::HistogramEqualize(pBitmap);
 }
 
 int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& ChromSpac, const double& LumTmp,
                             const double& ChromTmp)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	if (hq3d == nullptr)
-	{
-		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, LumTmp);
-	}
-	else if (oldLevelDenoise != LumSpac || image.size().width != oldwidthDenoise || image.size().height
-		!= oldheightDenoise)
-	{
-		delete hq3d;
-		hq3d = new Chqdn3d(image.size().width, image.size().height, LumSpac, LumTmp);
-	}
 
-	try
+	if (bitmap != nullptr)
 	{
-		hq3d->ApplyDenoise3D(image);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		if (hq3d == nullptr)
+		{
+			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
+		}
+		else if (oldLevelDenoise != LumSpac || bitmap->GetBitmapWidth() != oldwidthDenoise || bitmap->GetBitmapHeight()
+			!= oldheightDenoise)
+		{
+			delete hq3d;
+			hq3d = new Chqdn3d(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), LumSpac, LumTmp);
+		}
+
+		hq3d->ApplyDenoise3D(bitmap);
 	}
 
 	return 0;
@@ -1471,29 +1496,17 @@ int CFiltreEffetCPU::HQDn3D(const double& LumSpac, const double& ChromSpac, cons
 int CFiltreEffetCPU::LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType,
                                const int& iIntensity, const int& iColor, const int& iColorIntensity)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv:Mat output;
-		CRegardsBitmap* bitmap = new CRegardsBitmap();
-		cv::cvtColor(image, output, cv::COLOR_BGR2BGRA);
-		bitmap->SetMatrix(output);
 		auto filtre = new CLensFlare();
 		filtre->LensFlare(bitmap, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 		delete filtre;
-		cv::cvtColor(bitmap->GetMatrix(), image, cv::COLOR_BGRA2BGR);
-		delete bitmap;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -1503,70 +1516,53 @@ int CFiltreEffetCPU::LensFlare(const int& iPosX, const int& iPosY, const int& iP
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::RGBFilter(const int& red, const int& green, const int& blue)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		cv::Scalar color = cv::Scalar(red, green, blue);
-		image = image + color;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cv::Mat out = bitmap->GetMatrix() + color;
+		bitmap->SetMatrix(out);
 	}
 	return 0;
 }
 
 int CFiltreEffetCPU::Solarize(const long& threshold)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto filtre = new CSolarize(static_cast<int>(threshold));
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
 
 int CFiltreEffetCPU::Posterize(const float& level, const float& gamma)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto filtre = new CPosterize(level, gamma);
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -1578,28 +1574,22 @@ int CFiltreEffetCPU::Posterize(const float& level, const float& gamma)
 int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& color2, const float& amplitude,
                                   const float& frequence, const int& octave, const int& intensity)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto m_perlinNoise = new CPerlinNoise();
 		CRegardsBitmap localBitmap(250, 250);
-		auto _local = new CRegardsBitmap(image.size().width, image.size().height);
+		auto _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
-		cv::resize(localBitmap.GetMatrix(), _local->GetMatrix(), cv::Size(image.size().width, image.size().height), INTER_CUBIC);
+		cv::resize(localBitmap.GetMatrix(), _local->GetMatrix(), cv::Size(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight()), INTER_CUBIC);
 		Fusion(_local, intensity / 100.0f);
 		delete _local;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -1609,24 +1599,18 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& colo
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto filtre = new CSwirl(angle, radius);
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -1636,24 +1620,22 @@ int CFiltreEffetCPU::Swirl(const float& radius, const float& angle)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const double& contrast)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
-	
-	try
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
 	{
 		float alpha = contrast / 100.0f; //# Contrast control(1.0 - 3.0)
 		float beta = brightness; //# Brightness control(0 - 100)
-		cv::convertScaleAbs(image, image, alpha, beta);
+		cv::Mat image;
+		cv::convertScaleAbs(bitmap->GetMatrix(), image, alpha, beta);
+		bitmap->SetMatrix(image);
+		//adjusted = cv2.convertScaleAbs(image, alpha = alpha, beta = beta)
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -1661,23 +1643,18 @@ int CFiltreEffetCPU::BrightnessAndContrast(const double& brightness, const doubl
 //////////////////////////////////////////////////////////////////
 int CFiltreEffetCPU::NiveauDeGris()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		Mat dest;
-		cvtColor(image, dest, COLOR_BGR2GRAY);
-		cvtColor(dest, image, COLOR_GRAY2BGR);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2GRAY);
+		cvtColor(dest, bitmap->GetMatrix(), COLOR_GRAY2BGRA);
+		dest.release();
 	}
 	return 0;
 }
@@ -1686,25 +1663,19 @@ int CFiltreEffetCPU::NiveauDeGris()
 //////////////////////////////////////////////////////////////////
 int CFiltreEffetCPU::NoirEtBlanc()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		Mat dest;
-		cvtColor(image, dest, COLOR_BGR2GRAY);
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2GRAY);
 		threshold(dest, dest, 127, 255, THRESH_BINARY);
-		cvtColor(dest, image, COLOR_GRAY2BGR);
+		cvtColor(dest, bitmap->GetMatrix(), COLOR_GRAY2BGRA);
 		dest.release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -1714,14 +1685,24 @@ int CFiltreEffetCPU::NoirEtBlanc()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Sepia()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
+		/*
+		auto filtre = new CSepiaFiltre();
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+		*/
+
+		Mat dest;
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2BGR);
+
 		cv::Mat kernel =
 			(cv::Mat_<float>(3, 3)
 				<<
@@ -1729,13 +1710,10 @@ int CFiltreEffetCPU::Sepia()
 				0.349, 0.686, 0.168,
 				0.393, 0.769, 0.189);
 
-		cv::transform(image, image, kernel);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cv::transform(dest, dest, kernel);
+		cvtColor(dest, dest, COLOR_BGR2BGRA);
+		bitmap->SetMatrix(dest);
+
 	}
 	return 0;
 }
@@ -1745,25 +1723,20 @@ int CFiltreEffetCPU::Sepia()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Soften()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		short kernel[] = { 1, 1, 1, 1, 8, 1, 1, 1, 1 };
+		short kernel[] = {1, 1, 1, 1, 8, 1, 1, 1, 1};
 		auto filtre = new CMatrixConvolution(kernel, 3, 16, 0);
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+
 	}
 	return 0;
 }
@@ -1773,21 +1746,18 @@ int CFiltreEffetCPU::Soften()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Blur(const int& radius)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		blur(image, image, cv::Size(radius, radius));
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		Mat dest;
+		blur(bitmap->GetMatrix(), dest, cv::Size(radius, radius));
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
 	return 0;
 }
@@ -1798,22 +1768,20 @@ int CFiltreEffetCPU::Blur(const int& radius)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::GaussianBlur(const int& radius, const int& boxSize)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv::GaussianBlur(image, image, cv::Size(boxSize, boxSize), radius);
+		Mat dest;
+		cv::GaussianBlur(bitmap->GetMatrix(), dest, cv::Size(boxSize, boxSize), radius);
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -1822,29 +1790,23 @@ int CFiltreEffetCPU::GaussianBlur(const int& radius, const int& boxSize)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Emboss()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-
-	try
+	if (bitmap != nullptr)
 	{
 		// Construct kernel (all entries initialized to 0)
 		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(0, 0) = -1.0;
 		kernel.at<float>(2, 2) = 1.0;
-
-		filter2D(image, image, image.depth(), kernel);
-
+		Mat dest;
+		filter2D(bitmap->GetMatrix(), dest, bitmap->GetMatrix().depth(), kernel);
+		bitmap->SetMatrix(dest);
+		dest.release();
 		kernel.release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 
 	return 0;
@@ -1855,13 +1817,13 @@ int CFiltreEffetCPU::Emboss()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::SharpenStrong()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(0, 0) = -1.0;
@@ -1873,15 +1835,11 @@ int CFiltreEffetCPU::SharpenStrong()
 		kernel.at<float>(2, 0) = -1.0;
 		kernel.at<float>(2, 1) = -1.0;
 		kernel.at<float>(2, 2) = -1.0;
-
-		filter2D(image, image, image.depth(), kernel);
+		Mat dest;
+		filter2D(bitmap->GetMatrix(), dest, bitmap->GetMatrix().depth(), kernel);
+		bitmap->SetMatrix(dest);
+		dest.release();
 		kernel.release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 
 	return 0;
@@ -1892,13 +1850,13 @@ int CFiltreEffetCPU::SharpenStrong()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Sharpen()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		Mat kernel(3, 3, CV_32F, Scalar(0));
 		kernel.at<float>(1, 1) = 5.0;
@@ -1906,17 +1864,13 @@ int CFiltreEffetCPU::Sharpen()
 		kernel.at<float>(2, 1) = -1.0;
 		kernel.at<float>(1, 0) = -1.0;
 		kernel.at<float>(1, 2) = -1.0;
-
-		filter2D(image, image, image.depth(), kernel);
-
+		Mat dest;
+		filter2D(bitmap->GetMatrix(), dest, bitmap->GetMatrix().depth(), kernel);
+		bitmap->SetMatrix(dest);
+		dest.release();
 		kernel.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -1925,22 +1879,20 @@ int CFiltreEffetCPU::Sharpen()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Erode()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		erode(image, image, Mat());
+		Mat dest;
+		erode(bitmap->GetMatrix(), dest, Mat());
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -1949,22 +1901,20 @@ int CFiltreEffetCPU::Erode()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Median()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		medianBlur(image, image, 3);
+		Mat dest;
+		medianBlur(bitmap->GetMatrix(), dest, 3);
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -1973,24 +1923,37 @@ int CFiltreEffetCPU::Median()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Noise()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
+
 		auto filtre = new CNoise();
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+
+		/*
+		vector<Mat> bgr_planes;
+		split(bitmap->GetMatrix(), bgr_planes);
+
+		for (int i = 0; i < 3; i++)
+		{
+			cv::Mat noise = Mat(bgr_planes[i].size(), CV_64F);
+			Mat result;
+			normalize(bgr_planes[i], result, 0.0, 1.0, NORM_MINMAX, CV_64F);
+			cv::randn(noise, 0, 0.1);
+			result = result + noise;
+			normalize(result, result, 0.0, 1.0, NORM_MINMAX, CV_64F);
+			result.convertTo(bgr_planes[i], CV_32F, 255, 0);
+		}
+
+		cv::merge(bgr_planes, bitmap->GetMatrix());
+		*/
 	}
 	return 0;
 }
@@ -2000,22 +1963,20 @@ int CFiltreEffetCPU::Noise()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Dilate()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		dilate(image, image, Mat());
+		Mat dest;
+		dilate(bitmap->GetMatrix(), dest, Mat());
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -2024,22 +1985,20 @@ int CFiltreEffetCPU::Dilate()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Negatif()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		bitwise_not(image, image);
+		Mat dest;
+		bitwise_not(bitmap->GetMatrix(), dest);
+		bitmap->SetMatrix(dest);
+		dest.release();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -2048,30 +2007,36 @@ int CFiltreEffetCPU::Negatif()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FiltreEdge()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
+		/*
+		short kernel[] = {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+		auto filtre = new CMatrixConvolution(kernel, 3, 1, 0);
+		filtre->SetParameter(bitmap, backColor);
+		filtre->Compute();
+		delete filtre;
+	*/
+		
 		Mat dest;
-		cvtColor(image, dest, COLOR_BGR2GRAY);
+		cvtColor(bitmap->GetMatrix(), dest, COLOR_BGRA2GRAY);
 
 		Mat img_blur;
 		cv::GaussianBlur(dest, img_blur, cv::Size(3, 3), 0, 0);
 		Mat edges;
 		Canny(img_blur, edges, 100, 200, 3, false);
 
-		cvtColor(edges, image, COLOR_GRAY2BGR);
+		cvtColor(edges, dest, COLOR_GRAY2BGRA);
+		bitmap->SetMatrix(dest);
+		
+
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -2080,25 +2045,21 @@ int CFiltreEffetCPU::FiltreEdge()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FiltreMosaic()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto filtre = new CMosaic(5);
-		filtre->SetParameter(image, backColor);
+		filtre->SetParameter(bitmap, backColor);
 		filtre->Compute();
 		delete filtre;
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
+
 	return 0;
 }
 
@@ -2107,21 +2068,15 @@ int CFiltreEffetCPU::FiltreMosaic()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FlipVertical()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv::flip(image, image, 0);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		bitmap->VertFlipBuf();
 	}
 	return 0;
 }
@@ -2131,22 +2086,17 @@ int CFiltreEffetCPU::FlipVertical()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::FlipHorizontal()
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv::flip(image, image, 1);
+		bitmap->HorzFlipBuf();
 	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+
 	return 0;
 }
 
@@ -2157,58 +2107,51 @@ int CFiltreEffetCPU::FlipHorizontal()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::MotionBlur(const double& radius, const double& sigma, const double& angle)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		auto filtre = new CMotionBlur();
-		filtre->MotionBlur(image, radius, sigma, angle);
+		filtre->MotionBlur(bitmap, radius, sigma, angle);
 		delete filtre;
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+
 	}
 	return 0;
 }
 
 int CFiltreEffetCPU::GroundGlassEffect(const double& radius)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		Mat imageResult = image.clone();
+
+		Mat imageSource = bitmap->GetMatrix();
+		cvtColor(imageSource, imageSource, COLOR_BGRA2BGR);
+		Mat imageResult = imageSource.clone();
 		RNG rng;
 		int randomNum;
 		int Number = radius;
 
-		for (int i = 0; i < image.rows - Number; i++)
-			for (int j = 0; j < image.cols - Number; j++)
+		for (int i = 0; i < imageSource.rows - Number; i++)
+			for (int j = 0; j < imageSource.cols - Number; j++)
 			{
 				randomNum = rng.uniform(0, Number);
-				imageResult.at<Vec3b>(i, j)[0] = image.at<Vec3b>(i + randomNum, j + randomNum)[0];
-				imageResult.at<Vec3b>(i, j)[1] = image.at<Vec3b>(i + randomNum, j + randomNum)[1];
-				imageResult.at<Vec3b>(i, j)[2] = image.at<Vec3b>(i + randomNum, j + randomNum)[2];
+				imageResult.at<Vec3b>(i, j)[0] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[0];
+				imageResult.at<Vec3b>(i, j)[1] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[1];
+				imageResult.at<Vec3b>(i, j)[2] = imageSource.at<Vec3b>(i + randomNum, j + randomNum)[2];
 			}
 
-		imageResult.copyTo(image);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cvtColor(imageResult, imageResult, COLOR_BGR2BGRA);
+		bitmap->SetMatrix(imageResult);
 	}
 	return 0;
 }
@@ -2218,33 +2161,30 @@ int CFiltreEffetCPU::GroundGlassEffect(const double& radius)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::RotateFree(const double& angle, const int& widthOut, const int& heightOut)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
+		//Mat dst;
+		Mat src = bitmap->GetMatrix();
+
 		// get rotation matrix for rotating the image around its center in pixel coordinates
-		const Point2f center((image.cols - 1) / 2.0, (image.rows - 1) / 2.0);
+		const Point2f center((src.cols - 1) / 2.0, (src.rows - 1) / 2.0);
 		Mat rot = getRotationMatrix2D(center, angle, 1.0);
 		// determine bounding rectangle, center not relevant
-		Rect2f bbox = RotatedRect(Point2f(), image.size(), angle).boundingRect2f();
+		Rect2f bbox = RotatedRect(Point2f(), src.size(), angle).boundingRect2f();
 		// adjust transformation matrix
-		rot.at<double>(0, 2) += bbox.width / 2.0 - image.cols / 2.0;
-		rot.at<double>(1, 2) += bbox.height / 2.0 - image.rows / 2.0;
+		rot.at<double>(0, 2) += bbox.width / 2.0 - src.cols / 2.0;
+		rot.at<double>(1, 2) += bbox.height / 2.0 - src.rows / 2.0;
 
-		warpAffine(image, image, rot, bbox.size());
+		warpAffine(src, bitmap->GetMatrix(), rot, bbox.size());
 
-
+		src.release();
 		rot.release();
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 	return 0;
 }
@@ -2254,30 +2194,25 @@ int CFiltreEffetCPU::RotateFree(const double& angle, const int& widthOut, const 
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::PhotoFiltre(const CRgbaquad& clValue, const int& intensity)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
 		float coeff = (float)intensity / 100.0f;
 		float diff = 1.0f - coeff;
 		cv::Mat out;
 		cv::Mat out_one;
-		out_one = image.mul(diff);
+		out_one = bitmap->GetMatrix().mul(diff);
 
 		cv::Scalar color = cv::Scalar(clValue.GetBlue(), clValue.GetGreen(), clValue.GetRed());
 		cv::Scalar out_two = color * coeff;
 
-		cv::add(out_one, out_two, image);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		cv::add(out_one, out_two, out);
+		bitmap->SetMatrix(out);
 	}
 	return 0;
 }
@@ -2310,21 +2245,31 @@ void CFiltreEffetCPU::RotateMatrix(const int& angle, Mat& src)
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Rotate90()
 {
+	CRegardsBitmap* bitmap;
 	if (preview)
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_CLOCKWISE);
+		bitmap = bitmapOut;
 	else
-		cv::rotate(input, input, cv::ROTATE_90_CLOCKWISE);
+		bitmap = pBitmap;
 
+	if (bitmap != nullptr)
+	{
+		bitmap->Rotate90();
+	}
 	return 0;
 }
 
 int CFiltreEffetCPU::Rotate180()
 {
+	CRegardsBitmap* bitmap;
 	if (preview)
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_180);
+		bitmap = bitmapOut;
 	else
-		cv::rotate(input, input, cv::ROTATE_180);
+		bitmap = pBitmap;
 
+	if (bitmap != nullptr)
+	{
+		bitmap->Rotate180();
+	}
 	return 0;
 }
 
@@ -2333,11 +2278,16 @@ int CFiltreEffetCPU::Rotate180()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Rotate270()
 {
+	CRegardsBitmap* bitmap;
 	if (preview)
-		cv::rotate(paramOutput, paramOutput, cv::ROTATE_90_COUNTERCLOCKWISE);
+		bitmap = bitmapOut;
 	else
-		cv::rotate(input, input, cv::ROTATE_90_COUNTERCLOCKWISE);
-	
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		bitmap->Rotate270();
+	}
 	return 0;
 }
 
@@ -2346,7 +2296,20 @@ int CFiltreEffetCPU::Rotate270()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Resize(const int& imageWidth, const int& imageHeight, const int& interpolation)
 {
-	resize(input, paramOutput, Size(imageHeight, imageWidth), 0, 0, INTER_CUBIC);
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
+	{
+		Mat dst(imageHeight, imageWidth, CV_8UC4);
+		resize(bitmap->GetMatrix(), dst, dst.size(), 0, 0, INTER_CUBIC);
+		bitmap->SetMatrix(dst);
+		dst.release();
+	}
+
 	return 0;
 }
 
@@ -2355,109 +2318,127 @@ int CFiltreEffetCPU::Resize(const int& imageWidth, const int& imageHeight, const
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
+	if (bitmap != nullptr)
 	{
-		cv::Mat dst;
-		cv::cvtColor(bitmapSecond->GetMatrix(), dst, COLOR_BGRA2BGR);
-		float beta = (1.0 - pourcentage);
-		cv::addWeighted(image, pourcentage, dst, beta, 0.0, dst);
-		dst.copyTo(image);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		bitmap->FusionBitmap(bitmapSecond, pourcentage);
 	}
 	return 0;
 }
 
 void CFiltreEffetCPU::GetBitmap(CRegardsBitmap* & bitmap, const bool& source)
 {
-	cv::Mat image;
-	if (preview)
-		image = paramOutput;
-	else
-		image = input;
-
 	if (bitmap != nullptr)
 	{
-		if (!source)
+		if (bitmapOut != nullptr && !source)
 		{
-			bitmap->SetFilename(filename);
-			bitmap->SetMatrix(image);
+			bitmap->SetFilename(bitmapOut->GetFilename());
+			bitmap->SetMatrix(bitmapOut->GetMatrix());
 		}
 		else
 		{
-			bitmap->SetFilename(filename);
-			bitmap->SetMatrix(image);
+			bitmap->SetFilename(pBitmap->GetFilename());
+			bitmap->SetMatrix(pBitmap->GetMatrix());
+			//bitmap->SetBitmap(pBitmap->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		}
 	}
 }
 
-cv::Mat& CFiltreEffetCPU::GetOpenCVMatrix()
+#define SCALEBITS            8
+#define ONE_HALF             (1 << (SCALEBITS - 1))
+#define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
+
+void CFiltreEffetCPU::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr, const int& widthOut,
+                                 const int& heightOut)
 {
-	if (preview && !paramOutput.empty())
+	CRegardsBitmap* bitmap;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	const int wrap = bitmap->GetBitmapWidth();
+	const int wrap3 = bitmap->GetBitmapWidth() * 4;
+	uint8_t* p = bitmap->GetPtBitmap();
+	for (int y = 0; y < bitmap->GetBitmapHeight(); y += 2)
 	{
-		return paramOutput;
+		for (int x = 0; x < bitmap->GetBitmapWidth(); x += 2)
+		{
+			int r = p[2];
+			int g = p[1];
+			int b = p[0];
+			int r1 = r;
+			int g1 = g;
+			int b1 = b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			p += wrap3;
+			lum += wrap;
+			r = p[2];
+			g = p[1];
+			b = p[0];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[0] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+			r = p[6];
+			g = p[5];
+			b = p[4];
+			r1 += r;
+			g1 += g;
+			b1 += b;
+			lum[1] = (FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b + ONE_HALF) >> SCALEBITS;
+
+			cb[0] = (((-FIX(0.16874) * r1 - FIX(0.33126) * g1 +
+				FIX(0.50000) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cr[0] = (((FIX(0.50000) * r1 - FIX(0.41869) * g1 -
+				FIX(0.08131) * b1 + 4 * ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
+			cb++;
+			cr++;
+			p += -wrap3 + 2 * 4;
+			lum += -wrap + 2;
+		}
+		p += wrap3;
+		lum += wrap;
 	}
-	return input;
 }
 
 CRegardsBitmap* CFiltreEffetCPU::GetBitmap(const bool& source)
 {
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-	cv::Mat output;
-
-	if (source)
+	auto copy = new CRegardsBitmap();
+	if (bitmapOut != nullptr && !source)
 	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
-	}
-	else if (preview && !paramOutput.empty())
-	{
-		paramOutput.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+		copy->SetFilename(bitmapOut->GetFilename());
+		copy->SetMatrix(bitmapOut->GetMatrix());
 	}
 	else
 	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
+		copy->SetFilename(pBitmap->GetFilename());
+		copy->SetMatrix(pBitmap->GetMatrix());
 	}
-
-	bitmapOut->SetMatrix(output);
-
-	if (bitmapOut != nullptr)
-		bitmapOut->SetFilename(filename);
-	return bitmapOut;
+	return copy;
 }
 
 int CFiltreEffetCPU::BrightnessAndContrastAuto(float clipHistPercent)
 {
-	cv::Mat image;
+	CRegardsBitmap* bitmap;
 	if (preview)
-		image = paramOutput;
+		bitmap = bitmapOut;
 	else
-		image = input;
+		bitmap = pBitmap;
 
-	try
-	{
-		BrightnessAndContrastAuto(image, clipHistPercent);
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+	BrightnessAndContrastAuto(bitmap->GetMatrix(), clipHistPercent);
+
 	return 0;
 }

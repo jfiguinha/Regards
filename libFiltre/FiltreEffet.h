@@ -83,7 +83,6 @@ public:
     int GetLib();
 	wxImage GetwxImage();
 	CRegardsBitmap * GetBitmap(const bool &source);
-	cv::Mat & GetOpenCVMatrix();
 	IFiltreEffet * GetInstance()
 	{
 		return filtreEffet;

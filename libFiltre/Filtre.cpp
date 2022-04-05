@@ -33,7 +33,7 @@ struct myFiltreTask {
 };
 #endif
 
-CFiltre::CFiltre(): bmWidth(0), bmHeight(0)
+CFiltre::CFiltre(): bmWidth(0), bmHeight(0), pBitmap(nullptr), bitmapWidthSize(0), pictureSize(0)
 {
 }
 
@@ -42,18 +42,32 @@ CFiltre::~CFiltre()
 {
 }
 
-void CFiltre::SetParameter(cv::Mat & pBitmap, CRgbaquad color)
+void CFiltre::SetParameter(CRegardsBitmap * pBitmap, CRgbaquad color)
 {
-	this->pBitsSrc = pBitmap;
+	this->pBitmap = pBitmap;
 	this->color = color;
-	bmWidth = pBitmap.size().width;
-	bmHeight = pBitmap.size().height;
+	bitmapWidthSize = (int)pBitmap->GetWidthSize();
+	bmWidth = pBitmap->GetBitmapWidth();
+	bmHeight = pBitmap->GetBitmapHeight();
+	pictureSize = bmHeight * (bmWidth << 2);
+}
+
+int CFiltre::GetPosition(const int &x, const int &y)
+{
+	if (x >= 0 && x < bmWidth && y < bmHeight && y >= 0)
+		return (y * bitmapWidthSize) + (x << 2);
+	else
+		return -1;
 }
 
 //Effet GrayScale
 void CFiltre::Compute()
 {
+	if (pBitmap->GetPtBitmap() != nullptr)
+	{
+		cv::Mat pBitsSrc;
 		cv::Mat pBitsDest;
+		pBitsSrc = pBitmap->GetMatrix();
 		pBitsSrc.copyTo(pBitsDest);
 
 #ifdef USE_TBB		
@@ -92,7 +106,8 @@ void CFiltre::Compute()
 		}
 #endif
 
-		pBitsDest.copyTo(pBitsSrc);
+		pBitmap->SetMatrix(pBitsDest);
+	}
 }
 
 
@@ -100,7 +115,8 @@ void CFiltre::Compute()
 
 void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
-
+	int position = GetPosition(x, y);
+	uint8_t alpha = pBitsSrc.data[position + 3];
 	float red = 0.0;
 	float green = 0.0;
 	float blue = 0.0;
@@ -114,13 +130,12 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat 
 		for (auto j = start; j <= end; j++)
 		{
 			Kfactor += kernel[k];
-			int localX = x + j;
-			int localY = y + i;
-			if (localX >= 0 && localX < bmWidth && localY < bmHeight && localY >= 0)
+			int pos = GetPosition(x + j, y + i);
+			if (pos != -1)
 			{
-				red += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[0]) * kernel[k];
-				green += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[1]) * kernel[k];
-				blue += (float)(pBitsSrc.at<cv::Vec3b>(y + i, x + j)[2]) * kernel[k];
+				red += *(pBitsSrc.data + pos) * kernel[k];
+				green += *(pBitsSrc.data + pos + 1) * kernel[k];
+				blue += *(pBitsSrc.data + pos + 2) * kernel[k];
 			}
 			k++;
 			
@@ -140,9 +155,8 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, const cv::Mat 
 	blue = blue < 0 ? 0 : blue;
 	uint8_t b = blue > 255 ? 255 : blue;
 	
-	pBitsDest.at<cv::Vec3b>(y, x)[0] = r;
-	pBitsDest.at<cv::Vec3b>(y, x)[1] = g;
-	pBitsDest.at<cv::Vec3b>(y, x)[2] = b;
+	uint8_t data[4] = { r, g, b, alpha };
+	memcpy(pBitsDest.data + position, data, 4);
 
 }
 
@@ -154,25 +168,20 @@ float CNoise::Noise2d(int x, int y)
 
 void CNoise::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
-	//int pos = GetPosition(x, y);
-	//uint8_t alpha = pBitsSrc.data[pos + 3];
+	int pos = GetPosition(x, y);
+	uint8_t alpha = pBitsSrc.data[pos + 3];
 	float n = Noise2d(int(x), int(y));
+	int r = *(pBitsSrc.data + pos) + n;
+	int g = *(pBitsSrc.data + pos + 1) + n;
+	int b = *(pBitsSrc.data + pos + 2) + n;
 
-	int r = pBitsSrc.at<cv::Vec3b>(y, x)[0] + n;
-	int g = pBitsSrc.at<cv::Vec3b>(y, x)[1] + n;
-	int b = pBitsSrc.at<cv::Vec3b>(y, x)[2] + n;
 	
 	r = max(0, min(255, r));
 	g = max(0, min(255, g));
 	b = max(0, min(255, b));
 
-
-	pBitsDest.at<cv::Vec3b>(y, x)[0] = r;
-	pBitsDest.at<cv::Vec3b>(y, x)[1] = g;
-	pBitsDest.at<cv::Vec3b>(y, x)[2] = b;
-
-	//uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
-	//memcpy(pBitsDest.data + pos, data, 4);
+	uint8_t data[4] = { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), alpha };
+	memcpy(pBitsDest.data + pos, data, 4);
 }
 
 void CMosaic::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
@@ -187,9 +196,11 @@ void CMosaic::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc,
 	float s = floor(x / w);
 	float t = floor(y / h);
 
-	pBitsDest.at<cv::Vec3b>(y, x)[0] = pBitsSrc.at<cv::Vec3b>(t * h, s * w)[0];
-	pBitsDest.at<cv::Vec3b>(y, x)[1] = pBitsSrc.at<cv::Vec3b>(t * h, s * w)[1];
-	pBitsDest.at<cv::Vec3b>(y, x)[2] = pBitsSrc.at<cv::Vec3b>(t * h, s * w)[2];
+	int posOut = GetPosition(x, y);
+	int pos = GetPosition(s*w, t*h);
+
+	uint8_t data[4] = { *(pBitsSrc.data + pos), *(pBitsSrc.data + pos + 1), *(pBitsSrc.data + pos + 2), *(pBitsSrc.data + pos + 3) };
+	memcpy(pBitsDest.data + posOut, data, 4);
 }
 
 float CSwirl::EuclideanDist(FLOATPOINT p)
@@ -270,34 +281,46 @@ void CSwirl::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, 
 	wxPoint pt = PostFX(x, y, bmWidth, bmHeight, radius, angle);
 	if (pt.x >= 0 && pt.x < bmWidth && pt.y >= 0 && pt.y < bmHeight)
 	{
-		pBitsDest.at<cv::Vec3b>(y, x)[0] = pBitsSrc.at<cv::Vec3b>(pt.y, pt.x)[0];
-		pBitsDest.at<cv::Vec3b>(y, x)[1] = pBitsSrc.at<cv::Vec3b>(pt.y, pt.x)[1];
-		pBitsDest.at<cv::Vec3b>(y, x)[2] = pBitsSrc.at<cv::Vec3b>(pt.y, pt.x)[2];
+		int positionSrc = GetPosition(pt.x, pt.y); 
+		int positionDest = GetPosition(x, y);
+		memcpy(pBitsDest.data + positionDest, pBitsSrc.data + positionSrc, 4);
 	}
 	else
 	{
-		pBitsDest.at<cv::Vec3b>(y, x)[0] = color.GetRed();
-		pBitsDest.at<cv::Vec3b>(y, x)[1] = color.GetGreen();
-		pBitsDest.at<cv::Vec3b>(y, x)[2] = color.GetBlue();
+		int positionDest = GetPosition(x, y);
+		memcpy(pBitsDest.data + positionDest, &color, 4);
 	}
 }
 
 void CPosterize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
+	CRgbaquad color;
+	int position = GetPosition(x, y);
+	//uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
 
-	int r = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[0]) / _offset;
-	int g = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[1]) / _offset;
-	int b = (float)(pBitsSrc.at<cv::Vec3b>(y, x)[2]) / _offset;
+	int r = color.GetFRed() / _offset;
+	int g = color.GetFGreen() / _offset;
+	int b = color.GetFBlue() / _offset;
 
-	pBitsDest.at<cv::Vec3b>(y, x)[0] = posterize[r];
-	pBitsDest.at<cv::Vec3b>(y, x)[1] = posterize[g];
-	pBitsDest.at<cv::Vec3b>(y, x)[2] = posterize[b];
+	//double dr = pow(posterize[r], gammaFactor);
+	//double dg = pow(posterize[g], gammaFactor);
+	//double db = pow(posterize[b], gammaFactor);
+
+	color = CRgbaquad(posterize[r], posterize[g], posterize[b]);
+
+	memcpy(pBitsDest.data + position, &color, 3);
 
 }
 
 void CSolarize::PixelCompute(const int &x, const int &y, const cv::Mat & pBitsSrc, cv::Mat & pBitsDest)
 {
-	pBitsDest.at<cv::Vec3b>(y, x)[0] = solarize[pBitsSrc.at<cv::Vec3b>(y, x)[0]];
-	pBitsDest.at<cv::Vec3b>(y, x)[1] = solarize[pBitsSrc.at<cv::Vec3b>(y, x)[1]];
-	pBitsDest.at<cv::Vec3b>(y, x)[2] = solarize[pBitsSrc.at<cv::Vec3b>(y, x)[2]];
+	CRgbaquad color;
+	int position = GetPosition(x, y);
+	//uint8_t alpha = pBitsSrc.data[position + 3];
+	memcpy(&color, pBitsSrc.data + position, 4);
+
+	color = CRgbaquad(solarize[color.GetRed()], solarize[color.GetGreen()], solarize[color.GetBlue()]);
+
+	memcpy(pBitsDest.data + position, &color, 3);
 }

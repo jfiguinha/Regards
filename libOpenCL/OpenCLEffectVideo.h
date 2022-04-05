@@ -52,7 +52,7 @@ namespace Regards
 			virtual ~COpenCLEffectVideo();
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
-			cv::Mat & GetMatrix(const bool & src = true);
+			cv::Mat GetMatrix(const bool & src = true);
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
 			bool convertToGLTexture2D(GLTexture* glTexture);
@@ -79,8 +79,8 @@ namespace Regards
 			COpenCLProgram * openCLProgram;
 			COpenCLFilter* openclFilter = nullptr;
 			wxString filename;
-			cv::Mat paramSrc;
-			cv::Mat paramOutput;
+			cv::UMat paramSrc;
+			cv::UMat paramOutput;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
 		};
