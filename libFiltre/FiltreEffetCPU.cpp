@@ -214,7 +214,7 @@ bool CFiltreEffetCPU::convertToGLTexture2D(GLTexture* glTexture)
 		image = input;
 
 	if (glTexture != nullptr)
-		glTexture->SetData(&image);
+		glTexture->SetData(image);
 
 	return true;
 }

@@ -65,15 +65,23 @@ void GLTexture::GetData(uint8_t* data)
 	}
 }
 
-void GLTexture::SetData(cv::Mat * bitmap)
+void GLTexture::SetData(cv::Mat & bitmap)
 {
-	if (m_nTextureID && bitmap != nullptr)
+	cv::Mat bitmapMatrix;
+	if (bitmap.channels() == 3)
+		cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+	else if (bitmap.channels() == 1)
+		cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+	else
+		bitmapMatrix = bitmap;
+
+	if (m_nTextureID)
 	{
 		glEnable(GL_TEXTURE_2D);
-		width = bitmap->size().width;
-		height = bitmap->size().height;
+		width = bitmapMatrix.size().width;
+		height = bitmapMatrix.size().height;
 		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmap->data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
 	}
 }
 
