@@ -20,17 +20,6 @@ void CRegardsBitmap::GetY(uint8_t* & lum)
 {
 	if (!bitmapMatrix.empty())
 	{
-		/*
-		for (int posY = 0; posY < GetBitmapHeight(); posY++)
-		{
-			for (int posX = 0; posX < GetBitmapWidth(); posX++)
-			{
-				int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
-				int posLocal = posX + posY * GetBitmapWidth();
-				lum[posLocal] = 0.257f * value[bitmapMatrix.data[posPicture + 2]] + 0.504f * value[bitmapMatrix.data[posPicture + 1]] + 0.098f * value[bitmapMatrix.data[posPicture]] + 16;
-			}
-		}
-		*/
 		cv::Mat cvDest;
 		cv::Mat ycbcr;
 		cv::Mat yChannel;
@@ -49,30 +38,6 @@ void CRegardsBitmap::SetY(uint8_t* lum)
 {
 	if (!bitmapMatrix.empty())
 	{
-		/*
-		for (int posY = 0; posY < GetBitmapHeight(); posY++)
-		{
-			for (int posX = 0; posX < GetBitmapWidth(); posX++)
-			{
-				const int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
-				const int posLocal = posX + posY * GetBitmapWidth();
-
-				float Y = lum[posLocal];
-				float cr = (0.439 * value[bitmapMatrix.data[posPicture + 2]]) - (0.368 * value[bitmapMatrix.data[posPicture + 1]]) - (0.071 * value[
-					bitmapMatrix.data[posPicture]]) + 128;
-				float cb = -(0.148 * value[bitmapMatrix.data[posPicture + 2]]) - (0.291 * value[bitmapMatrix.data[posPicture + 1]]) + (0.439 * value[
-					bitmapMatrix.data[posPicture]]) + 128;
-
-				double B = 1.164 * (Y - 16) + 2.018 * (cb - 128);
-				double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
-				double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
-
-				bitmapMatrix.data[posPicture + 2] = clamp(R, 0.0, 255.0); //min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
-				bitmapMatrix.data[posPicture + 1] = clamp(G, 0.0, 255.0); //min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-				bitmapMatrix.data[posPicture] = clamp(B, 0.0, 255.0); //min(Y + 2.03211f * U, 255.0f); //B
-			}
-		}
-		*/
 		cv::Mat cvDest;
 		cv::Mat ycbcr;
 		cv::Mat yChannel;
@@ -381,7 +346,13 @@ cv::Mat& CRegardsBitmap::GetMatrix()
 
 void CRegardsBitmap::SetMatrix(const cv::Mat& matrix, const bool& m_bFlip)
 {
-	matrix.copyTo(bitmapMatrix);
+	if (matrix.channels() == 3)
+		cvtColor(matrix, bitmapMatrix, cv::COLOR_BGR2BGRA);
+	else if (matrix.channels() == 1)
+		cvtColor(matrix, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+	else
+		matrix.copyTo(bitmapMatrix);
+
 	if (m_bFlip)
 	{
 		VertFlipBuf();

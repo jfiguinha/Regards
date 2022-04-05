@@ -2438,15 +2438,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			try
 			{
 				CRegardsBitmap* picture = new CRegardsBitmap();
-				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); // correct element size should be CV_32FC3
-				if (matPicture.channels() != 4)
-				{
-					if(matPicture.channels() == 3)
-						cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
-					else if (matPicture.channels() == 1)
-						cvtColor(matPicture, matPicture, cv::COLOR_GRAY2BGRA);
-				}
-				
+				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); // correct element size should be CV_32FC3			
 				picture->SetMatrix(matPicture);
 				picture->VertFlipBuf();
 				picture->SetFilename(fileName);
