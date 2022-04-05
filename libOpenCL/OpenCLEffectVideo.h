@@ -79,8 +79,8 @@ namespace Regards
 			COpenCLProgram * openCLProgram;
 			COpenCLFilter* openclFilter = nullptr;
 			wxString filename;
-			cv::UMat paramSrc;
-			cv::UMat paramOutput;
+			cv::Mat paramSrc;
+			cv::Mat paramOutput;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
 		};

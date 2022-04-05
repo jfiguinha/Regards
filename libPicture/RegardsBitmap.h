@@ -14,13 +14,9 @@ public:
 	CRegardsBitmap(const int& iWidth, const int& iHeight, const int& iDepth = 32);
 	CRegardsBitmap();
 	virtual ~CRegardsBitmap();
-
-	CRegardsBitmap& operator=(const CRegardsBitmap& other);
-	void GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr);
-	void SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr);
-
-	void GetY(uint8_t* & lum);
+	void GetY(uint8_t*& lum);
 	void SetY(uint8_t* lum);
+	CRegardsBitmap& operator=(const CRegardsBitmap& other);
 	void ApplyRotation(const int& rotation);
 	void ReadFile(const wxString& filename);
 	void WriteFile(const wxString& filename);

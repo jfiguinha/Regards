@@ -159,7 +159,7 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 //Get Output
 //-----------------------------------------------------------------------------------------------
 
-wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
+wxImage COpenCLEffect::GetwxImage(cv::Mat & input)
 {
 	cv::Mat cvDest;
 	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
@@ -592,16 +592,13 @@ int COpenCLEffect::FiltreMosaic()
 //----------------------------------------------------------------------------
 int COpenCLEffect::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
 {
-	cv::UMat second;
-	bitmapSecond->GetMatrix().copyTo(second);
-		
 	if (preview && !paramOutput.empty())
 	{
-		openclFilter->Fusion(paramOutput, second, pourcentage);
+		openclFilter->Fusion(paramOutput, bitmapSecond->GetMatrix(), pourcentage);
 	}
 	else
 	{
-		openclFilter->Fusion(input, second, pourcentage);
+		openclFilter->Fusion(input, bitmapSecond->GetMatrix(), pourcentage);
 	}
 	return 0;
 }

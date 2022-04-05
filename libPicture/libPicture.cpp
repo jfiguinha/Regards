@@ -2260,9 +2260,158 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			bitmap->SetPicture(test);
 			break;
 		}
+		case JPEG:
+		{
+			printf("CLibPicture LoadPicture JPEG \n");
+			if (isThumbnail)
+			{
+				tjscalingfactor* scalingfactors = nullptr, sf = { 1, 1 };
+				int nsf = 0;
+				size_t _jpegSize;
+				uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
+
+				//unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
+				//Getting the size
+				if (_compressedImage != nullptr && _jpegSize > 0)
+				{
+					//int COLOR_COMPONENTS = 4;
+					//unsigned char* _compressedImage; //!< _compressedImage from above
+					CRegardsBitmap* picture;
+					int jpegSubsamp, width = 0, height = 0;
+
+
+					tjhandle _jpegDecompressor = tjInitDecompress();
+
+
+					tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
+						&jpegSubsamp);
+
+
+					if ((scalingfactors = tjGetScalingFactors(&nsf)) == nullptr || nsf == 0)
+						throw("executing tjGetScalingFactors()");
+
+					//int num = 1;
+					//int denom = 4;
+					//int defaultscaling = 0;
+					int match = 0;
+
+#ifdef WIN32
+
+					HDC screen = GetDC(nullptr);
+					RECT rcClip;
+					GetClipBox(screen, &rcClip);
+					ReleaseDC(nullptr, screen);
+
+					int widthThumbnail = max(static_cast<int32_t>(rcClip.right / 4), 200);
+					int heightThumbnail = max(static_cast<int32_t>(rcClip.bottom / 4), 200);
+
+#else
+					int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
+					int heightThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 4, 200);
+#endif
+
+					float ratio = CalculPictureRatio(width, height, widthThumbnail, heightThumbnail);
+
+					for (int j = 0; j < nsf; j++)
+					{
+						sf = scalingfactors[j];
+						float localRatio = static_cast<float>(sf.num) / static_cast<float>(sf.denom);
+						if (localRatio < ratio)
+						{
+							if (j > 0)
+								sf = scalingfactors[j - 1];
+
+							match = 1;
+							break;
+						}
+					}
+
+					if (match == 0)
+					{
+						sf = scalingfactors[nsf - 1];
+						match = 1;
+					}
+
+					if (match == 1)
+					{
+						width = TJSCALED(width, sf);
+						height = TJSCALED(height, sf);
+					}
+
+					picture = new CRegardsBitmap(width, height);
+
+					tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture->GetPtBitmap(),
+						picture->GetBitmapWidth(), 0, picture->GetBitmapHeight(), TJPF_BGRX,
+						TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+
+					tjDestroy(_jpegDecompressor);
+
+					bitmap->SetPicture(picture);
+					bitmap->SetFilename(fileName);
+
+					delete[] _compressedImage;
+				}
+			}
+			else
+			{
+				printf("CLibPicture LoadPicture TURBOJPEG \n");
+				//unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
+				//Getting the size
+				FILE* file = nullptr;
+
+
+				if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "rb")) == nullptr)
+					cout << "File Failed To Load\n";
+				else
+				{
+					//int COLOR_COMPONENTS = 4;
+					long unsigned int _jpegSize; //!< _jpegSize from above
+					//unsigned char* _compressedImage; //!< _compressedImage from above
+					CRegardsBitmap* picture;
+					int jpegSubsamp, width, height;
+
+					cout << "File Loaded Successfully\n";
+					long prev = ftell(file);
+					fseek(file, 0L, SEEK_END);
+					_jpegSize = ftell(file);
+					fseek(file, prev, SEEK_SET);
+
+
+					//Creating a buffer and saving it back
+					auto _compressedImage = new uint8_t[_jpegSize];
+					//cout << "fileSize" << fileSize;
+					fread(_compressedImage, _jpegSize, 1, file);
+					fclose(file);
+
+					tjhandle _jpegDecompressor = tjInitDecompress();
+
+
+					tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height,
+						&jpegSubsamp);
+
+					picture = new CRegardsBitmap(width, height);
+
+					tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture->GetPtBitmap(), width, 0,
+						height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+
+					tjDestroy(_jpegDecompressor);
+
+					cout << "JPEGTURBO END File Loaded Successfully\n";
+
+					bitmap->SetPicture(picture);
+					bitmap->SetFilename(fileName);
+					//wxString filename = CFileUtility::GetFileName(fileName);
+					//picture->WriteFile("e:\\" + filename + ".dat");
+
+					delete[] _compressedImage;
+
+					cout << "JPEGTURBO DELETE File Loaded Successfully\n";
+				}
+			}
+		}
+		break;
 
 		case PNM:
-		case JPEG:
 		case PNG:
 		case TIFF:
 		case WEBP:

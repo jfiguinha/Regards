@@ -107,13 +107,13 @@ namespace Regards
 
 		protected:
 			COpenCLFilter * openclFilter;
-			wxImage GetwxImage(cv::UMat& input);
+			wxImage GetwxImage(cv::Mat& input);
 			int GetSizeData() const;
 			cl_mem_flags  flag;
 			wxString filename;
 			cv::Mat alphaChannel;
-			cv::UMat input;
-			cv::UMat paramOutput;
+			cv::Mat input;
+			cv::Mat paramOutput;
 		};
 
 	}

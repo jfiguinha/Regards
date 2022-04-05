@@ -151,6 +151,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 	if (!needToTranscode)
 		return;
 
+	cv::UMat dest;
 	if (openclContext != nullptr)
 	{
 		COpenCLProgram * programCL;
@@ -193,13 +194,10 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 
 				vecParam.push_back(paramsurfaceHeight);
 			}
-
-
-			paramSrc.release();
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
-			paramSrc.create((int)heightOut, (int)widthOut, type);
-			cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_RW);
+			dest.create((int)heightOut, (int)widthOut, type);
+			cl_mem clBuffer = (cl_mem)dest.handle(cv::ACCESS_RW);
 			program->SetParameter(&vecParam, widthOut, heightOut, clBuffer);
 
 			program->SetKeepOutput(true);
@@ -219,5 +217,5 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			vecParam.clear();
 		}
 	}
-	cv::cvtColor(paramSrc, paramSrc, cv::COLOR_BGRA2BGR);
+	cv::cvtColor(dest, paramSrc, cv::COLOR_BGRA2BGR);
 }

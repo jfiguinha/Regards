@@ -142,9 +142,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 
 		if (frameStabilized)
 		{
-			cv::UMat image_local = openCVStabilization->CorrectFrame(paramSrc);
-			image_local.copyTo(paramSrc);
-			image_local.release();
+			openCVStabilization->CorrectFrame(paramSrc);
 		}
 	}
 

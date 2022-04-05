@@ -16,87 +16,6 @@ auto CRegardsBitmap::operator=(const CRegardsBitmap& other) -> CRegardsBitmap&
 }
 
 
-void CRegardsBitmap::GetY(uint8_t* & lum)
-{
-	if (!bitmapMatrix.empty())
-	{
-		/*
-		for (int posY = 0; posY < GetBitmapHeight(); posY++)
-		{
-			for (int posX = 0; posX < GetBitmapWidth(); posX++)
-			{
-				int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
-				int posLocal = posX + posY * GetBitmapWidth();
-				lum[posLocal] = 0.257f * value[bitmapMatrix.data[posPicture + 2]] + 0.504f * value[bitmapMatrix.data[posPicture + 1]] + 0.098f * value[bitmapMatrix.data[posPicture]] + 16;
-			}
-		}
-		*/
-		cv::Mat cvDest;
-		cv::Mat ycbcr;
-		cv::Mat yChannel;
-
-		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
-		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
-		cv::extractChannel(ycbcr, yChannel, 0);
-		memcpy(lum, yChannel.data, bitmapMatrix.cols * bitmapMatrix.rows);
-
-		yChannel.release();
-		ycbcr.release();
-	}
-}
-
-void CRegardsBitmap::SetY(uint8_t* lum)
-{
-	if (!bitmapMatrix.empty())
-	{
-		/*
-		for (int posY = 0; posY < GetBitmapHeight(); posY++)
-		{
-			for (int posX = 0; posX < GetBitmapWidth(); posX++)
-			{
-				const int posPicture = posX * 4 + posY * GetBitmapWidth() * 4;
-				const int posLocal = posX + posY * GetBitmapWidth();
-
-				float Y = lum[posLocal];
-				float cr = (0.439 * value[bitmapMatrix.data[posPicture + 2]]) - (0.368 * value[bitmapMatrix.data[posPicture + 1]]) - (0.071 * value[
-					bitmapMatrix.data[posPicture]]) + 128;
-				float cb = -(0.148 * value[bitmapMatrix.data[posPicture + 2]]) - (0.291 * value[bitmapMatrix.data[posPicture + 1]]) + (0.439 * value[
-					bitmapMatrix.data[posPicture]]) + 128;
-
-				double B = 1.164 * (Y - 16) + 2.018 * (cb - 128);
-				double G = 1.164 * (Y - 16) - 0.391 * (cb - 128) - 0.813 * (cr - 128);
-				double R = 1.164 * (Y - 16) + 1.596 * (cr - 128);
-
-				bitmapMatrix.data[posPicture + 2] = clamp(R, 0.0, 255.0); //min(max(R, 0.0), 255.0);//min(Y + 1.13983f * V, 255.0f); //R
-				bitmapMatrix.data[posPicture + 1] = clamp(G, 0.0, 255.0); //min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-				bitmapMatrix.data[posPicture] = clamp(B, 0.0, 255.0); //min(Y + 2.03211f * U, 255.0f); //B
-			}
-		}
-		*/
-		cv::Mat cvDest;
-		cv::Mat ycbcr;
-		cv::Mat yChannel;
-
-		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
-		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
-
-		// Extract the Y channel
-		cv::extractChannel(ycbcr, yChannel, 0);
-
-		memcpy(yChannel.data, lum, bitmapMatrix.cols * bitmapMatrix.rows);
-
-		// Merge the the color planes back into an Lab image
-		cv::insertChannel(yChannel, ycbcr, 0);
-
-		// convert back to RGB
-		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
-		cv::cvtColor(cvDest, bitmapMatrix, cv::COLOR_BGR2BGRA);
-		// Temporary Mat not reused, so release from memory.
-		yChannel.release();
-		ycbcr.release();
-	}
-}
-
 int CRegardsBitmap::GetOrientation()
 {
 	return orientation;
@@ -230,106 +149,55 @@ void CRegardsBitmap::SaveToBmp(const wxString& filename)
 
 #endif
 
+void CRegardsBitmap::GetY(uint8_t*& lum)
+{
+	if (!bitmapMatrix.empty())
+	{
+		cv::Mat cvDest;
+		cv::Mat ycbcr;
+		cv::Mat yChannel;
+
+		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+		cv::extractChannel(ycbcr, yChannel, 0);
+		memcpy(lum, yChannel.data, bitmapMatrix.cols * bitmapMatrix.rows);
+
+		yChannel.release();
+		ycbcr.release();
+	}
+}
+
+void CRegardsBitmap::SetY(uint8_t* lum)
+{
+	if (!bitmapMatrix.empty())
+	{
+		cv::Mat cvDest;
+		cv::Mat ycbcr;
+		cv::Mat yChannel;
+
+		cv::cvtColor(bitmapMatrix, cvDest, cv::COLOR_BGRA2BGR);
+		cvtColor(cvDest, ycbcr, cv::COLOR_BGR2YCrCb);
+
+		// Extract the Y channel
+		cv::extractChannel(ycbcr, yChannel, 0);
+
+		memcpy(yChannel.data, lum, bitmapMatrix.cols * bitmapMatrix.rows);
+
+		// Merge the the color planes back into an Lab image
+		cv::insertChannel(yChannel, ycbcr, 0);
+
+		// convert back to RGB
+		cv::cvtColor(ycbcr, cvDest, cv::COLOR_YCrCb2BGR);
+		cv::cvtColor(cvDest, bitmapMatrix, cv::COLOR_BGR2BGRA);
+		// Temporary Mat not reused, so release from memory.
+		yChannel.release();
+		ycbcr.release();
+	}
+}
+
 #define SCALEBITS            8
 #define ONE_HALF             (1 << (SCALEBITS - 1))
 #define FIX(x)               ((int) ((x) * (1L<<SCALEBITS) + 0.5))
-
-void CRegardsBitmap::GetYUV420P(uint8_t* & lum, uint8_t* & cb, uint8_t* & cr)
-{
-	if (bitmapMatrix.empty())
-		return;
-
-	int width_middle = bitmapMatrix.cols / 2;
-	int height_middle = bitmapMatrix.rows / 2;
-
-	for (int y = 0; y < height_middle; y++)
-	{
-
-		for (int x = 0; x < width_middle; x++)
-		{
-			float r1 = 0;
-			float g1 = 0;
-			float b1 = 0;
-			int cr_position = x + y * width_middle;
-			int lum_position = (x * 2) + (y * 2) * bitmapMatrix.cols;
-			int position = (x * 2) * 4 + (y * 2) * bitmapMatrix.cols * 4;
-			for (int i = 0; i < 2; i++)
-			{
-				float r = value[bitmapMatrix.data[position + 2]];
-				float g = value[bitmapMatrix.data[position + 1]];
-				float b = value[bitmapMatrix.data[position + 0]];
-				r1 += r;
-				g1 += g;
-				b1 += b;
-				lum[lum_position] = static_cast<int>((FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b +
-					ONE_HALF)) >> SCALEBITS;
-				r = value[bitmapMatrix.data[position + 6]];
-				g = value[bitmapMatrix.data[position + 5]];
-				b = value[bitmapMatrix.data[position + 4]];
-				r1 += r;
-				g1 += g;
-				b1 += b;
-				lum[lum_position + 1] = static_cast<int>((FIX(0.29900) * r + FIX(0.58700) * g + FIX(0.11400) * b +
-					ONE_HALF)) >> SCALEBITS;
-
-				position += bitmapMatrix.cols * 4;
-				lum_position += bitmapMatrix.cols;
-			}
-
-			cb[cr_position] = ((static_cast<int>(-FIX(0.16874) * r1 - FIX(0.33126) * g1 + FIX(0.50000) * b1 + 4 *
-				ONE_HALF - 1) >> (SCALEBITS + 2)) + 128);
-			cr[cr_position] = ((static_cast<int>((FIX(0.50000) * r1 - FIX(0.41869) * g1 - FIX(0.08131) * b1 + 4 *
-				ONE_HALF - 1)) >> (SCALEBITS + 2)) + 128);
-		}
-	}
-}
-
-void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
-{
-	if (bitmapMatrix.empty())
-		return;
-	for (int y = 0; y < bitmapMatrix.rows; y++)
-	{
-
-		for (int x = 0; x < bitmapMatrix.cols; x++)
-		{
-			const int positionSrc = x + y * bitmapMatrix.cols;
-			int position_uv;
-			if (x & 1)
-			{
-				if (y & 1)
-					position_uv = ((x - 1) / 2) + ((y - 1) / 2) * (bitmapMatrix.cols / 2);
-				else
-					position_uv = ((x - 1) / 2) + (y / 2) * (bitmapMatrix.cols / 2);
-			}
-			else
-			{
-				if (y & 1)
-					position_uv = (x / 2) + ((y - 1) / 2) * (bitmapMatrix.cols / 2);
-				else
-					position_uv = (x / 2) + (y / 2) * (bitmapMatrix.cols / 2);
-			}
-			float uComp = cb[position_uv];
-			float vComp = cr[position_uv];
-			float yComp = lum[positionSrc];
-			// RGB conversion
-
-			float b = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
-			float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
-			float r = (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
-			float a = 255.0f;
-
-			float minimal = 0.0;
-			float maximal = 255.0;
-
-			int position = x * 4 + y * bitmapMatrix.cols * 4;
-			bitmapMatrix.data[position] = clamp(r, minimal, maximal);
-			bitmapMatrix.data[position + 1] = clamp(g, minimal, maximal);
-			bitmapMatrix.data[position + 2] = clamp(b, minimal, maximal);
-			bitmapMatrix.data[position + 3] = clamp(a, minimal, maximal);
-		}
-	}
-}
 
 void CRegardsBitmap::ReadFile(const wxString& filename)
 {
