@@ -127,27 +127,22 @@ CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
 {
 	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
 
-	cv::Mat output;
 
 	if (source)
 	{
-		//input.copyTo(output);
-		cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
+		bitmapOut->SetMatrix(input);
 	}
 	else if (preview && !paramOutput.empty())
 	{
-		//paramOutput.copyTo(output);
-		cv::cvtColor(paramOutput, output, cv::COLOR_BGR2BGRA);
+
+		bitmapOut->SetMatrix(paramOutput);
 	}
 	else
 	{
-		//input.copyTo(output);
-		cv::cvtColor(input, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
+
+		bitmapOut->SetMatrix(input);
+
 	}
-	
-	bitmapOut->SetMatrix(output);
 
 	if (bitmapOut != nullptr)
 		bitmapOut->SetFilename(filename);

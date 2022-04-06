@@ -199,23 +199,19 @@ CRegardsBitmap* COpenCLEffectVideo::GetBitmap(const bool &src)
 {
 	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
 
-	cv::Mat output;
-
 	if (src)
 	{
-		paramSrc.copyTo(output);
+		bitmapOut->SetMatrix(paramSrc);
 	}
 	else if (interpolatePicture)
 	{
-		paramOutput.copyTo(output);
+		bitmapOut->SetMatrix(paramOutput);
 	}
 	else
 	{
-		paramSrc.copyTo(output);
+		bitmapOut->SetMatrix(paramSrc);
 	}
 
-	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-	bitmapOut->SetMatrix(output);
 
 	return bitmapOut;
 

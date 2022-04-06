@@ -180,29 +180,31 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	bool isOk = false;
 	UMat u;
 	//inputData.copyTo(u);
-    cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
+	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
+
         cl_int status = 0;
 
         Mat local;
-        u.copyTo(local);	
+		inputData.copyTo(local);
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
 		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
 
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-            
+
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
-		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
+		size_t region[3] = { (size_t)inputData.cols, (size_t)inputData.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
@@ -494,10 +496,10 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	////Mat local;
+	////cvDestBgra.copyTo(local);
 
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
 	if(programCL != nullptr)
 	{
@@ -584,10 +586,10 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	////Mat local;
+	////cvDestBgra.copyTo(local);
     
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
 	{
@@ -780,10 +782,10 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
     
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
 	{
@@ -861,10 +863,10 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
     
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	////Mat local;
+	////cvDestBgra.copyTo(local);
     
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -918,10 +920,10 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
  
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
 	{
@@ -990,10 +992,10 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
     
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
 	{
@@ -1072,10 +1074,10 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	////Mat local;
+	////cvDestBgra.copyTo(local);
 
-    cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_RW);
+    cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
    
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	if (programCL != nullptr)

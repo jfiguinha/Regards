@@ -344,6 +344,21 @@ cv::Mat& CRegardsBitmap::GetMatrix()
 	return bitmapMatrix;
 }
 
+void CRegardsBitmap::SetMatrix(const cv::UMat& matrix, const bool& m_bFlip)
+{
+	if (matrix.channels() == 3)
+		cvtColor(matrix, bitmapMatrix, cv::COLOR_BGR2BGRA);
+	else if (matrix.channels() == 1)
+		cvtColor(matrix, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+	else
+		matrix.copyTo(bitmapMatrix);
+
+	if (m_bFlip)
+	{
+		VertFlipBuf();
+	}
+}
+
 void CRegardsBitmap::SetMatrix(const cv::Mat& matrix, const bool& m_bFlip)
 {
 	if (matrix.channels() == 3)

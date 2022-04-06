@@ -67,7 +67,7 @@ public:
 
 	cv::Mat& GetMatrix();
 	void SetMatrix(const cv::Mat& matrix, const bool& m_bFlip = false);
-
+	void SetMatrix(const cv::UMat& matrix, const bool& m_bFlip = false);
 	int GetBitmapDepth();
 
 	void ConvertToBgr();
