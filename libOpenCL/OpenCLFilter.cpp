@@ -179,7 +179,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
 	UMat u;
-	//inputData.copyTo(u);
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
@@ -187,7 +186,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
         cl_int status = 0;
 
         Mat local;
-		inputData.copyTo(local);
+		u.copyTo(local);
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
@@ -496,8 +495,8 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	////Mat local;
-	////cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
@@ -527,7 +526,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Mosaic");
 			
@@ -586,8 +585,8 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	////Mat local;
-	////cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
@@ -644,7 +643,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "MotionBlur");
 			
@@ -782,8 +781,8 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	//Mat local;
-	//cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram(programName);
@@ -813,7 +812,7 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			
@@ -863,8 +862,8 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
     
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	////Mat local;
-	////cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -889,7 +888,7 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Posterisation");
 			
@@ -920,8 +919,8 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	//Mat local;
-	//cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
  
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -946,7 +945,7 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Solarization");
 			
@@ -992,8 +991,8 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	//Mat local;
-	//cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
@@ -1023,7 +1022,7 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Noise");
 			
@@ -1067,15 +1066,11 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
     cv::UMat dest;
 	cv::UMat cvDest;
     cv::UMat cvDestBgra;
-    int depth = CV_8U;
-    int type = CV_MAKE_TYPE(depth, 4);
-    cvDestBgra.create((int)inputData.rows, (int)inputData.cols, type);
-
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	////Mat local;
-	////cvDestBgra.copyTo(local);
+	Mat local;
+	cvDestBgra.copyTo(local);
 
     cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
    
@@ -1116,7 +1111,7 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
 			int type = CV_MAKE_TYPE(depth, 4);
 			dest.create((int)inputData.rows, (int)inputData.cols, type);
-			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_RW));
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Swirl");
             //outputValue = program->GetOutput();
