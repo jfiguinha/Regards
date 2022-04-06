@@ -3,6 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "RegardsBitmap.h"
+#include <FaceRect.h>
 #include <fstream>
 extern float value[256];
 extern float clamp(float val, float minval, float maxval);
@@ -767,8 +768,11 @@ CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, con
 		if (xEnd > this->GetBitmapWidth())
 			xEnd = this->GetBitmapWidth();
 
-		cv::Rect myROI(xPos, yPos, (xPos - xEnd), (yEnd - yPos));
-		bitmap->SetMatrix(bitmapMatrix(myROI));
+		cv::Rect rect(xPos, yPos, (xPos - xEnd), (yEnd - yPos));
+		VerifRectSize(rect, bitmapMatrix);
+		//bool is_inside = (rect & cv::Rect(0, 0, bitmapMatrix.cols, bitmapMatrix.rows)) == rect;
+
+		bitmap->SetMatrix(bitmapMatrix(rect));
 	}
 	return bitmap;
 }

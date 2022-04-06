@@ -20,3 +20,23 @@ struct FaceBox
         : x(x_), y(y_), w(w_), h(h_), angle(a_), scale(s_), score(c_)
     {}
 };
+
+inline void VerifRectSize(cv::Rect & rect, cv::Mat & matSrc)
+{
+    rect.x = max(rect.x, 0);
+    rect.y = max(rect.y, 0);
+
+    bool is_inside = (rect & cv::Rect(0, 0, matSrc.cols, matSrc.rows)) == rect;
+    if (!is_inside)
+    {
+        if ((rect.width + rect.x) > matSrc.cols)
+        {
+            rect.width = matSrc.cols - rect.x - 1;
+        }
+
+        if ((rect.height + rect.y) > matSrc.rows)
+        {
+            rect.height = matSrc.rows - rect.y - 1;
+        }
+    }
+}

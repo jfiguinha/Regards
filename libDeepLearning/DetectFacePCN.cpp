@@ -94,7 +94,11 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
             int y1 = max(facelocal.y,0);
             int x2 = facelocal.w + facelocal.x - 1;
             int y2 = facelocal.w + facelocal.y - 1;
-            face.myROI = Rect(Point(x1, y1), Point(x2, y2));
+
+            Rect rect = Rect(Point(x1, y1), Point(x2, y2));
+            VerifRectSize(rect, frameOpenCVDNN);
+          //  bool is_inside = (rect & cv::Rect(0, 0, frameOpenCVDNN.cols, frameOpenCVDNN.rows)) == rect;
+            face.myROI = rect;
             face.angle = (int)(360.0 - facelocal.angle) % 360;
             face.confidence = facelocal.score;
             face.croppedImage = frameOpenCVDNN(face.myROI);

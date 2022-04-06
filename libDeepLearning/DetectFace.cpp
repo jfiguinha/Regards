@@ -131,7 +131,9 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 				int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
 				int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
-				face.myROI = Rect(Point(x1, y1), Point(x2, y2));
+				Rect rect = Rect(Point(x1, y1), Point(x2, y2));
+				VerifRectSize(rect, frameOpenCVDNN);
+				face.myROI = rect;
 				face.croppedImage = frameOpenCVDNN(face.myROI);
 				listOfFace.push_back(face);
 				pointOfFace.push_back(face.myROI);

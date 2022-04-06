@@ -224,6 +224,9 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	rect.y = max((bbox.height - faceLocation.height) / 2, 0);
 	rect.width = max(faceLocation.width, 0);
 	rect.height = max(faceLocation.height, 0);
+	VerifRectSize(rect, dst);
+	//bool is_inside = (rect & cv::Rect(0, 0, dst.cols, dst.rows)) == rect;
+
 	dst = dst(rect);
 
 	r.release();
@@ -503,6 +506,9 @@ void CFaceDetector::DetectEyes(cv::Mat& pBitmap)
 								rc.y += 1;
 								rc.width -= 2;
 								rc.height -= 2;
+								VerifRectSize(rc, faceColor);
+								//bool is_inside = (rc & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == rc;
+
 								faceColor = faceColor(rc);
 							}
 
@@ -510,7 +516,9 @@ void CFaceDetector::DetectEyes(cv::Mat& pBitmap)
 							listOfFace[i].myROI.y += 1;
 							listOfFace[i].myROI.width -= 2;
 							listOfFace[i].myROI.height -= 2;
-							//cv::cvtColor(faceColor, faceColor, COLOR_BGR2BGRA);
+							VerifRectSize(listOfFace[i].myROI, faceColor);
+							//bool is_inside = (listOfFace[i].myROI & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == listOfFace[i].myROI;
+
 							faceColor.copyTo(Source(listOfFace[i].myROI));
 							faceFound = true;
 						}
