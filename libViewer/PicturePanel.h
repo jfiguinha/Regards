@@ -23,7 +23,7 @@ namespace Regards
 			void OnChannelSelect(wxCommandEvent& event);
 			//void OnRangeSelect(wxSpinEvent& evt);
 			bool refreshPicture = true;
-			wxImage* image;
+			wxImage image;
 			CRegardsBitmap* histogram = nullptr;
 			CRegardsBitmap* pictureOriginal;
 			//CRegardsBitmap * pictureBackup;

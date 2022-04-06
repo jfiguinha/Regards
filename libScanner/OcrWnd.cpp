@@ -162,10 +162,10 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 	CRegardsBitmap * _bitmap = filtreEffet->GetBitmap(false);
 	imageLoad->SetPicture(_bitmap);
-	wxImage * image = imageLoad->GetwxImage();
+	wxImage image = imageLoad->GetwxImage();
 	delete imageLoad;
 
-	wxBitmap bitmap = wxBitmap(*image);
+	wxBitmap bitmap = wxBitmap(image);
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
 	
@@ -178,7 +178,7 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	wxImage * local_image = new wxImage(bitmap.ConvertToImage());
 	imageLoad->SetPicture(local_image);
 	filtreEffet->SetBitmap(imageLoad);
-	delete image;
+
 	delete imageLoad;
 
 }

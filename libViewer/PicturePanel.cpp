@@ -201,9 +201,6 @@ CPicturePanel::~CPicturePanel()
 	if (pictureOriginal != nullptr)
 		delete pictureOriginal;
 
-	if (image != nullptr)
-		delete image;
-
 	if (histogram == nullptr)
 		delete histogram;
 
@@ -247,8 +244,6 @@ void CPicturePanel::on_paint(wxPaintEvent& event)
 
 	CreateHistogram();
 
-	if (image != nullptr)
-	{
-		dc.DrawBitmap(*image, marged, marged * 2 + ch_h, false);
-	}
+	dc.DrawBitmap(image, marged, marged * 2 + ch_h, false);
+
 }

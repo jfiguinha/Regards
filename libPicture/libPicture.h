@@ -59,16 +59,11 @@ namespace Regards
 			//-----------------------------------------------------------------------
 			//Fonction de conversion
 			//-----------------------------------------------------------------------
-			CxImage * ConvertwxImageToCxImage(const wxImage & image);
-			CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
-			//CRegardsBitmap * ConvertCXImageToScaleRegardsBitmap(CxImage * image, const int &width, const int &height);
-			CxImage * ConvertRegardsBitmapToCXImage(CRegardsBitmap * bitmap);
-			CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image, const int &orientation);
-			CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
-			CRegardsBitmap * ConvertCXImageToScaleRegardsBitmapBGR(CxImage * image, const int &width, const int &height);
-			CRegardsBitmap * ConvertCXImageToScaleRegardsBitmapCRgbaquad(CxImage * image, const int &width, const int &height);
-			static wxImage * ConvertRegardsBitmapToWXImage(CRegardsBitmap * image, const bool &loadAlpha = false);
-			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap, const bool &flip, const bool &loadAlpha = false);
+
+			static CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
+			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
+			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap);
+			static CxImage* ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap);
 			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
 
 			static void Initx265Decoder();

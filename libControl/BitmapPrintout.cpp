@@ -126,10 +126,10 @@ void CBitmapPrintout::DrawPicture(const int& pageNum)
 	OffsetLogicalOrigin(xoff, yoff);
 
 	wxDC* dc = GetDC();
-	wxImage* _local = image->GetwxImage();
-	dc->DrawBitmap(*_local, 0, 0);
-	delete _local;
+	wxImage _local = image->GetwxImage();
+	dc->DrawBitmap(_local, 0, 0);
 	delete image;
+
 }
 
 

@@ -271,6 +271,7 @@ int CLibPicture::TestImageFormat(const wxString& szFileName)
 //-----------------------------------------------------------------------------
 //Conversion du format CXImage vers RegardsBitmap
 //-----------------------------------------------------------------------------
+/*
 CRegardsBitmap* CLibPicture::ConvertCXImageToRegardsBitmap(CxImage* image, const int& orientation)
 {
 	auto bitmap = new CRegardsBitmap(image->GetWidth(), image->GetHeight());
@@ -280,7 +281,7 @@ CRegardsBitmap* CLibPicture::ConvertCXImageToRegardsBitmap(CxImage* image, const
 	bitmap->RotateExif(orientation);
 	return bitmap;
 }
-
+*/
 //-----------------------------------------------------------------------------
 //Conversion du format CXImage vers RegardsBitmap
 //-----------------------------------------------------------------------------
@@ -302,52 +303,6 @@ CRegardsBitmap* CLibPicture::ConvertCXImageToRegardsBitmap(CxImage* image)
 //-----------------------------------------------------------------------------
 //Conversion du format CXImage vers RegardsBitmap
 //-----------------------------------------------------------------------------
-CRegardsBitmap* CLibPicture::ConvertCXImageToScaleRegardsBitmapCRgbaquad(
-	CxImage* image, const int& width, const int& height)
-{
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"ConvertCXImageToScaleRegardsBitmap\n");
-#endif
-
-	float ratio = CScaleThumbnail::CalculRatio(image->GetWidth(), image->GetHeight(), width, height);
-
-	auto bitmapOut = new CRegardsBitmap(image->GetWidth() * ratio, image->GetHeight() * ratio);
-	uint8_t* data = bitmapOut->GetPtBitmap();
-	image->InterpolationBicubicRGB(data, image->GetWidth() * ratio, image->GetHeight() * ratio);
-	EXIFINFO* exif = image->GetExifInfo();
-	if (exif != nullptr)
-		bitmapOut->RotateExif(exif->Orientation);
-
-	return bitmapOut;
-}
-
-//-----------------------------------------------------------------------------
-//Conversion du format CXImage vers RegardsBitmap
-//-----------------------------------------------------------------------------
-CRegardsBitmap* CLibPicture::ConvertCXImageToScaleRegardsBitmapBGR(CxImage* image, const int& width, const int& height)
-{
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"ConvertCXImageToScaleRegardsBitmap\n");
-#endif
-
-	float ratio = CScaleThumbnail::CalculRatio(image->GetWidth(), image->GetHeight(), width, height);
-	auto bitmapOut = new CRegardsBitmap(image->GetWidth() * ratio, image->GetHeight() * ratio);
-	uint8_t* data = bitmapOut->GetPtBitmap();
-	image->InterpolationBicubicBGR(data, image->GetWidth() * ratio, image->GetHeight() * ratio);
-
-	EXIFINFO* exif = image->GetExifInfo();
-	if (exif != nullptr)
-		bitmapOut->RotateExif(exif->Orientation);
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
-	DWORD Result = LasttickCount - tickCount;
-#endif
-
-	return bitmapOut;
-}
 
 CxImage* CLibPicture::ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap)
 {
@@ -356,8 +311,8 @@ CxImage* CLibPicture::ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap)
 	{
 		image = new CxImage();
 		image->CreateFromArray(bitmap->GetPtBitmap(), bitmap->GetBitmapSize(), bitmap->GetBitmapWidth(),
-		                       bitmap->GetBitmapHeight(), bitmap->GetBitmapDepth(), bitmap->GetWidthSize(), false,
-		                       false);
+			bitmap->GetBitmapHeight(), bitmap->GetBitmapDepth(), bitmap->GetWidthSize(), false,
+			false);
 	}
 	return image;
 }
@@ -949,10 +904,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
                 
-                wxImage * image = bitmap->GetwxImage(true);
-                image->SetOption("wxIMAGE_OPTION_QUALITY",2);
-                image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
-                delete image;
+                wxImage image = bitmap->GetwxImage(true);
+                image.SetOption("wxIMAGE_OPTION_QUALITY",2);
+                image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
                 
 				pictureMetadata.CopyMetadata(fileTemp);
 
@@ -986,10 +940,10 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			{
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
 
-                wxImage * image = bitmap->GetwxImage(true);
-                image->SetOption("wxIMAGE_OPTION_QUALITY",2);
-                image->SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
-                delete image;
+                wxImage image = bitmap->GetwxImage(true);
+                image.SetOption("wxIMAGE_OPTION_QUALITY",2);
+                image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
+
 				pictureMetadata.CopyMetadata(fileTemp);
 
 				CMetadataExiv2 metadata(fileTemp);
@@ -1014,20 +968,16 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	case JPEG:
 		{
 			wxLogNull logNo;
-            wxImage * image = bitmap->GetwxImage(true);
-            image->SetOption("wxIMAGE_OPTION_QUALITY",quality);
-            image->SaveFile(fileName,wxBITMAP_TYPE_JPEG);
-            delete image;
-
+            wxImage image = bitmap->GetwxImage(true);
+            image.SetOption("wxIMAGE_OPTION_QUALITY",quality);
+            image.SaveFile(fileName,wxBITMAP_TYPE_JPEG);
 		}
 		break;
 
 	case PCX:
 	{
-		wxLogNull logNo;
-		wxImage* image = bitmap->GetwxImage(true);
-		image->SaveFile(fileName, wxBITMAP_TYPE_PCX);
-		delete image;
+		wxImage image = bitmap->GetwxImage(true);
+		image.SaveFile(fileName, wxBITMAP_TYPE_PCX);
 		break;
 	}
 
@@ -1074,10 +1024,10 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				if (wxFileExists(file))
 					wxRemoveFile(file);
 
-				wxImage* image = bitmap->GetwxImage(true);
-				image->SetOption("wxIMAGE_OPTION_QUALITY", quality);
-				image->SaveFile(file, wxBITMAP_TYPE_JPEG);
-				delete image;
+				wxImage image = bitmap->GetwxImage(true);
+				image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
+				image.SaveFile(file, wxBITMAP_TYPE_JPEG);
+
 			}
 			else
 			{
@@ -1090,10 +1040,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				if (wxFileExists(file))
 					wxRemoveFile(file);
 
-				wxImage* image = bitmap->GetwxImage(true);
-				image->SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
-				image->SaveFile(file, wxBITMAP_TYPE_TIFF);
-				delete image;
+				wxImage image = bitmap->GetwxImage(true);
+				image.SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
+				image.SaveFile(file, wxBITMAP_TYPE_TIFF);
 			}
 
 			wxImage image;
@@ -1114,9 +1063,9 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case XPM:
 		{
-			wxImage* image = bitmap->GetwxImage();
-			image->SaveFile(fileName, wxBITMAP_TYPE_XPM);
-			delete image;
+			wxImage image = bitmap->GetwxImage();
+			image.SaveFile(fileName, wxBITMAP_TYPE_XPM);
+
 		}
 		break;
 	default: ;
@@ -1286,35 +1235,16 @@ int CLibPicture::SavePicture(const wxString& fileNameIn, const wxString& fileNam
 	return 0;
 }
 
-CxImage* CLibPicture::ConvertwxImageToCxImage(const wxImage& image)
-{
-	CxImage* _image = nullptr;
-	if (image.IsOk())
-	{
-		wxMemoryOutputStream outputStream;
-		image.SaveFile(outputStream, wxBITMAP_TYPE_PNG);
-		auto data = new uint8_t[outputStream.GetSize()];
-		if (data != nullptr)
-		{
-			outputStream.CopyTo(data, outputStream.GetSize());
-			CxMemFile memFile(data, outputStream.GetSize());
-			_image = new CxImage(&memFile, CxImage::GetTypeIdFromName("png"));
-			delete[] data;
-		}
-	}
-
-	return _image;
-}
-
 CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
 {
 	CRegardsBitmap* bitmap = nullptr;
 	if (image.IsOk())
 	{
-		CxImage* _image = ConvertwxImageToCxImage(image);
-		wxString error = _image->GetLastError();
-		if (error == "")
-			bitmap = ConvertCXImageToRegardsBitmap(_image);
+		bitmap = new CRegardsBitmap();
+		cv::Mat dest = cv::Mat(image.GetHeight(), image.GetWidth(), CV_8UC3, image.GetData());
+		cv::cvtColor(dest, dest, cv::COLOR_RGB2BGR);
+		bitmap->SetMatrix(dest, true);
+
 	}
 
 	return bitmap;
@@ -1461,19 +1391,6 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 }
 
 
-//--------------------------------------------------------------------------------------------
-//Obtention d'un thumbnail à partir des informations exif
-//--------------------------------------------------------------------------------------------
-/*
-vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg)
-{
-	int iFormat = TestImageFormat(szFileName);
-	vector<CImageVideoThumbnail *> listThumbnail;
-	LoadAllVideoThumbnail(szFileName, &listThumbnail, compressJpeg);
-	return listThumbnail;
-}
-*/
-
 void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImageVideoThumbnail*>* listThumbnail,
                                        const int& bitmapType, const int& width, const int& height,
                                        const bool& compressJpeg, const bool& isThumbnail)
@@ -1554,8 +1471,8 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			}
 			else
 			{
-				CRegardsBitmap* bitmap;
-				//wxMemoryDC memdc;
+
+				wxImage bitmapResize;
 				if (isThumbnail)
 				{
 					int bw, bh;
@@ -1566,16 +1483,14 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 					double m_zoomFactor = min(scale_x, scale_y);
 					bw = static_cast<int>(image.GetWidth() * m_zoomFactor);
 					bh = static_cast<int>(image.GetHeight() * m_zoomFactor);
-					wxImage bitmapResize = image.ResampleBicubic(bw, bh);
-					bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
+					bitmapResize = image.ResampleBicubic(bw, bh);
 				}
-				else
-					bitmap = ConvertwxImageToRegardsBitmap(image);
+
 				//bitmap->SetFilename(szFileName);
 				//CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
 				auto imageVideoThumbnail = new CImageVideoThumbnail();
 				imageVideoThumbnail->image = new CImageLoadingFormat();
-				imageVideoThumbnail->image->SetPicture(bitmap);
+				imageVideoThumbnail->image->SetPicture(&bitmapResize);
 				imageVideoThumbnail->image->SetFilename(szFileName);
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 4;
@@ -1802,11 +1717,9 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 					{
 						auto imageVideoThumbnail = new CImageVideoThumbnail();
 						CxImage* frame = _cxImage->GetFrame(i);
-						CRegardsBitmap* _local = ConvertCXImageToRegardsBitmap(frame, 0);
-						_local->SetFilename(szFileName);
 						imageVideoThumbnail->image = new CImageLoadingFormat();
 						imageVideoThumbnail->image->SetFilename(szFileName);
-						imageVideoThumbnail->image->SetPicture(_local);
+						imageVideoThumbnail->image->SetPicture(frame);
 						imageVideoThumbnail->rotation = 0;
 						imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 						imageVideoThumbnail->percent = (static_cast<float>(i) / static_cast<float>(_cxImage->
@@ -2771,16 +2684,18 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	}
 }
 
-wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& flip, const bool& loadAlpha)
+
+wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 {
 	const int width = bitmap->GetBitmapWidth();
 	const int height = bitmap->GetBitmapHeight();
 	const int widthSrcSize = width * 4;
 	unsigned char* data = bitmap->GetPtBitmap();
+	bool loadAlpha = false;
 	wxImage anImage(width, height, true);
 	if (loadAlpha)
 		anImage.InitAlpha();
-
+	bool flip = false;
 	unsigned char* dataOut = anImage.GetData();
 	unsigned char* dataAlpha = anImage.GetAlpha();
 
@@ -2808,10 +2723,10 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const
 			}
 		}
 	}
-
+	
 	return anImage;
 }
-
+/*
 wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& loadAlpha)
 {
 	const int width = bitmap->GetBitmapWidth();
@@ -2848,7 +2763,7 @@ wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, cons
 
 	return anImage;
 }
-
+*/
 bool CLibPicture::HasThumbnail(const wxString& filename)
 {
 #if defined(EXIV2)

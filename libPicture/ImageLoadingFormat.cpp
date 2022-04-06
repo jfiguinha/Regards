@@ -178,7 +178,7 @@ void CImageLoadingFormat::SetPicture(CxImage* image)
 			delete _image;
 
 		CLibPicture libPicture;
-		_image = libPicture.ConvertCXImageToRegardsBitmap(image, 0);
+		_image = libPicture.ConvertCXImageToRegardsBitmap(image);
 	}
 }
 
@@ -417,13 +417,12 @@ int CImageLoadingFormat::Resize(const int& pictureWidth, const int& pictureHeigh
 	return 0;
 }
 
-wxImage* CImageLoadingFormat::GetwxImage(const bool& copy)
+wxImage CImageLoadingFormat::GetwxImage(const bool& copy)
 {
 	if (!IsOk())
 		return nullptr;
 
-	CLibPicture libPicture;
-	return libPicture.ConvertRegardsBitmapToWXImage(_image);
+	return CLibPicture::ConvertRegardsBitmapToWXImage(_image);
 }
 
 CxImage* CImageLoadingFormat::GetCxImage(const bool& copy)
@@ -431,6 +430,5 @@ CxImage* CImageLoadingFormat::GetCxImage(const bool& copy)
 	if (!IsOk())
 		return nullptr;
 
-	CLibPicture libPicture;
-	return libPicture.ConvertRegardsBitmapToCXImage(_image);
+	return CLibPicture::ConvertRegardsBitmapToCXImage(_image);
 }

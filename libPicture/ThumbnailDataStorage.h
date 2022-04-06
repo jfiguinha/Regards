@@ -19,5 +19,5 @@ public:
 
 private:
 	bool TestBitmap() override;
-	wxImage* localbitmap;
+	wxImage localbitmap;
 };
