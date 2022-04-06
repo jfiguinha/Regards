@@ -90,8 +90,8 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
 
             FaceBox facelocal = preList[i];
             CFace face;
-            int x1 = facelocal.x;
-            int y1 = facelocal.y;
+            int x1 = max(facelocal.x,0);
+            int y1 = max(facelocal.y,0);
             int x2 = facelocal.w + facelocal.x - 1;
             int y2 = facelocal.w + facelocal.y - 1;
             face.myROI = Rect(Point(x1, y1), Point(x2, y2));

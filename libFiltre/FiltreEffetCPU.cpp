@@ -451,10 +451,12 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 	else
 		image = input;
 
-	cv::flip(image, image, 0);
+	
 
 	if(nbFace > 0)
 	{
+		cv::flip(image, image, 0);
+
 		try
 		{
 			//Resize the rectangle
@@ -647,9 +649,9 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			
 		}
 
-
+		cv::flip(image, image, 0);
 	}
-	cv::flip(image, image, 0);
+	//
 	return 0;
 }
 

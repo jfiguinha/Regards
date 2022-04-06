@@ -500,10 +500,12 @@ void CListFace::FacialRecognition(void* param)
 		CRegardsBitmap* pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 		if (pictureOK && pictureData != nullptr)
 		{
+			/*
 			if (libPicture.TestIsVideo(path->filename))
 			{
 				pictureData->VertFlipBuf();
 			}
+			*/
 
 			pictureData->SetFilename(path->filename);
 

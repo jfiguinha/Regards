@@ -244,6 +244,7 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(CRegardsBitmap * picture)
 		std::vector<CFace> listOfFace;
 		picture->VertFlipBuf();
 		detectFacePCN->DetectFace(picture->GetMatrix(), listOfFace, listFace);
+		picture->VertFlipBuf();
 	}
 
 	return listFace;

@@ -58,7 +58,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 
 	this->source = source;
 
-	source->VertFlipBuf();
+	//source->VertFlipBuf();
 
 	//Find Face on source
 	//cv::Mat dst;
@@ -78,7 +78,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 
 	nbFace = listFace.size();
 
-	source->VertFlipBuf();
+	//source->VertFlipBuf();
 
 	vector<int> elementColor;
 	for (auto i = 0; i < 100; i++)
