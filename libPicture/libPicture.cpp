@@ -945,13 +945,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			if (pictureMetadata.HasExif())
 			{
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
-
-				/*
-                wxImage image = bitmap->GetwxImage(true);
-                image.SetOption("wxIMAGE_OPTION_QUALITY",2);
-                image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
-				*/
-				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
 				CRegardsBitmap* local = bitmap->GetRegardsBitmap(false);
 				cv::Mat image = local->GetMatrix();
 				cv::imwrite(fileTemp.ToStdString(), image);
