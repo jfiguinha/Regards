@@ -1260,7 +1260,7 @@ CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
 	{
 		bitmap = new CRegardsBitmap();
 		cv::Mat dest = cv::Mat(image.GetHeight(), image.GetWidth(), CV_8UC3, image.GetData());
-		cv::cvtColor(dest, dest, cv::COLOR_RGB2BGR);
+		cv::cvtColor(dest, dest, cv::COLOR_RGB2BGRA);
 		bitmap->SetMatrix(dest, true);
 
 	}
