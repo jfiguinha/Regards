@@ -55,7 +55,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			picture = new CImageLoadingFormat();
 			cv::Mat rawData(1, memFile->size, CV_8UC1, (void*)memFile->dataPt);
 			cv::Mat matPicture = cv::imdecode(rawData, cv::IMREAD_COLOR);
-			cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
+			//cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
 			bitmap->SetMatrix(matPicture);
 			bitmap->VertFlipBuf();
 			bitmap->SetFilename(fileName);

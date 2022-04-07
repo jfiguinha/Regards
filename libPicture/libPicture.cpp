@@ -903,11 +903,17 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				}
 
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
-                
+				CRegardsBitmap* local = bitmap->GetRegardsBitmap(false);
+				cv::Mat image = local->GetMatrix();
+				cv::imwrite(fileTemp.ToStdString(), image);
+
+				/*
                 wxImage image = bitmap->GetwxImage(true);
                 image.SetOption("wxIMAGE_OPTION_QUALITY",2);
                 image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
-                
+                */
+
+
 				pictureMetadata.CopyMetadata(fileTemp);
 
 				CMetadataExiv2 metadata(fileTemp);
@@ -940,9 +946,15 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			{
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
 
+				/*
                 wxImage image = bitmap->GetwxImage(true);
                 image.SetOption("wxIMAGE_OPTION_QUALITY",2);
                 image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
+				*/
+				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
+				CRegardsBitmap* local = bitmap->GetRegardsBitmap(false);
+				cv::Mat image = local->GetMatrix();
+				cv::imwrite(fileTemp.ToStdString(), image);
 
 				pictureMetadata.CopyMetadata(fileTemp);
 
@@ -2734,6 +2746,28 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 {
+	cv::Mat img = bitmap->GetMatrix();
+	cv::Mat im2;
+	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+
+	cv::flip(im2, im2, 0);
+
+	long imsize = im2.rows * im2.cols * im2.channels();
+	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = im2.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+	/*
+	for (long i = 0; i < imsize; i++)
+	{
+		d[i] = s[i];
+	}
+	*/
+	return wx;
+
+	/*
 	const int width = bitmap->GetBitmapWidth();
 	const int height = bitmap->GetBitmapHeight();
 	const int widthSrcSize = width * 4;
@@ -2772,6 +2806,7 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 	}
 	
 	return anImage;
+	*/
 }
 /*
 wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& loadAlpha)

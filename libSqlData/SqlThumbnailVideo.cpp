@@ -7,6 +7,7 @@
 #include <wx/dir.h>
 #include <FileUtility.h>
 #include <LibResource.h>
+#include <RegardsBitmap.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
@@ -83,13 +84,20 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 		if (wxFileExists(thumbnail))
 		{
 			CLibPicture libPicture;
-			wxImage image;
+			cv::Mat loadPicture;
+			CRegardsBitmap * bitmap = nullptr;
 			if (wxFileExists(thumbnail))
-				image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
-
-			if (image.IsOk())
 			{
-				videoThumbnail->image = libPicture.LoadPicture(thumbnail);
+				bitmap = new CRegardsBitmap();
+				loadPicture = cv::imread(thumbnail.ToStdString());
+				bitmap->SetMatrix(loadPicture);
+				//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
+			}
+
+			if (bitmap != nullptr)
+			{
+				videoThumbnail->image = new CImageLoadingFormat();
+				videoThumbnail->image->SetPicture(bitmap);
 			}
 			else
 			{
