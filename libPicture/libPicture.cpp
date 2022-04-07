@@ -1477,7 +1477,10 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			}
 			else
 			{
+				auto imageVideoThumbnail = new CImageVideoThumbnail();
+				imageVideoThumbnail->image = new CImageLoadingFormat();
 
+				cv::Mat out;
 				wxImage bitmapResize;
 				if (isThumbnail)
 				{
@@ -1489,14 +1492,25 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 					double m_zoomFactor = min(scale_x, scale_y);
 					bw = static_cast<int>(image.GetWidth() * m_zoomFactor);
 					bh = static_cast<int>(image.GetHeight() * m_zoomFactor);
-					bitmapResize = image.ResampleBicubic(bw, bh);
+
+					
+					cv::Mat in = CLibPicture::mat_from_wx(image);
+					cv::resize(in, out, cv::Size(bw, bh), cv::INTER_CUBIC);
+					//bitmapResize = CLibPicture::wx_from_mat(out);
+
+					CRegardsBitmap * bitmap = new CRegardsBitmap();
+					cv::cvtColor(out, out, cv::COLOR_RGB2BGRA);
+					bitmap->SetMatrix(out);
+					bitmap->VertFlipBuf();
+					imageVideoThumbnail->image->SetPicture(bitmap);
 				}
+				else
+					imageVideoThumbnail->image->SetPicture(&image);
 
 				//bitmap->SetFilename(szFileName);
 				//CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
-				auto imageVideoThumbnail = new CImageVideoThumbnail();
-				imageVideoThumbnail->image = new CImageLoadingFormat();
-				imageVideoThumbnail->image->SetPicture(&bitmapResize);
+
+				
 				imageVideoThumbnail->image->SetFilename(szFileName);
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 4;
@@ -2094,6 +2108,33 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	return bitmap;
+}
+
+wxImage CLibPicture::wx_from_mat(cv::Mat& im2) {
+	//cv::Mat im2;
+	/*
+	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+	*/
+	long imsize = im2.rows * im2.cols * im2.channels();
+	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = im2.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+	/*
+	for (long i = 0; i < imsize; i++)
+	{
+		d[i] = s[i];
+	}
+	*/
+	return wx;
+}
+
+cv::Mat CLibPicture::mat_from_wx(wxImage& wx) {
+	cv::Mat im2(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC3, wx.GetData());
+	//cvtColor(im2, im2, cv::COLOR_RGB2BGR);
+	return im2;
 }
 
 //------------------------------------------------------------------------------

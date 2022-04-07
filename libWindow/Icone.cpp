@@ -12,6 +12,8 @@
 #endif
 #include <RegardsConfigParam.h>
 #include <RegardsBitmap.h>
+#include <libPicture.h>
+using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
@@ -718,10 +720,17 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 			{
 				GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight,
 					ratio);
+
+				cv::Mat out;
+				cv::Mat in = CLibPicture::mat_from_wx(image);
+				cv::resize(in, out, cv::Size(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight), cv::INTER_CUBIC);
+				scale = CLibPicture::wx_from_mat(out);
+				/*
 				if (config->GetThumbnailQuality() == 0)
 					scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 				else
 					scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+				*/
 			}
 
 			scaleBackup = scale;
