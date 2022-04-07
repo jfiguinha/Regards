@@ -36,7 +36,6 @@
       <File Name="MeanShift.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="src">
-      <File Name="RedEye.cpp"/>
       <File Name="Wave.cpp"/>
       <File Name="Selection.cpp"/>
       <File Name="PerlinNoise.cpp"/>
@@ -49,7 +48,6 @@
       <File Name="circle.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="RedEye.h"/>
       <File Name="Wave.h"/>
       <File Name="Selection.h"/>
       <File Name="Rotation.h"/>

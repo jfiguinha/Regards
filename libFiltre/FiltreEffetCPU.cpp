@@ -2087,7 +2087,7 @@ int CFiltreEffetCPU::Rotate270()
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Resize(const int& imageWidth, const int& imageHeight, const int& interpolation)
 {
-	resize(input, paramOutput, Size(imageHeight, imageWidth), 0, 0, INTER_CUBIC);
+	resize(input, paramOutput, cv::Size(imageHeight, imageWidth), 0, 0, INTER_CUBIC);
 	return 0;
 }
 
