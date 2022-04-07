@@ -178,21 +178,21 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	UMat u;
-	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
+	//UMat u;
+	//cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 	try
 	{
 
         cl_int status = 0;
 
         Mat local;
-		u.copyTo(local);
+		inputData.copyTo(local);
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+		
 
 		
 		cl_command_queue q = openclContext->GetCommandQueue();
@@ -201,21 +201,28 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
 
+		GetRgbaBitmap(clImage, inputData);
+		/*
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)inputData.cols, (size_t)inputData.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-
+		*/
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
 
+		status = clFlush(q);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+
 		status = clFinish(q); // TODO Use events
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
-
+			
 		status = clReleaseMemObject(clImage); // TODO RAII
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
@@ -910,6 +917,52 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+}
+
+
+int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
+{
+	cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+
+	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(flag);
+		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(u.size().width);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(u.size().height);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		program->SetKeepOutput(true);
+		program->SetParameter(&vecParam, u.size().width, u.size().height, (cl_mem)cl_image);
+		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+
+		delete program;
+
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return 0;
 }
 
 void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
