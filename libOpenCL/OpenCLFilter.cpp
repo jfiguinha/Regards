@@ -947,8 +947,11 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 
 		program->SetKeepOutput(true);
 		program->SetParameter(&vecParam, u.size().width, u.size().height, (cl_mem)cl_image);
+#ifdef __APPLE__
+        program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
+#else
 		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-
+#endif
 		delete program;
 
 
