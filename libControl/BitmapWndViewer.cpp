@@ -639,9 +639,9 @@ void CBitmapWndViewer::MouseClick(const int& xPos, const int& yPos)
 		int hpos = GetHPos();
 		int vpos = GetVPos();
 
-		int x = (xPos - xPosImage) / scale_factor;
-		int y = (yPos - yPosImage) / scale_factor;
-
+		int x = (xPos - xPosImage);
+		int y = (yPos - yPosImage);
+        m_cDessin->SetScaleFactor(scale_factor);
 
 		invertColor = true;
 		mouseBlock = true;
@@ -808,8 +808,10 @@ void CBitmapWndViewer::MouseMove(const int& xPos, const int& yPos)
 		int hpos = GetHPos();
 		int vpos = GetVPos();
 
-		int x = (xPos - xPosImage) / scale_factor;
-		int y = (yPos - yPosImage) / scale_factor;
+		int x = (xPos - xPosImage);
+		int y = (yPos - yPosImage);
+        
+        m_cDessin->SetScaleFactor(scale_factor);
 
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)

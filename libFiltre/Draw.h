@@ -32,10 +32,19 @@ namespace Regards
 			virtual void GetPos(wxRect &rc){};
 			virtual void GetPoint(wxPoint &pt){};
 			virtual void GetScreenPoint(wxPoint &pt){};
+            virtual void SetScaleFactor(const double &factor)
+            {
+                this->factor = factor;
+            }
+            virtual double GetScaleFactor()
+            {
+                return factor;
+            }
 		protected:
 			wxRect m_rcAffichage;
 			float m_fRatioValue;
 			wxPoint pt;
+             double factor = 1.0;
 			bool VerifierValiditerPoint(const wxPoint &pt);
 			float XDrawingPosition(const float &m_lx, const long &m_lHScroll, const float &ratio);
 			float YDrawingPosition(const float &m_ly, const long &m_lVScroll, const float &ratio);

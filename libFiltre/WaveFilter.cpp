@@ -129,11 +129,11 @@ CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParamete
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
-
+        double scaleFactor = bitmapViewer->GetDessinPt()->GetScaleFactor();
 		CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
 		int radius = waveEffectParameter->radius;
 		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x, image.GetHeight() - pt.y, image.GetHeight(), radius, scale);
+		filtre->WaveFilter(pt.x / scaleFactor, image.GetHeight() - (pt.y / scaleFactor), image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -188,11 +188,11 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
 		ApplyExifToPoint(pt, source->GetOrientation(), source->GetBitmapWidth(), source->GetBitmapHeight());
 		//Calcul Point with Exif info
-
+        double scaleFactor = bitmapViewer->GetDessinPt()->GetScaleFactor();
 		CWaveEffectParameter* waveEffectParameter = (CWaveEffectParameter*)effectParameter;
 		int radius = waveEffectParameter->radius;
 		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x, image.GetHeight() - pt.y, image.GetHeight(), radius, scale);
+		filtre->WaveFilter(pt.x / scaleFactor, image.GetHeight() - (pt.y / scaleFactor), image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
 		

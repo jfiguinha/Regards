@@ -135,7 +135,7 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
-
+        double scaleFactor = bitmapViewer->GetDessinPt()->GetScaleFactor();
 		//ApplyExifToPoint(pt, source->GetOrientation(), source->GetBitmapWidth(), source->GetBitmapHeight());
 		
 		CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
@@ -143,7 +143,7 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 		float brightness = (float)lensFlareParameter->brightness;
 		float colorIntensity = (float)lensFlareParameter->colorIntensity;
 		puissance = ((float)(source->GetBitmapWidth() / 4) * (puissance / 100.0f));
-		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+		filtre->LensFlare(pt.x / scaleFactor, pt.y / scaleFactor, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -152,13 +152,6 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 
 	return imageLoad;
 }
-
-void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop)
-{
-	int puissance = (int)((float)(source->GetBitmapWidth() / 4) * ((float)iPuissance / 100.0f));
-	filtreEffet->LensFlare(iPosX - posLeft, iPosY - posTop, puissance, iType, iIntensity, iColor, iColorIntensity);
-}
-
 
 void CLensFlareFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
@@ -211,9 +204,10 @@ void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParamete
 		ApplyExifToPoint(pt, source->GetOrientation(), source->GetBitmapWidth(), source->GetBitmapHeight());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
+        double scaleFactor = bitmapViewer->GetDessinPt()->GetScaleFactor();
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
-		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+		filtre->LensFlare(pt.x / scaleFactor, pt.y / scaleFactor, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));

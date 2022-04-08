@@ -27,7 +27,7 @@ CLensFlare::~CLensFlare(void)
 void CLensFlare::Halo(const int &x, const int &y,const int &iColor, const int &iTaille, const int &iWidth, const float &fAlpha2, const int &iCentre)
 {
 	int rayon = iTaille;
-
+    
 
     if(iTaille > 0)
         pBitmap->InsertwxImage(CCircle::Halo(iColor, iColorIntensity, iTaille * 2, iWidth, fAlpha2, iCentre), x - rayon, y - rayon);
