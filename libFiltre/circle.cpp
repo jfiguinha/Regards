@@ -23,20 +23,17 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 	const int width = image.GetWidth();
 	const int height = image.GetHeight();
 
-
-    for (auto y = 0; y < height; y++)
-    {
-
-        for (auto x = 0; x < width; x++)
-		{
-			int i = y * width + x;
-			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
+	tbb::parallel_for(0, height, 1, [=](int y) {
+			for (auto x = 0; x < width; x++)
 			{
-				if (alpha != nullptr)
-					alpha[i] *= (1.0f - fAlpha);
+				int i = y * width + x;
+				if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
+				{
+					if (alpha != nullptr)
+						alpha[i] *= (1.0f - fAlpha);
+				}
 			}
-		}
-	}
+		});
 
 	image.Replace(0, 0, 0,
 		m_color.GetRed(), m_color.GetGreen(), m_color.GetBlue());
@@ -64,15 +61,14 @@ wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaill
 	int height = image.GetHeight();
 
 
-    for (auto y = 0; y < height; y++)
-    {
+	tbb::parallel_for(0, height, 1, [=](int y) {
 
-        for (auto x = 0; x < width; x++)
+		for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
 			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
+				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
 				if (image.HasAlpha())
 					alpha[i] = 0;
 				if (fValue <= rayon)
@@ -83,7 +79,7 @@ wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaill
 				}
 			}
 		}
-	}
+		});
 
 	image.Replace(0, 0, 0,
 		m_color.GetRed(), m_color.GetGreen(), m_color.GetBlue());
@@ -122,9 +118,6 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 
 	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
-
-	
-
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
 		alpha = image.GetAlpha();
@@ -135,10 +128,8 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 	int height = image.GetHeight();
 
 
-	for (auto y = 0; y < height; y++)
-    {
-
-        for (auto x = 0; x < width; x++)
+	tbb::parallel_for(0, height, 1, [=](int y) {
+		for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
@@ -163,7 +154,7 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 				i++;
 			}
 		}
-	}
+		});
 
 	return image;
 
@@ -179,20 +170,6 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	for (i = iTaille - iWidth; i <= iTaille; i++)
 	{
 		int j = iTaille - i;
-		/*
-		if (!(j < 0))
-		{
-			double m_iIntensity = (double)i / (double)100;
-
-			m_iIntensity = asin(m_iIntensity);
-
-			double m = (m_iIntensity * 90) / pi;
-
-			m_iIntensity = exp(-m*m*0.006)*0.50 + exp(-m*0.03)*(1 - 0.50);
-
-
-		}
-		*/
 		HSB m_value = { iNb * j, 50, 100 };
 		CRgbaquad m_rgbValue;
 		CColor::HSBToRGB(m_value, m_rgbValue);
@@ -216,18 +193,16 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	int height = image.GetHeight();
 
 
-    for (auto y = 0; y < height; y++)
-    {
-
-        for (auto x = 0; x < width; x++)
+	tbb::parallel_for(0, height, 1, [=](int y) {
+		for (auto x = 0; x < width; x++)
 		{
 			int i1 = y * width + x;
 			if (data[i1 * 3] == 0 && data[i1 * 3 + 1] == 0 && data[i1 * 3 + 2] == 0)
 			{
-				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
+				const float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
 				int distance = (int)fValue;
 				alpha[i1] = 0;
-			
+
 				if (distance <= rayon && distance >= (rayon - iWidth))
 				{
 					int position = iWidth - (rayon - distance);
@@ -235,7 +210,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 					data[i1 * 3 + 1] = listColor[position].GetGreen();
 					data[i1 * 3 + 2] = listColor[position].GetBlue();
 					alpha[i1] = 255 - (fAlpha2 * 255.0f);
-				}	
+				}
 				else
 				{
 					int position = iWidth - (rayon - distance);
@@ -254,7 +229,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 				}
 			}
 		}
-	}
+		});
 
 	return image;
 }
@@ -265,7 +240,19 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 	int rayon = iTaille / 2;
 	vector<CRgbaquad> listColorCenter;
 	vector<CRgbaquad> listColorOut;
+	/*
+	cv::Mat out = cv::Mat(iTaille, iTaille, CV_8UC3);
+	cv::circle(out, cv::Point(rayon, rayon), rayon, cv::Scalar(0, 0, 0), cv::FILLED);
 
+	long imsize = out.rows * out.cols * out.channels();
+	wxImage image(out.cols, out.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = out.data;
+	unsigned char* d = image.GetData();
+	memcpy(d, s, imsize);
+
+	uint8_t* charAlpha = new uint8_t[iTaille* iTaille];
+	image.SetAlpha(charAlpha);
+	*/
 	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	float y1 = 0.3f;
@@ -332,15 +319,15 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 	int width = image.GetWidth();
 	int height = image.GetHeight();
 
-    for (auto y = 0; y < height; y++)
-	{
-
+    //for (auto y = 0; y < height; y++)
+	//{
+	tbb::parallel_for(0, height, 1, [=](int y) {
 		for (auto x = 0; x < width; x++)
 		{
 			int i = y * width + x;
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
 			{
-				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
+				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) * (y - rayon)));
 				int distance = (int)fValue;
 				alpha[i] = 0;
 
@@ -349,8 +336,8 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 					data[i * 3] = listColorCenter[distance].GetRed();
 					data[i * 3 + 1] = listColorCenter[distance].GetGreen();
 					data[i * 3 + 2] = listColorCenter[distance].GetBlue();
-					alpha[i] = 255 - (fAlpha2 * 255.0f);					
-				}				
+					alpha[i] = 255 - (fAlpha2 * 255.0f);
+				}
 				else if (distance <= rayon && distance >= (rayon - iWidth))
 				{
 					int position = iWidth - (rayon - distance);
@@ -368,7 +355,7 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 			}
 			i++;
 		}
-	}
+		});
 
 	return image;
 }
