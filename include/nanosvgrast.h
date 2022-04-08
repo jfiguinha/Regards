@@ -1202,12 +1202,12 @@ static void nsvg__rasterizeSortedEdges(NSVGrasterizer *r, float tx, float ty, fl
 
 static void nsvg__unpremultiplyAlpha(unsigned char* image, int w, int h, int stride)
 {
-	int x,y;
+	//int x,y;
 
 	// Unpremultiply
-	for (y = 0; y < h; y++) {
+	tbb::parallel_for(0, h, 1, [=](int y) {
 		unsigned char *row = &image[y*stride];
-		for (x = 0; x < w; x++) {
+		for (int x = 0; x < w; x++) {
 			int r = row[0], g = row[1], b = row[2], a = row[3];
 			if (a != 0) {
 				row[0] = (unsigned char)(r*255/a);
@@ -1216,12 +1216,12 @@ static void nsvg__unpremultiplyAlpha(unsigned char* image, int w, int h, int str
 			}
 			row += 4;
 		}
-	}
+	});
 
 	// Defringe
-	for (y = 0; y < h; y++) {
+	tbb::parallel_for(0, h, 1, [=](int y) {
 		unsigned char *row = &image[y*stride];
-		for (x = 0; x < w; x++) {
+		for (int x = 0; x < w; x++) {
 			int r = 0, g = 0, b = 0, a = row[3], n = 0;
 			if (a == 0) {
 				if (x-1 > 0 && row[-1] != 0) {
@@ -1256,7 +1256,7 @@ static void nsvg__unpremultiplyAlpha(unsigned char* image, int w, int h, int str
 			}
 			row += 4;
 		}
-	}
+	});
 }
 
 

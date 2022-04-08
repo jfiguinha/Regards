@@ -721,27 +721,28 @@ int CRegardsBitmap::InsertwxImage(const wxImage& bitmap, int xPos, int yPos)
 		uint8_t* alpha = bitmap.GetAlpha();
 
 
-		for (auto y = yPos; y < yEnd; y++)
-		{
-
-			for (auto x = xPos; x < xEnd; x++)
+		tbb::parallel_for(yPos, yEnd, 1, [=](int y)
+			//for (auto y = yPos; y < yEnd; y++)
 			{
-				int i = (y - yPos) * withwxImage + (x - xPos);
-				CRgbaquad* colorSrc = GetPtColorValue(x, y);
-				if (colorSrc != nullptr)
+
+				for (auto x = xPos; x < xEnd; x++)
 				{
-					auto color = CRgbaquad(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], alpha[i]);
-					float value = color.GetFAlpha() / 255.0f;
-					float alphaDiff = 1.0f - value;
-					if (alphaDiff < 1.0f)
+					int i = (y - yPos) * withwxImage + (x - xPos);
+					CRgbaquad* colorSrc = GetPtColorValue(x, y);
+					if (colorSrc != nullptr)
 					{
-						colorSrc->Mul(alphaDiff);
-						color.Mul(value);
-						colorSrc->Add(color);
+						auto color = CRgbaquad(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], alpha[i]);
+						float value = color.GetFAlpha() / 255.0f;
+						float alphaDiff = 1.0f - value;
+						if (alphaDiff < 1.0f)
+						{
+							colorSrc->Mul(alphaDiff);
+							color.Mul(value);
+							colorSrc->Add(color);
+						}
 					}
 				}
-			}
-		}
+			});
 	}
 
 	return 0;

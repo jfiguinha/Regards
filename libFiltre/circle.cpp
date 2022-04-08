@@ -7,12 +7,31 @@
 
 using namespace Regards::FiltreEffet;
 const double pi = 3.14159265358979323846264338327950288419716939937510;
+
+std::map<int, wxImage> CCircle::listOfCircle;
+
+void CCircle::CleanCircle()
+{
+	listOfCircle.clear();
+}
+
+wxImage CCircle::GetCircle(const int &rayon)
+{
+	if (listOfCircle.find(rayon) != listOfCircle.end())
+	{
+		return listOfCircle.at(rayon).Copy();
+	}
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", rayon, rayon);
+	listOfCircle[rayon] = image;
+	return image.Copy();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////
 //
 ///////////////////////////////////////////////////////////////////////////////////////
 wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, const float &fAlpha)
 {
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille * 2, iTaille * 2);
+	wxImage image = GetCircle(iTaille * 2);// CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille * 2, iTaille * 2);
 
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
@@ -47,7 +66,7 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 ///////////////////////////////////////////////////////////////////////////////////////
 wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaille, const float &fAlpha)
 {
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	int rayon = iTaille / 2;
 
@@ -116,7 +135,7 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 	}
 
 
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
@@ -179,7 +198,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	}
 
 
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
@@ -253,7 +272,7 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 	uint8_t* charAlpha = new uint8_t[iTaille* iTaille];
 	image.SetAlpha(charAlpha);
 	*/
-	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
+	wxImage image = GetCircle(iTaille); //CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	float y1 = 0.3f;
 	float x1 = 0.5f;

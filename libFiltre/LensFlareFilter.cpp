@@ -17,7 +17,7 @@
 #include <Draw.h>
 #include <BitmapDisplay.h>
 #include <Selection.h>
-
+#include <circle.h>
 #include "TreeElementValue.h"
 using namespace Regards::Filter;
 
@@ -74,6 +74,8 @@ void CLensFlareFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap
 {
     CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
  
+	CCircle::CleanCircle();
+
 	this->source = source;
 
     vector<int> elementIntensity;

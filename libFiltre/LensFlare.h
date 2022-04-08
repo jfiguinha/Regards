@@ -24,7 +24,7 @@ namespace Regards
 
 			int iColorIntensity;
 			CRegardsBitmap * pBitmap;
-
+			
 
 		};
 	}
