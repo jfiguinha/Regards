@@ -293,7 +293,7 @@ namespace Regards
 
 			bool copyBitmap = false;
 			CFiltreEffet* filtreEffet = nullptr;
-			CRegardsBitmap* copyBmpSrc = nullptr;
+			//CRegardsBitmap* copyBmpSrc = nullptr;
 			bool needUpdate = false;
 			CRenderBitmapOpenGL* renderBitmapOpenGL = nullptr;
 			//CRenderPageCurlOpenGL * pageCurlOpenGL = nullptr;
