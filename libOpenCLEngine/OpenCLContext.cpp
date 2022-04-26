@@ -226,6 +226,7 @@ void COpenCLContext::CreateContext()
 			return;
 		}
 		std::cerr << "Unable to find a compatible OpenCL device for openGL sharing." << std::endl;
+        std::cerr << "Error OpenCL context : " << err << std::endl;
 		std::cerr << "Create a compatible OpenCL context." << std::endl;
 	}
 

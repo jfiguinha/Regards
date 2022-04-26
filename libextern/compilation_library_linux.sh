@@ -30,9 +30,8 @@ cd ..
 tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
-#./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 ./vcpkg install ffmpeg[all-gpl]
-./vcpkg install wxWidgets
+./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
@@ -50,4 +49,20 @@ cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
 
-rm vcpkg-master/installed/x64-linux/lib/libpng.a
+#Compile wxWidgets
+FILE=wxWidgets-3.1.6.zip
+if [ ! -f FILE ]; then
+    wget https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.6/wxWidgets-3.1.6.zip
+    mkdir wxWidgets
+    cp wxWidgets-3.1.6.zip wxWidgets/wxWidgets-3.1.6.zip 
+    cd wxWidgets
+    unzip wxWidgets-3.1.6.zip
+    cd ..
+fi
+
+cd wxWidgets
+./configure
+make -j$NBPROC 
+
+
+

@@ -19,7 +19,7 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 	CThemeFont themeFont = theme.themeIcone.font;
 	colorFont = themeFont.GetColorFont();
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CPicturePanel::on_paint));
-	image = nullptr;
+	//image = nullptr;
 	choice_control = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(100, -1));
 	choice_control->AppendString("All channel");
 	choice_control->AppendString("Blue");
