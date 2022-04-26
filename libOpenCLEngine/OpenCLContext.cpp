@@ -13,7 +13,6 @@
 #include <CL/cl_gl.h>
 #endif
 #include <LibResource.h>
-#include <EGL/egl.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 using namespace Regards::OpenCL;
