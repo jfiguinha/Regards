@@ -37,7 +37,6 @@ cd vcpkg-master
 ./vcpkg install libde265
 ./vcpkg install libexif
 ./vcpkg install tbb
-./vcpkg install glew
 ./vcpkg install x265
 ./vcpkg install jasper
 ./vcpkg install libraw
@@ -61,7 +60,7 @@ if [ ! -f FILE ]; then
 fi
 
 cd wxWidgets
-./configure
+./configure --disable-glcanvasegl
 make -j$NBPROC 
 
 

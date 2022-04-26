@@ -13,6 +13,7 @@
 #include <CL/cl_gl.h>
 #endif
 #include <LibResource.h>
+#include <EGL/egl.h>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 using namespace Regards::OpenCL;
@@ -21,6 +22,13 @@ int COpenCLContext::GetDefaultType()
 {
 	return OPENCL_UCHAR;
 }
+
+ /// Returns the address of the \p function_name extension
+ /// function. Returns \c 0 if \p function_name is invalid.
+ void* get_extension_function_address(cl_platform_id platform, const char *function_name)
+ {
+     return clGetExtensionFunctionAddressForPlatform(platform, function_name);
+ }
 
 COpenCLContext::COpenCLContext(cl_platform_id platformId, const wxString& platformName, cl_device_id deviceId,
                                cl_device_type deviceType, const bool& opengl): context(nullptr)
@@ -194,12 +202,23 @@ void COpenCLContext::CreateContext()
 #elif defined(__WXGTK__)
 
 		// Create CL context properties, add GLX context & handle to DC
+        GLXContext glxcontext = glXGetCurrentContext();
+        Display * display = glXGetCurrentDisplay();
+        //EGLContext eglContext = eglGetCurrentContext();
+        //EGLDisplay eglDisplay = eglGetCurrentDisplay();
+        
+        
 		cl_context_properties properties[] = {
-		 CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(), // GLX Context
-		 CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(), // GLX Display
+		 CL_GL_CONTEXT_KHR, (cl_context_properties)glxcontext, // GLX Context
+		 CL_GLX_DISPLAY_KHR, (cl_context_properties)display, // GLX Display
 		 CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 0
 		};
+        /*
+        cl_context_properties properties[] = {CL_CONTEXT_PLATFORM, (cl_context_properties)platform, 
+        CL_GL_CONTEXT_KHR, (cl_context_properties)eglGetCurrentContext(), 
+        CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglGetCurrentDisplay(), 0};
+        */
 #elif defined(__APPLE__)
 
 		// Get current CGL Context and CGL Share group
@@ -213,6 +232,29 @@ void COpenCLContext::CreateContext()
 
 #endif
 
+    /*
+        // lookup current OpenCL device for current OpenGL context
+        cl_device_id gpu_id;
+        
+        typedef cl_int(*GetGLContextInfoKHRFunction)(
+            const cl_context_properties*, cl_gl_context_info, size_t, void *, size_t *
+        );
+        // load clGetGLContextInfoKHR() extension function
+        GetGLContextInfoKHRFunction GetGLContextInfoKHR =
+            reinterpret_cast<GetGLContextInfoKHRFunction>(
+                reinterpret_cast<size_t>(
+                    get_extension_function_address(platform, "clGetGLContextInfoKHR")
+                )
+            );
+        
+        cl_int ret = GetGLContextInfoKHR(
+            properties,
+            CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR,
+            sizeof(cl_device_id),
+            &gpu_id,
+            0
+        );
+*/
 		// Find CL capable devices in the current GL context
 		//cl_device_id devices[32]; size_t size;
 		//clGetGLContextInfoKHR(properties, CL_DEVICES_FOR_GL_CONTEXT_KHR, 32 * sizeof(cl_device_id), devices, &size);

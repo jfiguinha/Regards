@@ -209,7 +209,7 @@
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
-        <Library Value="GLEW"/>
+        <Library Value="epoxy"/>
         <Library Value="exiv2"/>
         <Library Value="exiv2-xmp"/>
         <Library Value="Jbig"/>
@@ -475,6 +475,14 @@
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libimf.so ./Debug</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/libintlc.so.5 ./Debug</Command>
         <Command Enabled="yes">cp $$HOME/intel/oneapi/tbb/latest/lib/intel64/gcc4.8/libtbb.so.12 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_gtk3u_webview-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_baseu_net-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_baseu_xml-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_gtk3u_xrc-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_gtk3u_html-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_gtk3u_core-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_baseu-3.1.so.6 ./Debug</Command>
+        <Command Enabled="yes">cp $$HOME/developpement/git/Regards/libextern/wxWidgets/lib/libwx_gtk3u_gl-3.1.so.6 ./Debug</Command>
         <Command Enabled="yes">cp -R ./Debug ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Debug ./Package/RegardsViewer</Command>

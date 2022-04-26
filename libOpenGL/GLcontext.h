@@ -1,12 +1,6 @@
 #pragma once
-#include <GL/glew.h>
-#if defined(WIN32)
-#include <GL/wglew.h>
-#elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
-#include <AGL/agl.h>
-#else
-#include <GL/glxew.h>
-#endif
+#include <epoxy/gl.h>
+#include <epoxy/glx.h>
 
 
 #ifdef __APPLE__

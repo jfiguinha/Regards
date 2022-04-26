@@ -105,6 +105,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 
 	//Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	Mat frameOpenCVDNN;
+    
 	cvtColor(bitmap, frameOpenCVDNN, COLOR_BGRA2BGR);
 	int frameHeight = frameOpenCVDNN.size().height;
 	int frameWidth = frameOpenCVDNN.size().width;

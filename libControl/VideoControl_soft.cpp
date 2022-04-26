@@ -1973,6 +1973,17 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
+    int widthOutput = 0;
+	int heightOutput = 0;
+	wxRect rc(0, 0, 0, 0);
+	CalculPositionVideo(widthOutput, heightOutput, rc);
+    
+    if(pictureFrame == nullptr)
+        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+        
+    if(pictureFrame->GetMatrix().empty())
+        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+    
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
 	inverted = false;
@@ -1981,10 +1992,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	int widthOutput = 0;
-	int heightOutput = 0;
-	wxRect rc(0, 0, 0, 0);
-	CalculPositionVideo(widthOutput, heightOutput, rc);
+
 
 	cv::Mat cvImage;
 
