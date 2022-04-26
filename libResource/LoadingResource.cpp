@@ -8,11 +8,11 @@ CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourc
 {
 	CLibResource libResource;
 	auto bitmap = new CRegardsBitmap();
-#ifndef _DEBUG
+
 	CPictureData* data = libResource.LoadBitmapFromResource(resourceName);
 	data->CopyData(bitmap);
 	delete data;
-#endif
+
 	return bitmap;
 }
 
