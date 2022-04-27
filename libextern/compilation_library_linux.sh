@@ -30,8 +30,8 @@ cd ..
 tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
+./vcpkg install wxWidgets
 ./vcpkg install ffmpeg[all-gpl]
-./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
@@ -44,6 +44,12 @@ cd vcpkg-master
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
 ./vcpkg install tesseract
+cd ..
+
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip

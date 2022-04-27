@@ -24,6 +24,9 @@
 #include <wx/textfile.h>
 #include <wx/display.h>
 //#define TEST_WINDOWMANAGER
+#ifdef __WXGTK__
+ #include <X11/Xlib.h>   
+#endif
 
 #ifdef TEST_WINDOWMANAGER
 #include <myFrame.h>
@@ -176,6 +179,10 @@ public:
 		//frameViewer = nullptr;
 #ifdef USECURL
 		curl_global_init(CURL_GLOBAL_ALL);
+#endif
+
+#ifdef __WXGTK__
+		int result = XInitThreads();
 #endif
 
 		for (auto i = 0; i < 256; i++)
