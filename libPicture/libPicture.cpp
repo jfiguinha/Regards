@@ -2482,8 +2482,30 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case SVG:
 		{
             wxImage img = CLibResource::CreatePictureFromSVGFilename(fileName, svgWidth, svgHeight);
-			 auto image = new wxImage(img);
-            bitmap->SetPicture(image);
+
+			wxRect rc;
+			rc.x = 0;
+			rc.y = 0;
+			rc.width = svgWidth;
+			rc.height = svgHeight;
+			wxBitmap localmemBitmap_backup = wxBitmap(svgWidth, svgHeight);
+			wxMemoryDC memDC(localmemBitmap_backup);
+			wxBrush brush(*wxWHITE, wxBRUSHSTYLE_SOLID);
+			memDC.SetBrush(brush);
+			memDC.SetPen(wxPen(*wxWHITE, 1)); // 10-pixels-thick pink outline
+			memDC.DrawRectangle(rc);
+			memDC.SetPen(wxNullPen);
+			memDC.SetBrush(wxNullBrush);
+
+			memDC.DrawBitmap(img, 0, 0);
+
+			memDC.SelectObject(wxNullBitmap);
+
+			img.Destroy();
+
+			
+			wxImage local = localmemBitmap_backup.ConvertToImage();
+            bitmap->SetPicture(&local);
 		}
 		break;
 #ifdef LIBBPG

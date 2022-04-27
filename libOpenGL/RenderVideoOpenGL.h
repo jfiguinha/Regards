@@ -31,10 +31,7 @@ namespace Regards
 			void DeleteVideoTexture();
 			GLTexture* GetVideoTexture(const int& width, const int& height);
 
-#ifdef WIN32
-			cl_mem GetCopyVideoTexture(cl_context context);
-			cl_mem GetOpenCLVideoTexturePt();
-#endif
+
 			GLTexture* GetVideoTexturePt();
 			GLTexture* GetVideoTextureCopyPt();
 			void SetSubtitle(CRegardsBitmap* subtitle);
@@ -52,9 +49,7 @@ namespace Regards
 
 		private:
 			bool directcopytexture = true;
-#ifdef WIN32
-			void CopyTexture();
-#endif
+
 
 			GLTexture* textureSubtitle;
 			GLTexture* textureVideo;

@@ -24,6 +24,9 @@
 #include <wx/textfile.h>
 #include <wx/display.h>
 //#define TEST_WINDOWMANAGER
+#ifdef __WXGTK__
+ #include <X11/Xlib.h>   
+#endif
 
 #ifdef TEST_WINDOWMANAGER
 #include <myFrame.h>
@@ -82,18 +85,12 @@ using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Viewer;
 
-#include <GL/glew.h>
 #ifndef __APPLE__
 #include <GL/glut.h>
-#endif
-#if defined(_WIN32)
-#elif defined(_WIN64)
-#include <GL/wglew.h>
-#elif defined(__APPLE__) && !defined(GLEW_APPLE_GLX)
-#include <AGL/agl.h>
 #else
-#include <GL/glxew.h>
+#include <GL/glut.h>
 #endif
+
 
 #include <wx/glcanvas.h>
 int args[] = {
@@ -184,14 +181,9 @@ public:
 		curl_global_init(CURL_GLOBAL_ALL);
 #endif
 
-
 #ifdef __WXGTK__
 		int result = XInitThreads();
-
-
-
 #endif
-
 
 		for (auto i = 0; i < 256; i++)
 			value[i] = static_cast<float>(i);

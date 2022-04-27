@@ -176,7 +176,13 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
     renderOpenGL->SetCurrent(*this);
 
-	
+    /*
+    Display * display =  glxGetCurrentDisplay();
+    if(display == nullptr)
+        cout << "Display is null" << endl;
+    else
+        cout << "Display is not null" << endl;
+	*/
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	if (regardsParam->GetIsOpenCLSupport())
 	{

@@ -1,6 +1,6 @@
 # Maintainer: Jacques Figuinha <appt.jf@outlook.fr>
 pkgname=regardsviewer-bin
-pkgver=2.70.8
+pkgver=2.70.9
 pkgrel=1
 pkgdesc="Regards is a modern photo viewer. (official precompiled binary)"
 arch=('x86_64')
@@ -8,7 +8,7 @@ url="https://github.com/jfiguinha/Regards"
 license=('GPL')
 provides=()
 options=()
-depends=('gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'sane' 'sndio' 'poppler' 'ffmpeg')
+depends=('gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'sdl2' 'sane' 'sndio')
 optdepends=()
 conflicts=('RegardsViewer')
 source=("RegardsViewer.zip")

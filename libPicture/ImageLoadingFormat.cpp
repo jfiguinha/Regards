@@ -420,7 +420,7 @@ int CImageLoadingFormat::Resize(const int& pictureWidth, const int& pictureHeigh
 wxImage CImageLoadingFormat::GetwxImage(const bool& copy)
 {
 	if (!IsOk())
-		return nullptr;
+		return wxImage();
 
 	return CLibPicture::ConvertRegardsBitmapToWXImage(_image);
 }

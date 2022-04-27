@@ -88,10 +88,13 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 			CRegardsBitmap * bitmap = nullptr;
 			if (wxFileExists(thumbnail))
 			{
-				bitmap = new CRegardsBitmap();
 				loadPicture = cv::imread(thumbnail.ToStdString());
-				bitmap->SetMatrix(loadPicture);
-				bitmap->VertFlipBuf();
+                if(!loadPicture.empty())
+                {
+                    bitmap = new CRegardsBitmap();
+                    bitmap->SetMatrix(loadPicture);
+                    bitmap->VertFlipBuf();
+                }
 				//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
 			}
 
