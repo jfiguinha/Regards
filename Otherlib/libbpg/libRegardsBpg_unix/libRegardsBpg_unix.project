@@ -34,7 +34,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>
-        <IncludePath Value="$${HOME}/developpement/git/Regards/libextern/vcpkg/installed/x64-linux/include"/>
+        <IncludePath Value="$${HOME}/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
         <Preprocessor Value="HAVE_AV_CONFIG_H"/>
