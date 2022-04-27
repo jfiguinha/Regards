@@ -145,7 +145,7 @@ bool GLSLShader::CreateComputeProgram(const wxString& nProgramID_i)
 	int length = static_cast<int>(dataProgram.size()) + 1;
 	auto data = new char[length];
 	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
-	glShaderSourceARB(m_hComputeHandle, 1, (const GLcharARB**)&data, &length);
+	glShaderSource(m_hComputeHandle, 1, (const GLcharARB**)&data, &length);
 
 	glCompileShader(m_hComputeHandle);
 
@@ -172,7 +172,7 @@ bool GLSLShader::CreateVertexProgram(const wxString& nProgramID_i)
 	int length = static_cast<int>(dataProgram.size()) + 1;
 	auto data = new char[length];
 	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
-	glShaderSourceARB(m_hVertexHandle, 1, (const GLcharARB**)&data, &length);
+	glShaderSource(m_hVertexHandle, 1, (const GLcharARB**)&data, &length);
 
 	glCompileShader(m_hVertexHandle);
 

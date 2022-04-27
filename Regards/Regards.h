@@ -87,8 +87,6 @@ using namespace Regards::Viewer;
 
 #ifndef __APPLE__
 #include <GL/glut.h>
-#else
-#include <GL/glut.h>
 #endif
 
 
