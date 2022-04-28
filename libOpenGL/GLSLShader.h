@@ -27,7 +27,7 @@ namespace Regards
 			bool SetIntegerParam(const char* pParamName_i, int iValue_i);
 			bool SetMatrixParam(const char* pParamName_i, float* tabVecs);
 
-			GLhandleARB GetProgramId()
+			GLuint GetProgramId()
 			{
 				return m_hProgramObject;
 			}
@@ -41,10 +41,10 @@ namespace Regards
 			bool check_shader_compile_status(GLuint obj);
 			bool check_program_link_status(GLuint obj);
 
-			GLhandleARB m_hProgramObject;
-			GLhandleARB m_hShaderHandle;
-			GLhandleARB m_hVertexHandle;
-			GLhandleARB m_hComputeHandle;
+			GLuint m_hProgramObject;
+			GLuint m_hShaderHandle;
+			GLuint m_hVertexHandle;
+			GLuint m_hComputeHandle;
 		};
 	}
 }

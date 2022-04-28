@@ -1061,12 +1061,9 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 		wxSetCursor(*wxSTANDARD_CURSOR);
 		break;
 	}
-    
-#ifdef __WXGTK__
+
 	MouseClick(xPos * scale_factor, yPos * scale_factor);
-#else
-    MouseClick(xPos, yPos);
-#endif
+
 }
 
 //-----------------------------------------------------------------

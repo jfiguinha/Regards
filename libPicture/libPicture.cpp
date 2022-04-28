@@ -2402,12 +2402,16 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			try
 			{
-				CRegardsBitmap* picture = new CRegardsBitmap();
-				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); // correct element size should be CV_32FC3			
-				picture->SetMatrix(matPicture);
-				picture->VertFlipBuf();
-				picture->SetFilename(fileName);
-				bitmap->SetPicture(picture);
+				
+				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); 
+                if(!matPicture.empty())
+                {
+                    CRegardsBitmap* picture = new CRegardsBitmap();
+                    picture->SetMatrix(matPicture);
+                    picture->VertFlipBuf();
+                    picture->SetFilename(fileName);
+                    bitmap->SetPicture(picture);
+                }
 			}
 			catch (cv::Exception& e)
 			{
@@ -2423,17 +2427,21 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			try
 			{
-				CRegardsBitmap* picture = new CRegardsBitmap();
+				
 				cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
-				//cv::Mat ldr;
-				cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
-				tonemap->process(hdr, hdr);
-				hdr.convertTo(hdr, CV_8UC3, 255);
-				cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
-				picture->SetMatrix(hdr);
-				picture->VertFlipBuf();
-				picture->SetFilename(fileName);
-				bitmap->SetPicture(picture);
+                if(!hdr.empty())
+                {
+                    CRegardsBitmap* picture = new CRegardsBitmap();
+                    cv::Ptr<cv::TonemapReinhard> tonemap = cv::createTonemapReinhard(1.0f);
+                    tonemap->process(hdr, hdr);
+                    hdr.convertTo(hdr, CV_8UC3, 255);
+                    cvtColor(hdr, hdr, cv::COLOR_RGB2BGRA);
+                    picture->SetMatrix(hdr);
+                    picture->VertFlipBuf();
+                    picture->SetFilename(fileName);
+                    bitmap->SetPicture(picture);
+                }
+
 			}
 			catch (cv::Exception& e)
 			{
