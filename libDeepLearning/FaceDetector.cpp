@@ -689,13 +689,19 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	CSqlFacePhoto facePhoto;
 	CSqlFaceRecognition sqlfaceRecognition;
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
+    wxString fileSource = CFileUtility::GetFaceThumbnailPath(numFace);
 
-	if (!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString()))
+	if (!wxFileExists(fileSource))
 	{
 		return 0;
 	}
 
-	Mat aligned_face1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString());
+  
+
+	Mat aligned_face1 = imread(fileSource.ToStdString());
+    if(aligned_face1.empty())
+        return 0;
+    
 	Mat feature1;
 	faceRecognizer->feature(aligned_face1, feature1);
 	feature1 = feature1.clone();
@@ -707,9 +713,18 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 		double confidence = 0.0;
 
 		for (CFaceRecognitionData picture : faceRecognitonVec)
-		{
+        {
+            wxString fileSource = CFileUtility::GetFaceThumbnailPath(picture.numFace);
 
-			Mat aligned_face2 = imread(CFileUtility::GetFaceThumbnailPath(picture.numFace).ToStdString());
+            if (!wxFileExists(fileSource))
+            {
+                continue;
+            }
+            
+			Mat aligned_face2 = imread(fileSource.ToStdString());
+            if(aligned_face2.empty())
+                continue;
+            
 			Mat feature2;
 			faceRecognizer->feature(aligned_face2, feature2);
 			feature2 = feature2.clone();

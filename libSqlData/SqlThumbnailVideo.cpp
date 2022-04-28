@@ -83,29 +83,15 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 		if (wxFileExists(thumbnail))
 		{
-			CLibPicture libPicture;
-			cv::Mat loadPicture;
-			CRegardsBitmap * bitmap = nullptr;
-			if (wxFileExists(thumbnail))
-			{
-				loadPicture = cv::imread(thumbnail.ToStdString());
-                if(!loadPicture.empty())
-                {
-                    bitmap = new CRegardsBitmap();
-                    bitmap->SetMatrix(loadPicture);
-                    bitmap->VertFlipBuf();
-                }
-				//image.LoadFile(thumbnail, wxBITMAP_TYPE_JPEG);
-			}
-
-			if (bitmap != nullptr)
-			{
+            wxImage picture(thumbnail);
+            if(picture.IsOk())
+            {
 				videoThumbnail->image = new CImageLoadingFormat();
-				videoThumbnail->image->SetPicture(bitmap);
+				videoThumbnail->image->SetPicture(&picture);
 			}
 			else
 			{
-				
+                CLibPicture libPicture;
 				videoThumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
 				DeleteThumbnail(fullpath);
 			}
