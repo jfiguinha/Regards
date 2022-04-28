@@ -32,6 +32,7 @@ cd vcpkg-master
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
 ./vcpkg install ffmpeg[all-gpl]
+./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
@@ -46,28 +47,7 @@ cd vcpkg-master
 ./vcpkg install tesseract
 cd ..
 
-git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-./bootstrap-vcpkg.sh
-./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
-cd ..
-
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
-
-#Compile wxWidgets
-FILE=wxWidgets-3.1.6.zip
-if [ ! -f FILE ]; then
-    wget https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.6/wxWidgets-3.1.6.zip
-    mkdir wxWidgets
-    cp wxWidgets-3.1.6.zip wxWidgets/wxWidgets-3.1.6.zip 
-    cd wxWidgets
-    unzip wxWidgets-3.1.6.zip
-    cd ..
-fi
-
-cd wxWidgets
-./configure --disable-glcanvasegl
-make -j$NBPROC 
 
 
 
