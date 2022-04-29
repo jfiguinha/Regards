@@ -59,8 +59,8 @@ namespace Regards
 			//-----------------------------------------------------------------------
 			//Fonction de conversion
 			//-----------------------------------------------------------------------
-			static cv::Mat mat_from_wx(wxImage& wx);
-			static wxImage wx_from_mat(cv::Mat& im2);
+			static cv::Mat mat_from_wx(const wxImage& wx);
+			static wxImage wx_from_mat(const cv::Mat& im2);
 			static CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
 			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
 			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap);

@@ -1252,8 +1252,7 @@ CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
 	if (image.IsOk())
 	{
 		bitmap = new CRegardsBitmap();
-		cv::Mat dest = cv::Mat(image.GetHeight(), image.GetWidth(), CV_8UC3, image.GetData());
-		cv::cvtColor(dest, dest, cv::COLOR_RGB2BGRA);
+		cv::Mat dest = mat_from_wx(image);
 		bitmap->SetMatrix(dest, true);
 
 	}
@@ -2115,7 +2114,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	return bitmap;
 }
 
-wxImage CLibPicture::wx_from_mat(cv::Mat& im2) {
+wxImage CLibPicture::wx_from_mat(const cv::Mat& im2) {
 
 	if (im2.channels() == 4)
 	{
@@ -2141,7 +2140,7 @@ wxImage CLibPicture::wx_from_mat(cv::Mat& im2) {
 	return wxImage();
 }
 
-cv::Mat CLibPicture::mat_from_wx(wxImage& wx) {
+cv::Mat CLibPicture::mat_from_wx(const wxImage& wx) {
 	cv::Mat im2(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC3, wx.GetData());
 	if (wx.HasAlpha())
 	{
@@ -2505,7 +2504,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case SVG:
 		{
             wxImage img = CLibResource::CreatePictureFromSVGFilename(fileName, svgWidth, svgHeight);
-
 			wxRect rc;
 			rc.x = 0;
 			rc.y = 0;
@@ -2529,6 +2527,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			
 			wxImage local = localmemBitmap_backup.ConvertToImage();
             bitmap->SetPicture(&local);
+
 		}
 		break;
 #ifdef LIBBPG
