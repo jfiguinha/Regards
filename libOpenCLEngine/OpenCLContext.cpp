@@ -200,11 +200,19 @@ void COpenCLContext::CreateContext()
 		};
 #elif defined(__WXGTK__)
 
+#if wxUSE_GLCANVAS_EGL == 1
+        EGLContext eglContext = eglGetCurrentContext();
+        EGLDisplay eglDisplay = eglGetCurrentDisplay();
+
+        cl_context_properties properties[] = {CL_CONTEXT_PLATFORM, (cl_context_properties)platform, 
+        CL_GL_CONTEXT_KHR, (cl_context_properties)eglContext, 
+        CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0};
+
+#else
 		// Create CL context properties, add GLX context & handle to DC
         GLXContext glxcontext = glXGetCurrentContext();
         Display * display = glXGetCurrentDisplay();
-        //EGLContext eglContext = eglGetCurrentContext();
-        //EGLDisplay eglDisplay = eglGetCurrentDisplay();
+        
         
         
 		cl_context_properties properties[] = {
@@ -213,10 +221,9 @@ void COpenCLContext::CreateContext()
 		 CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
 		 0
 		};
+        
+#endif
         /*
-        cl_context_properties properties[] = {CL_CONTEXT_PLATFORM, (cl_context_properties)platform, 
-        CL_GL_CONTEXT_KHR, (cl_context_properties)eglGetCurrentContext(), 
-        CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglGetCurrentDisplay(), 0};
         */
 #elif defined(__APPLE__)
 

@@ -38,13 +38,11 @@ cd vcpkg-master
 ./vcpkg install libde265
 ./vcpkg install libexif
 ./vcpkg install tbb
-./vcpkg install x265
 ./vcpkg install jasper
 ./vcpkg install libraw
 ./vcpkg install poppler
 ./vcpkg install sqlite3
 ./vcpkg install freeimage
-./vcpkg install tesseract
 cd ..
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip

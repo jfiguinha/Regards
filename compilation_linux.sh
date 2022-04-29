@@ -24,6 +24,9 @@ sudo apt install libsane-dev
 sudo apt install libvdpau-dev
 sudo apt install libgnutls28-dev
 sudo apt install libunistring-dev
+sudo apt install libsdl2-dev
+sudo apt install bison
+sudo apt install gperf
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
