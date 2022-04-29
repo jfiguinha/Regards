@@ -1252,8 +1252,7 @@ CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
 	if (image.IsOk())
 	{
 		bitmap = new CRegardsBitmap();
-		cv::Mat dest = cv::Mat(image.GetHeight(), image.GetWidth(), CV_8UC3, image.GetData());
-		cv::cvtColor(dest, dest, cv::COLOR_RGB2BGRA);
+		cv::Mat dest = mat_from_wx(image);
 		bitmap->SetMatrix(dest, true);
 
 	}
@@ -2115,30 +2114,45 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	return bitmap;
 }
 
-wxImage CLibPicture::wx_from_mat(cv::Mat& im2) {
-	//cv::Mat im2;
-	/*
-	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-	*/
-	long imsize = im2.rows * im2.cols * im2.channels();
-	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = im2.data;
-	unsigned char* d = wx.GetData();
-	memcpy(d, s, imsize);
-	/*
-	for (long i = 0; i < imsize; i++)
+wxImage CLibPicture::wx_from_mat(const cv::Mat& im2) {
+
+	if (im2.channels() == 4)
 	{
-		d[i] = s[i];
+		cv::Mat img;
+		cvtColor(im2, img, cv::COLOR_BGRA2RGB);
+
+		std::vector<cv::Mat> matChannels;
+		cv::split(im2, matChannels);
+		
+		long imsize = im2.rows * im2.cols * im2.channels();
+		wxImage wx(im2.cols, im2.rows, img.data, matChannels[3].data, true);
+
+		return wx;
+
 	}
-	*/
-	return wx;
+	else
+	{
+		long imsize = im2.rows * im2.cols * im2.channels();
+		wxImage wx(im2.cols, im2.rows, im2.data, true);
+		return wx;
+	}
+
+	return wxImage();
 }
 
-cv::Mat CLibPicture::mat_from_wx(wxImage& wx) {
+cv::Mat CLibPicture::mat_from_wx(const wxImage& wx) {
 	cv::Mat im2(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC3, wx.GetData());
-	//cvtColor(im2, im2, cv::COLOR_RGB2BGR);
+	if (wx.HasAlpha())
+	{
+		std::vector<cv::Mat> matChannels;
+		cv::split(im2, matChannels);
+
+		// create alpha channel
+		cv::Mat alpha(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC1, wx.GetAlpha());
+		matChannels.push_back(alpha);
+
+		cv::merge(matChannels, im2);
+	}
 	return im2;
 }
 
@@ -2490,7 +2504,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case SVG:
 		{
             wxImage img = CLibResource::CreatePictureFromSVGFilename(fileName, svgWidth, svgHeight);
-
 			wxRect rc;
 			rc.x = 0;
 			rc.y = 0;
@@ -2514,6 +2527,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			
 			wxImage local = localmemBitmap_backup.ConvertToImage();
             bitmap->SetPicture(&local);
+
 		}
 		break;
 #ifdef LIBBPG
