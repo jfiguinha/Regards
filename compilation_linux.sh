@@ -25,6 +25,8 @@ sudo apt install libvdpau-dev
 sudo apt install libgnutls28-dev
 sudo apt install libunistring-dev
 sudo apt install libsdl2-dev
+sudo apt install libjpeg-dev
+sudo apt install curl zip unzip tar
 sudo apt install bison
 sudo apt install gperf
 #sudo apt install libx265-dev
