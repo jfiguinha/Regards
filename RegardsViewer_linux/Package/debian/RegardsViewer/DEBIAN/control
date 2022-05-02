@@ -1,13 +1,13 @@
 Package: RegardsViewer
-Version: 2.60.1
-Installed-Size: 278388
+Version: 2.71.0
+Installed-Size: 466984
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
 Section: graphics
 Source: https://github.com/jfiguinha/Regards.git
 Homepage: https://jfiguinha.pagesperso-orange.fr/
 Architecture: amd64
 Priority: standard
-Depends: libexif-dev, libgtk-3-dev, freeglut3-dev, mesa-common-dev, libturbojpeg-dev, libsdl2-dev, libglew-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev, libva-dev, libsane-dev, ocl-icd-opencl-dev, libopenjp2-7-dev, libfftw3-dev, libleptonica-dev, libwebp-dev, libtbb-dev, libwebkit2gtk-4.0-dev, libfreeimage-dev, libvdpau-dev
+Depends: libwebkit2gtk-4.0-dev, freeglut3-dev, mesa-common-dev, libsdl2-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev,  libsane-dev, libgnutls28-dev, libunistring-dev, libturbojpeg-dev, libva-dev, libvdpau-dev
 Description: RegardsViewer is a picture viewer and video player
  Regards is a modern photo viewer.
  Support highDPI definition screen.

@@ -246,7 +246,6 @@
         <Library Value="SM"/>
         <Library Value="SDL2"/>
         <Library Value="asound"/>
-        <Library Value="sndio"/>
         <Library Value="Xv"/>
         <Library Value="curl"/>
         <Library Value="dl"/>
@@ -343,7 +342,6 @@
         <Library Value="wxregexu-3.1"/>
         <Library Value="openjp2"/>
         <Library Value="liblibexif"/>
-        <Library Value="gnutls"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
         <Library Value="png"/>
@@ -379,8 +377,6 @@
         <Library Value="Xi"/>
         <Library Value="Xrandr"/>
         <Library Value="Xxf86vm"/>
-        <Library Value="ssl"/>
-        <Library Value="crypto"/>
         <Library Value="brotlidec"/>
         <Library Value="vpx"/>
         <Library Value="mp3lame"/>
@@ -404,13 +400,13 @@
         <Library Value="intlc"/>
         <Library Value="gmodule-2.0"/>
         <Library Value="expat"/>
-        <Library Value="ssl"/>
         <Library Value="jpeg"/>
         <Library Value="turbojpeg"/>
         <Library Value="zen"/>
         <Library Value="xml2"/>
         <Library Value="lzma"/>
-        <Library Value="ssh"/>
+        <Library Value="ssl"/>
+        <Library Value="crypto"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

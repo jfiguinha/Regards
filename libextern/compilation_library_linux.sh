@@ -22,7 +22,7 @@ fi
 
 cd qpdf-release-qpdf-10.3.2
 ./autogen.sh
-./configure --prefix="$HOME/ffmpeg_build" --disable-shared
+./configure --prefix="$HOME/ffmpeg_build" --disable-shared --enable-crypto-native --disable-crypto-openssl --disable-crypto-gnutls
 make -j$NBPROC
 sudo make install
 cd ..
@@ -31,7 +31,7 @@ tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
-./vcpkg install ffmpeg[aom,ass,avcodec,avdevice,avfilter,avformat,avresample,bzip2,core,dav1d,fontconfig,freetype,fribidi,gpl,iconv,ilbc,lzma,modplug,mp3lame,nvcodec,opencl,opengl,openh264,openjpeg,opus,postproc,snappy,soxr,speex,swresample,swscale,theora,vorbis,vpx,webp,x264,x265,zlib]
+./vcpkg install ffmpeg[all-gpl]
 ./vcpkg install opencv[contrib,ipp,openmp,ffmpeg]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
