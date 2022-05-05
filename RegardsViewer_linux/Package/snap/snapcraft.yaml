@@ -70,7 +70,7 @@ environment:
 parts:
   regardsviewer:
     plugin: dump
-    source: https://github.com/jfiguinha/Regards/releases/download/v2.71.0/RegardsViewer_2.71-linux-x86_64.tar.gz
+    source: https://github.com/jfiguinha/Regards/releases/download/v2.71.0/RegardsViewer_2.71.0-linux-x86_64.tar.gz
     stage-packages:
       - freeglut3
       - libass9

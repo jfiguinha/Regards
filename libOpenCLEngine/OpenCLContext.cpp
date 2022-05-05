@@ -7,6 +7,9 @@
 #include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
 #elif defined(__WXGTK__)
+#if wxUSE_GLCANVAS_EGL == 1
+#include <EGL/egl.h>
+#endif
 #include <GL/glx.h>
 #include <CL/cl_gl.h>
 #else
