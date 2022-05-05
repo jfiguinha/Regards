@@ -8,6 +8,28 @@ grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 license: GPL-3.0
 
+plugs:
+  graphics-core20:
+    interface: content
+    target: $SNAP/graphics
+    default-provider: mesa-core20
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes:gtk-3-themes
+  sound-themes:
+    interface: content
+    target: $SNAP/data-dir/sounds
+    default-provider: gtk-common-themes:sound-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/data-dir/icons
+    default-provider: gtk-common-themes:icon-themes
+  gnome-3-38-2004:
+    interface: content
+    target: $SNAP/data-dir/gnome-platform
+    default-provider: gnome-3-38-2004:gnome-3-38-2004
+
 layout:
   /etc/fonts:
     bind: $SNAP/etc/fonts
@@ -15,11 +37,40 @@ layout:
     bind: $SNAP/usr/share/fonts
   /var/cache/fontconfig:
     bind: $SNAP_DATA/var/cache/fontconfig
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.0:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.0
+  /usr/lib/dri:
+    bind: $SNAP/usr/lib/dri
+  /usr/share/X11/xkb:
+    bind: $SNAP/usr/share/X11/xkb
+  /etc/glvnd:
+    bind: $SNAP/etc/glvnd
+  /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri:
+    bind: $SNAP/graphics/dri
+  /usr/share/glvnd:
+    bind: $SNAP/graphics/glvnd
+  /usr/share/libdrm:
+    bind: $SNAP/graphics/libdrm
+  /usr/share/drirc.d:
+   bind: $SNAP/graphics/drirc.d
+
+environment:
+  LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/graphics/dri:$SNAP/graphics/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/xorg:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/dri
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d
+  EGL_PLATFORM: wayland
+  #EGL_LOG_LEVEL: debug
+  XKB_CONFIG_DATA: $SNAP/usr/share/X11/xkb
+  SNAP_DESKTOP_RUNTIME: $SNAP/data-dir/gnome-platform
+  GTK_EXE_PREFIX: $SNAP/usr
+  GTK_USE_PORTAL: '1'
 
 parts:
   regardsviewer:
     plugin: dump
-    source: https://github.com/jfiguinha/Regards/releases/download/v2.71.0/RegardsViewer_2.71.0-linux-x86_64.tar.gz
+    source: https://github.com/jfiguinha/Regards/releases/download/v2.71.0/RegardsViewer_2.71-linux-x86_64.tar.gz
     stage-packages:
       - freeglut3
       - libass9
@@ -95,8 +146,9 @@ parts:
       - libice6
       - libsm6
       - libepoxy0  
+      - curl
       - libatk1.0-0  
-      - libwebkit2gtk-4.0-37     
+      - libwebkit2gtk-4.0-37  
       - libfftw3-double3
       - libfftw3-single3    
       - libsane
@@ -104,8 +156,10 @@ parts:
       - fonts-freefont-ttf
       - fonts-arphic-uming
       - fontconfig-config
+
 apps:
   regardsviewer:
     command: usr/bin/RegardsViewer
     desktop: usr/share/applications/RegardsViewer.desktop
-    plugs: [x11, unity7, gsettings, pulseaudio, wayland, network, network-bind, home, desktop, desktop-legacy]
+    extensions: [gnome-3-38]
+    plugs: [x11, audio-playback, jack1, opengl, alsa, mount-observe, removable-media, dvb, avahi-control, unity7, gsettings, pulseaudio, wayland, network, network-bind, home, desktop, desktop-legacy]
