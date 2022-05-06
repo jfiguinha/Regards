@@ -1933,6 +1933,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else if (memFile != nullptr)
 		{
+            printf("File to process : %s \n", fileName.ToStdString().c_str());
 			//auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
 			wxImage jpegImage;
 			jpegImage.LoadFile(*memFile, wxBITMAP_TYPE_JPEG);
@@ -2140,7 +2141,8 @@ wxImage CLibPicture::wx_from_mat(const cv::Mat& im2) {
 	return wxImage();
 }
 
-cv::Mat CLibPicture::mat_from_wx(const wxImage& wx) {
+cv::Mat CLibPicture::mat_from_wx(const wxImage& wx)
+{
 	cv::Mat im2(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC3, wx.GetData());
 	if (wx.HasAlpha())
 	{
@@ -2152,7 +2154,12 @@ cv::Mat CLibPicture::mat_from_wx(const wxImage& wx) {
 		matChannels.push_back(alpha);
 
 		cv::merge(matChannels, im2);
+        
+        cvtColor(im2, im2, cv::COLOR_RGBA2BGRA);
 	}
+    else
+        cvtColor(im2, im2, cv::COLOR_RGB2BGR);
+    
 	return im2;
 }
 

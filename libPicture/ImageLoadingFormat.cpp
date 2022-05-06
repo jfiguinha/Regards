@@ -191,6 +191,7 @@ void CImageLoadingFormat::SetPicture(wxImage* image)
 
 		CLibPicture libPicture;
 		_image = libPicture.ConvertwxImageToRegardsBitmap(*image);
+        this->convertToRGB24 = convertToRGB24;
 	}
 }
 
