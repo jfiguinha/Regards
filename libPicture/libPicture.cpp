@@ -2133,8 +2133,10 @@ wxImage CLibPicture::wx_from_mat(const cv::Mat& im2) {
 	}
 	else
 	{
+		cv::Mat img;
+		cvtColor(im2, img, cv::COLOR_BGR2RGB);
 		long imsize = im2.rows * im2.cols * im2.channels();
-		wxImage wx(im2.cols, im2.rows, im2.data, true);
+		wxImage wx(im2.cols, im2.rows, img.data, true);
 		return wx;
 	}
 
