@@ -209,6 +209,7 @@
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
+        <Library Value="EGL"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
         <Library Value="exiv2-xmp"/>
@@ -245,11 +246,8 @@
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
         <Library Value="SDL2"/>
-        <Library Value="asound"/>
-        <Library Value="Xv"/>
         <Library Value="curl"/>
         <Library Value="dl"/>
-        <Library Value="fftw3f"/>
         <Library Value="webkit2gtk-4.0"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler-cpp"/>
