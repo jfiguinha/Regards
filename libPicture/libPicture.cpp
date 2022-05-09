@@ -2115,32 +2115,6 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	return bitmap;
 }
 
-wxImage CLibPicture::wx_from_mat(const cv::Mat& im2) {
-
-	if (im2.channels() == 4)
-	{
-		cv::Mat img;
-		cvtColor(im2, img, cv::COLOR_BGRA2RGB);
-
-		std::vector<cv::Mat> matChannels;
-		cv::split(im2, matChannels);
-		
-		long imsize = im2.rows * im2.cols * im2.channels();
-		wxImage wx(im2.cols, im2.rows, img.data, matChannels[3].data, true);
-
-		return wx;
-
-	}
-	else
-	{
-		long imsize = im2.rows * im2.cols * im2.channels();
-		wxImage wx(im2.cols, im2.rows, im2.data, true);
-		return wx;
-	}
-
-	return wxImage();
-}
-
 cv::Mat CLibPicture::mat_from_wx(const wxImage& wx)
 {
 	cv::Mat im2(cv::Size(wx.GetWidth(), wx.GetHeight()), CV_8UC3, wx.GetData());
