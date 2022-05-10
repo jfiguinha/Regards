@@ -87,7 +87,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
             if(picture.IsOk())
             {
 				videoThumbnail->image = new CImageLoadingFormat();
-				videoThumbnail->image->SetPicture(&picture);
+				videoThumbnail->image->SetPicture(&picture, true);
 			}
 			else
 			{
