@@ -47,7 +47,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			picture = new CImageLoadingFormat();
 			wxImage jpegImage;
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
-			picture->SetPicture(&jpegImage);
+			picture->SetPicture(&jpegImage, true);
 			picture->SetFilename(fileName);
 
 			CPictureMetadataExiv metadata(memFile->dataPt, memFile->size);
