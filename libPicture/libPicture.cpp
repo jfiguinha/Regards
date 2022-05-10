@@ -1874,6 +1874,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else
 			notThumbnail = true;
+
 	}
 	else if (TestIsVideo(fileName))
 	{

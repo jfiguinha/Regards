@@ -9,8 +9,9 @@
 #endif
 #include <ConvertUtility.h>
 #include <RegardsBitmap.h>
+#include "PictureMetadataExiv.h"
 using namespace Regards::Picture;
-
+using namespace Regards::exiv2;
 CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& thumbnail, bool& isFromExif)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
@@ -48,6 +49,11 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
 			picture->SetPicture(&jpegImage);
 			picture->SetFilename(fileName);
+
+			CPictureMetadataExiv metadata(memFile->dataPt, memFile->size);
+			int orientation = metadata.GetOrientation();
+			picture->SetOrientation(orientation);
+
 		}
 		else
 		{
