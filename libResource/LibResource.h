@@ -9,7 +9,7 @@ public:
 	~CLibResource(){};
     static void InitializeSQLServerDatabase(const wxString & folder);
     static void KillSqlEngine();
-    CPictureData * LoadBitmapFromResource(const wxString &idName);
+    static wxString LoadBitmapFromResource(const wxString &idName);
     static wxString LoadStringFromResource(const wxString &idName, const int &idLang);
 	static wxString LoadExifNameFromResource(const wxString &id);
     static wxString GetOpenGLShaderProgram(const wxString &idName);

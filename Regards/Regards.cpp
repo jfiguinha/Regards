@@ -19,6 +19,12 @@
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include "ParamInit.h"
+
+#include <LoadingResource.h>
+#include <RegardsBitmap.h>
+#include <LibResource.h>
+#include <PictureData.h>
+
 using namespace cv;
 using namespace Regards::Picture;
 
@@ -63,6 +69,17 @@ void MyApp::MacOpenFile(const wxString &fileName)
 	//frameViewer->OpenFile(fileName);
 }
 #endif
+
+void SaveResourceToFile(wxString fileName)
+{
+	CRegardsBitmap* resource = CLoadingResource::LoadRegardsBmpResource(fileName);
+	resource->VertFlipBuf();
+	cv::Mat matrix = resource->GetMatrix();
+
+	wxString toto = "C:\\developpement\\git\\Regards\\Regards\\Resources\\bitmap\\" + fileName + ".jpg";
+	cv::imwrite(toto.ToStdString(), matrix);
+	delete resource;
+}
 
 int MyApp::Close()
 {

@@ -33,6 +33,7 @@ namespace Regards
 			wxString GetOpenCLFloatFromFile(const wxString& idName);
 			wxString GetOpenCLUcharFromFile(const wxString& idName);
 			wxString GetOpenGLFromFile(const wxString& idName);
+			wxString GetBitmapResourcePath(const wxString& idName);
 
 		private:
 			wxString GetOpenCLFloat(const wxString& idName);

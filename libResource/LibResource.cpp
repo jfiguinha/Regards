@@ -214,10 +214,10 @@ wxString CLibResource::LoadExifNameFromResource(const wxString& id)
 	return libelle;
 }
 
-CPictureData* CLibResource::LoadBitmapFromResource(const wxString& idName)
+wxString CLibResource::LoadBitmapFromResource(const wxString& idName)
 {
 	CSqlResource sqlResource;
-	return sqlResource.GetBitmap(idName);
+	return sqlResource.GetBitmapResourcePath(idName);
 }
 
 wxString CLibResource::LoadStringFromResource(const wxString& idName, const int& idLang)

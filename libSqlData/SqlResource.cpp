@@ -210,6 +210,20 @@ wxString CSqlResource::GetOpenGLFromFile(const wxString& idName)
 	return text;
 }
 
+wxString CSqlResource::GetBitmapResourcePath(const wxString& idName)
+{
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	defaultPathSearch = resourcePath + "\\bitmap\\";
+#else
+	defaultPathSearch = resourcePath + "/bitmap/";
+#endif
+
+	defaultPathSearch += idName + ".png";
+	return defaultPathSearch;
+}
+
+
 wxString CSqlResource::GetFilepath(const wxString& idName)
 {
 	text = "";

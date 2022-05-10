@@ -6,21 +6,18 @@
 
 CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 {
-	CLibResource libResource;
 	auto bitmap = new CRegardsBitmap();
-
-	CPictureData* data = libResource.LoadBitmapFromResource(resourceName);
-	data->CopyData(bitmap);
-	delete data;
-
+	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
+	cv::Mat data = cv::imread(resourcePath.ToStdString());
+	bitmap->SetMatrix(data);
 	return bitmap;
 }
 
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {
-	CRegardsBitmap* bitmap = LoadRegardsBmpResource(resourceName);
-	wxImage out = ConvertTowxImageRGB(bitmap);
-	delete bitmap;
+	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
+	wxImage out;
+	out.LoadFile(resourcePath, wxBITMAP_TYPE_PNG);
 	return out;
 }
 
