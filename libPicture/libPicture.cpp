@@ -1246,7 +1246,7 @@ int CLibPicture::SavePicture(const wxString& fileNameIn, const wxString& fileNam
 	return 0;
 }
 
-CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
+CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image, const bool& convertToRGB24)
 {
 	CRegardsBitmap* bitmap = nullptr;
 	if (image.IsOk())
@@ -1254,7 +1254,8 @@ CRegardsBitmap* CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage& image)
 		bitmap = new CRegardsBitmap();
 		cv::Mat dest = mat_from_wx(image);
 		bitmap->SetMatrix(dest, true);
-
+		if (convertToRGB24)
+			bitmap->ConvertToBgr();
 	}
 
 	return bitmap;
@@ -1503,13 +1504,13 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 					//bitmapResize = CLibPicture::wx_from_mat(out);
 
 					CRegardsBitmap * bitmap = new CRegardsBitmap();
-					cv::cvtColor(out, out, cv::COLOR_RGB2BGRA);
 					bitmap->SetMatrix(out);
 					bitmap->VertFlipBuf();
+					bitmap->ConvertToBgr();
 					imageVideoThumbnail->image->SetPicture(bitmap);
 				}
 				else
-					imageVideoThumbnail->image->SetPicture(&image);
+					imageVideoThumbnail->image->SetPicture(&image, true);
 
 				//bitmap->SetFilename(szFileName);
 				//CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
@@ -1942,7 +1943,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 			{
 				imageLoading = new CImageLoadingFormat();
 				imageLoading->SetFilename(fileName);
-				imageLoading->SetPicture(&jpegImage);
+				imageLoading->SetPicture(&jpegImage, true);
 				imageLoading->SetOrientation(orientation);
 				if (imageLoading->IsOk())
 				{
@@ -2129,11 +2130,8 @@ cv::Mat CLibPicture::mat_from_wx(const wxImage& wx)
 		matChannels.push_back(alpha);
 
 		cv::merge(matChannels, im2);
-        
-        cvtColor(im2, im2, cv::COLOR_RGBA2BGRA);
+
 	}
-    else
-        cvtColor(im2, im2, cv::COLOR_RGB2BGR);
     
 	return im2;
 }
@@ -2455,7 +2453,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			auto image = new wxImage();
 			image->LoadFile(fileName, wxBITMAP_TYPE_IFF);
-			bitmap->SetPicture(image);
+			bitmap->SetPicture(image, true);
 		}
 		break;
 
@@ -2463,7 +2461,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			auto image = new wxImage();
 			image->LoadFile(fileName, wxBITMAP_TYPE_ICON);
-			bitmap->SetPicture(image);
+			bitmap->SetPicture(image, true);
 		}
 		break;
 
@@ -2471,7 +2469,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			auto image = new wxImage();
 			image->LoadFile(fileName, wxBITMAP_TYPE_CUR);
-			bitmap->SetPicture(image);
+			bitmap->SetPicture(image, true);
 		}
 		break;
 
@@ -2479,7 +2477,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			auto image = new wxImage();
 			image->LoadFile(fileName, wxBITMAP_TYPE_XPM);
-			bitmap->SetPicture(image);
+			bitmap->SetPicture(image, true);
 		}
 		break;
 
@@ -2611,7 +2609,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					if (value)
 					{
 						auto image = new wxImage(poppler.GetImage());
-						bitmap->SetPicture(image);
+						bitmap->SetPicture(image, true);
 					}
 				}
 				catch (...)
@@ -2625,7 +2623,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				auto image = new wxImage();
 				wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
 				image->LoadFile(fileName, bitmapType, numPicture);
-				bitmap->SetPicture(image);
+				bitmap->SetPicture(image, true);
 			}
 			break;
 

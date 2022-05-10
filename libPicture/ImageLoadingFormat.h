@@ -40,7 +40,7 @@ public:
 
 	void SetPicture(CRegardsBitmap* image, const bool& convertToRGB24 = false);
 	void SetPicture(CxImage* image);
-	void SetPicture(wxImage* image);
+	void SetPicture(wxImage* image, const bool& convertToRGB24 = false);
 	void UpdatePicture(CRegardsBitmap* image);
 	void SetPicture(CRegardsFloatBitmap* image);
 	bool IsOk();

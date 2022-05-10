@@ -61,7 +61,7 @@ namespace Regards
 			//-----------------------------------------------------------------------
 			static cv::Mat mat_from_wx(const wxImage& wx);
 			static CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
-			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
+			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image, const bool& convertToRGB24 = false);
 			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap);
 			static CxImage* ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap);
 			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);

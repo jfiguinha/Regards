@@ -182,7 +182,7 @@ void CImageLoadingFormat::SetPicture(CxImage* image)
 	}
 }
 
-void CImageLoadingFormat::SetPicture(wxImage* image)
+void CImageLoadingFormat::SetPicture(wxImage* image, const bool & convertToRGB24)
 {
 	if (image != nullptr)
 	{
@@ -190,8 +190,7 @@ void CImageLoadingFormat::SetPicture(wxImage* image)
 			delete _image;
 
 		CLibPicture libPicture;
-		_image = libPicture.ConvertwxImageToRegardsBitmap(*image);
-        this->convertToRGB24 = convertToRGB24;
+		_image = libPicture.ConvertwxImageToRegardsBitmap(*image, convertToRGB24);
 	}
 }
 
