@@ -1986,7 +1986,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
     
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
-	inverted = false;
+	inverted = true;
 	int filterInterpolation = 0;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 	if (regardsParam != nullptr)
