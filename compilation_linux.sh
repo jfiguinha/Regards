@@ -16,7 +16,7 @@ sudo apt install opencl-headers
 sudo apt install libwebkit2gtk-4.0-dev
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
-sudo apt install libcurl4-openssl-dev
+#sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
 sudo apt install liblzma-dev
 sudo apt install libva-dev
@@ -25,7 +25,7 @@ sudo apt install libvdpau-dev
 sudo apt install libgnutls28-dev
 sudo apt install libunistring-dev
 sudo apt install libsdl2-dev
-sudo apt install libjpeg-dev
+#sudo apt install libjpeg-dev
 sudo apt install curl zip unzip tar
 sudo apt install bison
 sudo apt install gperf
