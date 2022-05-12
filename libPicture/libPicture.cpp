@@ -2318,6 +2318,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				_cxImage->SetJpegScale(4);
 				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
 				bitmap->SetPicture(_cxImage);
+                delete _cxImage;
 #endif
 			}
 			else
@@ -2381,6 +2382,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 #else
 				_cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
 				bitmap->SetPicture(_cxImage);
+                delete _cxImage;
 #endif
 			}
 		}
@@ -2451,33 +2453,33 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case IFF:
 		{
-			auto image = new wxImage();
-			image->LoadFile(fileName, wxBITMAP_TYPE_IFF);
-			bitmap->SetPicture(image, true);
+			wxImage image;
+			image.LoadFile(fileName, wxBITMAP_TYPE_IFF);
+			bitmap->SetPicture(&image, true);
 		}
 		break;
 
 		case ICO:
 		{
-			auto image = new wxImage();
-			image->LoadFile(fileName, wxBITMAP_TYPE_ICON);
-			bitmap->SetPicture(image, true);
+			wxImage image;
+			image.LoadFile(fileName, wxBITMAP_TYPE_ICON);
+			bitmap->SetPicture(&image, true);
 		}
 		break;
 
 		case CUR:
 		{
-			auto image = new wxImage();
-			image->LoadFile(fileName, wxBITMAP_TYPE_CUR);
-			bitmap->SetPicture(image, true);
+			wxImage image;
+			image.LoadFile(fileName, wxBITMAP_TYPE_CUR);
+			bitmap->SetPicture(&image, true);
 		}
 		break;
 
 		case XPM:
 		{
-			auto image = new wxImage();
-			image->LoadFile(fileName, wxBITMAP_TYPE_XPM);
-			bitmap->SetPicture(image, true);
+			wxImage image;
+			image.LoadFile(fileName, wxBITMAP_TYPE_XPM);
+			bitmap->SetPicture(&image, true);
 		}
 		break;
 
@@ -2590,6 +2592,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
 				                            CxImage::GetTypeIdFromName("jbg"));
 				bitmap->SetPicture(_cxImage);
+                
+                delete _cxImage;
 			}
 			break;
 
@@ -2608,8 +2612,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 					if (value)
 					{
-						auto image = new wxImage(poppler.GetImage());
-						bitmap->SetPicture(image, true);
+						wxImage image(poppler.GetImage());
+						bitmap->SetPicture(&image, true);
 					}
 				}
 				catch (...)
@@ -2620,10 +2624,10 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case ANI:
 			{
-				auto image = new wxImage();
+				wxImage image;
 				wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
-				image->LoadFile(fileName, bitmapType, numPicture);
-				bitmap->SetPicture(image, true);
+				image.LoadFile(fileName, bitmapType, numPicture);
+				bitmap->SetPicture(&image, true);
 			}
 			break;
 
@@ -2642,6 +2646,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				}
 				else
 					bitmap->SetPicture(_cxImage);
+                    
+                delete _cxImage;
 			}
 			break;
 

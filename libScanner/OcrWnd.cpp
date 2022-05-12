@@ -175,8 +175,8 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 
 	dc.SelectObject(wxNullBitmap);
 	imageLoad = new CImageLoadingFormat();
-	wxImage * local_image = new wxImage(bitmap.ConvertToImage());
-	imageLoad->SetPicture(local_image);
+	wxImage local_image(bitmap.ConvertToImage());
+	imageLoad->SetPicture(&local_image, true);
 	filtreEffet->SetBitmap(imageLoad);
 
 	delete imageLoad;

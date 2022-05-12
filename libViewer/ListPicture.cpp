@@ -242,7 +242,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 			wxImage picture = bitmap.ConvertToImage();
 
 			auto imageLoad = new CImageLoadingFormat();
-			imageLoad->SetPicture(&picture);
+			imageLoad->SetPicture(&picture, true);
 			CSavePicture::SavePicture(nullptr, imageLoad, "photoindex.png");
 			delete imageLoad;
 		}

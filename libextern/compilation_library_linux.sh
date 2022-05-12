@@ -41,18 +41,26 @@ if [ ! -f FILE ]; then
     unzip release-qpdf-10.3.2.zip
 fi
 
-export pc_libjpeg_CFLAGS=$HOME/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include
+#LOCALPATH=$HOME/developpement/git/Regards/libextern
+LOCALPATH=$(pwd)
+echo $LOCALPATH
 
-export pc_libjpeg_LIBS=$HOME/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/lib/libjpeg.a
+export pc_libjpeg_CFLAGS=$LOCALPATH/vcpkg-master/installed/x64-linux/include
+
+export pc_libjpeg_LIBS=$LOCALPATH/vcpkg-master/installed/x64-linux/lib/libjpeg.a
 
 
 cd qpdf-release-qpdf-10.3.2
 ./autogen.sh
 ./configure --prefix="$HOME/ffmpeg_build" --disable-shared --enable-crypto-native --disable-crypto-openssl --disable-crypto-gnutls 
-make -j$NBPROC CXXFLAGS="-I$HOME/developpement/git/Regards/libextern/vcpkg-master/installed/x64-linux/include"
+make -j$NBPROC CXXFLAGS="-I$LOCALPATH/vcpkg-master/installed/x64-linux/include"
 
 sudo make install
 cd ..
+
+rm $LOCALPATH/vcpkg-master/installed/x64-linux/lib/libpng.a
+
+cp $LOCALPATH/tesscallback.h $LOCALPATH/vcpkg-master/installed/x64-linux/include
 
 unzip rav1e-0.5.0-beta.2-ubuntu.zip
 

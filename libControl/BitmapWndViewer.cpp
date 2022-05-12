@@ -189,45 +189,18 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 			}
 			else
 			{
-				/*
-				if (copyBmpSrc == nullptr)
-				{
-					copyBmpSrc = filtreEffet->GetBitmap(true);
-					updateFilter = false;
-					bitmapwidth = copyBmpSrc->GetBitmapWidth();
-					bitmapheight = copyBmpSrc->GetBitmapHeight();
-				}
-				else
-				{
-					CImageLoadingFormat image(false);
-					image.SetPicture(copyBmpSrc);
-					filtreEffet->SetBitmap(&image);
-				}
-				*/
 				filtreEffet->SetPreviewMode(false);
 				mouseUpdate->ApplyPreviewEffectSource(effectParameter, this, filtreEffet, m_cDessin);
 				bitmapwidth = filtreEffet->GetWidth();
 				bitmapheight = filtreEffet->GetHeight();
 			}
-			//copyBmpSrc->SaveToBmp("d:\\test.bmp");
 
 			if (mouseUpdate->NeedToShrink())
 				ShrinkImage();
 			
 			wxEndBusyCursor();
 		}
-		/*
-		else if(mouseUpdate->IsSourcePreview())
-		{
-			CImageLoadingFormat image(false);
-			image.SetPicture(copyBmpSrc);
-			filtreEffet->SetBitmap(&image);
-		}
-		*/
-		
-
 	}
-
 }
 
 void CBitmapWndViewer::PrintPicture()
