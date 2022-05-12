@@ -76,7 +76,7 @@ bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone* icone, CWindowM
 		CThumbnailData* data = icone->GetData();
 		if (data != nullptr)
 		{
-			if (data->GetTimePosition() > videoPos)
+			if (data->GetTimePosition() >= videoPos)
 			{
 				return true;
 			}
@@ -92,7 +92,24 @@ int CThumbnailVideo::FindNumItem(const int& videoPos)
 	CIcone* icone = iconeList->FindElement(videoPos, 0, &_pf, this);
 	if (icone != nullptr)
 	{
-		numItem = icone->GetNumElement() - 1;
+		if(iFormat < 100)
+			numItem = icone->GetNumElement();
+		else
+		{
+			CThumbnailData* data = icone->GetData();
+			if (data != nullptr)
+			{
+				if (data->GetTimePosition() == videoPos)
+				{
+					numItem = icone->GetNumElement();
+				}
+				else
+				{
+					numItem = icone->GetNumElement() - 1;
+				}
+			}
+		}
+			
 	}
 	return numItem;
 }
@@ -182,10 +199,9 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	int typeElement = TYPEVIDEO;
 	threadDataProcess = false;
 	auto iconeListLocal = new CIconeList();
-
 	CLibPicture libPicture;
-	int iFormat = libPicture.TestImageFormat(szFileName);
-	if (iFormat == PDF || iFormat == TIFF)
+
+	if (iFormat < 100)
 		typeElement = TYPEMULTIPAGE;
 
 	CSqlThumbnailVideo sqlThumbnailVideo;
@@ -491,6 +507,9 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 void CThumbnailVideo::SetFile(const wxString& videoFile, const int& size)
 {
 	process_end = false;
+
+	CLibPicture libPicture;
+	iFormat = libPicture.TestImageFormat(videoFile);
 
 	InitScrollingPos();
 	InitWithDefaultPicture(videoFile, size);

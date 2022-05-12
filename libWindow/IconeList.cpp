@@ -90,7 +90,6 @@ CIcone* CIconeList::FindElement(const int& xPos, const int& yPos, pItemCompFonct
 
 	if (it != pIconeList.end())
 		element = *it;
-
 	return element;
 }
 

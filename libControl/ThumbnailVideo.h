@@ -32,8 +32,7 @@ namespace Regards
 			int64_t oldvideoPos = 0;
 			bool processThumbnailVideo = false;
 			virtual void VideoProcessThumbnail();
-			//const CThemeThumbnail& theme_thumbnail_;
-			//const bool& test_validity_;
+			int iFormat = 0;
 		};
 	}
 }
