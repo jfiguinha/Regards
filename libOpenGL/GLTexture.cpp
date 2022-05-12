@@ -75,6 +75,18 @@ void GLTexture::SetData(cv::Mat & bitmap)
 	else
 		bitmapMatrix = bitmap;
 
+	if (!m_nTextureID)
+	{
+		glGenTextures(1, &m_nTextureID);
+		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	}
+
 	if (m_nTextureID)
 	{
 		glEnable(GL_TEXTURE_2D);
@@ -88,6 +100,18 @@ void GLTexture::SetData(cv::Mat & bitmap)
 
 void GLTexture::SetData(CRegardsBitmap * bitmap)
 {
+	if (!m_nTextureID)
+	{
+		glGenTextures(1, &m_nTextureID);
+		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	}
+
 	if (m_nTextureID && bitmap != nullptr)
 	{
 		glEnable(GL_TEXTURE_2D);
@@ -113,23 +137,6 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 		Delete();
 	}
 
-	/*
-	//generate the texture ID
-	glGenTextures(1, &m_nTextureID);
-	//binnding the texture
-	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-	//regular sampler params
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//need to set GL_NEAREST
-	//(not GL_NEAREST_MIPMAP_* which would cause CL_INVALID_GL_OBJECT later)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//specify texture dimensions, format etc
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pbyData);
-	*/
-
-
 	glEnable(GL_TEXTURE_2D);
 
 	glGenTextures(1, &m_nTextureID);
@@ -142,16 +149,6 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
-	/*
-	glEnable(GL_TEXTURE_2D);
-	glGenTextures(1, &m_nTextureID);
-	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	*/
 	return (GL_NO_ERROR == glGetError());
 }
 
