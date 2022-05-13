@@ -53,7 +53,7 @@ END_EVENT_TABLE()
 // frame constructor
 CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterface, const wxPoint &pos, const wxSize &size,
 	long style) :
-	wxFrame(NULL, wxID_ANY, title, pos, size, style)
+	wxFrame(NULL, FRAMESCANNER_ID, title, pos, size, style)
 {
 
 	SetIcon(wxICON(sample));

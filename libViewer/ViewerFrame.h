@@ -84,7 +84,9 @@ namespace Regards
 			void OnIconSizeLess(wxCommandEvent& event);
 			void OnIconSizeMore(wxCommandEvent& event);
 			void OnFacePertinence(wxCommandEvent& event);
+			void OnPictureEndLoading(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
+			void OnKeyUp(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
 			void OnHello(wxCommandEvent& event);
 			void CheckAllProcessEnd(wxTimerEvent& event);
@@ -101,15 +103,20 @@ namespace Regards
 #endif
 			void OnTimereventFileSysTimer(wxTimerEvent& event);
 			void OnTimerLoadPicture(wxTimerEvent& event);
+			void OnTimerEndLoadPicture(wxTimerEvent& event);
 			bool CheckDatabase(FolderCatalogVector & folderList);
 		wxDECLARE_EVENT_TABLE();
 
+
+			bool repeatEvent = false;
+			int eventToLoop = 0;
 
 			IMainInterface* mainInterface;
 			CMainParam* viewerParam;
 			CMainTheme* viewerTheme;
 			CMainWindow* mainWindow;
 			wxTimer* exitTimer;
+			bool pictureEndLoading = true;
 			CWaitingWindow* mainWindowWaiting;
 			wxPreviewFrameModalityKind m_previewModality;
 			bool fullscreen;
@@ -121,7 +128,8 @@ namespace Regards
 			static bool viewerMode;
 			bool onExit;
 			bool m_fsWatcher = true;
-
+			
+			wxTimer* endLoadPictureTimer;
 			wxTimer* loadPictureTimer;
 			wxTimer* eventFileSysTimer = nullptr;
 			wxString filenameTimer;

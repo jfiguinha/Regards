@@ -40,7 +40,7 @@ using namespace Regards::Picture;
 
 constexpr auto TIMER_LOADPICTURE = 2;
 constexpr auto TIMER_EVENTFILEFS = 3;
-
+constexpr auto TIMER_LOADPICTUREEND = 4;
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -92,7 +92,7 @@ void CViewerFrame::SetViewerMode(const bool& mode)
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface* mainInterface,
                            const wxString& fileToOpen)
-	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
+	: wxFrame(nullptr, FRAMEVIEWER_ID, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE), title_(title), pos_(pos),
 	  size_(size), main_interface_(mainInterface), file_to_open_(fileToOpen)
 {
 
@@ -150,6 +150,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	m_previewModality = wxPreviewFrame_AppModal;
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	eventFileSysTimer = new wxTimer(this, TIMER_EVENTFILEFS);
+	endLoadPictureTimer = new wxTimer(this, TIMER_LOADPICTUREEND);
 	auto menuFile = new wxMenu;
 
 	wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize", 1);
@@ -216,6 +217,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
 	Connect(wxEVENT_CLOSESCANNER, wxCommandEventHandler(CViewerFrame::HideScanner));
+	Connect(wxEVENT_PICTUREENDLOADING, wxCommandEventHandler(CViewerFrame::OnPictureEndLoading));
 	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExport));
 #ifdef WIN32
@@ -223,6 +225,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #endif
 	//Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
+	mainWindow->Bind(wxEVT_KEY_UP, &CViewerFrame::OnKeyUp, this);
 
 	if (fileToOpen != "")
 	{
@@ -245,6 +248,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	}
 
 	mainInterface->HideAbout();
+	
+	Connect(TIMER_LOADPICTUREEND, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerEndLoadPicture), nullptr, this);
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 	Connect(TIMER_EVENTFILEFS, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimereventFileSysTimer), nullptr, this);
 }
@@ -431,16 +436,6 @@ void CViewerFrame::OnTimereventFileSysTimer(wxTimerEvent& event)
 	eventFileSysTimer->Stop();
 }
 
-void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
-{
-	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	if (mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_PICTURENEXT);
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-	loadPictureTimer->Stop();
-}
 
 void CViewerFrame::OnHelp(wxCommandEvent& event)
 {
@@ -498,6 +493,42 @@ void CViewerFrame::Exit()
 	}
 }
 
+void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
+{
+	wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(eventToLoop);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	if (endLoadPictureTimer->IsRunning())
+		endLoadPictureTimer->Stop();
+
+	endLoadPictureTimer->Start(1000, true);
+	
+	//if (repeatEvent)
+	//	loadPictureTimer->Start(200, true);
+	//else
+	loadPictureTimer->Stop();
+}
+
+void CViewerFrame::OnTimerEndLoadPicture(wxTimerEvent& event)
+{
+	pictureEndLoading = true;
+}
+
+void CViewerFrame::OnPictureEndLoading(wxCommandEvent& event)
+{
+	pictureEndLoading = true;
+}
+
+void CViewerFrame::OnKeyUp(wxKeyEvent& event)
+{
+	if(loadPictureTimer->IsRunning())
+		loadPictureTimer->Stop();
+}
+
 void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 {
 	if (event.m_keyCode == WXK_ESCAPE && fullscreen)
@@ -517,6 +548,12 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 		case WXK_SPACE:
 		case WXK_PAGEUP:
 			{
+				repeatEvent = true;
+				eventToLoop = wxEVENT_PICTURENEXT;
+				if(pictureEndLoading)
+					loadPictureTimer->Start(200, true);
+				pictureEndLoading = false;
+				/*
 				printf("Image Suivante \n");
 				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 				if (mainWindow != nullptr)
@@ -524,40 +561,35 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 					wxCommandEvent evt(wxEVENT_PICTURENEXT);
 					mainWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
+				*/
 			}
 			break;
 
 		case WXK_PAGEDOWN:
 			{
-				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-				if (mainWindow != nullptr)
-				{
-					wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
-					mainWindow->GetEventHandler()->AddPendingEvent(evt);
-				}
+				repeatEvent = true;
+				eventToLoop = wxEVENT_PICTUREPREVIOUS;
+				if (pictureEndLoading)
+					loadPictureTimer->Start(200, true);
+				pictureEndLoading = false;
 			}
 			break;
 
 
 		case WXK_END:
 			{
-				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-				if (mainWindow != nullptr)
-				{
-					wxCommandEvent evt(wxEVENT_PICTURELAST);
-					mainWindow->GetEventHandler()->AddPendingEvent(evt);
-				}
+				repeatEvent = false;
+				eventToLoop = wxEVENT_PICTURELAST;
+				loadPictureTimer->Start(0, true);
 			}
 			break;
 
 		case WXK_HOME:
 			{
-				wxWindow* mainWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-				if (mainWindow != nullptr)
-				{
-					wxCommandEvent evt(wxEVENT_PICTUREFIRST);
-					mainWindow->GetEventHandler()->AddPendingEvent(evt);
-				}
+				repeatEvent = false;
+				eventToLoop = wxEVENT_PICTUREFIRST;
+				loadPictureTimer->Start(0, true);
+
 			}
 			break;
 
@@ -615,6 +647,10 @@ CViewerFrame::~CViewerFrame()
 		eventFileSysTimer->Stop();
 
 	delete(eventFileSysTimer);
+
+	if (endLoadPictureTimer->IsRunning())
+		endLoadPictureTimer->Stop();
+	delete(endLoadPictureTimer);
 
 	if (mainWindow != nullptr)
 		delete(mainWindow);

@@ -263,11 +263,21 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 void CCentralWindow::OnPicturePrevious(wxCommandEvent& event)
 {
 	ImagePrecedente();
+
+
+	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
+	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
+	mainWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CCentralWindow::OnPictureNext(wxCommandEvent& event)
 {
 	ImageSuivante();
+
+
+	wxWindow* mainWindow = this->FindWindowById(FRAMEVIEWER_ID);
+	wxCommandEvent evt(wxEVENT_PICTUREENDLOADING);
+	mainWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CCentralWindow::OnPictureFirst(wxCommandEvent& event)
@@ -446,6 +456,7 @@ wxString CCentralWindow::ImageSuivante(const bool& loadPicture)
 		isNext = true;
 		LoadPicture(localFilename);
 	}
+
 	return localFilename;
 }
 
@@ -516,6 +527,8 @@ wxString CCentralWindow::ImageDebut(const bool& loadPicture)
 	{
 		LoadPicture(localFilename);
 	}
+
+
 	return localFilename;
 }
 
@@ -554,6 +567,7 @@ wxString CCentralWindow::ImagePrecedente(const bool& loadPicture)
 		isNext = false;
 		LoadPicture(localFilename);
 	}
+
 	return localFilename;
 }
 

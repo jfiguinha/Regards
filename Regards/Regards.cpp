@@ -70,16 +70,6 @@ void MyApp::MacOpenFile(const wxString &fileName)
 }
 #endif
 
-void SaveResourceToFile(wxString fileName)
-{
-	CRegardsBitmap* resource = CLoadingResource::LoadRegardsBmpResource(fileName);
-	resource->VertFlipBuf();
-	cv::Mat matrix = resource->GetMatrix();
-
-	wxString toto = "C:\\developpement\\git\\Regards\\Regards\\Resources\\bitmap\\" + fileName + ".jpg";
-	cv::imwrite(toto.ToStdString(), matrix);
-	delete resource;
-}
 
 int MyApp::Close()
 {
@@ -217,12 +207,6 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-	/*
-	if (regardsParam->GetIsOpenCLSupport())
-	{
-		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-	}
-	*/
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
