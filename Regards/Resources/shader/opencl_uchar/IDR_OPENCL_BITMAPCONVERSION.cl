@@ -3,10 +3,12 @@
 //----------------------------------------------------
 __kernel void BitmapToOpenGLTexture(__write_only image2d_t output, const __global uchar *input, int width, int height)
 {
+	int stride = 3 * ((24 * width + 23)/24);
 	const int2 pos = {get_global_id(0), get_global_id(1)};
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x * 3 + y * width * 3;
+	int position = x * 3 + y * stride;
+	
 
 	float4 value;
 
@@ -20,10 +22,11 @@ __kernel void BitmapToOpenGLTexture(__write_only image2d_t output, const __globa
 
 __kernel void BitmapToOpenGLTextureApple(__write_only image2d_t output, const __global uchar *input, int width, int height)
 {
+	int stride = 3 * ((24 * width + 23)/24);
 	const int2 pos = {get_global_id(0), get_global_id(1)};
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x * 3 + y * width * 3;
+	int position = x * 3 + y * stride;
 
 	float4 value;
 
