@@ -25,6 +25,7 @@ sudo pacman -S freeglut
 sudo pacman -S mesa
 sudo pacman -S bison
 sudo pacman -S gperf
+sudo pacman -S sane
 #sudo pacman -S x265
 #sudo pacman -S tesseract
 #sudo pacman -S poppler
