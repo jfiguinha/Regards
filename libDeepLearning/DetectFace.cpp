@@ -101,7 +101,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 
 #else
 	if (!isload)
-		return;
+		return 0;
 
 	//Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	Mat frameOpenCVDNN;

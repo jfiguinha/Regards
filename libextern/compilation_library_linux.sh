@@ -59,6 +59,8 @@ sudo make install
 cd ..
 
 rm $LOCALPATH/vcpkg-master/installed/x64-linux/lib/libpng.a
+rm $LOCALPATH/vcpkg-master/installed/x64-linux/lib/libhardfbuzz.a
+rm $LOCALPATH/vcpkg-master/installed/x64-linux/lib/libhardfbuzz-subset.a
 
 cp $LOCALPATH/tesscallback.h $LOCALPATH/vcpkg-master/installed/x64-linux/include
 
