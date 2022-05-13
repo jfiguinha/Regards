@@ -178,8 +178,12 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	//UMat u;
-	//cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
+	UMat u;
+#ifdef __APPLE__
+	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
+#else
+	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+#endif
 	try
 	{
 
@@ -201,15 +205,8 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
 
-		GetRgbaBitmap(clImage, inputData);
-		/*
-		size_t offset = 0; // TODO
-		size_t dst_origin[3] = { 0, 0, 0 };
-		size_t region[3] = { (size_t)inputData.cols, (size_t)inputData.rows, 1 };
-		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-		*/
+		GetRgbaBitmap(clImage, u);
+
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
