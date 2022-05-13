@@ -176,14 +176,10 @@ COpenCLFilter::~COpenCLFilter()
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
 	using namespace cv::ocl;
-	cl_context context = openclContext->GetContext();
+//	cl_context context = openclContext->GetContext();
 	bool isOk = false;
 	Mat u;
-#ifdef __APPLE__
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
-#else
-	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
-#endif
 
 	if (glTexture != nullptr)
 		glTexture->SetData(u);
