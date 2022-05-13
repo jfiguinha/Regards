@@ -178,12 +178,18 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-	UMat u;
+	Mat u;
 #ifdef __APPLE__
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 #else
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
 #endif
+
+	if (glTexture != nullptr)
+		glTexture->SetData(u);
+
+	/*
+
 	try
 	{
 
@@ -232,7 +238,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-
+	*/
 	return isOk;
 }
 
@@ -944,11 +950,7 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 
 		program->SetKeepOutput(true);
 		program->SetParameter(&vecParam, u.size().width, u.size().height, (cl_mem)cl_image);
-#ifdef __APPLE__
-        program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
-#else
 		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
-#endif
 		delete program;
 
 
