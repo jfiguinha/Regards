@@ -19,6 +19,7 @@ brew install -v qpdf
 brew install -v wxWidgets
 brew install -v exiv2
 brew install -v freeimage
+brew install -v libepoxy
 
 #Install External Library
 cd libextern
