@@ -62,7 +62,7 @@ using namespace Regards::OpenCL;
 #define CONFIG_AVFILTER 1
 
 extern "C" {
-#include "libavformat/avformat.h"
+#include <libavformat/avformat.h>
 
 #if CONFIG_AVFILTER
 #endif
