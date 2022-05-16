@@ -179,14 +179,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
 
-	Mat u;
-	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
-
-	if (glTexture != nullptr)
-		glTexture->SetData(u);
-        
-#ifdef OPENCL_OPENGL
-
 	try
 	{
 
@@ -235,7 +227,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-#endif
+
 	return isOk;
 }
 
@@ -1508,6 +1500,8 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 				cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
 			}
 		}
+		else
+			cv::resize(cvImage, cvImage, cv::Size(widthOut+2, heightOut+2), method);
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), cv::INTER_NEAREST_EXACT);
