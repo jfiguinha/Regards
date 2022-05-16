@@ -88,7 +88,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                 
                 wxString outputFilename = libPath;
                 outputFilename = listOflib[listOflib.size() - 1];
-                outputFilename.Replace("-3.1.5.0.0.dylib", "-3.1.dylib");
+                outputFilename.Replace("-3.1.6.0.0.dylib", "-3.1.dylib");
                 wxString outputLib = folder_output_final + "/" + outputFilename;
 
                  if(dylibName == outputFilename)
@@ -101,7 +101,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                       continue;
                 }
 
-                if(!wxFileExists(fileToTest) && libPath.find("3.1.5.0.0.dylib")==wxNOT_FOUND)
+                if(!wxFileExists(fileToTest) && libPath.find("3.1.6.0.0.dylib")==wxNOT_FOUND)
                 {
                    // printf("copyFile \n");
                     copyFile[outputFilename] = toWrite + " " + fileToTest;
