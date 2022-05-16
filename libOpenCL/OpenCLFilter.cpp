@@ -178,13 +178,14 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-#ifdef WIN32
+
 	Mat u;
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 
 	if (glTexture != nullptr)
 		glTexture->SetData(u);
-#else
+        
+#ifdef OPENCL_OPENGL
 
 	try
 	{
