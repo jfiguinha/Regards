@@ -176,15 +176,15 @@ COpenCLFilter::~COpenCLFilter()
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
 	using namespace cv::ocl;
-//	cl_context context = openclContext->GetContext();
+	cl_context context = openclContext->GetContext();
 	bool isOk = false;
+#ifdef WIN32
 	Mat u;
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 
 	if (glTexture != nullptr)
 		glTexture->SetData(u);
-
-	/*
+#else
 
 	try
 	{
@@ -207,7 +207,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
 
-		GetRgbaBitmap(clImage, u);
+		GetRgbaBitmap(clImage, inputData);
 
 		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
@@ -234,7 +234,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-	*/
+#endif
 	return isOk;
 }
 
