@@ -1486,25 +1486,25 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 		the nearest neighbor method in PIL, scikit-image or Matlab.
 		INTER_NEAREST_EXACT = 6,
 		*/
-		if (ratio != 100)
-		{
-			CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-			int superDnn = regardsParam->GetSuperResolutionType();
-			int useSuperResolution = regardsParam->GetUseSuperResolution();
-			if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
-			{
-				cvImage = superSampling->upscaleImage(cvImage, superDnn, (ratio / 100));
-			}
-			else
-			{
-				cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
-			}
-		}
-		else
-			cv::resize(cvImage, cvImage, cv::Size(widthOut+2, heightOut+2), method);
+        CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+        int superDnn = regardsParam->GetSuperResolutionType();
+        int useSuperResolution = regardsParam->GetUseSuperResolution();
+        if (useSuperResolution && superSampling->TestIfMethodIsValid(superDnn, (ratio / 100)) && !isUsed)
+        {
+            cvImage = superSampling->upscaleImage(cvImage, superDnn, (ratio / 100));
+        }
+        else if (cvImage.cols != widthOut || cvImage.rows != heightOut)
+        {
+            cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
+        }
+        else
+        {
+            cv::resize(cvImage, cvImage, cv::Size(widthOut+2, heightOut+2), method);
+        }
+
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
-			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), cv::INTER_NEAREST_EXACT);
+			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
 
 		//Apply Transformation
 
@@ -1522,7 +1522,7 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			else
 				cv::flip(cvImage, cvImage, 0);
 		}
-		//cv::cvtColor(cvImage, cvImage, cv::COLOR_BGR2BGRA);
+		//
 	}
 	catch (cv::Exception& e)
 	{
