@@ -178,14 +178,13 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	using namespace cv::ocl;
 	cl_context context = openclContext->GetContext();
 	bool isOk = false;
-
+#ifdef WIN32
 	Mat u;
 	cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA); 
 
 	if (glTexture != nullptr)
 		glTexture->SetData(u);
-        
-#ifdef OPENCL_OPENGL
+#else
 
 	try
 	{
@@ -947,7 +946,12 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 
 		program->SetKeepOutput(true);
 		program->SetParameter(&vecParam, u.size().width, u.size().height, (cl_mem)cl_image);
+#ifdef __APPLE__
+        program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
+#else
 		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+#endif
+	
 		delete program;
 
 
