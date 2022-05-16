@@ -147,9 +147,11 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
     
     txtFile.Write();
     txtFile.Close(); 
-    cout << "Please execute " << fileOutToWrite << endl;
-    char nom[20];
-    cin >> nom;
+
+    printf("Execute modif lib \n");
+    wxArrayString output;
+    wxExecute("./modif_lib.sh", output);
+
     return filesOut;
 }
 
