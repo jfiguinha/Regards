@@ -2230,42 +2230,42 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case EXR:
 		{
+            CRegardsBitmap * picture = nullptr;
+            Array2D<Rgba> pixels;
+            RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+            Box2i dw = file.dataWindow();
+            int width = dw.max.x - dw.min.x + 1;
+            int height = dw.max.y - dw.min.y + 1;
+            pixels.resizeErase(height, width);
+            file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
+            file.readPixels(dw.min.y, dw.max.y);
 
-				CRegardsBitmap * picture = nullptr;
-				Array2D<Rgba> pixels;
-				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Box2i dw = file.dataWindow();
-				int width = dw.max.x - dw.min.x + 1;
-				int height = dw.max.y - dw.min.y + 1;
-				pixels.resizeErase(height, width);
-				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-				file.readPixels(dw.min.y, dw.max.y);
+            if (width > 0 && height > 0)
+            {
+                picture = new CRegardsBitmap(width, height);
+                int k = 0;
+                uint8_t * data = picture->GetPtBitmap();
+                for (int i = 0; i < height; i++)
+                {
+                    for (int j = 0; j < width; j++, k += 4)
+                    {
+                        float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+                        float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+                        float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+                        float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 
-				if (width > 0 && height > 0)
-				{
-					picture = new CRegardsBitmap(width, height);
-					int k = 0;
-					uint8_t * data = picture->GetPtBitmap();
-					for (int i = 0; i < height; i++)
-					{
-						for (int j = 0; j < width; j++, k += 4)
-						{
-							float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-
-							data[k] = (int)(bvalue * 255.0);
-							data[k + 1] = (int)(gvalue * 255.0);
-							data[k + 2] = (int)(rvalue * 255.0);
-							data[k + 3] = (int)(avalue * 255.0);
-						}
-					}
-					picture->VertFlipBuf();
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
+                        data[k] = (int)(bvalue * 255.0);
+                        data[k + 1] = (int)(gvalue * 255.0);
+                        data[k + 2] = (int)(rvalue * 255.0);
+                        data[k + 3] = (int)(avalue * 255.0);
+                    }
+                }
+                picture->VertFlipBuf();
+                bitmap->SetPicture(picture);
+                bitmap->SetFilename(fileName);
+            }
 		}
+        break;
 
 		case JPEG:
 		{
