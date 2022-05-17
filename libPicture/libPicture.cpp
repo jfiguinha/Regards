@@ -2265,6 +2265,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					bitmap->SetPicture(picture);
 					bitmap->SetFilename(fileName);
 				}
+                break;
 		}
 
 		case JPEG:
