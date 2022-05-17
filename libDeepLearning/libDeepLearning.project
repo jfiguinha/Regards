@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libDeepLearning" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="DetectFace">
     <File Name="DetectFacePCN.h"/>
     <File Name="DetectFacePCN.cpp"/>
     <File Name="DetectFace.cpp"/>
     <File Name="DetectFace.h"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="Plot">
     <File Name="../libextern/CvPlot/src/cvplot.cpp"/>
   </VirtualDirectory>
@@ -20,13 +20,11 @@
     <File Name="FaceDetector.cpp"/>
     <File Name="DetectRotation.cpp"/>
     <File Name="DeepLearning.cpp"/>
-    <File Name="base64.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="FaceDetector.h"/>
     <File Name="DetectRotation.h"/>
     <File Name="DeepLearning.h"/>
-    <File Name="base64.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
