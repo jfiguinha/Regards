@@ -92,8 +92,8 @@ using namespace Regards::Picture;
 
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
-
 extern float clamp(float val, float minval, float maxval);
+
 
 
 #if defined(LIBBPG) && not defined(WIN32)
@@ -2228,11 +2228,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			break;
 		}
 
-
 		case EXR:
 		{
-			//if (isThumbnail)
-			//{
+
 				CRegardsBitmap * picture = nullptr;
 				Array2D<Rgba> pixels;
 				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
@@ -2267,41 +2265,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					bitmap->SetPicture(picture);
 					bitmap->SetFilename(fileName);
 				}
-            /*
-			}
-			else
-			{
-				CRegardsFloatBitmap * picture = nullptr;
-				Array2D<Rgba> pixels;
-				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-				Box2i dw = file.dataWindow();
-				int width = dw.max.x - dw.min.x + 1;
-				int height = dw.max.y - dw.min.y + 1;
-				pixels.resizeErase(height, width);
-				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-				file.readPixels(dw.min.y, dw.max.y);
-
-				if (width > 0 && height > 0)
-				{
-					picture = new CRegardsFloatBitmap(width, height);
-					int k = 0;
-					float * data = picture->GetData();
-					for (int i = height - 1; i >= 0; i--)
-					{
-						for (int j = 0; j < width; j++, k += 4)
-						{
-							data[k] = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							data[k + 1] = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							data[k + 2] = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							data[k + 3] = clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-						}
-					}
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
-			}*/
 		}
-		break;
 
 		case JPEG:
 		{
@@ -2501,7 +2465,6 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		}
 		break;
         
-
 		case HDR:
 		{
 			try
@@ -2983,6 +2946,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	switch (iFormat)
 	{
 
+
 	case HDR:
 		{
 			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
@@ -2990,8 +2954,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			height = hdr.rows;
 		}
 		break;
-         
-        
+  
 	case EXR:
 	{
 		RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
