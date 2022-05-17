@@ -148,25 +148,13 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../Otherlib/libbpg/libRegardsBpg"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
-        <IncludePath Value="../libextern/libde265-master"/>
-        <IncludePath Value="../libextern/libde265-master/build"/>
-        <IncludePath Value="../libextern/libde265-master/libde265"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/reader"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/common"/>
-        <IncludePath Value="../libextern/libde265-master"/>
         <IncludePath Value="../Otherlib/libavif/include"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../Otherlib/libFreeImage/Source"/>
         <IncludePath Value="../libextern/piccante-master/include"/>
-        <IncludePath Value="../libextern/exiv2-0.27.4/build"/>
-        <IncludePath Value="../libextern/exiv2-0.27.4/xmpsdk/include"/>
-        <IncludePath Value="../libextern/exiv2-0.27.4/include/exiv2"/>
-        <IncludePath Value="../libextern/exiv2-0.27.4/include"/>
-        <IncludePath Value="../libextern/ffmpeg-master"/>
-        <IncludePath Value="../libextern/ffmpeg-master/include"/>
-        <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
-        <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
         <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
@@ -175,6 +163,7 @@
         <Preprocessor Value="FREEIMAGE_LIB"/>
         <Preprocessor Value="LATEST_GREATEST_FFMPEG"/>
         <Preprocessor Value="MEDIAINFO_LIBRARY"/>
+        <Preprocessor Value="PIC_STB_DISABLE"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
