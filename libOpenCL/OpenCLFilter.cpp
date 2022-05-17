@@ -184,8 +184,8 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 
         cl_int status = 0;
 
-        Mat local;
-		inputData.copyTo(local);
+      ///  Mat local;
+	//	inputData.copyTo(local);
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
@@ -1439,7 +1439,9 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			rectGlobal.width = cvImage.cols - rectGlobal.x;
 		}
 
-		cvImage = cvImage(rectGlobal);
+		cv::UMat crop;
+		cvImage(rectGlobal).copyTo(crop);
+		crop.copyTo(cvImage);
 
 		if (angle == 90)
 		{
@@ -1497,11 +1499,12 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
         {
             cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
         }
+		/*
         else
         {
             cv::resize(cvImage, cvImage, cv::Size(widthOut+2, heightOut+2), method);
         }
-
+		*/
 
 		if (cvImage.cols != widthOut || cvImage.rows != heightOut)
 			cv::resize(cvImage, cvImage, cv::Size(widthOut, heightOut), method);
