@@ -3,12 +3,13 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <PictureData.h>
+#include <ConvertUtility.h>
 
 CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 {
 	auto bitmap = new CRegardsBitmap();
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
-	cv::Mat data = cv::imread(resourcePath.ToStdString());
+	cv::Mat data = cv::imread(CConvertUtility::ConvertToUTF8(resourcePath));
 	bitmap->SetMatrix(data);
 	return bitmap;
 }

@@ -3,6 +3,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include "RegardsBitmap.h"
+#include <ConvertUtility.h>
 #include <FaceRect.h>
 #include <fstream>
 extern float value[256];
@@ -299,7 +300,7 @@ void CRegardsBitmap::SetYUV420P(uint8_t* lum, uint8_t* cb, uint8_t* cr)
 
 void CRegardsBitmap::ReadFile(const wxString& filename)
 {
-	bitmapMatrix = cv::imread(filename.ToStdString());
+	bitmapMatrix = cv::imread(CConvertUtility::ConvertToUTF8(filename));
     if(!bitmapMatrix.empty())
         cv::cvtColor(bitmapMatrix, bitmapMatrix, cv::COLOR_BGR2BGRA);
 }

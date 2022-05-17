@@ -2447,7 +2447,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			try
 			{
 				
-				cv::Mat matPicture = cv::imread(fileName.ToStdString(), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); 
+				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToUTF8(fileName), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); 
                 if(!matPicture.empty())
                 {
                     CRegardsBitmap* picture = new CRegardsBitmap();
@@ -2471,7 +2471,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			try
 			{
 				
-				cv::Mat hdr = cv::imread(fileName.ToStdString(),-1); // correct element size should be CV_32FC3
+				cv::Mat hdr = cv::imread(CConvertUtility::ConvertToUTF8(fileName),-1); // correct element size should be CV_32FC3
                 if(!hdr.empty())
                 {
                     CRegardsBitmap* picture = new CRegardsBitmap();
@@ -2950,7 +2950,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 	case HDR:
 		{
-			cv::Mat hdr = cv::imread(fileName.ToStdString(), -1); // correct element size should be CV_32FC3
+			cv::Mat hdr = cv::imread(CConvertUtility::ConvertToUTF8(fileName), -1); // correct element size should be CV_32FC3
 			width = hdr.cols;
 			height = hdr.rows;
 		}
