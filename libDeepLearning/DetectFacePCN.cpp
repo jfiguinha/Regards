@@ -101,7 +101,7 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
             face.myROI = rect;
             face.angle = (int)(360.0 - facelocal.angle) % 360;
             face.confidence = facelocal.score;
-            face.croppedImage = frameOpenCVDNN(face.myROI);
+            frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
             listOfFace.push_back(face);
             pointOfFace.push_back(face.myROI);
         }

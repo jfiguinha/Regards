@@ -1253,7 +1253,9 @@ cv::Mat CFiltreEffetCPU::Interpolation(cv::Mat & cvImage, const int& widthOut, c
 			rectGlobal.width = cvImage.cols - rectGlobal.x;
 		}
 
-		cvImage = cvImage(rectGlobal);
+		cv::Mat crop;
+		cvImage(rectGlobal).copyTo(crop);
+		crop.copyTo(cvImage);
 
 		if (angle == 90)
 		{

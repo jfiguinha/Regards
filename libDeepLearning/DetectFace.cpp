@@ -85,7 +85,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
                 try{
                     face.confidence = rect.confidence;
                     face.myROI = Rect(Point(x1, y1), Point(x2, y2));
-                    face.croppedImage = frameOpenCVDNN(face.myROI);
+					frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
                     listOfFace.push_back(face);
                     pointOfFace.push_back(face.myROI);   
                 }
@@ -135,7 +135,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 				Rect rect = Rect(Point(x1, y1), Point(x2, y2));
 				VerifRectSize(rect, frameOpenCVDNN);
 				face.myROI = rect;
-				face.croppedImage = frameOpenCVDNN(face.myROI);
+				frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
 				listOfFace.push_back(face);
 				pointOfFace.push_back(face.myROI);
 			}

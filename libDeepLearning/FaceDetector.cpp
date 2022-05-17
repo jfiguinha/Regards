@@ -4,7 +4,6 @@
 #include <SqlFaceLabel.h>
 #include <RegardsBitmap.h>
 #include <opencv2/face/facemark.hpp>
-#include "base64.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <SqlFaceRecognition.h>
@@ -329,7 +328,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap* pBitmap)
 					}
 					catch (Exception& e)
 					{
-						resizedImage = source(face.myROI);
+						source(face.myROI).copyTo(resizedImage);
 
 
 					}
@@ -586,7 +585,8 @@ void CFaceDetector::RemoveRedEye(Mat& image, const Rect& rSelectionBox, const Re
 	if (rc.y < 0)
 		rc.y = 0;
 
-	Mat iris2 = eyeMat(rc);
+	Mat iris2;
+	eyeMat(rc).copyTo(iris2);
 	Mat img_gray;
 	cvtColor(iris2, img_gray, COLOR_BGR2GRAY);
 	Mat thresh;
