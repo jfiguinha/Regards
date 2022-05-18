@@ -99,12 +99,6 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
     else
     {
         printf("error GetThumbnail");
-#ifdef WIN32
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-        image.LoadFile(photoCancel, wxBITMAP_TYPE_PNG);
     }        
 	return image;
 }
