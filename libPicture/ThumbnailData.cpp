@@ -1,5 +1,6 @@
 #include <header.h>
 #include "ThumbnailData.h"
+#include <ConvertUtility.h>
 
 CThumbnailData::CThumbnailData(const wxString& filename)
 {
@@ -15,8 +16,8 @@ CThumbnailData::CThumbnailData(const wxString& filename)
 	numParent = 0;
 	numCatalog = 0;
 
-	this->filename = filename;
-	libelle = filename;
+	this->filename = CConvertUtility::ConvertToUTF8(filename);
+	libelle = this->filename;
 	numElement = 0;
 	libelleTimePosition = "";
 	numPhotoId = -1;
@@ -47,7 +48,7 @@ CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
 
 void CThumbnailData::SetFilename(const wxString& filename)
 {
-	this->filename = filename;
+	this->filename = CConvertUtility::ConvertToUTF8(filename);
 }
 
 void CThumbnailData::SetNumPhotoId(const int& id)
