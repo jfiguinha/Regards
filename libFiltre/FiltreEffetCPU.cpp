@@ -18,6 +18,7 @@
 #include <FileUtility.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <ConvertUtility.h>
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 using namespace Regards::DeepLearning;
@@ -274,7 +275,7 @@ void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
 		return;
 	}
 
-	Mat src = imread(filePath.ToStdString());
+	Mat src = imread(CConvertUtility::ConvertToUTF8(filePath));
 	if (src.empty())
 		return;
 

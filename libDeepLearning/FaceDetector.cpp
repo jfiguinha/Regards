@@ -16,6 +16,7 @@
 #include <opencv2/tracking/tracking_by_matching.hpp>
 #include <opencv2/objdetect/face.hpp>
 #include <FileUtility.h>
+#include <ConvertUtility.h>
 using namespace Regards::OpenCL;
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
@@ -698,7 +699,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 
   
 
-	Mat aligned_face1 = imread(fileSource.ToStdString());
+	Mat aligned_face1 = imread(CConvertUtility::ConvertToUTF8(fileSource));
     if(aligned_face1.empty())
         return 0;
     
@@ -721,7 +722,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
                 continue;
             }
             
-			Mat aligned_face2 = imread(fileSource.ToStdString());
+			Mat aligned_face2 = imread(CConvertUtility::ConvertToUTF8(fileSource));
             if(aligned_face2.empty())
                 continue;
             
