@@ -553,13 +553,16 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
-	int faceDetection = 0;
-	if (COpenCLEngine::InstanceCreate() == false)
+    int faceDetection = 0;
+    CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+    
+    if (COpenCLEngine::InstanceCreate() == false && regardsParam->GetIsOpenCLSupport())
 	{
 		processIdle = true;
 		return;
 	}
-	else if(!isLoadingResource && !resourceLoaded)
+	
+    if(!isLoadingResource && !resourceLoaded)
 	{
 		isLoadingResource = true;
 		auto path = new CThreadFace();
@@ -573,7 +576,7 @@ void CListFace::ProcessIdle()
 		return;
 	}
 
-	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+	
 	if (regardsParam != nullptr)
 	{
 		faceDetection = regardsParam->GetFaceDetection();
