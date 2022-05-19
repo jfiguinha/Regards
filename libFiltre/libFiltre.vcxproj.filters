@@ -297,6 +297,12 @@
     <ClInclude Include="VideoStabilization.h">
       <Filter>Filter\video</Filter>
     </ClInclude>
+    <ClInclude Include="LensDistortion.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="LensDistortionEffectParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -439,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="VideoStabilization.cpp">
       <Filter>Filter\video</Filter>
+    </ClCompile>
+    <ClCompile Include="LensDistortion.cpp">
+      <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

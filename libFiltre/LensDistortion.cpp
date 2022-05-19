@@ -55,7 +55,7 @@ void CLensDistortion::Filter(CEffectParameter * effectParameter, CRegardsBitmap 
 	this->source = source;
 
     vector<int> elementColor;
-    for (auto i = 1; i < 100; i++)
+    for (auto i = 1; i < 1000; i+=10)
 	{
 		elementColor.push_back(i);
 	}
@@ -136,7 +136,7 @@ void CLensDistortion::ApplyPreviewEffectSource(CEffectParameter* effectParameter
 		image.SetPicture(source);
         
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtreEffet->LensDistortionFilter(lensEffectParameter->strength);
+		filtre->LensDistortionFilter(lensEffectParameter->strength);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
 		delete filtre;

@@ -1862,7 +1862,7 @@ int CFiltreEffetCPU::LensDistortionFilter(const int &size)
 
     int halfWidth = eiffel.rows / 2;
     int halfHeight = eiffel.cols / 2;
-    double strength = (double)size / 1000;//0.0001;
+	double strength = (double)size/100;
     double correctionRadius = sqrt(pow(eiffel.rows, 2) + pow(eiffel.cols, 2)) / strength;
 
     int newX, newY;
@@ -1888,11 +1888,13 @@ int CFiltreEffetCPU::LensDistortionFilter(const int &size)
             sourceY = round(halfHeight + theta * newY);
 
             
-            image.at<Vec3b>(i, j)[0] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[0];
-            image.at<Vec3b>(i, j)[1] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[1];
-            image.at<Vec3b>(i, j)[2] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[2];
+            image.at<Vec3b>(i, j)[0] =eiffel.at<Vec3b>(sourceX, sourceY)[0];
+            image.at<Vec3b>(i, j)[1] =eiffel.at<Vec3b>(sourceX, sourceY)[1];
+            image.at<Vec3b>(i, j)[2] = eiffel.at<Vec3b>(sourceX, sourceY)[2];
         }
     }  
+
+	//imwrite("d:\\test.jpg", image);
 }
 
 //----------------------------------------------------------------------------

@@ -123,7 +123,6 @@ int MyApp::Close()
 }
 
 
-
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
