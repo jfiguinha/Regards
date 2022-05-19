@@ -239,6 +239,10 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 	}
 }
 
+
+
+
+
 bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization * openCVStabilization)
 {
 	cv::Mat image;
@@ -1843,6 +1847,52 @@ int CFiltreEffetCPU::Negatif()
 	bitwise_not(image, image);
 
 	return 0;
+}
+
+int CFiltreEffetCPU::LensDistortionFilter(const int &size)
+{
+	cv::Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;  
+        
+    Mat eiffel;
+    image.copyTo(eiffel);
+
+    int halfWidth = eiffel.rows / 2;
+    int halfHeight = eiffel.cols / 2;
+    double strength = (double)size / 1000;//0.0001;
+    double correctionRadius = sqrt(pow(eiffel.rows, 2) + pow(eiffel.cols, 2)) / strength;
+
+    int newX, newY;
+    double distance; 
+    double theta; 
+    int sourceX; 
+    int sourceY; 
+    double r;
+    for (int i = 0; i < image.rows; ++i)
+    {
+        for (int j = 0; j < image.cols; j++)
+        {
+            newX = i - halfWidth; 
+            newY = j - halfHeight;
+            distance = sqrt(pow(newX, 2) + pow(newY, 2));
+            r = distance / correctionRadius;
+            if (r == 0.0)
+                theta = 1;
+            else
+                theta = atan(r) / r;
+
+            sourceX = round(halfWidth + theta*newX);
+            sourceY = round(halfHeight + theta * newY);
+
+            
+            image.at<Vec3b>(i, j)[0] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[0];
+            image.at<Vec3b>(i, j)[1] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[1];
+            image.at<Vec3b>(i, j)[2] = 0;//eiffel.at<Vec3b>(sourceX, sourceY)[2];
+        }
+    }  
 }
 
 //----------------------------------------------------------------------------

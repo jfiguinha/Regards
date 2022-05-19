@@ -75,6 +75,7 @@
       <File Name="FilterWindowParam.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="data structure">
+      <File Name="LensDistortionEffectParameter.h"/>
       <File Name="VignetteEffectParameter.h"/>
       <File Name="CartoonEffectParameter.h"/>
       <File Name="OilPaintingEffectParameter.h"/>
@@ -117,6 +118,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="LensDistortion.h"/>
+      <File Name="LensDistortion.cpp"/>
       <File Name="BokehFilter.h"/>
       <File Name="BokehFilter.cpp"/>
       <File Name="VignetteFilter.h"/>

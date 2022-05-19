@@ -36,6 +36,7 @@
 #include "BokehFilter.h"
 #include <CartoonFilter.h>
 #include "FiltreImplementation.h"
+#include "LensDistortion.h"
 #include <effect_id.h>
 using namespace Regards::Filter;
 
@@ -280,6 +281,9 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
         filterEffect = new CLensFlareFilter();
 		break;
 
+    case IDM_FILTRELENSCORRECTION:
+        filterEffect = new CLensDistortion();
+		break;       
 
 	case IDM_FILTRE_VIDEO:
 		filterEffect = new CVideoFilter();

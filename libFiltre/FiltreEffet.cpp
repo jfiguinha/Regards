@@ -68,6 +68,12 @@ int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& 
 }
 
 
+int CFiltreEffet::LensDistortionFilter(const int &size)
+{
+    filtreEffet->LensDistortionFilter(size);
+	return 0;
+}
+
 int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
 {
 	filtreEffet->WaveFilter(x, y, height, scale, radius);

@@ -65,6 +65,7 @@ public:
 	virtual int Erode() = 0;
 	virtual int Median() = 0;
 	virtual int Noise() = 0;
+    virtual int LensDistortionFilter(const int &size) = 0;
 	virtual int Dilate() = 0;
 	virtual int Negatif() = 0;
 	virtual int FiltreEdge() = 0;

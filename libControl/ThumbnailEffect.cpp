@@ -284,6 +284,11 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 				thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 				infosSeparationSpecialEffect->AddPhotoToList(numElement);
 				break;
+                
+            case IDM_FILTRELENSCORRECTION:
+                thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
+				infosSeparationSpecialEffect->AddPhotoToList(numElement);
+				break;
 
 			default:
 				thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));

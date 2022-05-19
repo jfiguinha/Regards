@@ -52,6 +52,7 @@ bool COpenCLEffect::convertToGLTexture2D(GLTexture* glTexture)
 	return isOk;
 }
 
+
 int COpenCLEffect::GetSizeData() const
 {
 	return sizeof(cl_uint) * 4;
@@ -90,6 +91,7 @@ int COpenCLEffect::HQDn3D(const double& LumSpac, const double& ChromSpac, const 
 	}
 	return 0;
 }
+
 
 int COpenCLEffect::WaveFilter(int x, int y, short height, int scale, int radius)
 {
