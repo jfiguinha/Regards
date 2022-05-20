@@ -494,8 +494,8 @@ void COpenCLFilter::FiltreMosaic(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
@@ -584,8 +584,8 @@ void COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+//	cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
@@ -780,8 +780,8 @@ void COpenCLFilter::FiltreConvolution(const wxString &programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram(programName);
@@ -861,8 +861,8 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
     
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
     
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -920,8 +920,8 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	double _strength = (double)strength / 100;
 	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
@@ -982,8 +982,8 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
 
-	inputData.copyTo(local);
-	imwrite("d:\\dist.jpeg", local);
+//	inputData.copyTo(local);
+//	imwrite("d:\\dist.jpeg", local);
 }
 
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
@@ -1042,8 +1042,8 @@ void COpenCLFilter::Solarize(const long &threshold, cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
  
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -1114,8 +1114,8 @@ void COpenCLFilter::Noise(cv::UMat & inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
     
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
@@ -1192,8 +1192,8 @@ void COpenCLFilter::Swirl(const float &radius, const float &angle, cv::UMat & in
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
     cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
    
