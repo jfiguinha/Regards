@@ -19,7 +19,7 @@ using namespace Regards::Filter;
 
 CLensDistortion::CLensDistortion()
 {
-    libelleEffectStrength = "Effect.Strength";
+    libelleEffectStrength = CLibResource::LoadStringFromResource(L"LBLFILTERSTRENGTH", 1); //"Effect.Strength";
 }
 
 int CLensDistortion::TypeApplyFilter()
