@@ -1656,7 +1656,7 @@ GLTexture* CVideoControlSoft::DisplayTexture(GLTexture* glTexture)
 		floatRect.right = 1.0f;
 		floatRect.top = 0;
 		floatRect.bottom = 1.0f;
-		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, videoPosition * 1000 * 1000, inverted);
+		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, floatRect, videoPosition / 100, inverted);
 		muVideoEffect.unlock();
 	}
 

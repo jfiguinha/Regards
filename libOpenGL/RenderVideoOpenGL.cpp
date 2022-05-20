@@ -87,7 +87,7 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 			{
 				printf("SetParam effectenable failed \n ");
 			}
-			if (!m_pShader->SetIntegerParam("vhsEffect",1))
+			if (!m_pShader->SetIntegerParam("vhsEffect", effectParameter->vhsEnable))
 			{
 				printf("SetParam vhsEffect failed \n ");
 			}

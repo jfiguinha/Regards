@@ -56,6 +56,7 @@ public:
 		rotation = 0;
 		showFPS = 0;
 		grayEnable = 0;
+		vhsEnable = 0;
 		sepiaEnable = 0;
 		enableSubtitle = 0;
 		streamAudioUpdate = 0;
@@ -123,6 +124,7 @@ public:
 	int   effectEnable;
 	int	  grayEnable;
 	int	  sepiaEnable;
+	int	  vhsEnable;
 	int   enableSubtitle;
 	int   streamAudioIndex;
 	int   streamVideoIndex;

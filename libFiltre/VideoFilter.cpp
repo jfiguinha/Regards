@@ -37,6 +37,7 @@ CVideoFilter::CVideoFilter()
 	enableSharpenEffect = CLibResource::LoadStringFromResource(L"LBLenableSharpenEffect",1);//L"Effect.Sharpen.Enable";
 	enableColorEffect = CLibResource::LoadStringFromResource(L"LBLenableColorEffect",1);//L"Color Boost.Enable";
 	enableBandCEffect = CLibResource::LoadStringFromResource(L"LBLenableBandCEffect",1);//L"Tone.Enable";
+	enableVHSEffect = CLibResource::LoadStringFromResource(L"LBLFILTERVHS", 1); //"Effect.Vhs";
 	enableGrayScale = CLibResource::LoadStringFromResource(L"LBLenableGrayScale",1);//L"Effect.Gray Scale";
     enableBicubicInterpolation = CLibResource::LoadStringFromResource(L"LBLEFFECTBICUBICINTERPOLATION", 1);//LBLEFFECTBICUBICINTERPOLATION
     enableOpenCL = CLibResource::LoadStringFromResource(L"LBLEFFECTOPENCL", 1);//LBLEFFECTOPENCL
@@ -106,16 +107,13 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	for(int i = 0;i < videoEffectParameter->tabZoom.size();i++)
 		AddMetadataElement(zoomPicture, to_string(videoEffectParameter->tabZoom[i]), i);
 
-	//if(supportOpenCL)
-	//	filtreInterface->AddTreeInfos(enableOpenCL, new CTreeElementValueInt(videoEffectParameter->enableOpenCL), &videoEffectParameter->enableOpenCL, 2, 2);
 	filtreInterface->AddTreeInfos(libelleScale, new CTreeElementValueInt(videoEffectParameter->ratioSelect), &formatPicture, 3, 3);
-	//filtreInterface->AddTreeInfos(libelleZoom, new CTreeElementValueInt(videoEffectParameter->zoomSelect), &zoomPicture,3,3);
-   // filtreInterface->AddTreeInfos(enableBicubicInterpolation, new CTreeElementValueInt(videoEffectParameter->BicubicEnable), &videoEffectParameter->BicubicEnable, 2, 2);
 	filtreInterface->AddTreeInfos(showFPS, new CTreeElementValueInt(videoEffectParameter->showFPS), &videoEffectParameter->showFPS, 2, 2);
 	filtreInterface->AddTreeInfos(enableEffect, new CTreeElementValueInt(videoEffectParameter->effectEnable), &videoEffectParameter->effectEnable, 2, 2);
 	filtreInterface->AddTreeInfos(libelleAutoContrast, new CTreeElementValueInt(videoEffectParameter->autoConstrast), &videoEffectParameter->autoConstrast, 2, 2);
 	filtreInterface->AddTreeInfos(enableFilmgrain, new CTreeElementValueInt(videoEffectParameter->filmgrainenable), &videoEffectParameter->filmgrainenable, 2, 2);
 	filtreInterface->AddTreeInfos(enableGrayScale, new CTreeElementValueInt(videoEffectParameter->grayEnable), &videoEffectParameter->grayEnable, 2, 2);
+	filtreInterface->AddTreeInfos(enableVHSEffect, new CTreeElementValueInt(videoEffectParameter->vhsEnable), &videoEffectParameter->vhsEnable, 2, 2);
 	filtreInterface->AddTreeInfos(enableBandCEffect, new CTreeElementValueInt(videoEffectParameter->bandcEnable), &videoEffectParameter->bandcEnable, 2, 2);
     filtreInterface->AddTreeInfos(toneConstrastLevel,new CTreeElementValueInt(videoEffectParameter->contrast), &elementContrast);
     filtreInterface->AddTreeInfos(toneBrightnessLevel,new CTreeElementValueInt(videoEffectParameter->brightness), &elementContrast);
@@ -224,6 +222,10 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	else if (key == effectDenoising)
 	{
 		videoEffectParameter->denoisingLevel = value;
+	}
+	else if (key == enableVHSEffect)
+	{
+		videoEffectParameter->vhsEnable = value;
 	}
 	else if (key == libelleStabilizeNbFrame)
 	{

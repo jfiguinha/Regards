@@ -7,6 +7,7 @@ uniform float right;
 uniform float bottom;
 uniform int effectenable;
 uniform int vhsEffect;
+uniform float iTime;
 uniform int grayscale;
 uniform int sharpenMasking;
 uniform int tone;
@@ -190,7 +191,6 @@ vec4 vhsImage(vec4 color)
     vec2 uv;
 	uv.x = gl_TexCoord[0].s;
 	uv.y = gl_TexCoord[0].t;   
-    float iTime = 60.0;
 
     for (float i = 0.0; i < 0.71; i += 0.1313)
     {
@@ -357,6 +357,11 @@ void main(void)
 			return;
 		}
 		
+        if(vhsEffect == 1)
+        {
+            src_color = vhsImage(src_color);
+        }		
+		
 		src_color = ApplyFilter(src_color);
 		
 		if(denoise == 1)
@@ -377,10 +382,7 @@ void main(void)
 			src_color = src_color+noise*grainamount;
 		}
 
-        if(vhsEffect == 1)
-        {
-            src_color = vhsImage(src_color);
-        }
+
 	}
 	gl_FragColor = src_color;
 }

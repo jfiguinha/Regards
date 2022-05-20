@@ -48,6 +48,7 @@ namespace Regards
 			wxString colorBoostRed;
 			wxString colorBoostGreen;
 			wxString colorBoostBlue;
+			wxString enableVHSEffect;
 			wxString showFPS;
 			wxString libelleAudio;
 			wxString libelleVideo;
