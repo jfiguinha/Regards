@@ -1,7 +1,3 @@
-//--------------------------------------------------------------
-//To Optimize : https://zz85.github.io/glsl-optimizer/
-//--------------------------------------------------------------
-
 uniform sampler2D texUnit;
 uniform float fWidth;
 uniform float fHeight;
