@@ -59,6 +59,7 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree& them
 	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CTreeWindow::OnMoveRight));
 	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CTreeWindow::OnMoveTop));
 	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CTreeWindow::OnMoveBottom));
+	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CTreeWindow::OnMouseLeave));
 }
 
 
@@ -81,6 +82,12 @@ void CTreeWindow::OnMoveTop(wxCommandEvent& event)
 	int pos = event.GetInt();
 	posHauteur = pos;
 	Resize();
+}
+
+void CTreeWindow::OnMouseLeave(wxMouseEvent& event)
+{
+	if (HasCapture())
+		ReleaseMouse();
 }
 
 void CTreeWindow::OnMoveBottom(wxCommandEvent& event)

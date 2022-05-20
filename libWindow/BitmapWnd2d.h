@@ -62,7 +62,7 @@ namespace Regards
 			void OnEraseBackground(wxEraseEvent& event) override
 			{
 			};
-
+			void OnMouseLeave(wxMouseEvent& event);
 			void OnTimer(wxTimerEvent& event);
 			void OnCommand(wxCommandEvent& event);
 

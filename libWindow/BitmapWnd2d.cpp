@@ -26,7 +26,13 @@ CBitmapWnd2D::CBitmapWnd2D(wxWindow* parent, wxWindowID id)
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd2D::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd2D::OnMouseCaptureLost));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWnd2D::OnIdle));
+	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CBitmapWnd2D::OnMouseLeave));
+}
 
+void CBitmapWnd2D::OnMouseLeave(wxMouseEvent& event)
+{
+	if (HasCapture())
+		ReleaseMouse();
 }
 
 void CBitmapWnd2D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender)

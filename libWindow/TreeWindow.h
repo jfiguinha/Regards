@@ -51,6 +51,7 @@ namespace Regards
 			void OnLDoubleClick(wxMouseEvent& event);
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
+			void OnMouseLeave(wxMouseEvent& event);
 
 			void OnMouseCaptureLost(wxMouseEvent& event)
 			{

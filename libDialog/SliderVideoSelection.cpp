@@ -330,6 +330,9 @@ void CSliderVideoSelection::OnMouseLeave(wxMouseEvent& event)
 {
 	m_bTracking = FALSE;
 	m_bMouseOver = false;
+
+	if (HasCapture())
+		ReleaseMouse();
 }
 
 void CSliderVideoSelection::OnMouseHover(wxMouseEvent& event)

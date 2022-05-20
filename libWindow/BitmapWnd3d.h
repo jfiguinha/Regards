@@ -43,6 +43,8 @@ namespace Regards
 			void OnMouseCaptureLost(wxMouseEvent& event)
 			{
 			};
+
+			void OnMouseLeave(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);

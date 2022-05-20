@@ -55,7 +55,6 @@ namespace Regards
 			void OnTimerPageRight(wxTimerEvent& event);
 			void OnTimerStopMoving(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
-
 			void OnEraseBackground(wxEraseEvent& event) override
 			{
 			};
