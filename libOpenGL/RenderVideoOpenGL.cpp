@@ -36,7 +36,7 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 
 
 void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter,
-                                          const wxFloatRect& rect, const bool& inverted)
+                                          const wxFloatRect& rect, const float &iTime, const bool& inverted)
 {
 	glTexture->Enable();
 
@@ -85,8 +85,16 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 			}
 			if (!m_pShader->SetIntegerParam("effectenable", effectParameter->effectEnable))
 			{
-				printf("SetParam grayscale failed \n ");
+				printf("SetParam effectenable failed \n ");
 			}
+			if (!m_pShader->SetIntegerParam("vhsEffect",1))
+			{
+				printf("SetParam vhsEffect failed \n ");
+			}
+			if (!m_pShader->SetParam("iTime",iTime))
+			{
+				printf("SetParam vhsEffect failed \n ");
+			}            
 			if (!m_pShader->SetIntegerParam("grayscale", effectParameter->grayEnable))
 			{
 				printf("SetParam grayscale failed \n ");

@@ -39,7 +39,7 @@ namespace Regards
 			void DeleteSubtitle();
 
 
-			void RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect,
+			void RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float &iTime,
 			                      const bool& inverted);
 
 			bool IsCopyDirect()
