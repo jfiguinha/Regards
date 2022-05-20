@@ -40,7 +40,7 @@ namespace Regards
 
 			bool convertToGLTexture2D(GLTexture* glTexture);
 			virtual ~COpenCLEffect();
-            int LensDistortionFilter(const int &size){ return -1; };
+            int LensDistortionFilter(const int &size);
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };
 			int VignetteEffect(const double& radius = 1.0, const double& power = 0.8) { return -1; };
 			int MeanShift(const float& fSpatialRadius, const float& fColorRadius) { return -1; };

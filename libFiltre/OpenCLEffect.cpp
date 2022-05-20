@@ -34,6 +34,7 @@ bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabil
 	return true;
 }
 
+
 bool COpenCLEffect::convertToGLTexture2D(GLTexture* glTexture)
 {
 	bool isOk = false;
@@ -187,6 +188,20 @@ wxImage COpenCLEffect::GetwxImage()
 	}
 	return GetwxImage(input);
 	
+}
+
+
+int COpenCLEffect::LensDistortionFilter(const int& size)
+{
+	if (preview && !paramOutput.empty())
+	{
+		openclFilter->LensDistortion(size, paramOutput);
+	}
+	else
+	{
+		openclFilter->LensDistortion(size, input);
+	}
+	return 0;
 }
 
 //-----------------------------------------------------------------------------------------------

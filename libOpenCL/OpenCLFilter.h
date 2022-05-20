@@ -53,6 +53,7 @@ namespace Regards
 			void Median(cv::UMat& inputData);
 			void Noise(cv::UMat& inputData);
 			void Flip(const wxString &functionName, cv::UMat& inputData);
+			void LensDistortion(const float& strength, cv::UMat& inputData);
 			void Swirl(const float &radius, const float &angle, cv::UMat& inputData);
 			void BrightnessAndContrast(const double &brightness, const double &contrast, cv::UMat& inputData);
 			void ColorEffect(const wxString &functionName, cv::UMat& inputData);

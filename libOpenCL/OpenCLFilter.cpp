@@ -912,6 +912,80 @@ void COpenCLFilter::Posterize(const float &level, const float &gamma, cv::UMat &
 }
 
 
+void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
+{
+	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::UMat cvDestBgra;
+
+	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+
+	Mat local;
+	cvDestBgra.copyTo(local);
+
+	double _strength = (double)strength / 100;
+	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
+
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_DISTORTION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(flag);
+
+		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(cvDestBgra.size().width);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(cvDestBgra.size().height);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterFloat* paramLevel = new COpenCLParameterFloat();
+		paramLevel->SetLibelle("correctionRadius");
+		paramLevel->SetValue(correctionRadius);
+		vecParam.push_back(paramLevel);
+
+		try
+		{
+			int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+			int type = CV_MAKE_TYPE(depth, 4);
+			dest.create((int)inputData.rows, (int)inputData.cols, type);
+			program->SetParameter(&vecParam, inputData.cols, inputData.rows, (cl_mem)dest.handle(cv::ACCESS_WRITE));
+			program->SetKeepOutput(true);
+			program->ExecuteProgram(programCL->GetProgram(), "Distortion");
+
+		}
+		catch (...)
+		{
+
+		}
+		delete program;
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
+	inputData.copyTo(local);
+	imwrite("d:\\dist.jpeg", local);
+}
+
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 {
 	cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);

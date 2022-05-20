@@ -45,7 +45,7 @@ int CLensDistortion::GetNameFilter()
 
 int CLensDistortion::GetTypeFilter()
 {
-	return CONVOLUTION_EFFECT; //
+	return SPECIAL_EFFECT; //
 }
 
 void CLensDistortion::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -127,23 +127,12 @@ bool CLensDistortion::IsSourcePreview()
 
 void CLensDistortion::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-    CLensDistortionEffectParameter * lensEffectParameter = (CLensDistortionEffectParameter *)effectParameter;
-	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && source != nullptr)
 	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-        
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->LensDistortionFilter(lensEffectParameter->strength);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
-
-		filtreEffet->SetBitmap(imageLoad);
-		delete imageLoad;
+		CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
+		filtreEffet->LensDistortionFilter(lensEffectParameter->strength);
 	}
+
 }
 
 
@@ -156,16 +145,23 @@ CImageLoadingFormat* CLensDistortion::ApplyEffect(CEffectParameter* effectParame
 	CImageLoadingFormat* imageLoad = nullptr;
 	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
 	{
-		CLensDistortionEffectParameter * lensEffectParameter = (CLensDistortionEffectParameter *)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
-		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-		filtre->LensDistortionFilter(lensEffectParameter->strength);
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
-		delete filtre;
+		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
+
+		if (source != nullptr && filtre != nullptr)
+		{
+			source->RotateExif(source->GetOrientation());
+			CImageLoadingFormat image(false);
+			image.SetPicture(source);
+			filtre->SetBitmap(&image);
+
+			CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
+			filtre->LensDistortionFilter(lensEffectParameter->strength);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			imageLoad->SetPicture(bitmapOut);
+		}
 	}
 
 	return imageLoad;
+
 }
