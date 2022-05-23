@@ -5,7 +5,7 @@
 #include <libPicture.h>
 #include <MediaInfo.h>
 #include <picture_id.h>
-#include <libexif/exif-data.h>
+//#include <libexif/exif-data.h>
 #include "avif.h"
 #include "Heic.h"
 #include "ConvertUtility.h"
