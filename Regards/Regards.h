@@ -215,7 +215,7 @@ public:
 			if (!MyApp::TestAudioDevice("SDL_AUDIODRIVER=winmm"))
 			{
 				wxMessageBox(_T("Could not initialize SDL Audio Driver"));
-				exit(1);
+				//exit(1);
 			}
 		}
 #endif

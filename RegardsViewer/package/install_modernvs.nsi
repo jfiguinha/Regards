@@ -6,7 +6,7 @@
 ;Include Modern UI
 
 !include "MUI2.nsh"
-!include "ZipDLL.nsh"
+!include /CHARSET=CP1252 zipdll.nsh
 !include "FileAssociation.nsh"
 
 # Reserve plugin files (good practice)
