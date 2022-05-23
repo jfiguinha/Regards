@@ -265,7 +265,6 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	else
 	{
 		CLibPicture libPicture;
-
 		vector<CImageVideoThumbnail*> listThumbnail = libPicture.LoadDefaultVideoThumbnail(szFileName, size);
 		//Création de la liste des icones
 
@@ -499,8 +498,11 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 		}
 	}
 
+
+	CLibPicture libPicture;
+	int nbImage = libPicture.GetNbImage(videoFilename);
 	InitScrollingPos();
-	InitWithDefaultPicture(videoFilename, 20);
+	InitWithDefaultPicture(videoFilename, nbImage);
 }
 
 
