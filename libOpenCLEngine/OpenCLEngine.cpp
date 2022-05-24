@@ -299,30 +299,38 @@ int COpenCLDeviceList::IsExtensionSupported(const char* support_str, const char*
 
 wxString COpenCLDeviceList::GetDeviceInfo(cl_device_id device, cl_device_info param_name)
 {
-	// Get the length for the i-th device name
-	size_t device_name_length = 0;
-	cl_int err = clGetDeviceInfo(
-		device,
-		param_name,
-		0,
-		nullptr,
-		&device_name_length
-	);
-	Error::CheckError(err);
+	try
+	{	// Get the length for the i-th device name
+		size_t device_name_length = 0;
+		cl_int err = clGetDeviceInfo(
+			device,
+			param_name,
+			0,
+			nullptr,
+			&device_name_length
+		);
+		Error::CheckError(err);
 
-	// Get the name itself for the i-th device
-	// use vector for automatic memory management
-	vector<char> device_name(device_name_length);
-	err = clGetDeviceInfo(
-		device,
-		param_name,
-		device_name_length,
-		&device_name[0],
-		nullptr
-	);
-	Error::CheckError(err);
+		// Get the name itself for the i-th device
+		// use vector for automatic memory management
+		vector<char> device_name(device_name_length);
+		err = clGetDeviceInfo(
+			device,
+			param_name,
+			device_name_length,
+			&device_name[0],
+			nullptr
+		);
+		Error::CheckError(err);
 
-	return wxString(&device_name[0]);
+		return wxString(&device_name[0]);
+	}
+	catch(...)
+	{
+
+	}
+
+	return "";
 }
 
 void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_platform_id platform,
@@ -360,6 +368,8 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice*>& listOfDevice, cl_
 		cl_device_type type;
 		clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
 		wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
+		if (deviceName == "")
+			continue;
 
 #ifdef __TEST_WITHOUTSHARINGOPENGL__
 
@@ -580,9 +590,12 @@ void COpenCLDeviceList::GetAllDevice()
 {
 	printf("GetAllDevice \n");
 	vector<OpenCLPlatform*> platformList = COpenCLPlatformList::GetPlatform();
+
 	for (OpenCLPlatform* platform : platformList)
 	{
-		if (platform != nullptr)
+		int iPos = platform->platformName.find("FPGA");
+
+		if (platform != nullptr && !(iPos > 0))
 		{
 			printf("Platform Name : %s \n", CConvertUtility::ConvertToUTF8(platform->platformName));
 			cl_device_type deviceType = ParseDeviceType("ALL");
