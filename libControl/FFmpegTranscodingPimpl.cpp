@@ -261,6 +261,9 @@ int CFFmpegTranscodingPimpl::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
+	if (openclContext == nullptr)
+		supportOpenCL = 0;
+
 	return supportOpenCL;
 }
 
