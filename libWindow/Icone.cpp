@@ -663,6 +663,177 @@ void CIcone::CalculPosition(const wxImage& render)
 	posYThumbnail = localy + top;
 }
 
+
+namespace
+{
+
+	struct BicubicPrecalc
+	{
+		double weight[4];
+		int offset[4];
+	};
+
+
+	// The following two local functions are for the B-spline weighting of the
+	// bicubic sampling algorithm
+	static inline double spline_cube(double value)
+	{
+		return value <= 0.0 ? 0.0 : value * value * value;
+	}
+
+	static inline double spline_weight(double value)
+	{
+		return (spline_cube(value + 2) -
+			4 * spline_cube(value + 1) +
+			6 * spline_cube(value) -
+			4 * spline_cube(value - 1)) / 6;
+	}
+
+
+	inline void DoCalc(BicubicPrecalc& precalc, double srcpixd, int oldDim)
+	{
+		const double dd = srcpixd - static_cast<int>(srcpixd);
+
+		for (int k = -1; k <= 2; k++)
+		{
+			precalc.offset[k + 1] = srcpixd + k < 0.0
+				? 0
+				: srcpixd + k >= oldDim
+				? oldDim - 1
+				: static_cast<int>(srcpixd + k);
+
+			precalc.weight[k + 1] = spline_weight(k - dd);
+		}
+	}
+
+	void ResampleBicubicPrecalc(wxVector<BicubicPrecalc>& aWeight, int oldDim)
+	{
+		const int newDim = aWeight.size();
+		wxASSERT(oldDim > 0 && newDim > 0);
+
+		if (newDim > 1)
+		{
+			// We want to map pixels in the range [0..newDim-1]
+			// to the range [0..oldDim-1]
+			const double scale_factor = static_cast<double>(oldDim - 1) / (newDim - 1);
+
+			for (int dstd = 0; dstd < newDim; dstd++)
+			{
+				// We need to calculate the source pixel to interpolate from - Y-axis
+				const double srcpixd = static_cast<double>(dstd) * scale_factor;
+
+				DoCalc(aWeight[dstd], srcpixd, oldDim);
+			}
+		}
+		else
+		{
+			// Let's take the pixel from the center of the source image.
+			const double srcpixd = static_cast<double>(oldDim - 1) / 2.0;
+
+			DoCalc(aWeight[0], srcpixd, oldDim);
+		}
+	}
+
+} // anonymous namespace
+
+
+// This is the bicubic resampling algorithm
+wxImage CIcone::ResampleBicubic(wxImage * src, int width, int height)
+{
+	// This function implements a Bicubic B-Spline algorithm for resampling.
+	// This method is certainly a little slower than wxImage's default pixel
+	// replication method, however for most reasonably sized images not being
+	// upsampled too much on a fairly average CPU this difference is hardly
+	// noticeable and the results are far more pleasing to look at.
+	//
+	// This particular bicubic algorithm does pixel weighting according to a
+	// B-Spline that basically implements a Gaussian bell-like weighting
+	// kernel. Because of this method the results may appear a bit blurry when
+	// upsampling by large factors.  This is basically because a slight
+	// gaussian blur is being performed to get the smooth look of the upsampled
+	// image.
+
+	// Edge pixels: 3-4 possible solutions
+	// - (Wrap/tile) Wrap the image, take the color value from the opposite
+	// side of the image.
+	// - (Mirror)    Duplicate edge pixels, so that pixel at coordinate (2, n),
+	// where n is nonpositive, will have the value of (2, 1).
+	// - (Ignore)    Simply ignore the edge pixels and apply the kernel only to
+	// pixels which do have all neighbours.
+	// - (Clamp)     Choose the nearest pixel along the border. This takes the
+	// border pixels and extends them out to infinity.
+	//
+	// NOTE: below the y_offset and x_offset variables are being set for edge
+	// pixels using the "Mirror" method mentioned above
+
+	wxImage ret_image;
+
+	ret_image.Create(width, height, false);
+
+	const unsigned char* src_data = src->GetData();
+	unsigned char* dst_data = ret_image.GetData();
+
+
+	wxCHECK_MSG(dst_data, ret_image, wxS("unable to create image"));
+
+	// Precalculate weights
+	wxVector<BicubicPrecalc> vPrecalcs(height);
+	wxVector<BicubicPrecalc> hPrecalcs(width);
+
+	ResampleBicubicPrecalc(vPrecalcs, src->GetHeight());
+	ResampleBicubicPrecalc(hPrecalcs, src->GetWidth());
+
+	tbb::parallel_for(0, height, 1, [=](int dsty) 
+	{
+			// We need to calculate the source pixel to interpolate from - Y-axis
+			const BicubicPrecalc& vPrecalc = vPrecalcs[dsty];
+
+			for (int dstx = 0; dstx < width; dstx++)
+			{
+				int dst_pixel_index = dsty * width * 3 + dstx * 3;
+				// X-axis of pixel to interpolate from
+				const BicubicPrecalc& hPrecalc = hPrecalcs[dstx];
+
+				// Sums for each color channel
+				double sum_r = 0, sum_g = 0, sum_b = 0, sum_a = 0;
+
+				// Here we actually determine the RGBA values for the destination pixel
+				for (int k = -1; k <= 2; k++)
+				{
+					// Y offset
+					const int y_offset = vPrecalc.offset[k + 1];
+
+					// Loop across the X axis
+					for (int i = -1; i <= 2; i++)
+					{
+						// X offset
+						const int x_offset = hPrecalc.offset[i + 1];
+
+						// Calculate the exact position where the source data
+						// should be pulled from based on the x_offset and y_offset
+						int src_pixel_index = y_offset * src->GetWidth() + x_offset;
+
+						// Calculate the weight for the specified pixel according
+						// to the bicubic b-spline kernel we're using for
+						// interpolation
+						const double
+							pixel_weight = vPrecalc.weight[k + 1] * hPrecalc.weight[i + 1];
+
+						sum_r += src_data[src_pixel_index * 3 + 0] * pixel_weight;
+						sum_g += src_data[src_pixel_index * 3 + 1] * pixel_weight;
+						sum_b += src_data[src_pixel_index * 3 + 2] * pixel_weight;
+					}
+				}
+				dst_data[dst_pixel_index + 0] = (unsigned char)(sum_r + 0.5);
+				dst_data[dst_pixel_index + 1] = (unsigned char)(sum_g + 0.5);
+				dst_data[dst_pixel_index + 2] = (unsigned char)(sum_b + 0.5);
+
+			}
+		});
+
+	return ret_image;
+}
+
 wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, const bool& flipVertical, const bool &forceRedraw)
 {
 	wxImage image;
@@ -700,12 +871,14 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 				if (!image.IsOk())
 				{
 					photoDefault = false;
+					/*
 					wxColor colorToReplace = wxColor(0, 0, 0);
 					wxColor colorActifReplacement = wxColor(255, 255, 255);
 					image = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", themeIcone.GetWidth(), themeIcone.GetHeight());
 					image.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 						colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-
+					*/
+					image = wxImage(themeIcone.GetWidth(), themeIcone.GetHeight());
 					returnValue = 1;
 				}
 				else
@@ -721,18 +894,18 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 				GetBitmapDimension(image.GetWidth(), image.GetHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight,
 					ratio);
 
-				/*
-				cv::Mat out;
-				cv::Mat in = CLibPicture::mat_from_wx(image);
-				cv::resize(in, out, cv::Size(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight), cv::INTER_CUBIC);
-				scale = CLibPicture::wx_from_mat(out);
-				
-				*/
 				if (config->GetThumbnailQuality() == 0)
 					scale = image.Scale(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+				else if(photoDefault)
+					scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 				else
-					scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-				
+				{
+					wxColor colorToReplace = wxColor(0, 0, 0);
+					wxColor colorActifReplacement = wxColor(255, 255, 255);
+					scale = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+					scale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+						colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+				}
 				
 			}
 
