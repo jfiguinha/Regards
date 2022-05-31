@@ -250,8 +250,12 @@ void CIcone::SetPictureLoading(const wxImage& imageLoading)
 
 wxImage CIcone::GenerateVideoIcone()
 {
-	wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
-	return image.ResampleBicubic(themeIcone.GetWidth(), image.GetHeight());
+	if (videoCadre.GetWidth() != themeIcone.GetWidth())
+	{
+		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
+		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+	}
+	return videoCadre;
 }
 
 int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int& posHauteur)
@@ -286,7 +290,7 @@ int CIcone::OnClick(const int& x, const int& y, const int& posLargeur, const int
 	return 0;
 }
 
-void CIcone::RenderPictureBitmap(wxDC* memDC, const wxImage& bitmapScale, const int& type)
+void CIcone::RenderPictureBitmap(wxDC* memDC, wxImage& bitmapScale, const int& type)
 {
 	wxRect rc;
 	rc.x = 0;
@@ -444,7 +448,7 @@ void CIcone::SetShowDelete(const bool& value)
 	showDeleted = value;
 }
 
-void CIcone::RenderVideoBitmap(wxDC* memDC, const wxImage& bitmapScale, const int& type)
+void CIcone::RenderVideoBitmap(wxDC* memDC, wxImage& bitmapScale, const int& type)
 {
 	wxImage bitmapImageActif;
 	wxImage bitmapImageCadreVideo = GenerateVideoIcone();
@@ -492,7 +496,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, const wxImage& bitmapScale, const in
 	//Size Thumbnail Max
 	int heightThumbnailMax = (themeIcone.GetHeight() - 40) - (bitmapImageCadreVideo.GetHeight() * 2);
 	if (bitmapScale.GetHeight() > heightThumbnailMax)
-		bitmapImageActif = bitmapScale.ResampleBicubic(bitmapScale.GetWidth(), heightThumbnailMax);
+		bitmapImageActif = ResampleBicubic(&bitmapScale, bitmapScale.GetWidth(), heightThumbnailMax);
 	else
 		bitmapImageActif = bitmapScale;
 
@@ -573,7 +577,7 @@ void CIcone::RenderVideoBitmap(wxDC* memDC, const wxImage& bitmapScale, const in
 	}
 }
 
-void CIcone::RenderBitmap(wxDC* memdc, const wxImage& bitmapScale, const int& type)
+void CIcone::RenderBitmap(wxDC* memdc, wxImage& bitmapScale, const int& type)
 {
 	if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
 		return RenderVideoBitmap(memdc, bitmapScale, type);

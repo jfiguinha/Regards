@@ -97,9 +97,9 @@ namespace Regards
 
 		private:
 			
-			void RenderPictureBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
-			void RenderVideoBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
-			void RenderBitmap(wxDC* dc, const wxImage& bitmapScale, const int& type);
+			void RenderPictureBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);
+			void RenderVideoBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);
+			void RenderBitmap(wxDC* dc, wxImage& bitmapScale, const int& type);
 
 			void CalculPosition(const wxImage& render);
 			void GetBitmapDimension(const int& width, const int& height, int& tailleAffichageBitmapWidth,
@@ -122,7 +122,8 @@ namespace Regards
 			//---------------------------------------------------
 			//int interpolationMethod;
 			CThumbnailData* pThumbnailData;
-
+			
+			wxImage videoCadre;
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
 			wxImage bitmapDelete;
