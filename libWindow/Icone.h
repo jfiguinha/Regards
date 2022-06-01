@@ -123,7 +123,8 @@ namespace Regards
 			//int interpolationMethod;
 			CThumbnailData* pThumbnailData;
 			
-			wxImage videoCadre;
+			static wxImage videoCadre;
+			static wxImage photoTemp;
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
 			wxImage bitmapDelete;

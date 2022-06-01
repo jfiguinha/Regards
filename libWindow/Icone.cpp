@@ -17,6 +17,9 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 
 
+wxImage CIcone::videoCadre;
+wxImage CIcone::photoTemp;
+
 void CIcone::ReinitPos()
 {
 	x = oldx;
@@ -904,11 +907,15 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 				else
 				{
-					wxColor colorToReplace = wxColor(0, 0, 0);
-					wxColor colorActifReplacement = wxColor(255, 255, 255);
-					scale = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
-					scale.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
-						colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+					if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() != tailleAffichageBitmapHeight)
+					{
+						wxColor colorToReplace = wxColor(0, 0, 0);
+						wxColor colorActifReplacement = wxColor(255, 255, 255);
+						photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+						photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+							colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+					}
+					scale = photoTemp;
 				}
 				
 			}
