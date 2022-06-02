@@ -183,18 +183,17 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	{
 
 		cl_int status = 0;
-#ifdef __APPLE__
+
 		Mat local;
 		inputData.copyTo(local);
-#endif
+		glTexture->SetData(local);
+
+		/*
+		cl_command_queue q = openclContext->GetCommandQueue();
+
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
-
-
-
-
-		cl_command_queue q = openclContext->GetCommandQueue();
 
 		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
@@ -218,7 +217,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		status = clReleaseMemObject(clImage); // TODO RAII
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
-
+		*/
 		isOk = true;
 	}
 	catch (cv::Exception& e)
@@ -494,8 +493,8 @@ void COpenCLFilter::FiltreMosaic(cv::UMat& inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_MOSAIC");
@@ -584,8 +583,8 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
@@ -780,8 +779,8 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram(programName);
@@ -861,8 +860,8 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, cv::UMat& 
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -919,8 +918,8 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 	cv::UMat cvDestBgra;
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	double _strength = (double)strength / 100;
 	double correctionRadius = sqrt(pow(inputData.rows, 2) + pow(inputData.cols, 2)) / _strength;
@@ -1041,8 +1040,8 @@ void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_COLOR");
@@ -1113,8 +1112,8 @@ void COpenCLFilter::Noise(cv::UMat& inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_NOISE");
@@ -1191,8 +1190,8 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inp
 
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	Mat local;
-	cvDestBgra.copyTo(local);
+	//Mat local;
+	//cvDestBgra.copyTo(local);
 
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 
@@ -1512,9 +1511,11 @@ cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut,
 			rectGlobal.width = inputData.cols - rectGlobal.x;
 		}
 
-		cv::UMat crop;
-		inputData(rectGlobal).copyTo(crop);
-		crop.copyTo(cvImage);
+		//cv::UMat crop;
+		inputData(rectGlobal).copyTo(cvImage);
+		//Mat global;
+		//cvImage.copyTo(global);
+		//crop.copyTo(cvImage);
 		//cvImage = cvImage(rectGlobal);
 
 		if (angle == 90)
