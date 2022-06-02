@@ -912,7 +912,18 @@ wxBitmap CIcone::GetBitmapIcone(int& returnValue, const bool& flipHorizontal, co
 					scale = ResampleBicubic(&image, tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
 				else
 				{
-					if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() != tailleAffichageBitmapHeight)
+					if (photoTemp.IsOk())
+					{
+						if (photoTemp.GetWidth() != tailleAffichageBitmapWidth || photoTemp.GetHeight() != tailleAffichageBitmapHeight)
+						{
+							wxColor colorToReplace = wxColor(0, 0, 0);
+							wxColor colorActifReplacement = wxColor(255, 255, 255);
+							photoTemp = CLibResource::CreatePictureFromSVG("IDB_PHOTOTEMP", tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
+							photoTemp.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+								colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+						}
+					}
+					else
 					{
 						wxColor colorToReplace = wxColor(0, 0, 0);
 						wxColor colorActifReplacement = wxColor(255, 255, 255);

@@ -154,6 +154,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	cl_int err = 0;
 	size_t global_work_size[2] = {static_cast<size_t>(width), static_cast<size_t>(height)};
 	//size_t offset[2] = { 0, PAD_LINES };
+	cl_command_queue q = openclContext->GetCommandQueue();
 
 	if (cl_output_buffer == static_cast<cl_mem>(nullptr))
 	{
@@ -181,24 +182,21 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	}
 
 	cl_event ev;
-	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
+	err = clEnqueueNDRangeKernel(q, kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
 	                             global_work_size, nullptr, 0, nullptr, nullptr);
 	Error::CheckError(err);
 
-	err = clFlush(openclContext->GetCommandQueue());
+	err = clFlush(q);
 	Error::CheckError(err);
 
-	err = clFinish(openclContext->GetCommandQueue());
+	err = clFinish(q);
 	Error::CheckError(err);
-
-
-	wxMilliSleep(10);
 
 	if (!keepMemory)
 	{
 		if (flag == CL_MEM_USE_HOST_PTR)
 		{
-			void* tmp_ptr = clEnqueueMapBuffer(openclContext->GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0,
+			void* tmp_ptr = clEnqueueMapBuffer(q, cl_output_buffer, true, CL_MAP_READ, 0,
 			                                   outputBufferSize, 0, nullptr, nullptr, &err);
 			Error::CheckError(err);
 			if (tmp_ptr != data)
@@ -207,18 +205,18 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 				throw Error("clEnqueueMapBuffer failed to return original pointer");
 			}
 
-			err = clFinish(openclContext->GetCommandQueue());
+			err = clFinish(q);
 			Error::CheckError(err);
 
-			err = clEnqueueUnmapMemObject(openclContext->GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+			err = clEnqueueUnmapMemObject(q, cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
 			Error::CheckError(err);
 		}
 		else
 		{
-			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, outputBufferSize, data,
+			err = clEnqueueReadBuffer(q, cl_output_buffer, CL_TRUE, 0, outputBufferSize, data,
 			                          0, nullptr, nullptr);
 			Error::CheckError(err);
-			err = clFinish(openclContext->GetCommandQueue());
+			err = clFinish(q);
 			Error::CheckError(err);
 		}
 
@@ -238,6 +236,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wxString& kernelName,
                                              vector<COpenCLParameter*>* vecParam, int width, int height)
 {
+	cl_command_queue q = openclContext->GetCommandQueue();
 	cl_int err = 0;
 	kernel = clCreateKernel(program, kernelName.c_str(), &err);
 	Error::CheckError(err);
@@ -251,17 +250,15 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wx
 		parameter->Add(kernel, numArg++);
 	}
 
-	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
+	err = clEnqueueNDRangeKernel(q, kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
 	                             global_work_size, nullptr, 0, nullptr, nullptr);
 	Error::CheckError(err);
 
-	err = clFlush(openclContext->GetCommandQueue());
+	err = clFlush(q);
 	Error::CheckError(err);
 
-	err = clFinish(openclContext->GetCommandQueue());
+	err = clFinish(q);
 	Error::CheckError(err);
-
-	wxMilliSleep(10);
 
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -275,7 +272,7 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wx
 void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t* ls)
 {
 	cl_int err;
-
+	cl_command_queue q = openclContext->GetCommandQueue();
 	int numArg = 0;
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -291,16 +288,14 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 	cl_event event;
 
 	//clEnqueueNDRangeKernel(queue, dist_kernel, 2, offset, gs_d, ls, 0, NULL, &event)
-	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, &event);
+	err = clEnqueueNDRangeKernel(q, kernel, 2, offset, gs_d, ls, 0, nullptr, &event);
 	Error::CheckError(err);
 
-	err = clFlush(openclContext->GetCommandQueue());
+	err = clFlush(q);
 	Error::CheckError(err);
 
-	err = clFinish(openclContext->GetCommandQueue());
+	err = clFinish(q);
 	Error::CheckError(err);
-
-	wxMilliSleep(10);
 
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -324,6 +319,7 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 {
 	cl_event cl_perf_event = nullptr;
 	cl_int err;
+	cl_command_queue q = openclContext->GetCommandQueue();
 
 	if (cl_output_buffer == static_cast<cl_mem>(nullptr))
 	{
@@ -359,22 +355,20 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 	                               &local_size_max, nullptr);
 	Error::CheckError(err);
 
-	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, 1, nullptr, &global_size,
+	err = clEnqueueNDRangeKernel(q, kernel, 1, nullptr, &global_size,
 	                             local_size ? &local_size : nullptr, 0, nullptr, &cl_perf_event);
 
-	err = clFlush(openclContext->GetCommandQueue());
+	err = clFlush(q);
 	Error::CheckError(err);
 
-	err = clFinish(openclContext->GetCommandQueue());
+	err = clFinish(q);
 	Error::CheckError(err);
-
-	wxMilliSleep(10);
 
 	if (!keepMemory)
 	{
 		if (flag == CL_MEM_USE_HOST_PTR)
 		{
-			void* tmp_ptr = clEnqueueMapBuffer(openclContext->GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0,
+			void* tmp_ptr = clEnqueueMapBuffer(q, cl_output_buffer, true, CL_MAP_READ, 0,
 			                                   bitmapSize, 0, nullptr, nullptr, &err);
 			Error::CheckError(err);
 			if (tmp_ptr != data)
@@ -382,18 +376,18 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 				// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
 				throw Error("clEnqueueMapBuffer failed to return original pointer");
 			}
-			err = clFinish(openclContext->GetCommandQueue());
+			err = clFinish(q);
 			Error::CheckError(err);
 
-			err = clEnqueueUnmapMemObject(openclContext->GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+			err = clEnqueueUnmapMemObject(q, cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
 			Error::CheckError(err);
 		}
 		else
 		{
-			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, bitmapSize, data, 0,
+			err = clEnqueueReadBuffer(q, cl_output_buffer, CL_TRUE, 0, bitmapSize, data, 0,
 			                          nullptr, nullptr);
 			Error::CheckError(err);
-			err = clFinish(openclContext->GetCommandQueue());
+			err = clFinish(q);
 			Error::CheckError(err);
 		}
 

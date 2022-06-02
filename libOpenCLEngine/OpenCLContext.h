@@ -6,6 +6,7 @@
 #endif
 #include "OpenCLInfos.h"
 #include <opencv2/core/ocl.hpp>
+
 using namespace std;
 
 #define OPENCL_UCHAR 1
@@ -56,7 +57,7 @@ namespace Regards
 
 			cl_command_queue GetCommandQueue()
 			{
-				return queue;
+				return (cl_command_queue)cv::ocl::Queue::getDefault().ptr();;
 			}
             
             bool IsSharedContextCompatible()

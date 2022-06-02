@@ -157,7 +157,7 @@ int COpenCLContext::GenerateContext()
 	try
 	{
 		CreateContext();
-		CreateQueue();
+		//CreateQueue();
 		return 0;
 	}
 	catch (...)
