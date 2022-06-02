@@ -175,15 +175,16 @@ COpenCLFilter::~COpenCLFilter()
 
 void COpenCLFilter::ReallocMat(cv::UMat& inputData)
 {
-	/*
+
+    /*
 	cl_command_queue q = openclContext->GetCommandQueue();
 	uint8_t* y = new uint8_t[inputData.rows * inputData.cols * 3];
 	cl_int err = clEnqueueReadBuffer(q, (cl_mem)inputData.handle(cv::AccessFlag::ACCESS_READ), CL_TRUE, 0, inputData.rows * inputData.cols * 3, y, 0, nullptr, nullptr);
 	err = clFinish(q);
 	delete[] y;
-	*/
-	//Mat local;
-	//inputData.copyTo(local);
+*/
+	Mat local;
+	inputData.copyTo(local);
 }
 
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
@@ -197,13 +198,13 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		
 
 		cl_command_queue q = openclContext->GetCommandQueue();
-		ReallocMat(inputData);
+		//ReallocMat(inputData);
 
         cl_int status = 0;
 
 		//Mat local;
         //inputData.copyTo(local);
-		ReallocMat(inputData);
+		//ReallocMat(inputData);
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
@@ -1493,7 +1494,8 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int& method, cv::UMat & inputData, int flipH, int flipV, int angle, int ratio)
 {
 	cv::UMat cvImage;
-	inputData.copyTo(cvImage);
+	//inputData.copyTo(cvImage);
+    printf("Interpolation widthOut : %d heightOut : %d \n", widthOut, heightOut);
 
 	try
 	{
@@ -1536,19 +1538,19 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 			rectGlobal.height -= rectGlobal.y;
 		}
 
-		if ((rectGlobal.height + rectGlobal.y) > cvImage.rows)
+		if ((rectGlobal.height + rectGlobal.y) > inputData.rows)
 		{
-			rectGlobal.height = cvImage.rows - rectGlobal.y;
+			rectGlobal.height = inputData.rows - rectGlobal.y;
 		}
-		if ((rectGlobal.width + rectGlobal.x) > cvImage.cols)
+		if ((rectGlobal.width + rectGlobal.x) > inputData.cols)
 		{
-			rectGlobal.width = cvImage.cols - rectGlobal.x;
+			rectGlobal.width = inputData.cols - rectGlobal.x;
 		}
 
-		cv::UMat crop;
-		cvImage(rectGlobal).copyTo(crop);
-		crop.copyTo(cvImage);
-        //cvImage = cvImage(rectGlobal);
+		//cv::UMat cvImage;
+		//inputData(rectGlobal).copyTo(cvImage);
+		//crop.copyTo(cvImage);
+        cvImage = inputData(rectGlobal);
 
 		if (angle == 90)
 		{
@@ -1642,7 +1644,12 @@ cv::UMat COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut,
 		
 	}
 
-	
+	//UMat output;
+   // cvImage.copyTo(output);
+   
+   //	Mat local;
+	//cvImage.copyTo(local);
+   
 	return cvImage;
 }
 
