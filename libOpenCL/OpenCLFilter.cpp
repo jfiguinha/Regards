@@ -182,7 +182,11 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	try
 	{
 		cl_int status = 0;
-		
+#ifdef __WXGTK__
+        cv::Mat data;
+        inputData.copyTo(data);
+        glTexture->SetData(data);
+#else
 		cl_command_queue q = openclContext->GetCommandQueue();
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
@@ -211,7 +215,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		status = clReleaseMemObject(clImage); // TODO RAII
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
-		
+#endif
 		isOk = true;
 	}
 	catch (cv::Exception& e)
