@@ -490,7 +490,7 @@ COpenCLContext* COpenCLEngine::Create2DInstance()
 	{
 		cv::ocl::setUseOpenCL(true);
 		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
-		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::getCurrent());
+
 
 	}
 #endif
@@ -541,7 +541,6 @@ COpenCLContext* COpenCLEngine::CreateInstance()
 	{
 		cv::ocl::setUseOpenCL(true);
 		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
-		_singleton->SetOpenCVContext(cv::ocl::OpenCLExecutionContext::getCurrent());
 
 	}
 #endif

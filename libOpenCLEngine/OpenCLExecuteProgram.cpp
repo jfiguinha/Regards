@@ -180,13 +180,19 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 		parameter->Add(kernel, numArg++);
 	}
 
-
+	cl_event ev;
 	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
 	                             global_work_size, nullptr, 0, nullptr, nullptr);
 	Error::CheckError(err);
 
+	err = clFlush(openclContext->GetCommandQueue());
+	Error::CheckError(err);
+
 	err = clFinish(openclContext->GetCommandQueue());
 	Error::CheckError(err);
+
+
+	wxMilliSleep(10);
 
 	if (!keepMemory)
 	{
@@ -219,6 +225,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 		err = clReleaseMemObject(cl_output_buffer);
 		Error::CheckError(err);
 	}
+	
 
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -248,8 +255,13 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wx
 	                             global_work_size, nullptr, 0, nullptr, nullptr);
 	Error::CheckError(err);
 
+	err = clFlush(openclContext->GetCommandQueue());
+	Error::CheckError(err);
+
 	err = clFinish(openclContext->GetCommandQueue());
 	Error::CheckError(err);
+
+	wxMilliSleep(10);
 
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -282,9 +294,13 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, &event);
 	Error::CheckError(err);
 
+	err = clFlush(openclContext->GetCommandQueue());
+	Error::CheckError(err);
 
 	err = clFinish(openclContext->GetCommandQueue());
 	Error::CheckError(err);
+
+	wxMilliSleep(10);
 
 	for (auto it = vecParam->begin(); it != vecParam->end(); ++it)
 	{
@@ -345,8 +361,14 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 
 	err = clEnqueueNDRangeKernel(openclContext->GetCommandQueue(), kernel, 1, nullptr, &global_size,
 	                             local_size ? &local_size : nullptr, 0, nullptr, &cl_perf_event);
+
+	err = clFlush(openclContext->GetCommandQueue());
+	Error::CheckError(err);
+
 	err = clFinish(openclContext->GetCommandQueue());
 	Error::CheckError(err);
+
+	wxMilliSleep(10);
 
 	if (!keepMemory)
 	{

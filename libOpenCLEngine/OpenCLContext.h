@@ -83,15 +83,7 @@ namespace Regards
 				return platform_name;
 			}
 
-			cv::ocl::OpenCLExecutionContext GetContextForOpenCV()
-			{
-				return opencvContext;
-			}
 
-			void SetOpenCVContext(cv::ocl::OpenCLExecutionContext opencvContext)
-			{
-				this->opencvContext = opencvContext;
-			}
 
 		private:
 
@@ -107,7 +99,6 @@ namespace Regards
 			cl_context context;
             cl_device_type deviceType;
 			cl_command_queue queue;
-			cv::ocl::OpenCLExecutionContext opencvContext;
 			vector<COpenCLProgram *> listProgram;
 		};
 	}
