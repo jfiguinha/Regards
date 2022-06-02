@@ -1205,22 +1205,24 @@ wxImage CFiltreEffetCPU::GetwxImage()
 	return anImage;
 }
 
-cv::Mat CFiltreEffetCPU::Interpolation(cv::Mat & cvImage, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
+cv::Mat CFiltreEffetCPU::Interpolation(const cv::Mat & inputData, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)
 {
-
+	cv::Mat cvImage;
+	//cv::Mat cvImage;
+	//inputData.copyTo(cvImage);
 	try
 	{
-		float ratioX = (float)cvImage.cols / rc.width;
-		float ratioY = (float)cvImage.rows / rc.height;
+		float ratioX = (float)inputData.cols / rc.width;
+		float ratioY = (float)inputData.rows / rc.height;
 		if (angle == 90 || angle == 270)
 		{
-			ratioX = (float)cvImage.cols / (float)rc.height;
-			ratioY = (float)cvImage.rows / (float)rc.width;
+			ratioX = (float)inputData.cols / (float)rc.height;
+			ratioY = (float)inputData.rows / (float)rc.width;
 		}
 
 		cv::Rect rectGlobal;
-		cv::Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(cvImage.cols, cvImage.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
-		cv::Rect rect_end = CFiltreEffetCPUImpl::CalculRect(cvImage.cols, cvImage.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
+		cv::Rect rect_begin = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, 0, 0, rc.x, rc.y);
+		cv::Rect rect_end = CFiltreEffetCPUImpl::CalculRect(inputData.cols, inputData.rows, widthOut, heightOut, flipH, flipV, angle, ratioX, ratioY, widthOut, heightOut, rc.x, rc.y);
 		rectGlobal.x = rect_begin.x;
 		rectGlobal.y = rect_begin.y;
 		rectGlobal.width = rect_end.x;
@@ -1249,18 +1251,18 @@ cv::Mat CFiltreEffetCPU::Interpolation(cv::Mat & cvImage, const int& widthOut, c
 			rectGlobal.height -= rectGlobal.y;
 		}
 
-		if ((rectGlobal.height + rectGlobal.y) > cvImage.rows)
+		if ((rectGlobal.height + rectGlobal.y) > inputData.rows)
 		{
-			rectGlobal.height = cvImage.rows - rectGlobal.y;
+			rectGlobal.height = inputData.rows - rectGlobal.y;
 		}
-		if ((rectGlobal.width + rectGlobal.x) > cvImage.cols)
+		if ((rectGlobal.width + rectGlobal.x) > inputData.cols)
 		{
-			rectGlobal.width = cvImage.cols - rectGlobal.x;
+			rectGlobal.width = inputData.cols - rectGlobal.x;
 		}
-
-		cv::Mat crop;
-		cvImage(rectGlobal).copyTo(crop);
-		crop.copyTo(cvImage);
+		
+		//cv::Mat crop;
+		inputData(rectGlobal).copyTo(cvImage);
+		//crop.copyTo(cvImage);
 
 		if (angle == 90)
 		{
@@ -1358,6 +1360,7 @@ void CFiltreEffetCPU::Interpolation(const int& widthOut, const int& heightOut, c
 	int flipH, int flipV, int angle, int ratio)
 {
 	paramOutput = Interpolation(input, widthOut, heightOut, rc, method, flipH, flipV, angle, ratio);
+	preview = true;
 }
 
 
