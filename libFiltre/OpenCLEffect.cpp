@@ -8,7 +8,7 @@
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
 //
-#include "utility.h"
+
 #include <ImageLoadingFormat.h>
 #define minmax
 #include <DeepLearning.h>

@@ -67,6 +67,8 @@ namespace Regards
 			bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
 
 		protected:
+
+			void ReallocMat(cv::UMat& inputData);
 			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
 			CSuperSampling* superSampling;
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);

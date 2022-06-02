@@ -120,6 +120,7 @@
     <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
     <UseInteloneTBB>true</UseInteloneTBB>
     <UseInteloneMKL>No</UseInteloneMKL>
+    <InterproceduralOptimization>true</InterproceduralOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -388,7 +389,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libproto
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\epoxy-0.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\pcre2-16.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\pcre2-16d.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>IF NOT EXIST $(SolutionDir)\include\header_debug.pch $(ICInstallDir)bin\Intel64\clang++.exe -cc1 $(SolutionDir)\include\header.h -emit-pch -o $(SolutionDir)\include\header_debug.pch</Command>

@@ -253,7 +253,12 @@ void CIcone::SetPictureLoading(const wxImage& imageLoading)
 
 wxImage CIcone::GenerateVideoIcone()
 {
-	if (videoCadre.GetWidth() != themeIcone.GetWidth())
+	if (!videoCadre.IsOk())
+	{
+		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
+		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
+	}
+	else if (videoCadre.GetWidth() != themeIcone.GetWidth())
 	{
 		wxImage image = LoadImageResource(L"IDB_CADRE_VIDEO");
 		videoCadre = ResampleBicubic(&image, themeIcone.GetWidth(), image.GetHeight());
