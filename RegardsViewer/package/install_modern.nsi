@@ -17,13 +17,13 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
 ;--------------------------------
 ;General
-!define MUI_PRODUCT "Regards Viewer 2.67.4"
+!define MUI_PRODUCT "Regards Viewer 2.72.1"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
-  Name "Regards Viewer 2.67.4"
+  Name "Regards Viewer 2.72.1"
   OutFile "RegardsViewer2Setup.exe"
 
   ;Default installation folder
