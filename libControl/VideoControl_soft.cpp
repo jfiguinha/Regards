@@ -2017,7 +2017,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 	if (glTexture != nullptr)
 	{
-		glTexture->SetData(cvImage);
+		glTexture->SetData(bitmapOut);
 
 	}
 	return glTexture;
