@@ -5,16 +5,18 @@
 #include <mutex>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <OpenCLContext.h>
 using namespace std;
-
+using namespace Regards::OpenCL;
+extern COpenCLContext* openclContext;
 #ifdef WIN32
-wxString listHardware[] = { "cuda", "qsv", "d3d11va", "dxva2", "opencl"  };
+wxString listHardware[] = { "opencl", "cuda", "dxva2" ,"d3d11va",  "qsv"   };
 int sizeList = 5;
 #elif defined(__APPLE__)
-wxString listHardware[] = { "videotoolbox", "opencl" };
+wxString listHardware[] = { "opencl", "videotoolbox" };
 int sizeList = 2;
 #else
-wxString listHardware[] = { "vdpau", "cuda", "vaapi", "opencl", "qsv" };
+wxString listHardware[] = { "opencl", "vdpau", "cuda", "vaapi", "qsv" };
 int sizeList = 5;
 #endif
 
@@ -816,11 +818,11 @@ int CFFmfcPimpl::video_thread(void* arg)
 		if (!ret)
 			continue;
 
-			AVRational tb_frame = { frame_rate.den, frame_rate.num };
-			duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
-			pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-			ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
-			av_frame_unref(frame);
+		AVRational tb_frame = { frame_rate.den, frame_rate.num };
+		duration = (frame_rate.num && frame_rate.den ? av_q2d(tb_frame) : 0);
+		pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
+		ret = is->_pimpl->queue_picture(is, frame, pts, duration, frame->pkt_pos, is->viddec.pkt_serial);
+		av_frame_unref(frame);
 
 
 		if (ret < 0)
@@ -1444,6 +1446,65 @@ const char* CFFmfcPimpl::getExt(const char* fspec)
 	return e;
 }
 
+void  CFFmfcPimpl::init_opencv_opencl_context(AVBufferRef* ocl_device_ctx) {
+	AVHWDeviceContext* ocl_hw_device_ctx = (AVHWDeviceContext*)ocl_device_ctx->data;
+	AVOpenCLDeviceContext* ocl_device_ocl_ctx = (AVOpenCLDeviceContext*)ocl_hw_device_ctx->hwctx;
+	size_t param_value_size;
+
+	// Get context properties
+	clGetContextInfo(
+		ocl_device_ocl_ctx->context,
+		CL_CONTEXT_PROPERTIES,
+		0,
+		NULL,
+		&param_value_size
+	);
+	cl_context_properties* props = (cl_context_properties * )malloc(param_value_size);
+	clGetContextInfo(
+		ocl_device_ocl_ctx->context,
+		CL_CONTEXT_PROPERTIES,
+		param_value_size,
+		props,
+		NULL
+	);
+
+	// Find the platform prop
+	cl_platform_id platform;
+	for (int i = 0; props[i] != 0; i = i + 2) {
+		if (props[i] == CL_CONTEXT_PLATFORM) {
+			platform = (cl_platform_id)props[i + 1];
+		}
+	}
+
+	// Get the name for the platform
+	clGetPlatformInfo(
+		platform,
+		CL_PLATFORM_NAME,
+		0,
+		NULL,
+		&param_value_size
+	);
+	char* platform_name = (char*)malloc(param_value_size);
+	clGetPlatformInfo(
+		platform,
+		CL_PLATFORM_NAME,
+		param_value_size,
+		platform_name,
+		NULL
+	);
+
+	/*
+	// Finally: attach the context to OpenCV
+	ocl::attachContext(
+		platform_name,
+		platform,
+		ocl_device_ocl_ctx->context,
+		ocl_device_ocl_ctx->device_id
+	);
+	*/
+}
+
+
 int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType type)
 {
 	int err = 0;
@@ -1456,9 +1517,21 @@ int CFFmfcPimpl::hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType 
 			fprintf(stderr, "Failed to create specified HW device.\n");
 			return err;
 		}
+
+		/*
+		if ((err = av_hwdevice_ctx_create_derived(
+			&ocl_device_ctx,
+			AV_HWDEVICE_TYPE_OPENCL,
+			hw_device_ctx,
+			0)) < 0)
+		{
+			fprintf(stderr, "Failed to create specified HW device.\n");
+			return err;
+		}
+		*/
+
 	}
 	ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
-
 	return err;
 }
 
@@ -1494,7 +1567,8 @@ int CFFmfcPimpl::decoder_init(Decoder* d, AVCodecContext* avctx, PacketQueue* qu
 
 int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame, AVSubtitle* sub) {
 	int ret = AVERROR(EAGAIN);
-
+	
+	//cl_context context = openclContext->GetContext();
 	for (;;) {
 		if (d->queue->serial == d->pkt_serial) {
 			do {
@@ -1504,26 +1578,52 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 				switch (d->avctx->codec_type)
 				{
 				case AVMEDIA_TYPE_VIDEO:
-					ret = avcodec_receive_frame(d->avctx, frame);
-
-					if (acceleratorHardware != "")
 					{
-						if (is->hwaccel_retrieve_data && frame->format == is->hwaccel_pix_fmt) {
-							ret = is->hwaccel_retrieve_data(d->avctx, frame);
+						ret = avcodec_receive_frame(d->avctx, frame);
+
+						AVFrame* ocl_frame = av_frame_alloc();
+
+						/*
+						if (frame->hw_frames_ctx != nullptr)
+						{
+							AVBufferRef* ocl_hw_frames_ctx;
+
+							// Create an OpenCL hardware frames context from the VA-API
+							// frame's frames context
+							av_hwframe_ctx_create_derived(
+								&ocl_hw_frames_ctx,
+								AV_PIX_FMT_OPENCL,
+								ocl_device_ctx, // <- The OpenCL device context from earlier
+								frame->hw_frames_ctx,
+								AV_HWFRAME_MAP_DIRECT
+							);
+
+							ocl_frame->hw_frames_ctx = av_buffer_ref(ocl_hw_frames_ctx);
+							ocl_frame->format = AV_PIX_FMT_OPENCL;
+							av_hwframe_map(ocl_frame, frame, AV_HWFRAME_MAP_READ);
 						}
+						*/
+						
+
+						if (acceleratorHardware != "")
+						{
+							if (is->hwaccel_retrieve_data && frame->format == is->hwaccel_pix_fmt) {
+								ret = is->hwaccel_retrieve_data(d->avctx, frame);
+							}
+
+							if (ret >= 0)
+								is->hwaccel_retrieved_pix_fmt = (AVPixelFormat)frame->format;
+						}
+
 
 						if (ret >= 0)
-							is->hwaccel_retrieved_pix_fmt = (AVPixelFormat)frame->format;
-					}
-
-
-					if (ret >= 0)
-					{
-						if (decoder_reorder_pts == -1) {
-							frame->pts = frame->best_effort_timestamp;
-						}
-						else if (!decoder_reorder_pts) {
-							frame->pts = frame->pkt_dts;
+						{
+							if (decoder_reorder_pts == -1) {
+								frame->pts = frame->best_effort_timestamp;
+							}
+							else if (!decoder_reorder_pts) {
+								frame->pts = frame->pkt_dts;
+							}
 						}
 					}
 					break;
@@ -1730,6 +1830,11 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 
         bool isSuccess = false;
+		acceleratorHardware = "";
+
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			acceleratorHardware = config->GetHardwareDecoder();
 
         if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
@@ -1742,53 +1847,49 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
             bool error = false;
             enum AVHWDeviceType type;
 
-			CRegardsConfigParam* config = CParamInit::getInstance();
-            if(config != nullptr)
-            {
-				acceleratorHardware = config->GetHardwareDecoder();
-                if(acceleratorHardware != "")
-                {
-                    type = av_hwdevice_find_type_by_name(acceleratorHardware);
-                    if (type == AV_HWDEVICE_TYPE_NONE)
-                    {
-                        fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
-                        fprintf(stderr, "Available device types:");
-                        while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-                            fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-                        fprintf(stderr, "\n");
+			if(acceleratorHardware != "")
+			{
+				type = av_hwdevice_find_type_by_name(acceleratorHardware);
+				if (type == AV_HWDEVICE_TYPE_NONE)
+				{
+					fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+					fprintf(stderr, "Available device types:");
+					while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+						fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+					fprintf(stderr, "\n");
 
-                        error = true;
-                    }
+					error = true;
+				}
 
-                    if (!error)
-                    {
-                        if (hw_decoder_init(avctx, type) < 0)
-                            error = true;
-                    }
-                    if (!error)
-                    {
-                        if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-                            error = true;
-                        }
+				if (!error)
+				{
+					if (hw_decoder_init(avctx, type) < 0)
+						error = true;
+				}
+				if (!error)
+				{
+					if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
+						error = true;
+					}
 
-                        isSuccess = true;
-                    }
-                    if (isSuccess)
-                    {
-                        printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-                    }
-                    else
-                    {
-                        printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-                    }   
-                }
+					isSuccess = true;
+				}
+				if (isSuccess)
+				{
+					printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+				}
+				else
+				{
+					printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+				}   
 			}
-            
+           
             
              if (!isSuccess)
              {
                 for (int i = 0; i < sizeList; i++)
                 {
+					error = false;
                     acceleratorHardware = listHardware[i];
                     type = av_hwdevice_find_type_by_name(acceleratorHardware);
                     if (type == AV_HWDEVICE_TYPE_NONE)
@@ -1970,6 +2071,8 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 		if(is->viddec.avctx->hw_device_ctx != nullptr)
 			av_buffer_unref(&is->viddec.avctx->hw_device_ctx);
 
+		//if (ocl_device_ctx != nullptr)
+		//	av_buffer_unref(&ocl_device_ctx);
 		decoder_abort(&is->viddec, &is->pictq);
 		decoder_destroy(&is->viddec);
 
@@ -2671,6 +2774,7 @@ int CFFmfcPimpl::hwaccel_decode_init(AVCodecContext* avctx)
 
 AVPixelFormat CFFmfcPimpl::get_format(AVCodecContext* s, const enum AVPixelFormat* pix_fmts)
 {
+	/*
 	const enum AVPixelFormat* p;
 	for (p = pix_fmts; *p != -1; p++) {
 		if (*p == hw_pix_fmt)
@@ -2678,6 +2782,58 @@ AVPixelFormat CFFmfcPimpl::get_format(AVCodecContext* s, const enum AVPixelForma
 	}
 	fprintf(stderr, "Failed to get HW surface format.\n");
 	return AV_PIX_FMT_NONE;
+	*/
+	
+	VideoState* ist = (VideoState*)s->opaque;
+	const enum AVPixelFormat* p;
+	int ret;
+
+	for (p = pix_fmts; *p != AV_PIX_FMT_NONE; p++) {
+		const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(*p);
+		const AVCodecHWConfig* config = NULL;
+		int i;
+
+		if (!(desc->flags & AV_PIX_FMT_FLAG_HWACCEL))
+			break;
+
+		if (ist->hwaccel_id == HWACCEL_GENERIC || ist->hwaccel_id == HWACCEL_AUTO) 
+		{
+			for (i = 0;; i++) {
+				config = avcodec_get_hw_config(s->codec, i);
+				if (!config)
+					break;
+				if (!(config->methods &
+					AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
+					continue;
+				if (config->pix_fmt == *p)
+					break;
+			}
+		}
+
+		ret = hwaccel_decode_init(s);
+		if (ret < 0) {
+			if (ist->hwaccel_id == HWACCEL_GENERIC)
+			{
+				av_log(NULL, AV_LOG_FATAL,
+					"%s hwaccel requested for input stream, "
+					"but cannot be initialized.\n");
+				return AV_PIX_FMT_NONE;
+			}
+			continue;
+		}
+
+		
+		if (ist->hw_frames_ctx) {
+			s->hw_frames_ctx = av_buffer_ref(ist->hw_frames_ctx);
+			if (!s->hw_frames_ctx)
+				return AV_PIX_FMT_NONE;
+		}
+		
+		ist->hwaccel_pix_fmt = *p;
+		break;
+	}
+	
+	return *p;
 }
 
 int CFFmfcPimpl::get_buffer(AVCodecContext* s, AVFrame* frame, int flags)
