@@ -34,7 +34,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	openCLSupport = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
-	videoDecoderHardware = "";
+	videoDecoderHardware = "auto";
 	videoEncoderHardware = "";
 	openCLFaceSupport = 0;
 	videoFaceDetection = 0;
