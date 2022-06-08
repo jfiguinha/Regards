@@ -48,7 +48,6 @@ extern "C"
 #include "libavutil/avstring.h"
 #include "libavutil/pixdesc.h"
 #include "libavfilter/buffersink.h"
-#include "libavutil/hwcontext_opencl.h"
 #ifdef __APPLE__
 #include "libavcodec/avcodec.h"
 #include "libavcodec/videotoolbox.h"
@@ -606,9 +605,8 @@ public:
 	void step_to_next_frame(VideoState *is);
 
 	AVFrame * CopyFrame(AVFrame * frame);
-	void  init_opencv_opencl_context(AVBufferRef* ocl_device_ctx);
-	AVBufferRef* hw_device_ctx = nullptr;
-	//AVBufferRef* ocl_device_ctx = nullptr;
+
+	AVBufferRef* hw_device_ctx = NULL;
 	static enum AVPixelFormat hw_pix_fmt;
 
 	//SOUND Volume
@@ -705,5 +703,5 @@ public:
 	static int hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input);
 	static int hwaccel_decode_init(AVCodecContext* avctx);
 	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
-
+	bool TestHardware(const wxString& acceleratorHardware, AVCodecContext* avct, AVCodec* codec, AVDictionary* opts);
 };
