@@ -126,6 +126,7 @@ namespace Regards
 			virtual void RenderIcone(wxDC* dc) = 0;
 			virtual void UpdateScroll() = 0;
 
+			void ExecuteTimer(const int& numId, wxTimer* refresh);
 			void OnRefreshThumbnail(wxCommandEvent& event);
 			void update_render_icone(wxCommandEvent& event);
 			virtual void VideoProcessThumbnail() {};
