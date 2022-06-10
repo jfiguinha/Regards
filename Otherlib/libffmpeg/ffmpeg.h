@@ -39,6 +39,8 @@
 //#include "libavutil/thread.h"
 #include "libavutil/threadmessage.h"
 
+//#define HAVE_THREADS
+
 void show_usage(void);
 void ffmpeg_cleanup(int ret);
 int ExecuteFFMpegProgram(int argc, char** argv, void (*foo)(int), int (*progress)(int, void*), void * wndProgress);
@@ -416,7 +418,7 @@ typedef struct InputFile {
 
     AVPacket* pkt;
 
-#if HAVE_THREADS
+#ifdef HAVE_THREADS
     AVThreadMessageQueue* in_thread_queue;
     pthread_t thread;           /* thread reading from this file */
     int non_blocking;           /* reading packets from the thread should not block */

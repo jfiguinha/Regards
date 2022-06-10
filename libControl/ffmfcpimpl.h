@@ -24,6 +24,7 @@
 #include <thread>
 using namespace std;
 
+
 extern "C"
 {
 #include "libavutil/avstring.h"
@@ -402,6 +403,7 @@ public:
 		int serial;
 	} MyAVPacketList;
 
+
 	CFFmfcPimpl()
 	{
 	}
@@ -453,8 +455,7 @@ public:
 	int get_master_sync_type(VideoState* is);
 	
 	int hw_decoder_init(AVCodecContext *ctx, const enum AVHWDeviceType type);
-	static enum AVPixelFormat get_format(AVCodecContext* s, const enum AVPixelFormat* pix_fmts);
-	//static enum AVPixelFormat get_hw_format(AVCodecContext *s, const AVPixelFormat *pix_fmts);
+
 	static int get_buffer(AVCodecContext* s, AVFrame* frame, int flags);
 	//Calcul du pourcentage
 	void StopStream();
@@ -701,7 +702,6 @@ public:
 //------------------------------------------------------------------------
 
 	static int hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input);
-	static int hwaccel_decode_init(AVCodecContext* avctx);
 	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
-	bool TestHardware(const wxString& acceleratorHardware, AVCodecContext* avct, AVCodec* codec, AVDictionary* opts);
+	bool TestHardware(const wxString& acceleratorHardware, AVHWDeviceType& type, AVCodecContext* avct, AVCodec* codec, AVDictionary * & opts, VideoState* is, AVStream* video);
 };

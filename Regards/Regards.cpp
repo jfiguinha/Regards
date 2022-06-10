@@ -25,6 +25,8 @@
 #include <LibResource.h>
 #include <PictureData.h>
 
+#include <ffmpeg_application.h>
+
 using namespace cv;
 using namespace Regards::Picture;
 
@@ -156,8 +158,6 @@ bool MyApp::OnInit()
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 	CLibPicture::Initx265Decoder();
-
-
 
 
 #ifdef GLUT

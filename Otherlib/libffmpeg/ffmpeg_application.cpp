@@ -95,14 +95,17 @@ void CFFmpegApp::ExecuteFFmpeg()
 
 int CFFmpegApp::TestFFmpeg(const wxString& commandline)
 {
+	//ffmpeg -hwaccel_output_format cuda -i F:\music_video\test.mp4 -frames:v 1 -q:v 2 test.png
 	arrayOfStrings.push_back("ffmpeg");
+	arrayOfStrings.push_back("-hwaccel_output_format");
+	arrayOfStrings.push_back("cuda");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back("d:\\video\\IMG_1293.MOV");
-	arrayOfStrings.push_back("-c:v");
-	arrayOfStrings.push_back("vp9");
-	arrayOfStrings.push_back("-c:a");
-	arrayOfStrings.push_back("libvorbis");
-	arrayOfStrings.push_back("d:\\video\\output.mkv");
+	arrayOfStrings.push_back("F:\\music_video\\test.mp4");
+	arrayOfStrings.push_back("-frames:v");
+	arrayOfStrings.push_back("1");
+	arrayOfStrings.push_back("-q:v");
+	arrayOfStrings.push_back("2");
+	arrayOfStrings.push_back("d:\\test.png");
 
 	ExecuteFFmpeg();
 
