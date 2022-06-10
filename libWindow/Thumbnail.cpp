@@ -935,69 +935,83 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 	CLibPicture libPicture;
 
-	if(enableTimer)
+	if (enableTimer && !isMouseOnWindow)
 	{
-		bool actifActif = false;
-		CIcone* icone = GetIconeById(numActifPhotoId);
-		if (icone != nullptr)
-		{
-			CThumbnailData* data = icone->GetData();
+		if (refreshActifTimer->IsRunning())
+			refreshActifTimer->Stop();
 
-			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
-				libPicture.TestIsAnimation(data->GetFilename()))
-			{
-				actifActif = true;
-			}
-			if (libPicture.TestIsVideo(data->GetFilename()))
-			{
-				timeActif = 1000 / 25;
-			}
-			else if (libPicture.TestIsAnimation(data->GetFilename()))
-			{
-				timeActif = 100;
-			}
-			else
-			{
-				timeActif = 1000;
-			}
-		}
+		if (refreshSelectTimer->IsRunning())
+			refreshSelectTimer->Stop();
 
-		if(actifActif)
-			if (!refreshActifTimer->IsRunning())
-				refreshActifTimer->Start(timeActif, TRUE);
 	}
 
-	if (enableTimer)
+	if(enableTimer && isMouseOnWindow)
 	{
-		bool actifActif = false;
-		CIcone* icone = GetIconeById(numSelectPhotoId);
-		if (icone != nullptr)
 		{
-			CThumbnailData* data = icone->GetData();
+			bool actifActif = false;
+			CIcone* icone = GetIconeById(numActifPhotoId);
+			if (icone != nullptr)
+			{
+				CThumbnailData* data = icone->GetData();
 
-			if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
-				libPicture.TestIsAnimation(data->GetFilename()))
-			{
-				actifActif = true;
+				if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+					libPicture.TestIsAnimation(data->GetFilename()))
+				{
+					actifActif = true;
+				}
+				if (libPicture.TestIsVideo(data->GetFilename()))
+				{
+					timeActif = 1000 / 25;
+				}
+				else if (libPicture.TestIsAnimation(data->GetFilename()))
+				{
+					timeActif = 100;
+				}
+				else
+				{
+					timeActif = 1000;
+				}
 			}
-			if (libPicture.TestIsVideo(data->GetFilename()))
-			{
-				timeSelect = 1000 / 25;
-			}
-			else if (libPicture.TestIsAnimation(data->GetFilename()))
-			{
-				timeSelect = 100;
-			}
-			else
-			{
-				timeSelect = 1000;
-			}
+
+			if (actifActif)
+				if (!refreshActifTimer->IsRunning())
+					refreshActifTimer->Start(timeActif, TRUE);
 		}
 
-		if (actifActif)
-			if (!refreshSelectTimer->IsRunning())
-				refreshSelectTimer->Start(timeSelect, TRUE);
+		{
+			bool actifActif = false;
+			CIcone* icone = GetIconeById(numSelectPhotoId);
+			if (icone != nullptr)
+			{
+				CThumbnailData* data = icone->GetData();
+
+				if (libPicture.TestIsVideo(data->GetFilename()) || libPicture.TestIsPDF(data->GetFilename()) ||
+					libPicture.TestIsAnimation(data->GetFilename()))
+				{
+					actifActif = true;
+				}
+				if (libPicture.TestIsVideo(data->GetFilename()))
+				{
+					timeSelect = 1000 / 25;
+				}
+				else if (libPicture.TestIsAnimation(data->GetFilename()))
+				{
+					timeSelect = 100;
+				}
+				else
+				{
+					timeSelect = 1000;
+				}
+			}
+
+			if (actifActif)
+				if (!refreshSelectTimer->IsRunning())
+					refreshSelectTimer->Start(timeSelect, TRUE);
+		}
 	}
+
+
+
 
 	VideoProcessThumbnail();
 
@@ -1546,13 +1560,13 @@ void CThumbnail::TestMaxX()
 void CThumbnail::OnEnterWindow(wxMouseEvent& event)
 {
 	TRACE();
-	
+	isMouseOnWindow = true;
 }
 
 void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 {
 	TRACE();
-	//refreshTimer->Stop();
+	isMouseOnWindow = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -137,6 +137,7 @@ namespace Regards
 			void MoveBottom();
 			void MoveRight();
 
+			bool isMouseOnWindow = false;
 			bool enableTimer = true;
 
 			//Variable
