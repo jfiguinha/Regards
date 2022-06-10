@@ -370,7 +370,7 @@ int CFFmpegApp::TestFFmpeg(const wxString& commandline)
 	arrayOfStrings.push_back("d:\\test.png");
 	*/
 	arrayOfStrings.push_back("ffmpeg");
-	arrayOfStrings.push_back("cuda");
+	arrayOfStrings.push_back("dxva2");
 	arrayOfStrings.push_back("d:\\video\\20200509_132206.mp4");
 	arrayOfStrings.push_back("F:\\music_video\\20200509_132206.yuv");
 	TestHWDecode(arrayOfStrings);

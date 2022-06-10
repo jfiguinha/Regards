@@ -333,13 +333,9 @@ void CPreviewWnd::HideToolbar(wxCommandEvent& event)
 				if (isVideo)
 					bitmapInfos->Show(false);
 				else if (isBitmap)
-				{
 					bitmapInfos->Show(false);
-				}
 				else
-				{
 					bitmapInfos->Show(false);
-				}
 
 				showElement->HideToolbar();
 				Resize();
