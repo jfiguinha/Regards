@@ -185,6 +185,9 @@ bool MyApp::OnInit()
 	regardsParam = new CRegardsConfigParam();
 	CParamInit::Initialize(regardsParam);
 
+	//CFFmpegApp ffmpeg;
+	//ffmpeg.TestFFmpeg("");
+
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
 	CLibResource::InitializeSQLServerDatabase(resourcePath);

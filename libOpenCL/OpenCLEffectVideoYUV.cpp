@@ -179,6 +179,11 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 				paramSrcHeight->SetValue(heightOut);
 				vecParam.push_back(paramSrcHeight);
 
+				COpenCLParameterInt* paramRgba = new COpenCLParameterInt();
+				paramRgba->SetLibelle("rgba");
+				paramRgba->SetValue(rgba);
+				vecParam.push_back(paramRgba);
+
 				vecParam.push_back(paramLineSize);
 
 				paramSrc.release();

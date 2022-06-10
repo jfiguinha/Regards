@@ -1510,16 +1510,15 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 
 					if (acceleratorHardware != "")
 					{
-						if (is->hwaccel_retrieve_data && frame->format == is->hwaccel_pix_fmt) {
+
+						if (is->hwaccel_retrieve_data && frame->format == hw_pix_fmt) {
 							ret = is->hwaccel_retrieve_data(d->avctx, frame);
 						}
 
 						if (ret >= 0)
 							is->hwaccel_retrieved_pix_fmt = (AVPixelFormat)frame->format;
 					}
-
-
-					if (ret >= 0)
+					else if (ret >= 0)
 					{
 						if (decoder_reorder_pts == -1) {
 							frame->pts = frame->best_effort_timestamp;
@@ -2632,19 +2631,14 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 {
 	VideoState* ist = (VideoState*)avctx->opaque;
 	AVFrame* output = NULL;
-	enum AVPixelFormat output_format = ist->hwaccel_output_format;
+	//enum AVPixelFormat output_format = ist->hwaccel_output_format;
 	int err;
-
-	if (input->format == output_format) {
-		// Nothing to do.
-		return 0;
-	}
 
 	output = av_frame_alloc();
 	if (!output)
 		return AVERROR(ENOMEM);
 
-	output->format = output_format;
+	//output->format = output_format;
 
 	err = av_hwframe_transfer_data(output, input, 0);
 	if (err < 0) {
@@ -2652,13 +2646,16 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 			"output frame: %d.\n", err);
 		goto fail;
 	}
-
+	
+	output->pts = input->pkt_dts;
+	ist->hwaccel_retrieved_pix_fmt = (AVPixelFormat)output->format;
+	/*
 	err = av_frame_copy_props(output, input);
 	if (err < 0) {
 		av_frame_unref(output);
 		goto fail;
 	}
-
+	*/
 	/*
 	int ret = 0;
 	int  size = av_image_get_buffer_size((AVPixelFormat)output->format, output->width,

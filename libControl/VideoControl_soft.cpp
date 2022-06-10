@@ -2236,7 +2236,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 	}
 
 
-	if (!enableopenCL || src_frame->format != 0)
+	if (!enableopenCL || (src_frame->format != AV_PIX_FMT_YUV420P && src_frame->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
 		GetBitmapRGBA(src_frame);
@@ -2251,23 +2251,82 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
-			int ysize = 0;
-			int usize = 0;
-			int vsize = 0;
+			if (src_frame->format == AV_PIX_FMT_NV12)
+			{
 
-			ysize = src_frame->linesize[0] * src_frame->height;
-			usize = src_frame->linesize[1] * (src_frame->height / 2);
-			vsize = src_frame->linesize[2] * (src_frame->height / 2);
+				//printf("OpenCL openclEffectYUV \n");
+				int ysize = 0;
+				int uvsize = 0;
+				ysize = src_frame->linesize[0] * src_frame->height;
+				uvsize = src_frame->linesize[1] * (src_frame->height / 2);
 
-			//cv::Mat frameYUV_cpu = cv::Mat(src_frame->height, src_frame->width, CV_8UC3, src_frame->data);
+#ifdef TEST_NV12
+				cv::Mat data = cv::Mat(1080, 1920, CV_8UC4);
+	
+				for (int y = 0; y < src_frame->height; y++)
+				{
+					for (int x = 0; x < src_frame->width; x++)
+					{
+						int srcPos = x * 4 + y * src_frame->width * 4;
+						int positionSrc = x + y * src_frame->width;
+						int positionUV = 0;
 
+						int yModulo = y % 2;
+						int xModulo = x % 2;
+						if (xModulo == 1)
+						{
+							if (yModulo == 1)
+								positionUV = (x - 1) + ((y - 1) / 2) * src_frame->width;
+							else
+								positionUV = (x - 1) + (y / 2) * src_frame->width;
+						}
+						else
+						{
+							if (yModulo == 1)
+								positionUV = x + ((y - 1) / 2) * src_frame->width + positionUV;
+							else
+								positionUV = x + (y / 2) * src_frame->width + positionUV;
+						}
 
+						float vComp = src_frame->data[1][positionUV];
+						float uComp = src_frame->data[1][positionUV + 1];
+						float yComp = src_frame->data[0][positionSrc];
 
-			muBitmap.lock();
-			openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2],
-				                            vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-			//openclEffectYUV->SetYUVMatrix(frameYUV_cpu);
-			muBitmap.unlock();
+						float r = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
+						float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
+						float b= (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
+						data.data[srcPos+3] = 255;
+
+			
+						data.data[srcPos] = clamp(r, 0, 255);
+						data.data[srcPos + 1] = clamp(g, 0, 255);
+						data.data[srcPos + 2] = clamp(b, 0, 255);
+
+					}
+				}
+				cv::imwrite("d:\\test.jpg", data);
+#endif
+
+				muBitmap.lock();
+				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize,
+					src_frame->width, src_frame->height, src_frame->linesize[0]);
+				muBitmap.unlock();
+			}
+			else if (src_frame->format == AV_PIX_FMT_YUV420P)
+			{
+				int ysize = 0;
+				int usize = 0;
+				int vsize = 0;
+
+				ysize = src_frame->linesize[0] * src_frame->height;
+				usize = src_frame->linesize[1] * (src_frame->height / 2);
+				vsize = src_frame->linesize[2] * (src_frame->height / 2);
+
+				muBitmap.lock();
+				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2],
+					vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
+				muBitmap.unlock();
+			}
 			
 		}
 	}
