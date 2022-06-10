@@ -689,6 +689,8 @@ public:
 #else
 	wxString acceleratorHardware = "cuda";
 #endif
+
+	bool isHardwareDecoding = false;
 	bool isOpenGLDecoding = false;
 	int find_stream_info = 1;
 #ifndef CMDUTILS

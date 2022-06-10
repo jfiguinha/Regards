@@ -1508,7 +1508,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 				case AVMEDIA_TYPE_VIDEO:
 					ret = avcodec_receive_frame(d->avctx, frame);
 
-					if (acceleratorHardware != "")
+					if (isHardwareDecoding)
 					{
 
 						if (is->hwaccel_retrieve_data && frame->format == hw_pix_fmt) {
@@ -1689,7 +1689,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 		if (!config) {
 			fprintf(stderr, "Decoder %s does not support device type %s.\n",
 				codec->name, av_hwdevice_get_type_name(type));
-			return -1;
+			return false;
 		}
 		if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
 			config->device_type == type) {
@@ -1704,7 +1704,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	//	return AVERROR(ENOMEM);
 
 	if (avcodec_parameters_to_context(is->avctx, video->codecpar) < 0)
-		return -1;
+		return false;
 
 	//is->hwaccel_get_buffer = dxva2_get_buffer;
 	is->avctx->get_format = get_hw_format;
@@ -1717,25 +1717,21 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	if (!error)
 	{
 		if (hw_decoder_init(avctx, type) < 0)
-			error = true;
+			return false;
 	}
 	if (!error)
 	{
 		if ((ret = avcodec_open2(avctx, codec, &opts)) < 0) {
-			error = true;
+			return false;
 		}
-
-		isSuccess = true;
 	}
+
+	isSuccess = true;
+
 	if (isSuccess)
 	{
 		printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
 	}
-	else
-	{
-		printf("Error No Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
-	}
-
 	return isSuccess;
 }
 
@@ -1819,7 +1815,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			{
 				AVStream* video = ic->streams[stream_index];
 				isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
-
+				/*
 				if (!isSuccess)
 				{
 					for (int i = 0; i < sizeList; i++)
@@ -1830,12 +1826,14 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 							break;
 					}
 				}
+				*/
 			}
 
         }
 
         if(!isSuccess)
         {
+			isHardwareDecoding = false;
             printf("No success for hardware decoding ! \n");
             ret = avcodec_open2(avctx, codec, &opts);
 
@@ -1846,6 +1844,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
         }
 		else
 		{
+			isHardwareDecoding = true;
 			is->hwaccel_retrieve_data = &hwaccel_retrieve_data;
 		}
 
