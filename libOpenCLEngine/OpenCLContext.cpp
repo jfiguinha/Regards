@@ -14,6 +14,7 @@
 #include <CL/cl_gl.h>
 #else
 #include <CL/cl_gl.h>
+#include <CL/cl_d3d11.h>
 #endif
 #include <LibResource.h>
 
@@ -193,12 +194,28 @@ void COpenCLContext::CreateContext()
 
 	if (isOpenGL)
 	{
+		/*
+		clGetDeviceIDsFromD3D11KHR_fn ptrToFunction_clGetDeviceIDsFromD3D11KHR = NULL;
+		ptrToFunction_clGetDeviceIDsFromD3D11KHR = (clGetDeviceIDsFromD3D11KHR_fn)clGetExtensionFunctionAddressForPlatform(platform, "clGetDeviceIDsFromD3D11KHR");
+
+		cl_uint numDevs = 0;
+		//careful with the g_pd3DDevice
+		cl_int status = ptrToFunction_clGetDeviceIDsFromD3D11KHR(platform, CL_D3D11_DEVICE_KHR, (void*)g_pd3dDevice, CL_PREFERRED_DEVICES_FOR_D3D11_KHR, 0, NULL, &numDevs);
+		Error::CheckError(status);
+
+		cl_device_id* devID = NULL;
+		cl_device_id * g_clDevices = (cl_device_id*)malloc(sizeof(cl_device_id) * numDevs);
+		ptrToFunction_clGetDeviceIDsFromD3D11KHR(platform, CL_D3D11_DEVICE_KHR, (void*)g_pd3dDevice, CL_PREFERRED_DEVICES_FOR_D3D11_KHR, numDevs, g_clDevices, NULL);
+		Error::CheckError(status);
+		*/
 #ifdef WIN32
 		// Create CL context properties, add WGL context & handle to DC
 		cl_context_properties properties[] = {
 			CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
 			CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
 			CL_CONTEXT_PLATFORM, (cl_context_properties)platform, // OpenCL platform
+		//	CL_CONTEXT_D3D11_DEVICE_KHR, (intptr_t)g_pd3dDevice, 
+		//	CL_CONTEXT_INTEROP_USER_SYNC, CL_FALSE,
 			0
 		};
 #elif defined(__WXGTK__)

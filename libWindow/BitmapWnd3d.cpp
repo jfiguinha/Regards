@@ -7,6 +7,8 @@
 #include <OpenCLEngine.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+
+#include <ffmpeg_application.h>
 using namespace Regards::OpenCL;
 
 extern COpenCLContext* openclContext;
@@ -198,6 +200,8 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 		}
 	}
 	
+	CFFmpegApp ffmpeg;
+	ffmpeg.TestFFmpeg("");
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
     
