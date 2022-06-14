@@ -322,11 +322,14 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		try
 		{
 
-			// dif = dif / 100.0;
-			int nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
+			int nbFpsPerSecond = 1;
+			if(dif > 0)
+				nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
 			int missingFrame = ffmpeg_trans->totalFrame - ffmpeg_trans->nbFrameEncoded;
 
-			double timeMissing = missingFrame / nbFpsPerSecond;
+			double timeMissing = 1;
+			if(nbFpsPerSecond > 0)
+				timeMissing = missingFrame / nbFpsPerSecond;
 
 			wxString frame = wxString::Format("%d fps", nbFpsPerSecond);
 			ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
@@ -384,10 +387,25 @@ enum AVPixelFormat CFFmpegTranscodingPimpl::get_hw_format(AVCodecContext* ctx,
 	return AV_PIX_FMT_NONE;
 }
 
-int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
+int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxString& decodeHardware)
 {
 	int ret;
 	unsigned int i;
+
+	enum AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
+
+	if (decodeHardware != "")
+	{
+		type = av_hwdevice_find_type_by_name(decodeHardware.ToStdString().c_str());
+		if (type == AV_HWDEVICE_TYPE_NONE) {
+			fprintf(stderr, "Device type %s is not supported.\n", decodeHardware.ToStdString().c_str());
+			fprintf(stderr, "Available device types:");
+			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+			fprintf(stderr, "\n");
+			return -1;
+		}
+	}
 
 	ifmt_ctx = nullptr;
 	if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToUTF8(filename), nullptr, nullptr)) < 0)
@@ -411,6 +429,8 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 		AVStream* stream = ifmt_ctx->streams[i];
 		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
 			continue;
+
+
 		const AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
 		AVCodecContext* codec_ctx;
 		if (!dec)
@@ -418,31 +438,95 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 			av_log(nullptr, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", i);
 			return AVERROR_DECODER_NOT_FOUND;
 		}
-		codec_ctx = avcodec_alloc_context3(dec);
-		if (!codec_ctx)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
-			return AVERROR(ENOMEM);
-		}
-		ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
-		if (ret < 0)
-		{
-			av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
-				"for stream #%u\n", i);
-			return ret;
-		}
-		/* Reencode video & audio and remux subtitles etc. */
-		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
-			|| codec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
-		{
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-				codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
 
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+		if (dec->type == AVMEDIA_TYPE_VIDEO)
+		{
+			AVStream* video = ifmt_ctx->streams[i];
+
+			if (decodeHardware != "")
 			{
-				videoStreamIndex = i;
+				for (int j = 0;; j++) {
+					const AVCodecHWConfig* config = avcodec_get_hw_config(dec, j);
+					if (!config) {
+						fprintf(stderr, "Decoder %s does not support device type %s.\n",
+							dec->name, av_hwdevice_get_type_name(type));
+						return -1;
+					}
+					if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+						config->device_type == type) {
+						hw_pix_fmt = config->pix_fmt;
+						break;
+					}
+				}
+
+				if (!(codec_ctx = avcodec_alloc_context3(dec)))
+					return AVERROR(ENOMEM);
+
+				
+				if (avcodec_parameters_to_context(codec_ctx, video->codecpar) < 0)
+					return -1;
+
+				codec_ctx->get_format = get_hw_format;
+
+				if (hw_decoder_init(codec_ctx, type) < 0)
+					return -1;
+			}
+			else
+			{
+				codec_ctx = avcodec_alloc_context3(dec);
+				if (!codec_ctx)
+				{
+					av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
+					return AVERROR(ENOMEM);
+				}
+				ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
+				if (ret < 0)
+				{
+					av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
+						"for stream #%u\n", i);
+					return ret;
+				}
 			}
 
+
+			if ((ret = avcodec_open2(codec_ctx, dec, NULL)) < 0) {
+				fprintf(stderr, "Failed to open codec for stream #%u\n", video);
+				return -1;
+			}
+
+			codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
+			videoStreamIndex = i;
+
+			startTime = ifmt_ctx->start_time;
+
+			auto matrix = reinterpret_cast<int32_t*>(
+				av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+			if (matrix)
+				rotation = lround(av_display_rotation_get(matrix));
+			else
+				rotation = 0;
+
+			stream_ctx[i].dec_ctx = codec_ctx;
+
+			stream_ctx[i].dec_frame = av_frame_alloc();
+			if (!stream_ctx[i].dec_frame)
+				return AVERROR(ENOMEM);
+		}
+		else if(dec->type == AVMEDIA_TYPE_AUDIO)
+		{
+			codec_ctx = avcodec_alloc_context3(dec);
+			if (!codec_ctx)
+			{
+				av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
+				return AVERROR(ENOMEM);
+			}
+			ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
+			if (ret < 0)
+			{
+				av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
+					"for stream #%u\n", i);
+				return ret;
+			}
 
 			ret = avcodec_open2(codec_ctx, dec, nullptr);
 			if (ret < 0)
@@ -451,23 +535,14 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 				return ret;
 			}
 
-			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
-			{
-				startTime = ifmt_ctx->start_time;
+			stream_ctx[i].dec_ctx = codec_ctx;
 
-				auto matrix = reinterpret_cast<int32_t*>(
-					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
-				if (matrix)
-					rotation = lround(av_display_rotation_get(matrix));
-				else
-					rotation = 0;
-			}
+			stream_ctx[i].dec_frame = av_frame_alloc();
+			if (!stream_ctx[i].dec_frame)
+				return AVERROR(ENOMEM);
 		}
-		stream_ctx[i].dec_ctx = codec_ctx;
 
-		stream_ctx[i].dec_frame = av_frame_alloc();
-		if (!stream_ctx[i].dec_frame)
-			return AVERROR(ENOMEM);
+
 	}
 
 	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 0);
@@ -1392,7 +1467,14 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
 	int ret;
-	if ((ret = open_input_file(input)) < 0)
+	wxString decoderHardware = "";
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+	{
+		decoderHardware = config->GetHardwareDecoder();
+	}
+
+	if ((ret = open_input_file(input, decoderHardware)) < 0)
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
 		return ret;
@@ -1858,25 +1940,48 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 				AVFrame* tmp_frame = nullptr;
 				int ret = 0;
-
+				AVFrame* sw_frame = NULL;
 				while (ret >= 0)
 				{
+					if (!(sw_frame = av_frame_alloc())) {
+						fprintf(stderr, "Can not alloc frame\n");
+						ret = AVERROR(ENOMEM);
+						goto fail_video;
+					}
+
 					ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
 					if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 						break;
 					if (ret < 0)
-						return ret;
+						goto fail_video;
 
 					if (pkt->buf == nullptr)
-						return 0;
+						goto fail_video;
 
-					tmp_frame = stream->dec_frame;
+					if (stream->dec_frame->format == hw_pix_fmt) {
+						/* retrieve data from GPU to CPU */
+						if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0) 
+						{
+							fprintf(stderr, "Error transferring the data to system memory\n");
+							goto fail_video;
+						}
+						tmp_frame = sw_frame;
+					}
+					else
+						tmp_frame = stream->dec_frame;
+
+					//tmp_frame = stream->dec_frame;
 
 					tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
 					SetFrameData(tmp_frame, m_dlgProgress);
 
 					av_packet_unref(pkt);
+
+fail_video:
+					av_frame_free(&sw_frame);
+					if (ret < 0)
+						return ret;
 				}
 			}
 
@@ -1923,16 +2028,34 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 				AVFrame* tmp_frame = nullptr;
 				int ret = 0;
-
+				AVFrame* sw_frame = NULL;
 				while (ret >= 0)
 				{
+					if (!(sw_frame = av_frame_alloc())) {
+						fprintf(stderr, "Can not alloc frame\n");
+						ret = AVERROR(ENOMEM);
+						goto fail;
+					}
+
 					ret = avcodec_receive_frame(stream->dec_ctx, stream->dec_frame);
 					if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 						break;
 					if (ret < 0)
-						return ret;
+						goto fail;
 
-					tmp_frame = stream->dec_frame;
+					if (stream->dec_frame->format == hw_pix_fmt) {
+						/* retrieve data from GPU to CPU */
+						if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0)
+						{
+							fprintf(stderr, "Error transferring the data to system memory\n");
+							goto fail;
+						}
+						tmp_frame = sw_frame;
+					}
+					else
+						tmp_frame = stream->dec_frame;
+
+					//tmp_frame = stream->dec_frame;
 					tmp_frame->pts = tmp_frame->best_effort_timestamp;
 
 					if (isVideo)
@@ -1949,9 +2072,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 					ret = filter_encode_write_frame(tmp_frame, stream_index, m_dlgProgress, isVideo);
 					if (ret < 0)
-						return ret;
+						goto fail;
 
-					
+fail:
+					av_frame_free(&sw_frame);				
 				}
 			}
 			else
@@ -2183,6 +2307,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 	if (p_codec != nullptr)
 	{
 		c = avcodec_alloc_context3(p_codec);
+		/*
 		if (pSourceCodecCtx != nullptr)
 		{
 			// Set things in context that we will allow the user to
@@ -2207,7 +2332,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 				c->compression_level = videoCompressOption->videoCompressionValue;
 		}
 		else
-		{
+		{*/
 			c->codec_type = AVMEDIA_TYPE_VIDEO;
 			c->pix_fmt = AV_PIX_FMT_YUV420P;
 			c->width = width;
@@ -2219,7 +2344,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 			c->max_b_frames = 0;
 			if (videoCompressOption->videoQualityOrBitRate == 0)
 				c->compression_level = videoCompressOption->videoCompressionValue;
-		}
+		//}
 		AVDictionary* param = setEncoderParam(codec_id, c, encoderHardName);
 
 		if (rotate != 0 && streamVideo != nullptr)

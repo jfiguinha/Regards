@@ -95,7 +95,7 @@ private:
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString& nameEncoder);
 	int encode_write_frame(AVFrame* filt_frame, unsigned int stream_index);
 
-	int open_input_file(const wxString& filename);
+	int open_input_file(const wxString& filename, const wxString& decodeHardware);
 	int open_output_file(const wxString& filename);
 
 	int filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress,
