@@ -64,7 +64,13 @@ using namespace cv;
 
 #include <stdio.h>
 
+static enum AVPixelFormat hw_pix_fmt;
+static bool use_opencl = true;
 
+static AVBufferRef* hw_device_ctx = NULL;
+
+static FILE* output_file = NULL;
+#ifdef TEST_WINDOWS
   // FFmpeg context attached to OpenCL context
 class OpenCL_FFMPEG_Context : public ocl::Context::UserContext {
 public:
@@ -87,12 +93,8 @@ extern "C"
 {
 
 
-
-	static bool use_opencl = true;
 	static bool is_d3dva = true;
-	static AVBufferRef* hw_device_ctx = NULL;
-	static enum AVPixelFormat hw_pix_fmt;
-	static FILE* output_file = NULL;
+
 
 
 
@@ -214,18 +216,16 @@ extern "C"
 					d3d11_device_ctx->device_context->CopySubresourceRegion(singleTexture, 0, 0, 0, 0, texture, subresource, NULL);
 					// Copy D3D11 single texture to cv::UMat
 					directx::convertFromD3D11Texture2D(singleTexture, output);
-					return true;
+					return false;
 				}
 			}
 
 		}
 		catch (...)
 		{
-			return false;
+
 		}
-
-
-		return false;
+		return true;
 	}
 
 
@@ -264,8 +264,39 @@ extern "C"
 
 		return err;
 	}
+}
+#else
+		static int hw_decoder_init(AVCodecContext* ctx, const enum AVHWDeviceType type)
+		{
+			int err = 0;
 
-	static int decode_write(AVCodecContext* avctx, AVPacket* packet, AVD3D11VADeviceContext* hw_d3d11_dev_ctx, bool & firstFrame)
+			if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
+				NULL, NULL, 0)) < 0) {
+				fprintf(stderr, "Failed to create specified HW device.\n");
+				return err;
+			}
+			ctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
+
+			return err;
+		}
+
+		static enum AVPixelFormat get_hw_format(AVCodecContext* ctx,
+			const enum AVPixelFormat* pix_fmts)
+		{
+			const enum AVPixelFormat* p;
+
+			for (p = pix_fmts; *p != -1; p++) {
+				if (*p == hw_pix_fmt)
+					return *p;
+			}
+
+			fprintf(stderr, "Failed to get HW surface format.\n");
+			return AV_PIX_FMT_NONE;
+		}
+#endif
+
+
+	static int decode_write(AVCodecContext* avctx, AVPacket* packet)
 	{
 		AVFrame* frame = NULL, * sw_frame = NULL;
 		AVFrame* tmp_frame = NULL;
@@ -297,58 +328,17 @@ extern "C"
 				goto fail;
 			}
 
-			/*
-			if (firstFrame)
-			{
-				// create intermediate texture
-				D3D11_TEXTURE2D_DESC pDes{};
-				ZeroMemory(&pDes, sizeof(pDes));
-				pDes.Width = frame->width;
-				pDes.Height = frame->height;
-				pDes.ArraySize = 1;
-				pDes.MipLevels = 1;
-				pDes.Format = DXGI_FORMAT_NV12;
-				pDes.SampleDesc.Count = 1;
-				pDes.SampleDesc.Quality = 0;
-				pDes.Usage = D3D11_USAGE_DEFAULT;
-				pDes.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-				pDes.CPUAccessFlags = 0;
-				pDes.MiscFlags = 0;
-
-				
-				hw_d3d11_dev_ctx->device->CreateTexture2D(&pDes, NULL, &texture_D3D11);
-
-				// connect opengl and directx textures
-				//HANDLE hRegisterObject = wglDXRegisterObjectNV(
-				//	device_handle, texture_D3D11, texture_opengl, GL_TEXTURE_2D, WGL_ACCESS_READ_WRITE_NV
-				//);
-
-				firstFrame = false;
-			}
-			*/
 
 			if (frame->format == hw_pix_fmt)
 			{
 				bool error = true;
-
+#ifdef TEST_WINDOWS
 				if (is_d3dva)
 				{
 					cv::UMat output;
 					error = hw_copy_frame_to_umat(hw_device_ctx, frame, output);
-					/*
-					cv::Mat output;
-					int subresource = 0;
-					ID3D11Texture2D* texture = hw_get_d3d11_texture(frame, &subresource);
-					ID3D11Texture2D* singleTexture = hw_get_d3d11_single_texture(frame, hw_d3d11_dev_ctx, texture);
-					if (texture && singleTexture) {
-						// Copy D3D11 sub-texture to D3D11 single texture
-						hw_d3d11_dev_ctx->device_context->CopySubresourceRegion(singleTexture, 0, 0, 0, 0, texture, subresource, NULL);
-						// Copy D3D11 single texture to cv::UMat
-						cv::directx::convertFromD3D11Texture2D(singleTexture, output);
-						return true;
-					}
-					*/
 				}
+#endif
 				if(error)
 				{
 					/* retrieve data from GPU to CPU */
@@ -391,7 +381,7 @@ extern "C"
 				return ret;
 		}
 	}
-}
+
 
 
 
@@ -484,9 +474,9 @@ int TestHWDecode(std::vector<std::string> & arrayOfStrings)
 	output_file = fopen(arrayOfStrings[3].c_str(), "w+b");
 
 	// setup WGL_NV_DX_interop extension
-	AVBufferRef* hw_device_ctx_buffer = decoder_ctx->hw_device_ctx;
-	AVHWDeviceContext* hw_d3d11_device_ctx = (AVHWDeviceContext*)hw_device_ctx_buffer->data;
-	AVD3D11VADeviceContext* hw_d3d11_dev_ctx = (AVD3D11VADeviceContext*)hw_d3d11_device_ctx->hwctx;
+	//AVBufferRef* hw_device_ctx_buffer = decoder_ctx->hw_device_ctx;
+	//AVHWDeviceContext* hw_d3d11_device_ctx = (AVHWDeviceContext*)hw_device_ctx_buffer->data;
+	//AVD3D11VADeviceContext* hw_d3d11_dev_ctx = (AVD3D11VADeviceContext*)hw_d3d11_device_ctx->hwctx;
 	//HANDLE device_handle = wglDXOpenDeviceNV(hw_d3d11_dev_ctx->device);
 
 
@@ -496,13 +486,13 @@ int TestHWDecode(std::vector<std::string> & arrayOfStrings)
 			break;
 
 		if (video_stream == packet->stream_index)
-			ret = decode_write(decoder_ctx, packet, hw_d3d11_dev_ctx, firstFrame);
+			ret = decode_write(decoder_ctx, packet);
 
 		av_packet_unref(packet);
 	}
 
 	/* flush the decoder */
-	ret = decode_write(decoder_ctx, NULL, hw_d3d11_dev_ctx, firstFrame);
+	ret = decode_write(decoder_ctx, NULL);
 
 	if (output_file)
 		fclose(output_file);
@@ -611,7 +601,7 @@ int CFFmpegApp::TestFFmpeg(const wxString& commandline)
 	arrayOfStrings.push_back("d:\\test.png");
 	*/
 	arrayOfStrings.push_back("ffmpeg");
-	arrayOfStrings.push_back("d3d11va");
+	arrayOfStrings.push_back("cuda");
 	arrayOfStrings.push_back("d:\\video\\20200509_132206.mp4");
 	arrayOfStrings.push_back("F:\\music_video\\20200509_132206.yuv");
 	TestHWDecode(arrayOfStrings);

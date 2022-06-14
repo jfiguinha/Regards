@@ -185,8 +185,6 @@ bool MyApp::OnInit()
 	regardsParam = new CRegardsConfigParam();
 	CParamInit::Initialize(regardsParam);
 
-	//CFFmpegApp ffmpeg;
-	//ffmpeg.TestFFmpeg("");
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
 
@@ -209,12 +207,15 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-/*
-	if (regardsParam->GetIsOpenCLSupport())
-	{
-		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-	}
-	*/
+
+//	if (regardsParam->GetIsOpenCLSupport())
+//	{
+//		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
+//	}
+
+	//CFFmpegApp ffmpeg;
+	//ffmpeg.TestFFmpeg("");
+
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

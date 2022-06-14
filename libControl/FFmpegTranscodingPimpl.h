@@ -85,7 +85,7 @@ private:
 	void VideoTreatment(AVFrame* & tmp_frame, StreamContext* stream);
 	int ProcessEncodeFile(AVFrame* dst);
 	int ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds);
-	void DecodeHardwareFrame(AVFrame* & tmp_frame, AVFrame* sw_frame, StreamContext* stream);
+	
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
 
 	AVCodecContext * OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, wxString encoderName);
@@ -98,8 +98,9 @@ private:
 	int open_input_file(const wxString& filename, const wxString& decodeHardware);
 	int open_output_file(const wxString& filename);
 
+	int EncodeFrame(const int& stream_index, int& positionMovie, const bool& isVideo, const bool& write);
 	int filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress,
-	                              const int& isvideo);
+	                              const int& isvideo, const bool& write);
 	int flush_encoder(unsigned int stream_index);
 	void Release();
 	void SetFrameData(AVFrame* src_frame, CompressVideo* m_dlgProgress);
@@ -107,7 +108,7 @@ private:
 	int hw_decoder_init(AVCodecContext* ctx, enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
 	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
-
+	AVPixelFormat pixelFormatInput = AV_PIX_FMT_YUV420P;
 	AVFormatContext* ifmt_ctx = nullptr;
 	AVFormatContext* ofmt_ctx = nullptr;
 	StreamContext* stream_ctx;
@@ -123,7 +124,7 @@ private:
 	wxString input_file = "";
 	int orientation = 0;
 	CVideoOptionCompress* videoCompressOption;
-
+	wxString decodeHardware = "";
 	double duration = 0;
 	int totalFrame = 0;
 	int nbFrameEncoded = 0;

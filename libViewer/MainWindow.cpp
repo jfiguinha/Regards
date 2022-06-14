@@ -422,6 +422,9 @@ void CMainWindow::ExportVideo(const wxString& filename, const wxString& filename
 	if (!wxFileExists(filename))
 		return;
 
+	////CFFmpegApp ffmpeg;
+	//ffmpeg.TestFFmpeg("");
+
 	CMediaInfo metadata;
 	int rotation = metadata.GetVideoRotation(filename);
 

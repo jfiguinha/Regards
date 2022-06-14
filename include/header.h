@@ -52,9 +52,6 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
-#if (defined(WIN32) && defined(_MSC_VER))
-#include <tbb/tbbmalloc_proxy.h>
-#endif
 #endif
 
 #include <thread>
