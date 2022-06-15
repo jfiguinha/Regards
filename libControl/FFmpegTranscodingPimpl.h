@@ -155,7 +155,8 @@ private:
 	int nbFrame = 0;
 
 	int framerate = 30;
-
+	uint8_t* src = nullptr;
+	int sizesrc = 0;
 	
 
 	cv::VideoCapture * capture = nullptr;

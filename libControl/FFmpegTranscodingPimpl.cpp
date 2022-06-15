@@ -323,10 +323,14 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		{
 
 			// dif = dif / 100.0;
-			int nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
+			int nbFpsPerSecond = 1;
+			if (dif > 0)
+				nbFpsPerSecond = static_cast<int>(ffmpeg_trans->nbFrameEncoded / dif);
 			int missingFrame = ffmpeg_trans->totalFrame - ffmpeg_trans->nbFrameEncoded;
 
-			double timeMissing = missingFrame / nbFpsPerSecond;
+			double timeMissing = 1;
+			if (nbFpsPerSecond > 0)
+				timeMissing = missingFrame / nbFpsPerSecond;
 
 			wxString frame = wxString::Format("%d fps", nbFpsPerSecond);
 			ffmpeg_trans->m_dlgProgress->SetTextProgression(frame, 2);
@@ -1610,48 +1614,143 @@ CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext* stream)
 {
 	//bool decodeBitmap = false;
+	cv::Mat mat;
 
-	CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
-
-	cv::Mat mat = ApplyProcess(bitmap);
-
-	if (dst_hardware == nullptr)
+	if (IsSupportOpenCL())
 	{
-		dst_hardware = av_frame_alloc();
-
-		av_opt_set_int(scaleContext, "srcw", tmp_frame->width, 0);
-		av_opt_set_int(scaleContext, "srch", tmp_frame->height, 0);
-		av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
-		av_opt_set_int(scaleContext, "dstw", tmp_frame->width, 0);
-		av_opt_set_int(scaleContext, "dsth", tmp_frame->height, 0);
-		av_opt_set_int(scaleContext, "dst_format", pixelFormatInput, 0);
-		av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
-
-		if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+		cv::UMat bgr;
+		int nWidth = tmp_frame->width;
+		int nHeight = tmp_frame->height;
+		if (tmp_frame->format == AV_PIX_FMT_NV12)
 		{
-			sws_freeContext(scaleContext);
-			throw std::logic_error("Failed to initialise scale context");
+			try
+			{
+				int sizeData = (nHeight + nHeight / 2) * nWidth;
+				if (sizeData != sizesrc && src != nullptr)
+				{
+					delete[] src;
+					src = nullptr;
+				}
+
+				if (src == nullptr)
+				{
+					src = new uint8_t[sizeData];
+					sizesrc = sizeData;
+				}
+
+				int size = nHeight * nWidth;
+				memcpy(src, tmp_frame->data[0], size);
+				memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
+				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
+				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
+
+
+		}
+		else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
+		{
+			cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
+			cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+			cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
+
+			cv::Mat u_resized, v_resized;
+			cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
+			cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
+
+			cv::Mat yuv;
+
+			std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
+			cv::merge(yuv_channels, yuv);
+
+			cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
+
 		}
 
+		bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
+		bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
 
-		dst_hardware->format = pixelFormatInput;
-		dst_hardware->width = stream->dec_frame->width;
-		dst_hardware->height = stream->dec_frame->height;
-		av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
-			pixelFormatInput, 1);
+		if (stabilizeFrame && openCVStabilization == nullptr)
+			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
+
+		COpenCLEffectVideo openclEffectVideo;
+		openclEffectVideo.SetMatrix(bgr);
+
+		if (stabilizeFrame || correctedContrast)
+		{
+			openclEffectVideo.ApplyOpenCVEffect(&videoCompressOption->videoEffectParameter, openCVStabilization);
+		}
+
+		openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
+
+		if (dst_hardware == nullptr)
+		{
+			dst_hardware = av_frame_alloc();
+			dst_hardware->format = AV_PIX_FMT_YUV420P;
+			dst_hardware->width = stream->dec_frame->width;
+			dst_hardware->height = stream->dec_frame->height;
+			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
+				AV_PIX_FMT_YUV420P, 1);
+		}
+		av_frame_copy_props(dst_hardware, tmp_frame);
+
+		openclEffectVideo.GetYUV420P(dst_hardware->data[0], dst_hardware->data[1], dst_hardware->data[2], tmp_frame->width, tmp_frame->height);
+
+		tmp_frame = dst_hardware;
+
+		nbFrame++;
 	}
-	av_frame_copy_props(dst_hardware, tmp_frame);
+	else
+	{
+		CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
+		mat = ApplyProcess(bitmap);
+		delete bitmap;
 
 
-	int linesize = mat.cols * 4;
+		if (dst_hardware == nullptr)
+		{
+			dst_hardware = av_frame_alloc();
 
-	sws_scale(scaleContext, &mat.data, &linesize, 0, mat.rows,
-		dst_hardware->data, dst_hardware->linesize);
+			av_opt_set_int(scaleContext, "srcw", tmp_frame->width, 0);
+			av_opt_set_int(scaleContext, "srch", tmp_frame->height, 0);
+			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
+			av_opt_set_int(scaleContext, "dstw", tmp_frame->width, 0);
+			av_opt_set_int(scaleContext, "dsth", tmp_frame->height, 0);
+			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
+			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
-	tmp_frame = dst_hardware;
+			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)
+			{
+				sws_freeContext(scaleContext);
+				throw std::logic_error("Failed to initialise scale context");
+			}
 
-	delete bitmap;
-	nbFrame++;
+
+			dst_hardware->format = AV_PIX_FMT_YUV420P;
+			dst_hardware->width = stream->dec_frame->width;
+			dst_hardware->height = stream->dec_frame->height;
+			av_image_alloc(dst_hardware->data, dst_hardware->linesize, tmp_frame->width, tmp_frame->height,
+				AV_PIX_FMT_YUV420P, 1);
+		}
+		av_frame_copy_props(dst_hardware, tmp_frame);
+
+
+		int linesize = mat.cols * 4;
+
+		sws_scale(scaleContext, &mat.data, &linesize, 0, mat.rows,
+			dst_hardware->data, dst_hardware->linesize);
+
+		tmp_frame = dst_hardware;
+
+		nbFrame++;
+	}
+
+
 }
 
 void CFFmpegTranscodingPimpl::VideoInfos(StreamContext* stream)
@@ -2197,7 +2296,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 			framerate = (pSourceCodecCtx->framerate.num / pSourceCodecCtx->framerate.den) * 1;
 			c->codec_id = codec_id;
 			c->codec_type = AVMEDIA_TYPE_VIDEO;
-			c->pix_fmt = pixelFormatInput;
+			c->pix_fmt = AV_PIX_FMT_YUV420P;
 			c->width = pSourceCodecCtx->width;
 			c->height = pSourceCodecCtx->height;
 			c->framerate = pSourceCodecCtx->framerate;
@@ -2213,7 +2312,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 		else
 		{
 			c->codec_type = AVMEDIA_TYPE_VIDEO;
-			c->pix_fmt = pixelFormatInput;
+			c->pix_fmt = AV_PIX_FMT_YUV420P;
 			c->width = width;
 			c->height = height;
 			c->time_base = { 1,  (int)fps };
@@ -2339,7 +2438,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			av_opt_set_int(scaleContext, "src_format", AV_PIX_FMT_BGRA, 0);
 			av_opt_set_int(scaleContext, "dstw", frame->width, 0);
 			av_opt_set_int(scaleContext, "dsth", frame->height, 0);
-			av_opt_set_int(scaleContext, "dst_format", pixelFormatInput, 0);
+			av_opt_set_int(scaleContext, "dst_format", AV_PIX_FMT_YUV420P, 0);
 			av_opt_set_int(scaleContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
 			if (sws_init_context(scaleContext, nullptr, nullptr) < 0)

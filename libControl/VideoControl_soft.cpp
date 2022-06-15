@@ -1881,6 +1881,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
+	//inverted = false;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
 	if (regardsParam != nullptr)
@@ -1934,7 +1935,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		glTexture->SetData(bitmap);
 		delete bitmap;
 	}
-	inverted = false;
+	//inverted = false;
 	
 	return glTexture;
 }
@@ -2129,83 +2130,65 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
+			cv::UMat bgr;
+			int nWidth = src_frame->width;
+			int nHeight = src_frame->height;
 			if (src_frame->format == AV_PIX_FMT_NV12)
 			{
-
-				//printf("OpenCL openclEffectYUV \n");
-				int ysize = 0;
-				int uvsize = 0;
-				ysize = src_frame->linesize[0] * src_frame->height;
-				uvsize = src_frame->linesize[1] * (src_frame->height / 2);
-
-#ifdef TEST_NV12
-				cv::Mat data = cv::Mat(1080, 1920, CV_8UC4);
-	
-				for (int y = 0; y < src_frame->height; y++)
+				try
 				{
-					for (int x = 0; x < src_frame->width; x++)
+					int sizeData = (nHeight + nHeight / 2) * nWidth;
+					if (sizeData != sizesrc && src != nullptr)
 					{
-						int srcPos = x * 4 + y * src_frame->width * 4;
-						int positionSrc = x + y * src_frame->width;
-						int positionUV = 0;
-
-						int yModulo = y % 2;
-						int xModulo = x % 2;
-						if (xModulo == 1)
-						{
-							if (yModulo == 1)
-								positionUV = (x - 1) + ((y - 1) / 2) * src_frame->width;
-							else
-								positionUV = (x - 1) + (y / 2) * src_frame->width;
-						}
-						else
-						{
-							if (yModulo == 1)
-								positionUV = x + ((y - 1) / 2) * src_frame->width + positionUV;
-							else
-								positionUV = x + (y / 2) * src_frame->width + positionUV;
-						}
-
-						float vComp = src_frame->data[1][positionUV];
-						float uComp = src_frame->data[1][positionUV + 1];
-						float yComp = src_frame->data[0][positionSrc];
-
-						float r = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
-						float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
-						float b= (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
-						data.data[srcPos+3] = 255;
-
-			
-						data.data[srcPos] = clamp(r, 0, 255);
-						data.data[srcPos + 1] = clamp(g, 0, 255);
-						data.data[srcPos + 2] = clamp(b, 0, 255);
-
+						delete[] src;
+						src = nullptr;
 					}
-				}
-				cv::imwrite("d:\\test.jpg", data);
-#endif
 
-				muBitmap.lock();
-				openclEffectYUV->SetMemoryDataNV12(src_frame->data[0], ysize, src_frame->data[1], uvsize,
-					src_frame->width, src_frame->height, src_frame->linesize[0]);
-				muBitmap.unlock();
+					if (src == nullptr)
+					{
+						src = new uint8_t[sizeData];
+						sizesrc = sizeData;
+					}
+
+
+					int size = nHeight * nWidth;
+					memcpy(src, src_frame->data[0], size);
+					memcpy(src + size, src_frame->data[1], (nWidth * (nHeight / 2)));
+					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
+					cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
+					
+				}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
+
+
 			}
 			else if (src_frame->format == AV_PIX_FMT_YUV420P)
 			{
-				int ysize = 0;
-				int usize = 0;
-				int vsize = 0;
+				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
+				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[1]);
+				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[2]);
 
-				ysize = src_frame->linesize[0] * src_frame->height;
-				usize = src_frame->linesize[1] * (src_frame->height / 2);
-				vsize = src_frame->linesize[2] * (src_frame->height / 2);
+				cv::Mat u_resized, v_resized;
+				cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
+				cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
 
-				muBitmap.lock();
-				openclEffectYUV->SetMemoryData(src_frame->data[0], ysize, src_frame->data[1], usize, src_frame->data[2],
-					vsize, src_frame->width, src_frame->height, src_frame->linesize[0]);
-				muBitmap.unlock();
+				cv::Mat yuv;
+
+				std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
+				cv::merge(yuv_channels, yuv);
+
+				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
+
 			}
-			
+
+			muBitmap.lock();
+			openclEffectYUV->SetMatrix(bgr);
+			muBitmap.unlock();
 		}
 	}
 }

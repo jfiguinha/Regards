@@ -265,4 +265,7 @@ protected:
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
 	bool useOpenCLOpenGLInterop = false;
+
+	uint8_t * src = nullptr;
+	int sizesrc = 0;
 };
