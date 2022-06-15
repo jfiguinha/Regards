@@ -2,7 +2,6 @@
 #include "VideoControlInterface.h"
 #include <OpenCLEngine.h>
 #include <OpenCLEffectVideoYUV.h>
-#include <OpenCLEffectVideoNV12.h>
 #include <VideoStabilization.h>
 
 extern "C" {

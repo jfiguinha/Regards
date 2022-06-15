@@ -1621,6 +1621,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		cv::UMat bgr;
 		int nWidth = tmp_frame->width;
 		int nHeight = tmp_frame->height;
+		COpenCLEffectVideoYUV openclEffectVideo;
+
 		if (tmp_frame->format == AV_PIX_FMT_NV12)
 		{
 			try
@@ -1643,6 +1645,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
 				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
 				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
+				openclEffectVideo.SetMatrix(bgr);
+
+				
+				
 			}
 			catch (cv::Exception& e)
 			{
@@ -1659,6 +1665,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 			cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
 			cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
 
+
 			cv::Mat u_resized, v_resized;
 			cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
 			cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
@@ -1670,7 +1677,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 
 			cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
 
+			openclEffectVideo.SetMatrix(bgr);
 		}
+
+		
 
 		bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 		bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
@@ -1678,8 +1688,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		if (stabilizeFrame && openCVStabilization == nullptr)
 			openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
 
-		COpenCLEffectVideo openclEffectVideo;
-		openclEffectVideo.SetMatrix(bgr);
+		//COpenCLEffectVideo openclEffectVideo;
+		//openclEffectVideo.SetMatrix(bgr);
 
 		if (stabilizeFrame || correctedContrast)
 		{

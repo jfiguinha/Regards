@@ -13,24 +13,21 @@ namespace Regards
 
 			COpenCLEffectVideoYUV();
 			virtual ~COpenCLEffectVideoYUV();
-			void SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferU, int sizeU, uint8_t * bufferV, int sizeV, const int &width, const int &height, const int &lineSize);
-			void SetMemoryDataNV12(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &lineSize);
+			void SetMemoryData(const cv::Mat& bufferY, const cv::Mat& bufferU,const cv::Mat & bufferV, const int &width, const int &height, const int &lineSize);
+			void SetMemoryDataNV12(const cv::Mat& bufferY, const cv::Mat& bufferUV, const int &width, const int &height, const int &lineSize);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut, const int& rgba = 0);
 			bool IsOk();
-			
 
 		protected:
 
-			int GetSizeData();
-			bool isOk = false;
 			int formatData = 0;
 			
 			//Bitmap Memory Buffer
 			COpenCLParameterInt * paramWidth = nullptr;
 			COpenCLParameterInt * paramHeight = nullptr;
-			COpenCLParameterByteArray * inputY = nullptr;
-			COpenCLParameterByteArray * inputU = nullptr;
-			COpenCLParameterByteArray * inputV = nullptr;
+			cv::UMat inputY;
+			cv::UMat inputU;
+			cv::UMat inputV;
 			COpenCLParameterInt * paramLineSize = nullptr;
 
 		};

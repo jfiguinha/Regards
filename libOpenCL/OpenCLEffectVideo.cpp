@@ -35,9 +35,29 @@ COpenCLEffectVideo::COpenCLEffectVideo()
 	openclFilter = new COpenCLFilter();
 }
 
+void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
+{
+	if (frame.channels() == 4)
+		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+	else
+		paramSrc = frame;
+
+	needToTranscode = false;
+	isOk = true;
+}
+
+
+
 void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)
 {
-	cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+	if (frame.channels() == 4)
+		cv::cvtColor(frame, paramSrc, cv::COLOR_BGRA2BGR);
+	else
+		frame.copyTo(paramSrc);
+
+	needToTranscode = false;
+	isOk = true;
+
 }
 
 cv::Mat COpenCLEffectVideo::GetMatrix(const bool & src)
@@ -305,6 +325,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut)
 {
+
 	int middleWidth = widthOut / 2;
 	int middleHeight = heightOut / 2;
 
@@ -404,6 +425,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 			Error::CheckError(err);
 		}
 	}
+
 	if (inputY != nullptr)
 	{
 		inputY->Release();
@@ -433,6 +455,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 		paramHeight->Release();
 		delete paramHeight;
 	}
+
 }
 
 

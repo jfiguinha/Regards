@@ -27,7 +27,7 @@ namespace Regards
 		class COpenCLParameter
 		{
 		public:
-			COpenCLParameter(): queue(nullptr)
+			COpenCLParameter()
 			{
 				dataType = 0;
 				noDelete = false;
@@ -39,11 +39,6 @@ namespace Regards
 			{
 				if (!noDeleteClMem)
 					COpenCLParameter::Release();
-			}
-
-			void SetCommandQueue(const cl_command_queue& queue)
-			{
-				this->queue = queue;
 			}
 
 			void SetLibelle(const wxString& libelle);
@@ -75,7 +70,7 @@ namespace Regards
 
 		protected:
 			cl_mem cl_buffer = nullptr;
-			cl_command_queue queue;
+
 			int dataType;
 			bool noDelete;
 			bool noDeleteClMem;

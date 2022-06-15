@@ -1881,7 +1881,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
-	//inverted = false;
+	inverted = false;
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
 	if (regardsParam != nullptr)
@@ -1935,7 +1935,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		glTexture->SetData(bitmap);
 		delete bitmap;
 	}
-	//inverted = false;
+	//inverted = true;
 	
 	return glTexture;
 }
@@ -2130,11 +2130,13 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
+
 			cv::UMat bgr;
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
 			if (src_frame->format == AV_PIX_FMT_NV12)
 			{
+				/*
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * nWidth;
@@ -2164,7 +2166,15 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					std::cout << "exception caught: " << err_msg << std::endl;
 					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 				}
+				*/
+			
 
+				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
+				cv::Mat uv = cv::Mat(cv::Size(nWidth, nHeight / 2), CV_8UC1, src_frame->data[1]);
+				muBitmap.lock();
+				openclEffectYUV->SetMemoryDataNV12(y, uv, nWidth, nHeight, nWidth);
+				muBitmap.unlock();
+				
 
 			}
 			else if (src_frame->format == AV_PIX_FMT_YUV420P)
@@ -2172,7 +2182,12 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
 				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[1]);
 				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[2]);
-
+				
+				muBitmap.lock();
+				openclEffectYUV->SetMemoryData(y, u, v, nWidth, nHeight, nWidth);
+				muBitmap.unlock();
+				
+				/*
 				cv::Mat u_resized, v_resized;
 				cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
 				cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
@@ -2183,12 +2198,14 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				cv::merge(yuv_channels, yuv);
 
 				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
+				*/
+				
 
 			}
 
-			muBitmap.lock();
-			openclEffectYUV->SetMatrix(bgr);
-			muBitmap.unlock();
+			//muBitmap.lock();
+			//openclEffectYUV->SetMatrix(bgr);
+			//muBitmap.unlock();
 		}
 	}
 }

@@ -192,6 +192,8 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 	err = clFinish(q);
 	Error::CheckError(err);
 
+	//wxMilliSleep(1000);
+
 	if (!keepMemory)
 	{
 		if (flag == CL_MEM_USE_HOST_PTR)

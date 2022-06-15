@@ -52,12 +52,14 @@ namespace Regards
 			virtual ~COpenCLEffectVideo();
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
+			void SetMatrix(cv::UMat& frame);
+
 			cv::Mat GetMatrix(const bool & src = true);
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
 			bool convertToGLTexture2D(GLTexture* glTexture);
 			void AutoContrast();
-			void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
+			virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			void Rotate(CVideoEffectParameter* videoEffectParameter);
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
@@ -83,6 +85,7 @@ namespace Regards
 			cv::UMat paramOutput;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
+			bool isOk = false;
 		};
 
 	}
