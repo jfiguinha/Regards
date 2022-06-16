@@ -12,6 +12,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
+#include <LibResource.h>
 #if defined __APPLE__
 #include <OpenCL/cl_gl.h>
 #else
@@ -176,18 +177,78 @@ COpenCLFilter::~COpenCLFilter()
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
 	//using namespace cv::ocl;
-	cl_context context = openclContext->GetContext();
-	bool isOk = false;
+	//cl_context context = openclContext->GetContext();
+	bool isOk = true;
+	cv::Mat data;
+	inputData.copyTo(data);
+	glTexture->SetData(data);
 
+#ifdef USE_INTEROP
 	try
 	{
+#ifdef OPENCV_SOURCE
+		UMat u = inputData;
+
+		cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+
+		Size srcSize = inputData.size();
+
+		using namespace cv::ocl;
+		Context& ctx = Context::getDefault();
+		cl_context context = (cl_context)ctx.ptr();
+
+		//checkOpenCLVersion();  // clCreateFromGLTexture requires OpenCL 1.2
+
+		
+
+		// TODO Add support for roi
+		CV_Assert(u.offset == 0);
+		CV_Assert(u.isContinuous());
+
+		cl_int status = 0;
+		//cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, gl::TEXTURE_2D, 0, texture.texId(), &status);
+		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
+
+		cl_mem clBuffer = (cl_mem)u.handle(ACCESS_READ);
+
+		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+		size_t offset = 0; // TODO
+		size_t dst_origin[3] = { 0, 0, 0 };
+		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
+		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+		status = clFinish(q); // TODO Use events
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
+
+		status = clReleaseMemObject(clImage); // TODO RAII
+		if (status != CL_SUCCESS)
+			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+
+#else
+
+
 		cl_int status = 0;
 #ifdef __WXGTK__
         cv::Mat data;
         inputData.copyTo(data);
         glTexture->SetData(data);
 #else
-		cl_command_queue q = openclContext->GetCommandQueue();
+
+		using namespace cv::ocl;
+		Context& ctx = Context::getDefault();
+		cl_context context = (cl_context)ctx.ptr();
+		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
 
 		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
@@ -207,7 +268,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
 
-
 		status = clFinish(q); // TODO Use events
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
@@ -215,6 +275,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		status = clReleaseMemObject(clImage); // TODO RAII
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+#endif
 #endif
 		isOk = true;
 	}
@@ -225,6 +286,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
 
+#endif
 	return isOk;
 }
 
@@ -985,6 +1047,43 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 
 int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 {
+/*
+	vector<COpenCLParameter*> vecParam;
+	cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
+
+	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
+
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(u.size().width);
+	paramWidth->SetLibelle("width");
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(u.size().height);
+	paramHeight->SetLibelle("height");
+	vecParam.push_back(paramHeight);
+
+#ifdef __APPLE__
+	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTextureApple", vecParam, u.cols, u.rows, cl_image);// program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
+#else
+	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTexture", vecParam, u.cols, u.rows, cl_image); //program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+#endif
+	
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+*/
 	cl_mem clBuffer = (cl_mem)u.handle(cv::ACCESS_READ);
 
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BITMAPCONVERSION");
@@ -1029,6 +1128,7 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 		}
 		vecParam.clear();
 	}
+
 	return 0;
 }
 
@@ -1038,10 +1138,34 @@ void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
 	cv::UMat cvDest;
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+	/*
+	vector<COpenCLParameter*> vecParam;
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
 
-	//Mat local;
-	//cvDestBgra.copyTo(local);
+	COpenCLParameterInt* paramThreshold = new COpenCLParameterInt();
+	paramThreshold->SetLibelle("threshold");
+	paramThreshold->SetValue((int)threshold);
+	vecParam.push_back(paramThreshold);
 
+	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Solarization", vecParam, inputData.cols, inputData.rows);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
+	*/
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_COLOR");
 	if (programCL != nullptr)
@@ -1087,6 +1211,7 @@ void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	
 }
 
 void COpenCLFilter::Median(cv::UMat& inputData)
@@ -1111,9 +1236,38 @@ void COpenCLFilter::Noise(cv::UMat& inputData)
 	cv::UMat cvDestBgra;
 	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	//Mat local;
-	//cvDestBgra.copyTo(local);
+	vector<COpenCLParameter*> vecParam;
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
 
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(inputData.cols);
+	paramWidth->SetLibelle("width");
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(inputData.rows);
+	paramHeight->SetLibelle("height");
+	vecParam.push_back(paramHeight);
+
+	dest = ExecuteOpenCLCode("IDR_OPENCL_NOISE", "Noise", vecParam, inputData.cols, inputData.rows);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
+	/*
 	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
 	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_NOISE");
 	if (programCL != nullptr)
@@ -1165,6 +1319,7 @@ void COpenCLFilter::Noise(cv::UMat& inputData)
 		vecParam.clear();
 	}
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	*/
 }
 
 
@@ -1182,6 +1337,55 @@ void COpenCLFilter::Flip(const wxString& functionName, cv::UMat& inputData)
 
 void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inputData)
 {
+	cv::UMat dest;
+	cv::UMat cvDest;
+	cv::UMat cvDestBgra;
+	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
+
+	vector<COpenCLParameter*> vecParam;
+	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+
+	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+	input->SetValue(clBuffer);
+	input->SetLibelle("input");
+	input->SetNoDelete(true);
+	vecParam.push_back(input);
+
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(inputData.cols);
+	paramWidth->SetLibelle("width");
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(inputData.rows);
+	paramHeight->SetLibelle("height");
+	vecParam.push_back(paramHeight);
+
+	COpenCLParameterFloat* paramRadius = new COpenCLParameterFloat();
+	paramRadius->SetLibelle("radius");
+	paramRadius->SetValue(radius);
+	vecParam.push_back(paramRadius);
+
+	COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
+	paramAngle->SetLibelle("angle");
+	paramAngle->SetValue(angle);
+	vecParam.push_back(paramAngle);
+
+
+	dest = ExecuteOpenCLCode("IDR_OPENCL_SWIRL", "Swirl", vecParam, inputData.cols, inputData.rows);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
+	/*
 	//cl_mem outputValue = nullptr;
 	cv::UMat dest;
 	cv::UMat cvDest;
@@ -1259,6 +1463,7 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inp
 
 	//UMat dest = GetOpenCVStruct(outputValue,  inputData.cols, inputData.rows);
 	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	*/
 }
 
 void COpenCLFilter::BrightnessAndContrast(const double& brightness, const double& contrast, cv::UMat& inputData)
@@ -1454,6 +1659,106 @@ cv::Rect COpenCLFilter::CalculRect(int widthIn, int heightIn, int widthOut, int 
 	return rect;
 }
 
+
+cv::UMat COpenCLFilter::ExecuteOpenCLCode(const wxString & programName, const wxString & functionName, vector<COpenCLParameter*> & vecParam, const int &width, const int &height)
+{
+	UMat paramSrc;
+
+	int depth = (openclContext->GetDefaultType() == OPENCL_FLOAT) ? CV_32F : CV_8U;
+	int type = CV_MAKE_TYPE(depth, 4);
+	paramSrc.create((int)height, (int)width, type);
+
+	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
+	cv::ocl::ProgramSource programSource(kernelSource);
+	cv::ocl::Context context = cv::ocl::Context::getDefault();
+
+	// Compile the kernel code
+	cv::String errmsg;
+	cv::String buildopt = cv::format("-D dstT=%s", cv::ocl::typeToStr(paramSrc.depth()));
+	cv::ocl::Program program = context.getProg(programSource, buildopt, errmsg);
+
+	cv::ocl::Kernel kernel(functionName, program);
+
+	cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_WRITE);
+
+	cl_int err = clSetKernelArg((cl_kernel)kernel.ptr(), 0, sizeof(cl_mem), &clBuffer);
+	if (err > 0)
+		throw new std::exception("OpenCL Kernel Error", err);
+
+	int numArg = 1;
+	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
+	{
+		COpenCLParameter* parameter = *it;
+		parameter->Add((cl_kernel)kernel.ptr(), numArg++);
+	}
+
+	size_t global_work_size[3] = { paramSrc.cols, paramSrc.rows, 1 };
+	//size_t localThreads[3] = { 16, 16, 1 };
+	bool success = kernel.run(3, global_work_size, NULL, true);
+	if (!success) {
+		cout << "Failed running the kernel..." << endl;
+		if (err > 0)
+			throw new std::exception("OpenCL Kernel run", success);
+		return paramSrc;
+	}
+
+	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
+	{
+		COpenCLParameter* parameter = *it;
+		if (!parameter->GetNoDelete())
+			parameter->Release();
+	}
+
+	//cvtColor(paramSrc, paramSrc, cv::COLOR_RGBA2BGR);
+
+
+	return paramSrc;
+}
+
+
+void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem & outBuffer)
+{
+	wxString kernelSource = CLibResource::GetOpenCLUcharProgram(programName);
+	cv::ocl::ProgramSource programSource(kernelSource);
+	cv::ocl::Context context = cv::ocl::Context::getDefault();
+
+	// Compile the kernel code
+	cv::String errmsg;
+	cv::String buildopt = "";// cv::format("-D dstT=%s", cv::ocl::typeToStr(paramSrc.depth()));
+	cv::ocl::Program program = context.getProg(programSource, buildopt, errmsg);
+
+	cv::ocl::Kernel kernel(functionName, program);
+
+	//cl_mem clBuffer = (cl_mem)paramSrc.handle(cv::ACCESS_WRITE);
+
+	cl_int err = clSetKernelArg((cl_kernel)kernel.ptr(), 0, sizeof(cl_mem), &outBuffer);
+	if (err > 0)
+		throw new std::exception("OpenCL Kernel Error", err);
+
+	int numArg = 1;
+	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
+	{
+		COpenCLParameter* parameter = *it;
+		parameter->Add((cl_kernel)kernel.ptr(), numArg++);
+	}
+
+	size_t global_work_size[3] = { width, height, 1 };
+	//size_t localThreads[3] = { 16, 16, 1 };
+	bool success = kernel.run(3, global_work_size, NULL, true);
+	if (!success) {
+		cout << "Failed running the kernel..." << endl;
+		if (err > 0)
+			throw new std::exception("OpenCL Kernel run", success);
+		return;
+	}
+
+	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
+	{
+		COpenCLParameter* parameter = *it;
+		if (!parameter->GetNoDelete())
+			parameter->Release();
+	}
+}
 
 cv::UMat COpenCLFilter::Interpolation(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cv::UMat& inputData, int flipH, int flipV, int angle, int ratio)
 {

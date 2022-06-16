@@ -27,7 +27,7 @@ namespace Regards
 
 			cl_context GetContext()
 			{
-				return (cl_context)cv::ocl::Context::getDefault().ptr();
+				return context;
 			}
             
             const cl_device_type GetDeviceType()

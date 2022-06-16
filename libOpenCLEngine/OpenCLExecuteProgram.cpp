@@ -181,10 +181,12 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t& outputBufferSize)
 		parameter->Add(kernel, numArg++);
 	}
 
-	cl_event ev;
+	cl_event _event;
 	err = clEnqueueNDRangeKernel(q, kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
-	                             global_work_size, nullptr, 0, nullptr, nullptr);
+	                             global_work_size, nullptr, 0, nullptr, &_event);
 	Error::CheckError(err);
+
+	clWaitForEvents(1, &_event);
 
 	err = clFlush(q);
 	Error::CheckError(err);
@@ -251,10 +253,12 @@ void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program& program, const wx
 		COpenCLParameter* parameter = *it;
 		parameter->Add(kernel, numArg++);
 	}
-
+	cl_event _event;
 	err = clEnqueueNDRangeKernel(q, kernel, sizeof(global_work_size) / sizeof(size_t), nullptr,
-	                             global_work_size, nullptr, 0, nullptr, nullptr);
+	                             global_work_size, nullptr, 0, nullptr, &_event);
 	Error::CheckError(err);
+
+	clWaitForEvents(1, &_event);
 
 	err = clFlush(q);
 	Error::CheckError(err);
@@ -292,7 +296,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t* offset, size_t* gs_d, size_t
 	//clEnqueueNDRangeKernel(queue, dist_kernel, 2, offset, gs_d, ls, 0, NULL, &event)
 	err = clEnqueueNDRangeKernel(q, kernel, 2, offset, gs_d, ls, 0, nullptr, &event);
 	Error::CheckError(err);
-
+	clWaitForEvents(1, &event);
 	err = clFlush(q);
 	Error::CheckError(err);
 
@@ -359,7 +363,7 @@ void COpenCLExecuteProgram::ExecuteKernel1D(const size_t& global_size, const siz
 
 	err = clEnqueueNDRangeKernel(q, kernel, 1, nullptr, &global_size,
 	                             local_size ? &local_size : nullptr, 0, nullptr, &cl_perf_event);
-
+	clWaitForEvents(1, &cl_perf_event);
 	err = clFlush(q);
 	Error::CheckError(err);
 

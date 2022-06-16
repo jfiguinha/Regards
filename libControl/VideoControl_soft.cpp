@@ -2167,13 +2167,12 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 				}
 				*/
-			
-
 				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
 				cv::Mat uv = cv::Mat(cv::Size(nWidth, nHeight / 2), CV_8UC1, src_frame->data[1]);
 				muBitmap.lock();
 				openclEffectYUV->SetMemoryDataNV12(y, uv, nWidth, nHeight, nWidth);
 				muBitmap.unlock();
+				
 				
 
 			}
@@ -2183,6 +2182,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[1]);
 				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[2]);
 				
+			
 				muBitmap.lock();
 				openclEffectYUV->SetMemoryData(y, u, v, nWidth, nHeight, nWidth);
 				muBitmap.unlock();
@@ -2199,8 +2199,6 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 
 				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
 				*/
-				
-
 			}
 
 			//muBitmap.lock();

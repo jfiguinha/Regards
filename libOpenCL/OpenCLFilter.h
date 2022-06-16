@@ -66,6 +66,8 @@ namespace Regards
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 			bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
 
+			cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
+			void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer);
 		protected:
 
 			void ReallocMat(cv::UMat& inputData);

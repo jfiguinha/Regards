@@ -1627,6 +1627,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		{
 			try
 			{
+				
+				/*
 				int sizeData = (nHeight + nHeight / 2) * nWidth;
 				if (sizeData != sizesrc && src != nullptr)
 				{
@@ -1646,7 +1648,11 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
 				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
 				openclEffectVideo.SetMatrix(bgr);
-
+				*/
+				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
+				cv::Mat uv = cv::Mat(cv::Size(nWidth, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+				openclEffectVideo.SetMemoryDataNV12(y, uv, nWidth, nHeight, nWidth);
+				openclEffectVideo.TranscodePicture(nWidth, nHeight);
 				
 				
 			}
