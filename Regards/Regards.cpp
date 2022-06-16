@@ -25,7 +25,9 @@
 #include <LibResource.h>
 #include <PictureData.h>
 
+#ifdef TEST
 #include <ffmpeg_application.h>
+#endif
 
 using namespace cv;
 using namespace Regards::Picture;

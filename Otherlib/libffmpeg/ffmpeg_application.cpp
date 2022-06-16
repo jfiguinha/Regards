@@ -8,8 +8,9 @@
 #include <stdexcept>
 #include "ffmpeg_application.h"
 
-
+#ifdef WIN32
 #include <CL/cl_d3d11.h>
+#endif
 
 extern "C" {
 #include "ffmpeg.h"
@@ -20,7 +21,9 @@ extern "C" {
 #include <libavutil/opt.h>
 #include <libavutil/avassert.h>
 #include <libavutil/imgutils.h>
+#ifdef WIN32
 #include <libavutil/hwcontext_d3d11va.h>
+#endif
 }
 
 #include <opencv2/core/directx.hpp>

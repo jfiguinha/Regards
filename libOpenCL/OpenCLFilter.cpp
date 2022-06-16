@@ -1681,7 +1681,7 @@ cv::UMat COpenCLFilter::ExecuteOpenCLCode(const wxString & programName, const wx
 
 	cl_int err = clSetKernelArg((cl_kernel)kernel.ptr(), 0, sizeof(cl_mem), &clBuffer);
 	if (err > 0)
-		throw new std::exception("OpenCL Kernel Error", err);
+		throw "OpenCL Kernel Error";
 
 	int numArg = 1;
 	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
@@ -1690,13 +1690,13 @@ cv::UMat COpenCLFilter::ExecuteOpenCLCode(const wxString & programName, const wx
 		parameter->Add((cl_kernel)kernel.ptr(), numArg++);
 	}
 
-	size_t global_work_size[3] = { paramSrc.cols, paramSrc.rows, 1 };
+	size_t global_work_size[3] = { (size_t)paramSrc.cols, (size_t)paramSrc.rows, 1 };
 	//size_t localThreads[3] = { 16, 16, 1 };
 	bool success = kernel.run(3, global_work_size, NULL, true);
 	if (!success) {
 		cout << "Failed running the kernel..." << endl;
 		if (err > 0)
-			throw new std::exception("OpenCL Kernel run", success);
+			throw "OpenCL Kernel run";
 		return paramSrc;
 	}
 
@@ -1731,7 +1731,7 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 
 	cl_int err = clSetKernelArg((cl_kernel)kernel.ptr(), 0, sizeof(cl_mem), &outBuffer);
 	if (err > 0)
-		throw new std::exception("OpenCL Kernel Error", err);
+		throw "OpenCL Kernel Error";
 
 	int numArg = 1;
 	for (auto it = vecParam.begin(); it != vecParam.end(); ++it)
@@ -1740,13 +1740,13 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 		parameter->Add((cl_kernel)kernel.ptr(), numArg++);
 	}
 
-	size_t global_work_size[3] = { width, height, 1 };
+	size_t global_work_size[3] = { (size_t)width, (size_t)height, 1 };
 	//size_t localThreads[3] = { 16, 16, 1 };
 	bool success = kernel.run(3, global_work_size, NULL, true);
 	if (!success) {
 		cout << "Failed running the kernel..." << endl;
 		if (err > 0)
-			throw new std::exception("OpenCL Kernel run", success);
+			throw "OpenCL Kernel run";
 		return;
 	}
 
