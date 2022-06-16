@@ -90,22 +90,39 @@ void CRegardsConfigParam::SetAutoConstrast(const int& autoContrast)
 
 void CRegardsConfigParam::SetHardwareDecoder(const wxString& hardwareDecoder)
 {
+#ifdef __APPLE__
+    videoDecoderHardware = "videotoolbox";
+#else
 	videoDecoderHardware = hardwareDecoder;
+#endif
 }
 
 wxString CRegardsConfigParam::GetHardwareDecoder()
 {
+#ifdef __APPLE__
+    return "videotoolbox";
+#else
 	return videoDecoderHardware;
+#endif
 }
 
 void CRegardsConfigParam::SetHardwareEncoder(const wxString& hardwareEncoder)
 {
+#ifdef __APPLE__
+    videoEncoderHardware = "videotoolbox";
+#else
 	videoEncoderHardware = hardwareEncoder;
+#endif
+	
 }
 
 wxString CRegardsConfigParam::GetHardwareEncoder()
 {
+#ifdef __APPLE__
+    return "videotoolbox";
+#else
 	return videoEncoderHardware;
+#endif
 }
 
 bool CRegardsConfigParam::GetIsOpenCLSupport()
