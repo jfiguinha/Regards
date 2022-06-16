@@ -30,14 +30,10 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="OpenCLFilter.cpp"/>
-    <File Name="OpenCLEffectVideoNV12.cpp"/>
-    <File Name="OpenCLEffectVideoYUV.cpp"/>
     <File Name="OpenCLEffectVideo.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="OpenCLFilter.h"/>
-    <File Name="OpenCLEffectVideoNV12.h"/>
-    <File Name="OpenCLEffectVideoYUV.h"/>
     <File Name="OpenCLEffectVideo.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
