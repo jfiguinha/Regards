@@ -1644,7 +1644,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				memcpy(src, tmp_frame->data[0], size);
 				memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
 				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
-				openclEffectVideo.SetNV12(yuv, nWidth, nHeight);
+				openclEffectVideo.SetNV12(yuv);
 
 				
 			}
@@ -1661,10 +1661,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		{
 			try
 			{
-				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
-				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
-				openclEffectVideo.SetYUV420P(y, u, v, nWidth, nHeight);
+				cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
+				cv::Mat u = cv::Mat(cv::Size(tmp_frame->linesize[1], nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+				cv::Mat v = cv::Mat(cv::Size(tmp_frame->linesize[2], nHeight / 2), CV_8UC1, tmp_frame->data[2]);
+				openclEffectVideo.SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
 			}
 			catch (cv::Exception& e)
 			{

@@ -697,13 +697,13 @@ void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 	if (rotation == 90)
 		angle = 90;
 	else if (rotation == -90)
-		angle = 270;
+		angle = 90;
 	else if (rotation == -180)
 		angle = 180;
 	else if (rotation == 180)
 		angle = 180;
 	else if (rotation == -270)
-		angle = 90;
+		angle = 270;
 	else if (rotation == 270)
 		angle = 270;
 	muVideoEffect.lock();
@@ -2154,7 +2154,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
 
 					muBitmap.lock();
-					openclEffectYUV->SetNV12(yuv, nWidth, nHeight);
+					openclEffectYUV->SetNV12(yuv);
 					muBitmap.unlock();
 
 				}
@@ -2171,12 +2171,12 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			{
 				try
 				{
-					cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
-					cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-					cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
+					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
+					cv::Mat u = cv::Mat(cv::Size(tmp_frame->linesize[1], nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+					cv::Mat v = cv::Mat(cv::Size(tmp_frame->linesize[2], nHeight / 2), CV_8UC1, tmp_frame->data[2]);
 
 					muBitmap.lock();
-					openclEffectYUV->SetYUV420P(y, u, v, nWidth, nHeight);
+					openclEffectYUV->SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
 					muBitmap.unlock();
 				}
 				catch (cv::Exception& e)

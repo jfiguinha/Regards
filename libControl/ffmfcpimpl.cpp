@@ -1476,6 +1476,7 @@ enum AVPixelFormat CFFmfcPimpl::get_hw_format(AVCodecContext* ctx,
 			return *p;
 	}
 
+	hw_pix_fmt = AV_PIX_FMT_NONE;
 	fprintf(stderr, "Failed to get HW surface format.\n");
 	return AV_PIX_FMT_NONE;
 }
@@ -1508,7 +1509,7 @@ int CFFmfcPimpl::decoder_decode_frame(VideoState* is, Decoder* d, AVFrame* frame
 				case AVMEDIA_TYPE_VIDEO:
 					ret = avcodec_receive_frame(d->avctx, frame);
 
-					if (isHardwareDecoding)
+					if (isHardwareDecoding && hw_pix_fmt != AV_PIX_FMT_NONE)
 					{
 
 						if (is->hwaccel_retrieve_data && frame->format == hw_pix_fmt) {
@@ -1708,7 +1709,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 
 	//is->hwaccel_get_buffer = dxva2_get_buffer;
 	is->avctx->get_format = get_hw_format;
-	//is->avctx->get_buffer2 = get_buffer;
+//	is->avctx->get_buffer2 = get_buffer;
 	is->avctx->opaque = is;
 	is->codec = codec;
 	is->hwaccel_id = HWACCEL_AUTO;
