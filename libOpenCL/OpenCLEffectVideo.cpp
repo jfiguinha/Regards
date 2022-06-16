@@ -324,24 +324,35 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 }
 
-void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& nWidth, const int& nHeight)
+void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
 {
 	cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR_NV12);
 }
 
-void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& nWidth, const int& nHeight)
+void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight)
 {
 	cv::Mat u_resized, v_resized;
-	cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
-	cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
+	cv::resize(u, u_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
+	cv::resize(v, v_resized, cv::Size(linesize, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
 
 	cv::Mat yuv;
 
 	std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
 	cv::merge(yuv_channels, yuv);
 
-	cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR);
-}
+	
+
+	if (nWidth != linesize)
+	{
+		cv::UMat out;
+		cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR);
+		out(cv::Rect(0, 0, nWidth, nHeight)).copyTo(paramSrc);
+	}
+	else
+	{
+		cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR);
+	}
+};
 
 void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int & nWidth, const int & nHeight)
 {
