@@ -2125,13 +2125,12 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
-            printf("AV_PIX_FMT_NV12 \n");
-			cv::UMat bgr;
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
 			AVFrame* tmp_frame = src_frame;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
+                printf("AV_PIX_FMT_NV12 \n");
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * nWidth;
