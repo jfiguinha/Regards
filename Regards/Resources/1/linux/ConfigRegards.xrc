@@ -271,13 +271,12 @@
 							<object class="wxComboBox" name="ID_CBVIDEODECODERHARD">
 								<pos>10,170</pos>
 								<size>170,20</size>
-								<value>auto</value>
+								<value>none</value>
 								<content>
-									<item>auto</item>
+									<item>none</item>
 									<item>cuda</item>
 									<item>vdpau</item>
 									<item>vaapi</item>
-									<item>opencl</item>
 									<item>qsv</item>
 								</content>
 							</object>		
@@ -289,13 +288,12 @@
 							<object class="wxComboBox" name="ID_CBVIDEOENCODERHARD">
 								<pos>200,170</pos>
 								<size>170,20</size>
-								<value>auto</value>
+								<value>none</value>
 								<content>
-									<item>auto</item>
+									<item>none</item>
 									<item>nvenc</item>
 									<item>vaapi</item>
 									<item>libmfx</item>
-									<item>opencl</item>
 								</content>
 							</object>								
 						</object>

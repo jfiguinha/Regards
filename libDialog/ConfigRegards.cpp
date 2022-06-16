@@ -61,10 +61,8 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbUSESUPERDNN = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBUSESUPERDNN")));
 	cbUSESUPERDNNFILTER = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBUSESUPERDNNFILTER")));
 
-#ifndef __APPLE__
 	rbVideoEncoderHard = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEOENCODERHARD")));
 	rbVideoDecoderHard = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBVIDEODECODERHARD")));
-#endif
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
@@ -204,7 +202,6 @@ void ConfigRegards::init()
 	int superDnn = regardsParam->GetSuperResolutionType();
 	cbUSESUPERDNNFILTER->SetSelection(superDnn);
 
-#ifndef __APPLE__
 	int numItem = 0;
 	wxString encoder = regardsParam->GetHardwareEncoder();
 	if (encoder != "")
@@ -223,9 +220,6 @@ void ConfigRegards::init()
 	}
 	else
 		rbVideoDecoderHard->SetSelection(0);
-
-#endif
-
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -300,8 +294,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	int faceProcess = scProcessFace->GetValue();
 	int exifProcess = scProcessExif->GetValue();
 
-#ifndef __APPLE__
-
 	wxString oldencoder = regardsParam->GetHardwareEncoder();
 	wxString olddecoder = regardsParam->GetHardwareDecoder();
 
@@ -322,8 +314,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		showInfosRestart = true;
 	if (olddecoder != decoder)
 		showInfosRestart = true;
-
-#endif
 
 	if (thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
 	{
