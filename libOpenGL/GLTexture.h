@@ -38,6 +38,8 @@ namespace Regards
 			uint8_t* GetData();
 			void GetData(uint8_t* data);
 		protected:
+
+			void SetTextureData(const cv::Mat& bitmapMatrix);
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
 			int width;

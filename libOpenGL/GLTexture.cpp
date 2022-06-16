@@ -78,6 +78,11 @@ void GLTexture::SetData(cv::UMat& bitmap)
 	else
 		bitmap.copyTo(bitmapMatrix);
 
+	SetTextureData(bitmapMatrix);
+}
+
+void GLTexture::SetTextureData(const cv::Mat& bitmapMatrix)
+{
 	if (!m_nTextureID)
 	{
 		glGenTextures(1, &m_nTextureID);
@@ -112,51 +117,13 @@ void GLTexture::SetData(cv::Mat & bitmap)
 	else
 		bitmapMatrix = bitmap;
 
-	if (!m_nTextureID)
-	{
-		glGenTextures(1, &m_nTextureID);
-		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	}
-
-	if (m_nTextureID)
-	{
-		glEnable(GL_TEXTURE_2D);
-		width = bitmapMatrix.size().width;
-		height = bitmapMatrix.size().height;
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
-	}
+	SetTextureData(bitmapMatrix);
 }
 
 
 void GLTexture::SetData(CRegardsBitmap * bitmap)
 {
-	if (!m_nTextureID)
-	{
-		glGenTextures(1, &m_nTextureID);
-		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	}
-
-	if (m_nTextureID && bitmap != nullptr)
-	{
-		glEnable(GL_TEXTURE_2D);
-		width = bitmap->GetBitmapWidth();
-		height = bitmap->GetBitmapHeight();
-		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmap->GetMatrix().data);
-	}
+	SetTextureData(bitmap->GetMatrix());
 }
 
 //bool GLTexture::Create(const int &nWidth, const int &nHeight, void *pbyData, const int & nFormat_i, const int & nInternalFormat_i)
