@@ -2025,7 +2025,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 
 void CVideoControlSoft::Rotate90()
 {
-	angle += 90;
+	angle += 270;
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
@@ -2033,7 +2033,7 @@ void CVideoControlSoft::Rotate90()
 
 void CVideoControlSoft::Rotate270()
 {
-	angle += 270;
+	angle += 90;
 	angle = angle % 360;
 	CalculPositionPicture(centerX, centerY);
 	UpdateScrollBar();
