@@ -2112,7 +2112,6 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		enableopenCL = 0;
 	}
 
-
 	if (!enableopenCL || (src_frame->format != AV_PIX_FMT_YUV420P && src_frame->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
@@ -2126,7 +2125,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
-
+            printf("AV_PIX_FMT_NV12 \n");
 			cv::UMat bgr;
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
@@ -2169,6 +2168,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
+                printf("AV_PIX_FMT_YUV420P \n");
 				try
 				{
 					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
@@ -2177,7 +2177,10 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 
 					muBitmap.lock();
 					openclEffectYUV->SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
+
 					muBitmap.unlock();
+                    
+                   // imwrite("/Users/jacques/Pictures/test.jpeg",test);
 				}
 				catch (cv::Exception& e)
 				{
