@@ -63,7 +63,10 @@ namespace Regards
 			void Rotate(CVideoEffectParameter* videoEffectParameter);
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
-			virtual void TranscodePicture(const int &widthOut, const int &heightOut, const int &rgba=0) {};
+
+			void SetNV12(const cv::Mat & yuv, const int& nWidth, const int& nHeight);
+			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& nWidth, const int& nHeight);
+
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
 			void ConvertToBgr();

@@ -27,18 +27,12 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="OpenCLEffectVideoYUV.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="OpenCLFilter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideo.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenCLEffectVideoYUV.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OpenCLFilter.cpp">

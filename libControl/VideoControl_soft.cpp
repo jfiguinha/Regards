@@ -1110,7 +1110,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 	{
 		if (openclEffectYUV == nullptr && openclContext != nullptr)
 		{
-			openclEffectYUV = new COpenCLEffectVideoYUV();
+			openclEffectYUV = new COpenCLEffectVideo();
 		}
 	}
 
@@ -1881,14 +1881,11 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	GLTexture* glTexture = nullptr;
 	wxRect rect;
 	int filterInterpolation = 0;
-	inverted = false;
+
 	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
 
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
-
-	openclEffect->TranscodePicture(widthVideo, heightVideo);
-
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
@@ -1935,8 +1932,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		glTexture->SetData(bitmap);
 		delete bitmap;
 	}
-	//inverted = true;
-	
+
 	return glTexture;
 }
 
@@ -2134,9 +2130,9 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			cv::UMat bgr;
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
-			if (src_frame->format == AV_PIX_FMT_NV12)
+			AVFrame* tmp_frame = src_frame;
+			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
-				/*
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * nWidth;
@@ -2152,13 +2148,15 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 						sizesrc = sizeData;
 					}
 
-
 					int size = nHeight * nWidth;
-					memcpy(src, src_frame->data[0], size);
-					memcpy(src + size, src_frame->data[1], (nWidth * (nHeight / 2)));
+					memcpy(src, tmp_frame->data[0], size);
+					memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
 					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
-					cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
-					
+
+					muBitmap.lock();
+					openclEffectYUV->SetNV12(yuv, nWidth, nHeight);
+					muBitmap.unlock();
+
 				}
 				catch (cv::Exception& e)
 				{
@@ -2166,44 +2164,28 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					std::cout << "exception caught: " << err_msg << std::endl;
 					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 				}
-				*/
-				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
-				cv::Mat uv = cv::Mat(cv::Size(nWidth, nHeight / 2), CV_8UC1, src_frame->data[1]);
-				muBitmap.lock();
-				openclEffectYUV->SetMemoryDataNV12(y, uv, nWidth, nHeight, nWidth);
-				muBitmap.unlock();
-				
-				
+
 
 			}
-			else if (src_frame->format == AV_PIX_FMT_YUV420P)
+			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
-				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, src_frame->data[0]);
-				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[1]);
-				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, src_frame->data[2]);
-				
-			
-				muBitmap.lock();
-				openclEffectYUV->SetMemoryData(y, u, v, nWidth, nHeight, nWidth);
-				muBitmap.unlock();
-				
-				/*
-				cv::Mat u_resized, v_resized;
-				cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
-				cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
+				try
+				{
+					cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
+					cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+					cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
 
-				cv::Mat yuv;
-
-				std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
-				cv::merge(yuv_channels, yuv);
-
-				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
-				*/
+					muBitmap.lock();
+					openclEffectYUV->SetYUV420P(y, u, v, nWidth, nHeight);
+					muBitmap.unlock();
+				}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
 			}
-
-			//muBitmap.lock();
-			//openclEffectYUV->SetMatrix(bgr);
-			//muBitmap.unlock();
 		}
 	}
 }

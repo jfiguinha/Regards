@@ -1,7 +1,7 @@
 #pragma once
 #include "VideoControlInterface.h"
 #include <OpenCLEngine.h>
-#include <OpenCLEffectVideoYUV.h>
+#include <OpenCLEffectVideo.h>
 #include <VideoStabilization.h>
 
 extern "C" {
@@ -209,7 +209,7 @@ protected:
 	bool threadVideoEnd = true;
 	GLTexture* glTextureSrc = nullptr;
 	CRegardsBitmap* bitmap = nullptr;
-	COpenCLEffectVideoYUV* openclEffectYUV = nullptr;
+	COpenCLEffectVideo* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
 	

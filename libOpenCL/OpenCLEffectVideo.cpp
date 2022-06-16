@@ -322,10 +322,56 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 }
 
+void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& nWidth, const int& nHeight)
+{
+	cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR_NV12);
+}
 
-void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut)
+void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& nWidth, const int& nHeight)
+{
+	cv::Mat u_resized, v_resized;
+	cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
+	cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
+
+	cv::Mat yuv;
+
+	std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
+	cv::merge(yuv_channels, yuv);
+
+	cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR);
+}
+
+void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int & nWidth, const int & nHeight)
 {
 
+	cv::Mat _y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, y);
+	cv::Mat _u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, u);
+	cv::Mat _v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, v);
+
+	cv::UMat src;
+	if (interpolatePicture)
+	{
+
+		src = paramOutput;
+	}
+	else
+	{
+		src = paramSrc;
+	}
+
+	cv::UMat ycbcr;
+
+
+	cvtColor(src, ycbcr, cv::COLOR_BGR2YUV);
+	vector<cv::UMat> yuv;
+	cv::split(ycbcr, yuv);
+	yuv[0].copyTo(_y);
+
+	cv::resize(yuv[1], _u, cv::Size(nWidth / 2, nHeight / 2), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
+	cv::resize(yuv[2], _v, cv::Size(nWidth / 2, nHeight / 2), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
+	
+
+	/*
 	int middleWidth = widthOut / 2;
 	int middleHeight = heightOut / 2;
 
@@ -455,7 +501,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 		paramHeight->Release();
 		delete paramHeight;
 	}
-
+	*/
 }
 
 

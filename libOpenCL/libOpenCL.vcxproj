@@ -511,12 +511,10 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="OpenCLEffectVideo.h" />
-    <ClInclude Include="OpenCLEffectVideoYUV.h" />
     <ClInclude Include="OpenCLFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideo.cpp" />
-    <ClCompile Include="OpenCLEffectVideoYUV.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

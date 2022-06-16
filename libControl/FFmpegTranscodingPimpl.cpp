@@ -1621,14 +1621,12 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		cv::UMat bgr;
 		int nWidth = tmp_frame->width;
 		int nHeight = tmp_frame->height;
-		COpenCLEffectVideoYUV openclEffectVideo;
+		COpenCLEffectVideo openclEffectVideo;
 
 		if (tmp_frame->format == AV_PIX_FMT_NV12)
 		{
 			try
 			{
-				
-				/*
 				int sizeData = (nHeight + nHeight / 2) * nWidth;
 				if (sizeData != sizesrc && src != nullptr)
 				{
@@ -1646,14 +1644,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				memcpy(src, tmp_frame->data[0], size);
 				memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
 				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
-				cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGRA_NV12);
-				openclEffectVideo.SetMatrix(bgr);
-				*/
-				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
-				cv::Mat uv = cv::Mat(cv::Size(nWidth, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-				openclEffectVideo.SetMemoryDataNV12(y, uv, nWidth, nHeight, nWidth);
-				openclEffectVideo.TranscodePicture(nWidth, nHeight);
-				
+				openclEffectVideo.SetNV12(yuv, nWidth, nHeight);
+
 				
 			}
 			catch (cv::Exception& e)
@@ -1667,23 +1659,20 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		}
 		else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 		{
-			cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
-			cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-			cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
-
-
-			cv::Mat u_resized, v_resized;
-			cv::resize(u, u_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
-			cv::resize(v, v_resized, cv::Size(nWidth, nHeight), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
-
-			cv::Mat yuv;
-
-			std::vector<cv::Mat> yuv_channels = { y,u_resized, v_resized };
-			cv::merge(yuv_channels, yuv);
-
-			cv::cvtColor(yuv, bgr, cv::COLOR_YUV2BGR);
-
-			openclEffectVideo.SetMatrix(bgr);
+			try
+			{
+				cv::Mat y = cv::Mat(cv::Size(nWidth, nHeight), CV_8UC1, tmp_frame->data[0]);
+				cv::Mat u = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[1]);
+				cv::Mat v = cv::Mat(cv::Size(nWidth / 2, nHeight / 2), CV_8UC1, tmp_frame->data[2]);
+				openclEffectVideo.SetYUV420P(y, u, v, nWidth, nHeight);
+			}
+			catch (cv::Exception& e)
+			{
+				const char* err_msg = e.what();
+				std::cout << "exception caught: " << err_msg << std::endl;
+				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+			}
+			
 		}
 
 		

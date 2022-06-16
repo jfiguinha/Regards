@@ -15,7 +15,7 @@ extern "C" {
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <OpenCLContext.h>
-#include <OpenCLEffectVideoYUV.h>
+#include <OpenCLEffectVideo.h>
 #include <OpenCLEngine.h>
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
