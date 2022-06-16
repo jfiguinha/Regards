@@ -65,11 +65,48 @@ void GLTexture::GetData(uint8_t* data)
 	}
 }
 
+
+void GLTexture::SetData(cv::UMat& bitmap)
+{
+	cv::Mat bitmapMatrix;
+	if (bitmap.channels() == 3)
+	{
+		cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+	}
+	else if (bitmap.channels() == 1)
+		cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+	else
+		bitmap.copyTo(bitmapMatrix);
+
+	if (!m_nTextureID)
+	{
+		glGenTextures(1, &m_nTextureID);
+		//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	}
+
+	if (m_nTextureID)
+	{
+		glEnable(GL_TEXTURE_2D);
+		width = bitmapMatrix.size().width;
+		height = bitmapMatrix.size().height;
+		glBindTexture(GL_TEXTURE_2D, m_nTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, bitmapMatrix.data);
+	}
+}
+
 void GLTexture::SetData(cv::Mat & bitmap)
 {
 	cv::Mat bitmapMatrix;
 	if (bitmap.channels() == 3)
+	{
 		cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+	}
 	else if (bitmap.channels() == 1)
 		cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
 	else

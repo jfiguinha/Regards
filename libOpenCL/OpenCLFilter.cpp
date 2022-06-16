@@ -179,9 +179,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	//using namespace cv::ocl;
 	//cl_context context = openclContext->GetContext();
 	bool isOk = true;
-	cv::Mat data;
-	inputData.copyTo(data);
-	glTexture->SetData(data);
+	glTexture->SetData(inputData);
 
 #ifdef USE_INTEROP
 	try
