@@ -2127,7 +2127,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			AVFrame* tmp_frame = src_frame;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
-                printf("AV_PIX_FMT_NV12 \n");
+                //printf("AV_PIX_FMT_NV12 \n");
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * nWidth;
@@ -2164,7 +2164,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
-                printf("AV_PIX_FMT_YUV420P \n");
+               // printf("AV_PIX_FMT_YUV420P \n");
 				try
 				{
 					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
