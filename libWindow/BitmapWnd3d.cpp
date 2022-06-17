@@ -8,6 +8,14 @@
 #ifdef OPENCV_OPENCL_OPENGL
 #include "opencv2/core/opengl.hpp"
 #endif
+#include <utility.h>
+
+
+#if defined (__APPLE__) || defined(MACOSX)
+static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
+#else
+static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
+#endif
 
 extern bool isOpenCLInitialized;
 
@@ -166,6 +174,7 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 	//this->Refresh();
 }
 #ifdef OPENCV_OPENCL_OPENGL
+
 cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 {
     cl_uint numPlatforms;
@@ -202,32 +211,62 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
             if (status != CL_SUCCESS)
                 CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
 
-            if (!strstr((const char*)extensionStr.data(), "cl_khr_gl_sharing"))
+            if (!strstr((const char*)extensionStr.data(), CL_GL_SHARING_EXT))
                 continue;
         }
 
-        clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
-            clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
-        if (!clGetGLContextInfoKHR)
-            continue;
+       clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
+           clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
+       if (!clGetGLContextInfoKHR)
+           continue;
 
-        cl_context_properties properties[] =
-        {
-#if defined(_WIN32)
-            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
-            CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(),
-            CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(),
-#elif defined(__ANDROID__)
-            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
-            CL_GL_CONTEXT_KHR, (cl_context_properties)eglGetCurrentContext(),
-            CL_EGL_DISPLAY_KHR, (cl_context_properties)eglGetCurrentDisplay(),
-#elif defined(__linux__)
-            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
-            CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(),
-            CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(),
-#endif
+
+#ifdef WIN32
+        // Create CL context properties, add WGL context & handle to DC
+        cl_context_properties properties[] = {
+            CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(), // WGL Context
+            CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(), // WGL HDC
+            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
             0
         };
+#elif defined(__WXGTK__)
+
+#if wxUSE_GLCANVAS_EGL == 1
+        EGLContext eglContext = eglGetCurrentContext();
+        EGLDisplay eglDisplay = eglGetCurrentDisplay();
+
+        cl_context_properties properties[] = { CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],,
+        CL_GL_CONTEXT_KHR, (cl_context_properties)eglContext,
+        CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0 };
+
+#else
+        // Create CL context properties, add GLX context & handle to DC
+        GLXContext glxcontext = glXGetCurrentContext();
+        Display* display = glXGetCurrentDisplay();
+
+        cl_context_properties properties[] = {
+         CL_GL_CONTEXT_KHR, (cl_context_properties)glxcontext, // GLX Context
+         CL_GLX_DISPLAY_KHR, (cl_context_properties)display, // GLX Display
+         CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],, // OpenCL platform
+         0
+        };
+
+#endif
+        /*
+        */
+#elif defined(__APPLE__)
+
+        // Get current CGL Context and CGL Share group
+        CGLContextObj kCGLContext = CGLGetCurrentContext();
+        CGLShareGroupObj kCGLShareGroup = CGLGetShareGroup(kCGLContext);
+        // Create CL context properties, add handle & share-group enum
+        cl_context_properties properties[] = {
+            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+        (cl_context_properties)kCGLShareGroup, 0
+        };
+
+#endif
+
 
         // query device
         device = NULL;
