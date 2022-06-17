@@ -657,7 +657,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	paramkernelSize->SetValue(size);
 	vecParam.push_back(paramkernelSize);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "kernelMotion", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "MotionBlur", vecParam, inputData.cols, inputData.rows);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{

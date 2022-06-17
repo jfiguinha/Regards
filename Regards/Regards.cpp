@@ -229,7 +229,7 @@ bool MyApp::OnInit()
 			}
 		}
 
-		if (isOpenCLCompatible)
+		if (!isOpenCLCompatible)
 		{
 			regardsParam->SetIsOpenCLSupport(false);
 		}
