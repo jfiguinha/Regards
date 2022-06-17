@@ -54,7 +54,8 @@
 #include <tbb/parallel_for.h>
 #endif
 
-//#define OPENCV_OPENCL_OPENGL
+
+#define OPENCV_OPENCL_OPENGL
 
 #include <thread>
 #include <mutex>

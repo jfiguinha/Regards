@@ -8,6 +8,9 @@
 #ifdef OPENCV_OPENCL_OPENGL
 #include "opencv2/core/opengl.hpp"
 #endif
+
+extern bool isOpenCLInitialized;
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -162,7 +165,103 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 	bitmapWndRender->OnMouseMove(event);
 	//this->Refresh();
 }
+#ifdef OPENCV_OPENCL_OPENGL
+cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
+{
+    cl_uint numPlatforms;
+    cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
+    if (status != CL_SUCCESS)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+    if (numPlatforms == 0)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: No available platforms");
 
+    std::vector<cl_platform_id> platforms(numPlatforms);
+    status = clGetPlatformIDs(numPlatforms, &platforms[0], NULL);
+    if (status != CL_SUCCESS)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+
+    // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
+
+    int found = -1;
+    cl_device_id device = NULL;
+    cl_context context = NULL;
+
+    for (int i = 0; i < (int)numPlatforms; i++)
+    {
+        // query platform extension: presence of "cl_khr_gl_sharing" extension is required
+        {
+            cv::AutoBuffer<char> extensionStr;
+
+            size_t extensionSize;
+            status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, 0, NULL, &extensionSize);
+            if (status == CL_SUCCESS)
+            {
+                extensionStr.allocate(extensionSize + 1);
+                status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, extensionSize, (char*)extensionStr.data(), NULL);
+            }
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
+
+            if (!strstr((const char*)extensionStr.data(), "cl_khr_gl_sharing"))
+                continue;
+        }
+
+        clGetGLContextInfoKHR_fn clGetGLContextInfoKHR = (clGetGLContextInfoKHR_fn)
+            clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetGLContextInfoKHR");
+        if (!clGetGLContextInfoKHR)
+            continue;
+
+        cl_context_properties properties[] =
+        {
+#if defined(_WIN32)
+            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+            CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(),
+            CL_WGL_HDC_KHR, (cl_context_properties)wglGetCurrentDC(),
+#elif defined(__ANDROID__)
+            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+            CL_GL_CONTEXT_KHR, (cl_context_properties)eglGetCurrentContext(),
+            CL_EGL_DISPLAY_KHR, (cl_context_properties)eglGetCurrentDisplay(),
+#elif defined(__linux__)
+            CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+            CL_GL_CONTEXT_KHR, (cl_context_properties)glXGetCurrentContext(),
+            CL_GLX_DISPLAY_KHR, (cl_context_properties)glXGetCurrentDisplay(),
+#endif
+            0
+        };
+
+        // query device
+        device = NULL;
+        status = clGetGLContextInfoKHR(properties, CL_CURRENT_DEVICE_FOR_GL_CONTEXT_KHR, sizeof(cl_device_id), (void*)&device, NULL);
+        if (status != CL_SUCCESS)
+            continue;
+
+        // create context
+        context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+        if (status != CL_SUCCESS)
+        {
+            clReleaseDevice(device);
+        }
+        else
+        {
+            found = i;
+            break;
+        }
+    }
+
+    if (found < 0)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
+
+    cl_platform_id platform = platforms[found];
+    std::string platformName = cv::ocl::PlatformInfo(&platform).name();
+
+    cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
+    clReleaseDevice(device);
+    clReleaseContext(context);
+    clExecCtx.bind();
+    return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
+
+}
+#endif
 
 //-----------------------------------------------------------------
 //Dessin de l'image
@@ -179,7 +278,8 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 #ifdef OPENCV_OPENCL_OPENGL
 		if (cv::ocl::haveOpenCL())
 		{
-			(void)cv::ogl::ocl::initializeContextFromGL();
+			initializeContextFromGL();
+			isOpenCLInitialized = true;
 		}
 #endif
     }  

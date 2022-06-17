@@ -28,6 +28,7 @@ using namespace dnn_superres;
 
 bool isUsed = false;
 std::mutex muDnnSuperResImpl;
+int numTexture = -1;
 
 
 class CSuperSampling
@@ -187,6 +188,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 
 		Size srcSize = inputData.size();
 
+
 		using namespace cv::ocl;
 		Context& ctx = Context::getDefault();
 		cl_context context = (cl_context)ctx.ptr();
@@ -197,33 +199,30 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 
 		cl_int status = 0;
 		//cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, gl::TEXTURE_2D, 0, texture.texId(), &status);
-		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+		cl_mem clImage = glTexture->GetOpenCLTexture();// clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
 		cl_mem clBuffer = (cl_mem)u.handle(ACCESS_READ);
 
+		//clGetDeviceInfo((cl_device_id)Device::getDefault().ptr(), CL_DEVICE_PREFERRED_INTEROP_USER_SYNC);
 		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
-		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+
 		size_t offset = 0; // TODO
 		size_t dst_origin[3] = { 0, 0, 0 };
 		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
 		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+	//	status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+	//	if (status != CL_SUCCESS)
+	//		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
 
 		status = clFinish(q); // TODO Use events
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
 
-		status = clReleaseMemObject(clImage); // TODO RAII
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
 	}
 	catch (cv::Exception& e)
 	{

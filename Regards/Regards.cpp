@@ -29,6 +29,8 @@
 #include <ffmpeg_application.h>
 #endif
 
+bool isOpenCLInitialized = false;
+
 using namespace cv;
 using namespace Regards::Picture;
 
@@ -233,6 +235,8 @@ bool MyApp::OnInit()
 		{
 			regardsParam->SetIsOpenCLSupport(false);
 		}
+
+		isOpenCLInitialized = true;
 	}
 #endif
 	//CFFmpegApp ffmpeg;

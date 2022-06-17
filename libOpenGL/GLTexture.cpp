@@ -30,6 +30,7 @@ GLTexture::GLTexture(const int& nWidth, const int& nHeight, GLenum format)
 	height = nHeight;
 	this->format = format;
 	Create(nWidth, nHeight, nullptr);
+
 }
 
 int GLTexture::GetWidth()
@@ -153,7 +154,29 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
+#ifdef OPENCV_OPENCL_OPENGL
+
+	using namespace cv::ocl;
+	Context& ctx = Context::getDefault();
+	cl_context context = (cl_context)ctx.ptr();
+
+	cl_int status = 0;
+	clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
+
+
+	cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+
+	status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+	if (status != CL_SUCCESS)
+		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+
+#endif
 	return (GL_NO_ERROR == glGetError());
+}
+
+cl_mem GLTexture::GetOpenCLTexture()
+{
+	return clImage;
 }
 
 void GLTexture::SetFilterType(const GLint FilterType_i, const GLint FilterValue_i)
@@ -175,6 +198,20 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
+#ifdef OPENCV_OPENCL_OPENGL
+
+	cl_int status = 0;
+	cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
+
+	status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+	if (status != CL_SUCCESS)
+		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+
+	status = clReleaseMemObject(clImage); // TODO RAII
+	if (status != CL_SUCCESS)
+		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+#endif
+
 	checkErrors("GLTexture::Delete()");
 	//glDisable(GL_TEXTURE_2D);
 	printf("Delete Texture id : %d \n", m_nTextureID);
@@ -188,6 +225,8 @@ void GLTexture::Delete()
 	}
 
 	checkErrors("GLTexture::Delete()");
+
+
 }
 
 void GLTexture::Enable()

@@ -27,6 +27,7 @@
 #include <wx/progdlg.h>
 
 extern bool processrecognitionison;
+extern bool isOpenCLInitialized;
 
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -555,7 +556,7 @@ void CListFace::ProcessIdle()
     int faceDetection = 0;
     CRegardsConfigParam* regardsParam = CParamInit::getInstance();
     
-    if (cv::ocl::Context::getDefault(false).empty() && regardsParam->GetIsOpenCLSupport())
+    if (!isOpenCLInitialized && regardsParam->GetIsOpenCLSupport())
 	{
 		processIdle = true;
 		return;

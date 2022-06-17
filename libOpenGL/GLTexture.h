@@ -33,6 +33,8 @@ namespace Regards
 				return m_nTextureID;
 			}
 
+			cl_mem GetOpenCLTexture();
+
 			int GetWidth();
 			int GetHeight();
 			uint8_t* GetData();
@@ -45,6 +47,7 @@ namespace Regards
 			int width;
 			int height;
 			GLenum format;
+			cl_mem clImage;
 		};
 	}
 }
