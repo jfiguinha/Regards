@@ -6,6 +6,8 @@ typedef struct
 	int alpha;
 }COLORData;
 
+
+
 // Inline device function to convert 32-bit unsigned integer to floating point rgba color 
 //*****************************************************************
 inline float4 rgbaUintToFloat4(uint c)
@@ -75,9 +77,12 @@ float4 NormalizeValue(float4 sum)
 //----------------------------------------------------
 //Filtre Posterization
 //----------------------------------------------------
-__kernel void Posterisation(__global uint *output,const __global uint *input, int level)
+__kernel void Posterisation(__global uint *output,const __global uint *input, int width, int height, int level)
 {
-    int position = get_global_id(0);
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * width;
+	
 	uchar4 colorInput = rgbaUintToUChar4(input[position]);
 	uchar4 colorOutput = colorInput;
 	int _levels = max(2, min(16, level));
@@ -98,9 +103,12 @@ __kernel void Posterisation(__global uint *output,const __global uint *input, in
 //----------------------------------------------------
 //Filtre Solarization
 //----------------------------------------------------
-__kernel void Solarization(__global uint *output,const __global uint *input, int threshold)
+__kernel void Solarization(__global uint *output,const __global uint *input, int width, int height, int threshold)
 {
-    int position = get_global_id(0);
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * width;
+	
 	float4 colorInput = rgbaUintToFloat4(input[position]);
 	float4 colorOutput = colorInput;
 	
