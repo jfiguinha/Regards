@@ -2,8 +2,6 @@
 #include <RGBAQuad.h>
 #include <effect_id.h>
 #include <GLTexture.h>
-#include <OpenCLContext.h>
-using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 
 class Chqdn3d;
@@ -25,7 +23,7 @@ class CFiltreEffet
 {
 public:
 
-	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext* openclContext, CImageLoadingFormat * bitmap);
+	CFiltreEffet(const CRgbaquad &backColor, const bool &useOpenCL, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
 
 	void SetPreviewMode(const bool& value);

@@ -15,14 +15,13 @@
 #include <Draw.h>
 #include <BitmapDisplay.h>
 #include <RenderOpenGL.h>
-#include <OpenCLEngine.h>
-using namespace Regards::OpenCL;
+
 
 bool CFilterWindowParam::supportOpenCL = false;
 
 CFilterWindowParam::CFilterWindowParam(): source(nullptr), m_pShader(nullptr)
 {
-	supportOpenCL = COpenCLEngine::SupportOpenCL();
+	supportOpenCL = cv::ocl::haveOpenCL();
 }
 
 CFilterWindowParam::~CFilterWindowParam()
@@ -32,7 +31,7 @@ CFilterWindowParam::~CFilterWindowParam()
 
 void CFilterWindowParam::InitFilterOpenCLCompatible()
 {
-	supportOpenCL = COpenCLEngine::SupportOpenCL();
+	supportOpenCL = cv::ocl::haveOpenCL();
 }
 
 CImageLoadingFormat * CFilterWindowParam::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing)
@@ -96,7 +95,7 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 		{
 			CImageLoadingFormat image;
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 			filtre->RenderEffect(GetNameFilter(), effectParameter);
 			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -245,7 +244,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			CImageLoadingFormat image;
 			bitmap->RotateExif(bitmapViewer->GetOrientation());
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 			filtre_effet->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre_effet->GetBitmap(true));

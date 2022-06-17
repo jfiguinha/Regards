@@ -1553,7 +1553,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, source);
+			filtreEffet = new CFiltreEffet(color, true, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
@@ -1637,7 +1637,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, source);
+			filtreEffet = new CFiltreEffet(color, false, source);
 		else
 			filtreEffet->SetBitmap(source);
 	}
@@ -1727,7 +1727,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
         int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
-            filtreEffet = new CFiltreEffet(color, source);
+            filtreEffet = new CFiltreEffet(color, true, source);
         else
             filtreEffet->SetBitmap(source);
 

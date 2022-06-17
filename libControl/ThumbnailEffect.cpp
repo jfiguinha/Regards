@@ -404,7 +404,7 @@ void CThumbnailEffect::LoadPicture(void* param)
 		auto color_quad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(),
 		                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(),
 		                           threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-		auto filtre = new CFiltreEffet(color_quad, thumbnail);
+		auto filtre = new CFiltreEffet(color_quad, false, thumbnail);
 
 		switch (threadLoadingBitmap->photoId)
 		{

@@ -1,6 +1,5 @@
 #include <header.h>
 #include "FiltreEffet.h"
-#include <OpenCLContext.h>
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include <OpenCLParameter.h>
@@ -117,7 +116,7 @@ int CFiltreEffet::RenderEffectPreview(const int& numEffect, CEffectParameter* ef
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openclContext, CImageLoadingFormat* bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, const bool& useOpenCL, CImageLoadingFormat* bitmap)
 {
 	filtreEffet = nullptr;
 	this->backColor = backColor;
@@ -128,7 +127,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad& backColor, COpenCLContext* openclCon
 	height = bitmap->GetHeight();
 	//filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
 
-	if (openclContext != nullptr)
+	if (useOpenCL && cv::ocl::haveOpenCL())
 	{
 		filtreEffet = new COpenCLEffect(backColor, bitmap);
 		this->numLib = LIBOPENCL;

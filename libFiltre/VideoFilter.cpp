@@ -12,13 +12,13 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-#include <OpenCLEngine.h>
+
 #include <Metadata.h>
 #include "videostream.h"
 #include <effect_id.h>
 using namespace Regards::Filter;
 using namespace Regards::Video;
-using namespace Regards::OpenCL;
+
 CVideoFilter::CVideoFilter()
 {
 	effectDenoising = CLibResource::LoadStringFromResource(L"LBLeffectDenoising", 1);

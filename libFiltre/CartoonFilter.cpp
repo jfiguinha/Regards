@@ -118,7 +118,7 @@ void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter,
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
 
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));
@@ -147,7 +147,7 @@ CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParamet
 		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image(false);
 		image.SetPicture(source);
-		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(filtre->GetBitmap(true));

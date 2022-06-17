@@ -1,10 +1,7 @@
 #include <header.h>
 #include <OpenCLFilter.h>
 #include "OpenCLEffect.h"
-#include "OpenCLExecuteProgram.h"
-#include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
-#include <OpenCLContext.h>
 #include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
 //
@@ -18,7 +15,6 @@ using namespace Regards::FiltreEffet;
 using namespace Regards::DeepLearning;
 
 #define NONE_FILTER 12
-extern COpenCLContext* openclContext;
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad& backColor, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(backColor)

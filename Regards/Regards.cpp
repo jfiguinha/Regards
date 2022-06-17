@@ -210,19 +210,29 @@ bool MyApp::OnInit()
 
 	if (regardsParam->GetIsOpenCLSupport())
 	{
+		bool isOpenCLCompatible = false;
 		if (!cv::ocl::haveOpenCL())
 		{
 			cout << "OpenCL is not avaiable..." << endl;
-			return;
 		}
-		cv::ocl::Context context;
-		if (!context.create(cv::ocl::Device::TYPE_GPU))
+		else
 		{
-			cout << "Failed creating the context..." << endl;
-			return;
+			cv::ocl::Context context;
+			if (!context.create(cv::ocl::Device::TYPE_GPU))
+			{
+				cout << "Failed creating the context..." << endl;
+			}
+			else
+			{
+				isOpenCLCompatible = true;
+				cv::ocl::Device(context.device(0));
+			}
 		}
 
-		cv::ocl::Device(context.device(0));
+		if (isOpenCLCompatible)
+		{
+			regardsParam->SetIsOpenCLSupport(false);
+		}
 	}
 
 	//CFFmpegApp ffmpeg;
