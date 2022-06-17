@@ -179,6 +179,99 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 }
 #ifdef OPENCV_OPENCL_OPENGL
 
+
+wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
+{
+    try
+    {	// Get the length for the i-th device name
+        size_t device_name_length = 0;
+        cl_int err = clGetDeviceInfo(
+            device,
+            param_name,
+            0,
+            nullptr,
+            &device_name_length
+        );
+        Error::CheckError(err);
+
+        // Get the name itself for the i-th device
+        // use vector for automatic memory management
+        vector<char> device_name(device_name_length);
+        err = clGetDeviceInfo(
+            device,
+            param_name,
+            device_name_length,
+            &device_name[0],
+            nullptr
+        );
+        Error::CheckError(err);
+
+        return wxString(&device_name[0]);
+    }
+    catch (...)
+    {
+
+    }
+
+    return "";
+}
+
+cl_device_id GetListOfDevice(cl_platform_id platform,   cl_device_type device_type)
+{
+    cl_uint num_of_devices;
+
+    cl_int err = clGetDeviceIDs(
+        platform,
+        device_type,
+        0,
+        nullptr,
+        &num_of_devices
+    );
+
+    Error::CheckError(err);
+
+    if (err == -1)
+        return;
+
+    vector<cl_device_id> devices(num_of_devices);
+
+    err = clGetDeviceIDs(
+        platform,
+        device_type,
+        num_of_devices,
+        &devices[0],
+        nullptr
+    );
+    Error::CheckError(err);
+
+    for (cl_uint i = 0; i < num_of_devices; ++i)
+    {
+        int supported = 0;
+        cl_device_type type;
+        clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, nullptr);
+        wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
+        if (deviceName == "")
+            continue;
+
+        if (type == CL_DEVICE_TYPE_GPU)
+        {
+            wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
+            supported = supportExt.find(CL_GL_SHARING_EXT);
+            if (supported > 0)
+                supported = 1;
+            else
+                supported = 0;
+        }
+
+        if (!supported)
+            continue;
+
+        
+        printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
+        return devices[i];
+    }
+}
+
 cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 {
 #if defined(__APPLE__) || defined(__MACOSX)
@@ -199,50 +292,25 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
     // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
 
     int found = -1;
-    cl_device_id device = NULL;
+    cl_device_id device = GetListOfDevice(platforms[0], CL_DEVICE_TYPE_GPU);
     cl_context context = NULL;
 
-    for (int i = 0; i < (int)numPlatforms; i++)
+    // get OpenGL share group
+    CGLContextObj cgl_current_context = CGLGetCurrentContext();
+    CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_context);
+
+    cl_context_properties properties[] = {
+        CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+        (cl_context_properties) cgl_share_group,
+        0
+    };
+    // create context
+    context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+    if (status != CL_SUCCESS)
     {
-        // query platform extension: presence of "cl_khr_gl_sharing" extension is required
-        {
-            cv::AutoBuffer<char> extensionStr;
-
-            size_t extensionSize;
-            status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, 0, NULL, &extensionSize);
-            if (status == CL_SUCCESS)
-            {
-                extensionStr.allocate(extensionSize + 1);
-                status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, extensionSize, (char*)extensionStr.data(), NULL);
-            }
-            if (status != CL_SUCCESS)
-                CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
-
-            if (!strstr((const char*)extensionStr.data(), CL_GL_SHARING_EXT))
-                continue;
-        }
-
-        // get OpenGL share group
-        CGLContextObj cgl_current_context = CGLGetCurrentContext();
-        CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_context);
-
-        cl_context_properties properties[] = {
-            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
-            (cl_context_properties) cgl_share_group,
-            0
-        };
-        // create context
-        context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
-        if (status != CL_SUCCESS)
-        {
-            clReleaseDevice(device);
-        }
-        else
-        {
-            found = i;
-            break;
-        }
+        clReleaseDevice(device);
     }
+
 
     if (found < 0)
         CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
