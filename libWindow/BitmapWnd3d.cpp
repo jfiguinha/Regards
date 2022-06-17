@@ -182,8 +182,9 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
 			bool isOpenCLCompatible = false;
 			(void)cv::ogl::ocl::initializeContextFromGL();
 		}
-    }  
 #endif
+    }  
+
     renderOpenGL->SetCurrent(*this);
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
