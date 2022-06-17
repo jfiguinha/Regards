@@ -13,6 +13,10 @@
 #include <OpenCL/cl_gl.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenCL/cl_gl_ext.h>
+#elif defined(__WXGTK__)
+#if wxUSE_GLCANVAS_EGL == 1
+#include <EGL/egl.h>
+#endif
 #endif
 
 #if defined (__APPLE__) || defined(MACOSX)
@@ -384,7 +388,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
         EGLContext eglContext = eglGetCurrentContext();
         EGLDisplay eglDisplay = eglGetCurrentDisplay();
 
-        cl_context_properties properties[] = { CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],,
+        cl_context_properties properties[] = { CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
         CL_GL_CONTEXT_KHR, (cl_context_properties)eglContext,
         CL_EGL_DISPLAY_KHR,  (cl_context_properties)eglDisplay, 0 };
 
