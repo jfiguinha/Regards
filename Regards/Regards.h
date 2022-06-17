@@ -34,8 +34,6 @@
 #ifdef USECURL
 #include <curl/curl.h>
 #endif
-#include <OpenCLEngine.h>
-using namespace Regards::OpenCL;
 
 
 #ifdef SDL2

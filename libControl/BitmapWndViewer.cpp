@@ -22,7 +22,6 @@
 #include "DiaporamaEffect.h"
 #include <wx/busyinfo.h>
 #include <wx/activityindicator.h>
-#include <OpenCLContext.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -36,7 +35,6 @@
 #include <config_id.h>
 using namespace Regards::Filter;
 using namespace Regards::Control;
-using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
 using namespace Regards::Window;
 
@@ -47,7 +45,6 @@ enum
 	TIMER_CLICK = 3
 };
 
-extern COpenCLContext* openclContext;
 
 #define PREVIEW_NONE 0
 #define TIMER_TRANSITION_TIME 30
@@ -514,7 +511,7 @@ void CBitmapWndViewer::EndTransition()
 
 bool CBitmapWndViewer::IsOpenCLCompatible()
 {
-	if (openclContext == nullptr)
+	if (!cv::ocl::haveOpenCL())
 		return false;
 
 	if (filtreEffet == nullptr)

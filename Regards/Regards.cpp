@@ -32,7 +32,6 @@
 using namespace cv;
 using namespace Regards::Picture;
 
-COpenCLContext* openclContext = nullptr;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -202,18 +201,29 @@ bool MyApp::OnInit()
 
 	if (!configFileExist)
 	{
-		int nbPlatform = Regards::OpenCL::COpenCLPlatformList::GetPlatformCount();
-		if (nbPlatform == 0)
+		if (!cv::ocl::haveOpenCL())
 			regardsParam->SetIsOpenCLSupport(false);
 		else
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
 
-//	if (regardsParam->GetIsOpenCLSupport())
-//	{
-//		openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-//	}
+	if (regardsParam->GetIsOpenCLSupport())
+	{
+		if (!cv::ocl::haveOpenCL())
+		{
+			cout << "OpenCL is not avaiable..." << endl;
+			return;
+		}
+		cv::ocl::Context context;
+		if (!context.create(cv::ocl::Device::TYPE_GPU))
+		{
+			cout << "Failed creating the context..." << endl;
+			return;
+		}
+
+		cv::ocl::Device(context.device(0));
+	}
 
 	//CFFmpegApp ffmpeg;
 	//ffmpeg.TestFFmpeg("");

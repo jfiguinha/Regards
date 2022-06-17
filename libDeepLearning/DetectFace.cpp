@@ -16,23 +16,16 @@
 #include "MyDetectFaceImpl.h"
 using namespace cv;
 
-#include <OpenCLContext.h>
-using namespace Regards::OpenCL;
 #else
 using namespace cv;
 using namespace dnn;
 
-#include <OpenCLContext.h>
-using namespace Regards::OpenCL;
 static Net net; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFace::muDnnAccess;
 bool CDetectFace::isload = false;
 
 #endif
 
-
-
-extern COpenCLContext* openclContext;
 
 CDetectFace::CDetectFace(void)
 {

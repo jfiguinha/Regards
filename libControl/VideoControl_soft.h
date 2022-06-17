@@ -1,6 +1,5 @@
 #pragma once
 #include "VideoControlInterface.h"
-#include <OpenCLEngine.h>
 #include <OpenCLEffectVideo.h>
 #include <VideoStabilization.h>
 

@@ -44,11 +44,6 @@ namespace Regards
 
 			COpenCLEffectVideo();
 
-			void SetFlag(const bool &useMemory)
-			{
-				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-			};
-
 			virtual ~COpenCLEffectVideo();
 			virtual bool IsOk();
 			void SetMatrix(cv::Mat& frame);
@@ -76,12 +71,7 @@ namespace Regards
 
 		protected:
 
-			int GetSizeData();
-			COpenCLProgram * GetProgram(const wxString &numProgram);
 			void GetRgbaBitmap(cl_mem cl_image, cv::UMat& inputData, GLTexture* texture, int rgba);
-			cl_mem_flags  flag;
-
-			COpenCLProgram * openCLProgram;
 			COpenCLFilter* openclFilter = nullptr;
 			wxString filename;
 			cv::UMat paramSrc;

@@ -24,11 +24,6 @@ namespace Regards
 
 			COpenCLFilter();
 
-			void SetFlag(const bool &useMemory)
-			{
-				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-			}
-
 			virtual ~COpenCLFilter();
 
 			COpenCLProgram * GetProgram(const wxString &numProgram);
@@ -66,15 +61,16 @@ namespace Regards
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
 			bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
 
-			cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
-			void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer);
-		protected:
+			
 
+		protected:
+			void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer);
+			cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 			void ReallocMat(cv::UMat& inputData);
 			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
 			CSuperSampling* superSampling;
 			cv::Rect CalculRect(int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, float ratioX, float ratioY, int x, int y, float left, float top);
-			int GetSizeData();
+
 			cl_mem_flags  flag;
 			Chqdn3d * hq3d = nullptr;
 			double oldLevelDenoise = 0;

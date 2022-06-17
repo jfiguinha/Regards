@@ -25,8 +25,7 @@
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-#include <OpenCLEngine.h>
-using namespace Regards::OpenCL;
+
 extern bool processrecognitionison;
 
 using namespace Regards::Picture;
@@ -556,7 +555,7 @@ void CListFace::ProcessIdle()
     int faceDetection = 0;
     CRegardsConfigParam* regardsParam = CParamInit::getInstance();
     
-    if (COpenCLEngine::InstanceCreate() == false && regardsParam->GetIsOpenCLSupport())
+    if (cv::ocl::Context::getDefault(false).empty() && regardsParam->GetIsOpenCLSupport())
 	{
 		processIdle = true;
 		return;

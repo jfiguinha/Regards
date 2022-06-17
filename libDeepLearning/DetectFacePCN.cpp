@@ -26,15 +26,12 @@ using namespace dnn;
 #define RED CV_RGB(255, 0, 0)
 #define PURPLE CV_RGB(139, 0, 255)
 
-#include <OpenCLContext.h>
-using namespace Regards::OpenCL;
+
 static Net net_1; // And finally we load the DNN responsible for face recognition.
 static Net net_2; // And finally we load the DNN responsible for face recognition.
 static Net net_3; // And finally we load the DNN responsible for face recognition.
 //std::mutex CDetectFacePCN::muDnnAccess;
 bool CDetectFacePCN::isload = false;
-
-extern COpenCLContext* openclContext;
 
 CDetectFacePCN::CDetectFacePCN(void)
 {

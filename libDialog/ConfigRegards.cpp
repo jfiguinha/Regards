@@ -5,9 +5,8 @@
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <OpenCLEngine.h>
 using namespace Regards::Viewer;
-using namespace Regards::OpenCL;
+
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ConfigRegards)
 //*)

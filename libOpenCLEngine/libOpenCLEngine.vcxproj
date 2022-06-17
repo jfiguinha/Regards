@@ -369,25 +369,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="OpenCLContext.cpp" />
-    <ClCompile Include="OpenCLEngine.cpp">
-      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</WholeProgramOptimization>
-      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release_avx|x64'">false</WholeProgramOptimization>
-    </ClCompile>
-    <ClCompile Include="OpenCLExecuteProgram.cpp" />
-    <ClCompile Include="OpenCLInfos.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />
-    <ClCompile Include="OpenCLProgram.cpp" />
     <ClCompile Include="utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="OpenCLContext.h" />
-    <ClInclude Include="OpenCLEngine.h" />
-    <ClInclude Include="OpenCLExecuteProgram.h" />
-    <ClInclude Include="OpenCLInfos.h" />
     <ClInclude Include="OpenCLParameter.h" />
-    <ClInclude Include="OpenCLProgram.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

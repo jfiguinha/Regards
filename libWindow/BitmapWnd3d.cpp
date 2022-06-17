@@ -1,14 +1,10 @@
 // ReSharper disable All
 #include "header.h"
-#include <OpenCLContext.h>
 #include "BitmapWnd3d.h"
 #include "BitmapWndRender.h"
 #include <RenderOpenGL.h>
-#include <OpenCLEngine.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-using namespace Regards::OpenCL;
-extern COpenCLContext* openclContext;
 
 //-----------------------------------------------------------------------------
 //
@@ -180,25 +176,6 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL->Init(this);
     }  
     renderOpenGL->SetCurrent(*this);
-
-    /*
-    Display * display =  glxGetCurrentDisplay();
-    if(display == nullptr)
-        cout << "Display is null" << endl;
-    else
-        cout << "Display is not null" << endl;
-	*/
-	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	if (regardsParam->GetIsOpenCLSupport())
-	{
-		if (openclContext == nullptr)
-		{
-			openclContext = Regards::OpenCL::COpenCLEngine::CreateInstance();
-		}
-	}
-	
-	//CFFmpegApp ffmpeg;
-	//ffmpeg.TestFFmpeg("");
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
     

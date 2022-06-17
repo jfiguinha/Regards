@@ -1,6 +1,5 @@
 // ReSharper disable All
 #include "header.h"
-#include <OpenCLContext.h>
 #include "BitmapWndRender.h"
 #include <RGBAQuad.h>
 #include <FiltreEffet.h>
@@ -20,7 +19,6 @@
 #endif
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
-#include <OpenCLEngine.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
 #include <WindowUtility.h>
@@ -33,7 +31,6 @@ using namespace Regards::OpenCL;
 
 extern bool processrecognitionison;
 
-extern COpenCLContext * openclContext;
 
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
@@ -185,7 +182,7 @@ int CBitmapWndRender::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	if (openclContext == nullptr)
+	if (!cv::ocl::haveOpenCL())
 		supportOpenCL = 0;
 	return supportOpenCL;
 }
@@ -1556,7 +1553,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, openclContext, source);
+			filtreEffet = new CFiltreEffet(color, source);
 		else
 		{
 			filtreEffet->SetBitmap(source);
@@ -1640,7 +1637,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 	if (loadBitmap)
 	{
 		if (filtreEffet == nullptr)
-			filtreEffet = new CFiltreEffet(color, nullptr, source);
+			filtreEffet = new CFiltreEffet(color, source);
 		else
 			filtreEffet->SetBitmap(source);
 	}
@@ -1730,7 +1727,7 @@ void CBitmapWndRender::OnPaint2D(wxWindow* gdi)
         int heightOutput = static_cast<int>(GetBitmapHeightWithRatio());
 
         if (filtreEffet == nullptr)
-            filtreEffet = new CFiltreEffet(color, openclContext, source);
+            filtreEffet = new CFiltreEffet(color, source);
         else
             filtreEffet->SetBitmap(source);
 

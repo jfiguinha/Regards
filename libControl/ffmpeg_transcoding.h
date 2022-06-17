@@ -1,6 +1,4 @@
 #pragma once
-#include <OpenCLContext.h>
-using namespace Regards::OpenCL;
 class CompressVideo;
 class CVideoOptionCompress;
 class CRegardsBitmap;

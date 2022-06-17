@@ -14,20 +14,16 @@ extern "C" {
 #include <wx/mstream.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <OpenCLContext.h>
 #include <OpenCLEffectVideo.h>
-#include <OpenCLEngine.h>
 #include <OpenCLParameter.h>
 #include <RegardsBitmap.h>
 #include <VideoStabilization.h>
 
 using namespace Regards::OpenCV;
-using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CompressVideo;
 class CFiltreEffet;
 class CffmpegToBitmap;
-extern COpenCLContext* openclContext;
 
 namespace cv
 {

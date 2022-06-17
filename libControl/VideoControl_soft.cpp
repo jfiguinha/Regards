@@ -1,6 +1,5 @@
 // ReSharper disable All
 #include "header.h"
-#include <OpenCLContext.h>
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
@@ -32,7 +31,6 @@ using namespace Regards::OpenCV;
 #define TIMER_PLAYSTOP 0x10003
 
 AVFrame* copyFrameBuffer = nullptr;
-extern COpenCLContext* openclContext;
 
 extern float clamp(float val, float minval, float maxval);
 
@@ -1108,7 +1106,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (IsSupportOpenCL())
 	{
-		if (openclEffectYUV == nullptr && openclContext != nullptr)
+		if (openclEffectYUV == nullptr)
 		{
 			openclEffectYUV = new COpenCLEffectVideo();
 		}
@@ -2057,8 +2055,7 @@ bool CVideoControlSoft::IsCPUContext()
 {
 	if (isCPU == -1)
 	{
-		if (openclContext != nullptr)
-			isCPU = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_CPU ? 1 : 0);
+		isCPU = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);
@@ -2090,8 +2087,8 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	if (openclContext == nullptr)
-		supportOpenCL = 0;
+	if (cv::ocl::Context::getDefault(false).empty())
+		return 0;
 
 	return supportOpenCL;
 }
@@ -2103,7 +2100,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 	bool isCPU = true;
 	if (IsSupportOpenCL())
 	{
-		enableopenCL = COpenCLEngine::SupportOpenCL();
+		enableopenCL = 1;
 		isCPU = IsCPUContext();
 	}
 	else

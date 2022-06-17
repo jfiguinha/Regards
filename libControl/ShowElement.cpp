@@ -1,5 +1,4 @@
 #include <header.h>
-#include <OpenCLContext.h>
 #include "ShowElement.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"

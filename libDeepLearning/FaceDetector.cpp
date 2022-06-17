@@ -12,12 +12,11 @@
 #include "DetectFace.h"
 #include "DetectFacePCN.h"
 #include <fstream>
-#include <OpenCLContext.h>
 #include <opencv2/tracking/tracking_by_matching.hpp>
 #include <opencv2/objdetect/face.hpp>
 #include <FileUtility.h>
 #include <ConvertUtility.h>
-using namespace Regards::OpenCL;
+
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -29,7 +28,6 @@ using namespace std;
 using namespace cv::face;
 using namespace std;
 
-extern COpenCLContext* openclContext;
 
 std::map<int, cv::Mat> listScore;
 

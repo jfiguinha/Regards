@@ -1,15 +1,13 @@
 // ReSharper disable All
 #include <header.h>
 #include "OpenCLEffectVideo.h"
-#include "OpenCLExecuteProgram.h"
-#include "OpenCLProgram.h"
 #include <RegardsBitmap.h>
 #include "utility.h"
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
 #include <VideoStabilization.h>
-#include <OpenCLContext.h>
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <OpenGL/OpenGL.h>
@@ -24,14 +22,9 @@
 using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 
-extern COpenCLContext* openclContext;
 
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
-	openCLProgram = nullptr;
-	bool useMemory = (openclContext->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
-	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-	openCLProgram = nullptr;
 	openclFilter = new COpenCLFilter();
 }
 
@@ -98,18 +91,8 @@ bool COpenCLEffectVideo::convertToGLTexture2D(GLTexture* glTexture)
 	return isOk;
 }
 
-int COpenCLEffectVideo::GetDataSizeWidth(const bool &src)
-{
-	return paramSrc.cols * GetSizeData();
-}
-
 COpenCLEffectVideo::~COpenCLEffectVideo()
 {
-	if (openCLProgram != nullptr)
-		delete openCLProgram;
-
-	openCLProgram = nullptr;
-
 	if (openclFilter != nullptr)
 		delete openclFilter;
 }
@@ -181,7 +164,7 @@ void COpenCLEffectVideo::ApplyOpenCVEffect(CVideoEffectParameter * videoEffectPa
 
 void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio)
 {
-	if (openclContext != nullptr && !paramSrc.empty())
+	if (!cv::ocl::Context::getDefault(false).empty() && !paramSrc.empty())
 	{
 		
 		paramOutput = openclFilter->Interpolation(widthOutput, heightOutput, rc, bicubic, paramSrc, flipH, flipV, angle, ratio);
@@ -385,139 +368,7 @@ void COpenCLEffectVideo::GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v,
 
 	cv::resize(yuv[1], _u, cv::Size(nWidth / 2, nHeight / 2), 0, 0, cv::INTER_NEAREST); //repeat u values 4 times
 	cv::resize(yuv[2], _v, cv::Size(nWidth / 2, nHeight / 2), 0, 0, cv::INTER_NEAREST); //repeat v values 4 times
-	
 
-	/*
-	int middleWidth = widthOut / 2;
-	int middleHeight = heightOut / 2;
-
-	COpenCLParameterByteArray *	inputY = new COpenCLParameterByteArray();
-	inputY->SetLibelle("inputY");
-	inputY->SetNoDelete(true);
-	inputY->SetValue(openclContext->GetContext(), y, widthOut * heightOut, flag);
-
-	COpenCLParameterByteArray *	inputU = new COpenCLParameterByteArray();
-	inputU->SetLibelle("inputU");
-	inputU->SetNoDelete(true);
-	inputU->SetValue(openclContext->GetContext(), u, middleWidth * middleHeight, flag);
-
-	COpenCLParameterByteArray *	inputV = new COpenCLParameterByteArray();
-	inputV->SetNoDelete(true);
-	inputV->SetLibelle("inputV");
-	inputV->SetValue(openclContext->GetContext(), v, middleWidth * middleHeight, flag);
-
-	COpenCLParameterInt *	paramWidth = new COpenCLParameterInt();
-	paramWidth->SetNoDelete(true);
-	paramWidth->SetLibelle("widthIn");
-	paramWidth->SetValue(widthOut);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetNoDelete(true);
-	paramHeight->SetLibelle("heightIn");
-	paramHeight->SetValue(heightOut);
-
-	cv::UMat cvDest;
-
-	if (interpolatePicture)
-	{
-		cv::cvtColor(paramOutput, cvDest, cv::COLOR_BGR2BGRA);
-	}
-	else
-	{
-		cv::cvtColor(paramSrc, cvDest, cv::COLOR_BGR2BGRA);
-	}
-
-	//paramSrc->SetNoDelete(true);
-
-	if (openclContext != nullptr)
-	{
-		COpenCLProgram * programCL = nullptr;
-
-		programCL = GetProgram("IDR_OPENCL_CONVERTTOY");
-
-		if (programCL != nullptr)
-		{
-			cl_mem clBuffer;
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(flag);
-
-			vecParam.push_back(inputY);
-			vecParam.push_back(inputU);
-			vecParam.push_back(inputV);
-
-			clBuffer = (cl_mem)cvDest.handle(cv::ACCESS_RW);
-
-
-			COpenCLParameterClMem * inputSrc = new COpenCLParameterClMem();
-			inputSrc->SetNoDelete(true);
-			inputSrc->SetLibelle("input");
-			inputSrc->SetValue(clBuffer);
-			vecParam.push_back(inputSrc);
-
-			vecParam.push_back(paramWidth);
-			vecParam.push_back(paramHeight);
-
-			program->ExecuteProgram2D(programCL->GetProgram(), "RgbaToYUV420P", &vecParam, middleWidth, middleHeight);
-
-			delete program;
-
-			for (COpenCLParameter * parameter : vecParam)
-			{
-				if (!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-
-			cl_int err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputY->GetValue(), CL_TRUE, 0, widthOut * heightOut, y, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFinish(openclContext->GetCommandQueue());
-			Error::CheckError(err);
-
-			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputU->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, u, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFinish(openclContext->GetCommandQueue());
-			Error::CheckError(err);
-
-			err = clEnqueueReadBuffer(openclContext->GetCommandQueue(), inputV->GetValue(), CL_TRUE, 0, middleWidth * middleHeight, v, 0, nullptr, nullptr);
-			Error::CheckError(err);
-			err = clFinish(openclContext->GetCommandQueue());
-			Error::CheckError(err);
-		}
-	}
-
-	if (inputY != nullptr)
-	{
-		inputY->Release();
-		delete inputY;
-	}
-
-	if (inputU != nullptr)
-	{
-		inputU->Release();
-		delete inputU;
-	}
-
-	if (inputV != nullptr)
-	{
-		inputV->Release();
-		delete inputV;
-	}
-
-	if (paramWidth != nullptr)
-	{
-		paramWidth->Release();
-		delete paramWidth;
-	}
-
-	if (paramHeight != nullptr)
-	{
-		paramHeight->Release();
-		delete paramHeight;
-	}
-	*/
 }
 
 
@@ -594,19 +445,3 @@ bool COpenCLEffectVideo::IsOk()
 	return !paramSrc.empty();
 }
 
-COpenCLProgram * COpenCLEffectVideo::GetProgram(const wxString &numProgram)
-{
-	if (openclContext != nullptr)
-		return openclContext->GetProgram(numProgram, openclContext->GetDefaultType());
-	return nullptr;
-}
-
-
-int COpenCLEffectVideo::GetSizeData()
-{
-	//For video is float if is shared context
-	//if (context->GetDefaultType() == OPENCL_FLOAT)
-	//	return sizeof(cl_float) * 4;
-
-	return sizeof(cl_uint);
-}

@@ -25,7 +25,6 @@
 #include "ListFace.h"
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
-#include <OpenCLEngine.h>
 #include <SqlThumbnail.h>
 #include <SqlFacePhoto.h>
 #include <wx/stdpaths.h>
@@ -35,7 +34,6 @@ using namespace Regards::Print;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
-using namespace Regards::OpenCL;
 using namespace Regards::Picture;
 
 constexpr auto TIMER_LOADPICTURE = 2;
