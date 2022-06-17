@@ -15,7 +15,7 @@
 #else
 #include <CL/cl_gl.h>
 #endif
-
+extern bool isOpenCLOpenGLInterop;
 using namespace Regards::OpenCL;
 using namespace cv;
 using namespace dnn;
@@ -173,63 +173,62 @@ COpenCLFilter::~COpenCLFilter()
 
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
-	//using namespace cv::ocl;
-	//cl_context context = openclContext->GetContext();
+
 	bool isOk = true;
 #ifndef OPENCV_OPENCL_OPENGL
 	glTexture->SetData(inputData);
 #else
 
-	try
-	{
-		UMat u = inputData;
+    if(isOpenCLOpenGLInterop)
+    {
+        try
+        {
+            UMat u = inputData;
 
-		cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
+            cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
 
-		Size srcSize = inputData.size();
+            Size srcSize = inputData.size();
 
 
-		using namespace cv::ocl;
-		Context& ctx = Context::getDefault();
-		cl_context context = (cl_context)ctx.ptr();
+            using namespace cv::ocl;
+            Context& ctx = Context::getDefault();
+            cl_context context = (cl_context)ctx.ptr();
 
-		// TODO Add support for roi
-		CV_Assert(u.offset == 0);
-		CV_Assert(u.isContinuous());
+            // TODO Add support for roi
+            CV_Assert(u.offset == 0);
+            CV_Assert(u.isContinuous());
 
-		cl_int status = 0;
-		//cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, gl::TEXTURE_2D, 0, texture.texId(), &status);
-		cl_mem clImage = glTexture->GetOpenCLTexture();// clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
+            cl_int status = 0;
+            cl_mem clImage = glTexture->GetOpenCLTexture();// clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
 
-		cl_mem clBuffer = (cl_mem)u.handle(ACCESS_READ);
+            cl_mem clBuffer = (cl_mem)u.handle(ACCESS_READ);
+            cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
 
-		//clGetDeviceInfo((cl_device_id)Device::getDefault().ptr(), CL_DEVICE_PREFERRED_INTEROP_USER_SYNC);
-		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+            size_t offset = 0; // TODO
+            size_t dst_origin[3] = { 0, 0, 0 };
+            size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
+            status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
 
-		size_t offset = 0; // TODO
-		size_t dst_origin[3] = { 0, 0, 0 };
-		size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
-		status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+            status = clFinish(q); // TODO Use events
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
 
-	//	status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
-	//	if (status != CL_SUCCESS)
-	//		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
-
-		status = clFinish(q); // TODO Use events
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
-
-	}
-	catch (cv::Exception& e)
-	{
-		const char* err_msg = e.what();
-		std::cout << "exception caught: " << err_msg << std::endl;
-		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-	}
+        }
+        catch (cv::Exception& e)
+        {
+            isOpenCLOpenGLInterop = false;
+            const char* err_msg = e.what();
+            std::cout << "exception caught: " << err_msg << std::endl;
+            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+        }   
+    }
+    else
+        glTexture->SetData(inputData);
+    
 
 #endif
 	return isOk;

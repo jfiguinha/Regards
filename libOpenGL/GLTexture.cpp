@@ -6,7 +6,7 @@
 #include <OpenCL/cl_gl_ext.h>
 #endif
 using namespace Regards::OpenGL;
-
+extern bool isOpenCLOpenGLInterop;
 GLTexture::GLTexture(void)
 {
 	m_nTextureID = 0;
@@ -160,19 +160,23 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 
 #ifdef OPENCV_OPENCL_OPENGL
 
-	using namespace cv::ocl;
-	Context& ctx = Context::getDefault();
-	cl_context context = (cl_context)ctx.ptr();
+    if(isOpenCLOpenGLInterop)
+    {
+       	using namespace cv::ocl;
+        Context& ctx = Context::getDefault();
+        cl_context context = (cl_context)ctx.ptr();
 
-	cl_int status = 0;
-	clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
+        cl_int status = 0;
+        clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
 
 
-	cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+        cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
 
-	status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
-	if (status != CL_SUCCESS)
-		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
+        status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+        if (status != CL_SUCCESS)
+            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed"); 
+    }
+
 
 #endif
 	return (GL_NO_ERROR == glGetError());
@@ -203,17 +207,19 @@ void GLTexture::checkErrors(std::string desc)
 void GLTexture::Delete()
 {
 #ifdef OPENCV_OPENCL_OPENGL
+    if(isOpenCLOpenGLInterop)
+    {
+        cl_int status = 0;
+        cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
 
-	cl_int status = 0;
-	cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
+        status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
+        if (status != CL_SUCCESS)
+            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
 
-	status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
-	if (status != CL_SUCCESS)
-		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
-
-	status = clReleaseMemObject(clImage); // TODO RAII
-	if (status != CL_SUCCESS)
-		CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+        status = clReleaseMemObject(clImage); // TODO RAII
+        if (status != CL_SUCCESS)
+            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+	}
 #endif
 
 	checkErrors("GLTexture::Delete()");

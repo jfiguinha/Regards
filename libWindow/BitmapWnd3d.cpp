@@ -22,7 +22,7 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
 extern bool isOpenCLInitialized;
-
+extern bool isOpenCLOpenGLInterop;
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -216,7 +216,7 @@ wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
     return "";
 }
 
-cl_device_id GetListOfDevice(cl_platform_id platform,   cl_device_type device_type)
+cl_device_id GetListOfDevice(cl_platform_id platform,   cl_device_type device_type, int & found)
 {
     cl_uint num_of_devices;
 
@@ -229,9 +229,6 @@ cl_device_id GetListOfDevice(cl_platform_id platform,   cl_device_type device_ty
     );
 
     Error::CheckError(err);
-
-    if (err == -1)
-        return;
 
     vector<cl_device_id> devices(num_of_devices);
 
@@ -266,10 +263,12 @@ cl_device_id GetListOfDevice(cl_platform_id platform,   cl_device_type device_ty
         if (!supported)
             continue;
 
-        
+        found = i;
         printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
-        return devices[i];
+        break;
     }
+    
+    return devices[found];
 }
 
 cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
@@ -292,7 +291,12 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
     // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
 
     int found = -1;
-    cl_device_id device = GetListOfDevice(platforms[0], CL_DEVICE_TYPE_GPU);
+    cl_device_id device = NULL;
+    device = GetListOfDevice(platforms[0], CL_DEVICE_TYPE_GPU, found);
+    
+    if (found < 0)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
+    
     cl_context context = NULL;
 
     // get OpenGL share group
@@ -311,11 +315,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
         clReleaseDevice(device);
     }
 
-
-    if (found < 0)
-        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
-
-    cl_platform_id platform = platforms[found];
+    cl_platform_id platform = platforms[0];
     std::string platformName = cv::ocl::PlatformInfo(&platform).name();
 
     cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
@@ -456,13 +456,14 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
             {
                 initializeContextFromGL();
                 isOpenCLInitialized = true;
+                isOpenCLOpenGLInterop = true;
             }
             catch (cv::Exception& e)
             {
                 const char* err_msg = e.what();
                 std::cout << "exception caught: " << err_msg << std::endl;
                 std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-
+                isOpenCLOpenGLInterop = false;
                 cv::ocl::Context context;
                 if (!context.create(cv::ocl::Device::TYPE_GPU))
                     isOpenCLInitialized = false;
