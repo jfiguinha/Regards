@@ -175,12 +175,12 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	//using namespace cv::ocl;
 	//cl_context context = openclContext->GetContext();
 	bool isOk = true;
+#ifndef OPENCV_OPENCL_OPENGL
 	glTexture->SetData(inputData);
+#else
 
-#ifdef USE_INTEROP
 	try
 	{
-#ifdef OPENCV_SOURCE
 		UMat u = inputData;
 
 		cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
@@ -190,10 +190,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		using namespace cv::ocl;
 		Context& ctx = Context::getDefault();
 		cl_context context = (cl_context)ctx.ptr();
-
-		//checkOpenCLVersion();  // clCreateFromGLTexture requires OpenCL 1.2
-
-		
 
 		// TODO Add support for roi
 		CV_Assert(u.offset == 0);
@@ -228,50 +224,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 		status = clReleaseMemObject(clImage); // TODO RAII
 		if (status != CL_SUCCESS)
 			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
-
-#else
-
-
-		cl_int status = 0;
-#ifdef __WXGTK__
-        cv::Mat data;
-        inputData.copyTo(data);
-        glTexture->SetData(data);
-#else
-
-		using namespace cv::ocl;
-		Context& ctx = Context::getDefault();
-		cl_context context = (cl_context)ctx.ptr();
-		cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
-
-		cl_mem clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
-
-		status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed");
-
-		GetRgbaBitmap(clImage, inputData);
-
-		status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
-
-		status = clFlush(q);
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
-
-		status = clFinish(q); // TODO Use events
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
-
-		status = clReleaseMemObject(clImage); // TODO RAII
-		if (status != CL_SUCCESS)
-			CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
-#endif
-#endif
-		isOk = true;
 	}
 	catch (cv::Exception& e)
 	{

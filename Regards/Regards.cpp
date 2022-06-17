@@ -207,7 +207,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-
+#ifndef OPENCV_OPENCL_OPENGL
 	if (regardsParam->GetIsOpenCLSupport())
 	{
 		bool isOpenCLCompatible = false;
@@ -234,7 +234,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		}
 	}
-
+#endif
 	//CFFmpegApp ffmpeg;
 	//ffmpeg.TestFFmpeg("");
 

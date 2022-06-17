@@ -80,13 +80,13 @@ bool COpenCLEffectVideo::convertToGLTexture2D(GLTexture* glTexture)
 	bool isOk = false;
 	if (interpolatePicture && !paramOutput.empty())
 	{
-		glTexture->SetData(paramOutput);
-		//isOk = openclFilter->convertToGLTexture2D(paramOutput, glTexture);
+		//glTexture->SetData(paramOutput);
+		isOk = openclFilter->convertToGLTexture2D(paramOutput, glTexture);
 	}
 	else
 	{
-		glTexture->SetData(paramSrc);
-		//isOk = openclFilter->convertToGLTexture2D(paramSrc, glTexture);
+		//glTexture->SetData(paramSrc);
+		isOk = openclFilter->convertToGLTexture2D(paramSrc, glTexture);
 	}
 	return isOk;
 }

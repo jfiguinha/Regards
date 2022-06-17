@@ -5,7 +5,9 @@
 #include <RenderOpenGL.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-
+#ifndef __WXGTK__
+#include "opencv2/core/opengl.hpp"
+#endif
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -174,7 +176,14 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     {
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
+#ifdef OPENCV_OPENCL_OPENGL
+		if (cv::ocl::haveOpenCL())
+		{
+			bool isOpenCLCompatible = false;
+			(void)cv::ogl::ocl::initializeContextFromGL();
+		}
     }  
+#endif
     renderOpenGL->SetCurrent(*this);
 
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
