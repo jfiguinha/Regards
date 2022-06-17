@@ -276,11 +276,42 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
 #ifdef OPENCV_OPENCL_OPENGL
-		if (cv::ocl::haveOpenCL())
-		{
-			initializeContextFromGL();
-			isOpenCLInitialized = true;
-		}
+        if (cv::ocl::haveOpenCL())
+        {
+            try
+            {
+                initializeContextFromGL();
+                isOpenCLInitialized = true;
+            }
+            catch (cv::Exception& e)
+            {
+                const char* err_msg = e.what();
+                std::cout << "exception caught: " << err_msg << std::endl;
+                std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+
+                cv::ocl::Context context;
+                if (!context.create(cv::ocl::Device::TYPE_GPU))
+                    isOpenCLInitialized = false;
+                else
+                    isOpenCLInitialized = true;
+
+                if (!isOpenCLInitialized)
+                {
+                    if (!context.create(cv::ocl::Device::TYPE_CPU))
+                        isOpenCLInitialized = false;
+                    else
+                        isOpenCLInitialized = true;
+                }
+
+                if(isOpenCLInitialized)
+                {
+                    cv::ocl::Device(context.device(0));
+                }
+                   
+            }
+            
+        }
+
 #endif
     }  
 
