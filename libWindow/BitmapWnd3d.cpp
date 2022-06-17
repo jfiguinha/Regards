@@ -9,7 +9,11 @@
 #include "opencv2/core/opengl.hpp"
 #endif
 #include <utility.h>
-
+#ifdef __APPLE__
+#include <OpenCL/cl_gl.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenCL/cl_gl_ext.h>
+#endif
 
 #if defined (__APPLE__) || defined(MACOSX)
 static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
@@ -177,6 +181,83 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 
 cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
 {
+#if defined(__APPLE__) || defined(__MACOSX)
+
+
+    cl_uint numPlatforms;
+    cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
+    if (status != CL_SUCCESS)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+    if (numPlatforms == 0)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: No available platforms");
+
+    std::vector<cl_platform_id> platforms(numPlatforms);
+    status = clGetPlatformIDs(numPlatforms, &platforms[0], NULL);
+    if (status != CL_SUCCESS)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get number of platforms");
+
+    // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
+
+    int found = -1;
+    cl_device_id device = NULL;
+    cl_context context = NULL;
+
+    for (int i = 0; i < (int)numPlatforms; i++)
+    {
+        // query platform extension: presence of "cl_khr_gl_sharing" extension is required
+        {
+            cv::AutoBuffer<char> extensionStr;
+
+            size_t extensionSize;
+            status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, 0, NULL, &extensionSize);
+            if (status == CL_SUCCESS)
+            {
+                extensionStr.allocate(extensionSize + 1);
+                status = clGetPlatformInfo(platforms[i], CL_PLATFORM_EXTENSIONS, extensionSize, (char*)extensionStr.data(), NULL);
+            }
+            if (status != CL_SUCCESS)
+                CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't get platform extension string");
+
+            if (!strstr((const char*)extensionStr.data(), CL_GL_SHARING_EXT))
+                continue;
+        }
+
+        // get OpenGL share group
+        CGLContextObj cgl_current_context = CGLGetCurrentContext();
+        CGLShareGroupObj cgl_share_group = CGLGetShareGroup(cgl_current_context);
+
+        cl_context_properties properties[] = {
+            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+            (cl_context_properties) cgl_share_group,
+            0
+        };
+        // create context
+        context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+        if (status != CL_SUCCESS)
+        {
+            clReleaseDevice(device);
+        }
+        else
+        {
+            found = i;
+            break;
+        }
+    }
+
+    if (found < 0)
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
+
+    cl_platform_id platform = platforms[found];
+    std::string platformName = cv::ocl::PlatformInfo(&platform).name();
+
+    cv::ocl::OpenCLExecutionContext clExecCtx = cv::ocl::OpenCLExecutionContext::create(platformName, platform, context, device);
+    clReleaseDevice(device);
+    clReleaseContext(context);
+    clExecCtx.bind();
+    return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
+    
+#else
+
     cl_uint numPlatforms;
     cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
     if (status != CL_SUCCESS)
@@ -252,21 +333,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
         };
 
 #endif
-        /*
-        */
-#elif defined(__APPLE__)
-
-        // Get current CGL Context and CGL Share group
-        CGLContextObj kCGLContext = CGLGetCurrentContext();
-        CGLShareGroupObj kCGLShareGroup = CGLGetShareGroup(kCGLContext);
-        // Create CL context properties, add handle & share-group enum
-        cl_context_properties properties[] = {
-            CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
-        (cl_context_properties)kCGLShareGroup, 0
-        };
-
 #endif
-
 
         // query device
         device = NULL;
@@ -298,7 +365,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
     clReleaseContext(context);
     clExecCtx.bind();
     return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
-
+#endif
 }
 #endif
 

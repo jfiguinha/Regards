@@ -1,6 +1,10 @@
 #include <header.h>
 #include "GLTexture.h"
 #include <RegardsBitmap.h>
+#ifdef __APPLE__
+#include <OpenCL/cl_gl.h>
+#include <OpenCL/cl_gl_ext.h>
+#endif
 using namespace Regards::OpenGL;
 
 GLTexture::GLTexture(void)
