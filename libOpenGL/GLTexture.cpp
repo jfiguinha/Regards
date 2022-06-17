@@ -214,11 +214,11 @@ void GLTexture::Delete()
 
         status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
         if (status != CL_SUCCESS)
-            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueReleaseGLObjects failed");
+           cout << "OpenCL: clEnqueueReleaseGLObjects failed" << endl;
 
         status = clReleaseMemObject(clImage); // TODO RAII
         if (status != CL_SUCCESS)
-            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clReleaseMemObject failed");
+            cout << "OpenCL: clReleaseMemObject failed"  << endl;
 	}
 #endif
 

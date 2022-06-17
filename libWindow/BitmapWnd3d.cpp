@@ -400,7 +400,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
         cl_context_properties properties[] = {
          CL_GL_CONTEXT_KHR, (cl_context_properties)glxcontext, // GLX Context
          CL_GLX_DISPLAY_KHR, (cl_context_properties)display, // GLX Display
-         CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],, // OpenCL platform
+         CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i], // OpenCL platform
          0
         };
 

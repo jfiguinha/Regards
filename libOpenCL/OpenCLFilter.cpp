@@ -223,7 +223,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             isOpenCLOpenGLInterop = false;
             const char* err_msg = e.what();
             std::cout << "exception caught: " << err_msg << std::endl;
-            std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+            std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
         }   
     }
     else
