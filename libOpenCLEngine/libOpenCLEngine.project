@@ -8,22 +8,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="OpenCLContext.cpp"/>
-    <File Name="OpenCLEngine.cpp"/>
-    <File Name="OpenCLExecuteProgram.cpp"/>
-    <File Name="OpenCLInfos.cpp"/>
     <File Name="OpenCLParameter.cpp"/>
-    <File Name="OpenCLProgram.cpp"/>
     <File Name="utility.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="utility.h"/>
-    <File Name="OpenCLProgram.h"/>
     <File Name="OpenCLParameter.h"/>
-    <File Name="OpenCLInfos.h"/>
-    <File Name="OpenCLExecuteProgram.h"/>
-    <File Name="OpenCLEngine.h"/>
-    <File Name="OpenCLContext.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
