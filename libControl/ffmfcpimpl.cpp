@@ -1810,7 +1810,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		if (config != nullptr)
 			acceleratorHardware = config->GetHardwareDecoder();
 
-        if (acceleratorHardware != "" && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
+        if ((acceleratorHardware != "" || acceleratorHardware != "none") && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
 			if(!isSuccess)
 			{

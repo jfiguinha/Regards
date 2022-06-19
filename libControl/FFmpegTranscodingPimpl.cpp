@@ -388,6 +388,96 @@ enum AVPixelFormat CFFmpegTranscodingPimpl::get_hw_format(AVCodecContext* ctx,
 	return AV_PIX_FMT_NONE;
 }
 
+int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
+{
+	int ret;
+	unsigned int i;
+
+	ifmt_ctx = nullptr;
+	if ((ret = avformat_open_input(&ifmt_ctx, CConvertUtility::ConvertToUTF8(filename), nullptr, nullptr)) < 0)
+	{
+		av_log(nullptr, AV_LOG_ERROR, "Cannot open input file\n");
+		return ret;
+	}
+
+	if ((ret = avformat_find_stream_info(ifmt_ctx, nullptr)) < 0)
+	{
+		av_log(nullptr, AV_LOG_ERROR, "Cannot find stream information\n");
+		return ret;
+	}
+
+	stream_ctx = static_cast<StreamContext*>(av_mallocz_array(ifmt_ctx->nb_streams, sizeof(*stream_ctx)));
+	if (!stream_ctx)
+		return AVERROR(ENOMEM);
+
+	for (i = 0; i < ifmt_ctx->nb_streams; i++)
+	{
+		AVStream* stream = ifmt_ctx->streams[i];
+		if (stream->codecpar->codec_id == AV_CODEC_ID_NONE)
+			continue;
+		const AVCodec* dec = avcodec_find_decoder(stream->codecpar->codec_id);
+		AVCodecContext* codec_ctx;
+		if (!dec)
+		{
+			av_log(nullptr, AV_LOG_ERROR, "Failed to find decoder for stream #%u\n", i);
+			return AVERROR_DECODER_NOT_FOUND;
+		}
+		codec_ctx = avcodec_alloc_context3(dec);
+		if (!codec_ctx)
+		{
+			av_log(nullptr, AV_LOG_ERROR, "Failed to allocate the decoder context for stream #%u\n", i);
+			return AVERROR(ENOMEM);
+		}
+		ret = avcodec_parameters_to_context(codec_ctx, stream->codecpar);
+		if (ret < 0)
+		{
+			av_log(nullptr, AV_LOG_ERROR, "Failed to copy decoder parameters to input decoder context "
+				"for stream #%u\n", i);
+			return ret;
+		}
+		/* Reencode video & audio and remux subtitles etc. */
+		if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO
+			|| codec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+		{
+			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+				codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
+
+			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+			{
+				videoStreamIndex = i;
+			}
+
+
+			ret = avcodec_open2(codec_ctx, dec, nullptr);
+			if (ret < 0)
+			{
+				av_log(nullptr, AV_LOG_ERROR, "Failed to open decoder for stream #%u\n", i);
+				return ret;
+			}
+
+			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+			{
+				startTime = ifmt_ctx->start_time;
+
+				auto matrix = reinterpret_cast<int32_t*>(
+					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+				if (matrix)
+					rotation = lround(av_display_rotation_get(matrix));
+				else
+					rotation = 0;
+			}
+		}
+		stream_ctx[i].dec_ctx = codec_ctx;
+
+		stream_ctx[i].dec_frame = av_frame_alloc();
+		if (!stream_ctx[i].dec_frame)
+			return AVERROR(ENOMEM);
+	}
+
+	av_dump_format(ifmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 0);
+	return 0;
+}
+
 
 int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxString& decodeHardware)
 {
@@ -398,7 +488,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 
 	enum AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
 	this->decodeHardware = decodeHardware;
-	if (decodeHardware != "")
+	if (decodeHardware != "" || decodeHardware != "none")
 	{
 		type = av_hwdevice_find_type_by_name(decodeHardware.ToStdString().c_str());
 		if (type == AV_HWDEVICE_TYPE_NONE) {
@@ -407,7 +497,6 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
 			fprintf(stderr, "\n");
-			return -1;
 		}
 	}
 
@@ -460,7 +549,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 			if (codec_ctx->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
 
-				if (decodeHardware != "")
+				if (decodeHardware != "" || decodeHardware != "none")
 				{
 					for (int j = 0;; j++) {
 						const AVCodecHWConfig* config = avcodec_get_hw_config(dec, j);
@@ -484,7 +573,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 				codec_ctx->framerate = av_guess_frame_rate(ifmt_ctx, stream, nullptr);
 				videoStreamIndex = i;
 
-				if (decodeHardware != "")
+				if (decodeHardware != "" || decodeHardware != "none")
 				{
 
 					codec_ctx->get_format = get_hw_format;
@@ -583,7 +672,7 @@ int CFFmpegTranscodingPimpl::EncodeFrame(const int& stream_index, int& positionM
 		if (ret < 0)
 			goto fail;
 
-		if (stream->dec_frame->format == hw_pix_fmt) {
+		if (stream->dec_frame->format == hw_pix_fmt && (decoderHardware != "" && decoderHardware != "none")) {
 			/* retrieve data from GPU to CPU */
 			if ((ret = av_hwframe_transfer_data(sw_frame, stream->dec_frame, 0)) < 0)
 			{
@@ -1553,7 +1642,6 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& output)
 {
 	int ret;
-	wxString decoderHardware = "";
 
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -1561,7 +1649,12 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 		decoderHardware = config->GetHardwareDecoder();
 	}
 
-	if ((ret = open_input_file(input, decoderHardware)) < 0)
+    if(decoderHardware == "" || decoderHardware == "none")
+    {
+        if ((ret = open_input_file(input)) < 0)
+            return ret;
+    }
+	else if ((ret = open_input_file(input, decoderHardware)) < 0)
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
 		return ret;

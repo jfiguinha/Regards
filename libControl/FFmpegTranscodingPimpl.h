@@ -70,7 +70,7 @@ private:
 
 	void EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile);
 	int EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds);
-
+    int open_input_file(const wxString& filename);
 	cv::Mat ApplyProcess(CRegardsBitmap* bitmap);
 	static void DisplayPreview(void* data);
 	void EndTreatment();
@@ -129,7 +129,7 @@ private:
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
-
+    wxString decoderHardware = "";
 	CRegardsBitmap* bmp = nullptr;
 	int width = 0;
 	int height = 0;

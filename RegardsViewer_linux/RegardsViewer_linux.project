@@ -405,6 +405,18 @@
         <Library Value="lzma"/>
         <Library Value="ssl"/>
         <Library Value="crypto"/>
+        <Library Value="nppc"/>
+        <Library Value="nppial"/>
+        <Library Value="nppicc"/>
+        <Library Value="nppidei"/>
+        <Library Value="nppif"/>
+        <Library Value="nppig"/>
+        <Library Value="nppim"/>
+        <Library Value="nppist"/>
+        <Library Value="nppisu"/>
+        <Library Value="nppitc"/>
+        <Library Value="npps"/>
+        <Library Value="cuda"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

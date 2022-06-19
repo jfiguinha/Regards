@@ -10,7 +10,7 @@ tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
 ./vcpkg install wxWidgets
-./vcpkg install ffmpeg[all-gpl]
+./vcpkg install ffmpeg[all-gpl,cuda]
 ./vcpkg install opencv[contrib,ipp,openmp,tbb,ffmpeg,opengl]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo

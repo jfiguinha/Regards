@@ -29,6 +29,7 @@ sudo apt install libsdl2-dev
 sudo apt install curl zip unzip tar
 sudo apt install bison
 sudo apt install gperf
+sudo apt install nvidia-cuda-toolkit
 #sudo apt install libx265-dev
 #sudo apt install libtesseract-dev
 #sudo apt install libpoppler-dev
