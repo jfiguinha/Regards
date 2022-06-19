@@ -13,6 +13,7 @@ GLTexture::GLTexture(void)
 	width = 0;
 	height = 0;
 	format = GL_BGRA_EXT;
+    isOpenCLCompatible = false;
 }
 
 GLTexture::~GLTexture(void)
@@ -136,7 +137,7 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 {
 	width = nWidth;
 	height = nHeight;
-
+    isOpenCLCompatible = false;
 	//GLuint m_nTextureSize = nWidth * nHeight << 2;
 
 	//int nError = glGetError();
@@ -168,18 +169,25 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 
         cl_int status = 0;
         clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
+        if (status == CL_SUCCESS)
+        {
+            cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
 
+            status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+        }
 
-        cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
-
-        status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
-        if (status != CL_SUCCESS)
-            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueAcquireGLObjects failed"); 
+         if (status == CL_SUCCESS)
+            isOpenCLCompatible = true;           
     }
 
 
 #endif
 	return (GL_NO_ERROR == glGetError());
+}
+
+bool GLTexture::IsOpenCLCompatible()
+{
+    return isOpenCLCompatible;
 }
 
 cl_mem GLTexture::GetOpenCLTexture()

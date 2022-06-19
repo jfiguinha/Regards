@@ -39,6 +39,8 @@ namespace Regards
 			int GetHeight();
 			uint8_t* GetData();
 			void GetData(uint8_t* data);
+            bool IsOpenCLCompatible();
+            
 		protected:
 
 			void SetTextureData(const cv::Mat& bitmapMatrix);
@@ -46,6 +48,7 @@ namespace Regards
 			GLuint m_nTextureID;
 			int width;
 			int height;
+            bool isOpenCLCompatible;
 			GLenum format;
 			cl_mem clImage;
 		};

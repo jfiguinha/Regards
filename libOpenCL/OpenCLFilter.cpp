@@ -179,7 +179,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 	glTexture->SetData(inputData);
 #else
 
-    if(isOpenCLOpenGLInterop)
+    if(isOpenCLOpenGLInterop && glTexture->IsOpenCLCompatible())
     {
         try
         {
