@@ -37,9 +37,9 @@
 #define USE_TBB
 #endif
 
-#ifndef OPENCV_OPENCL
+//#ifndef OPENCV_OPENCL
 #define OPENCV_OPENCL
-#endif
+//#endif
 
 
 //#define WX_PRECOMP
@@ -54,9 +54,9 @@
 #include <tbb/parallel_for.h>
 #endif
 
-#ifndef __WXGTK__
+//#ifndef __WXGTK__
 #define OPENCV_OPENCL_OPENGL
-#endif
+//#endif
 
 #include <thread>
 #include <mutex>

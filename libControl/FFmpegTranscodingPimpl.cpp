@@ -2112,16 +2112,15 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 		switch (st->codecpar->codec_type)
 		{
 		case AVMEDIA_TYPE_AUDIO:
-			printf("audio \n");
 			break;
 
 		case AVMEDIA_TYPE_VIDEO:
-			printf("video \n");
+			//printf("video \n");
 			isVideo = true;
-			//SetFrameData()
+
 			break;
 		}
-
+        
 		if (st->codecpar->codec_id != AV_CODEC_ID_NONE)
 		{
 			bool copyDirectPacket = false;
@@ -2167,6 +2166,16 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 				if (ret < 0)
 					return ret;
 			}
+            int outStreamIndex = streamInNumberInOut[stream_index];
+            printf("decoder -> type:video "
+                   "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
+                   av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
+                   av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ifmt_ctx->streams[stream_index]->time_base));
+            
+            printf("encoder -> type:video "
+                   "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
+                   av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
+                   av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ofmt_ctx->streams[outStreamIndex]->time_base));
 		}
 
 		av_packet_unref(&packet);
