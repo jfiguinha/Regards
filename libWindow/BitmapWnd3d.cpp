@@ -25,6 +25,7 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
+extern bool needToCreateRender;
 extern bool isOpenCLInitialized;
 extern bool isOpenCLOpenGLInterop;
 //-----------------------------------------------------------------------------
@@ -454,7 +455,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
 #ifdef OPENCV_OPENCL_OPENGL
-        if (cv::ocl::haveOpenCL())
+        if (cv::ocl::haveOpenCL() && needToCreateRender)
         {
             try
             {
@@ -488,6 +489,8 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                 }
                    
             }
+            
+            needToCreateRender = false;
             
         }
 

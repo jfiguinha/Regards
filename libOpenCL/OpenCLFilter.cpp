@@ -173,7 +173,7 @@ COpenCLFilter::~COpenCLFilter()
 
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
-
+    printf("convertToGLTexture2D \n");
 	bool isOk = true;
 #ifndef OPENCV_OPENCL_OPENGL
 	glTexture->SetData(inputData);
@@ -181,6 +181,9 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 
     if(isOpenCLOpenGLInterop && glTexture->IsOpenCLCompatible())
     {
+        printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
+        cl_int status = 0;
+        
         try
         {
             UMat u = inputData;
@@ -198,7 +201,7 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             CV_Assert(u.offset == 0);
             CV_Assert(u.isContinuous());
 
-            cl_int status = 0;
+            
             cl_mem clImage = glTexture->GetOpenCLTexture();// clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
             if (status != CL_SUCCESS)
                 CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
@@ -210,12 +213,12 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             size_t dst_origin[3] = { 0, 0, 0 };
             size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
             status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
-            if (status != CL_SUCCESS)
-                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
-
-            status = clFinish(q); // TODO Use events
-            if (status != CL_SUCCESS)
-                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");
+            if (status == CL_SUCCESS)
+            {
+                status = clFinish(q); // TODO Use events
+            }
+             if (status == CL_SUCCESS)
+                printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
 
         }
         catch (cv::Exception& e)
@@ -224,7 +227,14 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             const char* err_msg = e.what();
             std::cout << "exception caught: " << err_msg << std::endl;
             std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
+            status = -1;
+            printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
         }   
+        
+         if (status != CL_SUCCESS)
+         {
+             glTexture->SetData(inputData);
+         }
     }
     else
         glTexture->SetData(inputData);
