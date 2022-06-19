@@ -215,7 +215,7 @@ void GLTexture::checkErrors(std::string desc)
 void GLTexture::Delete()
 {
 #ifdef OPENCV_OPENCL_OPENGL
-    if(isOpenCLOpenGLInterop)
+    if(isOpenCLOpenGLInterop && isOpenCLCompatible)
     {
         cl_int status = 0;
         cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
