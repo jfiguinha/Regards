@@ -22,8 +22,6 @@ CRenderVideoOpenGL::CRenderVideoOpenGL(CRenderOpenGL* renderOpenGL)
 {
 	textureSubtitle = nullptr;
 	textureVideo = nullptr;
-	textureVideoCopy = nullptr;
-	cl_textureVideoCopy = nullptr;
 	fboId = 0;
 	this->renderOpenGL = renderOpenGL;
 }
@@ -214,28 +212,18 @@ void CRenderVideoOpenGL::DeleteVideoTexture()
 		delete(textureVideo);
 	textureVideo = nullptr;
 
-	if (textureVideoCopy != nullptr)
-		delete(textureVideoCopy);
-	textureVideoCopy = nullptr;
-
 	if (textureSubtitle != nullptr)
 		delete(textureSubtitle);
 	textureSubtitle = nullptr;
 
-	if (cl_textureVideoCopy != nullptr)
-	{
-		cl_int err = clReleaseMemObject(cl_textureVideoCopy);
-		Error::CheckError(err);
-		cl_textureVideoCopy = nullptr;
-	}
 }
 
-GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height)
+GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop)
 {
 	if (textureVideo != nullptr)
 		delete(textureVideo);
 
-	textureVideo = new GLTexture(width, height);
+	textureVideo = new GLTexture(width, height, isOpenCLOpenGLInterop);
 
 	return textureVideo;
 }
@@ -245,29 +233,4 @@ GLTexture* CRenderVideoOpenGL::GetVideoTexture(const int& width, const int& heig
 GLTexture* CRenderVideoOpenGL::GetVideoTexturePt()
 {
 	return textureVideo;
-}
-
-
-GLTexture* CRenderVideoOpenGL::GetVideoTextureCopyPt()
-{
-	if (textureVideoCopy != nullptr)
-		delete(textureVideoCopy);
-	textureVideoCopy = nullptr;
-
-	textureVideoCopy = new GLTexture(textureVideo->GetWidth(), textureVideo->GetHeight());
-
-	glGenFramebuffers(1, &fboId);
-	glBindFramebuffer(GL_FRAMEBUFFER, fboId);
-	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, textureVideo->GetTextureID(), 0);
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
-	                       GL_TEXTURE_2D, textureVideoCopy->GetTextureID(), 0);
-	glDrawBuffer(GL_COLOR_ATTACHMENT1);
-	glBlitFramebuffer(0, 0, textureVideo->GetWidth(), textureVideo->GetHeight(), 0, 0, textureVideo->GetWidth(),
-	                  textureVideo->GetHeight(),
-	                  GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDeleteFramebuffers(1, &fboId);
-	//CopyTexture();
-	return textureVideoCopy;
 }

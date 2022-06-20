@@ -25,9 +25,8 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-extern bool needToCreateRender;
 extern bool isOpenCLInitialized;
-extern bool isOpenCLOpenGLInterop;
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -60,7 +59,7 @@ void CBitmapWnd3D::OnMouseLeave(wxMouseEvent& event)
 void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRender)
 {
 	this->bitmapWndRender = bitmapWndRender;
-
+    bitmapWndRender->SetIsOpenGLInterop(isOpenCLOpenGLInterop);
 	this->bitmapWndRender->SetParent(this);
 
 	vector<int> listTimer = bitmapWndRender->GetListTimer();
@@ -80,6 +79,7 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 void CBitmapWnd3D::UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender)
 {
 	this->bitmapWndRender = bitmapWndRender;
+    bitmapWndRender->SetIsOpenGLInterop(isOpenCLOpenGLInterop);
 }
 
 bool CBitmapWnd3D::GetProcessEnd()
@@ -455,13 +455,15 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
 #ifdef OPENCV_OPENCL_OPENGL
-        if (cv::ocl::haveOpenCL() && needToCreateRender)
+        if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
         {
+           
             try
             {
                 initializeContextFromGL();
                 isOpenCLInitialized = true;
                 isOpenCLOpenGLInterop = true;
+               
             }
             catch (cv::Exception& e)
             {
@@ -489,12 +491,11 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                 }
                    
             }
-            
-            needToCreateRender = false;
-            
+                     
         }
 
 #endif
+        bitmapWndRender->SetIsOpenGLInterop(isOpenCLOpenGLInterop);
     }  
 
     renderOpenGL->SetCurrent(*this);

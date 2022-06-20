@@ -203,9 +203,6 @@ CShowElement::CShowElement(wxWindow* parent, wxWindowID id, wxWindowID bitmapVie
 
 	softRender = true;
 	videoWindow = new CVideoControlSoft(windowMain, this);
-	if (openCLCompatible)
-		videoWindow->UseOpenCLOpenGLInterop(true);
-
 	bitmapWindowRender->SetBitmapRenderInterface(videoWindow);
 	bitmapWindowRender->UpdateRenderInterface(bitmapWindow);
 

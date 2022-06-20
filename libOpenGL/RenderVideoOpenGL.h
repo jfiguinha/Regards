@@ -29,11 +29,10 @@ namespace Regards
 			~CRenderVideoOpenGL();
 
 			void DeleteVideoTexture();
-			GLTexture* GetVideoTexture(const int& width, const int& height);
+			GLTexture* GetVideoTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop);
 
 
 			GLTexture* GetVideoTexturePt();
-			GLTexture* GetVideoTextureCopyPt();
 			void SetSubtitle(CRegardsBitmap* subtitle);
 			void ShowSubtitle();
 			void DeleteSubtitle();
@@ -42,19 +41,10 @@ namespace Regards
 			void RenderWithEffect(GLTexture* glTexture, CVideoEffectParameter* effectParameter, const wxFloatRect& rect, const float &iTime,
 			                      const bool& inverted);
 
-			bool IsCopyDirect()
-			{
-				return directcopytexture;
-			}
 
 		private:
-			bool directcopytexture = true;
-
-
-			GLTexture* textureSubtitle;
-			GLTexture* textureVideo;
-			GLTexture* textureVideoCopy;
-			cl_mem cl_textureVideoCopy;
+			GLTexture* textureVideo = nullptr;
+			GLTexture* textureSubtitle = nullptr;
 			CRenderOpenGL* renderOpenGL = nullptr;
 			GLuint fboId;
 		};

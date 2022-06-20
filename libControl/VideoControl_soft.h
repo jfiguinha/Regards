@@ -96,7 +96,7 @@ public:
 	virtual void SetEndProgram(const bool& endProgram) override;
 	virtual int UpdateResized() override;
 
-	bool UseOpenCLOpenGLInterop(const bool& value);
+	virtual void SetIsOpenGLInterop(const bool& openglInterop);
 
 protected:
 
@@ -169,6 +169,7 @@ protected:
 	void GetDenoiserPt(const int& width, const int& height);
 	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
 
+	bool isOpenCLOpenGLInterop = false;
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;
@@ -262,7 +263,6 @@ protected:
 	SwsContext* localContext = nullptr;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
-	bool useOpenCLOpenGLInterop = false;
 
 	uint8_t * src = nullptr;
 	int sizesrc = 0;

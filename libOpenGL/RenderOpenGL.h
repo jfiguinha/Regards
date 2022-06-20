@@ -39,11 +39,9 @@ namespace Regards
 			~CRenderOpenGL() override;
 			GLTexture* GetGLTexture();
 			wxGLContext* GetGLContext();
-			GLTexture* GetDisplayTexture();
 
-			GLTexture* GetDisplayTexture(const int& width, const int& height);
 			void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
-			GLTexture* GetDisplayTexture(const int& width, const int& height, cl_context context);
+			GLTexture* GetDisplayTexture(const int& width, const int& height, const bool& isOpenCLOpenGLInterop);
 			void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
 			                    const int& top, const bool& inverted = false);
 
@@ -56,7 +54,7 @@ namespace Regards
 			GLSLShader* CreateShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 			GLSLShader* FindShader(const wxString& shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 
-			void RenderToTexture();
+			//void RenderToTexture();
 
 
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);

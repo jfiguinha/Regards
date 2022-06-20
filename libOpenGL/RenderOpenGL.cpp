@@ -129,7 +129,7 @@ GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And
 }
 
 
-GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height, cl_context context)
+GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height, const bool & isOpenCLOpenGLInterop)
 {
 	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))
 	{
@@ -139,7 +139,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height,
 			delete(textureDisplay);
 		textureDisplay = nullptr;
 
-		textureDisplay = new GLTexture(width, height);
+		textureDisplay = new GLTexture(width, height, isOpenCLOpenGLInterop);
 	}
 
 	return textureDisplay;
@@ -405,9 +405,10 @@ void CRenderOpenGL::RenderQuad(GLTexture* texture, const bool& flipH, const bool
 
 }
 
+/*
 void CRenderOpenGL::RenderToTexture()
 {
-	GLTexture* displayTexture = GetDisplayTexture();
+	GLTexture* displayTexture = GetGLTexture();
 	textureDisplay->Enable();
 	//textureSource->Enable();
 	glBindTexture(GL_TEXTURE_2D, displayTexture->GetTextureID()); // Bind To The Blur Texture
@@ -416,7 +417,7 @@ void CRenderOpenGL::RenderToTexture()
 	//textureSource->Disable();
 	textureDisplay->Disable();
 }
-
+*/
 void CRenderOpenGL::RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
                                    const int& top, const bool& inverted)
 {
@@ -436,27 +437,3 @@ GLTexture* CRenderOpenGL::GetGLTexture()
 	return textureDisplay;
 }
 
-GLTexture* CRenderOpenGL::GetDisplayTexture()
-{
-	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))
-	{
-		if (textureDisplay != nullptr)
-			delete(textureDisplay);
-
-		textureDisplay = new GLTexture(width, height);
-	}
-	return textureDisplay;
-}
-
-
-GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
-{
-	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))
-	{
-		if (textureDisplay != nullptr)
-			delete(textureDisplay);
-
-		textureDisplay = new GLTexture(width, height);
-	}
-	return textureDisplay;
-}

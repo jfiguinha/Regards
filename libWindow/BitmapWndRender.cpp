@@ -87,6 +87,11 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	parentRender = nullptr;
 }
 
+void CBitmapWndRender::SetIsOpenGLInterop(const bool& openglInterop)
+{
+	this->isOpenCLOpenGLInterop = openglInterop;
+}
+
 void CBitmapWndRender::SetTabValue(const std::vector<int> & value)
 {
 	this->value = value;
@@ -1590,7 +1595,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		bool useInterop = false;
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 
 		if (useOpenCLOpenGLInterop)
 		{
@@ -1671,7 +1676,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		CRegardsBitmap* bitmap = nullptr;
 		bitmap = filtreEffet->GetBitmap(false);
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 		if (glTexture != nullptr)
 			glTexture->SetData(bitmap);
 		else

@@ -6,7 +6,7 @@
 #include <OpenCL/cl_gl_ext.h>
 #endif
 using namespace Regards::OpenGL;
-extern bool isOpenCLOpenGLInterop;
+
 GLTexture::GLTexture(void)
 {
 	m_nTextureID = 0;
@@ -22,19 +22,19 @@ GLTexture::~GLTexture(void)
 }
 
 
-GLTexture* GLTexture::CreateTextureOutput(int width, int height, GLenum format)
+GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& isOpenCLOpenGLInterop, GLenum format)
 {
-	GLTexture* glTextureDest = new GLTexture(width, height, format);
+	GLTexture* glTextureDest = new GLTexture(width, height, format, isOpenCLOpenGLInterop);
 	return glTextureDest;
 }
 
-GLTexture::GLTexture(const int& nWidth, const int& nHeight, GLenum format)
+GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& isOpenCLOpenGLInterop, GLenum format)
 {
 	m_nTextureID = 0;
 	width = nWidth;
 	height = nHeight;
 	this->format = format;
-	Create(nWidth, nHeight, nullptr);
+	Create(nWidth, nHeight, nullptr, isOpenCLOpenGLInterop);
 
 }
 
@@ -133,7 +133,7 @@ void GLTexture::SetData(CRegardsBitmap * bitmap)
 }
 
 //bool GLTexture::Create(const int &nWidth, const int &nHeight, void *pbyData, const int & nFormat_i, const int & nInternalFormat_i)
-bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
+bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, const bool & isOpenCLOpenGLInterop)
 {
 	width = nWidth;
 	height = nHeight;
@@ -159,7 +159,6 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 
-#ifdef OPENCV_OPENCL_OPENGL
 
     if(isOpenCLOpenGLInterop)
     {
@@ -181,7 +180,6 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData)
     }
 
 
-#endif
 	return (GL_NO_ERROR == glGetError());
 }
 
@@ -214,8 +212,7 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
-#ifdef OPENCV_OPENCL_OPENGL
-    if(isOpenCLOpenGLInterop && isOpenCLCompatible)
+	if(isOpenCLCompatible)
     {
         cl_int status = 0;
         cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
@@ -228,7 +225,6 @@ void GLTexture::Delete()
         if (status != CL_SUCCESS)
             cout << "OpenCL: clReleaseMemObject failed"  << endl;
 	}
-#endif
 
 	checkErrors("GLTexture::Delete()");
 	//glDisable(GL_TEXTURE_2D);

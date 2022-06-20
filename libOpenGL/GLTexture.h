@@ -11,12 +11,12 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int& nWidth, const int& nHeight, GLenum format = GL_BGRA_EXT);
+			GLTexture(const int& nWidth, const int& nHeight, const bool& isOpenCLOpenGLInterop, GLenum format = GL_BGRA_EXT);
 			GLTexture(void);
 			~GLTexture(void);
 
-			static GLTexture* CreateTextureOutput(int width, int height, GLenum format = GL_BGRA_EXT);
-			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
+			static GLTexture* CreateTextureOutput(int width, int height, const bool& isOpenCLOpenGLInterop, GLenum format = GL_BGRA_EXT);
+			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, const bool& isOpenCLOpenGLInterop);
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
 			void Enable();

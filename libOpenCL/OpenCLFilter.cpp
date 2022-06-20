@@ -15,7 +15,7 @@
 #else
 #include <CL/cl_gl.h>
 #endif
-extern bool isOpenCLOpenGLInterop;
+
 using namespace Regards::OpenCL;
 using namespace cv;
 using namespace dnn;
@@ -175,11 +175,8 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 {
     //printf("convertToGLTexture2D \n");
 	bool isOk = true;
-#ifndef OPENCV_OPENCL_OPENGL
-	glTexture->SetData(inputData);
-#else
 
-    if(isOpenCLOpenGLInterop && glTexture->IsOpenCLCompatible())
+    if(glTexture->IsOpenCLCompatible())
     {
         printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
         cl_int status = 0;
@@ -223,7 +220,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
         }
         catch (cv::Exception& e)
         {
-            isOpenCLOpenGLInterop = false;
             const char* err_msg = e.what();
             std::cout << "exception caught: " << err_msg << std::endl;
             std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
@@ -240,7 +236,6 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
         glTexture->SetData(inputData);
     
 
-#endif
 	return isOk;
 }
 

@@ -69,11 +69,6 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* 
 	pictureFrame = new CRegardsBitmap();
 }
 
-bool CVideoControlSoft::UseOpenCLOpenGLInterop(const bool& value)
-{
-	useOpenCLOpenGLInterop = value;
-}
-
 vector<int> CVideoControlSoft::GetListTimer()
 {
 	vector<int> list;
@@ -1095,6 +1090,10 @@ void CVideoControlSoft::OnPaint2D(wxWindow* gdi)
 {
 }
 
+void CVideoControlSoft::SetIsOpenGLInterop(const bool& openglInterop)
+{
+	this->isOpenCLOpenGLInterop = openglInterop;
+}
 
 void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenGL)
 {
@@ -1910,9 +1909,9 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	bool useInterop = false;
 
 
-	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 
-	if (useOpenCLOpenGLInterop)
+	if (isOpenCLOpenGLInterop)
 	{
 		if (openclEffect->convertToGLTexture2D(glTexture))
 		{
@@ -1920,7 +1919,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		}
         else
         {
-            useOpenCLOpenGLInterop = false;
+			isOpenCLOpenGLInterop = false;
         }
 	}
 
@@ -1977,10 +1976,10 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	CalculPositionVideo(widthOutput, heightOutput, rc);
     
     if(pictureFrame == nullptr)
-        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
         
     if(pictureFrame->GetMatrix().empty())
-        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
     
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
@@ -2012,7 +2011,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	}
 
 
-	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
 	if (glTexture != nullptr)
 	{
 		glTexture->SetData(bitmapOut);

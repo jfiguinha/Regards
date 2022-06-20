@@ -130,6 +130,8 @@ namespace Regards
 			{
 			};
 
+
+			virtual void SetIsOpenGLInterop(const bool& openglInterop) override;
 			virtual void SetEndProgram(const bool& endProgram) override;
 
 			virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL) override;
@@ -159,6 +161,7 @@ namespace Regards
 			}
 
 			void SetTabValue(const std::vector<int>& value);
+
 
 		protected:
 
@@ -265,6 +268,7 @@ namespace Regards
 			bool isThumbnail;
 			bool isInUse;
 			int toolOption;
+			bool isOpenCLOpenGLInterop = false;
 
 			wxCursor hCursorHand;
 			wxCursor hCursorZoomIn;
