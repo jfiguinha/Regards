@@ -1823,7 +1823,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 		//CThumbnailVideo video;
 		//video.SetFilename(szFileName);
 		//is_valid = video.IsOk();
-		cv::VideoCapture capture(CConvertUtility::ConvertToUTF8(szFileName));
+		cv::VideoCapture capture(CConvertUtility::ConvertToStdString(szFileName));
 		if (capture.isOpened())
 		{
 			fileValid.insert(std::make_pair(szFileName, is_valid));
@@ -2441,7 +2441,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			try
 			{
 
-				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToUTF8(fileName), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
+				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToStdString(fileName), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
                 if(!matPicture.empty())
                 {
                     CRegardsBitmap* picture = new CRegardsBitmap();
@@ -2465,7 +2465,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			try
 			{
 
-				cv::Mat hdr = cv::imread(CConvertUtility::ConvertToUTF8(fileName),-1); // correct element size should be CV_32FC3
+				cv::Mat hdr = cv::imread(CConvertUtility::ConvertToStdString(fileName),-1); // correct element size should be CV_32FC3
                 if(!hdr.empty())
                 {
                     CRegardsBitmap* picture = new CRegardsBitmap();
@@ -2944,7 +2944,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 	case HDR:
 		{
-			cv::Mat hdr = cv::imread(CConvertUtility::ConvertToUTF8(fileName), -1); // correct element size should be CV_32FC3
+			cv::Mat hdr = cv::imread(CConvertUtility::ConvertToStdString(fileName), -1); // correct element size should be CV_32FC3
 			width = hdr.cols;
 			height = hdr.rows;
 		}
@@ -3092,14 +3092,14 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case HEIC:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CHeic::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
+			CHeic::GetPictureDimension(CConvertUtility::ConvertToStdString(fileName), width, height);
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
 	case AVIF:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CAvif::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
+			CAvif::GetPictureDimension(CConvertUtility::ConvertToStdString(fileName), width, height);
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;

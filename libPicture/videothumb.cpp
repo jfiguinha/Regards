@@ -13,7 +13,7 @@ using namespace cv;
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	filename = fileName;
-	capture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(fileName), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
+	capture = new cv::VideoCapture(CConvertUtility::ConvertToStdString(fileName), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
 	isOpen = capture->isOpened();
 		
 }

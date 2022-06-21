@@ -2232,7 +2232,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
@@ -2276,7 +2276,7 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new VideoCapture(CConvertUtility::ConvertToUTF8(input), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 

@@ -279,7 +279,7 @@ void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
 		return;
 	}
 
-	Mat src = imread(CConvertUtility::ConvertToUTF8(filePath));
+	Mat src = imread(CConvertUtility::ConvertToStdString(filePath));
 	if (src.empty())
 		return;
 

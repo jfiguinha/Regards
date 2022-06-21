@@ -9,7 +9,7 @@ CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourc
 {
 	auto bitmap = new CRegardsBitmap();
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
-	cv::Mat data = cv::imread(CConvertUtility::ConvertToUTF8(resourcePath));
+	cv::Mat data = cv::imread(CConvertUtility::ConvertToStdString(resourcePath));
 	bitmap->SetMatrix(data);
 	return bitmap;
 }

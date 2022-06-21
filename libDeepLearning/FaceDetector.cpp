@@ -695,7 +695,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 
   
 
-	Mat aligned_face1 = imread(CConvertUtility::ConvertToUTF8(fileSource));
+	Mat aligned_face1 = imread(CConvertUtility::ConvertToStdString(fileSource));
     if(aligned_face1.empty())
         return 0;
     
@@ -718,7 +718,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
                 continue;
             }
             
-			Mat aligned_face2 = imread(CConvertUtility::ConvertToUTF8(fileSource));
+			Mat aligned_face2 = imread(CConvertUtility::ConvertToStdString(fileSource));
             if(aligned_face2.empty())
                 continue;
             
