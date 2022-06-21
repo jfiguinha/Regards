@@ -92,12 +92,6 @@ public:
 		//			stacktrace=str.str();
 	};
 
-	//		virtual const char *what() const noexcept override
-	//			{
-	//			return (std::logic_error::what()+std::string("; ")+stacktrace).c_str();
-	//			}
-	//
-	//		std::string stacktrace;
 };
 
 template <class T, class tree_node_allocator = std::allocator<tree_node_<T>>>

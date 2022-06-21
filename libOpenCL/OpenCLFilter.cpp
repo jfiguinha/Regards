@@ -55,7 +55,7 @@ string CSuperSampling::GenerateModelPath(string modelName, int scale)
 	path = CFileUtility::GetResourcesFolderPath() + "/model/" + modelName + "_x" + to_string(scale) + ".pb";
 #endif
 
-	return path.ToStdString();
+	return CConvertUtility::ConvertToStdString(path);
 }
 
 bool CSuperSampling::TestIfMethodIsValid(int method, int scale)

@@ -23,9 +23,6 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testV
 		
 	}
 
-	//if (libPicture.TestIsVideo(filename))
-	//	videoCapture = new cv::VideoCapture(filename.ToStdString(), cv::CAP_ANY, { cv::CAP_PROP_HW_ACCELERATION,cv::VIDEO_ACCELERATION_ANY });
-
 }
 
 CThumbnailDataSQL::~CThumbnailDataSQL(void)

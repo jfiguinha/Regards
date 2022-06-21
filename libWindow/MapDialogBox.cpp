@@ -56,7 +56,7 @@ void CMapDialogBox::SetUrl(const wxString& url)
 wxString CMapDialogBox::GetUrl()
 {
 	wxString url = webBrowser->GetCurrentURL();
-	printf("WebBrowser url : %s \n", url.ToStdString().c_str());
+	//printf("WebBrowser url : %s \n", CConvertUtility::ConvertToStdString(url));
 	return webBrowser->GetCurrentURL();
 }
 

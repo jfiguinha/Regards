@@ -152,7 +152,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 					//findActif = true;
 					if (numButtonActif != i)
 					{
-						this->SetToolTip(nav->GetLibelleTooltip().c_str());
+						this->SetToolTip(nav->GetLibelleTooltip());
 						numButtonActif = i;
 					}
 				}

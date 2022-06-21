@@ -54,7 +54,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
    for(int i = 0;i < nbFiles;i++)
     {
         wxArrayString output;
-        printf("File : %s\n", files[i].ToStdString().c_str());
+        printf("File : %s\n", CConvertUtility::ConvertToStdString(files[i]).c_str());
         wxString command = "otool -L " + files[i];
         wxExecute(command.c_str(), output);
         
@@ -178,7 +178,7 @@ int main( int argc, char** argv )
     wxString folder_output_final = argv[2];
    // wxString folder_output = "./Release/RegardsViewer.app/Contents/Frameworks";
     
-    printf("directory %s \n",dirPath.ToStdString().c_str());
+    printf("directory %s \n",CConvertUtility::ConvertToStdString(dirPath).c_str());
     wxString filename;
     size_t nbFiles =  wxDir::GetAllFiles(dirPath, &files);
     do

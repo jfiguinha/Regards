@@ -129,9 +129,9 @@ void CBitmapInfos::SetDateInfos(const wxString& dataInfos, char seperator)
 	vector<wxString> vDateTime = CConvertUtility::split(dataInfos, seperator);
 	if (vDateTime.size() >= 3)
 	{
-		int year = atoi(vDateTime[0].c_str());
-		int month = atoi(vDateTime[1].c_str());
-		int day = atoi(vDateTime[2].c_str());
+		int year = atoi(vDateTime[0]);
+		int month = atoi(vDateTime[1]);
+		int day = atoi(vDateTime[2]);
 		int ijour = Dayofweek(day, month, year);
 		dateInfos = DayName.at(ijour) + L" " + to_string(day) + L" " + MonthName.at(month - 1) + L", " + to_string(year)
 			+ L" ";

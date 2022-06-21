@@ -104,7 +104,7 @@ void CLibPicture::LoadBpgDll()
 {
      printf("LoadBpgDll\n");
      wxString path = CFileUtility::GetProgramFolderPath();
-     
+
 #ifdef __APPLE__
     path.Append("/../Frameworks/libRegardsBpg.dylib");
 #else
@@ -222,7 +222,7 @@ bool CLibPicture::TestIsPicture(const wxString& szFileName)
 
 bool CLibPicture::TestIsPDF(const wxString& szFileName)
 {
-	wxFileName fichier(szFileName.c_str());
+	wxFileName fichier(szFileName);
 	wxString extension = fichier.GetExt();
 
 	const int numExt = TestExtension(extension.Lower());
@@ -233,7 +233,7 @@ bool CLibPicture::TestIsPDF(const wxString& szFileName)
 
 bool CLibPicture::TestIsVideo(const wxString& szFileName)
 {
-	wxFileName fichier(szFileName.c_str());
+	wxFileName fichier(szFileName);
 	wxString extension = fichier.GetExt();
 
 	const int numExt = TestExtension(extension.Lower());
@@ -263,7 +263,7 @@ int CLibPicture::TestImageFormat(const wxString& szFileName)
 	if (!testDir.IsOpened())
 	{
 		//int numExt = 0;
-		wxFileName fichier(szFileName.c_str());
+		wxFileName fichier(szFileName);
 		wxString extension = fichier.GetExt();
 		if (extension.size() < 3)
 			return 0;
@@ -550,10 +550,10 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
     case ASCII:
     {
         CRegardsBitmap* regards = bitmap->GetRegardsBitmap(false);
-        CBitmapToAscii::SaveToAscii(regards, fileName.ToStdString());
+        CBitmapToAscii::SaveToAscii(regards, CConvertUtility::ConvertToStdString(fileName));
         break;
     }
-    
+
 	case PFM:
 		{
 			CRegardsFloatBitmap* regards = bitmap->GetFloatBitmap(true);
@@ -831,7 +831,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 			FreeImage_Unload(Image);
 
-			delete regards;            
+			delete regards;
 		}
 		break;
 
@@ -913,13 +913,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
 				CRegardsBitmap* local = bitmap->GetRegardsBitmap(false);
 				cv::Mat image = local->GetMatrix();
-				cv::imwrite(fileTemp.ToStdString(), image);
-
-				/*
-                wxImage image = bitmap->GetwxImage(true);
-                image.SetOption("wxIMAGE_OPTION_QUALITY",2);
-                image.SaveFile(fileTemp,wxBITMAP_TYPE_JPEG);
-                */
+				cv::imwrite(CConvertUtility::ConvertToStdString(fileTemp), image);
 
 
 				pictureMetadata.CopyMetadata(fileTemp);
@@ -935,7 +929,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			}
 
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
-			CHeic::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
+			CHeic::SavePicture(CConvertUtility::ConvertToStdString(fileName), image, data, size, quality, hasExif);
 
 			if (data != nullptr)
 				delete[] data;
@@ -955,7 +949,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				wxString fileTemp = CFileUtility::GetTempFile("temp_exif.jpg");
 				CRegardsBitmap* local = bitmap->GetRegardsBitmap(false);
 				cv::Mat image = local->GetMatrix();
-				cv::imwrite(fileTemp.ToStdString(), image);
+				cv::imwrite(CConvertUtility::ConvertToStdString(fileTemp), image);
 
 				pictureMetadata.CopyMetadata(fileTemp);
 
@@ -971,7 +965,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap(true);
-			CAvif::SavePicture(fileName.ToStdString(), image, data, size, quality, hasExif);
+			CAvif::SavePicture(CConvertUtility::ConvertToStdString(fileName), image, data, size, quality, hasExif);
 			if (data != nullptr)
 				delete[] data;
 			delete image;
@@ -1001,7 +995,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			CRegardsBitmap* image = bitmap->GetRegardsBitmap(false);
 			cv::Mat dest;
 			cv::cvtColor(image->GetMatrix(), dest, cv::COLOR_BGRA2BGR);
-			cv::imwrite(fileName.ToStdString(), dest);
+			cv::imwrite(CConvertUtility::ConvertToStdString(fileName), dest);
 
 		}
 		break;
@@ -1145,7 +1139,7 @@ bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& fileName, const wx
             wxPdfDocument oPdfDocument;
             oPdfDocument.AddPage( ( poImage->GetHeight() > poImage->GetWidth() ) ? wxPORTRAIT : wxLANDSCAPE );
             oPdfDocument.SetImageScale( (double)nResolution * ( nResolutionUnit == wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0 ) / 72.0 );
-            oPdfDocument.Image( strTempFileName, 0 , 0, 0, 0, wxT( "image/tiff" ) );            
+            oPdfDocument.Image( strTempFileName, 0 , 0, 0, 0, wxT( "image/tiff" ) );
             // Remove temporary file.
             ::wxRemoveFile( strTempFileName );
             oPdfDocument.Close();
@@ -1506,7 +1500,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 					bw = static_cast<int>(image.GetWidth() * m_zoomFactor);
 					bh = static_cast<int>(image.GetHeight() * m_zoomFactor);
 
-					
+
 					cv::Mat in = CLibPicture::mat_from_wx(image);
 					cv::resize(in, out, cv::Size(bw, bh), cv::INTER_CUBIC);
 					//bitmapResize = CLibPicture::wx_from_mat(out);
@@ -1523,7 +1517,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 				//bitmap->SetFilename(szFileName);
 				//CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
 
-				
+
 				imageVideoThumbnail->image->SetFilename(szFileName);
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 4;
@@ -1545,12 +1539,12 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 #ifdef LIBHEIC
 	case AVIF:
 		{
-			return CAvif::GetNbFrame(szFileName.ToStdString());
+			return CAvif::GetNbFrame(CConvertUtility::ConvertToStdString(szFileName));
 		}
 		break;
 	case HEIC:
 		{
-			return CHeic::GetNbFrame(szFileName.ToStdString());
+			return CHeic::GetNbFrame(CConvertUtility::ConvertToStdString(szFileName));
 		}
 		break;
 #endif
@@ -1593,7 +1587,7 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 
 			auto _cxImage = new CxImage();
 			_cxImage->SetRetreiveAllFrames(true);
-			_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName(extension.c_str()));
+			_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName(extension));
 			int nbFrame = _cxImage->GetNumFrames();
 			delete _cxImage;
 			return nbFrame;
@@ -1743,7 +1737,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 				auto _cxImage = new CxImage();
 				_cxImage->SetRetreiveAllFrames(true);
 				_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName),
-				               CxImage::GetTypeIdFromName(extension.c_str()));
+				               CxImage::GetTypeIdFromName(extension));
 				if (_cxImage->GetNumFrames() > 1)
 				{
 					for (auto i = 0; i < _cxImage->GetNumFrames(); i++)
@@ -1893,7 +1887,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	}
 	else if (iFormat == HEIC)
 	{
-		CRegardsBitmap* bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
+		CRegardsBitmap* bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 		if (bitmap != nullptr)
 		{
 			imageLoading = new CImageLoadingFormat();
@@ -1943,7 +1937,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else if (memFile != nullptr)
 		{
-            printf("File to process : %s \n", fileName.ToStdString().c_str());
+            printf("File to process : %s \n", CConvertUtility::ConvertToStdString(fileName).c_str());
 			//auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
 			wxImage jpegImage;
 			jpegImage.LoadFile(*memFile, wxBITMAP_TYPE_JPEG);
@@ -2140,7 +2134,7 @@ cv::Mat CLibPicture::mat_from_wx(const wxImage& wx)
 		cv::merge(matChannels, im2);
 
 	}
-    
+
 	return im2;
 }
 
@@ -2156,7 +2150,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	//printf("CLibPicture LoadPicture \n");
-	
+
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
 	bool applyExif = true;
@@ -2446,8 +2440,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			try
 			{
-				
-				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToUTF8(fileName), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION); 
+
+				cv::Mat matPicture = cv::imread(CConvertUtility::ConvertToUTF8(fileName), cv::IMREAD_COLOR | cv::IMREAD_IGNORE_ORIENTATION);
                 if(!matPicture.empty())
                 {
                     CRegardsBitmap* picture = new CRegardsBitmap();
@@ -2465,12 +2459,12 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			}
 		}
 		break;
-        
+
 		case HDR:
 		{
 			try
 			{
-				
+
 				cv::Mat hdr = cv::imread(CConvertUtility::ConvertToUTF8(fileName),-1); // correct element size should be CV_32FC3
                 if(!hdr.empty())
                 {
@@ -2553,7 +2547,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 			img.Destroy();
 
-			
+
 			wxImage local = localmemBitmap_backup.ConvertToImage();
             bitmap->SetPicture(&local);
 
@@ -2568,7 +2562,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			if (_compressedImage != nullptr && data_size > 0)
 			{
 #if defined(WIN32)
-				
+
 				int width = 0, height = 0;
 				//size_t size = 0;
 				uint8_t* data = nullptr;
@@ -2625,11 +2619,11 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case RAWFILE:
 
 			CRaw::LoadPicture(fileName, bitmap);
-				
+
 			if(bitmap != nullptr)
 				bitmap->SetFilename(fileName);
 
-			applyExif = false;		
+			applyExif = false;
 			break;
 #endif
 
@@ -2639,7 +2633,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
 				                            CxImage::GetTypeIdFromName("jbg"));
 				bitmap->SetPicture(_cxImage);
-                
+
                 delete _cxImage;
 			}
 			break;
@@ -2685,7 +2679,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 				auto _cxImage = new CxImage();
 				_cxImage->SetRetreiveAllFrames(true);
-				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName(extension.c_str()));
+				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName(extension));
 				if (_cxImage->GetNumFrames() > 1)
 				{
 					CxImage* frame = _cxImage->GetFrame(numPicture);
@@ -2693,7 +2687,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 				}
 				else
 					bitmap->SetPicture(_cxImage);
-                    
+
                 delete _cxImage;
 			}
 			break;
@@ -2776,7 +2770,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					exifOrientation = 1;
 				}
 				bitmap->SetOrientation(exifOrientation);
-				
+
 				delete thumbnail;
 			}
 		}
@@ -2802,7 +2796,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	{
 		//delete bitmap;
 		//bitmap = LoadPicture(CLibResource::GetPhotoCancel());
-        
+
         CRegardsBitmap* _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(CLibResource::GetPhotoCancel()));
 		if (_bitmap != nullptr)
 		{
@@ -2874,7 +2868,7 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 			}
 		}
 	}
-	
+
 	return anImage;
 	*/
 }
@@ -2955,7 +2949,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			height = hdr.rows;
 		}
 		break;
-  
+
 	case EXR:
 	{
 		RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
@@ -2995,7 +2989,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 			}
 		}
 #else
-		
+
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"), true);
 #endif
 
@@ -3069,7 +3063,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
                 else {
                     printf("[%s] Unable to get symbol: %s\n",
                            __FILE__, dlerror());
-                }             
+                }
 #endif
 				delete[] _compressedImage;
 			}

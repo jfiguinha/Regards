@@ -32,6 +32,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../../libextern/ffmpeg-master/"/>
         <IncludePath Value="../../include"/>
+        <IncludePath Value="../../libUtility"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

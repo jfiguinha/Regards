@@ -13,6 +13,7 @@
 #include <wx/display.h>
 #include "AnimationToolbar.h"
 #include "PanelPhotoWnd.h"
+#include <ConvertUtility.h>
 #include "ListPicture.h"
 #include "WindowManager.h"
 #include "ThumbnailViewerVideo.h"
@@ -1796,7 +1797,7 @@ void CCentralWindow::OnStopAudio(wxCommandEvent& event)
 	if (musicDiaporama != "" && !ffmfcQuit)
 	{
 		ffmfc->Quit();
-		ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+		ffmfc->SetFile(nullptr, CConvertUtility::ConvertToStdString(musicDiaporama), "", false, 100);
 		musicStop = false;
 	}
 }
@@ -1819,7 +1820,7 @@ void CCentralWindow::StartMusic()
 	{
 		if (!musicDiaporama.empty() && musicStop)
 		{
-			ffmfc->SetFile(nullptr, musicDiaporama.ToStdString(), "", false, 100);
+			ffmfc->SetFile(nullptr, CConvertUtility::ConvertToStdString(musicDiaporama), "", false, 100);
 			musicStop = false;
 			ffmfc->SetTimePosition(musicPosition);
 		}

@@ -7,6 +7,7 @@
 #include "libPicture.h"
 #include <wx/progdlg.h>
 #include <effect_id.h>
+#include <ConvertUtility.h>
 #include <FaceRect.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -369,7 +370,7 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 
 
     // Open the output
-    thumbnailImpl.outputVideo.open(outfile.ToStdString(), fourcc, fps, S, true);
+    thumbnailImpl.outputVideo.open(CConvertUtility::ConvertToStdString(outfile), fourcc, fps, S, true);
 
 	if (thumbnailImpl.outputVideo.isOpened())
 	{

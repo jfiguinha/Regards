@@ -28,10 +28,10 @@ bool CCalendarSelect::SelectNewDate(wxWindow* window, const wxString& dataInfos)
 	if (dataInfos.Length() == 10)
 	{
 		vector<wxString> vDateTime = CConvertUtility::split(dataInfos, dataInfos[4]);
-		int month = atoi(vDateTime[1].c_str()) - 1;
-		dt.SetYear(atoi(vDateTime[0].c_str()));
+		int month = atoi(vDateTime[1]) - 1;
+		dt.SetYear(atoi(vDateTime[0]));
 		dt.SetMonth(static_cast<wxDateTime::Month>(month));
-		dt.SetDay(atoi(vDateTime[2].c_str()));
+		dt.SetDay(atoi(vDateTime[2]));
 	}
 
 	calendarBox.SetDate(dt);

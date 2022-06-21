@@ -308,7 +308,7 @@ void CRegardsBitmap::ReadFile(const wxString& filename)
 void CRegardsBitmap::WriteFile(const wxString& filename)
 {
     if(!bitmapMatrix.empty())
-        cv::imwrite(filename.ToStdString(), bitmapMatrix);
+        cv::imwrite(CConvertUtility::ConvertToStdString(filename), bitmapMatrix);
 }
 
 

@@ -11,7 +11,7 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <FileUtility.h>
-
+#include <ConvertUtility.h>
 #ifdef __APPLE__
 #include "MyDetectFaceImpl.h"
 using namespace cv;
@@ -219,7 +219,7 @@ void CDetectFace::LoadModel()
 				openCLCompatible = true;
 		}
 
-		net = readNetFromTensorflow(tensorflowWeightFile.ToStdString(), tensorflowConfigFile.ToStdString());
+		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 
 		if (openCLCompatible)
@@ -231,7 +231,7 @@ void CDetectFace::LoadModel()
         wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
         wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
-		net = readNetFromTensorflow(tensorflowWeightFile.ToStdString(), tensorflowConfigFile.ToStdString());
+		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
 		net.setPreferableTarget(DNN_TARGET_CPU);
 #endif

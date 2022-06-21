@@ -1,6 +1,7 @@
 #include "header.h"
 #include "SqlResult.h"
 #include <wx/ustring.h>
+#include "utf8.h"
 using namespace std;
 using namespace Regards::Sqlite;
 
@@ -38,37 +39,42 @@ bool CSqlResult::Next()
 	return (sqlite3_step(pRes) == SQLITE_ROW) ? true : false;
 }
 
+void fix_utf8_string(std::string& str)
+{
+    std::string temp;
+    utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
+    str = temp;
+}
+
 wxString CSqlResult::ColumnDataText(const int & clmNum)
 {
     if (clmNum > m_iColumnCount)
         return "";
     
+    char buf[4096];
+    /*
     const unsigned char * textValue = sqlite3_column_text(pRes, clmNum);
     wxString utf8 =  wxString::FromUTF8(reinterpret_cast<const char*>(textValue));
     return utf8;
-    
+    */
+    int32_t num_bytes = sqlite3_column_bytes(pRes, clmNum);
+    memcpy(buf, sqlite3_column_text(pRes, clmNum), num_bytes);
+    buf[num_bytes] = '\0';
+    cout << "ColumnDataText buf " << buf << endl;
+     wxString utf8 =  wxString::FromUTF8(buf);
     /*
-    wxString ret;
+    string data = string(buf);
+    fix_utf8_string(data);
     
-#ifdef __WXMSW__
-
-    const wxChar* text = reinterpret_cast<const wxChar*>(sqlite3_column_text16(pRes, clmNum));
-    if (text)
-        ret = text;
-#else
-    const char* text = reinterpret_cast<const char*>(sqlite3_column_text16(pRes, clmNum));
-    int len = sqlite3_column_bytes16(pRes, clmNum);
-    if (text)
-    {
-        ret = wxString(utf16_.cMB2WX(text));
-    }
-#endif
+    wxString utf8 =  wxString::FromUTF8(data);
+    cout << "ColumnDataText utf8 wxString " << utf8 << endl;
     
+    cout << "ColumnDataText utf8 wxCharBuffer " <<  utf8.ToUTF8()  << endl;
     
-    wxString value;
-    value.assign(ret.begin(), ret.end());
-    return value;
-     */
+    string local =  string(utf8.ToUTF8());
+    cout << "ColumnDataText utf8 string " <<  local.c_str()  << endl;
+     **/
+   return utf8;
 }
 
 int CSqlResult::ColumnDataInt(const int & clmNum)

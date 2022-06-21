@@ -11,6 +11,7 @@
 #include <wx/filename.h>
 #include <wx/filesys.h>
 #include <wx/wxpoppler.h>
+#include <ConvertUtility.h>
 #ifdef wxUSE_PDF
 #   include <wx/mstream.h>
 #   include <wx/pdfdoc.h>
@@ -59,7 +60,7 @@ wxPoppler::~wxPoppler()
 //
 bool wxPoppler::Open(const wxString& strFileName )
 {
-    m_pPdfDocument = poppler::document::load_from_file(strFileName.ToStdString());
+    m_pPdfDocument = poppler::document::load_from_file(CConvertUtility::ConvertToStdString(strFileName));
 
     if( !m_pPdfDocument )
     {

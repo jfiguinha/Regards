@@ -11,7 +11,7 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <FileUtility.h>
-
+#include <ConvertUtility.h>
 using namespace cv;
 using namespace dnn;
 
@@ -195,9 +195,9 @@ void CDetectFacePCN::LoadModel()
         wxString pcn3_proto = CFileUtility::GetResourcesFolderPath() + "/model/PCN-3.prototxt";
 
 #endif
-        net_1 = readNet(pcn1_proto.ToStdString(), detection_model_path.ToStdString());
-        net_2 = readNet(pcn2_proto.ToStdString(), detection_model_path.ToStdString());
-        net_3 = readNet(pcn3_proto.ToStdString(), detection_model_path.ToStdString());
+        net_1 = readNet(CConvertUtility::ConvertToStdString(pcn1_proto), CConvertUtility::ConvertToStdString(detection_model_path));
+        net_2 = readNet(CConvertUtility::ConvertToStdString(pcn2_proto), CConvertUtility::ConvertToStdString(detection_model_path));
+        net_3 = readNet(CConvertUtility::ConvertToStdString(pcn3_proto), CConvertUtility::ConvertToStdString(detection_model_path));
 
         
         net_1.setPreferableBackend(DNN_BACKEND_DEFAULT);

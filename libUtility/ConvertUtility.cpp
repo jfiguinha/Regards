@@ -42,6 +42,9 @@ const char* CConvertUtility::ConvertToUTF8(const wxString& s)
 	return s.mb_str(wxConvUTF8);
 #endif
  * */
+ 
+ 
+ 
 	return s.ToUTF8();
 }
 

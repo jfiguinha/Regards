@@ -340,7 +340,7 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 	xml_document<> doc;
 	// Read the xml file into a vector
 	//const char * fichier = CConvertUtility::ConvertFromwxString(filename);
-	ifstream theFile(boxfile.ToStdString());
+	ifstream theFile(CConvertUtility::ConvertToStdString(boxfile));
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	if (buffer.size() > 0)
 	{
@@ -514,7 +514,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
 			wxString outputFile = CFileUtility::GetTempFile("ocrfile.hocr");
 
-			tesseract_preprocess(tempFile.ToStdString(), preprocess.ToStdString());
+			tesseract_preprocess(CConvertUtility::ConvertToStdString(tempFile), CConvertUtility::ConvertToStdString(preprocess));
 
 			OcrToPDF(preprocess, outputFile, language);
 

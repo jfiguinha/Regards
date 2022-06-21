@@ -419,7 +419,7 @@ void CCategoryWnd::LoadCategorie(const int& numCategorie, tree<CTreeData*>::iter
 				treeData->SetNumParent(numParentElement);
 				treeData->SetNumLevel(level++);
 
-				if (criteria.GetLibelle().c_str() == exifKey)
+				if (criteria.GetLibelle() == exifKey)
 					treeData->SetIdElement(criteria.GetId());
 				else
 					treeData->SetIdElement(-1);

@@ -122,7 +122,7 @@ string CFiltreEffetCPUImpl::GenerateModelPath(string modelName, int scale)
 #else
 	path = CFileUtility::GetResourcesFolderPath() + "/model/"  + modelName + "_x" + to_string(scale) + ".pb";
 #endif
-	return path.ToStdString();
+	return CConvertUtility::ConvertToStdString(path);
 }
 
 bool CFiltreEffetCPUImpl::TestIfMethodIsValid(int method, int scale)
@@ -274,7 +274,7 @@ bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization * ope
 
 void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
 {
-	if (!wxFileExists(filePath.ToStdString()))
+	if (!wxFileExists(filePath))
 	{
 		return;
 	}
@@ -300,7 +300,7 @@ void CFiltreEffetCPU::LoadAndRotate(const wxString& filePath, const int& rotate)
 		transpose(src, src);
 		flip(src, src, 1);
 	}
-	imwrite(filePath.ToStdString(), src);
+	imwrite(CConvertUtility::ConvertToStdString(filePath), src);
 	src.release();
 }
 

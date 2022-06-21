@@ -17,7 +17,7 @@ CPictureMetadataExiv::CPictureMetadataExiv(const wxString& filename)
 	try
 	{
 		this->filename = filename;
-		exif = Exiv2::ImageFactory::open(filename.ToStdString());
+		exif = Exiv2::ImageFactory::open(CConvertUtility::ConvertToStdString(filename));
 		assert(exif.get() != 0);
 		exif->readMetadata();
 		isExif = true;
@@ -116,14 +116,14 @@ void CPictureMetadataExiv::SetDateTime(const wxString& dateTime)
 
 void CPictureMetadataExiv::AddAsciiValue(wxString keyName, wxString value, Exiv2::ExifData& exifData)
 {
-	Exiv2::ExifKey key(keyName.ToStdString());
+	Exiv2::ExifKey key(CConvertUtility::ConvertToStdString(keyName));
 	if (!exifData.empty())
 	{
 		auto md = exifData.findKey(key);
 		if (exifData.end() != md)
 		{
 			Exiv2::Value::AutoPtr rv = Exiv2::Value::create(Exiv2::asciiString);
-			rv->read(value.ToStdString());
+			rv->read(CConvertUtility::ConvertToStdString(value));
 			md->setValue(rv.get());
 			return;
 		}
@@ -132,13 +132,13 @@ void CPictureMetadataExiv::AddAsciiValue(wxString keyName, wxString value, Exiv2
 	// Create a ASCII string value (note the use of create)
 	Exiv2::Value::AutoPtr v = Exiv2::Value::create(Exiv2::asciiString);
 	// Set the value to a string
-	v->read(value.ToStdString());
+	v->read(CConvertUtility::ConvertToStdString(value));
 	exifData.add(key, v.get());
 }
 
 void CPictureMetadataExiv::AddRationalValue(wxString keyName, wxString value, Exiv2::ExifData& exifData)
 {
-	Exiv2::ExifKey key(keyName.ToStdString());
+	Exiv2::ExifKey key(CConvertUtility::ConvertToStdString(keyName));
 	if (!exifData.empty())
 	{
 		auto md = exifData.findKey(key);
@@ -249,7 +249,7 @@ bool CPictureMetadataExiv::CopyMetadata(const wxString& output)
 	{
 		try
 		{
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(output.ToStdString().c_str());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(CConvertUtility::ConvertToStdString(output).c_str());
 			if (exif.get())
 			{
 				Exiv2::ExifData& exifData = exif->exifData();
@@ -372,8 +372,8 @@ wxString CPictureMetadataExiv::GetGpsfValue(const wxString& gpsValue)
 		for (auto it = latValue.begin(); it != latValue.end(); ++it)
 		{
 			vector<wxString> intValue = CConvertUtility::split(*it, '/');
-			int valeur = atoi(intValue.at(0).c_str());
-			int diviseur = atoi(intValue.at(1).c_str());
+			int valeur = atoi(intValue.at(0));
+			int diviseur = atoi(intValue.at(1));
 
 			float value = static_cast<float>(valeur) / static_cast<float>(diviseur);
 			if (i == 1)
@@ -455,14 +455,14 @@ void CPictureMetadataExiv::ReadVideo(bool& hasGps, bool& hasDataTime, wxString& 
 					}
 
 					if (listRef[0] == '-')
-						flatitude = -atof(listValue[0].c_str());
+						flatitude = -atof(listValue[0]);
 					else
-						flatitude = atof(listValue[0].c_str());
+						flatitude = atof(listValue[0]);
 
 					if (listRef[1] == '-')
-						flongitude = -atof(listValue[1].c_str());
+						flongitude = -atof(listValue[1]);
 					else
-						flongitude = atof(listValue[1].c_str());
+						flongitude = atof(listValue[1]);
 
 					latitude = to_string(flatitude);
 					longitude = to_string(flongitude);

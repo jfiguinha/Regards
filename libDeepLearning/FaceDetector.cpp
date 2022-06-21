@@ -138,7 +138,6 @@ int CFaceDetector::DectectOrientationByFaceDetector(CRegardsBitmap* pBitmap)
 	return selectAngle;
 }
 
-//config.ToStdString(), weight.ToStdString(), eye.ToStdString(), mouth.ToStdString(), recognition.ToStdString()
 void CFaceDetector::LoadModel()
 {
 
@@ -161,10 +160,10 @@ void CFaceDetector::LoadModel()
 
 
 		facemark = face::createFacemarkKazemi();
-		facemark->loadModel(face_landmark.ToStdString());
+		facemark->loadModel(CConvertUtility::ConvertToStdString(face_landmark));
 
-		faceRecognizer = FaceRecognizerSF::create(fr_modelPath.ToStdString(), "");
-		eye_cascade.load(fileEye.ToStdString());
+		faceRecognizer = FaceRecognizerSF::create(CConvertUtility::ConvertToStdString(fr_modelPath), "");
+		eye_cascade.load(CConvertUtility::ConvertToStdString(fileEye));
 		detectFace.LoadModel();
 		detectFacePCN.LoadModel();
 		cout << "Loaded model" << endl;
@@ -611,7 +610,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	CSqlFaceRecognition sqlfaceRecognition;
 	vector<CFaceRecognitionData> faceRecognitonVec = facePhoto.GetAllNumFaceRecognition();
 
-	if(!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString()))
+	if(!wxFileExists(CFileUtility::GetFaceThumbnailPath(numFace)))
 	{
 		return 0;
 	}
@@ -619,7 +618,6 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 	fc1 = GetFaceScore(numFace);
 	if (fc1.rows == 0 || fc1.cols == 0)
 		return false;
-	//fc1 = imread(CFileUtility::GetFaceThumbnailPath(numFace).ToStdString(),0);
 
 	if (faceRecognitonVec.size() > 0)
 	{

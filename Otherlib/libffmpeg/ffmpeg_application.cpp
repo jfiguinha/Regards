@@ -7,7 +7,7 @@
 #include <wx/progdlg.h>
 #include <stdexcept>
 #include "ffmpeg_application.h"
-
+#include <ConvertUtility.h>
 #ifdef WIN32
 #include <CL/cl_d3d11.h>
 #endif
@@ -626,14 +626,14 @@ int CFFmpegApp::CropAudio(const wxString& inputAudioFile, const wxString& timeVi
 	arrayOfStrings.push_back("-stream_loop");
 	arrayOfStrings.push_back("-1");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputAudioFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputAudioFile));
 	arrayOfStrings.push_back("-c:a");
-	arrayOfStrings.push_back(extension.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(extension));
 	arrayOfStrings.push_back("-t");
-	arrayOfStrings.push_back(timeVideo.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideo));
 	arrayOfStrings.push_back("-vn");
 	arrayOfStrings.push_back("-y");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
@@ -646,15 +646,15 @@ int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString&
 	arrayOfStrings.push_back("-ss");
 	arrayOfStrings.push_back("00:00:00");
 	arrayOfStrings.push_back("-t");
-	arrayOfStrings.push_back(timeVideo.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideo));
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputVideoFile));
 	arrayOfStrings.push_back("-ss");
 	arrayOfStrings.push_back("00:00:00");
 	arrayOfStrings.push_back("-t");
-	arrayOfStrings.push_back(timeVideo.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideo));
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputAudioFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputAudioFile));
 	arrayOfStrings.push_back("-c:v");
 	arrayOfStrings.push_back("copy");
 	arrayOfStrings.push_back("-c:a");
@@ -664,7 +664,7 @@ int CFFmpegApp::ExecuteFFmpegApp(const wxString& inputVideoFile, const wxString&
 	arrayOfStrings.push_back("-map");
 	arrayOfStrings.push_back("1:a:0");
 	arrayOfStrings.push_back("-y");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
@@ -676,16 +676,16 @@ int CFFmpegApp::ExecuteFFmpegCutVideo(const wxString& inputVideoFile, const wxSt
 
 	arrayOfStrings.push_back("ffmpeg");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputVideoFile));
 	arrayOfStrings.push_back("-ss");
-	arrayOfStrings.push_back(timeVideoIn.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoIn));
 	arrayOfStrings.push_back("-to");
-	arrayOfStrings.push_back(timeVideoOut.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoOut));
 	arrayOfStrings.push_back("-c:v");
 	arrayOfStrings.push_back("copy");
 	arrayOfStrings.push_back("-c:a");
 	arrayOfStrings.push_back("copy");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
@@ -698,18 +698,18 @@ int CFFmpegApp::ExecuteFFmpegExtractVideo(const wxString& inputVideoFile, const 
 
 	arrayOfStrings.push_back("ffmpeg");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputVideoFile));
 	if (timeVideoIn != "00:00:00" || timeVideoOut != "00:00:00")
 	{
 		arrayOfStrings.push_back("-ss");
-		arrayOfStrings.push_back(timeVideoIn.ToStdString());
+		arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoIn));
 		arrayOfStrings.push_back("-to");
-		arrayOfStrings.push_back(timeVideoOut.ToStdString());
+		arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoOut));
 	}
 	arrayOfStrings.push_back("-c:v");
 	arrayOfStrings.push_back("copy");
 	arrayOfStrings.push_back("-an");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
@@ -722,18 +722,18 @@ int CFFmpegApp::ExecuteFFmpegExtractAudio(const wxString& inputVideoFile, const 
 
 	arrayOfStrings.push_back("ffmpeg");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputVideoFile));
 	if (timeVideoIn != "00:00:00" || timeVideoOut != "00:00:00")
 	{
 		arrayOfStrings.push_back("-ss");
-		arrayOfStrings.push_back(timeVideoIn.ToStdString());
+		arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoIn));
 		arrayOfStrings.push_back("-to");
-		arrayOfStrings.push_back(timeVideoOut.ToStdString());
+		arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(timeVideoOut));
 	}
 	arrayOfStrings.push_back("-c:a");
 	arrayOfStrings.push_back("copy");
 	arrayOfStrings.push_back("-vn");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
@@ -747,32 +747,13 @@ int CFFmpegApp::ExecuteFFmpegMuxVideoAudio(const wxString& inputVideoFile, const
 
 	arrayOfStrings.push_back("ffmpeg");
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputVideoFile));
 	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputAudioFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(inputAudioFile));
 	arrayOfStrings.push_back("-c");
 	arrayOfStrings.push_back("copy");
-	arrayOfStrings.push_back(outputFile.ToStdString());
+	arrayOfStrings.push_back(CConvertUtility::ConvertToStdString(outputFile));
 	ExecuteFFmpeg();
 
 	return 0;
 }
-
-/*
-int CFFmpegApp::ExecuteFFmpegAddRotateInfo(const wxString& inputVideoFile, const wxString& outputFile, const int& rotate)
-{
-	//ffmpeg -i 20200509_132328.mp4 -map_metadata 0 -metadata:s:v rotate=-90 -codec copy output.mp4
-	arrayOfStrings.push_back("ffmpeg");
-	arrayOfStrings.push_back("-i");
-	arrayOfStrings.push_back(inputVideoFile.ToStdString());
-	arrayOfStrings.push_back("-map_metadata");
-	arrayOfStrings.push_back("0");
-	arrayOfStrings.push_back("-metadata:s:v");
-	arrayOfStrings.push_back("rotate=" + std::to_string(rotate));
-	arrayOfStrings.push_back("-codec");
-	arrayOfStrings.push_back("copy");
-	arrayOfStrings.push_back(outputFile.ToStdString());
-	ExecuteFFmpeg();
-	return 0;
-}
-*/

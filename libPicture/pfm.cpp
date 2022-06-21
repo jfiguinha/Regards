@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
-
+#include <ConvertUtility.h>
 #define uchar unsigned char
 
 void skip_space(fstream& fileStream)
@@ -46,7 +46,7 @@ void CPfm::GetDimensions(const wxString& path, int& width, int& height)
 {
 	// create fstream object to read in pfm file 
 	// open the file in binary
-	fstream file(path.ToStdString().c_str(), ios::in | ios::binary);
+	fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::in | ios::binary);
 
 	// init variables 
 	string bands; // what type is the image   "Pf" = grayscale    (1-band)
@@ -66,7 +66,7 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 
 	// create fstream object to read in pfm file 
 	// open the file in binary
-	fstream file(path.ToStdString().c_str(), ios::in | ios::binary);
+	fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::in | ios::binary);
 
 	// init variables 
 	string bands; // what type is the image   "Pf" = grayscale    (1-band)
@@ -178,7 +178,7 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float s
 	{
 		// create fstream object to write out pfm file 
 		// open the file in binary
-		fstream file(path.ToStdString().c_str(), ios::out | ios::binary);
+		fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::out | ios::binary);
 
 
 		string bands = "PF";

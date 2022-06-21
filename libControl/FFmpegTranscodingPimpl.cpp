@@ -14,6 +14,7 @@
 #include <OpenCLFilter.h>
 #include <OpenCLEffectVideo.h>
 #include <FiltreEffetCPU.h>
+#include <ConvertUtility.h>
 #include <MediaInfo.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -490,9 +491,9 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 	this->decodeHardware = decodeHardware;
 	if (decodeHardware != "" || decodeHardware != "none")
 	{
-		type = av_hwdevice_find_type_by_name(decodeHardware.ToStdString().c_str());
+		type = av_hwdevice_find_type_by_name(CConvertUtility::ConvertToStdString(decodeHardware).c_str());
 		if (type == AV_HWDEVICE_TYPE_NONE) {
-			fprintf(stderr, "Device type %s is not supported.\n", decodeHardware.ToStdString().c_str());
+			fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(decodeHardware).c_str());
 			fprintf(stderr, "Available device types:");
 			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));

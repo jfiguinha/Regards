@@ -14,7 +14,7 @@
 
 #include <header.h>
 #include <wx/wxscan.h>
-
+#include <ConvertUtility.h>
 #if __WXSCANSANE__
 
 #include "wxImagePanel.h"
@@ -238,13 +238,10 @@ void wxScanSaneAcquireDialog::OnChoiceSelected(wxCommandEvent& event)
             
         if(valueChoice.title == "Scan resolution" && valueChoice.id == id)
         {
-            dpi = atoi(value.ToStdString().c_str());
+            dpi = atoi(CConvertUtility::ConvertToStdString(value).c_str());
             break;
         }
     }
-    
-    
-    //printf("Event : %d Text : %s \n", id, value.ToStdString().c_str());
 }
 
 wxPanel *wxScanSaneAcquireDialog::MakePreviewPanel(wxWindow *parent)
@@ -296,7 +293,6 @@ void wxScanSaneAcquireDialog::OnOk(wxCommandEvent& event)
 
 void wxScanSaneAcquireDialog::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    //printf("Event : %d Text : %s \n",event.GetId(), event.GetText().ToStdString().c_str());
     switch(event.GetId())
     {
     }

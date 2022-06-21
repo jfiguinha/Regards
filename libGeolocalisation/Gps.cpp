@@ -109,8 +109,8 @@ float CGps::GetGpsfValue(const wxString& gpsValue)
 	{
 
 		vector<wxString> intValue = CConvertUtility::split(*it, '/');
-		int valeur = atoi(intValue.at(0).c_str());
-		int diviseur = atoi(intValue.at(1).c_str());
+		int valeur = atoi(intValue.at(0));
+		int diviseur = atoi(intValue.at(1));
 
 		float value = (float)valeur / (float)diviseur;
 		if (i == 1)

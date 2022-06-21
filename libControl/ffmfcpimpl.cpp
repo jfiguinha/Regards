@@ -5,6 +5,7 @@
 #include <mutex>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <ConvertUtility.h>
 using namespace std;
 
 #ifdef WIN32
@@ -1673,7 +1674,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	type = av_hwdevice_find_type_by_name(acceleratorHardware);
 	if (type == AV_HWDEVICE_TYPE_NONE)
 	{
-		fprintf(stderr, "Device type %s is not supported.\n", acceleratorHardware.ToStdString().c_str());
+		fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 		fprintf(stderr, "Available device types:");
 		while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 			fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
@@ -1713,7 +1714,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	is->avctx->opaque = is;
 	is->codec = codec;
 	is->hwaccel_id = HWACCEL_AUTO;
-	printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+	printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 
 	if (!error)
 	{
@@ -1731,7 +1732,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 
 	if (isSuccess)
 	{
-		printf("Success for hardware decoding : %s ! \n", acceleratorHardware.ToStdString().c_str());
+		printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
 	}
 	return isSuccess;
 }

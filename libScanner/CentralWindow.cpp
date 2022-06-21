@@ -16,6 +16,7 @@
 #include <wx/pdfdocument.h>
 #include <LibResource.h>
 #include <SavePicture.h>
+#include <ConvertUtility.h>
 #include <wx/busyinfo.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -648,13 +649,13 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 		QPDF oldpdf;
 		if(fileIn)
-			oldpdf.processFile(filename.ToStdString().c_str());
+			oldpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
 
 		QPDF inpdf;
-		inpdf.processFile(fileToAdd.ToStdString().c_str());
+		inpdf.processFile(CConvertUtility::ConvertToStdString(fileToAdd).c_str());
 		
 
-		std::string outfile = file.ToStdString();
+		std::string outfile = CConvertUtility::ConvertToStdString(file);
 		QPDF outpdf;
 		outpdf.emptyPDF();
 
@@ -762,12 +763,12 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 	{
 		wxBusyInfo wait("Please wait, working...");
 		QPDF inpdf;
-		inpdf.processFile(filename.ToStdString().c_str());
+		inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
 		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
 		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 		int pageno = 0;
 
-		std::string outfile = file.ToStdString();
+		std::string outfile = CConvertUtility::ConvertToStdString(file);
 		QPDF outpdf;
 		outpdf.emptyPDF();
 
@@ -837,12 +838,12 @@ wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
 	}
 
 	QPDF inpdf;
-	inpdf.processFile(filename.ToStdString().c_str());
+	inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
 	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
 	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 	int pageno = 0;
 
-	std::string outfile = file.ToStdString();
+	std::string outfile = CConvertUtility::ConvertToStdString(file);
 	QPDF outpdf;
 	outpdf.emptyPDF();
 

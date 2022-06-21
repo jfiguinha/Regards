@@ -16,7 +16,7 @@ CThumbnailData::CThumbnailData(const wxString& filename)
 	numParent = 0;
 	numCatalog = 0;
 
-	this->filename = CConvertUtility::ConvertToUTF8(filename);
+	this->filename = filename;
 	libelle = this->filename;
 	numElement = 0;
 	libelleTimePosition = "";
@@ -48,7 +48,7 @@ CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
 
 void CThumbnailData::SetFilename(const wxString& filename)
 {
-	this->filename = CConvertUtility::ConvertToUTF8(filename);
+	this->filename = filename;
 }
 
 void CThumbnailData::SetNumPhotoId(const int& id)

@@ -85,9 +85,9 @@ void CRgbaquad::SetHexaColor(const wxString& hexacolor)
 	vector<wxString> listcolor = Split(hexacolor, ';');
 	if (listcolor.size() == 3)
 	{
-		red = atoi(listcolor[0].c_str());
-		green = atoi(listcolor[1].c_str());
-		blue = atoi(listcolor[2].c_str());
+		red = atoi(listcolor[0]);
+		green = atoi(listcolor[1]);
+		blue = atoi(listcolor[2]);
 	}
 }
 

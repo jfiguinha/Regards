@@ -1735,8 +1735,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 		}
 
 		CLibPicture libPicture;
-		if (libPicture.TestIsVideo(*filename) || libPicture.TestIsPDF(*filename) || libPicture.
-			TestIsAnimation(*filename))
+		if (libPicture.TestIsVideo(*filename) || libPicture.TestIsPDF(*filename) || libPicture.TestIsAnimation(*filename))
 		{
 			wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 			if (mainWnd != nullptr)

@@ -66,7 +66,7 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
 
     {
         NSVGimage* image = NULL;
-        image = nsvgParseFromFile(filename.ToStdString().c_str(), "px", 96.0f, 0, 0);
+        image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, 0, 0);
         if (image == NULL)
         {
             isError = true;
@@ -102,7 +102,7 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
     NSVGimage *image = NULL;
     NSVGrasterizer *rast = NULL;
     uint8_t * data = nullptr;
-    image = nsvgParseFromFile(filename.ToStdString().c_str(), "px", 96.0f, width, height);
+    image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, width, height);
     if (image == NULL) 
     {
         isError = true;

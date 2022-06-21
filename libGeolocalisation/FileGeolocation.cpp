@@ -269,14 +269,14 @@ void CFileGeolocation::SetFile(const wxString& picture, const wxString& libNotGe
 				}
 
 				if (listRef[0] == '-')
-					flatitude = -atof(listValue[0].c_str());
+					flatitude = -atof(listValue[0]);
 				else
-					flatitude = atof(listValue[0].c_str());
+					flatitude = atof(listValue[0]);
 
 				if (listRef[1] == '-')
-					flongitude = -atof(listValue[1].c_str());
+					flongitude = -atof(listValue[1]);
 				else
-					flongitude = atof(listValue[1].c_str());
+					flongitude = atof(listValue[1]);
 
 				latitudeGps = to_string(flatitude);
 				longitudeGps = to_string(flongitude);

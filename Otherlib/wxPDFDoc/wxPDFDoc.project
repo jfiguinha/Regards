@@ -121,6 +121,7 @@
       <Compiler Options=";-Wall;-std=gnu++14;$(shell ../../libextern/wxconfig_cpp.sh);-pthread;-Wno-narrowing;-fpermissive" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../../include"/>
+        <IncludePath Value="../../libUtility"/>
         <IncludePath Value="include"/>
       </Compiler>
       <Linker Options="">
