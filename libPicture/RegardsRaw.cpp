@@ -3,6 +3,7 @@
 #include "libraw/libraw.h"
 #include <ximage.h>
 #include <vector>
+#include <ConvertUtility.h>
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
 using namespace Regards::Picture;
 
@@ -55,7 +56,7 @@ DataStorage* CRegardsRaw::GetThumbnail(const string& fileName, int& outputFormat
 	auto RawProcessor = new LibRaw;
 	int ret; //, output_thumbs = 0;
 	outputFormat = BITMAPOUTPUT;
-	if (RawProcessor->open_file(fileName.c_str()) == LIBRAW_SUCCESS)
+	if (RawProcessor->open_file(CConvertUtility::ConvertToUTF8(fileName)) == LIBRAW_SUCCESS)
 	{
 		if (RawProcessor->unpack_thumb() == LIBRAW_SUCCESS)
 		{

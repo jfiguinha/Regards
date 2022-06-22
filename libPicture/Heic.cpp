@@ -1001,13 +1001,13 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 
 			int i = 0;
 			int nbProcess = thread::hardware_concurrency();;
-			
+
 			vector<thread *> listThread;
 			for (int j = 0; j < nbProcess; j++)
 			{
 				listThread.push_back(nullptr);
 			}
-			
+
 
 			while (i < listPicture.size())
 			{
@@ -1040,8 +1040,8 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 					}
 				}
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			} 
-			
+			}
+
 
 			for (int j = 0; j < nbProcess; j++)
 			{
@@ -1054,7 +1054,7 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 			}
 
 
-			
+
 			if (listPicture.size() > 0)
 			{
 				ImageId itemId;

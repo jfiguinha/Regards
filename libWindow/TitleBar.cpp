@@ -84,7 +84,7 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 			wxClientDC dc(this);
 			dc.DrawBitmap(m_croixOn, rcFermer.x, rcFermer.y, false);
 
-			this->SetToolTip(tooltip.c_str());
+			this->SetToolTip(tooltip);
 		}
 		else if (mouseCapture)
 		{

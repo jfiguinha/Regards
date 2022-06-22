@@ -62,7 +62,7 @@ tree<CTreeData*>::iterator CCategoryWnd::FindExifKey(const wxString& exifkey)
 	auto it = tr.begin();
 	auto itend = tr.end();
 
-	//int i = 
+	//int i =
 
 	while (it != itend)
 	{
@@ -81,7 +81,7 @@ tree<CTreeData*>::iterator CCategoryWnd::FindFolderKey(const wxString& path)
 	auto it = tr.begin();
 	auto itend = tr.end();
 
-	//int i = 
+	//int i =
 
 	while (it != itend)
 	{
@@ -258,7 +258,7 @@ tree<CTreeData*>::iterator CCategoryWnd::FindChild(tree<CTreeData*>::iterator pa
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	itOld = it;
 
-	//int i = 
+	//int i =
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
@@ -941,7 +941,7 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 		else if (!data->GetValue().empty() || it.number_of_children() == 0)
 		{
 			int xPos = widthPosition * (profondeur + 1);
-			
+
 			bool check = GetCheckState(data->GetExifKey(), data->GetKey(), data->GetNumCategorie());
 			tree_element_check = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 			CreatePositionElement(xPos, yPos, nbRow, 0, tree_element_check->GetWidth(),

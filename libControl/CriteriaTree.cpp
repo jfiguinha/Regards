@@ -313,7 +313,7 @@ void CCriteriaTree::SetFile(const wxString& picture, const int& numPhotoId)
 						CCriteria criteria = criteriaVector.at(0);
 						wxString libelleCategorie = photoCategorie.GetLibelle();
 						wxString value = criteria.GetLibelle();
-	
+
 						CTreeDataStars * treeDataFileName = new CTreeDataStars();
 						treeDataFileName->SetNumPhotoId(numPhotoId);
 						treeDataFileName->SetIsParent(false);

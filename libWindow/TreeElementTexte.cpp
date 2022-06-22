@@ -28,7 +28,7 @@ CTreeElementTexte& CTreeElementTexte::operator=(const CTreeElementTexte& other)
 }
 
 /**
- * \brief 
+ * \brief
  */
 CTreeElementTexte::~CTreeElementTexte()
 {
@@ -68,7 +68,7 @@ wxSize CTreeElementTexte::GetSizeText()
 	wxBitmap bitmap(250, 250);
 	wxMemoryDC dc(bitmap);
 	dc.SetFont(font);
-	size = dc.GetTextExtent(libelle.c_str());
+	size = dc.GetTextExtent(libelle);
 	dc.SelectObject(wxNullBitmap);
 	return size;
 }
@@ -78,7 +78,7 @@ void CTreeElementTexte::DrawText(wxDC* dc, const int& xPos, const int& yPos)
 	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	dc->SetFont(font);
 	dc->SetTextForeground(themeTexte.font.GetColorFont());
-	dc->DrawText(libelle.c_str(), xPos, yPos);
+	dc->DrawText(libelle, xPos, yPos);
 }
 
 void CTreeElementTexte::SetPosition(const int& position)

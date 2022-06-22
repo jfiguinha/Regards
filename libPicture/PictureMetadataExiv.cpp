@@ -249,7 +249,7 @@ bool CPictureMetadataExiv::CopyMetadata(const wxString& output)
 	{
 		try
 		{
-			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(CConvertUtility::ConvertToStdString(output).c_str());
+			Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(CConvertUtility::ConvertToStdString(output));
 			if (exif.get())
 			{
 				Exiv2::ExifData& exifData = exif->exifData();

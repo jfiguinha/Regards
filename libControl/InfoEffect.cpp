@@ -11,6 +11,7 @@
 #include "BitmapWndViewer.h"
 #include <TreeData.h>
 #include <TreeElementControlInterface.h>
+#include <ConvertUtility.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
 
@@ -112,7 +113,7 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 			wxString key = treeData->GetExifKey();
 			if (key != "-1")
 			{
-				const int modif = atoi(key.c_str());
+				const int modif = atoi(CConvertUtility::ConvertToUTF8(key));
 
 				auto imageLoad = new CImageLoadingFormat();
 				imageLoad->SetPicture(modificationManager->GetModification(modif));

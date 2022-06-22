@@ -244,7 +244,7 @@ void CFiltreEffect::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
-	//int i = 
+	//int i =
 
 	for (int i = 0; i < parent.number_of_children(); i++)
 	{
@@ -350,7 +350,7 @@ void CFiltreEffect::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 	tree<CTreeData*>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
-	//int i = 
+	//int i =
 
 	for (int i = 0; i < parent.number_of_children(); i++)
 	{

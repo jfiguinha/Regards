@@ -210,7 +210,7 @@ void CInfosFile::SetFile(const wxString& picture)
 	{
 		showOtherInformation = false;
 		tree<CTreeData*>::iterator top;
-		
+
 		int index = 0;
 
 		top = tr.begin();
@@ -291,7 +291,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 	CPositionElement* posElement;
 	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
 
-	//int i = 
+	//int i =
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
@@ -425,7 +425,7 @@ void CInfosFile::CreateElement()
 void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
 	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
-	//int i = 
+	//int i =
 
 	for (auto i = 0; i < parent.number_of_children(); i++)
 	{

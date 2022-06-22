@@ -66,7 +66,7 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
 
     {
         NSVGimage* image = NULL;
-        image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, 0, 0);
+        image = nsvgParseFromFile(CConvertUtility::ConvertToUTF8(filename), "px", 96.0f, 0, 0);
         if (image == NULL)
         {
             isError = true;
@@ -103,17 +103,17 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
     NSVGrasterizer *rast = NULL;
     uint8_t * data = nullptr;
     image = nsvgParseFromFile(CConvertUtility::ConvertToStdString(filename).c_str(), "px", 96.0f, width, height);
-    if (image == NULL) 
+    if (image == NULL)
     {
         isError = true;
         printf("Could not open SVG image.\n");
     }
-    
+
     if(!isError)
     {
         w = (int)image->width;
         h = (int)image->height;
-        rast = nsvgCreateRasterizer();        
+        rast = nsvgCreateRasterizer();
     }
 
     if (rast == NULL) {
@@ -129,21 +129,21 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
             isError = true;
         }
     }
-    
+
     if(!isError)
         nsvgRasterize(rast, image, 0,0,1, data, w, h, w*4);
 
     nsvgDeleteRasterizer(rast);
     nsvgDelete(image);
-    
+
     bool flip = false;
-    
+
     if(!isError)
     {
         const int width = w;
         const int height = h;
         const int widthSrcSize = width * 4;
-       
+
         wxImage anImage(width, height, true);
         anImage.InitAlpha();
 

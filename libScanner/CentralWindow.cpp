@@ -18,6 +18,7 @@
 #include <SavePicture.h>
 #include <ConvertUtility.h>
 #include <wx/busyinfo.h>
+#include <ConvertUtility.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define OPENFILE 0
@@ -70,9 +71,9 @@ void CCentralWindow::OnScan(wxCommandEvent& event)
         if (pdfFile != "")
         {
             LoadFile(pdfFile);
-        }    
+        }
     }
-        
+
 
 }
 
@@ -244,10 +245,10 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 		//CSavePicture::ExportPicture(this, filename);
 
 		//CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
-		
+
 		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
 		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
-		
+
 		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
 			"PDF " + filename + " (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
@@ -403,7 +404,7 @@ int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameO
 	int nbPage = 0;
 	CLibPicture libPicture;
 	//wxString _filename = "";
-	
+
 
 	if (listFile.size() > 0)
 	{
@@ -614,7 +615,7 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 {
 	wxString file = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-    
+
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
     if (!wxMkDir(tempFolder)) {
@@ -649,11 +650,11 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 		QPDF oldpdf;
 		if(fileIn)
-			oldpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
+			oldpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
 
 		QPDF inpdf;
-		inpdf.processFile(CConvertUtility::ConvertToStdString(fileToAdd).c_str());
-		
+		inpdf.processFile(CConvertUtility::ConvertToUTF8(fileToAdd));
+
 
 		std::string outfile = CConvertUtility::ConvertToStdString(file);
 		QPDF outpdf;
@@ -763,7 +764,7 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 	{
 		wxBusyInfo wait("Please wait, working...");
 		QPDF inpdf;
-		inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
+		inpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
 		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
 		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 		int pageno = 0;
@@ -794,7 +795,7 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 			pageno++;
 		}
 
-		QPDFWriter outpdfw(outpdf, outfile.c_str());
+		QPDFWriter outpdfw(outpdf, CConvertUtility::ConvertToUTF8(outfile));
 		outpdfw.write();
 	}
 

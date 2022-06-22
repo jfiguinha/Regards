@@ -271,14 +271,14 @@ void CFFmfcPimpl::stream_close(VideoState* is)
 	av_free(is->filename);
 
 	av_free(is);
-    
 
-    
+
+
 
 	wxCommandEvent evt(FF_QUIT_EVENT);
 	parent->GetEventHandler()->AddPendingEvent(evt);
 
-    
+
 
 	abortMutex.lock();
 	exit_video = false;
@@ -538,10 +538,10 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 	if (!is->paused && get_master_sync_type(is) == AV_SYNC_EXTERNAL_CLOCK && is->realtime)
 		check_external_clock_speed(is);
 
-	if (!display_disable && is->show_mode != SHOW_MODE_VIDEO && is->audio_st) 
+	if (!display_disable && is->show_mode != SHOW_MODE_VIDEO && is->audio_st)
 	{
 		time = av_gettime_relative() / 1000000.0;
-		if (is->force_refresh || is->last_vis_time + rdftspeed < time) 
+		if (is->force_refresh || is->last_vis_time + rdftspeed < time)
 		{
 			video_display(is);
 			is->last_vis_time = time;
@@ -555,7 +555,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 		if (frame_queue_nb_remaining(&is->pictq) == 0) {
 			// nothing to do, no picture to display in the queue
 		}
-		else 
+		else
 		{
 			double last_duration, duration, delay;
 			Frame* vp, * lastvp;
@@ -594,7 +594,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 				update_video_pts(is, vp->pts, vp->pos, vp->serial);
 			SDL_UnlockMutex(is->pictq.mutex);
 
-			if (frame_queue_nb_remaining(&is->pictq) > 1) 
+			if (frame_queue_nb_remaining(&is->pictq) > 1)
 			{
 				Frame* nextvp = frame_queue_peek_next(&is->pictq);
 				duration = vp_duration(is, vp, nextvp);
@@ -1628,7 +1628,7 @@ int CFFmfcPimpl::audio_thread(void* arg)
 	Frame* af;
 
 	int got_frame = 0;
-	
+
 	int ret = 0;
 
 	if (!frame)
@@ -1666,7 +1666,7 @@ the_end:
 
 bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceType & type, AVCodecContext * avctx, AVCodec * codec, AVDictionary * &  opts, VideoState* is, AVStream* video)
 {
-	
+
 	bool isSuccess = false;
 	bool error = false;
 	int ret = 0;
@@ -1674,7 +1674,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	type = av_hwdevice_find_type_by_name(acceleratorHardware);
 	if (type == AV_HWDEVICE_TYPE_NONE)
 	{
-		fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
+		fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
 		fprintf(stderr, "Available device types:");
 		while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 			fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
@@ -1714,7 +1714,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 	is->avctx->opaque = is;
 	is->codec = codec;
 	is->hwaccel_id = HWACCEL_AUTO;
-	printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
+	printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
 
 	if (!error)
 	{
@@ -1732,7 +1732,7 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 
 	if (isSuccess)
 	{
-		printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToStdString(acceleratorHardware).c_str());
+		printf("Success for hardware decoding : %s ! \n", CConvertUtility::ConvertToUTF8(acceleratorHardware));
 	}
 	return isSuccess;
 }
@@ -1772,11 +1772,11 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
         case AVMEDIA_TYPE_SUBTITLE: is->last_subtitle_stream = stream_index; forced_codec_name = subtitle_codec_name; break;
         case AVMEDIA_TYPE_VIDEO: is->last_video_stream = stream_index; forced_codec_name = video_codec_name; break;
 	}
-    
+
 	if (forced_codec_name)
 		codec = (AVCodec*)avcodec_find_decoder_by_name(forced_codec_name);
-        
-	if (!codec) 
+
+	if (!codec)
     {
 		if (forced_codec_name) av_log(NULL, AV_LOG_WARNING,
 			"No codec could be found with name '%s'\n", forced_codec_name);
@@ -1784,7 +1784,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			"No decoder could be found for codec %s\n", avcodec_get_name(avctx->codec_id));
 		ret = AVERROR(EINVAL);
 	}
-    
+
 	if (ret >= 0)
 	{
         avctx->codec_id = codec->id;
@@ -1806,7 +1806,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 
 		bool isSuccess = false;
 		acceleratorHardware = "";
-        
+
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
 			acceleratorHardware = config->GetHardwareDecoder();
@@ -1981,7 +1981,7 @@ void CFFmfcPimpl::stream_component_close(VideoState* is, int stream_index)
 		decoder_abort(&is->viddec, &is->pictq);
 		decoder_destroy(&is->viddec);
 
-		
+
 
 		break;
 	case AVMEDIA_TYPE_SUBTITLE:
@@ -2039,7 +2039,7 @@ void CFFmfcPimpl::stream_change_stream(VideoState* is, int codec_type, int newIn
 	}
 	stream_component_close(is, old_index);
 	stream_component_open(is, stream_index);
-	
+
 	//if (codec_type == AVMEDIA_TYPE_VIDEO)
 	//	is->que_attachments_req = 1;
 }
@@ -2647,7 +2647,7 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 			"output frame: %d.\n", err);
 		goto fail;
 	}
-	
+
 	output->pts = input->pkt_dts;
 	ist->hwaccel_retrieved_pix_fmt = (AVPixelFormat)output->format;
 	/*
@@ -2669,7 +2669,7 @@ int CFFmfcPimpl::hwaccel_retrieve_data(AVCodecContext* avctx, AVFrame* input)
 	}
 	ret = av_image_copy_to_buffer(buffer, size,
 		(const uint8_t* const*)output->data,
-		(const int*)output->linesize, (AVPixelFormat)output->format, 
+		(const int*)output->linesize, (AVPixelFormat)output->format,
 		output->width, output->height, 1);
 
 	if (ret < 0) {
@@ -2703,4 +2703,3 @@ int CFFmfcPimpl::get_buffer(AVCodecContext* s, AVFrame* frame, int flags)
 
 	return avcodec_default_get_buffer2(s, frame, flags);
 }
-

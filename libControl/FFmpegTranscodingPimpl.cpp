@@ -319,7 +319,7 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 
 		double dif = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::steady_clock::now() - ffmpeg_trans->begin).count();
-            
+
 		try
 		{
 
@@ -491,9 +491,9 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 	this->decodeHardware = decodeHardware;
 	if (decodeHardware != "" || decodeHardware != "none")
 	{
-		type = av_hwdevice_find_type_by_name(CConvertUtility::ConvertToStdString(decodeHardware).c_str());
+		type = av_hwdevice_find_type_by_name(CConvertUtility::ConvertToUTF8(decodeHardware));
 		if (type == AV_HWDEVICE_TYPE_NONE) {
-			fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToStdString(decodeHardware).c_str());
+			fprintf(stderr, "Device type %s is not supported.\n", CConvertUtility::ConvertToUTF8(decodeHardware));
 			fprintf(stderr, "Available device types:");
 			while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
 				fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
@@ -1232,7 +1232,7 @@ void CFFmpegTranscodingPimpl::SetParamFromVideoCodec(AVCodecContext* c, AVCodecC
 	c->gop_size = framerate;
 	c->max_b_frames = 1;
 	c->sample_aspect_ratio = pSourceCodecCtx->sample_aspect_ratio;
-	
+
 }
 
 int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
@@ -1297,7 +1297,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 			return AVERROR_UNKNOWN;
 		}
 
-		
+
 
 		streamInNumberInOut[i] = outStream++;
 
@@ -1445,7 +1445,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 	//AVDictionaryEntry* rotate_tag = av_dict_get(ifmt_ctx->metadata, "rotate", NULL, 0);
 	//if (rotate_tag != nullptr)
 	//	av_dict_set(&ofmt_ctx->metadata, rotate_tag->key, rotate_tag->value, 0);
-	
+
 	av_dump_format(ofmt_ctx, 0, CConvertUtility::ConvertToUTF8(filename), 1);
 
 	if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE))
@@ -1470,7 +1470,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 		return ret;
 	}
 
-	
+
 
 	return 0;
 }
@@ -1629,7 +1629,7 @@ int CFFmpegTranscodingPimpl::flush_encoder(unsigned int stream_index)
 {
 	if (stream_ctx[stream_index].enc_ctx != nullptr)
 	{
-		
+
 		av_log(nullptr, AV_LOG_INFO, "Flushing stream #%u encoder\n", stream_index);
 		if (!(stream_ctx[stream_index].enc_ctx->codec->capabilities &
 			AV_CODEC_CAP_DELAY))
@@ -1740,7 +1740,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
 				openclEffectVideo.SetNV12(yuv);
 
-				
+
 			}
 			catch (cv::Exception& e)
 			{
@@ -1766,10 +1766,10 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 				std::cout << "exception caught: " << err_msg << std::endl;
 				std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 			}
-			
+
 		}
 
-		
+
 
 		bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 		bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
@@ -2005,7 +2005,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	double fps = 0;
 	Mat frameOutput;
 	{
-		
+
 		fps = capture->get(CAP_PROP_FPS);
 		double noFrame = fps * timeInSeconds;
 		bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
@@ -2121,7 +2121,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 
 			break;
 		}
-        
+
 		if (st->codecpar->codec_id != AV_CODEC_ID_NONE)
 		{
 			bool copyDirectPacket = false;
@@ -2172,7 +2172,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
                    "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
                    av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
                    av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ifmt_ctx->streams[stream_index]->time_base));
-            
+
             printf("encoder -> type:video "
                    "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
                    av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
@@ -2369,7 +2369,7 @@ void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* f
 		}
 
 		fwrite(enc_pkt.data, 1, enc_pkt.size, outfile);
-		
+
 	}
 
 	av_packet_unref(&enc_pkt);
@@ -2380,7 +2380,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 	AVCodecContext * c = nullptr;
     wxString encoderHardName = "";
     const AVCodec* p_codec;
-    
+
     if(encoderName != "")
     {
         encoderHardName = GetCodecName(codec_id, encoderName);
@@ -2588,11 +2588,11 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		 */
 		if (codec->id == AV_CODEC_ID_MPEG1VIDEO || codec->id == AV_CODEC_ID_MPEG2VIDEO)
 			fwrite(endcode, 1, sizeof(endcode), f);
-		
+
 
 		avcodec_free_context(&c);
 		av_frame_free(&frame);
-        
+
         fclose(f);
 
 	}
@@ -2600,6 +2600,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 	{
 
 	}
-	
+
 	return 0;
 }

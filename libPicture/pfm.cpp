@@ -44,16 +44,16 @@ void swapBytes(float* fptr)
 
 void CPfm::GetDimensions(const wxString& path, int& width, int& height)
 {
-	// create fstream object to read in pfm file 
+	// create fstream object to read in pfm file
 	// open the file in binary
-	fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::in | ios::binary);
+	fstream file(CConvertUtility::ConvertToUTF8(path), ios::in | ios::binary);
 
-	// init variables 
+	// init variables
 	string bands; // what type is the image   "Pf" = grayscale    (1-band)
 	//                          "PF" = color        (3-band)
 	float scalef; // , fvalue;   // scale factor and temp value to hold pixel value
 	//float vfvalue[3];
-	// extract header information, skips whitespace 
+	// extract header information, skips whitespace
 	file >> bands;
 	file >> width;
 	file >> height;
@@ -64,23 +64,23 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 {
 	CRegardsFloatBitmap* image;
 
-	// create fstream object to read in pfm file 
+	// create fstream object to read in pfm file
 	// open the file in binary
 	fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::in | ios::binary);
 
-	// init variables 
+	// init variables
 	string bands; // what type is the image   "Pf" = grayscale    (1-band)
 	//                          "PF" = color        (3-band)
 	int width, height; // width and height of the image
 	float scalef, fvalue; // scale factor and temp value to hold pixel value
 	float vfvalue[3];
-	// extract header information, skips whitespace 
+	// extract header information, skips whitespace
 	file >> bands;
 	file >> width;
 	file >> height;
 	file >> scalef;
 
-	// determine endianness 
+	// determine endianness
 	int littleEndianFile = (scalef < 0);
 	int littleEndianMachine = littleendian();
 	int needSwap = (littleEndianFile != littleEndianMachine);
@@ -109,7 +109,7 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 
 	if (bands == "Pf")
 	{
-		// handle 1-band image 
+		// handle 1-band image
 		cout << "Reading grayscale image (1-band)" << endl;
 		cout << "Reading into CV_32FC1 image" << endl;
 		image = new CRegardsFloatBitmap(width, height);
@@ -176,13 +176,13 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float s
 {
 	if (image != nullptr)
 	{
-		// create fstream object to write out pfm file 
+		// create fstream object to write out pfm file
 		// open the file in binary
-		fstream file(CConvertUtility::ConvertToStdString(path).c_str(), ios::out | ios::binary);
+		fstream file(CConvertUtility::ConvertToUTF8(path), ios::out | ios::binary);
 
 
 		string bands = "PF";
-		int width = image->GetWidth(), height = image->GetHeight(); // width and height of the image 
+		int width = image->GetWidth(), height = image->GetHeight(); // width and height of the image
 		//float fvalue;       // scale factor and temp value to hold pixel value
 		float vfvalue[3]; // temp value to hold 3-band pixel value
 
@@ -190,7 +190,7 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float s
 		if (littleendian())
 			scalef = -scalef;
 
-		// insert header information 
+		// insert header information
 		file << bands << "\n";
 		file << width << "\n";
 		file << height << "\n";

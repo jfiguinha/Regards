@@ -79,19 +79,19 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 
 wxString CFileUtility::GetFileExtension(const wxString& szFilePath)
 {
-	auto filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath);
 	return filename.GetExt();
 }
 
 wxString CFileUtility::GetFileName(const wxString& szFilePath)
 {
-	auto filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath);
 	return filename.GetFullName();
 }
 
 wxString CFileUtility::GetFolder(const wxString& szFilePath)
 {
-	auto filename = wxFileName(szFilePath.c_str());
+	auto filename = wxFileName(szFilePath);
 	return filename.GetPath();
 }
 
@@ -107,7 +107,7 @@ wxString CFileUtility::GetResourcesFolderPath()
     wxString realPath;
     realPath.append(path.begin(),path.begin() + index + exeFolderMacOs.size());
     realPath.append("Resources");
-    
+
     return realPath;
 
 #else
@@ -252,14 +252,14 @@ wxString CFileUtility::GetProgramFolderPath()
 	wxString path = wxStandardPaths::Get().GetExecutablePath();
 	return GetFolder(path);
 #elif defined(__APPLE__) && not defined(__LLVM__)
-    
+
     wxString exeFolderMacOs = ".app/Contents/";
     wxString path = wxStandardPaths::Get().GetExecutablePath();
     int index = path.Find(exeFolderMacOs);
     wxString realPath;
     realPath.append(path.begin(),path.begin() + index + exeFolderMacOs.size());
     realPath.append("MacOS");
-    
+
     return realPath;
 #else
     wxString path = wxStandardPaths::Get().GetExecutablePath();
@@ -273,7 +273,7 @@ wxString CFileUtility::GetProgramFolderPath()
 wxString CFileUtility::GetFileTime(const wxString& szFileName)
 {
 	wxStructStat strucStat;
-	wxStat(szFileName.c_str(), &strucStat);
+	wxStat(szFileName, &strucStat);
 	//wxFileOffset filelen = strucStat.st_size;
 	wxDateTime last_modified_time(strucStat.st_mtime);
 	return last_modified_time.Format(wxT("%Y.%m.%d"));

@@ -1937,7 +1937,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 		}
 		else if (memFile != nullptr)
 		{
-            printf("File to process : %s \n", CConvertUtility::ConvertToStdString(fileName).c_str());
+            printf("File to process : %s \n", CConvertUtility::ConvertToUTF8(fileName));
 			//auto image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
 			wxImage jpegImage;
 			jpegImage.LoadFile(*memFile, wxBITMAP_TYPE_JPEG);

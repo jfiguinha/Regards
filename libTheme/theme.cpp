@@ -20,7 +20,7 @@ xml_node<>* CThemeXml::node(xml_document<>& doc, const wxString& name, const wxS
 // operations
 const char* CThemeXml::stralloc(xml_document<>& doc, const wxString& str)
 {
-	return doc.allocate_string(str.c_str());
+	return doc.allocate_string(CConvertUtility::ConvertToUTF8(str));
 }
 
 
@@ -258,7 +258,7 @@ void CThemeFont::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			bold = atoi(value.c_str());
+			bold = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("positionFont");
@@ -266,7 +266,7 @@ void CThemeFont::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			positionFont = atoi(value.c_str());
+			positionFont = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorFont");
@@ -290,7 +290,7 @@ void CThemeFont::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			fontSize = atoi(value.c_str());
+			fontSize = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -298,7 +298,7 @@ void CThemeFont::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("fontQuality");
@@ -306,7 +306,7 @@ void CThemeFont::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			fontQuality = atoi(value.c_str());
+			fontQuality = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -347,7 +347,7 @@ void CThemeTreeElement::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -355,7 +355,7 @@ void CThemeTreeElement::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -406,7 +406,7 @@ void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -414,7 +414,7 @@ void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementWidth");
@@ -422,7 +422,7 @@ void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			elementWidth = atoi(value.c_str());
+			elementWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementHeight");
@@ -430,7 +430,7 @@ void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			elementHeight = atoi(value.c_str());
+			elementHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -438,7 +438,7 @@ void CThemeTreeTriangle::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -494,7 +494,7 @@ void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -502,7 +502,7 @@ void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementWidth");
@@ -510,7 +510,7 @@ void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			croixWidth = atoi(value.c_str());
+			croixWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementHeight");
@@ -518,7 +518,7 @@ void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			croixHeight = atoi(value.c_str());
+			croixHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("crossColor");
@@ -542,7 +542,7 @@ void CThemeTreeDelete::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			position = atoi(value.c_str());
+			position = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -616,7 +616,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -624,7 +624,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementWidth");
@@ -632,7 +632,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			elementWidth = atoi(value.c_str());
+			elementWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rectanglePast");
@@ -656,7 +656,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("buttonWidth");
@@ -664,7 +664,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			buttonWidth = atoi(value.c_str());
+			buttonWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("buttonHeight");
@@ -672,7 +672,7 @@ void CThemeTreeSlide::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			buttonHeight = atoi(value.c_str());
+			buttonHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -746,7 +746,7 @@ void CThemeTreeTexte::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -754,7 +754,7 @@ void CThemeTreeTexte::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -789,7 +789,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			node_name = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -797,7 +797,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			node_name = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementWidth");
@@ -805,7 +805,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			node_name = child_node->name();
-			elementWidth = atoi(value.c_str());
+			elementWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementHeight");
@@ -813,7 +813,7 @@ void CThemeTreeCheckBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			node_name = child_node->name();
-			elementHeight = atoi(value.c_str());
+			elementHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -862,7 +862,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -870,7 +870,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("elementWidth");
@@ -878,7 +878,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			elementWidth = atoi(value.c_str());
+			elementWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -886,7 +886,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("buttonWidth");
@@ -894,7 +894,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			buttonWidth = atoi(value.c_str());
+			buttonWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("buttonHeight");
@@ -902,7 +902,7 @@ void CThemeTreeListBox::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			buttonHeight = atoi(value.c_str());
+			buttonHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("color");
@@ -961,7 +961,7 @@ void CThemeTree::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rowHeight = atoi(value.c_str());
+			rowHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rowWidth");
@@ -969,7 +969,7 @@ void CThemeTree::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rowWidth = atoi(value.c_str());
+			rowWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 
@@ -978,7 +978,7 @@ void CThemeTree::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			margeX = atoi(value.c_str());
+			margeX = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("bgColorOne");
@@ -1079,7 +1079,7 @@ void CThemeScrollBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rectangleSize = atoi(value.c_str());
+			rectangleSize = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -1087,7 +1087,7 @@ void CThemeScrollBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorBack");
@@ -1208,7 +1208,7 @@ void CThemeFastDrawBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			size = atoi(value.c_str());
+			size = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -1277,7 +1277,7 @@ void CThemeSeparationBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			size = atoi(value.c_str());
+			size = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -1368,7 +1368,7 @@ void CThemeTitleBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -1376,7 +1376,7 @@ void CThemeTitleBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("croixWidth");
@@ -1384,7 +1384,7 @@ void CThemeTitleBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			croixWidth = atoi(value.c_str());
+			croixWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("croixHeight");
@@ -1392,7 +1392,7 @@ void CThemeTitleBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			croixHeight = atoi(value.c_str());
+			croixHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorCross");
@@ -1455,7 +1455,7 @@ void CThemePane::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorBack");
@@ -1522,7 +1522,7 @@ void CThemeSlider::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -1530,7 +1530,7 @@ void CThemeSlider::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rectangleHeight");
@@ -1538,7 +1538,7 @@ void CThemeSlider::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rectangleHeight = atoi(value.c_str());
+			rectangleHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorBack");
@@ -1685,7 +1685,7 @@ void CThemeBitmapInfos::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxWidth");
@@ -1693,7 +1693,7 @@ void CThemeBitmapInfos::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxWidth = atoi(value.c_str());
+			checkboxWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxHeight");
@@ -1701,7 +1701,7 @@ void CThemeBitmapInfos::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxHeight = atoi(value.c_str());
+			checkboxHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -1760,7 +1760,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -1768,7 +1768,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxHeight");
@@ -1776,7 +1776,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxHeight = atoi(value.c_str());
+			checkboxHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxWidth");
@@ -1784,7 +1784,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxWidth = atoi(value.c_str());
+			checkboxWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("marge");
@@ -1792,7 +1792,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			marge = atoi(value.c_str());
+			marge = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("showOnlyThumbnail");
@@ -1800,7 +1800,7 @@ void CThemeIcone::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			showOnlyThumbnail = atoi(value.c_str());
+			showOnlyThumbnail = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorBack");
@@ -1912,7 +1912,7 @@ void CThemeInfosSeparationBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorBack");
@@ -1944,7 +1944,7 @@ void CThemeInfosSeparationBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxHeight = atoi(value.c_str());
+			checkboxHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxWidth");
@@ -1952,7 +1952,7 @@ void CThemeInfosSeparationBar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxWidth = atoi(value.c_str());
+			checkboxWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -2103,7 +2103,7 @@ void CThemeToolBarZoom::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxHeight");
@@ -2111,7 +2111,7 @@ void CThemeToolBarZoom::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxHeight = atoi(value.c_str());
+			checkboxHeight = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("checkboxWidth");
@@ -2119,7 +2119,7 @@ void CThemeToolBarZoom::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			checkboxWidth = atoi(value.c_str());
+			checkboxWidth = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -2162,7 +2162,7 @@ void CThemeToolbarElement::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleX = atoi(value.c_str());
+			tailleX = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("tailleY");
@@ -2170,7 +2170,7 @@ void CThemeToolbarElement::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleY = atoi(value.c_str());
+			tailleY = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }
@@ -2224,7 +2224,7 @@ void CThemeToolbarButton::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleX = atoi(value.c_str());
+			tailleX = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("tailleY");
@@ -2232,7 +2232,7 @@ void CThemeToolbarButton::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleY = atoi(value.c_str());
+			tailleY = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rectangleSize");
@@ -2240,7 +2240,7 @@ void CThemeToolbarButton::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rectangleSize = atoi(value.c_str());
+			rectangleSize = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("showButtonOnly");
@@ -2248,7 +2248,7 @@ void CThemeToolbarButton::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			showButtonOnly = atoi(value.c_str());
+			showButtonOnly = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("lineColorTop");
@@ -2385,7 +2385,7 @@ void CThemeToolbarTexte::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleX = atoi(value.c_str());
+			tailleX = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("tailleY");
@@ -2393,7 +2393,7 @@ void CThemeToolbarTexte::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			tailleY = atoi(value.c_str());
+			tailleY = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rectangleSize");
@@ -2401,7 +2401,7 @@ void CThemeToolbarTexte::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			rectangleSize = atoi(value.c_str());
+			rectangleSize = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("rectTop");
@@ -2520,7 +2520,7 @@ void CThemeToolbar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			width = atoi(value.c_str());
+			width = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("height");
@@ -2528,7 +2528,7 @@ void CThemeToolbar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			height = atoi(value.c_str());
+			height = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("colorTop");
@@ -2560,7 +2560,7 @@ void CThemeToolbar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			margeX = atoi(value.c_str());
+			margeX = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("margeY");
@@ -2568,7 +2568,7 @@ void CThemeToolbar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			margeY = atoi(value.c_str());
+			margeY = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 
 		child_node = node->first_node("position");
@@ -2576,7 +2576,7 @@ void CThemeToolbar::LoadXML(xml_node<>* root_node)
 		{
 			value = child_node->value();
 			nodeName = child_node->name();
-			position = atoi(value.c_str());
+			position = atoi(CConvertUtility::ConvertToUTF8(value));
 		}
 	}
 }

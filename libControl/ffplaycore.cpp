@@ -2,7 +2,7 @@
 #include "ffplaycore.h"
 #include <window_id.h>
 #include <fstream>
-
+#include <ConvertUtility.h>
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
@@ -505,7 +505,7 @@ int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxSt
 
 	av_init_packet(&_pimpl->flush_pkt);
 	_pimpl->flush_pkt.data = (uint8_t*)(intptr_t)"FLUSH";
-	cur_stream = _pimpl->g_is = _pimpl->stream_open(filename.c_str(), _pimpl->file_iformat);
+	cur_stream = _pimpl->g_is = _pimpl->stream_open(CConvertUtility::ConvertToUTF8(filename), _pimpl->file_iformat);
 	if (!_pimpl->g_is)
 	{
 		_pimpl->do_exit(nullptr);
