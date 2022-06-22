@@ -19,7 +19,7 @@ int CHeifAvif::GetNbFrame(const string& filename)
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
-		heif_context_read_from_file(ctx, filename, nullptr);
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		num_images = heif_context_get_number_of_top_level_images(ctx);
 		if (num_images == 0)
@@ -40,7 +40,7 @@ CRegardsBitmap* CHeifAvif::GetThumbnailPicture(const string& filename)
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
-		heif_context_read_from_file(ctx, filename, nullptr);
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		// get a handle to the primary image
 		heif_image_handle* handle;
@@ -91,7 +91,7 @@ void CHeifAvif::GetPictureDimension(const string& filename, int& width, int& hei
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
-		heif_context_read_from_file(ctx, filename, nullptr);
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		// get a handle to the primary image
 		heif_image_handle* handle;
@@ -208,7 +208,7 @@ void CHeifAvif::SavePicture(const string& filenameOut, const int& type, CRegards
 
 			heif_encoder_release(encoder);
 
-			heif_context_write_to_file(ctx, filenameOut);
+			heif_context_write_to_file(ctx, filenameOut.c_str());
 
 			if (image)
 			{
@@ -227,7 +227,7 @@ bool CHeifAvif::HasExifMetaData(const string& filename)
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
-		heif_context_read_from_file(ctx, filename, nullptr);
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		// get a handle to the primary image
 		heif_image_handle* handle;
@@ -250,7 +250,7 @@ void CHeifAvif::GetMetadata(const string& filename, uint8_t* & data, long& size)
 	heif_context* ctx = heif_context_alloc();
 	if (ctx)
 	{
-		heif_context_read_from_file(ctx, filename, nullptr);
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
 		// get a handle to the primary image
 		heif_image_handle* handle;
