@@ -49,6 +49,23 @@ bool COpenCLEffect::convertToGLTexture2D(GLTexture* glTexture)
 	return isOk;
 }
 
+cv::UMat COpenCLEffect::GetUMat()
+{
+	cv::UMat output;
+
+	if (preview && !paramOutput.empty())
+	{
+		paramOutput.copyTo(output);
+	}
+	else
+	{
+		input.copyTo(output);
+	}
+
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+
+	return output;
+}
 
 int COpenCLEffect::GetSizeData() const
 {

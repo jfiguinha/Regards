@@ -15,6 +15,7 @@ namespace Regards
 			GLTexture(void);
 			~GLTexture(void);
 
+            cl_int CreateOpenCLTextureContext(cl_context context, cl_command_queue q);
 			static GLTexture* CreateTextureOutput(int width, int height, const bool& isOpenCLOpenGLInterop, GLenum format = GL_BGRA_EXT);
 			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, const bool& isOpenCLOpenGLInterop);
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
@@ -50,7 +51,8 @@ namespace Regards
 			int height;
             bool isOpenCLCompatible;
 			GLenum format;
-			cl_mem clImage;
+			cl_mem clImage = nullptr;
+            cl_command_queue q = nullptr;
 		};
 	}
 }

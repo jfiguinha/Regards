@@ -132,12 +132,32 @@ void GLTexture::SetData(CRegardsBitmap * bitmap)
 	SetTextureData(bitmap->GetMatrix());
 }
 
+cl_int GLTexture::CreateOpenCLTextureContext(cl_context context, cl_command_queue q)
+{
+    this->q = q;
+    cl_int status = 0;
+    if(isOpenCLCompatible)
+    {
+        clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
+        if (status == CL_SUCCESS)
+        {
+            status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
+        } 
+
+        
+    }
+    
+    if (status != CL_SUCCESS)
+         isOpenCLCompatible = false;
+    return status;
+}
+
 //bool GLTexture::Create(const int &nWidth, const int &nHeight, void *pbyData, const int & nFormat_i, const int & nInternalFormat_i)
 bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, const bool & isOpenCLOpenGLInterop)
 {
 	width = nWidth;
 	height = nHeight;
-    isOpenCLCompatible = false;
+    isOpenCLCompatible = isOpenCLOpenGLInterop;
 	//GLuint m_nTextureSize = nWidth * nHeight << 2;
 
 	//int nError = glGetError();
@@ -158,27 +178,6 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
-
-
-    if(isOpenCLOpenGLInterop)
-    {
-       	using namespace cv::ocl;
-        Context& ctx = Context::getDefault();
-        cl_context context = (cl_context)ctx.ptr();
-
-        cl_int status = 0;
-        clImage = clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, m_nTextureID, &status);
-        if (status == CL_SUCCESS)
-        {
-            cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
-
-            status = clEnqueueAcquireGLObjects(q, 1, &clImage, 0, NULL, NULL);
-        }
-
-         if (status == CL_SUCCESS)
-            isOpenCLCompatible = true;           
-    }
-
 
 	return (GL_NO_ERROR == glGetError());
 }
@@ -212,18 +211,22 @@ void GLTexture::checkErrors(std::string desc)
 
 void GLTexture::Delete()
 {
-	if(isOpenCLCompatible)
+	if(clImage != nullptr)
     {
         cl_int status = 0;
-        cl_command_queue q = (cl_command_queue)cv::ocl::Queue::getDefault().ptr();
-
         status = clEnqueueReleaseGLObjects(q, 1, &clImage, 0, NULL, NULL);
         if (status != CL_SUCCESS)
            cout << "OpenCL: clEnqueueReleaseGLObjects failed" << endl;
+           
+        status = clFinish(q); // TODO Use events
+        if (status != CL_SUCCESS)
+            CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clFinish failed");           
 
         status = clReleaseMemObject(clImage); // TODO RAII
         if (status != CL_SUCCESS)
             cout << "OpenCL: clReleaseMemObject failed"  << endl;
+            
+        clImage = nullptr;
 	}
 
 	checkErrors("GLTexture::Delete()");

@@ -37,7 +37,8 @@ namespace Regards
 			{
 				flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 			};
-
+                
+            cv::UMat GetUMat();
 			bool convertToGLTexture2D(GLTexture* glTexture);
 			virtual ~COpenCLEffect();
             int LensDistortionFilter(const int &size);

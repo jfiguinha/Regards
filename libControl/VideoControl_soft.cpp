@@ -1925,9 +1925,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	if (!useInterop)
 	{
-		CRegardsBitmap* bitmap = openclEffect->GetBitmap();
-		glTexture->SetData(bitmap);
-		delete bitmap;
+        cv::UMat data = openclEffect->GetUMat(false);
+		glTexture->SetData(data);
 	}
 
 	return glTexture;

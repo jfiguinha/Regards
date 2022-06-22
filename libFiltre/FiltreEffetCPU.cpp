@@ -240,7 +240,16 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 }
 
 
+cv::UMat CFiltreEffetCPU::GetUMat()
+{
+	cv::UMat image;
+	if (preview)
+		paramOutput.copyTo(image);
+	else
+		input.copyTo(image);
 
+    return image;    
+}
 
 
 bool CFiltreEffetCPU::StabilizeVideo(Regards::OpenCV::COpenCVStabilization * openCVStabilization)

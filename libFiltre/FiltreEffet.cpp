@@ -66,6 +66,10 @@ int CFiltreEffet::BokehEffect(const int& radius, const int& boxsize, const int& 
 	return 0;
 }
 
+ cv::UMat CFiltreEffet::GetUMat()
+ {
+     return filtreEffet->GetUMat();
+ }
 
 int CFiltreEffet::LensDistortionFilter(const int &size)
 {

@@ -15,7 +15,7 @@ public:
 	bool convertToGLTexture2D(GLTexture* glTexture);
 	int HistogramNormalize();
 	int HistogramEqualize();
-
+    cv::UMat GetUMat();
 	int RedEye();
 	int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace);
 	int HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp);

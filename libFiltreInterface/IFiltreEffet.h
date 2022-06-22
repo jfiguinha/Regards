@@ -41,6 +41,7 @@ public:
 		this->preview = preview;
 	}
 
+  virtual cv::UMat GetUMat() = 0;
 	virtual bool convertToGLTexture2D(GLTexture * glTexture) = 0;
 	virtual int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) = 0;
 	virtual int OilPaintingEffect(const int &size, const int &dynRatio) = 0;
@@ -101,4 +102,3 @@ protected:
 	CRgbaquad backColor;
 	bool preview;
 };
-

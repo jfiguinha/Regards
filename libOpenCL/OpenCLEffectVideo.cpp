@@ -39,6 +39,27 @@ void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
 	isOk = true;
 }
 
+cv::UMat COpenCLEffectVideo::GetUMat(const bool & src)
+{
+	cv::UMat output;
+
+	if (src)
+	{
+		paramSrc.copyTo(output);
+	}
+	else if (interpolatePicture)
+	{
+		paramOutput.copyTo(output);
+	}
+	else
+	{
+		paramSrc.copyTo(output);
+	}
+
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+
+	return output;
+}
 
 
 void COpenCLEffectVideo::SetMatrix(cv::Mat& frame)

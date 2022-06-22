@@ -193,30 +193,34 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             using namespace cv::ocl;
             Context& ctx = Context::getDefault();
             cl_context context = (cl_context)ctx.ptr();
-
+            cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+            
             // TODO Add support for roi
             CV_Assert(u.offset == 0);
             CV_Assert(u.isContinuous());
-
             
-            cl_mem clImage = glTexture->GetOpenCLTexture();// clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
-            if (status != CL_SUCCESS)
-                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
-
+            cl_mem clImage = glTexture->GetOpenCLTexture();
+            if(clImage == nullptr)
+            {
+                status = glTexture->CreateOpenCLTextureContext(context, q);
+                if (status != CL_SUCCESS)
+                    CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
+                    
+                clImage = glTexture->GetOpenCLTexture();
+            }   
+            // clCreateFromGLTexture(context, CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, glTexture->GetTextureID(), &status);
+                
             cl_mem clBuffer = (cl_mem)u.handle(ACCESS_READ);
-            cl_command_queue q = (cl_command_queue)Queue::getDefault().ptr();
+           
 
             size_t offset = 0; // TODO
             size_t dst_origin[3] = { 0, 0, 0 };
             size_t region[3] = { (size_t)u.cols, (size_t)u.rows, 1 };
             status = clEnqueueCopyBufferToImage(q, clBuffer, clImage, offset, dst_origin, region, 0, NULL, NULL);
-            if (status == CL_SUCCESS)
-            {
-                status = clFinish(q); // TODO Use events
-            }
+
              if (status == CL_SUCCESS)
                 printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
-
+                
         }
         catch (cv::Exception& e)
         {
@@ -230,11 +234,10 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
          if (status != CL_SUCCESS)
          {
              glTexture->SetData(inputData);
-         }
+         }       
     }
     else
         glTexture->SetData(inputData);
-    
 
 	return isOk;
 }
