@@ -2,6 +2,7 @@
 #include "GLcontext.h"
 
 class CRegardsBitmap;
+class CTextureGLPriv;
 
 namespace Regards
 {
@@ -45,6 +46,9 @@ namespace Regards
 			void SetTextureData(const cv::Mat& bitmapMatrix);
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
+#ifdef WIN32
+			CTextureGLPriv* pimpl_;
+#endif
 			int width;
 			int height;
 			GLenum format;

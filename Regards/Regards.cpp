@@ -30,7 +30,7 @@
 #endif
 
 bool isOpenCLInitialized = false;
-
+bool isOpenCLOpenGLInterop = false;
 using namespace cv;
 using namespace Regards::Picture;
 
@@ -215,6 +215,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
+#ifndef WIN32
 	if (regardsParam->GetIsOpenCLSupport())
 	{
 		if (!cv::ocl::haveOpenCL())
@@ -248,6 +249,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		}
 	}
+#endif
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
