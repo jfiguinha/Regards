@@ -46,7 +46,7 @@ namespace Regards
 			void SetTextureData(const cv::Mat& bitmapMatrix);
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
-#ifdef WIN32
+#ifdef OPENCV_OPENCL_OPENGL
 			CTextureGLPriv* pimpl_ = nullptr;
 #endif
 			int width;

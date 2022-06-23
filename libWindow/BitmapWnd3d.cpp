@@ -185,7 +185,7 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 	//this->Refresh();
 }
 
-#ifdef WIN32
+#ifdef OPENCV_OPENCL_OPENGL
 
 
 wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
@@ -458,7 +458,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
 
-#ifdef WIN32
+#ifdef OPENCV_OPENCL_OPENGL
 
         CRegardsConfigParam* regardsParam = CParamInit::getInstance();
         if (regardsParam != nullptr)

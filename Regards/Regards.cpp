@@ -215,7 +215,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-#ifndef WIN32
+#ifndef OPENCV_OPENCL_OPENGL
 	if (regardsParam->GetIsOpenCLSupport())
 	{
 		if (!cv::ocl::haveOpenCL())
