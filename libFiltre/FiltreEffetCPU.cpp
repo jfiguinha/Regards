@@ -224,6 +224,16 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 	}
 }
 
+cv::Mat CFiltreEffetCPU::GetMat()
+{
+	cv::Mat image;
+	if (preview)
+		image = paramOutput;
+	else
+		image = input;
+
+	return image;
+}
 
 cv::UMat CFiltreEffetCPU::GetUMat()
 {

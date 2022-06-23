@@ -167,6 +167,10 @@ CRegardsBitmap* CFiltreEffet::GetBitmap(const bool& source)
 	return filtreEffet->GetBitmap(source);
 }
 
+cv::Mat CFiltreEffet::GetMat()
+{
+	return filtreEffet->GetMat();
+}
 
 int CFiltreEffet::HistogramNormalize()
 {

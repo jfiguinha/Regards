@@ -30,6 +30,23 @@ bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabil
 	return true;
 }
 
+cv::Mat COpenCLEffect::GetMat()
+{
+	cv::Mat output;
+
+	if (preview && !paramOutput.empty())
+	{
+		paramOutput.copyTo(output);
+	}
+	else
+	{
+		input.copyTo(output);
+	}
+
+	cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
+
+	return output;
+}
 
 cv::UMat COpenCLEffect::GetUMat()
 {
