@@ -13,7 +13,7 @@ cd vcpkg-master
 ./vcpkg install ffnvcodec
 ./vcpkg install wxWidgets
 ./vcpkg install ffmpeg[all-gpl]
-./vcpkg install opencv[contrib,ipp,openmp,tbb,ffmpeg,opengl]
+./vcpkg install opencv[contrib,ipp,openmp,tbb,ffmpeg,opengl,cuda]
 ./vcpkg install exiv2[video,xmp]
 ./vcpkg install libmediainfo
 ./vcpkg install libde265

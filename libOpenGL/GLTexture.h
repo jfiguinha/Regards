@@ -41,7 +41,7 @@ namespace Regards
 			uint8_t* GetData();
 			void GetData(uint8_t* data);
             bool IsOpenCLCompatible();
-            
+            void SetIsOpenCLOpenGLInterop(const bool &isCompatible);
 		protected:
 
 			void SetTextureData(const cv::Mat& bitmapMatrix);

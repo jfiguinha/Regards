@@ -61,7 +61,7 @@ public:
 	void SetTimePosition(int64_t time);
 	int64_t GetTimePosition();
 	//Main function
-	int SetFile(CVideoControlInterface* control, string filename, const wxString& acceleratorHardware,
+	int SetFile(CVideoControlInterface* control, const wxString & filename, const wxString& acceleratorHardware,
 	            const bool& isOpenGLDecoding, const int& volume);
 	void Play();
 	//Reset

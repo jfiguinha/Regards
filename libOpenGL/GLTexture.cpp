@@ -182,6 +182,11 @@ bool GLTexture::Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, 
 	return (GL_NO_ERROR == glGetError());
 }
 
+void GLTexture::SetIsOpenCLOpenGLInterop(const bool &isCompatible)
+{
+    isOpenCLCompatible = isCompatible;
+}
+
 bool GLTexture::IsOpenCLCompatible()
 {
     return isOpenCLCompatible;

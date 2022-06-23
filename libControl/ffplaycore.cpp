@@ -460,7 +460,7 @@ wxString CFFmfc::Getfilename()
 //½âÂëÖ÷º¯Êý
 //Main function
 //#define __MINGW32__
-int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxString& acceleratorHardware,
+int CFFmfc::SetFile(CVideoControlInterface* control, const wxString & filename, const wxString& acceleratorHardware,
                     const bool& isOpenGLDecoding, const int& volume)
 {
 	//Save volume infos;
@@ -488,11 +488,6 @@ int CFFmfc::SetFile(CVideoControlInterface* control, string filename, const wxSt
 	Reset_index();
 	//ÍË³ö·ûºÅÖÃÁã
 	_pimpl->exit_remark = 0;
-	//int flags;
-	//ºËÐÄ½á¹¹Ìå
-
-	//char dummy_videodriver[] = "SDL_VIDEODRIVER=dummy";
-	_pimpl->input_filename = filename;
 
 
 	if (_pimpl->display_disable)

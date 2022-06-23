@@ -840,7 +840,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
-	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
+	ffmfc->SetFile(this, filename,
 	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 

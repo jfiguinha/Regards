@@ -620,7 +620,7 @@ public:
 	VideoState *g_is = nullptr;
 	/* options specified by the user */
 	AVInputFormat *file_iformat = nullptr;
-	string input_filename;
+
 	int screen_width = 0;
 	int screen_height = 0;
 	int audio_disable = 0;

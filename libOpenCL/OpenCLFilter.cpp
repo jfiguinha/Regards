@@ -220,6 +220,8 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
 
              if (status == CL_SUCCESS)
                 printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
+            else
+                CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
                 
         }
         catch (cv::Exception& e)
@@ -229,12 +231,10 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
             std::cout << "convertToGLTexture2D OpenCL OpenGL Interop no work" << std::endl;
             status = -1;
             printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
+            glTexture->SetIsOpenCLOpenGLInterop(false);
+            glTexture->SetData(inputData);
         }   
-        
-         if (status != CL_SUCCESS)
-         {
-             glTexture->SetData(inputData);
-         }       
+     
     }
     else
         glTexture->SetData(inputData);
