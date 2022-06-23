@@ -173,9 +173,8 @@ COpenCLFilter::~COpenCLFilter()
 
 bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
 {
-    //printf("convertToGLTexture2D \n");
+    printf("convertToGLTexture2D \n");
 	bool isOk = true;
-
     if(glTexture->IsOpenCLCompatible())
     {
         printf("convertToGLTexture2D isOpenCLOpenGLInterop \n");
@@ -237,8 +236,11 @@ bool COpenCLFilter::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTextu
      
     }
     else
+    {
+     
+        printf("convertToGLTexture2D not isOpenCLOpenGLInterop compatible \n");
         glTexture->SetData(inputData);
-
+    }
 	return isOk;
 }
 
