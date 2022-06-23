@@ -1868,7 +1868,7 @@ void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
-    printf("GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect) \n");
+    //printf("GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect) \n");
     
 	if (openclEffect == nullptr)
 		return nullptr;

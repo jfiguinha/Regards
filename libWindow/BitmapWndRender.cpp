@@ -1537,7 +1537,7 @@ void CBitmapWndRender::SetPreview(const int& value)
 
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
-     printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
+     //printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
     
 	CRgbaquad color;
 
