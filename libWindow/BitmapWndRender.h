@@ -66,8 +66,6 @@ namespace Regards
 			int GetPosRatio();
 			void SetRatioPos(const int& pos);
 
-			bool UseOpenCLOpenGLInterop(const bool& value);
-
 			int GetBitmapWidth();
 			int GetBitmapHeight();
 
@@ -131,7 +129,7 @@ namespace Regards
 			};
 
 
-			virtual void SetIsOpenGLInterop(const bool& openglInterop) override;
+
 			virtual void SetEndProgram(const bool& endProgram) override;
 
 			virtual void OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL * renderOpenGL) override;
@@ -336,7 +334,7 @@ namespace Regards
             bool needToRefresh = false;
 			bool endProgram = false;
 			wxWindow* parentRender = nullptr;
-			bool useOpenCLOpenGLInterop = false;
+
             double scale_factor = 1.0f;
 		};
 	}

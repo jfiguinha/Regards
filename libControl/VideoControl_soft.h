@@ -96,7 +96,6 @@ public:
 	virtual void SetEndProgram(const bool& endProgram) override;
 	virtual int UpdateResized() override;
 
-	virtual void SetIsOpenGLInterop(const bool& openglInterop);
 
 protected:
 
@@ -169,7 +168,6 @@ protected:
 	void GetDenoiserPt(const int& width, const int& height);
 	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
 
-	bool isOpenCLOpenGLInterop = false;
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;

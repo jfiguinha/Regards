@@ -35,11 +35,6 @@ int CFiltreEffet::RenderEffect(const int& numEffect, CEffectParameter* effectPar
 	return CFiltreData::RenderEffect(numEffect, this, effectParameter);
 }
 
-bool CFiltreEffet::convertToGLTexture2D(GLTexture* glTexture)
-{
-	return filtreEffet->convertToGLTexture2D(glTexture);
-}
-
 int CFiltreEffet::OilPaintingEffect(const int& size, const int& dynRatio)
 {
 	return filtreEffet->OilPaintingEffect(size, dynRatio);

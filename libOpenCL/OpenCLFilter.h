@@ -59,8 +59,6 @@ namespace Regards
 			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat & inputData, const float & fSigma);
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
-			bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
-
 			
 
 		protected:

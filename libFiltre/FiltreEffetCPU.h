@@ -12,7 +12,6 @@ public:
 	CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
 
-	bool convertToGLTexture2D(GLTexture* glTexture);
 	int HistogramNormalize();
 	int HistogramEqualize();
     cv::UMat GetUMat();

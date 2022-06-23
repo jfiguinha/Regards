@@ -39,7 +39,7 @@ namespace Regards
 			};
                 
             cv::UMat GetUMat();
-			bool convertToGLTexture2D(GLTexture* glTexture);
+
 			virtual ~COpenCLEffect();
             int LensDistortionFilter(const int &size);
 			int BokehEffect(const int& radius, const int& boxsize, const int& nbFace, const wxRect & listFace) { return -1; };

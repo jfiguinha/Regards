@@ -11,13 +11,12 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int& nWidth, const int& nHeight, const bool& isOpenCLOpenGLInterop, GLenum format = GL_BGRA_EXT);
+			GLTexture(const int& nWidth, const int& nHeight, GLenum format = GL_BGRA_EXT);
 			GLTexture(void);
 			~GLTexture(void);
 
-            cl_int CreateOpenCLTextureContext(cl_context context, cl_command_queue q);
-			static GLTexture* CreateTextureOutput(int width, int height, const bool& isOpenCLOpenGLInterop, GLenum format = GL_BGRA_EXT);
-			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData, const bool& isOpenCLOpenGLInterop);
+			static GLTexture* CreateTextureOutput(int width, int height, GLenum format = GL_BGRA_EXT);
+			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
 			void Enable();
@@ -40,8 +39,7 @@ namespace Regards
 			int GetHeight();
 			uint8_t* GetData();
 			void GetData(uint8_t* data);
-            bool IsOpenCLCompatible();
-            void SetIsOpenCLOpenGLInterop(const bool &isCompatible);
+
 		protected:
 
 			void SetTextureData(const cv::Mat& bitmapMatrix);
@@ -49,10 +47,7 @@ namespace Regards
 			GLuint m_nTextureID;
 			int width;
 			int height;
-            bool isOpenCLCompatible;
 			GLenum format;
-			cl_mem clImage = nullptr;
-            cl_command_queue q = nullptr;
 		};
 	}
 }

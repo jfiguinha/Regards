@@ -87,11 +87,6 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	parentRender = nullptr;
 }
 
-void CBitmapWndRender::SetIsOpenGLInterop(const bool& openglInterop)
-{
-	this->isOpenCLOpenGLInterop = openglInterop;
-}
-
 void CBitmapWndRender::SetTabValue(const std::vector<int> & value)
 {
 	this->value = value;
@@ -1538,13 +1533,12 @@ void CBitmapWndRender::SetPreview(const int& value)
 	preview = value;
 }
 
-bool CBitmapWndRender::UseOpenCLOpenGLInterop(const bool& value)
-{
-	useOpenCLOpenGLInterop = value;
-}
+
 
 void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 {
+     printf("void CBitmapWndRender::RenderToScreenWithOpenCLSupport() \n");
+    
 	CRgbaquad color;
 
 	int widthOutput = static_cast<int>(GetBitmapWidthWithRatio()) * scale_factor;
@@ -1593,36 +1587,10 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		printf("widthOutput : %d heightOutput %d \n", widthOutput, heightOutput);
 
-		bool useInterop = false;
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+        cv::UMat data = filtreEffet->GetUMat();
+        glTexture->SetData(data);
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
-
-		if (useOpenCLOpenGLInterop)
-		{
-			if (filtreEffet->convertToGLTexture2D(glTexture))
-			{
-				useInterop = true;
-			}
-            else
-                useOpenCLOpenGLInterop = false;
-		}
-
-
-		if (!useInterop)
-		{
-            cv::UMat data = filtreEffet->GetUMat();
-            glTexture->SetData(data);
-            /*
-			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
-
-			if (glTexture != nullptr)
-				glTexture->SetData(bitmap);
-			else
-				printf("CBitmapWndRender GetDisplayTexture Error \n");
-
-			delete bitmap;
-            */
-		}
 		
 	}
 
@@ -1680,7 +1648,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		CRegardsBitmap* bitmap = nullptr;
 		bitmap = filtreEffet->GetBitmap(false);
 
-		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 		if (glTexture != nullptr)
 			glTexture->SetData(bitmap);
 		else

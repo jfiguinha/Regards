@@ -31,24 +31,6 @@ bool COpenCLEffect::StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabil
 }
 
 
-bool COpenCLEffect::convertToGLTexture2D(GLTexture* glTexture)
-{
-	bool isOk = false;
-	{
-
-		if (preview && !paramOutput.empty())
-		{
-			isOk = openclFilter->convertToGLTexture2D(paramOutput, glTexture);
-		}
-		else
-		{
-			isOk = openclFilter->convertToGLTexture2D(input, glTexture);
-		}
-	}
-
-	return isOk;
-}
-
 cv::UMat COpenCLEffect::GetUMat()
 {
 	cv::UMat output;

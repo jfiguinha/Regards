@@ -206,21 +206,6 @@ cv::Mat CFiltreEffetCPUImpl::upscaleImage(cv::Mat img, int method, int scale)
 }
 
 
-bool CFiltreEffetCPU::convertToGLTexture2D(GLTexture* glTexture)
-{
-	cv::Mat image;
-	if (preview)
-		image = paramOutput;
-	else
-		image = input;
-
-	if (glTexture != nullptr)
-		glTexture->SetData(image);
-
-	return true;
-}
-
-
 CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitmap)
 	: IFiltreEffet(back_color)
 {
