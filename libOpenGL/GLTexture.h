@@ -47,7 +47,7 @@ namespace Regards
 			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
 #ifdef WIN32
-			CTextureGLPriv* pimpl_;
+			CTextureGLPriv* pimpl_ = nullptr;
 #endif
 			int width;
 			int height;

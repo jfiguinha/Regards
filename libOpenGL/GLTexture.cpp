@@ -14,7 +14,7 @@ class CTextureGLPriv
 {
 public:
 	bool convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture);
-	void CreateTextureInterop(GLTexture* glTexture, cl_context context, cl_command_queue q);
+	cl_int CreateTextureInterop(GLTexture* glTexture);
 	void DeleteTextureInterop();
 
 	cl_mem clImage = nullptr;
@@ -23,26 +23,9 @@ public:
 	cl_command_queue q;
 };
 
-GLTexture::GLTexture(void)
-{
-	m_nTextureID = 0;
-	width = 0;
-	height = 0;
-	format = GL_BGRA_EXT;
-#ifdef WIN32
-	pimpl_ = new CTextureGLPriv();
-#endif
-}
 
-GLTexture::~GLTexture(void)
-{
-	Delete();
-#ifdef WIN32
-	delete pimpl_;
-#endif
-}
 
-void CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture, cl_context context, cl_command_queue q)
+cl_int CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture)
 {
 	using namespace cv::ocl;
 	cl_int status = 0;
@@ -62,9 +45,10 @@ void CTextureGLPriv::CreateTextureInterop(GLTexture* glTexture, cl_context conte
 			isOpenCLCompatible = false;
 		}
 	}
+	return status;
 }
 
-bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glTexture)
+bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 {
 	//printf("convertToGLTexture2D \n");
 	bool isOk = true;
@@ -76,22 +60,15 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glText
 	{
 		try
 		{
-			cv::UMat u = inputData;
-
-			cv::cvtColor(inputData, u, cv::COLOR_BGR2RGBA);
-
-			cv::Size srcSize = inputData.size();
+			cv::Size srcSize = u.size();
 
 
 			using namespace cv::ocl;
 			Context& ctx = Context::getDefault();
 			context = (cl_context)ctx.ptr();
 			q = (cl_command_queue)Queue::getDefault().ptr();
-			// TODO Add support for roi
-			CV_Assert(u.offset == 0);
-			CV_Assert(u.isContinuous());
 
-			CreateTextureInterop(glTexture, context, q);
+			status =CreateTextureInterop(glTexture);
 
 			if (status != CL_SUCCESS)
 				CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clCreateFromGLTexture failed");
@@ -124,7 +101,7 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& inputData, GLTexture* glText
 	
 	if(!isOk)
 	{
-		glTexture->SetData(inputData);
+		glTexture->SetData(u);
 	}
 
 	return isOk;
@@ -145,6 +122,24 @@ void CTextureGLPriv::DeleteTextureInterop()
 	}
 }
 #endif
+
+GLTexture::GLTexture(void)
+{
+	m_nTextureID = 0;
+	width = 0;
+	height = 0;
+	format = GL_BGRA_EXT;
+
+}
+
+GLTexture::~GLTexture(void)
+{
+	Delete();
+#ifdef WIN32
+	if (pimpl_ != nullptr)
+		delete pimpl_;
+#endif
+}
 
 GLTexture* GLTexture::CreateTextureOutput(int width, int height, GLenum format)
 {
@@ -201,21 +196,31 @@ void GLTexture::SetData(cv::UMat& bitmap)
 
 #ifdef WIN32
 	bool isOk = false;
+
+#ifdef WIN32
+	if(pimpl_ == nullptr)
+		pimpl_ = new CTextureGLPriv();
+#endif
+
 	if (pimpl_ != nullptr && isOpenCLOpenGLInterop && pimpl_->isOpenCLCompatible)
 	{
 		cv::UMat bitmapMatrix;
 		if (bitmap.channels() == 3)
 		{
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2BGRA);
+			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGR2RGBA);
 			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 		}
 		else if (bitmap.channels() == 1)
 		{
-			cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2BGRA);
+			cvtColor(bitmap, bitmapMatrix, cv::COLOR_GRAY2RGBA);
 			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
 		}
 		else
-			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix,this);
+		{
+			cvtColor(bitmap, bitmapMatrix, cv::COLOR_BGRA2RGBA);
+			isOk = pimpl_->convertToGLTexture2D(bitmapMatrix, this);
+		}
+			
 
 		if (!isOk)
 		{
