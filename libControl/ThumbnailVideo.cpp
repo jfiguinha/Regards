@@ -27,6 +27,56 @@ struct ThumbnailVideoThread
 	thread* threadVideo;
 };
 
+void CThumbnailVideo::ProcessThumbnail(void* param)
+{
+	ThumbnailVideoThread* video = (ThumbnailVideoThread*)param;
+	if (video->filename != "")
+	{
+		CLibPicture libPicture;
+		CSqlThumbnailVideo sqlThumbnailVideo;
+		int nbResult = sqlThumbnailVideo.GetNbThumbnail(video->filename);
+		if (nbResult > 0)
+		{
+			for (int i = 0; i < nbResult; i++)
+			{
+				auto thumbnail = new CImageVideoThumbnail();
+				sqlThumbnailVideo.GetPictureThumbnail(video->filename, i, thumbnail);
+				if (thumbnail->image == nullptr)
+				{
+					thumbnail = new CImageVideoThumbnail();
+					thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
+					thumbnail->timePosition = i;
+					thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
+				}
+				if (thumbnail->image == nullptr)
+				{
+					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+
+				}
+
+
+				CIcone* pBitmapIcone = video->window->iconeList->GetElement(i);
+				if (pBitmapIcone != nullptr)
+				{
+					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
+					if (thumbnailData != nullptr)
+					{
+						if (thumbnail->image != nullptr)
+							thumbnailData->SetBitmap(thumbnail->image);
+						thumbnailData->SetTimePosition(thumbnail->timePosition);
+					}
+				}
+
+				if (thumbnail != nullptr)
+					delete thumbnail;
+			}
+		}
+	}
+	auto event = new wxCommandEvent(wxEVENT_ENDUPDATEVIDEOTHUMBNAIL);
+	event->SetClientData(video);
+	wxQueueEvent(video->window, event);
+}
+
 CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CThemeThumbnail& themeThumbnail,
                                  const bool& testValidity)
 	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
@@ -63,7 +113,7 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
         ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
         thumStruct->window = this;
         thumStruct->filename = videoFilename;
-        thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
+        thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
     }
 }
 
@@ -72,7 +122,7 @@ void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
     ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
 	thumStruct->window = this;
     thumStruct->filename = videoFilename;
-    thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
+    thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -406,58 +456,9 @@ void CThumbnailVideo::ResizeThumbnail()
     ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
 	thumStruct->window = this;
     thumStruct->filename = videoFilename;
-    thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
+    thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
 }
 
-void CThumbnailVideo::VideoProcessThumbnail(void* param)
-{
-    ThumbnailVideoThread * video = (ThumbnailVideoThread *)param;
-	if (video->filename != "")
-	{
-		CLibPicture libPicture;
-		CSqlThumbnailVideo sqlThumbnailVideo;
-		int nbResult = sqlThumbnailVideo.GetNbThumbnail(video->filename);
-		if (nbResult > 0)
-		{
-			for (int i = 0; i < nbResult; i++)
-			{
-				auto thumbnail = new CImageVideoThumbnail();
-				sqlThumbnailVideo.GetPictureThumbnail(video->filename, i, thumbnail);
-				if (thumbnail->image == nullptr)
-				{
-					thumbnail = new CImageVideoThumbnail();
-					thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
-					thumbnail->timePosition = i;
-					thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
-				}
-				if (thumbnail->image == nullptr)
-				{
-					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
-
-				}
-				
-
-				CIcone* pBitmapIcone = video->window->iconeList->GetElement(i);
-				if (pBitmapIcone != nullptr)
-				{
-					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
-					if (thumbnailData != nullptr)
-					{
-						if (thumbnail->image != nullptr)
-							thumbnailData->SetBitmap(thumbnail->image);
-						thumbnailData->SetTimePosition(thumbnail->timePosition);
-					}
-				}
-				
-				if (thumbnail != nullptr)
-					delete thumbnail;
-			}
-		}
-	}
-    auto event = new wxCommandEvent(wxEVENT_ENDUPDATEVIDEOTHUMBNAIL);
-	event->SetClientData(video);
-	wxQueueEvent(video->window, event);
-}
 
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)

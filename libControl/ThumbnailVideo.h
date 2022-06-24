@@ -16,13 +16,14 @@ namespace Regards
 
 		private:
 
-
+			static void ProcessThumbnail(void* param);
 			static void LoadMoviePicture(void* param);
 			void ResizeThumbnail() override;
 			static bool ItemCompFonct(int x, int y, CIcone* icone, CWindowMain* parent);
 			void EraseThumbnail(wxCommandEvent& event) override;
 			void EndVideoThumbnail(wxCommandEvent& event);
             void EndUpdateVideoThumbnail(wxCommandEvent& event);
+			
 			void EndThumbnail(wxCommandEvent& event);
 
 			int FindNumItem(const int& videoPos);
@@ -32,7 +33,7 @@ namespace Regards
 			wxString videoFilename;
 			int64_t oldvideoPos = 0;
 			bool processThumbnailVideo = false;
-			static void VideoProcessThumbnail(void* param);
+			
 			int iFormat = 0;
 
 		};
