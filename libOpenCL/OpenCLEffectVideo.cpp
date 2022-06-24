@@ -314,7 +314,10 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
 {
-	cv::cvtColor(yuv, paramSrc, cv::COLOR_YUV2BGR_NV12);
+    cv::UMat out;
+	cv::cvtColor(yuv, out, cv::COLOR_YUV2BGR_NV12);
+    out.copyTo(paramSrc);
+
 }
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight)

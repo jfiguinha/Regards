@@ -509,11 +509,11 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         }
 
 #endif
-
+        bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
     }  
 
     renderOpenGL->SetCurrent(*this);
-    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
+    
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
     
 }

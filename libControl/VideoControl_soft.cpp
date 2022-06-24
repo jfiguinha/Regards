@@ -2104,6 +2104,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
+            cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
 			AVFrame* tmp_frame = src_frame;
