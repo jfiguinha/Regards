@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{21740b4d-53a9-40d0-959a-2c9e251be3d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{ea6f1a4d-744e-448f-b579-dfa51158a1c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -45,9 +48,6 @@
     <ClInclude Include="videoframe.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="videothumb.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="videothumbnailer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -63,6 +63,9 @@
     <ClInclude Include="StreamInfo.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="videothumb.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="filmstripfilter.cpp">
@@ -72,9 +75,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="stringoperations.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="videothumb.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="videothumbnailer.cpp">
@@ -88,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="videothumb.cpp">
+      <Filter>Interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
