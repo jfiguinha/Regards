@@ -40,7 +40,7 @@ namespace Regards
 		public:
 			CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 			~CBitmapWndRender(void) override;
-
+			void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop);
 			virtual void SetParent(wxWindow* parent) override;
 			int GetWidth() override;
 			int GetHeight() override;

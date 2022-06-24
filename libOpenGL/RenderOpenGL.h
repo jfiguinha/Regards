@@ -41,7 +41,7 @@ namespace Regards
 			wxGLContext* GetGLContext();
 
 			void CreateScreenRender(const int& width, const int& height, const CRgbaquad& color);
-			GLTexture* GetDisplayTexture(const int& width, const int& height);
+			GLTexture* GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop);
 			void RenderToScreen(IMouseUpdate* mousUpdate, CEffectParameter* effectParameter, const int& left,
 			                    const int& top, const bool& inverted = false);
 

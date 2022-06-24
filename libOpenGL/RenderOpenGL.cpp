@@ -129,7 +129,7 @@ GLvoid CRenderOpenGL::ReSizeGLScene(GLsizei width, GLsizei height) // Resize And
 }
 
 
-GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
+GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height, const bool& openclOpenGLInterop)
 {
 	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))
 	{
@@ -139,7 +139,7 @@ GLTexture* CRenderOpenGL::GetDisplayTexture(const int& width, const int& height)
 			delete(textureDisplay);
 		textureDisplay = nullptr;
 
-		textureDisplay = new GLTexture(width, height);
+		textureDisplay = new GLTexture(width, height, openclOpenGLInterop);
 	}
 
 	return textureDisplay;

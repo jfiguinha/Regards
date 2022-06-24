@@ -67,6 +67,7 @@ namespace Regards
 #ifdef OPENCV_OPENCL_OPENGL
 			cv::ocl::Context& initializeContextFromGL();
 #endif
+			bool openclOpenGLInterop = false;
 		};
 	}
 }

@@ -29,6 +29,7 @@ class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInt
 public:
 	CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer);
 	~CVideoControlSoft() override;
+	void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop);
 	void SetParent(wxWindow* parent) override;
 	void ReloadResource();
 	bool IsPause();
@@ -168,6 +169,7 @@ protected:
 	void GetDenoiserPt(const int& width, const int& height);
 	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
 
+	bool openclOpenGLInterop = false;
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;

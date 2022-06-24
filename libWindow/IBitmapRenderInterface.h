@@ -27,5 +27,5 @@ public:
 	virtual void SetParent(wxWindow* parent) = 0;
 	virtual void Resize() = 0;
 	virtual void SetEndProgram(const bool& endProgram) = 0;
-
+	virtual void SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop) = 0;
 };

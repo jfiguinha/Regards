@@ -5,7 +5,7 @@
 #include <OpenCL/cl_gl.h>
 #include <OpenCL/cl_gl_ext.h>
 #endif
-extern bool isOpenCLOpenGLInterop;
+
 
 using namespace Regards::OpenGL;
 #ifdef OPENCV_OPENCL_OPENGL
@@ -140,18 +140,19 @@ GLTexture::~GLTexture(void)
 #endif
 }
 
-GLTexture* GLTexture::CreateTextureOutput(int width, int height, GLenum format)
+GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
 {
-	GLTexture* glTextureDest = new GLTexture(width, height, format);
+	GLTexture* glTextureDest = new GLTexture(width, height, openclOpenGLInterop, format);
 	return glTextureDest;
 }
 
-GLTexture::GLTexture(const int& nWidth, const int& nHeight, GLenum format)
+GLTexture::GLTexture(const int& nWidth, const int& nHeight, const bool& openclOpenGLInterop, GLenum format)
 {
 	m_nTextureID = 0;
 	width = nWidth;
 	height = nHeight;
 	this->format = format;
+	this->openclOpenGLInterop = openclOpenGLInterop;
 	Create(nWidth, nHeight, nullptr);
 
 }
@@ -200,7 +201,7 @@ void GLTexture::SetData(cv::UMat& bitmap)
 	if(pimpl_ == nullptr)
 		pimpl_ = new CTextureGLPriv();
 
-	if (pimpl_ != nullptr && isOpenCLOpenGLInterop && pimpl_->isOpenCLCompatible)
+	if (pimpl_ != nullptr && openclOpenGLInterop && pimpl_->isOpenCLCompatible)
 	{
 		cv::UMat bitmapMatrix;
 		if (bitmap.channels() == 3)
@@ -348,7 +349,7 @@ void GLTexture::Delete()
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 
 #ifdef OPENCV_OPENCL_OPENGL
-	if (pimpl_ && isOpenCLOpenGLInterop)
+	if (pimpl_ && openclOpenGLInterop)
 	{
 		pimpl_->DeleteTextureInterop();
 	}

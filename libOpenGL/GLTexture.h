@@ -12,11 +12,11 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int& nWidth, const int& nHeight, GLenum format = GL_BGRA_EXT);
+			GLTexture(const int& nWidth, const int& nHeight, const bool& openclOpenGLInterop, GLenum format = GL_BGRA_EXT);
 			GLTexture(void);
 			~GLTexture(void);
 
-			static GLTexture* CreateTextureOutput(int width, int height, GLenum format = GL_BGRA_EXT);
+			static GLTexture* CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format = GL_BGRA_EXT);
 			bool Create(const int& nWidth, const int& nHeight, uint8_t* pbyData);
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
@@ -49,6 +49,7 @@ namespace Regards
 #ifdef OPENCV_OPENCL_OPENGL
 			CTextureGLPriv* pimpl_ = nullptr;
 #endif
+			bool openclOpenGLInterop = false;
 			int width;
 			int height;
 			GLenum format;

@@ -984,6 +984,11 @@ void CVideoControlSoft::PlayFirstMovie(const bool& firstMovie)
 	this->firstMovie = firstMovie;
 }
 
+void  CVideoControlSoft::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
+{
+	this->openclOpenGLInterop = openclOpenGLInterop;
+}
+
 int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 {
 	if (videoEnd || stopVideo)
@@ -1904,7 +1909,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
 	}
 
-	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	cv::UMat data = openclEffect->GetUMat(false);
 	glTexture->SetData(data);
 
@@ -1954,10 +1959,10 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
 	if (pictureFrame == nullptr)
-		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 
 	if (pictureFrame->GetMatrix().empty())
-		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
@@ -1989,7 +1994,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	}
 
 
-	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	if (glTexture != nullptr)
 	{
 		glTexture->SetData(bitmapOut);

@@ -28,7 +28,7 @@ static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
 #endif
-extern bool isOpenCLOpenGLInterop;
+
 extern bool isOpenCLInitialized;
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 {
 	this->bitmapWndRender = bitmapWndRender;
 	this->bitmapWndRender->SetParent(this);
-
+    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 	vector<int> listTimer = bitmapWndRender->GetListTimer();
 	for (int id : listTimer)
 	{
@@ -82,6 +82,7 @@ void CBitmapWnd3D::SetBitmapRenderInterface(IBitmapRenderInterface* bitmapWndRen
 void CBitmapWnd3D::UpdateRenderInterface(IBitmapRenderInterface* bitmapWndRender)
 {
 	this->bitmapWndRender = bitmapWndRender;
+    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 }
 
 bool CBitmapWnd3D::GetProcessEnd()
@@ -474,7 +475,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                     {
                         initializeContextFromGL();
                         isOpenCLInitialized = true;
-                        isOpenCLOpenGLInterop = true;
+                        openclOpenGLInterop = true;
 
                     }
                     catch (cv::Exception& e)
@@ -482,7 +483,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                         const char* err_msg = e.what();
                         std::cout << "exception caught: " << err_msg << std::endl;
                         std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-                        isOpenCLOpenGLInterop = false;
+                        openclOpenGLInterop = false;
                         cv::ocl::Context context;
                         if (!context.create(cv::ocl::Device::TYPE_GPU))
                             isOpenCLInitialized = false;
@@ -512,7 +513,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
     }  
 
     renderOpenGL->SetCurrent(*this);
-
+    bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
 	bitmapWndRender->OnPaint3D(this, renderOpenGL);
     
 }

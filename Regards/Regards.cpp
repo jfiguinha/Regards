@@ -30,7 +30,7 @@
 #endif
 
 bool isOpenCLInitialized = false;
-bool isOpenCLOpenGLInterop = false;
+
 using namespace cv;
 using namespace Regards::Picture;
 
