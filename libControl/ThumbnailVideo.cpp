@@ -18,10 +18,11 @@ using namespace Regards::Window;
 using namespace Regards::Picture;
 #define WX_TIMER_PROCESS 1001
 #define wxEVENT_ENDTHUMBNAIL 1002
+#define wxEVENT_ENDUPDATEVIDEOTHUMBNAIL 1003
 
 struct ThumbnailVideoThread
 {
-	wxWindow * window;
+	CThumbnailVideo * window;
 	wxString filename;
 	thread* threadVideo;
 };
@@ -35,6 +36,7 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, const wxWindowID id, const CT
 	enableTimer = false;
 	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndVideoThumbnail));
 	Connect(wxEVENT_ENDTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndThumbnail));
+    Connect(wxEVENT_ENDUPDATEVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndUpdateVideoThumbnail));
 }
 
 
@@ -57,12 +59,20 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
 
 	nbVideoThumbnailProcess--;
 	if (oldMovie == videoFilename)
-		ProcessVideoThumbnail();
+    {
+        ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+        thumStruct->window = this;
+        thumStruct->filename = videoFilename;
+        thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
+    }
 }
 
 void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
 {
-	ProcessVideoThumbnail();
+    ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+	thumStruct->window = this;
+    thumStruct->filename = videoFilename;
+    thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -336,26 +346,6 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 	needToRefresh = true;
 }
 
-void CThumbnailVideo::VideoProcessThumbnail()
-{
-	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(videoFilename) && nbVideoThumbnailProcess == 0 && processThumbnailVideo)
-	{
-		CSqlThumbnailVideo sqlThumbnailVideo;
-		int nbResult = sqlThumbnailVideo.GetNbThumbnail(videoFilename);
-		if (nbResult < 20)
-		{
-			ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
-			thumStruct->filename = videoFilename;
-			thumStruct->window = this;
-			thumStruct->threadVideo = new thread(LoadMoviePicture, thumStruct);
-			nbVideoThumbnailProcess++;
-		}
-
-		processThumbnailVideo = false;
-	}
-}
-
 void CThumbnailVideo::LoadMoviePicture(void* param)
 {
 	ThumbnailVideoThread * label = static_cast<ThumbnailVideoThread*>(param);
@@ -389,31 +379,56 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 	wxQueueEvent(label->window, event);
 }
 
+void CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)
+{
+    /*
+     * 			ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+			thumStruct->filename = videoFilename;
+			thumStruct->window = this;
+			thumStruct->threadVideo = new thread(LoadMoviePicture, thumStruct);
+             * */
+    ThumbnailVideoThread* label = static_cast<ThumbnailVideoThread*>(event.GetClientData());
+    if(label != nullptr)
+    {
+        if(label->threadVideo != nullptr)
+        {
+            label->threadVideo->join();
+            delete label->threadVideo;
+        }
+        delete label;
+    }   
+    needToRefresh = true;
+}
+
 void CThumbnailVideo::ResizeThumbnail()
 {
 	UpdateScroll();
-	ProcessVideoThumbnail();
+    ThumbnailVideoThread* thumStruct = new ThumbnailVideoThread();
+	thumStruct->window = this;
+    thumStruct->filename = videoFilename;
+    thumStruct->threadVideo = new thread(VideoProcessThumbnail, thumStruct);
 }
 
-void CThumbnailVideo::ProcessVideoThumbnail()
+void CThumbnailVideo::VideoProcessThumbnail(void* param)
 {
-	if (videoFilename != "")
+    ThumbnailVideoThread * video = (ThumbnailVideoThread *)param;
+	if (video->filename != "")
 	{
 		CLibPicture libPicture;
 		CSqlThumbnailVideo sqlThumbnailVideo;
-		int nbResult = sqlThumbnailVideo.GetNbThumbnail(videoFilename);
+		int nbResult = sqlThumbnailVideo.GetNbThumbnail(video->filename);
 		if (nbResult > 0)
 		{
 			for (int i = 0; i < nbResult; i++)
 			{
 				auto thumbnail = new CImageVideoThumbnail();
-				sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i, thumbnail);
+				sqlThumbnailVideo.GetPictureThumbnail(video->filename, i, thumbnail);
 				if (thumbnail->image == nullptr)
 				{
 					thumbnail = new CImageVideoThumbnail();
 					thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
 					thumbnail->timePosition = i;
-					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
+					thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
 				}
 				if (thumbnail->image == nullptr)
 				{
@@ -422,7 +437,7 @@ void CThumbnailVideo::ProcessVideoThumbnail()
 				}
 				
 
-				CIcone* pBitmapIcone = iconeList->GetElement(i);
+				CIcone* pBitmapIcone = video->window->iconeList->GetElement(i);
 				if (pBitmapIcone != nullptr)
 				{
 					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
@@ -439,7 +454,9 @@ void CThumbnailVideo::ProcessVideoThumbnail()
 			}
 		}
 	}
-	needToRefresh = true;
+    auto event = new wxCommandEvent(wxEVENT_ENDUPDATEVIDEOTHUMBNAIL);
+	event->SetClientData(video);
+	wxQueueEvent(video->window, event);
 }
 
 

@@ -958,6 +958,9 @@ COPY "$(SolutionDir)$(Platform)\$(Configuration)\iconv-2.dll" "$(SolutionDir)$(P
     <ProjectReference Include="..\libUtility\libUtility.vcxproj">
       <Project>{a576274a-8b70-4aee-afca-a14d3083c49f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libVideoThumbnail\libFFmpegThumbnailer.vcxproj">
+      <Project>{4824cb9f-9777-4a3d-8287-671c1407e7a1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libViewer\LibViewer.vcxproj">
       <Project>{caa0ba1b-f0ec-48ea-9158-dad73cdb55a4}</Project>
     </ProjectReference>

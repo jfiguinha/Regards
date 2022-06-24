@@ -64,7 +64,7 @@ namespace Regards
 			CRenderOpenGL* renderOpenGL = nullptr;
 			IBitmapRenderInterface* bitmapWndRender = nullptr;
 
-#ifdef WIN32
+#ifdef OPENCV_OPENCL_OPENGL
 			cv::ocl::Context& initializeContextFromGL();
 #endif
 		};
