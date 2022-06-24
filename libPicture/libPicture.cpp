@@ -89,6 +89,7 @@ using namespace Regards::exiv2;
 
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
+using namespace Regards::Video;
 
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
@@ -1323,10 +1324,9 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				//RGBQUAD color = {0,0,0,0};
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
-				int rotation = 0;
 				CThumbnailVideo video(szFileName);
-				bitmap->SetPicture(video.GetVideoFrame(timePosition, widthThumbnail, heightThumbnail));
-				bitmap->SetOrientation(0);
+				bitmap->SetPicture(video.GetVideoFramePercent(percent, widthThumbnail, heightThumbnail));
+				bitmap->SetOrientation(video.GetOrientation());
 				bitmap->SetFilename(szFileName);
 				break;
 			}
@@ -1772,9 +1772,8 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case AV1:
 		case MOV:
 			{
-				CThumbnailVideo video(szFileName);
-				vector<CImageVideoThumbnail*> listVideo = video.GetVideoListFrame(
-					widthThumbnail, heightThumbnail, compressJpeg);
+
+				vector<CImageVideoThumbnail*> listVideo = CThumbnailVideo::GetVideoListFrame(szFileName, widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);
@@ -2705,11 +2704,10 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case Y4M:
 		case MOV:
 			{
-				int orientation = 0;
 				CThumbnailVideo video(fileName);
-				int duration = video.GetMovieDuration() * 20.0 / 100.0;
-				bitmap->SetPicture(video.GetVideoFrame(duration, 0, 0));
-				bitmap->SetOrientation(0);
+				int percent = ((float)numPicture / (float)20) * 100.0f;
+				bitmap->SetPicture(video.GetVideoFramePercent(percent, 0, 0));
+				bitmap->SetOrientation(video.GetOrientation());
 				bitmap->SetFilename(fileName);
 			}
 			break;
@@ -3085,7 +3083,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
 			CThumbnailVideo video(fileName);
-			video.GetVideoDimensions(width, height, rotation);
+			video.GetVideoDimensions(width, height);
 		}
 		break;
 #ifdef LIBHEIC

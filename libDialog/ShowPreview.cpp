@@ -24,7 +24,7 @@ using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
 using namespace Regards::exiv2;
-
+using namespace Regards::Video;
 
 void CShowPreview::UpdateScreenRatio()
 {
@@ -126,12 +126,11 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	if (videoOriginal != nullptr)
 		delete videoOriginal;
 
-	videoOriginal = new CThumbnailVideo(filename);
+	videoOriginal = new Regards::Video::CThumbnailVideo(filename);
 	timeTotal = videoOriginal->GetMovieDuration();
-	orientation = videoOriginal->GetVideoOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	decodeFrameOriginal = videoOriginal->GetVideoFrame(0, 0, 0);
+	decodeFrameOriginal = videoOriginal->GetVideoFramePos(0, 0, 0);
 
 	MoveSlider(0);
 	//this->Resize();
@@ -241,7 +240,7 @@ void CShowPreview::ThreadLoading(void* data)
 {
 	int ret = 0;
 	auto showPreview = static_cast<CShowPreview*>(data);
-
+	int orientation = 0;
 	wxString fileTemp = "";
 
 	if (!showPreview->moveSlider)
@@ -256,10 +255,10 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CThumbnailVideo video(fileTemp);
+			CThumbnailVideo video(showPreview->filename);
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
-			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
+			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 			showPreview->decodeFrame->VertFlipBuf();
 		}
 		else
@@ -268,7 +267,7 @@ void CShowPreview::ThreadLoading(void* data)
 		if (showPreview->decodeFrameOriginal != nullptr)
 			delete showPreview->decodeFrameOriginal;
 
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
 
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
@@ -278,7 +277,7 @@ void CShowPreview::ThreadLoading(void* data)
 		if (showPreview->decodeFrameOriginal != nullptr)
 			delete showPreview->decodeFrameOriginal;
 		//showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}

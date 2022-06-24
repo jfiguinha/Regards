@@ -40,9 +40,6 @@
     <ClCompile Include="RegardsJpegPicture.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="videothumb.cpp">
-      <Filter>ThumbnailVideo</Filter>
-    </ClCompile>
     <ClCompile Include="BmpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -162,12 +159,6 @@
     <ClInclude Include="RegardsJpegPicture.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="videothumb.h">
-      <Filter>ThumbnailVideo</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageVideoThumbnail.h">
-      <Filter>ThumbnailVideo</Filter>
-    </ClInclude>
     <ClInclude Include="BmpOption.h">
       <Filter>Dialog</Filter>
     </ClInclude>
@@ -268,9 +259,6 @@
     </Filter>
     <Filter Include="datastructure">
       <UniqueIdentifier>{637a8849-3739-497d-b628-b0e061cfef4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThumbnailVideo">
-      <UniqueIdentifier>{3441aef7-2d8c-4c2b-8ef0-aaa85458a520}</UniqueIdentifier>
     </Filter>
     <Filter Include="Dialog">
       <UniqueIdentifier>{bdc0c1a0-e7de-486c-a3af-db9eba76d898}</UniqueIdentifier>

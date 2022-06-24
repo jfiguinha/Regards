@@ -9,9 +9,16 @@ using namespace Regards::Window;
 class CRegardsBitmap;
 class CFFmpegDecodeFrameFilter;
 class CFFmpegTranscoding;
-class CThumbnailVideo;
+
 class CRegardsConfigParam;
 class CImageLoadingFormat;
+namespace Regards
+{
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
+}
 
 namespace Regards
 {
@@ -79,7 +86,7 @@ namespace Regards
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-			CThumbnailVideo* videoOriginal = nullptr;
+			Regards::Video::CThumbnailVideo* videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
 			CRegardsBitmap * decodeFrame = nullptr;

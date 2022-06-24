@@ -33,6 +33,7 @@ using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
+using namespace Regards::Video;
 using namespace Regards::DeepLearning;
 
 //#define CAFFE
@@ -463,12 +464,12 @@ void CListFace::FacialRecognition(void* param)
 		int height = 0;
 
 		int orientation = 0;
-		video.GetVideoDimensions(width, height, orientation);
-		int timeinsecond = video.GetMovieDuration();
-		for (int i = 0; i < timeinsecond; i++)
+		video.GetVideoDimensions(width, height);
+		int64_t timeinsecond = video.GetMovieDuration();
+		for (int64_t i = 0; i < timeinsecond; i++)
 		{
 			path->nbFace = 0;
-			CRegardsBitmap* pictureData = video.GetVideoFrame(i, 0, 0);
+			CRegardsBitmap* pictureData = video.GetVideoFramePos(i, 0, 0);
 			if (pictureData != nullptr)
 			{
 				pictureData->SetFilename(path->filename);

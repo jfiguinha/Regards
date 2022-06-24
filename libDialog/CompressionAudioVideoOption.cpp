@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(CompressionAudioVideoOption, wxDialog)
 END_EVENT_TABLE()
 
 using namespace Regards::Picture;
+using namespace Regards::Video;
 
 static void GetTimeToHourMinuteSecond(const long& timeToSplit, int& hour, int& minute, int& second)
 {
@@ -220,8 +221,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
-	int orientation = ffmpegTranscoding->GetVideoOrientation();
-	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFrame(pos, 340, 240);
+	int orientation = 0;// ffmpegTranscoding->GetVideoOrientation();
+	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
 	bitmap_local->RotateExif(orientation);
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
 	int x = 0;
@@ -302,8 +303,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	if (ffmpegTranscoding != nullptr)
 		delete ffmpegTranscoding;
 
-	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
-	//ffmpegTranscoding->SetFilename(videoFilename);
+	ffmpegTranscoding = new Regards::Video::CThumbnailVideo(videoFilename);
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);
 

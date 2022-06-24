@@ -23,6 +23,14 @@ namespace Regards
 	}
 }
 
+namespace Regards
+{
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
+}
+
 using namespace Regards::Control;
 
 //(*Headers(TiffOption)
@@ -30,7 +38,7 @@ using namespace Regards::Control;
 class CPreviewDlg;
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-class CThumbnailVideo;
+
 class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
@@ -140,7 +148,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	CThumbnailVideo* ffmpegTranscoding = nullptr;
+	Regards::Video::CThumbnailVideo* ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif
