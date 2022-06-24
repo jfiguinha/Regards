@@ -6,7 +6,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
-#ifdef WIN32
+#ifdef OPENCV_OPENCL_OPENGL
 
 #include <opencv2/core/opengl.hpp>
 #include <utility.h>
@@ -422,6 +422,8 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
         if (status != CL_SUCCESS)
         {
             clReleaseDevice(device);
+            found = -1;
+            break;
         }
         else
         {

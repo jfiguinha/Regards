@@ -192,9 +192,10 @@ void GLTexture::GetData(uint8_t* data)
 
 void GLTexture::SetData(cv::UMat& bitmap)
 {
-
+    bool isOk = false;
+    
 #ifdef OPENCV_OPENCL_OPENGL
-	bool isOk = false;
+	
 
 	if(pimpl_ == nullptr)
 		pimpl_ = new CTextureGLPriv();
