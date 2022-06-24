@@ -130,6 +130,7 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libFiltreInterface"/>

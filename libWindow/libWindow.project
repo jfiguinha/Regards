@@ -163,9 +163,8 @@
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
+        <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libGeolocalisation"/>
@@ -179,7 +178,6 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
-        <IncludePath Value="../libextern/libOpenCL/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

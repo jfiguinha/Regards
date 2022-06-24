@@ -158,6 +158,7 @@
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libGeolocalisation"/>
