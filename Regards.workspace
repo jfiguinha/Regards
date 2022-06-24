@@ -29,7 +29,7 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
-    <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project"/>
+    <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>

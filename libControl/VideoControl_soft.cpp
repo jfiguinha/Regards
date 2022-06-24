@@ -1911,8 +1911,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 	cv::UMat data = openclEffect->GetUMat(false);
-	glTexture->SetData(data);
-
+	if(!glTexture->SetData(data))
+        openclOpenGLInterop = false;
 	return glTexture;
 }
 

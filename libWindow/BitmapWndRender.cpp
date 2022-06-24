@@ -1594,7 +1594,8 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 
 		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, isOpenCLOpenGLInterop);
         cv::UMat data = filtreEffet->GetUMat();
-        glTexture->SetData(data);
+        if(!glTexture->SetData(data))
+            isOpenCLOpenGLInterop = false;
 
 		
 	}

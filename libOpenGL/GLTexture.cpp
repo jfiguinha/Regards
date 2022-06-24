@@ -85,6 +85,11 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			}
 			if (status == CL_SUCCESS)
 				printf("convertToGLTexture2D isOpenCLOpenGLInterop is OK \n");
+            else
+            {
+               CV_Error(cv::Error::OpenCLApiCallError, "OpenCL: clEnqueueCopyBufferToImage failed");
+                isOk = false;
+            }
 
 		}
 		catch (cv::Exception& e)
@@ -96,11 +101,6 @@ bool CTextureGLPriv::convertToGLTexture2D(cv::UMat& u, GLTexture* glTexture)
 			isOk = false;
 			printf("convertToGLTexture2D isOpenCLOpenGLInterop is FALSE \n");
 		}
-	}
-	
-	if(!isOk)
-	{
-		glTexture->SetData(u);
 	}
 
 	return isOk;
@@ -191,7 +191,7 @@ void GLTexture::GetData(uint8_t* data)
 }
 
 
-void GLTexture::SetData(cv::UMat& bitmap)
+bool GLTexture::SetData(cv::UMat& bitmap)
 {
     bool isOk = false;
     
@@ -223,7 +223,7 @@ void GLTexture::SetData(cv::UMat& bitmap)
 
 		if (!isOk)
 		{
-			pimpl_->isOpenCLCompatible = false;
+			openclOpenGLInterop = false;
 			pimpl_->DeleteTextureInterop();
 		}
 	}
@@ -244,7 +244,7 @@ void GLTexture::SetData(cv::UMat& bitmap)
 		SetTextureData(bitmapMatrix);
 	}
 
-
+    return isOk;
 	
 }
 
