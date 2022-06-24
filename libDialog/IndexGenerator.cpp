@@ -57,7 +57,7 @@ IndexGenerator::~IndexGenerator()
 
 wxString IndexGenerator::GetIndexTitle()
 {
-	return txtTitle->GetLineText(0);
+	return txtTitle->GetLineText(0).c_str();
 }
 
 bool IndexGenerator::IsOk()
@@ -135,8 +135,8 @@ wxColour IndexGenerator::GetColor()
 
 int IndexGenerator::GetThumbnailSize(int& width, int& height)
 {
-	width = atoi(txtWidth->GetLineText(0));
-	height = atoi(txtHeight->GetLineText(0));
+	width = atoi(txtWidth->GetLineText(0).c_str());
+	height = atoi(txtHeight->GetLineText(0).c_str());
 	return 0;
 }
 

@@ -14,20 +14,11 @@
 #include <wx/spinctrl.h>
 #include <wx/dateevt.h>
 
-
 namespace Regards
 {
 	namespace Control
 	{
 		class CShowPreview;
-	}
-}
-
-namespace Regards
-{
-	namespace Video
-	{
-		class CThumbnailVideo;
 	}
 }
 
@@ -38,7 +29,7 @@ using namespace Regards::Control;
 class CPreviewDlg;
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-
+class CThumbnailVideoOpenCV;
 class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
@@ -148,7 +139,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	Regards::Video::CThumbnailVideo* ffmpegTranscoding = nullptr;
+	CThumbnailVideoOpenCV * ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif

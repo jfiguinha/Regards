@@ -109,6 +109,9 @@
     <ClCompile Include="pfm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="videothumbopencv.cpp">
+      <Filter>ThumbnailOpenCV</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -240,6 +243,12 @@
     <ClInclude Include="pfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImageVideoThumbnail.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="videothumbopencv.h">
+      <Filter>ThumbnailOpenCV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -271,6 +280,9 @@
     </Filter>
     <Filter Include="ThumbnailVideoGenerator">
       <UniqueIdentifier>{c208792d-80f5-4021-b146-20e9d88e01be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThumbnailOpenCV">
+      <UniqueIdentifier>{016ca9ef-9288-4407-ab7e-a1cea09ef513}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

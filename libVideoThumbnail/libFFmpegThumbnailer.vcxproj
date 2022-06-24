@@ -196,7 +196,6 @@
     <ClInclude Include="grayscalefilter.h" />
     <ClInclude Include="histogram.h" />
     <ClInclude Include="ifilter.h" />
-    <ClInclude Include="ImageVideoThumbnail.h" />
     <ClInclude Include="moviedecoder.h" />
     <ClInclude Include="moviestreaminfo.h" />
     <ClInclude Include="StreamInfo.h" />

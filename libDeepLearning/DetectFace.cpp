@@ -48,11 +48,11 @@ CDetectFace::~CDetectFace(void)
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
+void CDetectFace::DetectFace(const Mat& bitmap, const float& confidenceThreshold, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
 {
 #ifdef __APPLE__
 
-    float bestConfidence = 0;
+	float bestConfidence = 0;
 	vector<FaceRect> listFaceRect;
 	int faceDetect = 0;
 	if (_impl)
@@ -64,7 +64,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 		for (int i = 0; i < listFaceRect.size(); i++)
 		{
 			CFace face;
-			
+
 
 			FaceRect rect = listFaceRect[i];
 
@@ -73,22 +73,22 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 			int x2 = rect.x + rect.width;
 			int y2 = rect.y + rect.height;
 
-            if (rect.confidence > confidenceThreshold)
+			if (rect.confidence > confidenceThreshold)
 			{
-                try{
-                    face.confidence = rect.confidence;
-                    face.myROI = Rect(Point(x1, y1), Point(x2, y2));
+				try {
+					face.confidence = rect.confidence;
+					face.myROI = Rect(Point(x1, y1), Point(x2, y2));
 					frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
-                    listOfFace.push_back(face);
-                    pointOfFace.push_back(face.myROI);   
-                }
-                catch (Exception& e)
-                {
-                    const char* err_msg = e.what();
-                    std::cout << "exception caught: " << err_msg << std::endl;
-                    std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-                }
-            }
+					listOfFace.push_back(face);
+					pointOfFace.push_back(face.myROI);
+				}
+				catch (Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
+			}
 		}
 	}
 
@@ -98,7 +98,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float & confidenceThreshol
 
 	//Mat frameOpenCVDNN(bitmap->GetBitmapHeight(), bitmap->GetBitmapWidth(), CV_8UC4, bitmap->GetPtBitmap());
 	Mat frameOpenCVDNN;
-    
+
 	cvtColor(bitmap, frameOpenCVDNN, COLOR_BGRA2BGR);
 	int frameHeight = frameOpenCVDNN.size().height;
 	int frameWidth = frameOpenCVDNN.size().width;
@@ -176,8 +176,8 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 			float confidence = detectionMat.at<float>(i, 2);
 			if (confidence > confidenceThreshold)
 			{
-                if(bestConfidence < confidence)
-                    bestConfidence = confidence;
+				if (bestConfidence < confidence)
+					bestConfidence = confidence;
 				nbFaceDetect++;
 			}
 		}
@@ -207,8 +207,8 @@ void CDetectFace::LoadModel()
 
 #ifndef __WXGTK__
 
-        wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
-        wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
+		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
 
 
 		bool openCLCompatible = false;
@@ -228,8 +228,8 @@ void CDetectFace::LoadModel()
 			net.setPreferableTarget(DNN_TARGET_CPU);
 #else
 
-        wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
-        wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
+		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
+		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 
 		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);
@@ -243,8 +243,8 @@ void CDetectFace::LoadModel()
 		std::cout << "exception caught: " << err_msg << std::endl;
 		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-    
-    isload = true;
+
+	isload = true;
 #endif
-	
+
 }

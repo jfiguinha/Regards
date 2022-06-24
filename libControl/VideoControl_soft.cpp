@@ -17,7 +17,7 @@
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
-#include <videothumb.h>
+#include <videothumbopencv.h>
 #include <hqdn3d.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
@@ -34,7 +34,7 @@ AVFrame* copyFrameBuffer = nullptr;
 
 extern float clamp(float val, float minval, float maxval);
 
-CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain,  IVideoInterface* eventPlayer)
+CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* eventPlayer)
 {
 	renderBitmapOpenGL = nullptr;
 
@@ -328,10 +328,9 @@ void CVideoControlSoft::TestMaxY()
 
 void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
-	int orientation = 0;
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
-	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
+	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFrame(videoSoft->videoPosition, 0, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 	videoSoft->needToRefresh = true;
@@ -398,7 +397,7 @@ void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
 	case WXK_CONTROL:
 		controlKeyPush = false;
 		break;
-	default: ;
+	default:;
 	}
 }
 
@@ -663,18 +662,18 @@ void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
 
 	case WXK_NUMPAD_ADD:
 	case WXK_ADD:
-		{
-			this->ZoomOn();
-		}
-		break;
+	{
+		this->ZoomOn();
+	}
+	break;
 
 	case WXK_NUMPAD_SUBTRACT:
 	case WXK_SUBTRACT:
-		{
-			this->ZoomOut();
-		}
-		break;
-	default: ;
+	{
+		this->ZoomOut();
+	}
+	break;
+	default:;
 	}
 }
 
@@ -842,7 +841,7 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
 {
 	ffmfc->SetFile(this, filename,
-	               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
+		IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding, GetSoundVolume());
 }
 
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
@@ -996,7 +995,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideo(movie);
+		thumbnailVideo = new CThumbnailVideoOpenCV(movie);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;
@@ -1025,8 +1024,8 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 
 		/*
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
-		               IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
-		               firstMovie ? 0 : GetSoundVolume());
+					   IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
+					   firstMovie ? 0 : GetSoundVolume());
 		*/
 		muVideoEffect.lock();
 		videoEffectParameter.ratioSelect = 0;
@@ -1605,7 +1604,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
-	          &convertedFrameBuffer, &linesize);
+		&convertedFrameBuffer, &linesize);
 
 	//bitmapData->VertFlipBuf();
 
@@ -1634,9 +1633,9 @@ void CVideoControlSoft::SetData(void* data, const float& sample_aspect_ratio, vo
 	heightVideo = src_frame->height;
 	ratioVideo = static_cast<float>(src_frame->width) / static_cast<float>(src_frame->height);
 #ifdef __APPLE__
-    needToRefresh = true;
+	needToRefresh = true;
 #else
-    parentRender->Refresh();
+	parentRender->Refresh();
 #endif
 }
 
@@ -1663,7 +1662,7 @@ void CVideoControlSoft::Resize()
 {
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
-	
+
 	if (!stopVideo)
 	{
 		updateContext = true;
@@ -1765,8 +1764,8 @@ void CVideoControlSoft::SetZoomIndex(const int& pos)
 
 
 void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize,
-                                                       int& heightInterpolationSize, int& left, int& top,
-                                                       const bool& invert)
+	int& heightInterpolationSize, int& left, int& top,
+	const bool& invert)
 {
 	TRACE();
 #ifndef WIN32
@@ -1869,8 +1868,8 @@ void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
-    //printf("GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect) \n");
-    
+	//printf("GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect) \n");
+
 	if (openclEffect == nullptr)
 		return nullptr;
 
@@ -1906,8 +1905,8 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	}
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-    cv::UMat data = openclEffect->GetUMat(false);
-    glTexture->SetData(data);
+	cv::UMat data = openclEffect->GetUMat(false);
+	glTexture->SetData(data);
 
 	return glTexture;
 }
@@ -1949,17 +1948,17 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 
 GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
 {
-    int widthOutput = 0;
+	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
-    
-    if(pictureFrame == nullptr)
-        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-        
-    if(pictureFrame->GetMatrix().empty())
-        return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
-    
+
+	if (pictureFrame == nullptr)
+		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+
+	if (pictureFrame->GetMatrix().empty())
+		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput);
+
 	GLTexture* glTexture = nullptr;
 	CRgbaquad backColor;
 	inverted = true;
@@ -2105,7 +2104,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			AVFrame* tmp_frame = src_frame;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
-                //printf("AV_PIX_FMT_NV12 \n");
+				//printf("AV_PIX_FMT_NV12 \n");
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * nWidth;
@@ -2142,7 +2141,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
-               // printf("AV_PIX_FMT_YUV420P \n");
+				// printf("AV_PIX_FMT_YUV420P \n");
 				try
 				{
 					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
@@ -2153,8 +2152,8 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					openclEffectYUV->SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
 
 					muBitmap.unlock();
-                    
-                   // imwrite("/Users/jacques/Pictures/test.jpeg",test);
+
+					// imwrite("/Users/jacques/Pictures/test.jpeg",test);
 				}
 				catch (cv::Exception& e)
 				{

@@ -21,14 +21,7 @@ using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
-namespace Regards
-{
-	namespace Video
-	{
-		class CThumbnailVideo;
-	}
-}
-
+class CThumbnailVideoOpenCV;
 class Chqdn3d;
 
 class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInterface
@@ -52,7 +45,7 @@ public:
 	void SetZoomIndex(const int& pos);
 	void ShrinkVideo();
 	void RepeatVideo();
-	void DiaporamaMode(const bool & value);
+	void DiaporamaMode(const bool& value);
 	vector<int> GetZoomValue();
 	virtual CRegardsBitmap* SavePicture(bool& isFromBuffer);
 	bool IsFFmpegDecode();
@@ -89,9 +82,9 @@ public:
 	virtual void OnPaint2D(wxWindow* gdi) override;
 	virtual void OnMouseMove(wxMouseEvent& event) override;
 	virtual void OnLButtonDown(wxMouseEvent& event) override;
-	virtual void OnRButtonDown(wxMouseEvent& event) override; 
+	virtual void OnRButtonDown(wxMouseEvent& event) override;
 	virtual void OnLButtonUp(wxMouseEvent& event) override;
-	virtual void OnLDoubleClick(wxMouseEvent& event) override{};
+	virtual void OnLDoubleClick(wxMouseEvent& event) override {};
 	virtual void OnMouseWheel(wxMouseEvent& event) override {};
 	virtual void OnKeyDown(wxKeyEvent& event) override;
 	virtual void OnKeyUp(wxKeyEvent& event) override;
@@ -165,7 +158,7 @@ protected:
 	int GetSoundVolume();
 	float GetZoomRatio();
 	void CalculRectPictureInterpolation(wxRect& rc, int& widthInterpolationSize, int& heightInterpolationSize,
-	                                    int& left, int& top, const bool& invert);
+		int& left, int& top, const bool& invert);
 	void CalculPositionVideo(int& widthOutput, int& heightOutput, wxRect& rc);
 
 	int GetSrcBitmapWidth();
@@ -207,7 +200,7 @@ protected:
 	mutex muVideoEffect;
 	mutex muVideoRender;
 	mutex muSubtitle;
-	
+
 	bool videoRender = false;;
 	bool videoStartRender = false;
 	thread* _threadVideo = nullptr;
@@ -217,7 +210,7 @@ protected:
 	COpenCLEffectVideo* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
-	
+
 	CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;
@@ -251,7 +244,7 @@ protected:
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
-	Regards::Video::CThumbnailVideo* thumbnailVideo;
+	CThumbnailVideoOpenCV * thumbnailVideo;
 	bool thumbnailFromBitmap = false;
 	Chqdn3d* hq3d = nullptr;
 	int oldLevelDenoise = 4;
@@ -269,6 +262,6 @@ protected:
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
 
-	uint8_t * src = nullptr;
+	uint8_t* src = nullptr;
 	int sizesrc = 0;
 };

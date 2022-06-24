@@ -20,7 +20,7 @@
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
 #include "LibResource.h"
-#include <videothumb.h>
+#include <videothumbopencv.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
@@ -33,7 +33,6 @@ using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-using namespace Regards::Video;
 using namespace Regards::DeepLearning;
 
 //#define CAFFE
@@ -72,8 +71,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	std::vector<int> value = {60, 70, 80, 90, 100};
-	std::vector<int> valueZoom = {100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600};
+	std::vector<int> value = { 60, 70, 80, 90, 100 };
+	std::vector<int> valueZoom = { 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
 
 	int positionTab = 3;
 	if (config != nullptr)
@@ -117,12 +116,12 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFaceToolbar->SetTrackBarPosition(positionTab - 1);
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY,
-		                         false);
-    }
+			false);
+	}
 
 	if (viewerTheme != nullptr)
 	{
-        CThemeToolbar theme;
+		CThemeToolbar theme;
 		int position = 2;
 		if (config != nullptr)
 		{
@@ -141,11 +140,11 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFacePertinenceToolbar->SetTabValue(value);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(),
-		                         rect, wxID_ANY, false);
+			rect, wxID_ANY, false);
 
 		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
-		
+
 		titleBar = new CTitleBar(windowManager, wxID_ANY, this);
 		titleBar->SetRefresh(true);
 		titleBar->SetTitle(libelle);
@@ -167,7 +166,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
 	Connect(wxEVENT_THUMBNAILREFRESHFACE, wxCommandEventHandler(CListFace::ThumbnailDatabaseRefresh));
 
-	
+
 
 	processIdle = true;
 
@@ -180,15 +179,15 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 int CListFace::ImageSuivante()
 {
-    int numItem = -1;
-	if(thumbnailFace != nullptr)
+	int numItem = -1;
+	if (thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImageSuivante();
 	/*
-    if(numItem =- -1)
-    {
-        int photoId = thumbnailFace->GetNumPhotoId(numItem);
-        thumbnailFace->SetActifItem(photoId, false);
-    }
+	if(numItem =- -1)
+	{
+		int photoId = thumbnailFace->GetNumPhotoId(numItem);
+		thumbnailFace->SetActifItem(photoId, false);
+	}
 	*/
 	return numItem;
 }
@@ -210,15 +209,15 @@ int CListFace::GetNumItem()
 
 int CListFace::ImagePrecedente()
 {
-    int numItem = 0;
+	int numItem = 0;
 	if (thumbnailFace != nullptr)
 		numItem = thumbnailFace->ImagePrecedente();
 	/*
-    if(numItem =- -1)
-    {
-        int photoId = thumbnailFace->GetNumPhotoId(numItem);
-        thumbnailFace->SetActifItem(photoId, false);
-    }
+	if(numItem =- -1)
+	{
+		int photoId = thumbnailFace->GetNumPhotoId(numItem);
+		thumbnailFace->SetActifItem(photoId, false);
+	}
 	*/
 	return numItem;
 }
@@ -409,7 +408,7 @@ void CListFace::FacialRecognitionReload()
 		CSqlFindFacePhoto facePhoto;
 		std::vector<int> listFace = facePhoto.GetListFaceToRecognize();
 		wxProgressDialog dialog("Face Recognition", "", listFace.size(), nullptr,
-		                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+			wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
 		int i = 0;
 		for (int numFace : listFace)
@@ -459,17 +458,17 @@ void CListFace::FacialRecognition(void* param)
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
-		CThumbnailVideo video(path->filename);
+		CThumbnailVideoOpenCV video(path->filename);
 		int width = 0;
 		int height = 0;
 
 		int orientation = 0;
-		video.GetVideoDimensions(width, height);
-		int64_t timeinsecond = video.GetMovieDuration();
-		for (int64_t i = 0; i < timeinsecond; i++)
+		video.GetVideoDimensions(width, height, orientation);
+		int timeinsecond = video.GetMovieDuration();
+		for (int i = 0; i < timeinsecond; i++)
 		{
 			path->nbFace = 0;
-			CRegardsBitmap* pictureData = video.GetVideoFramePos(i, 0, 0);
+			CRegardsBitmap* pictureData = video.GetVideoFrame(i, 0, 0);
 			if (pictureData != nullptr)
 			{
 				pictureData->SetFilename(path->filename);
@@ -530,11 +529,11 @@ void CListFace::FacialRecognition(void* param)
 
 void CListFace::OnIdle(wxIdleEvent& evt)
 {
-    if(needToRefresh)
-    {
-        this->Refresh();
-        needToRefresh = false;
-    }      
+	if (needToRefresh)
+	{
+		this->Refresh();
+		needToRefresh = false;
+	}
 
 	if (endProgram)
 	{
@@ -554,16 +553,16 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
-    int faceDetection = 0;
-    CRegardsConfigParam* regardsParam = CParamInit::getInstance();
-    
-    if (!isOpenCLInitialized && regardsParam->GetIsOpenCLSupport())
+	int faceDetection = 0;
+	CRegardsConfigParam* regardsParam = CParamInit::getInstance();
+
+	if (!isOpenCLInitialized && regardsParam->GetIsOpenCLSupport())
 	{
 		processIdle = true;
 		return;
 	}
-	
-    if(!isLoadingResource && !resourceLoaded)
+
+	if (!isLoadingResource && !resourceLoaded)
 	{
 		isLoadingResource = true;
 		auto path = new CThreadFace();
@@ -577,7 +576,7 @@ void CListFace::ProcessIdle()
 		return;
 	}
 
-	
+
 	if (regardsParam != nullptr)
 	{
 		faceDetection = regardsParam->GetFaceDetection();
@@ -588,8 +587,8 @@ void CListFace::ProcessIdle()
 		processIdle = false;
 		return;
 	}
-		
-	
+
+
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam* config = CParamInit::getInstance();
@@ -642,7 +641,7 @@ void CListFace::ProcessIdle()
 
 			if (sendMessageStatus)
 			{
-				if(cleanDatabase)
+				if (cleanDatabase)
 					CDeepLearning::CleanRecognition();
 				cleanDatabase = false;
 				auto thumbnailMessage = new CThumbnailMessage();

@@ -52,9 +52,10 @@ public:
 	wxComboBox* rbTransitionDiaporamaEffect;
 	wxComboBox* rbInterpolation;
 
+#ifndef __APPLE__
 	wxComboBox* rbVideoEncoderHard;
 	wxComboBox* rbVideoDecoderHard;
-
+#endif
 	//ID_RBVIDEOFACEDETECTION
 	wxRadioBox* rbVideoFaceDetection;
 	wxRadioBox* rbFaceDetection;
