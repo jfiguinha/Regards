@@ -38,9 +38,9 @@
 #endif
 
 
-//#ifndef __WXGTK__
+#ifndef __WXGTK__
 #define OPENCV_OPENCL_OPENGL
-//#endif
+#endif
 
 //#define WX_PRECOMP
 #if defined(__WXMSW__) && defined(_DEBUG)
