@@ -233,7 +233,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Otherlib\libffmpeg;..\libTheme;..\include;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libParameter;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource;..\Regards\Resources;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libVideoThumbnail;..\Otherlib\libffmpeg;..\libTheme;..\include;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libParameter;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource;..\Regards\Resources;$(SolutionDir)libextern\opencv\opencv-4.5.1\build\;$(SolutionDir)libextern\opencv\opencv-4.5.1\modules\core\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
