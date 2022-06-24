@@ -218,6 +218,7 @@
         <Library Value="raw_r"/>
         <Library Value="jasper"/>
         <Library Value="gomp"/>
+        <Library Value="VideoThumbnail"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>
         <Library Value="avcodec"/>
@@ -413,6 +414,7 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
         <LibraryPath Value="../libOpenGL/Debug"/>
+        <LibraryPath Value="../libVideoThumbnail/Debug"/>
         <LibraryPath Value="../wxCheckTree/Debug"/>
         <LibraryPath Value="../libSqlite/Debug"/>
         <LibraryPath Value="../libViewer/Debug"/>
@@ -500,6 +502,7 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Release"/>
         <LibraryPath Value="../libOpenGL/Release"/>
+        <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../libMediaInfo/Release"/>
         <LibraryPath Value="../wxCheckTree/Release"/>
         <LibraryPath Value="../libSqlite/Release"/>

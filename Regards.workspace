@@ -29,6 +29,7 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
+    <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
@@ -147,6 +148,7 @@
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Debug"/>
+      <Project Name="libVideoThumbnail" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -223,6 +225,7 @@
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
       <Project Name="RegardsViewer_macsilicon" ConfigName="Release"/>
+      <Project Name="libVideoThumbnail" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

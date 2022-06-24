@@ -38,11 +38,6 @@
     <File Name="RotateByShearRGB.h"/>
     <File Name="RotateByShear.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="ThumbnailVideo">
-    <File Name="videothumb.h"/>
-    <File Name="ImageVideoThumbnail.h"/>
-    <File Name="videothumb.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="libexif">
     <File Name="ThumbnailData.h"/>
     <File Name="Metadata.h"/>
@@ -135,6 +130,7 @@
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-pthread;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libFiltre"/>
