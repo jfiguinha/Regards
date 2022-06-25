@@ -106,6 +106,7 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
 	if (label != nullptr)
 		delete label;
 
+	process_end = true;
 
 	nbVideoThumbnailProcess--;
 	if (oldMovie == videoFilename)
@@ -114,6 +115,7 @@ void CThumbnailVideo::EndThumbnail(wxCommandEvent& event)
         thumStruct->window = this;
         thumStruct->filename = videoFilename;
         thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
+		process_end = false;
     }
 }
 
@@ -123,6 +125,7 @@ void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
 	thumStruct->window = this;
     thumStruct->filename = videoFilename;
     thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
+	process_end = false;
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -448,6 +451,7 @@ void CThumbnailVideo::EndUpdateVideoThumbnail(wxCommandEvent& event)
         delete label;
     }   
     needToRefresh = true;
+	process_end = true;
 }
 
 void CThumbnailVideo::ResizeThumbnail()
@@ -457,6 +461,7 @@ void CThumbnailVideo::ResizeThumbnail()
 	thumStruct->window = this;
     thumStruct->filename = videoFilename;
     thumStruct->threadVideo = new thread(ProcessThumbnail, thumStruct);
+	process_end = false;
 }
 
 
