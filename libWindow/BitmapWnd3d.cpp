@@ -227,6 +227,8 @@ wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
 
 cl_device_id GetListOfDevice(cl_platform_id platform, cl_device_type device_type, int& found)
 {
+    found = -1;
+    
     cl_uint num_of_devices;
 
     cl_int err = clGetDeviceIDs(
@@ -277,6 +279,8 @@ cl_device_id GetListOfDevice(cl_platform_id platform, cl_device_type device_type
         break;
     }
 
+    if(found == -1)
+        return nullptr;
     return devices[found];
 }
 
@@ -322,6 +326,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
     if (status != CL_SUCCESS)
     {
         clReleaseDevice(device);
+        CV_Error(cv::Error::OpenCLInitError, "OpenCL: Can't create context for OpenGL interop");
     }
 
     cl_platform_id platform = platforms[0];

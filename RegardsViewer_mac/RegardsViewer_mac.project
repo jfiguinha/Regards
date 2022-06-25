@@ -210,6 +210,7 @@
         <Library Value="expat"/>
         <Library Value="jasper"/>
         <Library Value="Jbig"/>
+        <Library Value="VideoThumbnail"/>
         <Library Value="avformat"/>
         <Library Value="avcodec"/>
         <Library Value="avdevice"/>
@@ -368,6 +369,7 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Release"/>
         <LibraryPath Value="../libOpenGL/Release"/>
+        <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../wxCheckTree/Release"/>
         <LibraryPath Value="../libViewer/Release"/>
         <LibraryPath Value="../libSqlEngine/Release"/>
