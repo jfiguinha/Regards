@@ -1813,13 +1813,13 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 	heightInterpolationSize = parentRender->GetSize().GetHeight() * scale_factor - (top * 2);
 
 	rc.x = max(xValue, 0);
-	if (invert)
-	{
-		int heightmax = heightOutput - (parentRender->GetSize().GetHeight() * scale_factor) - yValue;
-		rc.y = max(heightmax, 0);
-	}
-	else
-		rc.y = max(yValue, 0);
+	//if (!invert)
+	//{
+	int heightmax = heightOutput - (parentRender->GetSize().GetHeight() * scale_factor) - yValue;
+	rc.y = max(heightmax, 0);
+	//}
+	//else
+	//	rc.y = max(yValue, 0);
 	rc.width = widthOutput;
 	rc.height = heightOutput;
 }
