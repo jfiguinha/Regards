@@ -492,16 +492,18 @@ void MovieDecoder::getScaledVideoFrame(int scaledSize, bool maintainAspectRatio,
     auto del = [] (AVFrame* f) { av_frame_free(&f); };
     std::unique_ptr<AVFrame, decltype(del)> res(av_frame_alloc(), del);
 
-    checkRc(av_buffersrc_write_frame(m_pFilterSource, m_pFrame), "Failed to write frame to filter graph");
+    //checkRc(av_buffersrc_write_frame(m_pFilterSource, m_pFrame), "Failed to write frame to filter graph");
 
     int attempts = 0;
-    int rc = av_buffersink_get_frame(m_pFilterSink, res.get());
-    while (rc == AVERROR(EAGAIN) && attempts++ < 10)
+    int rc = 0;// av_buffersink_get_frame(m_pFilterSink, res.get());
+   
+    do
     {
         decodeVideoFrame();
         checkRc(av_buffersrc_write_frame(m_pFilterSource, m_pFrame), "Failed to write frame to filter graph");
         rc = av_buffersink_get_frame(m_pFilterSink, res.get());
     }
+    while (rc == AVERROR(EAGAIN) && attempts++ < 10);
 
     checkRc(rc, "Failed to get buffer from filter");
 
