@@ -38,10 +38,6 @@
 #endif
 
 
-//#ifndef __WXGTK__
-#define OPENCV_OPENCL_OPENGL
-//#endif
-
 //#define WX_PRECOMP
 #if defined(__WXMSW__) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC

@@ -46,6 +46,7 @@ public:
 	wxRadioBox* rbAutoRotate;
 	wxRadioBox* rbContrastCorrection;
 
+	wxRadioBox* rbOpenCLOpenGLInterop;
 	wxRadioBox* rbUSESUPERDNN;
 	wxComboBox* cbUSESUPERDNNFILTER;
 

@@ -8,7 +8,7 @@
 
 
 using namespace Regards::OpenGL;
-#ifdef OPENCV_OPENCL_OPENGL
+
 using namespace cv::ocl;
 
 class CTextureGLPriv
@@ -120,7 +120,6 @@ void CTextureGLPriv::DeleteTextureInterop()
 			cout << "OpenCL: clReleaseMemObject failed" << endl;
 	}
 }
-#endif
 
 GLTexture::GLTexture(void)
 {
@@ -134,10 +133,10 @@ GLTexture::GLTexture(void)
 GLTexture::~GLTexture(void)
 {
 	Delete();
-#ifdef OPENCV_OPENCL_OPENGL
+
 	if (pimpl_ != nullptr)
 		delete pimpl_;
-#endif
+
 }
 
 GLTexture* GLTexture::CreateTextureOutput(int width, int height, const bool& openclOpenGLInterop, GLenum format)
@@ -195,13 +194,10 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 {
     bool isOk = false;
     
-#ifdef OPENCV_OPENCL_OPENGL
-	
-
 	if(pimpl_ == nullptr)
 		pimpl_ = new CTextureGLPriv();
 
-	if (pimpl_ != nullptr && openclOpenGLInterop && pimpl_->isOpenCLCompatible)
+	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)
 	{
 		cv::UMat bitmapMatrix;
 		if (bitmap.channels() == 3)
@@ -227,7 +223,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 			pimpl_->DeleteTextureInterop();
 		}
 	}
-#endif
+
 
 	if(!isOk)
 	{
@@ -348,12 +344,10 @@ void GLTexture::Delete()
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 
-#ifdef OPENCV_OPENCL_OPENGL
 	if (pimpl_ && openclOpenGLInterop)
 	{
 		pimpl_->DeleteTextureInterop();
 	}
-#endif
 
 	if (0 != m_nTextureID)
 	{

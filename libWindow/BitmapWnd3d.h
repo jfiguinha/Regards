@@ -63,10 +63,7 @@ namespace Regards
 			void OnCommand(wxCommandEvent& event);
 			CRenderOpenGL* renderOpenGL = nullptr;
 			IBitmapRenderInterface* bitmapWndRender = nullptr;
-
-#ifdef OPENCV_OPENCL_OPENGL
 			cv::ocl::Context& initializeContextFromGL();
-#endif
 			bool openclOpenGLInterop = false;
 		};
 	}

@@ -296,7 +296,18 @@
 									<item>qsv</item>
 									<item>libmfx</item>
 								</content>
-							</object>		
+							</object>
+							<object class="wxRadioBox" name="ID_RBOPENGLOPENCLINTEROP">
+								<label>OpenCL OpenGL Interop</label>
+								<style>wxRA_SPECIFY_COLS</style>
+								<content>
+									<item>Yes</item>
+									<item>No</item>
+								</content>
+								<default>-1</default>
+								<pos>0,220</pos>
+								<size>190,70</size>
+							</object>								
 							</object>
 					</object>
 					</object>

@@ -215,8 +215,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
-#ifndef OPENCV_OPENCL_OPENGL
-	if (regardsParam->GetIsOpenCLSupport())
+	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
 	{
 		if (!cv::ocl::haveOpenCL())
 		{
@@ -249,7 +248,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(false);
 		}
 	}
-#endif
+
 
 #ifdef WIN32
 	wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";

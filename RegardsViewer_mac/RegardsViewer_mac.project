@@ -210,7 +210,6 @@
         <Library Value="expat"/>
         <Library Value="jasper"/>
         <Library Value="Jbig"/>
-        <Library Value="VideoThumbnail"/>
         <Library Value="avformat"/>
         <Library Value="avcodec"/>
         <Library Value="avdevice"/>
@@ -331,7 +330,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.72.6/" \
+	-e "s/VERSION/2.72.7/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -369,7 +368,6 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Release"/>
         <LibraryPath Value="../libOpenGL/Release"/>
-        <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../wxCheckTree/Release"/>
         <LibraryPath Value="../libViewer/Release"/>
         <LibraryPath Value="../libSqlEngine/Release"/>
@@ -420,7 +418,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.72.6/" \
+	-e "s/VERSION/2.72.7/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>

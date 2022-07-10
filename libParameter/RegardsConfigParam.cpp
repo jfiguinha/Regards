@@ -32,6 +32,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numLanguage = 1;
 	numInterpolation = 0;
 	openCLSupport = 0;
+	openCLOpenGLInteropSupport = 0;
 	detectOrientation = 0;
 	autoContrast = 0;
 	videoDecoderHardware = "none";
@@ -106,6 +107,16 @@ void CRegardsConfigParam::SetHardwareEncoder(const wxString& hardwareEncoder)
 wxString CRegardsConfigParam::GetHardwareEncoder()
 {
 	return videoEncoderHardware;
+}
+
+bool CRegardsConfigParam::GetIsOpenCLOpenGLInteropSupport()
+{
+	return openCLOpenGLInteropSupport;
+}
+
+void CRegardsConfigParam::SetIsOpenCLOpenGLInteropSupport(const int& openCLOpenGLInteropSupport)
+{
+	this->openCLOpenGLInteropSupport = openCLOpenGLInteropSupport;
 }
 
 bool CRegardsConfigParam::GetIsOpenCLSupport()
@@ -387,6 +398,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
 	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
+	sectionPosition->append_node(node("openCLOpenGLInteropSupport", to_string(openCLOpenGLInteropSupport)));
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
 	sectionPosition->append_node(node("autoContrast", to_string(autoContrast)));
 	sectionPosition->append_node(node("openCLFaceSupport", to_string(openCLFaceSupport)));
@@ -569,6 +581,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<>* position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		openCLSupport = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("openCLOpenGLInteropSupport");
+	if (child_node != nullptr)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		openCLOpenGLInteropSupport = atoi(child_node->value());
 	}
 
 	child_node = position_node->first_node("detectOrientation");

@@ -6,7 +6,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 
-#ifdef OPENCV_OPENCL_OPENGL
+
 
 #include <opencv2/core/opengl.hpp>
 #include <utility.h>
@@ -27,7 +27,6 @@ static const char* CL_GL_SHARING_EXT = "cl_APPLE_gl_sharing";
 static const char* CL_GL_SHARING_EXT = "cl_khr_gl_sharing";
 #endif
 
-#endif
 
 extern bool isOpenCLInitialized;
 
@@ -185,9 +184,6 @@ void CBitmapWnd3D::OnMouseMove(wxMouseEvent& event)
 	bitmapWndRender->OnMouseMove(event);
 	//this->Refresh();
 }
-
-#ifdef OPENCV_OPENCL_OPENGL
-
 
 wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name)
 {
@@ -451,7 +447,7 @@ cv::ocl::Context& CBitmapWnd3D::initializeContextFromGL()
     return const_cast<cv::ocl::Context&>(clExecCtx.getContext());
 #endif
 }
-#endif
+
 
 //-----------------------------------------------------------------
 //Dessin de l'image
@@ -466,12 +462,10 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
         renderOpenGL = new CRenderOpenGL(this);
         renderOpenGL->Init(this);
 
-#ifdef OPENCV_OPENCL_OPENGL
-
         CRegardsConfigParam* regardsParam = CParamInit::getInstance();
         if (regardsParam != nullptr)
         {
-            if (regardsParam->GetIsOpenCLSupport())
+            if (regardsParam->GetIsOpenCLSupport() && regardsParam->GetIsOpenCLOpenGLInteropSupport())
             {
                 if (cv::ocl::haveOpenCL() && !isOpenCLInitialized)
                 {
@@ -481,6 +475,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                         initializeContextFromGL();
                         isOpenCLInitialized = true;
                         openclOpenGLInterop = true;
+                        regardsParam->SetIsOpenCLOpenGLInteropSupport(true);
 
                     }
                     catch (cv::Exception& e)
@@ -512,8 +507,7 @@ void CBitmapWnd3D::OnPaint(wxPaintEvent& event)
                 }
             }
         }
-
-#endif
+        regardsParam->SetIsOpenCLOpenGLInteropSupport(openclOpenGLInterop);
         bitmapWndRender->SetOpenCLOpenGLInterop(openclOpenGLInterop);
     }  
 

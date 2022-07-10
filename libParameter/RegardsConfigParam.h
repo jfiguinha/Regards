@@ -111,6 +111,10 @@ public:
 	int GetDetectOrientation();
 	void SetDectectOrientation(const int& detectOrientation);
 
+	bool GetIsOpenCLOpenGLInteropSupport();
+	void SetIsOpenCLOpenGLInteropSupport(const int& openCLOpenGLInteropSupport);
+
+
 protected:
 	void LoadParameter() override;
 	void SaveParameter() override;
@@ -170,7 +174,7 @@ protected:
 
 	int loadFromBinaries = 0;
 	int openCLSupport = 0;
-
+	int openCLOpenGLInteropSupport = 0;
 	int openCLFaceSupport = 0;
 
 	int autoContrast = 0;

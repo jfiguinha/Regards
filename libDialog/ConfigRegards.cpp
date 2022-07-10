@@ -50,6 +50,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbDatabaseInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATAINMEMORY")));
 	rbAutoRotate = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBROTATEAUTO")));
 	rbInterpolation = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBINTERPOLATIONFILTER")));
+	rbOpenCLOpenGLInterop = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBOPENGLOPENCLINTEROP")));
 	rbContrastCorrection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUTOCONTRAST")));
 
 	txtMusicDiaporamaPath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTMUSICDIAPORAMAPATH")));
@@ -202,6 +203,13 @@ void ConfigRegards::init()
 	int superDnn = regardsParam->GetSuperResolutionType();
 	cbUSESUPERDNNFILTER->SetSelection(superDnn);
 
+	int openclOpenGLInterop = regardsParam->GetIsOpenCLOpenGLInteropSupport();
+	if (openclOpenGLInterop == 0)
+		rbOpenCLOpenGLInterop->SetSelection(1);
+	else
+		rbOpenCLOpenGLInterop->SetSelection(0);
+	
+
 #ifndef __APPLE__
 	int numItem = 0;
 	wxString encoder = regardsParam->GetHardwareEncoder();
@@ -297,6 +305,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	int thumbnailProcess = scProcessThumbnail->GetValue();
 	int faceProcess = scProcessFace->GetValue();
 	int exifProcess = scProcessExif->GetValue();
+
+	int openclOpenGLInterop = rbOpenCLOpenGLInterop->GetSelection();
+	if (openclOpenGLInterop == 0)
+		regardsParam->SetIsOpenCLOpenGLInteropSupport(1);
+	else
+		regardsParam->SetIsOpenCLOpenGLInteropSupport(0);
 
 #ifndef __APPLE__
 
