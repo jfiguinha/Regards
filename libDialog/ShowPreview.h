@@ -9,7 +9,7 @@ using namespace Regards::Window;
 class CRegardsBitmap;
 class CFFmpegDecodeFrameFilter;
 class CFFmpegTranscoding;
-class CThumbnailVideoOpenCV;
+
 class CRegardsConfigParam;
 class CImageLoadingFormat;
 
@@ -20,6 +20,12 @@ namespace Regards
 		class CBitmapWndRender;
 		class CBitmapWnd3D;
 	}
+
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
+
 	namespace Control
 	{
 		class CShowPreview : public CWindowMain, public CSliderInterface
@@ -79,7 +85,7 @@ namespace Regards
 			bool defaultToolbar;
 			bool defaultViewer;
 			//bool bitmapWndLocal;
-			CThumbnailVideoOpenCV * videoOriginal = nullptr;
+			Regards::Video::CThumbnailVideo* videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
 			CRegardsBitmap * decodeFrame = nullptr;

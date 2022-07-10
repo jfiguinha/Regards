@@ -21,8 +21,20 @@ using namespace Regards::OpenCL;
 using namespace Regards::OpenCV;
 using namespace Regards::OpenGL;
 class CFFmfc;
-class CThumbnailVideoOpenCV;
+
 class Chqdn3d;
+
+namespace Regards
+{
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
+	namespace OpenCV
+	{
+		class COpenCVStabilization;
+	}
+}
 
 class CVideoControlSoft : public IBitmapRenderInterface, public CVideoControlInterface
 {
@@ -246,7 +258,7 @@ protected:
 	wxString acceleratorHardware = "";
 	bool isOpenGLDecoding = false;
 	float startingTime = 0;
-	CThumbnailVideoOpenCV * thumbnailVideo;
+	CThumbnailVideo * thumbnailVideo;
 	bool thumbnailFromBitmap = false;
 	Chqdn3d* hq3d = nullptr;
 	int oldLevelDenoise = 4;

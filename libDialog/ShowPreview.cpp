@@ -14,7 +14,7 @@
 #include <BitmapWndRender.h>
 #include <ImageLoadingFormat.h>
 #include <MetadataExiv2.h>
-#include <videothumbopencv.h>
+#include <videothumb.h>
 #include <FileUtility.h>
 #include <Tracing.h>
 #include <VideoControl_soft.h>
@@ -126,12 +126,12 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	if (videoOriginal != nullptr)
 		delete videoOriginal;
 
-	videoOriginal = new CThumbnailVideoOpenCV(filename);
+	videoOriginal = new CThumbnailVideo(filename);
 	timeTotal = videoOriginal->GetMovieDuration();
-	orientation = videoOriginal->GetVideoOrientation();
+	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	decodeFrameOriginal = videoOriginal->GetVideoFrame(0, 0, 0);
+	decodeFrameOriginal = videoOriginal->GetVideoFramePos(0, 0, 0);
 
 	MoveSlider(0);
 	//this->Resize();
@@ -256,10 +256,10 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CThumbnailVideoOpenCV video(fileTemp);
+			CThumbnailVideo video(fileTemp);
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
-			showPreview->decodeFrame = video.GetVideoFrame(0, 0, 0);
+			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 			showPreview->decodeFrame->VertFlipBuf();
 		}
 		else
@@ -268,7 +268,7 @@ void CShowPreview::ThreadLoading(void* data)
 		if (showPreview->decodeFrameOriginal != nullptr)
 			delete showPreview->decodeFrameOriginal;
 
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
 
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
@@ -278,7 +278,7 @@ void CShowPreview::ThreadLoading(void* data)
 		if (showPreview->decodeFrameOriginal != nullptr)
 			delete showPreview->decodeFrameOriginal;
 		//showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFrame(showPreview->position, 0, 0);
+		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}

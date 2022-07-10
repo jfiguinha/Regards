@@ -17,7 +17,7 @@
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
-#include <videothumbopencv.h>
+#include <videothumb.h>
 #include <hqdn3d.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
@@ -330,7 +330,7 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
-	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFrame(videoSoft->videoPosition, 0, 0);
+	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 	videoSoft->needToRefresh = true;
@@ -1000,7 +1000,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideoOpenCV(movie);
+		thumbnailVideo = new CThumbnailVideo(movie);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;

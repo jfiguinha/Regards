@@ -25,6 +25,7 @@ public:
 		width = movieDecoder->getWidth();
 		height = movieDecoder->getHeight();
 		rotation = movieDecoder->getOrientation();
+		m_videoMovieDuration = movieDecoder->getDuration();
 	}
 
 	~CThumbnailVideoPimpl()
@@ -46,12 +47,13 @@ public:
 
 	void GetThumbnail(CRegardsBitmap * & image, const int & thumbnailWidth, const int& thumbnailHeight)
 	{
-		if (m_seekTimeInSecond == -1)
+		if (m_seekTimeInSecond == 0 || m_seekTimeInSecond == -1)
 			videoThumbnailer->GetThumbnail(image, movieDecoder, thumbnailWidth, thumbnailHeight, rotation);
 		else
 			videoThumbnailer->GetThumbnailPos(image, movieDecoder, m_seekTimeInSecond, thumbnailWidth, thumbnailHeight, rotation);
 	}
 
+	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
 	MovieDecoder* movieDecoder = nullptr;
 	VideoThumbnailer* videoThumbnailer = nullptr;
@@ -154,7 +156,7 @@ CRegardsBitmap * CThumbnailVideo::GetVideoFramePercent(const int &percent, const
 
 int64_t CThumbnailVideo::GetMovieDuration()
 {
-	return pimpl->m_seekTimeInSecond;
+	return pimpl->m_videoMovieDuration / 100;
 }
 
 vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail)

@@ -29,10 +29,17 @@ using namespace Regards::Control;
 class CPreviewDlg;
 class CImageLoadingFormat;
 class CVideoOptionCompress;
-class CThumbnailVideoOpenCV;
 class CRegardsBitmap;
 class CSliderVideoSelection;
 class CVideoEffectParameter;
+
+namespace Regards
+{
+	namespace Video
+	{
+		class CThumbnailVideo;
+	}
+}
 
 class CompressionAudioVideoOption : public wxDialog
 {
@@ -139,7 +146,7 @@ private:
 	double timeTotal;
 	bool isOk;
 	wxString videoFilename;
-	CThumbnailVideoOpenCV * ffmpegTranscoding = nullptr;
+	Regards::Video::CThumbnailVideo * ffmpegTranscoding = nullptr;
 #ifndef USE_PREVIEW_INTEGRATE
 		CPreviewDlg * previewDlg;
 #endif
