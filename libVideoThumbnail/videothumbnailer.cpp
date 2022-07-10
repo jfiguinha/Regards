@@ -172,6 +172,36 @@ int VideoThumbnailer::GetOrientation()
 	return m_orientation;
 }
 
+
+void VideoThumbnailer::GetThumbnail(CRegardsBitmap* image, MovieDecoder* movieDecoder, const int& thumbnailWidth, const int& thumbnailHeight, const int& rotation)
+{
+    VideoFrame videoFrame;
+
+    if (m_SmartFrameSelection)
+    {
+        generateSmartThumbnail(*movieDecoder, videoFrame);
+    }
+    else
+    {
+        if (thumbnailWidth > thumbnailHeight)
+            m_ThumbnailSize = thumbnailWidth;
+        else
+            m_ThumbnailSize = thumbnailHeight;
+
+        movieDecoder->getScaledVideoFrame(m_ThumbnailSize, m_MaintainAspectRatio, videoFrame);
+    }
+
+    applyFilters(videoFrame);
+
+    if (image != nullptr)
+    {
+        cv::Mat videoMat = cv::Mat(cv::Size(videoFrame.width, videoFrame.height), CV_8UC4, videoFrame.frameData);
+
+        image->SetMatrix(videoMat);
+    }
+}
+
+
 int VideoThumbnailer::GetThumbnailPos(CRegardsBitmap* image, MovieDecoder* movieDecoder, const int64& m_seekTimeInSecond, const int& thumbnailWidth, const int& thumbnailHeight, const int& rotation)
 {
     try

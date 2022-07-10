@@ -50,7 +50,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbDatabaseInMemory = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBDATAINMEMORY")));
 	rbAutoRotate = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBROTATEAUTO")));
 	rbInterpolation = static_cast<wxComboBox*>(FindWindow(XRCID("ID_CBINTERPOLATIONFILTER")));
-	rbOpenCLOpenGLInterop = static_cast<wxComboBox*>(FindWindow(XRCID("ID_RBOPENGLOPENCLINTEROP")));
+	rbOpenCLOpenGLInterop = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBOPENGLOPENCLINTEROP")));
 	rbContrastCorrection = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBAUTOCONTRAST")));
 
 	txtMusicDiaporamaPath = static_cast<wxTextCtrl*>(FindWindow(XRCID("ID_TXTMUSICDIAPORAMAPATH")));

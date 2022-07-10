@@ -46,10 +46,13 @@ public:
 
 	void GetThumbnail(CRegardsBitmap * & image, const int & thumbnailWidth, const int& thumbnailHeight)
 	{
-		videoThumbnailer->GetThumbnailPos(image, movieDecoder, m_seekTimeInSecond, thumbnailWidth, thumbnailHeight, rotation);
+		if (m_seekTimeInSecond == -1)
+			videoThumbnailer->GetThumbnail(image, movieDecoder, thumbnailWidth, thumbnailHeight, rotation);
+		else
+			videoThumbnailer->GetThumbnailPos(image, movieDecoder, m_seekTimeInSecond, thumbnailWidth, thumbnailHeight, rotation);
 	}
 
-	int64 m_seekTimeInSecond;
+	int64 m_seekTimeInSecond = 0;
 	MovieDecoder* movieDecoder = nullptr;
 	VideoThumbnailer* videoThumbnailer = nullptr;
 	int     thumbnailSize = 0;
@@ -85,6 +88,27 @@ void CThumbnailVideo::GetVideoDimensions(int & width, int & height)
 {
 	width = pimpl->width;
 	height = pimpl->height;
+}
+
+CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+{
+	CRegardsBitmap* image = new CRegardsBitmap();
+
+	try
+	{
+		image->SetFilename(fileName);
+		pimpl->SetMoviePos(-1);
+		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
+
+
+	}
+	catch (...)
+	{
+		if (image != nullptr)
+			delete image;
+		image = nullptr;
+	}
+	return image;
 }
 
 CRegardsBitmap* CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)

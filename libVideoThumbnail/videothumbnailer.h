@@ -44,6 +44,7 @@ public:
     ~VideoThumbnailer();
 
 	static int64_t GetMovieDuration(const string& videoFile);
+    void GetThumbnail(CRegardsBitmap* image, MovieDecoder* movieDecoder, const int& thumbnailWidth, const int& thumbnailHeight, const int& rotation);
     int GetThumbnailPos(CRegardsBitmap* image, MovieDecoder* movieDecoder, const int64& m_seekTimeInSecond, const int& thumbnailWidth, const int& thumbnailHeight, const int& rotation);
 	int GetThumbnail(CRegardsBitmap * image, MovieDecoder * movieDecoder, const int &percent, const int & thumbnailWidth, const int & thumbnailHeight, const int & rotation);
 	MovieDecoder * MovieDecoderThumbnail(const std::string& videoFile, AVFormatContext* pAvContext = NULL);

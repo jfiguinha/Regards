@@ -12,7 +12,7 @@ namespace Regards{
 		public:
 			CThumbnailVideo(const wxString& fileName);
 			~CThumbnailVideo();
-
+			CRegardsBitmap* GetVideoFrame( const int& thumbnailWidth, const int& thumbnailHeight);
 			CRegardsBitmap * GetVideoFramePos(const int64& timePosition, const int & thumbnailWidth, const int & thumbnailHeight);
 			CRegardsBitmap * GetVideoFramePercent(const int& percent, const int & thumbnailWidth, const int & thumbnailHeight);
 			void GetVideoDimensions(int & width, int & height);
