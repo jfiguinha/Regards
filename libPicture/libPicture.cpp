@@ -67,7 +67,7 @@ using namespace Regards::exiv2;
 #include <wx/image.h>
 
 #include <FileUtility.h>
-
+#include <VideoPlayer.h>
 //Dialog Save
 #include <GifOption.h>
 #include <JpegOption.h>
@@ -1822,7 +1822,7 @@ bool CLibPicture::TestIsVideoValid(const wxString& szFileName)
 		//CThumbnailVideo video;
 		//video.SetFilename(szFileName);
 		//is_valid = video.IsOk();
-		cv::VideoCapture capture(CConvertUtility::ConvertToStdString(szFileName));
+		CVideoPlayer capture(szFileName, false);
 		if (capture.isOpened())
 		{
 			fileValid.insert(std::make_pair(szFileName, is_valid));

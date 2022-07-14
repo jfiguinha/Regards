@@ -127,7 +127,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 					}
 					else
 					{
-						time_pos += 1000;
+						time_pos += 500;
 						if (videoCapture->SeekToPos(time_pos) == -1)
 						{
 							videoCapture->SeekToBegin();

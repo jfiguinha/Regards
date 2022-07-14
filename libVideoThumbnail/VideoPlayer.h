@@ -12,11 +12,19 @@ namespace Regards {
 		class CVideoPlayer
 		{
 		public:
-			CVideoPlayer(const wxString &filename);
+			CVideoPlayer(const wxString &filename, const bool &useHardware = true);
+			bool isOpened();
 			void SeekToBegin();
 			int SeekToPos(const int& sec);
+			
 			int GetDuration();
-			cv::Mat GetVideoFrame();
+			int GetFps();
+			int GetTotalFrame();
+			int GetWidth();
+			int GetHeight();
+
+			int GetOrientation();
+			cv::Mat GetVideoFrame(const bool& applyOrientation = true);
 			virtual ~CVideoPlayer();
 
 		private:

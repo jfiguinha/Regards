@@ -75,6 +75,9 @@ public:
     int64_t duration = 0;
     int64_t nbFrames = 0;
     int64_t nbFps = 0;
+    bool isOpen = false;
+    int widthVideo = 0;
+    int heightVideo = 0;
 
     int SeekToPos(const int& sec)
     {
@@ -139,7 +142,6 @@ public:
         fprintf(stderr, "Failed to get HW surface format.\n");
         return AV_PIX_FMT_NONE;
     }
-
 
     int decode_write(AVCodecContext* avctx, AVPacket* packet, bool & decode_video)
     {
@@ -227,6 +229,10 @@ public:
             &convertedFrameBuffer, &linesize);
     }
 
+    bool isOpened()
+    {
+        return isOpen;
+    }
 
     int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = true)
     {
@@ -354,12 +360,10 @@ public:
         nbFps = nbFrames / (duration / 1000000);
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
         cv::Mat temp = GetVideoFrame();
+        isOpen = true;
 
         return 1;
     }
-
-
-
 
     int GetDuration()
     {
@@ -371,7 +375,7 @@ public:
         return avformat_seek_file(input_ctx, video_stream, INT64_MIN, 0, INT64_MAX, 0);
     }
 
-    cv::Mat GetVideoFrame()
+    cv::Mat GetVideoFrame(const bool &applyOrientation)
     {
         bool decode_video = false;
         bool exit_white = false;
@@ -398,7 +402,7 @@ public:
        if (!decode_video)
            return cv::Mat();
 
-       if (rotation != 0)
+       if (applyOrientation && rotation != 0)
        {
            cv::Mat src = videoFrame;
            cv::Mat dst;
@@ -428,7 +432,10 @@ public:
         return videoFrame;
     }
 
-
+    int GetOrientation()
+    {
+        return rotation;
+    }
 };
 
 AVBufferRef* CVideoPlayerPimpl::hw_device_ctx = NULL;
@@ -439,40 +446,73 @@ void CVideoPlayer::SeekToBegin()
     pimpl->SeekToBegin();
 }
 
+int CVideoPlayer::GetFps()
+{
+    return pimpl->nbFps;
+}
+
+int CVideoPlayer::GetTotalFrame()
+{
+    return pimpl->nbFrames;
+}
+
+int CVideoPlayer::GetWidth()
+{
+    return pimpl->widthVideo;
+}
+
+int CVideoPlayer::GetHeight()
+{
+    return pimpl->heightVideo;
+}
+
 int CVideoPlayer::GetDuration()
 {
-
     return pimpl->GetDuration();
 }
 
+int CVideoPlayer::GetOrientation()
+{
+    return pimpl->GetOrientation();
+}
+
+bool CVideoPlayer::isOpened()
+{
+    return pimpl->isOpened();
+}
 
 int CVideoPlayer::SeekToPos(const int& sec)
 {
     return pimpl->SeekToPos(sec);
 }
 
-CVideoPlayer::CVideoPlayer(const wxString& filename)
+CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware)
 {
     int ret = 0;
     pimpl = new CVideoPlayerPimpl();
     wxString decoderHardware = "";
 
-    CRegardsConfigParam* config = CParamInit::getInstance();
-    if (config != nullptr)
+    if (useHardware)
     {
-        decoderHardware = config->GetHardwareDecoder();
-    }
+        CRegardsConfigParam* config = CParamInit::getInstance();
+        if (config != nullptr)
+        {
+            decoderHardware = config->GetHardwareDecoder();
+        }
 
-    if(decoderHardware != "")
-        ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
-    
-    if(ret <= 0)
-        pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), false);
+        if (decoderHardware != "")
+            ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
+
+        if (ret <= 0)
+            ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), false);
+    }
+    else
+        ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), useHardware);
 }
 
-cv::Mat CVideoPlayer::GetVideoFrame()
+cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 {
-    return pimpl->GetVideoFrame();
+    return pimpl->GetVideoFrame(applyOrientation);
 }
 
 CVideoPlayer::~CVideoPlayer()

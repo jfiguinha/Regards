@@ -25,9 +25,12 @@ class CompressVideo;
 class CFiltreEffet;
 class CffmpegToBitmap;
 
-namespace cv
+namespace Regards
 {
-	class VideoCapture;
+	namespace Video
+	{
+		class CVideoPlayer;
+	}
 }
 
 class CFFmpegTranscodingPimpl
@@ -155,6 +158,6 @@ private:
 	int sizesrc = 0;
 	
 
-	cv::VideoCapture * capture = nullptr;
+	Regards::Video::CVideoPlayer* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };
