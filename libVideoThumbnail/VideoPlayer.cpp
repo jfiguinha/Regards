@@ -82,23 +82,24 @@ public:
         int64_t seekTarget = sec * AV_TIME_BASE;
         if (seekTarget < duration)
         {
-            int n_seconds = 10; // seek forward 10 seconds
-        // time_base is in seconds, eg. the time base may be 1/1000th of a second,
-        // so just multiply by the reciprocal (den = denominator, num = numerator)
             int64_t ts = av_rescale(
                 sec,
                 input_ctx->streams[video_stream]->time_base.den,
                 input_ctx->streams[video_stream]->time_base.num
             );
-            // even though it mentions in docs that you shouldn't use this because it is a
-            // work in progress, it's been around for more than a decade now, ffplay/ffmpeg/ffprobe
-            // all use it...it is the most consistent and easiest to use. the way I am using
-            // it here is to seek to the nearest keyframe (not frame!). I would not recommend
-            // using it in any other way:
-            // eg. AVSEEK_FLAG_ANY/FRAME/BACKWARD (BACKWARD is ignored anyways)
-            // 0 as flag seeks to keyframes only. I have set the max timestamp to the same value so
-            // that we only look for nearest keyframes behind us
-            int err = avformat_seek_file(input_ctx, video_stream, 0, ts, ts, 0);
+
+            //ts /= 10;
+
+            //SEEK
+            int  err = avformat_seek_file(input_ctx, video_stream, 0, ts, INT64_MAX, 0);
+
+            if(err < 0)
+            {
+               // av_log(NULL, AV_LOG_ERROR, "SUCCEEDED av_seek_frame: %u newPos:%d\n", tm, is->pb->pos);
+                avcodec_flush_buffers(input_ctx->streams[video_stream]->codec);
+            }
+
+           // int err = avformat_seek_file(input_ctx, video_stream, 0, ts, ts, 0);
             return ret;
 
         }
@@ -466,13 +467,13 @@ CVideoPlayer::CVideoPlayer(const wxString& filename)
     int ret = 0;
     pimpl = new CVideoPlayerPimpl();
     wxString decoderHardware = "";
-    /*
+
     CRegardsConfigParam* config = CParamInit::getInstance();
     if (config != nullptr)
     {
         decoderHardware = config->GetHardwareDecoder();
     }
-    */
+
     if(decoderHardware != "")
         ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
     
