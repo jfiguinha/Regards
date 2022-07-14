@@ -16,8 +16,6 @@
 #include <FiltreEffetCPU.h>
 #include <ConvertUtility.h>
 #include <MediaInfo.h>
-#include <VideoPlayer.h>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavcodec/packet.h>
@@ -30,7 +28,6 @@ extern "C" {
 #include <ffmpeg_application.h>
 using namespace cv;
 using namespace Regards::OpenCL;
-using namespace Regards::Video;
 
 static const char* ROTATE = "rotate";
 static const char* hb_h264_level_names[] = {
@@ -208,10 +205,10 @@ static int apply_vp9_preset(AVDictionary** av_opts, const wxString& preset)
 */
 
 #ifdef WIN32
-wxString listencoderHardware[] = {"nvenc", "amf", "qsv","mf", "libmfx", "opencl" };
+wxString listencoderHardware[] = { "nvenc", "amf", "qsv","mf", "libmfx", "opencl" };
 int sizeListEncoderHardware = 6;
 #elif defined(__APPLE__)
-wxString listencoderHardware[] = { "videotoolbox", "opencl"};
+wxString listencoderHardware[] = { "videotoolbox", "opencl" };
 int sizeListEncoderHardware = 1;
 #else
 wxString listencoderHardware[] = { "nvenc", "vaapi", "libmfx", "opencl" };
@@ -1366,7 +1363,7 @@ int CFFmpegTranscodingPimpl::open_output_file(const wxString& filename)
 				return AVERROR_INVALIDDATA;
 			}
 
-			if(dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+			if (dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO)
 			{
 				streamAudio = out_stream;
 				//enc_ctx->bit_rate = dst_abit_rate;
@@ -1653,11 +1650,11 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 		decoderHardware = config->GetHardwareDecoder();
 	}
 
-    if(decoderHardware == "" || decoderHardware == "none")
-    {
-        if ((ret = open_input_file(input)) < 0)
-            return ret;
-    }
+	if (decoderHardware == "" || decoderHardware == "none")
+	{
+		if ((ret = open_input_file(input)) < 0)
+			return ret;
+	}
 	else if ((ret = open_input_file(input, decoderHardware)) < 0)
 		return ret;
 	if ((ret = open_output_file(output)) < 0)
@@ -2009,10 +2006,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	Mat frameOutput;
 	{
 
-		//fps = capture->get(CAP_PROP_FPS);
-		//double noFrame = fps * timeInSeconds;
-		bool success = capture->SeekToPos(timeInSeconds * 1000);
-		frameOutput = capture->GetVideoFrame(false);
+		fps = capture->get(CAP_PROP_FPS);
+		double noFrame = fps * timeInSeconds;
+		bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
+		*capture >> frameOutput;
 	}
 	CRegardsBitmap bitmap;
 	bitmap.SetMatrix(frameOutput);
@@ -2170,16 +2167,16 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 				if (ret < 0)
 					return ret;
 			}
-            int outStreamIndex = streamInNumberInOut[stream_index];
-            printf("decoder -> type:video "
-                   "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
-                   av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
-                   av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ifmt_ctx->streams[stream_index]->time_base));
+			int outStreamIndex = streamInNumberInOut[stream_index];
+			printf("decoder -> type:video "
+				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
+				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
+				av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ifmt_ctx->streams[stream_index]->time_base));
 
-            printf("encoder -> type:video "
-                   "pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
-                   av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
-                   av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ofmt_ctx->streams[outStreamIndex]->time_base));
+			printf("encoder -> type:video "
+				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
+				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
+				av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ofmt_ctx->streams[outStreamIndex]->time_base));
 		}
 
 		av_packet_unref(&packet);
@@ -2235,11 +2232,11 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new CVideoPlayer(input_file);
+	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
-	rotate = capture->GetOrientation();
+	rotate = capture->get(CAP_PROP_ORIENTATION_META);
 
 	orientation = rotate;
 
@@ -2279,16 +2276,20 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new CVideoPlayer(input_file);
+	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
-	rotate = capture->GetOrientation();
-	fps = capture->GetFps();
-	totalFrame = capture->GetTotalFrame();
-	width = capture->GetWidth();
-	height = capture->GetHeight();
-	duration = capture->GetDuration();
+
+	{
+		fps = capture->get(CAP_PROP_FPS);
+		totalFrame = int(capture->get(CAP_PROP_FRAME_COUNT));
+		width = capture->get(CAP_PROP_FRAME_WIDTH);
+		height = capture->get(CAP_PROP_FRAME_HEIGHT);
+		duration = totalFrame / fps;
+		rotate = capture->get(CAP_PROP_ORIENTATION_META);
+
+	}
 
 	if ((ret = OpenFile(input, output)) < 0)
 		return ret;
@@ -2374,21 +2375,21 @@ void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* f
 	av_packet_unref(&enc_pkt);
 }
 
-AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pSourceCodecCtx, AVStream * streamVideo, wxString encoderName)
+AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pSourceCodecCtx, AVStream* streamVideo, wxString encoderName)
 {
-	AVCodecContext * c = nullptr;
-    wxString encoderHardName = "";
-    const AVCodec* p_codec;
+	AVCodecContext* c = nullptr;
+	wxString encoderHardName = "";
+	const AVCodec* p_codec;
 
-    if(encoderName != "")
-    {
-        encoderHardName = GetCodecName(codec_id, encoderName);
-        p_codec = avcodec_find_encoder_by_name(encoderHardName);
-    }
-    else
-    {
-        p_codec = avcodec_find_encoder(codec_id);
-    }
+	if (encoderName != "")
+	{
+		encoderHardName = GetCodecName(codec_id, encoderName);
+		p_codec = avcodec_find_encoder_by_name(encoderHardName);
+	}
+	else
+	{
+		p_codec = avcodec_find_encoder(codec_id);
+	}
 
 	if (p_codec != nullptr)
 	{
@@ -2461,7 +2462,7 @@ AVCodecContext * CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, 
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
 {
 	AVCodecID codec_name;
-	const AVCodec* codec;
+	//const AVCodec* codec;
 	AVCodecContext* c = NULL;
 	int i, ret, x, y;
 	FILE* f;
@@ -2475,8 +2476,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		//double fps = 0;
 		Mat frameOutput;
 		{
-			bool success = capture->SeekToPos(timeInSeconds * 1000);
-			frameOutput = capture->GetVideoFrame(false);
+			fps = capture->get(CAP_PROP_FPS);
+			double noFrame = fps * timeInSeconds;
+			bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
+			width = capture->get(CAP_PROP_FRAME_WIDTH);
+			height = capture->get(CAP_PROP_FRAME_HEIGHT);
+			*capture >> frameOutput;
 		}
 		CRegardsBitmap bitmap;
 		bitmap.SetMatrix(frameOutput);
@@ -2569,7 +2574,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			frame->pts = i;
 
 			/* encode the image */
-			EncodeOneFrame(c, frame,f);
+			EncodeOneFrame(c, frame, f);
 		}
 
 		/* flush the encoder */
@@ -2581,14 +2586,14 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		   codecs. To create a valid file, you usually need to write packets
 		   into a proper file format or protocol; see muxing.c.
 		 */
-		if (codec->id == AV_CODEC_ID_MPEG1VIDEO || codec->id == AV_CODEC_ID_MPEG2VIDEO)
-			fwrite(endcode, 1, sizeof(endcode), f);
+		//if (codec->id == AV_CODEC_ID_MPEG1VIDEO || codec->id == AV_CODEC_ID_MPEG2VIDEO)
+		//	fwrite(endcode, 1, sizeof(endcode), f);
 
 
 		avcodec_free_context(&c);
 		av_frame_free(&frame);
 
-        fclose(f);
+		fclose(f);
 
 	}
 	catch (...)

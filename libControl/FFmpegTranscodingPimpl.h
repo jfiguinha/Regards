@@ -25,12 +25,9 @@ class CompressVideo;
 class CFiltreEffet;
 class CffmpegToBitmap;
 
-namespace Regards
+namespace cv
 {
-	namespace Video
-	{
-		class CVideoPlayer;
-	}
+	class VideoCapture;
 }
 
 class CFFmpegTranscodingPimpl
@@ -68,12 +65,12 @@ public:
 
 	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption);
 	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
-	
+
 private:
 
 	void EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile);
 	int EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds);
-    int open_input_file(const wxString& filename);
+	int open_input_file(const wxString& filename);
 	cv::Mat ApplyProcess(CRegardsBitmap* bitmap);
 	static void DisplayPreview(void* data);
 	void EndTreatment();
@@ -81,15 +78,15 @@ private:
 	int OpenFile(const wxString& input, const wxString& output);
 	static int write_packet(void* opaque, uint8_t* buf, int buf_size);
 	int encode_write_frame_withoutpos(AVFrame* filt_frame, unsigned int stream_index);
-	void VideoTreatment(AVFrame* & tmp_frame, StreamContext* stream);
+	void VideoTreatment(AVFrame*& tmp_frame, StreamContext* stream);
 	int ProcessEncodeFile(AVFrame* dst);
 	int ProcessEncodeOneFrameFile(AVFrame* dst, const int64_t& timeInSeconds);
-	
+
 	wxString GetCodecName(AVCodecID vcodec, const wxString& encoderHardware);
 
-	AVCodecContext * OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, wxString encoderName);
+	AVCodecContext* OpenFFmpegEncoder(AVCodecID codec_id, AVCodecContext* pCodecCtx, AVStream* streamVideo, wxString encoderName);
 	void SetParamFromVideoCodec(AVCodecContext* pCodecCtx, AVCodecContext* pSourceCodecCtx);
-	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx,	const wxString& encoderName);
+	AVDictionary* setEncoderParam(const AVCodecID& codec_id, AVCodecContext* pCodecCtx, const wxString& encoderName);
 	AVCodecID GetCodecID(AVMediaType codec_type) const;
 	wxString GetCodecNameForEncoder(AVCodecID vcodec, const wxString& nameEncoder);
 	int encode_write_frame(AVFrame* filt_frame, unsigned int stream_index);
@@ -99,7 +96,7 @@ private:
 
 	int EncodeFrame(const int& stream_index, int& positionMovie, const bool& isVideo, const bool& write);
 	int filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress,
-	                              const int& isvideo, const bool& write);
+		const int& isvideo, const bool& write);
 	int flush_encoder(unsigned int stream_index);
 	void Release();
 	void SetFrameData(AVFrame* src_frame, CompressVideo* m_dlgProgress);
@@ -132,7 +129,7 @@ private:
 	AVBufferRef* hw_device_ctx = nullptr;
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
-    wxString decoderHardware = "";
+	wxString decoderHardware = "";
 	CRegardsBitmap* bmp = nullptr;
 	int width = 0;
 	int height = 0;
@@ -156,8 +153,8 @@ private:
 	int framerate = 30;
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
-	
 
-	Regards::Video::CVideoPlayer* capture = nullptr;
+
+	cv::VideoCapture* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

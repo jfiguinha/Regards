@@ -353,13 +353,14 @@ public:
         if (matrix)
             rotation = lround(av_display_rotation_get(matrix));
 
-        int widthVideo = decoder_ctx->width;
-        int heightVideo = decoder_ctx->height;
+        widthVideo = decoder_ctx->width;
+        heightVideo = decoder_ctx->height;
         duration = input_ctx->duration;
         nbFrames = input_ctx->streams[video_stream]->nb_frames;
         nbFps = nbFrames / (duration / 1000000);
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
-        cv::Mat temp = GetVideoFrame();
+       
+        cv::Mat temp = GetVideoFrame(true);
         isOpen = true;
 
         return 1;
