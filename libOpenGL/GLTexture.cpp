@@ -194,7 +194,7 @@ bool GLTexture::SetData(cv::UMat& bitmap)
 {
     bool isOk = false;
     
-	if(pimpl_ == nullptr)
+	if(pimpl_ == nullptr && openclOpenGLInterop)
 		pimpl_ = new CTextureGLPriv();
 
 	if (pimpl_ != nullptr && pimpl_->isOpenCLCompatible && openclOpenGLInterop)

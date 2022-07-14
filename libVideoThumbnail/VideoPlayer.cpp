@@ -71,6 +71,8 @@ public:
     int i;
     cv::Mat videoFrame;
     int rotation = 0;
+    bool hw_decode = false;
+
     CVideoPlayerPimpl()
     {
 
@@ -147,7 +149,7 @@ public:
                 goto fail;
             }
 
-            if (frame->format == hw_pix_fmt) {
+            if (frame->format == hw_pix_fmt && hw_decode) {
                 /* retrieve data from GPU to CPU */
                 if ((ret = av_hwframe_transfer_data(sw_frame, frame, 0)) < 0) {
                     fprintf(stderr, "Error transferring the data to system memory\n");
@@ -200,73 +202,118 @@ public:
     }
 
 
-    bool OpenVideoFile(const char * hardwareDevice, const char * videoFilename)
+    int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = true)
     {
-        type = av_hwdevice_find_type_by_name(hardwareDevice);
-        if (type == AV_HWDEVICE_TYPE_NONE) {
-            fprintf(stderr, "Device type %s is not supported.\n", hardwareDevice);
-            fprintf(stderr, "Available device types:");
-            while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
-                fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
-            fprintf(stderr, "\n");
-            return -1;
-        }
-
-        packet = av_packet_alloc();
-        if (!packet) {
-            fprintf(stderr, "Failed to allocate AVPacket\n");
-            return -1;
-        }
-
-        /* open the input file */
-        if (avformat_open_input(&input_ctx, videoFilename, NULL, NULL) != 0) {
-            fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
-            return -1;
-        }
-
-        if (avformat_find_stream_info(input_ctx, NULL) < 0) {
-            fprintf(stderr, "Cannot find input stream information.\n");
-            return -1;
-        }
-
-        /* find the video stream information */
-        ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
-        if (ret < 0) {
-            fprintf(stderr, "Cannot find a video stream in the input file\n");
-            return -1;
-        }
-        video_stream = ret;
-
-        for (i = 0;; i++) {
-            const AVCodecHWConfig* config = avcodec_get_hw_config(decoder, i);
-            if (!config) {
-                fprintf(stderr, "Decoder %s does not support device type %s.\n",
-                    decoder->name, av_hwdevice_get_type_name(type));
+        this->hw_decode = hw_decode;
+        if (hw_decode)
+        {
+            type = av_hwdevice_find_type_by_name(hardwareDevice);
+            if (type == AV_HWDEVICE_TYPE_NONE) {
+                fprintf(stderr, "Device type %s is not supported.\n", hardwareDevice);
+                fprintf(stderr, "Available device types:");
+                while ((type = av_hwdevice_iterate_types(type)) != AV_HWDEVICE_TYPE_NONE)
+                    fprintf(stderr, " %s", av_hwdevice_get_type_name(type));
+                fprintf(stderr, "\n");
                 return -1;
             }
-            if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
-                config->device_type == type) {
-                hw_pix_fmt = config->pix_fmt;
-                break;
+
+            packet = av_packet_alloc();
+            if (!packet) {
+                fprintf(stderr, "Failed to allocate AVPacket\n");
+                return -1;
+            }
+
+            /* open the input file */
+            if (avformat_open_input(&input_ctx, videoFilename, NULL, NULL) != 0) {
+                fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
+                return -1;
+            }
+
+            if (avformat_find_stream_info(input_ctx, NULL) < 0) {
+                fprintf(stderr, "Cannot find input stream information.\n");
+                return -1;
+            }
+
+            /* find the video stream information */
+            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
+            if (ret < 0) {
+                fprintf(stderr, "Cannot find a video stream in the input file\n");
+                return -1;
+            }
+            video_stream = ret;
+
+            for (i = 0;; i++) {
+                const AVCodecHWConfig* config = avcodec_get_hw_config(decoder, i);
+                if (!config) {
+                    fprintf(stderr, "Decoder %s does not support device type %s.\n",
+                        decoder->name, av_hwdevice_get_type_name(type));
+                    return -1;
+                }
+                if (config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX &&
+                    config->device_type == type) {
+                    hw_pix_fmt = config->pix_fmt;
+                    break;
+                }
+            }
+
+            if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
+                return AVERROR(ENOMEM);
+
+
+            video = input_ctx->streams[video_stream];
+            if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
+                return -1;
+
+            decoder_ctx->get_format = get_hw_format;
+
+            if (hw_decoder_init(decoder_ctx, type) < 0)
+                return -1;
+
+            if ((ret = avcodec_open2(decoder_ctx, decoder, NULL)) < 0) {
+                fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
+                return -1;
             }
         }
+        else
+        {
+            packet = av_packet_alloc();
+            if (!packet) {
+                fprintf(stderr, "Failed to allocate AVPacket\n");
+                return -1;
+            }
 
-        if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
-            return AVERROR(ENOMEM);
+            /* open the input file */
+            if (avformat_open_input(&input_ctx, videoFilename, NULL, NULL) != 0) {
+                fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
+                return -1;
+            }
+
+            if (avformat_find_stream_info(input_ctx, NULL) < 0) {
+                fprintf(stderr, "Cannot find input stream information.\n");
+                return -1;
+            }
+
+            /* find the video stream information */
+            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
+            if (ret < 0) {
+                fprintf(stderr, "Cannot find a video stream in the input file\n");
+                return -1;
+            }
+            video_stream = ret;
 
 
-        video = input_ctx->streams[video_stream];
-        if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
-            return -1;
+            if (!(decoder_ctx = avcodec_alloc_context3(decoder)))
+                return AVERROR(ENOMEM);
 
-        decoder_ctx->get_format = get_hw_format;
 
-        if (hw_decoder_init(decoder_ctx, type) < 0)
-            return -1;
+            video = input_ctx->streams[video_stream];
+            if (avcodec_parameters_to_context(decoder_ctx, video->codecpar) < 0)
+                return -1;
 
-        if ((ret = avcodec_open2(decoder_ctx, decoder, NULL)) < 0) {
-            fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
-            return -1;
+            if ((ret = avcodec_open2(decoder_ctx, decoder, NULL)) < 0) {
+                fprintf(stderr, "Failed to open codec for stream #%u\n", video_stream);
+                return -1;
+            }
         }
 
         rotation = 0;
@@ -280,6 +327,8 @@ public:
 
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
         cv::Mat temp = GetVideoFrame();
+
+        return 1;
     }
 
     cv::Mat GetVideoFrame()
@@ -350,14 +399,21 @@ void CVideoPlayer::SeekToBegin()
 
 CVideoPlayer::CVideoPlayer(const wxString& filename)
 {
+    int ret = 0;
     pimpl = new CVideoPlayerPimpl();
     wxString decoderHardware = "";
+    /*
     CRegardsConfigParam* config = CParamInit::getInstance();
     if (config != nullptr)
     {
         decoderHardware = config->GetHardwareDecoder();
     }
-    pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
+    */
+    if(decoderHardware != "")
+        ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
+    
+    if(ret <= 0)
+        pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), false);
 }
 
 cv::Mat CVideoPlayer::GetVideoFrame()
