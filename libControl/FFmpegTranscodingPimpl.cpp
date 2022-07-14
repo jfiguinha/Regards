@@ -1721,7 +1721,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 		{
 			try
 			{
-				int sizeData = (nHeight + nHeight / 2) * nWidth;
+				int sizeData = (nHeight + nHeight / 2) * tmp_frame->linesize[0];
 				if (sizeData != sizesrc && src != nullptr)
 				{
 					delete[] src;
@@ -1734,11 +1734,11 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 					sizesrc = sizeData;
 				}
 
-				int size = nHeight * nWidth;
+				int size = nHeight * tmp_frame->linesize[0];
 				memcpy(src, tmp_frame->data[0], size);
-				memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
-				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
-				openclEffectVideo.SetNV12(yuv);
+				memcpy(src + size, tmp_frame->data[1], (tmp_frame->linesize[0] * (nHeight / 2)));
+				cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, tmp_frame->linesize[0], CV_8UC1, src);
+				openclEffectVideo.SetNV12(yuv, tmp_frame->linesize[0], nWidth, nHeight);
 
 
 			}

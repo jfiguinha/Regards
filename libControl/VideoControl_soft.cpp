@@ -2113,7 +2113,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				//printf("AV_PIX_FMT_NV12 \n");
 				try
 				{
-					int sizeData = (nHeight + nHeight / 2) * nWidth;
+					int sizeData = (nHeight + nHeight / 2) * tmp_frame->linesize[0];
 					if (sizeData != sizesrc && src != nullptr)
 					{
 						delete[] src;
@@ -2126,13 +2126,15 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 						sizesrc = sizeData;
 					}
 
-					int size = nHeight * nWidth;
+					int size = nHeight * tmp_frame->linesize[0];
 					memcpy(src, tmp_frame->data[0], size);
-					memcpy(src + size, tmp_frame->data[1], (nWidth * (nHeight / 2)));
-					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, nWidth, CV_8UC1, src);
+					memcpy(src + size, tmp_frame->data[1], (tmp_frame->linesize[0] * (nHeight / 2)));
 
+
+					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, tmp_frame->linesize[0], CV_8UC1, src);
+					//yuv = yuv(cv::Rect(0, 0, nWidth, nHeight));
 					muBitmap.lock();
-					openclEffectYUV->SetNV12(yuv);
+					openclEffectYUV->SetNV12(yuv, tmp_frame->linesize[0], nWidth, nHeight);
 					muBitmap.unlock();
 
 				}
