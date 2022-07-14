@@ -48,6 +48,7 @@ extern "C"
     #include <libavutil/avassert.h>
     #include <libavutil/imgutils.h>
     #include "libswscale/swscale.h"
+    #include <libavutil/display.h>
 }
 
 using namespace Regards::Video;
@@ -69,7 +70,7 @@ public:
     enum AVHWDeviceType type;
     int i;
     cv::Mat videoFrame;
-
+    int rotation = 0;
     CVideoPlayerPimpl()
     {
 
@@ -157,30 +158,7 @@ public:
             else
                 tmp_frame = frame;
 
-            /*
-            size = av_image_get_buffer_size(tmp_frame->format, tmp_frame->width,
-                tmp_frame->height, 1);
-            buffer = av_malloc(size);
-            if (!buffer) {
-                fprintf(stderr, "Can not alloc buffer\n");
-                ret = AVERROR(ENOMEM);
-                goto fail;
-            }
-            ret = av_image_copy_to_buffer(buffer, size,
-                (const uint8_t* const*)tmp_frame->data,
-                (const int*)tmp_frame->linesize, tmp_frame->format,
-                tmp_frame->width, tmp_frame->height, 1);
-           
-            if (ret < 0) {
-                fprintf(stderr, "Can not copy image to buffer\n");
-                goto fail;
-            }
-
-            if ((ret = fwrite(buffer, 1, size, output_file)) < 0) {
-                fprintf(stderr, "Failed to dump raw data.\n");
-                goto fail;
-            }
-             */
+            GetBitmapRGBA(tmp_frame);
 
         fail:
             av_frame_free(&frame);
@@ -291,26 +269,84 @@ public:
             return -1;
         }
 
+        rotation = 0;
+        int32_t* matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(video, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
+        if (matrix)
+            rotation = lround(av_display_rotation_get(matrix));
+
         int widthVideo = decoder_ctx->width;
         int heightVideo = decoder_ctx->height;
+
+
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
+        cv::Mat temp = GetVideoFrame();
     }
 
     cv::Mat GetVideoFrame()
     {
-        cv::Mat videoFrame;
-        if ((ret = av_read_frame(input_ctx, packet)) < 0)
-            return videoFrame;
+        bool exit_white = false;
+       do
+        {
+            
+            if ((ret = av_read_frame(input_ctx, packet)) < 0)
+            {
+                return cv::Mat();
+                break;
+            }
 
-        if (video_stream == packet->stream_index)
-            videoFrame = decode_write(decoder_ctx, packet);
+            if (video_stream == packet->stream_index)
+            {
+                decode_write(decoder_ctx, packet);
+                exit_white = true;
+            }
 
-        av_packet_unref(packet);
+            av_packet_unref(packet);
+
+       } while (!exit_white);
+
+       if (rotation != 0)
+       {
+           cv::Mat src = videoFrame;
+           cv::Mat dst;
+           //Rotate Frame
+           if (rotation == 90 || rotation == -270)
+           {
+               cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
+               // Rotate clockwise 270 degrees
+              // transpose(src, dst);
+              // flip(dst, src, 0);
+           }
+           else if (rotation == 180)
+           {
+               // Rotate clockwise 180 degrees
+               flip(src, src, -1);
+           }
+           else if (rotation == 270 || rotation == -90)
+           {
+               cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
+               // Rotate clockwise 90 degrees
+              // transpose(src, dst);
+              // flip(dst, src, 1);
+           }
+           return dst;
+       }
 
         return videoFrame;
     }
+
+    void SeekToBegin()
+    {
+
+    }
 };
 
+AVBufferRef* CVideoPlayerPimpl::hw_device_ctx = NULL;
+enum AVPixelFormat CVideoPlayerPimpl::hw_pix_fmt;
+
+void CVideoPlayer::SeekToBegin()
+{
+    pimpl->SeekToBegin();
+}
 
 CVideoPlayer::CVideoPlayer(const wxString& filename)
 {

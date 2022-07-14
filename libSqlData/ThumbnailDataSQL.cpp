@@ -11,6 +11,8 @@ using namespace Regards::Sqlite;
 #include <FileUtility.h>
 #include <opencv2/videoio.hpp>
 #include <ConvertUtility.h>
+#include <VideoPlayer.h>
+using namespace Regards::Video;
 using namespace Regards::Picture;
 
 CThumbnailDataSQL::CThumbnailDataSQL(const wxString& filename, const bool& testValidity)
@@ -90,7 +92,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		{
 			if (libPicture.TestIsVideo(filename) && videoCapture == nullptr)
 			{
-				videoCapture = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
+				videoCapture = new CVideoPlayer(filename);
 				//fps = videoCapture->get(cv::CAP_PROP_FPS);
 			}
 
@@ -102,10 +104,12 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				{
 					//time_pos += 1000;
 					//videoCapture->set(cv::CAP_PROP_POS_MSEC, time_pos);
-					if (!videoCapture->read(cvImg))
+					cvImg = videoCapture->GetVideoFrame();
+					if (cvImg.empty())
 					{
-						videoCapture->set(cv::CAP_PROP_POS_MSEC, 0);
-						grabbed = videoCapture->read(cvImg);
+						videoCapture->SeekToBegin();
+						cvImg = videoCapture->GetVideoFrame();
+						grabbed = true;
 						//time_pos = 0;
 					}
 					else

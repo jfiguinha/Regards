@@ -13,6 +13,7 @@ namespace Regards {
 		{
 		public:
 			CVideoPlayer(const wxString &filename);
+			void SeekToBegin();
 			cv::Mat GetVideoFrame();
 			virtual ~CVideoPlayer();
 

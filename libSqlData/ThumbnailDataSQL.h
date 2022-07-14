@@ -3,6 +3,15 @@
 
 class CImageLoadingFormat;
 
+namespace Regards
+{
+	namespace Video
+	{
+		class CVideoPlayer;
+	}
+}
+
+
 class CThumbnailDataSQL : public CThumbnailData
 {
 public:
@@ -31,5 +40,5 @@ private:
 	int time_pos = 0;
 	wxImage frameOut;
 	int oldnumFrame = -1;
-	cv::VideoCapture * videoCapture = nullptr;
+	Regards::Video::CVideoPlayer * videoCapture = nullptr;
 };
