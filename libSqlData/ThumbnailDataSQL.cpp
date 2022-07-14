@@ -102,15 +102,24 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				
 				if (oldnumFrame != numFrame)
 				{
-					//time_pos += 1000;
+					time_pos += 1;
 					//videoCapture->set(cv::CAP_PROP_POS_MSEC, time_pos);
+					if (videoCapture->GetDuration() > 60)
+					{
+						if (videoCapture->SeekToPos(time_pos) == -1)
+						{
+							videoCapture->SeekToBegin();
+							time_pos = 0;
+						}
+					}
+
 					cvImg = videoCapture->GetVideoFrame();
 					if (cvImg.empty())
 					{
 						videoCapture->SeekToBegin();
 						cvImg = videoCapture->GetVideoFrame();
 						grabbed = true;
-						//time_pos = 0;
+						time_pos = 0;
 					}
 					else
 						grabbed = true;
@@ -119,7 +128,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 					{
 						int w = cvImg.cols;
 						int h = cvImg.rows;
-						cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+						//cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
 						frameOut = wxImage(w, h, cvImg.data, true);
                         oldnumFrame = numFrame;
 					}

@@ -72,7 +72,9 @@ public:
     cv::Mat videoFrame;
     int rotation = 0;
     bool hw_decode = false;
-
+    int64_t duration = 0;
+    int64_t nbFrames = 0;
+    int64_t nbFps = 0;
     CVideoPlayerPimpl()
     {
 
@@ -117,8 +119,9 @@ public:
     }
 
 
-    int decode_write(AVCodecContext* avctx, AVPacket* packet)
+    int decode_write(AVCodecContext* avctx, AVPacket* packet, bool & decode_video)
     {
+        decode_video = false;
         AVFrame* frame = NULL, * sw_frame = NULL;
         AVFrame* tmp_frame = NULL;
         uint8_t* buffer = NULL;
@@ -161,6 +164,7 @@ public:
                 tmp_frame = frame;
 
             GetBitmapRGBA(tmp_frame);
+            decode_video = true;
 
         fail:
             av_frame_free(&frame);
@@ -183,7 +187,7 @@ public:
             av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
             av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
             av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
-            av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGR24, 0);
+            av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_RGB24, 0);
             av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
             if (sws_init_context(localContext, nullptr, nullptr) < 0)
@@ -193,7 +197,7 @@ public:
             }
         }
 
-        int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, tmp_frame->width, tmp_frame->height, 16);
+        int numBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, tmp_frame->width, tmp_frame->height, 16);
         uint8_t* convertedFrameBuffer = videoFrame.data;
         int linesize = videoFrame.step1();
 
@@ -223,7 +227,7 @@ public:
                 return -1;
             }
 
-            /* open the input file */
+            // open the input file 
             if (avformat_open_input(&input_ctx, videoFilename, NULL, NULL) != 0) {
                 fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
                 return -1;
@@ -234,7 +238,7 @@ public:
                 return -1;
             }
 
-            /* find the video stream information */
+            // find the video stream information 
             ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
             if (ret < 0) {
                 fprintf(stderr, "Cannot find a video stream in the input file\n");
@@ -282,7 +286,7 @@ public:
                 return -1;
             }
 
-            /* open the input file */
+            // open the input file 
             if (avformat_open_input(&input_ctx, videoFilename, NULL, NULL) != 0) {
                 fprintf(stderr, "Cannot open input file '%s'\n", videoFilename);
                 return -1;
@@ -293,7 +297,7 @@ public:
                 return -1;
             }
 
-            /* find the video stream information */
+            // find the video stream information 
             ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
             if (ret < 0) {
                 fprintf(stderr, "Cannot find a video stream in the input file\n");
@@ -323,12 +327,39 @@ public:
 
         int widthVideo = decoder_ctx->width;
         int heightVideo = decoder_ctx->height;
-
-
+        duration = input_ctx->duration;
+        nbFrames = input_ctx->streams[video_stream]->nb_frames;
+        nbFps = nbFrames / (duration / 1000000);
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
         cv::Mat temp = GetVideoFrame();
 
         return 1;
+    }
+
+
+
+    int SeekToPos(const int & sec)
+    {
+        int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
+        int64_t seekTarget = sec * AV_TIME_BASE;
+        if (seekTarget < duration)
+        {
+
+            int64_t seekTarget = int64_t(sec * nbFps) * timeBase;
+
+            ret = av_seek_frame(input_ctx, video_stream, seekTarget, AVSEEK_FLAG_FRAME);
+
+            return ret;
+
+        }
+        return -1;
+
+        //avcodec_flush_buffers(decoder_ctx);
+    }
+
+    int GetDuration()
+    {
+        return (duration / AV_TIME_BASE);
     }
 
     int SeekToBegin()
@@ -338,7 +369,9 @@ public:
 
     cv::Mat GetVideoFrame()
     {
+        bool decode_video = false;
         bool exit_white = false;
+
        do
         {
             
@@ -350,13 +383,16 @@ public:
 
             if (video_stream == packet->stream_index)
             {
-                decode_write(decoder_ctx, packet);
+                decode_write(decoder_ctx, packet, decode_video);
                 exit_white = true;
             }
 
             av_packet_unref(packet);
 
        } while (!exit_white);
+
+       if (!decode_video)
+           return cv::Mat();
 
        if (rotation != 0)
        {
@@ -397,6 +433,18 @@ enum AVPixelFormat CVideoPlayerPimpl::hw_pix_fmt;
 void CVideoPlayer::SeekToBegin()
 {
     pimpl->SeekToBegin();
+}
+
+int CVideoPlayer::GetDuration()
+{
+
+    return pimpl->GetDuration();
+}
+
+
+int CVideoPlayer::SeekToPos(const int& sec)
+{
+    return pimpl->SeekToPos(sec);
 }
 
 CVideoPlayer::CVideoPlayer(const wxString& filename)
