@@ -19,9 +19,13 @@
     <Filter Include="Interface">
       <UniqueIdentifier>{ea6f1a4d-744e-448f-b579-dfa51158a1c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="videoplayer">
+      <UniqueIdentifier>{1e17d323-cb1d-4ca2-a8f4-68f162dfd392}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="filmstrip.h">
@@ -66,6 +70,9 @@
     <ClInclude Include="videothumb.h">
       <Filter>Interface</Filter>
     </ClInclude>
+    <ClInclude Include="VideoPlayer.h">
+      <Filter>videoplayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="filmstripfilter.cpp">
@@ -91,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="videothumb.cpp">
       <Filter>Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoPlayer.cpp">
+      <Filter>videoplayer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
