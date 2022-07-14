@@ -92,7 +92,10 @@ wxImage CThumbnailDataSQL::GetwxImage()
 		{
 			if (libPicture.TestIsVideo(filename) && videoCapture == nullptr)
 			{
-				videoCapture = new CVideoPlayer(filename);
+				if(useOpenCV)
+					videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
+				else
+					videoCapture = new CVideoPlayer(filename);
 				//fps = videoCapture->get(cv::CAP_PROP_FPS);
 			}
 
@@ -102,35 +105,58 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				
 				if (oldnumFrame != numFrame)
 				{
-					time_pos += 1;
-					//videoCapture->set(cv::CAP_PROP_POS_MSEC, time_pos);
-					if (videoCapture->GetDuration() > 60)
+					if (useOpenCV)
 					{
-						if (videoCapture->SeekToPos(time_pos) == -1)
+						if (!videoCaptureCV->read(cvImg))
 						{
-							videoCapture->SeekToBegin();
-							time_pos = 0;
+							videoCaptureCV->set(cv::CAP_PROP_POS_MSEC, 0);
+							grabbed = videoCaptureCV->read(cvImg);
+							//time_pos = 0;
+						}
+						else
+							grabbed = true;
+
+						if (grabbed)
+						{
+							int w = cvImg.cols;
+							int h = cvImg.rows;
+							cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+							frameOut = wxImage(w, h, cvImg.data, true);
+							oldnumFrame = numFrame;
 						}
 					}
-
-					cvImg = videoCapture->GetVideoFrame();
-					if (cvImg.empty())
-					{
-						videoCapture->SeekToBegin();
-						cvImg = videoCapture->GetVideoFrame();
-						grabbed = true;
-						time_pos = 0;
-					}
 					else
-						grabbed = true;
-
-					if (grabbed)
 					{
-						int w = cvImg.cols;
-						int h = cvImg.rows;
-						//cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-						frameOut = wxImage(w, h, cvImg.data, true);
-                        oldnumFrame = numFrame;
+						//time_pos += 1;
+						/*
+						if (videoCapture->GetDuration() > 60)
+						{
+							if (videoCapture->SeekToPos(time_pos) == -1)
+							{
+								videoCapture->SeekToBegin();
+								time_pos = 0;
+							}
+						}
+						*/
+						cvImg = videoCapture->GetVideoFrame();
+						if (cvImg.empty())
+						{
+							videoCapture->SeekToBegin();
+							cvImg = videoCapture->GetVideoFrame();
+							grabbed = true;
+							//time_pos = 0;
+						}
+						else
+							grabbed = true;
+
+						if (grabbed)
+						{
+							int w = cvImg.cols;
+							int h = cvImg.rows;
+							//cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
+							frameOut = wxImage(w, h, cvImg.data, true);
+							oldnumFrame = numFrame;
+						}
 					}
 				}
                 else
