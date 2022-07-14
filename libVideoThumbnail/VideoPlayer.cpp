@@ -331,6 +331,11 @@ public:
         return 1;
     }
 
+    int SeekToBegin()
+    {
+        return avformat_seek_file(input_ctx, video_stream, INT64_MIN, 0, INT64_MAX, 0);
+    }
+
     cv::Mat GetVideoFrame()
     {
         bool exit_white = false;
@@ -383,10 +388,7 @@ public:
         return videoFrame;
     }
 
-    void SeekToBegin()
-    {
 
-    }
 };
 
 AVBufferRef* CVideoPlayerPimpl::hw_device_ctx = NULL;
