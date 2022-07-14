@@ -78,31 +78,20 @@ public:
 
     int SeekToPos(const int& sec)
     {
-        int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
-        int64_t seekTarget = sec * AV_TIME_BASE;
+        //int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
+        int64_t seekTarget = (double)((double)sec / 1000) * (double)AV_TIME_BASE;
         if (seekTarget < duration)
         {
-            int64_t ts = av_rescale(
-                sec,
-                input_ctx->streams[video_stream]->time_base.den,
-                input_ctx->streams[video_stream]->time_base.num
-            );
+            AVRational time_base = input_ctx->streams[video_stream]->time_base;
+            int64_t ts = av_rescale_q(sec * 1000, AV_TIME_BASE_Q, time_base);           
 
-            //ts /= 10;
-
-            //SEEK
-            int  err = avformat_seek_file(input_ctx, video_stream, 0, ts, INT64_MAX, 0);
-
-            if(err < 0)
-            {
-               // av_log(NULL, AV_LOG_ERROR, "SUCCEEDED av_seek_frame: %u newPos:%d\n", tm, is->pb->pos);
-                avcodec_flush_buffers(input_ctx->streams[video_stream]->codec);
-            }
+            ret = av_seek_frame(input_ctx, video_stream, ts, 0);
 
            // int err = avformat_seek_file(input_ctx, video_stream, 0, ts, ts, 0);
             return ret;
 
         }
+        
         return -1;
 
         //avcodec_flush_buffers(decoder_ctx);

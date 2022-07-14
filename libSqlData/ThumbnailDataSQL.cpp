@@ -127,17 +127,12 @@ wxImage CThumbnailDataSQL::GetwxImage()
 					}
 					else
 					{
-						//time_pos += 1;
-						/*
-						if (videoCapture->GetDuration() > 60)
+						time_pos += 1000;
+						if (videoCapture->SeekToPos(time_pos) == -1)
 						{
-							if (videoCapture->SeekToPos(time_pos) == -1)
-							{
-								videoCapture->SeekToBegin();
-								time_pos = 0;
-							}
+							videoCapture->SeekToBegin();
+							time_pos = 0;
 						}
-						*/
 						cvImg = videoCapture->GetVideoFrame();
 						if (cvImg.empty())
 						{
