@@ -2487,6 +2487,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			height = capture->GetHeight();
 			bool success = capture->SeekToPos(timeInSeconds * 1000);
 			frameOutput = capture->GetVideoFrame(false);
+			//cv::imwrite("d:\\test.jpg", frameOutput);
 			cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 		}
 		CRegardsBitmap bitmap;
