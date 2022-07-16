@@ -16,18 +16,24 @@
 #include <FiltreEffetCPU.h>
 #include <ConvertUtility.h>
 #include <MediaInfo.h>
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavcodec/packet.h>
-#include <libavutil/opt.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/display.h>
-#include <libavutil/channel_layout.h>
+#include <VideoPlayer.h>
+
+extern "C"
+{
+	#include <libavcodec/avcodec.h>
+	#include <libavcodec/packet.h>
+	#include <libavutil/opt.h>
+	#include <libavutil/imgutils.h>
+	#include <libavutil/display.h>
+	#include <libavutil/channel_layout.h>
 }
+
+
 #include <opencv2/core/core.hpp>
 #include <ffmpeg_application.h>
 using namespace cv;
 using namespace Regards::OpenCL;
+using namespace Regards::Video;
 
 static const char* ROTATE = "rotate";
 static const char* hb_h264_level_names[] = {
@@ -2005,11 +2011,12 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	double fps = 0;
 	Mat frameOutput;
 	{
-
-		fps = capture->get(CAP_PROP_FPS);
-		double noFrame = fps * timeInSeconds;
-		bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
-		*capture >> frameOutput;
+		fps = capture->GetFps();
+		width = capture->GetWidth();
+		height = capture->GetHeight();
+		bool success = capture->SeekToPos(timeInSeconds * 1000);
+		frameOutput = capture->GetVideoFrame(false);
+		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
 	CRegardsBitmap bitmap;
 	bitmap.SetMatrix(frameOutput);
@@ -2232,11 +2239,11 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input_file), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	capture = new CVideoPlayer(input_file);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
-	rotate = capture->get(CAP_PROP_ORIENTATION_META);
+	rotate = capture->GetOrientation();
 
 	orientation = rotate;
 
@@ -2276,19 +2283,18 @@ int CFFmpegTranscodingPimpl::EncodeFile(const wxString& input, const wxString& o
 	if (capture != nullptr)
 		delete capture;
 
-	capture = new VideoCapture(CConvertUtility::ConvertToStdString(input), cv::CAP_ANY, { CAP_PROP_HW_ACCELERATION,VIDEO_ACCELERATION_ANY });
+	capture = new CVideoPlayer(input_file);
 	if (!capture->isOpened())
 		throw "Error when reading steam_avi";
 
 
 	{
-		fps = capture->get(CAP_PROP_FPS);
-		totalFrame = int(capture->get(CAP_PROP_FRAME_COUNT));
-		width = capture->get(CAP_PROP_FRAME_WIDTH);
-		height = capture->get(CAP_PROP_FRAME_HEIGHT);
-		duration = totalFrame / fps;
-		rotate = capture->get(CAP_PROP_ORIENTATION_META);
-
+		rotate = capture->GetOrientation();
+		fps = capture->GetFps();
+		totalFrame = capture->GetTotalFrame();
+		width = capture->GetWidth();
+		height = capture->GetHeight();
+		duration = capture->GetDuration();
 	}
 
 	if ((ret = OpenFile(input, output)) < 0)
@@ -2476,12 +2482,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		//double fps = 0;
 		Mat frameOutput;
 		{
-			fps = capture->get(CAP_PROP_FPS);
-			double noFrame = fps * timeInSeconds;
-			bool success = capture->set(CAP_PROP_POS_FRAMES, noFrame);
-			width = capture->get(CAP_PROP_FRAME_WIDTH);
-			height = capture->get(CAP_PROP_FRAME_HEIGHT);
-			*capture >> frameOutput;
+			fps = capture->GetFps();
+			width = capture->GetWidth();
+			height = capture->GetHeight();
+			bool success = capture->SeekToPos(timeInSeconds * 1000);
+			frameOutput = capture->GetVideoFrame(false);
+			cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 		}
 		CRegardsBitmap bitmap;
 		bitmap.SetMatrix(frameOutput);

@@ -19,6 +19,15 @@ extern "C" {
 #include <RegardsBitmap.h>
 #include <VideoStabilization.h>
 
+namespace Regards
+{
+	namespace Video
+	{
+		class CVideoPlayer;
+	}
+}
+
+
 using namespace Regards::OpenCV;
 class CRegardsBitmap;
 class CompressVideo;
@@ -155,6 +164,6 @@ private:
 	int sizesrc = 0;
 
 
-	cv::VideoCapture* capture = nullptr;
+	Regards::Video::CVideoPlayer* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };
