@@ -2009,7 +2009,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 
 	//bool firstPos = true;
 	double fps = 0;
-	Mat frameOutput;
+	
 	{
 		fps = capture->GetFps();
 		width = capture->GetWidth();
@@ -2465,6 +2465,11 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 	return c;
 }
 
+cv::Mat CFFmpegTranscodingPimpl::GetFrameOutput()
+{
+	return frameOutput;
+}
+
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
 {
 	AVCodecID codec_name;
@@ -2480,7 +2485,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 	{
 		//bool firstPos = true;
 		//double fps = 0;
-		Mat frameOutput;
+		
 		{
 			fps = capture->GetFps();
 			width = capture->GetWidth();
@@ -2495,6 +2500,8 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		bitmap.ApplyRotation(rotation);
 		bitmap.VertFlipBuf();
 		frameOutput = ApplyProcess(&bitmap);
+
+		//*bitmapOut = bitmap;
 
 		codec_name = GetCodecID(AVMEDIA_TYPE_VIDEO);
 

@@ -45,7 +45,7 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	defaultToolbar = true;
 	defaultViewer = true;
 	decodeFrame = nullptr;
-	decodeFrameOriginal = nullptr;
+	decodeFrameOriginal = new CRegardsBitmap();
 
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
@@ -131,7 +131,8 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
 
-	decodeFrameOriginal = videoOriginal->GetVideoFramePos(0, 0, 0);
+	//transcodeFFmpeg->GetFrameOutput(decodeFrameOriginal);
+	//decodeFrameOriginal = videoOriginal->GetVideoFramePos(0, 0, 0);
 
 	MoveSlider(0);
 	//this->Resize();
@@ -265,20 +266,14 @@ void CShowPreview::ThreadLoading(void* data)
 		else
 			showPreview->compressIsOK = false;
 
-		if (showPreview->decodeFrameOriginal != nullptr)
-			delete showPreview->decodeFrameOriginal;
-
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
-
+		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);//showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
+		//imwrite("d:\\test_original.jpg", showPreview->decodeFrameOriginal->GetMatrix());
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
 	else
 	{
-		if (showPreview->decodeFrameOriginal != nullptr)
-			delete showPreview->decodeFrameOriginal;
-		//showPreview->decodeFrameOriginal->GetFrameBitmapPosition(showPreview->position);
-		showPreview->decodeFrameOriginal = showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
+		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}

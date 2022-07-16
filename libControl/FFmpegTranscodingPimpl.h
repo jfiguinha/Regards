@@ -68,6 +68,7 @@ public:
 		size_t room; ///< size left in the buffer
 	};
 
+	cv::Mat GetFrameOutput();
 
 	CFFmpegTranscodingPimpl();
 	~CFFmpegTranscodingPimpl();
@@ -163,7 +164,8 @@ private:
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
 
-
+	CRegardsBitmap * bitmapOut;
+	cv::Mat frameOutput;
 	Regards::Video::CVideoPlayer* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

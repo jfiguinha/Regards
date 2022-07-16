@@ -25,15 +25,24 @@ CFFmpegTranscoding::~CFFmpegTranscoding()
 
 wxString CFFmpegTranscoding::GetOutputFilename()
 {
+
 	return output;
 }
 
 int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& output, const int& position, CVideoOptionCompress* videoCompressOption)
 {
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
-	return ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
+	int ret =  ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
+	if (ret == 0)
+		frameOutput = ffmpegtranscoding.GetFrameOutput();
+	return ret;
 }
 
+void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap*& bitmap)
+{
+	if(bitmap != nullptr)
+		bitmap->SetMatrix(frameOutput);
+}
 
 void CFFmpegTranscoding::EncodeFileThread(void* data)
 {
