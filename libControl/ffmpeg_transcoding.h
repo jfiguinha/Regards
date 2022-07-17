@@ -20,6 +20,6 @@ protected:
 	std::thread* encode_thread;
 	CompressVideo* m_dlgProgress;
 	wxWindow* mainWindow;
-	cv::Mat frameOutput;
+	CRegardsBitmap * frameOutput;
 	CVideoOptionCompress* videoCompressOption;
 };

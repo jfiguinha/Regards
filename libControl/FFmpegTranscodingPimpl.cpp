@@ -241,6 +241,7 @@ videoCompressOption(nullptr), duration{}
 	scaleContext = sws_alloc_context();
 	packet.data = nullptr;
 	packet.size = 0;
+	bitmapOut = new CRegardsBitmap();
 
 }
 
@@ -297,6 +298,9 @@ CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
 
 	if (capture != nullptr)
 		delete capture;
+
+	if (bitmapOut != nullptr)
+		delete bitmapOut;
 
 };
 
@@ -2018,11 +2022,11 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		frameOutput = capture->GetVideoFrame(false);
 		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
-	CRegardsBitmap bitmap;
-	bitmap.SetMatrix(frameOutput);
-	bitmap.ApplyRotation(rotation);
-	bitmap.VertFlipBuf();
-	frameOutput = ApplyProcess(&bitmap);
+	
+	bitmapOut->SetMatrix(frameOutput);
+	bitmapOut->ApplyRotation(rotation);
+	bitmapOut->VertFlipBuf();
+	frameOutput = ApplyProcess(bitmapOut);
 
 	AVFrame* frame = av_frame_alloc();
 	if (!frame) {
@@ -2464,10 +2468,9 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 	}
 	return c;
 }
-
-cv::Mat CFFmpegTranscodingPimpl::GetFrameOutput()
+CRegardsBitmap * CFFmpegTranscodingPimpl::GetFrameOutput()
 {
-	return frameOutput;
+	return bitmapOut;
 }
 
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
@@ -2495,11 +2498,12 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			//cv::imwrite("d:\\test.jpg", frameOutput);
 			cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 		}
-		CRegardsBitmap bitmap;
-		bitmap.SetMatrix(frameOutput);
-		bitmap.ApplyRotation(rotation);
-		bitmap.VertFlipBuf();
-		frameOutput = ApplyProcess(&bitmap);
+
+
+		bitmapOut->SetMatrix(frameOutput);
+		bitmapOut->ApplyRotation(rotation);
+		bitmapOut->VertFlipBuf();
+		frameOutput = ApplyProcess(bitmapOut);
 
 		//*bitmapOut = bitmap;
 

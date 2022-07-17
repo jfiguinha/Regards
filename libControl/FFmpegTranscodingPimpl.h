@@ -68,7 +68,7 @@ public:
 		size_t room; ///< size left in the buffer
 	};
 
-	cv::Mat GetFrameOutput();
+	CRegardsBitmap * GetFrameOutput();
 
 	CFFmpegTranscodingPimpl();
 	~CFFmpegTranscodingPimpl();

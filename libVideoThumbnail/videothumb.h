@@ -17,7 +17,7 @@ namespace Regards{
 			CRegardsBitmap * GetVideoFramePercent(const int& percent, const int & thumbnailWidth, const int & thumbnailHeight);
 			void GetVideoDimensions(int & width, int & height);
 			int GetOrientation();
-			static vector<CImageVideoThumbnail *> GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail);
+			vector<CImageVideoThumbnail *> GetVideoListFrame(const int &widthThumbnail,const int &heightThumbnail);
 			int64_t GetMovieDuration();
 
 		private:

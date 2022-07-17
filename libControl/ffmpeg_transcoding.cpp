@@ -38,10 +38,12 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 	return ret;
 }
 
-void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap*& bitmap)
+void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap * & bitmap)
 {
-	if(bitmap != nullptr)
-		bitmap->SetMatrix(frameOutput);
+	if (bitmap != nullptr)
+	{
+		bitmap->SetMatrix(frameOutput->GetMatrix());
+	}
 }
 
 void CFFmpegTranscoding::EncodeFileThread(void* data)

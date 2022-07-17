@@ -1,6 +1,6 @@
 #include "header.h"
 #include "videothumb.h"
-#include "videothumbnailer.h"
+#include "VideoPlayer.h"
 #include "Metadata.h"
 #include "stringoperations.h"
 #include "filmstripfilter.h"
@@ -8,7 +8,6 @@
 #include "ImageVideoThumbnail.h"
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
-#include "moviedecoder.h"
 #include <ConvertUtility.h>
 using namespace Regards::Video;
 using namespace ffmpegthumbnailer;
@@ -19,24 +18,22 @@ public:
 	CThumbnailVideoPimpl(const wxString& fileName)
 	{
 		filename = CConvertUtility::ConvertToStdString(fileName);
-		videoThumbnailer = new VideoThumbnailer(thumbnailSize, workaroundIssues, maintainAspectRatio, imageQuality, smartFrameSelection);
-		movieDecoder = new MovieDecoder(filename, NULL);
-		movieDecoder->decodeVideoFrame(); //before seeking, a frame has to be decoded
-		width = movieDecoder->getWidth();
-		height = movieDecoder->getHeight();
-		rotation = movieDecoder->getOrientation();
-		m_videoMovieDuration = movieDecoder->getDuration();
+		videoThumbnailer = new CVideoPlayer(filename);
+		width = videoThumbnailer->GetWidth();
+		height = videoThumbnailer->GetHeight();
+		rotation = videoThumbnailer->GetOrientation();
+		m_videoMovieDuration = videoThumbnailer->GetDuration();
 	}
 
 	~CThumbnailVideoPimpl()
 	{
-		delete movieDecoder;
+		//delete movieDecoder;
 		delete videoThumbnailer;
 	}
 
 	void SetPercent(const int& percent)
 	{
-		int secondToSeekTo = (movieDecoder->getDuration() * percent) / 100;
+		int secondToSeekTo = (m_videoMovieDuration * percent) / 100;
 		m_seekTimeInSecond = secondToSeekTo;
 	}
 
@@ -47,22 +44,19 @@ public:
 
 	void GetThumbnail(CRegardsBitmap * & image, const int & thumbnailWidth, const int& thumbnailHeight)
 	{
-		if (m_seekTimeInSecond == 0 || m_seekTimeInSecond == -1)
-			videoThumbnailer->GetThumbnail(image, movieDecoder, thumbnailWidth, thumbnailHeight, rotation);
+		if (m_seekTimeInSecond > 0)
+			videoThumbnailer->SeekToPos(m_seekTimeInSecond * 1000);
 		else
-			videoThumbnailer->GetThumbnailPos(image, movieDecoder, m_seekTimeInSecond, thumbnailWidth, thumbnailHeight, rotation);
+			videoThumbnailer->SeekToBegin();
+		cv::Mat out = videoThumbnailer->GetVideoFrame();
+		image->SetMatrix(out);
+		image->ConvertToBgr();
+		image->VertFlipBuf();
 	}
 
 	int64 m_videoMovieDuration = 0;
 	int64 m_seekTimeInSecond = 0;
-	MovieDecoder* movieDecoder = nullptr;
-	VideoThumbnailer* videoThumbnailer = nullptr;
-	int     thumbnailSize = 0;
-	int     imageQuality = 10;
-	bool    filmStripOverlay = false;
-	bool    workaroundIssues = false;
-	bool    maintainAspectRatio = true;
-	bool    smartFrameSelection = false;
+	CVideoPlayer * videoThumbnailer = nullptr;
 	int width = 0;
 	int height = 0;
 	int rotation = 0;
@@ -99,7 +93,7 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const 
 	try
 	{
 		image->SetFilename(fileName);
-		pimpl->SetMoviePos(-1);
+		pimpl->SetMoviePos(0);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
 
 
@@ -159,33 +153,8 @@ int64_t CThumbnailVideo::GetMovieDuration()
 	return pimpl->m_videoMovieDuration / 100;
 }
 
-vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail)
+vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &widthThumbnail,const int &heightThumbnail)
 {
-	
-	int     thumbnailSize = 0;
-	int     imageQuality = 10;
-	bool    filmStripOverlay = false;
-	bool    workaroundIssues = false;
-	bool    maintainAspectRatio = true;
-	bool    smartFrameSelection = false;
-	wxString  seekTime;
-
-	VideoThumbnailer videoThumbnailer(thumbnailSize, workaroundIssues, maintainAspectRatio, imageQuality, smartFrameSelection);
-	FilmStripFilter* filmStripFilter = nullptr;
-
-	if (filmStripOverlay)
-	{
-		filmStripFilter = new FilmStripFilter();
-		videoThumbnailer.addFilter(filmStripFilter);
-	}
-
-    std::string path = CConvertUtility::ConvertToStdString(fileName);
-	MovieDecoder * movie = videoThumbnailer.MovieDecoderThumbnail(path);
-
-	int rotation = videoThumbnailer.GetOrientation();
-	//width = videoThumbnailer.GetWidth();
-	//height = videoThumbnailer.GetHeight();
-
 	vector<CImageVideoThumbnail *> listPicture;
 	for (auto i = 0; i < 100; i += 5)
 	{
@@ -196,7 +165,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 			int timePosition = 0;
 
 		
-			cxVideo->rotation = rotation;
+			cxVideo->rotation = 0;
 			cxVideo->percent = i;
 			cxVideo->image = new CImageLoadingFormat();
 		
@@ -204,7 +173,8 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 			try
 			{
 				picture = new CRegardsBitmap();
-				timePosition = videoThumbnailer.GetThumbnail(picture, movie, cxVideo->percent, widthThumbnail, heightThumbnail, rotation);
+				pimpl->SetPercent(cxVideo->percent);
+				pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
 			}
 			catch(...)
 			{
@@ -212,10 +182,10 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 					delete picture;
 				picture = nullptr;
 			}
-			cxVideo->timePosition = timePosition;
+			cxVideo->timePosition = pimpl->m_seekTimeInSecond;
 			cxVideo->image->SetPicture(picture);
 			cxVideo->image->SetFilename(fileName);
-			cxVideo->image->SetOrientation(rotation);
+			cxVideo->image->SetOrientation(0);
 			listPicture.push_back(cxVideo);
 		}
 		catch(...)
@@ -224,7 +194,5 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 		}
 	}
 
-	videoThumbnailer.DestroyMovieDecoder(movie);
-	delete filmStripFilter;
 	return listPicture;
 }
