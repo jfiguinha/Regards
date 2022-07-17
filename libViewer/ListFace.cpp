@@ -20,18 +20,18 @@
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
 #include "LibResource.h"
-#include <videothumbopencv.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFindFacePhoto.h>
 #include <RegardsConfigParam.h>
 #include <wx/progdlg.h>
-
+#include <VideoPlayer.h>
 extern bool processrecognitionison;
 extern bool isOpenCLInitialized;
 
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
+using namespace Regards::Video;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
 
@@ -458,22 +458,23 @@ void CListFace::FacialRecognition(void* param)
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
 		//Open Frame By Frame to Detect Face
-		CThumbnailVideoOpenCV video(path->filename);
+		CVideoPlayer video(path->filename);
 		int width = 0;
 		int height = 0;
-
-		int orientation = 0;
-		video.GetVideoDimensions(width, height, orientation);
-		int timeinsecond = video.GetMovieDuration();
-		for (int i = 0; i < timeinsecond; i++)
+		CRegardsBitmap pictureData;
+		int totalFrame = video.GetTotalFrame();
+		for (int i = 0; i < totalFrame; i++)
 		{
 			path->nbFace = 0;
-			CRegardsBitmap* pictureData = video.GetVideoFrame(i, 0, 0);
-			if (pictureData != nullptr)
+			cv::Mat frame = video.GetVideoFrame();
+			if (!frame.empty())
 			{
-				pictureData->SetFilename(path->filename);
-				pictureData->SetOrientation(0);
-				listFace = CDeepLearning::FindFace(pictureData);
+				pictureData.SetMatrix(frame);
+				pictureData.ConvertToBgr();
+				pictureData.VertFlipBuf();
+				pictureData.SetFilename(path->filename);
+				pictureData.SetOrientation(0);
+				listFace = CDeepLearning::FindFace(&pictureData);
 				path->nbFace = listFace.size();
 			}
 

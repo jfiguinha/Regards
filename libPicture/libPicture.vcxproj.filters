@@ -94,9 +94,6 @@
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailVideoExport.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="regards_webp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -109,8 +106,14 @@
     <ClCompile Include="pfm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="videothumbopencv.cpp">
-      <Filter>ThumbnailOpenCV</Filter>
+    <ClCompile Include="VideoPlayer.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="videothumb.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVideoExport.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,9 +231,6 @@
     <ClInclude Include="hqdn3d.h">
       <Filter>hqdb3d</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailVideoExport.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="regards_webp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,8 +246,14 @@
     <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>datastructure</Filter>
     </ClInclude>
-    <ClInclude Include="videothumbopencv.h">
-      <Filter>ThumbnailOpenCV</Filter>
+    <ClInclude Include="VideoPlayer.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="videothumb.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVideoExport.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -280,9 +286,6 @@
     </Filter>
     <Filter Include="ThumbnailVideoGenerator">
       <UniqueIdentifier>{c208792d-80f5-4021-b146-20e9d88e01be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThumbnailOpenCV">
-      <UniqueIdentifier>{016ca9ef-9288-4407-ab7e-a1cea09ef513}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

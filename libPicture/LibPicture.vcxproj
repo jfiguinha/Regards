@@ -539,7 +539,8 @@
     <ClInclude Include="ThumbnailDataStorage.h" />
     <ClInclude Include="ThumbnailVideoExport.h" />
     <ClInclude Include="TiffOption.h" />
-    <ClInclude Include="videothumbopencv.h" />
+    <ClInclude Include="VideoPlayer.h" />
+    <ClInclude Include="videothumb.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="yuv420.h" />
     <ClInclude Include="yuv422.h" />
@@ -580,7 +581,8 @@
     <ClCompile Include="ThumbnailDataStorage.cpp" />
     <ClCompile Include="ThumbnailVideoExport.cpp" />
     <ClCompile Include="TiffOption.cpp" />
-    <ClCompile Include="videothumbopencv.cpp" />
+    <ClCompile Include="VideoPlayer.cpp" />
+    <ClCompile Include="videothumb.cpp" />
     <ClCompile Include="webpOption.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
