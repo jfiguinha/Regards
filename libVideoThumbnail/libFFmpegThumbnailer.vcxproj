@@ -193,34 +193,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="filmstrip.h" />
-    <ClInclude Include="filmstripfilter.h" />
-    <ClInclude Include="grayscalefilter.h" />
-    <ClInclude Include="histogram.h" />
-    <ClInclude Include="ifilter.h" />
-    <ClInclude Include="moviedecoder.h" />
-    <ClInclude Include="moviestreaminfo.h" />
-    <ClInclude Include="StreamInfo.h" />
-    <ClInclude Include="stringoperations.h" />
-    <ClInclude Include="videoframe.h" />
     <ClInclude Include="VideoPlayer.h" />
-    <ClInclude Include="videostream.h" />
     <ClInclude Include="videothumb.h" />
-    <ClInclude Include="videothumbnailer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="filmstripfilter.cpp" />
-    <ClCompile Include="moviedecoder.cpp" />
-    <ClCompile Include="moviestreaminfo.cpp" />
-    <ClCompile Include="stringoperations.cpp" />
     <ClCompile Include="VideoPlayer.cpp" />
-    <ClCompile Include="videostream.cpp" />
     <ClCompile Include="videothumb.cpp" />
-    <ClCompile Include="videothumbnailer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

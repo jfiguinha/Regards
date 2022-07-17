@@ -2,15 +2,12 @@
 #include "videothumb.h"
 #include "VideoPlayer.h"
 #include "Metadata.h"
-#include "stringoperations.h"
-#include "filmstripfilter.h"
 #include <ximage.h>
 #include "ImageVideoThumbnail.h"
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
 #include <ConvertUtility.h>
 using namespace Regards::Video;
-using namespace ffmpegthumbnailer;
 
 class CThumbnailVideoPimpl
 {
