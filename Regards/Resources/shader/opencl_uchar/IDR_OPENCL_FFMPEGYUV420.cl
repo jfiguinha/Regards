@@ -10,16 +10,6 @@ inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
     return uiPackedPix;
 }
 
-inline uint bgraFloat4ToUint(float4 rgba, float fScale)
-{
-    unsigned int uiPackedPix = 0U;
-    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.z * fScale);
-    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
-    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.w * fScale)) << 16);
-    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
-    return uiPackedPix;
-}
-
 
 float4 GetColorFromYUV(const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int x, int y, int width, int height, int pitch)
 {
@@ -65,16 +55,13 @@ float4 GetColorFromYUV(const __global uchar *inputY, const __global uchar *input
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__kernel void Convert(__global uint *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int rgba, int pitch) 
+__kernel void Convert(__global uint *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x + (heightIn - y - 1) * widthOut;
+	int position = x + y * widthOut;
 
 	float4 color = GetColorFromYUV(inputY, inputU, inputV, x,  y, widthIn, heightIn, pitch);
-	if(rgba == 0)	
-		output[position] = rgbaFloat4ToUint(color,1.0f);
-	else
-		output[position] = bgraFloat4ToUint(color,1.0f);
+	output[position] = rgbaFloat4ToUint(color,1.0f);
 } 
 

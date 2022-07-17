@@ -59,11 +59,11 @@ namespace Regards
 			void BilateralEffect(cv::UMat & inputData, const int& fSize, const int& sigmaX, const int& sigmaP);
 			void Bm3d(cv::UMat & inputData, const float & fSigma);
 			void NlMeans(cv::UMat & inputData, const int& h, const int& hColor, const int& templateWindowSize, const int& searchWindowSize);
-			
+			static cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
 
 		protected:
-			void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer);
-			cv::UMat ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height);
+			static void ExecuteOpenCLCode(const wxString& programName, const wxString& functionName, vector<COpenCLParameter*>& vecParam, const int& width, const int& height, cl_mem& outBuffer);
+			
 			void ReallocMat(cv::UMat& inputData);
 			int GetRgbaBitmap(cl_mem cl_image, cv::UMat& u);
 			CSuperSampling* superSampling;

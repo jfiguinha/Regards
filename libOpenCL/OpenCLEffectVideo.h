@@ -59,7 +59,10 @@ namespace Regards
 			void ApplyVideoEffect(CVideoEffectParameter * effectParameter);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic, int ratio);
 
+			void SetNV12(const cv::Mat& yuv);
+			void SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut);
 			void SetNV12(const cv::Mat& yuv, const int& linesize, const int& nWidth, const int& nHeight);
+			void SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut);
 			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight);
 
 			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
@@ -76,6 +79,7 @@ namespace Regards
 			wxString filename;
 			cv::UMat paramSrc;
 			cv::UMat paramOutput;
+			cl_mem_flags  flag;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
 			bool isOk = false;

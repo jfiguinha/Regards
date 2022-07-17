@@ -24,31 +24,29 @@ float4 GetColorFromNV12(const __global uchar * inputY, const __global uchar *inp
 		if (xModulo == 1)
 		{		
 			if (yModulo == 1)
-				positionUV = (x - 1) + ((y - 1) / 2) * width;
+				positionUV = (x - 1) + ((y - 1) / 2) * pitch;
 			else
-				positionUV = (x - 1) + (y / 2) * width;
+				positionUV = (x - 1) + (y / 2) * pitch;
 		}
 		else
 		{
 			if (yModulo == 1)
-				positionUV = x + ((y - 1) / 2) * width + positionUV;
+				positionUV = x + ((y - 1) / 2) * pitch;
 			else
-				positionUV = x + (y / 2) * width + positionUV;
+				positionUV = x + (y / 2) * pitch;
 		}
 		
-		float vComp = inputUV[positionUV];
-		float uComp = inputUV[positionUV + 1];
-		float yComp = inputY[positionSrc];
+		uchar vComp = inputUV[positionUV];
+		uchar uComp = inputUV[positionUV + 1];
+		uchar yComp = inputY[positionSrc];
 		
-		color.x = (1.164 * (yComp - 16) + 1.596*(vComp-128));
-		color.y = (1.164 * (yComp - 16) - 0.391*(uComp-128) - 0.813*(vComp-128));
-		color.z = (1.164 * (yComp - 16) + 2.018*(uComp-128));
+		color.x = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
+		color.y = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
+		color.z = (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
 		color.w = 255.0f;
 		
-		color = color / (float4)255.0f;
-
 		float4 minimal = 0.0;
-		float4 maximal = 1.0;
+		float4 maximal = 255.0;
 
 		return color = min(max(color,minimal),maximal);
 		
@@ -63,7 +61,7 @@ __kernel void Convert(__global uint *output, const __global uchar *inputY, const
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x + (heightIn - y - 1) * widthOut;
+	int position = x +  y * widthOut;
 
 	float4 color = GetColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch); 
 	output[position] = rgbaFloat4ToUint(color,1.0f);

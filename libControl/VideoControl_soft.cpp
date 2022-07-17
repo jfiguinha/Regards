@@ -2110,7 +2110,64 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			AVFrame* tmp_frame = src_frame;
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
+				muBitmap.lock();
+
+				/*
+				* 
+				cv::Mat y = cv::Mat(nHeight, tmp_frame->linesize[0], CV_8UC1, tmp_frame->data[0]);
+				cv::Mat uv = cv::Mat(+ nHeight / 2, tmp_frame->linesize[1], CV_8UC1, tmp_frame->data[1]);
+
+				cv::Mat data = cv::Mat(nHeight, nWidth, CV_8UC4);
+
+				for (int y = 0; y < src_frame->height; y++)
+				{
+					for (int x = 0; x < src_frame->width; x++)
+					{
+						int srcPos = x * 4 + y * 4 * nWidth;
+						int positionSrc = x + y * tmp_frame->linesize[0];
+						int positionUV = 0;
+
+						int yModulo = y % 2;
+						int xModulo = x % 2;
+						if (xModulo == 1)
+						{
+							if (yModulo == 1)
+								positionUV = (x - 1) + ((y - 1) / 2) * tmp_frame->linesize[0];
+							else
+								positionUV = (x - 1) + (y / 2) * tmp_frame->linesize[0];
+						}
+						else
+						{
+							if (yModulo == 1)
+								positionUV = x + ((y - 1) / 2) * tmp_frame->linesize[0];
+							else
+								positionUV = x + (y / 2) * tmp_frame->linesize[0];
+						}
+
+						uchar vComp = tmp_frame->data[1][positionUV];
+						uchar uComp = tmp_frame->data[1][positionUV + 1];
+						uchar yComp = tmp_frame->data[0][positionSrc];
+
+						float r = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
+						float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
+						float b = (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
+						data.data[srcPos + 3] = 255;
+
+
+						data.data[srcPos] = clamp(r, 0, 255);
+						data.data[srcPos + 1] = clamp(g, 0, 255);
+						data.data[srcPos + 2] = clamp(b, 0, 255);
+					}
+				}
+
+				//cv::imwrite("d:\\test.jpg", data);
+				openclEffectYUV->SetNV12(data);
+				*/
+				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight);
+				muBitmap.unlock();
+				/*
 				//printf("AV_PIX_FMT_NV12 \n");
+				
 				try
 				{
 					int sizeData = (nHeight + nHeight / 2) * tmp_frame->linesize[0];
@@ -2144,12 +2201,18 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					std::cout << "exception caught: " << err_msg << std::endl;
 					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 				}
-
+				*/
 
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
 			{
+
+				muBitmap.lock();
+				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight);
+				muBitmap.unlock();
+
 				// printf("AV_PIX_FMT_YUV420P \n");
+				/*
 				try
 				{
 					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
@@ -2169,6 +2232,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 					std::cout << "exception caught: " << err_msg << std::endl;
 					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 				}
+				*/
 			}
 		}
 	}

@@ -26,6 +26,8 @@ using namespace Regards::OpenCV;
 COpenCLEffectVideo::COpenCLEffectVideo()
 {
 	openclFilter = new COpenCLFilter();
+	bool useMemory = (cv::ocl::Device::getDefault().type() == CL_DEVICE_TYPE_GPU) ? false : true;
+	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
 }
 
 void COpenCLEffectVideo::SetMatrix(cv::UMat& frame)
@@ -312,6 +314,72 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 }
 
+void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut)
+{
+	cv::UMat out;
+
+	vector<COpenCLParameter*> vecParam;
+ 	COpenCLParameterByteArray *	inputY = new COpenCLParameterByteArray();
+	inputY->SetLibelle("inputY");
+	inputY->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), bufferY, sizeY, flag);
+	vecParam.push_back(inputY); 
+
+	COpenCLParameterByteArray * inputUV = new COpenCLParameterByteArray();
+	inputUV->SetLibelle("inputUV");
+	inputUV->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), bufferUV, sizeUV, flag);
+	vecParam.push_back(inputUV);
+
+	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+	paramWidth->SetLibelle("widthIn");
+	paramWidth->SetValue(width);
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetLibelle("heightIn");
+	paramHeight->SetValue(height);
+	vecParam.push_back(paramHeight);
+
+	COpenCLParameterInt* paramSrcWidth = new COpenCLParameterInt();
+	paramSrcWidth->SetLibelle("widthOut");
+	paramSrcWidth->SetValue(widthOut);
+	vecParam.push_back(paramSrcWidth);
+
+	COpenCLParameterInt* paramSrcHeight = new COpenCLParameterInt();
+	paramSrcHeight->SetLibelle("heightOut");
+	paramSrcHeight->SetValue(heightOut);
+	vecParam.push_back(paramSrcHeight);
+
+	COpenCLParameterInt* paramLineSize = new COpenCLParameterInt();
+	paramLineSize->SetLibelle("LineSize");
+	paramLineSize->SetValue(lineSize);
+	vecParam.push_back(paramLineSize);
+
+
+  	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	//cv::Mat test;
+	//out.copyTo(test);
+	//imwrite("d:\\test.jpg", test);
+
+	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
+
+
+}
+
+void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
+{
+	cv::cvtColor(yuv, paramSrc, cv::COLOR_RGBA2BGR);
+}
+
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& linesize, const int& nWidth, const int& nHeight)
 {
     cv::UMat out;
@@ -328,6 +396,66 @@ void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& linesize, const 
 		out.copyTo(paramSrc);
 	}
 
+}
+
+void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut)
+{
+	cv::UMat out;
+
+	vector<COpenCLParameter*> vecParam;
+	COpenCLParameterByteArray* inputY = new COpenCLParameterByteArray();
+	inputY->SetLibelle("inputY");
+	inputY->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), bufferY, sizeY, flag);
+	vecParam.push_back(inputY);
+
+	COpenCLParameterByteArray* inputU = new COpenCLParameterByteArray();
+	inputU->SetLibelle("inputU");
+	inputU->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), bufferU, sizeU, flag);
+	vecParam.push_back(inputU);
+
+	COpenCLParameterByteArray* inputV = new COpenCLParameterByteArray();
+	inputV->SetLibelle("inputV");
+	inputV->SetValue((cl_context)cv::ocl::Context::getDefault(false).ptr(), bufferV, sizeV, flag);
+	vecParam.push_back(inputV);
+
+	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+	paramWidth->SetLibelle("widthIn");
+	paramWidth->SetValue(width);
+	vecParam.push_back(paramWidth);
+
+	COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+	paramHeight->SetLibelle("heightIn");
+	paramHeight->SetValue(height);
+	vecParam.push_back(paramHeight);
+
+	COpenCLParameterInt* paramSrcWidth = new COpenCLParameterInt();
+	paramSrcWidth->SetLibelle("widthOut");
+	paramSrcWidth->SetValue(widthOut);
+	vecParam.push_back(paramSrcWidth);
+
+	COpenCLParameterInt* paramSrcHeight = new COpenCLParameterInt();
+	paramSrcHeight->SetLibelle("heightOut");
+	paramSrcHeight->SetValue(heightOut);
+	vecParam.push_back(paramSrcHeight);
+
+	COpenCLParameterInt* paramLineSize = new COpenCLParameterInt();
+	paramLineSize->SetLibelle("LineSize");
+	paramLineSize->SetValue(lineSize);
+	vecParam.push_back(paramLineSize);
+
+
+	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
+
+	for (COpenCLParameter* parameter : vecParam)
+	{
+		if (!parameter->GetNoDelete())
+		{
+			delete parameter;
+			parameter = nullptr;
+		}
+	}
+
+	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
 }
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight)
