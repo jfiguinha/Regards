@@ -772,7 +772,7 @@ CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, con
 		if (xEnd > this->GetBitmapWidth())
 			xEnd = this->GetBitmapWidth();
 
-		cv::Rect rect(xPos, yPos, (xPos - xEnd), (yEnd - yPos));
+		cv::Rect rect(xPos, yPos, (xEnd - xPos), (yEnd - yPos));
 		VerifRectSize(rect, bitmapMatrix);
 		//bool is_inside = (rect & cv::Rect(0, 0, bitmapMatrix.cols, bitmapMatrix.rows)) == rect;
 		cv::Mat crop;

@@ -866,7 +866,7 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 		uint32_t _width, _heigth;
 		reader->getWidth(itemId, _width);
 		reader->getHeight(itemId, _heigth);
-		uint64_t memoryBufferSize = 1024 * 1024;
+		uint64_t memoryBufferSize = 4096 * 4096;
 		auto memoryBuffer = new uint8_t[memoryBufferSize];
 		ErrorCode err = reader->getItemDataWithDecoderParameters(itemId, memoryBuffer, memoryBufferSize);
 		if (err == ErrorCode::OK)
