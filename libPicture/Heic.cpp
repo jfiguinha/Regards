@@ -1187,6 +1187,23 @@ CRegardsBitmap* CHeic::GetThumbnailPicture(const string& filename)
 		ImageId itemId;
 		reader->getPrimaryItem(itemId);
 
+		Array<ItemPropertyInfo> propertyInfos;
+		reader->getItemProperties(itemId, propertyInfos);
+
+		unsigned int rotation = 0;
+		for (const auto& property : propertyInfos)
+		{
+			// For example, handle 'irot' transformational property is anti-clockwise rotation
+			if (property.type == ItemPropertyType::IROT)
+			{
+				// Get property struct by index to access rotation angle
+				Rotate irot;
+				reader->getProperty(property.index, irot);
+				rotation = irot.angle;
+				break; // Assume only one property
+			}
+		}
+
 		// Thumbnail references ('thmb') are from the thumbnail image to the master image
 		Array<ImageId> thumbIds;
 		reader->getReferencedToItemListByType(itemId, "thmb", thumbIds);
@@ -1207,6 +1224,12 @@ CRegardsBitmap* CHeic::GetThumbnailPicture(const string& filename)
 				if (picture != nullptr)
 				{
 					picture->SetFilename(filename);
+					//picture->SetOrientation(rotation);
+					if (rotation != 0)
+					{
+						picture->ApplyRotation(360 - rotation);
+						//picture->VertFlipBuf();
+					}
 				}
 			}
 		}
