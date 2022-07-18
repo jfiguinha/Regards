@@ -275,7 +275,8 @@ protected:
 	SwsContext* localContext = nullptr;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;
-
+	wxString colorRange = "";
+	wxString colorSpace = "";
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
 };

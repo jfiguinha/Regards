@@ -314,7 +314,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 
 }
 
-void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut)
+void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut, const int& colorRange, const int& colorSpace)
 {
 	cv::UMat out;
 
@@ -354,6 +354,16 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 	paramLineSize->SetValue(lineSize);
 	vecParam.push_back(paramLineSize);
 
+	COpenCLParameterInt* paramColorRange = new COpenCLParameterInt();
+	paramColorRange->SetLibelle("ColorRange");
+	paramColorRange->SetValue(colorRange);
+	vecParam.push_back(paramColorRange);
+
+	COpenCLParameterInt* paramColorSpace = new COpenCLParameterInt();
+	paramColorSpace->SetLibelle("ColorSpace");
+	paramColorSpace->SetValue(colorSpace);
+	vecParam.push_back(paramColorSpace);
+
 
   	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGNV12", "Convert", vecParam, widthOut, heightOut);
 
@@ -366,13 +376,13 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 		}
 	}
 
-	//cv::Mat test;
-	//out.copyTo(test);
-	//imwrite("d:\\test.jpg", test);
+	cv::cvtColor(out, convert_out, cv::COLOR_BGRA2BGR);
+	
+}
 
-	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
-
-
+void COpenCLEffectVideo::Convert()
+{
+	convert_out.copyTo(paramSrc);
 }
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
@@ -398,7 +408,7 @@ void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv, const int& linesize, const 
 
 }
 
-void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut)
+void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut, const int& colorRange, const int& colorSpace)
 {
 	cv::UMat out;
 
@@ -443,6 +453,16 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 	paramLineSize->SetValue(lineSize);
 	vecParam.push_back(paramLineSize);
 
+	COpenCLParameterInt* paramColorRange = new COpenCLParameterInt();
+	paramColorRange->SetLibelle("ColorRange");
+	paramColorRange->SetValue(colorRange);
+	vecParam.push_back(paramColorRange);
+
+	COpenCLParameterInt* paramColorSpace = new COpenCLParameterInt();
+	paramColorSpace->SetLibelle("ColorSpace");
+	paramColorSpace->SetValue(colorSpace);
+	vecParam.push_back(paramColorSpace);
+
 
 	out = COpenCLFilter::ExecuteOpenCLCode("IDR_OPENCL_FFMPEGYUV420", "Convert", vecParam, widthOut, heightOut);
 
@@ -455,7 +475,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 		}
 	}
 
-	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
+	cv::cvtColor(out, convert_out, cv::COLOR_RGBA2BGR);
 }
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight)

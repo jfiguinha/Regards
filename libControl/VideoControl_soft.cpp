@@ -21,6 +21,7 @@
 #include <hqdn3d.h>
 #include <Tracing.h>
 #include <RegardsConfigParam.h>
+#include <MediaInfo.h>
 #include <VideoStabilization.h>
 #include <FiltreEffetCPU.h>
 using namespace Regards::OpenCV;
@@ -1027,6 +1028,9 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 		pause = false;
 		firstMovie = true;
 
+		colorRange = CMediaInfo::GetColorRange(movie);
+		colorSpace = CMediaInfo::GetColorSpace(movie);
+
 		/*
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename),
 					   IsHardwareCompatible() ? acceleratorHardware : "", isOpenGLDecoding,
@@ -1887,6 +1891,10 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
+	muBitmap.lock();
+	openclEffect->Convert();
+	muBitmap.unlock();
+
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
 	{
@@ -2104,6 +2112,25 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		isffmpegDecode = false;
 		if (openclEffectYUV != nullptr)
 		{
+			int _colorSpace = 0;
+			int isLimited = 0;
+			if (colorRange == "Limited")
+				isLimited = 1;
+
+			if(colorSpace == "BT.601")
+			{
+				_colorSpace = 1;
+			}
+			else if (colorSpace == "BT.709")
+			{
+				_colorSpace = 2;
+			}
+			else if (colorSpace == "BT.2020")
+			{
+				_colorSpace = 3;
+			}
+
+
             cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
@@ -2163,7 +2190,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				//cv::imwrite("d:\\test.jpg", data);
 				openclEffectYUV->SetNV12(data);
 				*/
-				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight);
+				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
 				/*
 				//printf("AV_PIX_FMT_NV12 \n");
@@ -2208,7 +2235,7 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			{
 
 				muBitmap.lock();
-				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight);
+				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
 
 				// printf("AV_PIX_FMT_YUV420P \n");

@@ -151,3 +151,33 @@ int CMediaInfo::GetVideoRotation(const wxString& filename)
 #endif
 	return 0;
 }
+
+wxString CMediaInfo::GetColorRange(const wxString& filename)
+{
+#ifndef _DEBUG
+	MediaInfo MI;
+	wstring To_Display;
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
+	To_Display = MI.Get(Stream_Video, 0, __T("colour_range"), Info_Text, Info_Name).c_str();
+	MI.Close();
+	if (To_Display != "")
+		return To_Display;
+#endif
+
+	return "";
+}
+
+wxString CMediaInfo::GetColorSpace(const wxString& filename)
+{
+#ifndef _DEBUG
+	MediaInfo MI;
+	wstring To_Display;
+	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
+	To_Display = MI.Get(Stream_Video, 0, __T("matrix_coefficients"), Info_Text, Info_Name).c_str();
+	MI.Close();
+	if (To_Display != "")
+		return To_Display;
+#endif
+
+	return "";
+}
