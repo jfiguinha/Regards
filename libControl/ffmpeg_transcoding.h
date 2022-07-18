@@ -18,6 +18,7 @@ protected:
 	wxString input;
 	wxString output;
 	std::thread* encode_thread;
+	cv::Mat data;
 	CompressVideo* m_dlgProgress;
 	wxWindow* mainWindow;
 	CRegardsBitmap * frameOutput;

@@ -2375,7 +2375,7 @@ void CFFmpegTranscodingPimpl::EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* f
 			return;
 		else if (ret < 0) {
 			fprintf(stderr, "Error during encoding\n");
-			exit(1);
+			return;
 		}
 
 		fwrite(enc_pkt.data, 1, enc_pkt.size, outfile);
@@ -2475,6 +2475,7 @@ CRegardsBitmap * CFFmpegTranscodingPimpl::GetFrameOutput()
 
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
 {
+	cv::Mat decodeFrame;
 	AVCodecID codec_name;
 	//const AVCodec* codec;
 	AVCodecContext* c = NULL;
@@ -2494,13 +2495,13 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			width = capture->GetWidth();
 			height = capture->GetHeight();
 			bool success = capture->SeekToPos(timeInSeconds);
-			frameOutput = capture->GetVideoFrame(false);
-			//cv::imwrite("d:\\test.jpg", frameOutput);
-			cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
+			decodeFrame = capture->GetVideoFrame(false);
+			//cv::imwrite("d:\\test.jpg", decodeFrame);
+			cvtColor(decodeFrame, decodeFrame, cv::COLOR_RGB2BGRA);
 		}
 
 
-		bitmapOut->SetMatrix(frameOutput);
+		bitmapOut->SetMatrix(decodeFrame);
 		bitmapOut->ApplyRotation(rotation);
 		bitmapOut->VertFlipBuf();
 		frameOutput = ApplyProcess(bitmapOut);

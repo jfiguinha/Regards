@@ -33,16 +33,18 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 {
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
 	int ret =  ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
-	if (ret == 0)
-		frameOutput = ffmpegtranscoding.GetFrameOutput();
-	return ret;
+	if (ffmpegtranscoding.GetFrameOutput() != nullptr)
+	{
+		data = ffmpegtranscoding.GetFrameOutput()->GetMatrix();
+	}
+	return 0;
 }
 
 void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap * & bitmap)
 {
 	if (bitmap != nullptr)
 	{
-		bitmap->SetMatrix(frameOutput->GetMatrix());
+		bitmap->SetMatrix(data);
 	}
 }
 

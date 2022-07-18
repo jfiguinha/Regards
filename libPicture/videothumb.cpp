@@ -12,10 +12,10 @@ using namespace Regards::Video;
 class CThumbnailVideoPimpl
 {
 public:
-	CThumbnailVideoPimpl(const wxString& fileName)
+	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware)
 	{
 		filename = CConvertUtility::ConvertToStdString(fileName);
-		videoThumbnailer = new CVideoPlayer(filename);
+		videoThumbnailer = new CVideoPlayer(filename, useHardware);
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
 		rotation = videoThumbnailer->GetOrientation();
@@ -43,8 +43,7 @@ public:
 	{
 		if (m_seekTimeInSecond > 0)
 			videoThumbnailer->SeekToPos(m_seekTimeInSecond);
-		else
-			videoThumbnailer->SeekToBegin();
+
 		cv::Mat out = videoThumbnailer->GetVideoFrame();
 		image->SetMatrix(out);
 		image->ConvertToBgr();
@@ -64,7 +63,7 @@ public:
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
 {
 	this->fileName = fileName;
-	pimpl = new CThumbnailVideoPimpl(fileName);
+	pimpl = new CThumbnailVideoPimpl(fileName, false);
 }
 
 

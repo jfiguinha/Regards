@@ -254,6 +254,7 @@ void CShowPreview::ThreadLoading(void* data)
 		}
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
 		ret = showPreview->transcodeFFmpeg->EncodeFrame(showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
+		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);
 
 		if (ret == 0)
 		{
@@ -266,7 +267,7 @@ void CShowPreview::ThreadLoading(void* data)
 		else
 			showPreview->compressIsOK = false;
 
-		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);//showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
+		//showPreview->videoOriginal->GetVideoFramePos(showPreview->position, 0, 0);
 		//imwrite("d:\\test_original.jpg", showPreview->decodeFrameOriginal->GetMatrix());
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
