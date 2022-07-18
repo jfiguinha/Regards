@@ -1233,8 +1233,8 @@ void COpenCLFilter::ExecuteOpenCLCode(const wxString& programName, const wxStrin
 	}
 
 	size_t global_work_size[2] = { (size_t)width, (size_t)height };
-	size_t localThreads[2] = { 16, 16 };
-	bool success = kernel.run(2, global_work_size, localThreads, true);
+	//size_t localThreads[2] = { 16, 16 };
+	bool success = kernel.run(2, global_work_size, nullptr, true);
 	if (!success) {
 		cout << "Failed running the kernel..." << endl;
 		if (err > 0)

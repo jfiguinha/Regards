@@ -13,8 +13,6 @@ inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
 
 float4 GetColorFromNV12(const __global uchar * inputY, const __global uchar *inputUV, int x, int y, int width, int height, int pitch, int colorRange, int colorSpace)
 {
-	if(x < width && y < height && y >= 0 && x >= 0)	
-	{
 		float4 color;
 		int positionSrc = x + y * pitch;
 		int positionUV = 0;
@@ -117,9 +115,7 @@ float4 GetColorFromNV12(const __global uchar * inputY, const __global uchar *inp
 		}
 
 		return color = min(max(color,minimal),maximal);
-		
-	}
-	return 0.0f;
+
 }
 
 //----------------------------------------------------
@@ -130,7 +126,9 @@ __kernel void Convert(__global uint *output, const __global uchar *inputY, const
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	int position = x +  y * widthOut;
-
-	float4 color = GetColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch, colorRange, colorSpace); 
-	output[position] = rgbaFloat4ToUint(color,1.0f);
+	if(x < widthOut && y < heightOut && y >= 0 && x >= 0)	
+	{
+		float4 color = GetColorFromNV12(inputY, inputUV, x,  y, widthIn, heightIn, pitch, colorRange, colorSpace); 
+		output[position] = rgbaFloat4ToUint(color,1.0f);
+	}
 } 

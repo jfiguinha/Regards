@@ -237,9 +237,31 @@ bool MyApp::OnInit()
 					isOpenCLInitialized = true;
 			}
 
+			cout << context.ndevices() << " GPU devices are detected." << endl; //This bit provides an overview of the OpenCL devices you have in your computer
+			for (int i = 0; i < context.ndevices(); i++)
+			{
+				cv::ocl::Device device = context.device(i);
+#if defined(WIN32)
+				char message[255];
+				sprintf(message, "name: % s \n", device.name().c_str());
+				OutputDebugStringA(message);
+				sprintf(message,"OpenCL_C_Version: % s \n", device.OpenCL_C_Version().c_str());
+				OutputDebugStringA(message);
+#else
+				
+				cout << "name:              " << device.name() << endl;
+				cout << "available:         " << device.available() << endl;
+				cout << "imageSupport:      " << device.imageSupport() << endl;
+				cout << "OpenCL_C_Version:  " << device.OpenCL_C_Version() << endl;
+				cout << endl;
+#endif
+
+
+			}
+
 			if (isOpenCLInitialized)
 			{
-				cv::ocl::Device(context.device(0));
+				cv::ocl::Device(context.device(1));
 			}
 		}
 
