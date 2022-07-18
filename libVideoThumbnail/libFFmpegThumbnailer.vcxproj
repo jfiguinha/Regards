@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -107,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;LATEST_GREATEST_FFMPEG;FFMPEG;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\libRapidXML;..\libParameter;..\include;..\libPicture;..\CxImage;..\libDatastructure;..\libUtility;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\libPicture;..\CxImage;..\libDatastructure;..\libUtility;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
@@ -154,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;LATEST_GREATEST_FFMPEG;FFMPEG;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\libRapidXML;..\libParameter;..\include;..\libPicture;..\CxImage;..\libDatastructure;..\libUtility;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\libPicture;..\CxImage;..\libDatastructure;..\libUtility;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Parallelization>true</Parallelization>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
@@ -179,7 +178,6 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(SolutionDir)\include\header_release.pch</PrecompiledHeaderOutputFile>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,19 +191,34 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="VideoPlayer.h" />
+    <ClInclude Include="filmstrip.h" />
+    <ClInclude Include="filmstripfilter.h" />
+    <ClInclude Include="grayscalefilter.h" />
+    <ClInclude Include="histogram.h" />
+    <ClInclude Include="ifilter.h" />
+    <ClInclude Include="moviedecoder.h" />
+    <ClInclude Include="moviestreaminfo.h" />
+    <ClInclude Include="StreamInfo.h" />
+    <ClInclude Include="stringoperations.h" />
+    <ClInclude Include="videoframe.h" />
+    <ClInclude Include="videostream.h" />
     <ClInclude Include="videothumb.h" />
+    <ClInclude Include="videothumbnailer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="VideoPlayer.cpp" />
+    <ClCompile Include="filmstripfilter.cpp" />
+    <ClCompile Include="moviedecoder.cpp" />
+    <ClCompile Include="moviestreaminfo.cpp" />
+    <ClCompile Include="stringoperations.cpp" />
+    <ClCompile Include="videostream.cpp" />
     <ClCompile Include="videothumb.cpp" />
+    <ClCompile Include="videothumbnailer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210806.1\build\native\Microsoft.Windows.CppWinRT.targets')" />
   </ImportGroup>
 </Project>

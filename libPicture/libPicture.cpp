@@ -1773,8 +1773,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case MOV:
 			{
 
-				CThumbnailVideo thumbnailVideo(szFileName);
-				vector<CImageVideoThumbnail*> listVideo = thumbnailVideo.GetVideoListFrame(widthThumbnail, heightThumbnail);
+				vector<CImageVideoThumbnail*> listVideo = CThumbnailVideo::GetVideoListFrame(szFileName, widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);

@@ -109,9 +109,6 @@
     <ClCompile Include="VideoPlayer.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="videothumb.cpp">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailVideoExport.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
@@ -247,9 +244,6 @@
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="VideoPlayer.h">
-      <Filter>ThumbnailVideoGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="videothumb.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVideoExport.h">
