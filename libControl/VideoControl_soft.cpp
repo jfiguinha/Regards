@@ -1891,9 +1891,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
-	muBitmap.lock();
-	openclEffect->Convert();
-	muBitmap.unlock();
 
 	if ((videoEffectParameter.stabilizeVideo || videoEffectParameter.autoConstrast) && videoEffectParameter.
 		effectEnable)
@@ -2279,15 +2276,12 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 
 	if (!isffmpegDecode)
 	{
-		//printf("VideoControl Is use_opencl 1\n");
+		muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
-			//printf("VideoControl Is use_opencl 2\n");
-			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
-			muBitmap.unlock();
 		}
-		//printf("VideoControl Is use_opencl 3\n");
+		muBitmap.unlock();
 
 		deleteTexture = false;
 	}

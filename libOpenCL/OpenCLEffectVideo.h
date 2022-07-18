@@ -53,7 +53,6 @@ namespace Regards
 			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
 			CRegardsBitmap* GetBitmap(const bool &src = false);
 
-			void Convert();
 			void AutoContrast();
 			virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);
 			void Rotate(CVideoEffectParameter* videoEffectParameter);
@@ -80,7 +79,6 @@ namespace Regards
 			wxString filename;
 			cv::UMat paramSrc;
 			cv::UMat paramOutput;
-			cv::UMat convert_out;
 			cl_mem_flags  flag;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;

@@ -312,6 +312,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 		}
 	}
 
+	
 }
 
 void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV, int sizeUV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut, const int& colorRange, const int& colorSpace)
@@ -376,14 +377,9 @@ void COpenCLEffectVideo::SetNV12(uint8_t* bufferY, int sizeY, uint8_t* bufferUV,
 		}
 	}
 
-	cv::cvtColor(out, convert_out, cv::COLOR_BGRA2BGR);
-	
+	cv::cvtColor(out, paramSrc, cv::COLOR_BGRA2BGR);
 }
 
-void COpenCLEffectVideo::Convert()
-{
-	convert_out.copyTo(paramSrc);
-}
 
 void COpenCLEffectVideo::SetNV12(const cv::Mat& yuv)
 {
@@ -475,7 +471,7 @@ void COpenCLEffectVideo::SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* buffer
 		}
 	}
 
-	cv::cvtColor(out, convert_out, cv::COLOR_RGBA2BGR);
+	cv::cvtColor(out, paramSrc, cv::COLOR_RGBA2BGR);
 }
 
 void COpenCLEffectVideo::SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight)
