@@ -15,6 +15,8 @@ namespace Regards {
 			CVideoPlayer(const wxString &filename, const bool &useHardware = true);
 			bool isOpened();
 			void SeekToBegin();
+
+			void SkipFrame(const int& nbFrame);
 			int SeekToPos(const int& sec);
 			
 			int GetDuration();

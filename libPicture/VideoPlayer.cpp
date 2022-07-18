@@ -78,9 +78,33 @@ public:
     bool isOpen = false;
     int widthVideo = 0;
     int heightVideo = 0;
+    int skipFrame = 0;
 
     int SeekToPos(const int& sec)
     {
+        /*
+        int64_t timestamp = (AV_TIME_BASE / 100) * (timeInSeconds / 1000);
+
+        if (timestamp < 0)
+        {
+            timestamp = 0;
+        }
+
+        int ret = av_seek_frame(input_ctx, -1, timestamp, 0);
+
+        if (ret >= 0)
+        {
+            avcodec_flush_buffers(decoder_ctx);
+        }
+        else
+        {
+            throw logic_error("Seeking in video failed");
+        }
+        
+
+        return ret;
+        */
+  
         //int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
         int64_t seekTarget = (double)((double)sec / 1000) * (double)AV_TIME_BASE;
         if (seekTarget < duration)
@@ -88,9 +112,8 @@ public:
             AVRational time_base = input_ctx->streams[video_stream]->time_base;
             int64_t ts = av_rescale_q(sec * 1000, AV_TIME_BASE_Q, time_base);           
 
-            ret = av_seek_frame(input_ctx, video_stream, ts, 0);
+            ret = av_seek_frame(input_ctx, video_stream, seekTarget, 0);
 
-           // int err = avformat_seek_file(input_ctx, video_stream, 0, ts, ts, 0);
             return ret;
 
         }
@@ -381,8 +404,11 @@ public:
         bool decode_video = false;
         bool exit_white = false;
 
+       
+        int nbFrame = 0;
        do
         {
+           decode_video = false;
             
             if ((ret = av_read_frame(input_ctx, packet)) < 0)
             {
@@ -398,7 +424,7 @@ public:
 
             av_packet_unref(packet);
 
-       } while (!exit_white);
+       } while (!exit_white || !decode_video);
 
        if (!decode_video)
            return cv::Mat();
@@ -437,6 +463,11 @@ public:
     {
         return rotation;
     }
+
+    void SkipFrame(const int& nbFrame)
+    {
+        skipFrame = nbFrame;
+    }
 };
 
 AVBufferRef* CVideoPlayerPimpl::hw_device_ctx = NULL;
@@ -445,6 +476,11 @@ enum AVPixelFormat CVideoPlayerPimpl::hw_pix_fmt;
 void CVideoPlayer::SeekToBegin()
 {
     pimpl->SeekToBegin();
+}
+
+void CVideoPlayer::SkipFrame(const int& nbFrame)
+{
+    pimpl->SkipFrame(nbFrame);
 }
 
 int CVideoPlayer::GetFps()
