@@ -2018,7 +2018,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		fps = capture->GetFps();
 		width = capture->GetWidth();
 		height = capture->GetHeight();
-		bool success = capture->SeekToPos(timeInSeconds * 1000);
+		bool success = capture->SeekToPos(timeInSeconds);
 		frameOutput = capture->GetVideoFrame(false);
 		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
@@ -2493,7 +2493,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			fps = capture->GetFps();
 			width = capture->GetWidth();
 			height = capture->GetHeight();
-			bool success = capture->SeekToPos(timeInSeconds * 1000);
+			bool success = capture->SeekToPos(timeInSeconds);
 			frameOutput = capture->GetVideoFrame(false);
 			//cv::imwrite("d:\\test.jpg", frameOutput);
 			cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);

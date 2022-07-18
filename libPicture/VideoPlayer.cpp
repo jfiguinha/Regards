@@ -80,10 +80,10 @@ public:
     int heightVideo = 0;
     int skipFrame = 0;
 
-    int SeekToPos(const int& sec)
+    int SeekToPos(const int& timeInSeconds)
     {
-        /*
-        int64_t timestamp = (AV_TIME_BASE / 100) * (timeInSeconds / 1000);
+
+        int64_t timestamp = (AV_TIME_BASE) * static_cast<int64_t>(timeInSeconds);
 
         if (timestamp < 0)
         {
@@ -102,23 +102,32 @@ public:
         }
         
 
-        return ret;
-        */
+        /*
   
         //int64_t timeBase = (int64_t(decoder_ctx->time_base.num) * AV_TIME_BASE) / int64_t(decoder_ctx->time_base.den);
-        int64_t seekTarget = (double)((double)sec / 1000) * (double)AV_TIME_BASE;
+        int64_t seekTarget = (double)((double)sec) * (double)AV_TIME_BASE;
         if (seekTarget < duration)
         {
             AVRational time_base = input_ctx->streams[video_stream]->time_base;
-            int64_t ts = av_rescale_q(sec * 1000, AV_TIME_BASE_Q, time_base);           
+            int64_t ts = av_rescale_q(sec, AV_TIME_BASE_Q, time_base);           
 
-            ret = av_seek_frame(input_ctx, video_stream, seekTarget, 0);
+            ret = av_seek_frame(input_ctx, video_stream, ts, 0);
+
+            if (ret >= 0)
+            {
+                avcodec_flush_buffers(decoder_ctx);
+            }
+            else
+            {
+                throw logic_error("Seeking in video failed");
+            }
 
             return ret;
 
         }
         
         return -1;
+        */
 
         //avcodec_flush_buffers(decoder_ctx);
     }

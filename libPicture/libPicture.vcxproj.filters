@@ -112,6 +112,9 @@
     <ClCompile Include="ThumbnailVideoExport.cpp">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="videothumb.cpp">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -247,6 +250,9 @@
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailVideoExport.h">
+      <Filter>ThumbnailVideoGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="videothumb.h">
       <Filter>ThumbnailVideoGenerator</Filter>
     </ClInclude>
   </ItemGroup>
