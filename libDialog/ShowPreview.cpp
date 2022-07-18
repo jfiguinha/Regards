@@ -126,7 +126,7 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	if (videoOriginal != nullptr)
 		delete videoOriginal;
 
-	videoOriginal = new CThumbnailVideo(filename);
+	videoOriginal = new CThumbnailVideo(filename, false);
 	timeTotal = videoOriginal->GetMovieDuration();
 	orientation = videoOriginal->GetOrientation();
 	sliderVideo->SetTotalSecondTime(timeTotal * 1000);
@@ -258,7 +258,7 @@ void CShowPreview::ThreadLoading(void* data)
 
 		if (ret == 0)
 		{
-			CThumbnailVideo video(fileTemp);
+			CThumbnailVideo video(fileTemp, false);
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);

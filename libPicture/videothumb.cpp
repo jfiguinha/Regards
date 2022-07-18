@@ -60,7 +60,7 @@ public:
 	string filename = "";
 };
 
-CThumbnailVideo::CThumbnailVideo(const wxString& fileName)
+CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardware)
 {
 	this->fileName = fileName;
 	pimpl = new CThumbnailVideoPimpl(fileName, false);

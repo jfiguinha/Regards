@@ -10,7 +10,7 @@ namespace Regards{
 		class CThumbnailVideo
 		{
 		public:
-			CThumbnailVideo(const wxString& fileName);
+			CThumbnailVideo(const wxString& fileName, const bool& useHardware);
 			~CThumbnailVideo();
 			CRegardsBitmap* GetVideoFrame( const int& thumbnailWidth, const int& thumbnailHeight);
 			CRegardsBitmap * GetVideoFramePos(const int64& timePosition, const int & thumbnailWidth, const int & thumbnailHeight);

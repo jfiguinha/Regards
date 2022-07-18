@@ -303,7 +303,7 @@ void CompressionAudioVideoOption::SetFile(const wxString& videoFilename,
 	if (ffmpegTranscoding != nullptr)
 		delete ffmpegTranscoding;
 
-	ffmpegTranscoding = new CThumbnailVideo(videoFilename);
+	ffmpegTranscoding = new CThumbnailVideo(videoFilename, false);
 	//ffmpegTranscoding->SetFilename(videoFilename);
 	timeTotal = ffmpegTranscoding->GetMovieDuration();
 	slVideo->SetMax(timeTotal);

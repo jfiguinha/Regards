@@ -1324,7 +1324,7 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				//RGBQUAD color = {0,0,0,0};
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
-				CThumbnailVideo video(szFileName);
+				CThumbnailVideo video(szFileName, false);
 				bitmap->SetPicture(video.GetVideoFramePercent(percent, widthThumbnail, heightThumbnail));
 				bitmap->SetOrientation(video.GetOrientation());
 				bitmap->SetFilename(szFileName);
@@ -1773,7 +1773,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		case MOV:
 			{
 
-				CThumbnailVideo video(szFileName);
+				CThumbnailVideo video(szFileName, true);
 				vector<CImageVideoThumbnail*> listVideo = video.GetVideoListFrame(widthThumbnail, heightThumbnail);
 				for (CImageVideoThumbnail* cxVideo : listVideo)
 				{
@@ -2705,7 +2705,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		case Y4M:
 		case MOV:
 			{
-				CThumbnailVideo video(fileName);
+				CThumbnailVideo video(fileName, false);
 				int percent = ((float)numPicture / (float)20) * 100.0f;
 				bitmap->SetPicture(video.GetVideoFramePercent(percent, 0, 0));
 				bitmap->SetOrientation(video.GetOrientation());
@@ -3083,7 +3083,7 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	case MOV:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CThumbnailVideo video(fileName);
+			CThumbnailVideo video(fileName, false);
 			video.GetVideoDimensions(width, height);
 		}
 		break;

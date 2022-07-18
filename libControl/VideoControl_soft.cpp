@@ -1001,7 +1001,7 @@ int CVideoControlSoft::PlayMovie(const wxString& movie, const bool& play)
 			sws_freeContext(localContext);
 		localContext = nullptr;
 
-		thumbnailVideo = new CThumbnailVideo(movie);
+		thumbnailVideo = new CThumbnailVideo(movie, true);
 
 		if (openCVStabilization != nullptr)
 			delete openCVStabilization;
