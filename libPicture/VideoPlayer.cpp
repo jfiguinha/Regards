@@ -411,7 +411,12 @@ public:
         heightVideo = decoder_ctx->height;
         duration = input_ctx->duration;
         nbFrames = input_ctx->streams[video_stream]->nb_frames;
-        nbFps = nbFrames / (duration / 1000000);
+        
+        int durationInSec = (duration / AV_TIME_BASE);
+        if(durationInSec > 0)
+            nbFps = (double)nbFrames / durationInSec;
+        else
+            nbFps = 30;
         videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
        
         cv::Mat temp = GetVideoFrame(true);
