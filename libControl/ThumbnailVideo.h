@@ -11,7 +11,7 @@ namespace Regards
 			CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail& themeThumbnail,
 			                const bool& testValidity);
 			~CThumbnailVideo(void) override;
-			void SetFile(const wxString& videoFile, const int& size = 20);
+			void SetFile(const wxString& videoFile, const int& size);
 			void SetVideoPosition(const int64_t& videoPos);
 
 		private:
@@ -27,7 +27,7 @@ namespace Regards
 			void EndThumbnail(wxCommandEvent& event);
 
 			int FindNumItem(const int& videoPos);
-			void InitWithDefaultPicture(const wxString& szFileName, const int& size = 20);
+			void InitWithDefaultPicture(const wxString& szFileName, const int& size);
 			int numItemSelected;
 			bool process_end;
 			wxString videoFilename;

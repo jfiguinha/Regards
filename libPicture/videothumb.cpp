@@ -87,13 +87,29 @@ public:
 
 		if (thumbnailWidth > 0 && thumbnailHeight > 0)
 		{
-			int scaledSize = 0;
-			bool maintainAspectRatio = true;
-			int scaledWidth = thumbnailWidth;
-			int scaledHeight = thumbnailHeight;
-			calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+			int rotation = videoThumbnailer->GetOrientation();
+			if (rotation == 0 || rotation == 180)
+			{
+				int scaledSize = 0;
+				bool maintainAspectRatio = true;
 
-			cv::resize(out, out, cv::Size(scaledWidth, scaledHeight));
+				int scaledWidth = thumbnailWidth;
+				int scaledHeight = thumbnailHeight;
+				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+
+				cv::resize(out, out, cv::Size(scaledWidth, scaledHeight));
+			}
+			else
+			{
+				int scaledSize = 0;
+				bool maintainAspectRatio = true;
+
+				int scaledWidth = thumbnailWidth;
+				int scaledHeight = thumbnailHeight;
+				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+
+				cv::resize(out, out, cv::Size(scaledHeight, scaledWidth));
+			}
 		}
 
 		image->SetMatrix(out);
@@ -125,7 +141,12 @@ CThumbnailVideo::~CThumbnailVideo()
 
 int CThumbnailVideo::GetOrientation()
 {	
-	return pimpl->rotation;
+	int rotation = pimpl->rotation;
+	if (rotation == -90)
+		return 90;
+	if (rotation == -270)
+		return 270;
+	return rotation;
 }
 
 void CThumbnailVideo::GetVideoDimensions(int & width, int & height)

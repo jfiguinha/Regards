@@ -399,6 +399,25 @@ enum AVPixelFormat CFFmpegTranscodingPimpl::get_hw_format(AVCodecContext* ctx,
 	return AV_PIX_FMT_NONE;
 }
 
+double CFFmpegTranscodingPimpl::get_rotation(AVStream* st)
+{
+	uint8_t* displaymatrix = av_stream_get_side_data(st,
+		AV_PKT_DATA_DISPLAYMATRIX, NULL);
+	double theta = 0;
+	if (displaymatrix)
+		theta = -av_display_rotation_get((int32_t*)displaymatrix);
+
+	theta -= 360 * floor(theta / 360 + 0.9 / 360);
+
+	if (fabs(theta - 90 * round(theta / 90)) > 2)
+		av_log(NULL, AV_LOG_WARNING, "Odd rotation angle.\n"
+			"If you want to help, upload a sample "
+			"of this file to https://streams.videolan.org/upload/ "
+			"and contact the ffmpeg-devel mailing list. (ffmpeg-devel@ffmpeg.org)");
+
+	return theta;
+}
+
 int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 {
 	int ret;
@@ -470,12 +489,7 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename)
 			{
 				startTime = ifmt_ctx->start_time;
 
-				auto matrix = reinterpret_cast<int32_t*>(
-					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
-				if (matrix)
-					rotation = lround(av_display_rotation_get(matrix));
-				else
-					rotation = 0;
+				rotation = get_rotation(stream);
 			}
 		}
 		stream_ctx[i].dec_ctx = codec_ctx;
@@ -608,12 +622,8 @@ int CFFmpegTranscodingPimpl::open_input_file(const wxString& filename, const wxS
 			{
 				startTime = ifmt_ctx->start_time;
 
-				auto matrix = reinterpret_cast<int32_t*>(
-					av_stream_get_side_data(stream, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
-				if (matrix)
-					rotation = lround(av_display_rotation_get(matrix));
-				else
-					rotation = 0;
+				rotation = get_rotation(stream);
+
 			}
 		}
 		stream_ctx[i].dec_ctx = codec_ctx;

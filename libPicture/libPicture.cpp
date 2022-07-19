@@ -250,6 +250,9 @@ bool CLibPicture::TestIsAnimation(const wxString& szFileName)
 	if (nbFrame > 1)
 		returnValue = true;
 
+	if(TestIsVideo(szFileName))
+		returnValue = true;
+
 	return returnValue;
 }
 

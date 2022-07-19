@@ -444,6 +444,8 @@ public:
 
 	void frame_queue_next(FrameQueue* f);
 
+	double  get_rotation(AVStream* st);
+
 	/* return the number of undisplayed frames in the queue */
 	int frame_queue_nb_remaining(FrameQueue* f);
 

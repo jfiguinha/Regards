@@ -33,6 +33,8 @@
 #include <ImageVideoThumbnail.h>
 #include <Tracing.h>
 #include <wx/busyinfo.h>
+#include <VideoPlayer.h>
+using namespace Regards::Video;
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
@@ -1739,7 +1741,11 @@ void CCentralWindow::SetVideo(const wxString& path)
 	if (thumbnailVideo->GetFilename() != filename)
 	{
 		thumbnailVideo->SetFilename(filename);
-		thumbnailVideo->SetFile(filename);
+		CVideoPlayer videoPlayer(filename);
+		if(videoPlayer.GetDuration()  > 20)
+			thumbnailVideo->SetFile(filename, 20);
+		else
+			thumbnailVideo->SetFile(filename, videoPlayer.GetDuration());
 	}
 
 	if (previewWindow != nullptr)

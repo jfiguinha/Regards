@@ -272,6 +272,26 @@ public:
         return isOpen;
     }
 
+    double get_rotation(AVStream* st)
+    {
+        uint8_t* displaymatrix = av_stream_get_side_data(st,
+            AV_PKT_DATA_DISPLAYMATRIX, NULL);
+        double theta = 0;
+        if (displaymatrix)
+            theta = -av_display_rotation_get((int32_t*)displaymatrix);
+
+        theta -= 360 * floor(theta / 360 + 0.9 / 360);
+
+        if (fabs(theta - 90 * round(theta / 90)) > 2)
+            av_log(NULL, AV_LOG_WARNING, "Odd rotation angle.\n"
+                "If you want to help, upload a sample "
+                "of this file to https://streams.videolan.org/upload/ "
+                "and contact the ffmpeg-devel mailing list. (ffmpeg-devel@ffmpeg.org)");
+
+        return theta;
+    }
+
+
     int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = true)
     {
         this->hw_decode = hw_decode;
@@ -386,11 +406,7 @@ public:
             }
         }
 
-        rotation = 0;
-        int32_t* matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(video, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
-        if (matrix)
-            rotation = lround(av_display_rotation_get(matrix));
-
+        rotation = get_rotation(video);
         widthVideo = decoder_ctx->width;
         heightVideo = decoder_ctx->height;
         duration = input_ctx->duration;
@@ -449,9 +465,9 @@ public:
            cv::Mat src = videoFrame;
            cv::Mat dst;
            //Rotate Frame
-           if (rotation == 90 || rotation == -270)
+           if (rotation == 90)
            {
-               cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
+               cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
                // Rotate clockwise 270 degrees
               // transpose(src, dst);
               // flip(dst, src, 0);
@@ -461,9 +477,9 @@ public:
                // Rotate clockwise 180 degrees
                flip(src, src, -1);
            }
-           else if (rotation == 270 || rotation == -90)
+           else if (rotation == 270)
            {
-               cv::rotate(src, dst, cv::ROTATE_90_CLOCKWISE);
+               cv::rotate(src, dst, cv::ROTATE_90_COUNTERCLOCKWISE);
                // Rotate clockwise 90 degrees
               // transpose(src, dst);
               // flip(dst, src, 1);

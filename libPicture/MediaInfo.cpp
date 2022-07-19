@@ -148,6 +148,8 @@ int CMediaInfo::GetVideoRotation(const wxString& filename)
 	MI.Close();
 	if (To_Display != "")
 		return std::stoi(To_Display);
+#else
+	return -90;
 #endif
 	return 0;
 }

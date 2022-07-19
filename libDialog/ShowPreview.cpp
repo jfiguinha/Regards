@@ -161,11 +161,13 @@ void CShowPreview::ShowPicture(CRegardsBitmap* bitmap, const wxString& label)
 
 void CShowPreview::ShowOriginal()
 {
+	decodeFrameOriginal->ApplyRotation(orientation);
 	ShowPicture(decodeFrameOriginal, "Original Video");
 }
 
 void CShowPreview::ShowNew()
 {
+	decodeFrame->ApplyRotation(orientation);
 	ShowPicture(decodeFrame, "Export Video");
 }
 
