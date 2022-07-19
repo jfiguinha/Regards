@@ -46,17 +46,18 @@ public:
 	wxRadioBox* rbAutoRotate;
 	wxRadioBox* rbContrastCorrection;
 
-	wxRadioBox* rbOpenCLOpenGLInterop;
+	
 	wxRadioBox* rbUSESUPERDNN;
 	wxComboBox* cbUSESUPERDNNFILTER;
 
 	wxComboBox* rbTransitionDiaporamaEffect;
 	wxComboBox* rbInterpolation;
 
-#ifndef __APPLE__
+
+    wxRadioBox* rbOpenCLOpenGLInterop;
 	wxComboBox* rbVideoEncoderHard;
 	wxComboBox* rbVideoDecoderHard;
-#endif
+
 	//ID_RBVIDEOFACEDETECTION
 	wxRadioBox* rbVideoFaceDetection;
 	wxRadioBox* rbFaceDetection;

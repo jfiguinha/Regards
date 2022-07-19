@@ -141,7 +141,7 @@
 						</object>		
 						<object class="notebookpage">
 							<label>Process</label>
-							<object class="wxPanel" name="page_3">
+							<object class="wxPanel" name="page_2">
 								<object class="wxStaticBox" name="sbProcess">
 									<label>Process</label>
 									<pos>0,0</pos>
@@ -192,7 +192,7 @@
 						</object>
 						<object class="notebookpage">
 						<label>External Program</label>
-							<object class="wxPanel" name="page_4">
+							<object class="wxPanel" name="page_3">
 								<object class="wxStaticBox" name="sbPictureExternalProgram">
 									<label>Picture External Program</label>
 									<pos>0,10</pos>
@@ -290,46 +290,6 @@
 									<item>none</item>
 									<item>videotoolbox</item>
 								</content>
-							</object>								
-						</object>
-						<label>Other Parameter</label>
-						<object class="wxPanel" name="page_4">
-							<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
-								<label>Database in memory</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Yes</item>
-									<item>No</item>
-								</content>
-								<default>-1</default>
-								<pos>0,0</pos>
-								<size>380,70</size>
-							</object>		
-							<object class="wxStaticBox" name="sbDiaporama">
-								<label>Sequence</label>
-								<pos>0,90</pos>
-								<size>380,50</size>
-							</object>
-							<object class="wxSpinCtrl" name="ID_SCTIME">
-								<value>0</value>
-								<pos>120,110</pos>
-								<size>120,21</size>
-							</object>
-							<object class="wxStaticText" name="ID_STTIME">
-								<label>Time :</label>
-								<pos>16,110</pos>
-								<size>40,24</size>
-							</object>
-							<object class="wxRadioBox" name="ID_RBFACEDETECTION">
-								<label>Detect Face</label>
-								<style>wxRA_SPECIFY_COLS</style>
-								<content>
-									<item>Yes</item>
-									<item>No</item>
-								</content>
-								<default>-1</default>
-								<pos>0,140</pos>
-								<size>380,70</size>
 							</object>	
 							<object class="wxRadioBox" name="ID_RBOPENGLOPENCLINTEROP">
 								<label>OpenCL OpenGL Interop</label>
@@ -341,8 +301,8 @@
 								<default>-1</default>
 								<pos>0,220</pos>
 								<size>190,70</size>
-							</object>								
-							</object>
+							</object>							
+						</object>
 					</object>
 					</object>
 				</object>
