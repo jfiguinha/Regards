@@ -153,41 +153,86 @@ int64_t CThumbnailVideo::GetMovieDuration()
 vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &widthThumbnail,const int &heightThumbnail)
 {
 	vector<CImageVideoThumbnail *> listPicture;
-	for (auto i = 0; i < 100; i += 5)
+
+	int duration = pimpl->m_videoMovieDuration;
+
+	if (duration < 20)
 	{
-		try
+		for (auto i = 0; i < duration; i++)
 		{
-			CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
-			CRegardsBitmap * picture = nullptr;
-			int timePosition = 0;
-
-		
-			cxVideo->rotation = 0;
-			cxVideo->percent = i;
-			cxVideo->image = new CImageLoadingFormat();
-		
-
 			try
 			{
-				picture = new CRegardsBitmap();
-				pimpl->SetPercent(cxVideo->percent);
-				pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
+				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
+				CRegardsBitmap* picture = nullptr;
+				int timePosition = 0;
+
+
+				cxVideo->rotation = 0;
+				cxVideo->image = new CImageLoadingFormat();
+
+
+				try
+				{
+					picture = new CRegardsBitmap();
+					pimpl->SetMoviePos(i);
+					pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
+				}
+				catch (...)
+				{
+					if (picture != nullptr)
+						delete picture;
+					picture = nullptr;
+				}
+				cxVideo->timePosition = i;
+				cxVideo->image->SetPicture(picture);
+				cxVideo->image->SetFilename(fileName);
+				cxVideo->image->SetOrientation(0);
+				listPicture.push_back(cxVideo);
 			}
-			catch(...)
+			catch (...)
 			{
-				if(picture != nullptr)
-					delete picture;
-				picture = nullptr;
+				printf("error \n");
 			}
-			cxVideo->timePosition = pimpl->m_seekTimeInSecond;
-			cxVideo->image->SetPicture(picture);
-			cxVideo->image->SetFilename(fileName);
-			cxVideo->image->SetOrientation(0);
-			listPicture.push_back(cxVideo);
 		}
-		catch(...)
+	}
+	else
+	{
+		for (auto i = 0; i < 100; i += 5)
 		{
-			printf("error \n");
+			try
+			{
+				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
+				CRegardsBitmap* picture = nullptr;
+				int timePosition = 0;
+
+
+				cxVideo->rotation = 0;
+				cxVideo->percent = i;
+				cxVideo->image = new CImageLoadingFormat();
+
+
+				try
+				{
+					picture = new CRegardsBitmap();
+					pimpl->SetPercent(cxVideo->percent);
+					pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
+				}
+				catch (...)
+				{
+					if (picture != nullptr)
+						delete picture;
+					picture = nullptr;
+				}
+				cxVideo->timePosition = pimpl->m_seekTimeInSecond;
+				cxVideo->image->SetPicture(picture);
+				cxVideo->image->SetFilename(fileName);
+				cxVideo->image->SetOrientation(0);
+				listPicture.push_back(cxVideo);
+			}
+			catch (...)
+			{
+				printf("error \n");
+			}
 		}
 	}
 

@@ -1369,6 +1369,8 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 
 	const bool isAnimation = TestIsAnimation(szFileName);
 
+
+
 	for (auto i = 0; i < size; i++)
 	{
 		const int pourcentage = 0;
@@ -1607,7 +1609,12 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 	case AV1:
 	case MOV:
 		{
-			return 20;
+			CThumbnailVideo thumbnail(szFileName, false);
+			int64_t duration = thumbnail.GetMovieDuration();
+			if(duration > 20)
+				return 20;
+			return duration;
+
 			break;
 		}
 	default: ;
