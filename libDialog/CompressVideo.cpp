@@ -225,9 +225,11 @@ void CompressVideo::SetPos(const int& max, const int& pos)
 
 void CompressVideo::SetBitmap(CRegardsBitmap * bmp)
 {
+
 	wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(bmp);
+	
 	auto event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
-	event->SetClientData(new wxImage(image));
+	event->SetClientData(new wxImage(image.Mirror(false)));
 	wxQueueEvent(this, event);
 }
 
