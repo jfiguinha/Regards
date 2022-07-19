@@ -39,12 +39,63 @@ public:
 		m_seekTimeInSecond = secondToSeekTo;
 	}
 
+	void calculateDimensions(int squareSize, bool maintainAspectRatio, int& destWidth, int& destHeight)
+	{
+		if (squareSize == 0)
+		{
+			// use original video size
+			squareSize = max(destWidth, destHeight);
+		}
+
+		if (!maintainAspectRatio)
+		{
+			destWidth = squareSize;
+			destHeight = squareSize;
+		}
+		else
+		{
+			int srcWidth = width;
+			int srcHeight = height;
+			int ascpectNominator = 0;
+			int ascpectDenominator = 0;
+			videoThumbnailer->GetAspectRatio(ascpectNominator, ascpectDenominator);
+
+			if (ascpectNominator != 0 && ascpectDenominator != 0)
+			{
+				srcWidth = srcWidth * ascpectNominator / ascpectDenominator;
+			}
+
+			if (srcWidth > srcHeight)
+			{
+				destWidth = squareSize;
+				destHeight = static_cast<int>(static_cast<float>(squareSize) / srcWidth * srcHeight);
+			}
+			else
+			{
+				destWidth = static_cast<int>(static_cast<float>(squareSize) / srcHeight * srcWidth);
+				destHeight = squareSize;
+			}
+		}
+	}
+
 	void GetThumbnail(CRegardsBitmap * & image, const int & thumbnailWidth, const int& thumbnailHeight)
 	{
 		if (m_seekTimeInSecond > 0)
 			videoThumbnailer->SeekToPos(m_seekTimeInSecond);
 
 		cv::Mat out = videoThumbnailer->GetVideoFrame();
+
+		if (thumbnailWidth > 0 && thumbnailHeight > 0)
+		{
+			int scaledSize = 0;
+			bool maintainAspectRatio = true;
+			int scaledWidth = thumbnailWidth;
+			int scaledHeight = thumbnailHeight;
+			calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
+
+			cv::resize(out, out, cv::Size(scaledWidth, scaledHeight));
+		}
+
 		image->SetMatrix(out);
 		image->ConvertToBgr();
 		image->VertFlipBuf();

@@ -80,6 +80,12 @@ public:
     int heightVideo = 0;
     int skipFrame = 0;
 
+    void GetAspectRatio(int & ascpectNominator, int& ascpectDenominator)
+    {
+        ascpectNominator = decoder_ctx->sample_aspect_ratio.num;
+        ascpectDenominator = decoder_ctx->sample_aspect_ratio.den;
+    }
+
     int SeekToPos(const int& timeInSeconds)
     {
 
@@ -510,6 +516,11 @@ int CVideoPlayer::GetWidth()
 int CVideoPlayer::GetHeight()
 {
     return pimpl->heightVideo;
+}
+
+void CVideoPlayer::GetAspectRatio(int& ascpectNominator, int& ascpectDenominator)
+{
+    return pimpl->GetAspectRatio(ascpectNominator, ascpectDenominator);
 }
 
 int CVideoPlayer::GetDuration()

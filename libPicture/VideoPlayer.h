@@ -25,6 +25,8 @@ namespace Regards {
 			int GetWidth();
 			int GetHeight();
 
+			void GetAspectRatio(int & ascpectNominator, int & ascpectDenominator);
+
 			int GetOrientation();
 			cv::Mat GetVideoFrame(const bool& applyOrientation = true);
 			virtual ~CVideoPlayer();

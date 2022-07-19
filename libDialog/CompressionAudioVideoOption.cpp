@@ -222,7 +222,7 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
 	int orientation = ffmpegTranscoding->GetOrientation();
-	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos* 100, 340, 240);
+	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
 	bitmap_local->RotateExif(orientation);
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
 	int x = 0;

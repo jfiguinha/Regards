@@ -2816,25 +2816,30 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 {
-	cv::Mat img = bitmap->GetMatrix();
-	cv::Mat im2;
-	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-
-	cv::flip(im2, im2, 0);
-
-	long imsize = im2.rows * im2.cols * im2.channels();
-	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = im2.data;
-	unsigned char* d = wx.GetData();
-	memcpy(d, s, imsize);
-	/*
-	for (long i = 0; i < imsize; i++)
+	wxImage wx;
+	if (bitmap != nullptr)
 	{
-		d[i] = s[i];
+		cv::Mat img = bitmap->GetMatrix();
+		cv::Mat im2;
+		if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+		else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+		else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+
+		cv::flip(im2, im2, 0);
+
+		long imsize = im2.rows * im2.cols * im2.channels();
+		wx = wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+		unsigned char* s = im2.data;
+		unsigned char* d = wx.GetData();
+		memcpy(d, s, imsize);
+		/*
+		for (long i = 0; i < imsize; i++)
+		{
+			d[i] = s[i];
+		}
+		*/
 	}
-	*/
+
 	return wx;
 
 	/*
