@@ -1871,23 +1871,6 @@ void CVideoControlSoft::CalculPositionVideo(int& widthOutput, int& heightOutput,
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 }
 
-void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
-{
-	if (hq3d == nullptr)
-	{
-		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
-	}
-	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height != oldheightDenoise)
-	{
-		delete hq3d;
-		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
-	}
-
-	oldLevelDenoise = videoEffectParameter.denoisingLevel;
-	oldwidthDenoise = width;
-	oldheightDenoise = height;
-}
-
 GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 {
 	//printf("GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect) \n");
@@ -1923,8 +1906,7 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
-		GetDenoiserPt(widthOutput, heightOutput);
-		openclEffect->HQDn3D(hq3d, videoEffectParameter.denoisingLevel);
+		openclEffect->HQDn3D(videoEffectParameter.denoisingLevel);
 	}
 
 	glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
@@ -2001,7 +1983,10 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 	//Test if denoising Effect
 	if (videoEffectParameter.denoiseEnable && videoEffectParameter.effectEnable)
 	{
-		GetDenoiserPt(widthOutput, heightOutput);
+		if (hq3d == nullptr)
+			hq3d = new Chqdn3d(widthOutput, heightOutput, videoEffectParameter.denoisingLevel);
+		else
+			hq3d->UpdateParameter(widthOutput, heightOutput, videoEffectParameter.denoisingLevel);
 		hq3d->ApplyDenoise3D(bitmapOut);
 	}
 

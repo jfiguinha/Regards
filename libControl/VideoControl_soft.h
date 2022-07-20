@@ -177,8 +177,7 @@ protected:
 	int GetSrcBitmapWidth();
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();
-
-	void GetDenoiserPt(const int& width, const int& height);
+	Chqdn3d* hq3d = nullptr;
 	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
 
 	bool openclOpenGLInterop = false;
@@ -260,7 +259,6 @@ protected:
 	float startingTime = 0;
 	CThumbnailVideo * thumbnailVideo;
 	bool thumbnailFromBitmap = false;
-	Chqdn3d* hq3d = nullptr;
 	int oldLevelDenoise = 4;
 	int oldwidthDenoise = 0;
 	int oldheightDenoise = 0;

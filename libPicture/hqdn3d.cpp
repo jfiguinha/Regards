@@ -171,7 +171,7 @@ void Chqdn3d::hqdn3d_denoise(unsigned char* frame_src,
 
 Chqdn3d::Chqdn3d(const int& w, const int& h, const double& LumSpac, const double& LumTmp)
 {
-	double spatial_luma = LumSpac;
+	spatial_luma = LumSpac;
 	double temporal_luma = HQDN3D_TEMPORAL_LUMA_DEFAULT * spatial_luma / HQDN3D_SPATIAL_LUMA_DEFAULT;
 
 	this->h = h;
@@ -188,6 +188,36 @@ Chqdn3d::Chqdn3d(const int& w, const int& h, const double& LumSpac, const double
 
 	Frame = new unsigned short[w * h];
 	Line = new unsigned short[w];
+}
+
+void Chqdn3d::UpdateParameter(const int& w, const int& h, const double& LumSpac)
+{
+	if (this->w != w || this->h != h)
+	{
+		delete[] picture_y;
+		delete[] y_out;
+
+		delete[] Frame;
+		delete[] Line;
+
+		picture_y = new uint8_t[w * h];
+		y_out = new uint8_t[w * h];
+
+		Frame = new unsigned short[w * h];
+		Line = new unsigned short[w];
+	}
+
+	if (LumSpac != this->spatial_luma)
+	{
+		spatial_luma = LumSpac;
+		double temporal_luma = HQDN3D_TEMPORAL_LUMA_DEFAULT * spatial_luma / HQDN3D_SPATIAL_LUMA_DEFAULT;
+
+		//if (restart_lap < 0)
+		//	restart_lap = __max(2, (int)(1 + __max(LumTmp, ChromTmp)));
+
+		hqdn3d_precalc_coef(hqdn3d_coef[0], spatial_luma);
+		hqdn3d_precalc_coef(hqdn3d_coef[1], temporal_luma);
+	}
 }
 
 Chqdn3d::~Chqdn3d()

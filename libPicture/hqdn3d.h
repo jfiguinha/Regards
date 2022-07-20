@@ -6,6 +6,7 @@ class Chqdn3d
 public:
 	Chqdn3d(const int& w, const int& h, const double& LumSpac = 4, const double& LumTmp = 6);
 	~Chqdn3d();
+	void UpdateParameter(const int& w, const int& h, const double& LumSpac);
 	int ApplyDenoise3D(cv::Mat & bitmapIn);
 	uint8_t* ApplyDenoise3D(uint8_t* picture_y, const int& w, const int& h);
 
@@ -41,4 +42,5 @@ private:
 	uint8_t* y_out = nullptr;
 	unsigned short* Line = nullptr;
 	uint8_t* picture_y = nullptr;
+	double spatial_luma = 0;
 };

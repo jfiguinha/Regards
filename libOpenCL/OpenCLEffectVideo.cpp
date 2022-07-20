@@ -102,6 +102,9 @@ COpenCLEffectVideo::~COpenCLEffectVideo()
 {
 	if (openclFilter != nullptr)
 		delete openclFilter;
+
+	if (hq3d != nullptr)
+		delete hq3d;
 }
 
 void COpenCLEffectVideo::ConvertToBgr()
@@ -548,56 +551,71 @@ void COpenCLEffectVideo::FlipVertical()
 	}
 }
 
-void COpenCLEffectVideo::HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
+void COpenCLEffectVideo::HQDn3D(const double & LumSpac, const double & ChromSpac, const double & LumTmp, const double & ChromTmp)
 {
-	cv::UMat ycbcr;
-	cv::Mat yChannel;
-	int width = 0;
-	int height = 0;
-
-	if (interpolatePicture)
+	try
 	{
-		width = paramOutput.cols;
-		height = paramOutput.rows;
-		cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
+		
+		cv::UMat ycbcr;
+		cv::Mat yChannel;
+		int width = 0;
+		int height = 0;
+
+		if (interpolatePicture)
+		{
+			width = paramOutput.cols;
+			height = paramOutput.rows;
+			cvtColor(paramOutput, ycbcr, cv::COLOR_BGR2YCrCb);
+		}
+		else
+		{
+			width = paramSrc.cols;
+			height = paramSrc.rows;
+			cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
+
+		}
+
+		if(hq3d == nullptr)
+			hq3d = new Chqdn3d(width, height, LumSpac);
+		else if (hq3d != nullptr)
+		{
+			hq3d->UpdateParameter(width, height, LumSpac);
+		}
+
+		std::vector<cv::Mat> planes(3);
+		cv::split(ycbcr, planes);
+
+		// Extract the Y channel
+		//cv::extractChannel(ycbcr, yChannel, 0);
+
+		uint8_t* dataOut = hq3d->ApplyDenoise3D(planes[0].data, width, height);
+
+		memcpy(planes[0].data, dataOut, width * height);
+
+		// Merge the the color planes back into an Lab image
+		//cv::insertChannel(yChannel, ycbcr, 0);
+		cv::merge(planes, ycbcr);
+		// convert back to RGB
+
+
+		if (interpolatePicture)
+		{
+			cv::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
+		}
+		else
+		{
+			cv::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
+		}
+
+		ycbcr.release();
+		yChannel.release();
 	}
-	else
+	catch (cv::Exception& e)
 	{
-		width = paramSrc.cols;
-		height = paramSrc.rows;
-		cvtColor(paramSrc, ycbcr, cv::COLOR_BGR2YCrCb);
-
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 	}
-
-	
-
-	std::vector<cv::Mat> planes(3);
-	cv::split(ycbcr, planes);
-
-	// Extract the Y channel
-	//cv::extractChannel(ycbcr, yChannel, 0);
-
-	uint8_t* dataOut = hq3d->ApplyDenoise3D(planes[0].data, width, height);
-
-	memcpy(planes[0].data, dataOut, width * height);
-
-	// Merge the the color planes back into an Lab image
-	//cv::insertChannel(yChannel, ycbcr, 0);
-	cv::merge(planes, ycbcr);
-	// convert back to RGB
-	
-
-	if (interpolatePicture)
-	{
-		cv::cvtColor(ycbcr, paramOutput, cv::COLOR_YCrCb2BGR);
-	}
-	else
-	{
-		cv::cvtColor(ycbcr, paramSrc, cv::COLOR_YCrCb2BGR);
-	}
-
-	ycbcr.release();
-	yChannel.release();
 }
 
 bool COpenCLEffectVideo::IsOk()

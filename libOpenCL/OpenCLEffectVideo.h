@@ -65,7 +65,7 @@ namespace Regards
 			void SetYUV420P(uint8_t* bufferY, int sizeY, uint8_t* bufferU, int sizeU, uint8_t* bufferV, int sizeV, const int& width, const int& height, const int& lineSize, const int& widthOut, const int& heightOut, const int& colorRange, const int& colorSpace);
 			void SetYUV420P(const cv::Mat& y, const cv::Mat& u, const cv::Mat& v, const int& linesize, const int& nWidth, const int& nHeight);
 
-			void HQDn3D(Chqdn3d * hq3d, const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
+			void HQDn3D( const double & LumSpac, const double & ChromSpac = 4, const double & LumTmp = 3, const double & ChromTmp = 3);
             void FlipVertical();
 			void ConvertToBgr();
 			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
@@ -80,6 +80,7 @@ namespace Regards
 			cv::UMat paramSrc;
 			cv::UMat paramOutput;
 			cl_mem_flags  flag;
+			Chqdn3d* hq3d = nullptr;
 			bool interpolatePicture = false;
 			bool needToTranscode = false;
 			bool isOk = false;
