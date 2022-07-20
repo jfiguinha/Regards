@@ -1877,8 +1877,7 @@ void CVideoControlSoft::GetDenoiserPt(const int& width, const int& height)
 	{
 		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
 	}
-	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height !=
-		oldheightDenoise)
+	else if (oldLevelDenoise != videoEffectParameter.denoisingLevel || width != oldwidthDenoise || height != oldheightDenoise)
 	{
 		delete hq3d;
 		hq3d = new Chqdn3d(width, height, videoEffectParameter.denoisingLevel);
