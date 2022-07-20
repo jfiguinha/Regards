@@ -335,7 +335,14 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
+	if (videoSoft->pictureVideo != nullptr)
+	{
+		delete videoSoft->pictureVideo;
+		videoSoft->pictureVideo = nullptr;
+	}
 	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
+	if(videoSoft->pictureVideo != nullptr)
+		videoSoft->pictureVideo->VertFlipBuf();
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 	videoSoft->needToRefresh = true;
@@ -944,6 +951,9 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if (thumbnailVideo != nullptr)
 		delete thumbnailVideo;
+
+	if (pictureVideo != nullptr)
+		delete pictureVideo;
 
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
@@ -2106,6 +2116,11 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 		GetBitmapRGBA(src_frame);
 		muBitmap.lock();
 		*pictureFrame = *bitmapData;
+		if (pictureVideo != nullptr)
+		{
+			delete pictureVideo;
+			pictureVideo = nullptr;
+		}
 		muBitmap.unlock();
 	}
 	else
@@ -2131,7 +2146,6 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				_colorSpace = 3;
 			}
 
-
             cv::ocl::OpenCLExecutionContext::getCurrent().bind();
 			int nWidth = src_frame->width;
 			int nHeight = src_frame->height;
@@ -2139,97 +2153,8 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 			if (tmp_frame->format == AV_PIX_FMT_NV12)
 			{
 				muBitmap.lock();
-
-				/*
-				* 
-				cv::Mat y = cv::Mat(nHeight, tmp_frame->linesize[0], CV_8UC1, tmp_frame->data[0]);
-				cv::Mat uv = cv::Mat(+ nHeight / 2, tmp_frame->linesize[1], CV_8UC1, tmp_frame->data[1]);
-
-				cv::Mat data = cv::Mat(nHeight, nWidth, CV_8UC4);
-
-				for (int y = 0; y < src_frame->height; y++)
-				{
-					for (int x = 0; x < src_frame->width; x++)
-					{
-						int srcPos = x * 4 + y * 4 * nWidth;
-						int positionSrc = x + y * tmp_frame->linesize[0];
-						int positionUV = 0;
-
-						int yModulo = y % 2;
-						int xModulo = x % 2;
-						if (xModulo == 1)
-						{
-							if (yModulo == 1)
-								positionUV = (x - 1) + ((y - 1) / 2) * tmp_frame->linesize[0];
-							else
-								positionUV = (x - 1) + (y / 2) * tmp_frame->linesize[0];
-						}
-						else
-						{
-							if (yModulo == 1)
-								positionUV = x + ((y - 1) / 2) * tmp_frame->linesize[0];
-							else
-								positionUV = x + (y / 2) * tmp_frame->linesize[0];
-						}
-
-						uchar vComp = tmp_frame->data[1][positionUV];
-						uchar uComp = tmp_frame->data[1][positionUV + 1];
-						uchar yComp = tmp_frame->data[0][positionSrc];
-
-						float r = (1.164 * (yComp - 16) + 1.596 * (vComp - 128));
-						float g = (1.164 * (yComp - 16) - 0.391 * (uComp - 128) - 0.813 * (vComp - 128));
-						float b = (1.164 * (yComp - 16) + 2.018 * (uComp - 128));
-						data.data[srcPos + 3] = 255;
-
-
-						data.data[srcPos] = clamp(r, 0, 255);
-						data.data[srcPos + 1] = clamp(g, 0, 255);
-						data.data[srcPos + 2] = clamp(b, 0, 255);
-					}
-				}
-
-				//cv::imwrite("d:\\test.jpg", data);
-				openclEffectYUV->SetNV12(data);
-				*/
 				openclEffectYUV->SetNV12(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
-				/*
-				//printf("AV_PIX_FMT_NV12 \n");
-				
-				try
-				{
-					int sizeData = (nHeight + nHeight / 2) * tmp_frame->linesize[0];
-					if (sizeData != sizesrc && src != nullptr)
-					{
-						delete[] src;
-						src = nullptr;
-					}
-
-					if (src == nullptr)
-					{
-						src = new uint8_t[sizeData];
-						sizesrc = sizeData;
-					}
-
-					int size = nHeight * tmp_frame->linesize[0];
-					memcpy(src, tmp_frame->data[0], size);
-					memcpy(src + size, tmp_frame->data[1], (tmp_frame->linesize[0] * (nHeight / 2)));
-
-
-					cv::Mat yuv = cv::Mat(nHeight + nHeight / 2, tmp_frame->linesize[0], CV_8UC1, src);
-					//yuv = yuv(cv::Rect(0, 0, nWidth, nHeight));
-					muBitmap.lock();
-					openclEffectYUV->SetNV12(yuv, tmp_frame->linesize[0], nWidth, nHeight);
-					muBitmap.unlock();
-
-				}
-				catch (cv::Exception& e)
-				{
-					const char* err_msg = e.what();
-					std::cout << "exception caught: " << err_msg << std::endl;
-					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-				}
-				*/
 
 			}
 			else if (tmp_frame->format == AV_PIX_FMT_YUV420P)
@@ -2238,29 +2163,6 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 				muBitmap.lock();
 				openclEffectYUV->SetYUV420P(tmp_frame->data[0], tmp_frame->linesize[0] * nHeight, tmp_frame->data[1], tmp_frame->linesize[1] * (nHeight / 2), tmp_frame->data[2], tmp_frame->linesize[2] * (nHeight / 2), tmp_frame->linesize[0], nHeight, tmp_frame->linesize[0], nWidth, nHeight, isLimited, _colorSpace);
 				muBitmap.unlock();
-
-				// printf("AV_PIX_FMT_YUV420P \n");
-				/*
-				try
-				{
-					cv::Mat y = cv::Mat(cv::Size(tmp_frame->linesize[0], nHeight), CV_8UC1, tmp_frame->data[0]);
-					cv::Mat u = cv::Mat(cv::Size(tmp_frame->linesize[1], nHeight / 2), CV_8UC1, tmp_frame->data[1]);
-					cv::Mat v = cv::Mat(cv::Size(tmp_frame->linesize[2], nHeight / 2), CV_8UC1, tmp_frame->data[2]);
-
-					muBitmap.lock();
-					openclEffectYUV->SetYUV420P(y, u, v, tmp_frame->linesize[0], nWidth, nHeight);
-
-					muBitmap.unlock();
-
-					// imwrite("/Users/jacques/Pictures/test.jpeg",test);
-				}
-				catch (cv::Exception& e)
-				{
-					const char* err_msg = e.what();
-					std::cout << "exception caught: " << err_msg << std::endl;
-					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-				}
-				*/
 			}
 		}
 	}

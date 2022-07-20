@@ -162,13 +162,6 @@ bool MyApp::OnInit()
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 	CLibPicture::Initx265Decoder();
 
-/*
-    const char * path = "/home/figuinha/Téléchargements/MetArt.22.06.21.Savana.Epic.Movie.1.XXX.2160p.MP4-WRB[rarbg]/Sample/metart.22.06.21.savana.epic.movie.1.4k-sample.mp4";
-    string link = string(path);
-    cout << "path " << path << endl;
-    cout << "link " << link.c_str() << endl;
-    wxString lien = wxString(link.c_str());*/
-
 #ifdef GLUT
 #ifndef __APPLE__
 	int argc = 1;
