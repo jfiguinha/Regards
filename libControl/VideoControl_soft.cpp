@@ -211,12 +211,15 @@ CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		{
 			muBitmap.lock();
 			bitmap = openclEffectYUV->GetBitmap(true);
-			bitmap->VertFlipBuf();
 			muBitmap.unlock();
 		}
 	}
-	bitmap->ApplyRotation(angle);
-
+	
+	if (bitmap != nullptr)
+	{
+		bitmap->VertFlipBuf();
+		bitmap->ApplyRotation(angle);
+	}
 	return bitmap;
 }
 
