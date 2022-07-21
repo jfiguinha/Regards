@@ -14,7 +14,8 @@ class CThumbnailVideoPimpl
 public:
 	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware)
 	{
-		//filename = CConvertUtility::ConvertToStdString(fileName);
+		this->filename = fileName;
+        printf("Filename : %s \n", CConvertUtility::ConvertToUTF8(filename));
 		videoThumbnailer = new CVideoPlayer(filename, false);
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();

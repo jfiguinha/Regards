@@ -294,6 +294,8 @@ public:
 
     int OpenVideoFile(const char* hardwareDevice, const char* videoFilename, const bool& hw_decode = true)
     {
+        printf("Filename OpenVideoFile : %s \n", videoFilename);
+        
         this->hw_decode = hw_decode;
         if (hw_decode)
         {
@@ -325,7 +327,11 @@ public:
             }
 
             // find the video stream information 
+#ifdef WIN32
             ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
+#else
+            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
+#endif
             if (ret < 0) {
                 fprintf(stderr, "Cannot find a video stream in the input file\n");
                 return -1;
@@ -384,7 +390,11 @@ public:
             }
 
             // find the video stream information 
-            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**) & decoder, 0);
+#ifdef WIN32
+            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, (const AVCodec**)&decoder, 0);
+#else
+            ret = av_find_best_stream(input_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, &decoder, 0);
+#endif
             if (ret < 0) {
                 fprintf(stderr, "Cannot find a video stream in the input file\n");
                 return -1;
