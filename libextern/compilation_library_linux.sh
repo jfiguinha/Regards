@@ -9,11 +9,12 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
-./vcpkg install ffnvcodec
 ./vcpkg install wxWidgets
+./vcpkg install ffnvcodec
 ./vcpkg install ffmpeg[all-gpl]
-./vcpkg install opencv[contrib,ipp,openmp,tbb,ffmpeg,opengl]
+./vcpkg install opencv[contrib,ipp,openmp]
 ./vcpkg install exiv2[video,xmp]
+./vcpkg install tbb
 ./vcpkg install libmediainfo
 ./vcpkg install libde265
 ./vcpkg install libexif

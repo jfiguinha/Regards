@@ -14,7 +14,7 @@ class CThumbnailVideoPimpl
 public:
 	CThumbnailVideoPimpl(const wxString& fileName, const bool& useHardware)
 	{
-		filename = CConvertUtility::ConvertToStdString(fileName);
+		//filename = CConvertUtility::ConvertToStdString(fileName);
 		videoThumbnailer = new CVideoPlayer(filename, false);
 		width = videoThumbnailer->GetWidth();
 		height = videoThumbnailer->GetHeight();
@@ -124,7 +124,7 @@ public:
 	int width = 0;
 	int height = 0;
 	int rotation = 0;
-	string filename = "";
+	wxString filename = "";
 };
 
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardware)
