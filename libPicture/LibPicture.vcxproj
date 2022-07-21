@@ -501,7 +501,6 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ascii.h" />
     <ClInclude Include="avif.h" />
-    <ClInclude Include="avif_heif.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CompressionOption.h" />
@@ -548,7 +547,6 @@
   <ItemGroup>
     <ClCompile Include="ascii.cpp" />
     <ClCompile Include="avif.cpp" />
-    <ClCompile Include="avif_heif.cpp" />
     <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CompressionOption.cpp" />

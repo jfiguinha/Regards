@@ -88,9 +88,6 @@
     <ClCompile Include="RGBAQuad.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="avif_heif.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
     </ClCompile>
@@ -224,9 +221,6 @@
     </ClInclude>
     <ClInclude Include="RotateByShearRGB.h">
       <Filter>Rotate</Filter>
-    </ClInclude>
-    <ClInclude Include="avif_heif.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hqdn3d.h">
       <Filter>hqdb3d</Filter>

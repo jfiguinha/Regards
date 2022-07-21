@@ -1592,8 +1592,7 @@ int CFFmpegTranscodingPimpl::encode_write_frame(AVFrame* filt_frame, unsigned in
 	return ret;
 }
 
-int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame* frame, unsigned int stream_index,
-	CompressVideo* m_dlgProgress, const int& isvideo, const bool& write)
+int CFFmpegTranscodingPimpl::filter_encode_write_frame(AVFrame* frame, unsigned int stream_index, CompressVideo* m_dlgProgress, const int& isvideo, const bool& write)
 {
 	int ret = 0;
 
