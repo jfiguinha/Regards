@@ -374,6 +374,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\IlmThrea
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\zlibd1.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\Half-2_5_d.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\jpeg62.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\webp.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpmux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpdemux.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\webpdecoder.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -382,13 +383,14 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\bz2d.dll
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlidec.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\brotlicommon.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\mediainfod.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\wx*316ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\wx*317ud*.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\FreeImaged.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\leptonica-1.82.0d.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\libprotobufd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\rawd.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\liblzma.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\epoxy-0.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\tbb_debug.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\debug\bin\pcre2-16d.dll" $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -667,7 +669,8 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\IlmThread-2_5.
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\poppler-cpp.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\openjp2.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\epoxy-0.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\pcre2-16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\pcre2-16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\tbb.dll"  $(SolutionDir)$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
