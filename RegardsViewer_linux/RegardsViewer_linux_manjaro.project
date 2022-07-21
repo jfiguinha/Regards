@@ -469,7 +469,7 @@
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
-        <StartupCommands>"/home/figuinha/Images/[met-art] - 2015-09-15 leanisa - olesa (x120) 3744x5616/MetArt_Olesa_Leanisa_high_0001.jpg"</StartupCommands>
+        <StartupCommands></StartupCommands>
       </Debugger>
       <PreBuild/>
       <PostBuild>
