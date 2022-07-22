@@ -131,7 +131,7 @@ public:
 CThumbnailVideo::CThumbnailVideo(const wxString& fileName, const bool& useHardware)
 {
 	this->fileName = fileName;
-	pimpl = new CThumbnailVideoPimpl(fileName, false);
+	pimpl = new CThumbnailVideoPimpl(fileName, useHardware);
 }
 
 
