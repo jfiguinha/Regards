@@ -48,7 +48,7 @@ void CInfoAbout::Init()
 	auto treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.72.8");
+	treeDataWidth->SetValue("2.72.9");
 	tr.append_child(child, treeDataWidth);
 
 	auto treeDataAnnee = new CTreeData();
