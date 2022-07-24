@@ -794,7 +794,11 @@ void CCentralWindow::ShowToolbar()
 
 	if (isFullscreen)
 	{
-		windowManager->ShowWindow(Pos::wxRIGHT);
+		if (windowMode == WINDOW_VIEWER)
+		{
+			windowManager->ShowWindow(Pos::wxRIGHT);
+		}
+		
 		windowManager->HideWindow(Pos::wxCENTRAL);
 		windowManager->ShowWindow(Pos::wxCENTRAL);
 	}
@@ -1567,7 +1571,6 @@ bool CCentralWindow::FullscreenMode()
 	{
 		isFullscreen = true;
 		windowManager->HideWindow(Pos::wxLEFT);
-		//windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->Resize();
 	}
 
@@ -1600,7 +1603,14 @@ bool CCentralWindow::ScreenMode()
 		event.SetInt(windowMode);
 		wxPostEvent(this, event);
 	}
-
+	else
+	{
+		if (windowMode == WINDOW_PICTURE)
+		{
+			windowManager->HideWindow(Pos::wxRIGHT);
+			windowManager->Resize();
+		}
+	}
 	return true;
 }
 
