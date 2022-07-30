@@ -1,3 +1,9 @@
+Upstream-Name: Figuinha 
+Upstream-Contact: Figuinha Jacques <appt.jf@outlook.fr>
+Source: http://jfiguinha.pagesperso-orange.fr/
+
+Copyright: 2015-2022 Figuinha Jacques <appt.jf@outlook.fr>
+                    
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
