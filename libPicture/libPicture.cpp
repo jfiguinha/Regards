@@ -52,7 +52,7 @@
 #if defined(LIBRAW)
 #include "raw.h"
 #endif
-
+#include "jxl.h"
 #include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)
@@ -2225,6 +2225,13 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		break;
 #endif
 
+		case JXL:
+		{
+			CRegardsFloatBitmap* test = CJxl::GetPicture(fileName);
+			bitmap->SetPicture(test);
+			break;
+		}
+
 		case PFM:
 		{
 			CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
@@ -2938,6 +2945,11 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 	switch (iFormat)
 	{
 
+	case JXL:
+	{
+		CJxl::GetDimensions(fileName,width,height);
+		break;
+	}
 
 	case HDR:
 		{

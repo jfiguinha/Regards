@@ -11,6 +11,7 @@ public:
 	CRegardsFloatBitmap();
 	virtual ~CRegardsFloatBitmap();
 
+	void Resize(const int& iWidth, const int& iHeight);
 	bool IsValid();
 	int GetPosition(const int& x, const int& y);
 	//Flip

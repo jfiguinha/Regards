@@ -38,6 +38,7 @@
 #define JP2 33
 #define PFM 34
 #define ASCII 36
+#define JXL 37
 
 #define AVI 101
 #define MOV 102

@@ -24,6 +24,16 @@ CRegardsFloatBitmap::CRegardsFloatBitmap(const int& iWidth, const int& iHeight)
 	data = new float[m_lSize];
 }
 
+void CRegardsFloatBitmap::Resize(const int& iWidth, const int& iHeight)
+{
+	data = nullptr;
+	m_iWidth = iWidth;
+	m_iHeight = iHeight;
+	m_lSize = iWidth * iHeight * 4;
+	//needRotate = false;
+	data = new float[m_lSize];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////////////
