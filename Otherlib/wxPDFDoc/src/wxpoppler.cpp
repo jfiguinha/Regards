@@ -66,17 +66,18 @@ wxPoppler::~wxPoppler()
 //
 bool wxPoppler::Open(const wxString& strFileName )
 {
-    wxFileInputStream input(strFileName);
-    input.Read(memOut);
-    wxStreamBuffer* buffer = memOut.GetOutputStreamBuffer();
-
-    m_pPdfDocument = poppler::document::load_from_raw_data((char *)buffer->GetBufferStart(), buffer->GetBufferSize());
-
+    const std::wstring ws = strFileName.ToStdWstring();
+    const std::string s(ws.begin(), ws.end());
+    m_pPdfDocument = poppler::document::load_from_file(s);
     if( !m_pPdfDocument )
     {
-        wxLogError( wxT( "wxPoppler::Open -- GError: %s" ),  "");
-        // Signal error.
-        return false;
+        wxFileInputStream input(strFileName);
+        input.Read(memOut);
+        uint8_t* _compressedImage = nullptr;
+        wxStreamBuffer* buffer = memOut.GetOutputStreamBuffer();
+        m_pPdfDocument = poppler::document::load_from_raw_data((char*)buffer->GetBufferStart(), buffer->GetBufferSize());
+        if (!m_pPdfDocument)
+            return false;
     }
     return true;
 }
