@@ -1246,10 +1246,12 @@ bool CxImage::LoadResource(HRSRC hRes, uint32_t imagetype, HMODULE hModule)
 // > imagetype: specify the image format (CXIMAGE_FORMAT_BMP,...)
 // For UNICODE support: char -> char
 //CxImage::CxImage(const char * filename, uint32_t imagetype)
-CxImage::CxImage(const char * filename, uint32_t imagetype)
+CxImage::CxImage(const std::wstring & ws, uint32_t imagetype)
 {
+	const std::string s(ws.begin(), ws.end());
+
 	Startup(imagetype);
-	Load(filename,imagetype);
+	Load(s.c_str(), imagetype);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1263,12 +1265,13 @@ CxImage::CxImage(const char * filename, uint32_t imagetype)
 // > imagetype: specify the image format (CXIMAGE_FORMAT_BMP,...)
 // For UNICODE support: char -> char
 //CxImage::CxImage(const char * filename, uint32_t imagetype)
-CxImage::CxImage(const char * filename, uint32_t imagetype, const bool &header)
+CxImage::CxImage(const std::wstring & ws, uint32_t imagetype, const bool &header)
 {
+	const std::string s(ws.begin(), ws.end());
 	Startup(imagetype);
 	if (header)
 		info.nEscape = -1;
-	Load(filename, imagetype);
+	Load(s.c_str(), imagetype);
 }
 ////////////////////////////////////////////////////////////////////////////////
 /**

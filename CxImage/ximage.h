@@ -71,7 +71,7 @@ typedef int boolean;
   #include <arpa/inet.h>
 #endif
 
-
+#include <string>
 #include <algorithm>
 using namespace std;
 
@@ -279,10 +279,10 @@ public:
 	CxImage(uint32_t dwWidth, uint32_t dwHeight, uint32_t wBpp, uint32_t imagetype = 0);
 	CxImage(const CxImage &src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
 #if CXIMAGE_SUPPORT_DECODE
-	CxImage(const char * filename, uint32_t imagetype);	// For UNICODE support: char -> char
+	CxImage(const std::wstring& ws, uint32_t imagetype);	// For UNICODE support: char -> char
 	CxImage(FILE * stream, uint32_t imagetype);
 	CxImage(CxFile * stream, uint32_t imagetype);
-	CxImage(const char * filename, uint32_t imagetype, const bool &header);
+	CxImage(const std::wstring& ws, uint32_t imagetype, const bool &header);
 	CxImage(uint8_t * buffer, uint32_t size, uint32_t imagetype);
 #endif
 	virtual ~CxImage() { DestroyFrames(); Destroy(); };

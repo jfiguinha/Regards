@@ -23,13 +23,18 @@ const std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
 #endif
 }
 
-const std::string CConvertUtility::ConvertToStdString(const wxString& s)
+const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
 {
+	/*
 #ifdef __WXGTK__
     return std::string(ConvertToUTF8(s)); 
 #else
 	return s.ToStdString();
 #endif
+*/
+	const std::wstring ws = fileName.ToStdWstring();
+	const std::string s(ws.begin(), ws.end());
+	return s;
 }
 
 const char* CConvertUtility::ConvertToUTF8(const wxString& s)

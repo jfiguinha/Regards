@@ -2378,33 +2378,16 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 #ifdef TURBOJPEG
 
 				printf("CLibPicture LoadPicture TURBOJPEG \n");
-				//unsigned char buffer[width*height*COLOR_COMPONENTS]; //!< will contain the decompressed image
-				//Getting the size
-				FILE* file = nullptr;
+				size_t _jpegSize;
+				uint8_t* _compressedImage = CPictureUtility::readfile(fileName, _jpegSize);
 
 
-				if ((file = fopen(CConvertUtility::ConvertToUTF8(fileName), "rb")) == nullptr)
+				if (_compressedImage == nullptr)
 					cout << "File Failed To Load\n";
 				else
 				{
-					//int COLOR_COMPONENTS = 4;
-					long unsigned int _jpegSize; //!< _jpegSize from above
-					//unsigned char* _compressedImage; //!< _compressedImage from above
 					CRegardsBitmap* picture;
 					int jpegSubsamp, width, height;
-
-					cout << "File Loaded Successfully\n";
-					long prev = ftell(file);
-					fseek(file, 0L, SEEK_END);
-					_jpegSize = ftell(file);
-					fseek(file, prev, SEEK_SET);
-
-
-					//Creating a buffer and saving it back
-					auto _compressedImage = new uint8_t[_jpegSize];
-					//cout << "fileSize" << fileSize;
-					fread(_compressedImage, _jpegSize, 1, file);
-					fclose(file);
 
 					tjhandle _jpegDecompressor = tjInitDecompress();
 
@@ -2640,7 +2623,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case JBIG:
 			{
-				auto _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName),
+				auto _cxImage = new CxImage(fileName.ToStdWstring(),
 				                            CxImage::GetTypeIdFromName("jbg"));
 				bitmap->SetPicture(_cxImage);
 
@@ -3004,13 +2987,13 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 		}
 #else
 
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"), true);
+		image = new CxImage(fileName.ToStdWstring(), CxImage::GetTypeIdFromName("jpg"), true);
 #endif
 
 		break;
 
 	case JBIG:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jbg"), true);
+		image = new CxImage(fileName.ToStdWstring(), CxImage::GetTypeIdFromName("jbg"), true);
 		break;
 
 	case PDF:
