@@ -36,7 +36,7 @@ wxString CFileUtility::GetTempFile(wxString filename, wxString folder, const boo
 
 	}
 
-	return CConvertUtility::ConvertToUTF8(file);
+	return file;
 }
 
 wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
@@ -73,7 +73,7 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool& removeFile)
 	}
 
 
-	return CConvertUtility::ConvertToUTF8(file);
+	return file;
 }
 
 
@@ -143,7 +143,7 @@ wxString CFileUtility::GetFaceZScorePath(const int& numFace)
 	documentPath.append("/" + to_string(numFace) + ".bin");
 #endif
 
-	return CConvertUtility::ConvertToUTF8(documentPath);
+	return documentPath;
 }
 
 wxString CFileUtility::GetFaceThumbnailPath(const int& numFace)
@@ -166,7 +166,7 @@ wxString CFileUtility::GetFaceThumbnailPath(const int& numFace)
 	documentPath.append("/" + to_string(numFace) + ".jpg");
 #endif
 
-	return CConvertUtility::ConvertToUTF8(documentPath);
+	return documentPath;
 }
 
 wxString CFileUtility::GetVideoThumbnailPath(const wxString& path, const int& numFrame)
@@ -222,7 +222,7 @@ wxString CFileUtility::GetThumbnailPath(const wxString& path)
 	documentPath.append("/" + name + ".jpg");
 #endif
 
-	return CConvertUtility::ConvertToUTF8(documentPath);
+	return documentPath;
 }
 
 wxString CFileUtility::GetDocumentFolderPath()
@@ -243,7 +243,7 @@ wxString CFileUtility::GetDocumentFolderPath()
 	{
 		wxDir::Make(documentPath);
 	}
-	return CConvertUtility::ConvertToUTF8(documentPath);
+	return documentPath;
 }
 
 wxString CFileUtility::GetProgramFolderPath()

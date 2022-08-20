@@ -93,6 +93,8 @@ class wxPoppler
     int m_nDpi;                                           ///< Holds the image resolution in dots per inch.
     poppler::page * m_pPdfPage;                              ///< A pointer to the current PDF page.
     poppler::document * m_pPdfDocument;                      ///< A pointer to the current PDF document.
+    std::vector<unsigned char> binFile;
+    wxMemoryOutputStream memOut;
 };
 
 

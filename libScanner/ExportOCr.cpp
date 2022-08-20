@@ -95,7 +95,7 @@ static void SetVariablesFromCLArgs(tesseract::TessBaseAPI* api, int argc,
 }
 */
 static void PrintLangsList(tesseract::TessBaseAPI* api) {
-#ifdef __APPLE__
+#ifndef __WXGTK__
 	std::vector<std::string> languages;
 #else
 	GenericVector<STRING> languages;
@@ -104,7 +104,7 @@ static void PrintLangsList(tesseract::TessBaseAPI* api) {
 	printf("List of available languages (%d):\n", languages.size());
 	for (int index = 0; index < languages.size(); ++index) 
 	{
-#ifdef __APPLE__
+#ifndef __WXGTK__
 		std::string& lang = languages[index];
 #else
 		STRING& lang = languages[index];
@@ -143,7 +143,7 @@ static void checkArgValues(int arg, const char* mode, int count) {
 }
 
 // NOTE: arg_i is used here to avoid ugly *i so many times in this function
-#ifdef __APPLE__
+#ifndef __WXGTK__
 static void ParseArgs(const int argc, char** argv, const char** lang,
 	const char** image, const char** outputbase,
 	const char** datapath, l_int32* dpi, bool* list_langs,
@@ -437,7 +437,7 @@ static void PreloadRenderers(
 		}
 	}
 }
-#ifdef __APPLE__
+#ifndef __WXGTK__
 void CExportOcr::monitorProgress(tesseract::ETEXT_DESC *monitor, int page)
 #else
 void CExportOcr::monitorProgress(ETEXT_DESC* monitor, int page)
@@ -453,7 +453,7 @@ void CExportOcr::monitorProgress(ETEXT_DESC* monitor, int page)
 	}
 }
 
-#ifdef __APPLE__
+#ifndef __WXGTK__
 void CExportOcr::ocrProcess(tesseract::TessBaseAPI *api, tesseract::ETEXT_DESC *monitor) 
 #else
 void CExportOcr::ocrProcess(tesseract::TessBaseAPI* api, ETEXT_DESC* monitor)
@@ -489,7 +489,7 @@ int CExportOcr::ExportOcr(
 	/* main() calls functions like ParseArgs which call exit().
 	 * This results in memory leaks if vars_vec and vars_values are
 	 * declared as auto variables (destructor is not called then). */
-#ifdef __APPLE__
+#ifndef __WXGTK__
 	static std::vector<std::string> vars_vec;
 	static std::vector<std::string> vars_values;
 #else

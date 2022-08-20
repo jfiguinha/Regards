@@ -11,7 +11,7 @@ namespace Regards
 				int argc, char** argv,
 				wxString &errorMessage);
 
-#ifdef __APPLE__
+#ifndef __WXGTK__
 			static void monitorProgress(tesseract::ETEXT_DESC *monitor, int page);
 			static void ocrProcess(tesseract::TessBaseAPI *api, tesseract::ETEXT_DESC *monitor);
 #else

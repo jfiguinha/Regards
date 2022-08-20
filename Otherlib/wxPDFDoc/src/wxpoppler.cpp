@@ -12,7 +12,10 @@
 #include <wx/filesys.h>
 #include <wx/wxpoppler.h>
 #include <ConvertUtility.h>
+#include <FileUtility.h>
+#include <fstream>
 #ifdef wxUSE_PDF
+#include <wx/wfstream.h>
 #   include <wx/mstream.h>
 #   include <wx/pdfdoc.h>
 #endif // wxUSE_PDF
@@ -42,6 +45,7 @@ wxPoppler::wxPoppler()
 //
 wxPoppler::~wxPoppler()
 {
+    
     // If exists delete the PDF page.
     if( m_pPdfPage != nullptr)
     {
@@ -53,14 +57,20 @@ wxPoppler::~wxPoppler()
     {
        delete m_pPdfDocument;
     }
+
 }
+
 
 
 // Opens a PDF stream from file or memory depending on the parameterization.
 //
 bool wxPoppler::Open(const wxString& strFileName )
 {
-    m_pPdfDocument = poppler::document::load_from_file(CConvertUtility::ConvertToStdString(strFileName));
+    wxFileInputStream input(strFileName);
+    input.Read(memOut);
+    wxStreamBuffer* buffer = memOut.GetOutputStreamBuffer();
+
+    m_pPdfDocument = poppler::document::load_from_raw_data((char *)buffer->GetBufferStart(), buffer->GetBufferSize());
 
     if( !m_pPdfDocument )
     {
