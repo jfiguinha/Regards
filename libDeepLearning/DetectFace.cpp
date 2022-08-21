@@ -7,9 +7,6 @@
 //
 #include "header.h"
 #include "DetectFace.h"
-#include <RegardsBitmap.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
 #include <FileUtility.h>
 #include <ConvertUtility.h>
 #ifdef __APPLE__
@@ -196,7 +193,7 @@ int CDetectFace::FindNbFace(const Mat& bitmap, const float& confidenceThreshold,
 #endif
 }
 
-void CDetectFace::LoadModel()
+void CDetectFace::LoadModel(const bool & openCLCompatible)
 {
 
 #ifdef __APPLE__
@@ -210,7 +207,7 @@ void CDetectFace::LoadModel()
 		wxString tensorflowConfigFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 		wxString tensorflowWeightFile = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
 
-
+		/*
 		bool openCLCompatible = false;
 		CRegardsConfigParam* config = CParamInit::getInstance();
 		if (config != nullptr)
@@ -218,6 +215,7 @@ void CDetectFace::LoadModel()
 			if (config->GetIsOpenCLSupport())
 				openCLCompatible = true;
 		}
+		*/
 
 		net = readNetFromTensorflow(CConvertUtility::ConvertToStdString(tensorflowWeightFile), CConvertUtility::ConvertToStdString(tensorflowConfigFile));
 		net.setPreferableBackend(DNN_BACKEND_DEFAULT);

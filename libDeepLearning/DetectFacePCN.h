@@ -19,9 +19,9 @@ public:
     CDetectFacePCN(void);
     ~CDetectFacePCN(void);
 
-    void LoadModel();
-    void DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
-    int DetectFaceAngle(cv::Mat frameOpenCVDNN);
+    void LoadModel(const bool& openCLCompatible);
+    void DetectFace(const cv::Mat& source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace);
+    int DetectFaceAngle(const cv::Mat& frameOpenCVDNN);
 private:
 
     bool xyValid(int _x, int _y, cv::Mat _img);

@@ -473,9 +473,14 @@ if (threadRotate != nullptr)
 {
 	if (threadRotate->bitmap != nullptr)
 	{
+		bool fastDetection = true;
+		CRegardsConfigParam* param = CParamInit::getInstance();
+		if (param != nullptr)
+			fastDetection = param->GetFastDetectionFace();
+
 		threadRotate->isReady = true;
 		threadRotate->bitmap->VertFlipBuf();
-		threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap);
+		threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap->GetMatrix(), fastDetection);
 	}
 
 	if (threadRotate->mainWindow != nullptr)
@@ -559,8 +564,13 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		{
 			if (!isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) && DeepLearning::CDeepLearning::IsResourceReady())
 			{
+				bool fastDetection = true;
+				CRegardsConfigParam* param = CParamInit::getInstance();
+				if (param != nullptr)
+					fastDetection = param->GetFastDetectionFace();
+
 				CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-				int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap);
+				int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap->GetMatrix(), fastDetection);
 				sqlPhotos.InsertPhotoExif(filename, exif);
 				bitmap->SetOrientation(exif);
 			}

@@ -1,12 +1,10 @@
 #include <header.h>
 #include "DetectRotation.h"
 #include "FaceDetector.h"
-#include <RegardsBitmap.h>
 using namespace cv;
 using namespace std;
 using namespace dnn;
 using namespace Regards::OpenCV;
-
 #define WRITE_OUTPUT_SAMPLE
 
 CDetectRotation::CDetectRotation()
@@ -17,7 +15,7 @@ CDetectRotation::~CDetectRotation()
 {
 }
 
-int CDetectRotation::GetExifOrientation(CRegardsBitmap* pBitmap, const bool& fastDetection)
+int CDetectRotation::GetExifOrientation(const cv::Mat& pBitmap, const bool& fastDetection)
 {
 	CFaceDetector faceDetector(fastDetection);
 	int angle = faceDetector.DectectOrientationByFaceDetector(pBitmap);

@@ -7,9 +7,6 @@
 //
 #include "header.h"
 #include "DetectFacePCN.h"
-#include <RegardsBitmap.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
 #include <FileUtility.h>
 #include <ConvertUtility.h>
 using namespace cv;
@@ -46,7 +43,7 @@ CDetectFacePCN::~CDetectFacePCN(void)
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
+void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listOfFace, std::vector<cv::Rect>& pointOfFace)
 {
     if (!isload)
         return;
@@ -116,7 +113,7 @@ void CDetectFacePCN::DetectFace(cv::Mat source, std::vector<CFace>& listOfFace, 
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
+int CDetectFacePCN::DetectFaceAngle(const cv::Mat& frameOpenCVDNN)
 {
     if (!isload)
         return 0;
@@ -169,19 +166,20 @@ int CDetectFacePCN::DetectFaceAngle(cv::Mat frameOpenCVDNN)
 }
 
 
-void CDetectFacePCN::LoadModel()
+void CDetectFacePCN::LoadModel(const bool& openCLCompatible)
 {
     wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";
 
     try
     {
+        /*
        bool openCLCompatible = false;
        CRegardsConfigParam* config = CParamInit::getInstance();
        if (config != nullptr)
        {
            if (config->GetIsOpenCLSupport())
                openCLCompatible = true;
-       }
+       }*/
         
 #ifdef WIN32
         wxString detection_model_path = CFileUtility::GetResourcesFolderPath() + "\\model\\PCN.caffemodel";

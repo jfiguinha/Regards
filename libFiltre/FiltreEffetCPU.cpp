@@ -821,7 +821,12 @@ int CFiltreEffetCPU::RedEye()
 	else
 		image = input;
 
-	CDeepLearning::DetectEyes(image);
+	bool fastDetection = true;
+	CRegardsConfigParam* param = CParamInit::getInstance();
+	if (param != nullptr)
+		fastDetection = param->GetFastDetectionFace();
+
+	CDeepLearning::DetectEyes(image, fastDetection);
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)

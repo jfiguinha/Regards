@@ -339,8 +339,16 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 
 void CListFace::LoadResource(void* param)
 {
+	bool openCLCompatible = false;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+	{
+		if (config->GetIsOpenCLSupport())
+			openCLCompatible = true;
+	}
+
 	auto path = static_cast<CThreadFace*>(param);
-	CDeepLearning::LoadRessource();
+	CDeepLearning::LoadRessource(openCLCompatible);
 
 	if (path->mainWindow != nullptr)
 	{
@@ -356,6 +364,10 @@ void CListFace::FacialDetectionRecognition(void* param)
 	auto path = static_cast<CThreadFace*>(param);
 	wxString filename = path->filename;
 
+	bool fastDetection = true;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		fastDetection = config->GetFastDetectionFace();
 
 	std::vector<int> listFace;
 	if (filename == "")
@@ -365,7 +377,7 @@ void CListFace::FacialDetectionRecognition(void* param)
 		for (int numFace : listFace)
 		{
 			wxString text = "Face number : " + to_string(i);
-			CDeepLearning::FindFaceCompatible(numFace);
+			CDeepLearning::FindFaceCompatible(numFace, fastDetection);
 			if (false == path->dialog->Update(i++, text))
 				break;
 		}
@@ -378,7 +390,7 @@ void CListFace::FacialDetectionRecognition(void* param)
 		//int i = 0;
 		for (int numFace : listFace)
 		{
-			CDeepLearning::FindFaceCompatible(numFace);
+			CDeepLearning::FindFaceCompatible(numFace, fastDetection);
 			break;
 		}
 	}
@@ -396,10 +408,15 @@ void CListFace::FacialDetectionRecognition(void* param)
 
 void CListFace::FacialRecognitionReload()
 {
+	bool fastDetection = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
+	{
+		fastDetection = config->GetFastDetectionFace();
 		nbProcesseur = config->GetFaceProcess();
+	}
+		
 
 	if (nbProcessFaceRecognition < nbProcesseur)
 	{
@@ -414,7 +431,7 @@ void CListFace::FacialRecognitionReload()
 		for (int numFace : listFace)
 		{
 			wxString text = "Face number : " + to_string(i);
-			CDeepLearning::FindFaceCompatible(numFace);
+			CDeepLearning::FindFaceCompatible(numFace, fastDetection);
 			if (false == dialog.Update(i++, text))
 				break;
 		}
@@ -434,9 +451,14 @@ void CListFace::FacialRecognitionReload()
 
 void CListFace::FindFaceCompatible(const vector<int>& listFace)
 {
+	bool fastDetection = true;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		fastDetection = config->GetFastDetectionFace();
+
 	for (int numFace : listFace)
 	{
-		CDeepLearning::FindFaceCompatible(numFace);
+		CDeepLearning::FindFaceCompatible(numFace, fastDetection);
 	}
 }
 
@@ -451,9 +473,15 @@ void CListFace::FacialRecognition(void* param)
 	path->nbFace = 0;
 	vector<int> listFace;
 	int faceVideoDetection = 0;
+	bool fastDetection = true;
+
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
+	{
+		fastDetection = config->GetFastDetectionFace();
 		faceVideoDetection = config->GetFaceVideoDetection();
+	}
+		
 
 	if (faceVideoDetection && libPicture.TestIsVideo(path->filename))
 	{
@@ -474,7 +502,7 @@ void CListFace::FacialRecognition(void* param)
 				pictureData.VertFlipBuf();
 				pictureData.SetFilename(path->filename);
 				pictureData.SetOrientation(0);
-				listFace = CDeepLearning::FindFace(&pictureData);
+				listFace = CDeepLearning::FindFace(frame, path->filename, fastDetection);
 				path->nbFace = listFace.size();
 			}
 
@@ -510,7 +538,7 @@ void CListFace::FacialRecognition(void* param)
 
 			pictureData->SetFilename(path->filename);
 
-			listFace = CDeepLearning::FindFace(pictureData);
+			listFace = CDeepLearning::FindFace(pictureData->GetMatrix(), path->filename, fastDetection);
 			path->nbFace = listFace.size();
 		}
 

@@ -67,7 +67,7 @@ void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* sou
 
 	//Extract Face and Get Rectangle
 	CFaceDetector face_detector(true);
-	vector<cv::Rect> listFace = face_detector.GetRectFace(source);
+	vector<cv::Rect> listFace = face_detector.GetRectFace(source->GetMatrix());
 	if (listFace.size() > 0)
 	{
 		faceRect.SetX(listFace[0].x);

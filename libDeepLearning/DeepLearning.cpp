@@ -2,12 +2,8 @@
 #include "DeepLearning.h"
 #include "FaceDetector.h"
 #include "DetectRotation.h"
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
-#include <ViewerParamInit.h>
 using namespace Regards::DeepLearning;
 using namespace Regards::OpenCV;
-using namespace Regards::Viewer;
 #undef AUTO_ROTATE
 
 static bool isload = false;
@@ -18,48 +14,44 @@ void CDeepLearning::CleanRecognition()
 	CFaceDetector::CleanBase();
 }
 
-vector<int> CDeepLearning::FindFace(CRegardsBitmap* pictureData)
+vector<int> CDeepLearning::FindFace(const cv::Mat & pictureData, const wxString &filename, const bool & fastDetection)
 {
-	bool fastDetection = true;
+	//bool fastDetection = true;
 	muLoading.lock();
 	const bool isLoading = isload;
 	muLoading.unlock();
-
+	/*
 	CRegardsConfigParam* param = CParamInit::getInstance();
 	if (param != nullptr)
 		fastDetection = param->GetFastDetectionFace();
-
+*/
 	if (isLoading)
 	{
 		CFaceDetector faceDetector(fastDetection);
-		return faceDetector.FindFace(pictureData);
+		return faceDetector.FindFace(pictureData, filename);
 	}
 	vector<int> list;
 	return list;
 }
 
 
-void CDeepLearning::LoadRessource()
+void CDeepLearning::LoadRessource(const bool& openCLCompatible)
 {
 	//CDetectRotation::LoadModel(rotation_json);
-	CFaceDetector::LoadModel();
+	CFaceDetector::LoadModel(openCLCompatible);
 	muLoading.lock();
 	isload = true;
 	muLoading.unlock();
 }
 
 
-void CDeepLearning::DetectEyes(cv::Mat& pBitmap)
+void CDeepLearning::DetectEyes(const cv::Mat& pBitmap, const bool& fastDetection)
 {
-	bool fastDetection = true;
 	std::vector<wxRect> listEye;
 	muLoading.lock();
 	const bool isLoading = isload;
 	muLoading.unlock();
 
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-		fastDetection = param->GetFastDetectionFace();
 
 	if (isLoading)
 	{
@@ -76,16 +68,12 @@ bool CDeepLearning::IsResourceReady()
 	return isLoading;
 }
 
-int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
+int CDeepLearning::GetExifOrientation(const cv::Mat&  pBitmap, const bool& fastDetection)
 {
-	bool fastDetection = true;
 	muLoading.lock();
 	const bool isLoading = isload;
 	muLoading.unlock();
 
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-		fastDetection = param->GetFastDetectionFace();
 
 	if (isLoading)
 	{
@@ -96,17 +84,13 @@ int CDeepLearning::GetExifOrientation(CRegardsBitmap* pBitmap)
 }
 
 
-bool CDeepLearning::FindFaceCompatible(const int& numFace)
+bool CDeepLearning::FindFaceCompatible(const int& numFace, const bool& fastDetection)
 {
 	bool returnValue = false;
-	bool fastDetection = true;
+
 	muLoading.lock();
 	const bool isLoading = isload;
 	muLoading.unlock();
-
-	CRegardsConfigParam* param = CParamInit::getInstance();
-	if (param != nullptr)
-		fastDetection = param->GetFastDetectionFace();
 
 	if (isLoading)
 	{

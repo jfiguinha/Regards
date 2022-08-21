@@ -2,7 +2,6 @@
 
 class CPictureData;
 class FaceRect;
-class CRegardsBitmap;
 
 namespace Regards
 {
@@ -13,13 +12,13 @@ namespace Regards
 		public:
 
 			static void CleanRecognition();
-			static void LoadRessource();
-			static vector<int> FindFace(CRegardsBitmap* pictureData);
-			static void DetectEyes(cv::Mat& pBitmap);
+			static void LoadRessource(const bool& openCLCompatible);
+			static vector<int> FindFace(const cv::Mat & pictureData, const wxString& filename, const bool & fastDetection);
+			static void DetectEyes(const cv::Mat& pBitmap, const bool& fastDetection);
 
-			static int GetExifOrientation(CRegardsBitmap* pBitmap);
+			static int GetExifOrientation(const cv::Mat& pBitmap, const bool& fastDetection);
 			static bool IsResourceReady();
-			static bool FindFaceCompatible(const int& numFace);
+			static bool FindFaceCompatible(const int& numFace, const bool& fastDetection);
 		};
 	}
 }
