@@ -447,6 +447,9 @@ public:
 
     cv::Mat GetVideoFrame(const bool &applyOrientation)
     {
+        if (input_ctx == nullptr)
+            return cv::Mat();
+
         bool decode_video = false;
         bool exit_white = false;
 
@@ -521,12 +524,14 @@ enum AVPixelFormat CVideoPlayerPimpl::hw_pix_fmt;
 
 void CVideoPlayer::SeekToBegin()
 {
-    pimpl->SeekToBegin();
+    if(IsOk())
+        pimpl->SeekToBegin();
 }
 
 void CVideoPlayer::SkipFrame(const int& nbFrame)
 {
-    pimpl->SkipFrame(nbFrame);
+    if (IsOk())
+        pimpl->SkipFrame(nbFrame);
 }
 
 bool CVideoPlayer::IsOk()
@@ -536,37 +541,50 @@ bool CVideoPlayer::IsOk()
 
 int CVideoPlayer::GetFps()
 {
-    return pimpl->nbFps;
+    if (IsOk())
+        return pimpl->nbFps;
+    return -1;
 }
 
 int CVideoPlayer::GetTotalFrame()
 {
-    return pimpl->nbFrames;
+    if (IsOk())
+        return pimpl->nbFrames;
+    return -1;
 }
 
 int CVideoPlayer::GetWidth()
 {
-    return pimpl->widthVideo;
+    if (IsOk())
+        return pimpl->widthVideo;
+    return -1;
 }
 
 int CVideoPlayer::GetHeight()
 {
-    return pimpl->heightVideo;
+    if (IsOk())
+        return pimpl->heightVideo;
+    return -1;
 }
 
 void CVideoPlayer::GetAspectRatio(int& ascpectNominator, int& ascpectDenominator)
 {
-    return pimpl->GetAspectRatio(ascpectNominator, ascpectDenominator);
+    if (IsOk())
+        pimpl->GetAspectRatio(ascpectNominator, ascpectDenominator);
 }
 
 int CVideoPlayer::GetDuration()
 {
-    return pimpl->GetDuration();
+    if (IsOk())
+     return pimpl->GetDuration();
+    return -1;
 }
 
 int CVideoPlayer::GetOrientation()
 {
-    return pimpl->GetOrientation();
+    if (IsOk())
+        return pimpl->GetOrientation();
+    return -1;
 }
 
 bool CVideoPlayer::isOpened()
@@ -576,7 +594,9 @@ bool CVideoPlayer::isOpened()
 
 int CVideoPlayer::SeekToPos(const int& sec)
 {
-    return pimpl->SeekToPos(sec);
+    if (IsOk())
+        return pimpl->SeekToPos(sec);
+    return -1;
 }
 
 CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware)
@@ -612,8 +632,13 @@ CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware)
 
 cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 {
-    if(isOk)
-        return pimpl->GetVideoFrame(applyOrientation);
+    if (isOk)
+    {
+        cv::Mat mat = pimpl->GetVideoFrame(applyOrientation);
+        if (mat.empty())
+            isOk = false;
+        return mat;
+    }
     return cv::Mat();
 }
 

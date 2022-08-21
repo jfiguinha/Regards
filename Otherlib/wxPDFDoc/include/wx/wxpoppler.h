@@ -94,7 +94,7 @@ class wxPoppler
     poppler::page * m_pPdfPage;                              ///< A pointer to the current PDF page.
     poppler::document * m_pPdfDocument;                      ///< A pointer to the current PDF document.
     std::vector<unsigned char> binFile;
-    wxMemoryOutputStream memOut;
+    uint8_t * _compressedImage = nullptr;
 };
 
 
