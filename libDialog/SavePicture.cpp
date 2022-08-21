@@ -26,7 +26,7 @@ CSavePicture::~CSavePicture()
 
 const wxString GetPictureFilter()
 {
-	return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
+	return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|JXL (*.jxl)|*.jxl|NFO (*.nfo)|*.nfo";
 }
 
 wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
@@ -45,7 +45,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 
 		std::vector<wxString> v = {
 			".pdf", ".bmp", ".bpg", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".ppm",
-			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".nfo"
+			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".nfo", ".jxl"
 		};
 		
 
