@@ -149,6 +149,28 @@ bool MyApp::OnInit()
 		printf("SQLite in serialized mode \n");
 	}
 
+#ifdef WIN32
+	LCID lcid = GetThreadLocale();
+	wchar_t name[LOCALE_NAME_MAX_LENGTH];
+	if (LCIDToLocaleName(lcid, name, LOCALE_NAME_MAX_LENGTH, 0) == 0)
+		printf("%s", GetLastError());
+	std::wcout << L"Locale name = " << name << std::endl;
+
+	char buffer[64];
+	int ret;
+	ret = wcstombs(buffer, name, sizeof(buffer));
+	setlocale(LC_ALL, buffer);
+	
+#else
+
+	std::locale loc;
+	string locName = loc.name();
+	setlocale(LC_ALL, name);
+
+#endif
+	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
+
+
 	sqlite3_initialize();
 
 	wxInitAllImageHandlers();
