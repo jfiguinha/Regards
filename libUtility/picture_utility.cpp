@@ -1,11 +1,9 @@
 #include <header.h>
 #include "picture_utility.h"
-#include <ConvertUtility.h>
+#include "ConvertUtility.h"
 #include <wx/wfstream.h>
 uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 {
-	_fileSize = 0;
-	/*
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	uint8_t* _compressedImage = nullptr;
 	FILE* file;
@@ -24,7 +22,7 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 		fread(_compressedImage, _fileSize, 1, file);
 		fclose(file);
 	}
-	*/
+	/*
 	wxFileInputStream input(fileName);
 	wxMemoryOutputStream memOut(NULL);
 	input.Read(memOut);
@@ -36,6 +34,7 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 		_compressedImage = new uint8_t[_fileSize];
 		memcpy(_compressedImage, (char*)buffer->GetBufferStart(), buffer->GetBufferSize());
 	}
+	*/
 	return _compressedImage;
 }
 

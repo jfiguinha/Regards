@@ -39,6 +39,9 @@
     <ClInclude Include="RegistryAccess.h">
       <Filter>Registry</Filter>
     </ClInclude>
+    <ClInclude Include="picture_utility.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="RegistryAccess.cpp">
       <Filter>Registry</Filter>
+    </ClCompile>
+    <ClCompile Include="picture_utility.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

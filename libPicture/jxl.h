@@ -15,9 +15,7 @@ private:
 	static bool DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
 		CRegardsFloatBitmap*& bmp, size_t & xsize,
 		size_t & ysize, std::vector<uint8_t>* icc_profile);
-	static bool DecodeJpegDim(const uint8_t* jxl, size_t size,
-		size_t& xsize,
-		size_t& ysize);
+	static void * DecodeJpegDim(FILE* file);
 	static bool DecodeJpegXlExif(const uint8_t* jxl, size_t size, std::vector<uint8_t>* exif);
 	static bool EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t> * compressed);
 };

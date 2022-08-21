@@ -454,6 +454,7 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ConvertUtility.h" />
     <ClInclude Include="FileUtility.h" />
+    <ClInclude Include="picture_utility.h" />
     <ClInclude Include="RegistryAccess.h" />
     <ClInclude Include="wxmd5.h" />
   </ItemGroup>
@@ -471,6 +472,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_windows10|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="FileUtility.cpp" />
+    <ClCompile Include="picture_utility.cpp" />
     <ClCompile Include="RegistryAccess.cpp" />
     <ClCompile Include="wxmd5.cpp" />
   </ItemGroup>

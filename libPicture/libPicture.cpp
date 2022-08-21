@@ -1190,7 +1190,7 @@ bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& fileName, const wx
 bool CLibPicture::TestIsExifCompatible(const wxString& filename)
 {
 	const int iFormat = TestImageFormat(filename);
-	if ((iFormat == JPEG || iFormat == PNG || iFormat == TIFF || iFormat == WEBP || iFormat == RAWFILE || iFormat ==
+	if ((iFormat == JPEG || iFormat == JXL || iFormat == PNG || iFormat == TIFF || iFormat == WEBP || iFormat == RAWFILE || iFormat ==
 		HEIC || iFormat == AVIF))
 		return true;
 	return false;
@@ -2237,6 +2237,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			CRegardsFloatBitmap* test = CJxl::GetPicture(fileName);
 			bitmap->SetPicture(test);
+			bitmap->Flip();
+			delete test;
 			break;
 		}
 
@@ -2244,6 +2246,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		{
 			CRegardsFloatBitmap* test = CPfm::ReadFilePFM(fileName, isThumbnail);
 			bitmap->SetPicture(test);
+			delete test;
 			break;
 		}
 

@@ -14,6 +14,7 @@
 #include <ConvertUtility.h>
 #include <FileUtility.h>
 #include <fstream>
+#include <picture_utility.h>
 #ifdef wxUSE_PDF
 #include <wx/wfstream.h>
 #   include <wx/mstream.h>
@@ -71,11 +72,14 @@ bool wxPoppler::Open(const wxString& strFileName )
     m_pPdfDocument = poppler::document::load_from_file(s);
     if( !m_pPdfDocument )
     {
-        wxFileInputStream input(strFileName);
-        input.Read(memOut);
-        uint8_t* _compressedImage = nullptr;
-        wxStreamBuffer* buffer = memOut.GetOutputStreamBuffer();
-        m_pPdfDocument = poppler::document::load_from_raw_data((char*)buffer->GetBufferStart(), buffer->GetBufferSize());
+        size_t _jpegSize;
+        uint8_t* _compressedImage = CPictureUtility::readfile(strFileName, _jpegSize);
+        if (_compressedImage != nullptr)
+        {
+            m_pPdfDocument = poppler::document::load_from_raw_data((char*)_compressedImage, _jpegSize);
+            delete[] _compressedImage;
+        }
+
         if (!m_pPdfDocument)
             return false;
     }

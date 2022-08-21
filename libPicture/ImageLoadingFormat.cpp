@@ -201,14 +201,14 @@ void CImageLoadingFormat::SetPicture(CRegardsFloatBitmap* image)
 		if (_image != nullptr)
 			delete _image;
 
-		_image = new CRegardsBitmap(GetWidth(), GetHeight());
+		_image = new CRegardsBitmap(image->GetWidth(), image->GetHeight());
 		uint8_t* buffer = _image->GetPtBitmap();
 		float* data = image->GetData();
-		for (long y = 0; y < GetHeight(); y++)
+		for (long y = 0; y < image->GetHeight(); y++)
 		{
-			for (long x = 0; x < GetWidth(); x++)
+			for (long x = 0; x < image->GetWidth(); x++)
 			{
-				int position = x * 4 + y * GetWidth() * 4;
+				int position = x * 4 + y * image->GetWidth() * 4;
 				*buffer++ = max(0, min(static_cast<int32_t>(data[position + 2] * 255), 255));
 				*buffer++ = max(0, min(static_cast<int32_t>(data[position + 1] * 255), 255));
 				*buffer++ = max(0, min(static_cast<int32_t>(data[position] * 255), 255));

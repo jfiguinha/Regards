@@ -94,9 +94,6 @@
     <ClCompile Include="regards_webp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="picture_utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ascii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -229,9 +226,6 @@
       <Filter>hqdb3d</Filter>
     </ClInclude>
     <ClInclude Include="regards_webp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="picture_utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ascii.h">
