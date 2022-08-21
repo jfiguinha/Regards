@@ -100,7 +100,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 			}
 
             bool grabbed = false;
-			if(videoCapture != nullptr)
+			if(videoCapture != nullptr && videoCapture->IsOk())
 			{
 				
 				if (oldnumFrame != numFrame)

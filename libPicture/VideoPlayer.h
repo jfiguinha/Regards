@@ -25,6 +25,8 @@ namespace Regards {
 			int GetWidth();
 			int GetHeight();
 
+			bool IsOk();
+
 			void GetAspectRatio(int & ascpectNominator, int & ascpectDenominator);
 
 			int GetOrientation();
@@ -33,7 +35,7 @@ namespace Regards {
 
 		private:
 			CVideoPlayerPimpl* pimpl;
-
+			bool isOk = false;
 		};
 	}
 }

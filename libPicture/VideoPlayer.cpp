@@ -529,6 +529,11 @@ void CVideoPlayer::SkipFrame(const int& nbFrame)
     pimpl->SkipFrame(nbFrame);
 }
 
+bool CVideoPlayer::IsOk()
+{
+    return isOk;
+}
+
 int CVideoPlayer::GetFps()
 {
     return pimpl->nbFps;
@@ -589,18 +594,27 @@ CVideoPlayer::CVideoPlayer(const wxString& filename, const bool& useHardware)
         }
 
         if (decoderHardware != "")
+        {
             ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename));
+            delete pimpl;
+            pimpl = new CVideoPlayerPimpl();
+        }
 
         if (ret <= 0)
-            ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), false);
+            ret = pimpl->OpenVideoFile("", CConvertUtility::ConvertToUTF8(filename), false);
     }
     else
-        ret = pimpl->OpenVideoFile(CConvertUtility::ConvertToUTF8(decoderHardware), CConvertUtility::ConvertToUTF8(filename), useHardware);
+        ret = pimpl->OpenVideoFile("", CConvertUtility::ConvertToUTF8(filename), useHardware);
+
+    if (ret > 0)
+        isOk = true;
 }
 
 cv::Mat CVideoPlayer::GetVideoFrame(const bool& applyOrientation)
 {
-    return pimpl->GetVideoFrame(applyOrientation);
+    if(isOk)
+        return pimpl->GetVideoFrame(applyOrientation);
+    return cv::Mat();
 }
 
 CVideoPlayer::~CVideoPlayer()
