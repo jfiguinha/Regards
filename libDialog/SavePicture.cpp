@@ -45,7 +45,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 
 		std::vector<wxString> v = {
 			".pdf", ".bmp", ".bpg", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".ppm",
-			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".nfo", ".jxl"
+			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".jxl", ".nfo"
 		};
 		
 

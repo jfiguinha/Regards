@@ -259,7 +259,7 @@ bool CLibPicture::TestIsAnimation(const wxString& szFileName)
 //----------------------------------------------------------------------------
 //Test si le format de l'image est exploitable
 //----------------------------------------------------------------------------
-int CLibPicture::TestImageFormat(const wxString& szFileName)
+int CLibPicture::TestImageFormat(const wxString& szFileName, const bool& reading )
 {
 	int numExt = 0;
 	wxDir testDir(szFileName);
@@ -273,7 +273,7 @@ int CLibPicture::TestImageFormat(const wxString& szFileName)
 			return 0;
 
 		numExt = TestExtension(extension.Lower());
-		if (numExt == ASCII)
+		if (numExt == ASCII && reading)
 			numExt = 0;
 	}
 	return numExt;
@@ -518,6 +518,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 	case XPM:
 	case IFF:
 	case PFM:
+	case JXL:
 	case PNM:
 	case JPC:
 		{
@@ -547,7 +548,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 	int iFormat = 0;
 
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
-	iFormat = TestImageFormat(fileName);
+	iFormat = TestImageFormat(fileName, false);
 	wxString informations_error = CLibResource::LoadStringFromResource(L"informationserror", 1);
 	switch (iFormat)
 	{
@@ -1201,7 +1202,7 @@ bool CLibPicture::TestIsExifCompatible(const wxString& filename)
 //-----------------------------------------------------------------------------
 int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitmap)
 {
-	const int iFormat = TestImageFormat(fileName);
+	const int iFormat = TestImageFormat(fileName, false);
 	const wxString wxfileName = fileName;
 
 	int option = 0;
@@ -1223,7 +1224,7 @@ int CLibPicture::SavePicture(const wxString& fileNameIn, const wxString& fileNam
 {
 	int option = 0;
 	int quality = 0;
-	int iFormat = TestImageFormat(fileNameOut);
+	int iFormat = TestImageFormat(fileNameOut, false);
 	if (SavePictureOption(iFormat, option, quality) == 1)
 	{
 		int nbPicture = GetNbImage(fileNameIn);

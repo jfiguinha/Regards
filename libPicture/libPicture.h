@@ -34,7 +34,7 @@ namespace Regards
 			bool HasThumbnail(const wxString &filename);
 			int GetNbImage(const  wxString & szFileName);
 			uint32_t GetFrameDelay(const  wxString & szFileName);
-			int TestImageFormat(const wxString & szFileName);
+			int TestImageFormat(const wxString & szFileName, const bool &reading = true);
 			bool TestIsVideo(const wxString & szFileName);
 			bool TestIsPDF(const wxString & szFileName);
 			bool TestIsPicture(const wxString & szFileName);
