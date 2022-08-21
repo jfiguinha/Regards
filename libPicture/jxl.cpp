@@ -5,6 +5,10 @@
 #include "jxl/decode_cxx.h"
 #include "jxl/resizable_parallel_runner.h"
 #include "jxl/resizable_parallel_runner_cxx.h"
+#include "jxl/encode.h"
+#include "jxl/encode_cxx.h"
+#include "jxl/thread_parallel_runner.h"
+#include "jxl/thread_parallel_runner_cxx.h"
 #include "picture_utility.h"
 
 /** Decodes JPEG XL image to floating point pixels and ICC Profile. Pixel are
@@ -198,6 +202,85 @@ bool CJxl::DecodeJpegDim(const uint8_t* jxl, size_t size,
     }
 }
 
+/**
+ * Compresses the provided pixels.
+ *
+ * @param pixels input pixels
+ * @param xsize width of the input image
+ * @param ysize height of the input image
+ * @param compressed will be populated with the compressed bytes
+ */
+bool  CJxl::EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t>* compressed) {
+    auto enc = JxlEncoderMake(/*memory_manager=*/nullptr);
+    auto runner = JxlThreadParallelRunnerMake(
+        /*memory_manager=*/nullptr,
+        JxlThreadParallelRunnerDefaultNumWorkerThreads());
+    if (JXL_ENC_SUCCESS != JxlEncoderSetParallelRunner(enc.get(),
+        JxlThreadParallelRunner,
+        runner.get())) {
+        fprintf(stderr, "JxlEncoderSetParallelRunner failed\n");
+        return false;
+    }
+
+    JxlPixelFormat pixel_format = { 3, JXL_TYPE_FLOAT, JXL_NATIVE_ENDIAN, 0 };
+
+    JxlBasicInfo basic_info;
+    JxlEncoderInitBasicInfo(&basic_info);
+    basic_info.xsize = im->GetWidth();
+    basic_info.ysize = im->GetHeight();
+    basic_info.bits_per_sample = 32;
+    basic_info.exponent_bits_per_sample = 8;
+    basic_info.uses_original_profile = JXL_FALSE;
+    if (JXL_ENC_SUCCESS != JxlEncoderSetBasicInfo(enc.get(), &basic_info)) {
+        fprintf(stderr, "JxlEncoderSetBasicInfo failed\n");
+        return false;
+    }
+
+    JxlColorEncoding color_encoding = {};
+    JxlColorEncodingSetToSRGB(&color_encoding,
+        /*is_gray=*/pixel_format.num_channels < 3);
+    if (JXL_ENC_SUCCESS !=
+        JxlEncoderSetColorEncoding(enc.get(), &color_encoding)) {
+        fprintf(stderr, "JxlEncoderSetColorEncoding failed\n");
+        return false;
+    }
+
+    if (JXL_ENC_SUCCESS !=
+        JxlEncoderAddImageFrame(JxlEncoderOptionsCreate(enc.get(), nullptr),
+            &pixel_format, (void*)im->data,
+           im->GetSize())) {
+        fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
+        return false;
+    }
+
+    compressed->resize(64);
+    uint8_t* next_out = compressed->data();
+    size_t avail_out = compressed->size() - (next_out - compressed->data());
+    JxlEncoderStatus process_result = JXL_ENC_NEED_MORE_OUTPUT;
+    while (process_result == JXL_ENC_NEED_MORE_OUTPUT) {
+        process_result = JxlEncoderProcessOutput(enc.get(), &next_out, &avail_out);
+        if (process_result == JXL_ENC_NEED_MORE_OUTPUT) {
+            size_t offset = next_out - compressed->data();
+            compressed->resize(compressed->size() * 2);
+            next_out = compressed->data() + offset;
+            avail_out = compressed->size() - offset;
+        }
+    }
+    compressed->resize(next_out - compressed->data());
+    if (JXL_ENC_SUCCESS != process_result) {
+        fprintf(stderr, "JxlEncoderProcessOutput failed\n");
+        return false;
+    }
+
+    return true;
+}
+
+void CJxl::WriteFile(CRegardsFloatBitmap* im, const wxString& path)
+{
+    std::vector<uint8_t> compressed;
+    EncodeJxlOneshot(im, &compressed);
+    CPictureUtility::writefile(path, compressed.data(), compressed.size());
+}
 
 void CJxl::GetDimensions(const wxString& path, int& width, int& height)
 {

@@ -40,7 +40,7 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 }
 
 
-void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, size_t& size)
+void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t & size)
 {
 	//const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	FILE* file;

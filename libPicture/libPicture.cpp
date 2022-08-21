@@ -566,6 +566,14 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 			break;
 		}
 
+	case JXL:
+	{
+		CRegardsFloatBitmap* regards = bitmap->GetFloatBitmap(true);
+		CJxl::WriteFile(regards, fileName);
+		delete regards;
+		break;
+	}
+
 	case BMP:
 		{
 			CRegardsBitmap* regards = bitmap->GetRegardsBitmap();
