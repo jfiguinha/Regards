@@ -166,15 +166,15 @@ bool MyApp::OnInit()
 
 #else
 
-	std::locale loc;
-	string locName = loc.name();
-	setlocale(LC_ALL, locName.c_str());
+	//std::locale loc;
+	//string locName = loc.name();
+	//setlocale(LC_ALL, locName.c_str());
 
 #endif
 
 #ifdef __APPLE__
 	setlocale(LC_NUMERIC, "en_US.UTF-8");
-#else
+#elif defined(WIN32)
     std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 #endif
 
