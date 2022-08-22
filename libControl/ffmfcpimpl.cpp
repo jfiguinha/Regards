@@ -1687,6 +1687,10 @@ bool CFFmfcPimpl::TestHardware(const wxString& acceleratorHardware, AVHWDeviceTy
 		return false;
 
 	for (int i = 0;; i++) {
+
+
+
+
 		const AVCodecHWConfig* config = avcodec_get_hw_config(codec, i);
 		if (!config) {
 			fprintf(stderr, "Decoder %s does not support device type %s.\n",
@@ -1762,7 +1766,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 {
 	AVFormatContext* ic = is->ic;
 	AVCodecContext* avctx;
-	AVCodec* codec;
+	AVCodec* codec = nullptr;
 	const char* forced_codec_name = NULL;
 	AVDictionary* opts = NULL;
 	AVDictionaryEntry* t = NULL;
@@ -1774,6 +1778,13 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 	if (stream_index < 0 || stream_index >= ic->nb_streams)
 		return -1;
 
+	bool isSuccess = false;
+	acceleratorHardware = "";
+
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		acceleratorHardware = config->GetHardwareDecoder();
+
 	avctx = avcodec_alloc_context3(NULL);
 	if (!avctx)
 		return AVERROR(ENOMEM);
@@ -1783,7 +1794,21 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 		goto fail;
 	avctx->pkt_timebase = ic->streams[stream_index]->time_base;
 
-	codec = (AVCodec*)avcodec_find_decoder(avctx->codec_id);
+	/*
+	if (acceleratorHardware != "")
+	{
+		if (avctx->codec_id == AV_CODEC_ID_AV1 && acceleratorHardware == "cuda")
+		{
+			codec = (AVCodec*)avcodec_find_decoder_by_name("av1_cuvid");
+		}
+		else if (avctx->codec_id == AV_CODEC_ID_AV1 && acceleratorHardware == "qsv")
+		{
+			codec = (AVCodec*)avcodec_find_decoder_by_name("av1_qsv");
+		}
+	}*/
+
+	if(codec == nullptr)
+		codec = (AVCodec*)avcodec_find_decoder(avctx->codec_id);
 
 	switch (avctx->codec_type)
     {
@@ -1823,12 +1848,7 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
         if (stream_lowres)
             av_dict_set_int(&opts, "lowres", stream_lowres, 0);
 
-		bool isSuccess = false;
-		acceleratorHardware = "";
 
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-			acceleratorHardware = config->GetHardwareDecoder();
 
         if ((acceleratorHardware != "" || acceleratorHardware != "none") && avctx->codec_type == AVMEDIA_TYPE_VIDEO)
         {
@@ -1836,18 +1856,6 @@ int CFFmfcPimpl::stream_component_open(VideoState* is, int stream_index)
 			{
 				AVStream* video = ic->streams[stream_index];
 				isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
-				/*
-				if (!isSuccess)
-				{
-					for (int i = 0; i < sizeList; i++)
-					{
-						acceleratorHardware = listHardware[i];
-						isSuccess = TestHardware(acceleratorHardware, type, avctx, codec, opts, is, video);
-						if (isSuccess)
-							break;
-					}
-				}
-				*/
 			}
 
         }

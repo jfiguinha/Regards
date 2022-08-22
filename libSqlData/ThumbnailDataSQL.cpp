@@ -147,6 +147,9 @@ wxImage CThumbnailDataSQL::GetwxImage()
 						else
 							grabbed = true;
 
+						if (cvImg.empty())
+							grabbed = false;
+
 						if (grabbed)
 						{
 							int w = cvImg.cols;
