@@ -161,6 +161,9 @@ bool MyApp::OnInit()
 	ret = wcstombs(buffer, name, sizeof(buffer));
 	setlocale(LC_ALL, buffer);
 	
+#elif __APPLE__
+    std::locale::global(std::locale(""));
+
 #else
 
 	std::locale loc;

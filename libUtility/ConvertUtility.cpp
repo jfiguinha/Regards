@@ -32,9 +32,13 @@ const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
 	return s.ToStdString();
 #endif
 */
+#ifdef __APPLE__
+    return fileName.ToStdString();
+#else
 	const std::wstring ws = fileName.ToStdWstring();
 	const std::string s(ws.begin(), ws.end());
 	return s;
+#endif
 }
 
 const char* CConvertUtility::ConvertToUTF8(const wxString& s)
