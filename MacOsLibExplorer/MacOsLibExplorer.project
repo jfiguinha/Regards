@@ -10,13 +10,17 @@
   <VirtualDirectory Name="src">
     <File Name="main.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread" C_Options="" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libUtility"/>
       </Compiler>
       <Linker Options="$(shell ../libextern/wxconfig_lib.sh);-headerpad_max_install_names;">
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
+        <Library Value="Utility"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -61,7 +65,9 @@
       <Compiler Options="-O2;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options=";$(shell wx-config --debug=no --libs --unicode=yes)" Required="yes"/>
+      <Linker Options=";$(shell wx-config --debug=no --libs --unicode=yes)" Required="yes">
+        <LibraryPath Value="../libUtility/Release"/>
+      </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
@@ -97,6 +103,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

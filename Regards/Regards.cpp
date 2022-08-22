@@ -168,8 +168,12 @@ bool MyApp::OnInit()
 	setlocale(LC_ALL, locName.c_str());
 
 #endif
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8");
 
+#ifdef __APPLE__
+	setlocale(LC_NUMERIC, "en_US.UTF-8");
+#else
+    std::setlocale(LC_NUMERIC, "en_US.UTF-8");
+#endif
 
 	sqlite3_initialize();
 

@@ -199,7 +199,7 @@
         <Library Value="Theme"/>
         <Library Value="Parameter"/>
         <Library Value="CxImage"/>
-        <Library Value="wx_osx_cocoau_gl-3.1"/>
+        <Library Value="wx_osx_cocoau_gl-3.2"/>
         <Library Value="epoxy"/>
         <Library Value="exiv2"/>
         <Library Value="exiv2-xmp"/>
@@ -270,7 +270,9 @@
         <Library Value="ffmpeg"/>
         <Library Value="dav1d"/>
         <Library Value="rav1e"/>
-        <Library Value="wx_osx_cocoau_webview-3.1"/>
+        <Library Value="wx_osx_cocoau_webview-3.2"/>
+        <Library Value="jxl"/>
+        <Library Value="jxl_threads"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

@@ -10,6 +10,7 @@
 #endif
 #include <wx/textfile.h>
 #include <map>
+#include <ConvertUtility.h>
 #include <iostream>
 using namespace std;
 
@@ -71,7 +72,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
 
             if(!(lineText.find("/System/Library/Frameworks") == 1 || lineText.find("/usr/lib") == 1 || lineText.find("@executable_path") == 1))
             {
-                wxPrintf("lineText Lib : " + lineText + "\n");
+                wxPrintf("External Lib : " + lineText + "\n");
                 std::vector<wxString> listOfString = split(lineText, '(');
                 wxString toWrite = "cp ";
                  wxString libPath = listOfString[0];
@@ -88,7 +89,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                 
                 wxString outputFilename = libPath;
                 outputFilename = listOflib[listOflib.size() - 1];
-                outputFilename.Replace("-3.1.6.0.0.dylib", "-3.1.dylib");
+                outputFilename.Replace("-3.2.0.0.0.dylib", "-3.2.dylib");
                 wxString outputLib = folder_output_final + "/" + outputFilename;
 
                  if(dylibName == outputFilename)
@@ -101,7 +102,7 @@ wxArrayString ExecuteProcess(wxArrayString files, int nbFiles, bool isMacOsFolde
                       continue;
                 }
 
-                if(!wxFileExists(fileToTest) && libPath.find("3.1.6.0.0.dylib")==wxNOT_FOUND)
+                if(!wxFileExists(fileToTest) && libPath.find("3.2.0.0.0.dylib")==wxNOT_FOUND)
                 {
                    // printf("copyFile \n");
                     copyFile[outputFilename] = toWrite + " " + fileToTest;
