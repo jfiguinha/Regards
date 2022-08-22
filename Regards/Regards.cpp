@@ -165,7 +165,7 @@ bool MyApp::OnInit()
 
 	std::locale loc;
 	string locName = loc.name();
-	setlocale(LC_ALL, name);
+	setlocale(LC_ALL, locName.c_str());
 
 #endif
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8");

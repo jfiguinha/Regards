@@ -29,11 +29,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="picture_utility.cpp"/>
     <File Name="ConvertUtility.cpp"/>
     <File Name="FileUtility.cpp"/>
     <File Name="wxmd5.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="picture_utility.h"/>
     <File Name="ConvertUtility.h"/>
     <File Name="FileUtility.h"/>
     <File Name="wxmd5.h"/>

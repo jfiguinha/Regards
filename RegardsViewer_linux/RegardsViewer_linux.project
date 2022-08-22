@@ -406,6 +406,12 @@
         <Library Value="lzma"/>
         <Library Value="ssl"/>
         <Library Value="crypto"/>
+        <Library Value="jxl"/>
+        <Library Value="jxl_threads"/>
+        <Library Value="jxl_dec"/>
+        <Library Value="brotlicommon-static"/>
+        <Library Value="brotlienc-static"/>
+        <Library Value="hwy"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -457,7 +463,7 @@
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
-        <StartupCommands></StartupCommands>
+        <StartupCommands/>
       </Debugger>
       <PreBuild/>
       <PostBuild>
