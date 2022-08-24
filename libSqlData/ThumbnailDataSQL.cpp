@@ -95,7 +95,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				if(useOpenCV)
 					videoCaptureCV = new cv::VideoCapture(CConvertUtility::ConvertToUTF8(filename));
 				else
-					videoCapture = new CVideoPlayer(filename);
+					videoCapture = new CVideoPlayer(filename,false);
 				//fps = videoCapture->get(cv::CAP_PROP_FPS);
 			}
 
@@ -170,7 +170,12 @@ wxImage CThumbnailDataSQL::GetwxImage()
 				frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
 				if (!frameOut.IsOk())
 				{
-					numFrame = 1;
+                    frameOut = sqlThumbnailVideo.GetThumbnail(filename, 0);
+                }
+                
+                if (!frameOut.IsOk())
+                {
+					numFrame = 0;
 #ifdef WIN32
 					wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
 #else

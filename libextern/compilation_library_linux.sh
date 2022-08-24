@@ -4,12 +4,16 @@ echo $NBPROC
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
-
+unzip vcpkg-2022.08.15.zip
+cd vcpkg-2022.08.15
+./bootstrap-vcpkg.sh
+./vcpkg install wxWidgets
+./vcpkg install libjxl
+cd ..
 
 tar xf vcpkg.tar.gz
 cd vcpkg-master
 ./bootstrap-vcpkg.sh
-./vcpkg install wxWidgets
 ./vcpkg install ffnvcodec
 ./vcpkg install ffmpeg[all-gpl]
 ./vcpkg install opencv[contrib,ipp,openmp]

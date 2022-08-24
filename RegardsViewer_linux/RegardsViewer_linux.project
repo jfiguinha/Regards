@@ -205,7 +205,7 @@
         <Library Value="Parameter"/>
         <Library Value="OpenCL"/>
         <Library Value="CxImage"/>
-        <Library Value="wx_gtk3u_gl-3.1"/>
+        <Library Value="wx_gtk3u_gl-3.2"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
@@ -329,16 +329,15 @@
         <Library Value="x265"/>
         <Library Value="wayland-egl"/>
         <Library Value="wayland-client"/>
-        <Library Value="wx_gtk3u_gl-3.1"/>
-        <Library Value="wx_gtk3u_webview-3.1"/>
-        <Library Value="wx_baseu_net-3.1"/>
-        <Library Value="wx_baseu_xml-3.1"/>
-        <Library Value="wx_gtk3u_xrc-3.1"/>
-        <Library Value="wx_gtk3u_html-3.1"/>
-        <Library Value="wx_gtk3u_core-3.1"/>
-        <Library Value="wx_baseu-3.1"/>
-        <Library Value="wxscintilla-3.1"/>
-        <Library Value="wxregexu-3.1"/>
+        <Library Value="wx_gtk3u_gl-3.2"/>
+        <Library Value="wx_gtk3u_webview-3.2"/>
+        <Library Value="wx_baseu_net-3.2"/>
+        <Library Value="wx_baseu_xml-3.2"/>
+        <Library Value="wx_gtk3u_xrc-3.2"/>
+        <Library Value="wx_gtk3u_html-3.2"/>
+        <Library Value="wx_gtk3u_core-3.2"/>
+        <Library Value="wx_baseu-3.2"/>
+        <Library Value="wxscintilla-3.2"/>
         <Library Value="openjp2"/>
         <Library Value="liblibexif"/>
         <Library Value="dav1d"/>
@@ -412,6 +411,13 @@
         <Library Value="brotlicommon-static"/>
         <Library Value="brotlienc-static"/>
         <Library Value="hwy"/>
+        <Library Value="pcre2-32"/>
+        <Library Value="Xfixes"/>
+        <Library Value="Xinerama"/>
+        <Library Value="Xcursor"/>
+        <Library Value="xkbcommon"/>
+        <Library Value="wayland-cursor"/>
+        <Library Value="Xss"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
