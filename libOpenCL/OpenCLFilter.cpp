@@ -363,18 +363,59 @@ void COpenCLFilter::SharpenMasking(const float& sharpness, cv::UMat& inputData)
 {
 	try
 	{
-		Mat origin;
-		inputData.copyTo(origin);
+        cv::UMat cvDestBgra;
+        double sigma = 1;
+		cv::GaussianBlur(inputData, cvDestBgra, cv::Size(), sigma, sigma);
+        
+        cv::UMat dest;
+        cv::UMat inputDataBgra;
+        cv::cvtColor(cvDestBgra, cvDestBgra, cv::COLOR_BGR2BGRA);
+        cv::cvtColor(inputData, inputDataBgra, cv::COLOR_BGR2BGRA);
 
-		Mat blurred;
-		double sigma = 1, threshold = 5, amount = sharpness;
-		cv::GaussianBlur(inputData, blurred, cv::Size(), sigma, sigma);
+        vector<COpenCLParameter*> vecParam;
+        cl_mem clBuffer = (cl_mem)inputDataBgra.handle(cv::ACCESS_READ);
+        COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+        input->SetValue(clBuffer);
+        input->SetLibelle("input");
+        input->SetNoDelete(true);
+        vecParam.push_back(input);
+        
+        cl_mem clBuffer_out = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+        COpenCLParameterClMem* gauss = new COpenCLParameterClMem(true);
+        gauss->SetValue(clBuffer_out);
+        gauss->SetLibelle("gaussian");
+        gauss->SetNoDelete(true);
+        vecParam.push_back(gauss);
 
 
-		Mat lowConstrastMask = abs(origin - blurred) < threshold;
-		Mat sharpened = origin * (1 + amount) + blurred * (-amount);
-		origin.copyTo(sharpened, lowConstrastMask);
-		sharpened.copyTo(inputData);
+        COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+        paramWidth->SetValue(inputData.size().width);
+        paramWidth->SetLibelle("width");
+        vecParam.push_back(paramWidth);
+
+        COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+        paramHeight->SetValue(inputData.size().height);
+        paramHeight->SetLibelle("height");
+        vecParam.push_back(paramHeight);
+
+        COpenCLParameterFloat * paramThreshold = new COpenCLParameterFloat();
+        paramThreshold->SetLibelle("sharpness");
+        paramThreshold->SetValue(sharpness);
+        vecParam.push_back(paramThreshold);
+
+        dest = ExecuteOpenCLCode("IDR_OPENCL_SHARPENMASKING", "SharpenMasking", vecParam, inputData.size().width, inputData.size().height);
+
+        for (COpenCLParameter* parameter : vecParam)
+        {
+            if (!parameter->GetNoDelete())
+            {
+                delete parameter;
+                parameter = nullptr;
+            }
+        }
+
+        cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+
 	}
 	catch (cv::Exception& e)
 	{
@@ -451,7 +492,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat& inputData)
 	paramAngle->SetValue(5.0f);
 	vecParam.push_back(paramAngle);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -544,7 +585,7 @@ void COpenCLFilter::MotionBlurCompute(const vector<double>& kernelMotion, const 
 	paramkernelSize->SetValue(size);
 	vecParam.push_back(paramkernelSize);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "MotionBlur", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_MOTIONBLUR", "MotionBlur", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -691,7 +732,7 @@ void COpenCLFilter::FiltreConvolution(const wxString& programName, const wxStrin
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	dest = ExecuteOpenCLCode(programName, functionName, vecParam, cvDestBgra.cols, cvDestBgra.rows);
+	dest = ExecuteOpenCLCode(programName, functionName, vecParam, cvDestBgra.size().width, cvDestBgra.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -752,7 +793,7 @@ void COpenCLFilter::Posterize(const float& level, const float& gamma, cv::UMat& 
 	paramLevel->SetValue(level);
 	vecParam.push_back(paramLevel);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Posterisation", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Posterisation", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -800,7 +841,7 @@ void COpenCLFilter::LensDistortion(const float& strength, cv::UMat& inputData)
 	paramLevel->SetValue(correctionRadius);
 	vecParam.push_back(paramLevel);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_DISTORTION", "Distortion", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_DISTORTION", "Distortion", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -836,9 +877,9 @@ int COpenCLFilter::GetRgbaBitmap(cl_mem cl_image, UMat& u)
 	vecParam.push_back(paramHeight);
 
 #ifdef __APPLE__
-	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTextureApple", vecParam, u.cols, u.rows, cl_image);// program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
+	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTextureApple", vecParam, u.size().width, u.size().height, cl_image);// program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTextureApple");
 #else
-	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTexture", vecParam, u.cols, u.rows, cl_image); //program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+	ExecuteOpenCLCode("IDR_OPENCL_BITMAPCONVERSION", "BitmapToOpenGLTexture", vecParam, u.size().width, u.size().height, cl_image); //program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
 #endif
 
 
@@ -888,7 +929,7 @@ void COpenCLFilter::Solarize(const long& threshold, cv::UMat& inputData)
 	paramThreshold->SetValue((int)threshold);
 	vecParam.push_back(paramThreshold);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Solarization", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_COLOR", "Solarization", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -942,7 +983,7 @@ void COpenCLFilter::Noise(cv::UMat& inputData)
 	paramHeight->SetLibelle("height");
 	vecParam.push_back(paramHeight);
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_NOISE", "Noise", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_NOISE", "Noise", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
@@ -1006,7 +1047,7 @@ void COpenCLFilter::Swirl(const float& radius, const float& angle, cv::UMat& inp
 	vecParam.push_back(paramAngle);
 
 
-	dest = ExecuteOpenCLCode("IDR_OPENCL_SWIRL", "Swirl", vecParam, inputData.cols, inputData.rows);
+	dest = ExecuteOpenCLCode("IDR_OPENCL_SWIRL", "Swirl", vecParam, inputData.size().width, inputData.size().height);
 
 	for (COpenCLParameter* parameter : vecParam)
 	{
