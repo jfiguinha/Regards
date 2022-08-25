@@ -470,40 +470,54 @@ void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue,
 
 void COpenCLFilter::FiltreMosaic(cv::UMat& inputData)
 {
-	cv::UMat dest;
-	cv::UMat cvDestBgra;
-	cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
-
-	vector<COpenCLParameter*> vecParam;
-	cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
-	COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
-	input->SetValue(clBuffer);
-	input->SetLibelle("input");
-	input->SetNoDelete(true);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-	paramWidth->SetValue(inputData.cols);
-	paramWidth->SetLibelle("width");
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
-	paramAngle->SetLibelle("fTileSize");
-	paramAngle->SetValue(5.0f);
-	vecParam.push_back(paramAngle);
-
-	dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width, inputData.size().height);
-
-	for (COpenCLParameter* parameter : vecParam)
+	try
 	{
-		if (!parameter->GetNoDelete())
-		{
-			delete parameter;
-			parameter = nullptr;
-		}
-	}
+		cv::UMat dest;
+		cv::UMat cvDestBgra;
+		cv::cvtColor(inputData, cvDestBgra, cv::COLOR_BGR2BGRA);
 
-	cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+		vector<COpenCLParameter*> vecParam;
+		cl_mem clBuffer = (cl_mem)cvDestBgra.handle(cv::ACCESS_READ);
+		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
+		input->SetValue(clBuffer);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(inputData.cols);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(inputData.rows);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
+		paramAngle->SetLibelle("fTileSize");
+		paramAngle->SetValue(5.0f);
+		vecParam.push_back(paramAngle);
+
+		dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width, inputData.size().height);
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+
+		cv::cvtColor(dest, inputData, cv::COLOR_BGRA2BGR);
+	}
+	catch (cv::Exception& e)
+	{
+		const char* err_msg = e.what();
+		std::cout << "exception caught: " << err_msg << std::endl;
+		std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+	}
 }
 
 void COpenCLFilter::Blur(const int& radius, cv::UMat& inputData)

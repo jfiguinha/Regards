@@ -1,4 +1,4 @@
-__kernel void Mosaic(__global uint * output, const __global uint *input, int width, float fTileSize)
+__kernel void Mosaic(__global uint * output, const __global uint *input, int width, int height, float fTileSize)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
