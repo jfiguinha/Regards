@@ -73,23 +73,26 @@ __kernel void Distortion(__global uint *output,const __global uint *input, int w
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float theta = 1;
-	int halfWidth = (width / 2); 
-	int halfHeight = (height / 2);
-	
-	float newX = x - halfWidth; 
-	float newY = y - halfHeight;
-	float value = pow((float)newX,(float)2.0) + pow((float)newY, (float)2.0);
-	float distance = sqrt(value);
-	float r = distance / correctionRadius;
-	if (r != 0.0)
-		theta = atan(r) / r;
-		
-	int sourceX = round(halfWidth + theta*newX);
-	int sourceY = round(halfHeight + theta * newY);
-	
-	int positionSrc = sourceX + sourceY * width;
-	int position = x + y * width;
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+	    float theta = 1;
+	    int halfWidth = (width / 2); 
+	    int halfHeight = (height / 2);
+	    
+	    float newX = x - halfWidth; 
+	    float newY = y - halfHeight;
+	    float value = pow((float)newX,(float)2.0) + pow((float)newY, (float)2.0);
+	    float distance = sqrt(value);
+	    float r = distance / correctionRadius;
+	    if (r != 0.0)
+		    theta = atan(r) / r;
+		    
+	    int sourceX = round(halfWidth + theta*newX);
+	    int sourceY = round(halfHeight + theta * newY);
+	    
+	    int positionSrc = sourceX + sourceY * width;
+	    int position = x + y * width;
 
-	output[position] = input[positionSrc];
+	    output[position] = input[positionSrc];
+    }
 }

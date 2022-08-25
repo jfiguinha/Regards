@@ -60,5 +60,8 @@ __kernel void Swirl(__global uint *output,const __global uint *input, int width,
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	int position = x + y * width;
-	output[position] = PostFX(input, x,y, radius, angleDegree, width, height);
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+    	output[position] = PostFX(input, x,y, radius, angleDegree, width, height);
+    }
 }

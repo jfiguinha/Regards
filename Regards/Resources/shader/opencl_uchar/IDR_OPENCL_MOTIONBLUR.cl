@@ -88,17 +88,20 @@ __kernel void MotionBlur(__global uint * output, const __global uint *input, int
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	float4 sum = 0;
-	for (int i = 0; i < kernelSize; i++)
-	{
-		int u = x + offsets[i].x;
-		int v = y + offsets[i].y;
-		if ((u < 0) || (u >= width) || (v < 0) || (v >= height))
-			continue;
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+	    float4 sum = 0;
+	    for (int i = 0; i < kernelSize; i++)
+	    {
+		    int u = x + offsets[i].x;
+		    int v = y + offsets[i].y;
+		    if ((u < 0) || (u >= width) || (v < 0) || (v >= height))
+			    continue;
 
-		float4 color = kernelMotion[i] * GetfColorSrc(u, v, input, width, height);
-		sum = sum + color;
-	}
-	int position = x + y * width;
-	output[position] = rgbaFloat4ToUint(NormalizeValue(sum),1.0f);    
+		    float4 color = kernelMotion[i] * GetfColorSrc(u, v, input, width, height);
+		    sum = sum + color;
+	    }
+	    int position = x + y * width;
+	    output[position] = rgbaFloat4ToUint(NormalizeValue(sum),1.0f);    
+    }
 }

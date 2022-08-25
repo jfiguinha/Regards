@@ -90,17 +90,19 @@ __kernel void Soften(__global uint * output, const __global uint *input, int wid
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	
-	float4 sum = GetfColorSrc(x - 1, y - 1, input, width, height);
-	sum += GetfColorSrc(x , y - 1, input, width, height);
-	sum += GetfColorSrc(x + 1, y - 1, input, width, height);
-	sum += GetfColorSrc(x - 1, y, input, width, height);
-	sum += GetfColorSrc(x , y, input, width, height) * (float4)8.0f;
-	sum += GetfColorSrc(x + 1, y, input, width, height);
-	sum += GetfColorSrc(x - 1, y + 1, input, width, height);
-	sum += GetfColorSrc(x , y + 1, input, width, height);
-	sum += GetfColorSrc(x + 1, y + 1, input, width, height);
-	sum = sum / (float4)16.0f;
-	int position = x + y * width;
-	output[position] = rgbaFloat4ToUint(NormalizeValue(sum),1.0f);    
+	if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+	    float4 sum = GetfColorSrc(x - 1, y - 1, input, width, height);
+	    sum += GetfColorSrc(x , y - 1, input, width, height);
+	    sum += GetfColorSrc(x + 1, y - 1, input, width, height);
+	    sum += GetfColorSrc(x - 1, y, input, width, height);
+	    sum += GetfColorSrc(x , y, input, width, height) * (float4)8.0f;
+	    sum += GetfColorSrc(x + 1, y, input, width, height);
+	    sum += GetfColorSrc(x - 1, y + 1, input, width, height);
+	    sum += GetfColorSrc(x , y + 1, input, width, height);
+	    sum += GetfColorSrc(x + 1, y + 1, input, width, height);
+	    sum = sum / (float4)16.0f;
+	    int position = x + y * width;
+	    output[position] = rgbaFloat4ToUint(NormalizeValue(sum),1.0f);  
+    }  
 }

@@ -94,13 +94,17 @@ __kernel void SharpenMasking( __global uint *output, const __global uint *input,
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float4 origin = GetColorSrc(x, y, input, width, height);
-    float4 color = GetColorSrc(x, y, gaussian, width, height);
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
 
-	color = origin - color;
-	
-	float4 value = origin + color * sharpness;
+	    float4 origin = GetColorSrc(x, y, input, width, height);
+        float4 color = GetColorSrc(x, y, gaussian, width, height);
 
-	int position = x + y * width;
-	output[position] = NormalizeValue(value);
+	    color = origin - color;
+	    
+	    float4 value = origin + color * sharpness;
+
+	    int position = x + y * width;
+	    output[position] = NormalizeValue(value);
+    }
 }

@@ -83,21 +83,23 @@ __kernel void Posterisation(__global uint *output,const __global uint *input, in
 	int y = get_global_id(1);
 	int position = x + y * width;
 	
-	uchar4 colorInput = rgbaUintToUChar4(input[position]);
-	uchar4 colorOutput = colorInput;
-	int _levels = max(2, min(16, level));
-	float _offset = (float)256 / (float)_levels;
-	
-	int red = colorInput.x / _offset;
-	int green = colorInput.y / _offset;
-	int blue = colorInput.z / _offset;
-	
-	colorOutput.x = (red * _offset);
-	colorOutput.y = (green * _offset);
-	colorOutput.z = (blue * _offset);
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+	    uchar4 colorInput = rgbaUintToUChar4(input[position]);
+	    uchar4 colorOutput = colorInput;
+	    int _levels = max(2, min(16, level));
+	    float _offset = (float)256 / (float)_levels;
+	    
+	    int red = colorInput.x / _offset;
+	    int green = colorInput.y / _offset;
+	    int blue = colorInput.z / _offset;
+	    
+	    colorOutput.x = (red * _offset);
+	    colorOutput.y = (green * _offset);
+	    colorOutput.z = (blue * _offset);
 
-	output[position] = rgbaUChar4ToUint(colorOutput);
-	
+	    output[position] = rgbaUChar4ToUint(colorOutput);
+    }	
 }
 
 //----------------------------------------------------
@@ -109,30 +111,33 @@ __kernel void Solarization(__global uint *output,const __global uint *input, int
 	int y = get_global_id(1);
 	int position = x + y * width;
 	
-	float4 colorInput = rgbaUintToFloat4(input[position]);
-	float4 colorOutput = colorInput;
-	
-	float red = colorInput.x;
-	float green = colorInput.y;
-	float blue = colorInput.z;
-	float fthreshold = (float)threshold;
-	
-	if (red > fthreshold)
-		colorOutput.x = 255.0f - red;
-	else
-		colorOutput.x = red;
-		
-	if (green > fthreshold)
-		colorOutput.y = 255.0f - green;
-	else
-		colorOutput.y = green;
+    if(x < width && y < height && y >= 0 && x >= 0)	
+    {
+	    float4 colorInput = rgbaUintToFloat4(input[position]);
+	    float4 colorOutput = colorInput;
+	    
+	    float red = colorInput.x;
+	    float green = colorInput.y;
+	    float blue = colorInput.z;
+	    float fthreshold = (float)threshold;
+	    
+	    if (red > fthreshold)
+		    colorOutput.x = 255.0f - red;
+	    else
+		    colorOutput.x = red;
+		    
+	    if (green > fthreshold)
+		    colorOutput.y = 255.0f - green;
+	    else
+		    colorOutput.y = green;
 
-	if (blue > fthreshold)
-		colorOutput.z = 255.0f - blue;
-	else
-		colorOutput.z = blue;
+	    if (blue > fthreshold)
+		    colorOutput.z = 255.0f - blue;
+	    else
+		    colorOutput.z = blue;
 
-	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
+	    output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
+    }
 	
 }
 
