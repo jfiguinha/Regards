@@ -605,15 +605,15 @@ int COpenCLEffect::RGBFilter(const int& red, const int& green, const int& blue)
 	return 0;
 }
 
-int COpenCLEffect::FiltreMosaic()
+int COpenCLEffect::FiltreMosaic(const int& size)
 {
 	if (preview && !paramOutput.empty())
 	{
-		openclFilter->FiltreMosaic(paramOutput);
+		openclFilter->FiltreMosaic(paramOutput, size);
 	}
 	else
 	{
-		openclFilter->FiltreMosaic(input);
+		openclFilter->FiltreMosaic(input, size);
 	}
 	return 0;
 }

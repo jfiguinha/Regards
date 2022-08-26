@@ -372,6 +372,7 @@ namespace Regards
 			};
 		};
 
+/*
 		class CMosaicFilter : public CDefaultFilter
 		{
 		public:
@@ -406,6 +407,7 @@ namespace Regards
 					filtreEffet->FiltreMosaic();
 			};
 		};
+*/
 
 		class CNoiseFilter : public CDefaultFilter
 		{

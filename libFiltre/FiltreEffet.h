@@ -59,7 +59,7 @@ public:
 	int Negatif();
 	int RedEye();
 	int FiltreEdge();
-	int FiltreMosaic();
+	int FiltreMosaic(const int &size);
 	int FlipVertical();
 	int FlipHorizontal();
 	int Rotate90();

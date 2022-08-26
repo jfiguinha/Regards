@@ -513,6 +513,8 @@
     <ClInclude Include="LensFlareFilter.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="MeanShift.h" />
+    <ClInclude Include="MosaicFilter.h" />
+    <ClInclude Include="MosaicFilterParameter.h" />
     <ClInclude Include="MotionBlur.h" />
     <ClInclude Include="MotionBlurEffectParameter.h" />
     <ClInclude Include="MotionBlurFilter.h" />
@@ -582,6 +584,7 @@
     <ClCompile Include="LensFlareFilter.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="MeanShift.cpp" />
+    <ClCompile Include="MosaicFilter.cpp" />
     <ClCompile Include="MotionBlur.cpp" />
     <ClCompile Include="MotionBlurFilter.cpp" />
     <ClCompile Include="moviestreaminfo.cpp" />

@@ -21,6 +21,7 @@
 #include "PosterisationFilter.h"
 #include "PhotoFiltreFilter.h"
 #include "BrightAndContrastFilter.h"
+#include "MosaicFilter.h"
 #include "SharpenMaskingFilter.h"
 #include "MotionBlurFilter.h"
 #include "BlurFilter.h"

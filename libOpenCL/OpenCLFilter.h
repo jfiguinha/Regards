@@ -39,7 +39,7 @@ namespace Regards
 			void SharpenMasking(const float &sharpness, cv::UMat& inputData);
 			void PhotoFiltre(const CRgbaquad &clValue, const int &intensity, cv::UMat& inputData);
 			void RGBFilter(const int &red, const int &green, const int &blue, cv::UMat& inputData);
-			void FiltreMosaic(cv::UMat& inputData);
+			void FiltreMosaic(cv::UMat& inputData, const int& size);
 			void Blur(const int &radius, cv::UMat& inputData);
 			void GaussianBlur(const int& radius, const int& boxSize, cv::UMat& inputData);
 			void ErodeDilate(const wxString &functionName, cv::UMat& inputData);

@@ -73,7 +73,7 @@ namespace Regards
 			int SharpenStrong();
 			int Sharpen();
 			int SharpenMasking(const float &sharpness);
-			int FiltreMosaic();
+			int FiltreMosaic(const int& size);
 			int FiltreEdge();
 			int Erode();
 			int Noise();

@@ -827,6 +827,8 @@ int CFiltreEffetCPU::RedEye()
 		fastDetection = param->GetFastDetectionFace();
 
 	CDeepLearning::DetectEyes(image, fastDetection);
+
+	return 0;
 }
 
 int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
@@ -1936,7 +1938,7 @@ int CFiltreEffetCPU::FiltreEdge()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::FiltreMosaic()
+int CFiltreEffetCPU::FiltreMosaic(const int& size)
 {
 	cv::Mat image;
 	if (preview)
@@ -1944,7 +1946,7 @@ int CFiltreEffetCPU::FiltreMosaic()
 	else
 		image = input;
 
-	auto filtre = new CMosaic(5);
+	auto filtre = new CMosaic(size);
 	filtre->SetParameter(image, backColor);
 	filtre->Compute();
 	delete filtre;

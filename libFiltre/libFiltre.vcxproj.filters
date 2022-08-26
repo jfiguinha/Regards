@@ -303,6 +303,12 @@
     <ClInclude Include="LensDistortionEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="MosaicFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="MosaicFilterParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -447,6 +453,9 @@
       <Filter>Filter\video</Filter>
     </ClCompile>
     <ClCompile Include="LensDistortion.cpp">
+      <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="MosaicFilter.cpp">
       <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>

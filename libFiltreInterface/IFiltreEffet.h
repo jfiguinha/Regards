@@ -70,7 +70,7 @@ public:
 	virtual int Dilate() = 0;
 	virtual int Negatif() = 0;
 	virtual int FiltreEdge() = 0;
-	virtual int FiltreMosaic() = 0;
+	virtual int FiltreMosaic(const int &size) = 0;
 	virtual int FlipVertical() = 0;
 	virtual int FlipHorizontal() = 0;
 	virtual int VignetteEffect(const double& radius, const double& power) = 0;

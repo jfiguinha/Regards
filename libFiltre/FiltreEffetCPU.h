@@ -47,7 +47,7 @@ public:
 	int Dilate();
 	int Negatif();
 	int FiltreEdge();
-	int FiltreMosaic();
+	int FiltreMosaic(const int& size);
 	int FlipVertical();
 	int FlipHorizontal();
 	int CartoonifyImage(const int & mode);

@@ -468,7 +468,7 @@ void COpenCLFilter::RGBFilter(const int& red, const int& green, const int& blue,
 
 }
 
-void COpenCLFilter::FiltreMosaic(cv::UMat& inputData)
+void COpenCLFilter::FiltreMosaic(cv::UMat& inputData, const int& size)
 {
 	try
 	{
@@ -496,7 +496,7 @@ void COpenCLFilter::FiltreMosaic(cv::UMat& inputData)
 
 		COpenCLParameterFloat* paramAngle = new COpenCLParameterFloat();
 		paramAngle->SetLibelle("fTileSize");
-		paramAngle->SetValue(5.0f);
+		paramAngle->SetValue(size);
 		vecParam.push_back(paramAngle);
 
 		dest = ExecuteOpenCLCode("IDR_OPENCL_MOSAIC", "Mosaic", vecParam, inputData.size().width, inputData.size().height);

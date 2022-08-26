@@ -477,9 +477,9 @@ int CFiltreEffet::FiltreEdge()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffet::FiltreMosaic()
+int CFiltreEffet::FiltreMosaic(const int& size)
 {
-	return filtreEffet->FiltreMosaic();
+	return filtreEffet->FiltreMosaic(size);
 }
 
 //----------------------------------------------------------------------------
