@@ -1,23 +1,29 @@
 ﻿#pragma once
 
-#include "panorama.g.h"
-
-namespace winrt::libFiltre::implementation
+namespace cv
 {
-    struct panorama : panoramaT<panorama>
-    {
-        panorama();
-
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
-
-        void ClickHandler(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
-    };
+	class UMat;
+	class Mat;
 }
 
-namespace winrt::libFiltre::factory_implementation
+namespace Regards
 {
-    struct panorama : panoramaT<panorama, implementation::panorama>
-    {
-    };
+	namespace OpenCV
+	{
+		class CImagePanorama
+		{
+		public:
+			CImagePanorama()
+			{
+
+			}
+
+			~CImagePanorama()
+			{
+
+			}
+
+			static cv::Mat CreatePanorama(const cv::Mat & image_left, const cv::Mat & image_right);
+		};
+	}
 }

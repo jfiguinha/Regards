@@ -64,6 +64,9 @@
     <Filter Include="Filter\video">
       <UniqueIdentifier>{18d72e57-3806-43cb-b1b4-a3640e2aa12b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Filter\Panorama">
+      <UniqueIdentifier>{073b904b-375f-46c0-9f95-cf3ae8d94256}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -309,6 +312,9 @@
     <ClInclude Include="MosaicFilterParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="panorama.h">
+      <Filter>Filter\Panorama</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="circle.cpp">
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="MosaicFilter.cpp">
       <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="panorama.cpp">
+      <Filter>Filter\Panorama</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
