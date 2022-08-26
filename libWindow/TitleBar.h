@@ -17,6 +17,7 @@ namespace Regards
 			void SetTitle(const wxString& title);
 			void SetClosable(const bool& value);
 			void SetRefresh(const bool& value);
+			void SetCenter(const bool& value);
 			void UpdateScreenRatio() override;
 			void SetTheme(CThemeTitleBar* themeTitle);
 			void Redraw();
@@ -35,6 +36,7 @@ namespace Regards
 
 			bool isRefresh;
 			bool isClosable;
+			bool isCenter;
 			wxBitmap m_croixOff;
 			wxBitmap m_croixOn;
 			wxBitmap m_refreshOn;

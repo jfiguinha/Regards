@@ -13,6 +13,7 @@ CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleB
 	mouseCapture = false;
 	isClosable = true;
 	isRefresh = true;
+	isCenter = false;
 	this->titleBarInterface = titleBarInterface;
 	tooltip = CLibResource::LoadStringFromResource("LBLClose", 1);
 	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESHDATA", 1);
@@ -28,6 +29,10 @@ CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface* titleB
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CTitleBar::OnLButtonDown));
 }
 
+void CTitleBar::SetCenter(const bool& value)
+{
+	isCenter = value;
+}
 
 void CTitleBar::Redraw()
 {
@@ -41,7 +46,13 @@ void CTitleBar::Redraw()
 	dc.DrawBitmap(m_refreshButton, rcRefresh.x, rcRefresh.y, false);
 	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
 	int yPos = (this->GetWindowHeight() - size.y) / 2;
-	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
+	int xPos = (this->GetWindowWidth() - size.x) / 2;
+	if (isCenter)
+	{
+		DrawTexte(&dc, libelle, xPos, yPos, themeTitle.font);
+	}
+	else
+		DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
 }
 
 void CTitleBar::SetTheme(CThemeTitleBar* themeTitle)
@@ -184,7 +195,13 @@ void CTitleBar::on_paint(wxPaintEvent& event)
 
 	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
 	int yPos = (this->GetWindowHeight() - size.y) / 2;
-	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
+	if (isCenter)
+	{
+		int xPos = (this->GetWindowWidth() - size.x) / 2;
+		DrawTexte(&dc, libelle, xPos, yPos, themeTitle.font);
+	}
+	else
+		DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
 }
 
 void CTitleBar::OnLButtonDown(wxMouseEvent& event)

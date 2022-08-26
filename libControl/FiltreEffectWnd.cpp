@@ -13,6 +13,7 @@
 #include "BitmapWnd3d.h"
 #include <window_id.h>
 #include <FilterData.h>
+#include <TitleBar.h>
 #include <ImageLoadingFormat.h>
 #include <TreeWindow.h>
 #include <SqlPhotos.h>
@@ -24,7 +25,7 @@ using namespace Regards::Sqlite;
 
 CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar& themeScroll,
                                                const CThemeTree& themeTree, int bitmapWindowId)
-	: CTreeWithScrollbar("CFiltreEffectScrollWnd", parent, id, themeScroll, themeTree)
+	: CTreeWithScrollbar("CFiltreEffectScrollWnd", parent, id, themeScroll, themeTree, "Filtre", true)
 {
 	this->bitmapWindowId = bitmapWindowId;
 	bitmap = nullptr;
@@ -120,7 +121,11 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 	if (filtreEffectOld != nullptr)
 		delete(filtreEffectOld);
 	filtreEffectOld = nullptr;
-	
+
+	wxString filterName = CFiltreData::GetFilterLabel(numItem);
+	if (titleBar != nullptr)
+		titleBar->SetTitle(filterName);
+
 	numFiltre = numItem;
 	if (!isVideo)
 	{
