@@ -394,6 +394,25 @@
     <ClCompile Include="mem.c" />
     <ClCompile Include="pixdesc.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="adler32.h" />
+    <ClInclude Include="aes.h" />
+    <ClInclude Include="atomic.h" />
+    <ClInclude Include="atomic_gcc.h" />
+    <ClInclude Include="atomic_suncc.h" />
+    <ClInclude Include="atomic_win32.h" />
+    <ClInclude Include="attributes.h" />
+    <ClInclude Include="audioconvert.h" />
+    <ClInclude Include="audio_fifo.h" />
+    <ClInclude Include="avassert.h" />
+    <ClInclude Include="avconfig.h" />
+    <ClInclude Include="avstring.h" />
+    <ClInclude Include="avutil.h" />
+    <ClInclude Include="base64.h" />
+    <ClInclude Include="blowfish.h" />
+    <ClInclude Include="bprint.h" />
+    <ClInclude Include="bswap.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

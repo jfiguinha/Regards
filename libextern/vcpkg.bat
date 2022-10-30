@@ -9,7 +9,7 @@ vcpkg install jasper:x64-windows --recurse
 vcpkg install exiv2[video,xmp]:x64-windows --recurse
 vcpkg install dav1d:x64-windows --recurse
 vcpkg install wxWidgets:x64-windows --recurse
-vcpkg install opencv[contrib,ipp,openmp,opengl,cuda,ffmpeg]:x64-windows --recurse
+vcpkg install opencv[contrib,ipp,openmp,opengl,ffmpeg]:x64-windows --recurse
 vcpkg install freeimage:x64-windows --recurse
 vcpkg install aom:x64-windows --recurse
 vcpkg install poppler:x64-windows --recurse
@@ -17,3 +17,4 @@ vcpkg install libmediainfo:x64-windows --recurse
 vcpkg install libepoxy:x64-windows --recurse
 vcpkg install opencl:x64-windows --recurse
 vcpkg install libexif:x64-windows
+vcpkg install libjxl:x64-windows

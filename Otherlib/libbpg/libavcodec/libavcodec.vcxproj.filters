@@ -61,4 +61,63 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="avcodec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bswapdsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bytestream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cabac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cabac_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cabac_tablegen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="get_bits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="golomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hevc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hevcdsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hevcpred.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathops.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="old_codec_ids.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="put_bits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rnd_avg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="videodsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
