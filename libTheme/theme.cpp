@@ -2,7 +2,7 @@
 #include "theme.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <rapidxml.hpp>
+#include <rapidxml/rapidxml.hpp>
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif

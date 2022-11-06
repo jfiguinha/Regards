@@ -11,19 +11,18 @@
 
 #include "header.h"
 #include <Regards.h>
-#include <FilterData.h>
 #include <wx/window.h>
 #include "SqlInit.h"
 #include <libPicture.h>
-#include <FilterWindowParam.h>
 #include <ConvertUtility.h>
-#include <FileUtility.h>
-#include "ParamInit.h"
-
 #include <LoadingResource.h>
 #include <RegardsBitmap.h>
 #include <LibResource.h>
-#include <PictureData.h>
+#include <FileUtility.h>
+#include <ParamInit.h>
+#include <FilterWindowParam.h>
+#include <FilterData.h>
+//#include <PictureData.h>
 
 #ifdef TEST
 #include <ffmpeg_application.h>

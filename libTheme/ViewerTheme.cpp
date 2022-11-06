@@ -1,7 +1,7 @@
 #include <header.h>
 #include "ViewerTheme.h"
-#include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_print.hpp>
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif

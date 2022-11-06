@@ -3,6 +3,8 @@
 
 #include "avif/internal.h"
 
+#ifdef AVIF_CODEC_AOM
+
 // These are for libaom to deal with
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -505,4 +507,6 @@ avifCodec * avifCodecCreateAOM(void)
 
 #ifdef __clang__
 #pragma clang diagnostic pop
+#endif
+
 #endif

@@ -55,6 +55,9 @@
     <Filter Include="CompressionVideo\Preview">
       <UniqueIdentifier>{886c2dca-4edc-47db-9598-c720474aa390}</UniqueIdentifier>
     </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{0d07b559-183a-4edc-92ab-5b4ba56b1f7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -131,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="SliderVideoPreview.cpp">
       <Filter>CompressionVideo\Preview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

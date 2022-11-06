@@ -5,7 +5,7 @@
 #include <font_quality.h>
 #endif
 #include <ConvertUtility.h>
-#include <rapidxml.hpp>
+#include <rapidxml/rapidxml.hpp>
 using namespace rapidxml;
 
 CThemeParam::CThemeParam()

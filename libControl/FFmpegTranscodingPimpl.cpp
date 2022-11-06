@@ -2188,6 +2188,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 					return ret;
 			}
 			int outStreamIndex = streamInNumberInOut[stream_index];
+#ifndef WIN32
 			printf("decoder -> type:video "
 				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
 				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ifmt_ctx->streams[stream_index]->time_base),
@@ -2197,6 +2198,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeFile(AVFrame* dst)
 				"pkt_pts:%s pkt_pts_time:%s pkt_dts:%s pkt_dts_time:%s\n",
 				av_ts2str(packet.pts), av_ts2timestr(packet.pts, &ofmt_ctx->streams[outStreamIndex]->time_base),
 				av_ts2str(packet.dts), av_ts2timestr(packet.dts, &ofmt_ctx->streams[outStreamIndex]->time_base));
+#endif
 		}
 
 		av_packet_unref(&packet);

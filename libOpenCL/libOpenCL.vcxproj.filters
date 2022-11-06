@@ -30,12 +30,21 @@
     <ClInclude Include="OpenCLFilter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="OpenCLParameter.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenCLEffectVideo.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="OpenCLFilter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCLParameter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

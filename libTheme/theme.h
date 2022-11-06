@@ -1,6 +1,6 @@
 #pragma once
-#include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_print.hpp>
 using namespace rapidxml;
 
 class CThemeXml

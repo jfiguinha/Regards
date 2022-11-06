@@ -37,8 +37,8 @@
 
 
 #ifdef SDL2
-#include <SDL.h>
-#include <SDL_audio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
 #endif
 
 #ifdef __WXMSW__

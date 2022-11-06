@@ -3,6 +3,8 @@
 
 #include "avif/internal.h"
 
+#ifdef AVIF_CODEC_DAV1D
+
 #if defined(_MSC_VER)
 #pragma warning(disable : 4201) // nonstandard extension used: nameless struct/union
 #endif
@@ -217,3 +219,5 @@ avifCodec * avifCodecCreateDav1d(void)
     codec->internal->dav1dSettings.frame_size_limit = AVIF_MAX_IMAGE_SIZE;
     return codec;
 }
+
+#endif

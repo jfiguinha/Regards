@@ -1,7 +1,7 @@
 #include "header.h"
 #include "ConfigParam.h"
 #include <fstream>
-#include <rapidxml.hpp>
+#include <rapidxml/rapidxml.hpp>
 #include <ConvertUtility.h>
 using namespace rapidxml;
 

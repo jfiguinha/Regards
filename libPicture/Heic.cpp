@@ -487,6 +487,7 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 
 void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8_t*& data_exif, unsigned int& size, const int& compression, const bool& hasExif)
 {
+#ifdef HAS_X265
 	struct heif_error err{};
 	if (source)
 	{
@@ -549,6 +550,7 @@ void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8
 			heif_context_free(ctx);
 		}
 	}
+#endif
 }
 
 

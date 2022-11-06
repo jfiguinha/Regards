@@ -19,6 +19,9 @@
     <Filter Include="Registry">
       <UniqueIdentifier>{653de218-ae50-4e95-a2c8-1f7752e7e7fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Error">
+      <UniqueIdentifier>{7cd8bed5-7040-40d5-94ba-8ec0c8c4f06c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -42,6 +45,9 @@
     <ClInclude Include="picture_utility.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>Error</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
@@ -58,6 +64,12 @@
     </ClCompile>
     <ClCompile Include="picture_utility.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>Error</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

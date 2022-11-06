@@ -153,6 +153,9 @@
     <ClCompile Include="..\Regards\openexr_3\half.cpp">
       <Filter>OpenExr</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="regards.rc">

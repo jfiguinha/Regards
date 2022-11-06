@@ -68,5 +68,8 @@
     <ClCompile Include="RenderVideoOpenGL.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

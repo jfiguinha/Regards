@@ -3,6 +3,8 @@
 
 #include "avif/internal.h"
 
+#ifdef AVIF_CODEC_RAV1E
+
 #include "rav1e/rav1e.h"
 
 #include <string.h>
@@ -282,3 +284,5 @@ avifCodec * avifCodecCreateRav1e(void)
     memset(codec->internal, 0, sizeof(struct avifCodecInternal));
     return codec;
 }
+
+#endif

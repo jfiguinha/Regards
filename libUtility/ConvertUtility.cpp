@@ -27,7 +27,7 @@ const std::string CConvertUtility::ConvertToStdString(const wxString& fileName)
 {
 #ifdef __APPLE__
     return fileName.ToStdString();
-#elif WIN32
+#elif defined(WIN32)
 	const std::wstring ws = fileName.ToStdWstring();
 	const std::string s(ws.begin(), ws.end());
 	return s;

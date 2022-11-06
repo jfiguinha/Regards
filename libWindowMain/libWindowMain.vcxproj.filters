@@ -65,5 +65,8 @@
     <ClCompile Include="WorkerThread.cpp">
       <Filter>WorkerThread</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

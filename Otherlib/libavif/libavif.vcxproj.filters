@@ -54,5 +54,8 @@
     <ClCompile Include="src\codec_rav1e.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\codec_aom.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include <header.h>
 #include "ViewerParam.h"
-#include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
+#include <rapidxml/rapidxml.hpp>
+#include <rapidxml/rapidxml_print.hpp>
 #include <ConvertUtility.h>
 #include <window_id.h>
 #include <fstream>

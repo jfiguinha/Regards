@@ -925,6 +925,7 @@ bool CBitmapWndRender::UpdateExifInfos()
 	CSqlPhotos sqlPhotos;
 	int exifCode = sqlPhotos.GetExifFromAngleAndFlip(angle, flipHorizontal, flipVertical);
 	sqlPhotos.UpdatePhotoExif(filename, exifCode);
+	return true;
 }
 
 void CBitmapWndRender::FlipVertical()

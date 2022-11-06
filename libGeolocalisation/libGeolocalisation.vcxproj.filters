@@ -47,5 +47,8 @@
     <ClCompile Include="GeoPluginValue.cpp">
       <Filter>Datastructure</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

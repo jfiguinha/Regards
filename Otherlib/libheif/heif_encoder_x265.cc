@@ -18,6 +18,8 @@
  * along with libheif.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_X265
+
 #include "heif.h"
 #include "heif_plugin.h"
 #include "heif_api_structs.h"
@@ -1011,3 +1013,5 @@ const struct heif_encoder_plugin* get_encoder_plugin_x265()
 {
   return &encoder_plugin_x265;
 }
+
+#endif

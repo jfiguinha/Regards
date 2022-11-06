@@ -1907,7 +1907,7 @@ int CFiltreEffetCPU::LensDistortionFilter(const int &size)
             image.at<Vec3b>(i, j)[2] = eiffel.at<Vec3b>(sourceX, sourceY)[2];
         }
     }  
-
+	return 0;
 	//imwrite("d:\\test.jpg", image);
 }
 

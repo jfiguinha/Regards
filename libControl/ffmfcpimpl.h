@@ -15,10 +15,10 @@
  * This software transplant ffplay to Microsoft VC++ environment.
  * And use MFC to build a simple Graphical User Interface.
  */
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
-#include <SDL_thread.h>
-#include <SDL_mutex.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_mutex.h>
 #include <RegardsBitmap.h>
 #include "VideoControlInterface.h"
 #include <thread>

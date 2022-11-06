@@ -67,6 +67,9 @@
     <Filter Include="Filter\Panorama">
       <UniqueIdentifier>{073b904b-375f-46c0-9f95-cf3ae8d94256}</UniqueIdentifier>
     </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{90fb664c-5e73-44b6-a226-8d53135becfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

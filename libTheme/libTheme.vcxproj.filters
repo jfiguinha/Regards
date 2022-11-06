@@ -83,5 +83,8 @@
     <ClCompile Include="ViewerThemeInit.cpp">
       <Filter>Viewer</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
