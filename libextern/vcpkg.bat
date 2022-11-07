@@ -18,3 +18,4 @@ vcpkg install libepoxy:x64-windows --recurse
 vcpkg install opencl:x64-windows --recurse
 vcpkg install libexif:x64-windows
 vcpkg install libjxl:x64-windows
+vcpkg install rapidxml:x64-windows
