@@ -153,6 +153,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <PlatformToolset>v143</PlatformToolset>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -235,8 +236,12 @@
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\x265\build\vc17-arm64;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib\;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+    <IncludePath>$(SolutionDir)libextern\x265\source;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\x265\lib\arm64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\x265\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib\;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IncludePath>$(SolutionDir)libextern\x265\source;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\x265\build\vc17-arm64;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib\;$(SolutionDir)libextern\x265\lib\arm64\Release;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -445,11 +450,20 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../../libextern/libpng;.;..\;../libbpg;../libgetopt;../;../../../libextern/x265/source;../../../libextern/x265_2.5/build/msys/8bit;../../../libextern/dlib-19.4/dlib/external/zlib;../../../libextern/dlib-19.4/dlib/external/libpng</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libextern/libpng;.;..\;../libbpg;../libgetopt;../;$(SolutionDir)libextern/x265/source</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CONFIG_BPG_VERSION=0.9.7;USE_X265;inline=__inline;WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;DLLFORMATBPG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libpng16.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libx265.lib;libpng16.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PreprocessorDefinitions>CONFIG_BPG_VERSION=0.9.7;USE_X265;inline=__inline;WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;DLLFORMATBPG_EXPORTS;%(PreprocessorDefinitions);_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)libextern/libpng;.;..\;../libbpg;../libgetopt;../;$(SolutionDir)libextern/x265/source</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libx265.lib;libpng16.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

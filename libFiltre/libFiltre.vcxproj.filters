@@ -231,9 +231,6 @@
     <ClInclude Include="VideoFilter.h">
       <Filter>window\video</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\header.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="CropFilter.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
@@ -317,6 +314,9 @@
     </ClInclude>
     <ClInclude Include="panorama.h">
       <Filter>Filter\Panorama</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -413,9 +413,6 @@
     <ClCompile Include="VideoFilter.cpp">
       <Filter>window\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\header.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="CropFilter.cpp">
       <Filter>window\Drawing</Filter>
     </ClCompile>
@@ -469,6 +466,9 @@
     </ClCompile>
     <ClCompile Include="panorama.cpp">
       <Filter>Filter\Panorama</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

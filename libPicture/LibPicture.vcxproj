@@ -154,6 +154,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <PlatformToolset>v143</PlatformToolset>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -235,7 +236,10 @@
     <ExecutablePath>$(ICInstallDir)bin\Intel64;$(ICInstallDir)bin;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>$(SolutionDir)libextern\wxWidgets\build\msw\ARM64\Debug\mswud\;$(SolutionDir)libextern\wxWidgets\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)libextern\libde265\build;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)\libextern\libde265\libde265;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\libRapidXML</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)libextern\libde265\build;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)\libextern\libde265\libde265;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\libRapidXML</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)libextern\libde265\build;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)\libextern\libde265\libde265;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\libRapidXML</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -534,11 +538,23 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>LIBHEIC;LIBRAW;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LIBBPG;LIBHEIC;LIBRAW;WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LIBBPG;LIBHEIC;LIBRAW;WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -594,6 +610,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ascii.cpp" />
     <ClCompile Include="avif.cpp" />
