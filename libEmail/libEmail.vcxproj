@@ -283,7 +283,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <PrecompiledHeaderOutputFile>$(SolutionDir)\include\header_debug.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -431,7 +431,7 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)include;../libUtility</AdditionalIncludeDirectories>
       <Optimization>MaxSpeedHighLevel</Optimization>
-      <PrecompiledHeaderOutputFile>$(SolutionDir)\include\header_release.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -564,6 +564,8 @@
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="email.cpp" />
     <ClCompile Include="LocalMapi.cpp" />

@@ -255,7 +255,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_VAR_BIT_DEPTH;_ISOC99_SOURCE;HAVE_AV_CONFIG_H;_FILE_OFFSET_BITS=64;_LARGEFILE_SOURCE;_WIN32_WINNT=0x0502;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;inline=__inline;USE_VAR_BIT_DEPTH;WIN64;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;USE_VAR_BIT_DEPTH;_ISOC99_SOURCE;HAVE_AV_CONFIG_H;_FILE_OFFSET_BITS=64;_LARGEFILE_SOURCE;_WIN32_WINNT=0x0502;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;inline=__inline;USE_VAR_BIT_DEPTH;WIN64;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>stdlib.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>../</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -346,7 +346,7 @@
       </PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>USE_VAR_BIT_DEPTH;_ISOC99_SOURCE;HAVE_AV_CONFIG_H;_FILE_OFFSET_BITS=64;_LARGEFILE_SOURCE;_WIN32_WINNT=0x0502;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;inline=__inline;USE_VAR_BIT_DEPTH;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;USE_VAR_BIT_DEPTH;_ISOC99_SOURCE;HAVE_AV_CONFIG_H;_FILE_OFFSET_BITS=64;_LARGEFILE_SOURCE;_WIN32_WINNT=0x0502;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;inline=__inline;USE_VAR_BIT_DEPTH;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
@@ -461,6 +461,7 @@
     <ClInclude Include="blowfish.h" />
     <ClInclude Include="bprint.h" />
     <ClInclude Include="bswap.h" />
+    <ClInclude Include="common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

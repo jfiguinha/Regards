@@ -12,9 +12,8 @@
     <Filter Include="header">
       <UniqueIdentifier>{6275faaa-e54b-4dce-bb5e-8f89a40bbe33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="header\Fichiers sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Fichiers Sources">
+      <UniqueIdentifier>{68c9b179-2205-4e68-8a38-e2c0e1a78d1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -192,174 +191,174 @@
     <ClInclude Include="include\wx\wxpoppler.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\wxmemdbg.h">
-      <Filter>header\Fichiers sources</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="src\wxmemdbg.h">
+      <Filter>Fichiers Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\pdfannotation.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfbarcode.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfcffdecoder.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfcffindex.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfcolour.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfdc.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfdecode.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfdocument.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfencoding.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfencrypt.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffont.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdata.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdatacore.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdataopentype.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdatatruetype.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdatatype0.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdatatype1.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdescription.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontdetails.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontextended.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontmanager.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontparser.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontparsertruetype.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontparsertype1.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontsubsetcff.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontsubsettruetype.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdffontvolt.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfform.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfgradient.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfgraphics.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfimage.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfkernel.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdflayer.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfobjects.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfocg.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfparser.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfpattern.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfprint.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfrijndael.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdftemplate.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfutility.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pdfxml.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\wxpoppler.cpp">
-      <Filter>header\Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfannotation.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfbarcode.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfcffdecoder.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfcffindex.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfcolour.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfdc.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfdecode.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfdocument.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfencoding.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfencrypt.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffont.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdata.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdatacore.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdataopentype.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdatatruetype.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdatatype0.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdatatype1.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdescription.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontdetails.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontextended.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontmanager.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontparser.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontparsertruetype.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontparsertype1.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontsubsetcff.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontsubsettruetype.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdffontvolt.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfform.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfgradient.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfgraphics.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfimage.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfkernel.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdflayer.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfobjects.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfocg.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfparser.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfpattern.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfprint.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfrijndael.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdftemplate.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfutility.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pdfxml.cpp">
+      <Filter>Fichiers Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wxpoppler.cpp">
+      <Filter>Fichiers Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\pdfcjkfontdata.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfcmapdata.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfcodepagedata.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfcolourdata.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfcorefontdata.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfcorefontkerning.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfdc28.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfdc29.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
     <None Include="src\pdfglyphnames.inc">
-      <Filter>header\Fichiers sources</Filter>
+      <Filter>Fichiers Sources</Filter>
     </None>
   </ItemGroup>
 </Project>

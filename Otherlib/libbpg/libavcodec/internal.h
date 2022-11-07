@@ -25,7 +25,6 @@
 #define AVCODEC_INTERNAL_H
 
 #include <stdint.h>
-
 #include "libavutil/buffer.h"
 #include "libavutil/channel_layout.h"
 #include "libavutil/mathematics.h"

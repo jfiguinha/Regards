@@ -5,7 +5,7 @@
 #else
 #include <CL/cl.h>
 #endif
-#include <ConvertUtility.h>
+#include "ConvertUtility.h"
 
 // Base class for all exception in samples
 class Error : public std::runtime_error
