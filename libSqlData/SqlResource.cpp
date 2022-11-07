@@ -120,7 +120,7 @@ void CSqlResource::InsertVector(const wstring &idName, const wstring &filename)
 {
 	const wxString data = readFileBytes(filename);
 	char * out = new char[data.size()];
-	const int taille = LZ4_compress(data.c_str(), out, data.size());
+	const int taille = LZ4_compress_default(data.c_str(), out, data.size(), data.size());
 	wchar_t _pwszRequeteSQL[512];
 	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO VectorResource (idName, size, data) VALUES('%s', %d, ?)", idName.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 2, out, taille);
