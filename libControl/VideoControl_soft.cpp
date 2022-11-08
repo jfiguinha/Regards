@@ -19,7 +19,7 @@
 #include <ConvertUtility.h>
 #include <videothumb.h>
 #include <hqdn3d.h>
-#include <Tracing.h>
+
 #include <RegardsConfigParam.h>
 #include <MediaInfo.h>
 #include <VideoStabilization.h>
@@ -233,7 +233,7 @@ bool CVideoControlSoft::IsFFmpegDecode()
 //-----------------------------------------------------------------
 void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 {
-	TRACE();
+	
 	parentRender->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -249,7 +249,7 @@ void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 {
-	TRACE();
+	
 	if (event.LeftDClick())
 		return;
 
@@ -268,7 +268,7 @@ void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 //------------------------------------------------------------------------------------
 void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 {
-	TRACE();
+	
 
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -302,7 +302,7 @@ void CVideoControlSoft::TestMaxX()
 	float screenWidth = static_cast<float>(parentRender->GetSize().GetWidth());
 	float posLargeurMax = bitmapRatioWidth - screenWidth;
 
-	TRACE();
+	
 	int xValue = posLargeurMax;
 
 	if (posLargeur >= xValue)
@@ -321,7 +321,7 @@ void CVideoControlSoft::TestMaxY()
 	float screenHeight = static_cast<float>(parentRender->GetSize().GetHeight());
 	float posHauteurMax = bitmapRatioHeight - screenHeight;
 
-	TRACE();
+	
 	int yValue = posHauteurMax;
 
 	if (posHauteur >= yValue)
@@ -485,7 +485,7 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 float CVideoControlSoft::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
-	TRACE();
+	
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
@@ -528,7 +528,7 @@ float CVideoControlSoft::GetZoomRatio()
 
 float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
-	TRACE();
+	
 
 	float newRatio = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
 	int zoomSelect = 0;
@@ -562,7 +562,7 @@ float CVideoControlSoft::CalculRatio(const int& pictureWidth, const int& picture
 
 void CVideoControlSoft::ShrinkVideo()
 {
-	TRACE();
+	
 
 	CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
@@ -813,7 +813,7 @@ bool CVideoControlSoft::GetProcessEnd()
 
 void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
 {
-	//TRACE();
+	//
 	if (endProgram && videoRenderStart && !quitWindow)
 	{
 		fpsTimer->Stop();
@@ -1333,7 +1333,7 @@ float CVideoControlSoft::GetHauteurMax()
 
 void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 {
-	TRACE();
+	
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
@@ -1372,7 +1372,7 @@ void CVideoControlSoft::CalculPositionPicture(const float& x, const float& y)
 
 int CVideoControlSoft::GetBitmapWidth()
 {
-	TRACE();
+	
 	//int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
@@ -1391,7 +1391,7 @@ int CVideoControlSoft::GetBitmapHeight()
 
 int CVideoControlSoft::GetSrcBitmapWidth()
 {
-	TRACE();
+	
 	int localAngle = angle;
 	float ratioSelect = GetMovieRatio();
 	float _widthVideo = widthVideo;
@@ -1409,7 +1409,7 @@ int CVideoControlSoft::GetSrcBitmapWidth()
 
 int CVideoControlSoft::GetSrcBitmapHeight()
 {
-	TRACE();
+	
 	float ratioSelect = GetMovieRatio();
 	float _widthVideo = widthVideo;
 	float _heightVideo = heightVideo;
@@ -1430,7 +1430,7 @@ int CVideoControlSoft::GetSrcBitmapHeight()
 //-----------------------------------------------------------------
 void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 {
-	TRACE();
+	
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
@@ -1443,7 +1443,7 @@ void CVideoControlSoft::MouseClick(const int& xPos, const int& yPos)
 //-----------------------------------------------------------------
 void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 {
-	TRACE();
+	
 	mouseBlock = false;
 	wxSetCursor(wxCursor(wxCURSOR_ARROW));
 	if (parentRender->HasCapture())
@@ -1452,7 +1452,7 @@ void CVideoControlSoft::MouseRelease(const int& xPos, const int& yPos)
 
 void CVideoControlSoft::CalculCenterPicture()
 {
-	TRACE();
+	
 
 	float bitmapRatioWidth = GetBitmapWidth();
 	float bitmapRatioHeight = GetBitmapHeight();
@@ -1790,7 +1790,7 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect& rc, int& widthInt
 	int& heightInterpolationSize, int& left, int& top,
 	const bool& invert)
 {
-	TRACE();
+	
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else

@@ -1172,9 +1172,6 @@ XCOPY /Y "$(SolutionDir)libextern\x265\lib\arm64\Release\*.so"  $(SolutionDir)$(
     <ProjectReference Include="..\libViewer\LibViewer.vcxproj">
       <Project>{caa0ba1b-f0ec-48ea-9158-dad73cdb55a4}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libWindowMain\libWindowMain.vcxproj">
-      <Project>{eb66819d-e61d-4ed3-a2fb-3eae75d705e2}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libWindow\libWindow.vcxproj">
       <Project>{f25c7926-abe0-4a0b-a1de-3d7452a6ac73}</Project>
     </ProjectReference>

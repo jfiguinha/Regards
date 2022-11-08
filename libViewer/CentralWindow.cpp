@@ -31,7 +31,7 @@
 #include <ShowElement.h>
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
-#include <Tracing.h>
+
 #include <wx/busyinfo.h>
 #include <VideoPlayer.h>
 using namespace Regards::Video;
@@ -296,7 +296,7 @@ void CCentralWindow::OnPictureLast(wxCommandEvent& event)
 void CCentralWindow::OnTimerDiaporama(wxTimerEvent& event)
 {
 	printf("OnTimerDiaporama \n");
-	TRACE();
+	
 	ImageSuivante();
 }
 
@@ -1036,7 +1036,7 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 
 void CCentralWindow::StartDiaporamaMessage(wxCommandEvent& event)
 {
-	TRACE();
+	
 	CMainParam* viewerParam = CMainParamInit::getInstance();
 	const int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 	diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
@@ -1044,7 +1044,7 @@ void CCentralWindow::StartDiaporamaMessage(wxCommandEvent& event)
 
 void CCentralWindow::StopAnimationEvent(wxCommandEvent& event)
 {
-	TRACE();
+	
 	if (isDiaporama)
 	{
 		CMainParam* viewerParam = CMainParamInit::getInstance();
@@ -1616,7 +1616,7 @@ bool CCentralWindow::ScreenMode()
 
 bool CCentralWindow::GetProcessEnd()
 {
-	TRACE();
+	
 	StopAnimation();
 
 	if (diaporamaTimer->IsRunning())
@@ -1820,7 +1820,7 @@ void CCentralWindow::OnStopAudio(wxCommandEvent& event)
 
 void CCentralWindow::StartMusic()
 {
-	TRACE();
+	
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	wxString musicDiaporama = "";
 

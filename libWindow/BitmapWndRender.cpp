@@ -239,7 +239,7 @@ void CBitmapWndRender::OnUpdateBitmap(wxCommandEvent& event)
 
 void CBitmapWndRender::SetFullscreen(const bool& fullscreen)
 {
-	//TRACE();
+	//
 	if (fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorFullscreen;
 	else
@@ -254,19 +254,19 @@ CFiltreEffet* CBitmapWndRender::GetFiltreEffet()
 
 float CBitmapWndRender::GetRatio()
 {
-	//TRACE();
+	//
 	return ratio;
 }
 
 int CBitmapWndRender::GetPosRatio()
 {
-	//TRACE();
+	//
 	return posRatio;
 }
 
 void CBitmapWndRender::SetRatioPos(const int& pos)
 {
-	//TRACE();
+	//
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -291,7 +291,7 @@ void CBitmapWndRender::SetRatioPos(const int& pos)
 //-----------------------------------------------------------------
 CBitmapWndRender::~CBitmapWndRender(void)
 {
-	//TRACE();
+	//
 	if (filtreEffet != nullptr)
 		delete filtreEffet;
 	filtreEffet = nullptr;
@@ -306,7 +306,7 @@ CBitmapWndRender::~CBitmapWndRender(void)
 
 void CBitmapWndRender::SetKey(const int& iKey)
 {
-	//TRACE();
+	//
 	this->iKey = iKey;
 	switch (toolOption)
 	{
@@ -323,7 +323,7 @@ void CBitmapWndRender::SetKey(const int& iKey)
 
 int CBitmapWndRender::GetKey()
 {
-	//TRACE();
+	//
 	return iKey;
 }
 
@@ -332,7 +332,7 @@ int CBitmapWndRender::GetKey()
 //-----------------------------------------------------------------------------
 void CBitmapWndRender::SetTool(const int& tool)
 {
-	//TRACE();
+	//
 	toolOption = tool;
 
 	switch (tool)
@@ -359,7 +359,7 @@ void CBitmapWndRender::SetTool(const int& tool)
 //-----------------------------------------------------------------------------
 int CBitmapWndRender::GetTool()
 {
-	//TRACE();
+	//
 	return toolOption;
 }
 
@@ -369,7 +369,7 @@ int CBitmapWndRender::GetTool()
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetZoom(bool active)
 {
-	//TRACE();
+	//
 	zoom = active;
 }
 
@@ -378,13 +378,13 @@ void CBitmapWndRender::SetZoom(bool active)
 //-----------------------------------------------------------------------------
 bool CBitmapWndRender::GetZoom()
 {
-	//TRACE();
+	//
 	return zoom;
 }
 
 void CBitmapWndRender::CalculCenterPicture()
 {
-	//TRACE();
+	//
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
 	float screenWidth = static_cast<float>(GetWidth());
@@ -413,7 +413,7 @@ void CBitmapWndRender::CalculCenterPicture()
 
 void CBitmapWndRender::CalculPositionPicture(const float& x, const float& y)
 {
-	//TRACE();
+	//
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
 	float screenWidth = static_cast<float>(GetWidth());
@@ -462,7 +462,7 @@ int CBitmapWndRender::GetVPos()
 //-----------------------------------------------------------------
 void CBitmapWndRender::ZoomOn()
 {
-	//TRACE();
+	//
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -491,7 +491,7 @@ void CBitmapWndRender::ZoomOn()
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetZoomPosition(const int& position)
 {
-	//TRACE();
+	//
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -545,7 +545,7 @@ void CBitmapWndRender::UpdateScrollBar()
 //-----------------------------------------------------------------
 void CBitmapWndRender::ZoomOut()
 {
-	//TRACE();
+	//
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -573,7 +573,7 @@ void CBitmapWndRender::ZoomOut()
 //-----------------------------------------------------------------
 void CBitmapWndRender::ShrinkImage(const bool& redraw)
 {
-	//TRACE();
+	//
 	shrinkImage = true;
 	ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
@@ -598,7 +598,7 @@ void CBitmapWndRender::ShrinkImage(const bool& redraw)
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetShrinkImage(bool active)
 {
-	//TRACE();
+	//
 	if (shrinkImage != active)
 	{
 		shrinkImage = active;
@@ -612,7 +612,7 @@ void CBitmapWndRender::SetShrinkImage(bool active)
 //-----------------------------------------------------------------------------
 bool CBitmapWndRender::GetShrinkImage()
 {
-	//TRACE();
+	//
 	return shrinkImage;
 }
 
@@ -621,7 +621,7 @@ bool CBitmapWndRender::GetShrinkImage()
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetShowScroll(bool visible)
 {
-	//TRACE();
+	//
 	showScroll = visible;
 }
 
@@ -630,7 +630,7 @@ void CBitmapWndRender::SetShowScroll(bool visible)
 //-----------------------------------------------------------------
 bool CBitmapWndRender::GetShowScroll()
 {
-	//TRACE();
+	//
 	return showScroll;
 }
 
@@ -644,7 +644,7 @@ wxString CBitmapWndRender::GetFilename()
 //-----------------------------------------------------------------
 float CBitmapWndRender::GetBitmapWidthWithRatio()
 {
-	//TRACE();
+	//
 	return static_cast<float>(GetBitmapWidth()) * ratio;
 }
 
@@ -653,14 +653,14 @@ float CBitmapWndRender::GetBitmapWidthWithRatio()
 //-----------------------------------------------------------------
 float CBitmapWndRender::GetBitmapHeightWithRatio()
 {
-	//TRACE();
+	//
 	return static_cast<float>(GetBitmapHeight()) * ratio;
 }
 
 
 void CBitmapWndRender::SetBitmapParameter(const bool& externBitmap, const bool& addToTexture)
 {
-	//TRACE();
+	//
 	this->externBitmap = externBitmap;
 	//if (addToTexture)
 	//	render.Destroy();
@@ -669,7 +669,7 @@ void CBitmapWndRender::SetBitmapParameter(const bool& externBitmap, const bool& 
 
 void CBitmapWndRender::SetIsBitmapThumbnail(const bool& isThumbnail)
 {
-	//TRACE();
+	//
 	this->isThumbnail = isThumbnail;
 }
 
@@ -731,7 +731,7 @@ void CBitmapWndRender::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& u
 
 void CBitmapWndRender::ReinitPicture()
 {
-	//TRACE();
+	//
 	printf("CBitmapWndRender::SetBitmap \n");
 
 	bitmapLoad = true;
@@ -754,7 +754,7 @@ void CBitmapWndRender::ReinitPicture()
 //-----------------------------------------------------------------
 void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
 {
-	//TRACE();
+	//
 	printf("CBitmapWndRender::SetBitmap \n");
 	//if (copyBmpSrc != nullptr)
 	//	delete copyBmpSrc;
@@ -814,14 +814,14 @@ void CBitmapWndRender::SetBitmap(CImageLoadingFormat* bitmapIn, const bool& copy
 
 void CBitmapWndRender::CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen)
 {
-	//TRACE();
+	//
 	xScreen = static_cast<int>(static_cast<float>(xReal) * (ratio));
 	yScreen = static_cast<int>(static_cast<float>(yReal) * (ratio));
 }
 
 void CBitmapWndRender::CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal)
 {
-	//TRACE();
+	//
 	xReal = static_cast<int>(static_cast<float>(xScreen) / (ratio));
 	yReal = static_cast<int>(static_cast<float>(yScreen) / (ratio));
 }
@@ -832,7 +832,7 @@ void CBitmapWndRender::CalculRealPosFromScreen(const int& xScreen, const int& yS
 //-----------------------------------------------------------------
 CRegardsBitmap* CBitmapWndRender::GetBitmap(const bool& source)
 {
-	//TRACE();
+	//
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
 		CRegardsBitmap* bitmap = this->source->GetRegardsBitmap(source);
@@ -851,7 +851,7 @@ CRegardsBitmap* CBitmapWndRender::GetBitmap(const bool& source)
 //-----------------------------------------------------------------
 CRegardsFloatBitmap* CBitmapWndRender::GetFloatBitmap(const bool& source)
 {
-	//TRACE();
+	//
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
 		CRegardsFloatBitmap* bitmap = this->source->GetFloatBitmap(source);
@@ -865,7 +865,7 @@ CRegardsFloatBitmap* CBitmapWndRender::GetFloatBitmap(const bool& source)
 //-----------------------------------------------------------------
 void CBitmapWndRender::GetInfosBitmap(wxString& filename, int& widthPicture, int& heightPicture)
 {
-	//TRACE();
+	//
 	widthPicture = bitmapwidth;
 	heightPicture = bitmapheight;
 	filename = this->filename;
@@ -873,7 +873,7 @@ void CBitmapWndRender::GetInfosBitmap(wxString& filename, int& widthPicture, int
 
 int CBitmapWndRender::GetOrientation()
 {
-	//TRACE();
+	//
 	return orientation;
 }
 
@@ -887,13 +887,13 @@ void CBitmapWndRender::SetOrientation(const int& exif)
 
 int CBitmapWndRender::GetRawBitmapWidth()
 {
-	//TRACE();
+	//
 	return bitmapwidth;
 }
 
 int CBitmapWndRender::GetRawBitmapHeight()
 {
-	//TRACE();
+	//
 	return bitmapheight;
 }
 
@@ -930,7 +930,7 @@ bool CBitmapWndRender::UpdateExifInfos()
 
 void CBitmapWndRender::FlipVertical()
 {
-	//TRACE();
+	//
 	if (flipVertical)
 		flipVertical = 0;
 	else
@@ -945,7 +945,7 @@ void CBitmapWndRender::FlipVertical()
 
 void CBitmapWndRender::Rotate90()
 {
-	//TRACE();
+	//
 	angle += 90;
 	angle = angle % 360;
 
@@ -956,7 +956,7 @@ void CBitmapWndRender::Rotate90()
 
 int CBitmapWndRender::GetAngleFromExif()
 {
-	//TRACE();
+	//
 	switch (GetOrientation())
 	{
 	case 1: // top left side
@@ -977,7 +977,7 @@ int CBitmapWndRender::GetAngleFromExif()
 
 void CBitmapWndRender::Rotate270()
 {
-	//TRACE();
+	//
 
 	angle += 270;
 	angle = angle % 360;
@@ -990,7 +990,7 @@ void CBitmapWndRender::Rotate270()
 
 void CBitmapWndRender::FlipHorizontal()
 {
-	//TRACE();
+	//
 	if (flipHorizontal)
 		flipHorizontal = 0;
 	else
@@ -1007,7 +1007,7 @@ void CBitmapWndRender::FlipHorizontal()
 //-----------------------------------------------------------------
 void CBitmapWndRender::MouseClick(const int& xPos, const int& yPos)
 {
-	//TRACE();
+	//
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
@@ -1020,7 +1020,7 @@ void CBitmapWndRender::MouseClick(const int& xPos, const int& yPos)
 //-----------------------------------------------------------------
 void CBitmapWndRender::MouseRelease(const int& xPos, const int& yPos)
 {
-	//TRACE();
+	//
 	mouseBlock = false;
 	//wxSetCursor(wxCursor(wxCURSOR_ARROW));
 	wxSetCursor(*wxSTANDARD_CURSOR);
@@ -1031,7 +1031,7 @@ void CBitmapWndRender::MouseRelease(const int& xPos, const int& yPos)
 
 void CBitmapWndRender::OnRButtonDown(wxMouseEvent& event)
 {
-	//TRACE();
+	//
 	parentRender->SetFocus();
 	wxWindow* window = wxWindow::FindWindowById(idWindowMain);
 	if (window != nullptr)
@@ -1076,7 +1076,7 @@ void CBitmapWndRender::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWndRender::OnLButtonUp(wxMouseEvent& event)
 {
-	//TRACE();
+	//
 	if (event.LeftDClick())
 		return;
 
@@ -1102,7 +1102,7 @@ void CBitmapWndRender::OnLButtonUp(wxMouseEvent& event)
 
 void CBitmapWndRender::OnKeyUp(wxKeyEvent& event)
 {
-	//TRACE();
+	//
 	SetKey(0);
 	switch (event.GetKeyCode())
 	{
@@ -1159,7 +1159,7 @@ void CBitmapWndRender::MoveRight()
 
 void CBitmapWndRender::OnKeyDown(wxKeyEvent& event)
 {
-	//TRACE();
+	//
 	SetKey(event.GetKeyCode());
 
 	switch (event.GetKeyCode())
@@ -1214,7 +1214,7 @@ void CBitmapWndRender::OnKeyDown(wxKeyEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWndRender::OnMouseWheel(wxMouseEvent& event)
 {
-	//TRACE();
+	//
 	int move = 0;
     if (event.GetWheelRotation() > 0)
         move = 0;
@@ -1259,7 +1259,7 @@ void CBitmapWndRender::Resize()
 
 int CBitmapWndRender::UpdateResized()
 {
-	//TRACE();
+	//
 	if (bitmapLoad)
 	{
 		if (shrinkImage)
@@ -1353,7 +1353,7 @@ void CBitmapWndRender::OnMouseMove(wxMouseEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 void CBitmapWndRender::TestMaxX()
 {
-	//TRACE();
+	//
 
 	if (int xValue = static_cast<int>(GetBitmapWidthWithRatio()) - GetWidth(); posLargeur >= xValue)
 		posLargeur = xValue;
@@ -1367,7 +1367,7 @@ void CBitmapWndRender::TestMaxX()
 ////////////////////////////////////////////////////////////////////////////////
 void CBitmapWndRender::TestMaxY()
 {
-	//TRACE();
+	//
 
 	if (int yValue = static_cast<int>(GetBitmapHeightWithRatio()) - GetHeight(); posHauteur >= yValue)
 		posHauteur = yValue;
@@ -1379,7 +1379,7 @@ void CBitmapWndRender::TestMaxY()
 
 float CBitmapWndRender::CalculPictureRatio(const int& pictureWidth, const int& pictureHeight)
 {
-	//TRACE();
+	//
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
@@ -1409,7 +1409,7 @@ float CBitmapWndRender::CalculPictureRatio(const int& pictureWidth, const int& p
 //-----------------------------------------------------------------
 float CBitmapWndRender::CalculRatio(const int& pictureWidth, const int& pictureHeight)
 {
-	//TRACE();
+	//
 	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
 
 	//Détermination du ration par rapport au tableau
@@ -1433,7 +1433,7 @@ float CBitmapWndRender::CalculRatio(const int& pictureWidth, const int& pictureH
 
 void CBitmapWndRender::TestMaxPosition()
 {
-	//TRACE();
+	//
 	TestMaxX();
 	TestMaxY();
 }
@@ -1489,7 +1489,7 @@ void CBitmapWndRender::CalculRectPictureInterpolation(wxRect& rc, int& widthInte
 
 void CBitmapWndRender::UpdateScreenRatio()
 {
-	//TRACE();
+	//
 	Resize();
 }
 
@@ -1805,7 +1805,7 @@ void CBitmapWndRender::RefreshWindow()
 //-----------------------------------------------------------------
 void CBitmapWndRender::OnLDoubleClick(wxMouseEvent& event)
 {
-	//TRACE();
+	//
 #ifdef __APPLE__
 	OnRButtonDown(event);
 #else

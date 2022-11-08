@@ -88,7 +88,7 @@ public:
 		//			assert(1==0);
 		//			std::ostringstream str;
 		//			std::cerr << boost::stacktrace::stacktrace() << std::endl;
-		//			str << boost::stacktrace::stacktrace();
+		//			str << boost::stacktrace::stack
 		//			stacktrace=str.str();
 	};
 

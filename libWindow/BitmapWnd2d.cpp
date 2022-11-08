@@ -104,7 +104,7 @@ CBitmapWnd2D::~CBitmapWnd2D(void)
 
 void CBitmapWnd2D::OnRButtonDown(wxMouseEvent& event)
 {
-	bitmapWndRender->OnRButtonDown(event);//TRACE();
+	bitmapWndRender->OnRButtonDown(event);//
 	this->SetFocus();
 
 }
@@ -124,7 +124,7 @@ void CBitmapWnd2D::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd2D::OnLButtonUp(wxMouseEvent& event)
 {
-	//TRACE();
+	//
 	if (event.LeftDClick())
 		return;
 

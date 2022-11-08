@@ -571,9 +571,12 @@
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="GpsEngine.h" />
     <ClInclude Include="IBitmapRenderInterface.h" />
     <ClInclude Include="IBitmapWnd.h" />
     <ClInclude Include="KeywordDialogBox.h" />
+    <ClInclude Include="MainInterface.h" />
+    <ClInclude Include="MasterWindow.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="SliderInterface.h" />
     <ClInclude Include="TabWindow.h" />
@@ -624,8 +627,12 @@
     <ClInclude Include="TreeElementTriangle.h" />
     <ClInclude Include="TreeWindow.h" />
     <ClInclude Include="TreeWithScrollbar.h" />
+    <ClInclude Include="WindowMain.h" />
+    <ClInclude Include="WindowMainPimpl.h" />
     <ClInclude Include="WindowManager.h" />
+    <ClInclude Include="WindowOpenGLMain.h" />
     <ClInclude Include="WindowToAdd.h" />
+    <ClInclude Include="WindowUtility.h" />
     <ClInclude Include="wxImagePanel.h" />
   </ItemGroup>
   <ItemGroup>
@@ -645,12 +652,14 @@
     <ClCompile Include="CalendarSelect.cpp" />
     <ClCompile Include="ClickToolbar.cpp" />
     <ClCompile Include="EmptyWindow.cpp" />
+    <ClCompile Include="GpsEngine.cpp" />
     <ClCompile Include="Icone.cpp" />
     <ClCompile Include="IconeList.cpp" />
     <ClCompile Include="InfosSeparationBar.cpp" />
     <ClCompile Include="KeywordDialogBox.cpp" />
     <ClCompile Include="MapDialogBox.cpp" />
     <ClCompile Include="MapSelect.cpp" />
+    <ClCompile Include="MasterWindow.cpp" />
     <ClCompile Include="Pane.cpp" />
     <ClCompile Include="PanelWithClickToolbar.cpp" />
     <ClCompile Include="PositionElement.cpp" />
@@ -688,6 +697,7 @@
     <ClCompile Include="TreeWithScrollbar.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WindowToAdd.cpp" />
+    <ClCompile Include="WindowUtility.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

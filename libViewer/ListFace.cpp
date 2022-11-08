@@ -1,5 +1,5 @@
 #include <header.h>
-#include <Tracing.h>
+
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #include <ParamInit.h>
@@ -574,7 +574,7 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 
 bool CListFace::GetProcessEnd()
 {
-	TRACE();
+	
 	if (nbProcessFacePhoto > 0 || nbProcessFaceRecognition > 0)
 		return false;
 	return true;

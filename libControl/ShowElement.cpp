@@ -13,7 +13,7 @@
 #include <SqlPhotos.h>
 #include <MetadataExiv2.h>
 #include <DeepLearning.h>
-#include <Tracing.h>
+
 #include "BitmapWndViewer.h"
 
 //--------------------------------------------------
@@ -553,7 +553,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		}
 	}
 	filename = bitmap->GetFilename();
-	TRACE();
+	
 	if (bitmapWindow != nullptr)
 	{
 		CSqlPhotos sqlPhotos;

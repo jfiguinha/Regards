@@ -245,7 +245,7 @@ void CBitmapWndViewer::SetParent(wxWindow* parent)
 {
 	parentRender = parent;
     
-	//TRACE();
+	//
 #ifndef WIN32
 	double scale_factor = parentRender->GetContentScaleFactor();
 #else

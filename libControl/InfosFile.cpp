@@ -57,7 +57,7 @@ const wxString CInfosFile::GetFilename()
 void CInfosFile::MouseOver(wxDC* deviceContext, CPositionElement* element, const int& x, const int& y,
                            const int& posLargeur, const int& posHauteur, bool& update)
 {
-	//TRACE();
+	//
 
 	if (element != nullptr)
 	{
@@ -70,14 +70,14 @@ void CInfosFile::MouseOver(wxDC* deviceContext, CPositionElement* element, const
 
 void CInfosFile::UpdateScreenRatio()
 {
-	//TRACE();
+	//
 	this->UpdateElement();
 }
 
 void CInfosFile::AddTreeInfos(const wxString& exifKey, const wxString& exifValue, const int& index,
                               tree<CTreeData*>::iterator& top, tree<CTreeData*>::iterator& child)
 {
-	//TRACE();
+	//
 	wchar_t seps[] = L".";
 	int item = 0;
 	wchar_t informations[TAILLEMAX];
@@ -159,7 +159,7 @@ void CInfosFile::AddTreeInfos(const wxString& exifKey, const wxString& exifValue
 
 void CInfosFile::SetFile(const wxString& picture)
 {
-	//TRACE();
+	//
 
 	if (filename == picture)
 		return;
@@ -286,7 +286,7 @@ void CInfosFile::SetFile(const wxString& picture)
 
 void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 {
-	//TRACE();
+	//
 
 	CPositionElement* posElement;
 	tree<CTreeData*>::sibling_iterator it = tree<CTreeData*>::begin(parent);
@@ -369,7 +369,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 
 void CInfosFile::CreateElement()
 {
-	//TRACE();
+	//
 
 	widthPosition = 0;
 	vectorPosElement.clear();
@@ -551,7 +551,7 @@ void CInfosFile::UpdateChildTree(tree<CTreeData*>::sibling_iterator& parent)
 
 void CInfosFile::UpdateElement()
 {
-	//TRACE();
+	//
 
 	for (CPositionElement* value : vectorPosElement)
 	{
@@ -634,7 +634,7 @@ void CInfosFile::UpdateElement()
 void CInfosFile::ClickOnElement(CPositionElement* element, wxWindow* window, const int& x, const int& y,
                                 const int& posLargeur, const int& posHauteur)
 {
-	//TRACE();
+	//
 	if (element != nullptr)
 	{
 		CTreeElement* treeElement = element->GetTreeElement();

@@ -22,6 +22,21 @@
     <Filter Include="Datastructure">
       <UniqueIdentifier>{b4a78db2-1d2f-4333-9726-03360137dcea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{11d65e60-7b9f-4ef2-965a-d0ebb95c4be0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Master">
+      <UniqueIdentifier>{75fd3f62-22e0-4dd5-b3ec-4fbd419b7313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\EngineGps">
+      <UniqueIdentifier>{4fd60e31-a98d-4e0d-a44b-90fd8e3ef0d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\interface">
+      <UniqueIdentifier>{321b2eb9-ab1e-4f57-aa9b-2301b53d3616}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\utility">
+      <UniqueIdentifier>{8ac341bc-e7ab-4539-ba19-dc998190d9e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,6 +246,27 @@
     <ClInclude Include="IBitmapWnd.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="GpsEngine.h">
+      <Filter>Main\EngineGps</Filter>
+    </ClInclude>
+    <ClInclude Include="MainInterface.h">
+      <Filter>Main\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterWindow.h">
+      <Filter>Main\Master</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowMain.h">
+      <Filter>Main\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowMainPimpl.h">
+      <Filter>Main\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowOpenGLMain.h">
+      <Filter>Main\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowUtility.h">
+      <Filter>Main\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -397,6 +433,15 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="GpsEngine.cpp">
+      <Filter>Main\EngineGps</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterWindow.cpp">
+      <Filter>Main\Master</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowUtility.cpp">
+      <Filter>Main\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

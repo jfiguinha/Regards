@@ -16,7 +16,7 @@
 #include <MetadataExiv2.h>
 #include <videothumb.h>
 #include <FileUtility.h>
-#include <Tracing.h>
+
 #include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
 #include "ffmpeg_transcoding.h"
@@ -419,7 +419,7 @@ void CShowPreview::Resize()
 
 bool CShowPreview::SetBitmap(CImageLoadingFormat* bitmap)
 {
-	TRACE();
+	
 
 	if (previewToolbar != nullptr)
 		previewToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());

@@ -16,7 +16,7 @@
 #include <ThumbnailData.h>
 #include "ThumbnailMessage.h"
 #include <libPicture.h>
-#include <Tracing.h>
+
 
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -84,7 +84,7 @@ bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone* icone, CWindowMain* p
 
 CIcone* CThumbnail::FindElement(const int& xPos, const int& yPos)
 {
-	TRACE();
+	
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
 }
@@ -92,7 +92,7 @@ CIcone* CThumbnail::FindElement(const int& xPos, const int& yPos)
 
 void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 {
-	TRACE();
+	
 
 	wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
 	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
@@ -131,7 +131,7 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 
 void CThumbnail::SetCheck(const bool& check)
 {
-	TRACE();
+	
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pIcone = iconeList->GetElement(i);
@@ -144,7 +144,7 @@ void CThumbnail::SetCheck(const bool& check)
 
 void CThumbnail::GetSelectItem(vector<CThumbnailData*>& vectorData)
 {
-	TRACE();
+	
 	for (int i = 0; i < nbElementInIconeList; i++)
 	{
 		CIcone* pIcone = iconeList->GetElement(i);
@@ -173,7 +173,7 @@ CIcone* CThumbnail::GetIconeById(const int& idPhoto)
 
 int CThumbnail::GetNumItemById(const int& idPhoto)
 {
-	TRACE();
+	
 	pItemCompFonct _pf = &ItemCompFonctPhotoId;
 	CIcone* icone = iconeList->FindElement(idPhoto, 0, &_pf, this);
 	if (icone != nullptr)
@@ -188,7 +188,7 @@ int CThumbnail::GetNumPhotoId(const int &numItem)
 
 void CThumbnail::SetActifItem(const int& idPhoto, const bool& move)
 {
-	TRACE();
+	
 
 	int numItem = GetNumItemById(idPhoto);
 
@@ -350,13 +350,13 @@ wxString CThumbnail::GetFilename(const int& numItem)
 
 void CThumbnail::SetTheme(CThemeThumbnail* theme)
 {
-	TRACE();
+	
 	themeThumbnail = *theme;
 }
 
 void CThumbnail::ZoomOn()
 {
-	TRACE();
+	
 	positionSize++;
 	if (positionSize > Max)
 		positionSize = Max;
@@ -369,7 +369,7 @@ void CThumbnail::ZoomOn()
 
 void CThumbnail::ZoomOff()
 {
-	TRACE();
+	
 	positionSize--;
 	if (positionSize < 1)
 		positionSize = 1;
@@ -382,7 +382,7 @@ void CThumbnail::ZoomOff()
 
 void CThumbnail::ZoomPosition(const int& position)
 {
-	TRACE();
+	
 	positionSize = position + 1;
 	if (positionSize < 1)
 		positionSize = 1;
@@ -682,7 +682,7 @@ void CThumbnail::OnRefreshIconeSelect(wxTimerEvent& event)
 
 CThumbnail::~CThumbnail()
 {
-	TRACE();
+	
 	threadDataProcess = false;
 
 	refreshMouseMove->Stop();
@@ -729,25 +729,25 @@ CThumbnail::~CThumbnail()
 
 int CThumbnail::GetWidth()
 {
-	TRACE();
+	
 	return thumbnailSizeX;
 }
 
 int CThumbnail::GetHeight()
 {
-	TRACE();
+	
 	return thumbnailSizeY;
 }
 
 int CThumbnail::GetIconeHeight()
 {
-	TRACE();
+	
 	return themeThumbnail.themeIcone.GetHeight();
 }
 
 int CThumbnail::GetIconeWidth()
 {
-	TRACE();
+	
 	return themeThumbnail.themeIcone.GetWidth();
 }
 
@@ -776,7 +776,7 @@ void CThumbnail::AfterSetList()
 
 void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 {
-	TRACE();
+	
 
 	iconeListLocal->EraseThumbnailList();
 
@@ -786,7 +786,7 @@ void CThumbnail::EraseThumbnailList(CIconeList* iconeListLocal)
 
 void CThumbnail::SetIconeSize(const int& width, const int& height)
 {
-	TRACE();
+	
 	themeThumbnail.themeIcone.SetWidth(width);
 	themeThumbnail.themeIcone.SetHeight(height);
 
@@ -825,7 +825,7 @@ void CThumbnail::ProcessThumbnail(CThumbnailData* pThumbnailData)
 
 void CThumbnail::ProcessIdle()
 {
-	TRACE();
+	
 	if (nbElementInIconeList == 0 || threadDataProcess == false)
 	{
 		processIdle = false;
@@ -903,7 +903,7 @@ void CThumbnail::ProcessIdle()
 
 void CThumbnail::UpdateMessage(wxCommandEvent& event)
 {
-	TRACE();
+	
 	const int nbPhoto = event.GetExtraLong();
 	const auto thumbnailMessage = new CThumbnailMessage();
 	thumbnailMessage->nbPhoto = nbPhoto;
@@ -988,7 +988,7 @@ void CThumbnail::OnIdle(wxIdleEvent& evt)
 
 bool CThumbnail::GetProcessEnd()
 {
-	TRACE();
+	
 	if (nbProcess > 0 && nbVideoThumbnailProcess > 0)
 		return false;
 	return true;
@@ -996,7 +996,7 @@ bool CThumbnail::GetProcessEnd()
 
 wxString CThumbnail::GetWaitingMessage()
 {
-	TRACE();
+	
 	return "Window Thumbnail waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
 }
 
@@ -1005,7 +1005,7 @@ wxString CThumbnail::GetWaitingMessage()
 
 void CThumbnail::LoadPicture(void* param)
 {
-	TRACE();
+	
 	//std::thread* t1 = nullptr;
 	CLibPicture libPicture;
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(param);
@@ -1059,7 +1059,7 @@ void CThumbnail::LoadPicture(void* param)
 
 void CThumbnail::OnMouseMove(wxMouseEvent& event)
 {
-	TRACE();
+	
 	if (threadDataProcess == false)
 		return;
 
@@ -1144,7 +1144,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 
 void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const int& posLargeur, const int& posHauteur)
 {
-	TRACE();
+	
 
 	if (pBitmapIcone == nullptr)
 		return;
@@ -1181,19 +1181,19 @@ void CThumbnail::RenderBitmap(wxDC* deviceContext, CIcone* pBitmapIcone, const i
 
 void CThumbnail::UpdateScreenRatio()
 {
-	TRACE();
+	
 	this->Resize();
 }
 
 void CThumbnail::OpenFileViewer(const wxString& filename)
 {
-	TRACE();
+	
 	//ShellExecute(m_hWnd, L"open", filename.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 }
 
 void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 {
-	TRACE();
+	
 
 
 	int xPos = event.GetX();
@@ -1234,7 +1234,7 @@ void CThumbnail::OnLButtonUp(wxMouseEvent& event)
 
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
-	TRACE();
+	
 	wxClientDC winDC(this);
 	this->SetFocus();
 	int xPos = event.GetX();
@@ -1328,7 +1328,7 @@ int CThumbnail::GetNbIconSelected()
 
 void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 {
-	TRACE();
+	
 	int numItem = event.GetExtraLong();
 
 	if (numloadingIconePhotoId != -1)
@@ -1357,7 +1357,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 
 void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 {
-	TRACE();
+	
 
 	if (numloadingIconePhotoId != -1)
 	{
@@ -1374,7 +1374,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 
 void CThumbnail::on_paint(wxPaintEvent& event)
 {
-	TRACE();
+	
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 
@@ -1489,7 +1489,7 @@ void CThumbnail::on_paint(wxPaintEvent& event)
 
 void CThumbnail::Resize()
 {
-	TRACE();
+	
 	CalculControlSize();
 	ResizeThumbnail();
 	needToRefresh = true;
@@ -1497,7 +1497,7 @@ void CThumbnail::Resize()
 
 void CThumbnail::CalculControlSize()
 {
-	TRACE();
+	
 	controlWidth = GetWidth();
 	controlHeight = GetHeight();
 
@@ -1517,7 +1517,7 @@ void CThumbnail::CalculControlSize()
 ////////////////////////////////////////////////////////////////////////////////
 void CThumbnail::TestMaxX()
 {
-	TRACE();
+	
 
 	if (long xValue = GetWidth() - GetWindowWidth(); posLargeur >= xValue)
 		posLargeur = xValue;
@@ -1528,13 +1528,13 @@ void CThumbnail::TestMaxX()
 
 void CThumbnail::OnEnterWindow(wxMouseEvent& event)
 {
-	TRACE();
+	
 	isMouseOnWindow = true;
 }
 
 void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 {
-	TRACE();
+	
 	isMouseOnWindow = false;
 }
 
@@ -1543,7 +1543,7 @@ void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 void CThumbnail::TestMaxY()
 {
-	TRACE();
+	
 
 	if (long yValue = GetHeight() - GetWindowHeight(); posHauteur >= yValue)
 		posHauteur = yValue;
@@ -1565,7 +1565,7 @@ void CThumbnail::OnKeyUp(wxKeyEvent& event)
 
 void CThumbnail::OnKeyDown(wxKeyEvent& event)
 {
-	TRACE();
+	
 
 
 	switch (event.m_keyCode)
@@ -1603,7 +1603,7 @@ void CThumbnail::OnKeyDown(wxKeyEvent& event)
 
 void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
-	TRACE();
+	
 	int move;
     
     printf("OnMouseWheel value : %d \n", event.GetWheelRotation());
@@ -1653,7 +1653,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 
 void CThumbnail::InitScrollingPos()
 {
-	TRACE();
+	
 
 	posHauteur = 0;
 	posLargeur = 0;
@@ -1675,7 +1675,7 @@ void CThumbnail::InitScrollingPos()
 
 void CThumbnail::update_render_icone(wxCommandEvent& event)
 {
-	TRACE();
+	
 	auto filename = new wxString();
 	auto threadLoadingBitmap = static_cast<CThreadLoadingBitmap*>(event.GetClientData());
 	if (threadLoadingBitmap == nullptr)

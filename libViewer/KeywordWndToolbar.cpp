@@ -1,7 +1,7 @@
 #include <header.h>
 #include "KeywordWndToolbar.h"
 
-#include <Tracing.h>
+
 
 #include "KeywordManagementWindow.h"
 #include "ToolbarKeyword.h"
@@ -50,7 +50,7 @@ void CKeywordWndToolbar::Init(const wxString& filename)
 
 void CKeywordWndToolbar::UpdateScreenRatio()
 {
-	TRACE();
+	
 	toolbarKeyword->UpdateScreenRatio();
 	keywordWnd->UpdateScreenRatio();
 	this->Resize();
@@ -58,7 +58,7 @@ void CKeywordWndToolbar::UpdateScreenRatio()
 
 void CKeywordWndToolbar::Resize()
 {
-	TRACE();
+	
 
 	wxRect rcAffichageBitmap;
 	rcAffichageBitmap.x = 0;

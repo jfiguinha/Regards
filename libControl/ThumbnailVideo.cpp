@@ -12,7 +12,7 @@
 #include <SqlPhotosWithoutThumbnail.h>
 #include <LibResource.h>
 #include <ImageVideoThumbnail.h>
-#include <Tracing.h>
+
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -468,7 +468,7 @@ void CThumbnailVideo::ResizeThumbnail()
 
 void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
 {
-	TRACE();
+	
 	long value = event.GetExtraLong();
 	if (value == 1)
 	{

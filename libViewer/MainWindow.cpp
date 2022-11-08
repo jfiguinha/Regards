@@ -40,7 +40,7 @@
 #include <CompressionAudioVideoOption.h>
 #include <VideoCompressOption.h>
 #include <ParamInit.h>
-#include <Tracing.h>
+
 #include <ThumbnailVideoExport.h>
 #include <ffplaycore.h>
 #include <ConvertUtility.h>
@@ -784,7 +784,7 @@ void CMainWindow::SetDataToStatusBar(void* thumbMessage, const wxString& picture
 //---------------------------------------------------------------
 void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 {
-	TRACE();
+	
 	const auto thumbnailMessage = static_cast<CThumbnailMessage*>(event.GetClientData());
 	if (thumbnailMessage != nullptr)
 	{
@@ -819,7 +819,7 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 
 		case 3:
 		{
-			TRACE();
+			
 			const wxString picture = CLibResource::LoadStringFromResource(L"LBLPICTURERENDER", 1);
 			SetDataToStatusBar(event.GetClientData(), picture);
 		}
@@ -827,7 +827,7 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 
 		case 4:
 		{
-			TRACE();
+			
 			const wxString picture = CLibResource::LoadStringFromResource(L"LBLFACEPROCESS", 1);
 			SetDataToStatusBar(event.GetClientData(), picture);
 		}
@@ -835,7 +835,7 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 
 		case 5:
 		{
-			TRACE();
+			
 			const wxString picture = "Face Recognition progress : ";
 			SetDataToStatusBar(event.GetClientData(), picture);
 		}
@@ -863,7 +863,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::RefreshFolderList(wxCommandEvent& event)
 {
-	TRACE();
+	
 	updateFolder = true;
 	processIdle = true;
 }
@@ -882,7 +882,7 @@ wxString CMainWindow::GetFilename()
 //---------------------------------------------------------------
 void CMainWindow::CriteriaChange(wxCommandEvent& event)
 {
-	TRACE();
+	
 	//Refresh Criteria
 	wxWindow* window = FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
@@ -900,7 +900,7 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::OnShowToolbar(wxCommandEvent& event)
 {
-	TRACE();
+	
 	ShowToolbar();
 }
 
@@ -909,7 +909,7 @@ void CMainWindow::OnShowToolbar(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::UpdateScreenRatio()
 {
-	TRACE();
+	
 	toolbar->UpdateScreenRatio();
 	centralWnd->UpdateScreenRatio();
 	this->Resize();
@@ -920,7 +920,7 @@ void CMainWindow::UpdateScreenRatio()
 //---------------------------------------------------------------
 void CMainWindow::OnStatusSetText(wxCommandEvent& event)
 {
-	TRACE();
+	
 	auto statusText = static_cast<CStatusText*>(event.GetClientData());
 	if (statusText != nullptr)
 	{
@@ -934,7 +934,7 @@ void CMainWindow::OnStatusSetText(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::OnSetValueProgressBar(wxCommandEvent& event)
 {
-	TRACE();
+	
 
 	int position = event.GetInt();
 	//cout << "OnSetValueProgressBar Pos : " << position << endl;
@@ -957,7 +957,7 @@ void CMainWindow::OnSetValueProgressBar(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::OnSetRangeProgressBar(wxCommandEvent& event)
 {
-	TRACE();
+	
 	int range = event.GetInt();
 	// cout << "OnSetRangeProgressBar Pos : " << range << endl;
 	if (progressBar != nullptr)
@@ -969,7 +969,7 @@ void CMainWindow::OnSetRangeProgressBar(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::SetText(const int& numPos, const wxString& libelle)
 {
-	TRACE();
+	
 	auto event = new wxCommandEvent(wxEVENT_SETSTATUSTEXT);
 	auto statusText = new CStatusText();
 	statusText->position = numPos;
@@ -985,7 +985,7 @@ void CMainWindow::SetText(const int& numPos, const wxString& libelle)
 //---------------------------------------------------------------
 void CMainWindow::SetRangeProgressBar(const int& range)
 {
-	TRACE();
+	
 	auto event = new wxCommandEvent(wxEVENT_SETRANGEPROGRESSBAR);
 	event->SetInt(range);
 	wxQueueEvent(this, event);
@@ -996,7 +996,7 @@ void CMainWindow::SetRangeProgressBar(const int& range)
 //---------------------------------------------------------------
 void CMainWindow::SetPosProgressBar(const int& position)
 {
-	TRACE();
+	
 	auto event = new wxCommandEvent(wxEVENT_SETVALUEPROGRESSBAR);
 	event->SetInt(position);
 	wxQueueEvent(this, event);
@@ -1237,7 +1237,7 @@ void CMainWindow::PhotoProcess(CPhotos* photo)
 //---------------------------------------------------------------
 void CMainWindow::ProcessIdle()
 {
-	TRACE();
+	
 	bool hasDoneOneThings = false;
 	//int nbProcesseur = 1;
 
@@ -1297,7 +1297,7 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 //---------------------------------------------------------------
 void CMainWindow::Md5Checking(wxCommandEvent& event)
 {
-	TRACE();
+	
 	auto path = static_cast<CThreadMD5*>(event.GetClientData());
 	if (path != nullptr)
 	{
@@ -1324,7 +1324,7 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::CheckMD5(void* param)
 {
-	TRACE();
+	
 	auto path = static_cast<CThreadMD5*>(param);
 	if (path != nullptr)
 	{
@@ -1353,7 +1353,7 @@ void CMainWindow::CheckMD5(void* param)
 //---------------------------------------------------------------
 CMainWindow::~CMainWindow()
 {
-	TRACE();
+	
 	delete(centralWnd);
 	delete(toolbar);
 }
@@ -1369,7 +1369,7 @@ void CMainWindow::SaveParameter()
 
 void CMainWindow::Resize()
 {
-	TRACE();
+	
 	if (!fullscreen)
 	{
 		wxRect rcAffichageBitmap;
@@ -1398,7 +1398,7 @@ void CMainWindow::Resize()
 
 void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 {
-	TRACE();
+	
 	const long timePosition = event.GetExtraLong();
 	if (centralWnd != nullptr)
 	{
@@ -1409,7 +1409,7 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
-	TRACE();
+	
 	const int photoId = event.GetExtraLong();
 	wxString filename = "";
 	for (CPhotos photo : pictures)
@@ -1447,7 +1447,7 @@ void CMainWindow::OnUpdateFolder(wxCommandEvent& event)
 
 void CMainWindow::TransitionEnd()
 {
-	TRACE();
+	
 	centralWnd->TransitionEnd();
 
 	if (!centralWnd->IsDiaporamaStart())
@@ -1475,7 +1475,7 @@ void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
 
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {
-	TRACE();
+	
 
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CMainWindow::OnUpdateInfos");
@@ -1503,7 +1503,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 bool CMainWindow::GetProcessEnd()
 {
-	TRACE();
+	
 	if (nbProcessMD5 > 0)
 		return false;
 
@@ -1521,13 +1521,13 @@ void CMainWindow::OnEndThumbnail(wxCommandEvent& event)
 
 void CMainWindow::OnScanner(wxCommandEvent& event)
 {
-	TRACE();
+	
 	statusBarViewer->ShowScanner();
 }
 
 void CMainWindow::OnExit(wxCommandEvent& event)
 {
-	TRACE();
+	
 	statusBarViewer->Exit();
 }
 
@@ -1591,7 +1591,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 bool CMainWindow::OpenFolder(const wxString& path)
 {
-	TRACE();
+	
 	if (wxDirExists(path))
 	{
 		if (viewerParam != nullptr)
@@ -1612,13 +1612,13 @@ bool CMainWindow::OpenFolder(const wxString& path)
 
 bool CMainWindow::IsFullscreen()
 {
-	TRACE();
+	
 	return fullscreen;
 }
 
 void CMainWindow::InitPictures(wxCommandEvent& event)
 {
-	TRACE();
+	
 	printf("InitPictures \n");
 	refreshFolder = true;
 	processIdle = true;
@@ -1627,7 +1627,7 @@ void CMainWindow::InitPictures(wxCommandEvent& event)
 
 void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 {
-	TRACE();
+	
 	updateCriteria = true;
 	printf("OnFaceInfosUpdate /n");
 	processIdle = true;
@@ -1642,7 +1642,7 @@ void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 
 void CMainWindow::ShowToolbar()
 {
-	TRACE();
+	
 	showToolbar = !showToolbar;
 	if (centralWnd != nullptr)
 	{
@@ -1658,7 +1658,7 @@ void CMainWindow::ShowToolbar()
 ////////////////////////////////////////////////////////////////////////////////////////////////
 bool CMainWindow::SetFullscreen()
 {
-	TRACE();
+	
 	const bool work = centralWnd->IsCompatibleFullscreen();
 	if (work)
 		statusBarViewer->SetFullscreen();
@@ -1667,14 +1667,14 @@ bool CMainWindow::SetFullscreen()
 
 void CMainWindow::SetScreenEvent(wxCommandEvent& event)
 {
-	TRACE();
+	
 	this->Resize();
 }
 
 bool CMainWindow::SetFullscreenMode()
 {
 	bool is_work = false;
-	TRACE();
+	
 	if (!fullscreen)
 	{
 		if (centralWnd->FullscreenMode())
@@ -1693,7 +1693,7 @@ bool CMainWindow::SetFullscreenMode()
 bool CMainWindow::SetScreen()
 {
 	bool isWork = false;
-	TRACE();
+	
 	if (fullscreen)
 	{
 		if (centralWnd->ScreenMode())

@@ -1,7 +1,7 @@
 #include <header.h>
 #include "InfosFileWnd.h"
 
-#include <Tracing.h>
+
 #include <TreeWindow.h>
 #include <window_id.h>
 
@@ -24,7 +24,7 @@ CInfosFileWnd::CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScroll
 
 CInfosFileWnd::~CInfosFileWnd(void)
 {
-	TRACE();
+	
 
 	if (oldInfosFileControl != nullptr)
 		delete(oldInfosFileControl);
@@ -32,7 +32,7 @@ CInfosFileWnd::~CInfosFileWnd(void)
 
 void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 {
-	TRACE();
+	
 
 	auto threadInfos = static_cast<CThreadLoadInfos*>(event.GetClientData());
 	// if(threadInfos->filename == filename)
@@ -57,7 +57,7 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent& event)
 
 void CInfosFileWnd::InfosUpdate(const wxString& filename)
 {
-	TRACE();
+	
 
 	if (filename != this->filename)
 	{
@@ -77,7 +77,7 @@ void CInfosFileWnd::InfosUpdate(const wxString& filename)
 
 void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos* threadInfos)
 {
-	TRACE();
+	
 
 	CInfosFile* infosFileWnd = threadInfos->infosFileWnd;
 	infosFileWnd->SetFile(threadInfos->filename);

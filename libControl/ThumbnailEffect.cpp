@@ -16,7 +16,7 @@
 #include <picture_id.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
-#include <Tracing.h>
+
 #include <effect_id.h>
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
@@ -441,7 +441,7 @@ void CThumbnailEffect::LoadPicture(void* param)
 
 void CThumbnailEffect::ProcessIdle()
 {
-	TRACE();
+	
 	printf("CThumbnailEffect::ProcessIdle() \n");
 	//int nbProcesseur = thread::hardware_concurrency();
 	int nbProcesseur = 1;

@@ -9,7 +9,7 @@
 #include <SqlPhotos.h>
 #include <FileGeolocation.h>
 #include <GpsEngine.h>
-#include <Tracing.h>
+
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
@@ -19,7 +19,7 @@ using namespace std;
 CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos& theme)
 	: CWindowMain("CBitmapInfos", parent, id)
 {
-	TRACE();
+	
 	CListOfWindow* fileGeolocalisation = CGpsEngine::getInstance();
 	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;

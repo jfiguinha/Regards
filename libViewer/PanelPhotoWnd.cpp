@@ -15,7 +15,7 @@
 #include "ConvertUtility.h"
 #include "SqlFolderCatalog.h"
 #include "SQLRemoveData.h"
-#include <Tracing.h>
+
 namespace Regards
 {
 	namespace Viewer
@@ -255,7 +255,7 @@ void CPanelPhotoWnd::LoadInfo()
 
 wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialog)
 {
-	TRACE();
+	
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
 	wxString localFilename = "";
 	wxString msg = "In progress ...";
@@ -309,7 +309,7 @@ wxString CPanelPhotoWnd::AddFolder(const wxString& folder, const bool &showDialo
 void CPanelPhotoWnd::RemoveFolder(const wxString& folder)
 {
 	auto windowMain = static_cast<CWindowMain*>(this->FindWindowById(MAINVIEWERWINDOWID));
-	TRACE();
+	
 	wxBusyInfo wait("Please wait, working...", windowMain);
 	if (!folder.IsEmpty())
 	{

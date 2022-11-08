@@ -20,7 +20,7 @@
 #include <ThumbnailMessage.h>
 #include <TreeWindow.h>
 #include <GpsEngine.h>
-#include <Tracing.h>
+
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -192,7 +192,7 @@ wxString CCategoryFolderWindow::GetWaitingMessage()
 
 void CCategoryFolderWindow::ProcessIdle()
 {
-	TRACE();
+	
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
 	int nbPhotos;
