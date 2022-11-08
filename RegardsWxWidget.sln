@@ -6,17 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Picture", "Picture", "{111643F2-A36E-4F2F-8049-409B7E3F2E9C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{03F02712-6B4F-4FAF-8369-9242E482A156}"
-	ProjectSection(SolutionItems) = preProject
-		include\config_id.h = include\config_id.h
-		include\effect_id.h = include\effect_id.h
-		include\font_quality.h = include\font_quality.h
-		include\header.cpp = include\header.cpp
-		include\header.h = include\header.h
-		include\lang_id.h = include\lang_id.h
-		include\picture_id.h = include\picture_id.h
-		include\tostring.h = include\tostring.h
-		include\window_id.h = include\window_id.h
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libSqlEngine", "libSqlEngine\libSqlEngine.vcxproj", "{DBDF9029-404C-4C2A-B226-485E21D3E785}"
 EndProject
