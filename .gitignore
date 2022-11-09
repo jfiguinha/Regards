@@ -109,3 +109,5 @@
 /RegardsViewer/ARM64/Release
 /wxCheckTree/ARM64/Release
 /include/arm64/Release
+/RegardsViewer/package/Prerequisites
+/RegardsViewer/package/RegardsViewer2_arm.exe
