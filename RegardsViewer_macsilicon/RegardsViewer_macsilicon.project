@@ -277,7 +277,6 @@
         <LibraryPath Value="../libViewer/Debug"/>
         <LibraryPath Value="../libSqlEngine/Debug"/>
         <LibraryPath Value="../libResource/Debug"/>
-        <LibraryPath Value="../libCompress/Debug"/>
         <LibraryPath Value="../libDialog/Debug"/>
         <LibraryPath Value="../libPicture/Debug"/>
         <LibraryPath Value="../libUtility/Debug"/>
@@ -291,7 +290,6 @@
         <LibraryPath Value="../libParameter/Debug"/>
         <LibraryPath Value="../libOpenCL/Debug"/>
         <LibraryPath Value="../libEmail/Debug"/>
-        <LibraryPath Value="../libWindowMain/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../libAppleFunction/Debug"/>
@@ -299,7 +297,6 @@
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
         <LibraryPath Value="../Otherlib/libffmpeg/Debug"/>
-        <LibraryPath Value="../libOpenCLEngine/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -330,8 +327,6 @@
         <Command Enabled="yes">cp -f ../Regards/mac/wxmac.icns ./Debug/RegardsViewer.app/Contents/Resources/wxmac.icns</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/RegardsViewer.app/Contents/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Debug/libRegardsBpg.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtbb.12.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">install_name_tool -change @rpath/libtbb.12.dylib @executable_path/../Frameworks/libtbb.12.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
