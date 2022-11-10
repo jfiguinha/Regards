@@ -290,7 +290,7 @@
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
-        <StartupCommands></StartupCommands>
+        <StartupCommands/>
       </Debugger>
       <PreBuild>
         <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir ../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1 --include-dir ../libextern/wxWidgets-master/include -o regards.rc.o</Command>
@@ -680,7 +680,6 @@
   </Settings>
   <Dependencies Name="Debug">
     <Project Name="include"/>
-    <Project Name="libWindowMain"/>
     <Project Name="libWindow"/>
     <Project Name="libViewer"/>
     <Project Name="libVideoThumbnail"/>
@@ -697,7 +696,6 @@
     <Project Name="libExif"/>
     <Project Name="libEmail"/>
     <Project Name="libDialog"/>
-    <Project Name="libCompress"/>
     <Project Name="CxImage"/>
     <Project Name="libControl"/>
     <Project Name="libFiltreInterface"/>
@@ -714,14 +712,11 @@
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
     <Project Name="libheif"/>
-    <Project Name="libOpenCLEngine"/>
   </Dependencies>
   <Dependencies Name="Release">
     <Project Name="include"/>
     <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
     <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
     <Project Name="libWindow"/>
     <Project Name="libViewer"/>
     <Project Name="libVideoThumbnail"/>
@@ -753,7 +748,6 @@
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
     <Project Name="libheif"/>
-    <Project Name="libOpenCLEngine"/>
     <Project Name="libResource"/>
   </Dependencies>
 </CodeLite_Project>

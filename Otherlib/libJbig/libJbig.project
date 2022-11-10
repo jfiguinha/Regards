@@ -14,8 +14,6 @@
   <VirtualDirectory Name="include">
     <File Name="jbig.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options="$(shell ../../libextern/wxWidgets-master/wx-config --cflags);-pthread" Assembler="">
@@ -106,4 +104,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

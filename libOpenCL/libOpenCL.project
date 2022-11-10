@@ -29,15 +29,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="OpenCLParameter.cpp"/>
     <File Name="OpenCLFilter.cpp"/>
     <File Name="OpenCLEffectVideo.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="OpenCLParameter.h"/>
     <File Name="OpenCLFilter.h"/>
     <File Name="OpenCLEffectVideo.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-pthread;" C_Options="-Wall;" Assembler="">
@@ -141,4 +141,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

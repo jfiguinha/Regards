@@ -109,19 +109,12 @@
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libextern/"/>
-        <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../libextern/ffmpeg-master"/>
-        <IncludePath Value="../libextern/ffmpeg-master/include"/>
         <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>

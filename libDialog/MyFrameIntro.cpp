@@ -5,11 +5,7 @@
 using namespace Regards::Introduction;
 
 #ifndef wxHAS_IMAGES_IN_RESOURCES
-#ifdef __WXGTK__
 #include "../Resource/sample.xpm"
-#else
-#include "../../Resource/sample.xpm"
-#endif
 #endif
 
 MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size,

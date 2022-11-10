@@ -26,8 +26,6 @@
     <File Name="DetectRotation.h"/>
     <File Name="DeepLearning.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxconfig_cpp.sh);-std=gnu++14;-Wall;-fpermissive;-pthread;" C_Options=";-Wall;" Assembler="">
@@ -128,4 +126,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

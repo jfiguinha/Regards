@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Regards" Database="" Version="10.0.0">
-  <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
   <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
   <Project Name="libResource" Path="libResource/libResource.project" Active="No"/>
   <Project Name="libTheme" Path="libTheme/libTheme.project" Active="No"/>
@@ -46,16 +45,15 @@
     <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
     <Project Name="libViewer" Path="libViewer/libViewer.project" Active="No"/>
     <Project Name="libWindow" Path="libWindow/libWindow.project" Active="No"/>
-    <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project" Active="No"/>
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
     <Project Name="libScanner" Path="libScanner/libScanner.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
     <Project Name="MacOsLibExplorer" Path="MacOsLibExplorer/MacOsLibExplorer.project" Active="No"/>
-    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="No"/>
+    <Project Name="RegardsViewer_macsilicon" Path="RegardsViewer_macsilicon/RegardsViewer_macsilicon.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -69,14 +67,12 @@
   <VirtualDirectory Name="OpenCL - OpenGL">
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
-    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
-      <Project Name="libCompress" ConfigName="Debug"/>
       <Project Name="libControl" ConfigName="Debug"/>
       <Project Name="libDialog" ConfigName="Debug"/>
       <Project Name="libFiltre" ConfigName="Debug"/>
@@ -94,7 +90,6 @@
       <Project Name="libWindow" ConfigName="Debug"/>
       <Project Name="include" ConfigName="Debug"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Debug"/>
-      <Project Name="libWindowMain" ConfigName="Debug"/>
       <Project Name="libVideoFFMpeg" ConfigName="Debug"/>
       <Project Name="libEmail" ConfigName="Debug"/>
       <Project Name="libExif" ConfigName="Debug"/>
@@ -135,7 +130,6 @@
       <Project Name="libavif" ConfigName="Debug"/>
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="RegardsRaw" ConfigName="Debug"/>
-      <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
@@ -153,7 +147,6 @@
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>
-      <Project Name="libCompress" ConfigName="Release"/>
       <Project Name="libControl" ConfigName="Release"/>
       <Project Name="libDialog" ConfigName="Release"/>
       <Project Name="libFiltre" ConfigName="Release"/>
@@ -171,7 +164,6 @@
       <Project Name="libWindow" ConfigName="Release"/>
       <Project Name="include" ConfigName="Release"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Release"/>
-      <Project Name="libWindowMain" ConfigName="Release"/>
       <Project Name="libVideoFFMpeg" ConfigName="Release"/>
       <Project Name="libEmail" ConfigName="Release"/>
       <Project Name="libExif" ConfigName="Release"/>
@@ -212,7 +204,6 @@
       <Project Name="libavif" ConfigName="Release"/>
       <Project Name="libheif" ConfigName="Release"/>
       <Project Name="RegardsRaw" ConfigName="Release"/>
-      <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
