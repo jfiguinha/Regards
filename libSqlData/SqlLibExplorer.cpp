@@ -4,9 +4,10 @@
 #include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <libPicture.h>
-#include <FiltreEffetCPU.h>
+#include <ConvertUtility.h>
 #include <FileUtility.h>
 #include <wx/dir.h>
+using namespace cv;
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
@@ -108,6 +109,39 @@ CSqlLibExplorer::~CSqlLibExplorer()
 {
 }
 
+
+
+void CSqlLibExplorer::LoadAndRotate(const wxString& filePath, const int& rotate)
+{
+	if (!wxFileExists(filePath))
+	{
+		return;
+	}
+
+	Mat src = imread(CConvertUtility::ConvertToStdString(filePath));
+	if (src.empty())
+		return;
+
+	if (rotate == 90)
+	{
+		// Rotate clockwise 270 degrees
+		transpose(src, src);
+		flip(src, src, 0);
+	}
+	else if (rotate == 180)
+	{
+		// Rotate clockwise 180 degrees
+		flip(src, src, -1);
+	}
+	else if (rotate == 270)
+	{
+		// Rotate clockwise 90 degrees
+		transpose(src, src);
+		flip(src, src, 1);
+	}
+	imwrite(CConvertUtility::ConvertToStdString(filePath), src);
+	src.release();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Function: InitDatabase()
@@ -366,7 +400,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString& lpFilename)
 			{
 				if (libPicture.TestImageFormat(file) != 0)
 				{
-					CFiltreEffetCPU::LoadAndRotate(file, 180);
+					LoadAndRotate(file, 180);
 				}
 			}
 		}

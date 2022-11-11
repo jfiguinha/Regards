@@ -27,6 +27,7 @@
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <ConvertUtility.h>
+#include <picture_utility.h>
 #include <picture_id.h>
 #include <LibResource.h>
 #include "pfm.h"
@@ -1455,7 +1456,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	}
 	if (m_ani_images == 0)
 	{
-		CImageLoadingFormat* photo_cancel = LoadPicture(CLibResource::GetPhotoCancel());
+		CImageLoadingFormat* photo_cancel = LoadPicture(CPictureUtility::GetPhotoCancel());
 		if (photo_cancel->IsOk())
 		{
 			photo_cancel->SetFilename(szFileName);
@@ -2806,9 +2807,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	if (!bitmap->IsOk())
 	{
 		//delete bitmap;
-		//bitmap = LoadPicture(CLibResource::GetPhotoCancel());
+		//bitmap = LoadPicture(CPictureUtility::GetPhotoCancel());
 
-        CRegardsBitmap* _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(CLibResource::GetPhotoCancel()));
+        CRegardsBitmap* _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(CPictureUtility::GetPhotoCancel()));
 		if (_bitmap != nullptr)
 		{
 			_bitmap->SetFilename(fileName);

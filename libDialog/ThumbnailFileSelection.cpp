@@ -6,6 +6,7 @@
 #include <libPicture.h>
 #include <ScrollbarHorizontalWnd.h>
 #include <ScrollbarWnd.h>
+#include <picture_utility.h>
 #include <ImageVideoThumbnail.h>
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
@@ -54,7 +55,7 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 		if (thumbnail->image == nullptr)
 		{
 			CLibPicture libPicture;
-			thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+			thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -161,7 +162,7 @@ void CThumbnailFileSelection::SetListeFile()
 		if (thumbnail->image == nullptr)
 		{
 			CLibPicture libPicture;
-			thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+			thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);

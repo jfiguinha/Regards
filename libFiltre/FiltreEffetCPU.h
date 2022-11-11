@@ -1,6 +1,5 @@
 #pragma once
 #include "IFiltreEffet.h"
-#include <GLTexture.h>
 
 class CRegardsBitmap;
 class Chqdn3d;

@@ -515,7 +515,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../include;../cximage;../libParameter;../libUtility;../libDeeplearning;../libPicture;../libFiltreInterface;../libResource;../libOpenCL;../libOpenGL;.;../libOpenCLEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;../cximage;../libParameter;../libUtility;../libDeeplearning;../libPicture;../libFiltreInterface;../libResource;../libOpenCL;../libOpenGL;.</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>

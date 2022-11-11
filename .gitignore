@@ -111,3 +111,5 @@
 /include/arm64/Release
 /RegardsViewer/package/Prerequisites
 /RegardsViewer/package/RegardsViewer2_arm.exe
+/include/arm64/Debug
+/InsertResource/ARM64/Debug

@@ -31,7 +31,7 @@
 #include <ShowElement.h>
 #include <RegardsConfigParam.h>
 #include <ImageVideoThumbnail.h>
-
+#include <picture_utility.h>
 #include <wx/busyinfo.h>
 #include <VideoPlayer.h>
 using namespace Regards::Video;
@@ -671,7 +671,7 @@ int CCentralWindow::LoadPicture(const wxString& filename, const bool &refresh)
 		
 		if(errorPhoto)
 		{
-			pictureToLoad = CLibResource::GetPhotoCancel();
+			pictureToLoad = CPictureUtility::GetPhotoCancel();
 			needToLoadPicture = true;
 			StartLoadingPicture();
 		}
@@ -1778,7 +1778,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData* pictureData)
 		if (bitmap != nullptr)
 			delete bitmap;
 
-		bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+		bitmap = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 	}
 	bitmap->SetFilename(pictureData->picture);
 

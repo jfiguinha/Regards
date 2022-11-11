@@ -5,6 +5,7 @@
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
 #include <libPicture.h>
+#include <picture_utility.h>
 #include <LibResource.h>
 using namespace Regards::Control;
 using namespace Regards::Scanner;
@@ -155,7 +156,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 			if (thumbnail->image == nullptr)
 			{
 				CLibPicture libPicture;
-				thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+				thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);

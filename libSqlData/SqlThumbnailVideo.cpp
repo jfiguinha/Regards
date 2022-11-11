@@ -6,7 +6,7 @@
 #include <wx/file.h>
 #include <wx/dir.h>
 #include <FileUtility.h>
-#include <LibResource.h>
+#include <picture_utility.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -92,7 +92,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 			else
 			{
                 CLibPicture libPicture;
-				videoThumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+				videoThumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 				DeleteThumbnail(fullpath);
 			}
 			videoThumbnail->image->SetFilename(thumbnail);

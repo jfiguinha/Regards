@@ -12,7 +12,7 @@
 #include <SqlPhotosWithoutThumbnail.h>
 #include <LibResource.h>
 #include <ImageVideoThumbnail.h>
-
+#include <picture_utility.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Picture;
@@ -50,7 +50,7 @@ void CThumbnailVideo::ProcessThumbnail(void* param)
 				}
 				if (thumbnail->image == nullptr)
 				{
-					thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+					thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 
 				}
 
@@ -345,7 +345,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
 			if (thumbnail->image == nullptr)
-				thumbnail->image = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+				thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
 
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)

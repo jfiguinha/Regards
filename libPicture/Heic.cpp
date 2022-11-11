@@ -5,7 +5,7 @@
 #include <RegardsBitmap.h>
 #include <cstdint>
 #include <heifreader.h>
-#include <de265.h>
+#include <libde265/de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
 #include <libheif/heif.h>

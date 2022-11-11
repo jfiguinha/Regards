@@ -1,8 +1,9 @@
 #include <header.h>
 #include "SqlFindPhotos.h"
 #include "SqlResult.h"
-#include <LibResource.h>
+#include <picture_utility.h>
 #include <libPicture.h>
+#include <SqlResource.h>
 #include <ConvertUtility.h>
 using namespace Regards::Picture;
 using namespace Regards::Sqlite;
@@ -282,9 +283,10 @@ int CSqlFindPhotos::TraitementResult(CSqlResult * sqlResult)
 
 int CSqlFindPhotos::TraitementResultPhotoDataCriteria(CSqlResult* sqlResult)
 {
-	wxString listMonth = CLibResource::LoadStringFromResource(L"LBLMONTHNAME", 1);
+	CSqlResource sqlResource;
+	wxString listMonth = sqlResource.GetLibelle(L"LBLMONTHNAME", 1);
 	vector<wxString> MonthName = CConvertUtility::split(listMonth, ',');
-	wxString listDay = CLibResource::LoadStringFromResource(L"LBLDAYNAME", 1);
+	wxString listDay = sqlResource.GetLibelle(L"LBLDAYNAME", 1);
 	vector<wxString> DayName = CConvertUtility::split(listDay, ',');
 
 	int nbResult = 0;

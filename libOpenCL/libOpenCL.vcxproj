@@ -556,7 +556,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libFiltre;..\libParameter;..\libPicture;..\libOpenGL;..\libUtility;..\libResource;..\libDataStructure;..\libFiltreInterface;..\include;..\libDeepLearning;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libFiltre;..\libParameter;..\libPicture;..\libOpenGL;..\libUtility;..\libResource;..\libFiltreInterface;..\include;..\libDeepLearning;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
