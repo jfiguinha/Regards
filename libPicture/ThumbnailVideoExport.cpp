@@ -8,7 +8,7 @@
 #include <wx/progdlg.h>
 #include <effect_id.h>
 #include <ConvertUtility.h>
-#include <FaceRect.h>
+#include <picture_utility.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -204,7 +204,7 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 				int x = (sDst.width - sSrc.width) / 2;
 				Rect rect(x, y, 1920, 1080);
 				//bool is_inside = (rect & cv::Rect(0, 0, dest.cols, dest.rows)) == rect;
-				VerifRectSize(rect, dest);
+				CPictureUtility::VerifRectSize(rect, dest);
 				dest = dest(rect);
 				WritePicture(dest);
 				SendMessageProgress();

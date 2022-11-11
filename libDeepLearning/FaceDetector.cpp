@@ -13,7 +13,7 @@
 #include <opencv2/objdetect/face.hpp>
 #include <FileUtility.h>
 #include <ConvertUtility.h>
-
+#include <picture_utility.h>
 #define WIDTH_THUMBNAIL 1920
 #define HEIGHT_THUMBNAIL 1080
 
@@ -218,7 +218,7 @@ Mat CFaceDetector::RotateAndExtractFace(const double& theta_deg_eye, const Rect&
 	rect.y = max((bbox.height - faceLocation.height) / 2, 0);
 	rect.width = max(faceLocation.width, 0);
 	rect.height = max(faceLocation.height, 0);
-	VerifRectSize(rect, dst);
+	CPictureUtility::VerifRectSize(rect, dst);
 	//bool is_inside = (rect & cv::Rect(0, 0, dst.cols, dst.rows)) == rect;
 
 	dst = dst(rect);
@@ -500,7 +500,7 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 								rc.y += 1;
 								rc.width -= 2;
 								rc.height -= 2;
-								VerifRectSize(rc, faceColor);
+								CPictureUtility::VerifRectSize(rc, faceColor);
 								//bool is_inside = (rc & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == rc;
 
 								faceColor = faceColor(rc);
@@ -510,7 +510,7 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 							listOfFace[i].myROI.y += 1;
 							listOfFace[i].myROI.width -= 2;
 							listOfFace[i].myROI.height -= 2;
-							VerifRectSize(listOfFace[i].myROI, faceColor);
+							CPictureUtility::VerifRectSize(listOfFace[i].myROI, faceColor);
 							//bool is_inside = (listOfFace[i].myROI & cv::Rect(0, 0, faceColor.cols, faceColor.rows)) == listOfFace[i].myROI;
 
 							faceColor.copyTo(Source(listOfFace[i].myROI));

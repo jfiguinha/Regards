@@ -8,6 +8,7 @@
 #include "header.h"
 #include "DetectFacePCN.h"
 #include <FileUtility.h>
+#include <picture_utility.h>
 #include <ConvertUtility.h>
 using namespace cv;
 using namespace dnn;
@@ -90,7 +91,7 @@ void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listO
             int y2 = facelocal.w + facelocal.y - 1;
 
             Rect rect = Rect(Point(x1, y1), Point(x2, y2));
-            VerifRectSize(rect, frameOpenCVDNN);
+            CPictureUtility::VerifRectSize(rect, frameOpenCVDNN);
           //  bool is_inside = (rect & cv::Rect(0, 0, frameOpenCVDNN.cols, frameOpenCVDNN.rows)) == rect;
             face.myROI = rect;
             face.angle = (int)(360.0 - facelocal.angle) % 360;

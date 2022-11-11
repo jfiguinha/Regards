@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "RegardsBitmap.h"
 #include <ConvertUtility.h>
-#include <FaceRect.h>
+#include <picture_utility.h>
 #include <fstream>
 extern float value[256];
 extern float clamp(float val, float minval, float maxval);
@@ -773,7 +773,7 @@ CRegardsBitmap* CRegardsBitmap::CropBitmap(const int& xPos, const int& yPos, con
 			xEnd = this->GetBitmapWidth();
 
 		cv::Rect rect(xPos, yPos, (xEnd - xPos), (yEnd - yPos));
-		VerifRectSize(rect, bitmapMatrix);
+		CPictureUtility::VerifRectSize(rect, bitmapMatrix);
 		//bool is_inside = (rect & cv::Rect(0, 0, bitmapMatrix.cols, bitmapMatrix.rows)) == rect;
 		cv::Mat crop;
 		bitmapMatrix(rect).copyTo(crop);

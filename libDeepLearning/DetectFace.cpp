@@ -9,6 +9,7 @@
 #include "DetectFace.h"
 #include <FileUtility.h>
 #include <ConvertUtility.h>
+#include <picture_utility.h>
 #ifdef __APPLE__
 #include "MyDetectFaceImpl.h"
 using namespace cv;
@@ -123,7 +124,7 @@ void CDetectFace::DetectFace(const Mat& bitmap, const float& confidenceThreshold
 				int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
 				Rect rect = Rect(Point(x1, y1), Point(x2, y2));
-				VerifRectSize(rect, frameOpenCVDNN);
+				CPictureUtility::VerifRectSize(rect, frameOpenCVDNN);
 				face.myROI = rect;
 				frameOpenCVDNN(face.myROI).copyTo(face.croppedImage);
 				listOfFace.push_back(face);

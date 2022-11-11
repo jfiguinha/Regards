@@ -16,7 +16,6 @@
 #include <ximage.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <DeepLearning.h>
 #include "ascii.h"
 #ifdef ROTDETECT
 #include <rotdetect.h>
@@ -43,7 +42,7 @@
 #endif
 #endif
 #include "PictureData.h"
-#include <SqlPhotos.h>
+//#include <SqlPhotos.h>
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
@@ -88,7 +87,7 @@ using namespace Regards::exiv2;
 #define TYPE_IMAGE_REGARDSIMAGE 2
 #define OR ||
 
-using namespace Regards::Sqlite;
+//using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 using namespace Regards::Video;
 
