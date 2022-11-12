@@ -50,6 +50,20 @@
 #include <tbb/parallel_for.h>
 #endif
 
+#include <epoxy/gl.h>
+#ifdef WIN32
+#include <epoxy/wgl.h>
+#endif
+#ifdef __WXGTK__
+#include <epoxy/glx.h>
+#endif
+
+#ifdef __APPLE__
+#include <OpenCL/cl.h>
+#else
+#include <CL/cl.h>
+#include <CL/cl_gl.h>
+#endif
 
 
 #include <thread>

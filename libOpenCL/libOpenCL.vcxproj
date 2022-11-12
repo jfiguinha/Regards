@@ -556,7 +556,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\libFiltre;..\libParameter;..\libPicture;..\libOpenGL;..\libUtility;..\libResource;..\libFiltreInterface;..\include;..\libDeepLearning;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libParameter;..\libOpenGL;..\libUtility;..\libResource;..\include;..\libFiltreInterface;..\libPicture;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -579,6 +579,7 @@
     <ClInclude Include="OpenCLEffectVideo.h" />
     <ClInclude Include="OpenCLFilter.h" />
     <ClInclude Include="OpenCLParameter.h" />
+    <ClInclude Include="VideoStabilization.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -590,6 +591,7 @@
     <ClCompile Include="OpenCLEffectVideo.cpp" />
     <ClCompile Include="OpenCLFilter.cpp" />
     <ClCompile Include="OpenCLParameter.cpp" />
+    <ClCompile Include="VideoStabilization.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

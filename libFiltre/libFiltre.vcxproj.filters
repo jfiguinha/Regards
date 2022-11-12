@@ -61,9 +61,6 @@
     <Filter Include="window\Raw">
       <UniqueIdentifier>{04bec73b-3a49-4743-9e1c-9bde39eb0a64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Filter\video">
-      <UniqueIdentifier>{18d72e57-3806-43cb-b1b4-a3640e2aa12b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Filter\Panorama">
       <UniqueIdentifier>{073b904b-375f-46c0-9f95-cf3ae8d94256}</UniqueIdentifier>
     </Filter>
@@ -297,9 +294,6 @@
     <ClInclude Include="DecodeRawPicture.h">
       <Filter>window\Raw</Filter>
     </ClInclude>
-    <ClInclude Include="VideoStabilization.h">
-      <Filter>Filter\video</Filter>
-    </ClInclude>
     <ClInclude Include="LensDistortion.h">
       <Filter>window\picture</Filter>
     </ClInclude>
@@ -454,9 +448,6 @@
     </ClCompile>
     <ClCompile Include="DecodeRawPicture.cpp">
       <Filter>window\Raw</Filter>
-    </ClCompile>
-    <ClCompile Include="VideoStabilization.cpp">
-      <Filter>Filter\video</Filter>
     </ClCompile>
     <ClCompile Include="LensDistortion.cpp">
       <Filter>window\picture</Filter>

@@ -1,5 +1,4 @@
 #pragma once
-#include "GLcontext.h"
 #include <cstring>
 
 namespace Regards

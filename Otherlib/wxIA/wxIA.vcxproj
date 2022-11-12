@@ -478,7 +478,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;$(SolutionDir)include;$(SolutionDir)libResource;$(SolutionDir)otherlib/wxia/include;../include/wx;$(SolutionDir)libUtility;$(SolutionDir)RegardsViewer</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)include;$(SolutionDir)otherlib/wxia/include;../include/wx;$(SolutionDir)libUtility;$(SolutionDir)RegardsViewer</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

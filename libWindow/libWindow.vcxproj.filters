@@ -37,6 +37,12 @@
     <Filter Include="Main\utility">
       <UniqueIdentifier>{8ac341bc-e7ab-4539-ba19-dc998190d9e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{240c669a-049d-4640-abc4-a821358d049b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Render">
+      <UniqueIdentifier>{905f5478-8b9b-4395-8647-236faeb83707}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -267,6 +273,18 @@
     <ClInclude Include="WindowUtility.h">
       <Filter>Main\utility</Filter>
     </ClInclude>
+    <ClInclude Include="GLcontext.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderBitmapOpenGL.h">
+      <Filter>OpenGL\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderOpenGL.h">
+      <Filter>OpenGL\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderVideoOpenGL.h">
+      <Filter>OpenGL\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -442,6 +460,15 @@
     </ClCompile>
     <ClCompile Include="WindowUtility.cpp">
       <Filter>Main\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderBitmapOpenGL.cpp">
+      <Filter>OpenGL\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderOpenGL.cpp">
+      <Filter>OpenGL\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderVideoOpenGL.cpp">
+      <Filter>OpenGL\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -604,7 +604,6 @@
     <ClInclude Include="SwirlEffectParameter.h" />
     <ClInclude Include="SwirlFilter.h" />
     <ClInclude Include="VideoFilter.h" />
-    <ClInclude Include="VideoStabilization.h" />
     <ClInclude Include="videostream.h" />
     <ClInclude Include="VignetteEffectParameter.h" />
     <ClInclude Include="VignetteFilter.h" />
@@ -666,7 +665,6 @@
     <ClCompile Include="SolarisationFilter.cpp" />
     <ClCompile Include="SwirlFilter.cpp" />
     <ClCompile Include="VideoFilter.cpp" />
-    <ClCompile Include="VideoStabilization.cpp" />
     <ClCompile Include="videostream.cpp" />
     <ClCompile Include="VignetteFilter.cpp" />
     <ClCompile Include="Wave.cpp" />

@@ -598,7 +598,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;$(SolutionDir)include;$(SolutionDir)libResource;include;$(SolutionDir)libUtility</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)include;include;$(SolutionDir)libUtility</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>

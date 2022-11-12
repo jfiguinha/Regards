@@ -544,7 +544,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libSqlEngine;../libPicture;../libUtility;../libSqlData;../libParameter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libPicture;../libUtility;../libSqlData;../libParameter;../libSqlEngine</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>

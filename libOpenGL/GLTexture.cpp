@@ -1,11 +1,14 @@
 #include <header.h>
 #include "GLTexture.h"
-#include <RegardsBitmap.h>
 #ifdef __APPLE__
 #include <OpenCL/cl_gl.h>
 #include <OpenCL/cl_gl_ext.h>
 #endif
-
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
 using namespace Regards::OpenGL;
 
@@ -281,12 +284,6 @@ void GLTexture::SetData(cv::Mat & bitmap)
 		bitmapMatrix = bitmap;
 
 	SetTextureData(bitmapMatrix);
-}
-
-
-void GLTexture::SetData(CRegardsBitmap * bitmap)
-{
-	SetTextureData(bitmap->GetMatrix());
 }
 
 

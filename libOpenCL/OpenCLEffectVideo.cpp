@@ -6,7 +6,7 @@
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
 #include "hqdn3d.h"
-#include <VideoStabilization.h>
+#include "VideoStabilization.h"
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>

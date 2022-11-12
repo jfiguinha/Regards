@@ -1,7 +1,4 @@
 #pragma once
-#include "GLcontext.h"
-
-class CRegardsBitmap;
 class CTextureGLPriv;
 
 namespace Regards
@@ -21,7 +18,6 @@ namespace Regards
 			void SetFilterType(GLint FilterType_i, GLint FilterValue_i);
 			void Delete();
 			void Enable();
-			void SetData(CRegardsBitmap * bitmap);
 			void SetData(cv::Mat & bitmap);
 			bool SetData(cv::UMat& bitmap);
 			void Disable()

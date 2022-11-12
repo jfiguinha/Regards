@@ -178,7 +178,7 @@ void CRenderVideoOpenGL::SetSubtitle(CRegardsBitmap* subtitle)
 	textureSubtitle = nullptr;
 
 	textureSubtitle = new GLTexture();
-	textureSubtitle->SetData(subtitle);
+	textureSubtitle->SetData(subtitle->GetMatrix());
 }
 
 void CRenderVideoOpenGL::ShowSubtitle()

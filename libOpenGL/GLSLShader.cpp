@@ -2,6 +2,11 @@
 #include "GLSLShader.h"
 #include <LibResource.h>
 #include <ConvertUtility.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 using namespace Regards::OpenGL;
 
 GLSLShader::GLSLShader(void): m_hVertexHandle(0), m_hComputeHandle(0)

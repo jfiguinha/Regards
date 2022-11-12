@@ -571,6 +571,7 @@
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="GLcontext.h" />
     <ClInclude Include="GpsEngine.h" />
     <ClInclude Include="IBitmapRenderInterface.h" />
     <ClInclude Include="IBitmapWnd.h" />
@@ -578,6 +579,9 @@
     <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MasterWindow.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
+    <ClInclude Include="RenderBitmapOpenGL.h" />
+    <ClInclude Include="RenderOpenGL.h" />
+    <ClInclude Include="RenderVideoOpenGL.h" />
     <ClInclude Include="SliderInterface.h" />
     <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
@@ -663,6 +667,9 @@
     <ClCompile Include="Pane.cpp" />
     <ClCompile Include="PanelWithClickToolbar.cpp" />
     <ClCompile Include="PositionElement.cpp" />
+    <ClCompile Include="RenderBitmapOpenGL.cpp" />
+    <ClCompile Include="RenderOpenGL.cpp" />
+    <ClCompile Include="RenderVideoOpenGL.cpp" />
     <ClCompile Include="ScrollbarHorizontalWnd.cpp" />
     <ClCompile Include="ScrollbarVerticalWnd.cpp" />
     <ClCompile Include="ScrollbarWnd.cpp" />

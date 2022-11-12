@@ -541,7 +541,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libResource;../libPicture;../libUtility;../libFiltreInterface</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libUtility;../libResource</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -553,7 +553,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.;../include;../libResource;../libPicture;../libUtility;../libFiltreInterface</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include;../libResource;../libUtility</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -564,10 +564,6 @@
     <ClInclude Include="GLSLParameter.h" />
     <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="GLTexture.h" />
-    <ClInclude Include="GLcontext.h" />
-    <ClInclude Include="RenderBitmapOpenGL.h" />
-    <ClInclude Include="RenderOpenGL.h" />
-    <ClInclude Include="RenderVideoOpenGL.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -579,9 +575,6 @@
     <ClCompile Include="GLSLParameter.cpp" />
     <ClCompile Include="GLSLShader.cpp" />
     <ClCompile Include="GLTexture.cpp" />
-    <ClCompile Include="RenderBitmapOpenGL.cpp" />
-    <ClCompile Include="RenderOpenGL.cpp" />
-    <ClCompile Include="RenderVideoOpenGL.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
