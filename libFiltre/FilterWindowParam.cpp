@@ -14,8 +14,6 @@
 #include <RegardsBitmap.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
-#include <RenderOpenGL.h>
-
 
 bool CFilterWindowParam::supportOpenCL = false;
 

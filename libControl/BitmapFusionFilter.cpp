@@ -115,7 +115,7 @@ void CBitmapFusionFilter::GenerateTexture(CRegardsBitmap* bitmap)
 {
 	if (pictureNext == nullptr)
 		pictureNext = new GLTexture();
-	pictureNext->SetData(bitmap);
+	pictureNext->SetData(bitmap->GetMatrix());
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }
 

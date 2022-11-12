@@ -63,6 +63,7 @@ namespace Regards
 			static CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
 			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image, const bool& convertToRGB24 = false);
 			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap);
+			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat img);
 			static CxImage* ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap);
 			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
 

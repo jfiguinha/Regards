@@ -12,7 +12,6 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-#include <RenderOpenGL.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>

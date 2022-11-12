@@ -233,6 +233,15 @@ void CompressVideo::SetBitmap(CRegardsBitmap * bmp)
 	wxQueueEvent(this, event);
 }
 
+void CompressVideo::SetBitmap(cv::Mat bmp)
+{
+
+	wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(bmp);
+
+	auto event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
+	event->SetClientData(new wxImage(image.Mirror(false)));
+	wxQueueEvent(this, event);
+}
 
 bool CompressVideo::IsOk()
 {

@@ -4,7 +4,6 @@
 #include <FilterData.h>
 #include <RegardsBitmap.h>
 #include <LibResource.h>
-#include <RenderOpenGL.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>

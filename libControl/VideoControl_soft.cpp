@@ -1764,7 +1764,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int 
 GLTexture* CVideoControlSoft::RenderToTexture(CRegardsBitmap* bitmap)
 {
 	auto glTexture = new GLTexture();
-	glTexture->SetData(bitmap);
+	glTexture->SetData(bitmap->GetMatrix());
 	return glTexture;
 }
 

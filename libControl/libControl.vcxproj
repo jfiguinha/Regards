@@ -557,6 +557,7 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libEmail;..\include;..\libDeepLearning;..\libPicture;..\libOpenCL;..\libWindowMain;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -568,6 +569,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libEmail;..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -598,6 +600,7 @@
     <ClInclude Include="InfosFile.h" />
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
+    <ClInclude Include="MFTEncoding.h" />
     <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="MoveEffectTexture.h" />
     <ClInclude Include="NoneEffectTextureEffect.h" />
@@ -645,6 +648,7 @@
     <ClCompile Include="InfosFile.cpp" />
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
+    <ClCompile Include="MFTEncoding.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="MoveEffectTexture.cpp" />
     <ClCompile Include="PageCurlFilter.cpp" />

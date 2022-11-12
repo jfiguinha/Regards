@@ -109,6 +109,9 @@
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
     </ClCompile>
+    <ClCompile Include="MFTEncoding.cpp">
+      <Filter>Video\Core\Encoding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -241,6 +244,9 @@
       <Filter>Display</Filter>
     </ClInclude>
     <ClInclude Include="FFmpegTranscodingPimpl.h">
+      <Filter>Video\Core\Encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="MFTEncoding.h">
       <Filter>Video\Core\Encoding</Filter>
     </ClInclude>
   </ItemGroup>

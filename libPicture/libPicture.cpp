@@ -2818,6 +2818,24 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	}
 }
 
+wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat img)
+{
+	wxImage wx;
+	cv::Mat im2;
+	if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
+	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
+
+	cv::flip(im2, im2, 0);
+
+	long imsize = im2.rows * im2.cols * im2.channels();
+	wx = wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = im2.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+
+	return wx;
+}
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 {
@@ -2825,107 +2843,13 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap)
 	if (bitmap != nullptr)
 	{
 		cv::Mat img = bitmap->GetMatrix();
-		cv::Mat im2;
-		if (img.channels() == 1) { cvtColor(img, im2, cv::COLOR_GRAY2RGB); }
-		else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
-		else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
-
-		cv::flip(im2, im2, 0);
-
-		long imsize = im2.rows * im2.cols * im2.channels();
-		wx = wxImage(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
-		unsigned char* s = im2.data;
-		unsigned char* d = wx.GetData();
-		memcpy(d, s, imsize);
-		/*
-		for (long i = 0; i < imsize; i++)
-		{
-			d[i] = s[i];
-		}
-		*/
+		wx = ConvertRegardsBitmapToWXImage(img);
 	}
 
 	return wx;
-
-	/*
-	const int width = bitmap->GetBitmapWidth();
-	const int height = bitmap->GetBitmapHeight();
-	const int widthSrcSize = width * 4;
-	unsigned char* data = bitmap->GetPtBitmap();
-	bool loadAlpha = false;
-	wxImage anImage(width, height, true);
-	if (loadAlpha)
-		anImage.InitAlpha();
-	bool flip = false;
-	unsigned char* dataOut = anImage.GetData();
-	unsigned char* dataAlpha = anImage.GetAlpha();
-
-	if (data != nullptr)
-	{
-		int pos_data;
-		for (auto y = 0; y < height; y++)
-		{
-			if (flip)
-				pos_data = y * widthSrcSize;
-			else
-				pos_data = ((height - y) * widthSrcSize) - widthSrcSize;
-			int posDataOut = y * (width * 3);
-			int posAlpha = y * width;
-			for (auto x = 0; x < width; x++)
-			{
-				dataOut[posDataOut] = data[pos_data + 2];
-				dataOut[posDataOut + 1] = data[pos_data + 1];
-				dataOut[posDataOut + 2] = data[pos_data];
-
-				if (loadAlpha)
-					dataAlpha[posAlpha++] = data[pos_data + 3];
-				pos_data += 4;
-				posDataOut += 3;
-			}
-		}
-	}
-
-	return anImage;
-	*/
 }
-/*
-wxImage* CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap* bitmap, const bool& loadAlpha)
-{
-	const int width = bitmap->GetBitmapWidth();
-	const int height = bitmap->GetBitmapHeight();
-	const int widthSrcSize = width * 4;
-	unsigned char* data = bitmap->GetPtBitmap();
-	auto anImage = new wxImage(width, height, true);
-	if (loadAlpha)
-		anImage->InitAlpha();
 
-	unsigned char* dataOut = anImage->GetData();
-	unsigned char* dataAlpha = anImage->GetAlpha();
 
-	if (data != nullptr)
-	{
-		for (auto y = 0; y < height; y++)
-		{
-			int posData = ((height - y) * widthSrcSize) - widthSrcSize;
-			int posDataOut = y * (width * 3);
-			int posAlpha = y * width;
-			for (auto x = 0; x < width; x++)
-			{
-				dataOut[posDataOut] = data[posData + 2];
-				dataOut[posDataOut + 1] = data[posData + 1];
-				dataOut[posDataOut + 2] = data[posData];
-
-				if (loadAlpha)
-					dataAlpha[posAlpha++] = data[posData + 3];
-				posData += 4;
-				posDataOut += 3;
-			}
-		}
-	}
-
-	return anImage;
-}
-*/
 bool CLibPicture::HasThumbnail(const wxString& filename)
 {
 #if defined(EXIV2)
