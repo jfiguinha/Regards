@@ -20,6 +20,11 @@ namespace Regards
 {
 	namespace Picture
 	{
+#ifdef WIN32
+		class CWic;
+#endif
+
+
 		class CLibPicture
 		{
 
@@ -110,7 +115,9 @@ namespace Regards
 #endif
 #endif
 			map<wxString, bool> fileValid;
-
+#ifdef WIN32
+			Regards::Picture::CWic* wic = nullptr;
+#endif
 		};
 
 	}

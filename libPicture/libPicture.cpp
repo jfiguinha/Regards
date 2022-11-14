@@ -34,6 +34,9 @@
 #include <Heic.h>
 #include <avif.h>
 #endif
+#if defined(WIN32)
+#include "wic.h"
+#endif
 #ifdef LIBBPG
 #if defined(WIN32)
 #include <DllBpg.h>
@@ -151,10 +154,16 @@ CLibPicture::CLibPicture()
 	svgWidth = 1024;
 	svgHeight = 1024;
 	configRegards = CParamInit::getInstance();
+#ifdef WIN32
+	wic = new CWic();
+#endif
 }
 
 CLibPicture::~CLibPicture()
 {
+#ifdef WIN32
+	delete wic;
+#endif
 }
 
 
@@ -1548,6 +1557,15 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 {
 	int iFormat = TestImageFormat(szFileName);
 
+#ifdef WIN32
+	bool error = false;
+	int count = wic->GetNbFrame(szFileName.ToStdString(), error);
+	if (!error)
+	{
+		return count;
+	}
+#endif
+
 	switch (iFormat)
 	{
 #ifdef LIBHEIC
@@ -1862,6 +1880,13 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	bool notThumbnail = false;
 #ifdef WIN32
 
+	CRegardsBitmap* bmp = wic->GetThumbnailMetadata(fileName.ToStdString());
+	if (bmp != nullptr)
+	{
+		imageLoading = new CImageLoadingFormat();
+		imageLoading->SetPicture(bmp);
+		return imageLoading;
+	}
 	HDC screen = GetDC(nullptr);
 	RECT rcClip;
 	GetClipBox(screen, &rcClip);
@@ -2134,7 +2159,20 @@ CRegardsBitmap* CLibPicture::LoadFromFreeImage(const char* filename)
 CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail, const int& numPicture)
 {
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+#ifdef WIN32
+	CRegardsBitmap* _bitmap = nullptr;
+	if(isThumbnail)
+		_bitmap = wic->GetThumbnailMetadata(fileName.ToStdString());
+	else
+		_bitmap = wic->GetPicture(fileName.ToStdString(), numPicture);
+
+	if (_bitmap != nullptr)
+		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
+	else
+		bitmap->SetPicture(_bitmap);
+#else
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
+#endif
 	return bitmap;
 }
 
@@ -3176,3 +3214,4 @@ bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int optio
 
 	return true;
 }
+

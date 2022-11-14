@@ -604,6 +604,7 @@
     <ClInclude Include="VideoPlayer.h" />
     <ClInclude Include="videothumb.h" />
     <ClInclude Include="webpOption.h" />
+    <ClInclude Include="wic.h" />
     <ClInclude Include="yuv420.h" />
     <ClInclude Include="yuv422.h" />
   </ItemGroup>
@@ -651,6 +652,7 @@
     <ClCompile Include="VideoPlayer.cpp" />
     <ClCompile Include="videothumb.cpp" />
     <ClCompile Include="webpOption.cpp" />
+    <ClCompile Include="wic.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

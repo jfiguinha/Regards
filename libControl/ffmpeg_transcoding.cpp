@@ -8,6 +8,9 @@
 #include <wx/filename.h>
 #include <window_id.h>
 #include <LibResource.h>
+#ifdef WIN32
+#include "MFTEncoding.h"
+#endif
 #include "FFmpegTranscodingPimpl.h"
 
 CFFmpegTranscoding::CFFmpegTranscoding() :
@@ -31,12 +34,21 @@ wxString CFFmpegTranscoding::GetOutputFilename()
 
 int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& output, const int& position, CVideoOptionCompress* videoCompressOption)
 {
+#ifdef WIN32
+	CMFTEncoding mftEncoding;
+	int ret = mftEncoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
+	if (mftEncoding.GetFrameOutput() != nullptr)
+	{
+		data = mftEncoding.GetFrameOutput()->GetMatrix();
+	}
+#else
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
 	int ret =  ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
 	if (ffmpegtranscoding.GetFrameOutput() != nullptr)
 	{
 		data = ffmpegtranscoding.GetFrameOutput()->GetMatrix();
 	}
+#endif
 	return 0;
 }
 
@@ -52,6 +64,19 @@ void CFFmpegTranscoding::EncodeFileThread(void* data)
 {
 	auto ffmpeg_encoding = static_cast<CFFmpegTranscoding*>(data);
 
+#ifdef WIN32
+	CMFTEncoding mftEncoding;
+	int ret = mftEncoding.EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output,
+		ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);
+	if (ret < 0)
+	{
+		wxString errorConversion = CLibResource::LoadStringFromResource("LBLERRORCONVERSION", 1);
+		char message[255];
+		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
+		wxMessageBox(message, errorConversion, wxICON_ERROR);
+	}
+#else
+
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
 
 	int ret = ffmpegtranscoding.EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output,
@@ -64,7 +89,7 @@ void CFFmpegTranscoding::EncodeFileThread(void* data)
 		av_make_error_string(message, AV_ERROR_MAX_STRING_SIZE, ret);
 		wxMessageBox(message, errorConversion, wxICON_ERROR);
 	}
-
+#endif
 	wxCommandEvent event(wxEVENT_ENDCOMPRESSION);
 	event.SetInt(ret);
 	wxPostEvent(ffmpeg_encoding->mainWindow, event);

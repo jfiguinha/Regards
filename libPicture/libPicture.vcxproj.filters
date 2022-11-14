@@ -115,6 +115,9 @@
     <ClCompile Include="..\include\header.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="wic.cpp">
+      <Filter>wic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -252,6 +255,9 @@
     <ClInclude Include="jxl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wic.h">
+      <Filter>wic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -283,6 +289,9 @@
     </Filter>
     <Filter Include="ThumbnailVideoGenerator">
       <UniqueIdentifier>{c208792d-80f5-4021-b146-20e9d88e01be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wic">
+      <UniqueIdentifier>{aba33453-3fa0-4277-a7fa-b47ea6f8a2f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

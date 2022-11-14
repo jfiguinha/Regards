@@ -22,7 +22,8 @@
 #include <vector>
 #include <OpenCLEffectVideo.h>
 #include <fstream>
-
+#include <VideoStabilization.h>
+#include <RegardsBitmap.h>
 // The required link libraries 
 #pragma comment(lib, "mfplat")
 #pragma comment(lib, "mf")
@@ -36,7 +37,6 @@
 using namespace Regards::OpenCL;
 const MFTIME ONE_SECOND = 10000000; // One second
 
-
 template <class T> void SafeRelease(T** ppT)
 {
     if (*ppT)
@@ -46,58 +46,71 @@ template <class T> void SafeRelease(T** ppT)
     }
 }
 
-struct MFBufferAccess {
+class CMFTEncodingPimp
+{
+public:
 
-    ~MFBufferAccess()
+    CMFTEncodingPimp()
     {
-        HRESULT hr = m_pBuffer->Unlock();
-        if (hr != S_OK)
-        {
-            SafeRelease(&m_pBuffer);
-            std::cout << "Unable to unlock audio buffer" << std::endl;
-        }
-        SafeRelease(&m_pBuffer);
+        bitmap = new CRegardsBitmap();
     }
 
-    MFBufferAccess(IMFSample* pSample)
+
+    ~CMFTEncodingPimp()
     {
-        DWORD numBuffers;
-        HRESULT hr = pSample->GetBufferCount(&numBuffers);
-        if (hr != S_OK)
-        {
-            std::cout << "Unable to query audio buffer count" << std::endl;
-        }
-
-        if (numBuffers > 1)
-        {
-            hr = pSample->ConvertToContiguousBuffer(&m_pBuffer);
-        }
-        else
-        {
-            hr = pSample->GetBufferByIndex(0, &m_pBuffer);
-        }
-        if (hr != S_OK)
-        {
-            SafeRelease(&m_pBuffer);
-            std::cout << "Unable to fetch audio buffer" << std::endl;
-        }
-
-        hr = m_pBuffer->Lock(&data, &maxSize, &size);
-        if (hr != S_OK)
-        {
-            SafeRelease(&m_pBuffer);
-            std::cout << "Unable to lock audio buffer for reading" << std::endl;
-        }
+        if (bitmap != nullptr)
+            delete bitmap;
     }
 
-    BYTE* data{ nullptr };
-    DWORD size{ 0 };
-    DWORD maxSize{ 0 };
 
-private:
-    IMFMediaBuffer* m_pBuffer{ NULL };
+
+
+
+    int Encode(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption, long time = -1);
+    HRESULT WriteFrame(BYTE* buffer, DWORD streamIndex, LONGLONG timestamp, LONGLONG duration, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
+    HRESULT WriteAudioBuffer(BYTE* buffer, size_t bufferSize, LONGLONG timestamp, LONGLONG duration);
+    Regards::OpenCV::COpenCVStabilization* openCVStabilization = nullptr;
+
+    IMFSourceReaderEx* m_pSourceReader{ nullptr };
+    /*
+    IDirect3DDeviceManager9* m_pD3D9DeviceManager{ nullptr };
+    IDirect3D9Ex* m_pD3D9Ex{ nullptr };
+    IDirect3DDevice9Ex* m_pD3D9Device{ nullptr };
+    IDirect3DTexture9* m_pD3D9Texture{ nullptr };
+    IDirect3DSurface9* m_pD3D9Surface{ nullptr };
+    */
+    unsigned int m_iResetToken{ 0 };
+
+    IMFSinkWriter* m_pWriter;
+
+    DWORD m_readVideoStreamIndex;
+    DWORD m_readAudioStreamIndex;
+
+    DWORD m_writeVideoStreamIndex;
+    DWORD m_writeAudioStreamIndex;
+
+    //video metadata
+    LONGLONG mediaDuration{ 0 };
+    UINT32 frameDurationNum{ 0 }, frameDurationDenom{ 0 };
+    UINT32 width{ 0 }, height{ 0 };
+
+    //audio metadata
+    UINT32 audioChannels{ 0 };
+    UINT32 audioSamplesPerSecond{ 0 };
+    UINT32 audioAvgBitrate{ 0 };
+    UINT32 audioBitsPerSample{ 0 };
+    UINT32 audioBlockAlign{ 0 };
+    UINT32 audioAvgBytesPerSecond{ 0 };
+    UINT32 audioSamplesPerBlock{ 0 };
+    UINT32 audioValidBitsPerSample{ 0 };
+
+    UINT32 VIDEO_BIT_RATE = 10000000;
+    const GUID   VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
+    GUID   VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
+    GUID  AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
+
+    CRegardsBitmap* bitmap = nullptr;
 };
-
 
 
 static class MFSingleton
@@ -198,84 +211,99 @@ private:
     }
 };
 
-IMFSourceReaderEx* m_pSourceReader{ nullptr };
-/*
-IDirect3DDeviceManager9* m_pD3D9DeviceManager{ nullptr };
-IDirect3D9Ex* m_pD3D9Ex{ nullptr };
-IDirect3DDevice9Ex* m_pD3D9Device{ nullptr };
-IDirect3DTexture9* m_pD3D9Texture{ nullptr };
-IDirect3DSurface9* m_pD3D9Surface{ nullptr };
-*/
-unsigned int m_iResetToken{ 0 };
 
-IMFSinkWriter* m_pWriter;
 
-DWORD m_readVideoStreamIndex;
-DWORD m_readAudioStreamIndex;
+// Create global scope instance of MFSingleton to ensure startup and shutdown occurs once
+// Do not use this class anywhere else!
+static MFSingleton g_MFSingleton;
 
-DWORD m_writeVideoStreamIndex;
-DWORD m_writeAudioStreamIndex;
+struct MFBufferAccess {
 
-//video metadata
-LONGLONG mediaDuration{ 0 };
-UINT32 frameDurationNum{ 0 }, frameDurationDenom{ 0 };
-UINT32 width{ 0 }, height{ 0 };
+    ~MFBufferAccess()
+    {
+        HRESULT hr = m_pBuffer->Unlock();
+        if (hr != S_OK)
+        {
+            SafeRelease(&m_pBuffer);
+            std::cout << "Unable to unlock audio buffer" << std::endl;
+        }
+        SafeRelease(&m_pBuffer);
+    }
 
-//audio metadata
-UINT32 audioChannels{ 0 };
-UINT32 audioSamplesPerSecond{ 0 };
-UINT32 audioAvgBitrate{ 0 };
-UINT32 audioBitsPerSample{ 0 };
-UINT32 audioBlockAlign{ 0 };
-UINT32 audioAvgBytesPerSecond{ 0 };
-UINT32 audioSamplesPerBlock{ 0 };
-UINT32 audioValidBitsPerSample{ 0 };
+    MFBufferAccess(IMFSample* pSample)
+    {
+        DWORD numBuffers;
+        HRESULT hr = pSample->GetBufferCount(&numBuffers);
+        if (hr != S_OK)
+        {
+            std::cout << "Unable to query audio buffer count" << std::endl;
+        }
 
-const UINT32 VIDEO_BIT_RATE = 10000000;
-const GUID   VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
-const GUID   VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
+        if (numBuffers > 1)
+        {
+            hr = pSample->ConvertToContiguousBuffer(&m_pBuffer);
+        }
+        else
+        {
+            hr = pSample->GetBufferByIndex(0, &m_pBuffer);
+        }
+        if (hr != S_OK)
+        {
+            SafeRelease(&m_pBuffer);
+            std::cout << "Unable to fetch audio buffer" << std::endl;
+        }
 
+        hr = m_pBuffer->Lock(&data, &maxSize, &size);
+        if (hr != S_OK)
+        {
+            SafeRelease(&m_pBuffer);
+            std::cout << "Unable to lock audio buffer for reading" << std::endl;
+        }
+    }
+
+    BYTE* data{ nullptr };
+    DWORD size{ 0 };
+    DWORD maxSize{ 0 };
+
+private:
+    IMFMediaBuffer* m_pBuffer{ NULL };
+};
 
 //IDirect3D9Ex* MFSingleton::s_pD3D9Ex = NULL;
 bool MFSingleton::s_bCOMInitialized = false;
 bool MFSingleton::s_bMFInitialized = false;
 bool MFSingleton::s_bNVAPIInitialized = false;
 
-// Create global scope instance of MFSingleton to ensure startup and shutdown occurs once
-// Do not use this class anywhere else!
-static MFSingleton g_MFSingleton;
-
-
-CRegardsBitmap* CMFTEncoding::GetFrameOutput()
-{
-    return nullptr;
-}
-
 
 CMFTEncoding::CMFTEncoding()
 {
-
+    pimpl = new CMFTEncodingPimp();
 }
 
 CMFTEncoding::~CMFTEncoding()
 {
+    delete pimpl;
+}
 
+CRegardsBitmap* CMFTEncoding::GetFrameOutput()
+{
+    return pimpl->bitmap;
 }
 
 
 int CMFTEncoding::EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption)
 {
-	return Encode(input, output, m_dlgProgress, videoCompressOption);
+	return pimpl->Encode(input, output, m_dlgProgress, videoCompressOption);
 }
 
 
 int CMFTEncoding::EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption)
 {
-	return Encode(input, output,  m_dlgProgress, videoCompressOption);
+	return pimpl->Encode(input, output,  m_dlgProgress, videoCompressOption);
 }
 
 
-HRESULT CMFTEncoding::WriteFrame(
+HRESULT CMFTEncodingPimp::WriteFrame(
     BYTE* buffer,
     DWORD streamIndex,
     LONGLONG timestamp,
@@ -331,6 +359,10 @@ HRESULT CMFTEncoding::WriteFrame(
 
     openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
+    if (bitmap == nullptr)
+        bitmap = new CRegardsBitmap();
+
+    bitmap->SetMatrix(mat);
     m_dlgProgress->SetBitmap(mat);
     char txtduration[255];
     double percent = timestamp / duration;
@@ -387,7 +419,7 @@ HRESULT CMFTEncoding::WriteFrame(
     return hr;
 }
 
-HRESULT CMFTEncoding::WriteAudioBuffer(BYTE* buffer, size_t bufferSize, LONGLONG timestamp, LONGLONG duration)
+HRESULT CMFTEncodingPimp::WriteAudioBuffer(BYTE* buffer, size_t bufferSize, LONGLONG timestamp, LONGLONG duration)
 {
     HRESULT hr;
     IMFSample* pSample = NULL;
@@ -451,11 +483,34 @@ HRESULT CMFTEncoding::WriteAudioBuffer(BYTE* buffer, size_t bufferSize, LONGLONG
 
 
 
-int CMFTEncoding::Encode(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption, long time)
+int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption, long time)
 {
     //--------------------------------
     // SETUP DEVICES
     //--------------------------------
+
+    if (videoCompressOption != nullptr)
+    {
+        VIDEO_BIT_RATE = videoCompressOption->videoBitRate * 1024;
+        if(videoCompressOption->videoCodec == "h264")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
+        else  if (videoCompressOption->videoCodec == "h265")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_H265;
+        else  if (videoCompressOption->videoCodec == "vp9")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_VP90;
+        else  if (videoCompressOption->videoCodec == "vp8")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_VP80;
+
+        if (videoCompressOption->audioCodec == "aac")
+            AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
+        else  if (videoCompressOption->audioCodec == "vorbis")
+            AUDIO_ENCODING_FORMAT = MFAudioFormat_Opus;
+       // UINT32 VIDEO_BIT_RATE = 10000000;
+        //const GUID   VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
+      //  GUID   VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
+
+    }
+    
 
     //m_pD3D9Ex = MFSingleton::getD3D9Ex();
     MFSingleton::Init();
@@ -856,11 +911,11 @@ int CMFTEncoding::Encode(const wxString& input, const wxString& output, Compress
 
         hr = MFCreateMediaType(&pMediaTypeOutA);
         hr = pMediaTypeOutA->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-        hr = pMediaTypeOutA->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
+        hr = pMediaTypeOutA->SetGUID(MF_MT_SUBTYPE, AUDIO_ENCODING_FORMAT);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, audioChannels);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, audioSamplesPerSecond);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-        hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 24000);
+        hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, videoCompressOption->audioBitRate * 1024);
         hr = m_pWriter->AddStream(pMediaTypeOutA, &m_writeAudioStreamIndex);
         if (FAILED(hr))
         {
@@ -1079,7 +1134,7 @@ int CMFTEncoding::Encode(const wxString& input, const wxString& output, Compress
 
         SafeRelease(&pSample);
 
-        if (nbFrameEncode == 30 && time != -1)
+        if (nbFrameEncode == 1 && time != -1)
             break;
     }
 
