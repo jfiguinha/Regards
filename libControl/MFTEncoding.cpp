@@ -492,19 +492,25 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
     if (videoCompressOption != nullptr)
     {
         VIDEO_BIT_RATE = videoCompressOption->videoBitRate * 1024;
-        if(videoCompressOption->videoCodec == "h264")
+        if(videoCompressOption->videoCodec == "H264")
             VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
-        else  if (videoCompressOption->videoCodec == "h265")
+        else  if (videoCompressOption->videoCodec == "H265")
             VIDEO_ENCODING_FORMAT = MFVideoFormat_H265;
-        else  if (videoCompressOption->videoCodec == "vp9")
+        else  if (videoCompressOption->videoCodec == "VP9")
             VIDEO_ENCODING_FORMAT = MFVideoFormat_VP90;
-        else  if (videoCompressOption->videoCodec == "vp8")
+        else  if (videoCompressOption->videoCodec == "VP8")
             VIDEO_ENCODING_FORMAT = MFVideoFormat_VP80;
+        else  if (videoCompressOption->videoCodec == "MPEG4")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_MP4V;
+        else  if (videoCompressOption->videoCodec == "MPEG2")
+            VIDEO_ENCODING_FORMAT = MFVideoFormat_MPG1;
 
-        if (videoCompressOption->audioCodec == "aac")
+        if (videoCompressOption->audioCodec == "AAC")
             AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
-        else  if (videoCompressOption->audioCodec == "vorbis")
+        else  if (videoCompressOption->audioCodec == "VORBIS")
             AUDIO_ENCODING_FORMAT = MFAudioFormat_Opus;
+        else  if (videoCompressOption->audioCodec == "MP3")
+            AUDIO_ENCODING_FORMAT = MFAudioFormat_MP3;
        // UINT32 VIDEO_BIT_RATE = 10000000;
         //const GUID   VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
       //  GUID   VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;

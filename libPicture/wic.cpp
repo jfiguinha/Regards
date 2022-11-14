@@ -53,26 +53,31 @@ CRegardsBitmap * CWic::GetThumbnailMetadata(const string& filename)
         hr = pDecoder->GetThumbnail(&ppIThumbnail);
     }
 
-    if (SUCCEEDED(ppIThumbnail->GetSize(&cx, &cy)))
+    if (ppIThumbnail != nullptr)
     {
-        const UINT stride = cx * sizeof(DWORD);
-        const UINT buf_size = cy * stride;
-        byte* buf = new byte[buf_size];
-
-        hr = ppIThumbnail->CopyPixels(
-            nullptr,
-            stride,
-            buf_size,
-            buf
-        );
-
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(ppIThumbnail->GetSize(&cx, &cy)))
         {
-            cv::Mat mat(cy, cx, CV_8UC4, buf);
-            bitmap = new CRegardsBitmap();
-            bitmap->SetMatrix(mat);
+            const UINT stride = cx * sizeof(DWORD);
+            const UINT buf_size = cy * stride;
+            byte* buf = new byte[buf_size];
+
+            hr = ppIThumbnail->CopyPixels(
+                nullptr,
+                stride,
+                buf_size,
+                buf
+            );
+
+            if (SUCCEEDED(hr))
+            {
+                cv::Mat mat(cy, cx, CV_8UC4, buf);
+                bitmap = new CRegardsBitmap();
+                bitmap->SetMatrix(mat);
+                bitmap->VertFlipBuf();
+            }
         }
     }
+
 
     SafeRelease(pDecoder);
     SafeRelease(ppIThumbnail);
@@ -226,6 +231,7 @@ CRegardsBitmap* CWic::GetPicture(const string& filename, const int& numPicture) 
             cv::Mat mat(cy, cx, CV_8UC4, buf);
             bitmap = new CRegardsBitmap();
             bitmap->SetMatrix(mat);
+            bitmap->VertFlipBuf();
         }
 
     }

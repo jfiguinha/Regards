@@ -2166,7 +2166,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	else
 		_bitmap = wic->GetPicture(fileName.ToStdString(), numPicture);
 
-	if (_bitmap != nullptr)
+	if (_bitmap == nullptr)
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else
 		bitmap->SetPicture(_bitmap);
