@@ -264,7 +264,9 @@ void CShowPreview::ThreadLoading(void* data)
 			if (showPreview->decodeFrame != nullptr)
 				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
+#ifndef WIN32_MFT
 			showPreview->decodeFrame->VertFlipBuf();
+#endif
 		}
 		else
 			showPreview->compressIsOK = false;

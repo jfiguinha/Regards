@@ -105,9 +105,9 @@ public:
     UINT32 audioValidBitsPerSample{ 0 };
 
     UINT32 VIDEO_BIT_RATE = 10000000;
-    const GUID   VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
-    GUID   VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
-    GUID  AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
+    GUID VIDEO_INPUT_FORMAT = MFVideoFormat_RGB32;
+    GUID VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
+    GUID AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
 
     CRegardsBitmap* bitmap = nullptr;
 };
@@ -285,15 +285,15 @@ CMFTEncoding::~CMFTEncoding()
     delete pimpl;
 }
 
-CRegardsBitmap* CMFTEncoding::GetFrameOutput()
+cv::Mat CMFTEncoding::GetFrameOutput()
 {
-    return pimpl->bitmap;
+    return pimpl->bitmap->GetMatrix().clone();
 }
 
 
 int CMFTEncoding::EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption)
 {
-	return pimpl->Encode(input, output, m_dlgProgress, videoCompressOption);
+	return pimpl->Encode(input, output, m_dlgProgress, videoCompressOption, time);
 }
 
 
@@ -359,19 +359,30 @@ HRESULT CMFTEncodingPimp::WriteFrame(
 
     openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
+    mat = openclEffectVideo.GetMatrix();
+
     if (bitmap == nullptr)
         bitmap = new CRegardsBitmap();
 
     bitmap->SetMatrix(mat);
-    m_dlgProgress->SetBitmap(mat);
-    char txtduration[255];
-    double percent = timestamp / duration;
-    double pos = percent * duration;
+    //bitmap->VertFlipBuf();
+   
 
-    sprintf(txtduration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(percent * 100), static_cast<int>(pos), static_cast<int>(duration));
+    memcpy(pData, mat.data, cbWidth * height);
 
-    m_dlgProgress->SetPos(static_cast<int>(duration), static_cast<int>(pos));
-    m_dlgProgress->SetTextProgression(txtduration);
+    if (m_dlgProgress != nullptr)
+    {
+        m_dlgProgress->SetBitmap(bitmap->GetMatrix());
+        char txtduration[255];
+        double percent = timestamp / duration;
+        double pos = percent * duration;
+
+        sprintf(txtduration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(percent * 100), static_cast<int>(pos), static_cast<int>(duration));
+
+        m_dlgProgress->SetPos(static_cast<int>(duration), static_cast<int>(pos));
+        m_dlgProgress->SetTextProgression(txtduration);
+
+    }
 
     if (pBuffer)
     {
@@ -894,7 +905,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
         ///////////////////////
         ////WRITER VIDEO INPUT
         ///////////////////////
-
+        
         hr = MFCreateMediaType(&pMediaTypeInV);
         hr = pMediaTypeInV->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
         hr = pMediaTypeInV->SetGUID(MF_MT_SUBTYPE, VIDEO_INPUT_FORMAT);
@@ -910,18 +921,18 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
             std::cout << "Couldn't add input video type to video writer." << std::endl;
             return 1;
         }
-
+        
         //////////////////////////
         ////WRITER - AUDIO OUTPUT
         //////////////////////////
 
         hr = MFCreateMediaType(&pMediaTypeOutA);
         hr = pMediaTypeOutA->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-        hr = pMediaTypeOutA->SetGUID(MF_MT_SUBTYPE, AUDIO_ENCODING_FORMAT);
+        hr = pMediaTypeOutA->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_AAC);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, audioChannels);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, audioSamplesPerSecond);
         hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-        hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, videoCompressOption->audioBitRate * 1024);
+        hr = pMediaTypeOutA->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND,24000);
         hr = m_pWriter->AddStream(pMediaTypeOutA, &m_writeAudioStreamIndex);
         if (FAILED(hr))
         {
@@ -932,6 +943,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
         ////WRITER - AUDIO INPUT
         //////////////////////////
         // Calculate derived values.
+        
         UINT32 bitsPerSample = 8 * sizeof(int16_t);
         UINT32 blockAlign = audioChannels * bitsPerSample / 8;
         UINT32 bytesPerSecond = blockAlign * audioSamplesPerSecond;
@@ -950,6 +962,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
             std::cout << "Couldn't add input audio type to video writer." << std::endl;
             return 1;
         }
+        
         SafeRelease(&pMediaTypeInV);
         SafeRelease(&pMediaTypeOutV);
         SafeRelease(&pMediaTypeInA);
@@ -1109,6 +1122,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
 
             if (streamIndex == m_readVideoStreamIndex)
             {
+
                 WriteFrame(access.data, m_writeVideoStreamIndex, videoFrameTimeStamp, llDuration,  m_dlgProgress,  videoCompressOption);
                 nbFrameEncode++;
             }
@@ -1140,7 +1154,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
 
         SafeRelease(&pSample);
 
-        if (nbFrameEncode == 1 && time != -1)
+        if (nbFrameEncode == 30 && time != -1)
             break;
     }
 

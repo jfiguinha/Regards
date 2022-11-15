@@ -25,7 +25,7 @@ public:
 
 	CMFTEncoding();
 	~CMFTEncoding();
-	CRegardsBitmap* GetFrameOutput();
+	cv::Mat GetFrameOutput();
 	int EncodeOneFrame(CompressVideo* m_dlgProgress, const wxString& input, const wxString& output, const long& time, CVideoOptionCompress* videoCompressOption);
 	int EncodeFile(const wxString& input, const wxString& output, CompressVideo* m_dlgProgress, CVideoOptionCompress* videoCompressOption);
 

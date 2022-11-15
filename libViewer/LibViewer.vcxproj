@@ -571,6 +571,9 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libDialog;../libControl;../libSqlData;../libTheme;../libGeolocalisation;../libWindowMain;../libUtility;../libResource;../libOpenGL;../libPicture;../libParameter;../libFiltreInterface;../libScanner;../libDeeplearning;../libFiltre;../wxCheckTree;../libOpenCL;../Otherlib/libffmpeg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">

@@ -1826,7 +1826,7 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 	else
 	{
 		CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
-		mat = ApplyProcess(bitmap);
+		mat = ApplyProcess(bitmap->GetMatrix());
 		delete bitmap;
 
 
@@ -1883,11 +1883,11 @@ void CFFmpegTranscodingPimpl::VideoInfos(StreamContext* stream)
 }
 
 
-cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(CRegardsBitmap* bitmap)
+cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat & src)
 {
 	bool stabilizeFrame = videoCompressOption->videoEffectParameter.stabilizeVideo;
 	bool correctedContrast = videoCompressOption->videoEffectParameter.autoConstrast;
-	cv::Mat mat = bitmap->GetMatrix();
+	cv::Mat mat = src.clone();
 
 	if (stabilizeFrame && openCVStabilization == nullptr)
 		openCVStabilization = new Regards::OpenCV::COpenCVStabilization(videoCompressOption->videoEffectParameter.stabilizeImageBuffere);
@@ -1909,7 +1909,8 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(CRegardsBitmap* bitmap)
 	}
 	else
 	{
-
+		CRegardsBitmap* bitmap = new CRegardsBitmap();
+		bitmap->SetMatrix(mat);
 		bool frameStabilized = false;
 
 		if (videoCompressOption->videoEffectParameter.stabilizeVideo)
@@ -1985,9 +1986,9 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(CRegardsBitmap* bitmap)
 		}
 
 
-		CRegardsBitmap* bitmap = filtre.GetBitmap(true);
-		mat = bitmap->GetMatrix();
-		delete bitmap;
+		CRegardsBitmap* filtrebmp= filtre.GetBitmap(true);
+		mat = filtrebmp->GetMatrix();
+		delete filtrebmp;
 	}
 	return mat;
 }
@@ -2035,7 +2036,8 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 	bitmapOut->SetMatrix(frameOutput);
 	bitmapOut->ApplyRotation(rotation);
 	bitmapOut->VertFlipBuf();
-	frameOutput = ApplyProcess(bitmapOut);
+	frameOutput = ApplyProcess(bitmapOut->GetMatrix());
+
 
 	AVFrame* frame = av_frame_alloc();
 	if (!frame) {
@@ -2479,9 +2481,9 @@ AVCodecContext* CFFmpegTranscodingPimpl::OpenFFmpegEncoder(AVCodecID codec_id, A
 	}
 	return c;
 }
-CRegardsBitmap * CFFmpegTranscodingPimpl::GetFrameOutput()
+cv::Mat CFFmpegTranscodingPimpl::GetFrameOutput()
 {
-	return bitmapOut;
+	return frameOutput.clone();
 }
 
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
@@ -2515,7 +2517,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		bitmapOut->SetMatrix(decodeFrame);
 		bitmapOut->ApplyRotation(rotation);
 		bitmapOut->VertFlipBuf();
-		frameOutput = ApplyProcess(bitmapOut);
+		frameOutput = ApplyProcess(bitmapOut->GetMatrix());
 
 		//*bitmapOut = bitmap;
 
@@ -2598,7 +2600,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 
 		/* encode 1 second of video */
-		for (i = 0; i < fps; i++) {
+		for (i = 0; i < 60; i++) {
 
 
 			frame->pts = i;

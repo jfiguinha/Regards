@@ -8,7 +8,7 @@
 #include <wx/filename.h>
 #include <window_id.h>
 #include <LibResource.h>
-#ifdef WIN32
+#ifdef WIN32_MFT
 #include "MFTEncoding.h"
 #endif
 #include "FFmpegTranscodingPimpl.h"
@@ -34,19 +34,19 @@ wxString CFFmpegTranscoding::GetOutputFilename()
 
 int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& output, const int& position, CVideoOptionCompress* videoCompressOption)
 {
-#ifdef WIN32
+#ifdef WIN32_MFT
 	CMFTEncoding mftEncoding;
 	int ret = mftEncoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
-	if (mftEncoding.GetFrameOutput() != nullptr)
+	if (!mftEncoding.GetFrameOutput().empty())
 	{
-		data = mftEncoding.GetFrameOutput()->GetMatrix();
+		data mftEncoding.GetFrameOutput();
 	}
 #else
 	CFFmpegTranscodingPimpl ffmpegtranscoding;
 	int ret =  ffmpegtranscoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
-	if (ffmpegtranscoding.GetFrameOutput() != nullptr)
+	if (!ffmpegtranscoding.GetFrameOutput().empty())
 	{
-		data = ffmpegtranscoding.GetFrameOutput()->GetMatrix();
+		data = ffmpegtranscoding.GetFrameOutput();
 	}
 #endif
 	return 0;
@@ -56,7 +56,12 @@ void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap * & bitmap)
 {
 	if (bitmap != nullptr)
 	{
+#ifdef WIN32_MFT
 		bitmap->SetMatrix(data);
+		bitmap->VertFlipBuf();
+#else
+		bitmap->SetMatrix(data);
+#endif
 	}
 }
 
@@ -64,7 +69,7 @@ void CFFmpegTranscoding::EncodeFileThread(void* data)
 {
 	auto ffmpeg_encoding = static_cast<CFFmpegTranscoding*>(data);
 
-#ifdef WIN32
+#ifdef WIN32_MFT
 	CMFTEncoding mftEncoding;
 	int ret = mftEncoding.EncodeFile(ffmpeg_encoding->input, ffmpeg_encoding->output,
 		ffmpeg_encoding->m_dlgProgress, ffmpeg_encoding->videoCompressOption);

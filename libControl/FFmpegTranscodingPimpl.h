@@ -68,7 +68,7 @@ public:
 		size_t room; ///< size left in the buffer
 	};
 
-	CRegardsBitmap * GetFrameOutput();
+	cv::Mat GetFrameOutput();
 
 	CFFmpegTranscodingPimpl();
 	~CFFmpegTranscodingPimpl();
@@ -85,7 +85,7 @@ private:
 	void EncodeOneFrame(AVCodecContext* enc_ctx, AVFrame* frame, FILE* outfile);
 	int EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds);
 	int open_input_file(const wxString& filename);
-	cv::Mat ApplyProcess(CRegardsBitmap* bitmap);
+	cv::Mat ApplyProcess(cv::Mat& src);
 	static void DisplayPreview(void* data);
 	void EndTreatment();
 	int IsSupportOpenCL();
