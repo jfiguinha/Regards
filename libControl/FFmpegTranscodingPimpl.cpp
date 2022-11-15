@@ -2600,7 +2600,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 
 
 		/* encode 1 second of video */
-		for (i = 0; i < 60; i++) {
+		for (i = 0; i < 30; i++) {
 
 
 			frame->pts = i;

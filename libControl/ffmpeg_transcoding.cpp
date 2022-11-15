@@ -39,7 +39,7 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 	int ret = mftEncoding.EncodeOneFrame(nullptr, input, output, position, videoCompressOption);
 	if (!mftEncoding.GetFrameOutput().empty())
 	{
-		data mftEncoding.GetFrameOutput();
+		data = mftEncoding.GetFrameOutput();
 	}
 #else
 	CFFmpegTranscodingPimpl ffmpegtranscoding;

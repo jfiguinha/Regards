@@ -140,17 +140,23 @@ vector<CMetadata> CMediaInfo::ReadMetadata(const wxString& filename)
 
 int CMediaInfo::GetVideoRotation(const wxString& filename)
 {
-#ifndef _DEBUG
 	MediaInfo MI;
 	wstring To_Display;
 	MI.Open(CConvertUtility::ConvertToStdWstring(filename));
 	To_Display = MI.Get(Stream_Video, 0, __T("Rotation"), Info_Text, Info_Name).c_str();
 	MI.Close();
 	if (To_Display != "")
-		return std::stoi(To_Display);
-#else
-	return -90;
-#endif
+	{
+		try
+		{
+			return std::stoi(To_Display);
+		}
+		catch (...)
+		{
+
+		}
+	}
+		
 	return 0;
 }
 

@@ -375,11 +375,12 @@ HRESULT CMFTEncodingPimp::WriteFrame(
         m_dlgProgress->SetBitmap(bitmap->GetMatrix());
         char txtduration[255];
         double percent = timestamp / duration;
-        double pos = percent * duration;
+        double pos = timestamp / 1000;
+        double sec = duration / 1000;
 
-        sprintf(txtduration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(percent * 100), static_cast<int>(pos), static_cast<int>(duration));
+        sprintf(txtduration, "Progress : %d percent - Total Second : %d / %d", static_cast<int>(percent * 100), static_cast<int>(pos), static_cast<int>(sec));
 
-        m_dlgProgress->SetPos(static_cast<int>(duration), static_cast<int>(pos));
+        m_dlgProgress->SetPos(static_cast<int>(duration), static_cast<int>(sec));
         m_dlgProgress->SetTextProgression(txtduration);
 
     }
@@ -609,6 +610,8 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
         return 1;
     }
 
+    double totalTime = 0;
+
     if (m_readVideoStreamIndex != MF_SOURCE_READER_INVALID_STREAM_INDEX)
     {
         // read video metadata
@@ -627,6 +630,8 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
             return 1;
         }
 
+        totalTime = (double)mediaDuration / 10000000.0;
+        totalTime *= 1000;
         std::cout << "Video duration: " << ((double)mediaDuration / 10000000.0) << std::endl;
 
         IMFMediaType* pNativeType = NULL;
@@ -1123,7 +1128,7 @@ int CMFTEncodingPimp::Encode(const wxString& input, const wxString& output, Comp
             if (streamIndex == m_readVideoStreamIndex)
             {
 
-                WriteFrame(access.data, m_writeVideoStreamIndex, videoFrameTimeStamp, llDuration,  m_dlgProgress,  videoCompressOption);
+                WriteFrame(access.data, m_writeVideoStreamIndex, (videoFrameTimeStamp / ONE_SECOND) * 1000, totalTime,  m_dlgProgress,  videoCompressOption);
                 nbFrameEncode++;
             }
             else if (streamIndex == m_readAudioStreamIndex)
