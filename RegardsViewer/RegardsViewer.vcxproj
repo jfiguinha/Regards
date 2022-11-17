@@ -1034,7 +1034,7 @@ XCOPY /Y "$(SolutionDir)libextern\libde265\lib\arm64\Release\*.dll"  $(SolutionD
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libcurl.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\heif-master\lib\arm64\Release\heif_writer_shared.dll" $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\Release\qpdf28.dll" $(SolutionDir)$(Platform)\$(Configuration)\
+XCOPY /Y "$(SolutionDir)libextern\qpdf-master\lib\arm64\Release\qpdf29.dll" $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\poppler*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libpng16.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\lcms2.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
@@ -1100,7 +1100,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\opencv*.dll"
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\sw*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libexpat.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\zstd.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
-XCOPY /Y "$(SolutionDir)libextern\qpdf-master\build\libqpdf\Release\*.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\libmp3lame.DLL"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\fdk-aac.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
 XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\bin\vorbis.dll"  $(SolutionDir)$(Platform)\$(Configuration)\
