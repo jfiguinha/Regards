@@ -72,9 +72,6 @@
     <ClCompile Include="ExportOCr.cpp">
       <Filter>OCR\Export</Filter>
     </ClCompile>
-    <ClCompile Include="qpdfobject.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
     </ClCompile>
