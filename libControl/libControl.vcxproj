@@ -557,7 +557,7 @@
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\libEmail;..\include;..\libDeepLearning;..\libPicture;..\libOpenCL;..\libWindowMain;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;../Otherlib/libffmpeg;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDialog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>WIN32_MFT;WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
