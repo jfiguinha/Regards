@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libWindow" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Main">
-    <VirtualDirectory Name="interface">
-      <File Name="WindowOpenGLMain.h"/>
-      <File Name="WindowMain.h"/>
-      <File Name="WindowMainPimpl.h"/>
-      <File Name="MainInterface.h"/>
-      <File Name="IBitmapWnd.h"/>
-    </VirtualDirectory>
-    <File Name="GpsEngine.h"/>
-    <File Name="GpsEngine.cpp"/>
-    <File Name="MasterWindow.h"/>
-    <File Name="MasterWindow.cpp"/>
-    <File Name="WindowUtility.h"/>
-    <File Name="WindowUtility.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -41,7 +26,28 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Main">
+    <VirtualDirectory Name="interface">
+      <File Name="WindowOpenGLMain.h"/>
+      <File Name="WindowMain.h"/>
+      <File Name="WindowMainPimpl.h"/>
+      <File Name="MainInterface.h"/>
+      <File Name="IBitmapWnd.h"/>
+    </VirtualDirectory>
+    <File Name="GpsEngine.h"/>
+    <File Name="GpsEngine.cpp"/>
+    <File Name="MasterWindow.h"/>
+    <File Name="MasterWindow.cpp"/>
+    <File Name="WindowUtility.h"/>
+    <File Name="WindowUtility.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Render">
+    <File Name="RenderVideoOpenGL.h"/>
+    <File Name="RenderVideoOpenGL.cpp"/>
+    <File Name="RenderOpenGL.h"/>
+    <File Name="RenderOpenGL.cpp"/>
+    <File Name="RenderBitmapOpenGL.h"/>
+    <File Name="RenderBitmapOpenGL.cpp"/>
     <File Name="IBitmapRenderInterface.h"/>
     <File Name="BitmapWndRender.h"/>
     <File Name="BitmapWndRender.cpp"/>

@@ -27,10 +27,6 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Filter">
-    <VirtualDirectory Name="video">
-      <File Name="VideoStabilization.h"/>
-      <File Name="VideoStabilization.cpp"/>
-    </VirtualDirectory>
     <VirtualDirectory Name="Meanshift">
       <File Name="MeanShift.h"/>
       <File Name="MeanShift.cpp"/>
@@ -62,7 +58,6 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="window">
-    <VirtualDirectory Name="Transition"/>
     <VirtualDirectory Name="drawing">
       <File Name="CropFilter.h"/>
       <File Name="CropFilter.cpp"/>
