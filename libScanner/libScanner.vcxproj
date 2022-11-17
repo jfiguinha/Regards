@@ -470,7 +470,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../libWindow;../libControl;../libWindowMain;../libTheme;../libPicture;../libParameter;../libOpenGL;../libGeolocalisation;../libResource;../libFiltreInterface;../libDialog;../libSqlData;../libFiltre;../libUtility;../wxCheckTree;../Otherlib\wxIA\wia;../Otherlib\wxPDFDoc\include;..\Otherlib\wxIA\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>;wxMSVC_VERSION;QPDF_OBJECT_NOWARN;POINTERHOLDER_TRANSITION;CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
       <SupportJustMyCode>true</SupportJustMyCode>

@@ -213,28 +213,32 @@ CRegardsBitmap* CWic::GetPicture(const string& filename, const int& numPicture) 
         );
     }
 
-    if (SUCCEEDED(m_pConvertedSourceBitmap->GetSize(&cx, &cy)))
+    if(m_pConvertedSourceBitmap != nullptr)
     {
-        const UINT stride = cx * sizeof(DWORD);
-        const UINT buf_size = cy * stride;
-        byte * buf = new byte[buf_size];
-
-        hr = m_pConvertedSourceBitmap->CopyPixels(
-            nullptr,
-            stride,
-            buf_size,
-            buf
-        );
-
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(m_pConvertedSourceBitmap->GetSize(&cx, &cy)))
         {
-            cv::Mat mat(cy, cx, CV_8UC4, buf);
-            bitmap = new CRegardsBitmap();
-            bitmap->SetMatrix(mat);
-            bitmap->VertFlipBuf();
-        }
+            const UINT stride = cx * sizeof(DWORD);
+            const UINT buf_size = cy * stride;
+            byte* buf = new byte[buf_size];
 
+            hr = m_pConvertedSourceBitmap->CopyPixels(
+                nullptr,
+                stride,
+                buf_size,
+                buf
+            );
+
+            if (SUCCEEDED(hr))
+            {
+                cv::Mat mat(cy, cx, CV_8UC4, buf);
+                bitmap = new CRegardsBitmap();
+                bitmap->SetMatrix(mat);
+                bitmap->VertFlipBuf();
+            }
+
+        }
     }
+
 
     SafeRelease(pDecoder);
     SafeRelease(pFrame);

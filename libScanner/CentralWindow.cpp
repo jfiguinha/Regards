@@ -641,7 +641,7 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 	if (file != "")
 	{
 		wxBusyInfo wait("Please wait, working...");
-		std::vector<QPDFPageObjectHelper> oldpages;
+		std::vector<QPDFObjectHandle> oldpages;
 		int oldpageno_len = 0;
 		int i = 0;
 		bool fileIn = false;
@@ -663,26 +663,26 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 		if (fileIn)
 		{
-			oldpages = QPDFPageDocumentHelper(oldpdf).getAllPages();
+			oldpages = oldpdf.getAllPages();
 			oldpageno_len = oldpages.size();
 
 			for (; i <= oldAnimationPosition; i++)
 			{
 				auto object = oldpages.at(i);
-				QPDFPageObjectHelper& page(object);
-				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+				QPDFObjectHandle& page(object);
+				outpdf.addPage(page, false);
 			}
 		}
 
 
 
 
-		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+		std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
 		//int pageno_len = pages.size();
 		int pageno = 0;
 
 
-		for (std::vector<QPDFPageObjectHelper>::iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
+		for (std::vector<QPDFObjectHandle>::const_iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
 		{
 			bool find = false;
 			for (int i1 : listPage)
@@ -696,8 +696,8 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 			if (find)
 			{
-				QPDFPageObjectHelper& page(*newiter);
-				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+				QPDFObjectHandle page = *newiter;
+				outpdf.addPage(page, false);
 			}
 
 			pageno++;
@@ -708,9 +708,8 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 			//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
 			for (; i < oldpageno_len; i++)
 			{
-				auto object = oldpages.at(i);
-				QPDFPageObjectHelper& page(object);
-				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+				auto page = oldpages.at(i);
+				outpdf.addPage(page, false);
 			}
 		}
 
@@ -765,7 +764,7 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 		wxBusyInfo wait("Please wait, working...");
 		QPDF inpdf;
 		inpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
-		std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+		std::vector<QPDFObjectHandle> const & pages = inpdf.getAllPages();
 		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 		int pageno = 0;
 
@@ -774,7 +773,7 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 		outpdf.emptyPDF();
 
 
-		for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
+		for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin(); iter != pages.end(); ++iter)
 		{
 			bool find = false;
 			for (int i : listPage)
@@ -788,8 +787,8 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 
 			if (!find)
 			{
-				QPDFPageObjectHelper& page(*iter);
-				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+				QPDFObjectHandle page = *iter;
+				outpdf.addPage(page, false);
 			}
 
 			pageno++;
@@ -840,7 +839,7 @@ wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
 
 	QPDF inpdf;
 	inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
-	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+	std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
 	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 	int pageno = 0;
 
@@ -849,7 +848,8 @@ wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
 	outpdf.emptyPDF();
 
 
-	for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
+	for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin();
+		iter != pages.end(); ++iter)
 	{
 		bool find = false;
 		for (int i : listPage)
@@ -863,8 +863,8 @@ wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
 
 		if (find)
 		{
-			QPDFPageObjectHelper& page(*iter);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			QPDFObjectHandle page = *iter;
+			outpdf.addPage(page, false);
 		}
 
 		pageno++;
