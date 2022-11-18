@@ -1,4 +1,10 @@
 #pragma once
+#ifdef __WXGTK__
+#include <epoxy/gl.h>
+#include <epoxy/glx.h>
+#include <CL/cl_gl.h>
+#endif
+
 class CTextureGLPriv;
 
 namespace Regards

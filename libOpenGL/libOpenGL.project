@@ -13,7 +13,6 @@
     <File Name="GLTexture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="GLcontext.h"/>
     <File Name="GLSLParameter.h"/>
     <File Name="GLSLShader.h"/>
     <File Name="GLTexture.h"/>
