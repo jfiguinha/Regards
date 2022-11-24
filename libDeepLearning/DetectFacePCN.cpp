@@ -51,8 +51,8 @@ void CDetectFacePCN::DetectFace(const cv::Mat& source, std::vector<CFace>& listO
 
     Mat frameOpenCVDNN;
     cvtColor(source, frameOpenCVDNN, COLOR_BGRA2BGR);
-    int frameHeight = frameOpenCVDNN.rows;
-    int frameWidth = frameOpenCVDNN.cols;
+    //int frameHeight = frameOpenCVDNN.rows;
+    //int frameWidth = frameOpenCVDNN.cols;
 
     try
     {

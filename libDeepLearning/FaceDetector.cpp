@@ -414,8 +414,8 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 						Mat gray;
 						cvtColor(faceColor, gray, COLOR_BGR2GRAY);
 
-						int radiusL = 40;
-						int radiusR = 40;
+						//int radiusL = 40;
+						//int radiusR = 40;
 
 						faces.push_back(rc);
 					
@@ -552,8 +552,8 @@ void CFaceDetector::RemoveRedEye(const cv::Mat& image, const Rect& rSelectionBox
 	Mat eye;
 	cvtColor(eyeMat, eye, COLOR_BGR2GRAY);
 	GaussianBlur(eye, eye, Size(5, 5), 0);
-	double min = 0;
-	double max = 0;
+	////double min = 0;
+	//double max = 0;
 	Point minLoc;
 	double min_val, max_val;
 	Point maxLoc;
@@ -675,7 +675,7 @@ int CFaceDetector::FaceRecognition(const int& numFace)
 
 
 	double cosine_similar_thresh = 0.363;
-	double l2norm_similar_thresh = 1.128;
+	//double l2norm_similar_thresh = 1.128;
 
 	double maxConfidence = 0.0;
 	Mat fc1;

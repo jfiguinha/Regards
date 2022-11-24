@@ -295,8 +295,9 @@
     <LibraryPath>$(SolutionDir)libextern\heif-master\lib\arm64\Debug;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Debug;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\Debug\lib;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+    <IncludePath>C:\Program Files\LLVM\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\IMath;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\LLVM\lib;$(SolutionDir)libextern\heif-master\lib\arm64\Release;$(SolutionDir)libextern\dav1d\;$(SolutionDir)libextern\aom\build\Release;$(SolutionDir)libextern\qpdf-master\lib\arm64\Release;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
+    <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -1022,10 +1023,24 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\arm64-windows\debug\bin\ogg.dl
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../Regards;../libViewer;../libControl;../libParameter;../libDialog;../libTheme;../libWindow;../libFiltreInterface;../libPicture;../libSqlData;../libResource;../libUtility;../libSqlEngine;../libFiltre</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MinimalRebuild>true</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <OpenMPSupport>true</OpenMPSupport>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Shcore.lib;lz4.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;raw_r.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.82.0.lib;tesseract52.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_media.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;sqlite3.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1.lib;Imath-3_1.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;srcdav1d.lib;lz4.lib;Ws2_32.lib;Userenv.lib;libde265.lib;exiv2.lib;poppler.lib;raw_r.lib;mediainfo.lib;poppler-cpp.lib;qpdf.lib;psapi.lib;libx265.lib;aom.lib;opencv_calib3d4.lib;opencv_objdetect4.lib;opencv_core4.lib;opencv_dnn4.lib;opencv_features2d4.lib;opencv_xfeatures2d4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_highgui4.lib;opencv_dnn_superres4.lib;opencv_face4.lib;opencv_video4.lib;opencv_videoio4.lib;opencv_xphoto4.lib;opencv_tracking4.lib;opencv_photo4.lib;webpdemux.lib;webpdecoder.lib;webp.lib;libexif.lib;libxml2.lib;leptonica-1.82.0.lib;tesseract52.lib;freetype.lib;jasper.lib;iconv.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase32u.lib;wxbase32u_net.lib;wxbase32u_xml.lib;libpng16.lib;turbojpeg.lib;wxmsw32u_core.lib;wxmsw32u_adv.lib;wxmsw32u_html.lib;wxmsw32u_gl.lib;wxmsw32u_xrc.lib;wxmsw32u_qa.lib;wxmsw32u_aui.lib;wxmsw32u_media.lib;wxmsw32u_ribbon.lib;wxmsw32u_stc.lib;wxmsw32u_propgrid.lib;wxmsw32u_richtext.lib;wxmsw32u_webview.lib;SDL2.lib;epoxy.lib;libcurl.lib;openjp2.lib;heif_writer_shared.lib;tiff.lib;libexpat.lib;sqlite3.lib;freeimage.lib;jxl.lib;jxl_threads.lib;OpenEXR-3_1.lib;Imath-3_1.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)$(Platform)\$(Configuration)\Resources

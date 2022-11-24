@@ -239,7 +239,9 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\libRapidXML</IncludePath>
+    <IncludePath>C:\Program Files\LLVM\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include;$(SolutionDir)Otherlib\;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)Otherlib\libheif;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\poppler\cpp;$(SolutionDir)libextern\vcpkg\installed\arm64-windows\include\imath;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\libRapidXML</IncludePath>
+    <ExecutablePath>C:\Program Files\LLVM\bin;$(LLVMInstallDir)\bin;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Program Files\LLVM\lib;$(VC_LibraryPath_ARM64);$(WindowsSDK_LibraryPath_ARM64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -557,7 +559,20 @@
     <ClCompile>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;../include;../CxImage;../libUtility;../libParameter;../libResource;../libSqlData;../libDeeplearning;../Otherlib/libbpg/libRegardsBpg</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>LIBBPG;LIBHEIC;LIBRAW;WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LIBBPG;LIBHEIC;LIBRAW;WIN32;_ARM64_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MinimalRebuild>true</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <OpenMPSupport>true</OpenMPSupport>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

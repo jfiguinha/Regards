@@ -19,9 +19,9 @@ namespace Regards
 			                   const CThemeScrollBar& themeScroll, const CThemeTree& theme, const wxString& label = "", const bool &showTitle = false);
 			~CTreeWithScrollbar(void) override;
 			void UpdateScreenRatio() override;
-			void ClosePane() {};
-			void RefreshPane() {};
-			void SetLabel(const wxString& label);
+			void ClosePane() override {};
+			void RefreshPane() override {};
+			void SetLabel(const wxString& label) override;
 
 		protected:
 			void Resize() override;
