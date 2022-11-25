@@ -42,6 +42,7 @@
     <File Name="WindowUtility.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Render">
+    <File Name="GLcontext.h"/>
     <File Name="RenderVideoOpenGL.h"/>
     <File Name="RenderVideoOpenGL.cpp"/>
     <File Name="RenderOpenGL.h"/>
