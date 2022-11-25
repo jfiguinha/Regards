@@ -2,6 +2,9 @@
 #include <header.h>
 // DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
+#ifdef __APPLE__
+#include <ReadImage.h>
+#endif
 #include "libPicture.h"
 #include <wx/filename.h>
 #include <wx/progdlg.h>
@@ -37,6 +40,9 @@
 #if defined(WIN32)
 #include "wic.h"
 #endif
+
+
+
 #ifdef LIBBPG
 #if defined(WIN32)
 #include <DllBpg.h>
@@ -157,12 +163,18 @@ CLibPicture::CLibPicture()
 #ifdef WIN32
 	wic = new CWic();
 #endif
+#ifdef __APPLE__
+    readimage = new CReadMacOSImage();
+#endif
 }
 
 CLibPicture::~CLibPicture()
 {
 #ifdef WIN32
 	delete wic;
+#endif
+#ifdef __APPLE__
+    delete readimage;
 #endif
 }
 
@@ -2169,7 +2181,26 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	if (_bitmap == nullptr)
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else
+    {
 		bitmap->SetPicture(_bitmap);
+         ApplyOrientation(fileName, true, bitmap);
+    }
+#elif defined(__APPLE__)
+    int width = 0;
+    int height = 0;
+    unsigned char * data = readimage->ReadImage(fileName,width,height);
+    if(width != 0 && data != nullptr && height != 0 && !isThumbnail)
+    {
+        cv::Mat mat(height, width, CV_8UC4, data);
+        CRegardsBitmap * _bitmap = new CRegardsBitmap();
+        _bitmap->SetMatrix(mat);
+        _bitmap->VertFlipBuf();
+        _bitmap->ConvertToBgr();
+        bitmap->SetPicture(_bitmap);
+        ApplyOrientation(fileName, true, bitmap);
+    }
+    else
+        LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 #else
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 #endif
@@ -2783,13 +2814,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 	OutputDebugString(L"Convert\n");
 #endif
 
-		int orientation = -1;
-		if (TestIsExifCompatible(fileName) && applyExif)
-		{
-			CMetadataExiv2 metadata(fileName);
-			orientation = metadata.GetOrientation();
-			bitmap->SetOrientation(orientation);
-		}
+    ApplyOrientation(fileName, applyExif, bitmap);
 
 #ifdef ROTDETECT
 		if(orientation == -1 || orientation == 1)
@@ -2854,6 +2879,17 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 		}
 		bitmap->SetFilename(fileName);
 	}
+}
+
+void CLibPicture::ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap)
+{
+    int orientation = -1;
+    if (TestIsExifCompatible(fileName) && applyExif)
+    {
+        CMetadataExiv2 metadata(fileName);
+        orientation = metadata.GetOrientation();
+        bitmap->SetOrientation(orientation);
+    }   
 }
 
 wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat img)

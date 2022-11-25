@@ -5,26 +5,17 @@
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Render">
-    <File Name="RenderVideoOpenGL.h"/>
-    <File Name="RenderBitmapOpenGL.h"/>
-    <File Name="RenderVideoOpenGL.cpp"/>
-    <File Name="RenderBitmapOpenGL.cpp"/>
-  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="GLSLParameter.cpp"/>
     <File Name="GLSLShader.cpp"/>
     <File Name="GLTexture.cpp"/>
-    <File Name="RenderOpenGL.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="GLcontext.h"/>
     <File Name="GLSLParameter.h"/>
     <File Name="GLSLShader.h"/>
     <File Name="GLTexture.h"/>
-    <File Name="RenderOpenGL.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>

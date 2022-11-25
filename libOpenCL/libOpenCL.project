@@ -29,11 +29,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="VideoStabilization.cpp"/>
     <File Name="OpenCLParameter.cpp"/>
     <File Name="OpenCLFilter.cpp"/>
     <File Name="OpenCLEffectVideo.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="VideoStabilization.h"/>
     <File Name="OpenCLParameter.h"/>
     <File Name="OpenCLFilter.h"/>
     <File Name="OpenCLEffectVideo.h"/>
