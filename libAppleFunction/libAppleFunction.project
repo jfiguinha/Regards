@@ -15,10 +15,14 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ReadImage.cpp"/>
     <File Name="SaveFileFormat.cpp"/>
     <File Name="SaveFromCFunction.mm"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ReadImageImpl.mm"/>
+    <File Name="ReadImageImpl.h"/>
+    <File Name="ReadImage.h"/>
     <File Name="SaveFileFormat.h"/>
     <File Name="SaveFromCFunction.h"/>
   </VirtualDirectory>

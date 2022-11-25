@@ -15,6 +15,7 @@ class CImageVideoThumbnail;
 class CImageLoadingFormat;
 class CPictureData;
 class CRegardsConfigParam;
+class CReadMacOSImage;
 
 namespace Regards
 {
@@ -102,7 +103,7 @@ namespace Regards
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
 			int TestExtension(const wxString & ext);
-
+             void ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap);
 
 			int svgWidth;
 			int svgHeight;
@@ -117,6 +118,9 @@ namespace Regards
 			map<wxString, bool> fileValid;
 #ifdef WIN32
 			Regards::Picture::CWic* wic = nullptr;
+#endif
+#ifdef __APPLE__
+			CReadMacOSImage * readimage = nullptr;
 #endif
 		};
 

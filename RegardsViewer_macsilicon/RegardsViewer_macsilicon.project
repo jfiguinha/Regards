@@ -177,12 +177,12 @@
         <Library Value="Geolocalisation"/>
         <Library Value="Filtre"/>
         <Library Value="RegardsCL"/>
-        <Library Value="RegardsGL"/>
         <Library Value="SqlData"/>
         <Library Value="SqlEngine"/>
         <Library Value="Picture"/>
         <Library Value="DeepLearning"/>
         <Library Value="Window"/>
+        <Library Value="RegardsGL"/>
         <Library Value="Dialog"/>
         <Library Value="Sqlite3"/>
         <Library Value="Utility"/>
