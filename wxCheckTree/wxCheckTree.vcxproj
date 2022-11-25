@@ -547,7 +547,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <PreprocessorDefinitions>;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
