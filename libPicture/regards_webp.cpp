@@ -39,7 +39,7 @@ void CRegardsWebp::ApplyTransform(cv::Mat& image)
 
     cvtColor(image, image, cv::COLOR_RGBA2BGRA);
 
-    cv::flip(image, image, 0);
+    //cv::flip(image, image, 0);
 }
 
 vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay)

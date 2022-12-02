@@ -213,7 +213,7 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 	
 	if (!bitmap.empty())
 	{
-		cv::flip(bitmap, bitmap, 0);
+		//cv::flip(bitmap, bitmap, 0);
 		CPictureUtility::ApplyRotation(bitmap, angle);
 		//bitmap->ApplyRotation(angle);
 	}
@@ -333,8 +333,8 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
 	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
-	if(!videoSoft->pictureVideo.empty())
-		cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
+	//if(!videoSoft->pictureVideo.empty())
+	//	cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 	videoSoft->needToRefresh = true;

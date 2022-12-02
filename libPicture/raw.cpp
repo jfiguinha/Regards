@@ -39,7 +39,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			picture = new CImageLoadingFormat();
 			cv::Mat rawData(1, memFile->size, CV_8UC1, (void*)memFile->dataPt);
 			cv::Mat matPicture = cv::imdecode(rawData, cv::IMREAD_COLOR);
-			cv::flip(matPicture, matPicture, 0);
+			//cv::flip(matPicture, matPicture, 0);
 			picture->SetPicture(matPicture, 0, fileName);
 			picture->SetFilename(fileName);
 		}
@@ -96,7 +96,7 @@ bool CRaw::LoadPicture(const wxString& fileName, CImageLoadingFormat * imageLoad
 		int iTaille = raw_color * (raw_bitsize / 8);
 		int stride = ((iTaille * width + iTaille) & ~iTaille);
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		image->Flip();
+		//image->Flip();
 		imageLoadingFormat->SetPicture(image);
 		isOk = true;
 	}

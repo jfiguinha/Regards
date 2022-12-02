@@ -476,7 +476,7 @@ void CShowElement::RotateRecognition(void* param)
 				fastDetection = param->GetFastDetectionFace();
 
 			threadRotate->isReady = true;
-			cv::flip(threadRotate->bitmap, threadRotate->bitmap, 0);
+			//cv::flip(threadRotate->bitmap, threadRotate->bitmap, 0);
 			threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap, fastDetection);
 		}
 
@@ -732,11 +732,13 @@ cv::Mat CShowElement::GetVideoBitmap()
 	{
 		bool isFromBuffer = false;
 		bitmap = videoWindow->SavePicture(isFromBuffer);
+		/*
 		if (!isFromBuffer)
 		{
-			if (videoWindow->IsFFmpegDecode())
-				cv::flip(bitmap, bitmap, 0);
+			//if (videoWindow->IsFFmpegDecode())
+				//cv::flip(bitmap, bitmap, 0);
 		}
+		*/
 	}
 	return bitmap;
 }
@@ -748,12 +750,13 @@ void CShowElement::OnSave(wxCommandEvent& event)
 		bool isFromBuffer = false;
 		cv::Mat bitmap= videoWindow->SavePicture(isFromBuffer);
 		auto imageLoading = new CImageLoadingFormat();
+		/*
 		if (!isFromBuffer)
 		{
 			if (videoWindow->IsFFmpegDecode())
 				cv::flip(bitmap, bitmap, 0);
 		}
-
+		*/
 		imageLoading->SetPicture(bitmap);
 		CSavePicture::SavePicture(nullptr, imageLoading, filename);
 		if (imageLoading != nullptr)

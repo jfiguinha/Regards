@@ -437,7 +437,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 
 	if(nbFace > 0)
 	{
-		cv::flip(image, image, 0);
+		//cv::flip(image, image, 0);
 
 		try
 		{
@@ -631,7 +631,7 @@ int CFiltreEffetCPU::BokehEffect(const int& radius, const int& boxsize, const in
 			
 		}
 
-		cv::flip(image, image, 0);
+		//cv::flip(image, image, 0);
 	}
 	//
 	return 0;
@@ -1183,7 +1183,7 @@ wxImage CFiltreEffetCPU::GetwxImage()
 
 	cv::Mat cvDest;
 	cv::cvtColor(image, cvDest, cv::COLOR_BGR2RGB);
-	cv::flip(cvDest, cvDest, 0);
+	//cv::flip(cvDest, cvDest, 0);
 	wxImage anImage(cvDest.cols, cvDest.rows, cvDest.data, TRUE);
 	return anImage;
 }

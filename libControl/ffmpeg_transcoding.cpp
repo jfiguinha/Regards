@@ -57,7 +57,7 @@ cv::Mat CFFmpegTranscoding::GetFrameOutput()
 	cv::Mat bitmap;
 #ifdef WIN32_MFT
 	data.copyTo(bitmap);
-	cv::flip(bitmap, bitmap, 0);
+	//cv::flip(bitmap, bitmap, 0);
 #else
 	data.copyTo(bitmap);
 #endif

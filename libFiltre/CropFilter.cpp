@@ -88,7 +88,7 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 	{
 		imageLoad = new CImageLoadingFormat();
 		imageLoad->SetPicture(source);
-		imageLoad->Flip();
+		//imageLoad->Flip();
 		imageLoad->RotateExif(orientation);
 
 		try
@@ -110,7 +110,7 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 
 
 		imageLoad->SetPicture(out);
-		imageLoad->Flip();
+		//imageLoad->Flip();
 	}
 
 	return imageLoad;

@@ -153,7 +153,7 @@ cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 							int image_height = dstRGB.height;
 							picture.create(image_height, image_width, CV_8UC4);
 							memcpy(picture.data, dstRGB.pixels, image_height * image_width * 4);
-							cv::flip(picture, picture, 0);
+							//cv::flip(picture, picture, 0);
 						}
 						avifRGBImageFreePixels(&dstRGB);
 					}
@@ -217,7 +217,7 @@ cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPict
 
 					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
 					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
-					cv::flip(out, out, 0);
+					//cv::flip(out, out, 0);
 				}
 				avifRGBImageFreePixels(&dstRGB);
 			}
@@ -255,7 +255,7 @@ void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data,
 			image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT709;
 			image->yuvRange = AVIF_RANGE_FULL;
 
-			cv::flip(source, bitmapMatrix, 0);
+			//cv::flip(source, bitmapMatrix, 0);
 
 			// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
 			avifRGBImage rgb;
@@ -345,7 +345,7 @@ vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 					int image_height = dstRGB.height;
 					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
 					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
-					cv::flip(out, out, 0);
+					//cv::flip(out, out, 0);
 					listPicture.push_back(out);
 				}
 				avifRGBImageFreePixels(&dstRGB);
@@ -385,7 +385,7 @@ cv::Mat CAvif::GetPicture(const string& filename)
 
 				out.create(image_height, image_width, CV_8UC4);
 				memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
-				cv::flip(out, out, 0);
+				//cv::flip(out, out, 0);
 			}
 			avifRGBImageFreePixels(&dstRGB);
 		}

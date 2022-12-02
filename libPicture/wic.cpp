@@ -70,7 +70,7 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
             if (SUCCEEDED(hr))
             {
                 mat = cv::Mat(cy, cx, CV_8UC4, buf);
-                cv::flip(mat, mat, 0);
+                //cv::flip(mat, mat, 0);
             }
         }
     }
@@ -228,7 +228,7 @@ cv::Mat CWic::GetPicture(const string& filename, const int& numPicture) {
             if (SUCCEEDED(hr))
             {
                 mat = cv::Mat(cy, cx, CV_8UC4, buf);
-                cv::flip(mat, mat, 0);
+               // cv::flip(mat, mat, 0);
             }
 
         }

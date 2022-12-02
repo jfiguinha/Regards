@@ -184,7 +184,7 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace()
 			CLibPicture libPicture;
 			CImageLoadingFormat* picture = listFace.at(i);
 			libPicture.LoadPicture(file,false,0, picture);
-			picture->Flip();
+			//picture->Flip();
 	});
 
 	/*
@@ -229,7 +229,7 @@ vector<CImageLoadingFormat *> CSqlFacePhoto::GetAllFace(const int &numFace)
 			wxString file = files[i];
 			CLibPicture libPicture;
 			CImageLoadingFormat* picture = libPicture.LoadPicture(file);
-			picture->Flip();
+			//picture->Flip();
 			CImageLoadingFormat* local = listFace.at(i);
 			local = picture;
 		});
@@ -271,7 +271,7 @@ CImageLoadingFormat * CSqlFacePhoto::GetFacePicture(const int &numFace)
 	{
 		CLibPicture libPicture;
 		picture = libPicture.LoadPicture(thumbnail);
-		picture->Flip();
+		//picture->Flip();
 	}
 	return picture;
 

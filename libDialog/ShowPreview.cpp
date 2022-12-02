@@ -261,7 +261,7 @@ void CShowPreview::ThreadLoading(void* data)
 			CThumbnailVideo video(fileTemp, false);
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 #ifndef WIN32_MFT
-			cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);
+			//cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);
 #endif
 		}
 		else

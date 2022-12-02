@@ -102,7 +102,7 @@ int CFaceDetector::DectectOrientationByFaceDetector(const cv::Mat& pBitmap)
 	pBitmap.copyTo(Source);
 	if (isLoading)
 	{
-		cv::flip(Source, Source, 0);
+		//cv::flip(Source, Source, 0);
 		std::vector<CFace> listOfFace;
 
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
@@ -239,7 +239,7 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(const cv::Mat& picture)
 	if (isLoading)
 	{
 		Mat source;
-		cv::flip(picture, source, 1);
+		//cv::flip(picture, source, 1);
 		std::vector<CFace> listOfFace;
 		detectFacePCN->DetectFace(source, listOfFace, listFace);
 	}
@@ -287,7 +287,7 @@ std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString 
 		std::vector<CFace> listOfFace;
 		std::vector<Rect> pointOfFace;
 		Mat resizeSource;
-		cv::flip(pBitmap, source, 1);
+		//cv::flip(pBitmap, source, 1);
 		cvtColor(source, source, COLOR_BGRA2BGR);
 		float dRatio = 1.0;
 		float invertRatio = 1.0;

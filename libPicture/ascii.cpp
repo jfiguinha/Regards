@@ -19,7 +19,7 @@ char CBitmapToAscii::getDensity(int value)
 
 void CBitmapToAscii::SaveToAscii(CImageLoadingFormat * source, const string &filenameOut)
 {
-    source->Flip();
+   // source->Flip();
 
     float new_ratio = 1;
     int pictureWidth = source->GetWidth();

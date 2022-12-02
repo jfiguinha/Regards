@@ -2017,7 +2017,7 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
 	CPictureUtility::ApplyRotation(frameOutput, rotation);
-	cv::flip(frameOutput, frameOutput, 0);
+	//cv::flip(frameOutput, frameOutput, 0);
 	frameOutput = ApplyProcess(frameOutput);
 
 
@@ -2496,7 +2496,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 		}
 
 		CPictureUtility::ApplyRotation(decodeFrame, rotation);
-		cv::flip(decodeFrame, decodeFrame, 0);
+		//cv::flip(decodeFrame, decodeFrame, 0);
 		frameOutput = ApplyProcess(decodeFrame);
 
 		//*bitmapOut = bitmap;

@@ -204,7 +204,7 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
 		{
 			int compressMethod = 0;
 			unsigned long outputsize = 0;
-			bitmap->Flip();
+			//bitmap->Flip();
 			std::vector<uchar> data = bitmap->GetJpegData();
 			//wxString hash = wxMD5::GetFileMD5(filename);
 			wxFileName file(filename);

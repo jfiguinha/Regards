@@ -132,7 +132,7 @@ cv::Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, in
 		int y = (height - bitmap->GetHeight()) / 2;
 
 		pBitmap.copyTo(src_bitmap(cv::Rect(x, y, pBitmap.cols, pBitmap.rows)));
-		cv::flip(src_bitmap, src_bitmap, 0);
+		//cv::flip(src_bitmap, src_bitmap, 0);
 
 		/*
 		src_bitmap.create(width, height);

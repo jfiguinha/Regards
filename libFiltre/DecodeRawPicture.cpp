@@ -138,7 +138,7 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 		int stride = ((iTaille * width + iTaille) & ~iTaille);
 		//rawProcessor->copy_mem_image(image->GetBits(), width * raw_color * (raw_bitsize/8), 1);
 		rawProcessor->copy_mem_image(image->GetBits(), stride, 1);
-		image->Flip();
+		//image->Flip();
 		imageLoadingFormat->SetPicture(image);
 	}
 

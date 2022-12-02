@@ -170,7 +170,7 @@ wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 {
 	cv::Mat cvDest;
 	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
-	cv::flip(cvDest, cvDest, 0);
+	//cv::flip(cvDest, cvDest, 0);
 	wxImage anImage(input.cols, input.rows, cvDest.data, TRUE);
 	//anImage.Mirror(false);
 	return anImage;

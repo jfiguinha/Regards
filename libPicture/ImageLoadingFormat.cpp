@@ -141,19 +141,21 @@ void CImageLoadingFormat::RotateExif(const int& orientation)
 		break;
 	case 5: //left side top
 		this->Rotate90();
-		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
 		break;
 	case 6: // right side top
 		this->Rotate90();
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
 		break;
 	case 7: // right side bottom
 		this->Rotate90();
-		cv::flip(_image, _image, 0);
+		cv::flip(_image, _image, 1);
 		break;
 	case 8: // left side bottom
 		this->Rotate90();
-		cv::flip(_image, _image, 1);
-		cv::flip(_image, _image, 0);
+		//cv::flip(_image, _image, 1);
+		//cv::flip(_image, _image, 0);
 		break;
 	default:;
 	}
@@ -164,44 +166,19 @@ wxImage CImageLoadingFormat::GetwxImage()
 	if (!IsOk())
 		return wxImage();
 
-	const int width = GetWidth();
-	const int height = GetHeight();
-	const int widthSrcSize = width * 4;
-	unsigned char* data = _image.data;
-	bool loadAlpha = false;
-	wxImage anImage(width, height, true);
-	if (loadAlpha)
-		anImage.InitAlpha();
-	bool flip = false;
-	unsigned char* dataOut = anImage.GetData();
-	unsigned char* dataAlpha = anImage.GetAlpha();
-
-	if (data != nullptr)
+	long imsize = _image.rows * _image.cols * _image.channels();
+	wxImage wx(_image.cols, _image.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = _image.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+	/*
+	for (long i = 0; i < imsize; i++)
 	{
-		int pos_data;
-		for (auto y = 0; y < height; y++)
-		{
-			if (flip)
-				pos_data = y * widthSrcSize;
-			else
-				pos_data = ((height - y) * widthSrcSize) - widthSrcSize;
-			int posDataOut = y * (width * 3);
-			int posAlpha = y * width;
-			for (auto x = 0; x < width; x++)
-			{
-				dataOut[posDataOut] = data[pos_data + 2];
-				dataOut[posDataOut + 1] = data[pos_data + 1];
-				dataOut[posDataOut + 2] = data[pos_data];
-
-				if (loadAlpha)
-					dataAlpha[posAlpha++] = data[pos_data + 3];
-				pos_data += 4;
-				posDataOut += 3;
-			}
-		}
+		d[i] = s[i];
 	}
+	*/
+	return wx;
 
-	return anImage;
 }
 
 CxImage CImageLoadingFormat::GetCxImage()

@@ -304,7 +304,7 @@ cv::Mat & DecodeFrame(void* data, int length, void* externDecoder)
 				if (img)
 				{
 					picture = GetRGBPicture(img);
-					cv::flip(picture, picture, 0);
+					//cv::flip(picture, picture, 0);
 					cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
 					more = 0;
 				}
@@ -370,7 +370,7 @@ vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const s
 			if (img)
 			{
 				cv::Mat picture = GetRGBPicture(img);
-				cv::flip(picture, picture, 0);
+				//cv::flip(picture, picture, 0);
 				cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
 				listPicture.push_back(picture);
 			}

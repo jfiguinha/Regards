@@ -240,7 +240,7 @@ wxImage CLibPicture::ConvertRegardsBitmapToWXImage(cv::Mat & img)
 	else if (img.channels() == 4) { cvtColor(img, im2, cv::COLOR_BGRA2RGB); }
 	else { cvtColor(img, im2, cv::COLOR_BGR2RGB); }
 
-	cv::flip(im2, im2, 0);
+	//cv::flip(im2, im2, 0);
 
 	long imsize = im2.rows * im2.cols * im2.channels();
 	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
@@ -716,7 +716,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 				break;
 			}
 
-			cv::flip(mat, mat, 0);
+			//cv::flip(mat, mat, 0);
 			CRegardsWebp::SavePicture(fileName, mat, _option);
 			break;
 		}
@@ -2165,7 +2165,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			cv::Mat mat = CJxl::GetPicture(fileName);
 			mat.convertTo(out, CV_8UC4, 255); // or CV_32F works (too)
 			bitmap->SetPicture(out);
-			bitmap->Flip();
+			//bitmap->Flip();
 			break;
 		}
 
@@ -2213,7 +2213,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					}
 
 					bitmap->SetPicture(picture);
-					bitmap->Flip();
+					//bitmap->Flip();
 					bitmap->SetFilename(fileName);
 				}
                 break;
@@ -2300,7 +2300,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 					tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data,
 						picture.size().width, 0, picture.size().height, TJPF_BGRX,
-						TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+						TJFLAG_FASTDCT);
 
 					tjDestroy(_jpegDecompressor);
 
@@ -2342,7 +2342,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 					picture = cv::Mat(height, width, CV_8UC4);
 
 					tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, picture.data, width, 0,
-						height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+						height, TJPF_BGRX, TJFLAG_FASTDCT);
 
 					tjDestroy(_jpegDecompressor);
 
@@ -2383,7 +2383,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
                 {
 					bitmap->SetFilename(fileName);
                     bitmap->SetPicture(matPicture);
-					bitmap->Flip();
+					//bitmap->Flip();
                 }
 			}
 			catch (cv::Exception& e)
@@ -2408,7 +2408,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
                     hdr.convertTo(hdr, CV_8UC3, 255);
 					bitmap->SetFilename(fileName);
                     bitmap->SetPicture(hdr);
-					bitmap->Flip();
+					//bitmap->Flip();
                 }
 
 			}

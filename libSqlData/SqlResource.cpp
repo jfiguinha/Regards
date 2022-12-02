@@ -36,7 +36,7 @@ void CSqlResource::InsertBitmap(const wstring &idName, const wstring &mimeType, 
 		wchar_t _pwszRequeteSQL[512];
 		swprintf(_pwszRequeteSQL, 512, L"INSERT INTO BitmapResource (idName, mimeType, width, height, depth, data) VALUES('%s', '%s', %d, %d, %d, ?)", CConvertUtility::ConvertToUTF8(idName), CConvertUtility::ConvertToUTF8(mimeType), loadPicture->GetWidth(), loadPicture->GetHeight(), 32);
 		int size = loadPicture->GetWidth() * loadPicture->GetHeight() * 4;
-		cv::flip(bitmap, bitmap, 0);
+		//cv::flip(bitmap, bitmap, 0);
 
 		ExecuteInsertBlobData(_pwszRequeteSQL, 5, bitmap.data, size);
 

@@ -1644,7 +1644,7 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 			printf("CBitmapWndRender GetDisplayTexture Error \n");
 
 	}
-	RenderTexture(false);
+	RenderTexture(true);
 }
 
 void CBitmapWndRender::OnIdle(wxIdleEvent& evt)
