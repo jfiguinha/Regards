@@ -1,7 +1,7 @@
 #include "header.h"
 #include "SqlResource.h"
 #include <lz4.h>
-#include <RegardsBitmap.h>
+
 #include <libPicture.h>
 #include <fstream>
 #include <ImageLoadingFormat.h>
@@ -32,19 +32,14 @@ void CSqlResource::InsertBitmap(const wstring &idName, const wstring &mimeType, 
 	CImageLoadingFormat * loadPicture = libPicture.LoadPicture(filename);
 	if(loadPicture != nullptr && loadPicture->IsOk())
 	{
-		CRegardsBitmap * bitmap = loadPicture->GetRegardsBitmap();
+		cv::Mat bitmap = loadPicture->GetOpenCVPicture();
 		wchar_t _pwszRequeteSQL[512];
-		swprintf(_pwszRequeteSQL, 512, L"INSERT INTO BitmapResource (idName, mimeType, width, height, depth, data) VALUES('%s', '%s', %d, %d, %d, ?)", CConvertUtility::ConvertToUTF8(idName), CConvertUtility::ConvertToUTF8(mimeType), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetBitmapDepth());
+		swprintf(_pwszRequeteSQL, 512, L"INSERT INTO BitmapResource (idName, mimeType, width, height, depth, data) VALUES('%s', '%s', %d, %d, %d, ?)", CConvertUtility::ConvertToUTF8(idName), CConvertUtility::ConvertToUTF8(mimeType), loadPicture->GetWidth(), loadPicture->GetHeight(), 32);
+		int size = loadPicture->GetWidth() * loadPicture->GetHeight() * 4;
+		cv::flip(bitmap, bitmap, 0);
 
-		int size = bitmap->GetBitmapSize();
-		if (flip)
-			bitmap->VertFlipBuf();
-		//uint8_t * dest = new uint8_t[size];
-		//int outputsize = size;
-		//bool result = jpge::compress_image_to_jpeg_file_in_memory(dest, outputsize, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), 4, bitmap->GetPtBitmap());
-		ExecuteInsertBlobData(_pwszRequeteSQL, 5, bitmap->GetPtBitmap(), size);
-		//delete[] dest;
-		delete bitmap;
+		ExecuteInsertBlobData(_pwszRequeteSQL, 5, bitmap.data, size);
+
 		delete loadPicture;
 	}
 }

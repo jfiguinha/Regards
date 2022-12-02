@@ -1,7 +1,8 @@
 #include <header.h>
 #include "PicturePanel.h"
-#include <RegardsBitmap.h>
+#include <RGBAQuad.h>
 #include <libPicture.h>
+#include <ImageLoadingFormat.h>
 #include <opencv2/core.hpp>
 #include <wx/spinctrl.h>
 #include <CvPlot/cvplot.h>
@@ -13,8 +14,6 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 {
 	w = 0;
 	h = 0;
-	pictureOriginal = nullptr;
-	histogram = nullptr;
 	colorBack = theme.colorBack;
 	CThemeFont themeFont = theme.themeIcone.font;
 	colorFont = themeFont.GetColorFont();
@@ -31,12 +30,12 @@ CPicturePanel::CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbn
 }
 
 
-void CPicturePanel::CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont)
+void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont)
 {
 	cv::Mat hist;
 	cv::Mat src;
-	int hist_w = histogram->GetBitmapWidth(), hist_h = histogram->GetBitmapHeight();
-	cv::Mat image = pBitmap->GetMatrix();
+	int hist_w = histogram.size().width, hist_h = histogram.size().height;
+	cv::Mat image = pBitmap;
 	cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
 	auto color = cv::Scalar(255, 255, 255);
 
@@ -109,11 +108,8 @@ void CPicturePanel::CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* 
 
 
 	cv::Mat mat = axes.render(hist_h, hist_w);
-
-
 	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);
-	histogram->SetMatrix(histImage);
-	histogram->VertFlipBuf();
+	cv::flip(histImage, histogram, 0);
 
 	hist.release();
 	image.release();
@@ -122,18 +118,18 @@ void CPicturePanel::CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* 
 	histImage.release();
 }
 
-void CPicturePanel::NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue, const int& maxValue)
+void CPicturePanel::NormalizeHistogram(cv::Mat&  pictureData, const int& colorChoice, const int& minValue, const int& maxValue)
 {
 	int min = 0;
 	int max = 255;
 	//pixel = (pixel - min) * (nmax - nmin) / (max - min) + nmin
-
+	cv::Mat mat = pictureData;
 	//uint8_t * data = pictureData->GetPtBitmap();
-	for (int y = 0; y < pictureData->GetBitmapHeight(); y++)
+	for (int y = 0; y < pictureData.size().height; y++)
 	{
-		for (int x = 0; x < pictureData->GetBitmapWidth(); x++)
+		for (int x = 0; x < pictureData.size().width; x++)
 		{
-			CRgbaquad color = pictureData->GetColorValue(x, y);
+			CRgbaquad color = CRgbaquad::GetColorValue(&mat,x,y); // pictureData->GetColorValue(x, y);
 			if (colorChoice == 0)
 			{
 				color.SetRed((color.GetRed() - min) * (maxValue - minValue) / (max - min) + minValue);
@@ -152,7 +148,10 @@ void CPicturePanel::NormalizeHistogram(CRegardsBitmap* pictureData, const int& c
 			{
 				color.SetBlue((color.GetBlue() - min) * (maxValue - minValue) / (max - min) + minValue);
 			}
-			pictureData->SetColorValue(x, y, color);
+			//pictureData->SetColorValue(x, y, color);
+
+			int i = (x << 2) + (y * (pictureData.cols << 2));
+			memcpy(pictureData.data + i, &color, sizeof(CRgbaquad));
 		}
 	}
 }
@@ -171,19 +170,20 @@ void CPicturePanel::CreateHistogram()
 	const int width = neww - (marged * 2);
 	const int height = newh - ch_h - (marged * 4);
 
-	if (histogram == nullptr)
-		histogram = new CRegardsBitmap(width, height);
+	if (histogram.empty())
+		histogram = cv::Mat(height,width,CV_8UC4);
 
-	if (width != histogram->GetBitmapWidth() || height != histogram->GetBitmapHeight())
+	if (width != histogram.size().width || height != histogram.size().height)
 	{
-		delete histogram;
-		histogram = new CRegardsBitmap(width, height);
+		histogram = cv::Mat(height, width, CV_8UC4);
 	}
 
 	if (refreshPicture)
 	{
+		CImageLoadingFormat picture;
 		CalculateHistogram(pictureOriginal, histogram, channelSelect, colorBack, colorFont);
-		this->image = CLibPicture::ConvertRegardsBitmapToWXImage(histogram);
+		picture.SetPicture(histogram);
+		this->image = picture.GetwxImage();
 	}
 }
 
@@ -198,21 +198,12 @@ void CPicturePanel::OnChannelSelect(wxCommandEvent& event)
 
 CPicturePanel::~CPicturePanel()
 {
-	if (pictureOriginal != nullptr)
-		delete pictureOriginal;
-
-	if (histogram == nullptr)
-		delete histogram;
-
 	delete choice_control;
 }
 
-void CPicturePanel::SetPictureToDisplay(CRegardsBitmap* picture)
+void CPicturePanel::SetPictureToDisplay(cv::Mat& picture)
 {
-	if (pictureOriginal != nullptr)
-		delete pictureOriginal;
-
-	pictureOriginal = picture;
+	picture.copyTo(pictureOriginal);
 
 	channelSelect = 0;
 	choice_control->Select(0);

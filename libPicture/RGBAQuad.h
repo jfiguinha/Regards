@@ -22,6 +22,12 @@ public:
 
 	~CRgbaquad();
 
+	static int GetPosition(cv::Mat * bitmapMatrix, const int& x, const int& y);
+
+	static CRgbaquad* GetPtColorValue(cv::Mat * bitmapMatrix, const int& x, const int& y);
+
+	static CRgbaquad GetColorValue(cv::Mat* bitmapMatrix, const int& x, const int& y);
+
 	void SetHexaColor(const wxString& hexacolor);
 
 	void SetColor(const uint8_t& color);

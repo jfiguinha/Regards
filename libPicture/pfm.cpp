@@ -1,6 +1,5 @@
 #include <header.h>
 #include "pfm.h"
-#include <RegardsFloatBitmap.h>
 #include <iostream>
 #include <stdio.h>
 #include <fstream>
@@ -60,9 +59,9 @@ void CPfm::GetDimensions(const wxString& path, int& width, int& height)
 	file >> scalef;
 }
 
-CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbnail)
+cv::Mat CPfm::ReadFilePFM(const wxString& path, const bool& thumbnail)
 {
-	CRegardsFloatBitmap* image;
+	cv::Mat image;
 
 	// create fstream object to read in pfm file
 	// open the file in binary
@@ -85,12 +84,12 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 	int littleEndianMachine = littleendian();
 	int needSwap = (littleEndianFile != littleEndianMachine);
 
-	cout << setfill('=') << setw(19) << "=" << endl;
-	cout << "Reading image to pfm file: " << path << endl;
-	cout << "Little Endian?: " << ((needSwap) ? "false" : "true") << endl;
-	cout << "width: " << width << endl;
-	cout << "height: " << height << endl;
-	cout << "scale: " << scalef << endl;
+	//cout << setfill('=') << setw(19) << "=" << endl;
+	//cout << "Reading image to pfm file: " << path << endl;
+	//cout << "Little Endian?: " << ((needSwap) ? "false" : "true") << endl;
+	//cout << "width: " << width << endl;
+	//cout << "height: " << height << endl;
+	//cout << "scale: " << scalef << endl;
 
 	// skip SINGLE newline character after reading third arg
 	char c = file.get();
@@ -101,41 +100,40 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 		if (c == ' ' || c == '\t' || c == '\r')
 		{
 			cout << "newline expected";
-			return nullptr;
+			return image;
 		}
 		cout << "whitespace expected";
-		return nullptr;
+		return image;
 	}
 
 	if (bands == "Pf")
 	{
 		// handle 1-band image
-		cout << "Reading grayscale image (1-band)" << endl;
-		cout << "Reading into CV_32FC1 image" << endl;
-		image = new CRegardsFloatBitmap(width, height);
+		//cout << "Reading grayscale image (1-band)" << endl;
+		//cout << "Reading into CV_32FC1 image" << endl;
+		image.create(height, width, CV_32FC4);
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; ++j)
 			{
+				int pos = j * 4 + i * width * 4;
 				file.read((char*)&fvalue, sizeof(fvalue));
 				if (needSwap)
 				{
 					swapBytes(&fvalue);
 				}
-				int pos = image->GetPosition(j, i);
-				image->data[pos] = fvalue;
-				image->data[pos + 1] = fvalue;
-				image->data[pos + 2] = fvalue;
-				//im.at<float>(i, j) = (float)fvalue;
+				image.at<float>(pos + 0) = fvalue;
+				image.at<float>(pos + 1) = fvalue;
+				image.at<float>(pos + 2) = fvalue;
 			}
 		}
 	}
 	else if (bands == "PF")
 	{
 		// handle 3-band image
-		cout << "Reading color image (3-band)" << endl;
-		cout << "Reading into CV_32FC3 image" << endl;
-		image = new CRegardsFloatBitmap(width, height);
+		//cout << "Reading color image (3-band)" << endl;
+		//cout << "Reading into CV_32FC3 image" << endl;
+		image.create(height, width, CV_32FC4);
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; ++j)
@@ -147,18 +145,21 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 					swapBytes(&vfvalue[1]);
 					swapBytes(&vfvalue[2]);
 				}
-				int pos = image->GetPosition(j, i);
+
+				int pos = j * 4 + i * width * 4;
+
 				if (thumbnail)
 				{
-					image->data[pos + 0] = vfvalue[0];
-					image->data[pos + 1] = vfvalue[1];
-					image->data[pos + 2] = vfvalue[2];
+					
+					image.at<float>(pos + 0) = vfvalue[0];
+					image.at<float>(pos + 1) = vfvalue[1];
+					image.at<float>(pos + 2) = vfvalue[2];
 				}
 				else
 				{
-					image->data[pos + 2] = vfvalue[0];
-					image->data[pos + 1] = vfvalue[1];
-					image->data[pos + 0] = vfvalue[2];
+					image.at<float>(pos + 2) = vfvalue[0];
+					image.at<float>(pos + 1) = vfvalue[1];
+					image.at<float>(pos + 0) = vfvalue[2];
 				}
 			}
 		}
@@ -166,15 +167,15 @@ CRegardsFloatBitmap* CPfm::ReadFilePFM(const wxString& path, const bool& thumbna
 	else
 	{
 		cout << "unknown bands description";
-		return nullptr;
+		return image;
 	}
 	cout << setfill('=') << setw(19) << "=" << endl << endl;
 	return image;
 }
 
-int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float scalef)
+int CPfm::WriteFilePFM(const cv::Mat & image, const wxString& path, float scalef)
 {
-	if (image != nullptr)
+	if (!image.empty())
 	{
 		// create fstream object to write out pfm file
 		// open the file in binary
@@ -182,7 +183,7 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float s
 
 
 		string bands = "PF";
-		int width = image->GetWidth(), height = image->GetHeight(); // width and height of the image
+		int width = image.size().width, height = image.size().height; // width and height of the image
 		//float fvalue;       // scale factor and temp value to hold pixel value
 		float vfvalue[3]; // temp value to hold 3-band pixel value
 
@@ -196,28 +197,28 @@ int CPfm::WriteFilePFM(CRegardsFloatBitmap* image, const wxString& path, float s
 		file << height << "\n";
 		file << scalef << "\n";
 
-		cout << setfill('=') << setw(19) << "=" << endl;
-		cout << "Writing image to pfm file: " << path << endl;
-		cout << "Little Endian?: " << ((littleendian()) ? "true" : "false") << endl;
-		cout << "width: " << width << endl;
-		cout << "height: " << height << endl;
-		cout << "scale: " << scalef << endl;
+		//cout << setfill('=') << setw(19) << "=" << endl;
+		//cout << "Writing image to pfm file: " << path << endl;
+		//cout << "Little Endian?: " << ((littleendian()) ? "true" : "false") << endl;
+		//cout << "width: " << width << endl;
+		//cout << "height: " << height << endl;
+		//cout << "scale: " << scalef << endl;
 
-		cout << "writing color image (3-band)" << endl;
-		cout << "writing into CV_32FC3 image" << endl;
+		//cout << "writing color image (3-band)" << endl;
+		//cout << "writing into CV_32FC3 image" << endl;
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; ++j)
 			{
-				float* color = image->GetColorValue(j, i);
-				vfvalue[0] = color[2];
-				vfvalue[1] = color[1];
-				vfvalue[2] = color[0];
+				int pos = j * 4 + i * width * 4;
+				vfvalue[0] = image.at<float>(pos + 2);
+				vfvalue[1] = image.at<float>(pos + 1);
+				vfvalue[2] = image.at<float>(pos + 0);
 				file.write((char*)&vfvalue, sizeof(vfvalue));
 			}
 		}
 
-		cout << setfill('=') << setw(19) << "=" << endl << endl;
+		//cout << setfill('=') << setw(19) << "=" << endl << endl;
 	}
 	return 0;
 }

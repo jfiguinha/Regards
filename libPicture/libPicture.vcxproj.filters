@@ -31,15 +31,6 @@
     <ClCompile Include="ThumbnailDataStorage.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="RegardsBitmap.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsFloatBitmap.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsJpegPicture.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
     <ClCompile Include="BmpOption.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
@@ -85,9 +76,6 @@
     <ClCompile Include="ThumbnailData.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
-    <ClCompile Include="RGBAQuad.cpp">
-      <Filter>datastructure</Filter>
-    </ClCompile>
     <ClCompile Include="hqdn3d.cpp">
       <Filter>hqdb3d</Filter>
     </ClCompile>
@@ -117,6 +105,9 @@
     </ClCompile>
     <ClCompile Include="wic.cpp">
       <Filter>wic</Filter>
+    </ClCompile>
+    <ClCompile Include="RGBAQuad.cpp">
+      <Filter>datastructure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,15 +148,6 @@
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailDataStorage.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsBitmap.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsFloatBitmap.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsJpegPicture.h">
       <Filter>datastructure</Filter>
     </ClInclude>
     <ClInclude Include="BmpOption.h">
@@ -219,9 +201,6 @@
     <ClInclude Include="Metadata.h">
       <Filter>libexif</Filter>
     </ClInclude>
-    <ClInclude Include="RGBAQuad.h">
-      <Filter>datastructure</Filter>
-    </ClInclude>
     <ClInclude Include="RotateByShear.h">
       <Filter>Rotate</Filter>
     </ClInclude>
@@ -257,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="wic.h">
       <Filter>wic</Filter>
+    </ClInclude>
+    <ClInclude Include="RGBAQuad.h">
+      <Filter>datastructure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

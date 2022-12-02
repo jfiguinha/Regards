@@ -14,7 +14,7 @@
 #include <SQLRemoveData.h>
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
-#include <RegardsBitmap.h>
+#include <ImageLoadingFormat.h>
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
@@ -489,7 +489,7 @@ void CListFace::FacialRecognition(void* param)
 		CVideoPlayer video(path->filename);
 		int width = 0;
 		int height = 0;
-		CRegardsBitmap pictureData;
+		CImageLoadingFormat pictureData;
 		int totalFrame = video.GetTotalFrame();
 		for (int i = 0; i < totalFrame; i++)
 		{
@@ -497,9 +497,9 @@ void CListFace::FacialRecognition(void* param)
 			cv::Mat frame = video.GetVideoFrame();
 			if (!frame.empty())
 			{
-				pictureData.SetMatrix(frame);
-				pictureData.ConvertToBgr();
-				pictureData.VertFlipBuf();
+				pictureData.SetPicture(frame);
+				pictureData.ConvertToBGR();
+				pictureData.Flip();
 				pictureData.SetFilename(path->filename);
 				pictureData.SetOrientation(0);
 				listFace = CDeepLearning::FindFace(frame, path->filename, fastDetection);
@@ -526,7 +526,7 @@ void CListFace::FacialRecognition(void* param)
 	}
 	else
 	{
-		CRegardsBitmap* pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
+		CImageLoadingFormat * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 		if (pictureOK && pictureData != nullptr)
 		{
 			/*
@@ -538,7 +538,7 @@ void CListFace::FacialRecognition(void* param)
 
 			pictureData->SetFilename(path->filename);
 
-			listFace = CDeepLearning::FindFace(pictureData->GetMatrix(), path->filename, fastDetection);
+			listFace = CDeepLearning::FindFace(pictureData->GetOpenCVPicture(), path->filename, fastDetection);
 			path->nbFace = listFace.size();
 		}
 

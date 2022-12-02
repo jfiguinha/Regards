@@ -10,7 +10,7 @@
 #include "PageCurlFilter.h"
 #include <FilterData.h>
 #include <RGBAQuad.h>
-#include <RegardsBitmap.h>
+#include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include <GLTexture.h>
 
@@ -116,42 +116,43 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 	}
 
 	{
-		auto bitmapNext = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
+		cv::Mat bitmapNext;
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapNext->SetBackgroundColor(
-				CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
-			CRegardsBitmap* bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+			bitmapNext = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			CImageLoadingFormat * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
-				bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
+			{
+				cv::Mat mat = bitmapOut->GetOpenCVPicture();
+				mat.copyTo(bitmapNext(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+			}
 			delete bitmapOut;
 			if (pictureNext == nullptr)
 				pictureNext = new GLTexture();
-			pictureNext->SetData(bitmapNext->GetMatrix());
+			pictureNext->SetData(bitmapNext);
 		}
 
-		delete bitmapNext;
 	}
 	{
-		auto bitmapFirst = new CRegardsBitmap(bmpViewer->GetWidth(), bmpViewer->GetHeight());
+		cv::Mat bitmapFirst;
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapFirst->SetBackgroundColor(CRgbaquad(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(),
-			                                          255));
-			CRegardsBitmap* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
+			bitmapFirst = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
-				bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
+			{
+				cv::Mat mat = bitmapOut->GetOpenCVPicture();
+				mat.copyTo(bitmapFirst(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+			}
 			delete bitmapOut;
 			if (pictureFirst == nullptr)
 				pictureFirst = new GLTexture();
-			pictureFirst->SetData(bitmapFirst->GetMatrix());
+			pictureFirst->SetData(bitmapFirst);
 		}
-
-		delete bitmapFirst;
 	}
 
 	initTexture = false;

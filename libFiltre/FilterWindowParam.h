@@ -48,7 +48,7 @@ public:
     virtual int GetTypeFilter() = 0;
 	virtual bool NeedPreview() { return false; };
 	virtual void RenderEffect(CFiltreEffet* filtreEffet, CEffectParameter* effectParameter, const bool& preview) {};
-    virtual void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface) = 0;
+    virtual void Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface) = 0;
     virtual void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key) = 0;
 	virtual CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
@@ -73,7 +73,9 @@ protected:
 	static void RotateExif(const int & orientation, CFiltreEffet * filtre);
 	virtual void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);
 	virtual void DrawingToPicture(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin);
-	CRegardsBitmap * source;
+	cv::Mat source;
+	wxString filename = "";
+	int orientation;
 	Regards::OpenGL::GLSLShader * m_pShader;
 	static bool supportOpenCL;
 };

@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <array>
-#include <RegardsBitmap.h>
+
 
 extern "C" {
 #include "libavutil/imgutils.h"
@@ -103,37 +103,34 @@ int CffmpegToBitmap::GetThumbnailHeight()
 	return videoFrameOutputHeight;
 }
 
-int CffmpegToBitmap::GetConvert(CRegardsBitmap* bitmap, AVFrame* src_frame, const int& thumbnailWidth,
+int CffmpegToBitmap::GetConvert(cv::Mat & bitmap, AVFrame* src_frame, const int& thumbnailWidth,
                                 const int& thumbnailHeight)
 {
-	if (bitmap != nullptr)
+	if (!bitmap.empty())
 	{
 		int numBytes = av_image_get_buffer_size(pixelFormat, thumbnailWidth, thumbnailHeight, 1);
-		if (numBytes == bitmap->GetBitmapSize())
-		{
-			uint8_t* convertedFrameBuffer = bitmap->GetPtBitmap();
-			int linesize = thumbnailWidth * 4;
+		uint8_t* convertedFrameBuffer = bitmap.data;
+		int linesize = thumbnailWidth * 4;
 
-			videoFrameOutputWidth = thumbnailWidth;
-			videoFrameOutputHeight = thumbnailHeight;
-			sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-			          &convertedFrameBuffer, &linesize);
+		videoFrameOutputWidth = thumbnailWidth;
+		videoFrameOutputHeight = thumbnailHeight;
+		sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
+			        &convertedFrameBuffer, &linesize);
 
-			return 1;
-		}
+		return 1;
 	}
 	return 0;
 }
 
-CRegardsBitmap* CffmpegToBitmap::GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CffmpegToBitmap::GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight)
 {
-	CRegardsBitmap * bitmap = nullptr;
+	cv::Mat bitmap;
 	if(thumbnailWidth != 0 && thumbnailHeight != 0)
-		bitmap = new CRegardsBitmap(thumbnailWidth, thumbnailHeight);
+		bitmap = cv::Mat(thumbnailHeight, thumbnailWidth, CV_8UC4);
 	else
-		bitmap = new CRegardsBitmap(src_frame->width, src_frame->height);
+		bitmap = cv::Mat(src_frame->height, src_frame->width, CV_8UC4);
 	//int numBytes = av_image_get_buffer_size(pixelFormat, thumbnailWidth, thumbnailHeight, 1);
-	uint8_t* convertedFrameBuffer = bitmap->GetPtBitmap();
+	uint8_t* convertedFrameBuffer = bitmap.data;
 	int linesize = thumbnailWidth * 4;
 
 	videoFrameOutputWidth = thumbnailWidth;
@@ -143,16 +140,16 @@ CRegardsBitmap* CffmpegToBitmap::GetConvert(AVFrame* src_frame, const int& thumb
 	return bitmap;
 }
 
-CRegardsBitmap* CffmpegToBitmap::GetConvert(AVFrame* src_frame)
+cv::Mat CffmpegToBitmap::GetConvert(AVFrame* src_frame)
 {
-	CRegardsBitmap* bitmap = nullptr;
-	bitmap = new CRegardsBitmap(src_frame->width, src_frame->height);
+	cv::Mat bitmap;
+	bitmap = cv::Mat(src_frame->height, src_frame->width, CV_8UC4);
 	if (scaleContext == nullptr)
 	{
 		InitContext(src_frame, true, src_frame->width, src_frame->height);
 	}
 
-	uint8_t* convertedFrameBuffer = bitmap->GetPtBitmap();
+	uint8_t* convertedFrameBuffer = bitmap.data;
 	int linesize = src_frame->width * 4;
 
 	sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,

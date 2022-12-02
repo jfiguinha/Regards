@@ -46,7 +46,7 @@ CInfoEffect::~CInfoEffect()
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
-void CInfoEffect::AddModification(CRegardsBitmap* bitmap, const wxString& libelle)
+void CInfoEffect::AddModification(CImageLoadingFormat* bitmap, const wxString& libelle)
 {
 	const int numModification = modificationManager->GetNumModification();
 	const int nbModification = modificationManager->GetNbModification();
@@ -114,10 +114,7 @@ void CInfoEffect::ClickOnElement(CPositionElement* element, wxWindow* window, co
 			if (key != "-1")
 			{
 				const int modif = atoi(CConvertUtility::ConvertToUTF8(key));
-
-				auto imageLoad = new CImageLoadingFormat();
-				imageLoad->SetPicture(modificationManager->GetModification(modif));
-				bitmapViewer->SetBitmap(imageLoad);
+				bitmapViewer->SetBitmap(modificationManager->GetModification(modif));
 				//bitmapViewer->Refresh();
 				SetActifElement(key);
 			}
@@ -148,7 +145,7 @@ wxString CInfoEffect::GetFilename()
 	return filename;
 }
 
-void CInfoEffect::Init(CRegardsBitmap* bitmap, const wxString& libelle, const wxString& key)
+void CInfoEffect::Init(CImageLoadingFormat* bitmap, const wxString& libelle, const wxString& key)
 {
 	modificationManager->Init(bitmap);
 	InitTree(libelle, key);

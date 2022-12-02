@@ -16,7 +16,7 @@
 #include <MetadataExiv2.h>
 #include <videothumb.h>
 #include <FileUtility.h>
-
+#include <picture_utility.h>
 #include <VideoControl_soft.h>
 #include "CompressionAudioVideoOption.h"
 #include "ffmpeg_transcoding.h"
@@ -44,8 +44,6 @@ CShowPreview::CShowPreview(wxWindow* parent, wxWindowID id, CThemeParam* config)
 	configRegards = nullptr;
 	defaultToolbar = true;
 	defaultViewer = true;
-	decodeFrame = nullptr;
-	decodeFrameOriginal = new CRegardsBitmap();
 
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
@@ -138,11 +136,11 @@ void CShowPreview::SetParameter(const wxString& videoFilename,
 	//this->Resize();
 }
 
-void CShowPreview::ShowPicture(CRegardsBitmap* bitmap, const wxString& label)
+void CShowPreview::ShowPicture(cv::Mat & bitmap, const wxString& label)
 {
-	if (bitmap != nullptr && bitmap->GetBitmapWidth() > 0 && bitmap->GetBitmapHeight())
+	if (!bitmap.empty())
 	{
-		auto imageLoadingFormat = new CImageLoadingFormat(false);
+		auto imageLoadingFormat = new CImageLoadingFormat();
 		imageLoadingFormat->SetPicture(bitmap);
 		if (isFirstPicture)
 			bitmapWindow->SetBitmap(imageLoadingFormat, false);
@@ -161,13 +159,13 @@ void CShowPreview::ShowPicture(CRegardsBitmap* bitmap, const wxString& label)
 
 void CShowPreview::ShowOriginal()
 {
-	decodeFrameOriginal->ApplyRotation(orientation);
+	CPictureUtility::ApplyRotation(decodeFrameOriginal, orientation);
 	ShowPicture(decodeFrameOriginal, "Original Video");
 }
 
 void CShowPreview::ShowNew()
 {
-	decodeFrame->ApplyRotation(orientation);
+	CPictureUtility::ApplyRotation(decodeFrame, orientation);
 	ShowPicture(decodeFrame, "Export Video");
 }
 
@@ -256,16 +254,14 @@ void CShowPreview::ThreadLoading(void* data)
 		}
 		fileTemp = CFileUtility::GetTempFile("video_temp." + showPreview->extension, true);
 		ret = showPreview->transcodeFFmpeg->EncodeFrame(showPreview->filename, fileTemp, showPreview->position, &showPreview->videoOptionCompress);
-		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);
+		showPreview->decodeFrameOriginal = showPreview->transcodeFFmpeg->GetFrameOutput();
 
 		if (ret == 0)
 		{
 			CThumbnailVideo video(fileTemp, false);
-			if (showPreview->decodeFrame != nullptr)
-				delete showPreview->decodeFrame;
 			showPreview->decodeFrame = video.GetVideoFramePos(0, 0, 0);
 #ifndef WIN32_MFT
-			showPreview->decodeFrame->VertFlipBuf();
+			cv::flip(showPreview->decodeFrame, showPreview->decodeFrame, 0);
 #endif
 		}
 		else
@@ -278,7 +274,7 @@ void CShowPreview::ThreadLoading(void* data)
 	}
 	else
 	{
-		showPreview->transcodeFFmpeg->GetFrameOutput(showPreview->decodeFrameOriginal);
+		showPreview->decodeFrameOriginal = showPreview->transcodeFFmpeg->GetFrameOutput();
 		wxCommandEvent evt(wxEVENT_UPDATEPICTURE);
 		showPreview->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -385,10 +381,6 @@ CShowPreview::~CShowPreview()
 
 	if (transcodeFFmpeg != nullptr)
 		delete transcodeFFmpeg;
-	if (decodeFrame != nullptr)
-		delete decodeFrame;
-	if (decodeFrameOriginal != nullptr)
-		delete decodeFrameOriginal;
 
 	if (threadStart != nullptr)
 	{

@@ -12,7 +12,7 @@ namespace Regards
 			CLensFlare(void);
 			~CLensFlare(void);
 
-			void LensFlare(CRegardsBitmap * pBitmap, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
+			void LensFlare(cv::Mat * pBitmap, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
 
 		private:
 
@@ -21,9 +21,9 @@ namespace Regards
 			void Circle(const int &x, const int &y,const CRgbaquad &m_color, const int &iTaille, const float &fAlpha);
 			void CircleGradient(const int &x, const int &y,const CRgbaquad &m_color, const int &iTaille,const float &fAlpha = 0.8f);
 			void Burst(const int &x, const int &y,const int &iTaille,const int &iColor, const int &iIntensity = 25, const int &iColorIntensity = 30);
-
+			int InsertwxImage(const wxImage& bitmap, int xPos, int yPos);
 			int iColorIntensity;
-			CRegardsBitmap * pBitmap;
+			cv::Mat * pBitmap;
 			
 
 		};

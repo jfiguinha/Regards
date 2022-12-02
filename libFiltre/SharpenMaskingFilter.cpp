@@ -2,7 +2,7 @@
 #include "SharpenMaskingFilter.h"
 #include "SharpenMaskingParameter.h"
 #include <FilterData.h>
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
@@ -39,10 +39,10 @@ int CSharpenMaskingFilter::GetTypeFilter()
 	return CONVOLUTION_EFFECT; //return IDM_SHARPENMASKING;
 }
 
-void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
 	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
-
+	this->filename = filename;
 	this->source = source;
 
 	vector<int> elementFreq;
@@ -102,7 +102,7 @@ bool CSharpenMaskingFilter::IsSourcePreview()
 
 void CSharpenMaskingFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
 		filtreEffet->SharpenMasking(sharpenParameter->sharpness);
@@ -119,20 +119,20 @@ void CSharpenMaskingFilter::ApplyPreviewEffect(CEffectParameter* effectParameter
 CImageLoadingFormat* CSharpenMaskingFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
 			
 			imageLoad = new CImageLoadingFormat();
 			CSharpenMaskingEffectParameter* sharpenParameter = (CSharpenMaskingEffectParameter*)effectParameter;
 			filter->SharpenMasking(sharpenParameter->sharpness);
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

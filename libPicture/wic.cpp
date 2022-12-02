@@ -1,6 +1,5 @@
 #include "header.h"
 #include "wic.h"
-#include "RegardsBitmap.h"
 #include <windows.h>
 
 using namespace Regards::Picture;
@@ -32,13 +31,13 @@ CWic::~CWic()
     SafeRelease(m_pIWICFactory);
 }
 
-CRegardsBitmap * CWic::GetThumbnailMetadata(const string& filename)
+cv::Mat CWic::GetThumbnailMetadata(const string& filename)
 {
     HRESULT hr = S_OK;
     IWICBitmapDecoder* pDecoder = nullptr;
     IWICBitmapSource* ppIThumbnail = nullptr;
     UINT cx = 0, cy = 0;
-    CRegardsBitmap* bitmap = nullptr;
+    cv::Mat mat;
 
     hr = m_pIWICFactory->CreateDecoderFromFilename(
         std::wstring(filename.begin(), filename.end()).c_str(),                      // Image to be decoded
@@ -70,10 +69,8 @@ CRegardsBitmap * CWic::GetThumbnailMetadata(const string& filename)
 
             if (SUCCEEDED(hr))
             {
-                cv::Mat mat(cy, cx, CV_8UC4, buf);
-                bitmap = new CRegardsBitmap();
-                bitmap->SetMatrix(mat);
-                bitmap->VertFlipBuf();
+                mat = cv::Mat(cy, cx, CV_8UC4, buf);
+                cv::flip(mat, mat, 0);
             }
         }
     }
@@ -81,7 +78,7 @@ CRegardsBitmap * CWic::GetThumbnailMetadata(const string& filename)
 
     SafeRelease(pDecoder);
     SafeRelease(ppIThumbnail);
-    return bitmap;
+    return mat;
 }
 
 void CWic::GetPictureDimension(const string& filename, int& width, int& height)
@@ -167,12 +164,12 @@ int CWic::GetNbFrame(const string& filename, bool& error)
     return count;
 }
 
-CRegardsBitmap* CWic::GetPicture(const string& filename, const int& numPicture) {
+cv::Mat CWic::GetPicture(const string& filename, const int& numPicture) {
     HRESULT hr = S_OK;
     IWICFormatConverter* m_pConvertedSourceBitmap = nullptr;
     IWICBitmapDecoder* pDecoder = nullptr;
     UINT cx = 0, cy = 0, count = 0;
-    CRegardsBitmap* bitmap = nullptr;
+    cv::Mat mat;
 
     hr = m_pIWICFactory->CreateDecoderFromFilename(
         std::wstring(filename.begin(), filename.end()).c_str(),                      // Image to be decoded
@@ -230,10 +227,8 @@ CRegardsBitmap* CWic::GetPicture(const string& filename, const int& numPicture) 
 
             if (SUCCEEDED(hr))
             {
-                cv::Mat mat(cy, cx, CV_8UC4, buf);
-                bitmap = new CRegardsBitmap();
-                bitmap->SetMatrix(mat);
-                bitmap->VertFlipBuf();
+                mat = cv::Mat(cy, cx, CV_8UC4, buf);
+                cv::flip(mat, mat, 0);
             }
 
         }
@@ -244,5 +239,5 @@ CRegardsBitmap* CWic::GetPicture(const string& filename, const int& numPicture) 
     SafeRelease(pFrame);
     SafeRelease(m_pConvertedSourceBitmap);
 
-    return bitmap;
+    return mat;
 }

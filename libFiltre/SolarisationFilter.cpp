@@ -9,7 +9,7 @@
 
 #include "SolarisationFilter.h"
 #include "SolarisationEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -47,10 +47,10 @@ int CSolarisationFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //return IDM_AJUSTEMENT_SOLARISATION;
 }
 
-void CSolarisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CSolarisationFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-    
+	this->filename = filename;
 	this->source = source;
 
     vector<int> elementColor;
@@ -112,7 +112,7 @@ bool CSolarisationFilter::IsSourcePreview()
 void CSolarisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
 		filtreEffet->Solarize(solarisationEffectParameter->threshold);
@@ -132,17 +132,18 @@ CImageLoadingFormat* CSolarisationFilter::ApplyEffect(CEffectParameter* effectPa
 	{
 		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-		if (source != nullptr && filtre != nullptr)
+		if (!source.empty() && filtre != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
 			
 			imageLoad = new CImageLoadingFormat();
 			CSolarisationEffectParameter* solarisationEffectParameter = (CSolarisationEffectParameter*)effectParameter;
 			filtre->Solarize(solarisationEffectParameter->threshold);
-			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

@@ -1,17 +1,14 @@
 #include "header.h"
 #include "LoadingResource.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <PictureData.h>
 #include <ConvertUtility.h>
 
-CRegardsBitmap* CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
+cv::Mat CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 {
-	auto bitmap = new CRegardsBitmap();
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
-	cv::Mat data = cv::imread(CConvertUtility::ConvertToStdString(resourcePath));
-	bitmap->SetMatrix(data);
-	return bitmap;
+	return cv::imread(CConvertUtility::ConvertToStdString(resourcePath));
 }
 
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
@@ -22,12 +19,12 @@ wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 	return out;
 }
 
-wxImage CLoadingResource::ConvertTowxImageRGB(CRegardsBitmap* bitmap)
+wxImage CLoadingResource::ConvertTowxImageRGB(cv::Mat & mat)
 {
-	int width = bitmap->GetBitmapWidth();
-	int height = bitmap->GetBitmapHeight();
+	int width = mat.size().width;
+	int height = mat.size().height;
 	//int widthSrcSize = width * 4;
-	unsigned char* data = bitmap->GetPtBitmap();
+	unsigned char* data = mat.data;
 	//int posData = 0;
 	//int posDataOut = 0;
 	//int posAlpha = 0;

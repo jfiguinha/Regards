@@ -1,6 +1,6 @@
 // ReSharper disable All
 #pragma once
-#include <RegardsBitmap.h>
+
 
 #include "wx/print.h"
 #include "wx/printdlg.h"
@@ -36,13 +36,12 @@ namespace Regards
 			{
 				m_picture = image;
 				typeImage = 1;
-				m_bitmap = nullptr;
 			}
 
-			CBitmapPrintout(CRegardsBitmap* image, const wxString& title = wxT("My picture"))
+			CBitmapPrintout(cv::Mat image, const wxString& title = wxT("My picture"))
 				: wxPrintout(title)
 			{
-				m_bitmap = image;
+				image.copyTo(m_bitmap );
 				typeImage = 2;
 				m_picture = nullptr;
 			}
@@ -62,7 +61,7 @@ namespace Regards
 
 		private:
 			int typeImage;
-			CRegardsBitmap* m_bitmap;
+			cv::Mat m_bitmap;
 			CImageLoadingFormat* m_picture;
 		};
 	}

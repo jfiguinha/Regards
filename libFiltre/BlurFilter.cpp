@@ -9,7 +9,6 @@
 #include <FiltreEffet.h>
 #include "BlurFilter.h"
 #include "BlurEffectParameter.h"
-#include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
 #include <effect_id.h>
@@ -45,12 +44,12 @@ int CBlurFilter::GetTypeFilter()
     return CONVOLUTION_EFFECT;
 }
 
-void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CBlurFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CBlurEffectParameter * blurEffectParameter = (CBlurEffectParameter *)effectParameter;
     
 	this->source = source;
-
+    this->filename = filename;
     vector<int> elementColor;
     for (int i = 1; i < 100; i++)
     {
@@ -113,7 +112,7 @@ bool CBlurFilter::IsSourcePreview()
 
 void CBlurFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
 		filtreEffet->Blur(blurEffect->size);
@@ -130,19 +129,19 @@ void CBlurFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitmapD
 CImageLoadingFormat* CBlurFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
     CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+    if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
     {  	
         CFiltreEffet * filter = bitmapViewer->GetFiltreEffet();
     	if(filter != nullptr)
     	{
-            source->RotateExif(source->GetOrientation());
-            CImageLoadingFormat image(false);
+            CImageLoadingFormat image;
             image.SetPicture(source);
+            image.RotateExif(orientation);
             filter->SetBitmap(&image);
             CBlurEffectParameter* blurEffect = (CBlurEffectParameter*)effectParameter;
             filter->Blur(blurEffect->size);
             imageLoad = new CImageLoadingFormat();
-            CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+            cv::Mat bitmapOut = filter->GetBitmap(true);
             imageLoad->SetPicture(bitmapOut);
     	}
     }

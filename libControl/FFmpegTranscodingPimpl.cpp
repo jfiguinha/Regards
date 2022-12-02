@@ -1,7 +1,7 @@
 // ReSharper disable All
 #include "header.h"
 #include "FFmpegTranscodingPimpl.h"
-#include <RegardsBitmap.h>
+
 #include <CompressVideo.h>
 #include <ImageLoadingFormat.h>
 #include "ffmpegToBitmap.h"
@@ -17,7 +17,7 @@
 #include <ConvertUtility.h>
 #include <MediaInfo.h>
 #include <VideoPlayer.h>
-
+#include <picture_utility.h>
 extern "C"
 {
 	#include <libavcodec/avcodec.h>
@@ -241,7 +241,6 @@ videoCompressOption(nullptr), duration{}
 	scaleContext = sws_alloc_context();
 	packet.data = nullptr;
 	packet.size = 0;
-	bitmapOut = new CRegardsBitmap();
 
 }
 
@@ -299,9 +298,6 @@ CFFmpegTranscodingPimpl::~CFFmpegTranscodingPimpl()
 	if (capture != nullptr)
 		delete capture;
 
-	if (bitmapOut != nullptr)
-		delete bitmapOut;
-
 };
 
 void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
@@ -314,7 +310,6 @@ void CFFmpegTranscodingPimpl::DisplayPreview(void* data)
 		//auto imageLoadingFormat = new CImageLoadingFormat(false);
 		ffmpeg_trans->muFrame.lock();
 		ffmpeg_trans->m_dlgProgress->SetBitmap(ffmpeg_trans->bmp);
-		delete ffmpeg_trans->bmp;
 		ffmpeg_trans->muFrame.unlock();
 		ffmpeg_trans->muWriteData.lock();
 
@@ -1686,9 +1681,9 @@ int CFFmpegTranscodingPimpl::OpenFile(const wxString& input, const wxString& out
 
 
 
-CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
+cv::Mat CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 {
-	CRegardsBitmap* bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
+	cv::Mat bitmapData = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 	if (localContext == nullptr)
 	{
@@ -1710,12 +1705,8 @@ CRegardsBitmap* CFFmpegTranscodingPimpl::GetBitmapRGBA(AVFrame* tmp_frame)
 	}
 
 	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
-	if (numBytes != bitmapData->GetBitmapSize())
-	{
-		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
-	}
 
-	uint8_t* convertedFrameBuffer = bitmapData->GetPtBitmap();
+	uint8_t* convertedFrameBuffer = bitmapData.data;
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
@@ -1825,10 +1816,8 @@ void CFFmpegTranscodingPimpl::VideoTreatment(AVFrame*& tmp_frame, StreamContext*
 	}
 	else
 	{
-		CRegardsBitmap* bitmap = GetBitmapRGBA(tmp_frame);
-		mat = ApplyProcess(bitmap->GetMatrix());
-		delete bitmap;
-
+		cv::Mat bitmap = GetBitmapRGBA(tmp_frame);
+		mat = ApplyProcess(bitmap);
 
 		if (dst_hardware == nullptr)
 		{
@@ -1909,8 +1898,6 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat & src)
 	}
 	else
 	{
-		CRegardsBitmap* bitmap = new CRegardsBitmap();
-		bitmap->SetMatrix(mat);
 		bool frameStabilized = false;
 
 		if (videoCompressOption->videoEffectParameter.stabilizeVideo)
@@ -1931,12 +1918,10 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat & src)
 			{
 				openCVStabilization->CorrectFrame(mat);
 			}
-
-			bitmap->SetMatrix(mat);
 		}
 
 		CImageLoadingFormat image;
-		image.SetPicture(bitmap);
+		image.SetPicture(mat);
 		const CRgbaquad colorLocal;
 		CFiltreEffetCPU filtre(colorLocal, &image);
 
@@ -1986,9 +1971,8 @@ cv::Mat CFFmpegTranscodingPimpl::ApplyProcess(cv::Mat & src)
 		}
 
 
-		CRegardsBitmap* filtrebmp= filtre.GetBitmap(true);
-		mat = filtrebmp->GetMatrix();
-		delete filtrebmp;
+		mat = filtre.GetBitmap(true);
+
 	}
 	return mat;
 }
@@ -2032,11 +2016,9 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		frameOutput = capture->GetVideoFrame(false);
 		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
-	
-	bitmapOut->SetMatrix(frameOutput);
-	bitmapOut->ApplyRotation(rotation);
-	bitmapOut->VertFlipBuf();
-	frameOutput = ApplyProcess(bitmapOut->GetMatrix());
+	CPictureUtility::ApplyRotation(frameOutput, rotation);
+	cv::flip(frameOutput, frameOutput, 0);
+	frameOutput = ApplyProcess(frameOutput);
 
 
 	AVFrame* frame = av_frame_alloc();
@@ -2513,11 +2495,9 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			cvtColor(decodeFrame, decodeFrame, cv::COLOR_RGB2BGRA);
 		}
 
-
-		bitmapOut->SetMatrix(decodeFrame);
-		bitmapOut->ApplyRotation(rotation);
-		bitmapOut->VertFlipBuf();
-		frameOutput = ApplyProcess(bitmapOut->GetMatrix());
+		CPictureUtility::ApplyRotation(decodeFrame, rotation);
+		cv::flip(decodeFrame, decodeFrame, 0);
+		frameOutput = ApplyProcess(decodeFrame);
 
 		//*bitmapOut = bitmap;
 

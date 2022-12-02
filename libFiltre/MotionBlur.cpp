@@ -2,7 +2,7 @@
 #include "MotionBlur.h"
 #include <math.h>
 #include <stdlib.h>
-#include <RegardsBitmap.h>
+
 const double pi = 3.14159265358979323846264338327950288419716939937510;
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define DegreesToRadians(x) (pi*(x)/180.0)

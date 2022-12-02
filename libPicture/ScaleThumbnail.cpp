@@ -1,6 +1,6 @@
 #include <header.h>
 #include "ScaleThumbnail.h"
-#include <RegardsBitmap.h>
+#include "ImageLoadingFormat.h"
 using namespace Regards::Picture;
 
 CScaleThumbnail::CScaleThumbnail(void)
@@ -16,26 +16,26 @@ CScaleThumbnail::~CScaleThumbnail(void)
 //-----------------------------------------------------------------
 //Calcul du ratio pour l'image plein écran
 //-----------------------------------------------------------------
-float CScaleThumbnail::CalculRatio(CRegardsBitmap* pBitmap, const int& xMax, const int& yMax)
+float CScaleThumbnail::CalculRatio(CImageLoadingFormat* pBitmap, const int& xMax, const int& yMax)
 {
 	float newRatio;
 
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
-	if (pBitmap->GetBitmapWidth() > pBitmap->GetBitmapHeight())
-		newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetBitmapWidth());
+	if (pBitmap->GetWidth() > pBitmap->GetHeight())
+		newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetWidth());
 	else
-		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetBitmapHeight());
+		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetHeight());
 
-	if ((pBitmap->GetBitmapHeight() * newRatio) > yMax)
+	if ((pBitmap->GetHeight() * newRatio) > yMax)
 	{
-		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetBitmapHeight());
+		newRatio = static_cast<float>(yMax) / static_cast<float>(pBitmap->GetHeight());
 	}
 	else
 	{
-		if ((pBitmap->GetBitmapWidth() * newRatio) > xMax)
+		if ((pBitmap->GetWidth() * newRatio) > xMax)
 		{
-			newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetBitmapWidth());
+			newRatio = static_cast<float>(xMax) / static_cast<float>(pBitmap->GetWidth());
 		}
 	}
 
@@ -71,19 +71,19 @@ float CScaleThumbnail::CalculRatio(const int& width, const int& height, const in
 	return newRatio;
 }
 
-void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap* pBitmap, const int& width, const int& height)
+void CScaleThumbnail::CreateScaleBitmap(CImageLoadingFormat* pBitmap, const int& width, const int& height)
 {
 	float newRatio = CalculRatio(pBitmap, width, height);
 	if (newRatio == 0.0)
 		return;
 
-	int nTailleAffichageWidth = pBitmap->GetBitmapWidth() * newRatio;
-	int nTailleAffichageHeight = pBitmap->GetBitmapHeight() * newRatio;
+	int nTailleAffichageWidth = pBitmap->GetWidth() * newRatio;
+	int nTailleAffichageHeight = pBitmap->GetHeight() * newRatio;
 
 
 	//RedrawPicture
 	//Création d'un nouveau bitmap à la bonne échelle
-	if (nTailleAffichageWidth != pBitmap->GetBitmapWidth() && nTailleAffichageHeight != pBitmap->GetBitmapHeight())
+	if (nTailleAffichageWidth != pBitmap->GetWidth() && nTailleAffichageHeight != pBitmap->GetHeight())
 	{
 		//auto scaleBitmap = new CRegardsBitmap(nTailleAffichageWidth, nTailleAffichageHeight);
 		/*
@@ -93,7 +93,7 @@ void CScaleThumbnail::CreateScaleBitmap(CRegardsBitmap* pBitmap, const int& widt
 		*/
 
 		cv::Mat resized_down;
-		cv::resize(pBitmap->GetMatrix(), resized_down, cv::Size(nTailleAffichageWidth, nTailleAffichageHeight), cv::INTER_CUBIC);
+		cv::resize(pBitmap->GetOpenCVPicture(), resized_down, cv::Size(nTailleAffichageWidth, nTailleAffichageHeight), cv::INTER_CUBIC);
 
 		//delete scaleBitmap;
 	}

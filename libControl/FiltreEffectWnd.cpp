@@ -28,7 +28,6 @@ CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, 
 	: CTreeWithScrollbar("CFiltreEffectScrollWnd", parent, id, themeScroll, themeTree, "Filtre", true)
 {
 	this->bitmapWindowId = bitmapWindowId;
-	bitmap = nullptr;
 	numFiltre = 0;
 	effectParameter = nullptr;
 	filtreEffectOld = nullptr;
@@ -43,15 +42,10 @@ CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
 	if (effectParameter != nullptr)
 		delete(effectParameter);
 
-	if (bitmap != nullptr)
-		delete bitmap;
 }
 
 void CFiltreEffectScrollWnd::OnFiltreCancel()
 {
-	auto imageLoad = new CImageLoadingFormat(false);
-	imageLoad->SetPicture(bitmap);
-
 	CBitmapWndViewer* bitmapViewer = nullptr;
 	auto bitmapWindow = dynamic_cast<IBitmapWnd*>(wxWindow::FindWindowById(bitmapWindowId));
 	if (bitmapWindow != nullptr)
@@ -62,7 +56,7 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 	//auto bitmapViewer = static_cast<CBitmapWndViewer*>(this->FindWindowById(bitmapWindowId));
 	if (bitmapViewer != nullptr)
 	{
-		bitmapViewer->SetBitmap(imageLoad);
+		bitmapViewer->SetBitmap(bitmap);
 	}
 	if (bitmapViewer != nullptr && CFiltreData::NeedPreview(numFiltre))
 		bitmapViewer->RemoveListener();
@@ -86,9 +80,7 @@ void CFiltreEffectScrollWnd::OnFiltreOk(const int& numFiltre, CInfoEffectWnd* hi
 		CImageLoadingFormat* imageLoad = filtreEffectOld->ApplyEffect();
 		if (imageLoad != nullptr)
 		{
-			CRegardsBitmap* bitmapOut = imageLoad->GetRegardsBitmap(true);
-			historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numFiltre));
-			delete bitmapOut;
+			historyEffectWnd->AddModification(imageLoad, CFiltreData::GetFilterLabel(numFiltre));
 		}
 
 		if (imageLoad != nullptr)
@@ -168,12 +160,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 						if (effectParameter != nullptr)
 							delete(effectParameter);
 
-						if (bitmap != nullptr)
-							delete bitmap;
-						bitmap = nullptr;
-
-
-
+	
 						effectParameter = CFiltreData::GetEffectParameter(numItem);
 
 
@@ -181,7 +168,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 
 						bitmap = bitmapViewer->GetBitmap(true);
 						
-						filtreEffect->Init(effectParameter, bitmap, filename, numItem);
+						filtreEffect->Init(effectParameter, bitmap->GetOpenCVPicture(), filename, numItem);
 
 						if (previewWindow != nullptr)
 						{
@@ -212,10 +199,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 					{
 						CImageLoadingFormat* imageLoad = CFilterWindowParam::RenderEffect(
 							effectParameter, bitmapViewer, numItem);
-						CRegardsBitmap* bitmapOut = imageLoad->GetRegardsBitmap(true);
-						historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numItem));
-						delete bitmapOut;
-
+						historyEffectWnd->AddModification(imageLoad, CFiltreData::GetFilterLabel(numItem));
 						if (imageLoad != nullptr)
 							bitmapViewer->SetBitmap(imageLoad, true);
 
@@ -237,7 +221,8 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 					delete(effectParameter);
 				effectParameter = showVideo->GetParameter();
 				showVideo->SetVideoPreviewEffect(effectParameter);
-				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
+				cv::Mat bitmap;
+				filtreEffect->Init(effectParameter, bitmap, filename, numItem);
 
 				if (panelInfos != nullptr)
 				{
@@ -258,7 +243,8 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int& numItem, CInfoEffectWnd* his
 					delete(effectParameter);
 				effectParameter = showVideo->GetParameter();
 				showVideo->SetVideoPreviewEffect(effectParameter);
-				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
+				cv::Mat bitmap;
+				filtreEffect->Init(effectParameter, bitmap, filename, numItem);
 
 				if (panelInfos != nullptr)
 				{

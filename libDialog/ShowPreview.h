@@ -68,7 +68,7 @@ namespace Regards
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-			void ShowPicture(CRegardsBitmap* decodeFrame, const wxString& label);
+			void ShowPicture(cv::Mat& decodeFrame, const wxString& label);
 			void OnShowOriginal(wxCommandEvent& event);
 			void OnShowNew(wxCommandEvent& event);
 			void OnUpdatePicture(wxCommandEvent& event);
@@ -88,8 +88,8 @@ namespace Regards
 			Regards::Video::CThumbnailVideo* videoOriginal = nullptr;
 			CVideoOptionCompress videoOptionCompress;
 			CFFmpegTranscoding * transcodeFFmpeg = nullptr;
-			CRegardsBitmap * decodeFrame = nullptr;
-			CRegardsBitmap* decodeFrameOriginal = nullptr;
+			cv::Mat decodeFrame;
+			cv::Mat decodeFrameOriginal;
 			
 
 			wxString extension;

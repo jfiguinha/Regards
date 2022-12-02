@@ -52,17 +52,16 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 	return 0;
 }
 
-void CFFmpegTranscoding::GetFrameOutput(CRegardsBitmap * & bitmap)
+cv::Mat CFFmpegTranscoding::GetFrameOutput()
 {
-	if (bitmap != nullptr)
-	{
+	cv::Mat bitmap;
 #ifdef WIN32_MFT
-		bitmap->SetMatrix(data);
-		bitmap->VertFlipBuf();
+	data.copyTo(bitmap);
+	cv::flip(bitmap, bitmap, 0);
 #else
-		bitmap->SetMatrix(data);
+	data.copyTo(bitmap);
 #endif
-	}
+	return bitmap;
 }
 
 void CFFmpegTranscoding::EncodeFileThread(void* data)

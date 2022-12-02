@@ -5,7 +5,7 @@
 //
 #include "RenderVideoOpenGL.h"
 #include <GLSLShader.h>
-#include <RegardsBitmap.h>
+
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #include <GLUT/glut.h>
@@ -171,14 +171,14 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture* glTexture, CVideoEffectPara
 	glTexture->Disable();
 }
 
-void CRenderVideoOpenGL::SetSubtitle(CRegardsBitmap* subtitle)
+void CRenderVideoOpenGL::SetSubtitle(cv::Mat& subtitle)
 {
 	if (textureSubtitle != nullptr)
 		delete(textureSubtitle);
 	textureSubtitle = nullptr;
 
 	textureSubtitle = new GLTexture();
-	textureSubtitle->SetData(subtitle->GetMatrix());
+	textureSubtitle->SetData(subtitle);
 }
 
 void CRenderVideoOpenGL::ShowSubtitle()

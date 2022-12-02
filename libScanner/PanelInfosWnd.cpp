@@ -13,6 +13,7 @@
 #include "FiltreEffectWnd.h"
 #include <InfoEffectWnd.h>
 #include "ThumbnailViewerEffectWnd.h"
+#include <ImageLoadingFormat.h>
 #include <ShowElement.h>
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
@@ -163,7 +164,7 @@ void CPanelInfosWnd::HistoryUpdate()
 	auto bitmapViewer = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERIDPDF));
 	if (bitmapViewer != nullptr)
 	{
-		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+		CImageLoadingFormat* bitmap = bitmapViewer->GetBitmap(true);
 		if(bitmap != nullptr)
 		{
 			wxString filename = bitmap->GetFilename();

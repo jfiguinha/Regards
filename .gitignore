@@ -113,3 +113,5 @@
 /RegardsViewer/package/RegardsViewer2_arm.exe
 /include/arm64/Debug
 /InsertResource/ARM64/Debug
+/InsertResource/ARM64/Release
+/libPicture/bak

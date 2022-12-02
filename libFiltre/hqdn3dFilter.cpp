@@ -9,7 +9,7 @@
 
 #include "hqdn3dFilter.h"
 #include "hqdn3dEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
@@ -57,10 +57,10 @@ int Chqdn3dFilter::GetTypeFilter()
     return CONVOLUTION_EFFECT; //
 }
 
-void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void Chqdn3dFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     Chqdn3dEffectParameter * hqdn3dParameter = (Chqdn3dEffectParameter *)effectParameter;
- 
+    this->filename = filename;
 	this->source = source;
 
     vector<int> elementIntensity;
@@ -107,20 +107,20 @@ void Chqdn3dFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitm
 CImageLoadingFormat * Chqdn3dFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
         CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
         if (filter != nullptr)
         {
-            source->RotateExif(source->GetOrientation());
-            CImageLoadingFormat image(false);
+            CImageLoadingFormat image;
             image.SetPicture(source);
+            image.RotateExif(orientation);
             filter->SetBitmap(&image);
         	
             Chqdn3dEffectParameter* hqdn3dParameter = (Chqdn3dEffectParameter*)effectParameter;
             filter->HQDn3D(hqdn3dParameter->LumSpac, hqdn3dParameter->ChromSpac, hqdn3dParameter->LumTmp, hqdn3dParameter->ChromTmp);
             imageLoad = new CImageLoadingFormat();
-            CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+            cv::Mat bitmapOut = filter->GetBitmap(true);
             imageLoad->SetPicture(bitmapOut);
         }
 	}
@@ -166,7 +166,7 @@ bool Chqdn3dFilter::IsSourcePreview()
 
 void Chqdn3dFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
         Chqdn3dEffectParameter* hq3dn = (Chqdn3dEffectParameter*)effectParameter;
         filtreEffet->HQDn3D(hq3dn->LumSpac, hq3dn->ChromSpac, hq3dn->LumTmp, hq3dn->ChromTmp);

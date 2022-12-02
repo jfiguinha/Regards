@@ -50,8 +50,6 @@ namespace Regards
 			void SetMatrix(cv::UMat& frame);
             cv::UMat GetUMat(const bool & src = true);
 			cv::Mat GetMatrix(const bool & src = true);
-			void LoadRegardsBitmap(CRegardsBitmap * bitmap);
-			CRegardsBitmap* GetBitmap(const bool &src = false);
 
 			void AutoContrast();
 			virtual void GetYUV420P(uint8_t * & y, uint8_t * & u, uint8_t * & v, const int &widthOut, const int &heightOut);

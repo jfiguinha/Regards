@@ -12,7 +12,7 @@
 #include <FilterData.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
-#include <RegardsBitmap.h>
+
 #include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>
@@ -202,7 +202,7 @@ void CBitmapWndViewer::BeforeInterpolationBitmap()
 
 void CBitmapWndViewer::PrintPicture()
 {
-	CRegardsBitmap* bitmap = GetBitmap(true);
+	CImageLoadingFormat * bitmap = GetBitmap(true);
 	wxWindow* mainWindow = wxWindow::FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
@@ -366,9 +366,7 @@ void CBitmapWndViewer::ExportPicture()
 
 void CBitmapWndViewer::SavePicture()
 {
-	CRegardsBitmap* bitmap = GetBitmap(true);
-	auto imageLoading = new CImageLoadingFormat();
-	imageLoading->SetPicture(bitmap);
+	CImageLoadingFormat * imageLoading = GetBitmap(true);
 	CSavePicture::SavePicture(nullptr, imageLoading, filename);
 	if (imageLoading != nullptr)
 		delete imageLoading;

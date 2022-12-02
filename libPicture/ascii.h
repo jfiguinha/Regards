@@ -1,13 +1,13 @@
 #pragma once
 
-class CRegardsBitmap;
+class CImageLoadingFormat;
 
 class CBitmapToAscii
 {
 public:
     CBitmapToAscii(){};
     ~CBitmapToAscii(){};
-    static void SaveToAscii(CRegardsBitmap * source, const string &filenameOut);
+    static void SaveToAscii(CImageLoadingFormat* source, const string &filenameOut);
     
 private:
 

@@ -24,9 +24,7 @@ public:
 	int MeanShift(const float& fSpatialRadius, const float& fColorRadius);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle, int ratio);
     int LensDistortionFilter(const int &size);
-	CRegardsBitmap * GetBitmap(const bool &source);
-	void GetBitmap(CRegardsBitmap * & bitmap, const bool &source);
-	CRegardsBitmap * GetPtBitmap();
+	cv::Mat GetBitmap(const bool &source);
 	wxImage GetwxImage();
 	int WaveFilter(int x, int y, short height, int scale, int radius);
 	int SharpenMasking(const float &sharpness);
@@ -63,7 +61,7 @@ public:
 	int Swirl(const float &radius, const float &angle);
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);
-	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
+	int Fusion(cv::Mat& bitmapSecond, const float &pourcentage);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
 	virtual int GetWidth();
 	virtual int GetHeight();

@@ -1,5 +1,5 @@
 #pragma once
-class CRegardsBitmap;
+class CImageLoadingFormat;
 
 class CModificationManager
 {
@@ -10,9 +10,9 @@ public:
 	void SetNumModification(const unsigned int& numModification);
 	unsigned int GetNbModification();
 	unsigned int GetNumModification();
-	CRegardsBitmap* GetModification(const unsigned int& numModification);
-	void AddModification(CRegardsBitmap* bitmap, const wxString& libelle);
-	void Init(CRegardsBitmap* bitmap);
+	CImageLoadingFormat* GetModification(const unsigned int& numModification);
+	void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
+	void Init(CImageLoadingFormat* bitmap);
 	wxString GetModificationLibelle(const unsigned int& numModification);
 private:
 	wxString GetFilenameWithModification(const unsigned int& numModification);

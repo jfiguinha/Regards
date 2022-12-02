@@ -783,12 +783,12 @@ void CViewerFrame::OnHello(wxCommandEvent& event)
 	wxLogMessage("Hello world from wxWidgets!");
 }
 
-void CViewerFrame::PrintImagePreview(CRegardsBitmap* imageToPrint)
+void CViewerFrame::PrintImagePreview(CImageLoadingFormat * imageToPrint)
 {
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
-	const auto bitmapPreview = new CRegardsBitmap();
+	const auto bitmapPreview = new CImageLoadingFormat();
 	*bitmapPreview = *imageToPrint;
 	const auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview),
 	                                        &printDialogData);
@@ -815,7 +815,7 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat* imageToPrint)
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData* g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData print_dialog_data(*g_printData);
-	CRegardsBitmap* bitmap_preview = imageToPrint->GetRegardsBitmap(true);
+	cv::Mat bitmap_preview = imageToPrint->GetOpenCVPicture();
 
 
 	const auto preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmap_preview),

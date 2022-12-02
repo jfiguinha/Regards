@@ -1,6 +1,5 @@
 #include <header.h>
 #include "regards_webp.h"
-#include "RegardsBitmap.h"
 #include <webp/decode.h>
 #include <webp/encode.h>
 #include "picture_utility.h"
@@ -16,26 +15,36 @@ public:
 };
 
 
-CRegardsBitmap* CRegardsWebp::GetPicture(const wxString& filename)
+cv::Mat CRegardsWebp::GetPicture(const wxString& filename)
 {
-	CRegardsBitmap * picture = nullptr;
+    cv::Mat mat;
 	size_t data_size;
 	uint8_t* _compressedImage = CPictureUtility::readfile(filename, data_size);
 	if (_compressedImage != nullptr && data_size > 0)
 	{
-		picture = new CRegardsBitmap();
 		int width = 0, height = 0;
 		uint8_t* data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
-        cv::Mat bitmapMatrix = cv::Mat(height, width, CV_8UC4, data);
-        picture->SetMatrix(bitmapMatrix);
+        mat = cv::Mat(height, width, CV_8UC4, data);
 		delete[] _compressedImage;
 	}
-	return picture;
+	return mat;
 }
 
-vector<CRegardsBitmap*> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay)
+void CRegardsWebp::ApplyTransform(cv::Mat& image)
 {
-    vector<CRegardsBitmap*> pictureList;
+    if (image.channels() == 3)
+        cvtColor(image, image, cv::COLOR_BGR2BGRA);
+    else if (image.channels() == 1)
+        cvtColor(image, image, cv::COLOR_GRAY2BGRA);
+
+    cvtColor(image, image, cv::COLOR_RGBA2BGRA);
+
+    cv::flip(image, image, 0);
+}
+
+vector<cv::Mat> CRegardsWebp::GetAllPicture(const wxString& filename, int& delay)
+{
+    vector<cv::Mat> pictureList;
     int prev_frame_timestamp = 0;
     WebPAnimDecoder* dec;
     WebPAnimInfo anim_info;
@@ -61,7 +70,6 @@ vector<CRegardsBitmap*> CRegardsWebp::GetAllPicture(const wxString& filename, in
 
         // Decode frames.
         while (WebPAnimDecoderHasMoreFrames(dec)) {
-            CRegardsBitmap* curr_bitmap = new CRegardsBitmap();
             uint8_t* frame_rgba;
             int timestamp;
 
@@ -72,13 +80,9 @@ vector<CRegardsBitmap*> CRegardsWebp::GetAllPicture(const wxString& filename, in
             delay = timestamp - prev_frame_timestamp;
 
             cv::Mat bitmapMatrix = cv::Mat(anim_info.canvas_height, anim_info.canvas_width, CV_8UC4, frame_rgba);
-            curr_bitmap->SetMatrix(bitmapMatrix, true);
-           // curr_bitmap->SetBitmap(frame_rgba, anim_info.canvas_width, anim_info.canvas_height, true, true);
-            curr_bitmap->ConvertToBgr();
-            curr_bitmap->SetFilename(filename);
+            ApplyTransform(bitmapMatrix);
             prev_frame_timestamp = timestamp;
-
-            pictureList.push_back(curr_bitmap);
+            pictureList.push_back(bitmapMatrix);
         }
     }
 
@@ -124,12 +128,12 @@ int CRegardsWebpImpl::IsWebP(const WebPData* const webp_data) {
 }
 
 
-void CRegardsWebp::SavePicture(const wxString& fileName, CRegardsBitmap* regards, const int& _option)
+void CRegardsWebp::SavePicture(const wxString& fileName, cv::Mat& source, const int& _option)
 {
 	uint8_t* output = nullptr;
 
-	size_t size = WebPEncodeBGRA(regards->GetPtBitmap(),
-		regards->GetBitmapWidth(), regards->GetBitmapHeight(), regards->GetWidthSize(),
+	size_t size = WebPEncodeBGRA(source.data,
+        source.size().width, source.size().height, source.size().width * 4,
 		_option, &output);
 	CPictureUtility::writefile(fileName, output, size);
 

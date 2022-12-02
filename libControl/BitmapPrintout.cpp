@@ -11,18 +11,14 @@ using namespace Regards::Print;
 
 CBitmapPrintout::~CBitmapPrintout()
 {
-	if (m_bitmap != nullptr)
-		delete(m_bitmap);
 	if (m_picture != nullptr)
 		delete(m_picture);
 
-	m_bitmap = nullptr;
 	m_picture = nullptr;
 }
 
 CBitmapPrintout::CBitmapPrintout(): typeImage(0)
 {
-	m_bitmap = nullptr;
 	m_picture = nullptr;
 }
 
@@ -102,7 +98,7 @@ void CBitmapPrintout::DrawPicture(const int& pageNum)
 	}
 	else if (typeImage == 2)
 	{
-		image = new CImageLoadingFormat(false);
+		image = new CImageLoadingFormat();
 		image->SetPicture(m_bitmap);
 	}
 

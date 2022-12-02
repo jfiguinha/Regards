@@ -20,9 +20,9 @@ public:
 	int GetThumbnailHeight();
 	void DeleteData();
 	void InitContext(AVFrame* src_frame, const bool& bicubic, const int& thumbnailWidth, const int& thumbnailHeight);
-	int GetConvert(CRegardsBitmap* bitmap, AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
-	CRegardsBitmap* GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
-	CRegardsBitmap* GetConvert(AVFrame* src_frame);
+	int GetConvert(cv::Mat & bitmap, AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
+	cv::Mat GetConvert(AVFrame* src_frame, const int& thumbnailWidth, const int& thumbnailHeight);
+	cv::Mat GetConvert(AVFrame* src_frame);
 private:
 	SwsContext* scaleContext = nullptr;
 	int videoFrameWidth;

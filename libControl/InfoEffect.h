@@ -15,10 +15,10 @@ namespace Regards
 			~CInfoEffect() override;
 
 			wxString GetFilename();
-			void Init(CRegardsBitmap* bitmap, const wxString& libelle, const wxString& key);
+			void Init(CImageLoadingFormat* bitmap, const wxString& libelle, const wxString& key);
 			void AddEvent(const wxString& libelle, const wxString& key);
 			void SetActifElement(const wxString& key);
-			void AddModification(CRegardsBitmap* bitmap, const wxString& libelle);
+			void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
 			void UpdateScreenRatio() override;
 
 			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,

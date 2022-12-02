@@ -204,18 +204,14 @@ void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
 		{
 			int compressMethod = 0;
 			unsigned long outputsize = 0;
-			bitmap->ConvertToRGB24(true);
-			uint8_t* dest = bitmap->GetJpegData(outputsize);
+			bitmap->Flip();
+			std::vector<uchar> data = bitmap->GetJpegData();
 			//wxString hash = wxMD5::GetFileMD5(filename);
 			wxFileName file(filename);
 			wxULongLong sizeFile = file.GetSize();
 			wxString hash = sizeFile.ToString();
-			if (dest != nullptr)
-				sqlThumbnail.InsertThumbnail(filename, dest, outputsize, bitmap->GetWidth(), bitmap->GetHeight(), hash);
-
-			bitmap->DestroyJpegData(dest);
-
-			dest = nullptr;
+			if (data.size() > 0)
+				sqlThumbnail.InsertThumbnail(filename, data, outputsize, bitmap->GetWidth(), bitmap->GetHeight(), hash);
 
 			this->filename = filename;
 			//pictureLoad = true;

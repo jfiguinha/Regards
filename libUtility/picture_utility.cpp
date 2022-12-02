@@ -19,6 +19,104 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 	return _compressedImage;
 }
 
+void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
+{
+	if (_image.empty())
+		return;
+
+	switch (orientation)
+	{
+	case 1: // top left side
+		break;
+	case 2: // top right side
+		cv::flip(_image, _image, 1);
+		break;
+	case 3: // bottom right side
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
+		break;
+	case 4: // bottom left side
+		cv::flip(_image, _image, 0);
+		break;
+	case 5: //left side top
+		Rotate90(_image);
+		cv::flip(_image, _image, 1);
+		break;
+	case 6: // right side top
+		Rotate90(_image);
+		break;
+	case 7: // right side bottom
+		Rotate90(_image);
+		cv::flip(_image, _image, 0);
+		break;
+	case 8: // left side bottom
+		Rotate90(_image);
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
+		break;
+	default:;
+	}
+}
+
+
+void CPictureUtility::ApplyRotation(cv::Mat& image, const int& rotation)
+{
+	if (rotation == 90)
+		Rotate90(image);
+	else if (rotation == -90)
+		Rotate270(image);
+	else if (rotation == -180)
+		Rotate180(image);
+	else if (rotation == 180)
+		Rotate180(image);
+	else if (rotation == -270)
+		Rotate90(image);
+	else if (rotation == 270)
+		Rotate270(image);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+bool CPictureUtility::Rotate90(cv::Mat& image)
+{
+	if (image.empty())
+		return false;
+
+	cv::rotate(image, image, cv::ROTATE_90_COUNTERCLOCKWISE);
+	return true;
+}
+
+bool CPictureUtility::Rotate270(cv::Mat& image)
+{
+	if (image.empty())
+		return false;
+
+	cv::rotate(image, image, cv::ROTATE_90_CLOCKWISE);
+	return true;
+}
+
+bool CPictureUtility::Rotate180(cv::Mat& image)
+{
+	if (image.empty())
+		return false;
+
+	cv::rotate(image, image, cv::ROTATE_180);
+	return true;
+}
+
+void CPictureUtility::ApplyTransform(cv::Mat& image)
+{
+	if (image.channels() == 3)
+		cvtColor(image, image, cv::COLOR_BGR2BGRA);
+	else if (image.channels() == 1)
+		cvtColor(image, image, cv::COLOR_GRAY2BGRA);
+	else
+		cvtColor(image, image, cv::COLOR_RGBA2BGRA);
+
+	cv::flip(image, image, 0);
+}
 
 void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t & size)
 {

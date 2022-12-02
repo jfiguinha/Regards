@@ -6,6 +6,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ConvertUtility.h>
+#include <RGBAQuad.h>
 using namespace std;
 
 #ifdef WIN32
@@ -338,7 +339,7 @@ void CFFmfcPimpl::video_display(VideoState* is)
 					{
 						AVSubtitleRect* rect = sp->sub.rects[i];
 						//AVPicture picture = rect->pict;
-						auto bitmap = new CRegardsBitmap(rect->w, rect->h);
+						cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
 						uint8_t* data = rect->data[0];
 
 						for (int y = 0; y < rect->h; y++)
@@ -349,7 +350,8 @@ void CFFmfcPimpl::video_display(VideoState* is)
 								int j = *data++;
 								RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
 								CRgbaquad color(r, g, b, a);
-								bitmap->SetColorValue(x, y, color);
+								int i = (x << 2) + (y * (bitmap.cols << 2));
+								memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
 							}
 						}
 						if (dlg != nullptr)
@@ -627,7 +629,7 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 								int pitch, j;
 
 								AVSubtitleRect* rect = sp->sub.rects[i];
-								auto bitmap = new CRegardsBitmap(rect->w, rect->h);
+								cv::Mat bitmap = cv::Mat(rect->h, rect->w, CV_8UC4);
 								uint8_t* data = rect->data[0];
 								for (int y = 0; y < rect->h; y++)
 								{
@@ -637,7 +639,9 @@ void CFFmfcPimpl::video_refresh(void* opaque, double* remaining_time)
 										int j = *data++;
 										RGBA_IN(r, g, b, a, (uint32_t*)rect->data[1] + j);
 										CRgbaquad color(r, g, b, a);
-										bitmap->SetColorValue(x, y, color);
+										int i = (x << 2) + (y * (bitmap.cols << 2));
+										memcpy(bitmap.data + i, &color, sizeof(CRgbaquad));
+										//bitmap->SetColorValue(x, y, color);
 									}
 								}
 								if (dlg != nullptr)

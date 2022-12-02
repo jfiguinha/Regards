@@ -2,7 +2,7 @@
 #include "MosaicFilter.h"
 #include "MosaicFilterParameter.h"
 #include <FilterData.h>
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
@@ -39,12 +39,12 @@ int CMosaicFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //return IDM_SHARPENMASKING;
 }
 
-void CMosaicFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CMosaicFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
 	CMosaicEffectParameter* sharpenMaskingParameter = (CMosaicEffectParameter*)effectParameter;
 
 	this->source = source;
-
+	this->filename = filename;
 	vector<int> elementFreq;
 	for (auto i = 0; i < 100; i++)
 		elementFreq.push_back(i);
@@ -102,7 +102,7 @@ bool CMosaicFilter::IsSourcePreview()
 
 void CMosaicFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
 		filtreEffet->FiltreMosaic(mosaicParameter->size);
@@ -119,20 +119,20 @@ void CMosaicFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitma
 CImageLoadingFormat* CMosaicFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
 			
 			imageLoad = new CImageLoadingFormat();
 			CMosaicEffectParameter* mosaicParameter = (CMosaicEffectParameter*)effectParameter;
 			filter->FiltreMosaic(mosaicParameter->size);
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

@@ -7,7 +7,6 @@
 #include <wx/dir.h>
 #include <FileUtility.h>
 #include <picture_utility.h>
-#include <RegardsBitmap.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
 
@@ -87,7 +86,7 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
             if(picture.IsOk())
             {
 				videoThumbnail->image = new CImageLoadingFormat();
-				videoThumbnail->image->SetPicture(&picture, true);
+				videoThumbnail->image->SetPicture(picture);
 			}
 			else
 			{

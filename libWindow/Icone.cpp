@@ -11,7 +11,7 @@
 #ifdef WIN32
 #endif
 #include <RegardsConfigParam.h>
-#include <RegardsBitmap.h>
+
 #include <libPicture.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
@@ -186,9 +186,8 @@ bool CIcone::GetSelected()
 
 wxImage CIcone::LoadImageResource(const wxString& resourceName)
 {
-	CRegardsBitmap* data = CLoadingResource::LoadRegardsBmpResource(resourceName);
+	cv::Mat data = CLoadingResource::LoadRegardsBmpResource(resourceName);
 	wxImage bitmap = CLoadingResource::ConvertTowxImageRGB(data);
-	delete data;
 	return bitmap;
 }
 

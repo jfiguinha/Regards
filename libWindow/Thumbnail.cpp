@@ -1028,19 +1028,14 @@ void CThumbnail::LoadPicture(void* param)
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 				int compressMethod = 0;
 				unsigned long outputsize = 0;
-				bitmap->image->ConvertToRGB24(true);
-				uint8_t* dest = bitmap->image->GetJpegData(outputsize);
-				if (dest != nullptr)
-					sqlThumbnailVideo.InsertThumbnail(filename, dest, outputsize, bitmap->image->GetWidth(),
+				std::vector<uchar> dest = bitmap->image->GetJpegData();
+				if (dest.size() > 0)
+					sqlThumbnailVideo.InsertThumbnail(filename, dest.data(), outputsize, bitmap->image->GetWidth(),
 						bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
 						bitmap->timePosition);
 
-				bitmap->image->DestroyJpegData(dest);
-
 				if (i == selectPicture)
 					threadLoadingBitmap->bitmapIcone = bitmap->image;
-
-				dest = nullptr;
 
 				if (i != selectPicture)
 					delete bitmap;

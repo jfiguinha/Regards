@@ -9,7 +9,7 @@
 
 #include "WaveFilter.h"
 #include "WaveEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -68,12 +68,12 @@ int CWaveFilter::GetTypeFilter()
     return IDM_WAVE_EFFECT;
 }
 
-void CWaveFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CWaveFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CWaveEffectParameter * waveParameter = (CWaveEffectParameter *)effectParameter;
 	
 	this->source = source;
-
+	this->filename = filename;
     vector<int> elementIntensity;
     for (int i = 0; i < 40; i++)
         elementIntensity.push_back(i);
@@ -83,7 +83,7 @@ void CWaveFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * so
         elementColor.push_back(i);
     
     vector<int> elementBitmapHeight;
-    for (int i = 0; i < source->GetBitmapHeight() / 2; i++)
+    for (int i = 0; i < source.size().height / 2; i++)
         elementBitmapHeight.push_back(i);
     
     filtreInterface->AddTreeInfos(libelleEffectHeight, new CTreeElementValueInt(waveParameter->height), &elementColor);
@@ -120,11 +120,12 @@ void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmap
 CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer)
 	{
-		CImageLoadingFormat image(false);
-		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image;
+
 		image.SetPicture(source);
+		image.RotateExif(orientation);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 
 		wxPoint pt;
@@ -178,15 +179,15 @@ bool CWaveFilter::IsSourcePreview()
 void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
-		CImageLoadingFormat image(false);
+		CImageLoadingFormat image;
 		image.SetPicture(source);
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 
 		wxPoint pt;
 		bitmapViewer->GetDessinPt()->GetPoint(pt);
-		ApplyExifToPoint(pt, source->GetOrientation(), source->GetBitmapWidth(), source->GetBitmapHeight());
+		ApplyExifToPoint(pt, orientation, source.size().width, source.size().height);
 		//Calcul Point with Exif info
         double scaleFactor = bitmapViewer->GetDessinPt()->GetScaleFactor();
 		CWaveEffectParameter* waveEffectParameter = (CWaveEffectParameter*)effectParameter;

@@ -1,6 +1,6 @@
 #include "header.h"
 #include "VideoStabilization.h"
-#include <RegardsBitmap.h>
+
 
 using namespace Regards::OpenCV;
 using namespace cv;
@@ -384,12 +384,6 @@ COpenCVStabilization::~COpenCVStabilization()
 	delete pimpl;
 }
 
-
-void COpenCVStabilization::AddFrame(CRegardsBitmap* pBitmap)
-{
-	pimpl->AnalyseFrame(pBitmap->GetMatrix());
-}
-
 void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
 {
 	pimpl->nbFrameMax = nbFrame;
@@ -398,12 +392,6 @@ void COpenCVStabilization::SetNbFrameBuffer(const int& nbFrame)
 int COpenCVStabilization::GetNbFrame()
 {
 	return nbFrame;
-}
-
-void COpenCVStabilization::BufferFrame(CRegardsBitmap* pBitmap)
-{
-	pimpl->AnalyseFrame(pBitmap->GetMatrix());
-	nbFrameBuffer++;
 }
 
 void COpenCVStabilization::Init()
@@ -415,12 +403,6 @@ void COpenCVStabilization::Init()
 int COpenCVStabilization::GetNbFrameBuffer()
 {
 	return nbFrameBuffer;
-}
-
-void COpenCVStabilization::CorrectFrame(CRegardsBitmap* pBitmap)
-{
-	pimpl->CalculTransformation();
-	pimpl->CorrectedFrame(pBitmap->GetMatrix());
 }
 
 void COpenCVStabilization::AddFrame(const Mat& image)

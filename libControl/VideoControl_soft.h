@@ -60,7 +60,7 @@ public:
 	void RepeatVideo();
 	void DiaporamaMode(const bool& value);
 	vector<int> GetZoomValue();
-	virtual CRegardsBitmap* SavePicture(bool& isFromBuffer);
+	virtual cv::Mat SavePicture(bool& isFromBuffer);
 	bool IsFFmpegDecode();
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter* effectParameter);
@@ -75,7 +75,7 @@ public:
 	int getWidth() override;
 	int getHeight() override;
 
-	void SetSubtitulePicture(CRegardsBitmap* picture) override;
+	void SetSubtitulePicture(cv::Mat & picture);
 	void DeleteSubtitulePicture() override;
 
 	bool GetPausedValue();
@@ -145,7 +145,7 @@ protected:
 	void Resize() override;
 	void calculate_display_rect(wxRect* rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	GLTexture* RenderToGLTexture();
-	GLTexture* RenderToTexture(CRegardsBitmap* bitmap);
+	GLTexture* RenderToTexture(cv::Mat& bitmap);
 	GLTexture* RenderToTexture(COpenCLEffectVideo* openclEffect);
 	//GLTexture* RenderFFmpegToTexture();
 
@@ -162,7 +162,7 @@ protected:
 
 	void TestMaxX();
 	void TestMaxY();
-	GLTexture* RenderFFmpegToTexture(CRegardsBitmap* source);
+	GLTexture* RenderFFmpegToTexture(cv::Mat& source);
 	GLTexture* DisplayTexture(GLTexture* glTexture);
 	void StopVideoThread(wxCommandEvent& event);
 	float CalculRatio(const int& pictureWidth, const int& pictureHeight);
@@ -178,7 +178,7 @@ protected:
 	int GetSrcBitmapHeight();
 	float GetMovieRatio();
 	Chqdn3d* hq3d = nullptr;
-	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
+	cv::Mat GetBitmapRGBA(AVFrame* tmp_frame);
 
 	bool openclOpenGLInterop = false;
 	int mouseScrollX = 0;
@@ -219,7 +219,7 @@ protected:
 	thread* _threadVideo = nullptr;
 	bool threadVideoEnd = true;
 	GLTexture* glTextureSrc = nullptr;
-	CRegardsBitmap* bitmap = nullptr;
+	cv::Mat bitmap;
 	COpenCLEffectVideo* openclEffectYUV = nullptr;
 	CRenderVideoOpenGL* renderBitmapOpenGL;
 	CRenderOpenGL* renderOpenGL = nullptr;
@@ -238,9 +238,9 @@ protected:
 	bool deleteTexture = false;
 	int nbFrame;
 	wxString message;
-	CRegardsBitmap* pictureSubtitle;
-	CRegardsBitmap* pictureFrame = nullptr;
-	CRegardsBitmap* pictureVideo = nullptr;
+	cv::Mat pictureSubtitle;
+	cv::Mat pictureFrame;
+	cv::Mat pictureVideo;
 	int64_t videoPosition = 0;
 	int64_t oldvideoPosition = 0;
 	bool updateContext = true;
@@ -267,9 +267,8 @@ protected:
 	wxTimer* playStopTimer;
 	bool needToRefresh = false;
 	bool inverted = true;
-	CRegardsBitmap* previousFrame = nullptr;
-	CRegardsBitmap* bitmapData = nullptr;
-	COpenCVStabilization* openCVStabilization = nullptr;
+	cv::Mat previousFrame;
+	COpenCVStabilization * openCVStabilization = nullptr;
 	SwsContext* localContext = nullptr;
 	wxWindow* parentRender = nullptr;
 	bool endProgram = false;

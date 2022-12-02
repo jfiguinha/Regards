@@ -2,7 +2,6 @@
 #include <header.h>
 #include "Heic.h"
 #ifdef LIBHEIC
-#include <RegardsBitmap.h>
 #include <cstdint>
 #include <heifreader.h>
 #include <libde265/de265.h>
@@ -14,13 +13,13 @@
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
-static CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder = nullptr);
+static cv::Mat & DecodeFrame(void* data, int length, void* externDecoder = nullptr);
 
 typedef struct x265Frame
 {
 	uint64_t memoryBufferSize;
 	uint8_t* _memoryBuffer;
-	CRegardsBitmap* picture;
+	cv::Mat picture;
 	wxString filename;
 };
 
@@ -61,7 +60,7 @@ static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
 }
 
 
-CRegardsBitmap* GetRGBPicture(const de265_image* img)
+cv::Mat & GetRGBPicture(const de265_image* img)
 {
 	int width = de265_get_image_width(img, 0);
 	int height = de265_get_image_height(img, 0);
@@ -77,7 +76,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 	frame_width &= ~7;
 	frame_height &= ~7;
 
-	CRegardsBitmap* picture = nullptr;
+	cv::Mat picture;
 	int stride, chroma_stride;
 	const uint8_t* yOrigin = de265_get_image_plane(img, 0, &stride);
 	const uint8_t* cbOrigin = de265_get_image_plane(img, 1, &chroma_stride);
@@ -121,7 +120,8 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 			auto _y = new uint8_t[frame_width * frame_height];
 			auto _cb = new uint8_t[frame_width * frame_height / 4];
 			auto _cr = new uint8_t[frame_width * frame_height / 4];
-			picture = new CRegardsBitmap(frame_width, frame_height);
+			picture.create(frame_height, frame_width, CV_8UC4);
+
 			if (stride == frame_width && chroma_stride == frame_width / 2)
 			{
 				// fast copy
@@ -145,7 +145,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 					memcpy(_cr + y * frame_width / 2, crOrigin + chroma_stride * y, frame_width / 2);
 				}
 			}
-			yuv420p_to_rgb32(_y, _cb, _cr, picture->GetPtBitmap(), frame_width, frame_height);
+			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
 			delete[] _y;
 			delete[] _cb;
 			delete[] _cr;
@@ -154,7 +154,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 	case de265_chroma_422:
 		{
 			auto dataYUV = new uint8_t[frame_width * 2 * frame_height];
-			picture = new CRegardsBitmap(frame_width, frame_height);
+			picture.create(frame_height, frame_width, CV_8UC4);
 
 			for (auto y = 0; y < frame_height; y++)
 			{
@@ -173,12 +173,13 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 				}
 			}
 
-			yuv422p_to_rgb32(dataYUV, picture->GetPtBitmap(), frame_width, frame_height);
+			yuv422p_to_rgb32(dataYUV, picture.data, frame_width, frame_height);
 			delete[] dataYUV;
 		}
 		break;
 	case de265_chroma_444:
 		{
+			picture.create(frame_height, frame_width, CV_8UC4);
 			auto _y = new uint8_t[frame_width * frame_height];
 			auto _cb = new uint8_t[frame_width * frame_height / 4];
 			auto _cr = new uint8_t[frame_width * frame_height / 4];
@@ -205,7 +206,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 					//v[x/2] = V[y*chroma_stride + x];
 				}
 			}
-			yuv420p_to_rgb32(_y, _cb, _cr, picture->GetPtBitmap(), frame_width, frame_height);
+			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
 			delete[] _y;
 			delete[] _cb;
 			delete[] _cr;
@@ -213,6 +214,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 		break;
 	case de265_chroma_mono:
 		{
+			picture.create(frame_height, frame_width, CV_8UC4);
 			auto _y = new uint8_t[frame_width * frame_height];
 			auto _cb = new uint8_t[frame_width * frame_height / 4];
 			auto _cr = new uint8_t[frame_width * frame_height / 4];
@@ -237,7 +239,7 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 			memset(_cb, 0x80, frame_width * frame_height / 4);
 			memset(_cr, 0x80, frame_width * frame_height / 4);
 
-			yuv420p_to_rgb32(_y, _cb, _cr, picture->GetPtBitmap(), frame_width, frame_height);
+			yuv420p_to_rgb32(_y, _cb, _cr, picture.data, frame_width, frame_height);
 			delete[] _y;
 			delete[] _cb;
 			delete[] _cr;
@@ -254,9 +256,9 @@ CRegardsBitmap* GetRGBPicture(const de265_image* img)
 }
 
 
-CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
+cv::Mat & DecodeFrame(void* data, int length, void* externDecoder)
 {
-	CRegardsBitmap* picture = nullptr;
+	cv::Mat picture;
 	de265_decoder_context* decoderContext = nullptr;
 	if (decoderContext == nullptr)
 		decoderContext = de265_new_decoder();
@@ -302,8 +304,8 @@ CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 				if (img)
 				{
 					picture = GetRGBPicture(img);
-					picture->VertFlipBuf();
-					picture->ConvertToBgr();
+					cv::flip(picture, picture, 0);
+					cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
 					more = 0;
 				}
 
@@ -328,9 +330,9 @@ CRegardsBitmap* DecodeFrame(void* data, int length, void* externDecoder)
 	return picture;
 }
 
-vector<CRegardsBitmap*> DecodePictureList(de265_decoder_context* decoderContext, const string& filename)
+vector<cv::Mat> DecodePictureList(de265_decoder_context* decoderContext, const string& filename)
 {
-	vector<CRegardsBitmap*> listPicture;
+	vector<cv::Mat> listPicture;
 
 	int check_hash = 1;
 	int quiet = 0;
@@ -367,12 +369,9 @@ vector<CRegardsBitmap*> DecodePictureList(de265_decoder_context* decoderContext,
 			const de265_image* img = de265_get_next_picture(decoderContext);
 			if (img)
 			{
-				CRegardsBitmap* picture = GetRGBPicture(img);
-				picture->SetFilename(filename);
-				picture->VertFlipBuf();
-				picture->ConvertToBgr();
-				picture->RotateExif(0);
-
+				cv::Mat picture = GetRGBPicture(img);
+				cv::flip(picture, picture, 0);
+				cvtColor(picture, picture, cv::COLOR_RGBA2BGRA);
 				listPicture.push_back(picture);
 			}
 
@@ -394,9 +393,9 @@ vector<CRegardsBitmap*> DecodePictureList(de265_decoder_context* decoderContext,
 	return listPicture;
 }
 
-vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMasterSequence, int& delay)
+vector<cv::Mat> CHeic::GetAllPicture(const string& filename, bool& isMasterSequence, int& delay)
 {
-	vector<CRegardsBitmap*> listPicture;
+	vector<cv::Mat> listPicture;
 	auto* reader = Reader::Create();
 	Array<uint32_t> item_ids;
 
@@ -457,10 +456,9 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 							reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
 
 							//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
-							CRegardsBitmap* bitmapSrc = DecodeFrame(sampleData, size);
-							if (bitmapSrc != nullptr)
+							cv::Mat bitmapSrc = DecodeFrame(sampleData, size);
+							if (!bitmapSrc.empty())
 							{
-								bitmapSrc->SetFilename(filename);
 								listPicture.push_back(bitmapSrc);
 							}
 
@@ -485,7 +483,7 @@ vector<CRegardsBitmap*> CHeic::GetAllPicture(const string& filename, bool& isMas
 	return listPicture;
 }
 
-void CHeic::SavePicture(const string& filenameOut, CRegardsBitmap* source, uint8_t*& data_exif, unsigned int& size, const int& compression, const bool& hasExif)
+void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& data_exif, unsigned int& size, const int& compression, const bool& hasExif)
 {
 #ifdef HAS_X265
 	struct heif_error err{};
@@ -598,9 +596,9 @@ uint32_t CHeic::GetDelay(const string& filename)
 	return delay;
 }
 
-CRegardsBitmap* CHeic::GetPicture(const string& filename, bool& isMasterSequence, int& delay, const int& numPicture)
+cv::Mat CHeic::GetPicture(const string& filename, bool& isMasterSequence, int& delay, const int& numPicture)
 {
-	CRegardsBitmap* bitmapSrc = nullptr;
+	cv::Mat bitmapSrc;
 	auto* reader = Reader::Create();
 	Array<uint32_t> itemIds;
 
@@ -668,10 +666,6 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename, bool& isMasterSequence
 
 								//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
 								bitmapSrc = DecodeFrame(sampleData, size);
-								if (bitmapSrc != nullptr)
-								{
-									bitmapSrc->SetFilename(filename);
-								}
 
 								delete[] sampleData;
 								break;
@@ -762,10 +756,7 @@ void CHeic::DecodePictureMultiThread(void* parameter)
 	auto decoding = static_cast<x265Frame*>(parameter);
 
 	decoding->picture = DecodeFrame(decoding->_memoryBuffer, decoding->memoryBufferSize);
-	if (decoding->picture != nullptr)
-	{
-		decoding->picture->SetFilename(decoding->filename);
-	}
+
 
 	delete[] decoding->_memoryBuffer;
 }
@@ -781,10 +772,6 @@ struct mytask
 	void ApplyFilter()
 	{
 		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
-		if (frame->picture != nullptr)
-		{
-			frame->picture->SetFilename(frame->filename);
-		}
 
 		delete[] frame->_memoryBuffer;
 		frame->_memoryBuffer = nullptr;
@@ -793,26 +780,18 @@ struct mytask
 	void operator()()
 	{
 		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
-		if (frame->picture != nullptr)
-		{
-			frame->picture->SetFilename(frame->filename);
-		}
 
 		delete[] frame->_memoryBuffer;
 		frame->_memoryBuffer = nullptr;
 	}
 
-	CRegardsBitmap* GetFrame()
+	cv::Mat GetFrame()
 	{
 		return frame->picture;
 	}
 
 	void Free()
 	{
-		if (frame->picture != nullptr)
-			delete frame->picture;
-		frame->picture = nullptr;
-
 		if (frame->_memoryBuffer != nullptr)
 			delete[] frame->_memoryBuffer;
 		frame->_memoryBuffer = nullptr;
@@ -826,13 +805,13 @@ struct mytask
 	x265Frame* frame;
 };
 
-CRegardsBitmap* CHeic::GetPicture(const string& filename)
+cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 {
 	struct PictureEncoder
 	{
 		x265Frame* frame = nullptr;
 	};
-	CRegardsBitmap* picture = nullptr;
+	cv::Mat picture;
 	auto* reader = Reader::Create();
 
 	// Input file available from https://github.com/nokiatech/heif_conformance
@@ -874,12 +853,7 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 		if (err == ErrorCode::OK)
 		{
 			picture = DecodeFrame(memoryBuffer, memoryBufferSize);
-			if (picture != nullptr)
-			{
-				picture->SetFilename(filename);
-				picture->RotateExif(rotation);
-				// Feed 'data' to decoder and display the cover image...
-			}
+			orientation = rotation;
 		}
 		else
 		{
@@ -946,11 +920,11 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 				reader->getWidth(itemId, _width);
 				reader->getHeight(itemId, _heigth);
 
-				CRegardsBitmap* bitmapSrc = tasks[0].GetFrame();
-				if (bitmapSrc != nullptr)
+				cv::Mat bitmapSrc = tasks[0].GetFrame();
+				if (!bitmapSrc.empty())
 				{
-					int boxWidth = bitmapSrc->GetBitmapWidth();
-					int boxHeight = bitmapSrc->GetBitmapHeight();
+					int boxWidth = bitmapSrc.size().width;
+					int boxHeight = bitmapSrc.size().height;
 
 					int nbItemWidth = _width / boxWidth;
 					if (nbItemWidth * boxWidth < _width)
@@ -960,13 +934,15 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 					if (nbItemHeight * boxHeight < _heigth)
 						nbItemHeight++;
 
-					auto out = new CRegardsBitmap(boxWidth * nbItemWidth, boxHeight * nbItemHeight);
+					cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
 					int x = 0;
 					int y = (nbItemHeight * boxHeight) - boxHeight;
 
 					for (mytask task : tasks)
 					{
-						out->InsertBitmap(task.GetFrame(), x, y, false);
+						cv::Mat src = task.GetFrame();
+						src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
+						//out->InsertBitmap(task.GetFrame(), x, y, false);
 						x += boxWidth;
 
 						if (x > _width)
@@ -976,11 +952,10 @@ CRegardsBitmap* CHeic::GetPicture(const string& filename)
 						}
 					}
 
-					picture = out->CropBitmap(0, boxHeight * nbItemHeight - _heigth, _width, _heigth);
+					picture = out(cv::Rect(0, boxHeight * nbItemHeight - _heigth, _width, _heigth));
 
-					delete out;
 					listPicture.clear();
-					picture->SetFilename(filename);
+
 				}
 			}
 
@@ -1172,9 +1147,9 @@ void CHeic::GetPictureDimension(const string& filename, int& width, int& height)
 	}
 }
 
-CRegardsBitmap* CHeic::GetThumbnailPicture(const string& filename)
+cv::Mat CHeic::GetThumbnailPicture(const string& filename, int & orientation)
 {
-	CRegardsBitmap* picture = nullptr;
+	cv::Mat picture;
 	auto* reader = Reader::Create();
 	uint64_t itemSize = 1024 * 1024;
 	auto itemData = new uint8_t[itemSize];
@@ -1223,16 +1198,7 @@ CRegardsBitmap* CHeic::GetThumbnailPicture(const string& filename)
 			if (reader->getItemDataWithDecoderParameters(thumbId.get(), itemData, itemSize) == ErrorCode::OK)
 			{
 				picture = DecodeFrame(itemData, itemSize);
-				if (picture != nullptr)
-				{
-					picture->SetFilename(filename);
-					//picture->SetOrientation(rotation);
-					if (rotation != 0)
-					{
-						picture->ApplyRotation(360 - rotation);
-						//picture->VertFlipBuf();
-					}
-				}
+				orientation = rotation;
 			}
 		}
 	}

@@ -20,6 +20,33 @@ CRgbaquad::CRgbaquad(const uint8_t& red, const uint8_t& green, const uint8_t& bl
 	}
 }
 
+int CRgbaquad::GetPosition(cv::Mat * bitmapMatrix, const int& x, const int& y)
+{
+	return (x << 2) + (y * (bitmapMatrix->cols << 2));
+}
+
+CRgbaquad CRgbaquad::GetColorValue(cv::Mat* bitmapMatrix, const int& x, const int& y)
+{
+	CRgbaquad color;
+	if (!bitmapMatrix->empty() && x >= 0 && y >= 0 && x < bitmapMatrix->cols && y < bitmapMatrix->rows)
+	{
+		int i = GetPosition(bitmapMatrix, x, y);
+		memcpy(&color, bitmapMatrix->data + i, sizeof(CRgbaquad));
+	}
+	return color;
+}
+
+CRgbaquad* CRgbaquad::GetPtColorValue(cv::Mat * bitmapMatrix, const int& x, const int& y)
+{
+	CRgbaquad* color = nullptr;
+	if (!bitmapMatrix->empty() && x >= 0 && y >= 0 && x < bitmapMatrix->cols && y < bitmapMatrix->rows)
+	{
+		int i = GetPosition(bitmapMatrix, x, y);
+		color = ((CRgbaquad*)(bitmapMatrix->data + i));
+	}
+	return color;
+}
+
 int CRgbaquad::GetIntensity() const
 {
     return (red + green + blue) / 3;

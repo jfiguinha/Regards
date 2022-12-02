@@ -1,7 +1,7 @@
 #include <header.h>
 #include "CloudsFilter.h"
 #include "CloudsEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -52,12 +52,12 @@ int CCloudsFilter::GetTypeFilter()
     return SPECIAL_EFFECT;// 
 }
 
-void CCloudsFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CCloudsFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CCloudsEffectParameter * cloudsEffectParameter = (CCloudsEffectParameter *)effectParameter;
     
 	this->source = source;
-
+    this->filename = filename;
     vector<int> elementFreq;
     for (auto i = 0; i < 101; i++)
         elementFreq.push_back(i);
@@ -166,9 +166,9 @@ bool CCloudsFilter::IsSourcePreview()
 void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
     CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr)
+    if (effectParameter != nullptr && !source.empty())
     {
-        CImageLoadingFormat image(false);
+        CImageLoadingFormat image;
         image.SetPicture(source);
 
         CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
@@ -196,12 +196,13 @@ void CCloudsFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitma
 CImageLoadingFormat* CCloudsFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
     CImageLoadingFormat* imageLoad = nullptr;
-    if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+    if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
     {
         CCloudsEffectParameter* cloudsParameter = (CCloudsEffectParameter*)effectParameter;
-        source->RotateExif(source->GetOrientation());
-        CImageLoadingFormat image(false);
+
+        CImageLoadingFormat image;
         image.SetPicture(source);
+        image.RotateExif(orientation);
         CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
         filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
         imageLoad = new CImageLoadingFormat();

@@ -86,7 +86,7 @@ namespace Regards
 			int Posterize(const float &level, const float &gamma);
 			int Solarize(const long &threshold);
 			int PhotoFiltre(const CRgbaquad &clValue, const int &intensity);
-			int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
+			int Fusion(cv::Mat& bitmapSecond, const float &pourcentage);
 			int BrightnessAndContrast(const double &brightness, const double &contrast);
 			int RGBFilter(const int &red, const int &green, const int &blue);
 			int Swirl(const float &radius, const float &angle);
@@ -98,12 +98,12 @@ namespace Regards
 			int Lightness(const double &factor)  { return -1; };
 			int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)  { return -1; };
 
-			int HistogramLog(CRegardsBitmap * bitmap){ return  -1; }
-			int HistogramNormalize(CRegardsBitmap * bitmap){ return  -1; }
-			int HistogramEqualize(CRegardsBitmap * bitmap){ return  -1; }
+			int HistogramLog(cv::Mat & bitmap){ return  -1; }
+			int HistogramNormalize(cv::Mat& bitmap){ return  -1; }
+			int HistogramEqualize(cv::Mat& bitmap){ return  -1; }
 
 			int BrightnessAndContrastAuto(float clipHistPercent);
-			CRegardsBitmap* GetBitmap(const bool& source);
+			cv::Mat GetBitmap(const bool& source);
 
 			bool StabilizeVideo(Regards::OpenCV::COpenCVStabilization* stabilization);
 

@@ -1,6 +1,6 @@
 #include <header.h>
 #include "PerlinNoise.h"
-#include "RegardsBitmap.h"
+
 
 using namespace Regards::FiltreEffet;
 
@@ -100,13 +100,13 @@ float CPerlinNoise::Smooth_Noise(int x, int y)
 
 
 
-void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, const CRgbaquad & color2,const float &freq,const float &pers,const int &octaves)
+void CPerlinNoise::Clouds(cv::Mat& pBitmap,const CRgbaquad & color1, const CRgbaquad & color2,const float &freq,const float &pers,const int &octaves)
 {
-	if (pBitmap->GetPtBitmap() != nullptr)
+	if (!pBitmap.empty())
 	{
-		int bmWidth = pBitmap->GetBitmapWidth();
-		int bmHeight = pBitmap->GetBitmapHeight();
-		uint8_t* pBitsSrc = pBitmap->GetPtBitmap();
+		int bmWidth = pBitmap.size().width;
+		int bmHeight = pBitmap.size().height;
+		uint8_t* pBitsSrc = pBitmap.data;
 
 		//long k = 0;
 		//long m;

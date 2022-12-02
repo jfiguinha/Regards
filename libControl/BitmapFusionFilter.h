@@ -19,12 +19,12 @@ namespace Regards
 
 		protected:
 
-			virtual void GenerateTexture(CRegardsBitmap* bitmap);
+			virtual void GenerateTexture(CImageLoadingFormat* bitmap);
 			virtual void GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 
-			CRegardsBitmap* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
+			CImageLoadingFormat* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 			Regards::OpenGL::GLTexture * pictureNext;
-			CRegardsBitmap * _bmpSecond;
+			CImageLoadingFormat* _bmpSecond;
 			int width;
 			int height;
 			wxRect out;

@@ -16,7 +16,7 @@
 #include <LibResource.h>
 #include <libPicture.h>
 #include <wx/sstream.h>
-#include <RegardsBitmap.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::OpenGL;
 using namespace Regards::Picture;
 
@@ -43,20 +43,20 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
 	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 	                  colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
-	CLibPicture libPicture;
-	CRegardsBitmap* arrowLeft = libPicture.ConvertwxImageToRegardsBitmap(arrowPrevious);
-	CRegardsBitmap* arrowRight = libPicture.ConvertwxImageToRegardsBitmap(arrowNext);
+
+	CImageLoadingFormat arrowLeft;
+	arrowLeft.SetPicture(arrowPrevious);
+
+	CImageLoadingFormat arrowRight;
+	arrowRight.SetPicture(arrowNext);
 
 	if (textureArrowRight == nullptr)
 		textureArrowRight = new GLTexture();
-	textureArrowRight->SetData(arrowRight->GetMatrix());
+	textureArrowRight->SetData(arrowRight.GetOpenCVPicture());
 
 	if (textureArrowLeft == nullptr)
 		textureArrowLeft = new GLTexture();
-	textureArrowLeft->SetData(arrowLeft->GetMatrix());
-
-	delete arrowLeft;
-	delete arrowRight;
+	textureArrowLeft->SetData(arrowLeft.GetOpenCVPicture());
 }
 
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left,

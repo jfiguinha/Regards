@@ -9,7 +9,7 @@
 
 #include "PosterisationFilter.h"
 #include "PosterisationEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -48,10 +48,10 @@ int CPosterisationFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CPosterisationFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
-    
+	this->filename = filename;
 	this->source = source;
 
     vector<int> elementColor;
@@ -125,7 +125,7 @@ bool CPosterisationFilter::IsSourcePreview()
 void CPosterisationFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
 		filtreEffet->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
@@ -141,21 +141,22 @@ void CPosterisationFilter::ApplyPreviewEffect(CEffectParameter* effectParameter,
 CImageLoadingFormat* CPosterisationFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-		if (source != nullptr && filtre != nullptr)
+		if (!source.empty() && filtre != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
 			
 			CPosterisationEffectParameter* posterisationFiltreParameter = (CPosterisationEffectParameter*)effectParameter;
 			filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

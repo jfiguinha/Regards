@@ -24,7 +24,7 @@ public:
 	{
 	};
 
-	virtual void PrintImagePreview(CRegardsBitmap* imageToPrint)
+	virtual void PrintImagePreview(CImageLoadingFormat * imageToPrint)
 	{
 	};
 	virtual void Exit() = 0;

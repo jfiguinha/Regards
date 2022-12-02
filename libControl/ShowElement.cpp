@@ -45,20 +45,17 @@ public:
 		exif = 0;
 		thread = nullptr;
 		mainWindow = nullptr;
-		bitmap = nullptr;
 	};
 
 	~CThreadRotate()
 	{
-		if (bitmap != nullptr)
-			delete bitmap;
-		bitmap = nullptr;
+
 	};
 
 	bool isReady;
 	int exif;
 	wxString filename;
-	CRegardsBitmap* bitmap = nullptr;
+	cv::Mat bitmap;
 	std::thread* thread;
 	wxWindow* mainWindow;
 };
@@ -469,27 +466,27 @@ void CShowElement::OnIdle(wxIdleEvent& evt)
 void CShowElement::RotateRecognition(void* param)
 {
 	auto threadRotate = static_cast<CThreadRotate*>(param);
-if (threadRotate != nullptr)
-{
-	if (threadRotate->bitmap != nullptr)
+	if (threadRotate != nullptr)
 	{
-		bool fastDetection = true;
-		CRegardsConfigParam* param = CParamInit::getInstance();
-		if (param != nullptr)
-			fastDetection = param->GetFastDetectionFace();
+		if (!threadRotate->bitmap.empty())
+		{
+			bool fastDetection = true;
+			CRegardsConfigParam* param = CParamInit::getInstance();
+			if (param != nullptr)
+				fastDetection = param->GetFastDetectionFace();
 
-		threadRotate->isReady = true;
-		threadRotate->bitmap->VertFlipBuf();
-		threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap->GetMatrix(), fastDetection);
-	}
+			threadRotate->isReady = true;
+			cv::flip(threadRotate->bitmap, threadRotate->bitmap, 0);
+			threadRotate->exif = DeepLearning::CDeepLearning::GetExifOrientation(threadRotate->bitmap, fastDetection);
+		}
 
-	if (threadRotate->mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_ROTATEDETECT);
-		evt.SetClientData(threadRotate);
-		threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		if (threadRotate->mainWindow != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_ROTATEDETECT);
+			evt.SetClientData(threadRotate);
+			threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
-}
 }
 
 void CShowElement::OnRotateDetect(wxCommandEvent& event)
@@ -569,8 +566,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 				if (param != nullptr)
 					fastDetection = param->GetFastDetectionFace();
 
-				CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-				int exif = DeepLearning::CDeepLearning::GetExifOrientation(_bitmap->GetMatrix(), fastDetection);
+				int exif = DeepLearning::CDeepLearning::GetExifOrientation(bitmap->GetOpenCVPicture(), fastDetection);
 				sqlPhotos.InsertPhotoExif(filename, exif);
 				bitmap->SetOrientation(exif);
 			}
@@ -631,7 +627,7 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 	return false;
 }
 
-CRegardsBitmap* CShowElement::GetBitmap(const bool& source)
+CImageLoadingFormat* CShowElement::GetBitmap(const bool& source)
 {
 	if (bitmapWindow != nullptr)
 		return bitmapWindow->GetBitmap(source);
@@ -729,18 +725,17 @@ void CShowElement::OnClose(wxCommandEvent& event)
 	this->Resize();
 }
 
-CRegardsBitmap* CShowElement::GetVideoBitmap()
+cv::Mat CShowElement::GetVideoBitmap()
 {
-	CRegardsBitmap* bitmap = nullptr;
+	cv::Mat bitmap;
 	if (videoWindow != nullptr && IsPause())
 	{
 		bool isFromBuffer = false;
 		bitmap = videoWindow->SavePicture(isFromBuffer);
-		bitmap->SetFilename(this->filename);
 		if (!isFromBuffer)
 		{
 			if (videoWindow->IsFFmpegDecode())
-				bitmap->VertFlipBuf();
+				cv::flip(bitmap, bitmap, 0);
 		}
 	}
 	return bitmap;
@@ -751,13 +746,12 @@ void CShowElement::OnSave(wxCommandEvent& event)
 	if (videoWindow != nullptr)
 	{
 		bool isFromBuffer = false;
-		CRegardsBitmap* bitmap = videoWindow->SavePicture(isFromBuffer);
+		cv::Mat bitmap= videoWindow->SavePicture(isFromBuffer);
 		auto imageLoading = new CImageLoadingFormat();
-		bitmap->SetFilename(this->filename);
 		if (!isFromBuffer)
 		{
 			if (videoWindow->IsFFmpegDecode())
-				bitmap->VertFlipBuf();
+				cv::flip(bitmap, bitmap, 0);
 		}
 
 		imageLoading->SetPicture(bitmap);

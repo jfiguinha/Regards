@@ -16,7 +16,7 @@ extern "C" {
 #include <ParamInit.h>
 #include <OpenCLEffectVideo.h>
 #include <OpenCLParameter.h>
-#include <RegardsBitmap.h>
+
 #include <VideoStabilization.h>
 
 namespace Regards
@@ -117,7 +117,7 @@ private:
 	void VideoInfos(StreamContext* stream);
 	int hw_decoder_init(AVCodecContext* ctx, enum AVHWDeviceType type);
 	static enum AVPixelFormat get_hw_format(AVCodecContext* ctx, const enum AVPixelFormat* pix_fmts);
-	CRegardsBitmap* GetBitmapRGBA(AVFrame* tmp_frame);
+	cv::Mat GetBitmapRGBA(AVFrame* tmp_frame);
 	AVPixelFormat pixelFormatInput = AV_PIX_FMT_YUV420P;
 	AVFormatContext* ifmt_ctx = nullptr;
 	AVFormatContext* ofmt_ctx = nullptr;
@@ -144,7 +144,7 @@ private:
 	std::chrono::steady_clock::time_point begin;
 	std::chrono::steady_clock::time_point end;
 	wxString decoderHardware = "";
-	CRegardsBitmap* bmp = nullptr;
+	cv::Mat bmp;
 	int width = 0;
 	int height = 0;
 	AVFrame* dst = nullptr;
@@ -168,7 +168,6 @@ private:
 	uint8_t* src = nullptr;
 	int sizesrc = 0;
 
-	CRegardsBitmap * bitmapOut;
 	cv::Mat frameOutput;
 	Regards::Video::CVideoPlayer* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;

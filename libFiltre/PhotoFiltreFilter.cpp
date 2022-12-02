@@ -9,7 +9,7 @@
 
 #include "PhotoFiltreFilter.h"
 #include "PhotoFiltreEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -50,12 +50,12 @@ int CPhotoFiltreFilter::GetTypeFilter()
     return COLOR_EFFECT; //
 }
 
-void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
     
 	this->source = source;
-
+    this->filename = filename;
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);
@@ -134,7 +134,7 @@ bool CPhotoFiltreFilter::IsSourcePreview()
 void CPhotoFiltreFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
         CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
         filtreEffet->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
@@ -155,17 +155,18 @@ CImageLoadingFormat* CPhotoFiltreFilter::ApplyEffect(CEffectParameter* effectPar
     {
         CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-        if (source != nullptr && filtre != nullptr)
+        if (!source.empty() && filtre != nullptr)
         {
-            source->RotateExif(source->GetOrientation());
-            CImageLoadingFormat image(false);
+
+            CImageLoadingFormat image;
             image.SetPicture(source);
+            image.RotateExif(orientation);
             filtre->SetBitmap(&image);
         	
             imageLoad = new CImageLoadingFormat();
             CPhotoFiltreEffectParameter* photoFiltreParameter = (CPhotoFiltreEffectParameter*)effectParameter;
             filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-            CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+            cv::Mat bitmapOut = filtre->GetBitmap(true);
             imageLoad->SetPicture(bitmapOut);
 
         }

@@ -10,7 +10,7 @@
 #include <videothumb.h>
 #include "ShowPreview.h"
 #include <LibResource.h>
-#include <RegardsBitmap.h>
+#include <Picture_utility.h>
 #include <WindowUtility.h>
 extern "C" {
 #include <libavutil/error.h>
@@ -222,8 +222,8 @@ CompressionAudioVideoOption::CompressionAudioVideoOption(wxWindow* parent)
 void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
 	int orientation = ffmpegTranscoding->GetOrientation();
-	CRegardsBitmap* bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
-	bitmap_local->RotateExif(orientation);
+	cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
+	CPictureUtility::RotateExif(bitmap_local,orientation);
 	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
 	int x = 0;
 	int y = 0;
@@ -238,8 +238,6 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 	temp_dc.DrawBitmap(picture, x, y);
 	temp_dc.SelectObject(wxNullBitmap);
 	bitmap->SetBitmap(test_bitmap);
-
-	delete bitmap_local;
 }
 
 

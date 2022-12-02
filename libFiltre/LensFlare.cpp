@@ -1,6 +1,6 @@
 #include <header.h>
 #include "LensFlare.h"
-#include "RegardsBitmap.h"
+
 #include "Color.h"
 #include <math.h>
 #include <cstdlib>
@@ -10,7 +10,7 @@
 //const double pi = 3.14159265358979323846264338327950288419716939937510;
 using namespace Regards::FiltreEffet;
 
-CLensFlare::CLensFlare(void): pBitmap(nullptr)
+CLensFlare::CLensFlare(void)
 {
 	iColorIntensity = 100;
 }
@@ -19,6 +19,51 @@ CLensFlare::CLensFlare(void): pBitmap(nullptr)
 CLensFlare::~CLensFlare(void)
 {
 
+}
+
+int CLensFlare::InsertwxImage(const wxImage& bitmap, int xPos, int yPos)
+{
+	if (!pBitmap->empty() && bitmap.IsOk())
+	{
+		int withwxImage = bitmap.GetWidth();
+		int yEnd = yPos + bitmap.GetHeight();
+		int xEnd = xPos + bitmap.GetWidth();
+
+		if (yEnd > pBitmap->rows)
+			yEnd = pBitmap->rows;
+
+		if (xEnd > pBitmap->cols)
+			xEnd = pBitmap->cols;
+
+		uint8_t* data = bitmap.GetData();
+		uint8_t* alpha = bitmap.GetAlpha();
+
+
+		tbb::parallel_for(yPos, yEnd, 1, [=](int y)
+			//for (auto y = yPos; y < yEnd; y++)
+			{
+
+				for (auto x = xPos; x < xEnd; x++)
+				{
+					int i = (y - yPos) * withwxImage + (x - xPos);
+					CRgbaquad* colorSrc = CRgbaquad::GetPtColorValue(pBitmap, x, y);
+					if (colorSrc != nullptr)
+					{
+						auto color = CRgbaquad(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], alpha[i]);
+						float value = color.GetFAlpha() / 255.0f;
+						float alphaDiff = 1.0f - value;
+						if (alphaDiff < 1.0f)
+						{
+							colorSrc->Mul(alphaDiff);
+							color.Mul(value);
+							colorSrc->Add(color);
+						}
+					}
+				}
+			});
+	}
+
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +75,7 @@ void CLensFlare::Halo(const int &x, const int &y,const int &iColor, const int &i
     
 
     if(iTaille > 0)
-        pBitmap->InsertwxImage(CCircle::Halo(iColor, iColorIntensity, iTaille * 2, iWidth, fAlpha2, iCentre), x - rayon, y - rayon);
+        InsertwxImage(CCircle::Halo(iColor, iColorIntensity, iTaille * 2, iWidth, fAlpha2, iCentre), x - rayon, y - rayon);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +85,7 @@ void CLensFlare::HaloGradient(const int &x, const int &y, const int &iTaille, co
 {
 	int rayon = iTaille;
     if(iTaille > 0)
-        pBitmap->InsertwxImage(CCircle::HaloGradient(iTaille * 2, iWidth, fAlpha2), x - rayon, y - rayon);
+        InsertwxImage(CCircle::HaloGradient(iTaille * 2, iWidth, fAlpha2), x - rayon, y - rayon);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +95,7 @@ void CLensFlare::Circle(const int &x, const int &y,const CRgbaquad &m_color, con
 {
 	int rayon = iTaille / 2;
     if(rayon > 0)
-        pBitmap->InsertwxImage(CCircle::GenerateCircle(m_color, iTaille, fAlpha), x - rayon, y - rayon);
+        InsertwxImage(CCircle::GenerateCircle(m_color, iTaille, fAlpha), x - rayon, y - rayon);
 	
 }
 
@@ -62,7 +107,7 @@ void CLensFlare::CircleGradient(const int &x, const int &y,const CRgbaquad &m_co
 
 	int rayon = iTaille;
     if(rayon > 0)
-        pBitmap->InsertwxImage(CCircle::GradientTransparent(m_color, iTaille * 2, fAlpha), x - rayon, y - rayon);
+        InsertwxImage(CCircle::GradientTransparent(m_color, iTaille * 2, fAlpha), x - rayon, y - rayon);
 }
 
 
@@ -73,23 +118,23 @@ void CLensFlare::Burst(const int &x, const int &y,const int &iTaille,const int &
 {
 	int rayon = iTaille;
     if(rayon > 0)
-        pBitmap->InsertwxImage(CCircle::Burst(iTaille * 2, iColor, iIntensity, iColorIntensity), x - rayon, y - rayon);
+        InsertwxImage(CCircle::Burst(iTaille * 2, iColor, iIntensity, iColorIntensity), x - rayon, y - rayon);
 }
 
 
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
-void CLensFlare::LensFlare(CRegardsBitmap * pBitmap, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)
+void CLensFlare::LensFlare(cv::Mat * pBitmap, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)
 {
 	this->pBitmap = pBitmap;
 
-	int iWidth = pBitmap->GetBitmapWidth();
-	int iHeight = pBitmap->GetBitmapHeight();
+	int iWidth = pBitmap->size().width;
+	int iHeight = pBitmap->size().height;
 
 
 	//Chargement du lensflare 1
-	if (pBitmap->GetPtBitmap() != NULL)
+	if (!pBitmap->empty())
 	{
 
 		int i = 0;

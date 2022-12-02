@@ -1,6 +1,6 @@
 #include "header.h"
 #include "PictureData.h"
-#include <RegardsBitmap.h>
+#include "ImageLoadingFormat.h"
 
 
 CPictureData::~CPictureData()
@@ -55,10 +55,10 @@ void CPictureData::SetData(const int& width, const int& height, uint8_t* & extda
 	}
 }
 
-void CPictureData::CopyData(CRegardsBitmap* & bitmap)
+void CPictureData::CopyData(CImageLoadingFormat * bitmap)
 {
 	if (bitmap != nullptr)
-		bitmap->SetMatrix(bitmapMatrix);
+		bitmapMatrix = bitmap->GetOpenCVPicture();
 }
 
 

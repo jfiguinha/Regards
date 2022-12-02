@@ -9,7 +9,7 @@
 
 #include "ColorBalanceFilter.h"
 #include "RgbEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -52,12 +52,12 @@ int CColorBalanceFilter::GetTypeFilter()
 	return COLOR_EFFECT;// 
 }
 
-void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
     
 	this->source = source;
-
+	this->filename = filename;
     vector<int> elementColor;
     for (auto i = -255; i < 256; i++)
         elementColor.push_back(i);
@@ -128,7 +128,7 @@ bool CColorBalanceFilter::IsSourcePreview()
 
 void CColorBalanceFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
 		filtreEffet->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
@@ -146,20 +146,20 @@ void CColorBalanceFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, 
 CImageLoadingFormat* CColorBalanceFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 		if (filtre != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
 			
 			CRgbEffectParameter* rgbParameter = (CRgbEffectParameter*)effectParameter;
 			filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

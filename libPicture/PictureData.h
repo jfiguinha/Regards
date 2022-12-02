@@ -1,6 +1,6 @@
 #pragma once
 
-class CRegardsBitmap;
+class CImageLoadingFormat;
 
 class CPictureData
 {
@@ -22,7 +22,7 @@ public:
 	wxString GetFilename();
 	void SetFilename(const wxString& filename);
 	void SetData(const int &width, const int &height, uint8_t* & extdata, const int& size);
-	void CopyData(CRegardsBitmap* & bitmap);
+	void CopyData(CImageLoadingFormat * bitmap);
 	uint8_t* GetData();
 	int GetSize();
 

@@ -1,6 +1,6 @@
 #include <header.h>
 #include "OpenCLFilter.h"
-#include "RegardsBitmap.h"
+
 #include "utility.h"
 #include <opencv2/xphoto.hpp>
 #include <opencv2/dnn_superres.hpp>

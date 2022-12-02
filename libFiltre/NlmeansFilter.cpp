@@ -9,7 +9,7 @@
 
 #include "NlmeansFilter.h"
 #include "NlmeansEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -50,12 +50,12 @@ int CNlmeansFilter::GetTypeFilter()
 	return CONVOLUTION_EFFECT; //return IDM_FILTRE_NLMEAN;
 }
 
-void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CNlmeansFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CNlmeansEffectParameter * nlmeansEffectParameter = (CNlmeansEffectParameter *)effectParameter;
     
 	this->source = source;
-
+	this->filename = filename;
     vector<int> elementColor;
 	for (auto i = 1; i < 26; i++)
 	{
@@ -155,7 +155,7 @@ bool CNlmeansFilter::IsSourcePreview()
 
 void CNlmeansFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
 		filtreEffet->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->hColor, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
@@ -173,20 +173,20 @@ void CNlmeansFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitm
 CImageLoadingFormat* CNlmeansFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CNlmeansEffectParameter* nlmeansEffectParameter = (CNlmeansEffectParameter*)effectParameter;
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
 			
 			filter->NlmeansFilter(nlmeansEffectParameter->h, nlmeansEffectParameter->hColor, nlmeansEffectParameter->templateWindowSize, nlmeansEffectParameter->searchWindowSize);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

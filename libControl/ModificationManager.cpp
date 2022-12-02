@@ -2,7 +2,7 @@
 #include "ModificationManager.h"
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <RegardsBitmap.h>
+#include <ImageLoadingFormat.h>
 
 CModificationManager::CModificationManager(const wxString& folder)
 {
@@ -17,7 +17,7 @@ CModificationManager::CModificationManager(const wxString& folder)
 #endif
 }
 
-void CModificationManager::Init(CRegardsBitmap* bitmap)
+void CModificationManager::Init(CImageLoadingFormat * bitmap)
 {
 	if (!wxDir::Exists(folder))
 	{
@@ -99,13 +99,13 @@ wxString CModificationManager::GetModificationLibelle(const unsigned int& numMod
 	return listLibelle.at(numModification);
 }
 
-CRegardsBitmap* CModificationManager::GetModification(const unsigned int& numModification)
+CImageLoadingFormat* CModificationManager::GetModification(const unsigned int& numModification)
 {
 	//CSqlHistory history;
 	//return history.GetPhoto(numModification);
 	wxString filename = GetFilenameWithModification(numModification);
 
-	CRegardsBitmap * bitmap = new CRegardsBitmap();
+	CImageLoadingFormat* bitmap = new CImageLoadingFormat();
 	bitmap->ReadFile(filename);
 	if(numModification > 0)
 		bitmap->SetOrientation(0);
@@ -117,7 +117,7 @@ CRegardsBitmap* CModificationManager::GetModification(const unsigned int& numMod
 	return bitmap;
 }
 
-void CModificationManager::AddModification(CRegardsBitmap* bitmap, const wxString& libelle)
+void CModificationManager::AddModification(CImageLoadingFormat* bitmap, const wxString& libelle)
 {
 	if (numModification < nbModification)
 		listLibelle.erase(listLibelle.begin() + (numModification + 1), listLibelle.end());

@@ -23,7 +23,7 @@ public:
 	virtual int getWidth() = 0;
 	virtual int getHeight() = 0;
 
-	virtual void SetSubtitulePicture(CRegardsBitmap* picture) = 0;
+	virtual void SetSubtitulePicture(cv::Mat & picture) = 0;
 	virtual void DeleteSubtitulePicture() = 0;
 
 	virtual int ChangeAudioStream(int newStreamAudio) = 0;

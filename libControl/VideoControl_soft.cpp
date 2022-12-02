@@ -2,7 +2,7 @@
 #include "header.h"
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
-#include <RegardsBitmap.h>
+
 #include "ffplaycore.h"
 #include "ffmpegToBitmap.h"
 #ifdef __APPLE__
@@ -13,7 +13,7 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
-
+#include <picture_utility.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
@@ -58,7 +58,6 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* e
 	quitWindow = false;
 	videoStart = false;
 	videoRenderStart = false;
-	pictureSubtitle = nullptr;
 	video_aspect_ratio = 0.0;
 	config = CParamInit::getInstance();
 	pause = false;
@@ -67,7 +66,6 @@ CVideoControlSoft::CVideoControlSoft(CWindowMain* windowMain, IVideoInterface* e
 
 	openclEffectYUV = nullptr;
 	hCursorHand = CResourceCursor::GetClosedHand();
-	pictureFrame = new CRegardsBitmap();
 }
 
 vector<int> CVideoControlSoft::GetListTimer()
@@ -186,14 +184,13 @@ float CVideoControlSoft::GetMovieRatio()
 	return ratioSelect;
 }
 
-CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
+cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 {
-	CRegardsBitmap* bitmap;
+	cv::Mat bitmap;
 	if (thumbnailFromBitmap)
 	{
-		bitmap = new CRegardsBitmap();
 		muBitmap.lock();
-		*bitmap = *pictureVideo;
+		pictureVideo.copyTo(bitmap);
 		muBitmap.unlock();
 		isFromBuffer = true;
 	}
@@ -202,23 +199,23 @@ CRegardsBitmap* CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		isFromBuffer = false;
 		if (isffmpegDecode)
 		{
-			bitmap = new CRegardsBitmap();
 			muBitmap.lock();
-			*bitmap = *pictureFrame;
+			pictureFrame.copyTo(bitmap);
 			muBitmap.unlock();
 		}
 		else
 		{
 			muBitmap.lock();
-			bitmap = openclEffectYUV->GetBitmap(true);
+			bitmap = openclEffectYUV->GetMatrix(true);
 			muBitmap.unlock();
 		}
 	}
 	
-	if (bitmap != nullptr)
+	if (!bitmap.empty())
 	{
-		bitmap->VertFlipBuf();
-		bitmap->ApplyRotation(angle);
+		cv::flip(bitmap, bitmap, 0);
+		CPictureUtility::ApplyRotation(bitmap, angle);
+		//bitmap->ApplyRotation(angle);
 	}
 	return bitmap;
 }
@@ -335,14 +332,9 @@ void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
-	if (videoSoft->pictureVideo != nullptr)
-	{
-		delete videoSoft->pictureVideo;
-		videoSoft->pictureVideo = nullptr;
-	}
 	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
-	if(videoSoft->pictureVideo != nullptr)
-		videoSoft->pictureVideo->VertFlipBuf();
+	if(!videoSoft->pictureVideo.empty())
+		cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
 	videoSoft->muBitmap.unlock();
 	videoSoft->threadVideoEnd = true;
 	videoSoft->needToRefresh = true;
@@ -939,21 +931,11 @@ CVideoControlSoft::~CVideoControlSoft()
 	if (openclEffectYUV != nullptr)
 		delete openclEffectYUV;
 
-
-	if (pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
 	if (ffmfc)
 		delete ffmfc;
 
-	if (pictureFrame != nullptr)
-		delete pictureFrame;
-
 	if (thumbnailVideo != nullptr)
 		delete thumbnailVideo;
-
-	if (pictureVideo != nullptr)
-		delete pictureVideo;
 
 	if (localContext != nullptr)
 		sws_freeContext(localContext);
@@ -961,15 +943,10 @@ CVideoControlSoft::~CVideoControlSoft()
 
 }
 
-void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap* picture)
+void CVideoControlSoft::SetSubtitulePicture(cv::Mat & picture)
 {
 	muSubtitle.lock();
-
-	if (pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
-	pictureSubtitle = picture;
-
+	picture.copyTo(pictureSubtitle);
 	subtilteUpdate = true;
 
 	muSubtitle.unlock();
@@ -979,13 +956,8 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 {
 	muSubtitle.lock();
 
-	if (pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
-	pictureSubtitle = nullptr;
-
 	subtilteUpdate = true;
-
+	pictureSubtitle.release();
 	muSubtitle.unlock();
 }
 
@@ -1172,7 +1144,7 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (thumbnailVideo != nullptr && pictureVideo != nullptr && !IsSupportOpenCL())
+		if (thumbnailVideo != nullptr && !pictureVideo.empty() && !IsSupportOpenCL())
 		{
 			muBitmap.lock();
 			glTexture = RenderFFmpegToTexture(pictureVideo);
@@ -1198,13 +1170,9 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 		muSubtitle.lock();
 
-		if (subtilteUpdate && pictureSubtitle != nullptr)
+		if (subtilteUpdate && !pictureSubtitle.empty())
 		{
 			renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
-
-			delete pictureSubtitle;
-			pictureSubtitle = nullptr;
-
 			subtilteUpdate = false;
 		}
 		else if (subtilteUpdate)
@@ -1593,10 +1561,9 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 }
 
 
-CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
+cv::Mat CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 {
-	if (bitmapData == nullptr)
-		bitmapData = new CRegardsBitmap(tmp_frame->width, tmp_frame->height);
+	cv::Mat bitmapData = cv::Mat(tmp_frame->height, tmp_frame->width, CV_8UC4);
 
 	if (localContext == nullptr)
 	{
@@ -1618,12 +1585,7 @@ CRegardsBitmap* CVideoControlSoft::GetBitmapRGBA(AVFrame* tmp_frame)
 	}
 
 	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
-	if (numBytes != bitmapData->GetBitmapSize())
-	{
-		bitmapData->SetBitmap(tmp_frame->width, tmp_frame->height);
-	}
-
-	uint8_t* convertedFrameBuffer = bitmapData->GetPtBitmap();
+	uint8_t* convertedFrameBuffer = bitmapData.data;
 	int linesize = tmp_frame->width * 4;
 
 	sws_scale(localContext, tmp_frame->data, tmp_frame->linesize, 0, tmp_frame->height,
@@ -1761,10 +1723,10 @@ void CVideoControlSoft::calculate_display_rect(wxRect* rect, int scr_xleft, int 
 	rect->height = FFMAX(height, 1);
 }
 
-GLTexture* CVideoControlSoft::RenderToTexture(CRegardsBitmap* bitmap)
+GLTexture* CVideoControlSoft::RenderToTexture(cv::Mat & bitmap)
 {
 	auto glTexture = new GLTexture();
-	glTexture->SetData(bitmap->GetMatrix());
+	glTexture->SetData(bitmap);
 	return glTexture;
 }
 
@@ -1951,17 +1913,14 @@ bool CVideoControlSoft::ApplyOpenCVEffect(cv::Mat& image)
 }
 
 
-GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame)
+GLTexture* CVideoControlSoft::RenderFFmpegToTexture(cv::Mat & pictureFrame)
 {
 	int widthOutput = 0;
 	int heightOutput = 0;
 	wxRect rc(0, 0, 0, 0);
 	CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	if (pictureFrame == nullptr)
-		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
-
-	if (pictureFrame->GetMatrix().empty())
+	if (pictureFrame.empty())
 		return renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclOpenGLInterop);
 
 	GLTexture* glTexture = nullptr;
@@ -1976,7 +1935,7 @@ GLTexture* CVideoControlSoft::RenderFFmpegToTexture(CRegardsBitmap* pictureFrame
 
 	cv::Mat cvImage;
 
-	cv::cvtColor(pictureFrame->GetMatrix(), cvImage, cv::COLOR_BGRA2BGR);
+	cv::cvtColor(pictureFrame, cvImage, cv::COLOR_BGRA2BGR);
 
 	cv::Mat bitmapOut = CFiltreEffetCPU::Interpolation(cvImage, widthOutput, heightOutput, rc, filterInterpolation, flipH, flipV, angle, (int)GetZoomRatio() * 100);
 
@@ -2097,14 +2056,9 @@ void CVideoControlSoft::SetFrameData(AVFrame* src_frame)
 	if (!enableopenCL || (src_frame->format != AV_PIX_FMT_YUV420P && src_frame->format != AV_PIX_FMT_NV12))
 	{
 		isffmpegDecode = true;
-		GetBitmapRGBA(src_frame);
+		cv::Mat bitmapData = GetBitmapRGBA(src_frame);
 		muBitmap.lock();
-		*pictureFrame = *bitmapData;
-		if (pictureVideo != nullptr)
-		{
-			delete pictureVideo;
-			pictureVideo = nullptr;
-		}
+		bitmapData.copyTo(pictureFrame);
 		muBitmap.unlock();
 	}
 	else
@@ -2177,11 +2131,11 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 	}
 	else
 	{
-		CRegardsBitmap bitmap;
+		cv::Mat bitmap;
 		muBitmap.lock();
-		bitmap = *pictureFrame;
+		pictureFrame.copyTo(bitmap);
 		muBitmap.unlock();
-		glTexture = RenderFFmpegToTexture(&bitmap);
+		glTexture = RenderFFmpegToTexture(bitmap);
 	}
 
 	duration = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);

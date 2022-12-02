@@ -12,7 +12,7 @@
 #include <FiltreUpdate.h>
 using namespace Regards::Window;
 using namespace Regards::Video;
-class CRegardsBitmap;
+
 class CVideoControlSoft;
 class CRegardsConfigParam;
 
@@ -53,7 +53,7 @@ namespace Regards
 			void SetFullscreen(const bool& fullscreen);
 			void StopTransition();
 			void TransitionEnd();
-			CRegardsBitmap* GetBitmap(const bool& source);
+			CImageLoadingFormat* GetBitmap(const bool& source);
 			void ReloadResource();
 			void UpdateScreenRatio() override;
 			void SetDiaporamaMode();
@@ -70,7 +70,7 @@ namespace Regards
 			void SetTimePosition(const int64_t& timePosition);
 			bool IsPause();
 
-			CRegardsBitmap* GetVideoBitmap();
+			cv::Mat GetVideoBitmap();
 			void SetVideoPreviewEffect(CEffectParameter* effectParameter);
 			CEffectParameter* GetParameter() override;
 			void UpdateFiltre(CEffectParameter* effectParameter) override;

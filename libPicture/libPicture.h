@@ -66,11 +66,6 @@ namespace Regards
 			//Fonction de conversion
 			//-----------------------------------------------------------------------
 			static cv::Mat mat_from_wx(const wxImage& wx);
-			static CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
-			static CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image, const bool& convertToRGB24 = false);
-			static wxImage ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap);
-			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat img);
-			static CxImage* ConvertRegardsBitmapToCXImage(CRegardsBitmap* bitmap);
 			static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
 
 			static void Initx265Decoder();
@@ -81,6 +76,8 @@ namespace Regards
 
 			bool SaveToPDF(wxImage * poImage, const wxString &fileName, int option = -1, int quality = -1);
 
+			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat& img);
+
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
 #else
@@ -89,13 +86,13 @@ namespace Regards
 #endif
 #endif
 			static CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
-			CRegardsBitmap * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+			CImageLoadingFormat * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 
 		private:
 
 			//CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
-			CRegardsBitmap * LoadFromFreeImage(const char* filename);
+			cv::Mat & LoadFromFreeImage(const char* filename);
 			bool PictureDimensionFreeImage(const char* filename, int &width, int &height);
 			void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail);
 

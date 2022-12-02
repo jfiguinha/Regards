@@ -1,7 +1,7 @@
 // ReSharper disable All
 #include <header.h>
 #include "ThumbnailVideoExport.h"
-#include "RegardsBitmap.h"
+#include <ImageLoadingFormat.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include "libPicture.h"
@@ -9,6 +9,7 @@
 #include <effect_id.h>
 #include <ConvertUtility.h>
 #include <picture_utility.h>
+#include "RGBAQuad.h"
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -27,7 +28,7 @@ class CThumbnailDiaporama
 {
 public:
 	virtual ~CThumbnailDiaporama() = default;
-	CRegardsBitmap* GenerateBitmapForVideo(const wxString& filename, int width, int height);
+	cv::Mat GenerateBitmapForVideo(const wxString& filename, int width, int height);
 	int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame, int width, int height,
 	                  int effect);
 	virtual void WritePicture(cv::Mat& dest) = 0;
@@ -42,8 +43,8 @@ public:
 	bool endProcess = false;
 	int countNbFrame = 0;
 	int numWriteFrame = 0;
-	CRegardsBitmap* pBitmap = nullptr;
-	map<wxString, CRegardsBitmap*> listOfPicture;
+	cv::Mat pBitmap;
+	map<wxString, cv::Mat> listOfPicture;
 
 };
 
@@ -90,8 +91,8 @@ int CThumbnailDiaporama::SendMessageProgress()
 int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const int& nbFrame, int width, int height)
 {
 	cv::Mat dest;
-    CRegardsBitmap* src_bitmap = listOfPicture[filename]; //CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
-    cvtColor(src_bitmap->GetMatrix(), dest, cv::COLOR_BGRA2BGR);
+	dest = listOfPicture[filename]; //CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
+    cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
 
     for (int i = 0; i < nbFrame; i++)
     {
@@ -116,23 +117,34 @@ void CThumbnailVideoOpenCVExportImpl::WritePicture(cv::Mat& dest)
 //**********************************************************************
 //
 //**********************************************************************
-CRegardsBitmap* CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int width, int height)
+cv::Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, int width, int height)
 {
-	auto src_bitmap = new CRegardsBitmap(width, height);
+	cv::Mat src_bitmap;
 	CLibPicture libPicture;
 	bool pictureOK = true;
 
-	CRegardsBitmap* pBitmap = libPicture.LoadPictureToBGRA(filename, pictureOK, width, height);
-	if (pBitmap != nullptr)
+	CImageLoadingFormat * bitmap = libPicture.LoadPictureToBGRA(filename, pictureOK, width, height);
+	if (bitmap != nullptr)
 	{
+		cv::Mat pBitmap = bitmap->GetOpenCVPicture();
+		src_bitmap = cv::Mat::zeros(cv::Size(width, height), CV_8UC4);
+		int x = (width - bitmap->GetWidth()) / 2;
+		int y = (height - bitmap->GetHeight()) / 2;
+
+		pBitmap.copyTo(src_bitmap(cv::Rect(x, y, pBitmap.cols, pBitmap.rows)));
+		cv::flip(src_bitmap, src_bitmap, 0);
+
+		/*
+		src_bitmap.create(width, height);
 		src_bitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
-		int x = (width - pBitmap->GetBitmapWidth()) / 2;
-		int y = (height - pBitmap->GetBitmapHeight()) / 2;
+		int x = (width - pBitmap->GetWidth()) / 2;
+		int y = (height - pBitmap->GetHeight()) / 2;
 		src_bitmap->InsertBitmap(pBitmap, x, y, false);
 		src_bitmap->VertFlipBuf();
+		*/
 	}
 
-	delete pBitmap;
+	delete bitmap;
 	return src_bitmap;
 }
 
@@ -143,12 +155,12 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
                                        int width, int height, int effect)
 {
 	CLibPicture libPicture;
-	CRegardsBitmap* pBitmap1 = nullptr;
+	cv::Mat pBitmap1;
 	if (!filename1.empty())
 		pBitmap1 = listOfPicture[filename1]; // GenerateBitmapForVideo(filename1, width, height);
 
 
-	CRegardsBitmap* pBitmap2 = nullptr;
+	cv::Mat pBitmap2;
 	if (!filename2.empty())
 		pBitmap2 = listOfPicture[filename2]; //GenerateBitmapForVideo(filename2, width, height);
 
@@ -160,13 +172,13 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 	{
 		if (!filename1.empty())
 		{
-			dest = pBitmap1->GetMatrix();
+			dest = pBitmap1;
 			cvtColor(dest, src1, COLOR_BGRA2BGR);
 		}
 
 		if (!filename2.empty())
 		{
-			dest = pBitmap2->GetMatrix();
+			dest = pBitmap2;
 			cvtColor(dest, src2, COLOR_BGRA2BGR);
 		}
 	}
@@ -226,9 +238,13 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 					int x = 1920 - (alpha * 1920);
 					int x2 = -(alpha * 1920);
 
-					pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
-					pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
-					pBitmap->InsertBitmap(pBitmap2, x, 0, false);
+					
+					pBitmap = cv::Mat::zeros(pBitmap.size(), CV_8UC4);
+					pBitmap1.copyTo(pBitmap(cv::Rect(x2, 0, pBitmap1.cols, pBitmap1.rows)));
+					pBitmap2.copyTo(pBitmap(cv::Rect(x, 0, pBitmap2.cols, pBitmap2.rows)));
+					//pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
+					//pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
+					//pBitmap->InsertBitmap(pBitmap2, x, 0, false);
 					WritePicture(dest);
 					SendMessageProgress();
 					if (endProcess)
@@ -257,7 +273,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 	CLibPicture libPicture;
 	vector<wxString> picturefile;
 
-	pBitmap = new CRegardsBitmap(width, height);
+	//pBitmap = new CRegardsBitmap(width, height);
 
 	for (auto& i : listOfFile)
 	{
@@ -286,7 +302,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 		//int position;
 		if ((i == 0 || effect == IDM_DIAPORAMA_NONE) && effect != IDM_DIAPORAMA_TRANSITION)
 		{
-			CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+			cv::Mat src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 			listOfPicture[listOfFile[i]] = src_bitmap;
 
 			CopyPicture(picturefile[i], nbFrameByPicture, width, height);
@@ -295,7 +311,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 		}
 		else
 		{
-			CRegardsBitmap* src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+			cv::Mat  src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 			listOfPicture[listOfFile[i]] = src_bitmap;
 
 			switch (effect)
@@ -329,10 +345,8 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 		{
 			for (int i1 = i1 - 2; i1 < i1 - 1; i1++)
 			{
-				CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i1]];
-				if (src_bitmap != nullptr)
-					delete src_bitmap;
-				listOfPicture[listOfFile[i1]] = nullptr;
+				cv::Mat src_bitmap = listOfPicture[listOfFile[i1]];
+				listOfPicture[listOfFile[i1]] = src_bitmap;
 			}
 		}
 
@@ -343,14 +357,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 	if (endProcess)
 		movie_duration = 0;
 
-	for (int i = 0; i < listOfFile.size(); i++)
-	{
-		CRegardsBitmap* src_bitmap = listOfPicture[listOfFile[i]];
-		if (src_bitmap != nullptr)
-			delete src_bitmap;
-	}
 	listOfPicture.clear();
-	delete pBitmap;
 	return movie_duration;
 }
 

@@ -9,7 +9,7 @@
 
 #include "VideoFilter.h"
 #include "EffectVideoParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 
@@ -72,11 +72,11 @@ int CVideoFilter::GetTypeFilter()
     return IDM_FILTRE_VIDEO;
 }
 
-void CVideoFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CVideoFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
-    if(source != nullptr)
+    if(!source.empty())
     {
-        Filter(effectParameter, source->GetFilename(), filtreInterface);
+        Filter(effectParameter, filename, filtreInterface);
     }    
 }
 

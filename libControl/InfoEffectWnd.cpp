@@ -8,6 +8,7 @@
 #include <header.h>
 #include "InfoEffectWnd.h"
 #include <TreeWindow.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 
@@ -25,13 +26,13 @@ CInfoEffectWnd::~CInfoEffectWnd(void)
 		delete(historyEffectOld);
 }
 
-void CInfoEffectWnd::AddModification(CRegardsBitmap* bitmap, const wxString& libelle)
+void CInfoEffectWnd::AddModification(CImageLoadingFormat* bitmap, const wxString& libelle)
 {
 	if (historyEffectOld != nullptr)
 		historyEffectOld->AddModification(bitmap, libelle);
 }
 
-void CInfoEffectWnd::HistoryUpdate(CRegardsBitmap* bitmap, const wxString& filename, const wxString& historyLibelle,
+void CInfoEffectWnd::HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
                                    CModificationManager* modificationManager)
 {
 	if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)

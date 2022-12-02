@@ -16,7 +16,7 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <LoadingResource.h>
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FileUtility.h>
 #include <ParamInit.h>
@@ -236,6 +236,7 @@ bool MyApp::OnInit()
 			regardsParam->SetIsOpenCLSupport(true);		
 	}
 
+
 	if (regardsParam->GetIsOpenCLSupport() && !regardsParam->GetIsOpenCLOpenGLInteropSupport())
 	{
 		if (!cv::ocl::haveOpenCL())
@@ -244,6 +245,7 @@ bool MyApp::OnInit()
 		}
 		else
 		{
+
 			cv::ocl::Context context;
 			if (!context.create(cv::ocl::Device::TYPE_GPU))
 				isOpenCLInitialized = false;

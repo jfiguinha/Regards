@@ -11,13 +11,12 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
-#include <RegardsBitmap.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
 
 bool CFilterWindowParam::supportOpenCL = false;
 
-CFilterWindowParam::CFilterWindowParam(): source(nullptr), m_pShader(nullptr)
+CFilterWindowParam::CFilterWindowParam(): m_pShader(nullptr)
 {
 	supportOpenCL = cv::ocl::haveOpenCL();
 }
@@ -56,7 +55,7 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 		dc.SelectObject(wxNullBitmap);
 		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 		wxImage * local_image = new wxImage(bitmap.ConvertToImage());
-		imageLoad->SetPicture(local_image);
+		imageLoad->SetPicture(*local_image);
 		filtreEffet->SetBitmap(imageLoad);
 		delete imageLoad;
 	}
@@ -88,8 +87,8 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 		filtreEffet->RenderEffect(GetNameFilter(), effectParameter);
 	else
 	{
-		CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
-		if (bitmap != nullptr)
+		cv::Mat bitmap = filtreEffet->GetBitmap(false);
+		if (!bitmap.empty())
 		{
 			CImageLoadingFormat image;
 			image.SetPicture(bitmap);
@@ -224,11 +223,11 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			int orientation = bitmapViewer->GetOrientation();
 			filtre->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap * bitmapOut = filtre->GetBitmap(true);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			if (orientation > 4)
 			{
-				bitmapOut->VertFlipBuf();
-				bitmapOut->HorzFlipBuf();
+				cv::flip(bitmapOut, bitmapOut, 0);
+				cv::flip(bitmapOut, bitmapOut, 1);
 			}
 			imageLoad->SetPicture(bitmapOut);
 			imageLoad->SetOrientation(0);
@@ -236,13 +235,11 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 	}
 	else
 	{
-		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+		CImageLoadingFormat * bitmap = bitmapViewer->GetBitmap(true);
 		if (bitmap != nullptr)
 		{
-			CImageLoadingFormat image;
 			bitmap->RotateExif(bitmapViewer->GetOrientation());
-			image.SetPicture(bitmap);
-			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
+			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), false, bitmap);
 			filtre_effet->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre_effet->GetBitmap(true));

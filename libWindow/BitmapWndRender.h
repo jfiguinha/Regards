@@ -52,6 +52,7 @@ namespace Regards
 			void ReloadResource();
 			CFiltreEffet* GetFiltreEffet() override;
 
+			CImageLoadingFormat* GetBitmap(const bool& source) override;
 			virtual void SetPreview(const int& value);
 
 			void UpdateScreenRatio() override;
@@ -59,8 +60,6 @@ namespace Regards
 			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll) override;
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
-			CRegardsBitmap* GetBitmap(const bool& source) override;
-			CRegardsFloatBitmap* GetFloatBitmap(const bool& source) override;
 			void GetInfosBitmap(wxString& filename, int& widthPicture, int& heightPicture);
 
 			int GetPosRatio();

@@ -9,7 +9,7 @@
 
 #include "BokehFilter.h"
 #include "BokehEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <BitmapDisplay.h>
@@ -52,22 +52,22 @@ int CBokehFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CBokehFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)
+void CBokehFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface* filtreInterface)
 {
 	CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 
 	this->source = source;
-
+	this->filename = filename;
 	//source->VertFlipBuf();
 
 	//Find Face on source
 	//cv::Mat dst;
-	//cv::Mat image_local(source->GetBitmapHeight(), source->GetBitmapWidth(), CV_8UC4, source->GetPtBitmap());
+	//cv::Mat image_local(source.size().height, source.size().width, CV_8UC4, source->GetPtBitmap());
 	//cv::cvtColor(image_local, dst, cv::COLOR_BGRA2BGR);
 
 	//Extract Face and Get Rectangle
 	CFaceDetector face_detector(true);
-	vector<cv::Rect> listFace = face_detector.GetRectFace(source->GetMatrix());
+	vector<cv::Rect> listFace = face_detector.GetRectFace(source);
 	if (listFace.size() > 0)
 	{
 		faceRect.SetX(listFace[0].x);
@@ -166,9 +166,9 @@ bool CBokehFilter::IsSourcePreview()
 void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
-		CImageLoadingFormat image(false);
+		CImageLoadingFormat image;
 		image.SetPicture(source);
 
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
@@ -188,12 +188,11 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
+		CImageLoadingFormat image;
 		image.SetPicture(source);
-				
+		image.RotateExif(orientation);
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);

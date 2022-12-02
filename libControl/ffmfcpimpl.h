@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <SDL2/SDL_thread.h>
 #include <SDL2/SDL_mutex.h>
-#include <RegardsBitmap.h>
+
 #include "VideoControlInterface.h"
 #include <thread>
 using namespace std;

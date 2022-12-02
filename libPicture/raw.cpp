@@ -8,7 +8,6 @@
 #include <turbojpeg.h>
 #endif
 #include <ConvertUtility.h>
-#include <RegardsBitmap.h>
 #include "PictureMetadataExiv.h"
 using namespace Regards::Picture;
 using namespace Regards::exiv2;
@@ -20,26 +19,6 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 	DataStorage* memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
 	if (memFile != nullptr)
 	{
-		/*
-		if (thumb->type == LIBRAW_IMAGE_JPEG)
-		{
-			dataPt = new uint8_t[thumb->data_size];
-			memcpy(dataPt, thumb->data, thumb->data_size);
-			outputFormat = JPEGOUTPUT;
-			size = thumb->data_size;
-			//memPicture = new CxMemFile(thumb->data,thumb->data_size);
-		}
-		else if (thumb->type == LIBRAW_IMAGE_BITMAP)
-		{
-			std::vector<uint8_t> data;
-			outputFormat = BITMAPOUTPUT;
-			write_ppm(thumb, &data);
-			dataPt = new uint8_t[data.size()];
-			size = data.size();
-			memcpy(dataPt, &data[0], data.size());
-		}
-		*/
-
 		if (type == JPEGOUTPUT)
 		{
 			wxMemoryInputStream cxMemFile(memFile->dataPt, memFile->size);
@@ -47,7 +26,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			picture = new CImageLoadingFormat();
 			wxImage jpegImage;
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
-			picture->SetPicture(&jpegImage, true);
+			picture->SetPicture(jpegImage);
 			picture->SetFilename(fileName);
 
 			CPictureMetadataExiv metadata(memFile->dataPt, memFile->size);
@@ -57,15 +36,11 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 		}
 		else
 		{
-			CRegardsBitmap * bitmap = new CRegardsBitmap();
 			picture = new CImageLoadingFormat();
 			cv::Mat rawData(1, memFile->size, CV_8UC1, (void*)memFile->dataPt);
 			cv::Mat matPicture = cv::imdecode(rawData, cv::IMREAD_COLOR);
-			//cvtColor(matPicture, matPicture, cv::COLOR_BGR2BGRA);
-			bitmap->SetMatrix(matPicture);
-			bitmap->VertFlipBuf();
-			bitmap->SetFilename(fileName);
-			picture->SetPicture(bitmap);
+			cv::flip(matPicture, matPicture, 0);
+			picture->SetPicture(matPicture, 0, fileName);
 			picture->SetFilename(fileName);
 		}
 		delete memFile;
@@ -77,7 +52,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 		picture->SetFilename(fileName);
 		if (thumbnail)
 		{
-			picture->ConvertToBGR(true);
+			picture->ConvertToBGR();
 		}
 	}
 

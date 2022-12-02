@@ -2,7 +2,7 @@
 #include "FiltreEffect.h"
 #include <TreeDataEffect.h>
 #include <FilterData.h>
-#include <RegardsBitmap.h>
+
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include "BitmapWndViewer.h"
@@ -26,7 +26,7 @@ CFiltreEffect::CFiltreEffect(IFiltreUpdate* bitmapViewer, CTreeElementControlInt
 	filtre = 0;
 	widthPosition = 0;
 	filterEffect = nullptr;
-	source = nullptr;
+
 	index = 0;
 	this->isVideo = isVideo;
 
@@ -57,7 +57,7 @@ void CFiltreEffect::AddTreeInfos(const wxString& exifKey, CTreeElementValue* pos
 	AddTreeInfos(exifKey, position, value, typeValue, index++, top, child, type);
 }
 
-void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* source, const wxString& filename,
+void CFiltreEffect::Init(CEffectParameter* effectParameter, cv::Mat source, const wxString& filename,
                          const int& filtre)
 {
 	CBitmapWndViewer* bitmapViewer = nullptr;
@@ -82,10 +82,9 @@ void CFiltreEffect::Init(CEffectParameter* effectParameter, CRegardsBitmap* sour
 	filterEffect = CFiltreData::CreateEffectPointer(filtre);
 	if (filterEffect != nullptr)
 	{
-		if (source != nullptr)
+		if (!source.empty())
 		{
-			source->SetFilename(filename);
-			filterEffect->Filter(effectParameter, source, this);
+			filterEffect->Filter(effectParameter, source, filename, this);
 		}
 		else
 			filterEffect->Filter(effectParameter, filename, this);

@@ -22,7 +22,7 @@ namespace Regards
 			CFiltreEffect(IFiltreUpdate* bitmapViewer, CTreeElementControlInterface* interfaceControl, bool isVideo,
 			              int bitmapWindowId);
 			~CFiltreEffect(void) override;
-			virtual void Init(CEffectParameter* effectParameter, CRegardsBitmap* source, const wxString& filename,
+			virtual void Init(CEffectParameter* effectParameter, cv::Mat source, const wxString& filename,
 			                  const int& filtre);
 			void SlidePosChange(CTreeElement* treeElement, const int& position, CTreeElementValue* value,
 			                    const wxString& key) override;
@@ -61,7 +61,7 @@ namespace Regards
 			CEffectParameter* effectParameter;
 			CFilterWindowParam* filterEffect;
 
-			CRegardsBitmap* source;
+			cv::Mat source;
 			IFiltreUpdate* bitmapViewer;
 
 			tree<CTreeData*>::iterator top;

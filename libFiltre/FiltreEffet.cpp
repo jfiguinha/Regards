@@ -162,7 +162,7 @@ wxImage CFiltreEffet::GetwxImage()
 	return filtreEffet->GetwxImage();
 }
 
-CRegardsBitmap* CFiltreEffet::GetBitmap(const bool& source)
+cv::Mat CFiltreEffet::GetBitmap(const bool& source)
 {
 	return filtreEffet->GetBitmap(source);
 }
@@ -612,7 +612,7 @@ int CFiltreEffet::Rotate270()
 //----------------------------------------------------------------------------
 //Fusion de deux bitmaps
 //----------------------------------------------------------------------------
-int CFiltreEffet::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
+int CFiltreEffet::Fusion(cv::Mat & bitmapSecond, const float& pourcentage)
 {
 	return filtreEffet->Fusion(bitmapSecond, pourcentage);
 }

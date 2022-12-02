@@ -22,7 +22,7 @@ namespace Regards
 			{
 			};
 
-			void Filter(CEffectParameter* effectParameter, CRegardsBitmap* source,
+			void Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename,
 			            IFiltreEffectInterface* filtreInterface) override
 			{
 			};

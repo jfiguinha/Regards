@@ -12,20 +12,20 @@ namespace Regards
 		public:
 			CPicturePanel(wxWindow* parent, wxWindowID id, const CThemeThumbnail& theme);
 			~CPicturePanel() override;
-			void SetPictureToDisplay(CRegardsBitmap* picture);
+			void SetPictureToDisplay(cv::Mat& picture);
 			void on_paint(wxPaintEvent& event);
 			void UpdateScreenRatio() override;
 		private:
 
-			void CalculateHistogram(CRegardsBitmap* pBitmap, CRegardsBitmap* histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont);
+			void CalculateHistogram(cv::Mat& pBitmap, cv::Mat& histogram, const int& colorChoice, const wxColour& colorBgnd, const wxColour& colorFont);
 			void CreateHistogram();
-			void NormalizeHistogram(CRegardsBitmap* pictureData, const int& colorChoice, const int& minValue, const int& maxValue);
+			void NormalizeHistogram(cv::Mat& pictureData, const int& colorChoice, const int& minValue, const int& maxValue);
 			void OnChannelSelect(wxCommandEvent& event);
 			//void OnRangeSelect(wxSpinEvent& evt);
 			bool refreshPicture = true;
 			wxImage image;
-			CRegardsBitmap* histogram = nullptr;
-			CRegardsBitmap* pictureOriginal;
+			cv::Mat histogram;
+			cv::Mat pictureOriginal;
 			//CRegardsBitmap * pictureBackup;
 
 			int w, h;

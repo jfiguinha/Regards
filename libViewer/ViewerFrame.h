@@ -63,7 +63,7 @@ namespace Regards
 			void SetFullscreen() override;
 			void SetScreen() override;
 			void PrintPreview(CImageLoadingFormat* imageToPrint) override;
-			void PrintImagePreview(CRegardsBitmap* imageToPrint) override;
+			void PrintImagePreview(CImageLoadingFormat * imageToPrint);
 			void Exit() override;
 
 			void ShowViewer() override

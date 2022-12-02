@@ -1,7 +1,7 @@
 // ReSharper disable All
 #include <header.h>
 #include "OpenCLEffectVideo.h"
-#include <RegardsBitmap.h>
+
 #include "utility.h"
 #include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
@@ -182,21 +182,6 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 	}
 }
 
-
-void COpenCLEffectVideo::LoadRegardsBitmap(CRegardsBitmap * bitmap)
-{
-	if (bitmap != nullptr)
-	{
-		cv::Mat local = bitmap->GetMatrix();
-		filename = bitmap->GetFilename();
-		cv::cvtColor(local, paramSrc, cv::COLOR_BGRA2BGR);
-
-	}
-	interpolatePicture = false;
-	needToTranscode = false;
-
-}
-
 void COpenCLEffectVideo::AutoContrast()
 {
 	if (interpolatePicture)
@@ -210,27 +195,6 @@ void COpenCLEffectVideo::AutoContrast()
 	
 }
 
-CRegardsBitmap* COpenCLEffectVideo::GetBitmap(const bool &src)
-{
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-	if (src)
-	{
-		bitmapOut->SetMatrix(paramSrc);
-	}
-	else if (interpolatePicture)
-	{
-		bitmapOut->SetMatrix(paramOutput);
-	}
-	else
-	{
-		bitmapOut->SetMatrix(paramSrc);
-	}
-
-
-	return bitmapOut;
-
-}
 
 void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter)
 {

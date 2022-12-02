@@ -1,7 +1,7 @@
 #include <header.h>
 #include "CartoonFilter.h"
 #include "CartoonEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
@@ -47,12 +47,12 @@ void CCartoonFilter::AddMetadataElement(vector<CMetadata> & element, wxString va
 	element.push_back(linear);
 }
 
-void CCartoonFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CCartoonFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
 	CCartoonEffectParameter * cartoonEffectParameter = (CCartoonEffectParameter *)effectParameter;
     
 	this->source = source;
-
+	this->filename = filename;
 	vector<CMetadata> elementNoiseReduction;
 	AddMetadataElement(elementNoiseReduction, "Default", 0);
 	AddMetadataElement(elementNoiseReduction, "Sketch Mode", 1);
@@ -112,10 +112,10 @@ bool CCartoonFilter::IsSourcePreview()
 void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
-		CImageLoadingFormat image(false);
+		CImageLoadingFormat image;
 		image.SetPicture(source);
 
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
@@ -141,12 +141,13 @@ void CCartoonFilter::ApplyPreviewEffect(CEffectParameter* effectParameter, IBitm
 CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CCartoonEffectParameter* cartoonEffectParameter = (CCartoonEffectParameter*)effectParameter;
-		source->RotateExif(source->GetOrientation());
-		CImageLoadingFormat image(false);
+
+		CImageLoadingFormat image;
 		image.SetPicture(source);
+		image.RotateExif(orientation);
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();

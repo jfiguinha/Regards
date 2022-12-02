@@ -33,7 +33,7 @@ namespace Regards
 
 
 			GLTexture* GetVideoTexturePt();
-			void SetSubtitle(CRegardsBitmap* subtitle);
+			void SetSubtitle(cv::Mat & subtitle);
 			void ShowSubtitle();
 			void DeleteSubtitle();
 

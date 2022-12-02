@@ -9,7 +9,6 @@
 #include <ImageLoadingFormat.h>
 #include <hqdn3d.h>
 #include "MeanShift.h"
-#include <RegardsBitmap.h>
 #include <fstream>
 #include <GLTexture.h>
 #include <opencv2/xphoto.hpp>
@@ -213,8 +212,7 @@ CFiltreEffetCPU::CFiltreEffetCPU(CRgbaquad back_color, CImageLoadingFormat* bitm
 
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-		cv::Mat local = _bitmap->GetMatrix();
+		cv::Mat local = bitmap->GetOpenCVPicture();
 		filename = bitmap->GetFilename();
 		vector<cv::Mat> channels;
 		cv::extractChannel(local, alphaChannel, 3);
@@ -329,31 +327,6 @@ int CFiltreEffetCPU::GetHeight()
 		image = input;
 
 	return image.size().height;
-}
-
-CRegardsBitmap* CFiltreEffetCPU::GetPtBitmap()
-{
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-	cv::Mat output;
-
-	if (preview && !paramOutput.empty())
-	{
-		paramOutput.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-	}
-	else
-	{
-		input.copyTo(output);
-		cv::cvtColor(output, output, cv::COLOR_BGR2BGRA);
-		//cv::insertChannel(alphaChannel, output, 3);
-	}
-
-	bitmapOut->SetMatrix(output);
-
-	if (bitmapOut != nullptr)
-		bitmapOut->SetFilename(filename);
-	return bitmapOut;
 }
 
 // ReSharper disable once CppDoxygenUnresolvedReference
@@ -803,8 +776,7 @@ void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr)
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-		cv::Mat local = _bitmap->GetMatrix();
+		cv::Mat local = bitmap->GetOpenCVPicture();
 		filename = bitmap->GetFilename();
 		vector<cv::Mat> channels;
 		cv::extractChannel(local, alphaChannel, 3);
@@ -1464,14 +1436,11 @@ int CFiltreEffetCPU::LensFlare(const int& iPosX, const int& iPosY, const int& iP
 
 	{
 		cv:Mat output;
-		CRegardsBitmap* bitmap = new CRegardsBitmap();
 		cv::cvtColor(image, output, cv::COLOR_BGR2BGRA);
-		bitmap->SetMatrix(output);
 		auto filtre = new CLensFlare();
-		filtre->LensFlare(bitmap, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
+		filtre->LensFlare(&output, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 		delete filtre;
-		cv::cvtColor(bitmap->GetMatrix(), image, cv::COLOR_BGRA2BGR);
-		delete bitmap;
+		cv::cvtColor(output, image, cv::COLOR_BGRA2BGR);
 	}
 	return 0;
 }
@@ -1540,14 +1509,11 @@ int CFiltreEffetCPU::CloudsFilter(const CRgbaquad& color1, const CRgbaquad& colo
 
 
 	auto m_perlinNoise = new CPerlinNoise();
-	CRegardsBitmap localBitmap(250, 250);
-	auto _local = new CRegardsBitmap(image.size().width, image.size().height);
-	m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
+	cv::Mat localBitmap = cv::Mat(250, 250, CV_8UC4);
+	m_perlinNoise->Clouds(localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 	delete m_perlinNoise;
-	cv::resize(localBitmap.GetMatrix(), _local->GetMatrix(), cv::Size(image.size().width, image.size().height), INTER_CUBIC);
-	Fusion(_local, intensity / 100.0f);
-	delete _local;
-
+	cv::resize(localBitmap, localBitmap, cv::Size(image.size().width, image.size().height), INTER_CUBIC);
+	Fusion(localBitmap, intensity / 100.0f);
 	return 0;
 }
 
@@ -2163,7 +2129,7 @@ int CFiltreEffetCPU::Resize(const int& imageWidth, const int& imageHeight, const
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
+int CFiltreEffetCPU::Fusion(cv::Mat & bitmapSecond, const float& pourcentage)
 {
 	cv::Mat image;
 	if (preview)
@@ -2172,41 +2138,15 @@ int CFiltreEffetCPU::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcenta
 		image = input;
 
 	cv::Mat dst;
-	cv::cvtColor(bitmapSecond->GetMatrix(), dst, COLOR_BGRA2BGR);
+	cv::cvtColor(bitmapSecond, dst, COLOR_BGRA2BGR);
 	float beta = (1.0 - pourcentage);
 	cv::addWeighted(image, pourcentage, dst, beta, 0.0, dst);
 	dst.copyTo(image);
 	return 0;
 }
 
-void CFiltreEffetCPU::GetBitmap(CRegardsBitmap* & bitmap, const bool& source)
+cv::Mat CFiltreEffetCPU::GetBitmap(const bool& source)
 {
-	cv::Mat image;
-	if (preview)
-		image = paramOutput;
-	else
-		image = input;
-
-	if (bitmap != nullptr)
-	{
-		if (!source)
-		{
-			bitmap->SetFilename(filename);
-			bitmap->SetMatrix(image);
-		}
-		else
-		{
-			bitmap->SetFilename(filename);
-			bitmap->SetMatrix(image);
-		}
-	}
-}
-
-
-CRegardsBitmap* CFiltreEffetCPU::GetBitmap(const bool& source)
-{
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
 	cv::Mat output;
 
 	if (source)
@@ -2227,11 +2167,7 @@ CRegardsBitmap* CFiltreEffetCPU::GetBitmap(const bool& source)
 		//cv::insertChannel(alphaChannel, output, 3);
 	}
 
-	bitmapOut->SetMatrix(output);
-
-	if (bitmapOut != nullptr)
-		bitmapOut->SetFilename(filename);
-	return bitmapOut;
+	return output;
 }
 
 int CFiltreEffetCPU::BrightnessAndContrastAuto(float clipHistPercent)

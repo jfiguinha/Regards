@@ -159,11 +159,9 @@ void COcrWnd::UpdateScreenRatio()
 void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessin, int & widthOutput, int & heightOutput)
 {
     
-	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-	CRegardsBitmap * _bitmap = filtreEffet->GetBitmap(false);
-	imageLoad->SetPicture(_bitmap);
+	CImageLoadingFormat *  imageLoad = new CImageLoadingFormat();
+	imageLoad->SetPicture(filtreEffet->GetBitmap(false));
 	wxImage image = imageLoad->GetwxImage();
-	delete imageLoad;
 
 	wxBitmap bitmap = wxBitmap(image);
 	wxMemoryDC dc;
@@ -174,12 +172,11 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	Drawing(&dc, bitmapViewer, dessin);
 
 	dc.SelectObject(wxNullBitmap);
-	imageLoad = new CImageLoadingFormat();
+
 	wxImage local_image(bitmap.ConvertToImage());
-	imageLoad->SetPicture(&local_image, true);
+	imageLoad->SetPicture(local_image);
 	filtreEffet->SetBitmap(imageLoad);
 
-	delete imageLoad;
 
 }
 
@@ -503,13 +500,11 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	resourcePath = resourcePath + "/tessdata";
 #endif    
 
-			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
+			CImageLoadingFormat* bitmapBackground = showBitmap->GetBitmap(true);
 
 			CLibPicture libPicture;
 			wxString tempFile = CFileUtility::GetTempFile("temp.bmp");
-			CImageLoadingFormat loadingformat(false);
-			loadingformat.SetPicture(bitmapBackground);
-			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
+			libPicture.SavePicture(tempFile, bitmapBackground, 0, 0);
 
 			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
 			wxString outputFile = CFileUtility::GetTempFile("ocrfile.hocr");

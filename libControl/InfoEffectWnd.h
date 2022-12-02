@@ -11,6 +11,8 @@
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
 
+class CImageLoadingFormat;
+
 namespace Regards
 {
 	namespace Control
@@ -22,8 +24,8 @@ namespace Regards
 			               const CThemeTree& themeTree, int bitmap_window_id);
 			~CInfoEffectWnd(void) override;
 
-			void AddModification(CRegardsBitmap* bitmap, const wxString& libelle);
-			void HistoryUpdate(CRegardsBitmap* bitmap, const wxString& filename, const wxString& historyLibelle,
+			void AddModification(CImageLoadingFormat* bitmap, const wxString& libelle);
+			void HistoryUpdate(CImageLoadingFormat* bitmap, const wxString& filename, const wxString& historyLibelle,
 			                   CModificationManager* modificationManager);
 
 		private:

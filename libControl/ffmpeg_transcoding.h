@@ -12,7 +12,7 @@ public:
 	int EncodeFrame(const wxString& input, const wxString& output, const int& position, CVideoOptionCompress* videoCompressOption);
 	int EndDecodeFile(const int& returnValue);
 	wxString GetOutputFilename();
-	void GetFrameOutput(CRegardsBitmap * & bitmap);
+	cv::Mat GetFrameOutput();
 protected:
 	static void EncodeFileThread(void* data);
 	wxString input;

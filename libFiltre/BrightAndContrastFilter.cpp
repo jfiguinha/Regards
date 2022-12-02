@@ -9,7 +9,7 @@
 
 #include "BrightAndContrastFilter.h"
 #include "BrightAndContrastEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -48,10 +48,10 @@ int CBrightAndContrastFilter::GetTypeFilter()
     return COLOR_EFFECT; //return IDM_IMAGE_LIGHTCONTRAST;
 }
 
-void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-	
+    this->filename = filename;
 	this->source = source;
 
 	vector<int> elementContrast;
@@ -118,7 +118,7 @@ bool CBrightAndContrastFilter::IsSourcePreview()
 
 void CBrightAndContrastFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
 		filtreEffet->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
@@ -135,20 +135,20 @@ void CBrightAndContrastFilter::ApplyPreviewEffect(CEffectParameter* effectParame
 CImageLoadingFormat* CBrightAndContrastFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+            image.RotateExif(orientation);
 			filter->SetBitmap(&image);
 			
 			CBrightAndContrastEffectParameter* brightAndContrast = (CBrightAndContrastEffectParameter*)effectParameter;
 			filter->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

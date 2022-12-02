@@ -1,5 +1,4 @@
 #pragma once
-#include <RegardsBitmap.h>
 namespace Regards
 {
 	namespace FiltreEffet
@@ -9,8 +8,8 @@ namespace Regards
 }
 
 class CFiltreEffet;
-class CRegardsFloatBitmap;
 class CImageLoadingFormat;
+class CRgbaquad;
 
 using namespace Regards::FiltreEffet;
 
@@ -30,8 +29,7 @@ public:
 	virtual CRgbaquad GetBackColor() = 0;
 	virtual CFiltreEffet * GetFiltreEffet() = 0;
 	virtual int GetOrientation() = 0;
-	virtual CRegardsBitmap* GetBitmap(const bool& source) = 0;
-	virtual CRegardsFloatBitmap* GetFloatBitmap(const bool& source) = 0;
+	virtual CImageLoadingFormat * GetBitmap(const bool& source) = 0;
 	virtual void StartTransitionEffect(CImageLoadingFormat* bmpSecond, const bool& setPicture) = 0;
 	virtual void StopTransitionEffect(CImageLoadingFormat* bmpSecond) = 0;
 	virtual void CalculCenterPositionPicture() = 0;

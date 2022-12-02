@@ -3,7 +3,7 @@
 #include <window_id.h>
 #include <wx/dcmemory.h>
 
-#include <RegardsBitmap.h>
+
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(CompressVideo)
 //*)
@@ -223,15 +223,6 @@ void CompressVideo::SetPos(const int& max, const int& pos)
 	//ggProgress->SetValue(pos);
 }
 
-void CompressVideo::SetBitmap(CRegardsBitmap * bmp)
-{
-
-	wxImage image = CLibPicture::ConvertRegardsBitmapToWXImage(bmp);
-	
-	auto event = new wxCommandEvent(wxEVENT_UPDATEBITMAP);
-	event->SetClientData(new wxImage(image.Mirror(false)));
-	wxQueueEvent(this, event);
-}
 
 void CompressVideo::SetBitmap(cv::Mat bmp)
 {

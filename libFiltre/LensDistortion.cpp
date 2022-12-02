@@ -9,7 +9,7 @@
 
 #include "LensDistortion.h"
 #include "LensDistortionEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <BitmapDisplay.h>
@@ -48,10 +48,10 @@ int CLensDistortion::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CLensDistortion::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CLensDistortion::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
     CLensDistortionEffectParameter * lensEffectParameter = (CLensDistortionEffectParameter *)effectParameter;
-    
+	this->filename = filename;
 	this->source = source;
 
     vector<int> elementColor;
@@ -127,7 +127,7 @@ bool CLensDistortion::IsSourcePreview()
 
 void CLensDistortion::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
 		CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
 		filtreEffet->LensDistortionFilter(lensEffectParameter->strength);
@@ -143,21 +143,21 @@ void CLensDistortion::ApplyPreviewEffect(CEffectParameter* effectParameter, IBit
 CImageLoadingFormat* CLensDistortion::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CFiltreEffet* filtre = bitmapViewer->GetFiltreEffet();
 
-		if (source != nullptr && filtre != nullptr)
+		if (!source.empty() && filtre != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filtre->SetBitmap(&image);
 
 			CLensDistortionEffectParameter* lensEffectParameter = (CLensDistortionEffectParameter*)effectParameter;
 			filtre->LensDistortionFilter(lensEffectParameter->strength);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filtre->GetBitmap(true);
+			cv::Mat bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

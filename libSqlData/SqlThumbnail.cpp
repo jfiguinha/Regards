@@ -50,7 +50,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 
 
 
-bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash)
+bool CSqlThumbnail::InsertThumbnail(const wxString & path, std::vector<uchar> & data, const int &nBlob, const int & width, const int &height, const wxString &hash)
 {
 	bool returnValue = true;
 	type = 6;
@@ -66,7 +66,7 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 	{
 		wxFile fileOut;
 		fileOut.Create(thumbnail, true);
-		fileOut.Write(zBlob, nBlob);
+		fileOut.Write((void*)data.data(), data.size());
 		fileOut.Close();
 		returnValue = ExecuteRequestWithNoResult("INSERT INTO PHOTOSTHUMBNAIL (NumPhoto, FullPath, width, height, hash) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "')");
 	}

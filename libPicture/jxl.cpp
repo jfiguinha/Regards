@@ -1,6 +1,5 @@
 #include <header.h>
 #include "jxl.h"
-#include "RegardsFloatBitmap.h"
 #include "jxl/decode.h"
 #include "jxl/decode_cxx.h"
 #include "jxl/resizable_parallel_runner.h"
@@ -19,7 +18,7 @@
  * describes the color format of the pixel data.
  */
 bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
-    CRegardsFloatBitmap * & bmp, size_t & xsize,
+    cv::Mat & matFloat, size_t & xsize,
     size_t & ysize, std::vector<uint8_t>* icc_profile) {
     // Multi-threaded parallel runner.
   // Multi-threaded parallel runner.
@@ -98,11 +97,13 @@ bool CJxl::DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
                     xsize * ysize * 16);
                 return false;
             }
-            bmp->Resize(xsize,ysize);
-            void* pixels_buffer = (void*)bmp->data;
-            size_t pixels_buffer_size = bmp->GetSize();
+
+            matFloat.create(ysize, xsize, CV_32FC4);
+
+            //void* pixels_buffer = (void*)matFloat.data;
+            size_t pixels_buffer_size = ysize * xsize * 4 * sizeof(float);
             if (JXL_DEC_SUCCESS != JxlDecoderSetImageOutBuffer(dec.get(), &format,
-                pixels_buffer,
+                matFloat.data,
                 pixels_buffer_size)) {
                 fprintf(stderr, "JxlDecoderSetImageOutBuffer failed\n");
                 return false;
@@ -428,7 +429,7 @@ void *  CJxl::DecodeJpegDim(FILE* file) {
  * @param ysize height of the input image
  * @param compressed will be populated with the compressed bytes
  */
-bool  CJxl::EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t>* compressed) {
+bool  CJxl::EncodeJxlOneshot(cv::Mat & matFloat, std::vector<uint8_t>* compressed) {
     auto enc = JxlEncoderMake(/*memory_manager=*/nullptr);
     auto runner = JxlThreadParallelRunnerMake(
         /*memory_manager=*/nullptr,
@@ -444,8 +445,8 @@ bool  CJxl::EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t>* comp
 
     JxlBasicInfo basic_info;
     JxlEncoderInitBasicInfo(&basic_info);
-    basic_info.xsize = im->GetWidth();
-    basic_info.ysize = im->GetHeight();
+    basic_info.xsize = matFloat.size().width;
+    basic_info.ysize = matFloat.size().height;
     basic_info.bits_per_sample = 32;
     basic_info.exponent_bits_per_sample = 8;
     basic_info.uses_original_profile = JXL_FALSE;
@@ -465,8 +466,9 @@ bool  CJxl::EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t>* comp
 
     if (JXL_ENC_SUCCESS !=
         JxlEncoderAddImageFrame(JxlEncoderOptionsCreate(enc.get(), nullptr),
-            &pixel_format, (void*)im->data,
-           im->GetSize())) {
+            &pixel_format, matFloat.data,
+            matFloat.rows * matFloat.cols * 4 * sizeof(float)))
+    {
         fprintf(stderr, "JxlEncoderAddImageFrame failed\n");
         return false;
     }
@@ -493,10 +495,10 @@ bool  CJxl::EncodeJxlOneshot(CRegardsFloatBitmap* im, std::vector<uint8_t>* comp
     return true;
 }
 
-void CJxl::WriteFile(CRegardsFloatBitmap* im, const wxString& path)
+void CJxl::WriteFile(cv::Mat & matFloat, const wxString& path)
 {
     std::vector<uint8_t> compressed;
-    EncodeJxlOneshot(im, &compressed);
+    EncodeJxlOneshot(matFloat, &compressed);
     CPictureUtility::writefile(path, compressed.data(), compressed.size());
 }
 
@@ -523,18 +525,18 @@ void CJxl::GetDimensions(const wxString& jxl_filename, int& width, int& height)
     fclose(file);
 }
 
-CRegardsFloatBitmap* CJxl::GetPicture(const wxString& path)
+cv::Mat& CJxl::GetPicture(const wxString& path)
 {
-    CRegardsFloatBitmap* bmp = new CRegardsFloatBitmap();
+    cv::Mat matFloat;
     std::vector<uint8_t> icc_profile;
     size_t xsize = 0, ysize = 0;
     size_t _jpegSize;
     uint8_t* _compressedImage = CPictureUtility::readfile(path, _jpegSize);
-    if (!DecodeJpegXlOneShot(_compressedImage, _jpegSize, bmp, xsize,ysize,
+    if (!DecodeJpegXlOneShot(_compressedImage, _jpegSize, matFloat, xsize,ysize,
         &icc_profile))
-        return nullptr;
+        return matFloat;
     
-	return bmp;
+	return matFloat;
 }
 
 void CJxl::GetMetadata(const wxString& filename, uint8_t*& data, unsigned int& size)

@@ -1,7 +1,7 @@
 #include <header.h>
 #include "MoveEffectTexture.h"
 #include <ImageLoadingFormat.h>
-#include <RegardsBitmap.h>
+#include <picture_utility.h>
 #include "BitmapDisplay.h"
 #include "effect_id.h"
 using namespace Regards::Filter;
@@ -12,16 +12,14 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 {
 	int pos;
 
-	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	cv::Mat bitmapTemp = nextPicture->GetOpenCVPicture();
 	int orientation = nextPicture->GetOrientation();
-	bitmapTemp->RotateExif(orientation);
-	//bitmapTemp->SetAlphaValue(0);
+	CPictureUtility::RotateExif(bitmapTemp, orientation);
 
-	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
-	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
-	int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp.size().width, bitmapTemp.size().height);
+	int widthOutput = bitmapTemp.size().width * newRatio;
+	int heightOutput = bitmapTemp.size().height * newRatio;
 
-	delete bitmapTemp;
 
 
 	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)

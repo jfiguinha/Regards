@@ -449,9 +449,8 @@ void CPanelInfosWnd::HistoryUpdate()
 		auto bitmapViewer = static_cast<CShowElement*>(this->FindWindowById(SHOWBITMAPVIEWERID));
 		if (bitmapViewer != nullptr)
 		{
-			CRegardsBitmap* bitmap = bitmapViewer->GetBitmap(true);
+			CImageLoadingFormat * bitmap = bitmapViewer->GetBitmap(true);
 			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
-			delete bitmap;
 		}
 	}
 }
@@ -536,8 +535,7 @@ void CPanelInfosWnd::HistogramUpdate()
 {
 	CLibPicture picture;
 	CImageLoadingFormat* pictureLoad = picture.LoadPicture(filename);
-	CRegardsBitmap* bitmap = pictureLoad->GetRegardsBitmap();
-	picturePanel->SetPictureToDisplay(bitmap);
+	picturePanel->SetPictureToDisplay(pictureLoad->GetOpenCVPicture());
 	delete pictureLoad;
 
 	picturePanel->Show(true);

@@ -27,7 +27,6 @@ public:
 	//wxPanel * panel;
 	bool IsOk();
 	void SetPos(const int& max, const int& pos);
-	void SetBitmap(CRegardsBitmap * bmp);
 	void SetBitmap(cv::Mat bmp);
 	void SetTextProgression(const wxString& texte, const int& type = 0);
 protected:

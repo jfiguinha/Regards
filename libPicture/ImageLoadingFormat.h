@@ -1,30 +1,16 @@
 #pragma once
-class CRegardsFloatBitmap;
-class CRegardsBitmap;
-class CRegardsJpegPicture;
 class CxImage;
-
+class FIBITMAP;
 
 class CImageLoadingFormat
 {
 public:
-	CImageLoadingFormat(const bool& memoryDelete = true);
+	CImageLoadingFormat();
 	~CImageLoadingFormat();
-	void SetMemoryDelete(const bool& memoryDelete);
-	void DestroyJpegData(uint8_t* & data);
 	void SaveToJpeg(const wxString& filename);
-
+	cv::Mat GetOpenCVPicture();
 	CImageLoadingFormat* GetPage(const int& numPage);
-	//void SetPicturToJpeg(CRegardsBitmap* image, const bool& flip = true);
-	CxImage* GetCxImage(const bool& copy = true);
-	wxImage GetwxImage(const bool& copy = true);
-	CRegardsBitmap* GetRegardsBitmap(const bool& copy = true);
-	CRegardsFloatBitmap* GetFloatBitmap(const bool& copy = true);
-
 	int GetNbPage();
-
-	uint8_t* GetJpegData(unsigned long& outputsize);
-
 	int Resize(const int& width, const int& height, const int& method);
 	void Flip();
 	void Mirror();
@@ -37,26 +23,28 @@ public:
 	int GetResolution();
 	void SetOrientation(const int& orientation);
 	void SetFilename(const wxString& filename);
-
-	void SetPicture(CRegardsBitmap* image, const bool& convertToRGB24 = false);
 	void SetPicture(CxImage* image);
-	void SetPicture(wxImage* image, const bool& convertToRGB24 = false);
-	void UpdatePicture(CRegardsBitmap* image);
-	void SetPicture(CRegardsFloatBitmap* image);
+	void SetPicture(wxImage& image);
+	void SetPicture(cv::Mat& image);
+	void SetPicture(cv::Mat & image, const int& orientation, const wxString& filename, const bool& convertToRGB24 = false);
+	void UpdatePicture(cv::Mat& image);
 	bool IsOk();
-	void ConvertToRGB24(const bool& convert);
-	void ConvertToBGR(const bool& convert);
-
+	void ConvertToBGR();
+	void RotateExif(const int& orientation);
+	std::vector<uchar> GetJpegData();
+	wxImage GetwxImage();
+	CxImage GetCxImage();
+	cv::Mat GetFloatImage();
+	FIBITMAP* GetFreeImage();
+	void ReadFile(const wxString& filename);
+	void WriteFile(const wxString& filename);
 protected:
-	void DeletePicture();
+
 	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
-	uint8_t* CompressRegardsBitmapToJpeg(unsigned char* buffer, int width, int height, unsigned long& outputsize);
-	CRegardsBitmap* _image;
+
+	cv::Mat _image;
 	int format;
 	wxString filename;
 	int orientation;
-	bool convertToRGB24;
-	bool memoryDelete;
-	bool convertToBGR;
 	int resolution = 300;
 };

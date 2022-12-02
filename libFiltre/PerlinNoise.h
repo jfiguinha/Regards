@@ -15,7 +15,7 @@ namespace Regards
 
 			~CPerlinNoise();
 
-			void Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, const CRgbaquad & color2,const float &freq,const float &pers,const int &octaves);
+			void Clouds(cv::Mat & pBitmap,const CRgbaquad & color1, const CRgbaquad & color2,const float &freq,const float &pers,const int &octaves);
 
 		private:
 

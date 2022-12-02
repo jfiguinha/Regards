@@ -2,7 +2,7 @@
 #include "ascii.h"
 #include <algorithm>    // std::max
 #include <fstream>
-#include <RegardsBitmap.h>
+#include "ImageLoadingFormat.h"
 using namespace std;
 
 const string DENSITY = "@QB#NgWM8RDHdOKq9$6khEPXwmeZaoS2yjufF]}{tx1zv7lciL/\\|?*>r^;:_\"~,'.-`";
@@ -17,13 +17,13 @@ char CBitmapToAscii::getDensity(int value)
     return DENSITY[charValue];
 }
 
-void CBitmapToAscii::SaveToAscii(CRegardsBitmap * source, const string &filenameOut)
+void CBitmapToAscii::SaveToAscii(CImageLoadingFormat * source, const string &filenameOut)
 {
-    source->VertFlipBuf();
+    source->Flip();
 
     float new_ratio = 1;
-    int pictureWidth = source->GetBitmapWidth();
-    int pictureHeight = source->GetBitmapHeight();
+    int pictureWidth = source->GetWidth();
+    int pictureHeight = source->GetHeight();
     int width = 256;
     int height = 256;
 
@@ -43,24 +43,21 @@ void CBitmapToAscii::SaveToAscii(CRegardsBitmap * source, const string &filename
         new_ratio = static_cast<float>(width) / static_cast<float>(pictureWidth);
     }
 
-    CRegardsBitmap bitmap;
     cv::Mat out;
-    cv::resize(source->GetMatrix(), out, cv::Size(source->GetBitmapWidth() * new_ratio, source->GetBitmapHeight() * new_ratio), cv::INTER_CUBIC);
-
-    bitmap.SetMatrix(out);
+    cv::resize(source->GetOpenCVPicture(), out, cv::Size(source->GetWidth() * new_ratio, source->GetHeight() * new_ratio), cv::INTER_CUBIC);
     std::ofstream outfile(filenameOut);
     if( outfile.fail() )
     {
         cerr << "!Error opening " << filenameOut << endl;
         return;
     }
-    
+    cv::cvtColor(out, out, cv::COLOR_BGRA2GRAY);
     for(int y = 0;y < out.rows;y++)
     {
          for(int x = 0; x < out.cols; x++)
          {
-             CRgbaquad rgba = bitmap.GetColorValue(x,y);
-             outfile << getDensity(rgba.GetIntensity());    
+             int data = out.at<uchar>(cv::Point(x, y));
+             outfile << getDensity(data);
          }
           outfile << endl;
     }     

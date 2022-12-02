@@ -23,7 +23,7 @@
 #include <OpenCLEffectVideo.h>
 #include <fstream>
 #include <VideoStabilization.h>
-#include <RegardsBitmap.h>
+
 // The required link libraries 
 #pragma comment(lib, "mfplat")
 #pragma comment(lib, "mf")
@@ -52,14 +52,13 @@ public:
 
     CMFTEncodingPimp()
     {
-        bitmap = new CRegardsBitmap();
+
     }
 
 
     ~CMFTEncodingPimp()
     {
-        if (bitmap != nullptr)
-            delete bitmap;
+
     }
 
 
@@ -109,7 +108,7 @@ public:
     GUID VIDEO_ENCODING_FORMAT = MFVideoFormat_H264;
     GUID AUDIO_ENCODING_FORMAT = MFAudioFormat_AAC;
 
-    CRegardsBitmap* bitmap = nullptr;
+    cv::Mat bitmap;
 };
 
 
@@ -287,7 +286,7 @@ CMFTEncoding::~CMFTEncoding()
 
 cv::Mat CMFTEncoding::GetFrameOutput()
 {
-    return pimpl->bitmap->GetMatrix().clone();
+    return pimpl->bitmap.clone();
 }
 
 
@@ -359,20 +358,13 @@ HRESULT CMFTEncodingPimp::WriteFrame(
 
     openclEffectVideo.ApplyVideoEffect(&videoCompressOption->videoEffectParameter);
 
-    mat = openclEffectVideo.GetMatrix();
-
-    if (bitmap == nullptr)
-        bitmap = new CRegardsBitmap();
-
-    bitmap->SetMatrix(mat);
-    //bitmap->VertFlipBuf();
-   
+    bitmap = openclEffectVideo.GetMatrix();
 
     memcpy(pData, mat.data, cbWidth * height);
 
     if (m_dlgProgress != nullptr)
     {
-        m_dlgProgress->SetBitmap(bitmap->GetMatrix());
+        m_dlgProgress->SetBitmap(bitmap);
         char txtduration[255];
         double percent = timestamp / duration;
         double pos = timestamp / 1000;

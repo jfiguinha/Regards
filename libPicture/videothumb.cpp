@@ -5,8 +5,8 @@
 #include <ximage.h>
 #include "ImageVideoThumbnail.h"
 #include <ImageLoadingFormat.h>
-#include <RegardsBitmap.h>
 #include <ConvertUtility.h>
+#include <picture_utility.h>
 using namespace Regards::Video;
 
 class CThumbnailVideoPimpl
@@ -79,12 +79,12 @@ public:
 		}
 	}
 
-	void GetThumbnail(CRegardsBitmap * & image, const int & thumbnailWidth, const int& thumbnailHeight)
+	void GetThumbnail(cv::Mat & image, const int & thumbnailWidth, const int& thumbnailHeight)
 	{
 		if (m_seekTimeInSecond > 0)
 			videoThumbnailer->SeekToPos(m_seekTimeInSecond);
 
-		cv::Mat out = videoThumbnailer->GetVideoFrame();
+		image = videoThumbnailer->GetVideoFrame();
 
 		if (thumbnailWidth > 0 && thumbnailHeight > 0)
 		{
@@ -98,7 +98,7 @@ public:
 				int scaledHeight = thumbnailHeight;
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
-				cv::resize(out, out, cv::Size(scaledWidth, scaledHeight));
+				cv::resize(image, image, cv::Size(scaledWidth, scaledHeight));
 			}
 			else
 			{
@@ -109,13 +109,11 @@ public:
 				int scaledHeight = thumbnailHeight;
 				calculateDimensions(scaledSize, maintainAspectRatio, scaledWidth, scaledHeight);
 
-				cv::resize(out, out, cv::Size(scaledHeight, scaledWidth));
+				cv::resize(image, image, cv::Size(scaledHeight, scaledWidth));
 			}
 		}
 
-		image->SetMatrix(out);
-		image->ConvertToBgr();
-		image->VertFlipBuf();
+		CPictureUtility::ApplyTransform(image);
 
 	}
 
@@ -156,13 +154,11 @@ void CThumbnailVideo::GetVideoDimensions(int & width, int & height)
 	height = pimpl->height;
 }
 
-CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat & CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
 {
-	CRegardsBitmap* image = new CRegardsBitmap();
-
+	cv::Mat image;
 	try
 	{
-		image->SetFilename(fileName);
 		pimpl->SetMoviePos(0);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
 
@@ -170,20 +166,15 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const 
 	}
 	catch (...)
 	{
-		if (image != nullptr)
-			delete image;
-		image = nullptr;
 	}
 	return image;
 }
 
-CRegardsBitmap* CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat & CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
-	CRegardsBitmap* image = new CRegardsBitmap();
-
+	cv::Mat image;
 	try
 	{
-		image->SetFilename(fileName);
 		pimpl->SetMoviePos(timePosition);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
 
@@ -191,28 +182,21 @@ CRegardsBitmap* CThumbnailVideo::GetVideoFramePos(const int64& timePosition, con
 	}
 	catch (...)
 	{
-		if (image != nullptr)
-			delete image;
-		image = nullptr;
 	}
 	return image;
 }
 
-CRegardsBitmap * CThumbnailVideo::GetVideoFramePercent(const int &percent, const int & thumbnailWidth, const int & thumbnailHeight)
+cv::Mat& CThumbnailVideo::GetVideoFramePercent(const int &percent, const int & thumbnailWidth, const int & thumbnailHeight)
 {
-	CRegardsBitmap * image = new CRegardsBitmap();
+	cv::Mat image;
 
 	try
 	{
 		pimpl->SetPercent(percent);
-		image->SetFilename(fileName);
 		pimpl->GetThumbnail(image, thumbnailWidth, thumbnailHeight);
 	}
 	catch (...)
 	{
-		if(image != nullptr)
-			delete image;
-		image = nullptr;
 	}
 	return image;
 }
@@ -236,7 +220,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 			try
 			{
 				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
-				CRegardsBitmap* picture = nullptr;
+				cv::Mat image;
 				int timePosition = 0;
 
 
@@ -246,20 +230,14 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 
 				try
 				{
-					picture = new CRegardsBitmap();
 					pimpl->SetMoviePos(i);
-					pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(image, widthThumbnail, heightThumbnail);
 				}
 				catch (...)
 				{
-					if (picture != nullptr)
-						delete picture;
-					picture = nullptr;
 				}
 				cxVideo->timePosition = i;
-				cxVideo->image->SetPicture(picture);
-				cxVideo->image->SetFilename(fileName);
-				cxVideo->image->SetOrientation(0);
+				cxVideo->image->SetPicture(image, 0, fileName);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)
@@ -275,7 +253,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 			try
 			{
 				CImageVideoThumbnail* cxVideo = new CImageVideoThumbnail();
-				CRegardsBitmap* picture = nullptr;
+				cv::Mat image;
 				int timePosition = 0;
 
 
@@ -286,20 +264,14 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 
 				try
 				{
-					picture = new CRegardsBitmap();
 					pimpl->SetPercent(cxVideo->percent);
-					pimpl->GetThumbnail(picture, widthThumbnail, heightThumbnail);
+					pimpl->GetThumbnail(image, widthThumbnail, heightThumbnail);
 				}
 				catch (...)
 				{
-					if (picture != nullptr)
-						delete picture;
-					picture = nullptr;
 				}
 				cxVideo->timePosition = pimpl->m_seekTimeInSecond;
-				cxVideo->image->SetPicture(picture);
-				cxVideo->image->SetFilename(fileName);
-				cxVideo->image->SetOrientation(0);
+				cxVideo->image->SetPicture(image, 0, fileName);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)

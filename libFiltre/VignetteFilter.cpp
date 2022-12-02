@@ -9,7 +9,7 @@
 
 #include "VignetteFilter.h"
 #include "VignetteEffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
@@ -17,7 +17,7 @@
 #include <BitmapDisplay.h>
 using namespace Regards::Filter;
 
-CVignetteFilter::CVignetteFilter(): source(nullptr)
+CVignetteFilter::CVignetteFilter()
 {
 	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS", 1);
 	libelleEffectPower = CLibResource::LoadStringFromResource(L"LBLEFFECTPOWER", 1);
@@ -49,14 +49,14 @@ int CVignetteFilter::GetTypeFilter()
 	return SPECIAL_EFFECT; //
 }
 
-void CVignetteFilter::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)
+void CVignetteFilter::Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface* filtreInterface)
 {
 	CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
-
+	this->filename = filename;
 	this->source = source;
 
-	vignetteEffectParameter->bitmapWidth = source->GetBitmapWidth();
-	vignetteEffectParameter->bitmapHeight = source->GetBitmapHeight();
+	vignetteEffectParameter->bitmapWidth = source.size().width;
+	vignetteEffectParameter->bitmapHeight = source.size().height;
 
 	vector<int> elementRadius;
 	for (auto i = 0; i < 100; i++)
@@ -99,9 +99,9 @@ bool CVignetteFilter::IsSourcePreview()
 void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer, CFiltreEffet* filtreEffet, CDraw* dessing)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr)
+	if (effectParameter != nullptr && !source.empty())
 	{
-		CImageLoadingFormat image(false);
+		CImageLoadingFormat image;
 		image.SetPicture(source);
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 
@@ -123,20 +123,20 @@ void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter
 CImageLoadingFormat* CVignetteFilter::ApplyEffect(CEffectParameter* effectParameter, IBitmapDisplay* bitmapViewer)
 {
 	CImageLoadingFormat* imageLoad = nullptr;
-	if (effectParameter != nullptr && source != nullptr && bitmapViewer != nullptr)
+	if (effectParameter != nullptr && !source.empty() && bitmapViewer != nullptr)
 	{
 		CVignetteEffectParameter* vignetteEffectParameter = (CVignetteEffectParameter*)effectParameter;
 		CFiltreEffet* filter = bitmapViewer->GetFiltreEffet();
 		if (filter != nullptr)
 		{
-			source->RotateExif(source->GetOrientation());
-			CImageLoadingFormat image(false);
+			CImageLoadingFormat image;
 			image.SetPicture(source);
+			image.RotateExif(orientation);
 			filter->SetBitmap(&image);
 			
 			filter->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 			imageLoad = new CImageLoadingFormat();
-			CRegardsBitmap* bitmapOut = filter->GetBitmap(true);
+			cv::Mat bitmapOut = filter->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
 		}
 	}

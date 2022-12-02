@@ -3,7 +3,6 @@
 using namespace std;
 using namespace HEIF;
 #include "avif.h"
-#include <RegardsBitmap.h>
 #include <cstdint>
 #include <avif/avif.h>
 #include <iostream>
@@ -96,9 +95,9 @@ void CAvif::GetPictureDimension(const string& filename, int& width, int& height)
 }
 
 
-CRegardsBitmap* CAvif::GetThumbnailPicture(const string& filename)
+cv::Mat CAvif::GetThumbnailPicture(const string& filename)
 {
-	CRegardsBitmap* picture = nullptr;
+	cv::Mat picture;
 	auto* reader = Reader::Create();
 	uint64_t itemSize = 1024 * 1024;
 	auto itemData = new uint8_t[itemSize];
@@ -152,10 +151,9 @@ CRegardsBitmap* CAvif::GetThumbnailPicture(const string& filename)
 						{
 							int image_width = dstRGB.width;
 							int image_height = dstRGB.height;
-							picture = new CRegardsBitmap(image_width, image_height);
-							uint8_t* dataOut = picture->GetPtBitmap();
-							memcpy(dataOut, dstRGB.pixels, picture->GetBitmapSize());
-							picture->VertFlipBuf();
+							picture.create(image_height, image_width, CV_8UC4);
+							memcpy(picture.data, dstRGB.pixels, image_height * image_width * 4);
+							cv::flip(picture, picture, 0);
 						}
 						avifRGBImageFreePixels(&dstRGB);
 					}
@@ -163,13 +161,6 @@ CRegardsBitmap* CAvif::GetThumbnailPicture(const string& filename)
 				}
 				avifImageDestroy(decoded);
 				avifRWDataFree(&raw);
-				/*
-				picture = DecodeFrame(itemData, itemSize);
-				*/
-				if (picture != nullptr)
-				{
-					picture->SetFilename(filename);
-				}
 			}
 		}
 	}
@@ -186,9 +177,9 @@ CRegardsBitmap* CAvif::GetThumbnailPicture(const string& filename)
 	return picture;
 }
 
-CRegardsBitmap* CAvif::GetPicture(const string& filename, int& delay, const int& numPicture)
+cv::Mat CAvif::GetPicture(const string& filename, int& delay, const int& numPicture)
 {
-	CRegardsBitmap* out = nullptr;
+	cv::Mat out;
 	avifRWData raw = AVIF_DATA_EMPTY;
 	LoadDataFromFile(filename, raw);
 
@@ -223,10 +214,10 @@ CRegardsBitmap* CAvif::GetPicture(const string& filename, int& delay, const int&
 				{
 					int image_width = dstRGB.width;
 					int image_height = dstRGB.height;
-					out = new CRegardsBitmap(image_width, image_height);
-					uint8_t* dataOut = out->GetPtBitmap();
-					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
-					out->VertFlipBuf();
+
+					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
+					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
+					cv::flip(out, out, 0);
 				}
 				avifRGBImageFreePixels(&dstRGB);
 			}
@@ -241,12 +232,13 @@ CRegardsBitmap* CAvif::GetPicture(const string& filename, int& delay, const int&
 
 
 
-void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t* data, const long& size, const int& compression, const bool& hasExif)
+void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data, const long& size, const int& compression, const bool& hasExif)
 {
-	if (source != nullptr)
+	if (!source.empty())
 	{
-		int width = source->GetBitmapWidth();
-		int height = source->GetBitmapHeight();
+		cv::Mat bitmapMatrix;
+		int width = source.size().width;
+		int height = source.size().height;
 		int depth = 8;
 		avifPixelFormat format = AVIF_PIXEL_FORMAT_YUV420;
 		avifImage* image = avifImageCreate(width, height, depth, format);
@@ -262,15 +254,18 @@ void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t*
 			image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
 			image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT709;
 			image->yuvRange = AVIF_RANGE_FULL;
-			source->VertFlipBuf();
+
+			cv::flip(source, bitmapMatrix, 0);
+
 			// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
 			avifRGBImage rgb;
 			avifRGBImageSetDefaults(&rgb, image);
+			int size = bitmapMatrix.size().width * bitmapMatrix.size().height * 4;
 			rgb.depth = 8; // [8, 10, 12, 16]; Does not need to match image->depth.
 			rgb.format = AVIF_RGB_FORMAT_BGRA; // See choices in avif.h
-			rgb.pixels = new uint8_t[source->GetBitmapSize()]; // Point at your RGB(A)/BGR(A) pixels here
-			memcpy(rgb.pixels, source->GetPtBitmap(), source->GetBitmapSize());
-			rgb.rowBytes = source->GetWidthSize();
+			rgb.pixels = new uint8_t[size]; // Point at your RGB(A)/BGR(A) pixels here
+			memcpy(rgb.pixels, bitmapMatrix.data, size);
+			rgb.rowBytes = bitmapMatrix.size().width * 4;
 			//memcpy(&rgb.pixels, source->GetPtBitmap(), rgb.rowBytes);
 
 
@@ -309,9 +304,9 @@ void CAvif::SavePicture(const string& filename, CRegardsBitmap* source, uint8_t*
 }
 
 
-vector<CRegardsBitmap*> CAvif::GetAllPicture(const string& filename, int& delay)
+vector<cv::Mat> CAvif::GetAllPicture(const string& filename, int& delay)
 {
-	vector<CRegardsBitmap*> listPicture;
+	vector<cv::Mat> listPicture;
 
 	avifRWData raw = AVIF_DATA_EMPTY;
 	LoadDataFromFile(filename, raw);
@@ -348,10 +343,9 @@ vector<CRegardsBitmap*> CAvif::GetAllPicture(const string& filename, int& delay)
 				{
 					int image_width = dstRGB.width;
 					int image_height = dstRGB.height;
-					auto out = new CRegardsBitmap(image_width, image_height);
-					uint8_t* dataOut = out->GetPtBitmap();
-					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
-					out->VertFlipBuf();
+					cv::Mat out = cv::Mat(image_height, image_width, CV_8UC4);
+					memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
+					cv::flip(out, out, 0);
 					listPicture.push_back(out);
 				}
 				avifRGBImageFreePixels(&dstRGB);
@@ -363,9 +357,9 @@ vector<CRegardsBitmap*> CAvif::GetAllPicture(const string& filename, int& delay)
 	return listPicture;
 }
 
-CRegardsBitmap* CAvif::GetPicture(const string& filename)
+cv::Mat CAvif::GetPicture(const string& filename)
 {
-	CRegardsBitmap* out = nullptr;
+	cv::Mat out;
 	avifRWData raw = AVIF_DATA_EMPTY;
 	LoadDataFromFile(filename, raw);
 
@@ -388,10 +382,10 @@ CRegardsBitmap* CAvif::GetPicture(const string& filename)
 			{
 				int image_width = dstRGB.width;
 				int image_height = dstRGB.height;
-				out = new CRegardsBitmap(image_width, image_height);
-				uint8_t* dataOut = out->GetPtBitmap();
-				memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
-				out->VertFlipBuf();
+
+				out.create(image_height, image_width, CV_8UC4);
+				memcpy(out.data, dstRGB.pixels, image_height * image_width * 4);
+				cv::flip(out, out, 0);
 			}
 			avifRGBImageFreePixels(&dstRGB);
 		}

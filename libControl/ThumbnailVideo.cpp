@@ -412,18 +412,15 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 		for (int i = 0; i < listVideo.size(); i++)
 		{
 			CImageVideoThumbnail* bitmap = listVideo[i];
-			int compressMethod = 0;
+
 			unsigned long outputsize = 0;
-			bitmap->image->ConvertToRGB24(true);
-			uint8_t* dest = bitmap->image->GetJpegData(outputsize);
-			if (dest != nullptr)
-				sqlThumbnailVideo.InsertThumbnail(label->filename, dest, outputsize, bitmap->image->GetWidth(),
+
+			std::vector<uchar>  dest = bitmap->image->GetJpegData();
+			if (dest.size())
+				sqlThumbnailVideo.InsertThumbnail(label->filename, dest.data(), outputsize, bitmap->image->GetWidth(),
 					bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
 					bitmap->timePosition);
 
-			bitmap->image->DestroyJpegData(dest);
-
-			dest = nullptr;
 		}
 	}
 

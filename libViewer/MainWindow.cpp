@@ -7,6 +7,7 @@
 #include <PrintEngine.h>
 #include <libPicture.h>
 #include "ThemeParam.h"
+#include <ImageLoadingFormat.h>
 #include "MainThemeInit.h"
 #include "MainTheme.h"
 #include "PanelInfosWnd.h"
@@ -741,10 +742,12 @@ void CMainWindow::OnPrint(wxCommandEvent& event)
 		{
 			if (video->IsPause())
 			{
-				CRegardsBitmap* image = video->GetVideoBitmap();
-				if (image != nullptr)
+				cv::Mat image = video->GetVideoBitmap();
+				if (!image.empty())
 				{
-					statusBarViewer->PrintImagePreview(image);
+					CImageLoadingFormat* imageLoading = new CImageLoadingFormat();
+					imageLoading->SetPicture(image);
+					statusBarViewer->PrintImagePreview(imageLoading);
 					showPrintPicture = false;
 				}
 			}
@@ -850,7 +853,7 @@ void CMainWindow::UpdateStatusBarMessage(wxCommandEvent& event)
 //---------------------------------------------------------------
 void CMainWindow::PrintPreview(wxCommandEvent& event)
 {
-	const auto bitmap = static_cast<CRegardsBitmap*>(event.GetClientData());
+	const auto bitmap = static_cast<CImageLoadingFormat*>(event.GetClientData());
 
 	if (bitmap != nullptr)
 	{

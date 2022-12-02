@@ -8,6 +8,6 @@ public:
 	CPfm() {};
 	virtual ~CPfm() {};
 	static void GetDimensions(const wxString & path, int & width, int & height);
-	static CRegardsFloatBitmap* ReadFilePFM(const wxString& path, const bool& thumbnail);
-	static int WriteFilePFM(CRegardsFloatBitmap * im, const wxString & path, float scalef);
+	static cv::Mat ReadFilePFM(const wxString& path, const bool& thumbnail);
+	static int WriteFilePFM(const cv::Mat & im, const wxString & path, float scalef);
 };

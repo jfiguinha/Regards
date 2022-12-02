@@ -1,6 +1,6 @@
 #include <header.h>
 #include "hqdn3d.h"
-#include <RegardsBitmap.h>
+
 #include <algorithm>
 
 /*

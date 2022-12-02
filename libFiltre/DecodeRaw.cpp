@@ -1,7 +1,7 @@
 #include <header.h>
 #include "DecodeRaw.h"
 #include "DecodeRawParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <Metadata.h>
@@ -127,16 +127,16 @@ CEffectParameter* CDecodeRaw::GetEffectPointer()
 	return new CDecodeRawParameter();
 }
 
-void CDecodeRaw::Filter(CEffectParameter* effectParameter, CRegardsBitmap* source, IFiltreEffectInterface* filtreInterface)
+void CDecodeRaw::Filter(CEffectParameter* effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface* filtreInterface)
 {
 	CDecodeRawParameter* decodeParameter = (CDecodeRawParameter*)effectParameter;
 
-	if (source != nullptr)
-		orientation = source->GetOrientation();
+	if (!source.empty())
+		orientation = orientation;
 
-
+	this->filename = filename;
 	
-	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(source->GetFilename()));
+	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(filename));
 
 	this->source = source;
 	
@@ -523,7 +523,7 @@ void CDecodeRaw::CancelPreview(IBitmapDisplay* bitmapViewer)
 	CImageLoadingFormat* imageLoad = rawDecoder->DecodePicture(nullptr);
 	if (imageLoad != nullptr)
 	{
-		imageLoad->SetFilename(source->GetFilename());
+		imageLoad->SetFilename(filename);
 		bitmapViewer->UpdateBitmap(imageLoad, true);
 	}
 }

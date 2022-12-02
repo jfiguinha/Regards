@@ -9,7 +9,7 @@
 //
 
 #include "BitmapFusionFilter.h"
-#include <RegardsBitmap.h>
+
 #include <ImageLoadingFormat.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
@@ -37,21 +37,23 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
-CRegardsBitmap* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
+CImageLoadingFormat * CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
                                                                         IBitmapDisplay* bmpViewer)
 {
-	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	cv::Mat mat = nextPicture->GetOpenCVPicture();
 	const int orientation = nextPicture->GetOrientation();
+	CImageLoadingFormat * bitmapTemp = new CImageLoadingFormat();
+	bitmapTemp->SetPicture(mat);
 	bitmapTemp->RotateExif(orientation);
 	//bitmapTemp->SetAlphaValue(0);
 
-	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
-	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
-	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetWidth(), bitmapTemp->GetHeight());
+	const int widthOutput = bitmapTemp->GetWidth() * newRatio;
+	const int heightOutput = bitmapTemp->GetHeight() * newRatio;
 
 	cv::Mat _out;
-	cv::resize(bitmapTemp->GetMatrix(), _out, cv::Size(widthOutput, widthOutput), cv::INTER_CUBIC);
-	bitmapTemp->SetMatrix(_out);
+	cv::resize(bitmapTemp->GetOpenCVPicture(), _out, cv::Size(widthOutput, widthOutput), cv::INTER_CUBIC);
+	bitmapTemp->SetPicture(_out);
 
 	//auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 	//CInterpolationBicubic interpolation;
@@ -80,7 +82,7 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay*
 
 void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
 {
-	CRegardsBitmap* temp = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
+	CImageLoadingFormat * temp = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 	if (temp != nullptr)
 	{
 		GenerateTexture(temp);
@@ -92,16 +94,16 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
                                       IBitmapDisplay* bmpViewer, const int& etape, const float& scale_factor,
                                       const bool& isNext, float& ratio)
 {
-	CRegardsBitmap* bitmapTemp = nextPicture->GetRegardsBitmap(true);
+	cv::Mat mat = nextPicture->GetOpenCVPicture();
 	const int orientation = nextPicture->GetOrientation();
-	bitmapTemp->RotateExif(orientation);
-	//bitmapTemp->SetAlphaValue(0);
+	CImageLoadingFormat bitmapTemp;
+	bitmapTemp.SetPicture(mat);
+	bitmapTemp.RotateExif(orientation);
 
-	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
-	const int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
-	const int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
 
-	delete bitmapTemp;
+	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp.GetWidth(), bitmapTemp.GetHeight());
+	const int widthOutput = bitmapTemp.GetWidth() * newRatio;
+	const int heightOutput = bitmapTemp.GetHeight() * newRatio;
 
 	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
 		GenerateEffectTexture(nextPicture, bmpViewer);
@@ -111,11 +113,11 @@ void CBitmapFusionFilter::AfterRender(CImageLoadingFormat* nextPicture, CRenderB
 		                                        out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 }
 
-void CBitmapFusionFilter::GenerateTexture(CRegardsBitmap* bitmap)
+void CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat * bitmap)
 {
 	if (pictureNext == nullptr)
 		pictureNext = new GLTexture();
-	pictureNext->SetData(bitmap->GetMatrix());
+	pictureNext->SetData(bitmap->GetOpenCVPicture());
 	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 }
 

@@ -8,7 +8,7 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <wx/dcbuffer.h>
-#include <RegardsBitmap.h>
+
 #include <MetadataExiv2.h>
 #include <window_id.h>
 #include <config_id.h>
@@ -18,7 +18,6 @@
 #include <OpenCL/OpenCL.h>
 #endif
 #include <ImageLoadingFormat.h>
-#include <RegardsFloatBitmap.h>
 #include "RenderBitmapOpenGL.h"
 #include <utility.h>
 #include <WindowUtility.h>
@@ -85,6 +84,23 @@ CBitmapWndRender::CBitmapWndRender(CSliderInterface* slider, wxWindowID idMain, 
 	bitmapLoad = false;
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	parentRender = nullptr;
+}
+
+//-----------------------------------------------------------------
+//Obtention des dimensions du bitmap
+//-----------------------------------------------------------------
+CImageLoadingFormat * CBitmapWndRender::GetBitmap(const bool& source)
+{
+	//
+	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
+	{
+		CImageLoadingFormat* bitmap = new CImageLoadingFormat();
+		bitmap->SetPicture(this->source->GetOpenCVPicture());
+		bitmap->SetOrientation(orientation);
+		bitmap->SetFilename(this->filename);
+		return bitmap;
+	}
+	return nullptr;
 }
 
 void CBitmapWndRender::SetOpenCLOpenGLInterop(const bool& openclOpenGLInterop)
@@ -826,39 +842,6 @@ void CBitmapWndRender::CalculRealPosFromScreen(const int& xScreen, const int& yS
 	yReal = static_cast<int>(static_cast<float>(yScreen) / (ratio));
 }
 
-
-//-----------------------------------------------------------------
-//Obtention des dimensions du bitmap
-//-----------------------------------------------------------------
-CRegardsBitmap* CBitmapWndRender::GetBitmap(const bool& source)
-{
-	//
-	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
-	{
-		CRegardsBitmap* bitmap = this->source->GetRegardsBitmap(source);
-		if (bitmap != nullptr)
-		{
-			bitmap->SetOrientation(orientation);
-			bitmap->SetFilename(this->filename);
-		}
-		return bitmap;
-	}
-	return nullptr;
-}
-
-//-----------------------------------------------------------------
-//Obtention des dimensions du bitmap
-//-----------------------------------------------------------------
-CRegardsFloatBitmap* CBitmapWndRender::GetFloatBitmap(const bool& source)
-{
-	//
-	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
-	{
-		CRegardsFloatBitmap* bitmap = this->source->GetFloatBitmap(source);
-		return bitmap;
-	}
-	return nullptr;
-}
 
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap

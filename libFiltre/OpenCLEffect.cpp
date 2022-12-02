@@ -1,11 +1,7 @@
 #include <header.h>
 #include <OpenCLFilter.h>
 #include "OpenCLEffect.h"
-#include "RegardsBitmap.h"
-#include "RegardsFloatBitmap.h"
 #include <MotionBlur.h>
-//
-
 #include <ImageLoadingFormat.h>
 #define minmax
 #include <DeepLearning.h>
@@ -116,8 +112,7 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat* bitmap)
 {
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
-		CRegardsBitmap* _bitmap = bitmap->GetRegardsBitmap(false);
-		cv::Mat local = _bitmap->GetMatrix();
+		cv::Mat local = bitmap->GetOpenCVPicture();
 
 		if (local.channels() == 4)
 			cvtColor(local, input, cv::COLOR_BGRA2BGR);
@@ -146,29 +141,23 @@ COpenCLEffect::~COpenCLEffect()
 }
 
 
-CRegardsBitmap* COpenCLEffect::GetBitmap(const bool& source)
+cv::Mat COpenCLEffect::GetBitmap(const bool& source)
 {
-	CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-
+	cv::Mat bitmapOut;
 	if (source)
 	{
-		bitmapOut->SetMatrix(input);
+		input.copyTo(bitmapOut);
 	}
 	else if (preview && !paramOutput.empty())
 	{
-
-		bitmapOut->SetMatrix(paramOutput);
+		paramOutput.copyTo(bitmapOut);
 	}
 	else
 	{
-
-		bitmapOut->SetMatrix(input);
+		input.copyTo(bitmapOut);
 
 	}
 
-	if (bitmapOut != nullptr)
-		bitmapOut->SetFilename(filename);
 	return bitmapOut;
 
 }
@@ -622,10 +611,10 @@ int COpenCLEffect::FiltreMosaic(const int& size)
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int COpenCLEffect::Fusion(CRegardsBitmap* bitmapSecond, const float& pourcentage)
+int COpenCLEffect::Fusion(cv::Mat & bitmapSecond, const float& pourcentage)
 {
 	cv::UMat second;
-	bitmapSecond->GetMatrix().copyTo(second);
+	bitmapSecond.copyTo(second);
 		
 	if (preview && !paramOutput.empty())
 	{

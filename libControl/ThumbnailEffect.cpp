@@ -15,7 +15,7 @@
 #include <LoadingResource.h>
 #include <picture_id.h>
 #include <ImageLoadingFormat.h>
-#include <RegardsBitmap.h>
+
 
 #include <effect_id.h>
 using namespace Regards::Window;
@@ -33,7 +33,6 @@ public:
 		thumbnailData = nullptr;
 		_thread = nullptr;
 		thumbnail = nullptr;
-		picture = nullptr;
 		imageLoading = nullptr;
 	}
 
@@ -45,7 +44,7 @@ public:
 	wxString filepath;
 	int numIcone;
 	int photoId;
-	CRegardsBitmap* picture;
+	cv::Mat picture;
 	CThumbnailDataStorage* thumbnailData;
 	CImageLoadingFormat* imageLoading;
 	thread* _thread;
@@ -195,14 +194,14 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 		CInfosSeparationBarEffect* videoEffect = CreateNewSeparatorBar(videoLabelEffect);
 		int numElement = iconeListLocal->GetNbElement();
 
-		CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
+		cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
 		auto thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_FILTRE_VIDEO));
 		videoEffect->AddPhotoToList(numElement);
 
 		thumbnailData->SetNumPhotoId(IDM_FILTRE_VIDEO);
 
 		CImageLoadingFormat image;
-		image.SetPicture(pBitmap, true);
+		image.SetPicture(pBitmap);
 		thumbnailData->SetBitmap(&image);
 
 		auto pBitmapIcone = new CIcone();
@@ -249,11 +248,11 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			case IDM_REDEYE:
 				{
-					CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_REDEYE");
+					cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_REDEYE");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
 					CImageLoadingFormat image;
-					image.SetPicture(pBitmap, true);
+					image.SetPicture(pBitmap);
 					thumbnailData->SetBitmap(&image);
 					break;
 				}
@@ -261,16 +260,16 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			case IDM_CROP:
 				{
-					CRegardsBitmap* pResBitmap = loadingResource.LoadRegardsBmpResource("IDB_CROP");
-					auto pBitmap = new CRegardsBitmap(pResBitmap->GetBitmapWidth(), pResBitmap->GetBitmapHeight());
-					pBitmap->SetBackgroundColor(CRgbaquad(255, 255, 255));
-					pBitmap->InsertBitmap(pResBitmap, 0, 0);
+					cv::Mat pResBitmap = loadingResource.LoadRegardsBmpResource("IDB_CROP");
+					cv::Mat pBitmap(pResBitmap.size(), CV_8UC4, cv::Scalar(255, 255, 255));
+					pResBitmap.copyTo(pBitmap(cv::Rect(0, 0, pResBitmap.size().width, pResBitmap.size().height)));
+					//pBitmap->InsertBitmap(pResBitmap, 0, 0);
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					delete pResBitmap;
+
 
 					CImageLoadingFormat image;
-					image.SetPicture(pBitmap, true);
+					image.SetPicture(pBitmap);
 					thumbnailData->SetBitmap(&image);
 					break;
 				}
@@ -340,14 +339,14 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
 			int numElement = iconeListLocal->GetNbElement();
 			auto thumbnailData = new CThumbnailDataStorage(filename);
-			CRegardsBitmap* pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
+			cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
 			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
 			blackRoom->AddPhotoToList(numElement);
 
 			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
 
 			CImageLoadingFormat image;
-			image.SetPicture(pBitmap, true);
+			image.SetPicture(pBitmap);
 			thumbnailData->SetBitmap(&image);
 
 			auto pBitmapIcone = new CIcone();
@@ -526,7 +525,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 	{
 		if (filename == threadLoadingBitmap->filepath)
 		{
-			if (threadLoadingBitmap->picture != nullptr)
+			if (!threadLoadingBitmap->picture.empty())
 			{
 				if (threadLoadingBitmap->numIcone >= nbElementInIconeList)
 					return;
@@ -540,7 +539,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 					{
 						pThumbnailData->SetIsProcess(false);
 						CImageLoadingFormat image;
-						image.SetPicture(threadLoadingBitmap->picture, true);
+						image.SetPicture(threadLoadingBitmap->picture);
 						pThumbnailData->SetBitmap(&image);
 						pThumbnailData->SetIsLoading(false);
 						if (!render)

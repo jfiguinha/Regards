@@ -72,7 +72,7 @@ public:
 	int RGBFilter(const int &red, const int &green, const int &blue);
 	int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity);
 	int Swirl(const float &radius, const float &angle);
-	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
+	int Fusion(cv::Mat& bitmapSecond, const float &pourcentage);
 	int Posterize(const float &level, const float &gamma);
 	int Solarize(const long &threshold);
 	int BilateralFilter(const int& fSize, const int& sigmaX, const int& sigmaP);
@@ -83,7 +83,7 @@ public:
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
     int GetLib();
 	wxImage GetwxImage();
-	CRegardsBitmap * GetBitmap(const bool &source);
+	cv::Mat GetBitmap(const bool &source);
 	IFiltreEffet * GetInstance()
 	{
 		return filtreEffet;

@@ -1,7 +1,7 @@
 #include <header.h>
 #include "CropFilter.h"
 #include "EffectParameter.h"
-#include <RegardsBitmap.h>
+
 #include <LibResource.h>
 #include <FilterData.h>
 #include <FiltreEffet.h>
@@ -67,9 +67,10 @@ wxString CCropFilter::GetFilterLabel()
 	return CLibResource::LoadStringFromResource("LBLCROP", 1);
 }
 
-void CCropFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
+void CCropFilter::Filter(CEffectParameter * effectParameter, cv::Mat & source, const wxString& filename, IFiltreEffectInterface * filtreInterface)
 {
 	this->source = source;
+	this->filename = filename;
 }
 
 void CCropFilter::FilterChangeParam(CEffectParameter * effectParameter, CTreeElementValue * valueData, const wxString &key)
@@ -79,19 +80,20 @@ void CCropFilter::FilterChangeParam(CEffectParameter * effectParameter, CTreeEle
 
 CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
+	cv::Mat out;
 	CImageLoadingFormat * imageLoad = nullptr;
 	wxRect rcZoom;
 	bitmapViewer->GetDessinPt()->GetPos(rcZoom);
-	if (source != nullptr)
+	if (!source.empty())
 	{
-		source->RotateExif(source->GetOrientation());
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(source);
+		imageLoad->Flip();
+		imageLoad->RotateExif(orientation);
 
-		source->VertFlipBuf();
-
-		cv::Mat out;
 		try
 		{
-			cv::Mat matrix = source->GetMatrix();
+			cv::Mat matrix = imageLoad->GetOpenCVPicture();
 			cv::Rect rect;
 			rect.x = rcZoom.x;
 			rect.y = rcZoom.y;
@@ -101,21 +103,14 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 		}
 		catch (cv::Exception& e)
 		{
-			out = source->GetMatrix();
 			const char* err_msg = e.what();
 			std::cout << "exception caught: " << err_msg << std::endl;
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
 
 
-
-		CRegardsBitmap* bitmapOut = new CRegardsBitmap();
-
-		bitmapOut->SetMatrix(out);
-		bitmapOut->VertFlipBuf();
-
-		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(bitmapOut);
+		imageLoad->SetPicture(out);
+		imageLoad->Flip();
 	}
 
 	return imageLoad;

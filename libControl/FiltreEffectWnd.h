@@ -35,7 +35,7 @@ namespace Regards
 			void OnUpdateFilter(wxCommandEvent& event);
 
 			//CImageLoadingFormat * SetBitmapEffect(const int &effect, CEffectParameter * effectParameter, CRegardsBitmap * bitmap);
-			CRegardsBitmap* bitmap;
+			CImageLoadingFormat* bitmap;
 			CEffectParameter* effectParameter;
 			CFiltreEffect* filtreEffectOld;
 			int numFiltre;
