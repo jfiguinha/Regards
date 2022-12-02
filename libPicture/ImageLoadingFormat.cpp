@@ -154,8 +154,6 @@ void CImageLoadingFormat::RotateExif(const int& orientation)
 		break;
 	case 8: // left side bottom
 		this->Rotate90();
-		//cv::flip(_image, _image, 1);
-		//cv::flip(_image, _image, 0);
 		break;
 	default:;
 	}

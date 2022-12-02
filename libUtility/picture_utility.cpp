@@ -40,19 +40,19 @@ void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 		break;
 	case 5: //left side top
 		Rotate90(_image);
-		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
 		break;
 	case 6: // right side top
 		Rotate90(_image);
+		cv::flip(_image, _image, 1);
+		cv::flip(_image, _image, 0);
 		break;
 	case 7: // right side bottom
 		Rotate90(_image);
-		cv::flip(_image, _image, 0);
+		cv::flip(_image, _image, 1);
 		break;
 	case 8: // left side bottom
 		Rotate90(_image);
-		cv::flip(_image, _image, 1);
-		cv::flip(_image, _image, 0);
 		break;
 	default:;
 	}
