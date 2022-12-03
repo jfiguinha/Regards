@@ -52,10 +52,9 @@ void CThumbnailFileSelection::AddSeparatorBar(CIconeList* iconeListLocal, const 
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-		if (thumbnail->image == nullptr)
+		if (!thumbnail->image.IsOk())
 		{
-			CLibPicture libPicture;
-			thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+			thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);
@@ -159,10 +158,9 @@ void CThumbnailFileSelection::SetListeFile()
 		thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(photoVector.size()));
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-		if (thumbnail->image == nullptr)
+		if (!thumbnail->image.IsOk())
 		{
-			CLibPicture libPicture;
-			thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+			thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 		}
 
 		thumbnailData->SetBitmap(thumbnail->image);

@@ -5,10 +5,11 @@
 #include <ximage.h>
 #include "ImageVideoThumbnail.h"
 #include <ImageLoadingFormat.h>
+#include <libPicture.h>
 #include <ConvertUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Video;
-
+using namespace Regards::Picture;
 class CThumbnailVideoPimpl
 {
 public:
@@ -225,7 +226,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 
 
 				cxVideo->rotation = 0;
-				cxVideo->image = new CImageLoadingFormat();
+				cxVideo->filename = fileName;
 
 
 				try
@@ -237,7 +238,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 				{
 				}
 				cxVideo->timePosition = i;
-				cxVideo->image->SetPicture(image, 0, fileName);
+				cxVideo->image = CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)
@@ -259,7 +260,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 
 				cxVideo->rotation = 0;
 				cxVideo->percent = i;
-				cxVideo->image = new CImageLoadingFormat();
+				cxVideo->filename = fileName;
 
 
 				try
@@ -271,7 +272,7 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const int &wid
 				{
 				}
 				cxVideo->timePosition = pimpl->m_seekTimeInSecond;
-				cxVideo->image->SetPicture(image, 0, fileName);
+				cxVideo->image = CLibPicture::ConvertRegardsBitmapToWXImage(image);
 				listPicture.push_back(cxVideo);
 			}
 			catch (...)

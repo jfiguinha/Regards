@@ -17,7 +17,6 @@ class CImageVideoThumbnail
 public:
 	CImageVideoThumbnail()
 	{
-		image = nullptr;
 		rotation = 0;
 		percent = 0;
 		delay = 50;
@@ -26,14 +25,13 @@ public:
 
 	~CImageVideoThumbnail()
 	{
-		if (image != nullptr)
-			delete image;
 	};
 
-	CImageLoadingFormat* image;
+	wxImage image;
 	int rotation;
 	uint32_t delay;
 	int percent;
 	int timePosition;
+	wxString filename;
 };
 

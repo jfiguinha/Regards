@@ -6,6 +6,7 @@
 #include <wx/file.h>
 #include <wx/dir.h>
 #include <FileUtility.h>
+#include <ConvertUtility.h>
 #include <picture_utility.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -42,7 +43,7 @@ bool CSqlThumbnailVideo::TestThumbnail(const int & numPhoto, const int &numVideo
 
 
 
-bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const int &numPicture, const int &rotation, const int &percent, const int &timePosition)
+bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, std::vector<uchar> & dest, const int & width, const int &height, const int &numPicture, const int &rotation, const int &percent, const int &timePosition)
 {
 	type = 6;
 	wxString fullpath(path);
@@ -56,7 +57,7 @@ bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * 
 		type = 2;
 		wxFile fileOut;
 		fileOut.Create(thumbnail, true);
-		fileOut.Write(zBlob, nBlob);
+		fileOut.Write(dest.data(), dest.size());
 		fileOut.Close();
 
         return ExecuteRequestWithNoResult("INSERT INTO VIDEOTHUMBNAIL (NumPhoto, FullPath, numVideo, rotation, percent, timePosition, width, height) VALUES(" + to_string(numPhoto) + ",'" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," + to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) + ")");
@@ -82,27 +83,14 @@ void CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &n
 		wxString thumbnail = CFileUtility::GetVideoThumbnailPath(to_string(numPhoto), numVideo);
 		if (wxFileExists(thumbnail))
 		{
-            wxImage picture(thumbnail);
-            if(picture.IsOk())
+			videoThumbnail->image.LoadFile(thumbnail);
+            if(!videoThumbnail->image.IsOk())
             {
-				videoThumbnail->image = new CImageLoadingFormat();
-				videoThumbnail->image->SetPicture(picture);
+				videoThumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel());
 			}
-			else
-			{
-                CLibPicture libPicture;
-				videoThumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
-				DeleteThumbnail(fullpath);
-			}
-			videoThumbnail->image->SetFilename(thumbnail);
-		}
-		else
-		{
-			videoThumbnail->image = nullptr;
+			videoThumbnail->filename = thumbnail;
 		}
 	}
-	
-	//return videoThumbnail;
 
 }
 

@@ -14,7 +14,7 @@ public:
 	}
 
 	void RemoveBitmap();
-	void SetBitmap(CImageLoadingFormat* bitmap) override;
+	void SetBitmap(wxImage bitmap) override;
 	wxImage GetwxImage() override;
 
 private:

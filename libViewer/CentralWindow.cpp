@@ -1150,8 +1150,8 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 			if (thumbnail != nullptr)
 			{
 				image = new CImageLoadingFormat();
-				image->SetPicture(thumbnail->image->GetOpenCVPicture());
-				image->SetFilename(thumbnail->image->GetFilename());
+				image->SetPicture(thumbnail->image);
+				image->SetFilename(thumbnail->filename);
 			}
 		}
 		else

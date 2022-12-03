@@ -109,13 +109,11 @@ bool CPictureUtility::Rotate180(cv::Mat& image)
 void CPictureUtility::ApplyTransform(cv::Mat& image)
 {
 	if (image.channels() == 3)
-		cvtColor(image, image, cv::COLOR_BGR2BGRA);
+		cvtColor(image, image, cv::COLOR_RGB2BGRA);
 	else if (image.channels() == 1)
 		cvtColor(image, image, cv::COLOR_GRAY2BGRA);
 	else
 		cvtColor(image, image, cv::COLOR_RGBA2BGRA);
-
-	cv::flip(image, image, 0);
 }
 
 void CPictureUtility::writefile(const wxString& fileName, uint8_t* data, const size_t & size)

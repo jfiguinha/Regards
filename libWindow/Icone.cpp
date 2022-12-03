@@ -186,8 +186,7 @@ bool CIcone::GetSelected()
 
 wxImage CIcone::LoadImageResource(const wxString& resourceName)
 {
-	cv::Mat data = CLoadingResource::LoadRegardsBmpResource(resourceName);
-	wxImage bitmap = CLoadingResource::ConvertTowxImageRGB(data);
+	wxImage bitmap = CLoadingResource::LoadImageResource(resourceName);
 	return bitmap;
 }
 

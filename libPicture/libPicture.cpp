@@ -1282,8 +1282,7 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 		const int pourcentage = 0;
 		const float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 		auto cxVideo = new CImageVideoThumbnail();
-		//CRegardsBitmap * picture = nullptr;
-		//int timePosition = 0;
+
 		cxVideo->rotation = rotation;
 		cxVideo->percent = percent;
 
@@ -1293,17 +1292,18 @@ vector<CImageVideoThumbnail*> CLibPicture::LoadDefaultVideoThumbnail(const wxStr
 		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/loading.png";
 #endif
 
-		CImageLoadingFormat* picture = LoadPicture(photoCancel);
-		picture->Resize(widthThumbnail, heightThumbnail, 0);
-		picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
-		cxVideo->image = picture;
+		//picture->Resize(widthThumbnail, heightThumbnail, 0);
+		//picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
+		cxVideo->image.LoadFile(photoCancel);
+		cxVideo->image = cxVideo->image.ResampleBilinear(widthThumbnail, heightThumbnail);
+		cxVideo->filename = szFileName;
 		//cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap(), false);
 		if (isAnimation)
 			cxVideo->timePosition = i;
 		else
 			cxVideo->timePosition = pourcentage * percent;
-		cxVideo->image->SetFilename(szFileName);
-		cxVideo->image->SetOrientation(rotation);
+		cxVideo->filename = szFileName;
+		cxVideo->rotation = rotation;
 		//delete picture;
 		listThumbnail.push_back(cxVideo);
 	}
@@ -1349,19 +1349,14 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	}
 	if (m_ani_images == 0)
 	{
-		CImageLoadingFormat* photo_cancel = LoadPicture(CPictureUtility::GetPhotoCancel());
-		if (photo_cancel->IsOk())
-		{
-			photo_cancel->SetFilename(szFileName);
-			auto imageVideoThumbnail = new CImageVideoThumbnail();
-			imageVideoThumbnail->image = photo_cancel;
-			imageVideoThumbnail->image->SetFilename(szFileName);
-			imageVideoThumbnail->rotation = 0;
-			imageVideoThumbnail->delay = 4;
-			imageVideoThumbnail->percent = 100.0f;
-			imageVideoThumbnail->timePosition = 0;
-			listThumbnail->push_back(imageVideoThumbnail);
-		}
+		auto imageVideoThumbnail = new CImageVideoThumbnail();
+		imageVideoThumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel());
+		imageVideoThumbnail->filename = szFileName;
+		imageVideoThumbnail->rotation = 0;
+		imageVideoThumbnail->delay = 4;
+		imageVideoThumbnail->percent = 100.0f;
+		imageVideoThumbnail->timePosition = 0;
+		listThumbnail->push_back(imageVideoThumbnail);
 	}
 	else
 	{
@@ -1393,8 +1388,6 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			else
 			{
 				auto imageVideoThumbnail = new CImageVideoThumbnail();
-				imageVideoThumbnail->image = new CImageLoadingFormat();
-
 				cv::Mat out;
 				wxImage bitmapResize;
 				if (isThumbnail)
@@ -1411,15 +1404,13 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 
 					cv::Mat in = CLibPicture::mat_from_wx(image);
 					cv::resize(in, out, cv::Size(bw, bh), cv::INTER_CUBIC);
-					//bitmapResize = CLibPicture::wx_from_mat(out);
-					CPictureUtility::ApplyTransform(out);
-					imageVideoThumbnail->image->SetPicture(out);
+					imageVideoThumbnail->image = CLibPicture::ConvertRegardsBitmapToWXImage(out);
 				}
 				else
-					imageVideoThumbnail->image->SetPicture(image);
+					imageVideoThumbnail->image = image;
 
 
-				imageVideoThumbnail->image->SetFilename(szFileName);
+				imageVideoThumbnail->filename = szFileName;
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 4;
 				imageVideoThumbnail->percent = static_cast<int>(static_cast<float>(i) / static_cast<float>(
@@ -1620,9 +1611,8 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 				for (auto i = 0; i < listPicture.size(); i++)
 				{
 					auto imageVideoThumbnail = new CImageVideoThumbnail();
-					imageVideoThumbnail->image = new CImageLoadingFormat();
-					imageVideoThumbnail->image->SetFilename(szFileName);
-					imageVideoThumbnail->image->SetPicture(listPicture.at(i));
+					imageVideoThumbnail->filename = szFileName;
+					imageVideoThumbnail->image = ConvertRegardsBitmapToWXImage(listPicture.at(i));
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = delay;
 					imageVideoThumbnail->percent = static_cast<int>((static_cast<float>(i) / static_cast<float>(
@@ -1658,15 +1648,17 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 					{
 						auto imageVideoThumbnail = new CImageVideoThumbnail();
 						CxImage* frame = _cxImage->GetFrame(i);
-						imageVideoThumbnail->image = new CImageLoadingFormat();
-						imageVideoThumbnail->image->SetFilename(szFileName);
-						imageVideoThumbnail->image->SetPicture(frame);
+						CImageLoadingFormat image;
+						image.SetPicture(frame);
+						imageVideoThumbnail->filename = szFileName;
+						imageVideoThumbnail->image = image.GetwxImage();
 						imageVideoThumbnail->rotation = 0;
 						imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 						imageVideoThumbnail->percent = (static_cast<float>(i) / static_cast<float>(_cxImage->
 							GetNumFrames())) * 100.0f;
 						imageVideoThumbnail->timePosition = i;
 						listThumbnail->push_back(imageVideoThumbnail);
+						delete frame;
 					}
 				}
 				delete _cxImage;
@@ -1699,23 +1691,24 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 		default:
 			{
 				auto imageVideoThumbnail = new CImageVideoThumbnail();
-				imageVideoThumbnail->image = LoadThumbnail(szFileName);
-				imageVideoThumbnail->image->SetFilename(szFileName);
+				CImageLoadingFormat* imageLoad = LoadThumbnail(szFileName);
+				imageVideoThumbnail->image = imageLoad->GetwxImage();
+				imageVideoThumbnail->filename = szFileName;
 				imageVideoThumbnail->rotation = 0;
 				imageVideoThumbnail->delay = 0;
 				imageVideoThumbnail->percent = 0;
 				imageVideoThumbnail->timePosition = 0;
 				listThumbnail->push_back(imageVideoThumbnail);
+				delete imageLoad;
 			}
 		}
 	}
 	catch (...)
 	{
-		CImageLoadingFormat* bitmap = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
-
 		auto imageVideoThumbnail = new CImageVideoThumbnail();
-		imageVideoThumbnail->image = bitmap;
-		imageVideoThumbnail->image->SetFilename(szFileName);
+		imageVideoThumbnail->image.LoadFile(szFileName);
+		imageVideoThumbnail->image = imageVideoThumbnail->image.ResampleBicubic(widthThumbnail, heightThumbnail);
+		imageVideoThumbnail->filename = szFileName;
 		imageVideoThumbnail->rotation = 0;
 		imageVideoThumbnail->delay = 0;
 		imageVideoThumbnail->percent = 0;

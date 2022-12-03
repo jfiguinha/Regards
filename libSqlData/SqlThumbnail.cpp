@@ -50,7 +50,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 
 
 
-bool CSqlThumbnail::InsertThumbnail(const wxString & path, std::vector<uchar> & data, const int &nBlob, const int & width, const int &height, const wxString &hash)
+bool CSqlThumbnail::InsertThumbnail(const wxString & path, std::vector<uchar> & data, const int & width, const int &height, const wxString &hash)
 {
 	bool returnValue = true;
 	type = 6;

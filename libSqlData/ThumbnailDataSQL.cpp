@@ -190,31 +190,26 @@ wxImage CThumbnailDataSQL::GetwxImage()
 	return frameOut;
 }
 
-void CThumbnailDataSQL::SetBitmap(CImageLoadingFormat* bitmap)
+void CThumbnailDataSQL::SetBitmap(wxImage bitmap)
 {
-	if (bitmap == nullptr)
-		return;
-
-	if (bitmap->IsOk())
+	if (bitmap.IsOk())
 	{
 		//Enregistrement en base de données
 		CSqlThumbnail sqlThumbnail;
-		wxString filename = bitmap->GetFilename();
 		if (!TestBitmap())
 		{
 			int compressMethod = 0;
 			unsigned long outputsize = 0;
 			//bitmap->Flip();
-			std::vector<uchar> data = bitmap->GetJpegData();
-			//wxString hash = wxMD5::GetFileMD5(filename);
+			wxMemoryOutputStream memOut;
+			bitmap.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
+			std::vector<uchar> buffer(memOut.GetLength());
+			memOut.CopyTo(&buffer.at(0), memOut.GetLength());
 			wxFileName file(filename);
 			wxULongLong sizeFile = file.GetSize();
 			wxString hash = sizeFile.ToString();
-			if (data.size() > 0)
-				sqlThumbnail.InsertThumbnail(filename, data, outputsize, bitmap->GetWidth(), bitmap->GetHeight(), hash);
-
-			this->filename = filename;
-			//pictureLoad = true;
+			if (memOut.GetSize() > 0)
+				sqlThumbnail.InsertThumbnail(filename, buffer, bitmap.GetWidth(), bitmap.GetHeight(), hash);
 		}
 	}
 }

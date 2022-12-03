@@ -33,10 +33,10 @@ wxImage CThumbnailDataStorage::GetwxImage()
 	return wxImage();
 }
 
-void CThumbnailDataStorage::SetBitmap(CImageLoadingFormat* bitmap)
+void CThumbnailDataStorage::SetBitmap(wxImage bitmap)
 {
-	if (bitmap->IsOk())
+	if (bitmap.IsOk())
 	{
-		localbitmap = bitmap->GetwxImage();
+		localbitmap = bitmap;
 	}
 }

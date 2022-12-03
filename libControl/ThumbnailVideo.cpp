@@ -41,17 +41,13 @@ void CThumbnailVideo::ProcessThumbnail(void* param)
 			{
 				auto thumbnail = new CImageVideoThumbnail();
 				sqlThumbnailVideo.GetPictureThumbnail(video->filename, i, thumbnail);
-				if (thumbnail->image == nullptr)
-				{
-					thumbnail = new CImageVideoThumbnail();
-					thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
-					thumbnail->timePosition = i;
-					thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
-				}
-				if (thumbnail->image == nullptr)
-				{
-					thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+				thumbnail->percent = static_cast<float>(i) / static_cast<float>(nbResult) * 100.0f;
+				thumbnail->timePosition = i;
+				//thumbnail->image = libPicture.LoadPicture(video->filename, true, i);
 
+				if (!thumbnail->image.IsOk())
+				{
+					thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 				}
 
 
@@ -61,7 +57,7 @@ void CThumbnailVideo::ProcessThumbnail(void* param)
 					auto thumbnailData = static_cast<CThumbnailDataStorage*>(pBitmapIcone->GetData());
 					if (thumbnailData != nullptr)
 					{
-						if (thumbnail->image != nullptr)
+						if (thumbnail->image.IsOk())
 							thumbnailData->SetBitmap(thumbnail->image);
 						thumbnailData->SetTimePosition(thumbnail->timePosition);
 					}
@@ -275,12 +271,8 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 		{
 			auto thumbnail = new CImageVideoThumbnail();
 			sqlThumbnailVideo.GetPictureThumbnail(szFileName, i, thumbnail);
-			if (thumbnail->image == nullptr)
-			{
-				thumbnail->percent = (static_cast<float>(i) / static_cast<float>(nbResult)) * 100.0f;
-				thumbnail->timePosition = i;
-				thumbnail->image = libPicture.LoadPicture(szFileName, true, i);
-			}
+			thumbnail->percent = (static_cast<float>(i) / static_cast<float>(nbResult)) * 100.0f;
+			thumbnail->timePosition = i;
 
 			float percent = (static_cast<float>(i) / static_cast<float>(size)) * 100.0f;
 			auto thumbnailData = new CThumbnailDataStorage(szFileName);
@@ -295,7 +287,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 
 			try
 			{
-				if (thumbnail->image != nullptr)
+				if (thumbnail->image.IsOk())
 					thumbnailData->SetBitmap(thumbnail->image);
 			}
 			catch (...)
@@ -344,8 +336,10 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString& szFileName, const i
 			thumbnailData->SetPercent(percent);
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-			if (thumbnail->image == nullptr)
-				thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+			if (!thumbnail->image.IsOk())
+			{
+				thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
+			}
 
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)
@@ -415,10 +409,13 @@ void CThumbnailVideo::LoadMoviePicture(void* param)
 
 			unsigned long outputsize = 0;
 
-			std::vector<uchar>  dest = bitmap->image->GetJpegData();
+			wxMemoryOutputStream memOut;
+			bitmap->image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
+			std::vector<uchar> dest(memOut.GetLength());
+			memOut.CopyTo(&dest.at(0), memOut.GetLength());
 			if (dest.size())
-				sqlThumbnailVideo.InsertThumbnail(label->filename, dest.data(), outputsize, bitmap->image->GetWidth(),
-					bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
+				sqlThumbnailVideo.InsertThumbnail(label->filename, dest, bitmap->image.GetWidth(),
+					bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
 					bitmap->timePosition);
 
 		}

@@ -194,15 +194,13 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 		CInfosSeparationBarEffect* videoEffect = CreateNewSeparatorBar(videoLabelEffect);
 		int numElement = iconeListLocal->GetNbElement();
 
-		cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
+		wxImage pBitmap = loadingResource.LoadImageResource("IDB_BLACKROOM");
 		auto thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_FILTRE_VIDEO));
 		videoEffect->AddPhotoToList(numElement);
 
 		thumbnailData->SetNumPhotoId(IDM_FILTRE_VIDEO);
 
-		CImageLoadingFormat image;
-		image.SetPicture(pBitmap);
-		thumbnailData->SetBitmap(&image);
+		thumbnailData->SetBitmap(pBitmap);
 
 		auto pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
@@ -248,29 +246,20 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 
 			case IDM_REDEYE:
 				{
-					cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_REDEYE");
+					wxImage pBitmap = loadingResource.LoadImageResource("IDB_REDEYE");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-					CImageLoadingFormat image;
-					image.SetPicture(pBitmap);
-					thumbnailData->SetBitmap(&image);
+					thumbnailData->SetBitmap(pBitmap);
 					break;
 				}
 
 
 			case IDM_CROP:
 				{
-					cv::Mat pResBitmap = loadingResource.LoadRegardsBmpResource("IDB_CROP");
-					cv::Mat pBitmap(pResBitmap.size(), CV_8UC4, cv::Scalar(255, 255, 255));
-					pResBitmap.copyTo(pBitmap(cv::Rect(0, 0, pResBitmap.size().width, pResBitmap.size().height)));
-					//pBitmap->InsertBitmap(pResBitmap, 0, 0);
+					wxImage pResBitmap = loadingResource.LoadImageResource("IDB_CROP");
 					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
 					infosSeparationSpecialEffect->AddPhotoToList(numElement);
-
-
-					CImageLoadingFormat image;
-					image.SetPicture(pBitmap);
-					thumbnailData->SetBitmap(&image);
+					thumbnailData->SetBitmap(pResBitmap);
 					break;
 				}
 
@@ -339,15 +328,13 @@ void CThumbnailEffect::SetFile(const wxString& filename, CImageLoadingFormat* im
 			CInfosSeparationBarEffect* blackRoom = CreateNewSeparatorBar(blackRoomEffect);
 			int numElement = iconeListLocal->GetNbElement();
 			auto thumbnailData = new CThumbnailDataStorage(filename);
-			cv::Mat pBitmap = loadingResource.LoadRegardsBmpResource("IDB_BLACKROOM");
+			wxImage image = loadingResource.LoadImageResource("IDB_BLACKROOM");
 			thumbnailData = new CThumbnailDataStorage(CFiltreData::GetFilterLabel(IDM_DECODE_RAW));
 			blackRoom->AddPhotoToList(numElement);
 
 			thumbnailData->SetNumPhotoId(IDM_DECODE_RAW);
 
-			CImageLoadingFormat image;
-			image.SetPicture(pBitmap);
-			thumbnailData->SetBitmap(&image);
+			thumbnailData->SetBitmap(image);
 
 			auto pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
@@ -540,7 +527,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 						pThumbnailData->SetIsProcess(false);
 						CImageLoadingFormat image;
 						image.SetPicture(threadLoadingBitmap->picture);
-						pThumbnailData->SetBitmap(&image);
+						pThumbnailData->SetBitmap(image.GetwxImage());
 						pThumbnailData->SetIsLoading(false);
 						if (!render)
 						{

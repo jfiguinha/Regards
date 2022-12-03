@@ -164,9 +164,14 @@ wxImage CImageLoadingFormat::GetwxImage()
 	if (!IsOk())
 		return wxImage();
 
-	long imsize = _image.rows * _image.cols * _image.channels();
-	wxImage wx(_image.cols, _image.rows, (unsigned char*)malloc(imsize), false);
-	unsigned char* s = _image.data;
+	cv::Mat im2;
+	if (_image.channels() == 1) { cvtColor(_image, im2, cv::COLOR_GRAY2RGB); }
+	else if (_image.channels() == 4) { cvtColor(_image, im2, cv::COLOR_BGRA2RGB); }
+	else { cvtColor(_image, im2, cv::COLOR_BGR2RGB); }
+
+	long imsize = im2.rows * im2.cols * im2.channels();
+	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = im2.data;
 	unsigned char* d = wx.GetData();
 	memcpy(d, s, imsize);
 	/*

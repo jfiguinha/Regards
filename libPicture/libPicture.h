@@ -40,7 +40,7 @@ namespace Regards
 			bool HasThumbnail(const wxString &filename);
 			int GetNbImage(const  wxString & szFileName);
 			uint32_t GetFrameDelay(const  wxString & szFileName);
-			int TestImageFormat(const wxString & szFileName, const bool &reading = true);
+			static int TestImageFormat(const wxString & szFileName, const bool &reading = true);
 			bool TestIsVideo(const wxString & szFileName);
 			bool TestIsPDF(const wxString & szFileName);
 			bool TestIsPicture(const wxString & szFileName);
@@ -99,8 +99,8 @@ namespace Regards
 			//-----------------------------------------------------------------------------
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
-			int TestExtension(const wxString & ext);
-             void ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap);
+			static int TestExtension(const wxString & ext);
+            void ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap);
 
 			int svgWidth;
 			int svgHeight;

@@ -37,7 +37,7 @@ public:
 	wxString GetFilename();
 	void SetFilename(const wxString& filename);
 
-	virtual void SetBitmap(CImageLoadingFormat* bitmap)
+	virtual void SetBitmap(wxImage bitmap)
 	{
 	};
 

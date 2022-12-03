@@ -153,10 +153,9 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 			thumbnailData->SetLibelle("Page : " + to_string(i + 1) + "/" + to_string(size));
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 
-			if (thumbnail->image == nullptr)
+			if (!thumbnail->image.IsOk())
 			{
-				CLibPicture libPicture;
-				thumbnail->image = libPicture.LoadPicture(CPictureUtility::GetPhotoCancel());
+				thumbnail->image.LoadFile(CPictureUtility::GetPhotoCancel(), wxBITMAP_TYPE_ANY);
 			}
 
 			thumbnailData->SetBitmap(thumbnail->image);

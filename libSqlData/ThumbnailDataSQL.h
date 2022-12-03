@@ -28,7 +28,7 @@ public:
 		return false;
 	}
 
-	void SetBitmap(CImageLoadingFormat* bitmap) override;
+	void SetBitmap(wxImage bitmap) override;
 	wxImage GetwxImage() override;
 	int GetNbFrame() override;
 

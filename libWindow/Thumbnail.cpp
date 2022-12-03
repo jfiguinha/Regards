@@ -44,7 +44,7 @@ class CThreadLoadingBitmap
 public:
 	CThreadLoadingBitmap(): percent(0), typeElement(0), photoId(0), timePosition(0)
 	{
-		bitmapIcone = nullptr;
+
 		_thread = nullptr;
 		thumbnail = nullptr;
 	}
@@ -59,7 +59,7 @@ public:
 	int typeElement;
 	int photoId;
 	int timePosition;
-	CImageLoadingFormat* bitmapIcone;
+	wxImage bitmapIcone;
 	thread* _thread;
 	thread* _threadVideo;
 	CThumbnail* thumbnail;
@@ -1028,10 +1028,15 @@ void CThumbnail::LoadPicture(void* param)
 				wxString filename = threadLoadingBitmap->filename; // bitmap->image->GetFilename();
 				int compressMethod = 0;
 				unsigned long outputsize = 0;
-				std::vector<uchar> dest = bitmap->image->GetJpegData();
-				if (dest.size() > 0)
-					sqlThumbnailVideo.InsertThumbnail(filename, dest.data(), outputsize, bitmap->image->GetWidth(),
-						bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent,
+
+				wxMemoryOutputStream memOut;
+				bitmap->image.SaveFile(memOut, wxBITMAP_TYPE_JPEG);
+				std::vector<uchar> buffer(memOut.GetLength());
+				memOut.CopyTo(&buffer.at(0), memOut.GetLength());
+
+				if (buffer.size() > 0)
+					sqlThumbnailVideo.InsertThumbnail(filename, buffer, bitmap->image.GetWidth(),
+						bitmap->image.GetHeight(), i, bitmap->rotation, bitmap->percent,
 						bitmap->timePosition);
 
 				if (i == selectPicture)
@@ -1044,7 +1049,13 @@ void CThumbnail::LoadPicture(void* param)
 	}
 	else
 	{
-		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+		CImageLoadingFormat * imageLoad = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
+		if (imageLoad != nullptr)
+		{
+			threadLoadingBitmap->bitmapIcone = imageLoad->GetwxImage();
+			delete imageLoad;
+		}
+
 	}
 
 	auto event = new wxCommandEvent(EVENT_ICONEUPDATE);
@@ -1683,7 +1694,7 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 
 		if (threadLoadingBitmap != nullptr)
 		{
-			if (threadLoadingBitmap->bitmapIcone != nullptr)
+			if (threadLoadingBitmap->bitmapIcone.IsOk())
 			{
 				CThumbnailData* pThumbnailData = nullptr;
 				CIcone* icone = GetIconeById(threadLoadingBitmap->photoId);
@@ -1704,12 +1715,6 @@ void CThumbnail::update_render_icone(wxCommandEvent& event)
 
 				RefreshIcone(threadLoadingBitmap->photoId);
 			}
-		}
-
-		if (threadLoadingBitmap->bitmapIcone != nullptr)
-		{
-			delete(threadLoadingBitmap->bitmapIcone);
-			threadLoadingBitmap->bitmapIcone = nullptr;
 		}
 
 		if (threadLoadingBitmap->_thread != nullptr)

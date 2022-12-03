@@ -1,24 +1,25 @@
 #include "header.h"
 #include "LoadingResource.h"
-
+#include <libPicture.h>
 #include <LibResource.h>
 #include <PictureData.h>
 #include <ConvertUtility.h>
-
+using namespace Regards::Picture;
+/*
 cv::Mat CLoadingResource::LoadRegardsBmpResource(const wxString& resourceName)
 {
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
 	return cv::imread(CConvertUtility::ConvertToStdString(resourcePath));
 }
-
+*/
 wxImage CLoadingResource::LoadImageResource(const wxString& resourceName)
 {
 	wxString resourcePath = CLibResource::LoadBitmapFromResource(resourceName);
 	wxImage out;
-	out.LoadFile(resourcePath, wxBITMAP_TYPE_PNG);
+	out.LoadFile(resourcePath, wxBITMAP_TYPE_ANY);
 	return out;
 }
-
+/*
 wxImage CLoadingResource::ConvertTowxImageRGB(cv::Mat & mat)
 {
 	int width = mat.size().width;
@@ -50,3 +51,4 @@ wxImage CLoadingResource::ConvertTowxImageRGB(cv::Mat & mat)
 
 	return anImage;
 }
+*/
