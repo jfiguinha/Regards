@@ -288,7 +288,7 @@ std::vector<int> CFaceDetector::FindFace(const cv::Mat& pBitmap, const wxString 
 		std::vector<Rect> pointOfFace;
 		Mat resizeSource;
 		//cv::flip(pBitmap, source, 1);
-		cvtColor(source, source, COLOR_BGRA2BGR);
+		cvtColor(pBitmap, source, COLOR_BGRA2BGR);
 		float dRatio = 1.0;
 		float invertRatio = 1.0;
 		if (source.size().width > 600 || source.size().height > 600)
