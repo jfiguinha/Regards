@@ -61,6 +61,9 @@ void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 
 void CPictureUtility::ApplyRotation(cv::Mat& image, const int& rotation)
 {
+	if (image.empty())
+		return;
+
 	if (rotation == 90)
 		Rotate90(image);
 	else if (rotation == -90)

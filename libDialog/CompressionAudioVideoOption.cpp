@@ -223,21 +223,25 @@ void CompressionAudioVideoOption::SetBitmap(const long& pos)
 {
 	int orientation = ffmpegTranscoding->GetOrientation();
 	cv::Mat bitmap_local = ffmpegTranscoding->GetVideoFramePos(pos, 340, 240);
-	CPictureUtility::RotateExif(bitmap_local,orientation);
-	wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
-	int x = 0;
-	int y = 0;
-	x = (340 - picture.GetWidth()) / 2;
-	y = (240 - picture.GetHeight()) / 2;
+	if (!bitmap_local.empty())
+	{
 
-	wxBitmap test_bitmap(340, 240);
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(test_bitmap);
-	CWindowUtility winUtility;
-	winUtility.FillRect(&temp_dc, wxRect(0,0,340,240), *wxBLACK);
-	temp_dc.DrawBitmap(picture, x, y);
-	temp_dc.SelectObject(wxNullBitmap);
-	bitmap->SetBitmap(test_bitmap);
+		CPictureUtility::RotateExif(bitmap_local, orientation);
+		wxImage picture = CLibPicture::ConvertRegardsBitmapToWXImage(bitmap_local);
+		int x = 0;
+		int y = 0;
+		x = (340 - picture.GetWidth()) / 2;
+		y = (240 - picture.GetHeight()) / 2;
+
+		wxBitmap test_bitmap(340, 240);
+		wxMemoryDC temp_dc;
+		temp_dc.SelectObject(test_bitmap);
+		CWindowUtility winUtility;
+		winUtility.FillRect(&temp_dc, wxRect(0, 0, 340, 240), *wxBLACK);
+		temp_dc.DrawBitmap(picture, x, y);
+		temp_dc.SelectObject(wxNullBitmap);
+		bitmap->SetBitmap(test_bitmap);
+	}
 }
 
 

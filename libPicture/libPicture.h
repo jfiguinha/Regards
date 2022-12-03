@@ -77,7 +77,7 @@ namespace Regards
 			bool SaveToPDF(wxImage * poImage, const wxString &fileName, int option = -1, int quality = -1);
 
 			static wxImage ConvertRegardsBitmapToWXImage(cv::Mat& img);
-
+			static wxImage* ConvertRegardsBitmapToWXImagePt(cv::Mat& img);
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
 #else

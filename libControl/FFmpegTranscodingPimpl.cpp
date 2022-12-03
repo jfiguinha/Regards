@@ -2224,7 +2224,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrame(CompressVideo* m_dlgProgress, const 
 	const wxString& output, const long& time,
 	CVideoOptionCompress* videoCompressOption)
 {
-	int ret;
+	int ret = 0;
 	this->m_dlgProgress = m_dlgProgress;
 	totalFrame = 0;
 	encodeOneFrame = true;

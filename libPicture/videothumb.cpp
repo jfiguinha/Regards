@@ -155,7 +155,7 @@ void CThumbnailVideo::GetVideoDimensions(int & width, int & height)
 	height = pimpl->height;
 }
 
-cv::Mat & CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
 	try
@@ -171,7 +171,7 @@ cv::Mat & CThumbnailVideo::GetVideoFrame(const int& thumbnailWidth, const int& t
 	return image;
 }
 
-cv::Mat & CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
+cv::Mat CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int& thumbnailWidth, const int& thumbnailHeight)
 {
 	cv::Mat image;
 	try
@@ -187,7 +187,7 @@ cv::Mat & CThumbnailVideo::GetVideoFramePos(const int64& timePosition, const int
 	return image;
 }
 
-cv::Mat& CThumbnailVideo::GetVideoFramePercent(const int &percent, const int & thumbnailWidth, const int & thumbnailHeight)
+cv::Mat CThumbnailVideo::GetVideoFramePercent(const int &percent, const int & thumbnailWidth, const int & thumbnailHeight)
 {
 	cv::Mat image;
 
