@@ -1175,17 +1175,37 @@ CFiltreEffetCPU::~CFiltreEffetCPU()
 
 wxImage CFiltreEffetCPU::GetwxImage()
 {
-	cv::Mat image;
-	if (preview)
-		image = paramOutput;
-	else
-		image = input;
+	/*
+	CImageLoadingFormat picture;
 
-	cv::Mat cvDest;
-	cv::cvtColor(image, cvDest, cv::COLOR_BGR2RGB);
-	//cv::flip(cvDest, cvDest, 0);
-	wxImage anImage(cvDest.cols, cvDest.rows, cvDest.data, TRUE);
-	return anImage;
+	if (preview)
+		picture.SetPicture(paramOutput);
+	else
+		picture.SetPicture(input);
+
+
+	
+	return picture.GetwxImage();
+	*/
+
+	
+	cv::Mat im2;
+
+	if (preview)
+		im2 = paramOutput;
+	else
+		im2 = input;
+
+	//if (im2.channels() == 1) { cvtColor(im2, im2, cv::COLOR_GRAY2RGB); }
+	//else if (im2.channels() == 4) { cvtColor(im2, im2, cv::COLOR_BGRA2RGB); }
+	//else { cvtColor(im2, im2, cv::COLOR_BGR2RGB); }
+
+	long imsize = im2.rows * im2.cols * im2.channels();
+	wxImage wx(im2.cols, im2.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = im2.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+	return wx;
 }
 
 cv::Mat CFiltreEffetCPU::Interpolation(const cv::Mat & inputData, const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, int flipH, int flipV, int angle, int ratio)

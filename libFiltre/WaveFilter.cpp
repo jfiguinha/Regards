@@ -193,7 +193,7 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 		CWaveEffectParameter* waveEffectParameter = (CWaveEffectParameter*)effectParameter;
 		int radius = waveEffectParameter->radius;
 		int scale = waveEffectParameter->scale;
-		filtre->WaveFilter(pt.x / scaleFactor, image.GetHeight() - (pt.y / scaleFactor), image.GetHeight(), radius, scale);
+		filtre->WaveFilter(pt.x / scaleFactor, (pt.y / scaleFactor), image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
 		

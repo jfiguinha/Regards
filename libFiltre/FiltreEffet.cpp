@@ -193,7 +193,7 @@ int CFiltreEffet::BrightnessAndContrastAuto(float clipHistPercent)
 int CFiltreEffet::LensFlare(const int& iPosX, const int& iPosY, const int& iPuissance, const int& iType,
                             const int& iIntensity, const int& iColor, const int& iColorIntensity)
 {
-	int value = filtreEffet->LensFlare(iPosX, height - iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
+	int value = filtreEffet->LensFlare(iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 	return value;
 }
 

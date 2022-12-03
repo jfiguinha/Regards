@@ -1615,12 +1615,12 @@ void CBitmapWndRender::RenderToScreenWithoutOpenCLSupport()
 		updateFilter = false;
 	}
 
-
+	/*
 	if (loadBitmap || updateFilter || glTextureSrc == nullptr)
 	{
 		loadBitmap = false;
 	}
-
+	*/
 	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor,

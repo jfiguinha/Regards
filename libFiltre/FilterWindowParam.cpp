@@ -49,8 +49,6 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 		wxBitmap bitmap = wxBitmap(image);
 		wxMemoryDC dc;
 		dc.SelectObject(bitmap);
-		
-		//wxImage render = filtreEffet->GetwxImage();
 		Drawing(&dc, bitmapViewer, m_cDessin);
 		dc.SelectObject(wxNullBitmap);
 		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
