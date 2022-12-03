@@ -2014,7 +2014,6 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		height = capture->GetHeight();
 		bool success = capture->SeekToPos(timeInSeconds);
 		frameOutput = capture->GetVideoFrame(false);
-		cvtColor(frameOutput, frameOutput, cv::COLOR_RGB2BGRA);
 	}
 	CPictureUtility::ApplyRotation(frameOutput, rotation);
 	//cv::flip(frameOutput, frameOutput, 0);
@@ -2491,8 +2490,6 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			height = capture->GetHeight();
 			bool success = capture->SeekToPos(timeInSeconds);
 			decodeFrame = capture->GetVideoFrame(false);
-			//cv::imwrite("d:\\test.jpg", decodeFrame);
-			cvtColor(decodeFrame, decodeFrame, cv::COLOR_RGB2BGRA);
 		}
 
 		CPictureUtility::ApplyRotation(decodeFrame, rotation);

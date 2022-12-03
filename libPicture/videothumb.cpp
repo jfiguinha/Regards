@@ -114,7 +114,7 @@ public:
 			}
 		}
 
-		CPictureUtility::ApplyTransform(image);
+		//CPictureUtility::ApplyTransform(image);
 
 	}
 

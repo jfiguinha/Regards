@@ -155,7 +155,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
 							int w = cvImg.cols;
 							int h = cvImg.rows;
 							//cv::cvtColor(cvImg, cvImg, cv::COLOR_BGR2RGB);
-							frameOut = wxImage(w, h, cvImg.data, true);
+							frameOut = CLibPicture::ConvertRegardsBitmapToWXImage(cvImg);
 							oldnumFrame = numFrame;
 						}
 					}

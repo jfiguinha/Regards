@@ -249,7 +249,7 @@ public:
             av_opt_set_int(localContext, "src_format", tmp_frame->format, 0);
             av_opt_set_int(localContext, "dstw", tmp_frame->width, 0);
             av_opt_set_int(localContext, "dsth", tmp_frame->height, 0);
-            av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_RGB24, 0);
+            av_opt_set_int(localContext, "dst_format", AV_PIX_FMT_BGRA, 0);
             av_opt_set_int(localContext, "sws_flags", SWS_FAST_BILINEAR, 0);
 
             if (sws_init_context(localContext, nullptr, nullptr) < 0)
@@ -259,7 +259,7 @@ public:
             }
         }
 
-        int numBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, tmp_frame->width, tmp_frame->height, 16);
+        int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGRA, tmp_frame->width, tmp_frame->height, 16);
         uint8_t* convertedFrameBuffer = videoFrame.data;
         int linesize = videoFrame.step1();
 
@@ -427,7 +427,7 @@ public:
             nbFps = (double)nbFrames / durationInSec;
         else
             nbFps = 30;
-        videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC3);
+        videoFrame = cv::Mat(cv::Size(widthVideo, heightVideo), CV_8UC4);
        
         cv::Mat temp = GetVideoFrame(true);
         isOpen = true;
