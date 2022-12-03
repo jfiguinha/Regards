@@ -1882,6 +1882,7 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				imageLoading->SetFilename(fileName);
 				imageLoading->SetPicture(jpegImage);
 				imageLoading->SetOrientation(orientation);
+				imageLoading->ConvertToBGR();
 				if (imageLoading->IsOk())
 				{
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
@@ -2045,12 +2046,11 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 #ifdef WIN32
 	cv::Mat _bitmap;
-	/*
 	if(isThumbnail)
 		_bitmap = wic->GetThumbnailMetadata(fileName.ToStdString());
 	else
 		_bitmap = wic->GetPicture(fileName.ToStdString(), numPicture);
-	*/
+
 	if (_bitmap.empty())
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else
