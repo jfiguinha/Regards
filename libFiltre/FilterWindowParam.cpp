@@ -93,7 +93,8 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 			filtre->RenderEffect(GetNameFilter(), effectParameter);
 			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-			imageLoad->SetPicture(filtre->GetBitmap(true));
+			cv::Mat mat = filtre->GetBitmap(true);
+			imageLoad->SetPicture(mat);
 			filtreEffet->SetBitmap(imageLoad);
 			delete filtre;
 			delete imageLoad;
@@ -240,7 +241,8 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			CFiltreEffet * filtre_effet = new CFiltreEffet(bitmapViewer->GetBackColor(), false, bitmap);
 			filtre_effet->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
-			imageLoad->SetPicture(filtre_effet->GetBitmap(true));
+			cv::Mat mat = filtre_effet->GetBitmap(true);
+			imageLoad->SetPicture(mat);
 			imageLoad->SetOrientation(0);
 
 			delete filtre_effet;

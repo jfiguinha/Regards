@@ -160,7 +160,8 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 {
     
 	CImageLoadingFormat *  imageLoad = new CImageLoadingFormat();
-	imageLoad->SetPicture(filtreEffet->GetBitmap(false));
+	cv::Mat mat = filtreEffet->GetBitmap(false);
+	imageLoad->SetPicture(mat);
 	wxImage image = imageLoad->GetwxImage();
 
 	wxBitmap bitmap = wxBitmap(image);

@@ -95,7 +95,8 @@ CImageLoadingFormat * CBitmapWndRender::GetBitmap(const bool& source)
 	if (filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
 		CImageLoadingFormat* bitmap = new CImageLoadingFormat();
-		bitmap->SetPicture(this->source->GetOpenCVPicture());
+		cv::Mat mat = this->source->GetOpenCVPicture();
+		bitmap->SetPicture(mat);
 		bitmap->SetOrientation(orientation);
 		bitmap->SetFilename(this->filename);
 		return bitmap;
@@ -1534,7 +1535,7 @@ void CBitmapWndRender::RenderToScreenWithOpenCLSupport()
 	int heightOutput = static_cast<int>(GetBitmapHeightWithRatio()) * scale_factor;
 
 
-	bool invert = false;
+	bool invert = true;
 	muBitmap.lock();
 	bool bitmapIsLoad = false;
 

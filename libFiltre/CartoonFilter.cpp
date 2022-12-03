@@ -121,7 +121,8 @@ void CCartoonFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter,
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);
@@ -151,7 +152,8 @@ CImageLoadingFormat* CCartoonFilter::ApplyEffect(CEffectParameter* effectParamet
 		CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
 		filtre->CartoonifyImage(cartoonEffectParameter->mode);
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 	}
 

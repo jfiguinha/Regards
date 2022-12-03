@@ -137,7 +137,8 @@ CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParamete
 		filtre->WaveFilter(pt.x / scaleFactor, image.GetHeight() - (pt.y / scaleFactor), image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 	}
 
@@ -196,8 +197,8 @@ void CWaveFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, IB
 		filtre->WaveFilter(pt.x / scaleFactor, (pt.y / scaleFactor), image.GetHeight(), radius, scale);
 
 		imageLoad = new CImageLoadingFormat();
-		
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);

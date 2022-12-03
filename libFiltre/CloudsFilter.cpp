@@ -175,7 +175,8 @@ void CCloudsFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, 
         CCloudsEffectParameter* cloudsParameter = (CCloudsEffectParameter*)effectParameter;
         filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
         imageLoad = new CImageLoadingFormat();
-        imageLoad->SetPicture(filtre->GetBitmap(true));
+        cv::Mat mat = filtre->GetBitmap(true);
+        imageLoad->SetPicture(mat);
         delete filtre;
 
         filtreEffet->SetBitmap(imageLoad);
@@ -206,7 +207,8 @@ CImageLoadingFormat* CCloudsFilter::ApplyEffect(CEffectParameter* effectParamete
         CFiltreEffet* filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), false, &image);
         filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave, cloudsParameter->transparency);
         imageLoad = new CImageLoadingFormat();
-        imageLoad->SetPicture(filtre->GetBitmap(true));
+        cv::Mat mat = filtre->GetBitmap(true);
+        imageLoad->SetPicture(mat);
         delete filtre;
     }
 

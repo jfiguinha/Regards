@@ -147,7 +147,8 @@ CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectPar
 		filtre->LensFlare(pt.x / scaleFactor, pt.y / scaleFactor, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 	}
 
@@ -211,7 +212,8 @@ void CLensFlareFilter::ApplyPreviewEffectSource(CEffectParameter* effectParamete
 		filtre->LensFlare(pt.x / scaleFactor, pt.y / scaleFactor, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
 
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);

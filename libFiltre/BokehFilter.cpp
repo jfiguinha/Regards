@@ -175,7 +175,8 @@ void CBokehFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter, I
 		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);
@@ -197,7 +198,8 @@ CImageLoadingFormat* CBokehFilter::ApplyEffect(CEffectParameter* effectParameter
 		CBokehEffectParameter* BokehEffectParameter = (CBokehEffectParameter*)effectParameter;
 		filtre->BokehEffect(BokehEffectParameter->radius, BokehEffectParameter->boxSize, nbFace, faceRect);
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 	}
 

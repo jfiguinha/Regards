@@ -110,7 +110,8 @@ void CVignetteFilter::ApplyPreviewEffectSource(CEffectParameter* effectParameter
 		filtre->VignetteEffect(vignetteEffectParameter->radius, vignetteEffectParameter->power);
 
 		imageLoad = new CImageLoadingFormat();
-		imageLoad->SetPicture(filtre->GetBitmap(true));
+		cv::Mat mat = filtre->GetBitmap(true);
+		imageLoad->SetPicture(mat);
 		delete filtre;
 
 		filtreEffet->SetBitmap(imageLoad);

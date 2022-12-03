@@ -1255,7 +1255,8 @@ CImageLoadingFormat* CLibPicture::LoadVideoThumbnail(const wxString& szFileName,
 				bitmap = new CImageLoadingFormat();
 				bitmap->SetFilename(szFileName);
 				CThumbnailVideo video(szFileName, false);
-				bitmap->SetPicture(video.GetVideoFramePercent(percent, widthThumbnail, heightThumbnail));
+				cv::Mat mat = video.GetVideoFramePercent(percent, widthThumbnail, heightThumbnail);
+				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(video.GetOrientation());
 				bitmap->SetFilename(szFileName);
 				break;
@@ -2655,7 +2656,8 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			{
 				CThumbnailVideo video(fileName, false);
 				int percent = ((float)numPicture / (float)20) * 100.0f;
-				bitmap->SetPicture(video.GetVideoFramePercent(percent, 0, 0));
+				cv::Mat mat = video.GetVideoFramePercent(percent, 0, 0);
+				bitmap->SetPicture(mat);
 				bitmap->SetOrientation(video.GetOrientation());
 				bitmap->SetFilename(fileName);
 			}

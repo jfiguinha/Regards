@@ -52,11 +52,14 @@ void CRenderBitmapOpenGL::LoadingResource(const double& scale_factor)
 
 	if (textureArrowRight == nullptr)
 		textureArrowRight = new GLTexture();
-	textureArrowRight->SetData(arrowRight.GetOpenCVPicture());
+
+	cv::Mat mat = arrowRight.GetOpenCVPicture();
+	textureArrowRight->SetData(mat);
 
 	if (textureArrowLeft == nullptr)
 		textureArrowLeft = new GLTexture();
-	textureArrowLeft->SetData(arrowLeft.GetOpenCVPicture());
+	mat = arrowLeft.GetOpenCVPicture();
+	textureArrowLeft->SetData(mat);
 }
 
 void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture* glTexture, const int& alpha, const int& left,
