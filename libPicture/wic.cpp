@@ -38,6 +38,7 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
     IWICBitmapSource* ppIThumbnail = nullptr;
     UINT cx = 0, cy = 0;
     cv::Mat mat;
+    IWICFormatConverter* m_pConvertedSourceBitmap = nullptr;
 
     hr = m_pIWICFactory->CreateDecoderFromFilename(
         std::wstring(filename.begin(), filename.end()).c_str(),                      // Image to be decoded
@@ -52,6 +53,25 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
         hr = pDecoder->GetThumbnail(&ppIThumbnail);
     }
 
+    //Step 3: Format convert the frame to 32bppPBGRA
+    if (SUCCEEDED(hr))
+    {
+
+        hr = m_pIWICFactory->CreateFormatConverter(&m_pConvertedSourceBitmap);
+    }
+
+    if (SUCCEEDED(hr))
+    {
+        hr = m_pConvertedSourceBitmap->Initialize(
+            ppIThumbnail,                          // Input bitmap to convert
+            GUID_WICPixelFormat32bppPBGRA,   // Destination pixel format
+            WICBitmapDitherTypeNone,         // Specified dither pattern
+            NULL,                            // Specify a particular palette 
+            0.f,                             // Alpha threshold
+            WICBitmapPaletteTypeCustom       // Palette translation type
+        );
+    }
+
     if (ppIThumbnail != nullptr)
     {
         if (SUCCEEDED(ppIThumbnail->GetSize(&cx, &cy)))
@@ -60,7 +80,7 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
             const UINT buf_size = cy * stride;
             byte* buf = new byte[buf_size];
 
-            hr = ppIThumbnail->CopyPixels(
+            hr = m_pConvertedSourceBitmap->CopyPixels(
                 nullptr,
                 stride,
                 buf_size,
@@ -78,16 +98,15 @@ cv::Mat CWic::GetThumbnailMetadata(const string& filename)
 
     SafeRelease(pDecoder);
     SafeRelease(ppIThumbnail);
+    SafeRelease(m_pConvertedSourceBitmap);
     return mat;
 }
 
 void CWic::GetPictureDimension(const string& filename, int& width, int& height)
 {
     HRESULT hr = S_OK;
-    IWICFormatConverter* m_pConvertedSourceBitmap = nullptr;
     IWICBitmapDecoder* pDecoder = nullptr;
     UINT cx = 0, cy = 0;
-    CRegardsBitmap* bitmap = nullptr;
 
     hr = m_pIWICFactory->CreateDecoderFromFilename(
         std::wstring(filename.begin(), filename.end()).c_str(),                      // Image to be decoded
@@ -105,28 +124,11 @@ void CWic::GetPictureDimension(const string& filename, int& width, int& height)
         hr = pDecoder->GetFrame(0, &pFrame);
     }
 
-    //Step 3: Format convert the frame to 32bppPBGRA
-    if (SUCCEEDED(hr))
-    {
 
-        hr = m_pIWICFactory->CreateFormatConverter(&m_pConvertedSourceBitmap);
-    }
 
     if (SUCCEEDED(hr))
     {
-        hr = m_pConvertedSourceBitmap->Initialize(
-            pFrame,                          // Input bitmap to convert
-            GUID_WICPixelFormat32bppPBGRA,   // Destination pixel format
-            WICBitmapDitherTypeNone,         // Specified dither pattern
-            NULL,                            // Specify a particular palette 
-            0.f,                             // Alpha threshold
-            WICBitmapPaletteTypeCustom       // Palette translation type
-        );
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        m_pConvertedSourceBitmap->GetSize(&cx, &cy);
+        pFrame->GetSize(&cx, &cy);
         width = cx;
         height = cy;
     }
@@ -134,7 +136,7 @@ void CWic::GetPictureDimension(const string& filename, int& width, int& height)
 
     SafeRelease(pDecoder);
     SafeRelease(pFrame);
-    SafeRelease(m_pConvertedSourceBitmap);
+
 }
 
 int CWic::GetNbFrame(const string& filename, bool& error)

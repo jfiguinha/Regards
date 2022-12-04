@@ -1775,12 +1775,15 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	bool notThumbnail = false;
 #ifdef WIN32
 
+	
 	cv::Mat bmp = wic->GetThumbnailMetadata(fileName.ToStdString());
 	if (!bmp.empty())
 	{
+		CMetadataExiv2 pictureMetadata(fileName);
 		imageLoading = new CImageLoadingFormat();
 		imageLoading->SetPicture(bmp);
 		imageLoading->SetFilename(fileName);
+		imageLoading->SetOrientation(pictureMetadata.GetOrientation());
 		return imageLoading;
 	}
 	HDC screen = GetDC(nullptr);

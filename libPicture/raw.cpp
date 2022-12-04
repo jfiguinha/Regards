@@ -28,7 +28,7 @@ CImageLoadingFormat* CRaw::GetThumbnail(const wxString& fileName, const bool& th
 			jpegImage.LoadFile(cxMemFile, wxBITMAP_TYPE_JPEG);
 			picture->SetPicture(jpegImage);
 			picture->SetFilename(fileName);
-
+			picture->ConvertToBGR();
 			CPictureMetadataExiv metadata(memFile->dataPt, memFile->size);
 			int orientation = metadata.GetOrientation();
 			picture->SetOrientation(orientation);

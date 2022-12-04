@@ -1,6 +1,6 @@
 #ifdef WIN32
 #include <wincodec.h>
-class CRegardsBitmap;
+
 
 namespace Regards
 {
