@@ -19,6 +19,7 @@ uint8_t* CPictureUtility::readfile(const wxString& fileName, size_t& _fileSize)
 	return _compressedImage;
 }
 
+
 void CPictureUtility::RotateExif(cv::Mat& _image, const int& orientation)
 {
 	if (_image.empty())

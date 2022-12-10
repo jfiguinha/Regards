@@ -923,38 +923,56 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				cv::Mat bitmapSrc = tasks[0].GetFrame();
 				if (!bitmapSrc.empty())
 				{
-					int boxWidth = bitmapSrc.size().width;
-					int boxHeight = bitmapSrc.size().height;
-
-					int nbItemWidth = _width / boxWidth;
-					if (nbItemWidth * boxWidth < _width)
-						nbItemWidth++;
-
-					int nbItemHeight = _heigth / boxHeight;
-					if (nbItemHeight * boxHeight < _heigth)
-						nbItemHeight++;
-
-					cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
-					int x = 0;
-					int y = (nbItemHeight * boxHeight) - boxHeight;
-
-					for (mytask task : tasks)
+					try
 					{
-						cv::Mat src = task.GetFrame();
-						src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
-						//out->InsertBitmap(task.GetFrame(), x, y, false);
-						x += boxWidth;
 
-						if (x > _width)
+						int boxWidth = bitmapSrc.size().width;
+						int boxHeight = bitmapSrc.size().height;
+
+						int nbItemWidth = _width / boxWidth;
+						if (nbItemWidth * boxWidth < _width)
+							nbItemWidth++;
+
+						int nbItemHeight = _heigth / boxHeight;
+						if (nbItemHeight * boxHeight < _heigth)
+							nbItemHeight++;
+
+						cv::Mat out = cv::Mat(boxHeight * nbItemHeight + 1, boxWidth * nbItemWidth + 1, CV_8UC4);
+						int x = 0;
+						int y = (nbItemHeight * boxHeight) - boxHeight;
+
+						for (mytask task : tasks)
 						{
-							x = 0;
-							y -= boxHeight;
+							cv::Mat src = task.GetFrame();
+
+							try
+							{
+
+								src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
+							}
+							catch (cv::Exception& e)
+							{
+								const char* err_msg = e.what();
+								std::cout << "exception caught: " << err_msg << std::endl;
+								std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+							}
+							//out->InsertBitmap(task.GetFrame(), x, y, false);
+							x += boxWidth;
+
+							if (x > _width)
+							{
+								x = 0;
+								y -= boxHeight;
+							}
 						}
+
+						picture = out(cv::Rect(0, boxHeight * nbItemHeight - _heigth, _width, _heigth));
+
+						listPicture.clear();
 					}
-
-					picture = out(cv::Rect(0, boxHeight * nbItemHeight - _heigth, _width, _heigth));
-
-					listPicture.clear();
+					catch (...)
+					{
+					}
 
 				}
 			}

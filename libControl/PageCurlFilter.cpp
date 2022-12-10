@@ -126,7 +126,16 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 			if (bitmapOut != nullptr)
 			{
 				cv::Mat mat = bitmapOut->GetOpenCVPicture();
-				mat.copyTo(bitmapNext(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+				try
+				{
+					mat.copyTo(bitmapNext(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+				}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
 			}
 			delete bitmapOut;
 			if (pictureNext == nullptr)
@@ -146,7 +155,17 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 			if (bitmapOut != nullptr)
 			{
 				cv::Mat mat = bitmapOut->GetOpenCVPicture();
-				mat.copyTo(bitmapFirst(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+				try
+				{
+					mat.copyTo(bitmapFirst(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
+				}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
+				
 			}
 			delete bitmapOut;
 			if (pictureFirst == nullptr)

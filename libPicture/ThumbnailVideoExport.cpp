@@ -130,8 +130,18 @@ cv::Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, in
 		src_bitmap = cv::Mat::zeros(cv::Size(width, height), CV_8UC4);
 		int x = (width - bitmap->GetWidth()) / 2;
 		int y = (height - bitmap->GetHeight()) / 2;
+		try
+		{
+			pBitmap.copyTo(src_bitmap(cv::Rect(x, y, pBitmap.cols, pBitmap.rows)));
+		}
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
 
-		pBitmap.copyTo(src_bitmap(cv::Rect(x, y, pBitmap.cols, pBitmap.rows)));
+		
 		//cv::flip(src_bitmap, src_bitmap, 0);
 
 		/*
@@ -240,8 +250,28 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 
 					
 					pBitmap = cv::Mat::zeros(pBitmap.size(), CV_8UC4);
-					pBitmap1.copyTo(pBitmap(cv::Rect(x2, 0, pBitmap1.cols, pBitmap1.rows)));
-					pBitmap2.copyTo(pBitmap(cv::Rect(x, 0, pBitmap2.cols, pBitmap2.rows)));
+					try
+					{
+						pBitmap1.copyTo(pBitmap(cv::Rect(x2, 0, pBitmap1.cols, pBitmap1.rows)));
+					}
+					catch (cv::Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+					}
+
+					try
+					{
+						pBitmap2.copyTo(pBitmap(cv::Rect(x, 0, pBitmap2.cols, pBitmap2.rows)));
+					}
+					catch (cv::Exception& e)
+					{
+						const char* err_msg = e.what();
+						std::cout << "exception caught: " << err_msg << std::endl;
+						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+					}
+
 					//pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
 					//pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
 					//pBitmap->InsertBitmap(pBitmap2, x, 0, false);
