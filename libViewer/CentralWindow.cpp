@@ -1013,8 +1013,11 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 		const int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
 		{
-			CImageVideoThumbnail* video = videoThumbnail.at(animationPosition);
-			delay = video->delay;
+			if (videoThumbnail.size() > animationPosition)
+			{
+				CImageVideoThumbnail* video = videoThumbnail.at(animationPosition);
+				delay = video->delay;
+			}
 		}
 		else
 		{
@@ -1146,12 +1149,15 @@ void CCentralWindow::LoadAnimationBitmap(const wxString& filename, const int& nu
 		const int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
 		{
-			CImageVideoThumbnail* thumbnail = videoThumbnail.at(numFrame);
-			if (thumbnail != nullptr)
+			if (videoThumbnail.size() > numFrame)
 			{
-				image = new CImageLoadingFormat();
-				image->SetPicture(thumbnail->image);
-				image->SetFilename(thumbnail->filename);
+				CImageVideoThumbnail* thumbnail = videoThumbnail.at(numFrame);
+				if (thumbnail != nullptr)
+				{
+					image = new CImageLoadingFormat();
+					image->SetPicture(thumbnail->image);
+					image->SetFilename(thumbnail->filename);
+				}
 			}
 		}
 		else

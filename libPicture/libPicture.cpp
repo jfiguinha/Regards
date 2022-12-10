@@ -1451,14 +1451,6 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 {
 	int iFormat = TestImageFormat(szFileName);
 
-#ifdef WIN32
-	bool error = false;
-	int count = wic->GetNbFrame(szFileName.ToStdString(), error);
-	if (!error)
-	{
-		return count;
-	}
-#endif
 
 	switch (iFormat)
 	{
@@ -1685,6 +1677,20 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 						listThumbnail->push_back(imageVideoThumbnail);
 
 					}
+				}
+				else
+				{
+					auto imageVideoThumbnail = new CImageVideoThumbnail();
+					CImageLoadingFormat * image = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
+					imageVideoThumbnail->filename = szFileName;
+					imageVideoThumbnail->image = image->GetwxImage();
+					imageVideoThumbnail->rotation = 0;
+					imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
+					imageVideoThumbnail->percent = (static_cast<float>(0) / static_cast<float>(_cxImage->
+						GetNumFrames())) * 100.0f;
+					imageVideoThumbnail->timePosition = 0;
+					listThumbnail->push_back(imageVideoThumbnail);
+					delete image;
 				}
 				delete _cxImage;
 			}
