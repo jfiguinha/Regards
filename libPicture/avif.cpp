@@ -236,7 +236,6 @@ void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data,
 {
 	if (!source.empty())
 	{
-		cv::Mat bitmapMatrix;
 		int width = source.size().width;
 		int height = source.size().height;
 		int depth = 8;
@@ -260,12 +259,12 @@ void CAvif::SavePicture(const string& filename, cv::Mat & source, uint8_t* data,
 			// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
 			avifRGBImage rgb;
 			avifRGBImageSetDefaults(&rgb, image);
-			int size = bitmapMatrix.size().width * bitmapMatrix.size().height * 4;
+			int size = source.size().width * source.size().height * 4;
 			rgb.depth = 8; // [8, 10, 12, 16]; Does not need to match image->depth.
 			rgb.format = AVIF_RGB_FORMAT_BGRA; // See choices in avif.h
 			rgb.pixels = new uint8_t[size]; // Point at your RGB(A)/BGR(A) pixels here
-			memcpy(rgb.pixels, bitmapMatrix.data, size);
-			rgb.rowBytes = bitmapMatrix.size().width * 4;
+			memcpy(rgb.pixels, source.data, size);
+			rgb.rowBytes = source.size().width * 4;
 			//memcpy(&rgb.pixels, source->GetPtBitmap(), rgb.rowBytes);
 
 

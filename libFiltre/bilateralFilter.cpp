@@ -57,7 +57,7 @@ void CBilateralFilter::Filter(CEffectParameter * effectParameter, cv::Mat & sour
 	this->source = source;
 
     vector<int> elementColor;
-    for (auto i = 1; i < 100; i++)
+    for (auto i = 1; i < 20; i++)
 	{
 		if (i % 2 == 1)
 			elementColor.push_back(i);

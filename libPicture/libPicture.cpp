@@ -1054,8 +1054,16 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 		if (wxFileName::FileExists(fileName))
 		{
-			CMetadataExiv2 pictureMetadata(fileName);
-			pictureMetadata.SetOrientation(0);
+			try
+			{
+				CMetadataExiv2 pictureMetadata(fileName);
+				pictureMetadata.SetOrientation(0);
+			}
+			catch (...)
+			{
+
+			}
+
 		}
 	}
 

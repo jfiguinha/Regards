@@ -190,9 +190,8 @@ CxImage CImageLoadingFormat::GetCxImage()
 		return CxImage();
 
 	CxImage image;
-	image.CreateFromArray(_image.data, _image.rows * _image.cols * 4, _image.size().width,
-		_image.size().height, 8, _image.size().width * 4, false,
-			false);
+	image.CreateFromArray(_image.data, _image.rows * _image.cols * 4, _image.size().width, _image.size().height, 32, _image.size().width * 4, false, false);
+	image.Flip();
 	return image;
 
 }
@@ -227,7 +226,7 @@ FIBITMAP * CImageLoadingFormat::GetFreeImage()
 	int pitch = GetWidth() * 4;
 	return FreeImage_ConvertFromRawBits(_image.data, GetWidth(),
 		GetHeight(), pitch, 32, FI_RGBA_RED_MASK,
-		FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, TRUE);
 }
 
 void CImageLoadingFormat::SetPicture(wxImage & image)

@@ -487,7 +487,7 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& d
 {
 #ifdef HAS_X265
 	struct heif_error err{};
-	if (source)
+	if (!source.empty())
 	{
 		heif_context* ctx = heif_context_alloc();
 		if (ctx)
@@ -506,7 +506,7 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& d
 			// encode the image
 			heif_image* image; // code to fill in the image omitted in this example
 
-			err = heif_image_create(source->GetBitmapWidth(), source->GetBitmapHeight(),
+			err = heif_image_create(source.size().width, source.size().height,
 			                        heif_colorspace_RGB,
 			                        heif_chroma_interleaved_RGBA,
 			                        &image);
@@ -514,18 +514,18 @@ void CHeic::SavePicture(const string& filenameOut, cv::Mat & source, uint8_t*& d
 
 
 
-			heif_image_add_plane(image, heif_channel_interleaved, source->GetBitmapWidth(), source->GetBitmapHeight(),
+			heif_image_add_plane(image, heif_channel_interleaved, source.size().width, source.size().height,
 			                     32);
 
+			cvtColor(source, source, cv::COLOR_BGRA2RGBA);
 			int stride;
 			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
-			uint8_t* data = source->GetPtBitmap();
-			source->ConvertToBgr();
+			uint8_t* data = source.data;
 			//source->HorzFlipBuf();
-			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
+			for (uint32_t y = 0; y < source.size().height; y++)
 			{
-				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
-				memcpy(p + y * stride, data + position, source->GetBitmapWidth() * 4);
+				int position = source.size().width * 4 * y;
+				memcpy(p + y * stride, data + position, source.size().width * 4);
 			}
 
 			heif_context_encode_image(ctx, image, encoder, nullptr, nullptr);
