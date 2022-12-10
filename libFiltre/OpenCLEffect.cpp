@@ -170,10 +170,15 @@ wxImage COpenCLEffect::GetwxImage(cv::UMat & input)
 {
 	cv::Mat cvDest;
 	cv::cvtColor(input, cvDest, cv::COLOR_BGR2RGB);
-	//cv::flip(cvDest, cvDest, 0);
-	wxImage anImage(input.cols, input.rows, cvDest.data, TRUE);
-	//anImage.Mirror(false);
-	return anImage;
+
+	long imsize = cvDest.rows * cvDest.cols * cvDest.channels();
+	wxImage wx(cvDest.cols, cvDest.rows, (unsigned char*)malloc(imsize), false);
+	unsigned char* s = cvDest.data;
+	unsigned char* d = wx.GetData();
+	memcpy(d, s, imsize);
+
+
+	return wx;
 }
 
 

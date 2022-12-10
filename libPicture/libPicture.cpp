@@ -1996,7 +1996,7 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int& width, in
 	return true;
 }
 
-cv::Mat & CLibPicture::LoadFromFreeImage(const char* filename)
+cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 {
 	cv::Mat bitmapMatrix;
 
@@ -2097,7 +2097,10 @@ cv::Mat CLibPicture::mat_from_wx(const wxImage& wx)
 
 		cv::merge(matChannels, im2);
 
+		cvtColor(im2, im2, cv::COLOR_RGBA2BGRA);
 	}
+	else
+		cvtColor(im2, im2, cv::COLOR_RGB2BGRA);
 
 	return im2;
 }
@@ -2186,6 +2189,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			cv::Mat mat = CJxl::GetPicture(fileName);
 			mat.convertTo(out, CV_8UC4, 255); // or CV_32F works (too)
 			bitmap->SetPicture(out);
+			bitmap->ConvertToBGR();
 			//bitmap->Flip();
 			break;
 		}
@@ -2196,6 +2200,7 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 			cv::Mat mat = CPfm::ReadFilePFM(fileName, isThumbnail);
 			mat.convertTo(out, CV_8UC4, 255); // or CV_32F works (too)
 			bitmap->SetPicture(out);
+			bitmap->Flip();
 			break;
 		}
 

@@ -525,7 +525,7 @@ void CJxl::GetDimensions(const wxString& jxl_filename, int& width, int& height)
     fclose(file);
 }
 
-cv::Mat& CJxl::GetPicture(const wxString& path)
+cv::Mat CJxl::GetPicture(const wxString& path)
 {
     cv::Mat matFloat;
     std::vector<uint8_t> icc_profile;

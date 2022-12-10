@@ -92,7 +92,7 @@ namespace Regards
 
 			//CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
-			cv::Mat & LoadFromFreeImage(const char* filename);
+			cv::Mat LoadFromFreeImage(const char* filename);
 			bool PictureDimensionFreeImage(const char* filename, int &width, int &height);
 			void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail);
 

@@ -232,10 +232,9 @@ FIBITMAP * CImageLoadingFormat::GetFreeImage()
 void CImageLoadingFormat::SetPicture(wxImage & image)
 {
 	_image = CLibPicture::mat_from_wx(image);
-	if (_image.channels() == 3)
-		cvtColor(_image, _image, cv::COLOR_BGR2BGRA);
-	else if (_image.channels() == 1)
+	if (_image.channels() == 1)
 		cvtColor(_image, _image, cv::COLOR_GRAY2BGRA);
+	
 }
 
 cv::Mat CImageLoadingFormat::GetFloatImage()

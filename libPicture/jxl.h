@@ -8,7 +8,7 @@ public:
 	CJxl() {};
 	virtual ~CJxl() {};
 	static void GetDimensions(const wxString& path, int& width, int& height);
-	static cv::Mat & GetPicture(const wxString& path);
+	static cv::Mat GetPicture(const wxString& path);
 	static void GetMetadata(const wxString& filename, uint8_t*& data, unsigned int& size);
 	static void WriteFile(cv::Mat& matFloat, const wxString& path);
 private:

@@ -13,7 +13,7 @@
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
-static cv::Mat & DecodeFrame(void* data, int length, void* externDecoder = nullptr);
+static cv::Mat DecodeFrame(void* data, int length, void* externDecoder = nullptr);
 
 typedef struct x265Frame
 {
@@ -60,7 +60,7 @@ static uint8_t* convert_to_8bit(const uint8_t* data, int width, int height,
 }
 
 
-cv::Mat & GetRGBPicture(const de265_image* img)
+cv::Mat GetRGBPicture(const de265_image* img)
 {
 	int width = de265_get_image_width(img, 0);
 	int height = de265_get_image_height(img, 0);
@@ -256,7 +256,7 @@ cv::Mat & GetRGBPicture(const de265_image* img)
 }
 
 
-cv::Mat & DecodeFrame(void* data, int length, void* externDecoder)
+cv::Mat DecodeFrame(void* data, int length, void* externDecoder)
 {
 	cv::Mat picture;
 	de265_decoder_context* decoderContext = nullptr;

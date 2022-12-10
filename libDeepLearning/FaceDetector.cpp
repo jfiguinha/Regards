@@ -238,10 +238,8 @@ std::vector<cv::Rect> CFaceDetector::GetRectFace(const cv::Mat& picture)
 
 	if (isLoading)
 	{
-		Mat source;
-		//cv::flip(picture, source, 1);
 		std::vector<CFace> listOfFace;
-		detectFacePCN->DetectFace(source, listOfFace, listFace);
+		detectFacePCN->DetectFace(picture, listOfFace, listFace);
 	}
 
 	return listFace;
@@ -385,10 +383,8 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 	Mat Source;	
 	if (isLoading)
 	{
-		flip(pBitmap, Source, 0);
 		std::vector<CFace> listOfFace;
 		detectFacePCN->DetectFace(Source, listOfFace, pointOfFace);
-
 
 		if (listOfFace.size() > 0)
 		{
@@ -527,11 +523,6 @@ void CFaceDetector::DetectEyes(const cv::Mat& pBitmap)
 				}
 				
 			}
-		}
-
-		if (faceFound)
-		{
-			flip(Source, pBitmap, 0);
 		}
 	}
 }
