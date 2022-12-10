@@ -219,6 +219,7 @@ void CImageLoadingFormat::SetPicture(CxImage* image)
 {
 	_image.create(image->GetHeight(), image->GetWidth(), CV_8UC4);
 	image->Encode2BGRA(_image.data, image->GetHeight() * image->GetWidth() * 4, false);
+	cv::flip(_image, _image, 0);
 }
 
 FIBITMAP * CImageLoadingFormat::GetFreeImage()

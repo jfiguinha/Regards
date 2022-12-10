@@ -1683,7 +1683,7 @@ void CLibPicture::LoadAllVideoThumbnail(const wxString& szFileName, vector<CImag
 							GetNumFrames())) * 100.0f;
 						imageVideoThumbnail->timePosition = i;
 						listThumbnail->push_back(imageVideoThumbnail);
-						delete frame;
+
 					}
 				}
 				delete _cxImage;
@@ -1885,7 +1885,6 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 				imageLoading->SetFilename(fileName);
 				imageLoading->SetPicture(jpegImage);
 				imageLoading->SetOrientation(orientation);
-				imageLoading->ConvertToBGR();
 				if (imageLoading->IsOk())
 				{
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
@@ -2027,12 +2026,12 @@ cv::Mat CLibPicture::LoadFromFreeImage(const char* filename)
 
 	dibRgba = FreeImage_ConvertTo32Bits(dib);
 
-
 	//get the image width and height
 	width = FreeImage_GetWidth(dibRgba);
 	height = FreeImage_GetHeight(dibRgba);
-	bitmapMatrix = cv::Mat(height, width, CV_8UC4, FreeImage_GetBits(dibRgba));
-
+	bitmapMatrix = cv::Mat(height, width, CV_8UC4);
+	memcpy(bitmapMatrix.data, FreeImage_GetBits(dibRgba), width * height * 4);
+	cv::flip(bitmapMatrix, bitmapMatrix, 0);
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
 	FreeImage_Unload(dibRgba);
