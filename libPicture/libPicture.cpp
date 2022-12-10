@@ -1450,7 +1450,14 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 int CLibPicture::GetNbImage(const wxString& szFileName)
 {
 	int iFormat = TestImageFormat(szFileName);
-
+#ifdef WIN32
+	/*
+	bool error = false;
+	int nbFrame = wic->GetNbFrame(szFileName.ToStdString(), error);
+	if (!error)
+		return nbFrame;
+	*/
+#endif
 
 	switch (iFormat)
 	{
@@ -2056,7 +2063,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	cv::Mat _bitmap;
 	if(isThumbnail)
 		_bitmap = wic->GetThumbnailMetadata(fileName.ToStdString());
-	else
+	else if(numPicture == 0)
 		_bitmap = wic->GetPicture(fileName.ToStdString(), numPicture);
 
 	if (_bitmap.empty())
