@@ -937,7 +937,7 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 						if (nbItemHeight * boxHeight < _heigth)
 							nbItemHeight++;
 
-						cv::Mat out = cv::Mat(boxHeight * nbItemHeight + 1, boxWidth * nbItemWidth + 1, CV_8UC4);
+						cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
 						int x = 0;
 						int y = (nbItemHeight * boxHeight) - boxHeight;
 
