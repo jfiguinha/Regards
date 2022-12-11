@@ -2103,8 +2103,8 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
     }
     else
         LoadPicture(fileName, isThumbnail, numPicture, bitmap);
+*/
 #else
-*/
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 #endif
 	return bitmap;
