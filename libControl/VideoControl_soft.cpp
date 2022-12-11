@@ -192,7 +192,7 @@ cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 		muBitmap.lock();
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
-			cv::Mat data = openclEffectYUV->GetMatrix(true);
+			pictureFrame = openclEffectYUV->GetMatrix(true);
 			pictureFrame.copyTo(bitmap);
 
 		}
