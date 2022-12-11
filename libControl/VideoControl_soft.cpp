@@ -187,10 +187,26 @@ float CVideoControlSoft::GetMovieRatio()
 cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 {
 	cv::Mat bitmap;
-	muBitmap.lock();
-	pictureFrame.copyTo(bitmap);
-	muBitmap.unlock();
-	
+	if (!isffmpegDecode)
+	{
+		muBitmap.lock();
+		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
+		{
+			cv::Mat data = openclEffectYUV->GetMatrix(true);
+			pictureFrame.copyTo(bitmap);
+
+		}
+		muBitmap.unlock();
+	}
+	else
+	{
+		cv::Mat bitmap;
+		muBitmap.lock();
+		pictureFrame.copyTo(bitmap);
+		muBitmap.unlock();
+	}
+
+
 	if (!bitmap.empty())
 	{
 		CPictureUtility::ApplyRotation(bitmap, angle);
@@ -1856,9 +1872,6 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
         openclOpenGLInterop = false;
 
 	
-	muBitmap.lock();
-	data.copyTo(pictureFrame);
-	muBitmap.unlock();
 	
 	return glTexture;
 }
