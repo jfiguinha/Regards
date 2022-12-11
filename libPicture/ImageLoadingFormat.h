@@ -7,7 +7,7 @@ class CImageLoadingFormat
 public:
 	CImageLoadingFormat();
 	~CImageLoadingFormat();
-	void SaveToJpeg(const wxString& filename);
+	//void SaveToJpeg(const wxString& filename);
 	cv::Mat GetOpenCVPicture();
 	CImageLoadingFormat* GetPage(const int& numPage);
 	int GetNbPage();

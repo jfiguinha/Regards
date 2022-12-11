@@ -1,5 +1,6 @@
 #include "header.h"
 #include "MetadataExiv2.h"
+#include <FreeImage.h>
 #include "PictureMetadataExiv.h"
 #include <ximage.h>
 #include <libPicture.h>

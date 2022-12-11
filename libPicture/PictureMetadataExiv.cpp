@@ -1,4 +1,5 @@
 #include "header.h"
+#include <FreeImage.h>
 #include <ximage.h>
 #include <ConvertUtility.h>
 #include <exiv2/image.hpp>

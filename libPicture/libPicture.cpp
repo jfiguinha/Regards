@@ -2086,6 +2086,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		bitmap->SetPicture(_bitmap);
         ApplyOrientation(fileName, true, bitmap);
     }
+/*
 #elif defined(__APPLE__)
     int width = 0;
     int height = 0;
@@ -2103,6 +2104,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
     else
         LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 #else
+*/
 	LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 #endif
 	return bitmap;

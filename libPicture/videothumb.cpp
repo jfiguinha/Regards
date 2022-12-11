@@ -1,4 +1,5 @@
 #include "header.h"
+#include <FreeImage.h>
 #include "videothumb.h"
 #include "VideoPlayer.h"
 #include "Metadata.h"

@@ -1,6 +1,7 @@
 #include <header.h>
 #include "raw.h"
 #include "RegardsRaw.h"
+#include <FreeImage.h>
 #include <ximage.h>
 #include <ImageLoadingFormat.h>
 #include <libraw/libraw.h>

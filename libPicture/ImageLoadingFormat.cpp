@@ -1,12 +1,13 @@
 // ReSharper disable All
 #include <header.h>
 #include "ImageLoadingFormat.h"
+#include <FreeImage.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <ximage.h>
 #include <wx/mstream.h>
-#include <wx/wfstream.h>
-#include <FreeImage.h>
+//#include <wx/wfstream.h>
+
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif
@@ -269,7 +270,7 @@ void CImageLoadingFormat::SetPicture(cv::Mat& image, const int & exif, const wxS
 	filename = fileIn;
 }
 
-
+/*
 void CImageLoadingFormat::SaveToJpeg(const wxString& filename)
 {
 	int compressMethod = 0;
@@ -279,7 +280,7 @@ void CImageLoadingFormat::SaveToJpeg(const wxString& filename)
 	outputStream.Write(data.data(), data.size());
 	outputStream.Close();
 }
-
+*/
 void CImageLoadingFormat::ConvertToBGR()
 {
 	cvtColor(_image, _image, cv::COLOR_RGBA2BGRA);

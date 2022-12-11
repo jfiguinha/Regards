@@ -88,12 +88,6 @@
     <File Name="RGBAQuad.cpp"/>
     <File Name="ThumbnailDataStorage.h"/>
     <File Name="ThumbnailDataStorage.cpp"/>
-    <File Name="RegardsJpegPicture.h"/>
-    <File Name="RegardsJpegPicture.cpp"/>
-    <File Name="RegardsFloatBitmap.h"/>
-    <File Name="RegardsFloatBitmap.cpp"/>
-    <File Name="RegardsBitmap.h"/>
-    <File Name="RegardsBitmap.cpp"/>
     <File Name="ImageLoadingFormat.h"/>
     <File Name="ImageLoadingFormat.cpp"/>
   </VirtualDirectory>
@@ -156,6 +150,7 @@
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../libDeepLearning"/>
+        <Preprocessor Value="__FREEIMAGE__"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
