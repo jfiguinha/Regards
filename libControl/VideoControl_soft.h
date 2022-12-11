@@ -240,7 +240,7 @@ protected:
 	wxString message;
 	cv::Mat pictureSubtitle;
 	cv::Mat pictureFrame;
-	cv::Mat pictureVideo;
+	//cv::Mat pictureVideo;
 	int64_t videoPosition = 0;
 	int64_t oldvideoPosition = 0;
 	bool updateContext = true;

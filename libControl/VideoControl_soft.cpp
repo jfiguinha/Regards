@@ -187,35 +187,13 @@ float CVideoControlSoft::GetMovieRatio()
 cv::Mat CVideoControlSoft::SavePicture(bool& isFromBuffer)
 {
 	cv::Mat bitmap;
-	if (thumbnailFromBitmap)
-	{
-		muBitmap.lock();
-		pictureVideo.copyTo(bitmap);
-		muBitmap.unlock();
-		isFromBuffer = true;
-	}
-	else
-	{
-		isFromBuffer = false;
-		if (isffmpegDecode)
-		{
-			muBitmap.lock();
-			pictureFrame.copyTo(bitmap);
-			muBitmap.unlock();
-		}
-		else
-		{
-			muBitmap.lock();
-			bitmap = openclEffectYUV->GetMatrix(true);
-			muBitmap.unlock();
-		}
-	}
+	muBitmap.lock();
+	pictureFrame.copyTo(bitmap);
+	muBitmap.unlock();
 	
 	if (!bitmap.empty())
 	{
-		//cv::flip(bitmap, bitmap, 0);
 		CPictureUtility::ApplyRotation(bitmap, angle);
-		//bitmap->ApplyRotation(angle);
 	}
 	return bitmap;
 }
@@ -328,11 +306,12 @@ void CVideoControlSoft::TestMaxY()
 		posHauteur = 0;
 }
 
+
 void CVideoControlSoft::GenerateThumbnailVideo(void* data)
 {
 	auto videoSoft = static_cast<CVideoControlSoft*>(data);
 	videoSoft->muBitmap.lock();
-	videoSoft->pictureVideo = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
+	videoSoft->pictureFrame = videoSoft->thumbnailVideo->GetVideoFramePos(videoSoft->videoPosition, 0, 0);
 	//if(!videoSoft->pictureVideo.empty())
 	//	cv::flip(videoSoft->pictureVideo, videoSoft->pictureVideo, 0);
 	videoSoft->muBitmap.unlock();
@@ -1144,10 +1123,10 @@ void CVideoControlSoft::OnPaint3D(wxGLCanvas* canvas, CRenderOpenGL* renderOpenG
 
 	if (videoRenderStart)
 	{
-		if (thumbnailVideo != nullptr && !pictureVideo.empty() && !IsSupportOpenCL())
+		if (thumbnailVideo != nullptr && !pictureFrame.empty() && !IsSupportOpenCL())
 		{
 			muBitmap.lock();
-			glTexture = RenderFFmpegToTexture(pictureVideo);
+			glTexture = RenderFFmpegToTexture(pictureFrame);
 			muBitmap.unlock();
 		}
 		else
@@ -1875,6 +1854,12 @@ GLTexture* CVideoControlSoft::RenderToTexture(COpenCLEffectVideo* openclEffect)
 	cv::UMat data = openclEffect->GetUMat(false);
 	if(!glTexture->SetData(data))
         openclOpenGLInterop = false;
+
+	
+	muBitmap.lock();
+	data.copyTo(pictureFrame);
+	muBitmap.unlock();
+	
 	return glTexture;
 }
 
@@ -2124,6 +2109,7 @@ GLTexture* CVideoControlSoft::RenderToGLTexture()
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			glTexture = RenderToTexture(openclEffectYUV);
+
 		}
 		muBitmap.unlock();
 
