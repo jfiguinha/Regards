@@ -119,9 +119,6 @@
     <GlobalSettings>
       <Compiler Options="-Wall;$(shell ../libextern/wxconfig_cpp.sh);-Wall;-std=gnu++14;-pthread;-finstrument-functions" C_Options=";-Wall" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
-        <IncludePath Value="../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>

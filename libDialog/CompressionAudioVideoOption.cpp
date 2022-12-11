@@ -10,7 +10,7 @@
 #include <videothumb.h>
 #include "ShowPreview.h"
 #include <LibResource.h>
-#include <Picture_utility.h>
+#include <picture_utility.h>
 #include <WindowUtility.h>
 extern "C" {
 #include <libavutil/error.h>
