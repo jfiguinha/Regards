@@ -7,6 +7,7 @@
 #include <libde265/de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
+#include <libheif/heif_cxx.h>
 #include <libheif/heif.h>
 #include <FileUtility.h>
 #include <map>
@@ -807,6 +808,8 @@ struct mytask
 
 cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 {
+
+	
 	struct PictureEncoder
 	{
 		x265Frame* frame = nullptr;
@@ -939,15 +942,14 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 
 						cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
 						int x = 0;
-						int y = (nbItemHeight * boxHeight) - boxHeight;
-
+						int y = 0;
+						int i = 0;
 						for (mytask task : tasks)
 						{
 							cv::Mat src = task.GetFrame();
 
 							try
 							{
-
 								src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
 							}
 							catch (cv::Exception& e)
@@ -959,14 +961,16 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 							//out->InsertBitmap(task.GetFrame(), x, y, false);
 							x += boxWidth;
 
-							if (x > _width)
+							if (x >= _width)
 							{
 								x = 0;
-								y -= boxHeight;
+								y += boxHeight;
 							}
+							i++;
 						}
 
-						picture = out(cv::Rect(0, boxHeight * nbItemHeight - _heigth, _width, _heigth));
+						
+						picture = out(cv::Rect(0, 0, _width, _heigth));
 
 						listPicture.clear();
 					}
@@ -1124,8 +1128,41 @@ END:
 
 
 	Reader::Destroy(reader);
+	
 
+/*
+	cv::Mat picture;
+	try
+	{
+		heif_context* ctx = heif_context_alloc();
+		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
 
+		// get a handle to the primary image
+		heif_image_handle* handle;
+		heif_context_get_primary_image_handle(ctx, &handle);
+
+		// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+		heif_image* img;
+		heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+
+		int width = heif_image_handle_get_width(handle);
+		int height = heif_image_handle_get_height(handle);
+
+		picture = cv::Mat(height, width, CV_8UC3);
+
+		int stride = 0;
+		const uint8_t * data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+		memcpy(picture.data, data, stride);
+
+		heif_image_release(img);
+		heif_image_handle_release(handle);
+		heif_context_free(ctx);
+
+	}
+	catch (const heif::Error& err) {
+		std::cerr << err.get_message() << "\n";
+	}
+	*/
 	return picture;
 }
 

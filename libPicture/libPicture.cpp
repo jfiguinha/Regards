@@ -1674,14 +1674,14 @@ CImageLoadingFormat* CLibPicture::LoadThumbnail(const wxString& fileName, const 
 	}
 	else if (iFormat == HEIC)
 	{
-		int orientation = 0;
-		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName), orientation);
+		int angle = 0;
+		cv::Mat bitmap = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName), angle);
 		if (!bitmap.empty())
 		{
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
 			imageLoading->SetPicture(bitmap);
-			imageLoading->SetOrientation(orientation);
+			imageLoading->SetRotation(angle);
 			if (imageLoading != nullptr && imageLoading->IsOk())
 			{
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
@@ -1892,6 +1892,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 #ifdef WIN32
 	cv::Mat _bitmap;
+	/*
 	if(isThumbnail)
 		_bitmap = wic->GetThumbnailMetadata(CConvertUtility::ConvertToStdString(fileName));
 	else if (numPicture == 0)
@@ -1901,7 +1902,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		if(nbFrame == GetNbImage(fileName))
 			_bitmap = wic->GetPicture(CConvertUtility::ConvertToStdString(fileName), numPicture);
 	}
-
+	*/
 	if (_bitmap.empty())
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else

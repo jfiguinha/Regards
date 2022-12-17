@@ -20,6 +20,9 @@ public:
 	int GetOrientation();
 	wxString GetFilename();
 	int GetFormat();
+	void SetRotation(const int& rotation);
+	bool Rotate180();
+	bool Rotate270();
 	int GetResolution();
 	void SetOrientation(const int& orientation);
 	void SetFilename(const wxString& filename);

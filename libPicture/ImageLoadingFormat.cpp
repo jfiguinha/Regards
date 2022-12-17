@@ -61,6 +61,40 @@ int CImageLoadingFormat::GetHeight()
 	return _image.rows;
 }
 
+void CImageLoadingFormat::SetRotation(const int& rotation)
+{
+	if (rotation == 90)
+		Rotate90();
+	else if (rotation == -90)
+		Rotate270();
+	else if (rotation == -180)
+		Rotate180();
+	else if (rotation == 180)
+		Rotate180();
+	else if (rotation == -270)
+		Rotate90();
+	else if (rotation == 270)
+		Rotate270();
+}
+
+bool CImageLoadingFormat::Rotate270()
+{
+	if (_image.empty())
+		return false;
+
+	cv::rotate(_image, _image, cv::ROTATE_90_CLOCKWISE);
+	return true;
+}
+
+bool CImageLoadingFormat::Rotate180()
+{
+	if (_image.empty())
+		return false;
+
+	cv::rotate(_image, _image, cv::ROTATE_180);
+	return true;
+}
+
 void CImageLoadingFormat::Mirror()
 {
 	if (!IsOk())
