@@ -24,6 +24,7 @@
 #include <wx/filefn.h> 
 #include <ImageLoadingFormat.h>
 #include <MainThemeInit.h>
+#include <RegardsPDF.h>
 #include <MainParamInit.h>
 using namespace Regards::Picture;
 using namespace Regards::Print;
@@ -417,11 +418,10 @@ wxString CScannerFrame::ScanPage()
 #ifndef __APPLE__
 	if (image.IsOk())
 	{
-		CLibPicture picture;
 		pdfFile = CFileUtility::GetTempFile("scanner.pdf");
 		if (wxFileExists(pdfFile))
 			wxRemoveFile(pdfFile);
-		picture.SaveToPDF(&image, pdfFile);
+		CRegardsPDF::SaveToPDF(&image, pdfFile);
 
 	}
 #endif

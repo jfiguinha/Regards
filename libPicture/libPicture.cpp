@@ -89,6 +89,7 @@ using namespace Regards::exiv2;
 #include <PDFOption.h>
 #include <CompressionOption.h>
 #include <opencv2/core/core.hpp>
+#include "RegardsPDF.h"
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1
 #define TYPE_IMAGE_REGARDSIMAGE 2
@@ -382,35 +383,7 @@ int CLibPicture::SavePictureOption(const int& format, int& option, int& quality)
 
 	case PDF:
 		{
-			PDFOption pdfOption(nullptr);
-			pdfOption.ShowModal();
-			if (pdfOption.IsOk())
-			{
-				option = pdfOption.CompressionOption();
-				switch (option)
-				{
-				case 0:
-					{
-						CompressionOption jpegOption(nullptr);
-						jpegOption.ShowModal();
-						if (jpegOption.IsOk())
-						{
-							quality = jpegOption.CompressionLevel();
-						}
-						break;
-					}
-				case 1:
-					{
-						TiffOption tiffOption(nullptr);
-						tiffOption.ShowModal();
-						if (tiffOption.IsOk())
-							quality = tiffOption.CompressionOption();
-					}
-					break;
-				default: ;
-				}
-				returnValue = 1;
-			}
+			CRegardsPDF::SavePictureOption( option, quality);
 		}
 		break;
 
@@ -964,69 +937,7 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 
 	case PDF:
 		{
-			wxString fileToAdd = "";
-			wxString file = "";
-			wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-			wxString tempFolder = documentPath + "\\temp";
-			if (!wxMkDir(tempFolder))
-			{
-#else
-				wxString tempFolder = documentPath + "/temp";
-				if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-				// handle the error here
-			}
-			//Save
-
-			if (option == 0)
-			{
-				wxLogNull logNo;
-#ifdef WIN32
-				file = tempFolder + "\\temporary.jpg";
-#else
-				file = tempFolder + "/temporary.jpg";
-#endif
-
-
-				if (wxFileExists(file))
-					wxRemoveFile(file);
-
-				wxImage image = bitmap->GetwxImage();
-				image.SetOption("wxIMAGE_OPTION_QUALITY", quality);
-				image.SaveFile(file, wxBITMAP_TYPE_JPEG);
-
-			}
-			else
-			{
-#ifdef WIN32
-				file = tempFolder + "\\temporary.tiff";
-#else
-				file = tempFolder + "/temporary.tiff";
-#endif
-
-				if (wxFileExists(file))
-					wxRemoveFile(file);
-
-				wxImage image = bitmap->GetwxImage();
-				image.SetOption("wxIMAGE_OPTION_TIFF_COMPRESSION", 5);
-				image.SaveFile(file, wxBITMAP_TYPE_TIFF);
-			}
-
-			wxImage image;
-			image.LoadFile(file);
-			//int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-			//int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
-			//	double dblDpiBy72 = (double)m_nDpi / 72.0;
-
-			image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
-			//image.SetOption(wxIMAGE_OPTION_RESOLUTIONX, 200);// bitmap->GetResolution());
-			//image.SetOption(wxIMAGE_OPTION_RESOLUTIONY, 200);// bitmap->GetResolution());
-			//image.SetOption(wxIMAGE_OPTION_RESOLUTION, 200);//bitmap->GetResolution());
-
-			SaveToPDF(&image, fileName, file, option, quality);
-			wxRemoveFile(file);
+			CRegardsPDF::SavePictureToPdf(fileName, bitmap, option, quality);
 		}
 		break;
 
@@ -1072,76 +983,6 @@ int CLibPicture::SavePicture(const wxString& fileName, CImageLoadingFormat* bitm
 		             informations_error, wxOK | wxICON_ERROR);
 
 	return 0;
-}
-
-
-bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& fileName, const wxString& pictureName, int option,
-                            int quality)
-{
-	if (poImage->HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
-	{
-		//int nResolutionUnit= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONUNIT );
-		int nResolution = 0;
-
-		// Get image resolution-
-		if (poImage->HasOption(wxIMAGE_OPTION_RESOLUTION))
-		{
-			nResolution = poImage->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
-		}
-		else if (poImage->HasOption(wxIMAGE_OPTION_RESOLUTIONX) && (poImage->HasOption(wxIMAGE_OPTION_RESOLUTIONY)))
-		{
-			int nResolutionX = poImage->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-			int nResolutionY = poImage->GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
-
-			if (nResolutionX == nResolutionY)
-			{
-				nResolution = nResolutionX;
-			}
-		}
-		if (nResolution)
-		{
-			/*
-            // Save image in a temporary file.
-            wxString strTempFileName= wxFileName::CreateTempFileName( wxEmptyString );
-            poImage->SaveFile(strTempFileName, wxBITMAP_TYPE_TIFF);
-
-            // Create a PDF document, add a page, and put the image on it.
-            wxPdfDocument oPdfDocument;
-            oPdfDocument.AddPage( ( poImage->GetHeight() > poImage->GetWidth() ) ? wxPORTRAIT : wxLANDSCAPE );
-            oPdfDocument.SetImageScale( (double)nResolution * ( nResolutionUnit == wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0 ) / 72.0 );
-            oPdfDocument.Image( strTempFileName, 0 , 0, 0, 0, wxT( "image/tiff" ) );
-            // Remove temporary file.
-            ::wxRemoveFile( strTempFileName );
-            oPdfDocument.Close();
-            oPdfDocument.SaveAsFile(fileName);
-			*/
-
-			// Create a PDF document, add a page, and put the image on it.
-			wxPdfDocument oPdfDocument;
-			//int tpl = oPdfDocument.BeginTemplate(0, 0, poImage->GetWidth(), poImage->GetHeight());
-			wxPrintOrientation orientation = (poImage->GetHeight() > poImage->GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
-			oPdfDocument.AddPage(orientation);
-
-			//float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
-			//float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
-			//double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
-			//double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
-
-			if (option == 0)
-				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(),
-				                   wxT("image/jpeg"));
-			else
-				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(),
-				                   wxT("image/tiff"));
-
-			oPdfDocument.Close();
-			oPdfDocument.SaveAsFile(fileName);
-
-			return true;
-		}
-	}
-	// File saving not possible or not implemented.
-	return false;
 }
 
 
@@ -1349,27 +1190,17 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
                                        const int& bitmapType, const int& width, const int& height,
                                        const bool& compressJpeg, const bool& isThumbnail)
 {
-	wxPoppler poppler;
+	
 	wxImage image;
 	wxBitmapType bitmapTypeWxWidget = {};
-
+	CRegardsPDF* regardsPdf = nullptr;
 	//int iFormat = TestImageFormat(szFileName);
 	//bool needresize = true;
 	int m_ani_images = 0;
 	if (bitmapType == PDF)
 	{
-		try
-		{
-			bool isValid = poppler.Open(szFileName);
-			if (isValid)
-			{
-				m_ani_images = poppler.GetPageCount();
-				poppler.SetDpi(75);
-			}
-		}
-		catch (...)
-		{
-		}
+		bool error = false;
+		m_ani_images = CRegardsPDF::GetNbFrame(szFileName, error);
 	}
 	else
 	{
@@ -1393,18 +1224,16 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 	}
 	else
 	{
+		if (bitmapType == PDF)
+			regardsPdf = new CRegardsPDF(szFileName);
+
 		for (auto i = 0; i < m_ani_images; i++)
 		{
 			bool return_value;
 			image.Destroy();
 			if (bitmapType == PDF)
 			{
-				return_value = poppler.SelectPage(i);
-				if (return_value)
-					return_value = poppler.RenderPage();
-
-				if (return_value)
-					image = poppler.GetImage();
+				image = regardsPdf->GetPicture(i);
 			}
 			else
 			{
@@ -1453,6 +1282,8 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 			}
 		}
 	}
+	if (regardsPdf != nullptr)
+		delete regardsPdf;
 }
 
 int CLibPicture::GetNbImage(const wxString& szFileName)
@@ -1484,17 +1315,8 @@ int CLibPicture::GetNbImage(const wxString& szFileName)
 
 	case PDF:
 		{
-			try
-			{
-				wxPoppler poppler;
-				bool isValid = poppler.Open(szFileName);
-				if (isValid)
-					return poppler.GetPageCount();
-			}
-			catch (...)
-			{
-			}
-			return 0;
+			bool isValid = false;
+			return CRegardsPDF::GetNbFrame(szFileName, isValid);
 		}
 
 
@@ -2624,26 +2446,9 @@ void CLibPicture::LoadPicture(const wxString& fileName, const bool& isThumbnail,
 
 		case PDF:
 			{
-				try
-				{
-					bool value = false;
-					wxPoppler poppler;
-					value = poppler.Open(fileName);
-					if (value)
-						value = poppler.SelectPage(numPicture);
-
-					if (value)
-						value = poppler.RenderPage();
-
-					if (value)
-					{
-						wxImage image(poppler.GetImage());
-						bitmap->SetPicture(image);
-					}
-				}
-				catch (...)
-				{
-				}
+				CRegardsPDF regardsPdf(fileName);
+				wxImage image = regardsPdf.GetPicture(numPicture);
+				bitmap->SetPicture(image);
 			}
 			break;
 
@@ -2888,25 +2693,9 @@ int CLibPicture::GetPictureDimensions(const wxString& fileName, int& width, int&
 
 	case PDF:
 		{
-			try
-			{
-				wxPoppler poppler;
-				bool isValid = poppler.Open(fileName);
-				if (isValid)
-					isValid = poppler.SetDpi(300);
-				if (isValid)
-					isValid = poppler.SelectPage(0);
-				if (isValid)
-					isValid = poppler.RenderPage();
-				if (isValid)
-				{
-					imageWx = poppler.GetImage();
-					typeImage = TYPE_IMAGE_WXIMAGE;
-				}
-			}
-			catch (...)
-			{
-			}
+			CRegardsPDF regardsPdf(fileName);
+			imageWx = regardsPdf.GetPicture(0);
+			typeImage = TYPE_IMAGE_WXIMAGE;
 		}
 
 		break;
@@ -3035,87 +2824,3 @@ void CLibPicture::UninitFreeImage()
 {
 	FreeImage_DeInitialise();
 }
-
-/*
-CPictureData* CLibPicture::LoadPictureToJpeg(const wxString& filename, bool& pictureOK, const int& resizeWidth,
-                                             const int& resizeHeight)
-{
-	CPictureData* picture_data = nullptr;
-	CLibPicture libPicture;
-	CImageLoadingFormat* imageLoading = libPicture.LoadPicture(filename);
-
-	if (imageLoading != nullptr)
-	{
-		pictureOK = imageLoading->IsOk();
-		if (pictureOK)
-		{
-			imageLoading->ApplyExifOrientation(1);
-			imageLoading->ConvertToRGB24(true);
-			//Calcul Resize Size
-			picture_data = new CPictureData();
-			if (resizeWidth != 0 && resizeHeight != 0)
-			{
-				const float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth,
-				                                       resizeHeight);
-				picture_data->SetWidth(imageLoading->GetWidth() * ratio);
-				picture_data->SetHeight(imageLoading->GetHeight() * ratio);
-				imageLoading->Resize(picture_data->GetWidth(), picture_data->GetHeight(), 1);
-			}
-			else
-			{
-				picture_data->SetWidth(imageLoading->GetWidth());
-				picture_data->SetHeight(imageLoading->GetHeight());
-			}
-
-			unsigned long outputsize = 0;
-			int compressMethod = 0;
-			uint8_t* data = imageLoading->GetJpegData(outputsize, compressMethod);
-			picture_data->SetJpegData(data, outputsize);
-			imageLoading->DestroyJpegData(data, compressMethod);
-		}
-	}
-
-	if (imageLoading != nullptr)
-		delete imageLoading;
-
-	imageLoading = nullptr;
-
-	return picture_data;
-}
-*/
-/*
-CPictureData* CLibPicture::LoadPictureData(const wxString& filename, bool& pictureOK)
-{
-	auto pictureData = LoadPictureToJpeg(filename, pictureOK);
-	return pictureData;
-}
-*/
-
-bool CLibPicture::SaveToPDF(wxImage* poImage, const wxString& pdfFile, int option, int quality)
-{
-	wxLogNull logNo;
-	int _option = option;
-	int _quality = quality;
-
-	if (_option == -1)
-		SavePictureOption(PDF, _option, _quality);
-
-	wxString fileToSave;
-	if (option == 0)
-		fileToSave = CFileUtility::GetTempFile("scanner.jpg");
-	else
-		fileToSave = CFileUtility::GetTempFile("scanner.tif");
-
-	if (wxFileExists(fileToSave))
-		wxRemoveFile(fileToSave);
-
-	if (option == 0)
-		poImage->SaveFile(fileToSave, wxBITMAP_TYPE_JPEG);
-	else
-		poImage->SaveFile(fileToSave, wxBITMAP_TYPE_TIFF);
-
-	SaveToPDF(poImage, pdfFile, fileToSave, option, _quality);
-
-	return true;
-}
-

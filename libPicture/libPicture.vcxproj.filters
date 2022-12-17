@@ -109,6 +109,9 @@
     <ClCompile Include="RGBAQuad.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
+    <ClCompile Include="RegardsPDF.cpp">
+      <Filter>pdf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -240,6 +243,9 @@
     <ClInclude Include="RGBAQuad.h">
       <Filter>datastructure</Filter>
     </ClInclude>
+    <ClInclude Include="RegardsPDF.h">
+      <Filter>pdf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -274,6 +280,9 @@
     </Filter>
     <Filter Include="wic">
       <UniqueIdentifier>{aba33453-3fa0-4277-a7fa-b47ea6f8a2f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pdf">
+      <UniqueIdentifier>{ce966178-15a0-4d77-ae95-7ecd65075539}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

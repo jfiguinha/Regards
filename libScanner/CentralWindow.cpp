@@ -19,6 +19,7 @@
 #include <ConvertUtility.h>
 #include <wx/busyinfo.h>
 #include <ConvertUtility.h>
+#include <RegardsPDF.h>
 using namespace Regards::Window;
 using namespace Regards::Picture;
 #define OPENFILE 0
@@ -85,7 +86,7 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 		if (selectFile.ShowModal() == wxID_OK)
 		{
 			vector<int> listPage = selectFile.GetSelectItem();
-			wxString fileExtract = ProcessExtractFile(listPage);
+			wxString fileExtract = CRegardsPDF::ExtractPage(filename, listPage);
 
 			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
 				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -114,7 +115,7 @@ void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 		if (selectFile.ShowModal() == wxID_OK)
 		{
 			vector<int> listPage = selectFile.GetSelectItem();
-			ProcessFile(listPage);
+			CRegardsPDF::RemovePage(filename, listPage);
 			LoadFile(filename);
 		}
 
@@ -197,7 +198,7 @@ int CCentralWindow::OnOpen(const int &type)
 				int nbPage = libPicture.GetNbImage(file);
 				for (int i = 0; i < nbPage; i++)
 					listPage.push_back(i);
-				ProcessAddFile(file, filename, listPage, position);
+				CRegardsPDF::AddPage(file, filename, listPage, position);
 				position += nbPage;
 
 			}
@@ -239,33 +240,7 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 
 void CCentralWindow::OnSave(wxCommandEvent& event)
 {
-	/*
-	if (filename != "")
-	{
-		//CSavePicture::ExportPicture(this, filename);
 
-		//CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
-
-		wxString filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-		wxString savePdfFile = CLibResource::LoadStringFromResource(L"LBLSAVEPDFFILE", 1);
-
-		wxFileDialog saveFileDialog(nullptr, savePdfFile, "", "",
-			"PDF " + filename + " (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;     // the user changed idea...
-
-		wxString newfilename = saveFileDialog.GetPath();
-		wxCopyFile(filename, newfilename);
-
-		LoadFile(newfilename);
-	}
-	else
-	{
-		wxString openfile = CLibResource::LoadStringFromResource("LBLOPENAFILE", 1);
-		wxString infos = CLibResource::LoadStringFromResource("informationserror", 1);
-		wxMessageBox(openfile, infos, wxICON_INFORMATION);
-	}
-	*/
 	if (filename != "")
 	{
 		wxString tempFolder = CFileUtility::GetDocumentFolderPath();
@@ -307,97 +282,6 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 	}
 }
 
-void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality, int numpage)
-{
-	CLibPicture libPicture;
-	wxString file;
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-	if (!wxMkDir(tempFolder)) {
-#else
-	wxString tempFolder = documentPath + "/temp";
-	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-
-	//Save
-	if (option == 0)
-	{
-
-#ifdef WIN32
-		file = tempFolder + "\\temporary" + to_string(numpage) + ".jpg";
-#else
-		file = tempFolder + "/temporary" + to_string(numpage) + ".jpg";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-		libPicture.SavePicture(file, imageFormat, 0, quality);
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\temporary" + to_string(numpage) + ".tiff";
-#else
-		file = tempFolder + "/temporary" + to_string(numpage) + ".tiff";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-		libPicture.SavePicture(file, imageFormat, 0, quality);
-	}
-
-	wxImage image;
-	image.LoadFile(file);
-	//int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-	//int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
-	//	double dblDpiBy72 = (double)m_nDpi / 72.0;
-
-	image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
-
-
-	if (image.HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
-	{
-		//int nResolutionUnit = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
-		int nResolution = 0;
-
-		// Get image resolution-
-		if (image.HasOption(wxIMAGE_OPTION_RESOLUTION))
-		{
-			nResolution = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
-		}
-		else if (image.HasOption(wxIMAGE_OPTION_RESOLUTIONX) && (image.HasOption(wxIMAGE_OPTION_RESOLUTIONY)))
-		{
-			int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
-			int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
-
-			if (nResolutionX == nResolutionY)
-			{
-				nResolution = nResolutionX;
-			}
-		}
-		if (nResolution)
-		{
-
-
-			//int tpl = oPdfDocument.BeginTemplate(0, 0, image.GetWidth(), image.GetHeight());
-			wxPrintOrientation orientation = (image.GetHeight() > image.GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
-			oPdfDocument.AddPage(orientation);
-
-			if (option == 0)
-				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
-			else
-				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/tiff"));
-
-
-		}
-	}
-}
 
 int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameOutput)
 {
@@ -439,7 +323,7 @@ int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameO
 						{
 
 							CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, listPage[numpage]);
-							AddPdfPage(oPdfDocument, imageLoadingFormat, option, quality, numpage);
+							CRegardsPDF::AddPdfPage(&oPdfDocument, imageLoadingFormat, option, quality, numpage);
 							nbPage++;
 							delete imageLoadingFormat;
 						}
@@ -448,7 +332,7 @@ int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameO
 				else
 				{
 					CImageLoadingFormat * imageFormat = libPicture.LoadPicture(filename);
-					AddPdfPage(oPdfDocument, imageFormat, option, quality, i);
+					CRegardsPDF::AddPdfPage(&oPdfDocument, imageFormat, option, quality, i);
 					nbPage++;
 					delete imageFormat;
 				}
@@ -500,7 +384,7 @@ wxString CCentralWindow::ProcessLoadFiles(wxArrayString & listFile)
 				if (selectFile.ShowModal() == wxID_OK)
 				{
 					vector<int> listPage = selectFile.GetSelectItem();
-					ProcessAddFile(listFile[i], temporyFile, listPage, oldAnimationPosition);
+					CRegardsPDF::AddPage(listFile[i], temporyFile, listPage, oldAnimationPosition);
 				}
 			}
 		}
@@ -609,269 +493,4 @@ CCentralWindow::~CCentralWindow()
 void CCentralWindow::UpdateScreenRatio()
 {
 	this->Resize();
-}
-
-void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition)
-{
-	wxString file = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
-#else
-	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\add.pdf";
-#else
-		file = tempFolder + "/add.pdf";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-	}
-
-	if (file != "")
-	{
-		wxBusyInfo wait("Please wait, working...");
-		std::vector<QPDFObjectHandle> oldpages;
-		int oldpageno_len = 0;
-		int i = 0;
-		bool fileIn = false;
-		if (filename != "" && wxFileExists(filename))
-			fileIn = true;
-
-		QPDF oldpdf;
-		if(fileIn)
-			oldpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
-
-		QPDF inpdf;
-		inpdf.processFile(CConvertUtility::ConvertToUTF8(fileToAdd));
-
-
-		std::string outfile = CConvertUtility::ConvertToStdString(file);
-		QPDF outpdf;
-		outpdf.emptyPDF();
-
-
-		if (fileIn)
-		{
-			oldpages = oldpdf.getAllPages();
-			oldpageno_len = oldpages.size();
-
-			for (; i <= oldAnimationPosition; i++)
-			{
-				auto object = oldpages.at(i);
-				QPDFObjectHandle& page(object);
-				outpdf.addPage(page, false);
-			}
-		}
-
-
-
-
-		std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
-		//int pageno_len = pages.size();
-		int pageno = 0;
-
-
-		for (std::vector<QPDFObjectHandle>::const_iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
-		{
-			bool find = false;
-			for (int i1 : listPage)
-			{
-				if (i1 == pageno)
-				{
-					find = true;
-					break;
-				}
-			}
-
-			if (find)
-			{
-				QPDFObjectHandle page = *newiter;
-				outpdf.addPage(page, false);
-			}
-
-			pageno++;
-		}
-
-		if (fileIn)
-		{
-			//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
-			for (; i < oldpageno_len; i++)
-			{
-				auto page = oldpages.at(i);
-				outpdf.addPage(page, false);
-			}
-		}
-
-		QPDFWriter outpdfw(outpdf, outfile.c_str());
-		outpdfw.setCompressStreams(true);
-		outpdfw.setRecompressFlate(true);
-		outpdfw.write();
-	}
-#ifndef DEMO
-	if (wxFileExists(filename))
-	{
-		bool isRemove = wxRemoveFile(filename);
-		if (!isRemove)
-		{
-			printf("not remove");
-		}
-	}
-
-	wxCopyFile(file, filename);
-#endif
-}
-
-
-
-void CCentralWindow::ProcessFile(const vector<int> & listPage)
-{
-	wxString file = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
-#else
-	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\delete.pdf";
-#else
-		file = tempFolder + "/delete.pdf";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-	}
-
-	{
-		wxBusyInfo wait("Please wait, working...");
-		QPDF inpdf;
-		inpdf.processFile(CConvertUtility::ConvertToUTF8(filename));
-		std::vector<QPDFObjectHandle> const & pages = inpdf.getAllPages();
-		//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
-		int pageno = 0;
-
-		std::string outfile = CConvertUtility::ConvertToStdString(file);
-		QPDF outpdf;
-		outpdf.emptyPDF();
-
-
-		for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin(); iter != pages.end(); ++iter)
-		{
-			bool find = false;
-			for (int i : listPage)
-			{
-				if (i == pageno)
-				{
-					find = true;
-					break;
-				}
-			}
-
-			if (!find)
-			{
-				QPDFObjectHandle page = *iter;
-				outpdf.addPage(page, false);
-			}
-
-			pageno++;
-		}
-
-		QPDFWriter outpdfw(outpdf, CConvertUtility::ConvertToUTF8(outfile));
-		outpdfw.write();
-	}
-
-
-
-
-#ifndef DEMO
-	if (wxFileExists(filename))
-		wxRemoveFile(filename);
-
-	wxCopyFile(file, filename);
-#endif
-}
-
-
-
-wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
-{
-	wxString file = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
-#else
-	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
-#endif
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\extract.pdf";
-#else
-		file = tempFolder + "/extract.pdf";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-	}
-
-	QPDF inpdf;
-	inpdf.processFile(CConvertUtility::ConvertToStdString(filename).c_str());
-	std::vector<QPDFObjectHandle> const& pages = inpdf.getAllPages();
-	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
-	int pageno = 0;
-
-	std::string outfile = CConvertUtility::ConvertToStdString(file);
-	QPDF outpdf;
-	outpdf.emptyPDF();
-
-
-	for (std::vector<QPDFObjectHandle>::const_iterator iter = pages.begin();
-		iter != pages.end(); ++iter)
-	{
-		bool find = false;
-		for (int i : listPage)
-		{
-			if (i == pageno)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (find)
-		{
-			QPDFObjectHandle page = *iter;
-			outpdf.addPage(page, false);
-		}
-
-		pageno++;
-	}
-
-	QPDFWriter outpdfw(outpdf, outfile.c_str());
-	outpdfw.write();
-
-	return file;
 }

@@ -26,10 +26,10 @@ namespace Regards
 			wxString GetFilename();
 			int OnOpen(const int &type);
 			void UpdateScreenRatio();
-			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
 
 		private:
-			void AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality, int numpage);
+
+			wxString ProcessLoadFiles(wxArrayString& listFile);
 			void OnSave(wxCommandEvent& event);
 			void OnAddPage(wxCommandEvent& event);
 			void OnDeletePage(wxCommandEvent& event);
@@ -38,9 +38,6 @@ namespace Regards
 			void OnExit(wxCommandEvent& event);
 			void OnExtractPage(wxCommandEvent& event);
             void OnScan(wxCommandEvent& event);
-			wxString ProcessExtractFile(const vector<int> & listPage);
-			void ProcessFile(const vector<int> & listPage);
-			wxString ProcessLoadFiles(wxArrayString & listFile);
 			int LoadPictureFile(wxArrayString & listFile, wxString filenameOutput);
 
 			void RedrawBarPos();
