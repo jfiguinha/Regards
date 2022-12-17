@@ -1,5 +1,5 @@
 #include <header.h>
-#include <freeimage.h>
+#include <FreeImage.h>
 #include "RegardsRaw.h"
 #include "libraw/libraw.h"
 #include <ximage.h>
