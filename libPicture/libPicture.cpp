@@ -1892,7 +1892,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 #ifdef WIN32
 	cv::Mat _bitmap;
-	/*
+	
 	if(isThumbnail)
 		_bitmap = wic->GetThumbnailMetadata(CConvertUtility::ConvertToStdString(fileName));
 	else if (numPicture == 0)
@@ -1902,7 +1902,7 @@ CImageLoadingFormat* CLibPicture::LoadPicture(const wxString& fileName, const bo
 		if(nbFrame == GetNbImage(fileName))
 			_bitmap = wic->GetPicture(CConvertUtility::ConvertToStdString(fileName), numPicture);
 	}
-	*/
+	
 	if (_bitmap.empty())
 		LoadPicture(fileName, isThumbnail, numPicture, bitmap);
 	else
