@@ -889,9 +889,6 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				break;
 			}
 
-
-#ifdef USE_TBB
-
 			std::vector<mytask> tasks;
 
 			for (const auto masterId : itemIds)
@@ -904,12 +901,14 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				tasks.push_back(mytask(frame));
 			}
 
-
+			
 			tbb::parallel_for(0, (int)tasks.size(), 1, [=](int k)
 				{
 					mytask task = tasks[k];
 					task.ApplyFilter();
 				});
+			
+
 
 			if (tasks.size() > 0)
 			{
@@ -923,61 +922,69 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 				reader->getWidth(itemId, _width);
 				reader->getHeight(itemId, _heigth);
 
-				cv::Mat bitmapSrc = tasks[0].GetFrame();
-				if (!bitmapSrc.empty())
+				
+				if (tasks.size() == 1)
 				{
-					try
+					picture = tasks[0].GetFrame();
+					listPicture.clear();
+				}
+				else
+				{
+					cv::Mat bitmapSrc = tasks[0].GetFrame();
+					if (!bitmapSrc.empty())
 					{
-
-						int boxWidth = bitmapSrc.size().width;
-						int boxHeight = bitmapSrc.size().height;
-
-						int nbItemWidth = _width / boxWidth;
-						if (nbItemWidth * boxWidth < _width)
-							nbItemWidth++;
-
-						int nbItemHeight = _heigth / boxHeight;
-						if (nbItemHeight * boxHeight < _heigth)
-							nbItemHeight++;
-
-						cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
-						int x = 0;
-						int y = 0;
-						int i = 0;
-						for (mytask task : tasks)
+						try
 						{
-							cv::Mat src = task.GetFrame();
 
-							try
-							{
-								src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
-							}
-							catch (cv::Exception& e)
-							{
-								const char* err_msg = e.what();
-								std::cout << "exception caught: " << err_msg << std::endl;
-								std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-							}
-							//out->InsertBitmap(task.GetFrame(), x, y, false);
-							x += boxWidth;
+							int boxWidth = bitmapSrc.size().width;
+							int boxHeight = bitmapSrc.size().height;
 
-							if (x >= _width)
+							int nbItemWidth = _width / boxWidth;
+							if (nbItemWidth * boxWidth < _width)
+								nbItemWidth++;
+
+							int nbItemHeight = _heigth / boxHeight;
+							if (nbItemHeight * boxHeight < _heigth)
+								nbItemHeight++;
+
+							cv::Mat out = cv::Mat(boxHeight * nbItemHeight, boxWidth * nbItemWidth, CV_8UC4);
+							int x = 0;
+							int y = 0;
+							int i = 0;
+							for (mytask task : tasks)
 							{
-								x = 0;
-								y += boxHeight;
+								cv::Mat src = task.GetFrame();
+
+								try
+								{
+									src.copyTo(out(cv::Rect(x, y, src.cols, src.rows)));
+								}
+								catch (cv::Exception& e)
+								{
+									const char* err_msg = e.what();
+									std::cout << "exception caught: " << err_msg << std::endl;
+									std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+								}
+								//out->InsertBitmap(task.GetFrame(), x, y, false);
+								x += boxWidth;
+
+								if (x >= _width)
+								{
+									x = 0;
+									y += boxHeight;
+								}
+								i++;
 							}
-							i++;
+
+
+							picture = out(cv::Rect(0, 0, _width, _heigth));
+
+							listPicture.clear();
 						}
-
-						
-						picture = out(cv::Rect(0, 0, _width, _heigth));
-
-						listPicture.clear();
+						catch (...)
+						{
+						}
 					}
-					catch (...)
-					{
-					}
-
 				}
 			}
 
@@ -989,127 +996,6 @@ cv::Mat CHeic::GetPicture(const string& filename, int& orientation)
 
 			tasks.clear();
 
-#else
-
-
-			for (const auto masterId : itemIds)
-			{
-				PictureEncoder picture;
-				listPicture.push_back(picture);
-			}
-
-			int i = 0;
-			int nbProcess = thread::hardware_concurrency();;
-
-			vector<thread *> listThread;
-			for (int j = 0; j < nbProcess; j++)
-			{
-				listThread.push_back(nullptr);
-			}
-
-
-			while (i < listPicture.size())
-			{
-				for (int j = 0; j < nbProcess; j++)
-				{
-					if (listThread[j] != nullptr)
-					{
-						listThread[j]->join();
-						delete listThread[j];
-						listThread[j] = nullptr;
-					}
-				}
-
-				if ((i + 1) < listPicture.size())
-				{
-					for (int j = 0; j < nbProcess; j++)
-					{
-						if (listThread[j] == nullptr)
-						{
-							listPicture[i].frame = new x265Frame;
-							listPicture[i].frame->memoryBufferSize = 1024 * 1024;
-							listPicture[i].frame->_memoryBuffer = new uint8_t[memoryBufferSize];
-							listPicture[i].frame->filename = filename;
-							reader->getItemDataWithDecoderParameters(itemIds[i], listPicture[i].frame->_memoryBuffer, listPicture[i].frame->memoryBufferSize);
-							listThread[j] = new thread(DecodePictureMultiThread, listPicture[i].frame);
-							i++;
-							if (!(i < listPicture.size()))
-								break;
-						}
-					}
-				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			}
-
-
-			for (int j = 0; j < nbProcess; j++)
-			{
-				if (listThread[j] != nullptr)
-				{
-					listThread[j]->join();
-					delete listThread[j];
-					listThread[j] = nullptr;
-				}
-			}
-
-
-
-			if (listPicture.size() > 0)
-			{
-				ImageId itemId;
-				reader->getPrimaryItem(itemId);
-
-				Array<ItemPropertyInfo> propertyInfos;
-				reader->getItemProperties(itemId, propertyInfos);
-
-				uint32_t _width, _heigth;
-				reader->getWidth(itemId, _width);
-				reader->getHeight(itemId, _heigth);
-
-				CRegardsBitmap * bitmapSrc = listPicture[0].frame->picture;
-				int boxWidth = bitmapSrc->GetBitmapWidth();
-				int boxHeight = bitmapSrc->GetBitmapHeight();
-
-				int nbItemWidth = _width / boxWidth;
-				if (nbItemWidth * boxWidth < _width)
-					nbItemWidth++;
-
-				int nbItemHeight = _heigth / boxHeight;
-				if (nbItemHeight * boxHeight < _heigth)
-					nbItemHeight++;
-
-				CRegardsBitmap * out = new CRegardsBitmap(boxWidth * nbItemWidth, boxHeight * nbItemHeight);
-				int x = 0;
-				int y = (nbItemHeight * boxHeight) - boxHeight;
-
-				for (int i = 0; i < listPicture.size(); i++)
-				{
-					out->InsertBitmap(listPicture[i].frame->picture, x, y, false);
-					x += boxWidth;
-
-					if (x > _width)
-					{
-						x = 0;
-						y -= boxHeight;
-					}
-				}
-
-				picture = out->CropBitmap(0, boxHeight * nbItemHeight - _heigth, _width, _heigth);
-
-				for (PictureEncoder picture : listPicture)
-				{
-					if(picture.frame->picture != nullptr)
-						delete picture.frame->picture;
-
-					delete picture.frame;
-				}
-
-				delete out;
-				listPicture.clear();
-				picture->SetFilename(filename);
-
-			}
-#endif
 		}
 
 		if (memoryBuffer != nullptr)
