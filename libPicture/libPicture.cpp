@@ -1229,11 +1229,12 @@ void CLibPicture::LoadwxImageThumbnail(const wxString& szFileName, vector<CImage
 
 		for (auto i = 0; i < m_ani_images; i++)
 		{
-			bool return_value;
+			bool return_value = true;
 			image.Destroy();
 			if (bitmapType == PDF)
 			{
 				image = regardsPdf->GetPicture(i);
+				return_value = regardsPdf->IsOk();
 			}
 			else
 			{

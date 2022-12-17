@@ -5,9 +5,6 @@
 #include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
-#include <qpdf/QPDF.hh>
-#include <qpdf/QPDFPageDocumentHelper.hh>
-#include <qpdf/QPDFWriter.hh>
 #include "SelectPage.h"
 #include <FileUtility.h>
 #include <libPicture.h>
