@@ -1504,7 +1504,7 @@ void CBitmapWndRender::GenerateScreenBitmap(CFiltreEffet* filtreEffet, int& widt
 		top = 0;
 
 	wxRect rc(0, 0, 0, 0);
-	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, false);
 	filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal,
 		localflipVertical, localAngle, value[posRatio]);
 
