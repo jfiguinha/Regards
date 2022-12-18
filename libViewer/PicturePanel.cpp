@@ -108,7 +108,7 @@ void CPicturePanel::CalculateHistogram(cv::Mat & pBitmap, cv::Mat& histogram, co
 
 
 	cv::Mat mat = axes.render(hist_h, hist_w);
-	cvtColor(mat, histImage, cv::COLOR_BGR2BGRA);
+	cvtColor(mat, histogram, cv::COLOR_BGR2BGRA);
 	//cv::flip(histImage, histogram, 0);
 
 	hist.release();
