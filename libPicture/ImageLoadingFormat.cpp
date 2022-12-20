@@ -6,6 +6,7 @@
 #include <ConvertUtility.h>
 #include <ximage.h>
 #include <wx/mstream.h>
+#include "RGBAQuad.h"
 //#include <wx/wfstream.h>
 
 #ifdef ROTDETECT
@@ -18,6 +19,84 @@ using namespace Regards::exiv2;
 using namespace Regards::Picture;
 
 extern float value[256];
+
+int CImageLoadingFormat::GetPosition(const int& x, const int& y)
+{
+	return (x << 2) + (y * (_image.cols << 2));
+}
+
+
+CRgbaquad CImageLoadingFormat::GetColorValue(const int& x, const int& y)
+{
+	//CRgbaquad color = COLOR_RGBA_BLACK;
+	if (!_image.empty() && x >= 0 && y >= 0 && x < _image.cols && y < _image.rows)
+	{
+		int i = GetPosition(x, y);
+		return *((CRgbaquad*)(_image.data + i));
+	}
+	return COLOR_RGBA_BLACK;
+}
+
+
+
+CRgbaquad* CImageLoadingFormat::GetPtColorValue(const int& x, const int& y)
+{
+	CRgbaquad* color = nullptr;
+	if (!_image.empty() && x >= 0 && y >= 0 && x < _image.cols && y < _image.rows)
+	{
+		int i = GetPosition(x, y);
+		color = ((CRgbaquad*)(_image.data + i));
+	}
+	return color;
+}
+
+
+int CImageLoadingFormat::InsertBitmap(CImageLoadingFormat * bitmap, const int & xPos, const int& yPos, const bool& withalpha)
+{
+	if (!_image.empty() && bitmap != nullptr)
+	{
+		int yEnd = yPos + bitmap->GetHeight();
+		int xEnd = xPos + bitmap->GetWidth();
+
+		if (yEnd > _image.rows)
+			yEnd = _image.rows;
+
+		if (xEnd > _image.cols)
+			xEnd = _image.cols;
+
+
+		for (auto y = yPos; y < yEnd; y++)
+		{
+
+			for (auto x = xPos; x < xEnd; x++)
+			{
+				CRgbaquad* colorSrc = GetPtColorValue(x, y);
+				if (colorSrc != nullptr)
+				{
+					if (withalpha)
+					{
+						CRgbaquad color = bitmap->GetColorValue(x - xPos, y - yPos);
+						float alpha = color.GetFAlpha() / 255.0f;
+						float alphaDiff = 1.0f - alpha;
+						if (alphaDiff < 1.0f)
+						{
+							colorSrc->Mul(alphaDiff);
+							color.Mul(alpha);
+							colorSrc->Add(color);
+						}
+					}
+					else
+					{
+						CRgbaquad color = bitmap->GetColorValue(x - xPos, y - yPos);
+						*colorSrc = color;
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+}
 
 CImageLoadingFormat::CImageLoadingFormat(): format(0), orientation(0)
 {

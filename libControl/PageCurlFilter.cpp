@@ -116,61 +116,45 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 	}
 
 	{
-		cv::Mat bitmapNext;
+		CImageLoadingFormat bitmapNext;
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapNext = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			bitmapNext.SetPicture(mat);
 			CImageLoadingFormat * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
 			{
-				cv::Mat mat = bitmapOut->GetOpenCVPicture();
-				try
-				{
-					mat.copyTo(bitmapNext(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
-				}
-				catch (cv::Exception& e)
-				{
-					const char* err_msg = e.what();
-					std::cout << "exception caught: " << err_msg << std::endl;
-					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-				}
+				bitmapNext.InsertBitmap(bitmapOut, out.x, out.y);
+				//bitmapNext.Flip();
 			}
 			delete bitmapOut;
+			
 			if (pictureNext == nullptr)
 				pictureNext = new GLTexture();
-			pictureNext->SetData(bitmapNext);
+			pictureNext->SetData(bitmapNext.GetOpenCVPicture());
 		}
 
 	}
 	{
-		cv::Mat bitmapFirst;
+		CImageLoadingFormat bitmapFirst;
 
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			bitmapFirst = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			bitmapFirst.SetPicture(mat);
 			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
 			{
-				cv::Mat mat = bitmapOut->GetOpenCVPicture();
-				try
-				{
-					mat.copyTo(bitmapFirst(cv::Rect(out.x, out.y, bitmapOut->GetWidth(), bitmapOut->GetHeight())));
-				}
-				catch (cv::Exception& e)
-				{
-					const char* err_msg = e.what();
-					std::cout << "exception caught: " << err_msg << std::endl;
-					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-				}
-				
+				bitmapFirst.InsertBitmap(bitmapOut, out.x, out.y);
+				bitmapFirst.Flip();
 			}
 			delete bitmapOut;
 			if (pictureFirst == nullptr)
 				pictureFirst = new GLTexture();
-			pictureFirst->SetData(bitmapFirst);
+			pictureFirst->SetData(bitmapFirst.GetOpenCVPicture());
 		}
 	}
 

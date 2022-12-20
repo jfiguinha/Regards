@@ -1,6 +1,7 @@
 #pragma once
 class CxImage;
 class FIBITMAP;
+class CRgbaquad;
 
 class CImageLoadingFormat
 {
@@ -20,6 +21,7 @@ public:
 	int GetOrientation();
 	wxString GetFilename();
 	int GetFormat();
+	int InsertBitmap(CImageLoadingFormat * bitmap, const int& xPos, const int& yPos, const bool& withalpha = true);
 	void SetRotation(const int& rotation);
 	bool Rotate180();
 	bool Rotate270();
@@ -41,10 +43,14 @@ public:
 	FIBITMAP* GetFreeImage();
 	void ReadFile(const wxString& filename);
 	void WriteFile(const wxString& filename);
+	
+
 protected:
 
+	CRgbaquad* GetPtColorValue(const int& x, const int& y);
+	CRgbaquad GetColorValue(const int& x, const int& y);
 	float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
-
+	int GetPosition(const int& x, const int& y);
 	cv::Mat _image;
 	int format;
 	wxString filename;

@@ -40,19 +40,14 @@ int CBitmapFusionFilter::GetTypeFilter()
 CImageLoadingFormat * CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
                                                                         IBitmapDisplay* bmpViewer)
 {
-	cv::Mat mat = nextPicture->GetOpenCVPicture();
-	const int orientation = nextPicture->GetOrientation();
 	CImageLoadingFormat * bitmapTemp = new CImageLoadingFormat();
-	bitmapTemp->SetPicture(mat);
-	bitmapTemp->RotateExif(orientation);
-	//bitmapTemp->SetAlphaValue(0);
 
-	const float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetWidth(), bitmapTemp->GetHeight());
-	const int widthOutput = bitmapTemp->GetWidth() * newRatio;
-	const int heightOutput = bitmapTemp->GetHeight() * newRatio;
+	const float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
+	const int widthOutput = nextPicture->GetWidth() * newRatio;
+	const int heightOutput = nextPicture->GetHeight() * newRatio;
 
 	cv::Mat _out;
-	cv::resize(bitmapTemp->GetOpenCVPicture(), _out, cv::Size(widthOutput, widthOutput), cv::INTER_CUBIC);
+	cv::resize(nextPicture->GetOpenCVPicture(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
 	bitmapTemp->SetPicture(_out);
 
 	//auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
