@@ -16,6 +16,8 @@ namespace Regards
 			~CSqlResource();
 
 			CPictureData * GetBitmap(const wxString &idName);
+			vector<wxString> GetSavePictureFormat();
+			vector<wxString> GetSavePictureExtension();
 			wxString GetText(const wxString& idName);
 			wxString GetOpenGLShader(const wxString& idName);
 			wxString GetFilepath(const wxString& idName);
@@ -47,12 +49,14 @@ namespace Regards
             int TraitementResultExtension(CSqlResult * sqlResult);
 			int TraitementResult(CSqlResult * sqlResult);
 			int TraitementResultFilePath(CSqlResult * sqlResult);
+			int TraitementResultList(CSqlResult* sqlResult);
 			int typeResult;
 			CPictureData * memFile;
 			wxString text;
 			wxString libelle;
             string test;
 			wxString defaultPathSearch;
+			vector<wxString> list;
             int id;
 		};
 	}

@@ -1,6 +1,6 @@
 #include <header.h>
 #include "ExportFile.h"
-
+#include <LibResource.h>
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(ExportFile)
 //*)
@@ -30,6 +30,10 @@ CExportFile::CExportFile(wxWindow* parent)
 	cbFileSaveOption = static_cast<wxComboBox*>(FindWindow(XRCID("ID_cbfilesaveoption")));
 	btCancel = static_cast<wxButton*>(FindWindow(XRCID("ID_BTCANCEL")));
 	rbChangeFilename = static_cast<wxRadioBox*>(FindWindow(XRCID("ID_RBCHANGEFILENAME")));
+
+	//Get List of Save Format Support :
+	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
+	cbFileSaveOption->Insert(listFormat, 0);
 
 	Connect(XRCID("ID_RBDATEINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,
 	        (wxObjectEventFunction)&CExportFile::OnRadioBox1Select);

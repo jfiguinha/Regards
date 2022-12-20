@@ -26,7 +26,20 @@ CSavePicture::~CSavePicture()
 
 const wxString GetPictureFilter()
 {
-	return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
+	vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
+	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
+
+	int i = 0;
+	wxString listPictureFilter = "";
+	for (wxString format : listFormat)
+	{
+		if(i < listFormat.size() - 1)
+			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++) + "|");
+		else
+			listPictureFilter.append(format + "(*" + format + ")|" + listExtension.at(i++));
+	}
+	return listPictureFilter;
+	//return "PDF(*.PDF)|*.pdf|BMP(*.BMP)|*.bmp|BPG(*.BPG)|*.bpg|JPEG(*.JPG)|*.jpg|TIFF(*.TIF)|*.tif|GIF(*.GIF)|*.gif|PNG(*.PNG)|*.png|TGA(*.TGA)|*.tga|JPEG2000(*.JP2)|*.jp2|PPM(*.PPM)|*.ppm|WEBP (*.WEBP)|*.webp|PCX (*.PCX)|*.pcx|XPM (*.XPM)|*.xpm|JXR (*.JXR)|*.jxr|EXR (*.EXR)|*.exr|J2K (*.J2K)|*.j2k|PFM (*.PFM)|*.pfm|AVIF (*.avif)|*.avif|HEIC (*.heic)|*.heic|NFO (*.nfo)|*.nfo";
 }
 
 wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& filename)
@@ -42,12 +55,13 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 #endif
 
 		wxString _filename = CLibResource::LoadStringFromResource(L"LBLFILESNAME", 1);
-
+		vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
+		/*
 		std::vector<wxString> v = {
 			".pdf", ".bmp", ".bpg", ".jpg", ".tif", ".gif", ".png", ".tga", ".jp2", ".ppm",
 			".webp", ".pcx", ".xpm", ".jxr", ".exr", ".j2k", ".pfm", ".avif", ".heic", ".nfo"
 		};
-		
+		*/
 
 		wxFileName bmpFilename(filename);
 		wxFileDialog saveFileDialog(nullptr, bmpFilename.GetName(), "", bmpFilename.GetName(),
@@ -59,7 +73,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow* window, const wxString& fi
 		int filterIndex = saveFileDialog.GetFilterIndex();
 		file = saveFileDialog.GetPath();
         wxFileName outputName(file);
-        wxString extension = v[filterIndex];
+        wxString extension = listExtension[filterIndex];
 #ifdef WIN32
         file = outputName.GetPath() + "\\" + outputName.GetName() + extension;
 #else

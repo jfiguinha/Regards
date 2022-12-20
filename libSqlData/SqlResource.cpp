@@ -154,6 +154,22 @@ wxString CSqlResource::GetOpenCLFloat(const wxString& idName)
 	return text;
 }
 
+vector<wxString> CSqlResource::GetSavePictureFormat()
+{
+	list.clear();
+	typeResult = 8;
+	ExecuteRequest("SELECT Label FROM SavePictureFormat");
+	return list;
+}
+
+vector<wxString> CSqlResource::GetSavePictureExtension()
+{
+	list.clear();
+	typeResult = 8;
+	ExecuteRequest("SELECT Extension FROM SavePictureFormat");
+	return list;
+}
+
 wxString CSqlResource::GetOpenCLUchar(const wxString& idName)
 {
 	text = "";
@@ -552,6 +568,26 @@ int CSqlResource::TraitementResultExif(CSqlResult * sqlResult)
 	return nbResult;
 }
 
+int CSqlResource::TraitementResultList(CSqlResult* sqlResult)
+{
+	int nbResult = 0;
+	while (sqlResult->Next())
+	{
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		{
+			switch (i)
+			{
+			case 0:
+				list.push_back(sqlResult->ColumnDataText(i));
+				break;
+			default:;
+			}
+		}
+		nbResult++;
+	}
+	return nbResult;
+}
+
 int CSqlResource::TraitementResultExtension(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
@@ -602,6 +638,10 @@ int CSqlResource::TraitementResult(CSqlResult * sqlResult)
 
 	case 7:
 		nbResult = TraitementResultFilePath(sqlResult);
+		break;
+
+	case 8:
+		nbResult = TraitementResultList(sqlResult);
 		break;
 	default: ;
 	}

@@ -200,6 +200,19 @@ wxImage CLibResource::CreatePictureFromSVGFilename(const wxString& filename, con
 	return img;
 }
 
+
+vector<wxString> CLibResource::GetSavePictureFormat()
+{
+    CSqlResource sqlResource;
+    return sqlResource.GetSavePictureFormat();
+}
+
+vector<wxString> CLibResource::GetSavePictureExtension()
+{
+    CSqlResource sqlResource;
+    return sqlResource.GetSavePictureExtension();
+}
+
 wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight)
 {
     CSqlResource sqlResource;

@@ -19,5 +19,7 @@ public:
     static wxImage CreatePictureFromSVGFilename(const wxString& filename, const int& buttonWidth, const int& buttonHeight);
 	static wxImage CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight);
     static int GetExtensionId(const wxString &extension);
+    static vector<wxString> GetSavePictureFormat();
+    static vector<wxString> GetSavePictureExtension();
 	static wxString GetPhotoCancel();
 };

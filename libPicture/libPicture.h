@@ -85,7 +85,7 @@ namespace Regards
 #endif
 			static CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 			CImageLoadingFormat * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
-
+			static int TestExtension(const wxString& ext);
 		private:
 
 
@@ -96,7 +96,7 @@ namespace Regards
 			//-----------------------------------------------------------------------------
 			//Liste des fonctions de la DLL
 			//-----------------------------------------------------------------------------
-			static int TestExtension(const wxString & ext);
+			
             void ApplyOrientation(const wxString & fileName, const bool & applyExif, CImageLoadingFormat * bitmap);
 
 			int svgWidth;
