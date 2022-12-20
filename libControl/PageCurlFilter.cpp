@@ -121,7 +121,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
 			bitmapNext.SetPicture(mat);
 			CImageLoadingFormat * bitmapOut = GenerateInterpolationBitmapTexture(nextPicture, bmpViewer);
 			if (bitmapOut != nullptr)
@@ -143,7 +143,7 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat* nextPicture, CImageLo
 		if (init)
 		{
 			CRgbaquad colorBack = bmpViewer->GetBackColor();
-			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetRed(), colorBack.GetGreen(), colorBack.GetBlue(), 255));
+			cv::Mat mat = cv::Mat(bmpViewer->GetHeight(), bmpViewer->GetWidth(), CV_8UC4, cv::Scalar(colorBack.GetBlue(), colorBack.GetGreen(), colorBack.GetRed(), 255));
 			bitmapFirst.SetPicture(mat);
 			CImageLoadingFormat* bitmapOut = GenerateInterpolationBitmapTexture(source, bmpViewer);
 			if (bitmapOut != nullptr)
