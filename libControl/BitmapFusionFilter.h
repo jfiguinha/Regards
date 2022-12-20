@@ -22,6 +22,7 @@ namespace Regards
 			virtual void GenerateTexture(CImageLoadingFormat* bitmap);
 			virtual void GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 
+
 			CImageLoadingFormat* GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer);
 			Regards::OpenGL::GLTexture * pictureNext;
 			CImageLoadingFormat* _bmpSecond;

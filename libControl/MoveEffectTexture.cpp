@@ -22,10 +22,10 @@ void CMoveEffectTextureEffect::AfterRender(CImageLoadingFormat* nextPicture, CRe
 
 
 
-	if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
-	{
-		GenerateEffectTexture(nextPicture, bmpViewer);
-	}
+	//if (pictureNext == nullptr || pictureNext->GetWidth() != widthOutput || pictureNext->GetHeight() != heightOutput)
+	//{
+	//	GenerateEffectTexture(nextPicture, bmpViewer);
+	//}
 
 	if (isNext)
 	{

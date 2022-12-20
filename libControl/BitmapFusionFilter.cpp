@@ -37,31 +37,24 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
-CImageLoadingFormat * CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
+CImageLoadingFormat* CBitmapFusionFilter::GenerateInterpolationBitmapTexture(CImageLoadingFormat* nextPicture,
                                                                         IBitmapDisplay* bmpViewer)
 {
-	CImageLoadingFormat * bitmapTemp = new CImageLoadingFormat();
-
+	CImageLoadingFormat* picture = new CImageLoadingFormat();
 	const float newRatio = bmpViewer->CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
 	const int widthOutput = nextPicture->GetWidth() * newRatio;
 	const int heightOutput = nextPicture->GetHeight() * newRatio;
 
 	cv::Mat _out;
 	cv::resize(nextPicture->GetOpenCVPicture(), _out, cv::Size(widthOutput, heightOutput), cv::INTER_CUBIC);
-	bitmapTemp->SetPicture(_out);
-
-	//auto bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-	//CInterpolationBicubic interpolation;
-	//interpolation.Execute(bitmapTemp, bitmapOut);
-
-	//delete bitmapTemp;
-
+	picture->SetPicture(_out);
 	out.width = widthOutput;
 	out.height = heightOutput;
 	out.x = (bmpViewer->GetWidth() - widthOutput) / 2;
 	out.y = (bmpViewer->GetHeight() - heightOutput) / 2;
 
-	return bitmapTemp;
+	
+	return picture;
 }
 
 void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay* bmpViewer,
@@ -74,6 +67,7 @@ void CBitmapFusionFilter::SetTransitionBitmap(const bool& start, IBitmapDisplay*
 	else
 		bmpViewer->StopTransitionEffect(bmpSecond);
 }
+
 
 void CBitmapFusionFilter::GenerateEffectTexture(CImageLoadingFormat* nextPicture, IBitmapDisplay* bmpViewer)
 {
