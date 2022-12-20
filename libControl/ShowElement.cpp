@@ -555,24 +555,9 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 	{
 		CSqlPhotos sqlPhotos;
 		int exif = sqlPhotos.GetPhotoExif(filename);
-		//CMetadataExiv2 metaData(bitmap->GetFilename());
-		CLibPicture libPicture;
-		if (exif == -1 && configRegards->GetDetectOrientation())
-		{
-			if (!isThumbnail && libPicture.TestIsPicture(bitmap->GetFilename()) && DeepLearning::CDeepLearning::IsResourceReady())
-			{
-				bool fastDetection = true;
-				CRegardsConfigParam* param = CParamInit::getInstance();
-				if (param != nullptr)
-					fastDetection = param->GetFastDetectionFace();
 
-				int exif = DeepLearning::CDeepLearning::GetExifOrientation(bitmap->GetOpenCVPicture(), fastDetection);
-				sqlPhotos.InsertPhotoExif(filename, exif);
-				bitmap->SetOrientation(exif);
-			}
 
-		}
-		else if (configRegards->GetDetectOrientation())
+   		if (!isThumbnail && exif > 0)
 		{
 			bitmap->SetOrientation(exif);
 		}
@@ -587,18 +572,14 @@ bool CShowElement::SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnai
 		else if (configRegards != nullptr)
 			numEffect = configRegards->GetEffect();
 
+		
+
 		if (numEffect != 0)
 		{
-			if (isThumbnail)
+			if (isThumbnail || isDiaporama)
 			{
 				transitionEnd = false;
-				bitmapWindow->ShrinkImage();
-				bitmapWindow->SetTransitionBitmap(bitmap);
-				tempImage = nullptr;
-			}
-			else if (isDiaporama)
-			{
-				transitionEnd = false;
+				bitmap->Flip();
 				bitmapWindow->ShrinkImage();
 				bitmapWindow->SetTransitionBitmap(bitmap);
 				tempImage = nullptr;
