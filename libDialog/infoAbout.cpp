@@ -5,6 +5,7 @@
 #include "TreeDataLink.h"
 #include <TreeElementControlInterface.h>
 #include <TreeElementTriangle.h>
+#include <LibResource.h>
 using namespace Regards::Introduction;
 
 CInfoAbout::CInfoAbout(const CThemeTree& theme)
@@ -44,11 +45,13 @@ void CInfoAbout::Init()
 	treeDataFileName->SetKey("Developper");
 	treeDataFileName->SetValue("Figuinha Jacques");
 	tr.append_child(child, treeDataFileName);
+	
+	wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION", 1);
 
 	auto treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.74.3");
+	treeDataWidth->SetValue(localVersion);
 	tr.append_child(child, treeDataWidth);
 
 	auto treeDataAnnee = new CTreeData();

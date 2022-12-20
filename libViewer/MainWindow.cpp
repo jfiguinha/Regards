@@ -282,6 +282,10 @@ void CMainWindow::OnExportDiaporama(wxCommandEvent& event)
 	}
 	else
 	{
+
+		if (wxFileExists(filepath))
+			wxRemoveFile(filepath);
+
 		wxString musicDiaporama = config->GetMusicDiaporama();
 
 		if (!musicDiaporama.IsEmpty() && wxFileExists(musicDiaporama))

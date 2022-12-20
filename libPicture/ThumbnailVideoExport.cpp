@@ -29,11 +29,11 @@ class CThumbnailDiaporama
 public:
 	virtual ~CThumbnailDiaporama() = default;
 	cv::Mat GenerateBitmapForVideo(const wxString& filename, int width, int height);
-	int ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame, int width, int height,
+	int ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, const int& nbFrame, int width, int height,
 	                  int effect);
 	virtual void WritePicture(cv::Mat& dest) = 0;
 	int SendMessageProgress();
-	virtual int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height) = 0;
+	virtual int CopyPicture(cv::Mat& dest, const int& nbFrame, int width, int height) = 0;
 	int ExecuteProcess(const wxString& outfile, vector<wxString>& listOfFile, int delay, int fps, int width, int height,
 	                   int effect);
 
@@ -44,7 +44,6 @@ public:
 	int countNbFrame = 0;
 	int numWriteFrame = 0;
 	cv::Mat pBitmap;
-	map<wxString, cv::Mat> listOfPicture;
 
 };
 
@@ -56,7 +55,7 @@ class CThumbnailVideoOpenCVExportImpl : public CThumbnailDiaporama
 public:
 
 	void WritePicture(cv::Mat & dest);
-    int CopyPicture(const wxString& filename, const int& nbFrame, int width, int height);
+    int CopyPicture(cv::Mat& dest, const int& nbFrame, int width, int height);
     VideoWriter outputVideo;
 };
 
@@ -88,20 +87,31 @@ int CThumbnailDiaporama::SendMessageProgress()
 //**********************************************************************
 //
 //**********************************************************************
-int CThumbnailVideoOpenCVExportImpl::CopyPicture(const wxString& filename, const int& nbFrame, int width, int height)
+int CThumbnailVideoOpenCVExportImpl::CopyPicture(cv::Mat & dest, const int& nbFrame, int width, int height)
 {
-	cv::Mat dest;
-	dest = listOfPicture[filename]; //CThumbnailDiaporama::GenerateBitmapForVideo(filename, width, height);
-    cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
+    //cvtColor(dest, dest, cv::COLOR_BGRA2BGR);
+	if (!dest.empty())
+	{
+		cv::Mat video;
+		if (dest.channels() == 1) { cvtColor(dest, video, cv::COLOR_GRAY2RGB); }
+		else if (dest.channels() == 4) { cvtColor(dest, video, cv::COLOR_BGRA2BGR); }
+		else
+			dest.copyTo(video);
 
-    for (int i = 0; i < nbFrame; i++)
-    {
-        outputVideo.write(dest);
-        
-        SendMessageProgress();
-        if (endProcess)
-            break;
-    }
+		for (int i = 0; i < nbFrame; i++)
+		{
+			outputVideo.write(video);
+
+			SendMessageProgress();
+			if (endProcess)
+				break;
+		}
+	}
+	else
+	{
+		printf("Error");
+	}
+
 
     //delete src_bitmap;
     dest.release();
@@ -161,43 +171,36 @@ cv::Mat CThumbnailDiaporama::GenerateBitmapForVideo(const wxString& filename, in
 //**********************************************************************
 //
 //**********************************************************************
-int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString& filename2, const int& nbFrame,
+int CThumbnailDiaporama::ExecuteEffect(cv::Mat& pictureOne, cv::Mat& pictureTwo, const int& nbFrame,
                                        int width, int height, int effect)
 {
 	CLibPicture libPicture;
-	cv::Mat pBitmap1;
-	if (!filename1.empty())
-		pBitmap1 = listOfPicture[filename1]; // GenerateBitmapForVideo(filename1, width, height);
-
-
-	cv::Mat pBitmap2;
-	if (!filename2.empty())
-		pBitmap2 = listOfPicture[filename2]; //GenerateBitmapForVideo(filename2, width, height);
 
 	Mat src2;
 	Mat src1;
 	Mat dest;
 
-	if (effect != IDM_DIAPORAMA_MOVE)
+	if (IDM_DIAPORAMA_MOVE != effect)
 	{
-		if (!filename1.empty())
+		if (!pictureOne.empty())
 		{
-			dest = pBitmap1;
-			cvtColor(dest, src1, COLOR_BGRA2BGR);
+			cvtColor(pictureOne, src1, COLOR_BGRA2BGR);
 		}
 
-		if (!filename2.empty())
+		if (!pictureTwo.empty())
 		{
-			dest = pBitmap2;
-			cvtColor(dest, src2, COLOR_BGRA2BGR);
+			cvtColor(pictureTwo, src2, COLOR_BGRA2BGR);
 		}
 	}
+
+
+
 
 	switch (effect)
 	{
 	case IDM_DIAPORAMA_FUSION:
 		{
-			if (!filename1.empty())
+			if (!pictureOne.empty())
 			{
 				for (int k = 0; k < nbFrame; k++)
 				{
@@ -238,8 +241,12 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 
 	case IDM_DIAPORAMA_MOVE:
 		{
-			if (!filename1.empty())
+			if (!pictureOne.empty())
 			{
+				CImageLoadingFormat img1;
+				CImageLoadingFormat img2;
+				img1.SetPicture(pictureOne);
+				img2.SetPicture(pictureTwo);
 				for (int k = 0; k < nbFrame; k++)
 				{
 					float alpha = static_cast<float>(k) / static_cast<float>(nbFrame);
@@ -248,33 +255,16 @@ int CThumbnailDiaporama::ExecuteEffect(const wxString& filename1, const wxString
 					int x = 1920 - (alpha * 1920);
 					int x2 = -(alpha * 1920);
 
+					CImageLoadingFormat imageLoad;
+
+					pBitmap = cv::Mat::zeros(pictureOne.size(), CV_8UC4);
+					imageLoad.SetPicture(pBitmap);
 					
-					pBitmap = cv::Mat::zeros(pBitmap.size(), CV_8UC4);
-					try
-					{
-						pBitmap1.copyTo(pBitmap(cv::Rect(x2, 0, pBitmap1.cols, pBitmap1.rows)));
-					}
-					catch (cv::Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
+					imageLoad.InsertBitmap(&img1, x2, 0, false);
+					imageLoad.InsertBitmap(&img2, x, 0, false);
 
-					try
-					{
-						pBitmap2.copyTo(pBitmap(cv::Rect(x, 0, pBitmap2.cols, pBitmap2.rows)));
-					}
-					catch (cv::Exception& e)
-					{
-						const char* err_msg = e.what();
-						std::cout << "exception caught: " << err_msg << std::endl;
-						std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-					}
+					cvtColor(imageLoad.GetOpenCVPicture(), dest, COLOR_BGRA2BGR);
 
-					//pBitmap->SetBackgroundColor(CRgbaquad(0, 0, 0, 0));
-					//pBitmap->InsertBitmap(pBitmap1, x2, 0, false);
-					//pBitmap->InsertBitmap(pBitmap2, x, 0, false);
 					WritePicture(dest);
 					SendMessageProgress();
 					if (endProcess)
@@ -326,30 +316,32 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 	wxProgressDialog dialog("Export File", "Checking...", countNbFrame, nullptr,
 	                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 	this->dialog = &dialog;
-
+	cv::Mat old_bitmap;
+	cv::Mat src_bitmap;
 	for (int i = 0; i < picturefile.size(); i++)
 	{
+		
 		//int position;
 		if ((i == 0 || effect == IDM_DIAPORAMA_NONE) && effect != IDM_DIAPORAMA_TRANSITION)
 		{
-			cv::Mat src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
-			listOfPicture[listOfFile[i]] = src_bitmap;
-
-			CopyPicture(picturefile[i], nbFrameByPicture, width, height);
+			src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
+			src_bitmap.copyTo(old_bitmap);
+			CopyPicture(src_bitmap, nbFrameByPicture, width, height);
 			if (endProcess)
 				break;
+			
 		}
 		else
 		{
-			cv::Mat  src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
-			listOfPicture[listOfFile[i]] = src_bitmap;
+			src_bitmap = GenerateBitmapForVideo(listOfFile[i], width, height);
 
 			switch (effect)
 			{
 			case IDM_DIAPORAMA_TRANSITION:
 				{
 					//int iStart = i * nbFrameByPicture;
-					ExecuteEffect("", picturefile[i], nbFrameByPicture, width, height, effect);
+					cv::Mat mat;
+					ExecuteEffect(mat, src_bitmap, nbFrameByPicture, width, height, effect);
 					if (endProcess)
 						break;
 				}
@@ -358,19 +350,22 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 			default:
 				{
 					int iStart = i * nbFrameByPicture + nbFrameEffect * (i - 1);
-					ExecuteEffect(picturefile[i - 1], picturefile[i], nbFrameEffect, width, height, effect);
+					ExecuteEffect(old_bitmap, src_bitmap, nbFrameEffect, width, height, effect);
 					iStart += nbFrameEffect;
 					if (endProcess)
 						break;
 
-					CopyPicture(picturefile[i], nbFrameByPicture, width, height);
+					src_bitmap.copyTo(old_bitmap);
+					CopyPicture(src_bitmap, nbFrameByPicture, width, height);
 					if (endProcess)
 						break;
 				}
 				break;
 			}
+			
 		}
 
+		/*
 		if (i > 2)
 		{
 			for (int i1 = i1 - 2; i1 < i1 - 1; i1++)
@@ -379,7 +374,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 				listOfPicture[listOfFile[i1]] = src_bitmap;
 			}
 		}
-
+		*/
 		if (endProcess)
 			break;
 	}
@@ -387,7 +382,7 @@ int CThumbnailDiaporama::ExecuteProcess(const wxString& outfile, vector<wxString
 	if (endProcess)
 		movie_duration = 0;
 
-	listOfPicture.clear();
+
 	return movie_duration;
 }
 
@@ -404,6 +399,7 @@ int CThumbnailVideoExport::GenerateVideoFromList(const wxString& outfile, vector
 	int fourcc = VideoWriter::fourcc('H', '2', '6', '4');
     Size S = Size((int)width,    // Acquire input size
         (int)height);
+
 
 
     // Open the output
