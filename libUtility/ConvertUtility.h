@@ -11,5 +11,6 @@ public:
     static const char * ConvertToUTF8(const wxString & s);
     static const std::string ConvertToStdString(const wxString & s);
     static const std::wstring ConvertToStdWstring(const wxString & s);
+	static wxString GeneratePath(const wxString& firstPart, const wxString& secondPart);
 };
 

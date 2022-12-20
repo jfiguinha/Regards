@@ -360,16 +360,6 @@ void CListPicture::GeolocalizeFileCmd(wxCommandEvent& event)
 				if (false == dialog.Update(i, message))
 					break;
 			}
-
-			/*
-            CopyFileDlg copyFile(this);
-			copyFile.SetSelectItem(&listItem);
-            copyFile.SetMode(3);
-            copyFile.SetNewGeoInfos(mapSelect.GetLatitudeNumber(), mapSelect.GetLongitudeNumber(), mapSelect.GetLatitude(), mapSelect.GetLongitude(), infoGpsLocalisation);
-            copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
-            copyFile.Start();
-            copyFile.ShowModal();
-			*/
 		}
 	}
 	else
@@ -722,14 +712,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 
 	if (infoFile.outputFormat == 0)
 	{
-		wxString newFile = outputFolder;
-
-#if defined(WIN32)
-		newFile += "\\" + file;
-
-#else
-		newFile += "/" + file;
-#endif
+		wxString newFile = CConvertUtility::GeneratePath(outputFolder, file);
 
 		if (infoFile.changeFilename)
 		{
@@ -754,11 +737,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 			{
 				wxArrayString array;
 				wxDir::GetAllFiles(outputFolder, &array);
-#if defined(WIN32)
-				file = outputFolder + "\\" + file;
-#else
-				file = outputFolder + "/" + file;
-#endif
+				file = CConvertUtility::GeneratePath(outputFolder, file);
 				file.append("_" + to_string(array.GetCount()));
 			}
 
@@ -854,54 +833,8 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 
 				if (infoFile.outputFormat != 0)
 				{
-					switch (infoFile.outputFormat)
-					{
-					case 1: //TIFF
-						infoFile.outputFormat = TIFF;
-						break;
-					case 2: //PNG
-						infoFile.outputFormat = PNG;
-						break;
-					case 3: //GIF
-						infoFile.outputFormat = GIF;
-						break;
-					case 4: //JPEG
-						infoFile.outputFormat = JPEG;
-						break;
-					case 5:
-						//BMP
-						infoFile.outputFormat = BMP;
-						break;
-					case 6:
-						infoFile.outputFormat = TGA;
-						//TGA
-						break;
-					case 7:
-						//PCX
-						infoFile.outputFormat = PCX;
-						break;
-					case 8:
-						//MNG
-						infoFile.outputFormat = MNG;
-						break;
-					case 9:
-						//PNM
-						infoFile.outputFormat = PNM;
-						break;
-					case 10:
-						//JPC
-						infoFile.outputFormat = JPC;
-						break;
-					case 11:
-						//JPEG2000
-						infoFile.outputFormat = JPEG2000;
-						break;
-					case 12:
-						//PPM
-						infoFile.outputFormat = PPM;
-						break;
-					default: ;
-					}
+					vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
+					infoFile.outputFormat = CLibPicture::TestExtension(listExtension.at(infoFile.outputFormat - 1).Lower()) ;
 				}
 
 				wxString caption = CLibResource::LoadStringFromResource(L"LBLExportCaption", 1);
@@ -964,14 +897,7 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 				break;
 		}
 
-		/*
-		CopyFileDlg copyFile(this);
-		copyFile.SetSelectItem(&listItem);
-		copyFile.SetMode(0);
-		copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
-        copyFile.Start();
-		copyFile.ShowModal();
-		*/
+
 		//Mise à jour du répertoire des fichiers
 		auto mainWindow = static_cast<CMainWindow*>(this->FindWindowById(MAINVIEWERWINDOWID));
 		if (mainWindow != nullptr)
@@ -1065,13 +991,8 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 				wxString message = text + to_string(j) + "/" + to_string(listItem.size());
 
 				wxString file = CFileUtility::GetFileName(filename);
-				wxString newFile = folderPath;
+				wxString newFile = CConvertUtility::GeneratePath(folderPath, file);
 
-#ifdef WIN32
-				newFile += "\\" + file;
-#else
-				newFile += "/" + file;
-#endif
 				wxCopyFile(filename, newFile, true);
 
 				//wxRemoveFile(filename);

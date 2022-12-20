@@ -11,6 +11,16 @@ CConvertUtility::~CConvertUtility(void)
 {
 }
 
+wxString CConvertUtility::GeneratePath(const wxString& firstPart, const wxString& secondPart)
+{
+#if defined(WIN32)
+	return firstPart + "\\" + secondPart;
+
+#else
+	return firstPart + "/" + secondPart;
+#endif
+}
+
 const std::wstring CConvertUtility::ConvertToStdWstring(const wxString& s)
 {
 #ifdef __WXGTK__
