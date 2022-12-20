@@ -34,6 +34,7 @@ CExportFile::CExportFile(wxWindow* parent)
 	//Get List of Save Format Support :
 	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
 	cbFileSaveOption->Insert(listFormat, 0);
+	cbFileSaveOption->SetSelection(0);
 
 	Connect(XRCID("ID_RBDATEINFORMATION"),wxEVT_COMMAND_RADIOBOX_SELECTED,
 	        (wxObjectEventFunction)&CExportFile::OnRadioBox1Select);
@@ -75,7 +76,18 @@ void CExportFile::OnButton1Click(wxCommandEvent& event)
 	infoExportFile.dateInfoSelection = rbDateInformation->GetSelection();
 	infoExportFile.geoInfoSelection = rbGeographicalInformation->GetSelection();
 	infoExportFile.priority = rbPrioriry->GetSelection();
-	infoExportFile.outputFormat = cbFileSaveOption->GetSelection();
+	int selection = 0;
+	wxString stringSelect = cbFileSaveOption->GetStringSelection();
+	vector<wxString> listFormat = CLibResource::GetSavePictureFormat();
+	for(int i = 0;i < listFormat.size();i++)
+	{
+		if (listFormat[i] == stringSelect)
+		{
+			selection = i + 1;
+			break;
+		}
+	}
+	infoExportFile.outputFormat = selection;
 	infoExportFile.changeFilename = rbChangeFilename->GetSelection();
 	isOk = true;
 	this->Close();

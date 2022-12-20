@@ -28,6 +28,7 @@
 #include "ThumbnailToolBar.h"
 #include "ThumbnailToolBarZoom.h"
 #include <GpsEngine.h>
+#include <wx/filename.h>
 #include <RegardsConfigParam.h>
 #include <ImageLoadingFormat.h>
 #include <WindowMain.h>
@@ -729,9 +730,8 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 		{
 			if (!infoFile.changeFilename)
 			{
-				wxString extension = CFileUtility::GetFileExtension(filename);
-				size_t index = file.find(extension) - 1;
-				file = file.SubString(0, index);
+				wxFileName name = wxFileName(filename);
+				file = CConvertUtility::GeneratePath(outputFolder, name.GetName());
 			}
 			else
 			{
@@ -746,68 +746,13 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 			{
 				vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
 				file.append(listExtension.at(infoFile.outputFormat - 1).Lower());
-				//infoFile.outputFormat = CLibPicture::TestExtension(listExtension.at(infoFile.outputFormat - 1).Lower());
 			}
-
-			/*
-			switch (infoFile.outputFormat)
-			{
-			case TIFF:
-				file.append(".tif");
-				break;
-			case PNG:
-				file.append(".png");
-				break;
-			case GIF:
-				file.append(".gif");
-				break;
-			case JPEG:
-				file.append(".jpg");
-				break;
-			case BMP:
-				//BMP
-				file.append(".bmp");
-				break;
-			case TGA:
-				file.append(".tga");
-				//TGA
-				break;
-			case PCX:
-				//PCX
-				file.append(".pcx");
-				break;
-			case MNG:
-				//MNG
-				file.append(".mng");
-				break;
-			case PNM:
-				//PNM
-				file.append(".pnm");
-				break;
-			case JPC:
-				file.append(".jpc");
-				break;
-			case JPEG2000:
-				file.append(".jp2");
-				break;
-			case PPM:
-				file.append(".ppm");
-				break;
-			case PDF:
-				file.append(".pdf");
-				break;
-			default: ;
-			}*/
 
 			//Sauvegarde de l'image
 			CImageLoadingFormat* bitmap = libPicture.LoadPicture(filename);
 			if (bitmap != nullptr && bitmap->IsOk())
 			{
-				if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)
-				{
-					libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
-				}
-				
+				libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
 			}
 			if (bitmap != nullptr)
 				delete bitmap;
@@ -840,13 +785,14 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 				wxString folderPath = dlg.GetPath();
 				CSqlFindCriteria sqlFindCriteria;
 				InfoExportFile infoFile = exportFile.GetInfoExportFile();
-
+				/*
 				if (infoFile.outputFormat != 0)
 				{
 					vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
-					infoFile.outputFormat = CLibPicture::TestExtension(listExtension.at(infoFile.outputFormat - 1).Lower()) ;
+					wxString ext = listExtension.at(infoFile.outputFormat - 1).Lower();
+					infoFile.outputFormat = CLibPicture::TestExtension(ext.substr(1, ext.size() - 1)) ;
 				}
-
+				*/
 				wxString caption = CLibResource::LoadStringFromResource(L"LBLExportCaption", 1);
 				wxString text = CLibResource::LoadStringFromResource(L"LBLExportText", 1);
 				wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLExportMessage", 1);
@@ -856,8 +802,13 @@ void CListPicture::ExportFileCmd(wxCommandEvent& event)
 
 				if (infoFile.outputFormat != 0)
 				{
+
+					vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
+					wxString ext = listExtension.at(infoFile.outputFormat - 1).Lower();
+					int format = CLibPicture::TestExtension(ext.substr(1, ext.size() - 1));
+
 					CLibPicture libPicture;
-					libPicture.SavePictureOption(infoFile.outputFormat, optionPicture, qualityPicture);
+					libPicture.SavePictureOption(format, optionPicture, qualityPicture);
 				}
 
 				wxProgressDialog dialog(caption, text, listItem.size(), this,
