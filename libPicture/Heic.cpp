@@ -74,8 +74,8 @@ cv::Mat GetRGBPicture(const de265_image* img)
 	int frame_width = width;
 	int frame_height = height;
 
-	frame_width &= ~7;
-	frame_height &= ~7;
+	//frame_width &= ~7;
+	//frame_height &= ~7;
 
 	cv::Mat picture;
 	int stride, chroma_stride;
