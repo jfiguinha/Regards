@@ -2015,8 +2015,10 @@ int CFFmpegTranscodingPimpl::ProcessEncodeOneFrameFile(AVFrame* dst, const int64
 		bool success = capture->SeekToPos(timeInSeconds);
 		frameOutput = capture->GetVideoFrame(false);
 	}
+
+
+	frameOutput.copyTo(frameOutputWithoutEffect);
 	CPictureUtility::ApplyRotation(frameOutput, rotation);
-	//cv::flip(frameOutput, frameOutput, 0);
 	frameOutput = ApplyProcess(frameOutput);
 
 
@@ -2467,6 +2469,11 @@ cv::Mat CFFmpegTranscodingPimpl::GetFrameOutput()
 	return frameOutput.clone();
 }
 
+cv::Mat CFFmpegTranscodingPimpl::GetFrameOutputWithOutEffect()
+{
+	return frameOutputWithoutEffect.clone();
+}
+
 int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame* dst, const int64_t& timeInSeconds)
 {
 	cv::Mat decodeFrame;
@@ -2492,6 +2499,7 @@ int CFFmpegTranscodingPimpl::EncodeOneFrameFFmpeg(const char* filename, AVFrame*
 			decodeFrame = capture->GetVideoFrame(false);
 		}
 
+		decodeFrame.copyTo(frameOutputWithoutEffect);
 		CPictureUtility::ApplyRotation(decodeFrame, rotation);
 		//cv::flip(decodeFrame, decodeFrame, 0);
 		frameOutput = ApplyProcess(decodeFrame);

@@ -13,12 +13,14 @@ public:
 	int EndDecodeFile(const int& returnValue);
 	wxString GetOutputFilename();
 	cv::Mat GetFrameOutput();
+	cv::Mat GetFrameOutputWithOutEffect();
 protected:
 	static void EncodeFileThread(void* data);
 	wxString input;
 	wxString output;
 	std::thread* encode_thread;
 	cv::Mat data;
+	cv::Mat data_withouteffect;
 	CompressVideo* m_dlgProgress;
 	wxWindow* mainWindow;
 	CRegardsBitmap * frameOutput;

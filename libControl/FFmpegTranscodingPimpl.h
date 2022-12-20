@@ -69,6 +69,7 @@ public:
 	};
 
 	cv::Mat GetFrameOutput();
+	cv::Mat GetFrameOutputWithOutEffect();
 
 	CFFmpegTranscodingPimpl();
 	~CFFmpegTranscodingPimpl();
@@ -169,6 +170,7 @@ private:
 	int sizesrc = 0;
 
 	cv::Mat frameOutput;
+	cv::Mat frameOutputWithoutEffect;
 	Regards::Video::CVideoPlayer* capture = nullptr;
 	std::map<int, int> streamInNumberInOut;
 };

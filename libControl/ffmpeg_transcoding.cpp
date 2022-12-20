@@ -47,6 +47,7 @@ int CFFmpegTranscoding::EncodeFrame(const wxString& input, const wxString& outpu
 	if (!ffmpegtranscoding.GetFrameOutput().empty())
 	{
 		data = ffmpegtranscoding.GetFrameOutput();
+		data_withouteffect = ffmpegtranscoding.GetFrameOutputWithOutEffect();
 	}
 #endif
 	return 0;
@@ -60,6 +61,18 @@ cv::Mat CFFmpegTranscoding::GetFrameOutput()
 	//cv::flip(bitmap, bitmap, 0);
 #else
 	data.copyTo(bitmap);
+#endif
+	return bitmap;
+}
+
+cv::Mat CFFmpegTranscoding::GetFrameOutputWithOutEffect()
+{
+	cv::Mat bitmap;
+#ifdef WIN32_MFT
+	data_withouteffect.copyTo(bitmap);
+	//cv::flip(bitmap, bitmap, 0);
+#else
+	data_withouteffect.copyTo(bitmap);
 #endif
 	return bitmap;
 }
