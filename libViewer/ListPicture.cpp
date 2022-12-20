@@ -742,6 +742,14 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 			}
 
 
+			if (infoFile.outputFormat != 0)
+			{
+				vector<wxString> listExtension = CLibResource::GetSavePictureExtension();
+				file.append(listExtension.at(infoFile.outputFormat - 1).Lower());
+				//infoFile.outputFormat = CLibPicture::TestExtension(listExtension.at(infoFile.outputFormat - 1).Lower());
+			}
+
+			/*
 			switch (infoFile.outputFormat)
 			{
 			case TIFF:
@@ -789,7 +797,7 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 				file.append(".pdf");
 				break;
 			default: ;
-			}
+			}*/
 
 			//Sauvegarde de l'image
 			CImageLoadingFormat* bitmap = libPicture.LoadPicture(filename);
@@ -799,8 +807,10 @@ void CListPicture::ExportFile(const wxString& filename, CThumbnailData* data, In
 				{
 					libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
 				}
-				delete bitmap;
+				
 			}
+			if (bitmap != nullptr)
+				delete bitmap;
 		}
 		else
 		{

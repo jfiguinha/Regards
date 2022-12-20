@@ -53,20 +53,6 @@
 		<object class="wxComboBox" name="ID_cbfilesaveoption">
 			<content>
 				<item>Same as File</item>
-				<item>TIFF</item>
-				<item>PNG</item>
-				<item>GIF</item>
-				<item>JPEG</item>
-				<!--<item>BPG</item>-->
-				<item>BMP</item>
-				<item>TGA</item>
-				<item>PCX</item>
-				<item>MNG</item>
-				<item>PNM</item>
-				<item>JPC</item>
-				<item>JPEG2000</item>
-				<item>PPM</item>
-				<item>XPM</item>
 			</content>
 			<pos>16,224</pos>
 			<size>360,21</size>
