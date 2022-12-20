@@ -74,7 +74,7 @@ wxString CCriteriaTreeWnd::GenerateUrl()
 		url.append(fileGeolocalisation->GetLongitude());
 		return url;
 	}
-	return "http://www.openstreetmap.org";
+	return CLibResource::LoadStringFromResource(L"openstreetmapurl", 1);
 }
 
 void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent& event)

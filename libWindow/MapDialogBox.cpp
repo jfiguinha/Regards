@@ -18,7 +18,7 @@ CMapDialogBox::CMapDialogBox(wxWindow* parent, wxWindowID id, const wxString& ti
 	auto mainSizer = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(mainSizer);
 
-	webBrowser = wxWebView::New(this, wxID_ANY, "http://www.google.fr");
+	webBrowser = wxWebView::New(this, wxID_ANY, "https://www.google.fr");
 	webBrowser->Show(true);
 	webBrowser->SetSize(0, 0, 500, 240);
 
